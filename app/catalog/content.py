@@ -1,6 +1,7 @@
 """Read the versioned seed taxonomy; keep public browsing independent of a DB."""
 
 import json
+from collections import Counter
 from functools import lru_cache
 
 from django.conf import settings
@@ -30,16 +31,44 @@ def area_path(area):
 
 
 @lru_cache(maxsize=1)
+def entries():
+    """Articles contain independently addressable mathematical blocks.
+
+    Numbers are presentation only: references use stable article and block IDs.
+    Templates and metadata are trusted, repository-owned content.
+    """
+    source = settings.REPOSITORY_DIR / "examples" / "sumsets" / "entries.json"
+    result = {}
+    for entry in json.loads(source.read_text())["entries"]:
+        counts = Counter()
+        blocks = []
+        for item in entry["blocks"]:
+            counts[item["kind"]] += 1
+            block = {**item, "label": f"{item['kind'].capitalize()} {counts[item['kind']]}"}
+            if item.get("record"):
+                record = json.loads((source.parent / item["record"]).read_text())
+                block["record_id"] = record["id"]
+                block["formalization"] = record["formalization"]
+            blocks.append(block)
+        result[entry["id"]] = {
+            **entry, "display_title": entry["title"], "blocks": blocks,
+            "blocks_by_id": {block["id"]: block for block in blocks},
+            "contents_summary": " · ".join(
+                f"{count} {kind}{'s' if count != 1 else ''}" for kind, count in counts.items()
+            ),
+        }
+    return result
+
+
 def example_entry():
-    source = settings.REPOSITORY_DIR / "examples" / "sumsets" / "lower-bound.json"
-    entry = json.loads(source.read_text())
-    return {**entry, "display_title": "A lower bound for sumsets", "summary":
-            "A short proof that a sumset contains a translated copy of each summand."}
+    return entries()["thm-sumset-lower-bound"]
 
 
 def area_link(area):
     path = area_path(area)
-    entry_area = areas()[example_entry()["primary_area"]]
-    has_example = area["id"] in {item["id"] for item in ancestors(entry_area)}
+    entry_count = sum(
+        area["id"] in {item["id"] for item in ancestors(areas()[entry["primary_area"]])}
+        for entry in entries().values()
+    )
     return {**area, "url": reverse("catalog:area", args=[path]),
-            "children_count": len(children(area["id"])), "has_example": has_example}
+            "children_count": len(children(area["id"])), "entry_count": entry_count}

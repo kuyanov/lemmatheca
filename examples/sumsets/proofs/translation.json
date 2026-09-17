@@ -1,26 +1,64 @@
 {
   "format_version": 1,
   "id": "proof-sumset-lower-bound-translation",
-  "revision": "draft-1",
-  "statement": {"entry_id": "thm-sumset-lower-bound", "revision": "draft-1"},
+  "revision": "draft-3",
+  "statement": {
+    "entry_id": "thm-sumset-lower-bound",
+    "revision": "draft-3"
+  },
   "title": "Translate each summand into the sumset",
   "text": "translation.md",
   "method": "injection",
   "prerequisites": [
-    {"kind": "uses_statement", "proposal": "Translations in an additive group are injective", "status": "planned"},
-    {"kind": "uses_statement", "proposal": "An injection between finite sets gives a cardinality inequality", "status": "planned"},
-    {"kind": "uses_statement", "proposal": "Two upper-bound inequalities imply their maximum is bounded", "status": "planned"}
+    {
+      "kind": "uses_statement",
+      "proposal": "Translations in an additive group are injective",
+      "status": "planned"
+    },
+    {
+      "kind": "uses_statement",
+      "proposal": "An injection between finite sets gives a cardinality inequality",
+      "status": "planned"
+    },
+    {
+      "kind": "uses_statement",
+      "proposal": "Two upper-bound inequalities imply their maximum is bounded",
+      "status": "planned"
+    }
   ],
-  "attribution": [{"name": "Codex", "kind": "ai", "role": "draft_author"}],
+  "attribution": [
+    {
+      "name": "Codex",
+      "kind": "ai",
+      "role": "draft_author"
+    }
+  ],
   "license": "Apache-2.0",
   "formalization": {
-    "status": "not_started",
-    "declaration": null,
-    "step_alignment": [],
-    "verification_report": null,
+    "status": "checked",
+    "declaration": "Lemmatheca.sumset_card_lower_bound",
+    "step_alignment": [
+      {
+        "human_step": "Translate A by a chosen element of B; injectivity gives the first cardinality bound.",
+        "lean_step": "hleft"
+      },
+      {
+        "human_step": "Translate B by a chosen element of A; injectivity gives the second bound.",
+        "lean_step": "hright"
+      },
+      {
+        "human_step": "Combine the two bounds using their maximum.",
+        "lean_step": "max_le hleft hright"
+      }
+    ],
+    "verification_report": "../../../formal/checks/sumsets.json",
     "extracted_dependencies": null,
-    "external_dependencies": null
+    "external_dependencies": null,
+    "source": "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean"
   },
   "reviews": [],
-  "publication": {"status": "draft", "maintainer_decision": null}
+  "publication": {
+    "status": "draft",
+    "maintainer_decision": null
+  }
 }

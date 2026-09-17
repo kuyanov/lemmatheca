@@ -1,7 +1,17 @@
 <nav class="breadcrumbs" aria-label="Breadcrumb">
   <ol>
-    <li><a href="{% url 'catalog:home' %}">Library</a></li>
-    {% for crumb in breadcrumbs %}<li>{% if forloop.last and not entry %}<span aria-current="page">{{ crumb.title }}</span>{% else %}<a href="{{ crumb.url }}">{{ crumb.title }}</a>{% endif %}</li>{% endfor %}
-    {% if entry %}<li><span aria-current="page">Statement</span></li>{% endif %}
+    <li><a href="{% url 'catalog:home' %}">Repository</a></li>
+    {% for crumb in breadcrumbs %}
+    <li>
+      {% if forloop.last and not entry %}
+      <span aria-current="page">{{ crumb.title }}</span>
+      {% else %}
+      <a href="{{ crumb.url }}">{{ crumb.title }}</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+    {% if entry %}
+    <li><span aria-current="page">{{ entry.title }}</span></li>
+    {% endif %}
   </ol>
 </nav>

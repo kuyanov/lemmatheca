@@ -6,12 +6,13 @@ explanatory proofs. Contributors submit human mathematics. AI assists with
 formalization and review; a selected human maintainer decides what is published.
 
 **Current status: a browsable web prototype, draft examples, and a first Lean project.**
-The [web app](app/README.md) has area/subarea navigation and a human-readable HTML
-proof with equations and an illustration. Login and submission are placeholders.
-The [formal project](formal/README.md) checks a separate concrete integer sumset
-example and two supporting lemmas using Lean 4.34.0. There is no verification
-service or maintainer-approved corpus yet; the web article's general statement
-remains an unformalized draft.
+The [web app](app/README.md) has area/subarea navigation and two linked mathematical
+notes containing definitions, numbered results, proofs, and collapsible answers.
+References point to specific results by name. Login and submission are
+placeholders. The [formal project](formal/README.md) checks both general statements
+and their supporting lemmas and counterexamples using Lean 4.34.0 and pinned mathlib, alongside the original concrete integer
+example. There is no verification service or maintainer-approved corpus yet;
+the examples remain editorial drafts with full dependency review pending.
 
 The website currently uses Django templates, plain CSS, and self-hosted KaTeX
 loaded only on proof pages. There is no browser framework or database requirement.

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ entry.title }} — Lemmatheca{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'vendor/katex/katex.min.css' %}">
+<script src="{% static 'vendor/katex/katex.min.js' %}" defer></script>
+<script src="{% static 'vendor/katex/contrib/auto-render.min.js' %}" defer></script>
+<script src="{% static 'js/math.js' %}" defer></script>
+{% endblock %}
+{% block content %}
+{% include "catalog/_breadcrumbs.html" %}
+<article class="proof-article" data-math>
+  <div class="{% if return_entry %}reading-return{% endif %}">
+    {% include "catalog/_entry_back.html" %}
+    {% if return_block %}
+    <span class="return-location">{{ return_block.label }} · {{ return_block.title }}</span>
+    {% endif %}
+  </div>
+  <header class="proof-header">
+    <div class="proof-meta"><span class="eyebrow">Mathematical note</span><span class="pill">Draft</span></div>
+    <h1>{{ entry.title }}</h1>
+    <p class="proof-deck">{{ entry.abstract }}</p>
+    <div class="reading-meta"><span>{{ entry.reading_time }} min read</span><span>{{ entry.contents_summary }}</span>
+    </div>
+  </header>
+  <div class="proof-layout">
+    <aside class="proof-outline" aria-label="In this entry">
+      <span class="eyebrow">In this entry</span>
+      {% for block in entry.blocks %}
+      <a href="#{{ block.id }}"><span class="outline-label">{{ block.label }}</span>{{ block.title }}</a>
+      {% endfor %}
+    </aside>
+    <div class="proof-body">
+      {% for block in entry.blocks %}
+      <section id="{{ block.id }}" class="math-block math-block-{{ block.kind }}"
+        aria-labelledby="{{ block.id }}-title">
+        {% for alias in block.legacy_anchors %}
+        <span id="{{ alias }}" class="legacy-anchor" aria-hidden="true"></span>
+        {% endfor %}
+        <div class="block-heading">
+          <span class="eyebrow">{{ block.label }}</span>
+          <a class="block-permalink" href="#{{ block.id }}"
+            aria-label="Link to {{ block.label }}: {{ block.title }}">#</a>
+        </div>
+        <h2 id="{{ block.id }}-title">{{ block.title }}</h2>
+        {% include block.template %}
+        {% if block.formalization.status == "checked" %}
+        {% include "catalog/_verification.html" %}
+        {% endif %}
+      </section>
+      {% endfor %}
+      <p class="entry-review-note">An AI-authored draft, awaiting maintainer review. Lean checks are shown for
+        individual results; the full mathematical dependency audit is still pending.</p>
+      {% include "catalog/_entry_back.html" %}
+    </div>
+  </div>
+</article>
+{% endblock %}

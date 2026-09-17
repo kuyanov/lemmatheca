@@ -2,14 +2,19 @@
 
 ## Mathematical objects
 
+An entry is a short paper: a title, abstract, and an ordered sequence of definitions,
+lemmas, theorems, questions, proofs, and explanatory material. The entry is the
+reading unit; each mathematical block is an independently addressable object.
+
 Keep a statement separate from its proofs. Two beautiful arguments for the same
 theorem deserve two proof records, separate authorship, and separate grades.
 
 | Entity | Important fields and relations |
 | --- | --- |
 | Area | Stable ID, title, parent, aliases, display order |
-| Entry | Stable ID, kind (`definition` or `statement`), slug, title, primary area, additional areas, tags |
-| Entry revision | Immutable human text and assets, explicit hypotheses, prerequisites, attribution, formal target |
+| Entry | Stable ID, kind `article`, slug, title, abstract, areas, ordered mathematical blocks |
+| Entry revision | Immutable block order and revisions, human text, assets, attribution |
+| Mathematical block | Stable ID within its entry, kind (`definition`, `lemma`, `theorem`, `question`), title, hypotheses, prerequisites, formal binding |
 | Proof | Stable ID, exact statement revision, human argument, Lean declaration, argument alignment |
 | Formalization | Source and environment hashes, exact elaborated type, bindings, dependency graph, axiom report |
 | Submission | Proposer, target entry/proof, immutable revisions, workflow state |
@@ -29,6 +34,31 @@ references, equivalent formulations, and related results. Expository text itself
 is not mechanically certified; mathematical claims inside it must be backed by
 linked statements or clearly identified as motivation or conjecture. Do not put
 unchecked conjectures in the accepted-theorem collection.
+
+## Numbering, citations, and questions
+
+Number blocks by kind within each entry: Definition 1, Definition 2, Lemma 1,
+Lemma 2, Theorem 1, Question 1. The renderer derives numbers from their order;
+neither a display number nor an area's position is an identifier.
+
+Use a stable pair `(entry_id, block_id)` to identify a target. A canonical reader
+link ends in a descriptive fragment such as `#sumset-lower-bound`. Within an entry,
+show “Lemma 2”; across entries, show the linked name “Sumset lower bound”. A title
+hint can identify its containing entry when names coincide. Moving or renumbering
+blocks must preserve their IDs, or leave an explicit alias for old anchors.
+
+Questions may have a native HTML `details` answer, collapsed initially. An open
+question may have no answer. An answer and its formalization are distinct from the
+question; conjectures must never acquire a theorem verification badge. The demo
+uses answered questions with Lean-checked counterexamples. Publication remains an
+entry/revision decision, while formal verification attaches to specific results.
+
+In the prototype, `examples/sumsets/entries.json` records article order, block IDs,
+titles, kinds, references, and trusted HTML templates. Existing mathematical JSON
+records remain separate and are linked through a block's `record` field. The old
+web IDs and URLs are retained for compatibility. Article references are explicitly
+block-scoped; legacy statement/proof prerequisites still identify mathematical
+records. This distinguishes the reading structure from the proof dependency graph.
 
 ## Navigation versus dependencies
 
@@ -110,7 +140,8 @@ release selection. The routes below are proposed contracts, not existing endpoin
 | --- | --- |
 | `GET /api/v1/releases` | Available immutable corpus snapshots |
 | `GET /api/v1/entries?release=...&area=...&q=...&cursor=...` | Search and enumerate accepted entries |
-| `GET /api/v1/entries/<id>?release=...` | Statement/definition, hypotheses, prose, notation, formal bindings |
+| `GET /api/v1/entries/<id>?release=...` | Article, abstract, ordered blocks and revisions |
+| `GET /api/v1/entries/<id>/blocks/<block_id>?release=...` | Individual definition/result/question, hypotheses, proofs, and formal bindings |
 | `GET /api/v1/proofs/<id>?release=...` | A particular argument, Lean source, review and verification records |
 | `GET /api/v1/entries/<id>/dependencies?release=...` | Direct edges and paginated transitive closure |
 | `GET /api/v1/external-lemmas?release=...` | External assumptions/dependencies and their users |
@@ -137,6 +168,8 @@ manual human action followed by normal review.
 
 The records under [`examples/`](../examples/README.md) illustrate the on-disk
 shape using JSON plus Markdown. They are not a production schema or a published
-release. `formalization.status = not_started` and a null verification report are
-intentional. The first implementation must add JSON Schema validation, reference
-resolution, immutable hashes, and the actual Lean bindings before publication.
+release. Some blocks have checked Lean bindings; missing verification remains
+explicit and does not become success just because another block is checked. The
+prototype resolves block references and checks local Lean builds. Production JSON
+Schema validation, immutable releases, and the complete dependency audit remain
+requirements before publication.

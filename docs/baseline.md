@@ -1,8 +1,10 @@
 # A small mathematical baseline
 
 Start with a coherent dependency graph rather than many unrelated famous theorems.
-The following human arguments are design seeds, not accepted library entries or
-Lean-verified proofs. Most are early undergraduate mathematics; elementary support
+The following human arguments are design seeds, not accepted library entries.
+The sumset lower bound now has a Lean proof, along with a triple-sumset application;
+the other proposed statements remain unformalized. Most are early undergraduate
+mathematics; elementary support
 lemmas belong in the foundation layer even when they are not featured on the site.
 
 The concrete sumset records live in [`examples/sumsets/`](../examples/sumsets/definition.json).

@@ -1,0 +1,58 @@
+{
+  "format_version": 1,
+  "id": "proof-triple-sumset-lower-bound",
+  "revision": "draft-2",
+  "statement": {
+    "entry_id": "thm-triple-sumset-lower-bound",
+    "revision": "draft-2"
+  },
+  "title": "Apply the sumset lemma twice",
+  "text": "triple-lower-bound.md",
+  "method": "lemma-application",
+  "prerequisites": [
+    {
+      "kind": "uses_statement",
+      "entry_id": "thm-sumset-lower-bound",
+      "revision": "draft-3"
+    }
+  ],
+  "attribution": [
+    {
+      "name": "Codex",
+      "kind": "ai",
+      "role": "draft_author"
+    }
+  ],
+  "license": "Apache-2.0",
+  "formalization": {
+    "status": "checked",
+    "declaration": "Lemmatheca.triple_sumset_card_lower_bound",
+    "source": "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean",
+    "verification_report": "../../../formal/checks/sumsets.json",
+    "step_alignment": [
+      {
+        "human_step": "Use the nonempty triple sumsets lemma to obtain nonemptiness of A + B.",
+        "lean_step": "hAB"
+      },
+      {
+        "human_step": "Apply the sumset lower bound to A and B.",
+        "lean_step": "hfirst"
+      },
+      {
+        "human_step": "Apply the sumset lower bound to A + B and C.",
+        "lean_step": "hsecond"
+      },
+      {
+        "human_step": "Combine the cardinality bounds.",
+        "lean_step": "hAB_le, hC_le, and the final max_le"
+      }
+    ],
+    "extracted_dependencies": null,
+    "external_dependencies": null
+  },
+  "reviews": [],
+  "publication": {
+    "status": "draft",
+    "maintainer_decision": null
+  }
+}
