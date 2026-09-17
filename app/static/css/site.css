@@ -7,7 +7,13 @@
   --soft-green: #eef2eb;
   --line: #dedfd6;
   --serif: Georgia, "Times New Roman", serif;
-  --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+  --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --reading-leading: 1.65;
+  --anchor-offset: 72px;
 }
 
 * {
@@ -16,7 +22,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 32px
+  scroll-padding-top: 16px;
 }
 
 body {
@@ -64,7 +70,7 @@ h3 {
 }
 
 p {
-  line-height: 1.75
+  line-height: var(--reading-leading);
 }
 
 button {
@@ -81,7 +87,7 @@ button {
 }
 
 .site-header {
-  height: 112px;
+  height: 84px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -116,7 +122,7 @@ button {
 
 .header-actions {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center
 }
 
@@ -125,7 +131,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: 9px;
-  padding: 12px 18px;
+  padding: 10px 16px;
   border-radius: 5px;
   font-size: 13px;
   font-weight: 500;
@@ -171,29 +177,29 @@ button {
 .home-intro {
   display: grid;
   grid-template-columns: 1fr 330px;
-  gap: 80px;
+  gap: 48px;
   align-items: center;
-  padding: 50px 0
+  padding: var(--space-xl) 0;
 }
 
 .home-intro h1 {
   font-family: var(--serif);
-  font-size: clamp(44px, 5.2vw, 68px);
+  font-size: clamp(40px, 4.6vw, 56px);
   line-height: 1.08;
-  letter-spacing: -2.5px;
-  margin: 19px 0 23px
+  letter-spacing: -2px;
+  margin: 12px 0 16px;
 }
 
 .intro-text {
   color: var(--muted);
   font-size: 16px;
-  line-height: 1.8;
+  line-height: var(--reading-leading);
   max-width: 610px
 }
 
 .featured-proof {
   background: var(--soft-green);
-  padding: 27px 29px 26px;
+  padding: 20px 24px;
   border-radius: 4px;
   transition: background .2s
 }
@@ -211,8 +217,8 @@ button {
   display: flex;
   align-items: center;
   gap: 13px;
-  height: 62px;
-  margin-top: 8px
+  height: 36px;
+  margin-top: 4px;
 }
 
 .featured-drawing span {
@@ -241,16 +247,16 @@ button {
 
 .featured-proof h2 {
   font-family: var(--serif);
-  font-size: 25px;
+  font-size: 24px;
   line-height: 1.2;
-  margin-top: 9px;
+  margin-top: 6px;
   letter-spacing: -.5px
 }
 
 .featured-proof p {
   font-size: 12px;
   color: #687768;
-  margin: 10px 0 21px
+  margin: 8px 0 12px;
 }
 
 .text-link {
@@ -271,7 +277,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-md);
   gap: 20px
 }
 
@@ -293,10 +299,12 @@ button {
 }
 
 .area-item {
-  padding: 23px 6px 27px 0;
+  padding: 16px 6px 18px 0;
   border-top: 1px solid var(--line);
   position: relative;
-  transition: background .15s
+  transition: background .15s;
+  display: flex;
+  flex-direction: column;
 }
 
 .area-item:hover h3 {
@@ -312,7 +320,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 17px
+  margin-bottom: 8px;
 }
 
 .area-number {
@@ -330,17 +338,17 @@ button {
 
 .area-item h3 {
   font-family: var(--serif);
-  font-size: 23px;
+  font-size: 22px;
   letter-spacing: -.4px
 }
 
 .area-item p {
   color: var(--muted);
   font-size: 12px;
-  margin: 10px 0 20px;
+  margin: 8px 0 12px;
   max-width: 290px;
-  min-height: 42px;
-  line-height: 1.7
+
+  line-height: 1.55;
 }
 
 .area-meta {
@@ -349,7 +357,8 @@ button {
   align-items: center;
   gap: 7px;
   font-size: 10px;
-  line-height: 1.5
+  line-height: 1.5;
+  margin-top: auto;
 }
 
 .sample-dot {
@@ -365,8 +374,8 @@ button {
   align-items: center;
   gap: 22px;
   border-top: 1px solid var(--line);
-  margin-top: 70px;
-  padding: 29px 0 32px;
+  margin-top: var(--space-xl);
+  padding: 20px 0 24px;
   font-size: 11px;
   color: var(--muted)
 }
@@ -383,7 +392,7 @@ button {
 }
 
 .breadcrumbs {
-  padding-top: 32px
+  padding-top: var(--space-md);
 }
 
 .breadcrumbs ol {
@@ -396,12 +405,12 @@ button {
   margin: 0;
   color: #81867b;
   font-size: 11px;
-  line-height: 1.8
+  line-height: 1.6;
 }
 
 .breadcrumbs li+li:before {
   content: "/";
-  margin: 0 12px;
+  margin: 0 10px;
   color: #b2b7aa
 }
 
@@ -414,32 +423,32 @@ button {
 }
 
 .area-intro {
-  padding: 50px 0
+  padding: 28px 0;
 }
 
 .area-intro h1 {
   font-family: var(--serif);
-  font-size: clamp(38px, 4.5vw, 58px);
-  letter-spacing: -1.8px;
+  font-size: clamp(34px, 4vw, 46px);
+  letter-spacing: -1.3px;
   line-height: 1.12;
-  margin: 17px 0 19px
+  margin: 10px 0 12px;
 }
 
 .area-intro .button {
-  margin-top: 25px
+  margin-top: 16px;
 }
 
 .entries-section {
-  margin-bottom: 80px
+  margin-bottom: var(--space-lg);
 }
 
 .entry-row {
   display: grid;
   grid-template-columns: 170px 1fr 30px;
-  gap: 25px;
+  gap: 20px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  padding: 32px 0
+  padding: 20px 0;
 }
 
 .entry-type {
@@ -447,7 +456,7 @@ button {
   color: var(--muted);
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 8px;
   align-items: start
 }
 
@@ -464,14 +473,14 @@ button {
 
 .entry-row h3 {
   font-family: var(--serif);
-  font-size: 27px;
+  font-size: 25px;
   letter-spacing: -.5px
 }
 
 .entry-row p {
   font-size: 13px;
   color: var(--muted);
-  margin: 12px 0 20px
+  margin: 6px 0 10px;
 }
 
 .entry-arrow {
@@ -491,9 +500,9 @@ button {
 
 .empty-state {
   border-top: 1px solid var(--line);
-  padding: 45px 0 90px;
+  padding: 28px 0 40px;
   display: flex;
-  gap: 29px;
+  gap: 24px;
   max-width: 720px
 }
 
@@ -505,13 +514,13 @@ button {
 
 .empty-state h2 {
   font-family: var(--serif);
-  font-size: 28px
+  font-size: 26px;
 }
 
 .empty-state p {
   color: var(--muted);
   font-size: 14px;
-  margin: 13px 0 23px
+  margin: 8px 0 16px;
 }
 
 .proof-article {
@@ -522,44 +531,44 @@ button {
 .proof-header {
   max-width: 720px;
   margin-left: 220px;
-  padding: 51px 0 41px
+  padding: 24px 0;
 }
 
 .proof-meta {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 21px
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .proof-header h1 {
   font-family: var(--serif);
-  font-size: clamp(40px, 4.2vw, 54px);
+  font-size: clamp(34px, 3.8vw, 44px);
   line-height: 1.12;
-  letter-spacing: -1.7px;
+  letter-spacing: -1.2px;
   max-width: 640px
 }
 
 .proof-deck {
   font-size: 16px;
   color: var(--muted);
-  line-height: 1.8;
-  margin-top: 22px;
+  line-height: var(--reading-leading);
+  margin-top: 12px;
   max-width: 650px
 }
 
 .reading-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px 20px;
+  gap: 8px 16px;
   color: #888d81;
   font-size: 10px;
-  margin-top: 25px
+  margin-top: 12px;
 }
 
 .reading-meta span+span:before {
   content: "·";
-  margin-right: 20px
+  margin-right: 16px;
 }
 
 .proof-layout {
@@ -571,16 +580,16 @@ button {
 .proof-outline {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
   position: sticky;
-  top: 35px;
+  top: 24px;
   align-self: start;
-  padding-top: 6px
+  padding-top: 4px;
 }
 
 .proof-outline>.eyebrow {
   font-size: 9px;
-  margin-bottom: 9px;
+  margin-bottom: 4px;
   color: #92988b
 }
 
@@ -597,22 +606,22 @@ button {
   min-width: 0;
   font-family: var(--serif);
   font-size: 18px;
-  line-height: 1.8
+  line-height: var(--reading-leading);
 }
 
 .proof-body section {
-  margin-bottom: 38px
+  margin-bottom: var(--space-lg);
 }
 
 .proof-body h2 {
-  font-size: 27px;
+  font-size: 25px;
   letter-spacing: -.4px;
   line-height: 1.3;
-  margin-bottom: 16px
+  margin-bottom: 10px;
 }
 
 .proof-body p {
-  line-height: 1.85
+  line-height: var(--reading-leading);
 }
 
 .proof-body strong {
@@ -622,8 +631,8 @@ button {
 .math-display {
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 5px 3px;
-  margin: 16px -3px
+  padding: 2px 3px;
+  margin: 10px -3px;
 }
 
 .proof-body .katex {
@@ -631,31 +640,31 @@ button {
 }
 
 .katex-display {
-  margin: .5em 0 !important
+  margin: .25em 0 !important;
 }
 
 .statement-box {
   border-left: 2px solid var(--green);
   background: var(--soft-green);
-  padding: 25px 28px 22px;
-  margin: 33px 0 38px !important
+  padding: 16px 20px;
+  margin: 12px 0 16px;
 }
 
 .statement-box>.eyebrow {
   font-family: var(--sans);
-  margin-bottom: 14px
+  margin-bottom: 10px;
 }
 
 .statement-box .statement-interpretation {
   font-size: 12px;
   color: #71816c;
   font-family: var(--sans);
-  line-height: 1.7
+  line-height: 1.55;
 }
 
 .statement-equation {
-  font-size: 21px;
-  margin: 20px 0
+  font-size: 20px;
+  margin: 10px 0;
 }
 
 .proof-section-title {
@@ -679,7 +688,8 @@ button {
 }
 
 .proof-figure {
-  margin: 38px 0
+  margin: 24px 0;
+  scroll-margin-top: var(--anchor-offset);
 }
 
 .figure-image {
@@ -697,16 +707,17 @@ button {
 
 .proof-figure figcaption {
   font-family: var(--sans);
-  font-size: 11px;
+  font-size: 12px;
   color: #818a7b;
-  line-height: 1.8;
-  margin-top: 13px
+  line-height: 1.55;
+  margin-top: var(--space-sm);
 }
 
-.proof-figure figcaption>span {
+/* Keep label spacing off the spans generated by KaTeX. */
+.proof-figure .figure-label {
   font-weight: 600;
   color: #5c7059;
-  margin-right: 8px
+  margin-right: var(--space-sm)
 }
 
 .verification-note {
@@ -715,14 +726,16 @@ button {
   color: #7b8474;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  padding: 16px 0;
-  margin-top: 43px
+  padding: 8px 0;
+  margin-top: 16px;
 }
 
 .verification-note summary {
   cursor: pointer;
   list-style: revert;
-  font-weight: 500
+  font-weight: 500;
+  min-height: 24px;
+  line-height: 24px;
 }
 
 .status-dot {
@@ -735,8 +748,8 @@ button {
 }
 
 .verification-note p {
-  padding: 14px 0 2px;
-  line-height: 1.8
+  padding: 8px 0 0;
+  line-height: 1.6;
 }
 
 .back-link {
@@ -744,8 +757,10 @@ button {
   font-size: 12px;
   display: inline-flex;
   gap: 13px;
-  margin: 26px 0 10px;
-  color: var(--green)
+  margin: 12px 0 4px;
+  color: var(--green);
+  min-height: 28px;
+  align-items: center;
 }
 
 .verification-note code {
@@ -769,40 +784,40 @@ button {
 
 .entry-row .entry-contents {
   font-size: 11px;
-  margin-top: -4px;
+  margin-top: 0;
 }
 
 .outline-label {
   display: block;
   font-size: 9px;
   color: var(--muted);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .math-block {
-  scroll-margin-top: 110px;
+  scroll-margin-top: var(--anchor-offset);
   border-top: 1px solid var(--line);
-  padding-top: 25px;
+  padding-top: 16px;
 }
 
 .math-block:target {
   border-top-color: var(--green);
 }
 
-.math-block:target > h2 {
+.math-block:target>h2 {
   color: var(--green);
 }
 
 .legacy-anchor {
   display: block;
-  scroll-margin-top: 110px;
+  scroll-margin-top: var(--anchor-offset);
 }
 
 .block-heading {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 6px;
   font-family: var(--sans);
 }
 
@@ -817,25 +832,25 @@ button {
 
 .proof-label {
   font-style: italic;
-  margin: 20px 0 10px;
+  margin: 12px 0 6px;
 }
 
 .question-answer {
-  margin: 18px 0 0;
+  margin: 12px 0 0;
   border-left: 2px solid var(--line);
-  padding-left: 20px;
+  padding-left: 16px;
 }
 
-.question-answer > summary {
+.question-answer>summary {
   font-family: var(--sans);
   font-size: 13px;
   color: var(--green);
   cursor: pointer;
-  padding: 8px 0;
+  padding: 6px 0;
 }
 
 .answer-body {
-  padding-top: 12px;
+  padding-top: 8px;
 }
 
 .answer-hide,
@@ -848,7 +863,7 @@ button {
 }
 
 .math-block .verification-note {
-  margin-top: 24px;
+  margin-top: 12px;
   border-bottom: 0;
   padding-bottom: 0;
 }
@@ -858,7 +873,7 @@ button {
   font-size: 12px;
   color: var(--muted);
   border-top: 1px solid var(--line);
-  padding-top: 22px;
+  padding-top: 16px;
 }
 
 .reading-return {
@@ -868,8 +883,13 @@ button {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 4px;
-  padding: 10px 16px;
-  margin-top: 18px;
+  padding: 8px 12px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
 }
 
 .reading-return .back-link {
@@ -880,18 +900,18 @@ button {
   display: block;
   font-size: 10px;
   color: var(--muted);
-  margin: 3px 0 0 26px;
+  margin: 0;
 }
 
-.reading-return ~ .proof-layout .proof-outline {
-  top: 96px;
+.reading-return~.proof-layout .proof-outline {
+  top: 80px;
 }
 
 .placeholder-dialog {
   position: fixed;
   inset: 0;
   width: min(460px, calc(100% - 40px));
-  padding: 42px;
+  padding: 28px;
   background: var(--paper);
   color: var(--ink);
   border: 1px solid var(--line);
@@ -917,15 +937,15 @@ button {
 
 .placeholder-dialog h2 {
   font-family: var(--serif);
-  font-size: 33px;
+  font-size: 30px;
   line-height: 1.15;
-  margin: 17px 0
+  margin: 12px 0;
 }
 
 .placeholder-dialog p {
   font-size: 14px;
   color: var(--muted);
-  margin-bottom: 27px
+  margin-bottom: 20px;
 }
 
 .skip-link {
@@ -945,7 +965,7 @@ button {
 
 .noscript-note {
   font-size: 12px;
-  padding-bottom: 20px
+  padding-bottom: 12px;
 }
 
 @media(max-width:1000px) {
@@ -954,16 +974,16 @@ button {
   }
 
   .home-intro {
-    gap: 40px;
+    gap: 28px;
     grid-template-columns: 1fr 290px
   }
 
   .home-intro h1 {
-    font-size: 54px
+    font-size: 46px;
   }
 
   .featured-proof {
-    padding: 25px
+    padding: 20px;
   }
 
   .area-grid {
@@ -980,7 +1000,7 @@ button {
   }
 
   .proof-header h1 {
-    font-size: 46px
+    font-size: 40px;
   }
 
   .proof-deck {
@@ -1002,7 +1022,7 @@ button {
   }
 
   .site-header {
-    height: 85px
+    height: 72px;
   }
 
   .wordmark {
@@ -1031,13 +1051,13 @@ button {
 
   .home-intro {
     grid-template-columns: 1fr;
-    gap: 30px;
-    padding: 45px 0
+    gap: 20px;
+    padding: 24px 0;
   }
 
   .home-intro h1 {
-    font-size: 53px;
-    margin-top: 18px
+    font-size: 42px;
+    margin-top: 12px;
   }
 
   .intro-text {
@@ -1045,7 +1065,7 @@ button {
   }
 
   .featured-proof {
-    padding: 20px 23px
+    padding: 16px 20px;
   }
 
   .featured-drawing {
@@ -1054,23 +1074,23 @@ button {
 
   .featured-category {
     display: block;
-    margin-top: 17px
+    margin-top: 10px;
   }
 
   .featured-proof h2 {
-    font-size: 26px
+    font-size: 24px;
   }
 
   .featured-proof p {
-    margin-bottom: 16px
+    margin-bottom: 10px;
   }
 
   .section-heading {
-    margin-bottom: 18px
+    margin-bottom: 12px;
   }
 
   .section-heading h2 {
-    font-size: 25px
+    font-size: 24px;
   }
 
   .section-heading>span {
@@ -1083,26 +1103,26 @@ button {
   }
 
   .area-item {
-    padding-top: 21px
+    padding-top: 14px;
   }
 
   .area-item h3 {
-    font-size: 22px
+    font-size: 21px;
   }
 
   .area-item p {
     font-size: 11px;
-    min-height: 56px
+
   }
 
   .area-topline {
-    margin-bottom: 12px
+    margin-bottom: 8px;
   }
 
   .site-footer {
     gap: 15px;
     flex-wrap: wrap;
-    margin-top: 40px;
+    margin-top: 24px;
     font-size: 10px
   }
 
@@ -1115,7 +1135,7 @@ button {
   }
 
   .breadcrumbs {
-    padding-top: 24px
+    padding-top: 12px;
   }
 
   .breadcrumbs ol {
@@ -1127,17 +1147,17 @@ button {
   }
 
   .area-intro {
-    padding: 38px 0 40px
+    padding: 24px 0;
   }
 
   .area-intro h1 {
-    font-size: 43px
+    font-size: 36px;
   }
 
   .entry-row {
     grid-template-columns: 1fr 24px;
-    gap: 13px;
-    padding: 25px 0
+    gap: 10px;
+    padding: 16px 0;
   }
 
   .entry-type {
@@ -1147,12 +1167,12 @@ button {
   }
 
   .entry-row h3 {
-    font-size: 25px
+    font-size: 24px;
   }
 
   .empty-state {
     gap: 20px;
-    padding-top: 35px
+    padding-top: 24px;
   }
 
   .empty-state h2 {
@@ -1161,11 +1181,11 @@ button {
 
   .proof-header {
     margin-left: 0;
-    padding: 37px 0 33px
+    padding: 20px 0;
   }
 
   .proof-header h1 {
-    font-size: 43px;
+    font-size: 36px;
     max-width: 560px
   }
 
@@ -1177,9 +1197,9 @@ button {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     position: static;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border-top: 1px solid var(--line);
-    padding-top: 18px;
+    padding-top: 12px;
   }
 
   .proof-outline>.eyebrow {
@@ -1203,11 +1223,11 @@ button {
   }
 
   .proof-body h2 {
-    font-size: 25px
+    font-size: 24px;
   }
 
   .statement-box {
-    padding: 22px 19px
+    padding: 14px 16px;
   }
 
   .statement-equation {
@@ -1219,7 +1239,7 @@ button {
   }
 
   .placeholder-dialog {
-    padding: 36px 27px
+    padding: 28px 24px;
   }
 
   .placeholder-dialog h2 {
@@ -1259,11 +1279,11 @@ button {
   }
 
   .home-intro h1 {
-    font-size: 47px
+    font-size: 38px;
   }
 
   .proof-header h1 {
-    font-size: 38px
+    font-size: 32px;
   }
 
   .reading-meta {
