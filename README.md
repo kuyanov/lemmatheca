@@ -5,13 +5,27 @@ Readers browse areas and subareas, follow definitions and prerequisites, and enj
 explanatory proofs. Contributors submit human mathematics. AI assists with
 formalization and review; a selected human maintainer decides what is published.
 
-**Current status: design proposal and draft examples.** There is no web application,
-Lean project, verification service, or accepted mathematical corpus yet. Nothing in
-`examples/` claims to have been checked by Lean or approved by a maintainer.
+**Current status: a browsable web prototype, draft examples, and a first Lean project.**
+The [web app](app/README.md) has area/subarea navigation and a human-readable HTML
+proof with equations and an illustration. Login and submission are placeholders.
+The [formal project](formal/README.md) checks a separate concrete integer sumset
+example and two supporting lemmas using Lean 4.34.0. There is no verification
+service or maintainer-approved corpus yet; the web article's general statement
+remains an unformalized draft.
 
-The proposed starting point is a small Django application, PostgreSQL, Markdown
-with LaTeX rendered by MathJax, and isolated Lean 4 workers. Keep published
-mathematics in a versioned Git corpus and operational data in PostgreSQL.
+The website currently uses Django templates, plain CSS, and self-hosted KaTeX
+loaded only on proof pages. There is no browser framework or database requirement.
+The longer-term design adds a versioned mathematical corpus, PostgreSQL for
+operational data, and isolated Lean workers.
+
+Run the web app from the repository root:
+
+```sh
+uv sync --locked
+uv run python app/manage.py runserver
+```
+
+Then open <http://127.0.0.1:8000/>.
 
 Start with these documents:
 
@@ -22,6 +36,8 @@ Start with these documents:
 | [Verification and review](docs/verification-and-review.md) | Lean checks, external lemmas, translation, beauty grading, and maintainer authority |
 | [Mathematical baseline](docs/baseline.md) | A small starting collection, explicit hypotheses, human proofs, and dependency plans |
 | [Example records](examples/README.md) | Concrete draft JSON and Markdown for sumsets and a cardinality bound |
+| [First Lean proofs](formal/README.md) | Compilable sumset example, supporting lemmas, and axiom checks |
+| [Web app](app/README.md) | Run the website, edit its content, and check navigation |
 
 Three distinctions shape the project:
 

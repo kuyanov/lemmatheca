@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="A growing library of mathematical definitions, statements, and human-readable proofs.">
+  <title>{% block title %}Lemmatheca — a library of mathematics{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <script src="{% static 'js/site.js' %}" defer></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header shell">
+    <a class="wordmark" href="{% url 'catalog:home' %}" aria-label="Lemmatheca home"><span class="brand-mark" aria-hidden="true">ℓ</span>lemmatheca<span class="wordmark-dot">.</span></a>
+    <nav class="header-actions" aria-label="Account">
+      <button class="button button-quiet" type="button" data-placeholder="login">Log in</button>
+      <button class="button button-primary" type="button" data-placeholder="submit"><span class="button-plus" aria-hidden="true">+</span> Submit a proof</button>
+    </nav>
+  </header>
+  <main id="main" class="shell" tabindex="-1">{% block content %}{% endblock %}</main>
+  <footer class="site-footer shell"><a href="{% url 'catalog:home' %}">Lemmatheca</a><span>A growing library of mathematical ideas.</span><span class="edition">An early edition</span></footer>
+  <dialog class="placeholder-dialog" id="placeholder-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
+    <form method="dialog"><button class="dialog-close" aria-label="Close dialog" autofocus>×</button></form>
+    <span class="eyebrow">Still taking shape</span>
+    <h2 id="dialog-title">Coming soon</h2>
+    <p id="dialog-description"></p>
+    <form method="dialog"><button class="button button-primary">Back to the library</button></form>
+  </dialog>
+  <noscript><p class="noscript-note shell">Login and submission are coming soon. Browsing works without JavaScript.</p></noscript>
+</body>
+</html>

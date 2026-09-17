@@ -1,7 +1,9 @@
 # Project architecture
 
-This is a proposed structure. Only the design documents and example content exist
-today; the application directories below are implementation targets.
+This describes the intended full system. The design documents, example content,
+a small [Lean project](../formal/README.md), and a first [web app](../app/README.md)
+exist today. The web app implements read-only navigation and a sample HTML proof;
+the account, review, publication, database, and worker components remain future work.
 
 ## Tools
 
@@ -10,7 +12,7 @@ today; the application directories below are implementation targets.
 | Web application | Python, Django, server-rendered templates | Public pages, registration, submission forms, review screens |
 | Database | PostgreSQL | Accounts, drafts, jobs, reviews, publication pointers, searchable corpus projection |
 | Human mathematics | Markdown + LaTeX math | Portable, readable source without executable components |
-| Equations | A pinned, self-hosted MathJax build | Accessible mathematical typesetting on desktop and mobile |
+| Equations | Pinned, self-hosted KaTeX | Accessible mathematical typesetting, loaded only on article pages |
 | Images | PNG/WebP and sanitized SVG | Illustrations with captions, alt text, dimensions, and provenance |
 | Formal mathematics | Lean 4, Lake, a pinned mathlib revision | Existing mathematical definitions and proof tooling, with explicit dependency policy |
 | Published corpus | Git, JSON metadata, Markdown, `.lean` sources | Reviewable changes and reproducible, downloadable releases |
@@ -23,10 +25,12 @@ review workflow still need application code. See the official
 [Django overview](https://docs.djangoproject.com/en/5.2/intro/overview/) and
 [authentication documentation](https://docs.djangoproject.com/en/5.2/topics/auth/default/).
 
-[MathJax](https://docs.mathjax.org/en/latest/basic/mathjax.html) supports LaTeX input
-and accessible web mathematics. Specify a supported math macro set; arbitrary LaTeX
-documents and TikZ are not browser input. Store diagrams as image assets, retaining
-their source when available. Preview and publication must use the same renderer.
+[KaTeX](https://katex.org/docs/browser) supplies the first site's LaTeX rendering,
+with locally served fonts and accessible MathML output. It replaces the original
+MathJax proposal for this lightweight first implementation. Specify a supported
+math macro set; arbitrary LaTeX documents and TikZ are not browser input. Store
+diagrams as image assets, retaining their source when available. Preview and
+publication must use the same renderer.
 
 Use [PostgreSQL full-text search](https://www.postgresql.org/docs/current/textsearch.html)
 for titles, aliases, prose, and declaration names initially. Formula and semantic
@@ -53,7 +57,7 @@ lemmatheca/
 │   ├── jobs/                       # Durable jobs, leases, retries, worker commands
 │   ├── api/                        # Versioned, read-only corpus API
 │   ├── templates/                  # Reader pages and maintainer screens
-│   └── static/                     # Small stylesheet and pinned MathJax assets
+│   └── static/                     # Small stylesheet and pinned KaTeX assets
 ├── corpus/
 │   ├── taxonomy.json
 │   ├── foundations.json            # Exact elementary declaration allowlist

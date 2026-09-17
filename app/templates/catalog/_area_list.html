@@ -1,0 +1,10 @@
+<div class="area-grid">
+  {% for item in areas %}
+  <a class="area-item" href="{{ item.url }}">
+    <div class="area-topline"><span class="area-number">{{ forloop.counter|stringformat:"02d" }}</span><span class="area-arrow" aria-hidden="true">↗</span></div>
+    <h3>{{ item.title }}</h3>
+    <p>{{ item.description|default:"Explore definitions, statements, and proofs in this area." }}</p>
+    <span class="area-meta">{% if item.children_count %}{{ item.children_count }} subarea{{ item.children_count|pluralize }}{% else %}Explore topic{% endif %}{% if item.has_example %}<span class="sample-dot" aria-hidden="true"></span>1 example{% endif %}</span>
+  </a>
+  {% endfor %}
+</div>

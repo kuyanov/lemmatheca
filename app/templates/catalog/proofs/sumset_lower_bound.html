@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ entry.display_title }} — Lemmatheca{% endblock %}
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'vendor/katex/katex.min.css' %}">
+  <script src="{% static 'vendor/katex/katex.min.js' %}" defer></script>
+  <script src="{% static 'vendor/katex/contrib/auto-render.min.js' %}" defer></script>
+  <script src="{% static 'js/math.js' %}" defer></script>
+{% endblock %}
+{% block content %}
+{% include "catalog/_breadcrumbs.html" %}
+<article class="proof-article" data-math>
+  <header class="proof-header"><div class="proof-meta"><span class="eyebrow">Statement 001</span><span class="pill">Example · draft</span></div><h1>{{ entry.display_title }}</h1><p class="proof-deck">A translation moves a set without losing any of its elements. That simple observation gives us our first bound.</p><div class="reading-meta"><span>Additive combinatorics</span><span>3 min read</span><span>Proof by injection</span></div></header>
+  <div class="proof-layout">
+    <aside class="proof-outline" aria-label="On this page"><span class="eyebrow">On this page</span><a href="#definition">The definition</a><a href="#statement">The statement</a><a href="#proof">The proof</a><a href="#picture">A picture</a><a href="#assumptions">Why nonempty?</a></aside>
+    <div class="proof-body">
+      <section id="definition"><h2>The definition</h2><p>Let \(G\) be an additive abelian group, and let \(A,B\subseteq G\). The <strong>sumset</strong> of \(A\) and \(B\) is the set of all sums you can make by choosing one element from each:</p><div class="math-display">\[ A+B=\{a+b\mid a\in A,\ b\in B\}. \]</div><p>We count distinct sums, not the pairs that produce them. For instance, \(\{0,1\}+\{0,1\}=\{0,1,2\}\): four pairs, but only three sums.</p></section>
+      <section id="statement" class="statement-box"><span class="eyebrow">The statement</span><p>If \(A\) and \(B\) are <strong>finite, nonempty</strong> subsets of an additive abelian group, then</p><div class="math-display statement-equation">\[ |A+B|\geq\max\{|A|,\,|B|\}. \]</div><p class="statement-interpretation">A sumset is at least as large as either of its summands.</p></section>
+      <section id="proof"><div class="proof-section-title"><h2>The proof</h2><span>Find a copy inside</span></div><p>Choose any element \(b_0\in B\). Adding this fixed element to every member of \(A\) gives the map</p><div class="math-display">\[ \begin{aligned} f:A&\longrightarrow A+B,\\ a&\longmapsto a+b_0. \end{aligned} \]</div><p>Every image belongs to \(A+B\), by the definition of a sumset. And no two elements merge: if \(a+b_0=a'+b_0\), cancellation gives \(a=a'\). So \(f\) is injective, and hence</p><div class="math-display">\[ |A|\leq |A+B|. \]</div><p>Now choose \(a_0\in A\) and repeat the argument with \(b\mapsto a_0+b\). This gives \(|B|\leq |A+B|\). Since the sumset is at least as large as each summand, it is at least as large as their maximum. <span class="qed" aria-label="End of proof">□</span></p></section>
+      <figure id="picture" class="proof-figure"><div class="figure-image"><img src="{% static 'images/sumset-translation.svg' %}" width="720" height="280" alt="For A equal to {0, 1, 2} and B equal to {0, 2}, arrows send 0 to 2, 1 to 3, and 2 to 4. The three distinct images form a translated copy of A inside A plus B, which is {0, 1, 2, 3, 4}."></div><figcaption><span>Figure 01</span> Choose \(b_0=2\). The translated copy \(A+2\) sits inside \(A+B\), with every element of \(A\) still accounted for.</figcaption></figure>
+      <section id="assumptions"><h2>Why nonempty?</h2><p>The proof needs an element to translate by. If \(A=\varnothing\) and \(B=\{0\}\), then \(A+B=\varnothing\), so</p><div class="math-display">\[ |A+B|=0<1=\max\{|A|,|B|\}. \]</div><p>A small hypothesis can do essential work.</p></section>
+      <details class="verification-note"><summary><span class="status-dot" aria-hidden="true"></span>About this example</summary><p>This is an AI-authored demonstration of a human-readable proof. The general statement on this page has not yet been checked in Lean or approved by a maintainer. The repository contains a separate Lean-checked concrete integer example.</p></details>
+      <a class="back-link" href="{% url 'catalog:area' path='combinatorics/additive-combinatorics/sumsets' %}"><span aria-hidden="true">←</span> Back to Sumsets</a>
+    </div>
+  </div>
+</article>
+{% endblock %}
