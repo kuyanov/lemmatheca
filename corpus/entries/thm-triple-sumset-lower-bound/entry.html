@@ -1,0 +1,54 @@
+<section id="triple-sumset" data-kind="definition">
+  <h2>Triple sumsets</h2>
+  <p>Let \(A,B,C\) be finite subsets of an additive abelian group. We group the sum on the left and write</p>
+  <div class="math-display">\[ A+B+C=(A+B)+C=\{(a+b)+c\mid a\in A,\ b\in B,\ c\in C\}. \]</div>
+  <p>Our bounds below assume that each of the three summands is nonempty.</p>
+</section>
+
+<section id="nonempty-triple-sumset" data-kind="lemma">
+  <h2>Nonempty triple sumsets</h2>
+  <div class="statement-box">
+    <p>If \(A,B,C\) are nonempty, then both \(A+B\) and \((A+B)+C\) are nonempty.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>The <a href="../thm-sumset-lower-bound/entry.html#nonempty-sumset">Nonempty sumsets</a> lemma
+    gives an element of \(A+B\). Applying it again to \(A+B\) and \(C\) gives an element of \((A+B)+C\). Both sets are
+    finite because each sum is formed from finitely many choices. <span class="qed" aria-label="End of proof">□</span>
+  </p>
+</section>
+
+<section id="triple-sumset-lower-bound" data-kind="theorem">
+  <h2>Triple sumset lower bound</h2>
+  <div class="statement-box">
+    <p>For finite, nonempty subsets \(A,B,C\) of an additive abelian group,</p>
+    <div class="math-display statement-equation">\[ |A+B+C|\geq\max\{|A|,\,|B|,\,|C|\}. \]</div>
+  </div>
+  <div id="proof-triple-sumset-lower-bound">
+    <p class="proof-label">Proof</p>
+    <p>Set \(D=A+B\). By <a href="#nonempty-triple-sumset">Nonempty triple sumsets</a> and its proof, \(D\) is finite
+      and nonempty.</p>
+    <p>Apply the <a href="../thm-sumset-lower-bound/entry.html#sumset-lower-bound">Sumset lower bound</a> to \(A\) and
+      \(B\). It gives</p>
+    <div class="math-display">\[ |D|\geq\max\{|A|,\,|B|\}. \]</div>
+    <p>Now apply the same lemma to \(D\) and \(C\):</p>
+    <div class="math-display">\[ |D+C|\geq\max\{|D|,\,|C|\}. \]</div>
+    <p>Thus \(|D+C|\) is at least \(|D|\), hence at least each of \(|A|\) and \(|B|\), and it is also at least \(|C|\).
+      Since \(D+C=A+B+C\),</p>
+    <div class="math-display">\[ |A+B+C|\geq\max\{|A|,\,|B|,\,|C|\}. \]</div>
+    <p>Both applications use the nonemptiness of the summands. <span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+</section>
+
+<section id="strict-growth-question" data-kind="question">
+  <h2>Does another summand force growth?</h2>
+  <p>Must adding a third nonempty set strictly increase the size of \(A+B\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. For \(A=B=C=\{0\}\) in the integers,</p>
+      <div class="math-display">\[ A+B=(A+B)+C=\{0\}. \]</div>
+      <p>More generally, <a href="../thm-sumset-lower-bound/entry.html#zero-summand">A neutral summand</a> shows that
+        choosing \(C=\{0\}\) leaves any sumset \(A+B\) unchanged.</p>
+    </div>
+  </details>
+</section>

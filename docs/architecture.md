@@ -46,7 +46,6 @@ floating `latest` versions. mathlib and Lean must use compatible pins.
 lemmatheca/
 ├── README.md
 ├── docs/                           # Architecture, policies, baseline, contributor guide
-├── examples/                       # Unpublished design fixtures (present now)
 ├── app/
 │   ├── manage.py
 │   ├── config/                     # Django settings and root routes
@@ -96,7 +95,7 @@ lemmatheca/
 
 Use ordinary modules and a shared codebase. Separate processes are needed for
 resource isolation; independently deployed microservices are not needed initially.
-The [entry source layout](entry-sources.md) explains the recommended authoring
+The [entry source layout](entry-sources.md) explains the implemented authoring
 format and why entry folders and Lean modules need not mirror the browsing taxonomy.
 
 ## Storage and publication
@@ -143,7 +142,7 @@ spacing and responsive equations. The initial routes are:
 | --- | --- |
 | `/` | Areas of mathematics and search |
 | `/areas/<path>/` | Breadcrumbs, subareas, definitions, statements |
-| `/entries/<id>/<slug>/` | Human mathematics, proof choices, prerequisites |
+| `/entries/<id>/` | Human mathematics, proof choices, prerequisites |
 | `/entries/<id>/revisions/<revision>/` | A stable historical version |
 | `/submit/` | Definition, new statement, or alternate proof submission |
 | `/submissions/<id>/` | Author's draft, preview, job status, requested changes |

@@ -1,11 +1,8 @@
 # Entry folders and authoring format
 
-This is the recommended next storage layout, not a completed migration. The
-prototype still reads `examples/sumsets/entries.json` and Django HTML fragments.
-
-## Human entries: one folder per stable ID
-
-Use `corpus/entries/<entry-id>/`, independent of the browsing taxonomy:
+The app reads both mathematical notes directly from `corpus/`. Each note owns its
+HTML, JSON metadata, and supplementary assets. There is no parallel Markdown copy
+or entry-specific Django template.
 
 ```text
 corpus/
@@ -17,117 +14,160 @@ corpus/
     │   ├── entry.json
     │   ├── entry.html
     │   └── assets/
-    │       ├── sumset-translation.svg
-    │       └── sources/                 # Editable diagram sources, when needed
+    │       └── sumset-translation.svg
     └── thm-triple-sumset-lower-bound/
         ├── entry.json
         └── entry.html
 
-formal/
-└── Lemmatheca/
-    └── Combinatorics/
-        └── Additive/
-            ├── Sumsets.lean
-            └── FiniteSumsets.lean
+formal/Lemmatheca/Combinatorics/Additive/
+├── Sumsets.lean
+└── FiniteSumsets.lean
 ```
 
-`corpus/` groups the mathematical content separately from the application; the
-important choice is the flat `entries/<entry-id>/` layer inside it. Existing seed
-IDs are retained for compatibility even though their `thm-` prefix predates the
-paper-like entries. New IDs should identify an entry, not a theorem or category.
-Once assigned, an ID stays fixed when its title or subject classification changes.
+The entry ID matches its folder name and remains stable when the title or category
+changes. Existing `thm-` IDs predate the paper-like entries; they now identify whole
+notes. Category paths are metadata, not filesystem paths. Keep an entry's images,
+attachments, and editable diagram sources inside its own `assets/` directory.
 
-| Layout | Benefit | Cost |
-| --- | --- | --- |
-| `entries/<entry-id>/` | One stable home; works with multiple subject memberships | Subject browsing needs an index |
-| `entries/Combinatorics/Additive/…/<entry-id>/` | Convenient initial browsing in an editor | Forces a primary physical location; reclassification moves files and relative links |
+## Writing an entry
 
-The website already supplies subject browsing. Put `primary_area` and additional
-area memberships in `entry.json`; generate category indexes from those fields.
-Do not copy an entry into each subject folder. A generated index can also make
-the corpus convenient to browse from an editor.
+`entry.html` is an HTML fragment containing an ordered series of sections:
 
-Store the editorial reading order separately as ordered entry IDs per area in
-`reading-order.json`. It controls category listings and “Next entry”; filesystem
-enumeration and alphabetical titles should not determine a mathematical reading
-sequence. Reading order is distinct from formal prerequisites. At present the
-prototype uses the order in its existing `entries.json`, within each primary area.
+```html
+<section id="translation" data-kind="definition">
+  <h2>Translation</h2>
+  <p>For a fixed \(b\in G\), translate by \(x\mapsto x+b\).</p>
+</section>
 
-## Sources: HTML, LaTeX, and a small JSON sidecar
+<section id="sumset-lower-bound" data-kind="lemma">
+  <h2>Sumset lower bound</h2>
+  <p>Use <a href="#translation">Translation</a> to construct an injection.</p>
+</section>
+```
 
-Use **HTML as the canonical human source**, with `\(...\)` and `\[...\]` for
-mathematics, plus JSON for structured metadata. Keep one editable source for the
-prose rather than parallel HTML and Markdown versions.
+Every top-level section needs a stable `id`, a `data-kind` (`definition`, `lemma`,
+`theorem`, or `question`), and one direct `h2` title. The application supplies the
+outer layout, contents, block numbers, permalinks, and verification disclosures.
+Numbers follow HTML source order, separately for each kind. Metadata bindings are
+keyed by block ID and do not duplicate titles, kinds, or ordering.
 
-- `entry.html` contains the whole mathematical note: exposition, definitions,
-  statements, proofs, figures, and questions with native `details` answers. It
-  contains content only; the application supplies the page shell and navigation.
-- `entry.json` contains the stable ID, title, abstract, categories, authorship,
-  revision, references, and block/proof bindings to Lean declarations. Proofs have
-  their own identities so alternative arguments can be reviewed independently.
-- `assets/` contains the entry's images and supplementary files. Keep editable
-  diagram sources here too. Images use relative paths such as
-  `assets/sumset-translation.svg`, with captions, alt text, and dimensions.
-- Add `parts/` with HTML fragments only when an entry becomes inconvenient to edit
-  as one file; entry-local includes would need an explicit importer convention.
-  Start with a single `entry.html`.
+Write inline mathematics as `\(...\)` and display mathematics as `\[...\]`.
+Use normal HTML escaping: `&lt;` for less-than signs and `&amp;` for ampersands,
+including alignment separators in LaTeX. Close non-void HTML elements explicitly;
+malformed nesting is rejected. Ordinary format-on-save whitespace is fine.
 
-Give each mathematical block a stable local anchor. The source's block order
-determines reading order and display numbers; do not maintain a second manually
-ordered list in JSON. Metadata bindings are keyed by block ID. Validation should
-reject duplicate anchors, dangling references, missing assets, and bindings to
-nonexistent blocks. The exact HTML markers can be settled with the importer;
-authors should not need to reproduce the site's layout or CSS classes.
+The existing presentation classes are optional tools: `statement-box` for a result,
+`math-display` for a scrollable equation, and `proof-figure` for an illustration.
+Questions use `<details class="question-answer">`; the examples show the small
+Show/Hide answer labels. Answers start collapsed and reopen when returning from a
+citation within them. Source trees are never mutated by a reader's answer state.
 
-For portable source links, use relative HTML links such as
-`../thm-sumset-lower-bound/entry.html#sumset-lower-bound`. The importer can resolve
-the folder ID and fragment, check the target, and rewrite it to the canonical web
-route, including contextual return navigation. Cross-entry link text stays a
-readable result name; local result numbers are derived when rendering. Published
-reference metadata pins the target revision separately from the source link.
+Give separately identified proofs their own HTML anchors. A `proofs` object in a
+block's metadata maps proof IDs to authorship, method, revision, Lean binding, and
+human-to-Lean step alignment. Both main sumset proofs illustrate this convention.
 
-Keep Django page templates in `app/templates/` and mathematical source in the
-entry folders. The current trusted `{% math_ref %}` tags can remain during the
-transition; the eventual corpus importer should resolve references and assets
-without executing contributor HTML as a Django template. A JSON export can expose
-the parsed block structure and formal bindings to agents alongside the original
-HTML and assets. A new browser framework is unnecessary.
+## References and assets
 
-## Lean: organize a reusable library, bind it to entries
+Source links are ordinary HTML links:
 
-Keep Lean code under **`formal/Lemmatheca/`**, using stable, descriptive module
-paths such as `Combinatorics/Additive/FiniteSumsets.lean`. These are library module
-names, not a mirror of the website's taxonomy. Use consistent Lean module naming
-without spaces. A website category rename should not trigger a Lean module move.
+```html
+<a href="#nonempty-triple-sumset">Nonempty triple sumsets</a>
+<a href="../thm-sumset-lower-bound/entry.html#sumset-lower-bound">Sumset lower bound</a>
+<img src="assets/sumset-translation.svg" alt="A translation injection" width="720" height="280">
+<a href="assets/supplement.pdf">Supplement</a>
+```
 
-There need not be one Lean file per entry. Both current notes use definitions and
-results from `FiniteSumsets.lean`; keeping those together is reasonable. Split
-modules when their size or import dependencies justify it, not merely because a
-new article cites them. Put a shared definition in one module and import it from
-others rather than creating an entry-specific copy.
+The renderer derives local reference labels such as “Lemma 1”. Cross-entry links
+show the target's title and are rewritten to the public route with the exact
+source block recorded for the return link. Cross-entry references must target a
+mathematical block; ordinary local links can target figures or proof anchors.
 
-Each block/proof binding records the module and fully qualified declaration, for
-example:
+Each block's `references` metadata lists those same mathematical targets and pins
+their revisions. The loader rejects missing, extra, or stale recorded citations.
+For example:
 
 ```json
 {
-  "block_id": "sumset-lower-bound",
-  "module": "Lemmatheca.Combinatorics.Additive.FiniteSumsets",
-  "declaration": "Lemmatheca.sumset_card_lower_bound"
+  "references": [
+    {
+      "entry_id": "thm-sumset-lower-bound",
+      "block_id": "sumset-lower-bound",
+      "revision": "draft-2"
+    }
+  ]
 }
 ```
 
-This relationship can be many-to-many: an entry may need several modules, and a
-module may support several entries. Formal source remains solely in the Lean
-project; an entry folder does not hold a second editable `.lean` copy. Release
-manifests tie the human source, assets, formal sources, and check reports to exact
-revisions and hashes. Local lemma numbers are never Lean declaration identities.
+Only entry `assets/` directories are registered with Django's static-file system,
+under `entries/<entry-id>/`. `collectstatic` collects these alongside KaTeX and the
+site stylesheet. HTML and JSON source files are not exposed as static assets.
+Missing assets and paths escaping the entry's asset directory fail validation.
+Restart the development server after adding a new entry's asset directory so
+Django registers the new static directory.
 
-## Migration scope
+## Metadata and reading order
 
-First move each note's HTML, mathematical records, and illustration into its own
-entry folder and adapt the catalog loader and asset serving together. Preserve
-existing entry IDs, block anchors, public routes, and citation return behavior.
-Then consolidate the small fragments into `entry.html` and add validation and
-exports. These should be separate, reviewable changes; the “Next entry” button
-does not require a storage migration or Lean module renaming.
+`entry.json` has `format_version: 1`, the entry ID, revision, title, abstract,
+summary, reading time, primary area, attribution, license, publication state, and
+`blocks`, an object keyed by the HTML section IDs. The loader validates IDs,
+category memberships, block bindings, proof anchors, references, and Lean paths.
+Additional area memberships can be recorded, but the current reader lists entries
+and orders them by their primary area.
+
+`reading-order.json` explicitly lists entry IDs in each populated primary area.
+Every entry must appear exactly once. This order controls category listings and
+“Next entry”; it is independent of filenames and mathematical dependencies.
+
+```json
+{
+  "format_version": 1,
+  "areas": {
+    "sumsets": ["thm-sumset-lower-bound", "thm-triple-sumset-lower-bound"]
+  }
+}
+```
+
+The catalog cache invalidates when corpus files change. Editing an existing HTML
+or JSON file therefore does not require a server restart. Both examples are
+editorial drafts, not maintainer-approved publications. New published revisions
+and immutable releases remain future work.
+
+## Lean bindings
+
+Lean modules remain in `formal/Lemmatheca/`, organized as a reusable mathematical
+library. Both notes use `Combinatorics/Additive/FiniteSumsets.lean`; website entries
+and Lean modules need not correspond one-to-one. A website category rename should
+not trigger a Lean module move. There is one editable copy of each formal source.
+
+A block's `formalization` identifies its module and declaration:
+
+```json
+{
+  "status": "checked",
+  "module": "Lemmatheca.Combinatorics.Additive.FiniteSumsets",
+  "source": "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean",
+  "declaration": "Lemmatheca.sumset_card_lower_bound",
+  "verification_report": "formal/checks/sumsets.json"
+}
+```
+
+Formal source and report paths are repository-relative. The loader checks the
+module/source correspondence and that a checked declaration appears in its report.
+This structural check does not execute Lean or replace a fresh build, dependency
+audit, or maintainer review. The local development report records the migrated
+entry/block revisions and hashes of the exact checked sources.
+
+## Validation and trust boundary
+
+```sh
+uv run python app/manage.py validate_corpus
+uv run python app/manage.py test catalog
+cd formal && lake build
+```
+
+The corpus consists of trusted repository-owned HTML. It is parsed and rendered
+as content, never executed as a Django template. This parser is not an upload
+sanitizer: public submissions still require the planned validation, sanitization,
+and review pipeline. No registration or submission endpoint was added by this
+storage migration. The source folder and JSON bindings are available directly to
+local tools; the versioned public API and exports remain future work.

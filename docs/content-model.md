@@ -12,7 +12,7 @@ theorem deserve two proof records, separate authorship, and separate grades.
 | Entity | Important fields and relations |
 | --- | --- |
 | Area | Stable ID, title, parent, aliases, display order |
-| Entry | Stable ID, kind `article`, slug, title, abstract, areas, ordered mathematical blocks |
+| Entry | Stable ID, kind `article`, title, abstract, areas, ordered mathematical blocks |
 | Entry revision | Immutable block order and revisions, human text, assets, attribution |
 | Mathematical block | Stable ID within its entry, kind (`definition`, `lemma`, `theorem`, `question`), title, hypotheses, prerequisites, formal binding |
 | Proof | Stable ID, exact statement revision, human argument, Lean declaration, argument alignment |
@@ -53,17 +53,12 @@ question; conjectures must never acquire a theorem verification badge. The demo
 uses answered questions with Lean-checked counterexamples. Publication remains an
 entry/revision decision, while formal verification attaches to specific results.
 
-In the prototype, `examples/sumsets/entries.json` records article order, block IDs,
-titles, kinds, references, and trusted HTML templates. Existing mathematical JSON
-records remain separate and are linked through a block's `record` field. The old
-web IDs and URLs are retained for compatibility. Article references are explicitly
-block-scoped; legacy statement/proof prerequisites still identify mathematical
-records. This distinguishes the reading structure from the proof dependency graph.
-
-For the next storage iteration, the [entry source layout](entry-sources.md)
-recommends one HTML note, a JSON sidecar, and local assets in each stable entry
-folder, with separate reusable Lean modules. This supersedes the initial Markdown
-source proposal; the example JSON/Markdown fixtures remain in place for now.
+The prototype reads `corpus/entries/<entry-id>/entry.html` and `entry.json`.
+HTML sections define block IDs, kinds, titles, and order. JSON binds those blocks
+to hypotheses, references, proofs, and formal declarations. A separate
+`corpus/reading-order.json` controls the order of articles within primary areas.
+The [authoring guide](entry-sources.md) defines the implemented file contract.
+Human content is no longer stored as application templates or duplicate Markdown.
 
 ## Navigation versus dependencies
 
@@ -84,7 +79,7 @@ Combinatorics
 “Binomial coefficients” is a topic, not a theorem and not the definition's ID.
 An entry can appear in more than one topic while keeping one canonical URL. Areas
 need not all have the same depth. IDs do not encode the taxonomy, so moving an
-entry does not break links. Old slugs redirect.
+entry does not break links. Entry URLs use only the stable ID: `/entries/<id>/`.
 
 Mathematical dependencies form a separate directed graph. Use typed edges:
 `uses_definition`, `uses_statement`, `formal_dependency`, `explains`, and
@@ -104,7 +99,7 @@ a new revision. Reviews and verification reports belong to the revision that was
 actually examined. Formal success may be reused when formal inputs are identical,
 but an editorial change still needs approval of the new human text.
 
-Use opaque IDs in production. Friendly seed IDs in `examples/` make this proposal
+Use opaque IDs in production. Friendly seed IDs in `corpus/entries/` make the examples
 easier to read and still remain independent of category paths. A release snapshot
 and content hashes identify exact bytes. A proof pins its statement revision; do
 not carry it forward automatically after the statement changes.
@@ -171,10 +166,10 @@ manual human action followed by normal review.
 
 ## Example scope
 
-The records under [`examples/`](../examples/README.md) illustrate the on-disk
-shape using JSON plus Markdown. They are not a production schema or a published
-release. Some blocks have checked Lean bindings; missing verification remains
-explicit and does not become success just because another block is checked. The
-prototype resolves block references and checks local Lean builds. Production JSON
-Schema validation, immutable releases, and the complete dependency audit remain
-requirements before publication.
+The two entries under [`corpus/`](../corpus/README.md) are editable HTML/JSON
+submissions with entry-local assets and checked Lean bindings for their results.
+They are not a published release. The corpus loader validates references, anchors,
+assets, reading order, and formal source/report bindings; missing verification does
+not become success just because another block is checked. Production JSON Schema
+validation, immutable releases, a public API, and the complete dependency audit
+remain requirements before publication.

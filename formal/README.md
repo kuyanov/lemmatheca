@@ -45,9 +45,9 @@ dependencies to review, not a blanket approval of mathlib. The full transitive
 mathematical dependency auditor and foundations allowlist remain future work.
 
 [`checks/sumsets.json`](checks/sumsets.json) records the local build and axiom
-check, source hashes, statement/proof revisions, and the pinned environment. This
+check, source hashes, entry/block revisions, and the pinned environment. This
 is a development check record, not a production verification certificate or
-maintainer approval. The example metadata includes human-to-Lean step alignment.
+maintainer approval. The entry metadata in `corpus/entries/` includes human-to-Lean step alignment.
 
 ## Original integer illustration
 

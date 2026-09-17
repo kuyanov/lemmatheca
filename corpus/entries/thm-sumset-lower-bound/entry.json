@@ -1,0 +1,190 @@
+{
+  "id": "thm-sumset-lower-bound",
+  "revision": "draft-2",
+  "kind": "article",
+  "title": "Sumsets and translations",
+  "primary_area": "sumsets",
+  "reading_time": 5,
+  "summary": "Definitions, two lemmas, and a sharp lower bound, all built from translations.",
+  "abstract": "Adding sets starts with a simple construction. We study nonemptiness, find translated copies inside a sumset, and see why a lower bound can be exact.",
+  "blocks": {
+    "sumset": {
+      "hypotheses": [
+        "G is an additive abelian group.",
+        "A and B are finite subsets of G."
+      ],
+      "tags": [
+        "addition",
+        "sets"
+      ],
+      "prerequisites": [
+        {
+          "kind": "uses_definition",
+          "proposal": "Additive abelian group",
+          "status": "planned"
+        },
+        {
+          "kind": "uses_definition",
+          "proposal": "Subset and set-builder notation",
+          "status": "planned"
+        }
+      ],
+      "formalization": {
+        "status": "not_started",
+        "declaration": null,
+        "verification_report": null
+      }
+    },
+    "translation": {},
+    "nonempty-sumset": {
+      "formalization": {
+        "status": "checked",
+        "declaration": "Lemmatheca.finite_sumset_nonempty",
+        "source": "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean",
+        "verification_report": "formal/checks/sumsets.json",
+        "module": "Lemmatheca.Combinatorics.Additive.FiniteSumsets"
+      }
+    },
+    "sumset-lower-bound": {
+      "references": [
+        {
+          "entry_id": "thm-sumset-lower-bound",
+          "block_id": "translation",
+          "revision": "draft-2"
+        }
+      ],
+      "hypotheses": [
+        "G is an additive abelian group.",
+        "A and B are finite subsets of G.",
+        "A and B are both nonempty."
+      ],
+      "tags": [
+        "cardinality",
+        "translation",
+        "injection"
+      ],
+      "prerequisites": [
+        {
+          "kind": "uses_definition",
+          "entry_id": "thm-sumset-lower-bound",
+          "revision": "draft-2",
+          "block_id": "sumset"
+        },
+        {
+          "kind": "uses_definition",
+          "proposal": "Cardinality of a finite set",
+          "status": "planned"
+        }
+      ],
+      "formalization": {
+        "status": "checked",
+        "declaration": "Lemmatheca.sumset_card_lower_bound",
+        "source": "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean",
+        "verification_report": "formal/checks/sumsets.json",
+        "module": "Lemmatheca.Combinatorics.Additive.FiniteSumsets"
+      },
+      "proofs": {
+        "proof-sumset-lower-bound-translation": {
+          "revision": "draft-4",
+          "title": "Translate each summand into the sumset",
+          "method": "injection",
+          "prerequisites": [
+            {
+              "kind": "uses_statement",
+              "proposal": "Translations in an additive group are injective",
+              "status": "planned"
+            },
+            {
+              "kind": "uses_statement",
+              "proposal": "An injection between finite sets gives a cardinality inequality",
+              "status": "planned"
+            },
+            {
+              "kind": "uses_statement",
+              "proposal": "Two upper-bound inequalities imply their maximum is bounded",
+              "status": "planned"
+            }
+          ],
+          "attribution": [
+            {
+              "name": "Codex",
+              "kind": "ai",
+              "role": "draft_author"
+            }
+          ],
+          "license": "Apache-2.0",
+          "formalization": {
+            "status": "checked",
+            "declaration": "Lemmatheca.sumset_card_lower_bound",
+            "step_alignment": [
+              {
+                "human_step": "Translate A by a chosen element of B; injectivity gives the first cardinality bound.",
+                "lean_step": "hleft"
+              },
+              {
+                "human_step": "Translate B by a chosen element of A; injectivity gives the second bound.",
+                "lean_step": "hright"
+              },
+              {
+                "human_step": "Combine the two bounds using their maximum.",
+                "lean_step": "max_le hleft hright"
+              }
+            ],
+            "verification_report": "formal/checks/sumsets.json",
+            "extracted_dependencies": null,
+            "external_dependencies": null,
+            "source": "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean",
+            "module": "Lemmatheca.Combinatorics.Additive.FiniteSumsets"
+          },
+          "reviews": []
+        }
+      }
+    },
+    "zero-summand": {
+      "formalization": {
+        "status": "checked",
+        "declaration": "Lemmatheca.sumset_zero",
+        "source": "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean",
+        "verification_report": "formal/checks/sumsets.json",
+        "module": "Lemmatheca.Combinatorics.Additive.FiniteSumsets"
+      },
+      "references": [
+        {
+          "entry_id": "thm-sumset-lower-bound",
+          "block_id": "sumset-lower-bound",
+          "revision": "draft-2"
+        }
+      ]
+    },
+    "nonempty-question": {
+      "formalization": {
+        "status": "checked",
+        "declaration": "Lemmatheca.sumset_empty_counterexample",
+        "source": "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean",
+        "verification_report": "formal/checks/sumsets.json",
+        "module": "Lemmatheca.Combinatorics.Additive.FiniteSumsets"
+      },
+      "references": [
+        {
+          "entry_id": "thm-sumset-lower-bound",
+          "block_id": "sumset-lower-bound",
+          "revision": "draft-2"
+        }
+      ]
+    }
+  },
+  "publication": {
+    "status": "draft",
+    "maintainer_decision": null
+  },
+  "attribution": [
+    {
+      "name": "Codex",
+      "kind": "ai",
+      "role": "draft_author"
+    }
+  ],
+  "format_version": 1,
+  "additional_areas": [],
+  "license": "Apache-2.0"
+}

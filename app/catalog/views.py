@@ -6,10 +6,11 @@ from django.urls import reverse
 from django.views.decorators.http import require_safe
 
 from .content import ancestors, area_link, area_path, areas, children, entries, example_entry, next_entry
+from .sources import render_block
 
 
 def entry_context(entry):
-    return {**entry, "url": reverse("catalog:entry", args=[entry["id"], entry["slug"]])}
+    return {**entry, "url": reverse("catalog:entry", args=[entry["id"]])}
 
 
 @require_safe
@@ -35,16 +36,24 @@ def area(request, path):
 
 
 @require_safe
-def entry(request, entry_id, slug):
-    record = entries().get(entry_id)
-    if record is None or slug != record["slug"]:
+def entry(request, entry_id):
+    catalog = entries()
+    record = catalog.get(entry_id)
+    if record is None:
         raise Http404("This entry is not in the library.")
     current = entry_context(record)
+    current["blocks"] = [
+        {**block, "html": render_block(block, record,
+                                       catalog, request.GET.get("answer"))}
+        for block in record["blocks"]
+    ]
     # The source is an entry ID, never a client-supplied URL. This also works in
     # a new tab or without JavaScript, unlike relying solely on history.back().
-    source = entries().get(request.GET.get("from"))
-    return_entry = entry_context(source) if source and source["id"] != entry_id else None
-    return_block = source["blocks_by_id"].get(request.GET.get("at")) if return_entry else None
+    source = catalog.get(request.GET.get("from"))
+    return_entry = entry_context(
+        source) if source and source["id"] != entry_id else None
+    return_block = source["blocks_by_id"].get(
+        request.GET.get("at")) if return_entry else None
     entry_area = area_link(areas()[record["primary_area"]])
     return_url = return_entry["url"] if return_entry else entry_area["url"]
     if return_block:
@@ -58,7 +67,6 @@ def entry(request, entry_id, slug):
         "next_entry": entry_context(following) if following else None,
         "return_entry": return_entry,
         "return_block": return_block,
-        "expanded_answer": request.GET.get("answer"),
         "return_url": return_url,
         "return_label": return_label,
         "breadcrumbs": [area_link(item) for item in ancestors(areas()[record["primary_area"]])],

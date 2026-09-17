@@ -34,7 +34,7 @@ theorem translate_injective (b : Int) :
     _ = (a' + b) - b := congrArg (fun z : Int => z - b) h
     _ = a' := Int.add_sub_cancel a' b
 
-/-- The first concrete example in `examples/sumsets/definition.md`:
+/-- A concrete integer illustration of sumset membership:
 `{0, 1} + {0, 2} = {0, 1, 2, 3}`, expressed as equivalence of membership.
 
 The forward direction checks the four possible pairs. The reverse direction

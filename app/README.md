@@ -23,9 +23,9 @@ tracebacks for server errors remain available. Restart a server launched with
 
 Both examples are under **Combinatorics → Additive combinatorics → Sumsets**:
 
-<http://127.0.0.1:8000/entries/thm-sumset-lower-bound/sumset-lower-bound/>
+<http://127.0.0.1:8000/entries/thm-sumset-lower-bound/>
 
-<http://127.0.0.1:8000/entries/thm-triple-sumset-lower-bound/triple-sumset-lower-bound/>
+<http://127.0.0.1:8000/entries/thm-triple-sumset-lower-bound/>
 
 **Sumsets and translations** contains two definitions, two lemmas, a theorem, and
 a question. **Adding three sets** contains a definition, a lemma, a theorem, and a
@@ -39,7 +39,7 @@ or the category. Returning to a question reopens its answer. Questions use nativ
 HTML `details`, so answers and navigation need no JavaScript.
 
 At the bottom of a note, **Next entry** continues through its primary subarea in
-the same order as the category listing (currently the order in `entries.json`).
+the same order as the category listing, recorded in `corpus/reading-order.json`.
 The button names its destination and is omitted on the last entry. It is separate
 from the contextual return link used by mathematical citations.
 
@@ -52,53 +52,42 @@ drafts awaiting maintainer review and a full mathematical dependency audit.
 
 | File | Purpose |
 | --- | --- |
-| `examples/taxonomy.json` | Area titles, descriptions, and parent relationships |
-| `examples/sumsets/entries.json` | Article metadata, ordered blocks, stable anchors, references, formal bindings |
-| `app/catalog/content.py` | Seed content lookup and navigation |
-| `app/catalog/views.py` | Home, area, article pages, and contextual return links |
-| `app/catalog/templatetags/math_refs.py` | Contextual reference labels and anchored links |
-| `app/templates/catalog/entry.html` | Shared article layout, contents, numbered block headings |
-| `app/templates/catalog/blocks/` | Definitions, supporting results, and collapsible answers |
-| `app/templates/catalog/proofs/sumset_lower_bound.html` | Human proof as HTML, with LaTeX delimiters |
-| `app/templates/catalog/proofs/triple_sumset_lower_bound.html` | A second proof with a link to the lemma |
-| `app/static/images/sumset-translation.svg` | Explanatory figure |
+| `corpus/taxonomy.json` | Area titles, descriptions, and parent relationships |
+| `corpus/reading-order.json` | Ordered entry IDs within each primary area |
+| `corpus/entries/<id>/entry.html` | Complete human note, with stable section IDs and LaTeX |
+| `corpus/entries/<id>/entry.json` | Metadata, references, proof identities, and Lean bindings |
+| `corpus/entries/<id>/assets/` | Entry-local images and supplementary files |
+| `app/catalog/content.py` | Corpus loading, validation, cache, and navigation |
+| `app/catalog/sources.py` | HTML parsing and contextual reference/asset rendering |
+| `app/templates/catalog/entry.html` | Shared article layout, contents, numbering, navigation |
 | `app/static/css/site.css` | Shared responsive styles and print layout |
-| `app/static/js/site.js` | Placeholder dialogs |
 | `app/static/js/math.js` | Math rendering configuration |
-| `app/static/vendor/katex/` | Pinned KaTeX 0.18.7 scripts, fonts, and license |
+| `app/static/vendor/katex/` | Pinned self-hosted KaTeX scripts, fonts, and license |
 
-Templates are trusted repository content. There is no user HTML upload or render
-endpoint. Inline math uses `\(...\)` and display math uses `\[...\]`. KaTeX
-generates accessible MathML alongside its visual layout. All referenced fonts
-are self-hosted. Restart the server after editing the cached JSON seed data.
+The [entry authoring guide](../docs/entry-sources.md) explains the HTML and JSON
+format. Ordinary source links identify mathematical blocks by stable entry/block
+IDs; local numbers and cross-entry return links are derived during rendering.
+Corpus files are trusted repository content, not executable Django templates.
+Public HTML uploads and sanitization remain outside this prototype.
 
-VS Code's workspace settings enable `html.format.templating` for its built-in
-HTML formatter. Keep this enabled when using format-on-save: Django's `{% ... %}`
-and `{{ ... }}` tags must remain on one line. Ordinary HTML and surrounding prose
-can wrap. The template regression test catches split tags, including those that
-would otherwise silently render as literal text.
+Saving an existing HTML, JSON, or asset file invalidates the catalog cache.
+Restart the server when adding a new entry's asset directory. Only `assets/`
+folders are registered as static content; `collectstatic` includes them in a
+production build without copying HTML or metadata into the public static tree.
 
-The navigation uses the shared seed taxonomy; the sumset leaf contains both
-example entries. Other leaves have an explicit empty state. Blocks can point to
-existing mathematical JSON records or carry a formal binding inline. To cite a
-block from trusted HTML, load `math_refs` and use:
-
-```django
-{% math_ref "nonempty-triple-sumset" %}
-{% math_ref "sumset-lower-bound" entry_id="thm-sumset-lower-bound" from_block="triple-sumset-lower-bound" %}
-```
-
-`from_block` identifies the exact place to return to. Block IDs are stable even
-when their display numbers change; preserve them when reordering content.
+VS Code's `html.format.templating` setting is still needed for shared application
+Django templates. The mathematical HTML sources contain no Django template tags.
 
 ## Checks
 
 ```sh
 uv run python app/manage.py check
+uv run python app/manage.py validate_corpus
 uv run python app/manage.py test catalog
 ```
 
 The tests check every category route and rendered navigation link, correct example
 placement, citation/back navigation, entry counts, missing pages, empty leaves,
-read-only placeholders, and local math assets. Lean is checked separately using
+read-only placeholders, local math assets, source-order numbering, cache refresh,
+invalid corpus records, and entry-local asset collection. Lean is checked separately using
 `cd formal && lake build`; the web app does not execute Lean on each request.

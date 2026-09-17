@@ -34,10 +34,10 @@ Start with these documents:
 | --- | --- |
 | [Architecture](docs/architecture.md) | Tools, folders, website, storage, deployment, and implementation order |
 | [Content model](docs/content-model.md) | Definitions, statements, multiple proofs, revisions, taxonomy, and AI access |
-| [Entry source layout](docs/entry-sources.md) | Recommended entry folders, HTML authoring, assets, reading order, and Lean module bindings |
+| [Entry source layout](docs/entry-sources.md) | Entry folders, HTML authoring, assets, reading order, and Lean module bindings |
 | [Verification and review](docs/verification-and-review.md) | Lean checks, external lemmas, translation, beauty grading, and maintainer authority |
 | [Mathematical baseline](docs/baseline.md) | A small starting collection, explicit hypotheses, human proofs, and dependency plans |
-| [Example records](examples/README.md) | Concrete draft JSON and Markdown for sumsets and a cardinality bound |
+| [Mathematical corpus](corpus/README.md) | Two HTML/JSON sumset notes with local assets and cross-references |
 | [First Lean proofs](formal/README.md) | Compilable sumset example, supporting lemmas, and axiom checks |
 | [Web app](app/README.md) | Run the website, edit its content, and check navigation |
 

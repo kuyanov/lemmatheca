@@ -1,0 +1,87 @@
+<section id="sumset" data-kind="definition">
+  <h2>Sumsets</h2>
+  <p>Throughout this note, \(G\) is an additive abelian group and our sets are finite subsets of \(G\). The
+    <strong>sumset</strong> of \(A\) and \(B\) is
+  </p>
+  <div class="math-display">\[ A+B=\{a+b\mid a\in A,\ b\in B\}. \]</div>
+  <p>We count distinct sums, not the pairs that produce them. For instance, \(\{0,1\}+\{0,1\}=\{0,1,2\}\): four pairs,
+    but
+    only three sums.</p>
+</section>
+
+<section id="translation" data-kind="definition">
+  <h2>Translation</h2>
+  <p>For a fixed \(b\in G\), the <strong>translation by \(b\)</strong> is the map \(x\mapsto x+b\). The translated set
+    is
+  </p>
+  <div class="math-display">\[ A+b=\{a+b\mid a\in A\}=A+\{b\}. \]</div>
+  <p>This notation distinguishes adding one fixed element from adding all the elements of a set.</p>
+</section>
+
+<section id="nonempty-sumset" data-kind="lemma">
+  <h2>Nonempty sumsets</h2>
+  <div class="statement-box">
+    <p>If \(A\) and \(B\) are nonempty, then \(A+B\) is nonempty.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Choose \(a\in A\) and \(b\in B\). By definition, \(a+b\in A+B\), so the sumset has an element. <span class="qed"
+      aria-label="End of proof">□</span></p>
+</section>
+
+<section id="sumset-lower-bound" data-kind="lemma">
+  <h2>Sumset lower bound</h2>
+  <div class="statement-box">
+    <p>If \(A\) and \(B\) are <strong>finite, nonempty</strong> subsets of an additive abelian group, then</p>
+    <div class="math-display statement-equation">\[ |A+B|\geq\max\{|A|,\,|B|\}. \]</div>
+    <p class="statement-interpretation">A sumset is at least as large as either of its summands.</p>
+  </div>
+  <div id="proof-sumset-lower-bound-translation">
+    <p class="proof-label">Proof</p>
+    <p>Choose any element \(b_0\in B\). The translation from <a href="#translation">Translation</a> gives the map</p>
+    <div class="math-display">\[ \begin{aligned} f:A&amp;\longrightarrow A+B,\\ a&amp;\longmapsto a+b_0. \end{aligned}
+      \]
+    </div>
+    <p>Every image belongs to \(A+B\), by the definition of a sumset. And no two elements merge: if
+      \(a+b_0=a'+b_0\), cancellation gives \(a=a'\). So \(f\) is injective, and hence</p>
+    <div class="math-display">\[ |A|\leq |A+B|. \]</div>
+    <p>Now choose \(a_0\in A\) and repeat the argument with \(b\mapsto a_0+b\). This gives \(|B|\leq |A+B|\). Since
+      the sumset is at least as large as each summand, it is at least as large as their maximum. <span class="qed"
+        aria-label="End of proof">□</span></p>
+    <figure id="picture" class="proof-figure">
+      <div class="figure-image"><img src="assets/sumset-translation.svg" width="720" height="280"
+          alt="For A equal to {0, 1, 2} and B equal to {0, 2}, arrows send 0 to 2, 1 to 3, and 2 to 4. The three distinct images form a translated copy of A inside A plus B, which is {0, 1, 2, 3, 4}.">
+      </div>
+      <figcaption><span class="figure-label">Figure 01</span> Choose \(b_0=2\). The translated copy \(A+2\) sits inside
+        \(A+B\), with every
+        element of \(A\) still accounted for.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="zero-summand" data-kind="theorem">
+  <h2>A neutral summand</h2>
+  <div class="statement-box">
+    <p>For every finite subset \(A\subseteq G\),</p>
+    <div class="math-display">\[ A+\{0\}=A. \]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Every element of \(A+\{0\}\) has the form \(a+0=a\) with \(a\in A\). Conversely, each \(a\in A\) can be written as
+    \(a+0\), so it lies in the sumset. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For nonempty \(A\), this attains equality in <a href="#sumset-lower-bound">Sumset lower bound</a>: adding a
+    singleton need not
+    increase cardinality.</p>
+</section>
+
+<section id="nonempty-question" data-kind="question">
+  <h2>Can we drop nonemptiness?</h2>
+  <p>Would <a href="#sumset-lower-bound">Sumset lower bound</a> still hold if one summand were empty?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. Take \(A=\varnothing\) and \(B=\{0\}\) in the integers. There are no pairs to add, so \(A+B=\varnothing\),
+        while</p>
+      <div class="math-display">\[ |A+B|=0&lt;1=\max\{|A|,|B|\}. \]</div>
+      <p>Swapping the two sets gives the same obstruction. Both nonemptiness assumptions are necessary.</p>
+    </div>
+  </details>
+</section>

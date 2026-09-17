@@ -7,7 +7,7 @@ the other proposed statements remain unformalized. Most are early undergraduate
 mathematics; elementary support
 lemmas belong in the foundation layer even when they are not featured on the site.
 
-The concrete sumset records live in [`examples/sumsets/`](../examples/sumsets/definition.json).
+The concrete sumset notes live in [`corpus/entries/`](../corpus/README.md).
 No external nontrivial lemma is proposed as an exception for these seeds, but their
 actual Lean dependency closure remains to be measured and reviewed.
 
