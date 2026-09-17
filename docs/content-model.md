@@ -60,6 +60,11 @@ web IDs and URLs are retained for compatibility. Article references are explicit
 block-scoped; legacy statement/proof prerequisites still identify mathematical
 records. This distinguishes the reading structure from the proof dependency graph.
 
+For the next storage iteration, the [entry source layout](entry-sources.md)
+recommends one HTML note, a JSON sidecar, and local assets in each stable entry
+folder, with separate reusable Lean modules. This supersedes the initial Markdown
+source proposal; the example JSON/Markdown fixtures remain in place for now.
+
 ## Navigation versus dependencies
 
 Use a hierarchy for browsing, with additional category memberships for subjects

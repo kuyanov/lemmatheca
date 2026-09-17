@@ -51,7 +51,15 @@
       {% endfor %}
       <p class="entry-review-note">An AI-authored draft, awaiting maintainer review. Lean checks are shown for
         individual results; the full mathematical dependency audit is still pending.</p>
-      {% include "catalog/_entry_back.html" %}
+      <nav class="entry-navigation" aria-label="Entry navigation">
+        {% include "catalog/_entry_back.html" %}
+        {% if next_entry %}
+        <a class="button button-primary next-entry" href="{{ next_entry.url }}" rel="next">
+          <span><span class="next-entry-label">Next entry</span>{{ next_entry.title }}</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        {% endif %}
+      </nav>
     </div>
   </div>
 </article>

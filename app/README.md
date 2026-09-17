@@ -38,6 +38,11 @@ accept only known entry/block IDs; invalid inputs fall back to the source note
 or the category. Returning to a question reopens its answer. Questions use native
 HTML `details`, so answers and navigation need no JavaScript.
 
+At the bottom of a note, **Next entry** continues through its primary subarea in
+the same order as the category listing (currently the order in `entries.json`).
+The button names its destination and is omitted on the last entry. It is separate
+from the contextual return link used by mathematical citations.
+
 The login and submit buttons open placeholder dialogs. They do not authenticate,
 collect data, or submit proofs. The displayed lemmas, theorems, and counterexample answers have compiled Lean proofs
 in `formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean`. The articles remain

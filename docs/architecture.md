@@ -11,11 +11,11 @@ the account, review, publication, database, and worker components remain future 
 | --- | --- | --- |
 | Web application | Python, Django, server-rendered templates | Public pages, registration, submission forms, review screens |
 | Database | PostgreSQL | Accounts, drafts, jobs, reviews, publication pointers, searchable corpus projection |
-| Human mathematics | Markdown + LaTeX math | Portable, readable source without executable components |
+| Human mathematics | HTML + LaTeX math | Entry-local, readable source, independent of the page layout |
 | Equations | Pinned, self-hosted KaTeX | Accessible mathematical typesetting, loaded only on article pages |
 | Images | PNG/WebP and sanitized SVG | Illustrations with captions, alt text, dimensions, and provenance |
 | Formal mathematics | Lean 4, Lake, a pinned mathlib revision | Existing mathematical definitions and proof tooling, with explicit dependency policy |
-| Published corpus | Git, JSON metadata, Markdown, `.lean` sources | Reviewable changes and reproducible, downloadable releases |
+| Published corpus | Git, JSON metadata, HTML, `.lean` sources | Reviewable changes and reproducible, downloadable releases |
 | Background jobs | A dedicated Python worker and PostgreSQL job table | Durable, bounded formalization and verification jobs |
 | Development | uv, Ruff, pytest, browser checks, CI | Locked Python dependencies and checks appropriate to each component |
 
@@ -60,13 +60,12 @@ lemmatheca/
 │   └── static/                     # Small stylesheet and pinned KaTeX assets
 ├── corpus/
 │   ├── taxonomy.json
+│   ├── reading-order.json          # Ordered entry IDs per area
 │   ├── foundations.json            # Exact elementary declaration allowlist
 │   ├── external-lemmas.json         # Separately governed external results
 │   ├── entries/<entry-id>/
-│   │   ├── entry.json              # Metadata and formal definition/statement link
-│   │   ├── text.md                 # Human definition or statement and explanation
-│   │   ├── proofs/<proof-id>.json   # Proof metadata and formal declaration link
-│   │   ├── proofs/<proof-id>.md     # One human argument per proof
+│   │   ├── entry.json              # Metadata, block/proof identities and formal bindings
+│   │   ├── entry.html              # Complete human note, including proofs and questions
 │   │   └── assets/                 # Images and diagram source
 │   └── releases/                   # Manifests naming immutable snapshots
 ├── formal/
@@ -97,6 +96,8 @@ lemmatheca/
 
 Use ordinary modules and a shared codebase. Separate processes are needed for
 resource isolation; independently deployed microservices are not needed initially.
+The [entry source layout](entry-sources.md) explains the recommended authoring
+format and why entry folders and Lean modules need not mirror the browsing taxonomy.
 
 ## Storage and publication
 
@@ -160,7 +161,7 @@ forms; small JavaScript can handle previews and job-status refresh. Anonymous
 reading requires no account. Registration gives submission rights, not grading
 or publication rights.
 
-Preserve math delimiters through Markdown parsing and sanitize rendered HTML.
+Preserve math delimiters through HTML processing and sanitize rendered HTML.
 Restrict math macros and links; disable executable embedded content. Validate image
 types and sizes, sanitize SVG, and serve uploads from a non-executable asset origin.
 Use captions and alt text; allow wide equations to scroll without breaking mobile

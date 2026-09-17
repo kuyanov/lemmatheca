@@ -64,6 +64,16 @@ def example_entry():
     return entries()["thm-sumset-lower-bound"]
 
 
+def next_entry(entry):
+    """Continue in the same primary area, following its catalog display order."""
+    siblings = (item for item in entries().values()
+                if item["primary_area"] == entry["primary_area"])
+    for item in siblings:
+        if item["id"] == entry["id"]:
+            return next(siblings, None)
+    return None
+
+
 def area_link(area):
     path = area_path(area)
     entry_count = sum(

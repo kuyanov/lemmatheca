@@ -1,5 +1,6 @@
 from html.parser import HTMLParser
 from urllib.parse import urljoin, urlsplit
+from unittest.mock import patch
 
 from django.contrib.staticfiles import finders
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.template.loader import get_template
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 
-from .content import ancestors, area_link, areas, children, entries, example_entry
+from .content import ancestors, area_link, areas, children, entries, example_entry, next_entry
 
 
 class LinkParser(HTMLParser):
@@ -122,6 +123,33 @@ class CatalogTests(SimpleTestCase):
         self.assertContains(response, "Back to Adding three sets", count=2)
         self.assertContains(response, 'class="reading-return"')
         self.assertContains(response, 'id="sumset-lower-bound"')
+
+    def test_next_entry_navigation_reaches_the_next_note_and_stops_at_the_end(self):
+        first = example_entry()
+        second = entries()["thm-triple-sumset-lower-bound"]
+        first_url = reverse("catalog:entry", args=[first["id"], first["slug"]])
+        second_url = reverse("catalog:entry", args=[second["id"], second["slug"]])
+        parser = LinkParser()
+        parser.feed(self.client.get(first_url).content.decode())
+        links = [anchor for anchor in parser.anchors if anchor.get("rel") == "next"]
+        self.assertEqual(len(links), 1)
+        self.assertEqual(links[0]["href"], second_url)
+        self.assertIn("Next entry", links[0]["text"])
+        self.assertIn(second["title"], links[0]["text"])
+        response = self.client.get(links[0]["href"])
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'rel="next"')
+        self.assertContains(response, "Back to Sumsets")
+
+    def test_next_entry_follows_area_order_and_skips_unrelated_entries(self):
+        first = example_entry()
+        second = entries()["thm-triple-sumset-lower-bound"]
+        unrelated = {**first, "id": "unrelated", "primary_area": "group-theory"}
+        catalog = {item["id"]: item for item in [first, unrelated, second]}
+        with patch("catalog.content.entries", return_value=catalog):
+            self.assertEqual(next_entry(first), second)
+            self.assertIsNone(next_entry(second))
+            self.assertIsNone(next_entry(unrelated))
 
     def test_questions_are_collapsed_and_returning_to_an_answer_reopens_it(self):
         for entry in entries().values():

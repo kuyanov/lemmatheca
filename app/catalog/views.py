@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_safe
 
-from .content import ancestors, area_link, area_path, areas, children, entries, example_entry
+from .content import ancestors, area_link, area_path, areas, children, entries, example_entry, next_entry
 
 
 def entry_context(entry):
@@ -52,8 +52,10 @@ def entry(request, entry_id, slug):
             return_url += "?" + urlencode({"answer": return_block["id"]})
         return_url += f"#{return_block['id']}"
     return_label = f"Back to {return_entry['title']}" if return_entry else f"Back to {entry_area['title']}"
+    following = next_entry(record)
     return render(request, "catalog/entry.html", {
         "entry": current,
+        "next_entry": entry_context(following) if following else None,
         "return_entry": return_entry,
         "return_block": return_block,
         "expanded_answer": request.GET.get("answer"),
