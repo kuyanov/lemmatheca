@@ -75,11 +75,13 @@ def parse_source(source, bindings):
     parser.close()
     if len(parser.stack) != 1:
         raise ContentError(f"Unclosed <{parser.stack[-1].tag}>")
+    from .equations import prepare_equations
+    prepare_equations(parser.root)
     ids = set()
     for node in parser.root.walk():
         if "id" in node.attrs:
             identifier = node.attrs["id"]
-            if not identifier or not IDENTIFIER.fullmatch(identifier) or identifier in ids:
+            if not identifier or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:-]*", identifier) or identifier in ids:
                 raise ContentError(f"Invalid or duplicate anchor: {identifier}")
             ids.add(identifier)
     counts = Counter()
@@ -184,6 +186,11 @@ def render_block(block, entry, catalog, expanded_answer=None):
         start = f"<{node.tag}{attributes}>"
         if node.tag in VOID_ELEMENTS:
             return start
-        return start + ''.join(render(child) for child in children) + f"</{node.tag}>"
+        html = start + ''.join(render(child) for child in children) + f"</{node.tag}>"
+        if node.tag == 'table':
+            caption = next((child.text() for child in children
+                            if isinstance(child, Element) and child.tag == 'caption'), 'Data table')
+            return f'<div class="table-scroll" role="region" tabindex="0" aria-label="{escape(caption, quote=True)}">{html}</div>'
+        return html
     # Only maintainer-owned corpus files are accepted; there is no HTML upload API.
     return mark_safe(''.join(render(node) for node in block["nodes"]))

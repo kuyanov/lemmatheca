@@ -7,6 +7,8 @@ from django.conf import settings
 from django.urls import reverse
 
 from .sources import ContentError, Element, IDENTIFIER, asset_path, parse_source, reference_target
+from .metadata import entry_formalization, validate_entry_metadata, validate_block_metadata
+from .lean import lean_source_url
 
 
 def read_json(path):
@@ -42,7 +44,7 @@ def area_path(area):
     return "/".join(item["id"] for item in ancestors(area))
 
 
-def load_catalog(corpus_dir, repository_dir):
+def load_catalog(corpus_dir, repository_dir, *, check_reports=True):
     """Validate all sources before making any entry available to the reader."""
     catalog = {}
     taxonomy = {area["id"] for area in read_json(
@@ -52,18 +54,32 @@ def load_catalog(corpus_dir, repository_dir):
             continue
         try:
             entry = read_json(directory / "entry.json")
-            if entry["format_version"] != 1:
-                raise ContentError("Unsupported entry format_version")
+            validate_entry_metadata(entry)
+            for block in entry["blocks"].values():
+                validate_block_metadata(block, repository_dir, read_json, check_reports)
             if entry["id"] != directory.name or not IDENTIFIER.fullmatch(entry["id"]):
                 raise ContentError("Entry ID must match its folder name")
             if not {entry["primary_area"], *entry.get("additional_areas", [])} <= taxonomy:
                 raise ContentError("Unknown area")
             blocks, anchors, counts = parse_source(
                 (directory / "entry.html").read_text(), entry["blocks"])
+            for block in blocks:
+                formal = block['formalization']
+                is_mathlib = (formal['module'] or '').startswith('Mathlib.')
+                context = {'entry_id': entry['id'], 'block_id': block['id']}
+                block['formalization'] = {
+                    **formal, 'is_mathlib': is_mathlib,
+                    'source_url': lean_source_url(formal, **context),
+                    'unformalized_dependencies': [
+                        {**dependency, 'source_url': lean_source_url(dependency, **context)}
+                        for dependency in formal['unformalized_dependencies']],
+                }
             catalog[entry["id"]] = {
                 **entry, "directory": directory, "display_title": entry["title"],
                 "blocks": blocks, "blocks_by_id": {block["id"]: block for block in blocks},
                 "anchors": anchors,
+                "formalization": entry_formalization(blocks),
+                "license_url": f"https://spdx.org/licenses/{entry['license']}.html",
                 "contents_summary": " · ".join(
                     f"{count} {kind}{'s' if count != 1 else ''}" for kind, count in counts.items()),
             }
@@ -88,46 +104,13 @@ def load_catalog(corpus_dir, repository_dir):
     if set(ordered) != set(catalog):
         raise ContentError("Every entry must appear in reading-order.json")
 
-    def validate_metadata(value):
-        if isinstance(value, dict):
-            if "entry_id" in value:
-                target = catalog.get(value["entry_id"])
-                if (not target or value.get("block_id") not in target["blocks_by_id"]
-                        or value.get("revision") != target["revision"]):
-                    raise ContentError(
-                        f"Broken or stale metadata reference: {value}")
-            if value.get("status") == "checked" and "declaration" in value:
-                module = value.get("module", "")
-                if not module.startswith("Lemmatheca.") or not all(
-                        IDENTIFIER.fullmatch(part) for part in module.split(".")):
-                    raise ContentError(f"Invalid Lean module: {module}")
-                expected = f"formal/{module.replace('.', '/')}.lean"
-                if value.get("source") != expected or not (repository_dir / expected).is_file():
-                    raise ContentError(f"Missing Lean source: {expected}")
-                report_path = (repository_dir /
-                               value["verification_report"]).resolve()
-                if not report_path.is_relative_to((repository_dir / "formal/checks").resolve()):
-                    raise ContentError(
-                        "Verification report must be inside formal/checks")
-                report = read_json(report_path)
-                if value["declaration"] not in {item["name"] for item in report["declarations"]}:
-                    raise ContentError(
-                        f"Declaration missing from report: {value['declaration']}")
-            for child in value.values():
-                validate_metadata(child)
-        elif isinstance(value, list):
-            for child in value:
-                validate_metadata(child)
-
     for entry in ordered.values():
         try:
             for block in entry["blocks"]:
-                validate_metadata(
-                    {k: v for k, v in block.items() if k != "nodes"})
-                for proof_id in block.get("proofs", {}):
-                    if proof_id not in entry["anchors"]:
-                        raise ContentError(
-                            f"Proof has no source anchor: {proof_id}")
+                for reference in block['references']:
+                    target = catalog.get(reference['entry_id'])
+                    if not target or reference['block_id'] not in target['blocks_by_id']:
+                        raise ContentError(f'Broken metadata reference: {reference}')
                 referenced = set()
                 for root in block["nodes"]:
                     if not isinstance(root, Element):

@@ -15,6 +15,12 @@ open scoped Pointwise
 
 variable {G : Type*} [AddCommGroup G] [DecidableEq G]
 
+/-- Translation of a finite set by a fixed element. -/
+def translateFinset (A : Finset G) (b : G) : Finset G := A + {b}
+
+/-- The left-associated triple sumset used in the second entry. -/
+def tripleSumset (A B C : Finset G) : Finset G := (A + B) + C
+
 /-- The nonemptiness lemma in the first note. -/
 theorem finite_sumset_nonempty (A B : Finset G)
     (hA : A.Nonempty) (hB : B.Nonempty) : (A + B).Nonempty := by

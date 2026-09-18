@@ -1,175 +1,68 @@
 # Content and machine access
 
-## Mathematical objects
+An entry is a reading unit containing definitions, lemmas, theorems, questions,
+proofs, and explanatory material. Each mathematical block is independently
+addressable by `(entry_id, block_id)`.
 
-An entry is a short paper: a title, abstract, and an ordered sequence of definitions,
-lemmas, theorems, questions, proofs, and explanatory material. The entry is the
-reading unit; each mathematical block is an independently addressable object.
+The implemented metadata contract is in the [authoring guide](entry-sources.md).
+Entry metadata contains identity, authors, license, subject memberships, editorial
+status, reading time, summary, abstract, and blocks. Optional `source` metadata
+credits original material. Each block contains only formalization and references.
+The HTML owns block titles, kinds, and order. Git records history; the metadata
+contains no version counters or separate proof records.
 
-Keep a statement separate from its proofs. Two beautiful arguments for the same
-theorem deserve two proof records, separate authorship, and separate grades.
-
-| Entity | Important fields and relations |
-| --- | --- |
-| Area | Stable ID, title, parent, aliases, display order |
-| Entry | Stable ID, kind `article`, title, abstract, areas, ordered mathematical blocks |
-| Entry revision | Immutable block order and revisions, human text, assets, attribution |
-| Mathematical block | Stable ID within its entry, kind (`definition`, `lemma`, `theorem`, `question`), title, hypotheses, prerequisites, formal binding |
-| Proof | Stable ID, exact statement revision, human argument, Lean declaration, argument alignment |
-| Formalization | Source and environment hashes, exact elaborated type, bindings, dependency graph, axiom report |
-| Submission | Proposer, target entry/proof, immutable revisions, workflow state |
-| Verification run | Exact revision/environment/policy inputs, result, diagnostics, resource use, artifacts |
-| Review | Reviewer identity/type, target revision, rubric version, dimension grades, rationale |
-| Decision | Human maintainer, immutable revision/manifest hash, outcome, reason, timestamp |
-| Release | Corpus commit, complete manifest, verification artifact, publication timestamp |
-| External lemma | Precise declaration/source revision, mathematical statement, verification status, reason and authorization |
-
-A definition has a formal definition and a human explanation, rather than a fake
-proof field. A construction may additionally require existence or well-definedness
-theorems; store those as linked statements. State whether a mathematical object is
-bundled, a predicate, or a typeclass when this matters to the human/formal mapping.
-
-Definitions and statements can link to explanatory examples, illustrations,
-references, equivalent formulations, and related results. Expository text itself
-is not mechanically certified; mathematical claims inside it must be backed by
-linked statements or clearly identified as motivation or conjecture. Do not put
-unchecked conjectures in the accepted-theorem collection.
-
-## Numbering, citations, and questions
+## Numbering and navigation
 
 Number blocks by kind within each entry: Definition 1, Definition 2, Lemma 1,
-Lemma 2, Theorem 1, Question 1. The renderer derives numbers from their order;
-neither a display number nor an area's position is an identifier.
+Lemma 2, Theorem 1, Question 1. Display numbers are derived, never identifiers.
+Local references show these labels; cross-entry references show the result name.
+The reader returns to the citing block, reopening an answer when necessary.
 
-Use a stable pair `(entry_id, block_id)` to identify a target. A canonical reader
-link ends in a descriptive fragment such as `#sumset-lower-bound`. Within an entry,
-show “Lemma 2”; across entries, show the linked name “Sumset lower bound”. A title
-hint can identify its containing entry when names coincide. Moving or renumbering
-blocks must preserve their IDs, or leave an explicit alias for old anchors.
+Equations have separate entry-local labels and numbers. Tables and diagrams are
+part of the human source. Assets stay in their entry folder. Categories form a
+browsing hierarchy, while reading order is stored explicitly by primary area.
+An entry's stable folder and `/entries/<id>/` URL do not encode its category.
 
-Questions may have a native HTML `details` answer, collapsed initially. An open
-question may have no answer. An answer and its formalization are distinct from the
-question; conjectures must never acquire a theorem verification badge. The demo
-uses answered questions with Lean-checked counterexamples. Publication remains an
-entry/revision decision, while formal verification attaches to specific results.
+## Formalization
 
-The prototype reads `corpus/entries/<entry-id>/entry.html` and `entry.json`.
-HTML sections define block IDs, kinds, titles, and order. JSON binds those blocks
-to hypotheses, references, proofs, and formal declarations. A separate
-`corpus/reading-order.json` controls the order of articles within primary areas.
-The [authoring guide](entry-sources.md) defines the implemented file contract.
-Human content is no longer stored as application templates or duplicate Markdown.
+Each block records a status (`not_started`, `partial`, or `complete`), declaration,
+source path, report path, module, and `unformalized_dependencies`. The latter is
+a list of links to local Lean statements with unfinished proofs (using `sorry`),
+each identified by `declaration`, `module`, and `source`. A nonempty list is
+incompatible with `complete`. Already-proved
+mathlib lemmas do not belong on this list. References identify only
+the target entry and block. Existing mathlib declarations are valid bindings;
+they do not require duplicate proofs under Lemmatheca. Local formal code remains
+in `formal/Lemmatheca/` and can support multiple entries.
 
-## Navigation versus dependencies
+The entry's formalization status is derived from all its block statuses. For a
+question, the status describes its answer or counterexample. Definitions count
+too. Missing work keeps the entry partial or not started; successful checking of
+one result never makes another result complete.
 
-Use a hierarchy for browsing, with additional category memberships for subjects
-that overlap. For example:
+Formal completeness and editorial publication are independent. A maintainer must
+check that the formal declaration expresses the intended human mathematics.
+An axiom report does not automatically establish that correspondence or enumerate
+all mathematical dependencies. Pending statements are listed per block, with no
+global exception registry. Removing the final pending statement does not by itself
+make a formalization complete: its Lean binding must also pass verification.
 
-```text
-Combinatorics
-├── Additive combinatorics
-│   ├── Sumsets
-│   └── Additive energy
-├── Enumerative combinatorics
-│   ├── Binomial coefficients
-│   └── Generating functions
-└── Graph theory
-```
+## Authorship and licensing
 
-“Binomial coefficients” is a topic, not a theorem and not the definition's ID.
-An entry can appear in more than one topic while keeping one canonical URL. Areas
-need not all have the same depth. IDs do not encode the taxonomy, so moving an
-entry does not break links. Entry URLs use only the stable ID: `/entries/<id>/`.
+Display author names, including AI authorship when applicable, the license, and
+any material-source credit. Preserve upstream attribution in formal sources.
+The examples are Codex-authored drafts under Apache-2.0. A maintainer decides what
+is published; AI recommendations do not change the editorial status.
 
-Mathematical dependencies form a separate directed graph. Use typed edges:
-`uses_definition`, `uses_statement`, `formal_dependency`, `explains`, and
-`equivalent_to`. Only logical dependency edges must be acyclic at the accepted
-revision level; explanatory cross-links can form cycles.
+## Later AI access
 
-Keep human-declared prerequisites separate from dependencies extracted from Lean.
-A proof can require a formal helper that is pedagogically invisible. Conversely,
-a suggested background reading link need not occur in the proof term. Every edge
-names a revision or an immutable external declaration, not “whatever is latest.”
+A read-only API can expose the same entry JSON, parsed blocks, HTML, assets, Lean
+bindings, and direct dependency links. Git commits and content hashes can identify
+a reproducible corpus snapshot without adding per-entry version fields. Agents
+should be able to retrieve an entire snapshot or a bounded dependency closure.
 
-## Revisions and authorship
-
-Published revisions never change in place. A change to a theorem's hypotheses,
-definition, proof, illustration affecting its argument, or formal source produces
-a new revision. Reviews and verification reports belong to the revision that was
-actually examined. Formal success may be reused when formal inputs are identical,
-but an editorial change still needs approval of the new human text.
-
-Use opaque IDs in production. Friendly seed IDs in `corpus/entries/` make the examples
-easier to read and still remain independent of category paths. A release snapshot
-and content hashes identify exact bytes. A proof pins its statement revision; do
-not carry it forward automatically after the statement changes.
-
-Record original human authors, submitters, formalizers, AI assistance, source
-references, and license. AI-generated seed text must not be attributed to a human
-maintainer. Preserve the original argument when proposing edits. A materially
-different AI proof is a separate proposal, not an unannounced replacement.
-
-The repository currently has an Apache-2.0 license. These examples inherit it.
-Document the contribution terms before accepting public submissions; an external
-source citation does not by itself grant permission to copy that source's prose
-or figures. Preserve any required upstream attribution for imported formal code.
-
-## Formal bindings and review alignment
-
-Each accepted definition or proof points to a declaration in `formal/`. Store:
-
-- module, declaration name, and exact toolchain/library revisions;
-- elaborated statement, including implicit parameters and typeclass hypotheses;
-- mapping of human notation to formal objects and quantifier domains;
-- source locations linking major human proof steps to Lean lemmas or subproofs;
-- kernel verification, foundational axioms, full dependency closure, and external
-  dependency set as separate fields;
-- maintainer judgment that the formalization expresses the human mathematics.
-
-For example, a finite sumset must distinguish a `Finset` from a potentially
-infinite `Set`. A cardinality operator that returns zero for infinite sets must
-not silently replace the finite notion used by the human author. Equality of
-formal targets alone does not establish that the same argument was formalized.
-
-## AI-friendly interface
-
-Provide a read-only, versioned API with stable identifiers, pagination, and explicit
-release selection. The routes below are proposed contracts, not existing endpoints.
-
-| Endpoint | Purpose |
-| --- | --- |
-| `GET /api/v1/releases` | Available immutable corpus snapshots |
-| `GET /api/v1/entries?release=...&area=...&q=...&cursor=...` | Search and enumerate accepted entries |
-| `GET /api/v1/entries/<id>?release=...` | Article, abstract, ordered blocks and revisions |
-| `GET /api/v1/entries/<id>/blocks/<block_id>?release=...` | Individual definition/result/question, hypotheses, proofs, and formal bindings |
-| `GET /api/v1/proofs/<id>?release=...` | A particular argument, Lean source, review and verification records |
-| `GET /api/v1/entries/<id>/dependencies?release=...` | Direct edges and paginated transitive closure |
-| `GET /api/v1/external-lemmas?release=...` | External assumptions/dependencies and their users |
-| `GET /api/v1/exports/<release>` | JSONL, Markdown, Lean sources, and asset manifest |
-
-Reports use machine-readable enums and explicit `null`/`not_started` values.
-Do not equate absent evidence with a successful check. Return both human and Lean
-representations; neither should have to be recovered by scraping a web page.
-Assets include captions, alt text, hashes, and source references.
-
-An agent can download the whole accepted snapshot or retrieve a bounded
-prerequisite closure for a target theorem. This makes the entire *local corpus*
-available without requiring it to fit into one model context. It does not mean
-the project contains everything known to mathematics. Keep strict results,
-approved external dependencies, drafts, and conjectures distinguishable in every
-export and search filter.
-
-Start with lexical search, declaration-name lookup, and graph traversal. Add
-embeddings or formal type search only after real retrieval failures justify them.
-Agents may suggest missing prerequisites privately; public additions remain a
-manual human action followed by normal review.
-
-## Example scope
-
-The two entries under [`corpus/`](../corpus/README.md) are editable HTML/JSON
-submissions with entry-local assets and checked Lean bindings for their results.
-They are not a published release. The corpus loader validates references, anchors,
-assets, reading order, and formal source/report bindings; missing verification does
-not become success just because another block is checked. Production JSON Schema
-validation, immutable releases, a public API, and the complete dependency audit
-remain requirements before publication.
+Keep formal dependencies separate from expository citations: a formal helper may
+be invisible in the human proof, and a background reading link may not occur in the
+proof term. The full graph extractor and public API remain future work. Initially,
+lexical search, declaration lookup, and graph traversal should be sufficient.
+Research agents may propose results; additions still pass through a human workflow.

@@ -14,7 +14,7 @@ the account, review, publication, database, and worker components remain future 
 | Human mathematics | HTML + LaTeX math | Entry-local, readable source, independent of the page layout |
 | Equations | Pinned, self-hosted KaTeX | Accessible mathematical typesetting, loaded only on article pages |
 | Images | PNG/WebP and sanitized SVG | Illustrations with captions, alt text, dimensions, and provenance |
-| Formal mathematics | Lean 4, Lake, a pinned mathlib revision | Existing mathematical definitions and proof tooling, with explicit dependency policy |
+| Formal mathematics | Lean 4, Lake, a pinned mathlib commit | Existing mathematical definitions and proof tooling, with explicit dependency policy |
 | Published corpus | Git, JSON metadata, HTML, `.lean` sources | Reviewable changes and reproducible, downloadable releases |
 | Background jobs | A dedicated Python worker and PostgreSQL job table | Durable, bounded formalization and verification jobs |
 | Development | uv, Ruff, pytest, browser checks, CI | Locked Python dependencies and checks appropriate to each component |
@@ -36,7 +36,7 @@ Use [PostgreSQL full-text search](https://www.postgresql.org/docs/current/textse
 for titles, aliases, prose, and declaration names initially. Formula and semantic
 search can follow. Do not add a separate search service or graph database yet.
 
-Pin exact tool versions and dependency revisions when the first runnable project
+Pin exact tool versions and dependency commits when the first runnable project
 is created. Check those pins into the repository; do not build releases against
 floating `latest` versions. mathlib and Lean must use compatible pins.
 
@@ -51,7 +51,7 @@ lemmatheca/
 │   ├── config/                     # Django settings and root routes
 │   ├── accounts/                   # Registration and selected maintainer roles
 │   ├── catalog/                    # Taxonomy, entries, search, corpus import
-│   ├── submissions/                # Drafts, revisions, upload and preview
+│   ├── submissions/                # Drafts, upload and preview
 │   ├── reviews/                    # Grades, decisions, audit history
 │   ├── jobs/                       # Durable jobs, leases, retries, worker commands
 │   ├── api/                        # Versioned, read-only corpus API
@@ -61,12 +61,11 @@ lemmatheca/
 │   ├── taxonomy.json
 │   ├── reading-order.json          # Ordered entry IDs per area
 │   ├── foundations.json            # Exact elementary declaration allowlist
-│   ├── external-lemmas.json         # Separately governed external results
 │   ├── entries/<entry-id>/
-│   │   ├── entry.json              # Metadata, block/proof identities and formal bindings
+│   │   ├── entry.json              # Compact metadata and block formal bindings
 │   │   ├── entry.html              # Complete human note, including proofs and questions
 │   │   └── assets/                 # Images and diagram source
-│   └── releases/                   # Manifests naming immutable snapshots
+│   └── releases/                   # Manifests naming Git snapshots
 ├── formal/
 │   ├── lean-toolchain
 │   ├── lakefile.toml
@@ -101,18 +100,18 @@ format and why entry folders and Lean modules need not mirror the browsing taxon
 ## Storage and publication
 
 Git is authoritative for published mathematical source. PostgreSQL is authoritative
-for accounts, private drafts, jobs, reviews, and immutable maintainer decisions.
+for accounts, private drafts, jobs, reviews, and maintainer decisions.
 Its public catalog tables are a rebuildable projection of a published release.
 Store large images, build logs, and verification artifacts in object storage,
 referenced by content hashes. Small seed illustrations can live in Git.
 
 Avoid two competing editable copies of published mathematics. A web edit creates
-a draft revision. After review, a trusted publisher creates a corpus commit from
-that exact revision. A release records the corpus commit, formal source hashes,
+a draft change. After review, a trusted publisher creates a corpus commit from
+that exact content. A release records the corpus commit, formal source hashes,
 toolchain and dependency pins, trust-policy version, and verification artifact.
 
 Publication uses a durable outbox and an idempotent release ID. The publisher
-verifies the approved manifest, writes the immutable snapshot, imports its search
+verifies the approved manifest, writes the Git snapshot, imports its search
 projection, and atomically changes the public release pointer. A failed step is
 retried without publishing half a release. If the base changes in a way that
 affects verification or reviewed content, rebuild and obtain a fresh decision.
@@ -143,16 +142,14 @@ spacing and responsive equations. The initial routes are:
 | `/` | Areas of mathematics and search |
 | `/areas/<path>/` | Breadcrumbs, subareas, definitions, statements |
 | `/entries/<id>/` | Human mathematics, proof choices, prerequisites |
-| `/entries/<id>/revisions/<revision>/` | A stable historical version |
 | `/submit/` | Definition, new statement, or alternate proof submission |
 | `/submissions/<id>/` | Author's draft, preview, job status, requested changes |
 | `/review/` | Maintainer queue with prose/formal comparison and dependencies |
-| `/external-lemmas/` | External results and every published entry using them |
 
 An entry starts with the definition or statement, explicit hypotheses, motivation,
 and a readable proof. Offer collapsible sections for prerequisites, alternate
 proofs, Lean code, dependency details, and review history. Display concise factual
-labels such as “Lean checked” and “Uses 2 external lemmas.” A draft is visibly a
+labels such as “Formalization complete” and “2 statements pending.” A draft is visibly a
 draft and excluded from the accepted catalog.
 
 No application framework is needed in the browser. Start with links and HTML
@@ -184,6 +181,6 @@ layout. Print styles should keep equations, proof text, and captions legible.
    maintainer approval. Autonomous publication remains unavailable.
 
 Before opening submissions, check that an AI or ordinary account cannot publish;
-changing a reviewed revision invalidates approval; missing dependencies fail the
+changing reviewed content invalidates approval; missing dependencies fail the
 trust audit; worker timeouts do not block the site; and equations and images render
 correctly on a narrow screen. Test backup restoration for both corpus and database.

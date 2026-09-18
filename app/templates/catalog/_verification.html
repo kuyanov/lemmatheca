@@ -1,6 +1,31 @@
 <details class="verification-note">
-  <summary>{% if block.kind == "question" %}Answer checked in Lean{% else %}Lean checked{% endif %}</summary>
-  <p>This result has been formalized in Lean and is awaiting maintainer review.</p>
-  <p>Lean declaration: <code>{{ block.formalization.declaration }}</code>.</p>
-  <p>The proof passes Lean's kernel and axiom checks. The full mathematical dependency audit is still pending.</p>
+  <summary>
+    {% if block.kind == "question" %}Answer: {% endif %}
+    {% if block.formalization.status == "complete" %}Formalization
+    complete{% elif block.formalization.status == "partial" %}Partially formalized{% else %}Not formalized{% endif %}
+    {% if block.formalization.is_mathlib %} · mathlib{% endif %}
+    {% if block.formalization.unformalized_dependencies %}
+    · {{ block.formalization.unformalized_dependencies|length }}
+    statement{{ block.formalization.unformalized_dependencies|length|pluralize }} pending
+    {% endif %}
+  </summary>
+  {% if block.formalization.status == "partial" %}<p>Formalization is in progress; this block is not fully checked.</p>
+  {% endif %}
+  {% if block.formalization.status == "not_started" %}<p>No formalization is available yet.</p>{% endif %}
+  {% if block.formalization.declaration %}<p>Lean declaration:
+    {% if block.formalization.source_url %}<a
+      href="{{ block.formalization.source_url }}"><code>{{ block.formalization.declaration }}</code></a>
+    {% else %}<code>{{ block.formalization.declaration }}</code>{% endif %}.</p>
+  {% elif block.formalization.source_url %}
+  <p>Source: <a href="{{ block.formalization.source_url }}"><code>{{ block.formalization.source }}</code></a></p>
+  {% endif %}
+  {% if block.formalization.status == "complete" %}<p>The declaration and its axioms were checked with the pinned Lean
+    environment. Correspondence with the human text still requires review.</p>{% endif %}
+  {% if block.formalization.unformalized_dependencies %}
+  <p>Unproved dependencies — Lean statements with unfinished proofs:</p>
+  <ul>{% for dependency in block.formalization.unformalized_dependencies %}
+    <li><a href="{{ dependency.source_url }}"><code>{{ dependency.declaration }}</code></a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
 </details>

@@ -1,70 +1,34 @@
 {
-  "format_version": 2,
   "scope": "local_development_check",
-  "checked_on": "2026-09-17",
-  "command": "lake build",
-  "working_directory": "formal",
+  "checked_on": "2026-09-18T15:11:23.072879+00:00",
+  "command": "python app/manage.py check_formalizations",
   "build": "passed",
   "lean_toolchain": "leanprover/lean4:v4.34.0",
-  "mathlib_revision": "5ed2965256430c3649e86755f9576b54eca72435",
-  "axiom_check": "formal/Lemmatheca/AxiomChecks.lean",
+  "mathlib_commit": "5ed2965256430c3649e86755f9576b54eca72435",
   "declarations": [
+    {
+      "name": "Finset.Nonempty.add",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "Finset.add",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     {
       "name": "Lemmatheca.sumset_card_lower_bound",
       "axioms": [
         "propext",
         "Classical.choice",
         "Quot.sound"
-      ],
-      "binding": {
-        "entry_id": "thm-sumset-lower-bound",
-        "revision": "draft-2",
-        "block_id": "sumset-lower-bound"
-      },
-      "proof_id": "proof-sumset-lower-bound-translation",
-      "proof_revision": "draft-4"
-    },
-    {
-      "name": "Lemmatheca.triple_sumset_card_lower_bound",
-      "axioms": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "internal_lemma_used": "Lemmatheca.sumset_card_lower_bound",
-      "binding": {
-        "entry_id": "thm-triple-sumset-lower-bound",
-        "revision": "draft-2",
-        "block_id": "triple-sumset-lower-bound"
-      },
-      "proof_id": "proof-triple-sumset-lower-bound",
-      "proof_revision": "draft-3"
-    },
-    {
-      "name": "Lemmatheca.finite_sumset_nonempty",
-      "axioms": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "binding": {
-        "entry_id": "thm-sumset-lower-bound",
-        "revision": "draft-2",
-        "block_id": "nonempty-sumset"
-      }
-    },
-    {
-      "name": "Lemmatheca.sumset_zero",
-      "axioms": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "binding": {
-        "entry_id": "thm-sumset-lower-bound",
-        "revision": "draft-2",
-        "block_id": "zero-summand"
-      }
+      ]
     },
     {
       "name": "Lemmatheca.sumset_empty_counterexample",
@@ -72,25 +36,39 @@
         "propext",
         "Classical.choice",
         "Quot.sound"
-      ],
-      "binding": {
-        "entry_id": "thm-sumset-lower-bound",
-        "revision": "draft-2",
-        "block_id": "nonempty-question"
-      }
+      ]
     },
     {
-      "name": "Lemmatheca.triple_sumset_nonempty",
+      "name": "Lemmatheca.sumset_zero",
       "axioms": [
         "propext",
         "Classical.choice",
         "Quot.sound"
-      ],
-      "binding": {
-        "entry_id": "thm-triple-sumset-lower-bound",
-        "revision": "draft-2",
-        "block_id": "nonempty-triple-sumset"
-      }
+      ]
+    },
+    {
+      "name": "Lemmatheca.translateFinset",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "Lemmatheca.tripleSumset",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "Lemmatheca.triple_sumset_card_lower_bound",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
     },
     {
       "name": "Lemmatheca.triple_sumset_no_strict_growth",
@@ -98,37 +76,112 @@
         "propext",
         "Classical.choice",
         "Quot.sound"
+      ]
+    },
+    {
+      "name": "Lemmatheca.triple_sumset_nonempty",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  ],
+  "pending_dependencies": [
+    {
+      "name": "Lemmatheca.Pending.increasing_list_length_le_card",
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "binding": {
-        "entry_id": "thm-triple-sumset-lower-bound",
-        "revision": "draft-2",
-        "block_id": "strict-growth-question"
-      }
+      "module": "Lemmatheca.Combinatorics.Additive.Pending.IncreasingListCard",
+      "source": "formal/Lemmatheca/Combinatorics/Additive/Pending/IncreasingListCard.lean"
+    },
+    {
+      "name": "Lemmatheca.Pending.integer_sumset_increasing_chain",
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "module": "Lemmatheca.Combinatorics.Additive.Pending.IntegerSumsetChain",
+      "source": "formal/Lemmatheca/Combinatorics/Additive/Pending/IntegerSumsetChain.lean"
+    }
+  ],
+  "bindings": [
+    {
+      "entry_id": "thm-sumset-lower-bound",
+      "block_id": "sumset",
+      "declaration": "Finset.add"
+    },
+    {
+      "entry_id": "thm-sumset-lower-bound",
+      "block_id": "translation",
+      "declaration": "Lemmatheca.translateFinset"
+    },
+    {
+      "entry_id": "thm-sumset-lower-bound",
+      "block_id": "nonempty-sumset",
+      "declaration": "Finset.Nonempty.add"
+    },
+    {
+      "entry_id": "thm-sumset-lower-bound",
+      "block_id": "sumset-lower-bound",
+      "declaration": "Lemmatheca.sumset_card_lower_bound"
+    },
+    {
+      "entry_id": "thm-sumset-lower-bound",
+      "block_id": "zero-summand",
+      "declaration": "Lemmatheca.sumset_zero"
+    },
+    {
+      "entry_id": "thm-sumset-lower-bound",
+      "block_id": "nonempty-question",
+      "declaration": "Lemmatheca.sumset_empty_counterexample"
+    },
+    {
+      "entry_id": "thm-triple-sumset-lower-bound",
+      "block_id": "triple-sumset",
+      "declaration": "Lemmatheca.tripleSumset"
+    },
+    {
+      "entry_id": "thm-triple-sumset-lower-bound",
+      "block_id": "nonempty-triple-sumset",
+      "declaration": "Lemmatheca.triple_sumset_nonempty"
+    },
+    {
+      "entry_id": "thm-triple-sumset-lower-bound",
+      "block_id": "triple-sumset-lower-bound",
+      "declaration": "Lemmatheca.triple_sumset_card_lower_bound"
+    },
+    {
+      "entry_id": "thm-triple-sumset-lower-bound",
+      "block_id": "strict-growth-question",
+      "declaration": "Lemmatheca.triple_sumset_no_strict_growth"
     }
   ],
   "mathematical_dependency_audit": "not_performed",
   "maintainer_review": "pending",
   "notes": [
-    "Build and exact transitive axiom checks passed; no sorryAx or custom axioms were reported.",
-    "The notes include translation injections, applications of internal lemmas, nonemptiness witnesses, the neutral summand, and explicit counterexamples for the answered questions.",
-    "Axiom checks do not enumerate mathematical dependencies. The external-lemma registry grants no exceptions; a full dependency audit and foundations review remain pending.",
-    "This is a local development record, not a production verification certificate or publication approval. Recheck after changing any recorded source."
+    "Checks declarations and axioms, not correspondence with the human argument.",
+    "Pending dependency statements are type-checked separately; sorryAx is allowed only there.",
+    "Incomplete blocks and pending dependencies are not certified as complete proofs.",
+    "The full mathematical dependency closure is not extracted."
   ],
   "sha256": {
-    "app/catalog/content.py": "ba8d339fd014cfa04278309d271c22805ecb072f6bcc184fb8b5270c565dc901",
-    "app/catalog/sources.py": "e048cd215b5e02c68e450d3bcd9ead4f38a0c153d2b13ec6676499a3021902a4",
-    "app/templates/catalog/_verification.html": "fca3e1e8f74f28a2b46b45339cb2515276ae43a9fdf707368f59fed158bf0bb8",
-    "app/templates/catalog/entry.html": "a57e1a17b903217a25708123b0f7feb25671ef01bb3706e77a05c85718f51d39",
     "corpus/entries/thm-sumset-lower-bound/assets/sumset-translation.svg": "e38ffd36c6ee7050f8ac844bb5d6cdbf0e73dd016cb7ba1bd622b4b0bb849ed4",
-    "corpus/entries/thm-sumset-lower-bound/entry.html": "d3a4088ea9c0600c9adaf40b5b5baef607b2c725a2e1ef9856af9e560ee5a5ef",
-    "corpus/entries/thm-sumset-lower-bound/entry.json": "e590de346b047e76a74603d73e4b58fd627263b8e1b367422f5a6857d88b445b",
-    "corpus/entries/thm-triple-sumset-lower-bound/entry.html": "c1cb1311c6b8e966e4daa782b60a5e9a067f4c432a257220414d345549438695",
-    "corpus/entries/thm-triple-sumset-lower-bound/entry.json": "056214e77a812237e560ac0a3ec71c3551696d149e8c002094862bfbf45cc955",
-    "corpus/external-lemmas.json": "8b1dcbb36b61b0669ec707c820cb3ef30cb1d15c0dfeb7ad971830a2045ed35f",
-    "corpus/reading-order.json": "f57658c9ae5b90b4f7983b81a875153290ff9b7ef95f721314ee28fd2d33b32b",
-    "corpus/taxonomy.json": "1056d049e6fd2ad6f16563c47853c7279951f74b569354467e0150c9bbb14a02",
+    "corpus/entries/thm-sumset-lower-bound/entry.html": "ab11ccc3de89ed52e50eac769a903e35d13636deafe9572f0c048cd936ba4435",
+    "corpus/entries/thm-sumset-lower-bound/entry.json": "db595789d19efa77463194258ea9a9ce8f6fd0976eb29d61be40d89dffce61a6",
+    "corpus/entries/thm-triple-sumset-lower-bound/entry.html": "c281f8d459ad56a5a45a5dac906e9b466b33e0c2d3290318e73cf78eb2dc7a83",
+    "corpus/entries/thm-triple-sumset-lower-bound/entry.json": "8c16c072470caa69a95d99d75d180556af0ab1bb5011e19bd6182ff377be0fed",
+    "formal/.lake/packages/mathlib/Mathlib/Algebra/Group/Pointwise/Finset/Basic.lean": "583c5bda6b78379720190558a127d9fd4eab42a81920e4db72e9f2f792b01299",
     "formal/Lemmatheca/AxiomChecks.lean": "528134cbe66f299ce48f2845e2bc8e6bfc132b539ae1e6d4c40401b6a9ccd5af",
-    "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean": "099f9f67123ed0c446a9594fc97612440bf45fdc9dbb64bd2a9d613c03346ca6",
+    "formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean": "e04c14cb4b960f39fa55ccbc6b808334e48041968968c4471403f5bdd1e6326d",
+    "formal/Lemmatheca/Combinatorics/Additive/Pending/IncreasingListCard.lean": "2cdef4693eef488f131f1af7adb5c80a5a328bd700ef6a306717532a975cc49d",
+    "formal/Lemmatheca/Combinatorics/Additive/Pending/IntegerSumsetChain.lean": "060921f6c8de7d39a7485be9ea152849df73d49b55b3e984e12dc1bf326762d0",
     "formal/Lemmatheca/Combinatorics/Additive/Sumsets.lean": "e6414bc7c8e17754c4ed9d3d94abb0edb70c8065c55a859532ab0f3d80d2d1c0",
     "formal/Lemmatheca.lean": "37a917dda79c0ef23da93a03eb5727f540a3913374304b7bc224a005669ac1d0",
     "formal/lake-manifest.json": "364593e731276580ed27270a25a7db9b544d78778e11ab9b0a9b82fd248eaca5",

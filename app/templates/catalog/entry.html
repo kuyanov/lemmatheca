@@ -17,8 +17,15 @@
     {% endif %}
   </div>
   <header class="proof-header">
-    <div class="proof-meta"><span class="eyebrow">Mathematical note</span><span class="pill">Draft</span></div>
+    <div class="proof-meta"><span class="pill">{{ entry.status|title }}</span>
+      {% include "catalog/_formalization_badge.html" %}
+    </div>
     <h1>{{ entry.title }}</h1>
+    <div class="entry-credits">
+      <span>By {{ entry.authors|join:", " }}</span>
+      <a href="{{ entry.license_url }}" rel="license">{{ entry.license }}</a>
+      {% if entry.source %}<span>Source: <a href="{{ entry.source.url }}">{{ entry.source.title }}</a></span>{% endif %}
+    </div>
     <p class="proof-deck">{{ entry.abstract }}</p>
     <div class="reading-meta"><span>{{ entry.reading_time }} min read</span><span>{{ entry.contents_summary }}</span>
     </div>
@@ -41,13 +48,12 @@
         </div>
         <h2 id="{{ block.id }}-title">{{ block.title }}</h2>
         {{ block.html }}
-        {% if block.formalization.status == "checked" %}
         {% include "catalog/_verification.html" %}
-        {% endif %}
       </section>
       {% endfor %}
-      <p class="entry-review-note">An AI-authored draft, awaiting maintainer review. Lean checks are shown for
-        individual results; the full mathematical dependency audit is still pending.</p>
+      {% if entry.status == "draft" %}
+      <p class="entry-review-note">A draft, awaiting maintainer review.</p>
+      {% endif %}
       <nav class="entry-navigation" aria-label="Entry navigation">
         {% include "catalog/_entry_back.html" %}
         {% if next_entry %}

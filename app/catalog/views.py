@@ -1,16 +1,54 @@
 from urllib.parse import urlencode
 
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_safe
 
-from .content import ancestors, area_link, area_path, areas, children, entries, example_entry, next_entry
-from .sources import render_block
+from .content import ancestors, area_link, area_path, areas, children, entries, example_entry, next_entry, read_json
+from .sources import ContentError, render_block
+from .lean import lean_source_path
 
 
 def entry_context(entry):
     return {**entry, "url": reverse("catalog:entry", args=[entry["id"]])}
+
+
+@require_safe
+def lean_file(request, source):
+    try:
+        path = lean_source_path(source, settings.REPOSITORY_DIR)
+        lean_source = path.read_text()
+    except (ContentError, OSError, ValueError) as error:
+        raise Http404('This Lean source file is not available.') from error
+
+    context = {'source': source, 'filename': path.name, 'lean_source': lean_source,
+               'return_url': reverse('catalog:home'), 'return_label': 'Back to repository'}
+    # Context is optional. Status comes from a matching corpus binding, never
+    # from a query parameter or from the mere presence of a source file.
+    record = entries().get(request.GET.get('from')) if request.GET.get('from') else None
+    block = record['blocks_by_id'].get(request.GET.get('at')) if record else None
+    if block:
+        formal = block['formalization']
+        candidates = [(formal, formal['status'], False)] + [
+            (item, 'partial', True) for item in formal['unformalized_dependencies']]
+        for binding, status, pending in candidates:
+            if binding['source'] != source or binding['declaration'] != request.GET.get('declaration'):
+                continue
+            entry_url = reverse('catalog:entry', args=[record['id']])
+            if block['kind'] == 'question':
+                entry_url += '?' + urlencode({'answer': block['id']})
+            context.update(
+                entry=entry_context(record), source_block=block, binding=binding,
+                binding_status=status, pending=pending,
+                return_url=entry_url + '#' + block['id'], return_label='Back to ' + block['title'])
+            break
+    if source.startswith('Mathlib/'):
+        manifest = read_json(settings.REPOSITORY_DIR / 'formal/lake-manifest.json')
+        commit = next(item['rev'] for item in manifest['packages'] if item['name'] == 'mathlib')
+        context['upstream_url'] = f'https://github.com/leanprover-community/mathlib4/blob/{commit}/{source}'
+    return render(request, 'catalog/lean_file.html', context)
 
 
 @require_safe
