@@ -207,6 +207,13 @@ parameters; a matching binding supplies that declaration's status and return lin
 Standalone views do not assign a verification status to the file. The viewer also
 links mathlib source to the exact commit pinned in `formal/lake-manifest.json`.
 
+The ignored mathlib checkout is optional on a read-only web server. For complete
+mathlib bindings, catalog validation checks the declaration and source path
+against the committed verification report. If a referenced mathlib source is not
+installed, its viewer offers the pinned GitHub link. Local Lemmatheca files are
+still required. The verification command itself compiles the pinned dependencies
+and requires the source files before writing a new report.
+
 ```sh
 uv run python app/manage.py check_formalizations
 uv run python app/manage.py validate_corpus

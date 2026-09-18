@@ -17,9 +17,19 @@ def entry_context(entry):
 
 @require_safe
 def lean_file(request, source):
+    catalog = None
     try:
-        path = lean_source_path(source, settings.REPOSITORY_DIR)
-        lean_source = path.read_text()
+        path = lean_source_path(source, settings.REPOSITORY_DIR, require_file=False)
+        try:
+            lean_source = path.read_text()
+        except FileNotFoundError:
+            if not source.startswith('Mathlib/'):
+                raise
+            catalog = entries()
+            if not any(block['formalization']['source'] == source
+                       for entry in catalog.values() for block in entry['blocks']):
+                raise
+            lean_source = None
     except (ContentError, OSError, ValueError) as error:
         raise Http404('This Lean source file is not available.') from error
 
@@ -27,7 +37,9 @@ def lean_file(request, source):
                'return_url': reverse('catalog:home'), 'return_label': 'Back to repository'}
     # Context is optional. Status comes from a matching corpus binding, never
     # from a query parameter or from the mere presence of a source file.
-    record = entries().get(request.GET.get('from')) if request.GET.get('from') else None
+    if request.GET.get('from') and catalog is None:
+        catalog = entries()
+    record = catalog.get(request.GET.get('from')) if catalog is not None else None
     block = record['blocks_by_id'].get(request.GET.get('at')) if record else None
     if block:
         formal = block['formalization']

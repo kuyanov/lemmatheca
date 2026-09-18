@@ -232,7 +232,7 @@ class CorpusSourceTests(SimpleTestCase):
             self.assertIsNone(block['formalization']['declaration'])
             self.assertIsNone(block['formalization']['verification_report'])
             self.assertContains(response, 'formalization-partial')
-            self.assertContains(response, '2 statements pending')
+            self.assertRegex(response.content.decode(), r'2\s+statements pending')
             self.assertContains(response, 'Unproved dependencies')
             for dependency in block['formalization']['unformalized_dependencies']:
                 url = dependency['source_url']
@@ -247,7 +247,7 @@ class CorpusSourceTests(SimpleTestCase):
             for dependency in self.pending:
                 url = lean_source_url(dependency, entry_id=SECOND, block_id=block_id)
                 response = self.client.get(url)
-                self.assertContains(response, 'Proof incomplete')
+                self.assertRegex(response.content.decode(), r'Proof\s+incomplete')
                 self.assertContains(response, 'sorry')
                 self.assertContains(response, dependency['declaration'])
                 source = (settings.REPOSITORY_DIR / dependency['source']).read_text()

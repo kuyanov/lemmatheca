@@ -48,7 +48,9 @@ Run `uv run python app/manage.py check_formalizations`. The command:
    certified, and no status is automatically promoted.
 
 The reader validates that complete declarations appear in a passing report; it
-does not execute Lean during page requests. The command is intended for trusted
+also checks that a complete mathlib binding's source is recorded in that report.
+It does not require an installed mathlib checkout or execute Lean during page
+requests. Missing local Lemmatheca files remain errors. The command is intended for trusted
 repository content. A report should be regenerated when mathematical content,
 bindings, or the environment changes.
 

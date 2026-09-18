@@ -15,6 +15,19 @@ uv run python app/manage.py runserver
 Open <http://127.0.0.1:8000/>. No database setup or migrations are needed.
 This is a local development server, not a production deployment configuration.
 
+For a web-only deployment, keep the tracked `corpus/` and `formal/` directories,
+including `formal/checks/` and `formal/lake-manifest.json`. Lean and the mathlib
+checkout are optional for serving pages. Formalization status uses the committed
+verification reports; a complete mathlib binding must have its declaration and
+source recorded there. Missing local Lemmatheca sources still fail validation.
+
+`formal/.lake/` is ignored by Git, so `git pull` does not install mathlib. When a
+referenced mathlib file is absent, the Lean viewer shows its pinned GitHub link
+and retains the return link to the entry. To install local sources and compiled
+dependencies for verification, follow the [Lean setup](../formal/README.md).
+After deploying application changes, restart the web process. Run
+`uv run python app/manage.py validate_corpus` to check the deployed corpus.
+
 Missing HTML pages render `app/templates/404.html` with HTTP status 404 in both
 development and production. `Development404Middleware` replaces Django's technical
 404 when `DEBUG=True`, so you can preview the real error page locally. Debug

@@ -33,6 +33,11 @@ uv run python app/manage.py runserver
 
 Then open <http://127.0.0.1:8000/>.
 
+A web-only checkout does not need Lean or mathlib installed: it reads the committed
+verification reports. If mathlib sources are absent from the Git-ignored
+`formal/.lake/` directory, their viewer offers the source at the pinned GitHub
+commit. Local Lean sources and reports must still be deployed with the corpus.
+
 Start with these documents:
 
 | Document | What it specifies |

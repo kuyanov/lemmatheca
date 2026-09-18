@@ -1,13 +1,21 @@
 """A general Lean file viewer, independent of entry bindings."""
 
+from io import StringIO
+import json
 from pathlib import Path
+import shutil
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from django.conf import settings
+from django.core.management import call_command
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 from django.utils.html import escape
+
+from .content import entries, load_catalog
+from .metadata import formal_source_path
+from .sources import ContentError
 
 
 class LeanFileTests(SimpleTestCase):
@@ -69,3 +77,66 @@ class LeanFileTests(SimpleTestCase):
                 self.assertEqual(response.status_code, 200)
                 self.assertNotContains(response, 'Formalization complete')
                 self.assertEqual(response.context['return_url'], '/')
+
+
+class WebsiteWithoutMathlibTests(SimpleTestCase):
+    """Reproduce a server checkout containing tracked files but no formal/.lake."""
+
+    def setUp(self):
+        temporary = TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        shutil.copytree(settings.CORPUS_DIR, self.root / 'corpus')
+        shutil.copytree(settings.REPOSITORY_DIR / 'formal', self.root / 'formal',
+                        ignore=shutil.ignore_patterns('.lake'))
+        configured = override_settings(REPOSITORY_DIR=self.root, CORPUS_DIR=self.root / 'corpus')
+        configured.enable()
+        self.addCleanup(configured.disable)
+
+    def test_catalog_and_reader_work_without_lake_dependencies(self):
+        self.assertFalse((self.root / 'formal/.lake').exists())
+        output = StringIO()
+        call_command('validate_corpus', stdout=output)
+        self.assertIn('Validated 2 entries', output.getvalue())
+        for url in ('/', '/areas/combinatorics/additive-combinatorics/sumsets/',
+                    '/entries/thm-sumset-lower-bound/', '/entries/thm-triple-sumset-lower-bound/'):
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 200)
+        self.assertEqual(entries()['thm-sumset-lower-bound']['formalization']['status'], 'complete')
+
+    def test_missing_mathlib_source_has_pinned_fallback_and_preserves_return_link(self):
+        formal = entries()['thm-sumset-lower-bound']['blocks_by_id']['nonempty-sumset']['formalization']
+        manifest = json.loads((self.root / 'formal/lake-manifest.json').read_text())
+        commit = next(package['rev'] for package in manifest['packages'] if package['name'] == 'mathlib')
+        url = formal['source_url']
+        response = self.client.get(url)
+        self.assertContains(response, 'This mathlib source is not installed on this server.')
+        self.assertContains(response, f'https://github.com/leanprover-community/mathlib4/blob/{commit}/{formal["source"]}')
+        self.assertEqual(response.context['return_url'], '/entries/thm-sumset-lower-bound/#nonempty-sumset')
+        self.assertNotContains(response, '<pre')
+        self.assertContains(self.client.get(url.split('?')[0]), 'This mathlib source is not installed')
+        self.assertEqual(self.client.get('/lean/Mathlib/Missing.lean/').status_code, 404)
+        self.assertEqual(self.client.get('/lean/Mathlib/../private.lean/').status_code, 404)
+
+        # Installing sources later restores the viewer without a catalog edit.
+        path = formal_source_path(formal, self.root, require_file=False)
+        path.parent.mkdir(parents=True)
+        path.write_text('-- Locally installed mathlib source\n')
+        self.assertContains(self.client.get(url), 'Locally installed mathlib source')
+        self.assertNotContains(self.client.get(url), 'This mathlib source is not installed')
+
+    def test_missing_local_sources_and_unreported_mathlib_paths_still_fail_validation(self):
+        with self.assertRaisesRegex(ContentError, 'Missing Lean source:.*Mathlib'):
+            formal = entries()['thm-sumset-lower-bound']['blocks_by_id']['sumset']['formalization']
+            formal_source_path(formal, self.root)
+        report = self.root / 'formal/checks/sumsets.json'
+        original = report.read_text()
+        data = json.loads(original)
+        data['sha256'].pop('formal/.lake/packages/mathlib/' + formal['source'])
+        report.write_text(json.dumps(data))
+        with self.assertRaisesRegex(ContentError, 'Mathlib source missing from the verification report'):
+            load_catalog(self.root / 'corpus', self.root)
+        report.write_text(original)
+        (self.root / 'formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean').unlink()
+        with self.assertRaisesRegex(ContentError, 'Missing Lean source:.*FiniteSumsets.lean'):
+            load_catalog(self.root / 'corpus', self.root)

@@ -16,6 +16,13 @@ Sourcing `elan/env` makes `lean` and `lake` available in shells that do not yet 
 `~/.elan/bin` on their `PATH`. The Lean VS Code extension is installed separately
 from the compiler; `elan` selects the version specified in `lean-toolchain`.
 
+`formal/.lake/` is a local dependency/build directory and is ignored by Git.
+Pulling the repository on another machine does not populate it; run the setup
+commands above when you want to compile Lean or view mathlib sources locally.
+The website can serve the corpus without it, using the committed reports and a
+pinned GitHub source link for referenced mathlib files that are absent locally.
+Keep the tracked Lean sources, reports, and manifest on the web server.
+
 ## The mathematical notes
 
 Open [`FiniteSumsets.lean`](Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean) in

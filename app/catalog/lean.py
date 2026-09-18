@@ -8,7 +8,11 @@ from django.urls import reverse
 from .sources import ContentError
 
 
-def lean_source_path(source, repository_dir):
+class MissingLeanSource(ContentError):
+    """A valid source path whose file is not installed locally."""
+
+
+def lean_source_path(source, repository_dir, *, require_file=True):
     parts = source.split('/')
     if (len(parts) < 2 or any(not part or part.startswith('.') for part in parts)
             or '\\' in source or '\x00' in source or PurePosixPath(source).suffix != '.lean'):
@@ -20,8 +24,12 @@ def lean_source_path(source, repository_dir):
     else:
         raise ContentError('Use a formal/ or Mathlib/ source path')
     path = root.joinpath(*parts[1:])
-    if not path.resolve().is_relative_to(root.resolve()) or not path.is_file():
-        raise ContentError('Lean source is missing or outside its source tree')
+    if not path.resolve().is_relative_to(root.resolve()):
+        raise ContentError(f'Lean source is outside its source tree: {source}')
+    if path.exists() and not path.is_file():
+        raise ContentError(f'Lean source is not a file: {source}')
+    if require_file and not path.is_file():
+        raise MissingLeanSource(f'Missing Lean source: {path}')
     return path
 
 
