@@ -1,15 +1,18 @@
 # A small mathematical baseline
 
-Start with a coherent dependency graph rather than many unrelated famous theorems.
-The following human arguments are design seeds, not accepted library entries.
-The sumset lower bound now has a Lean proof, along with a triple-sumset application;
-the other proposed statements remain unformalized. Most are early undergraduate
-mathematics; elementary support
-lemmas belong in the foundation layer even when they are not featured on the site.
+Start with connected mathematical topics rather than unrelated famous theorems.
+The following arguments are candidate tasks for the
+[formalization pilot](formalization-experiments.md), not an accepted corpus or a
+list of results absent from mathlib. The sumset lower bound and a triple-sumset
+application have local Lean proofs; the remaining tasks below are proposals.
+Ordinary checked mathlib infrastructure can be reused without rebuilding a separate
+foundation library or obtaining per-lemma exceptions.
 
-The concrete sumset notes live in [`corpus/entries/`](../corpus/README.md).
-No external nontrivial lemma is proposed as an exception for these seeds, but their
-actual Lean dependency closure remains to be measured and reviewed.
+The current [corpus](../corpus/README.md) has two sumset notes and a short
+Erdős–Szekeres note reserved for a measured attempt. The latter remains entirely
+`not_started`. For standard-corpus construction, bind existing declarations when
+appropriate. For proof-translation experiments, the plans below specify which
+human argument to preserve; these are different evaluation tasks.
 
 ## Algebra: inverses of products
 
@@ -41,7 +44,7 @@ last factor:
 The element \((ab)^{-1}\) is a left inverse of \(ab\), and the calculation shows
 that \(b^{-1}a^{-1}\) is a right inverse. Apply the supporting lemma.
 
-**Formalization plan.** Use mathlib's group definition, prove the supporting lemma
+**Proof-translation experiment.** Use mathlib's group definition, prove the supporting lemma
 internally, and express the displayed calculation using the reviewed group laws.
 Do not close the goal by calling the upstream inverse-of-product theorem. Inspect
 inferred group instances as well as the explicit rewrite lemmas. The
@@ -82,17 +85,18 @@ The upper bound holds when one set is empty too. The lower bound as stated needs
 both sets nonempty: if \(A=\varnothing\) and \(B\neq\varnothing\), the sumset
 is empty. Preserve these distinctions in the formal statements.
 
-**Formalization plan.** Model finite subsets using `Finset` or explicit finite
-subtypes consistently. Prove translation injectivity and the finite
-injection/surjection cardinality lemmas internally, or explicitly approve their
-precise versions as elementary infrastructure. Prove the product-counting lemma
-before the upper bound. mathlib's
+**Proof-translation experiment.** Model finite subsets using `Finset` or explicit
+finite subtypes consistently. Formalize the translation injection and the
+addition surjection, using existing finite-cardinality and product-counting lemmas
+whose hypotheses match. Record these prerequisites in the experiment's allowed
+context. mathlib's
 [pointwise set operations](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Pointwise/Set/Basic.html)
-are a notation/definition reference, not permission to import all their theorems.
+help locate the formal objects. Reusing the target cardinality theorem would be
+valid corpus curation, but would not translate this injection/surjection argument.
 
 **Why this seed matters.** It checks finiteness/nonemptiness, finite versus infinite
 sets, an image-based proof, and a statement useful for further additive combinatorics.
-Use separate lower- and upper-bound entries, with a combined corollary if desired.
+The upper bound could become another block in the existing sumset note.
 
 ## Enumerative combinatorics: Pascal's identity
 
@@ -112,7 +116,7 @@ subsets of the remaining \(n\) elements. The second class already consists of
 the \((k+1)\)-element subsets of those remaining elements. The classes are
 disjoint and exhaustive, so their cardinalities add.
 
-**Formalization plan.** Define the two classes and both bijections, and prove the
+**Proof-translation experiment.** Define the two classes and both bijections, and prove the
 cardinality-of-disjoint-union step. If using `Nat.choose`, first link it to the
 subset-counting interpretation. A proof by its recursive equation alone would
 verify the identity but would not formalize this submitted counting argument.
@@ -138,8 +142,8 @@ two-element subset of \(V\). The degree \(\deg(v)\) counts edges containing \(v\
 ways. Counting first by vertices gives \(|I|=\sum_v\deg(v)\). Counting first
 by edges gives \(|I|=\sum_e 2=2|E|\), because every edge has exactly two endpoints.
 
-**Formalization plan.** Formalize the incidence set and the two finite fiber sums.
-Prove the counting helper internally or classify its exact version as a foundation.
+**Proof-translation experiment.** Formalize the incidence set and the two finite
+fiber sums, reusing suitable checked counting lemmas as recorded prerequisites.
 Do not introduce loops without changing the degree convention. A picture of a
 triangle with its six incidences is an appropriate rendering fixture, not a proof
 of the general theorem.
@@ -149,18 +153,21 @@ mathematical role must remain clear to both readers and agents.
 
 ## Baseline acceptance checks
 
-For the first implemented slice, verify all of the following:
+For a measured proof-translation task, check the following. These combine local
+commands with manual review; they are not all automated gates in the current app:
 
 - Definitions and hypotheses on the page match the elaborated Lean types.
 - Human proof steps have corresponding formal steps and declared prerequisites.
-- There is no `sorry`, forbidden axiom, circular dependency, or unclassified
-  external result in the transitive closure.
-- Deliberately altered hypotheses or hidden dependencies fail the relevant gate.
-- A changed human proof invalidates the old review decision even if its Lean
-  theorem statement is unchanged.
+- Complete proofs have no direct or transitive `sorryAx` or disallowed axioms.
+  Pending helpers are reported separately and do not make a partial block complete.
+- The reviewed statement has the intended hypotheses, including boundary cases;
+  compilation alone is not enough. Check for target-theorem shortcuts separately.
+- A changed human proof receives fresh review even if the Lean statement is
+  unchanged. There is no automatic review-invalidation service yet.
 - Desktop, mobile, and print output show inline/display math, long equations,
   images, captions, and alternate proofs correctly.
-- JSON export and human rendering refer to the same immutable release.
+- Logs preserve the exact input, environment, all attempts, model spending, and
+  human correction time. An API or immutable release service is not required.
 
 After these examples work, expand toward Lagrange's theorem, Vandermonde's identity,
 and more substantial sumset inequalities. The dependency graph will reveal which

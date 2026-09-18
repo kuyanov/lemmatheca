@@ -10,22 +10,20 @@
 {% block content %}
 {% include "catalog/_breadcrumbs.html" %}
 <article class="proof-article" data-math>
-  <div class="{% if return_entry %}reading-return{% endif %}">
+  {% if return_entry %}
+  <div class="reading-return">
     {% include "catalog/_entry_back.html" %}
     {% if return_block %}
     <span class="return-location">{{ return_block.label }} · {{ return_block.title }}</span>
     {% endif %}
   </div>
+  {% endif %}
   <header class="proof-header">
     <div class="proof-meta"><span class="pill">{{ entry.status|title }}</span>
       {% include "catalog/_formalization_badge.html" %}
     </div>
     <h1>{{ entry.title }}</h1>
-    <div class="entry-credits">
-      <span>By {{ entry.authors|join:", " }}</span>
-      <a href="{{ entry.license_url }}" rel="license">{{ entry.license }}</a>
-      {% if entry.source %}<span>Source: <a href="{{ entry.source.url }}">{{ entry.source.title }}</a></span>{% endif %}
-    </div>
+    {% include "catalog/_bibliography.html" %}
     <p class="proof-deck">{{ entry.abstract }}</p>
     <div class="reading-meta"><span>{{ entry.reading_time }} min read</span><span>{{ entry.contents_summary }}</span>
     </div>

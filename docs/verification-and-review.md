@@ -5,6 +5,11 @@ intended human mathematics and whether the exposition is suitable for the librar
 These are separate decisions. AI may propose translations and grades; it cannot
 publish an entry.
 
+The current phase focuses on formalization experiments and standard-corpus
+construction. Review and inclusion are manual repository work. Drafts are visible
+in the reader; there is no account-based publication control or automated AI
+grading service. Those public features are deferred.
+
 ## Allowed formalizations
 
 A block can point to a declaration in the local `formal/Lemmatheca/` project or to
@@ -51,15 +56,30 @@ The reader validates that complete declarations appear in a passing report; it
 also checks that a complete mathlib binding's source is recorded in that report.
 It does not require an installed mathlib checkout or execute Lean during page
 requests. Missing local Lemmatheca files remain errors. The command is intended for trusted
-repository content. A report should be regenerated when mathematical content,
-bindings, or the environment changes.
+repository content. It does not compare every saved source hash against current
+files during page requests. A report should be regenerated when mathematical
+content, bindings, or the environment changes.
 
 `unformalized_dependencies` is an author-maintained account of missing work, not
 a full dependency closure. Full dependency extraction remains future work, as does
 checking that the submitted human argument follows the same proof strategy. In
 particular, type agreement alone does not certify an exposition.
 
-## Human review and later automation
+## Experiment outcomes
+
+Measure statement correctness, Lean proof completion, and faithfulness to the
+human argument independently. Existing mathlib bindings are valid for corpus
+curation, even when the upstream proof uses another method. They do not by
+themselves count as successful translation of the displayed proof.
+
+Before a measured attempt, fix the input, environment, allowed prerequisites,
+retrieval policy, and cost/repair limits. Keep all attempts and human interventions
+in separate run records; current verification reports do not record them. Review
+the elaborated statement against the intended mathematics before counting a proof
+as a success. The [experiment plan](formalization-experiments.md) describes the
+proposed pilot and metrics; no experiment runner is implemented yet.
+
+## Human review and later public automation
 
 A maintainer checks hypotheses, domains, quantifiers, the explanation, authorship,
 license, source credit, and the formal binding. Finite sets must not silently turn
@@ -67,12 +87,14 @@ into infinite sets or misleading cardinality conventions. Conjectures remain
 questions rather than accepted theorems.
 
 Future submission handling should preserve submitted text and make suggested
-changes visible. Formalization and grading workers operate outside public page
+changes visible. Future formalization and grading workers should operate outside public page
 requests. Untrusted Lean code requires isolated workers with resource limits and
 no access to secrets; public HTML requires sanitization and asset checks. The
 current local command is not that public submission service.
 
-Beauty grades should distinguish clarity, economy, conceptual insight, reuse, and
+Formal beauty grading is deferred; initial reviews should give actionable feedback
+on correctness, clarity, and proof correspondence. Later grades can distinguish
+clarity, economy, conceptual insight, reuse, and
 faithfulness to the submitted argument. Record reasons, not only a score. Human
 and AI recommendations remain visible as recommendations. A selected maintainer
 makes the final publication decision.

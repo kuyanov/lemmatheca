@@ -91,6 +91,7 @@ class CatalogTests(SimpleTestCase):
         self.assertContains(response, "2 entries")
         for entry in entries().values():
             with self.subTest(entry=entry["id"]):
+                response = self.client.get(area_link(areas()[entry["primary_area"]])["url"])
                 url = reverse("catalog:entry", args=[entry["id"]])
                 self.assertEqual(url, f"/entries/{entry['id']}/")
                 self.assertContains(response, url)
@@ -168,6 +169,9 @@ class CatalogTests(SimpleTestCase):
             self.assertTrue(questions)
             self.assertTrue(
                 all("open" not in question for question in questions))
+        parser = LinkParser()
+        parser.feed(self.client.get(reverse('catalog:entry', args=[
+            'thm-triple-sumset-lower-bound'])).content.decode())
         citation = next(anchor for anchor in parser.anchors
                         if urlsplit(anchor["href"]).fragment == "zero-summand")
         response = self.client.get(citation["href"])
@@ -207,14 +211,18 @@ class CatalogTests(SimpleTestCase):
                 with self.subTest(entry=entry["id"], source=source):
                     response = self.client.get(
                         url, {} if source is None else {"from": source})
-                    self.assertContains(response, "Back to Sumsets", count=2)
+                    area = areas()[entry["primary_area"]]
+                    self.assertContains(response, f"Back to {area['title']}", count=1)
+                    self.assertNotContains(response, 'class="reading-return"')
+                    self.assertNotIn('Back to', response.content.decode().split('<header class="proof-header">')[0])
                     self.assertEqual(response.context["return_url"], area_link(
-                        areas()["sumsets"])["url"])
+                        area)["url"])
 
     def test_entry_counts_include_descendants_but_not_unrelated_areas(self):
-        for area_id in ["combinatorics", "additive-combinatorics", "sumsets"]:
+        for area_id, count in [("combinatorics", 3), ("additive-combinatorics", 2),
+                               ("sumsets", 2), ("extremal-combinatorics", 1)]:
             with self.subTest(area=area_id):
-                self.assertEqual(area_link(areas()[area_id])["entry_count"], 2)
+                self.assertEqual(area_link(areas()[area_id])["entry_count"], count)
         self.assertEqual(area_link(areas()["algebra"])["entry_count"], 0)
 
     def test_browsing_does_not_load_the_math_renderer(self):

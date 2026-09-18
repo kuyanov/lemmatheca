@@ -9,28 +9,44 @@ Each entry has a stable folder under `corpus/entries/<id>/` containing `entry.ht
 The required entry fields are exactly:
 
 ```text
-id, title, authors, license, primary_area, additional_areas,
+id, title, based_on, primary_area, additional_areas,
 status, reading_time, summary, abstract, blocks
 ```
 
-`authors` is a list of display names, for example `["Codex (AI)"]`. `license` is an
-SPDX identifier, such as `Apache-2.0`. `status` is the editorial state, currently
-`draft` for both examples; it is independent of formalization. `reading_time` is
-an integer number of minutes. Titles, authors, linked licenses, and editorial
-status appear on the entry page.
+`status` is the editorial state, currently `draft` for all examples; it is
+independent of formalization. `reading_time` is a positive integer number of
+minutes. The entry page displays its title, editorial status, and a bibliography
+labelled **Based on:**.
 
-If the human material comes from another source, add the optional provenance field:
+`based_on` is a list of citations. Use an empty list for original material without
+an external source; the page then omits the bibliography. Each citation requires
+`authors` (a nonempty list of names) and `title`. Optional fields are `year` (a
+positive integer), `venue`, `volume`, `issue`, `pages`, `doi`, and `url` (nonempty
+strings). Store a bare DOI and an HTTP(S) URL, if available. The reader generates
+the DOI link; a URL links the title. Citations can also describe print-only sources.
+The compact header shows authors, linked title, and year for the first citation;
+additional citations sit in a collapsed **more sources** disclosure. The title
+links to the DOI when no URL is supplied. Full publication details stay in JSON.
+For example:
 
 ```json
-"source": {
-  "title": "Original lecture notes",
-  "url": "https://example.org/notes"
-}
+"based_on": [
+  {
+    "authors": ["A. Seidenberg"],
+    "title": "A Simple Proof of a Theorem of Erdös and Szekeres",
+    "year": 1959,
+    "venue": "Journal of the London Mathematical Society",
+    "volume": "s1-34",
+    "issue": "3",
+    "pages": "352",
+    "doi": "10.1112/jlms/s1-34.3.352"
+  }
+]
 ```
 
-This produces a visible source credit. Omit it for original material. This entry
-source is distinct from a formalization's Lean source path. A source citation does
-not change the entry's license or grant permission to reproduce material.
+Top-level `authors`, `license`, and `source` fields have been removed. Citation
+authors identify the cited work, not the writer of the entry. Bibliographic
+sources are separate from each block's mathematical `references` and Lean `source`.
 
 `blocks` is keyed by the stable IDs in the HTML. Every block has exactly
 `formalization` and `references`:
@@ -117,6 +133,11 @@ answers: all complete → complete; all not started → not started; every other
 combination → partial. A question's status describes its answer or counterexample.
 A complete formalization does not imply editorial publication or human approval.
 
+**Finding a monotone subsequence**, based on Seidenberg's one-page paper and
+Björner–Stanley's exposition, is reserved for a later formalization-cost experiment.
+All four blocks use `not_started`, with null declaration/module/source/report
+fields and an empty dependency list. It has no Lean file or mathlib binding.
+
 ## HTML, equations, and tables
 
 Use ordinary HTML fragments with explicitly closed elements. Each top-level
@@ -181,6 +202,8 @@ contains a real table and a labelled equation as rendering baselines.
 Local mathematical links receive local numbers; cross-entry links show the result
 name and record the source block for the return link. IDs stay fixed when titles
 or categories change. Reader URLs use `/entries/<id>/`.
+Direct visits have no top back button. Following a cross-entry reference shows
+the sticky return bar; bottom navigation remains available in either case.
 
 Only entry `assets/` directories are registered with Django's static-file system.
 `collectstatic` includes them without exposing source HTML/JSON. Restart the server

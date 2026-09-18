@@ -2,6 +2,7 @@
 
 import json
 from functools import lru_cache
+from urllib.parse import quote
 
 from django.conf import settings
 from django.urls import reverse
@@ -79,7 +80,10 @@ def load_catalog(corpus_dir, repository_dir, *, check_reports=True):
                 "blocks": blocks, "blocks_by_id": {block["id"]: block for block in blocks},
                 "anchors": anchors,
                 "formalization": entry_formalization(blocks),
-                "license_url": f"https://spdx.org/licenses/{entry['license']}.html",
+                "based_on": [
+                    {**citation, 'doi_url': 'https://doi.org/' + quote(citation['doi'], safe='/')
+                     if citation.get('doi') else None}
+                    for citation in entry['based_on']],
                 "contents_summary": " · ".join(
                     f"{count} {kind}{'s' if count != 1 else ''}" for kind, count in counts.items()),
             }

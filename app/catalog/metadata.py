@@ -6,8 +6,10 @@ from urllib.parse import urlsplit
 from .sources import ContentError
 from .lean import lean_source_path
 
-ENTRY_FIELDS = {'id', 'title', 'authors', 'license', 'primary_area', 'additional_areas',
+ENTRY_FIELDS = {'id', 'title', 'based_on', 'primary_area', 'additional_areas',
                 'status', 'reading_time', 'summary', 'abstract', 'blocks'}
+CITATION_FIELDS = {'authors', 'title'}
+CITATION_OPTIONAL_FIELDS = {'year', 'venue', 'volume', 'issue', 'pages', 'doi', 'url'}
 FORMAL_FIELDS = {'status', 'declaration', 'source', 'verification_report', 'module',
                  'unformalized_dependencies'}
 FORMAL_STATUSES = {'not_started', 'partial', 'complete'}
@@ -20,16 +22,33 @@ def fields(value, required, optional=frozenset()):
         raise ContentError(f"Expected fields: {', '.join(sorted(required))}")
 
 
+def validate_citation(citation):
+    fields(citation, CITATION_FIELDS, CITATION_OPTIONAL_FIELDS)
+    if not isinstance(citation['authors'], list) or not citation['authors'] or not all(
+            isinstance(name, str) and name.strip() for name in citation['authors']):
+        raise ContentError('Citation authors must be a nonempty list of names')
+    for key in ('title', 'venue', 'volume', 'issue', 'pages', 'doi', 'url'):
+        if key in citation and (not isinstance(citation[key], str) or not citation[key].strip()):
+            raise ContentError(f'Citation {key} must be nonempty text')
+    if 'year' in citation and (type(citation['year']) is not int or citation['year'] <= 0):
+        raise ContentError('Citation year must be a positive integer')
+    if 'doi' in citation and not re.fullmatch(r'10\.\d{4,9}/\S+', citation['doi']):
+        raise ContentError('Use a bare DOI, for example 10.1112/jlms/s1-34.3.352')
+    if 'url' in citation:
+        url = urlsplit(citation['url'])
+        if url.scheme not in ('http', 'https') or not url.netloc:
+            raise ContentError('A citation needs an HTTP(S) URL')
+
+
 def validate_entry_metadata(entry):
-    fields(entry, ENTRY_FIELDS, {'source'})
-    for key in ('id', 'title', 'license', 'primary_area', 'status', 'summary', 'abstract'):
+    fields(entry, ENTRY_FIELDS)
+    for key in ('id', 'title', 'primary_area', 'status', 'summary', 'abstract'):
         if not isinstance(entry[key], str) or not entry[key].strip():
             raise ContentError(f"{key} must be nonempty text")
-    if not re.fullmatch(r'[A-Za-z0-9.+-]+', entry['license']):
-        raise ContentError('Use an SPDX license identifier')
-    if not isinstance(entry['authors'], list) or not entry['authors'] or not all(
-            isinstance(name, str) and name.strip() for name in entry['authors']):
-        raise ContentError('authors must be a nonempty list of names')
+    if not isinstance(entry['based_on'], list):
+        raise ContentError('based_on must be a list of citations')
+    for citation in entry['based_on']:
+        validate_citation(citation)
     if not isinstance(entry['additional_areas'], list) or not all(
             isinstance(area, str) for area in entry['additional_areas']):
         raise ContentError('additional_areas must be a list of area IDs')
@@ -37,16 +56,6 @@ def validate_entry_metadata(entry):
         raise ContentError('reading_time must be a positive number of minutes')
     if not isinstance(entry['blocks'], dict):
         raise ContentError('blocks must be keyed by block ID')
-    if 'source' in entry:
-        fields(entry['source'], {'title', 'url'})
-        source = entry['source']
-        if not isinstance(source['title'], str) or not source['title'].strip():
-            raise ContentError('A material source needs a title')
-        if not isinstance(source['url'], str):
-            raise ContentError('A material source needs an HTTP(S) URL')
-        url = urlsplit(source['url'])
-        if url.scheme not in ('http', 'https') or not url.netloc:
-            raise ContentError('A material source needs an HTTP(S) URL')
 
 
 def formal_source_path(formal, repository_dir, *, require_file=True):
@@ -131,4 +140,4 @@ def entry_formalization(blocks):
               'not_started' if all(value == 'not_started' for value in statuses) else 'partial')
     return {'status': status, 'complete': complete, 'total': len(statuses),
             'label': {'complete': 'Formalization complete', 'partial': 'Partially formalized',
-                      'not_started': 'Not formalized'}[status]}
+                      'not_started': 'Formalization not started'}[status]}

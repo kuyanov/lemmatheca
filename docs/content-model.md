@@ -5,11 +5,17 @@ proofs, and explanatory material. Each mathematical block is independently
 addressable by `(entry_id, block_id)`.
 
 The implemented metadata contract is in the [authoring guide](entry-sources.md).
-Entry metadata contains identity, authors, license, subject memberships, editorial
-status, reading time, summary, abstract, and blocks. Optional `source` metadata
-credits original material. Each block contains only formalization and references.
+Entry metadata contains identity, `based_on` citations, subject memberships,
+editorial status, reading time, summary, abstract, and blocks. Citations record
+authors, title, and optional publication details, DOI, and URL. Each block contains
+only formalization and references.
 The HTML owns block titles, kinds, and order. Git records history; the metadata
 contains no version counters or separate proof records.
+
+This file contract is the current storage model for corpus construction and
+formalization experiments. Experiment inputs, model attempts, costs, and human
+review time should live in separate run records, not in the entry schema. The
+run-record format is still proposed; see the [experiment plan](formalization-experiments.md).
 
 ## Numbering and navigation
 
@@ -47,14 +53,20 @@ all mathematical dependencies. Pending statements are listed per block, with no
 global exception registry. Removing the final pending statement does not by itself
 make a formalization complete: its Lean binding must also pass verification.
 
-## Authorship and licensing
+## Sources and attribution
 
-Display author names, including AI authorship when applicable, the license, and
-any material-source credit. Preserve upstream attribution in formal sources.
-The examples are Codex-authored drafts under Apache-2.0. A maintainer decides what
-is published; AI recommendations do not change the editorial status.
+Display external sources as **Based on:** citations, linking titles and DOIs when
+available. Original material may use an empty citation list. Entry authorship and
+licensing are no longer fields in this reader's metadata. Preserve upstream
+attribution in formal sources. A maintainer decides what is published; AI
+recommendations do not change the editorial status.
 
 ## Later AI access
+
+Local agents can read the existing corpus files and pinned Lean sources directly.
+An HTTP API is not needed for the initial formalization pilot. Reading order,
+taxonomy, bibliography, and block references already supply useful context, though
+they do not constitute the complete formal dependency graph.
 
 A read-only API can expose the same entry JSON, parsed blocks, HTML, assets, Lean
 bindings, and direct dependency links. Git commits and content hashes can identify

@@ -1,0 +1,51 @@
+<section id="endpoint-lengths" data-kind="definition">
+  <h2>Subsequences and endpoint lengths</h2>
+  <p>Fix distinct real numbers \(a_1,\ldots,a_N\). A subsequence selects indices
+    \(i_1&lt;\cdots&lt;i_k\), preserving their order. It is increasing when
+    \(a_{i_1}&lt;\cdots&lt;a_{i_k}\), and decreasing when all inequalities reverse.</p>
+  <p>Let \(p_i\) and \(q_i\) be the greatest lengths of increasing and decreasing
+    subsequences ending at \(a_i\). These maxima exist: there are finitely many
+    choices, including the singleton \(a_i\). Label position \(i\) by \((p_i,q_i)\).</p>
+</section>
+
+<section id="distinct-labels" data-kind="lemma">
+  <h2>Distinct endpoint labels</h2>
+  <div class="statement-box">
+    <p>The endpoint labels of <a href="#endpoint-lengths">Subsequences and endpoint lengths</a> are pairwise distinct.
+    </p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Take \(i&lt;j\). If \(a_i&lt;a_j\), append \(a_j\) to a longest increasing
+    subsequence ending at \(a_i\), giving \(p_j\geq p_i+1\). Otherwise
+    \(a_i&gt;a_j\), and the same extension gives \(q_j\geq q_i+1\).
+    Either way, the labels differ. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="monotone-subsequence" data-kind="theorem">
+  <h2>Erdős–Szekeres theorem</h2>
+  <div class="statement-box">
+    <p>For positive integers \(m,n\), every sequence of \(mn+1\) distinct real
+      numbers contains an increasing subsequence of length \(m+1\) or a decreasing
+      subsequence of length \(n+1\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>If neither exists, every label lies in
+    \(\{1,\ldots,m\}\times\{1,\ldots,n\}\). This set has only \(mn\) elements,
+    whereas <a href="#distinct-labels">Distinct endpoint labels</a> supplies
+    \(mn+1\) different labels. The pigeonhole principle gives a contradiction.
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+</section>
+
+<section id="repeated-values" data-kind="question">
+  <h2>Can values repeat?</h2>
+  <p>Does <a href="#monotone-subsequence">Erdős–Szekeres theorem</a> remain true
+    for strictly monotone subsequences if repeated values are allowed?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. Take \(m=n=1\) and the sequence \(0,0\). Its length is \(mn+1=2\),
+        but it has no strictly increasing or strictly decreasing subsequence of length two.</p>
+    </div>
+  </details>
+</section>

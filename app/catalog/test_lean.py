@@ -97,7 +97,7 @@ class WebsiteWithoutMathlibTests(SimpleTestCase):
         self.assertFalse((self.root / 'formal/.lake').exists())
         output = StringIO()
         call_command('validate_corpus', stdout=output)
-        self.assertIn('Validated 2 entries', output.getvalue())
+        self.assertIn('Validated 3 entries', output.getvalue())
         for url in ('/', '/areas/combinatorics/additive-combinatorics/sumsets/',
                     '/entries/thm-sumset-lower-bound/', '/entries/thm-triple-sumset-lower-bound/'):
             with self.subTest(url=url):

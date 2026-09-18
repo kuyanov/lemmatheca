@@ -18,6 +18,7 @@ from .sources import ContentError, render_block
 
 FIRST = "thm-sumset-lower-bound"
 SECOND = "thm-triple-sumset-lower-bound"
+THIRD = "thm-erdos-szekeres"
 
 
 class CorpusSourceTests(SimpleTestCase):
@@ -59,7 +60,7 @@ class CorpusSourceTests(SimpleTestCase):
         order["areas"]["sumsets"].reverse()
         path.write_text(json.dumps(order))
         with override_settings(CORPUS_DIR=self.corpus):
-            self.assertEqual(list(entries()), [SECOND, FIRST])
+            self.assertEqual(list(entries()), [SECOND, FIRST, THIRD])
             response = self.client.get(
                 reverse("catalog:entry", args=[SECOND]))
             self.assertEqual(response.context["next_entry"]["id"], FIRST)
@@ -174,7 +175,7 @@ class CorpusSourceTests(SimpleTestCase):
             self.metadata.write_text(json.dumps(metadata))
             response = self.client.get(url)
             self.assertEqual(response.context['entry']['formalization']['status'], 'not_started')
-            self.assertContains(response, 'Not formalized')
+            self.assertContains(response, 'Formalization not started')
 
     def test_partial_formalizations_allow_missing_declarations(self):
         metadata = json.loads(self.metadata.read_text())
@@ -275,22 +276,69 @@ class CorpusSourceTests(SimpleTestCase):
                 if formal['is_mathlib']:
                     self.assertContains(viewer, 'github.com/leanprover-community/mathlib4/blob/')
 
-    def test_authors_license_and_optional_material_source_are_displayed(self):
+    def test_citations_display_compact_authors_titles_years_and_source_links(self):
         metadata = json.loads(self.metadata.read_text())
-        metadata['authors'] = ['Example Author', 'Second Author']
-        metadata['source'] = {'title': 'Original lecture notes', 'url': 'https://example.org/notes'}
+        metadata['based_on'] = [
+            {'authors': ['Example Author', 'Second Author'], 'title': 'Original lecture notes',
+             'url': 'https://example.org/notes', 'year': 2020, 'venue': 'Example Journal',
+             'volume': '2', 'issue': '3', 'pages': '4–5', 'doi': '10.1234/notes'},
+            {'authors': ['Third Author'], 'title': 'A printed source'}]
         self.metadata.write_text(json.dumps(metadata))
         with override_settings(CORPUS_DIR=self.corpus):
             response = self.client.get(reverse('catalog:entry', args=[FIRST]))
+            self.assertContains(response, 'Based on:', count=1)
             self.assertContains(response, 'Example Author, Second Author')
-            self.assertContains(response, 'https://spdx.org/licenses/Apache-2.0.html')
-            self.assertContains(response, 'https://example.org/notes')
+            self.assertContains(response, 'href="https://example.org/notes"')
+            self.assertContains(response, 'href="https://doi.org/10.1234/notes"')
             self.assertContains(response, 'Original lecture notes')
+            self.assertNotContains(response, 'Example Journal')
+            self.assertNotContains(response, 'p. 4–5.')
+            self.assertContains(response, '(2020)')
+            self.assertContains(response, 'A printed source')
+            self.assertNotContains(response, 'rel="license"')
             self.assertNotContains(response, 'Mathematical note')
-        metadata['source']['url'] = 'javascript:alert(1)'
-        self.metadata.write_text(json.dumps(metadata))
-        with self.assertRaisesRegex(ContentError, 'HTTP'):
-            self.load()
+
+    def test_original_entries_omit_the_bibliography(self):
+        with override_settings(CORPUS_DIR=self.corpus):
+            response = self.client.get(reverse('catalog:entry', args=[FIRST]))
+            self.assertNotContains(response, 'Based on:')
+            self.assertNotContains(response, 'entry-bibliography')
+
+    def test_invalid_citations_and_removed_entry_fields_are_rejected(self):
+        original = self.metadata.read_text()
+        citation = {'authors': ['An Author'], 'title': 'A paper'}
+        changes = [
+            {'based_on': None}, {'based_on': [None]},
+            *({'based_on': [{**citation, **change}]} for change in [
+                {'authors': []}, {'authors': 'An Author'}, {'title': ''},
+                {'year': True}, {'year': '1959'}, {'pages': 352},
+                {'doi': 'https://doi.org/10.1234/paper'}, {'doi': '10.1234/a b'},
+                {'url': 'javascript:alert(1)'}, {'url': '//example.org/paper'},
+                {'url': 'https://'}, {'unexpected': 'field'}]),
+            {'authors': ['An Author']}, {'license': 'Apache-2.0'},
+            {'source': {'title': 'Old source', 'url': 'https://example.org'}}]
+        for change in changes:
+            with self.subTest(change=change):
+                metadata = {**json.loads(original), **change}
+                self.metadata.write_text(json.dumps(metadata))
+                with self.assertRaises(ContentError):
+                    self.load()
+
+    def test_paper_example_is_entirely_unformalized(self):
+        with override_settings(CORPUS_DIR=self.corpus):
+            response = self.client.get(reverse('catalog:entry', args=[THIRD]))
+            entry = response.context['entry']
+            self.assertEqual(entry['formalization']['status'], 'not_started')
+            self.assertEqual(entry['formalization']['complete'], 0)
+            self.assertContains(response, 'Formalization not started', count=5)
+            self.assertContains(response, 'href="https://doi.org/10.1112/jlms/s1-34.3.352"')
+            self.assertNotContains(response, 'href="/lean/')
+            for block in entry['blocks']:
+                formal = block['formalization']
+                self.assertEqual(formal['status'], 'not_started')
+                for field in ('declaration', 'source', 'module', 'verification_report'):
+                    self.assertIsNone(formal[field])
+                self.assertEqual(formal['unformalized_dependencies'], [])
 
     def test_mathlib_declarations_do_not_require_a_local_proof(self):
         catalog = self.load()

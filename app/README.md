@@ -1,9 +1,17 @@
 # Web app
 
 A small, server-rendered Django site. It has 12 top-level areas, nested subareas,
-breadcrumbs, and two mathematical notes with locally rendered equations and an SVG
+breadcrumbs, and three mathematical notes with locally rendered equations and an SVG
 illustration. There is no browser framework, bundler, CDN, or remote font service.
 KaTeX loads only on mathematical article pages.
+
+For the current phase, the app is a reader and preview tool for AI-formalization
+experiments and a growing standard-mathematics corpus. It does not run models,
+measure their costs, or manage submissions. Public contribution features come
+later; see the [experiment plan](../docs/formalization-experiments.md).
+`DATABASES` is empty, and authentication, sessions, and admin are not installed.
+The only application routes are `/`, `/areas/<path>/`, `/entries/<id>/`, and
+`/lean/<source>/`; search and a public JSON API are not implemented.
 
 From the repository root, with Python 3.12–3.14 and uv installed:
 
@@ -20,6 +28,8 @@ including `formal/checks/` and `formal/lake-manifest.json`. Lean and the mathlib
 checkout are optional for serving pages. Formalization status uses the committed
 verification reports; a complete mathlib binding must have its declaration and
 source recorded there. Missing local Lemmatheca sources still fail validation.
+The reader does not compare all current source hashes with the report on every
+request. Regenerate reports after changing mathematics, bindings, or toolchain pins.
 
 `formal/.lake/` is ignored by Git, so `git pull` does not install mathlib. When a
 referenced mathlib file is absent, the Lean viewer shows its pinned GitHub link
@@ -34,7 +44,7 @@ development and production. `Development404Middleware` replaces Django's technic
 tracebacks for server errors remain available. Restart a server launched with
 `--noreload` after changing Python code or settings.
 
-Both examples are under **Combinatorics → Additive combinatorics → Sumsets**:
+The first two examples are under **Combinatorics → Additive combinatorics → Sumsets**:
 
 <http://127.0.0.1:8000/entries/thm-sumset-lower-bound/>
 
@@ -46,12 +56,22 @@ a question. Its final integer bound has a human proof and two pending helper
 statements, demonstrating partial formalization. Each type is numbered
 independently, starting at 1 in each note.
 
+**Finding a monotone subsequence**, under **Combinatorics → Extremal combinatorics**,
+explains Seidenberg's one-page Erdős–Szekeres proof. Its bibliography links the
+paper's DOI and an accessible exposition. All four blocks are **Formalization not
+started**, with no Lean code or mathlib bindings, reserving the work for a later
+cost measurement:
+
+<http://127.0.0.1:8000/entries/thm-erdos-szekeres/>
+
 References within a note show a local label such as **Lemma 1**. Cross-references
 show names such as **Sumset lower bound** and link directly to the result's stable
 anchor. A sticky return link leads back to the citing block. `from` and `at`
 accept only known entry/block IDs; invalid inputs fall back to the source note
 or the category. Returning to a question reopens its answer. Questions use native
 HTML `details`, so answers and navigation need no JavaScript.
+The top return bar appears only after following a reference; ordinary visits go
+straight from the breadcrumbs to the entry header. Bottom back links remain.
 
 At the bottom of a note, **Next entry** continues through its primary subarea in
 the same order as the category listing, recorded in `corpus/reading-order.json`.
@@ -61,6 +81,8 @@ from the contextual return link used by mathematical citations.
 The login and submit buttons open placeholder dialogs. They do not authenticate,
 collect data, or submit proofs. Complete blocks bind either to compiled local Lean declarations
 or existing mathlib declarations. The articles remain drafts awaiting maintainer review.
+Drafts are visible in this prototype; there is no publication gate or accepted-only
+catalog. Review and inclusion are currently manual repository operations.
 
 ## Editing
 
@@ -69,7 +91,7 @@ or existing mathlib declarations. The articles remain drafts awaiting maintainer
 | `corpus/taxonomy.json` | Area titles, descriptions, and parent relationships |
 | `corpus/reading-order.json` | Ordered entry IDs within each primary area |
 | `corpus/entries/<id>/entry.html` | Complete human note, with stable section IDs and LaTeX |
-| `corpus/entries/<id>/entry.json` | Authors, license, status, references, and Lean bindings |
+| `corpus/entries/<id>/entry.json` | Based-on citations, status, references, and Lean bindings |
 | `corpus/entries/<id>/assets/` | Entry-local images and supplementary files |
 | `app/catalog/content.py` | Corpus loading, validation, cache, and navigation |
 | `app/catalog/sources.py` | HTML parsing and contextual reference/asset rendering |
@@ -77,13 +99,16 @@ or existing mathlib declarations. The articles remain drafts awaiting maintainer
 | `app/catalog/metadata.py` | Metadata validation and derived formalization status |
 | `app/catalog/lean.py` | Lean source path validation and contextual viewer links |
 | `app/templates/catalog/entry.html` | Shared article layout, contents, numbering, navigation |
+| `app/templates/catalog/_bibliography.html`, `_citation.html` | Compact source citations and additional-source disclosure |
 | `app/templates/catalog/lean_file.html` | General Lean file viewer |
 | `app/static/css/site.css` | Shared responsive styles and print layout |
 | `app/static/js/math.js` | Math rendering configuration |
 | `app/static/vendor/katex/` | Pinned self-hosted KaTeX scripts, fonts, and license |
 
 The [entry authoring guide](../docs/entry-sources.md) explains the HTML and JSON
-format. Entry pages display authors, a linked license, optional source credits, and
+format. Entry pages display the first **Based on:** citation as authors, linked
+title, and year; further sources are collapsed. Full publication details remain
+in JSON. Entry pages also show
 a complete/partial/not-started formalization badge derived from every block.
 Question blocks use the answer’s status. There are no per-entry version fields or
 global external-lemma registry. Each block's `unformalized_dependencies` lists
@@ -133,3 +158,6 @@ checks local/mathlib bindings and axiom dependencies, then refreshes the reports
 Pending helpers are type-checked separately with `sorry` allowed; they are never
 included among complete proofs.
 The web app does not execute Lean on each request.
+The test suite uses Django's test runner; no separate pytest/Ruff or CI workflow
+is configured. Passing these checks validates the reader and formal bindings,
+not AI translation quality or correspondence with a book's proof strategy.
