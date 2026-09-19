@@ -117,9 +117,11 @@ references, include the source entry and block
 so a sticky return bar can go back precisely, reopening a question answer when
 needed. Bottom back links and same-area “Next entry” links remain available.
 Questions and verification details use native HTML disclosures. There is no
-browser application framework or build step. On desktop, the sticky outline wraps
-a separate scroll area whose height tracks the visible viewport. On narrow screens
-the outline stays in the normal page flow.
+browser application framework or build step. Entry breadcrumbs and the optional
+reference return bar share a sticky strip. Its measured height keeps anchor targets
+and the desktop outline clear of it. The outline starts alongside the entry header
+and wraps a separate scroll area whose height tracks the visible viewport.
+On narrow screens the outline stays in the normal page flow below the header.
 
 ## Formal verification and its limits
 

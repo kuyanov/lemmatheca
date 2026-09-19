@@ -8,8 +8,8 @@
 <script src="{% static 'js/math.js' %}" defer></script>
 {% endblock %}
 {% block content %}
-{% include "catalog/_breadcrumbs.html" %}
-<article class="proof-article" data-math>
+<div class="entry-navigation-bar">
+  {% include "catalog/_breadcrumbs.html" %}
   {% if return_entry %}
   <div class="reading-return">
     {% include "catalog/_entry_back.html" %}
@@ -18,17 +18,19 @@
     {% endif %}
   </div>
   {% endif %}
-  <header class="proof-header">
-    <div class="proof-meta"><span class="pill">{{ entry.status|title }}</span>
-      {% include "catalog/_formalization_badge.html" %}
-    </div>
-    <h1>{{ entry.title }}</h1>
-    {% include "catalog/_bibliography.html" %}
-    <p class="proof-deck">{{ entry.abstract }}</p>
-    <div class="reading-meta"><span>{{ entry.reading_time }} min read</span><span>{{ entry.contents_summary }}</span>
-    </div>
-  </header>
+</div>
+<article class="proof-article" data-math>
   <div class="proof-layout">
+    <header class="proof-header">
+      <div class="proof-meta"><span class="pill">{{ entry.status|title }}</span>
+        {% include "catalog/_formalization_badge.html" %}
+      </div>
+      <h1>{{ entry.title }}</h1>
+      {% include "catalog/_bibliography.html" %}
+      <p class="proof-deck">{{ entry.abstract }}</p>
+      <div class="reading-meta"><span>{{ entry.reading_time }} min read</span><span>{{ entry.contents_summary }}</span>
+      </div>
+    </header>
     <aside class="proof-outline">
       <nav class="outline-scroll" aria-label="In this entry" tabindex="0">
         <span class="eyebrow">In this entry</span>

@@ -57,7 +57,8 @@ read it. All blocks are **Formalization not started** for a later measured pass:
 
 <http://127.0.0.1:8000/entries/sets-and-maps/>
 
-Long entry outlines have a separate, keyboard-focusable scroll area on desktop.
+The contents menu starts beside the entry header on desktop. Long outlines have
+a separate, keyboard-focusable scroll area.
 Its height fits the visible viewport even near the page header; scrolling inside
 it does not scroll the article. On narrow screens the contents remain in page flow.
 
@@ -70,6 +71,9 @@ or the category. Returning to a question reopens its answer. Questions use nativ
 HTML `details`, so answers and navigation need no JavaScript.
 The top return bar appears only after following a reference; ordinary visits go
 straight from the breadcrumbs to the entry header. Bottom back links remain.
+Area breadcrumbs stay visible while scrolling an entry. When a reference return
+bar is present, it shares the sticky strip beneath them. The outline and anchor
+offsets follow the strip's height, including when its text wraps on a small screen.
 
 At the bottom of a note, **Next entry** continues through its primary subarea in
 the same order as the category listing, recorded in `corpus/reading-order.json`.

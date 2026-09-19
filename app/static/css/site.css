@@ -524,13 +524,14 @@ button {
 }
 
 .proof-article {
+  --anchor-offset: calc(var(--entry-nav-height, 48px) + 16px);
   max-width: 1000px;
   margin: 0 auto
 }
 
 .proof-header {
+  grid-area: header;
   max-width: 720px;
-  margin-left: 220px;
   padding: 24px 0;
 }
 
@@ -698,21 +699,24 @@ button {
 .proof-layout {
   display: grid;
   grid-template-columns: 175px minmax(0, 720px);
-  gap: 45px
+  grid-template-areas: "outline header" "outline body";
+  column-gap: 45px;
 }
 
 .proof-outline {
+  grid-area: outline;
   position: sticky;
-  top: 24px;
+  top: calc(var(--entry-nav-height, 48px) + 16px);
   align-self: start;
   min-height: 0;
+  margin-top: 24px;
 }
 
 .outline-scroll {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: var(--outline-height, calc(100dvh - 48px));
+  max-height: var(--outline-height, calc(100dvh - var(--entry-nav-height, 48px) - 40px));
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -745,6 +749,7 @@ button {
 }
 
 .proof-body {
+  grid-area: body;
   min-width: 0;
   font-family: var(--serif);
   font-size: 18px;
@@ -1096,15 +1101,22 @@ button {
   padding-top: 16px;
 }
 
-.reading-return {
+.entry-navigation-bar {
   position: sticky;
-  top: 8px;
-  z-index: 2;
+  top: 0;
+  z-index: 3;
+  background: var(--paper);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--line);
+}
+
+.reading-return {
+  max-width: 1000px;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 8px 12px;
-  margin-top: 12px;
+  margin: 12px auto 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1121,14 +1133,6 @@ button {
   font-size: 10px;
   color: var(--muted);
   margin: 0;
-}
-
-.reading-return~.proof-layout .proof-outline {
-  top: 80px;
-}
-
-.reading-return~.proof-layout .outline-scroll {
-  max-height: var(--outline-height, calc(100dvh - 104px));
 }
 
 .placeholder-dialog {
@@ -1214,13 +1218,9 @@ button {
     column-gap: 26px
   }
 
-  .proof-header {
-    margin-left: 180px
-  }
-
   .proof-layout {
     grid-template-columns: 145px minmax(0, 1fr);
-    gap: 35px
+    column-gap: 35px;
   }
 
   .proof-header h1 {
@@ -1370,6 +1370,10 @@ button {
     margin: 0 8px
   }
 
+  .entry-navigation-bar {
+    padding-bottom: 12px;
+  }
+
   .area-intro {
     padding: 24px 0;
   }
@@ -1419,13 +1423,12 @@ button {
 
   .proof-outline {
     position: static;
-    margin-bottom: 20px;
+    margin: 0 0 20px;
     border-top: 1px solid var(--line);
     padding-top: 12px;
   }
 
-  .outline-scroll,
-  .reading-return~.proof-layout .outline-scroll {
+  .outline-scroll {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-height: none;
@@ -1553,6 +1556,7 @@ button {
   .site-header,
   .site-footer,
   .breadcrumbs,
+  .entry-navigation-bar,
   .proof-outline,
   .header-actions,
   .back-link,

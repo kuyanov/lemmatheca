@@ -22,13 +22,17 @@ dialog.addEventListener("click", (event) => {
     event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
 });
 
-// Keep the contents scroll area inside the visible part of the viewport, even
-// before its sticky wrapper reaches the top. Native scrolling stays in the menu.
+// Keep the contents and anchor targets below the sticky area/return navigation.
 const outline = document.querySelector(".proof-outline");
+const entryNavigation = document.querySelector(".entry-navigation-bar");
 if (outline) {
   let scheduled = false;
   const fitOutline = () => {
     scheduled = false;
+    if (entryNavigation) {
+      document.documentElement.style.setProperty(
+        "--entry-nav-height", `${entryNavigation.getBoundingClientRect().height}px`);
+    }
     const available = window.innerHeight - Math.max(0, outline.getBoundingClientRect().top) - 24;
     outline.style.setProperty("--outline-height", `${Math.max(0, available)}px`);
   };
@@ -41,5 +45,6 @@ if (outline) {
   window.addEventListener("scroll", scheduleFit, { passive: true });
   window.addEventListener("resize", scheduleFit);
   window.addEventListener("load", scheduleFit);
+  if (entryNavigation) new ResizeObserver(scheduleFit).observe(entryNavigation);
   fitOutline();
 }
