@@ -54,18 +54,20 @@ References target individual blocks and retain a return link to the citing block
 The header shows a compact **Based on:** citation, with further sources collapsed.
 Formalization badges are derived from all blocks; source links open a Lean viewer.
 Equations, equation references, tables, and entry-local images are supported.
+Figures are numbered 1, 2, … in source order and can be referenced by stable anchors.
+Same-entry block and figure references also provide a sticky return bar.
 
-The three current entries illustrate different states:
+The active corpus currently contains **Sets and maps: a first guide**, under
+**Logic and foundations → Set theory**, based on Open Logic. Its 21 blocks remain
+`not_started` for a measured formalization pass.
 
-- **Sumsets and translations:** six complete bindings, using local Lean and mathlib.
-- **Adding three sets:** four complete blocks and a partial integer bound whose two
-  helper statements have unfinished (`sorry`) proofs.
-- **Finding a monotone subsequence:** four `not_started` blocks explaining
-  [Seidenberg's one-page Erdős–Szekeres proof](https://doi.org/10.1112/jlms/s1-34.3.352).
-  No Lean code or mathlib binding has been added; it is reserved for a measured experiment.
+The three earlier examples are preserved in `corpus/backup/` and are not listed
+or served as entries. Their Lean sources and historical verification report remain
+in `formal/`. `corpus/taxonomy.json` contains the working areas;
+`corpus/taxonomy_complete.json` preserves the broader taxonomy for later use.
 
-All three remain editorial drafts. Lean checks formal proofs; humans still check
-that those proofs express the intended mathematics. AI recommendations never
+The active entry is an editorial draft. Lean checks formal proofs; humans still
+check that those proofs express the intended mathematics. AI recommendations never
 replace a maintainer's decision to include a result.
 
 ## Run and check
@@ -86,11 +88,15 @@ uv run python app/manage.py validate_corpus
 uv run python app/manage.py test catalog
 ```
 
-With the [Lean environment](formal/README.md) installed, refresh verification with:
+When active entries have formal bindings, refresh verification with the
+[Lean environment](formal/README.md) installed:
 
 ```sh
 uv run python app/manage.py check_formalizations
 ```
+
+With the current unformalized entry, this command has no bindings to check and
+does not launch Lean. It excludes archived entries.
 
 A web-only checkout needs the tracked corpus, local Lean sources, reports, and
 Lake manifest, but does not need Lean or mathlib installed. If the ignored

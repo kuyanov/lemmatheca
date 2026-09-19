@@ -14,6 +14,16 @@ from django.core.management.base import CommandError
 from django.test import SimpleTestCase, override_settings
 
 from .metadata import formal_source_path
+from .testing import copy_test_corpus
+
+
+class ActiveFormalizationTests(SimpleTestCase):
+    def test_archived_bindings_do_not_launch_lean_or_refresh_reports(self):
+        output = StringIO()
+        with patch('catalog.management.commands.check_formalizations.subprocess.run') as lean:
+            call_command('check_formalizations', stdout=output)
+        lean.assert_not_called()
+        self.assertIn('No complete formalizations or pending dependencies to check.', output.getvalue())
 
 
 class FormalizationCommandTests(SimpleTestCase):
@@ -22,7 +32,7 @@ class FormalizationCommandTests(SimpleTestCase):
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
         self.corpus = self.root / 'corpus'
-        shutil.copytree(settings.CORPUS_DIR, self.corpus)
+        copy_test_corpus(self.corpus)
         self.complete = set()
         self.pending = set()
         paths = {settings.REPOSITORY_DIR / 'formal' / name for name in

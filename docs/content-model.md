@@ -24,9 +24,13 @@ Lemma 2, Theorem 1, Question 1. Display numbers are derived, never identifiers.
 Local references show these labels; cross-entry references show the result name.
 The reader returns to the citing block, reopening an answer when necessary.
 
-Equations have separate entry-local labels and numbers. Tables and diagrams are
+Equations and figures have separate entry-local labels and numbers. Figure links
+use stable HTML IDs and display their generated numbers; they are not mathematical
+block dependencies and do not belong in JSON `references`. Tables and diagrams are
 part of the human source. Assets stay in their entry folder. Categories form a
 browsing hierarchy, while reading order is stored explicitly by primary area.
+Only `corpus/entries/` and the working `taxonomy.json` are live inputs; archived
+notes in `corpus/backup/` and `taxonomy_complete.json` stay outside the reader.
 An entry's stable folder and `/entries/<id>/` URL do not encode its category.
 
 ## Formalization

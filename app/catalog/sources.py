@@ -77,12 +77,27 @@ def parse_source(source, bindings):
         raise ContentError(f"Unclosed <{parser.stack[-1].tag}>")
     from .equations import prepare_equations
     prepare_equations(parser.root)
+    figures = {}
+    for number, figure in enumerate((node for node in parser.root.walk() if node.tag == 'figure'), 1):
+        captions = [node for node in figure.children if isinstance(
+            node, Element) and node.tag == 'figcaption']
+        if len(captions) != 1:
+            raise ContentError('Each figure needs one figcaption')
+        caption = captions[0]
+        label = f'Figure {number}'
+        # Accept old hand-written labels, but derive the displayed number from order.
+        caption.children = [Element('span', {'class': 'figure-label'}, [label]), *[
+            child for child in caption.children if not (isinstance(child, Element)
+                                                        and 'figure-label' in child.attrs.get('class', '').split())]]
+        if figure.attrs.get('id'):
+            figures[figure.attrs['id']] = label
     ids = set()
     for node in parser.root.walk():
         if "id" in node.attrs:
             identifier = node.attrs["id"]
             if not identifier or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:-]*", identifier) or identifier in ids:
-                raise ContentError(f"Invalid or duplicate anchor: {identifier}")
+                raise ContentError(
+                    f"Invalid or duplicate anchor: {identifier}")
             ids.add(identifier)
     counts = Counter()
     blocks = []
@@ -90,10 +105,12 @@ def parse_source(source, bindings):
         if isinstance(node, str) and not node.strip():
             continue
         if not isinstance(node, Element) or node.tag != "section":
-            raise ContentError("Entry content must be inside top-level <section> blocks")
+            raise ContentError(
+                "Entry content must be inside top-level <section> blocks")
         block_id, kind = node.attrs.get("id"), node.attrs.get("data-kind")
         if not block_id or kind not in KINDS:
-            raise ContentError("Each section needs an id and a supported data-kind")
+            raise ContentError(
+                "Each section needs an id and a supported data-kind")
         headings = [child for child in node.children
                     if isinstance(child, Element) and child.tag == "h2"]
         if len(headings) != 1 or not headings[0].text().strip():
@@ -112,7 +129,7 @@ def parse_source(source, bindings):
         raise ContentError("Metadata refers to blocks absent from entry.html")
     if not blocks:
         raise ContentError("An entry must contain at least one block")
-    return blocks, ids, counts
+    return blocks, ids, counts, figures
 
 
 def reference_target(href, entry_id, catalog):
@@ -132,7 +149,8 @@ def reference_target(href, entry_id, catalog):
         raise ContentError(f"Broken source link: {href}")
     if url.fragment not in target["blocks_by_id"]:
         if target_id != entry_id:
-            raise ContentError(f"Cross-entry references must name a mathematical block: {href}")
+            raise ContentError(
+                f"Cross-entry references must name a mathematical block: {href}")
         return None
     return target, target["blocks_by_id"][url.fragment]
 
@@ -156,6 +174,7 @@ def render_block(block, entry, catalog, expanded_answer=None):
         children = node.children
         if node.tag == "a":
             href = attrs.get("href", "")
+            link = urlsplit(href)
             if href.startswith("assets/"):
                 relative = asset_path(entry["directory"], href)
                 attrs["href"] = static(f"entries/{entry['id']}/{relative}")
@@ -164,16 +183,21 @@ def render_block(block, entry, catalog, expanded_answer=None):
                 resolved = reference_target(href, entry["id"], catalog)
             if resolved:
                 target, result = resolved
-                url = f"#{result['id']}"
+                query = urlencode({"from": entry["id"], "at": block["id"]})
+                url = reverse("catalog:entry", args=[target["id"]])
+                url += f"?{query}#{result['id']}"
                 label = result["label"]
                 if target["id"] != entry["id"]:
-                    query = urlencode({"from": entry["id"], "at": block["id"]})
-                    url = reverse("catalog:entry", args=[target["id"]])
-                    url += f"?{query}#{result['id']}"
                     label = result["title"]
                 attrs.update(href=url, **{"class": "lemma-reference"},
                              title=f"{result['label']} — {result['title']} · {target['title']}")
                 children = [label]
+            elif not link.scheme and not link.netloc and link.fragment in entry['figures']:
+                figure_id = link.fragment
+                query = urlencode({"from": entry["id"], "at": block["id"]})
+                attrs.update(href=reverse('catalog:entry', args=[entry['id']]) + f'?{query}#{figure_id}',
+                             **{'class': 'figure-reference'})
+                children = [entry['figures'][figure_id]]
         if node.tag == "img":
             relative = asset_path(entry["directory"], attrs.get("src", ""))
             attrs["src"] = static(f"entries/{entry['id']}/{relative}")
@@ -186,7 +210,8 @@ def render_block(block, entry, catalog, expanded_answer=None):
         start = f"<{node.tag}{attributes}>"
         if node.tag in VOID_ELEMENTS:
             return start
-        html = start + ''.join(render(child) for child in children) + f"</{node.tag}>"
+        html = start + ''.join(render(child)
+                               for child in children) + f"</{node.tag}>"
         if node.tag == 'table':
             caption = next((child.text() for child in children
                             if isinstance(child, Element) and child.tag == 'caption'), 'Data table')

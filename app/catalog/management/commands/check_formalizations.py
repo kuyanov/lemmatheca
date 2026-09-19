@@ -85,8 +85,8 @@ class Command(BaseCommand):
              'module': dependency['module'], 'source': dependency['source']}
             for name, dependency in sorted(pending.items())
         ]
-        paths = set(settings.CORPUS_DIR.rglob('entry.json')) | set(
-            settings.CORPUS_DIR.rglob('entry.html'))
+        paths = {entry['directory'] / name for entry in catalog.values()
+                 for name in ('entry.json', 'entry.html')}
         paths.update(path for entry in catalog.values() for path in (entry['directory'] / 'assets').rglob('*')
                      if path.is_file())
         paths.update((formal_dir / 'Lemmatheca').rglob('*.lean'))

@@ -1,0 +1,446 @@
+<section id="sets-and-elements" data-kind="definition">
+  <h2>Sets and their elements</h2>
+  <p>Much of mathematics starts with two questions: which objects are we talking about, and how are they related?
+    Sets let us answer the first question. Maps, which we meet below, describe one way to connect the objects.</p>
+  <p>A <strong>set</strong> is a collection whose members, called its <strong>elements</strong>, are all that matter.
+    We write \(x\in A\) to say “\(x\) belongs to \(A\),” and \(x\notin A\) to say that it does not.
+    Curly brackets list the elements. For example, \(A=\{2,5,8\}\) has three elements.</p>
+  <p>Changing the order of a list or repeating an element does not change its set:</p>
+  <div class="math-display">\[ \{2,5,8\}=\{8,2,5\}=\{2,2,5,8\}. \]</div>
+  <p>This is a rule about sets, not about every kind of collection. A shopping list with “two apples” records
+    something a set of fruit names does not. Later, ordered pairs will also record information that a set loses.</p>
+  <p>We can describe a set by a condition instead of a list. The notation</p>
+  <div class="math-display">\[ E=\{n\in\mathbb N\mid n\text{ is even}\} \]</div>
+  <p>means: start with the natural numbers and keep precisely the even ones. Read the bar as “such that.”
+    Here and throughout these notes, \(\mathbb N=\{0,1,2,\ldots\}\), so \(0\in E\).
+    We use \(\mathbb Z\) for the integers and \(\mathbb R\) for the real numbers.</p>
+  <p>We will use sets as a working language. We do not need to decide how every mathematical object is built
+    from more basic ones. We do need to say what our objects are and apply the same rules consistently.
+    When we select objects by a condition, we select them from an already specified set. We do not assume
+    that there is a set containing absolutely everything.</p>
+</section>
+
+<section id="statements-and-conventions" data-kind="definition">
+  <h2>Notation and conventions</h2>
+  <table>
+    <caption>Symbols used in this entry</caption>
+    <thead>
+      <tr>
+        <th scope="col">Notation</th>
+        <th scope="col">Read it as</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>\(P\Rightarrow Q\)</td>
+        <td>If \(P\) holds, then \(Q\) holds.</td>
+      </tr>
+      <tr>
+        <td>\(P\Longleftrightarrow Q\)</td>
+        <td>\(P\) holds if and only if \(Q\) holds: both implications are claimed.</td>
+      </tr>
+      <tr>
+        <td>\(\forall x\in A,\ P(x)\)</td>
+        <td>Every element of \(A\) has property \(P\).</td>
+      </tr>
+      <tr>
+        <td>\(\exists x\in A,\ P(x)\)</td>
+        <td>At least one element of \(A\) has property \(P\).</td>
+      </tr>
+      <tr>
+        <td>\(\exists!x\in A,\ P(x)\)</td>
+        <td>Exactly one element of \(A\) has property \(P\).</td>
+      </tr>
+      <tr>
+        <td>\(X:=Y\)</td>
+        <td>We define \(X\) to mean \(Y\).</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>“Or” allows both alternatives unless we say otherwise. “There exists” does not mean “there exists exactly
+    one.” “If” gives one implication; “if and only if” gives two.</p>
+  <p>We use ordinary classical logic, including arguments by contradiction and the split into “a statement
+    holds” and “it does not hold.” This does not say that there is always a quick procedure for deciding which
+    case we are in.</p>
+  <p>Letters stand for arbitrary objects unless values are assigned to them. In a proof, “take \(x\in A\)”
+    means to consider any element satisfying that condition, without assuming extra properties of \(x\).
+    The arguments below concern finite and infinite sets alike unless finiteness is stated.</p>
+</section>
+
+<section id="subsets-and-equality" data-kind="definition">
+  <h2>Empty sets, subsets, and equality</h2>
+  <p>The <strong>empty set</strong>, written \(\varnothing\), has no elements. A <strong>singleton</strong>
+    \(\{a\}\) has exactly one element, namely \(a\).</p>
+  <p>We write \(A\subseteq B\), and say that \(A\) is a <strong>subset</strong> of \(B\), when every element
+    of \(A\) also belongs to \(B\). In symbols,</p>
+  <div class="math-display">\[ A\subseteq B\quad\Longleftrightarrow\quad
+    \forall x,\ (x\in A\Rightarrow x\in B). \]</div>
+  <p>Equality is allowed: \(A\subseteq A\). We write \(A\subsetneq B\) for a <strong>proper subset</strong>,
+    meaning \(A\subseteq B\) and \(A\ne B\). Some books use \(\subset\) with different meanings;
+    we use the two symbols above to avoid that ambiguity.</p>
+  <p>Membership and inclusion ask different questions. For example, \(2\in\{2,5\}\) says that the number
+    \(2\) is an element, while \(\{2\}\subseteq\{2,5\}\) compares two sets. The brackets matter.</p>
+  <p>Two sets are equal exactly when they have the same elements. This rule is called
+    <strong>extensionality</strong>. It tells us what counts as equality, even if the sets have very different
+    descriptions. For instance, \(\{n\in\mathbb N\mid n&lt;3\}=\{0,1,2\}\).
+  </p>
+  <p>The empty set is a subset of every set. To violate \(\varnothing\subseteq B\), we would need an element
+    of \(\varnothing\) that is missing from \(B\); there is no such element. More generally, a statement
+    about every element of an empty set is true because there is no element for which it can fail.
+    A statement asserting the existence of an element of an empty set is false.</p>
+</section>
+
+<section id="two-inclusions" data-kind="lemma">
+  <h2>Proving equality by two inclusions</h2>
+  <div class="statement-box">
+    <p>For sets \(A,B\),</p>
+    <div class="math-display">\[ A=B\quad\Longleftrightarrow\quad A\subseteq B\text{ and }B\subseteq A. \]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>If \(A=B\), either set has all the elements of the other, so both inclusions hold.
+    Conversely, if both inclusions hold, an object belongs to \(A\) exactly when it belongs to \(B\).
+    The equality rule in <a href="#subsets-and-equality">Empty sets, subsets, and equality</a> then gives
+    \(A=B\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This is a useful proof pattern: start with an element of the left-hand set and show that it belongs to
+    the right-hand set, then reverse the roles. Another way to write the same reasoning is a chain of
+    “if and only if” statements about membership.</p>
+  <p>Inclusion is also <strong>transitive</strong>: if \(A\subseteq B\) and \(B\subseteq C\), then
+    \(A\subseteq C\). Indeed, an element of \(A\) first belongs to \(B\), and therefore to \(C\).</p>
+</section>
+
+<section id="empty-or-singleton" data-kind="question">
+  <h2>Is a set containing the empty set empty?</h2>
+  <p>Are \(\varnothing\) and \(\{\varnothing\}\) equal? Is
+    \(\varnothing\in\{\varnothing\}\)? Is \(\varnothing\subseteq\{\varnothing\}\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>They are not equal. The first has no elements; the second has one element, which happens to be
+        the empty set. Thus \(\varnothing\in\{\varnothing\}\) is true. The inclusion is also true,
+        for a different reason: the empty set is a subset of every set.</p>
+      <p>A set can itself be an element of another set. Thinking of an empty box inside a box can help here:
+        the outer box is not empty. The boxes are only a picture; the membership statements give the precise answer.</p>
+    </div>
+  </details>
+</section>
+
+<section id="set-operations" data-kind="definition">
+  <h2>Combining and removing elements</h2>
+  <p>Let \(A,B\) be subsets of a fixed set \(U\), which specifies the objects under discussion.</p>
+  <table>
+    <caption>Four operations on sets</caption>
+    <thead>
+      <tr>
+        <th scope="col">Set</th>
+        <th scope="col">Which elements belong?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Union \(A\cup B\)</td>
+        <td>Those in \(A\), in \(B\), or in both.</td>
+      </tr>
+      <tr>
+        <td>Intersection \(A\cap B\)</td>
+        <td>Those in both \(A\) and \(B\).</td>
+      </tr>
+      <tr>
+        <td>Difference \(A\setminus B\)</td>
+        <td>Those in \(A\) that are not in \(B\).</td>
+      </tr>
+      <tr>
+        <td>Complement \(A^c:=U\setminus A\)</td>
+        <td>Those in \(U\) that are not in \(A\).</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>For \(U=\{0,1,2,3,4\}\), \(A=\{0,2\}\), and \(B=\{2,3\}\), these are</p>
+  <div class="math-display">\[ A\cup B=\{0,2,3\},\qquad A\cap B=\{2\}, \]</div>
+  <div class="math-display">\[ A\setminus B=\{0\},\qquad A^c=\{1,3,4\}. \]</div>
+  <p>The complement depends on \(U\). With the same \(A\) inside \(\mathbb N\), its complement would
+    contain \(5,6,7,\ldots\) as well. We state the surrounding set when it is not clear from context.</p>
+  <p>Two sets are <strong>disjoint</strong> when their intersection is empty. This says they share no
+    elements; it does not require either of them to be empty. For example, \(\{0,2\}\) and \(\{1,3\}\)
+    are disjoint.</p>
+</section>
+
+<section id="set-identities" data-kind="lemma">
+  <h2>Working out identities from membership</h2>
+  <p>For subsets \(A,B,C\) of the same set \(U\), we have</p>
+  <div class="math-display">\[ A\cap(B\cup C)=(A\cap B)\cup(A\cap C), \]</div>
+  <div class="math-display">\[ (A\cup B)^c=A^c\cap B^c,\qquad (A\cap B)^c=A^c\cup B^c. \]</div>
+  <p>The first is a <strong>distributive law</strong>. The other two are <strong>De Morgan’s laws</strong>.</p>
+  <p class="proof-label">Proof</p>
+  <p>An element belongs to \(A\cap(B\cup C)\) exactly when it belongs to \(A\) and to at least one of
+    \(B,C\). That is exactly the condition for membership in \((A\cap B)\cup(A\cap C)\).
+    Use <a href="#two-inclusions">Proving equality by two inclusions</a>.</p>
+  <p>An element of \(U\) is outside \(A\cup B\) exactly when it is outside both \(A\) and \(B\).
+    This proves the second identity. It is outside \(A\cap B\) exactly when at least one of the two
+    membership conditions fails. This proves the third. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The same method explains \(A\cup B=B\cup A\), \(A\cap B=B\cap A\),
+    \(A\cup\varnothing=A\), and \(A\cap\varnothing=\varnothing\). Read each equality as a statement
+    about one arbitrary element.</p>
+</section>
+
+<section id="power-sets" data-kind="definition">
+  <h2>Sets whose elements are subsets</h2>
+  <p>The <strong>power set</strong> of \(A\), written \(\mathcal P(A)\), is the set of all subsets of
+    \(A\). Its defining rule is</p>
+  <div class="math-display">\[ S\in\mathcal P(A)\quad\Longleftrightarrow\quad S\subseteq A. \]</div>
+  <p>For example,</p>
+  <div class="math-display">\[ \mathcal P(\{0,1\})=\{\varnothing,\{0\},\{1\},\{0,1\}\}. \]</div>
+  <p>This power set has four elements, each of which is a set. In particular, \(\{0\}\) is an element of
+    the power set. Also, \(\varnothing\) and \(A\) always belong to \(\mathcal P(A)\), because both
+    are subsets of \(A\). If \(A=\varnothing\), these are the same subset, and
+    \(\mathcal P(\varnothing)=\{\varnothing\}\).</p>
+</section>
+
+<section id="families-of-sets" data-kind="definition">
+  <h2>Unions and intersections of a family</h2>
+  <p>Sometimes we have many sets, labelled by elements of an <strong>index set</strong> \(I\).
+    A <strong>family</strong> \((A_i)_{i\in I}\) gives a set \(A_i\) for each label \(i\).
+    Different labels are allowed to give the same set.</p>
+  <p>Suppose every \(A_i\) is a subset of a fixed \(U\). We define</p>
+  <div class="math-display">\[ \bigcup_{i\in I}A_i=\{x\in U\mid \exists i\in I,\ x\in A_i\}, \]</div>
+  <div class="math-display">\[ \bigcap_{i\in I}A_i=\{x\in U\mid \forall i\in I,\ x\in A_i\}. \]</div>
+  <p>The union asks for membership in at least one set; the intersection asks for membership in every set.
+    With \(A_n=\{0,1,\ldots,n\}\) for \(n\in\mathbb N\), the union is \(\mathbb N\) and the
+    intersection is \(\{0\}\). Every natural number appears eventually, but only zero appears in every set.</p>
+  <p>These definitions also settle an empty family. If \(I=\varnothing\), its union is empty: there is
+    no index witnessing membership. Its intersection is \(U\): every \(x\in U\) satisfies all the
+    membership requirements, because there are no requirements. The specified \(U\) is essential here.</p>
+</section>
+
+<section id="pairs-and-relations" data-kind="definition">
+  <h2>Ordered pairs and relations</h2>
+  <p>An <strong>ordered pair</strong> \((a,b)\) records a first and a second component. Its equality rule is</p>
+  <div class="math-display">\[ (a,b)=(a',b')\quad\Longleftrightarrow\quad a=a'\text{ and }b=b'. \]</div>
+  <p>Thus \((0,1)\ne(1,0)\), even though \(\{0,1\}=\{1,0\}\). The <strong>Cartesian product</strong>
+    \(A\times B\) is the set of all pairs \((a,b)\) with \(a\in A\) and \(b\in B\). For example,</p>
+  <div class="math-display">\[ \{0,1\}\times\{p,q\}=\{(0,p),(0,q),(1,p),(1,q)\}. \]</div>
+  <p>If either factor is empty, so is the product: there is no possible pair. We use ordered pairs by their
+    components; we will not need a particular construction of a pair from sets.</p>
+  <p>A <strong>relation</strong> from \(A\) to \(B\) is a subset \(R\subseteq A\times B\).
+    It specifies which pairs are related. We write \(a\,R\,b\) for \((a,b)\in R\).
+    For instance, on \(\{0,1,2\}\), the relation “is less than” consists of
+    \(\{(0,1),(0,2),(1,2)\}\).</p>
+  <p>A relation may connect one input to several outputs, or to none. A map has a more specific requirement.</p>
+</section>
+
+<section id="maps" data-kind="definition">
+  <h2>Maps, inputs, and outputs</h2>
+  <p>A <strong>map</strong>, or <strong>function</strong>, \(f:A\to B\) assigns to each \(x\in A\)
+    exactly one value \(f(x)\in B\). The set \(A\) is its <strong>domain</strong> and \(B\) its
+    <strong>codomain</strong>. We treat both as part of the specified map.
+  </p>
+  <p>There are two requirements: every allowed input gets an output, and no input gets two different
+    outputs. Different inputs may have the same output. Some elements of the codomain may never be reached.</p>
+  <figure id="map-picture" class="proof-figure">
+    <div class="figure-image"><img src="assets/map.svg" width="720" height="300"
+        alt="A map from A = {0, 1, 2} to B = {p, q, r}. The arrows send 0 to p, 1 to q, and 2 to q. No arrow reaches r.">
+    </div>
+    <figcaption>Every input has one arrow. Two arrows may reach
+      \(q\), while \(r\) receives none.</figcaption>
+  </figure>
+  <p>A map can be given by a table, a formula, or a description that determines its values. It need not
+    come with a practical recipe for calculating them. In <a href="#map-picture">Figure</a>, the whole map is specified
+    by
+    \(f(0)=p\), \(f(1)=q\), and \(f(2)=q\).</p>
+  <p>The <strong>graph</strong> of \(f\) is \(\{(x,f(x))\mid x\in A\}\), a relation with exactly
+    one output for each input. Here it is \(\{(0,p),(1,q),(2,q)\}\).
+    Saying that a relation is a function means that it has this existence-and-uniqueness property.</p>
+  <p>Maps \(f,g:A\to B\) are equal when \(f(x)=g(x)\) for every \(x\in A\).
+    The formulas \(f(x)=2(x+1)\) and \(g(x)=2x+2\) therefore define the same map \(\mathbb R\to\mathbb R\).
+    Different formulas need not mean different maps.</p>
+</section>
+
+<section id="formula-question" data-kind="question">
+  <h2>Does a formula always define a map?</h2>
+  <p>Do the instructions \(f(x)=1/x\) and “let \(g(x)\) be a real number whose square is \(x\)”
+    define maps \(\mathbb R\to\mathbb R\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. The first gives no real output at zero. It does define a map
+        \(\mathbb R\setminus\{0\}\to\mathbb R\).</p>
+      <p>The second has two problems. Negative inputs have no real output, and positive inputs have two
+        possible outputs: at \(x=4\), both \(2\) and \(-2\) fit. Restricting to nonnegative inputs
+        and requiring the nonnegative square root gives a well-defined map
+        \([0,\infty)\to[0,\infty)\). Here \([0,\infty)=\{x\in\mathbb R\mid x\geq0\}\).</p>
+      <p>Specifying a domain and codomain and checking that the output exists and is unique are part of
+        defining a map, not details to fill in after using it.</p>
+    </div>
+  </details>
+</section>
+
+<section id="composition" data-kind="definition">
+  <h2>Composition and identity maps</h2>
+  <p>If \(f:A\to B\) and \(g:B\to C\), their <strong>composition</strong> is the map
+    \(g\circ f:A\to C\) defined by</p>
+  <div class="math-display">\[ (g\circ f)(x):=g(f(x)). \]</div>
+  <p>Apply \(f\) first, then \(g\): the rightmost map acts first.
+    The declared codomain of \(f\) here is the domain of \(g\), so every intermediate value is an
+    allowed input. More generally, composition makes sense whenever all values of the first map lie
+    in the domain of the second.</p>
+  <p>For maps of the real numbers given by \(f(x)=x+1\) and \(g(x)=2x\),</p>
+  <div class="math-display">\[ (g\circ f)(x)=2x+2,\qquad (f\circ g)(x)=2x+1. \]</div>
+  <p>The order matters. For maps between different sets, the reverse composition may not even be defined.</p>
+  <p>The <strong>identity map</strong> on \(A\), written \(\operatorname{id}_A:A\to A\), leaves
+    every element where it is: \(\operatorname{id}_A(x)=x\). If \(S\subseteq A\), the
+    <strong>restriction</strong> \(f|_S:S\to B\) keeps the values of \(f\) but allows only inputs in \(S\).
+  </p>
+</section>
+
+<section id="composition-laws" data-kind="lemma">
+  <h2>Regrouping compositions</h2>
+  <div class="statement-box">
+    <p>For \(f:A\to B\), \(g:B\to C\), and \(h:C\to D\),</p>
+    <div class="math-display">\[ (h\circ g)\circ f=h\circ(g\circ f). \]</div>
+    <p>Also, \(\operatorname{id}_B\circ f=f=f\circ\operatorname{id}_A\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>At any \(x\in A\), both regroupings have value \(h(g(f(x)))\). The maps are equal because
+    their values agree at every input. Composing with either indicated identity map gives \(f(x)\)
+    at each input, which proves the remaining equalities.
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>This is <strong>associativity</strong>: brackets can move, but the order of the maps stays fixed.
+    It does not contradict the example in <a href="#composition">Composition and identity maps</a>.</p>
+</section>
+
+<section id="images-and-preimages" data-kind="definition">
+  <h2>Images and preimages</h2>
+  <p>Let \(f:A\to B\). For \(S\subseteq A\), its <strong>image</strong> is the set of outputs
+    reached from \(S\):</p>
+  <div class="math-display">\[ f(S):=\{f(x)\mid x\in S\}\subseteq B. \]</div>
+  <p>For \(T\subseteq B\), its <strong>preimage</strong> is the set of inputs whose outputs lie in \(T\):</p>
+  <div class="math-display">\[ f^{-1}(T):=\{x\in A\mid f(x)\in T\}\subseteq A. \]</div>
+  <p>We use \(f(x)\) for the value at an element and \(f(S)\) for the image of a subset; the context tells
+    them apart. Other texts use \(f[S]\) for the latter. The <strong>image of the map</strong>, also
+    called its <strong>range</strong>, is \(f(A)\). Its codomain is still \(B\), even if \(f(A)\ne B\).</p>
+  <p>For the map in <a href="#maps">Maps, inputs, and outputs</a>,</p>
+  <div class="math-display">\[ f(\{1,2\})=\{q\},\qquad f^{-1}(\{q\})=\{1,2\},\qquad f^{-1}(\{r\})=\varnothing. \]</div>
+  <p>The set \(f^{-1}(\{y\})\) is the <strong>fiber over \(y\)</strong>: all inputs giving that one
+    output. A preimage is defined for every map. The notation \(f^{-1}(T)\) does not assert
+    that an inverse map exists. In the example, there is no way to recover a unique input from \(q\).</p>
+</section>
+
+<section id="preimage-laws" data-kind="theorem">
+  <h2>Preimages preserve set operations</h2>
+  <div class="statement-box">
+    <p>For \(f:A\to B\) and subsets \(T,V\subseteq B\),</p>
+    <div class="math-display">\[ f^{-1}(T\cup V)=f^{-1}(T)\cup f^{-1}(V), \]</div>
+    <div class="math-display">\[ f^{-1}(T\cap V)=f^{-1}(T)\cap f^{-1}(V), \]</div>
+    <div class="math-display">\[ f^{-1}(B\setminus T)=A\setminus f^{-1}(T). \]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Take \(x\in A\). Belonging to the preimage of \(T\cup V\) means that \(f(x)\) lies in
+    at least one of \(T,V\). This says exactly that \(x\) lies in at least one of their preimages.</p>
+  <p>For intersection, replace “at least one” by “both.” For complement, \(f(x)\in B\setminus T\)
+    means precisely \(f(x)\notin T\), since \(f(x)\) already belongs to \(B\). This is equivalent
+    to \(x\notin f^{-1}(T)\). In each case, the two sides have the same elements.
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>Notice which set supplies each complement: \(B\) on the output side, and \(A\) on the input side.
+    We also have \(f^{-1}(\varnothing)=\varnothing\) and \(f^{-1}(B)=A\).
+    These rules hold for every map.</p>
+</section>
+
+<section id="image-intersection-question" data-kind="question">
+  <h2>Do images behave in the same way?</h2>
+  <p>For a map \(f:A\to B\) and subsets \(S,T\subseteq A\), are both of these identities always true?</p>
+  <div class="math-display">\[ f(S\cup T)=f(S)\cup f(T),\qquad f(S\cap T)=f(S)\cap f(T). \]</div>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The union identity is true. An output reached from \(S\cup T\) is reached from at least one of
+        \(S,T\), and conversely.</p>
+      <p>For intersection, only \(f(S\cap T)\subseteq f(S)\cap f(T)\) always holds: an input in both
+        sets gives an output in both images. But the same output can also come from different inputs.</p>
+      <p>Use the map in <a href="#maps">Maps, inputs, and outputs</a>, with \(S=\{1\}\) and \(T=\{2\}\).
+        The sets are disjoint, so \(f(S\cap T)=\varnothing\). Both images are \(\{q\}\), so their
+        intersection is \(\{q\}\). This is a counterexample to the second identity.</p>
+    </div>
+  </details>
+</section>
+
+<section id="kinds-of-maps" data-kind="definition">
+  <h2>Injective, surjective, and bijective maps</h2>
+  <p>These three words describe whether inputs can merge and whether outputs can be missed.</p>
+  <ul>
+    <li>A map \(f:A\to B\) is <strong>injective</strong>, or <strong>one-to-one</strong>, if
+      \(f(x)=f(x')\) implies \(x=x'\). Different inputs have different outputs.
+      Equivalently, each fiber has at most one element.</li>
+    <li>It is <strong>surjective</strong>, or <strong>onto</strong>, if every \(y\in B\) equals
+      \(f(x)\) for some \(x\in A\). Equivalently, \(f(A)=B\), or every fiber is nonempty.</li>
+    <li>It is <strong>bijective</strong> if it is both: each \(y\in B\) has exactly one input mapping to it.</li>
+  </ul>
+  <p>The map in <a href="#map-picture">Figure</a> is neither injective nor surjective: \(1\) and \(2\) both go to \(q\),
+    and \(r\) is missed. The map \(n\mapsto n+1\) from \(\mathbb N\) to \(\mathbb N\) is injective,
+    but not surjective, because it misses zero. The map \(x\mapsto x+1\) from \(\mathbb R\) to
+    \(\mathbb R\) is bijective: the unique input for \(y\) is \(y-1\).</p>
+  <p>The codomain matters. The squaring map \(x\mapsto x^2\) from \(\mathbb R\) to \(\mathbb R\)
+    is not surjective, but the same formula from \(\mathbb R\) to \([0,\infty)\) is surjective.
+    Neither map is injective, since \(1\) and \(-1\) have the same square.</p>
+  <p>In the phrase “one-to-one,” the extra condition is that an output cannot come from two different
+    inputs. Having one output for each input was already required of every map.</p>
+</section>
+
+<section id="image-preimage-round-trips" data-kind="lemma">
+  <h2>Going forward and back</h2>
+  <p>For \(f:A\to B\), \(S\subseteq A\), and \(T\subseteq B\),</p>
+  <div class="math-display">\[ S\subseteq f^{-1}(f(S)),\qquad f(f^{-1}(T))=T\cap f(A). \]</div>
+  <p class="proof-label">Proof</p>
+  <p>If \(x\in S\), then \(f(x)\in f(S)\), which places \(x\) in \(f^{-1}(f(S))\).
+    Other inputs may also land in the same image, so this inclusion can be strict.</p>
+  <p>An element of \(f(f^{-1}(T))\) is an output \(f(x)\) that belongs to \(T\). It therefore lies
+    in both \(T\) and \(f(A)\). Conversely, if \(y\) lies in both, write \(y=f(x)\) using its
+    membership in \(f(A)\). Since \(y\in T\), this \(x\) lies in \(f^{-1}(T)\), giving the
+    reverse inclusion. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>If \(f\) is injective, the first inclusion is equality: from \(f(x)=f(s)\) with \(s\in S\),
+    injectivity gives \(x=s\in S\). If \(f\) is surjective, the second identity becomes
+    \(f(f^{-1}(T))=T\), since \(f(A)=B\).</p>
+</section>
+
+<section id="inverse-maps" data-kind="theorem">
+  <h2>When a map can be reversed</h2>
+  <p>An <strong>inverse</strong> of \(f:A\to B\) is a map \(g:B\to A\) satisfying both</p>
+  <div class="math-display">\[ g\circ f=\operatorname{id}_A,\qquad f\circ g=\operatorname{id}_B. \]</div>
+  <div class="statement-box">
+    <p>A map has an inverse if and only if it is bijective. When an inverse exists,
+      it is unique.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(g\) is an inverse. If \(f(x)=f(x')\), applying \(g\) gives \(x=x'\), so \(f\)
+    is injective. Every \(y\in B\) equals \(f(g(y))\), so \(f\) is surjective.</p>
+  <p>Conversely, if \(f\) is bijective, each \(y\in B\) has exactly one input \(x\) with \(f(x)=y\).
+    Define \(g(y)\) to be that input. Then \(f(g(y))=y\). Also, \(x\) is the unique input for
+    \(f(x)\), so \(g(f(x))=x\). Thus both inverse identities hold. Any inverse must send \(y\)
+    to its unique input, which also proves uniqueness.
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>The inverse map is written \(f^{-1}\). This notation now names a map, whereas the preimage notation
+    in <a href="#images-and-preimages">Images and preimages</a> always names a set when applied to a subset.
+    For a bijection the notations agree: the preimage of \(T\) is the image of \(T\) under the inverse map.</p>
+  <p>Checking just one of the two identities is not enough. On \(\mathbb N\), let \(f(n)=n+1\), and
+    let \(g(0)=0\), \(g(n+1)=n\). Then \(g\circ f=\operatorname{id}_{\mathbb N}\), but
+    \(f(g(0))=1\ne0\). The missed output zero prevents \(f\) from having an inverse.</p>
+</section>
+
+<section id="empty-maps-question" data-kind="question">
+  <h2>What if the domain is empty?</h2>
+  <p>For a fixed set \(B\), how many maps \(\varnothing\to B\) are there? Can a nonempty set map
+    to \(\varnothing\)? Is the map \(\varnothing\to\varnothing\) bijective?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>There is exactly one map \(\varnothing\to B\): it has no input-output pairs. No values need
+        to be assigned, and any two such maps agree at every input because there are none.</p>
+      <p>There is no map from a nonempty set to \(\varnothing\). An element of its domain would need
+        an output, and the codomain has no elements to supply one.</p>
+      <p>The empty-domain map is always injective. It is surjective exactly when \(B\) is empty.
+        In particular, the unique map \(\varnothing\to\varnothing\) is bijective and is its own inverse.
+        Empty cases fit the definitions; we do not need a separate exception for them.</p>
+    </div>
+  </details>
+</section>

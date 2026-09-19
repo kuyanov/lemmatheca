@@ -36,7 +36,9 @@ lemmatheca/
 │   ├── templates/                  # Shared Django layout and reader pages
 │   └── static/                     # CSS, small JS, self-hosted vendor/katex
 ├── corpus/
-│   ├── taxonomy.json
+│   ├── taxonomy.json              # Working subjects only
+│   ├── taxonomy_complete.json     # Broader taxonomy, not loaded by the reader
+│   ├── backup/<entry-id>/          # Archived examples, not served as entries
 │   ├── reading-order.json
 │   └── entries/<entry-id>/
 │       ├── entry.json              # Identity, bibliography, areas, blocks and bindings
@@ -74,14 +76,17 @@ an entry between subjects does not require moving either its folder or its proof
 1. `catalog.content` reads taxonomy, reading order, and each entry's HTML/JSON.
    It validates metadata, assets, mathematical references, and formal bindings.
 2. The HTML parser derives block kinds, titles, order, local numbering, and equation
-   labels. Metadata supplies citations, reading information, references, and
+   labels, plus figure numbers and links. Metadata supplies citations, reading information, references, and
    formalization records. There is one editable source for each item.
 3. Views render the parsed content through shared Django templates. KaTeX runs in
    the browser on entry pages; no AI or Lean process runs during a page request.
-4. Editing a corpus file invalidates the catalog cache. Entry assets are registered
+4. Editing an active entry, taxonomy, or reading-order file invalidates the catalog cache. Entry assets are registered
    with Django staticfiles at startup; adding a new asset directory needs a restart.
 
-The reader lists all entries, including drafts. Primary areas determine listings
+The reader lists entries under `corpus/entries/`, including drafts. It currently
+contains only **Sets and maps: a first guide**, under **Logic and foundations →
+Set theory**. `corpus/backup/` and `taxonomy_complete.json` are not live inputs;
+regression tests use temporary copies of the archived examples. Primary areas determine listings
 and “Next entry” order. Additional areas are stored but do not currently create
 extra listings. Editorial status is descriptive metadata, not a permission gate.
 The parser accepts trusted repository content; it is not a public-upload sanitizer.
@@ -107,11 +112,14 @@ submission buttons open placeholder dialogs. Missing HTML routes use the custom
 
 The header shows authors, linked title, and year for the first **Based on:**
 citation, with further sources in a native HTML disclosure. Direct entry visits
-have no top back button. Cross-entry references include the source entry and block
+have no top back button. Local and cross-entry block references, and local figure
+references, include the source entry and block
 so a sticky return bar can go back precisely, reopening a question answer when
 needed. Bottom back links and same-area “Next entry” links remain available.
 Questions and verification details use native HTML disclosures. There is no
-browser application framework or build step.
+browser application framework or build step. On desktop, the sticky outline wraps
+a separate scroll area whose height tracks the visible viewport. On narrow screens
+the outline stays in the normal page flow.
 
 ## Formal verification and its limits
 
@@ -123,6 +131,8 @@ Unproved helper statements are explicit local Lean bindings under
 
 `check_formalizations` validates the corpus, builds the main library and bound
 modules, and checks complete declarations and their transitive axiom dependencies.
+Archived entries are excluded. With the current unformalized entry there is nothing
+to check, so the command does not launch Lean or overwrite old reports.
 Only `propext`, `Classical.choice`, and `Quot.sound` are allowed for complete proofs.
 Pending helper statements are checked separately and may use `sorryAx`. Reports
 record bindings, hashes, axiom lists, and environment pins. The command does not

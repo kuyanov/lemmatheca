@@ -125,7 +125,7 @@ author-maintained, not automatically extracted from a proof term.
 The list can also accompany `not_started`; a nonempty list always prevents
 completion, but an empty list alone never establishes it. Removing obligations
 still requires a complete binding and a passing check before setting `complete`.
-The integer bound in **Adding three sets** demonstrates a partial block with two
+The integer bound in the archived **Adding three sets** example demonstrates a partial block with two
 pending statements with `sorry`; the main theorem has no complete Lean proof.
 
 The entry badge is derived from **all** blocks, including definitions and question
@@ -133,7 +133,7 @@ answers: all complete → complete; all not started → not started; every other
 combination → partial. A question's status describes its answer or counterexample.
 A complete formalization does not imply editorial publication or human approval.
 
-**Finding a monotone subsequence**, based on Seidenberg's one-page paper and
+The archived **Finding a monotone subsequence** example, based on Seidenberg's one-page paper and
 Björner–Stanley's exposition, is reserved for a later formalization-cost experiment.
 All four blocks use `not_started`, with null declaration/module/source/report
 fields and an empty dependency list. It has no Lean file or mathlib binding.
@@ -154,6 +154,11 @@ Supported kinds are `definition`, `lemma`, `theorem`, and `question`. Display
 numbers follow source order separately for each kind. The application provides
 the page shell, contents, numbered headings, badges, and navigation. Use
 `<details class="question-answer">` for collapsible answers.
+
+These labels have the same meaning across the library: a definition fixes a term
+or symbol, a theorem states a proved result, and a lemma is a result used in another
+argument. A question poses a problem; its answer may contain a proof or a
+counterexample. Do not repeat this glossary in individual entries.
 
 Inline math uses `\(...\)`; display math uses `\[...\]`. HTML entities such as
 `&lt;` and `&amp;` preserve less-than signs and LaTeX alignment separators. Aligned
@@ -188,7 +193,27 @@ Ordinary tables, captions, headers, lists, emphasis, and images are supported:
 
 Tables receive a keyboard-focusable scrolling container, keeping wide tables
 inside the reading column. Math works in cells and captions. The first example
-contains a real table and a labelled equation as rendering baselines.
+in `corpus/backup/` contains a table and a labelled equation as rendering baselines.
+
+## Figures
+
+Give each figure a stable ID and one caption. The reader inserts **Figure 1**,
+**Figure 2**, … in source order; do not write a number in the source:
+
+```html
+<figure id="map-picture" class="proof-figure">
+  <div class="figure-image">
+    <img src="assets/map.svg" alt="A map from three inputs to two outputs" width="720" height="300">
+  </div>
+  <figcaption>Every input has one output.</figcaption>
+</figure>
+<p>The map in <a href="#map-picture">Figure</a> misses one element of its codomain.</p>
+```
+
+The link text becomes **Figure 1** automatically, including in forward references.
+A missing target fails validation. Figure references stay within the entry and
+are not block dependencies, so they need no JSON `references` record. They provide
+a return link to the citing block, just like mathematical references.
 
 ## Links, assets, and reading order
 
@@ -200,17 +225,21 @@ contains a real table and a labelled equation as rendering baselines.
 ```
 
 Local mathematical links receive local numbers; cross-entry links show the result
-name and record the source block for the return link. IDs stay fixed when titles
+name. Both record the source block for the return link. IDs stay fixed when titles
 or categories change. Reader URLs use `/entries/<id>/`.
-Direct visits have no top back button. Following a cross-entry reference shows
-the sticky return bar; bottom navigation remains available in either case.
+Direct visits have no top back button. Following a block reference, including one
+within the same entry, or a figure reference shows the sticky return bar; bottom navigation remains available in either case.
 
-Only entry `assets/` directories are registered with Django's static-file system.
+Only active entry `assets/` directories are registered with Django's static-file system.
 `collectstatic` includes them without exposing source HTML/JSON. Restart the server
 when adding a new asset directory; edits to existing corpus files invalidate the
 catalog cache automatically. `corpus/reading-order.json` controls category order
 and “Next entry”, with each entry listed once in its primary area. Additional area
 memberships are stored but the current reader lists entries by primary area.
+
+Keep inactive examples in `corpus/backup/`, outside `entries/`. They are not served,
+validated, or included in formalization checks. `taxonomy_complete.json` is a
+reference copy; only `taxonomy.json` controls browsing and area validation.
 
 ## Lean bindings and checks
 

@@ -21,7 +21,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   scroll-padding-top: 16px;
 }
 
@@ -702,16 +702,34 @@ button {
 }
 
 .proof-outline {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
   position: sticky;
   top: 24px;
   align-self: start;
-  padding-top: 4px;
+  min-height: 0;
 }
 
-.proof-outline>.eyebrow {
+.outline-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: var(--outline-height, calc(100dvh - 48px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  padding: 4px 8px 8px 0;
+}
+
+.outline-scroll>* {
+  flex: none;
+}
+
+.outline-scroll:focus-visible {
+  outline: 1px solid var(--green);
+  outline-offset: 3px;
+}
+
+.outline-scroll>.eyebrow {
   font-size: 9px;
   margin-bottom: 4px;
   color: #92988b
@@ -968,15 +986,21 @@ button {
   margin-bottom: 2px;
 }
 
-.lemma-reference {
+.lemma-reference,
+.figure-reference {
   color: var(--green);
   text-decoration: underline;
   text-decoration-color: #9bb5a4;
   text-underline-offset: 4px;
 }
 
-.lemma-reference:hover {
+.lemma-reference:hover,
+.figure-reference:hover {
   text-decoration-color: var(--green);
+}
+
+.figure-reference {
+  white-space: nowrap;
 }
 
 .entry-row+.entry-row {
@@ -1101,6 +1125,10 @@ button {
 
 .reading-return~.proof-layout .proof-outline {
   top: 80px;
+}
+
+.reading-return~.proof-layout .outline-scroll {
+  max-height: var(--outline-height, calc(100dvh - 104px));
 }
 
 .placeholder-dialog {
@@ -1390,15 +1418,22 @@ button {
   }
 
   .proof-outline {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     position: static;
     margin-bottom: 20px;
     border-top: 1px solid var(--line);
     padding-top: 12px;
   }
 
-  .proof-outline>.eyebrow {
+  .outline-scroll,
+  .reading-return~.proof-layout .outline-scroll {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: none;
+    overflow-y: visible;
+    padding: 0;
+  }
+
+  .outline-scroll>.eyebrow {
     grid-column: 1 / -1;
   }
 

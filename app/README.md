@@ -1,8 +1,9 @@
 # Web app
 
-A small, server-rendered Django site. It has 12 top-level areas, nested subareas,
-breadcrumbs, and three mathematical notes with locally rendered equations and an SVG
-illustration. There is no browser framework, bundler, CDN, or remote font service.
+A small, server-rendered Django site. The current reader has one top-level area,
+**Logic and foundations**, its **Set theory** subarea, and one active entry.
+Equations and SVG illustrations are rendered locally. There is no browser
+framework, bundler, CDN, or remote font service.
 KaTeX loads only on mathematical article pages.
 
 For the current phase, the app is a reader and preview tool for AI-formalization
@@ -44,29 +45,26 @@ development and production. `Development404Middleware` replaces Django's technic
 tracebacks for server errors remain available. Restart a server launched with
 `--noreload` after changing Python code or settings.
 
-The first two examples are under **Combinatorics → Additive combinatorics → Sumsets**:
+The earlier sumset and Erdős–Szekeres examples are in `corpus/backup/`. They
+are excluded from live entry routes and static files. The active taxonomy is in
+`corpus/taxonomy.json`; `taxonomy_complete.json` is reference material only.
 
-<http://127.0.0.1:8000/entries/thm-sumset-lower-bound/>
+**Sets and maps: a first guide**, under **Logic and foundations → Set theory**,
+starts with basic notation and conventions and develops set operations, maps,
+images, preimages, and inverses. Its 21 blocks include four questions with
+collapsible answers and an entry-local map diagram. Allow about 40 minutes to
+read it. All blocks are **Formalization not started** for a later measured pass:
 
-<http://127.0.0.1:8000/entries/thm-triple-sumset-lower-bound/>
+<http://127.0.0.1:8000/entries/sets-and-maps/>
 
-**Sumsets and translations** contains two definitions, two lemmas, a theorem, and
-a question. **Adding three sets** contains a definition, a lemma, two theorems, and
-a question. Its final integer bound has a human proof and two pending helper
-statements, demonstrating partial formalization. Each type is numbered
-independently, starting at 1 in each note.
-
-**Finding a monotone subsequence**, under **Combinatorics → Extremal combinatorics**,
-explains Seidenberg's one-page Erdős–Szekeres proof. Its bibliography links the
-paper's DOI and an accessible exposition. All four blocks are **Formalization not
-started**, with no Lean code or mathlib bindings, reserving the work for a later
-cost measurement:
-
-<http://127.0.0.1:8000/entries/thm-erdos-szekeres/>
+Long entry outlines have a separate, keyboard-focusable scroll area on desktop.
+Its height fits the visible viewport even near the page header; scrolling inside
+it does not scroll the article. On narrow screens the contents remain in page flow.
 
 References within a note show a local label such as **Lemma 1**. Cross-references
 show names such as **Sumset lower bound** and link directly to the result's stable
-anchor. A sticky return link leads back to the citing block. `from` and `at`
+anchor. Both local and cross-entry references show a sticky return link to the citing block.
+Figures are numbered automatically and their links provide the same return navigation. `from` and `at`
 accept only known entry/block IDs; invalid inputs fall back to the source note
 or the category. Returning to a question reopens its answer. Questions use native
 HTML `details`, so answers and navigation need no JavaScript.
@@ -88,7 +86,8 @@ catalog. Review and inclusion are currently manual repository operations.
 
 | File | Purpose |
 | --- | --- |
-| `corpus/taxonomy.json` | Area titles, descriptions, and parent relationships |
+| `corpus/taxonomy.json` | Active area titles, descriptions, and parent relationships |
+| `corpus/taxonomy_complete.json`, `corpus/backup/` | Inactive reference taxonomy and archived examples |
 | `corpus/reading-order.json` | Ordered entry IDs within each primary area |
 | `corpus/entries/<id>/entry.html` | Complete human note, with stable section IDs and LaTeX |
 | `corpus/entries/<id>/entry.json` | Based-on citations, status, references, and Lean bindings |
@@ -149,7 +148,8 @@ uv run python app/manage.py check_formalizations
 uv run python app/manage.py test catalog
 ```
 
-The tests check every category route and rendered navigation link, correct example
+The tests use the active corpus plus isolated copies of the archived examples.
+They check every category route and rendered navigation link, correct example
 placement, citation/back navigation, entry counts, missing pages, empty leaves,
 read-only placeholders, local math assets, source-order numbering, cache refresh,
 invalid corpus records, equation references, tables, metadata credits, derived
@@ -157,7 +157,8 @@ badges, and entry-local asset collection. `check_formalizations` builds Lean and
 checks local/mathlib bindings and axiom dependencies, then refreshes the reports.
 Pending helpers are type-checked separately with `sorry` allowed; they are never
 included among complete proofs.
-The web app does not execute Lean on each request.
+The web app does not execute Lean on each request. With no active formal bindings,
+`check_formalizations` exits without launching Lean or rewriting archived reports.
 The test suite uses Django's test runner; no separate pytest/Ruff or CI workflow
 is configured. Passing these checks validates the reader and formal bindings,
 not AI translation quality or correspondence with a book's proof strategy.

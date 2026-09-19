@@ -15,5 +15,6 @@ class Command(BaseCommand):
         except (ContentError, ValueError, KeyError, OSError) as error:
             raise CommandError(str(error)) from error
         blocks = sum(len(entry["blocks"]) for entry in catalog.values())
+        entry_word = 'entry' if len(catalog) == 1 else 'entries'
         self.stdout.write(self.style.SUCCESS(
-            f"Validated {len(catalog)} entries and {blocks} mathematical blocks."))
+            f"Validated {len(catalog)} {entry_word} and {blocks} mathematical blocks."))

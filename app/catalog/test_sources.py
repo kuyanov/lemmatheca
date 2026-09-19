@@ -2,8 +2,6 @@
 
 import json
 from pathlib import Path
-import shutil
-from tempfile import TemporaryDirectory
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
@@ -14,6 +12,7 @@ from django.utils.html import escape
 from .content import entries, load_catalog
 from .lean import lean_source_url
 from .sources import ContentError, render_block
+from .testing import ExampleCorpusMixin
 
 
 FIRST = "thm-sumset-lower-bound"
@@ -21,15 +20,13 @@ SECOND = "thm-triple-sumset-lower-bound"
 THIRD = "thm-erdos-szekeres"
 
 
-class CorpusSourceTests(SimpleTestCase):
+class CorpusSourceTests(ExampleCorpusMixin, SimpleTestCase):
     def setUp(self):
-        temporary = TemporaryDirectory()
-        self.addCleanup(temporary.cleanup)
-        self.corpus = Path(temporary.name) / "corpus"
-        shutil.copytree(settings.CORPUS_DIR, self.corpus)
+        super().setUp()
         self.source = self.corpus / "entries" / FIRST / "entry.html"
         self.metadata = self.source.with_suffix(".json")
-        second = json.loads((self.corpus / 'entries' / SECOND / 'entry.json').read_text())
+        second = json.loads(
+            (self.corpus / 'entries' / SECOND / 'entry.json').read_text())
         self.pending = second['blocks']['integer-triple-sumset-bound']['formalization']['unformalized_dependencies']
 
     def load(self):
@@ -51,7 +48,8 @@ class CorpusSourceTests(SimpleTestCase):
                              ["translation"]["label"], "Definition 1")
             rendered = render_block(
                 updated["blocks_by_id"]["sumset-lower-bound"], updated, entries())
-            self.assertIn('href="#translation"', rendered)
+            self.assertIn(
+                'href="/entries/thm-sumset-lower-bound/?from=thm-sumset-lower-bound&amp;at=sumset-lower-bound#translation"', rendered)
             self.assertIn('>Definition 1</a>', rendered)
 
     def test_reading_order_controls_listing_and_next_entry(self):
@@ -60,13 +58,38 @@ class CorpusSourceTests(SimpleTestCase):
         order["areas"]["sumsets"].reverse()
         path.write_text(json.dumps(order))
         with override_settings(CORPUS_DIR=self.corpus):
-            self.assertEqual(list(entries()), [SECOND, FIRST, THIRD])
+            self.assertEqual([entry['id'] for entry in entries().values()
+                              if entry['primary_area'] == 'sumsets'], [SECOND, FIRST])
             response = self.client.get(
                 reverse("catalog:entry", args=[SECOND]))
             self.assertEqual(response.context["next_entry"]["id"], FIRST)
             response = self.client.get(
                 reverse("catalog:entry", args=[FIRST]))
             self.assertIsNone(response.context["next_entry"])
+
+    def test_figure_labels_and_references_follow_source_order(self):
+        path = self.corpus / 'entries/sets-and-maps/entry.html'
+        original = path.read_text()
+        earlier = '<figure id="earlier"><figcaption>A preceding figure.</figcaption></figure>'
+        for prefix, number in ((earlier, 2), ('', 1)):
+            path.write_text(original.replace(
+                '<figure id="map-picture"', prefix + '<figure id="map-picture"'))
+            catalog = self.load()
+            entry = catalog['sets-and-maps']
+            self.assertEqual(
+                entry['figures']['map-picture'], f'Figure {number}')
+            caption = render_block(
+                entry['blocks_by_id']['maps'], entry, catalog)
+            reference = render_block(
+                entry['blocks_by_id']['kinds-of-maps'], entry, catalog)
+            self.assertIn(
+                f'<span class="figure-label">Figure {number}</span>', caption)
+            self.assertIn(f'>Figure {number}</a>', reference)
+            self.assertNotIn('Figure 01', caption)
+        path.write_text(original.replace(
+            'href="#map-picture"', 'href="#missing-figure"'))
+        with self.assertRaisesRegex(ContentError, 'Broken source link'):
+            self.load()
 
     def test_broken_html_references_and_assets_fail_validation(self):
         original = self.source.read_text()
@@ -162,27 +185,32 @@ class CorpusSourceTests(SimpleTestCase):
         with override_settings(CORPUS_DIR=self.corpus):
             url = reverse('catalog:entry', args=[FIRST])
             response = self.client.get(url)
-            self.assertEqual(response.context['entry']['formalization']['status'], 'complete')
+            self.assertEqual(
+                response.context['entry']['formalization']['status'], 'complete')
             self.assertContains(response, 'formalization-complete')
             self.assertContains(response, '✓')
             metadata['blocks']['nonempty-question']['formalization']['status'] = 'partial'
             self.metadata.write_text(json.dumps(metadata))
             response = self.client.get(url)
-            self.assertEqual(response.context['entry']['formalization']['status'], 'partial')
+            self.assertEqual(
+                response.context['entry']['formalization']['status'], 'partial')
             self.assertContains(response, 'Partially formalized')
             for block in metadata['blocks'].values():
                 block['formalization']['status'] = 'not_started'
             self.metadata.write_text(json.dumps(metadata))
             response = self.client.get(url)
-            self.assertEqual(response.context['entry']['formalization']['status'], 'not_started')
+            self.assertEqual(
+                response.context['entry']['formalization']['status'], 'not_started')
             self.assertContains(response, 'Formalization not started')
 
     def test_partial_formalizations_allow_missing_declarations(self):
         metadata = json.loads(self.metadata.read_text())
         formal = metadata['blocks']['translation']['formalization']
-        formal.update(status='partial', declaration=None, source=None, module=None, verification_report=None)
+        formal.update(status='partial', declaration=None,
+                      source=None, module=None, verification_report=None)
         self.metadata.write_text(json.dumps(metadata))
-        self.assertEqual(self.load()[FIRST]['formalization']['status'], 'partial')
+        self.assertEqual(self.load()[FIRST]
+                         ['formalization']['status'], 'partial')
         formal['status'] = 'complete'
         self.metadata.write_text(json.dumps(metadata))
         with self.assertRaisesRegex(ContentError, 'Complete formalizations need'):
@@ -197,16 +225,20 @@ class CorpusSourceTests(SimpleTestCase):
                     metadata['blocks'][block_id]['formalization']['unformalized_dependencies'] = self.pending
                     self.metadata.write_text(json.dumps(metadata))
                     with self.assertRaisesRegex(ContentError, 'cannot have unformalized dependencies'):
-                        load_catalog(self.corpus, settings.REPOSITORY_DIR, check_reports=check_reports)
+                        load_catalog(
+                            self.corpus, settings.REPOSITORY_DIR, check_reports=check_reports)
 
     def test_pending_dependencies_require_valid_unique_local_lean_bindings(self):
         metadata = json.loads(self.metadata.read_text())
         formal = metadata['blocks']['translation']['formalization']
-        formal.update(declaration=None, source=None, module=None, verification_report=None)
+        formal.update(declaration=None, source=None,
+                      module=None, verification_report=None)
         for status in ('partial', 'not_started'):
-            formal.update(status=status, unformalized_dependencies=self.pending)
+            formal.update(
+                status=status, unformalized_dependencies=self.pending)
             self.metadata.write_text(json.dumps(metadata))
-            self.assertEqual(self.load()[FIRST]['blocks_by_id']['translation']['formalization']['status'], status)
+            self.assertEqual(self.load()[
+                             FIRST]['blocks_by_id']['translation']['formalization']['status'], status)
         for invalid in (
                 None, 'A statement', [None], [1], ['A statement'], [{}],
                 [self.pending[0], self.pending[0]],
@@ -233,27 +265,33 @@ class CorpusSourceTests(SimpleTestCase):
             self.assertIsNone(block['formalization']['declaration'])
             self.assertIsNone(block['formalization']['verification_report'])
             self.assertContains(response, 'formalization-partial')
-            self.assertRegex(response.content.decode(), r'2\s+statements pending')
+            self.assertRegex(response.content.decode(),
+                             r'2\s+statements pending')
             self.assertContains(response, 'Unproved dependencies')
             for dependency in block['formalization']['unformalized_dependencies']:
                 url = dependency['source_url']
                 self.assertTrue(url.startswith('/lean/formal/'))
                 self.assertContains(response, f'href="{escape(url)}"')
                 self.assertContains(response, dependency['declaration'])
-            self.assertEqual(entries()[FIRST]['formalization']['status'], 'complete')
+            self.assertEqual(
+                entries()[FIRST]['formalization']['status'], 'complete')
 
     def test_dependency_links_show_escaped_lean_source_and_return_to_the_block(self):
         block_id = 'integer-triple-sumset-bound'
         with override_settings(CORPUS_DIR=self.corpus):
             for dependency in self.pending:
-                url = lean_source_url(dependency, entry_id=SECOND, block_id=block_id)
+                url = lean_source_url(
+                    dependency, entry_id=SECOND, block_id=block_id)
                 response = self.client.get(url)
-                self.assertRegex(response.content.decode(), r'Proof\s+incomplete')
+                self.assertRegex(response.content.decode(),
+                                 r'Proof\s+incomplete')
                 self.assertContains(response, 'sorry')
                 self.assertContains(response, dependency['declaration'])
-                source = (settings.REPOSITORY_DIR / dependency['source']).read_text()
+                source = (settings.REPOSITORY_DIR /
+                          dependency['source']).read_text()
                 self.assertContains(response, escape(source))
-                self.assertContains(response, f'href="/entries/{SECOND}/#{block_id}"')
+                self.assertContains(
+                    response, f'href="/entries/{SECOND}/#{block_id}"')
                 self.assertNotContains(response, 'katex.min.js')
                 self.assertEqual(self.client.head(url).status_code, 200)
                 self.assertEqual(self.client.post(url).status_code, 405)
@@ -265,16 +303,19 @@ class CorpusSourceTests(SimpleTestCase):
             for block_id in ('sumset-lower-bound', 'nonempty-sumset', 'nonempty-question'):
                 block = record['blocks_by_id'][block_id]
                 formal = block['formalization']
-                self.assertContains(response, f'href="{escape(formal["source_url"])}"')
+                self.assertContains(
+                    response, f'href="{escape(formal["source_url"])}"')
                 viewer = self.client.get(formal['source_url'])
                 self.assertContains(viewer, 'Formalization complete')
                 self.assertContains(viewer, formal['declaration'])
                 return_url = reverse('catalog:entry', args=[FIRST])
                 if block['kind'] == 'question':
                     return_url += '?answer=' + block_id
-                self.assertEqual(viewer.context['return_url'], return_url + '#' + block_id)
+                self.assertEqual(
+                    viewer.context['return_url'], return_url + '#' + block_id)
                 if formal['is_mathlib']:
-                    self.assertContains(viewer, 'github.com/leanprover-community/mathlib4/blob/')
+                    self.assertContains(
+                        viewer, 'github.com/leanprover-community/mathlib4/blob/')
 
     def test_citations_display_compact_authors_titles_years_and_source_links(self):
         metadata = json.loads(self.metadata.read_text())
@@ -289,7 +330,8 @@ class CorpusSourceTests(SimpleTestCase):
             self.assertContains(response, 'Based on:', count=1)
             self.assertContains(response, 'Example Author, Second Author')
             self.assertContains(response, 'href="https://example.org/notes"')
-            self.assertContains(response, 'href="https://doi.org/10.1234/notes"')
+            self.assertContains(
+                response, 'href="https://doi.org/10.1234/notes"')
             self.assertContains(response, 'Original lecture notes')
             self.assertNotContains(response, 'Example Journal')
             self.assertNotContains(response, 'p. 4–5.')
@@ -331,7 +373,8 @@ class CorpusSourceTests(SimpleTestCase):
             self.assertEqual(entry['formalization']['status'], 'not_started')
             self.assertEqual(entry['formalization']['complete'], 0)
             self.assertContains(response, 'Formalization not started', count=5)
-            self.assertContains(response, 'href="https://doi.org/10.1112/jlms/s1-34.3.352"')
+            self.assertContains(
+                response, 'href="https://doi.org/10.1112/jlms/s1-34.3.352"')
             self.assertNotContains(response, 'href="/lean/')
             for block in entry['blocks']:
                 formal = block['formalization']
@@ -344,7 +387,8 @@ class CorpusSourceTests(SimpleTestCase):
         catalog = self.load()
         formal = catalog[FIRST]['blocks_by_id']['nonempty-sumset']['formalization']
         self.assertEqual(formal['declaration'], 'Finset.Nonempty.add')
-        self.assertEqual(formal['source'], 'Mathlib/Algebra/Group/Pointwise/Finset/Basic.lean')
+        self.assertEqual(
+            formal['source'], 'Mathlib/Algebra/Group/Pointwise/Finset/Basic.lean')
         self.assertTrue(formal['is_mathlib'])
         self.assertTrue(formal['source_url'].startswith('/lean/Mathlib/'))
         metadata = json.loads(self.metadata.read_text())
@@ -355,14 +399,16 @@ class CorpusSourceTests(SimpleTestCase):
 
     def test_equation_references_and_tables_render_with_math_and_accessible_links(self):
         entry = self.load()[FIRST]
-        html = render_block(entry['blocks_by_id']['sumset-lower-bound'], entry, self.load())
+        html = render_block(entry['blocks_by_id']
+                            ['sumset-lower-bound'], entry, self.load())
         self.assertIn('id="eq:left-bound"', html)
         self.assertIn(r'\tag{1}', html)
         self.assertIn('href="#eq:left-bound"', html)
         self.assertIn('>(1)</a>', html)
         self.assertNotIn(r'\label', html)
         self.assertNotIn(r'\eqref', html)
-        table = render_block(entry['blocks_by_id']['sumset'], entry, self.load())
+        table = render_block(entry['blocks_by_id']
+                             ['sumset'], entry, self.load())
         self.assertIn('class="table-scroll"', table)
         self.assertIn('tabindex="0"', table)
         self.assertIn('<caption>', table)
@@ -372,9 +418,12 @@ class CorpusSourceTests(SimpleTestCase):
     def test_equation_reference_errors_fail_before_rendering(self):
         original = self.source.read_text()
         for before, after, message in [
-            (r'\eqref{eq:left-bound}', r'\eqref{missing}', 'Unknown equation reference'),
-            (r'\label{eq:left-bound}', r'\label{eq:left-bound}\tag{9}', 'numbered automatically'),
-            (r'\label{eq:left-bound}', r'\label{eq:left-bound}\label{eq:other}', 'one equation label'),
+            (r'\eqref{eq:left-bound}', r'\eqref{missing}',
+             'Unknown equation reference'),
+            (r'\label{eq:left-bound}', r'\label{eq:left-bound}\tag{9}',
+             'numbered automatically'),
+            (r'\label{eq:left-bound}',
+             r'\label{eq:left-bound}\label{eq:other}', 'one equation label'),
         ]:
             with self.subTest(change=after):
                 self.source.write_text(original.replace(before, after))
@@ -384,7 +433,7 @@ class CorpusSourceTests(SimpleTestCase):
     def test_equation_references_work_forward_and_inside_inline_math(self):
         original = self.source.read_text()
         self.source.write_text(original.replace('Throughout this note,',
-            r'Use \eqref{eq:left-bound}, \(\eqref{eq:left-bound}\), or \(1+\eqref{eq:left-bound}\). Throughout this note,'))
+                                                r'Use \eqref{eq:left-bound}, \(\eqref{eq:left-bound}\), or \(1+\eqref{eq:left-bound}\). Throughout this note,'))
         catalog = self.load()
         entry = catalog[FIRST]
         html = render_block(entry['blocks_by_id']['sumset'], entry, catalog)

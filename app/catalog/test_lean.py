@@ -16,6 +16,7 @@ from django.utils.html import escape
 from .content import entries, load_catalog
 from .metadata import formal_source_path
 from .sources import ContentError
+from .testing import copy_test_corpus
 
 
 class LeanFileTests(SimpleTestCase):
@@ -86,7 +87,7 @@ class WebsiteWithoutMathlibTests(SimpleTestCase):
         temporary = TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
-        shutil.copytree(settings.CORPUS_DIR, self.root / 'corpus')
+        copy_test_corpus(self.root / 'corpus')
         shutil.copytree(settings.REPOSITORY_DIR / 'formal', self.root / 'formal',
                         ignore=shutil.ignore_patterns('.lake'))
         configured = override_settings(REPOSITORY_DIR=self.root, CORPUS_DIR=self.root / 'corpus')
@@ -97,7 +98,7 @@ class WebsiteWithoutMathlibTests(SimpleTestCase):
         self.assertFalse((self.root / 'formal/.lake').exists())
         output = StringIO()
         call_command('validate_corpus', stdout=output)
-        self.assertIn('Validated 3 entries', output.getvalue())
+        self.assertIn('Validated 4 entries', output.getvalue())
         for url in ('/', '/areas/combinatorics/additive-combinatorics/sumsets/',
                     '/entries/thm-sumset-lower-bound/', '/entries/thm-triple-sumset-lower-bound/'):
             with self.subTest(url=url):

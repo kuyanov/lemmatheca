@@ -57,12 +57,13 @@ def load_catalog(corpus_dir, repository_dir, *, check_reports=True):
             entry = read_json(directory / "entry.json")
             validate_entry_metadata(entry)
             for block in entry["blocks"].values():
-                validate_block_metadata(block, repository_dir, read_json, check_reports)
+                validate_block_metadata(
+                    block, repository_dir, read_json, check_reports)
             if entry["id"] != directory.name or not IDENTIFIER.fullmatch(entry["id"]):
                 raise ContentError("Entry ID must match its folder name")
             if not {entry["primary_area"], *entry.get("additional_areas", [])} <= taxonomy:
                 raise ContentError("Unknown area")
-            blocks, anchors, counts = parse_source(
+            blocks, anchors, counts, figures = parse_source(
                 (directory / "entry.html").read_text(), entry["blocks"])
             for block in blocks:
                 formal = block['formalization']
@@ -72,13 +73,14 @@ def load_catalog(corpus_dir, repository_dir, *, check_reports=True):
                     **formal, 'is_mathlib': is_mathlib,
                     'source_url': lean_source_url(formal, **context),
                     'unformalized_dependencies': [
-                        {**dependency, 'source_url': lean_source_url(dependency, **context)}
+                        {**dependency,
+                            'source_url': lean_source_url(dependency, **context)}
                         for dependency in formal['unformalized_dependencies']],
                 }
             catalog[entry["id"]] = {
                 **entry, "directory": directory, "display_title": entry["title"],
                 "blocks": blocks, "blocks_by_id": {block["id"]: block for block in blocks},
-                "anchors": anchors,
+                "anchors": anchors, "figures": figures,
                 "formalization": entry_formalization(blocks),
                 "based_on": [
                     {**citation, 'doi_url': 'https://doi.org/' + quote(citation['doi'], safe='/')
@@ -114,7 +116,8 @@ def load_catalog(corpus_dir, repository_dir, *, check_reports=True):
                 for reference in block['references']:
                     target = catalog.get(reference['entry_id'])
                     if not target or reference['block_id'] not in target['blocks_by_id']:
-                        raise ContentError(f'Broken metadata reference: {reference}')
+                        raise ContentError(
+                            f'Broken metadata reference: {reference}')
                 referenced = set()
                 for root in block["nodes"]:
                     if not isinstance(root, Element):
@@ -150,13 +153,18 @@ def _cached_catalog(corpus_dir, repository_dir, signature):
 
 def entries():
     # Saving HTML, JSON, or an asset invalidates the cache without a server restart.
+    # Backups and the full taxonomy are reference material, not live corpus inputs.
+    paths = [settings.CORPUS_DIR /
+             name for name in ('taxonomy.json', 'reading-order.json')]
+    paths.extend(path for path in (settings.CORPUS_DIR /
+                 'entries').rglob('*') if path.is_file())
     signature = tuple((str(path), path.stat().st_mtime_ns, path.stat().st_size)
-                      for path in sorted(settings.CORPUS_DIR.rglob("*")) if path.is_file())
+                      for path in sorted(paths))
     return _cached_catalog(settings.CORPUS_DIR, settings.REPOSITORY_DIR, signature)
 
 
 def example_entry():
-    return entries()["thm-sumset-lower-bound"]
+    return entries()["sets-and-maps"]
 
 
 def next_entry(entry):

@@ -6,21 +6,29 @@ The corpus is edited as repository files; there is no ingestion pipeline, public
 submission service, or release API. See the
 [experiment and corpus plan](../docs/formalization-experiments.md).
 
-Three draft entries:
+The active draft is [Sets and maps: a first guide](entries/sets-and-maps/entry.html),
+with [metadata](entries/sets-and-maps/entry.json), under **Logic and foundations →
+Set theory**. Based on chapters 2–4 of Tim Button's Open Logic textbook, it covers
+sets, maps, notation, short proofs, a numbered map diagram, and four questions
+with collapsible answers. Estimated reading time: 40 minutes. All 21 blocks are
+`not_started`; formalization is reserved for a measured pass.
 
-- [Sumsets and translations](entries/thm-sumset-lower-bound/entry.html), with
-  [metadata](entries/thm-sumset-lower-bound/entry.json), an SVG illustration,
-  a table, and a labelled equation with a clickable reference.
-- [Adding three sets](entries/thm-triple-sumset-lower-bound/entry.html), with
-  [metadata](entries/thm-triple-sumset-lower-bound/entry.json), citing results
-  in the first entry, plus a sharper integer bound with a human proof and two
-  Lean helper statements with unfinished (`sorry`) proofs.
-- [Finding a monotone subsequence](entries/thm-erdos-szekeres/entry.html), with
-  [metadata](entries/thm-erdos-szekeres/entry.json), an exposition of Seidenberg's
-  [one-page Erdős–Szekeres proof](https://doi.org/10.1112/jlms/s1-34.3.352).
-  It is under **Combinatorics → Extremal combinatorics**. All four blocks are
-  `not_started`, without Lean sources or mathlib bindings, for a later
-  formalization-cost experiment.
+The earlier examples are archived outside the live entry tree:
+
+- [Sumsets and translations](backup/thm-sumset-lower-bound/entry.html): six complete bindings.
+- [Adding three sets](backup/thm-triple-sumset-lower-bound/entry.html): four complete blocks
+  and a partial integer bound with two pending Lean helper proofs.
+- [Finding a monotone subsequence](backup/thm-erdos-szekeres/entry.html): four unformalized
+  blocks based on Seidenberg's proof, reserved for a future measured experiment.
+
+`backup/` is excluded from listings, entry routes, static asset collection, corpus
+validation, and formalization checks. Tests load temporary copies of these examples
+to exercise features such as cross-entry links and complete/partial badges.
+[Taxonomy](taxonomy.json) contains only the working areas;
+[taxonomy_complete.json](taxonomy_complete.json) keeps the broader taxonomy for reference.
+To restore an archived entry, move it into `entries/`, restore its subjects to the
+active taxonomy, and add its ID to the primary area's reading order. Restore any
+entries it references as well, and revalidate its bindings.
 
 Each folder owns its HTML, JSON, and assets. [Taxonomy](taxonomy.json) describes
 subjects; [reading order](reading-order.json) controls listings and “Next entry”.
@@ -35,10 +43,8 @@ is initially visible; additional sources expand on demand. Full publication
 details remain in JSON. An empty list, as in the original sumset examples, omits that row.
 The website also displays a formalization badge derived from the block statuses.
 
-**Sumsets and translations** has six complete formal bindings, including existing
-mathlib declarations. **Adding three sets** has four complete blocks and one
-partial block, so its entry badge is partial. All three remain editorial drafts awaiting
-maintainer review. See the [authoring guide](../docs/entry-sources.md).
+The active entry remains a draft awaiting maintainer review. See the
+[authoring guide](../docs/entry-sources.md).
 
 ## Growing the collection
 
@@ -56,7 +62,8 @@ an entry. Additional areas are metadata only in the current reader.
 
 Keep prompts, attempts, cost measurements, and human review time in experiment
 records outside `entry.json`. No run-record system is implemented yet. The
-Erdős–Szekeres entry remains unformalized until a measured attempt is launched.
+Erdős–Szekeres and sets-and-maps entries remain unformalized until measured attempts
+are launched.
 
 ## Validation
 

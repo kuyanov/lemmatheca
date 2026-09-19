@@ -8,9 +8,9 @@ application have local Lean proofs; the remaining tasks below are proposals.
 Ordinary checked mathlib infrastructure can be reused without rebuilding a separate
 foundation library or obtaining per-lemma exceptions.
 
-The current [corpus](../corpus/README.md) has two sumset notes and a short
-Erdős–Szekeres note reserved for a measured attempt. The latter remains entirely
-`not_started`. For standard-corpus construction, bind existing declarations when
+The active [corpus](../corpus/README.md) starts with **Sets and maps: a first guide**,
+whose 21 blocks remain `not_started`. The two sumset notes and the unformalized
+Erdős–Szekeres note are preserved in `corpus/backup/`, outside the live reader. For standard-corpus construction, bind existing declarations when
 appropriate. For proof-translation experiments, the plans below specify which
 human argument to preserve; these are different evaluation tasks.
 
@@ -96,7 +96,7 @@ valid corpus curation, but would not translate this injection/surjection argumen
 
 **Why this seed matters.** It checks finiteness/nonemptiness, finite versus infinite
 sets, an image-based proof, and a statement useful for further additive combinatorics.
-The upper bound could become another block in the existing sumset note.
+The upper bound could become another block in the archived sumset note.
 
 ## Enumerative combinatorics: Pascal's identity
 

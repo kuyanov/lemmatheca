@@ -26,7 +26,7 @@ valuable part of the entry. Do not pay to reprove every elementary mathlib helpe
 
 ## First pilot
 
-Use the existing examples to test the mechanics, then choose roughly 20–40 proof
+Use the examples in `corpus/backup/` to test the mechanics, then choose roughly 20–40 proof
 tasks from two or three connected topics. This is a starting pilot size, not a
 coverage target or a sufficient basis for broad capability claims. Include direct
 library matches, representation changes, multi-step proofs, and a few deliberate
@@ -39,7 +39,9 @@ be familiar to a model; describe this as practical workflow evaluation, not evid
 of novelty or uncontaminated generalization. A later unfamiliar-paper set can
 probe transfer separately.
 
-**Finding a monotone subsequence** is a reserved candidate: keep its four blocks
+**Sets and maps: a first guide** is the active human-text baseline; its 21 blocks
+remain unformalized until a measured pass. The archived **Finding a monotone
+subsequence** is another reserved candidate: keep its four blocks
 `not_started` until a measured attempt is explicitly launched. Its short human
 proof is not a promise that the required Lean infrastructure will be short.
 

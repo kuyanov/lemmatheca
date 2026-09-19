@@ -19,7 +19,8 @@ def entry_context(entry):
 def lean_file(request, source):
     catalog = None
     try:
-        path = lean_source_path(source, settings.REPOSITORY_DIR, require_file=False)
+        path = lean_source_path(
+            source, settings.REPOSITORY_DIR, require_file=False)
         try:
             lean_source = path.read_text()
         except FileNotFoundError:
@@ -39,8 +40,10 @@ def lean_file(request, source):
     # from a query parameter or from the mere presence of a source file.
     if request.GET.get('from') and catalog is None:
         catalog = entries()
-    record = catalog.get(request.GET.get('from')) if catalog is not None else None
-    block = record['blocks_by_id'].get(request.GET.get('at')) if record else None
+    record = catalog.get(request.GET.get(
+        'from')) if catalog is not None else None
+    block = record['blocks_by_id'].get(
+        request.GET.get('at')) if record else None
     if block:
         formal = block['formalization']
         candidates = [(formal, formal['status'], False)] + [
@@ -57,17 +60,22 @@ def lean_file(request, source):
                 return_url=entry_url + '#' + block['id'], return_label='Back to ' + block['title'])
             break
     if source.startswith('Mathlib/'):
-        manifest = read_json(settings.REPOSITORY_DIR / 'formal/lake-manifest.json')
-        commit = next(item['rev'] for item in manifest['packages'] if item['name'] == 'mathlib')
-        context['upstream_url'] = f'https://github.com/leanprover-community/mathlib4/blob/{commit}/{source}'
+        manifest = read_json(settings.REPOSITORY_DIR /
+                             'formal/lake-manifest.json')
+        commit = next(item['rev'] for item in manifest['packages']
+                      if item['name'] == 'mathlib')
+        context[
+            'upstream_url'] = f'https://github.com/leanprover-community/mathlib4/blob/{commit}/{source}'
     return render(request, 'catalog/lean_file.html', context)
 
 
 @require_safe
 def home(request):
+    example = example_entry()
     return render(request, "catalog/home.html", {
         "areas": [area_link(area) for area in children()],
-        "example": entry_context(example_entry()),
+        "example": entry_context(example),
+        "example_area": areas()[example['primary_area']],
     })
 
 
@@ -100,10 +108,10 @@ def entry(request, entry_id):
     # The source is an entry ID, never a client-supplied URL. This also works in
     # a new tab or without JavaScript, unlike relying solely on history.back().
     source = catalog.get(request.GET.get("from"))
-    return_entry = entry_context(
-        source) if source and source["id"] != entry_id else None
     return_block = source["blocks_by_id"].get(
-        request.GET.get("at")) if return_entry else None
+        request.GET.get("at")) if source else None
+    return_entry = entry_context(source) if source and (
+        source["id"] != entry_id or return_block) else None
     entry_area = area_link(areas()[record["primary_area"]])
     return_url = return_entry["url"] if return_entry else entry_area["url"]
     if return_block:
@@ -111,6 +119,8 @@ def entry(request, entry_id):
             return_url += "?" + urlencode({"answer": return_block["id"]})
         return_url += f"#{return_block['id']}"
     return_label = f"Back to {return_entry['title']}" if return_entry else f"Back to {entry_area['title']}"
+    if return_block and source['id'] == entry_id:
+        return_label = f"Back to {return_block['label']}"
     following = next_entry(record)
     return render(request, "catalog/entry.html", {
         "entry": current,

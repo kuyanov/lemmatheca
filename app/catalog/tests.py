@@ -10,6 +10,7 @@ from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 
 from .content import ancestors, area_link, areas, children, entries, example_entry, next_entry
+from .testing import ExampleCorpusMixin
 
 
 class LinkParser(HTMLParser):
@@ -41,7 +42,50 @@ class LinkParser(HTMLParser):
             self.current_anchor = None
 
 
-class CatalogTests(SimpleTestCase):
+class ActiveCorpusTests(SimpleTestCase):
+    def test_only_working_areas_and_entries_are_live(self):
+        self.assertEqual(set(areas()), {'logic-and-foundations', 'set-theory'})
+        self.assertEqual(set(entries()), {'sets-and-maps'})
+        self.assertEqual(example_entry()['id'], 'sets-and-maps')
+        home = self.client.get('/')
+        self.assertContains(home, 'Sets and maps: a first guide')
+        self.assertContains(
+            home, '<span class="featured-category">Set theory</span>', html=True)
+        self.assertNotContains(home, 'One translation.')
+        for entry_id in ('thm-sumset-lower-bound', 'thm-triple-sumset-lower-bound', 'thm-erdos-szekeres'):
+            self.assertEqual(self.client.get(
+                f'/entries/{entry_id}/').status_code, 404)
+        self.assertEqual(self.client.get(
+            '/areas/combinatorics/').status_code, 404)
+        self.assertIsNone(finders.find(
+            'entries/thm-sumset-lower-bound/sumset-translation.svg'))
+        self.assertIsNotNone(finders.find('entries/sets-and-maps/map.svg'))
+
+    def test_local_block_and_figure_references_offer_a_precise_return(self):
+        url = '/entries/sets-and-maps/'
+        parser = LinkParser()
+        parser.feed(self.client.get(url).content.decode())
+        for target, source, label in (
+                ('subsets-and-equality', 'two-inclusions', 'Definition 3'),
+                ('map-picture', 'kinds-of-maps', 'Figure 1'),
+                ('maps', 'image-intersection-question', 'Definition 8')):
+            with self.subTest(target=target, source=source):
+                citation = next(link for link in parser.anchors
+                                if link['href'] == f'{url}?from=sets-and-maps&at={source}#{target}')
+                self.assertEqual(citation['text'], label)
+                response = self.client.get(citation['href'])
+                self.assertContains(response, 'class="reading-return"')
+                query = '?answer=' + source if source == 'image-intersection-question' else ''
+                self.assertEqual(
+                    response.context['return_url'], url + query + '#' + source)
+                returned = self.client.get(response.context['return_url'])
+                self.assertNotContains(returned, 'class="reading-return"')
+                if query:
+                    self.assertContains(
+                        returned, 'class="question-answer" open')
+
+
+class CatalogTests(ExampleCorpusMixin, SimpleTestCase):
     def test_formatter_has_not_split_django_template_tags(self):
         template_dir = settings.BASE_DIR / "templates"
         for path in template_dir.rglob("*.html"):
@@ -91,7 +135,8 @@ class CatalogTests(SimpleTestCase):
         self.assertContains(response, "2 entries")
         for entry in entries().values():
             with self.subTest(entry=entry["id"]):
-                response = self.client.get(area_link(areas()[entry["primary_area"]])["url"])
+                response = self.client.get(
+                    area_link(areas()[entry["primary_area"]])["url"])
                 url = reverse("catalog:entry", args=[entry["id"]])
                 self.assertEqual(url, f"/entries/{entry['id']}/")
                 self.assertContains(response, url)
@@ -109,7 +154,7 @@ class CatalogTests(SimpleTestCase):
                 if entry == example_entry():
                     self.assertContains(article, "Lemma 2")
                     self.assertContains(article, "Definition 2")
-                    self.assertContains(article, "sumset-translation.svg")
+                    self.assertContains(article, "map.svg")
 
     def test_named_cross_reference_and_return_link_target_specific_results(self):
         source = entries()["thm-triple-sumset-lower-bound"]
@@ -121,7 +166,7 @@ class CatalogTests(SimpleTestCase):
         self.assertEqual(citation["text"], "Sumset lower bound")
         self.assertNotIn("Lemma 2", citation["text"])
         local = next(anchor for anchor in parser.anchors if anchor.get("class") == "lemma-reference"
-                     and anchor["href"] == "#nonempty-triple-sumset")
+                     and urlsplit(anchor["href"]).fragment == "nonempty-triple-sumset")
         self.assertEqual(local["text"], "Lemma 1")
         response = self.client.get(citation["href"])
         self.assertEqual(
@@ -131,7 +176,7 @@ class CatalogTests(SimpleTestCase):
         self.assertContains(response, 'id="sumset-lower-bound"')
 
     def test_next_entry_navigation_reaches_the_next_note_and_stops_at_the_end(self):
-        first = example_entry()
+        first = entries()['thm-sumset-lower-bound']
         second = entries()["thm-triple-sumset-lower-bound"]
         first_url = reverse("catalog:entry", args=[first["id"]])
         second_url = reverse("catalog:entry", args=[second["id"]])
@@ -149,7 +194,7 @@ class CatalogTests(SimpleTestCase):
         self.assertContains(response, "Back to Sumsets")
 
     def test_next_entry_follows_area_order_and_skips_unrelated_entries(self):
-        first = example_entry()
+        first = entries()['thm-sumset-lower-bound']
         second = entries()["thm-triple-sumset-lower-bound"]
         unrelated = {**first, "id": "unrelated",
                      "primary_area": "group-theory"}
@@ -212,17 +257,21 @@ class CatalogTests(SimpleTestCase):
                     response = self.client.get(
                         url, {} if source is None else {"from": source})
                     area = areas()[entry["primary_area"]]
-                    self.assertContains(response, f"Back to {area['title']}", count=1)
+                    self.assertContains(
+                        response, f"Back to {area['title']}", count=1)
                     self.assertNotContains(response, 'class="reading-return"')
-                    self.assertNotIn('Back to', response.content.decode().split('<header class="proof-header">')[0])
+                    self.assertNotIn('Back to', response.content.decode().split(
+                        '<header class="proof-header">')[0])
                     self.assertEqual(response.context["return_url"], area_link(
                         area)["url"])
 
     def test_entry_counts_include_descendants_but_not_unrelated_areas(self):
         for area_id, count in [("combinatorics", 3), ("additive-combinatorics", 2),
-                               ("sumsets", 2), ("extremal-combinatorics", 1)]:
+                               ("sumsets", 2), ("extremal-combinatorics", 1),
+                               ("logic-and-foundations", 1), ("set-theory", 1)]:
             with self.subTest(area=area_id):
-                self.assertEqual(area_link(areas()[area_id])["entry_count"], count)
+                self.assertEqual(area_link(areas()[area_id])[
+                                 "entry_count"], count)
         self.assertEqual(area_link(areas()["algebra"])["entry_count"], 0)
 
     def test_browsing_does_not_load_the_math_renderer(self):
