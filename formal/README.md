@@ -19,11 +19,14 @@ committed reports without installing it; missing mathlib sources link upstream.
 
 ## Formal nodes
 
-Each `nodes/<id>.json` names a declaration, its dependencies, and human review:
+Each `nodes/<id>.json` names a declaration, its dependencies, and human review.
+
+Use stable IDs describing the mathematics, such as `set-insert-commute`,
+independently of the entries that reference them.
 
 ```json
 {
-  "id": "sets-and-maps-set",
+  "id": "set",
   "declaration": "Set",
   "module": "Mathlib.Data.Set.Defs",
   "dependencies": [],

@@ -5,10 +5,13 @@
   <header>
     <span class="eyebrow">Formal node</span>
     <h1>{{ node.id }}</h1>
-    {% include "formalization/_status_badge.html" with node=node only %}
-    {% if node.checked_on %}
-    <p>Checked <time datetime="{{ node.checked_on }}">{{ node.checked_on|slice:":10" }}</time></p>
-    {% endif %}
+    <div class="node-verification">
+      {% include "formalization/_status_badge.html" with node=node only %}
+      {% if node.checked_on %}
+      <span class="node-check-date">Checked <time
+          datetime="{{ node.checked_on }}">{{ node.checked_on|slice:":10" }}</time></span>
+      {% endif %}
+    </div>
     {% if node.declaration %}
     <p class="lean-declaration"><code>{{ node.declaration }}</code></p>
     <p class="lean-file-path"><code>{{ node.source }}</code>{% if declaration_line %} ·
@@ -21,7 +24,8 @@
       <summary>Dependencies ({{ dependencies|length }})</summary>
       <ul class="formal-node-list">
         {% for dependency in dependencies %}
-        <li><a href="{{ dependency.url }}"><code>{{ dependency.id }}</code></a>
+        <li><a href="{{ dependency.url }}" target="_blank" rel="noopener"
+            title="Open in a new tab"><code>{{ dependency.id }}</code></a>
           {% include "formalization/_status_badge.html" with node=dependency inline=True only %}
         </li>
         {% endfor %}
