@@ -15,6 +15,10 @@ uv run python app/manage.py validate_corpus
 uv run python app/manage.py test catalog
 ```
 
+Tests use small isolated fixtures and one smoke test of the current corpus.
+Lean command tests mock Lean output; run `check_formalizations` to check
+actual proofs.
+
 Open <http://127.0.0.1:8000/>. For another device on your local network, set
 `DJANGO_ALLOWED_HOSTS` to include the host address and run the development server
 with `0.0.0.0:8000`. Production requires `DJANGO_DEBUG=0`, a `DJANGO_SECRET_KEY`,

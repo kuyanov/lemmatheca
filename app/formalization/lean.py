@@ -91,7 +91,8 @@ def declaration_line(source, declaration):
             if scopes:
                 del namespace[scopes.pop():]
         elif name:
-            full = name.removeprefix('_root_.') if name.startswith('_root_.') else '.'.join([*namespace, name])
+            full = name.removeprefix('_root_.') if name.startswith(
+                '_root_.') else '.'.join([*namespace, name])
             if full == declaration:
                 return code.count('\n', 0, match.start(3)) + 1
     return None
@@ -103,11 +104,13 @@ def source_context(source, root, declaration=None):
     upstream = None
     if source.startswith('Mathlib/'):
         manifest = read_json(root / 'formal/lake-manifest.json')
-        commit = next(item['rev'] for item in manifest['packages'] if item['name'] == 'mathlib')
+        commit = next(item['rev'] for item in manifest['packages']
+                      if item['name'] == 'mathlib')
         upstream = f'https://github.com/leanprover-community/mathlib4/blob/{commit}/{source}'
     elif text is None:
         raise ContentError('Local Lean source is missing')
-    line = declaration_line(text, declaration) if text is not None and declaration else None
+    line = declaration_line(
+        text, declaration) if text is not None and declaration else None
     return {'lean_source': text,
             'source_lines': [{'number': number, 'text': value, 'selected': number == line}
                              for number, value in enumerate(text.splitlines(), 1)] if text is not None else [],
@@ -119,7 +122,8 @@ def verification_inputs(root, nodes):
     from .nodes import ENVIRONMENT
     paths = local_sources(root)
     paths.update(root / 'formal' / name for name in ENVIRONMENT)
-    roots = [root / 'formal', *sorted((root / 'formal/.lake/packages').glob('*'))]
+    roots = [root / 'formal', *
+             sorted((root / 'formal/.lake/packages').glob('*'))]
     modules = [node['module'] for node in nodes.values() if node['module']]
     visited = set()
     while modules:
@@ -130,7 +134,8 @@ def verification_inputs(root, nodes):
         if module.split('.')[0] in {'Init', 'Lean', 'Std'}:
             continue  # These ship with the pinned Lean toolchain.
         relative = module.replace('.', '/') + '.lean'
-        path = next((base / relative for base in roots if (base / relative).is_file()), None)
+        path = next(
+            (base / relative for base in roots if (base / relative).is_file()), None)
         if path is None:
             raise ContentError(f'Missing imported Lean source: {module}')
         if not path.resolve().is_relative_to((root / 'formal').resolve()):

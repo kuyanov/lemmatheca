@@ -85,7 +85,8 @@ def parse_source(source):
             raise ContentError('Each figure needs one figcaption')
         caption = captions[0]
         label = f'Figure {number}'
-        caption.children.insert(0, Element('span', {'class': 'figure-label'}, [label]))
+        caption.children.insert(0, Element(
+            'span', {'class': 'figure-label'}, [label]))
         if figure.attrs.get('id'):
             figures[figure.attrs['id']] = label
     ids = set()
@@ -116,7 +117,8 @@ def parse_source(source):
         if 'data-formal' in node.attrs:
             value = node.attrs['data-formal']
             if value is None:
-                raise ContentError('Use data-formal="" for a block with nothing to formalize')
+                raise ContentError(
+                    'Use data-formal="" for a block with nothing to formalize')
             formal_ids = value.split()
             if any(not IDENTIFIER.fullmatch(value) for value in formal_ids):
                 raise ContentError(f'{block_id}: invalid formal node ID')

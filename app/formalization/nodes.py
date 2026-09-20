@@ -160,7 +160,8 @@ def load_nodes(root, *, check_reports=True):
                   'dependencies_pending' if any(nodes[item]['status'] != 'complete' for item in node['dependencies']) else
                   'complete')
         node.update(status=status, status_label=NODE_STATUS_LABELS[status],
-                    checked_on=report.get('checked_on') if checked_current else None,
+                    checked_on=report.get(
+                        'checked_on') if checked_current else None,
                     url=reverse('formalization:node', args=[node_id]))
         visiting.remove(node_id)
         visited.add(node_id)
@@ -213,11 +214,13 @@ def block_progress(ids, nodes):
 
 def entry_progress(blocks, nodes):
     result = progress([node_id for block in blocks for node_id in block['formal_ids'] or []], nodes,
-                      unplanned=sum(block['formal_ids'] is None for block in blocks),
+                      unplanned=sum(block['formal_ids']
+                                    is None for block in blocks),
                       applicable=any(block['formal_ids'] != [] for block in blocks))
     # Linked nodes do not measure how much of an entire entry has been covered.
     result.pop('percent')
     if result['status'] == 'partial':
         result['label'] = 'Partial'
-        result['description'] = 'Formalization partial; ' + result['description']
+        result['description'] = 'Formalization partial; ' + \
+            result['description']
     return result

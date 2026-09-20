@@ -8,7 +8,8 @@ from .sources import ContentError
 ENTRY_FIELDS = {'id', 'title', 'based_on', 'primary_area', 'additional_areas',
                 'status', 'reading_time', 'summary', 'abstract'}
 CITATION_FIELDS = {'authors', 'title'}
-CITATION_OPTIONAL_FIELDS = {'year', 'venue', 'volume', 'issue', 'pages', 'doi', 'url'}
+CITATION_OPTIONAL_FIELDS = {'year', 'venue',
+                            'volume', 'issue', 'pages', 'doi', 'url'}
 
 
 def fields(value, required, optional=frozenset()):
@@ -27,7 +28,8 @@ def validate_citation(citation):
     if 'year' in citation and (type(citation['year']) is not int or citation['year'] <= 0):
         raise ContentError('Citation year must be a positive integer')
     if 'doi' in citation and not re.fullmatch(r'10\.\d{4,9}/\S+', citation['doi']):
-        raise ContentError('Use a bare DOI, for example 10.1112/jlms/s1-34.3.352')
+        raise ContentError(
+            'Use a bare DOI, for example 10.1112/jlms/s1-34.3.352')
     if 'url' in citation:
         url = urlsplit(citation['url'])
         if url.scheme not in ('http', 'https') or not url.netloc:

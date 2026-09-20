@@ -20,16 +20,20 @@ def prepare_equations(root):
             continue
         match = re.fullmatch(r'\s*\\\[(.*?)\\\]\s*', text, re.DOTALL)
         if len(labels) != 1 or not match or any(isinstance(child, Element) for child in node.children):
-            raise ContentError('Use one equation label in one plain display-math element')
+            raise ContentError(
+                'Use one equation label in one plain display-math element')
         label = labels[0]
         if label in numbers or (node.attrs.get('id') and node.attrs['id'] != label):
-            raise ContentError(f'Duplicate or conflicting equation label: {label}')
+            raise ContentError(
+                f'Duplicate or conflicting equation label: {label}')
         if r'\tag' in text:
-            raise ContentError('Labelled equations are numbered automatically; omit \\tag')
+            raise ContentError(
+                'Labelled equations are numbered automatically; omit \\tag')
         number = len(numbers) + 1
         numbers[label] = number
         node.attrs['id'] = label
-        node.children = [r'\[' + LABEL.sub('', match[1]) + rf'\tag{{{number}}}\]']
+        node.children = [
+            r'\[' + LABEL.sub('', match[1]) + rf'\tag{{{number}}}\]']
 
     def number(label):
         if label not in numbers:
@@ -44,15 +48,18 @@ def prepare_equations(root):
         result = []
         for part in MATH.split(text):
             if part.startswith((r'\[', r'\(')):
-                standalone = EQREF.fullmatch(part[2:-2].strip()) if part.startswith(r'\(') else None
+                standalone = EQREF.fullmatch(
+                    part[2:-2].strip()) if part.startswith(r'\(') else None
                 if standalone:
                     result.append(link(standalone[1]))
                 else:
-                    result.append(EQREF.sub(lambda match: r'\text{' + number(match[1]) + '}', part))
+                    result.append(
+                        EQREF.sub(lambda match: r'\text{' + number(match[1]) + '}', part))
             else:
                 position = 0
                 for match in EQREF.finditer(part):
-                    result.extend([part[position:match.start()], link(match[1])])
+                    result.extend(
+                        [part[position:match.start()], link(match[1])])
                     position = match.end()
                 result.append(part[position:])
         return result
@@ -67,7 +74,8 @@ def prepare_equations(root):
                 children.append(child)
             else:
                 if r'\label{' in child:
-                    raise ContentError('Equation labels belong inside a math-display element')
+                    raise ContentError(
+                        'Equation labels belong inside a math-display element')
                 children.extend(expand(child))
         node.children = children
     visit(root)

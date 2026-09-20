@@ -30,7 +30,8 @@ def node_detail(request, node_id):
 def node_page(request, node_id):
     nodes = load_nodes(settings.REPOSITORY_DIR)
     node = get_node(nodes, node_id)
-    context = {'node': node, 'dependencies': [nodes[item] for item in node['dependencies']]}
+    context = {'node': node, 'dependencies': [
+        nodes[item] for item in node['dependencies']]}
     if node['source']:
         context.update(source_context(
             node['source'], settings.REPOSITORY_DIR, node['declaration']))

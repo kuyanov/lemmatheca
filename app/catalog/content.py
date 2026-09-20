@@ -54,7 +54,8 @@ def load_catalog(corpus_dir, repository_dir):
             blocks, anchors, counts, figures = parse_source(
                 (directory / "entry.html").read_text())
             for block in blocks:
-                block['formalization'] = block_progress(block['formal_ids'], formal_nodes)
+                block['formalization'] = block_progress(
+                    block['formal_ids'], formal_nodes)
                 block['formal_nodes'] = [
                     formal_nodes[node_id]
                     for node_id in block['formal_ids'] or []]
