@@ -1,7 +1,6 @@
-"""Check corpus bindings against the pinned Lean environment, including mathlib."""
+"""Verify formal nodes independently of human entries."""
 
 from datetime import datetime, timezone
-import hashlib
 import json
 from pathlib import Path
 import re
@@ -12,39 +11,33 @@ import tempfile
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from catalog.content import load_catalog, read_json
-from catalog.metadata import formal_source_path
 from catalog.sources import ContentError
+from formalization.lean import verification_inputs
+from formalization.nodes import ALLOWED_AXIOMS, REPORT, REPORT_VERSION, file_hash, load_nodes, node_fingerprint
 
 
 class Command(BaseCommand):
-    help = 'Verify complete proofs, type-check pending dependencies, and write reports.'
+    help = 'Check node declarations and transitive axioms; record complete and pending proofs.'
 
     def handle(self, **options):
         root = settings.REPOSITORY_DIR
         formal_dir = root / 'formal'
         try:
-            catalog = load_catalog(settings.CORPUS_DIR,
-                                   root, check_reports=False)
-        except (ContentError, KeyError, ValueError, OSError) as error:
+            nodes = load_nodes(root, check_reports=False)
+            bound = {key: node for key, node in nodes.items() if node['declaration']}
+            if not bound:
+                self.stdout.write('No formal node declarations to check.')
+                return
+            inputs = verification_inputs(root, bound)
+            before = {path.relative_to(root).as_posix(): file_hash(path) for path in sorted(inputs)}
+            fingerprints = {key: node_fingerprint(node) for key, node in nodes.items()}
+        except (ContentError, ValueError, OSError) as error:
             raise CommandError(str(error)) from error
-        bindings = [(entry, block) for entry in catalog.values() for block in entry['blocks']
-                    if block['formalization']['status'] == 'complete']
-        pending = {dependency['declaration']: dependency
-                   for entry in catalog.values() for block in entry['blocks']
-                   for dependency in block['formalization']['unformalized_dependencies']}
-        if not bindings and not pending:
-            self.stdout.write(
-                'No complete formalizations or pending dependencies to check.')
-            return
         lake = shutil.which('lake') or str(Path.home() / '.elan/bin/lake')
-        modules = sorted({block['formalization']['module'] for _, block in bindings}
-                         | {dependency['module'] for dependency in pending.values()})
-        names = sorted({block['formalization']['declaration']
-                       for _, block in bindings})
+        modules = sorted({node['module'] for node in bound.values()})
+        names = sorted({node['declaration'] for node in bound.values()})
         source = '\n'.join(f'import {module}' for module in modules) + '\n\n'
-        source += '\n'.join(f'#check {name}\n#print axioms {name}'
-                            for name in sorted(set(names) | pending.keys())) + '\n'
+        source += '\n'.join(f'#check {name}\n#print axioms {name}' for name in names) + '\n'
 
         def run(args):
             try:
@@ -56,70 +49,46 @@ class Command(BaseCommand):
                 raise CommandError(result.stdout + result.stderr)
             return result.stdout + result.stderr
 
-        self.stdout.write('Building the pinned Lean project…')
-        # Pending modules are deliberately not imported by the main library.
-        run(['build', 'Lemmatheca', *modules])
-        with tempfile.NamedTemporaryFile('w', suffix='.lean', prefix='CorpusCheck', dir=formal_dir) as check:
+        self.stdout.write('Building the pinned Lean modules…')
+        run(['build', *modules])
+        with tempfile.NamedTemporaryFile('w', suffix='.lean', prefix='NodeCheck', dir=formal_dir) as check:
             check.write(source)
             check.flush()
             output = run(['env', 'lean', check.name])
-
-        def checked_declaration(name, *, allow_sorry=False):
-            pattern = re.escape(
-                "'" + name + "'") + r" (?:depends on axioms: \[([^\]]*)\]|does not depend on any axioms)"
+        declarations = {}
+        for name in names:
+            pattern = re.escape("'" + name + "'") + r" (?:depends on axioms: \[([^\]]*)\]|does not depend on any axioms)"
             match = re.search(pattern, output)
             if not match:
                 raise CommandError(f'No axiom result for {name}:\n{output}')
-            axioms = [value.strip() for value in (
-                match[1] or '').split(',') if value.strip()]
-            allowed = {'propext', 'Classical.choice', 'Quot.sound'}
-            if allow_sorry:
-                allowed.add('sorryAx')
-            if set(axioms) - allowed:
+            axioms = [value.strip() for value in (match[1] or '').split(',') if value.strip()]
+            if set(axioms) - ALLOWED_AXIOMS - {'sorryAx'}:
                 raise CommandError(f'{name} uses unapproved axioms: {axioms}')
-            return {'name': name, 'axioms': axioms}
-
-        declarations = [checked_declaration(name) for name in names]
-        pending_declarations = [
-            {**checked_declaration(name, allow_sorry=True),
-             'module': dependency['module'], 'source': dependency['source']}
-            for name, dependency in sorted(pending.items())
-        ]
-        paths = {entry['directory'] / name for entry in catalog.values()
-                 for name in ('entry.json', 'entry.html')}
-        paths.update(path for entry in catalog.values() for path in (entry['directory'] / 'assets').rglob('*')
-                     if path.is_file())
-        paths.update((formal_dir / 'Lemmatheca').rglob('*.lean'))
-        paths.add(formal_dir / 'Lemmatheca.lean')
-        paths.update(formal_source_path(
-            block['formalization'], root) for _, block in bindings)
-        paths.update(formal_source_path(dependency, root)
-                     for dependency in pending.values())
-        paths.update(formal_dir / name for name in ('lean-toolchain',
-                     'lake-manifest.json', 'lakefile.toml'))
-        manifest = read_json(formal_dir / 'lake-manifest.json')
-        mathlib = next(
-            package for package in manifest['packages'] if package['name'] == 'mathlib')
+            declarations[name] = {'axioms': axioms, 'status': 'pending' if 'sorryAx' in axioms else 'complete'}
+        try:
+            after_nodes = load_nodes(root, check_reports=False)
+            after_inputs = verification_inputs(root, bound)
+            after = {path.relative_to(root).as_posix(): file_hash(path) for path in sorted(after_inputs)}
+            if before != after or fingerprints != {key: node_fingerprint(node) for key, node in after_nodes.items()}:
+                raise CommandError('Formal inputs changed during verification; rerun the check.')
+        except (ContentError, ValueError, OSError) as error:
+            raise CommandError(str(error)) from error
         report = {
-            'scope': 'local_development_check', 'checked_on': datetime.now(timezone.utc).isoformat(),
-            'command': 'python app/manage.py check_formalizations', 'build': 'passed',
-            'lean_toolchain': (formal_dir / 'lean-toolchain').read_text().strip(),
-            'mathlib_commit': mathlib['rev'], 'declarations': declarations,
-            'pending_dependencies': pending_declarations,
-            'bindings': [{'entry_id': entry['id'], 'block_id': block['id'],
-                          'declaration': block['formalization']['declaration']} for entry, block in bindings],
-            'mathematical_dependency_audit': 'not_performed', 'maintainer_review': 'pending',
-            'notes': ['Checks declarations and axioms, not correspondence with the human argument.',
-                      'Pending dependency statements are type-checked separately; sorryAx is allowed only there.',
-                      'Incomplete blocks and pending dependencies are not certified as complete proofs.',
-                      'The full mathematical dependency closure is not extracted.'],
-            'sha256': {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
-                       for path in sorted(paths)},
+            'format_version': REPORT_VERSION, 'build': 'passed', 'checked_on': datetime.now(timezone.utc).isoformat(),
+            'command': 'python app/manage.py check_formalizations',
+            'nodes': {key: {'fingerprint': fingerprints[key], **declarations[node['declaration']]}
+                      for key, node in bound.items()},
+            'sha256': before,
+            'notes': ['Statement review and correspondence with the human text remain human decisions.',
+                      'sorryAx, including transitive use, always means pending.',
+                      'Declared node dependencies are checked separately from Lean axiom dependencies.'],
         }
-        for filename in {block['formalization']['verification_report'] for _, block in bindings}:
-            destination = root / filename
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            destination.write_text(json.dumps(report, indent=2) + '\n')
+        destination = root / REPORT
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile('w', dir=destination.parent, delete=False) as temporary:
+            json.dump(report, temporary, indent=2)
+            temporary.write('\n')
+        Path(temporary.name).replace(destination)
+        ready = sum(node['status'] == 'complete' for node in load_nodes(root).values())
         self.stdout.write(self.style.SUCCESS(
-            f'Checked {len(bindings)} complete block bindings and {len(names)} declarations; '
-            f'type-checked {len(pending)} pending dependencies (proofs may contain sorry).'))
+            f'Checked {len(bound)} node declarations: {ready} ready, {len(nodes) - ready} pending.'))

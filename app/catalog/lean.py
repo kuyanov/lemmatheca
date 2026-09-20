@@ -1,9 +1,6 @@
 """Read-only Lean source paths and links, independent of corpus membership."""
 
 from pathlib import PurePosixPath
-from urllib.parse import urlencode
-
-from django.urls import reverse
 
 from .sources import ContentError
 
@@ -31,15 +28,3 @@ def lean_source_path(source, repository_dir, *, require_file=True):
     if require_file and not path.is_file():
         raise MissingLeanSource(f'Missing Lean source: {path}')
     return path
-
-
-def lean_source_url(binding, *, entry_id=None, block_id=None):
-    if not binding['source']:
-        return None
-    url = reverse('catalog:lean_file', args=[binding['source']])
-    if entry_id and block_id:
-        context = {'from': entry_id, 'at': block_id}
-        if binding['declaration']:
-            context['declaration'] = binding['declaration']
-        url += '?' + urlencode(context)
-    return url

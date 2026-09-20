@@ -20,6 +20,9 @@ def copy_test_corpus(destination):
     order = {}
     for path in sorted((destination / 'entries').glob('*/entry.json')):
         entry = json.loads(path.read_text())
+        # Archived files preserve the old contract; these fixtures use only their human text.
+        entry.pop('blocks', None)
+        path.write_text(json.dumps(entry))
         order.setdefault(entry['primary_area'], []).append(entry['id'])
     (destination / 'reading-order.json').write_text(
         json.dumps({'format_version': 1, 'areas': order}))

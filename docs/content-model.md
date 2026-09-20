@@ -1,84 +1,75 @@
 # Content and machine access
 
 An entry is a reading unit containing definitions, lemmas, theorems, questions,
-proofs, and explanatory material. Each mathematical block is independently
-addressable by `(entry_id, block_id)`.
+proofs, and explanations. Each mathematical block is addressed by
+`(entry_id, block_id)`. The [authoring guide](entry-sources.md) defines the file
+contract.
 
-The implemented metadata contract is in the [authoring guide](entry-sources.md).
-Entry metadata contains identity, `based_on` citations, subject memberships,
-editorial status, reading time, summary, abstract, and blocks. Citations record
-authors, title, and optional publication details, DOI, and URL. Each block contains
-only formalization and references.
-The HTML owns block titles, kinds, and order. Git records history; the metadata
-contains no version counters or separate proof records.
-
-This file contract is the current storage model for corpus construction and
-formalization experiments. Experiment inputs, model attempts, costs, and human
-review time should live in separate run records, not in the entry schema. The
-run-record format is still proposed; see the [experiment plan](formalization-experiments.md).
+Entry JSON contains identity, `based_on` citations, subject memberships, editorial
+status, reading time, summary, and abstract. HTML owns block IDs, titles, kinds,
+order, links, and optional `data-formal` mappings. There are no JSON block records
+or duplicated references. Git supplies history; model attempts and costs belong
+in separate experiment records.
 
 ## Numbering and navigation
 
-Number blocks by kind within each entry: Definition 1, Definition 2, Lemma 1,
-Lemma 2, Theorem 1, Question 1. Display numbers are derived, never identifiers.
-Local references show these labels; cross-entry references show the result name.
-The reader returns to the citing block, reopening an answer when necessary.
+Blocks are numbered separately by kind within an entry. These display numbers
+are never identifiers. Local links show the derived label; cross-entry links show
+the result's name. Both return to the citing block, reopening an answer when needed.
+Equations and figures have their own local labels. Tables and images belong to
+the human source; assets stay inside the entry folder.
 
-Equations and figures have separate entry-local labels and numbers. Figure links
-use stable HTML IDs and display their generated numbers; they are not mathematical
-block dependencies and do not belong in JSON `references`. Tables and diagrams are
-part of the human source. Assets stay in their entry folder. Categories form a
-browsing hierarchy, while reading order is stored explicitly by primary area.
-Only `corpus/entries/` and the working `taxonomy.json` are live inputs; archived
-notes in `corpus/backup/` and `taxonomy_complete.json` stay outside the reader.
-An entry's stable folder and `/entries/<id>/` URL do not encode its category.
+Categories form a browsing hierarchy; reading order is explicit by primary area.
+Only `corpus/entries/` and the working taxonomy are live inputs. Archived examples
+and `taxonomy_complete.json` are reference material. Entry paths do not encode
+categories.
 
-## Formalization
+## Formal nodes and progress
 
-Each block records a status (`not_started`, `partial`, or `complete`), declaration,
-source path, report path, module, and `unformalized_dependencies`. The latter is
-a list of links to local Lean statements with unfinished proofs (using `sorry`),
-each identified by `declaration`, `module`, and `source`. A nonempty list is
-incompatible with `complete`. Already-proved
-mathlib lemmas do not belong on this list. References identify only
-the target entry and block. Existing mathlib declarations are valid bindings;
-they do not require duplicate proofs under Lemmatheca. Local formal code remains
-in `formal/Lemmatheca/` and can support multiple entries.
+Formal records live in `formal/nodes/<id>.json` and Lean modules in
+`formal/Lemmatheca/` or pinned mathlib. Each node names at most one declaration;
+blocks can link multiple nodes, and nodes can be shared. A node without a
+declaration is an unreviewed placeholder. See the [schema](../formal/README.md#formal-nodes).
 
-The entry's formalization status is derived from all its block statuses. For a
-question, the status describes its answer or counterexample. Definitions count
-too. Missing work keeps the entry partial or not started; successful checking of
-one result never makes another result complete.
+| Mapping | Block status |
+| --- | --- |
+| Missing `data-formal` | Not started; planning needed |
+| Empty `data-formal=""` | Not applicable |
+| Nonempty list | Complete if every node is ready; otherwise a percentage |
 
-Formal completeness and editorial publication are independent. A maintainer must
-check that the formal declaration expresses the intended human mathematics.
-An axiom report does not automatically establish that correspondence or enumerate
-all mathematical dependencies. Pending statements are listed per block, with no
-global exception registry. Removing the final pending statement does not by itself
-make a formalization complete: its Lean binding must also pass verification.
+A node is ready only with a reviewed statement, valid verification evidence, and
+ready declared dependencies. Other nodes have explicit statuses for missing
+declarations, review, verification, unfinished proofs, or dependencies. Missing proofs,
+including transitive `sorry`, cannot count as ready. Definitions can use existing
+Lean definitions; questions map their answers or counterexamples.
 
-## Sources and attribution
+Entry badges show Not started, Partial, or Complete without a percentage.
+Their counts include distinct linked nodes only once. Unmapped blocks keep an
+entry Partial even when every linked node is ready. Not-applicable blocks are
+excluded, and an all-not-applicable entry displays N/A. Block percentages count
+nodes, not proof difficulty or effort; they do not measure entry-wide coverage.
 
-Display external sources as **Based on:** citations, linking titles and DOIs when
-available. Original material may use an empty citation list. Entry authorship and
-licensing are no longer fields in this reader's metadata. Preserve upstream
-attribution in formal sources. A maintainer decides what is published; AI
-recommendations do not change the editorial status.
+Committing a mapping, including an empty one, records the maintainer's coverage
+review. Node `reviewed` flags record statement review. These are manual repository
+conventions, not an authentication or review workflow. AI proposals require review
+before merge; future agents must keep approved targets fixed. Editorial status
+remains independent of formal readiness.
 
-## Later AI access
+## Sources and access
 
-Local agents can read the existing corpus files and pinned Lean sources directly.
-An HTTP API is not needed for the initial formalization pilot. Reading order,
-taxonomy, bibliography, and block references already supply useful context, though
-they do not constitute the complete formal dependency graph.
+The entry header displays a compact **Based on:** citation with additional sources
+collapsed. Citation authors identify the cited work. Formal sources retain their
+upstream attribution. A maintainer decides what is included.
 
-A read-only API can expose the same entry JSON, parsed blocks, HTML, assets, Lean
-bindings, and direct dependency links. Git commits and content hashes can identify
-a reproducible corpus snapshot without adding per-entry version fields. Agents
-should be able to retrieve an entire snapshot or a bounded dependency closure.
+The read-only formal API exposes `/api/formal/nodes/` and
+`/api/formal/nodes/<id>/`, including derived `status`, `status_label`, dependencies, source,
+and node-page links. It does not load the human corpus. Node pages show escaped
+source with an inferred declaration line where possible. Human-corpus APIs,
+search, write endpoints, and autonomous workers remain future work.
 
-Keep formal dependencies separate from expository citations: a formal helper may
-be invisible in the human proof, and a background reading link may not occur in the
-proof term. The full graph extractor and public API remain future work. Initially,
-lexical search, declaration lookup, and graph traversal should be sufficient.
-Research agents may propose results; additions still pass through a human workflow.
+Agents can also read files directly. Formal dependencies are distinct from human
+citations: an explanatory link need not occur in a proof term, and a formal helper
+may be absent from the exposition. Declared node edges are not a complete extracted
+proof graph. Git commits and content hashes identify reproducible inputs without
+per-entry version fields. Statement writing and theorem proving will be measured
+separately in the [experiment plan](formalization-experiments.md).

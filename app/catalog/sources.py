@@ -69,7 +69,7 @@ class SourceParser(HTMLParser):
         self.stack[-1].children.append(data)
 
 
-def parse_source(source, bindings):
+def parse_source(source):
     parser = SourceParser()
     parser.feed(source)
     parser.close()
@@ -115,18 +115,24 @@ def parse_source(source, bindings):
                     if isinstance(child, Element) and child.tag == "h2"]
         if len(headings) != 1 or not headings[0].text().strip():
             raise ContentError(f"{block_id}: expected one nonempty <h2> title")
-        if block_id not in bindings:
-            raise ContentError(f"{block_id}: missing metadata binding")
+        formal_ids = None
+        if 'data-formal' in node.attrs:
+            value = node.attrs['data-formal']
+            if value is None:
+                raise ContentError('Use data-formal="" for a block with nothing to formalize')
+            formal_ids = value.split()
+            if any(not IDENTIFIER.fullmatch(value) for value in formal_ids):
+                raise ContentError(f'{block_id}: invalid formal node ID')
+            if len(formal_ids) != len(set(formal_ids)):
+                raise ContentError(f'{block_id}: duplicate formal node ID')
         counts[kind] += 1
-        blocks.append({**bindings[block_id], "id": block_id, "kind": kind,
+        blocks.append({"id": block_id, "kind": kind, "formal_ids": formal_ids,
                        "title": headings[0].text().strip(),
                        "label": f"{kind.capitalize()} {counts[kind]}",
                        "nodes": [child for child in node.children if child is not headings[0]]})
         heading_id = f"{block_id}-title"
         if heading_id in ids:
             raise ContentError(f"Reserved heading anchor: {heading_id}")
-    if set(bindings) != {block["id"] for block in blocks}:
-        raise ContentError("Metadata refers to blocks absent from entry.html")
     if not blocks:
         raise ContentError("An entry must contain at least one block")
     return blocks, ids, counts, figures

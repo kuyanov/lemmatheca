@@ -10,60 +10,65 @@ construction. Review and inclusion are manual repository work. Drafts are visibl
 in the reader; there is no account-based publication control or automated AI
 grading service. Those public features are deferred.
 
-## Allowed formalizations
+## Nodes and human review
 
-A block can point to a declaration in the local `formal/Lemmatheca/` project or to
-an existing declaration in the pinned mathlib dependency. Existing mathlib results
-are accepted as formal bindings without rewriting their proofs. Definitions can
-bind to existing definitions or instances. A question binds its answer or
-counterexample, not an unchecked conjecture.
+A block optionally links formal nodes through HTML `data-formal`. A node names
+one local or mathlib declaration, its module, dependencies, and a `reviewed`
+flag. Definitions can bind to definitions or instances. A question binds its
+answer or counterexample. The [formal README](../formal/README.md#formal-nodes)
+specifies the schema; entry JSON contains no formal metadata.
 
-Each formalization records `status`, `declaration`, `source`, `verification_report`,
-`module`, and `unformalized_dependencies`. Each pending dependency identifies a
-local Lean statement by `declaration`, `module`, and `source`. Its proof may use
-`sorry`; the reader links to the source, clearly marked incomplete. The list
-belongs to its block. Already-proved mathlib lemmas are not pending
-dependencies simply because they are external to the corpus. There is no global
-external-lemma registry or individual exception-approval requirement for using
-ordinary mathlib results.
+A maintainer reviews proposed statements and coverage before proof work. Committing
+HTML mappings records coverage approval, including an empty mapping for material
+that needs no formalization. `reviewed: true` records statement approval; clear it
+when changing the target's assumptions or conclusion. This is a manual convention,
+not an automatic target-locking system. Future proving agents must not silently
+change approved targets. Maintainers retain the final inclusion decision.
 
-`complete` requires an empty pending-dependency list, a complete binding, and a
-passing report. Validation rejects a complete block with pending statements, even
-when report checking is disabled for regeneration. `partial` permits
-unfinished work and missing binding fields; `not_started` indicates no completed
-formalization. The entry badge is derived from all block statuses. Neither a
-complete badge nor a mathlib binding grants publication approval.
+A node without a declaration shows **Declaration missing**; an unreviewed
+declaration shows **Pending review**. Changing `reviewed` takes effect
+on the next page load and does not invalidate Lean evidence. Approval alone cannot
+complete a node with missing or stale evidence, a `sorry` proof, or pending
+dependencies. Its status becomes **Verification needed**, **Proof pending**, or
+**Dependencies pending**, respectively. The badge displays this status without
+repeating it as reason text; the API exposes the same distinct status codes.
 
 ## Local check workflow
 
 Run `uv run python app/manage.py check_formalizations`. The command:
 
-1. Validates the metadata and source paths, allowing reports to be regenerated.
-2. Runs `lake build` using the pinned Lean/mathlib environment, explicitly building
-   pending modules as well as the main library.
-3. Imports the bound modules and runs `#check` and `#print axioms` for complete
-   declarations and pending dependencies.
-4. For complete declarations, rejects axioms outside `propext`, `Classical.choice`,
-   and `Quot.sound`, including direct or transitive use of `sorryAx`. Pending
-   dependencies also permit `sorryAx`, so their statement types can be checked
-   before proofs are available.
-5. Writes local reports with bindings, axiom lists, content hashes, and environment
-   pins. Pending dependencies appear in a separate `pending_dependencies` list,
-   never among certified complete `declarations`. Incomplete blocks are not
-   certified, and no status is automatically promoted.
+1. Loads the formal node registry independently of the human corpus and validates
+   IDs, module paths, dependency targets, and acyclicity.
+2. Fingerprints node metadata except `reviewed`, local Lemmatheca sources, imported dependency sources,
+   and the pinned environment, then runs `lake build` for registered modules.
+3. Imports these modules and runs `#check` and `#print axioms` for declarations.
+4. Allows `propext`, `Classical.choice`, and `Quot.sound` for complete proofs.
+   Direct or transitive `sorryAx` means pending; other axioms fail the run.
+5. Rejects inputs changed during the run and atomically writes
+   `formal/checks/nodes.json`, recording evidence for complete and pending proofs.
 
-The reader validates that complete declarations appear in a passing report; it
-also checks that a complete mathlib binding's source is recorded in that report.
-It does not require an installed mathlib checkout or execute Lean during page
-requests. Missing local Lemmatheca files remain errors. The command is intended for trusted
-repository content. It does not compare every saved source hash against current
-files during page requests. A report should be regenerated when mathematical
-content, bindings, or the environment changes.
+With no node declarations, the command skips Lean. Old archived JSON bindings
+and `checks/sumsets.json` are not part of the new registry.
 
-`unformalized_dependencies` is an author-maintained account of missing work, not
-a full dependency closure. Full dependency extraction remains future work, as does
-checking that the submitted human argument follows the same proof strategy. In
-particular, type agreement alone does not certify an exposition.
+The reader derives readiness from current evidence, statement review, and ready
+node dependencies. For a reviewed declaration, a missing or stale report yields
+`verification_needed`, never `complete` or a proof status from outdated evidence.
+Node metadata other than `reviewed`, source, dependency, or environment changes invalidate affected
+evidence. All local Lean sources are checked conservatively, so an unrelated
+local edit can invalidate several nodes. File hashes are cached by file metadata;
+page requests never run Lean.
+
+A web-only deployment can omit Lake dependencies: the committed report and pinned
+environment are trusted when external files are absent; installed dependency
+sources are compared with their recorded hashes. Local Lean sources must exist.
+The import scanner supports ordinary module imports and does not audit arbitrary
+metaprogram file access or custom build steps. The command operates on trusted
+repository content.
+
+Node dependencies are explicitly maintained; Lean axiom checking catches
+transitive `sorry` even if an edge was not recorded. Full mathematical dependency
+extraction, proof-strategy correspondence, and novelty checks are separate work.
+A successful check does not itself establish that a human block is fully covered.
 
 ## Experiment outcomes
 
@@ -100,5 +105,6 @@ and AI recommendations remain visible as recommendations. A selected maintainer
 makes the final publication decision.
 
 Git commits and content hashes identify what was reviewed and checked. There are
-no entry/proof version counters in the metadata. After a change, rerun checks and
-review the new content rather than carrying approval forward automatically.
+no entry/proof version counters in the metadata. After changing mathematical
+content, rerun checks and review the new content rather than carrying approval
+forward automatically.

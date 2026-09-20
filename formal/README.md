@@ -3,7 +3,7 @@
 This Lake project pins **Lean 4.34.0** and **mathlib v4.34.0**. The exact mathlib
 commit and all transitive packages are recorded in `lake-manifest.json`.
 
-Its current role is to check corpus bindings and provide a reproducible environment
+Its current role is to check formal nodes and provide a reproducible environment
 for AI-formalization experiments. It is not an automated translator or experiment
 runner. Keep these pins fixed during a comparison; record any upgrade as a new
 environment. See the [experiment plan](../docs/formalization-experiments.md).
@@ -28,10 +28,129 @@ The website can serve the corpus without it, using the committed reports and a
 pinned GitHub source link for referenced mathlib files that are absent locally.
 Keep the tracked Lean sources, reports, and manifest on the web server.
 
+## Formal nodes
+
+`formal/nodes/<id>.json` is the formal registry, independent of entry metadata.
+Definition 1 of sets-and-maps currently links to nine nodes. Each records its
+human review separately. A node record has exactly these fields (this is illustrative, not
+an active node):
+
+```json
+{
+  "id": "sumsets-lower-bound",
+  "declaration": "Lemmatheca.sumset_card_lower_bound",
+  "module": "Lemmatheca.Combinatorics.Additive.FiniteSumsets",
+  "dependencies": [],
+  "reviewed": false
+}
+```
+
+Use the module actually containing the chosen declaration. Local declarations use
+`Lemmatheca.*` modules in `formal/Lemmatheca/`; mathlib declarations use `Mathlib.*`.
+The module determines the source path, so no duplicate `source` field is stored.
+Each node names one declaration; a block can link any number of nodes. Definitions
+can name existing definitions, structures, or instances. IDs stay fixed across
+article reordering and can be reused by several entries.
+
+Before a declaration exists, `declaration` and `module` can both be `null`, with
+`reviewed: false`. Dependencies are unique node IDs; unknown IDs and cycles fail
+validation. Pending Lean statements may contain `sorry`. A node has no editable
+`status` or report path: readiness is derived from `formal/checks/nodes.json`.
+
+A human sets `reviewed: true` after reviewing the intended formal statement.
+Saving this flag takes effect on the next page load without rerunning Lean.
+It changes **Pending review** to **Complete** only if the declaration already has
+current passing evidence and ready dependencies. A reviewed theorem with `sorry`
+still shows **Proof pending**. Setting the flag back to `false` withdraws approval
+without discarding the Lean check.
+
+Committing HTML `data-formal` mappings records the maintainer's coverage review,
+including empty mappings. When changing a target's assumptions or conclusion,
+clear its review flag and obtain renewed review. Review is currently a manual
+repository convention; an automated target-locking or review service is not
+implemented. Proof attempts must keep approved targets fixed.
+
+Node pages at `/formal/nodes/<id>/` show the declaration, status, dependencies,
+and escaped source with line numbers. The declaration line is inferred when
+possible; generated declarations may have no source line. The separate read-only
+API lives at `/api/formal/nodes/` and `/api/formal/nodes/<id>/`. It can be used
+without loading the human corpus. Proving agents and write endpoints come later.
+
+Nodes expose one derived `status` and its `status_label`, used by every badge.
+There is no separate `reason` field or repeated reason paragraph on the page.
+The first applicable row determines the status:
+
+| API status | Badge | Meaning |
+| --- | --- | --- |
+| `declaration_missing` | Declaration missing | No Lean declaration has been assigned |
+| `review_pending` | Pending review | The declaration still needs human approval |
+| `verification_needed` | Verification needed | The current declaration has no valid check |
+| `proof_pending` | Proof pending | A current check found direct or transitive `sorry` |
+| `dependencies_pending` | Dependencies pending | The declaration is approved and checked, but a dependency is incomplete |
+| `complete` | Complete | The declaration and its dependencies are ready |
+
+`checked_on` is present for a current check, including one that found an unfinished
+proof. A stale check cannot determine proof readiness. The verification report
+still records proof evidence as `complete` or `pending`; human review and
+dependency readiness are combined with that evidence when deriving node statuses.
+
+## Checking nodes
+
+From the repository root:
+
+```sh
+uv run python app/manage.py check_formalizations
+```
+
+The checker builds all registered modules, imports them, runs `#check` and
+`#print axioms`, and writes one atomic report to `formal/checks/nodes.json`.
+It does not read archived or active JSON block bindings. With no declarations it
+skips Lean and leaves historical reports alone. It also rejects formal inputs
+that change during the check.
+
+A ready node needs an approved statement, current passing evidence, and ready
+node dependencies. The permitted foundational axioms are `propext`,
+`Classical.choice`, and `Quot.sound`. Direct or transitive `sorryAx` is recorded
+as pending; other axioms fail the run. There is no promotion based merely on a
+successful build, and a proved node with an unfinished declared dependency stays
+pending. Proof-dependency extraction is not implemented: declared node edges and
+Lean's transitive axiom checks serve different purposes.
+
+Evidence fingerprints node IDs, declarations, modules, and dependencies, but
+excludes the human `reviewed` flag. It also covers the toolchain/manifest/Lake configuration,
+all local Lemmatheca sources, and the source import closure of checked modules.
+The reader compares fingerprints without running Lean; file hashes are cached
+until file metadata changes. Source scanning is conservative and may invalidate
+unrelated nodes from the same run. The import scanner supports ordinary module
+imports; this is a trusted repository check, not an audit of arbitrary metaprograms
+or custom build steps. Dependencies supplied with Lean use its toolchain pin.
+
+A web-only checkout may omit `.lake/packages/`; recorded external source hashes
+are checked when those files are installed, and otherwise the pinned environment
+and committed report are trusted. Missing local sources are errors. Node edits
+other than review toggles, source changes, or changed pins require a fresh check. A report does not establish
+that the formal statement covers the human text or follows its proof strategy.
+
+Keep prompts, attempts, statement-writing costs, proof-writing costs, and human
+review time in separate experiment records. No model runner, costing system, or
+autonomous proving service is implemented yet.
+
 ## Active corpus and archived examples
 
-The active corpus contains only **Sets and maps: a first guide**. All 21 blocks
-are `not_started`; no Lean work should be performed until its measured pass.
+The active corpus contains only **Sets and maps: a first guide**. Its first
+definition is a declaration pilot with nine nodes:
+
+- Existing mathlib definitions: `Set`, `Set.Mem`, `Set.ofPred`, and `Set.insert`.
+- A local definition of the set of even natural numbers.
+- Four pending claims: insertion order, repeated insertion, the cardinality of
+  `{2, 5, 8}`, and membership of zero in the even-number set.
+
+The local declarations are in
+[`SetsAndElements.lean`](Lemmatheca/SetTheory/SetsAndElements.lean). They compile,
+but all four theorem proofs contain `sorry`. Review and proof work advance its
+progress separately; each node's `reviewed` flag records human approval. The other
+20 blocks remain `not_started` for a measured pass.
+
 The examples discussed below are preserved in `corpus/backup/`, outside the live
 reader and formalization checks. Their reusable Lean modules remain here.
 
@@ -52,15 +171,8 @@ The file also proves nonemptiness for two and three summands, the identity
 nonemptiness lemma calls the two-set lemma twice. Display numbers belong to each
 article and do not form part of a Lean declaration's identity.
 
-The archived entry **Finding a monotone subsequence** is deliberately
-unformalized for a later cost measurement. All of its blocks are `not_started`;
-there is no associated Lean code, pending statement, or mathlib binding. The
-verification command skips these blocks. Hashing their source as part of a corpus
-snapshot does not certify their mathematics.
-
-**Sets and maps: a first guide** is also human text only for now: all 21 blocks
-are `not_started`, with no Lean sources or mathlib bindings. It will receive a
-separate measured formalization pass.
+The archived **Finding a monotone subsequence** remains unformalized for later
+measurements; it has no registered formal nodes.
 
 Finite subsets use mathlib's `Finset`; `open scoped Pointwise` gives sumset
 notation. The `DecidableEq G` instance lets finite sets compute membership and
@@ -79,53 +191,20 @@ prerequisites and check that the generated proof follows the supplied argument.
 Calling an existing target theorem is a retrieval success, not evidence that its
 human proof was translated. Record those outcomes separately.
 
-[`checks/sumsets.json`](checks/sumsets.json) is a historical record for the archived
-sumset examples. Its original corpus paths describe the earlier checkout.
-For active entries with bindings, reports are generated by:
+[`checks/sumsets.json`](checks/sumsets.json) is a historical record in the old
+format. It is not consumed by the node checker. Archived JSON bindings are not
+live nodes; restoring them requires registering nodes and checking them anew.
 
-```sh
-uv run python app/manage.py check_formalizations
-```
-
-Run this from the repository root. With the current active corpus, it reports no
-bindings to check and does not launch Lean or rewrite the archived report. To
-recheck an archived entry, restore it and its referenced entries to the active
-corpus, restore their taxonomy and reading-order records, then run the command.
-For active bindings, it builds Lean, checks complete corpus bindings
-and records their axioms, source hashes, and environment
-pins. Pending helper modules are built explicitly and their statements type-checked
-with `sorry` allowed, separately from complete proofs. They appear under
-`pending_dependencies` in the report. Complete declarations must remain free of
-`sorryAx`, including transitive dependencies. It is a local development report, not a maintainer approval or a full
-mathematical dependency audit.
-
-The web reader checks report membership rather than rerunning Lean or checking all
-source hashes on each request. Refresh reports after relevant source or metadata
-changes. These reports contain no model usage, retry counts, or editing costs;
-experiment records belong separately from `formal/checks/`.
-
-The archived sumset examples also bind directly to mathlib's `Finset.add` and
-`Finset.Nonempty.add`. These need no local wrapper proof. Local definitions
-`Lemmatheca.translateFinset` and `Lemmatheca.tripleSumset` supply the other definition
-bindings. Metadata in `corpus/entries/` contains no per-entry/proof version fields;
-each block has one formalization and an explicit `unformalized_dependencies` list
-of Lean statement bindings (`declaration`, `module`, `source`) with unfinished
-proofs. These are not imported mathlib declarations.
-A nonempty list prevents `complete` status.
-
-The archived theorem **A sharper bound over the integers** has a human proof
-but no Lean declaration yet. Its increasing-chain construction and counting step
-are recorded as pending dependencies with explicit Lean statements and `sorry`:
+The archived examples also used mathlib's `Finset.add` and `Finset.Nonempty.add`
+and the local definitions `Lemmatheca.translateFinset` and `Lemmatheca.tripleSumset`.
+Pending helper statements still live in:
 
 - [IntegerSumsetChain.lean](Lemmatheca/Combinatorics/Additive/Pending/IntegerSumsetChain.lean)
 - [IncreasingListCard.lean](Lemmatheca/Combinatorics/Additive/Pending/IncreasingListCard.lean)
 
-These modules are not imported by `Lemmatheca.lean`; the check command builds them
-explicitly when active entries list them as dependencies. It checks their types but does not certify the partial theorem or
-discharge these obligations. Both completed formalizations and pending helpers
-link to the shared Lean file viewer. It can also open files without corpus
-bindings at `/lean/formal/<path>.lean/` or `/lean/Mathlib/<path>.lean/`, including
-`/lean/formal/Lemmatheca.lean/`.
+Their `sorry` proofs remain unfinished. They are not imported by the main library
+and are not checked by the node command unless registered. Registered node pages
+display the relevant source; other files can be read directly in the repository.
 
 ## Original integer illustration
 

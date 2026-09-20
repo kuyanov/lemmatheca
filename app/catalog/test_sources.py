@@ -7,10 +7,8 @@ from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
-from django.utils.html import escape
 
 from .content import entries, load_catalog
-from .lean import lean_source_url
 from .sources import ContentError, render_block
 from .testing import ExampleCorpusMixin
 
@@ -25,9 +23,6 @@ class CorpusSourceTests(ExampleCorpusMixin, SimpleTestCase):
         super().setUp()
         self.source = self.corpus / "entries" / FIRST / "entry.html"
         self.metadata = self.source.with_suffix(".json")
-        second = json.loads(
-            (self.corpus / 'entries' / SECOND / 'entry.json').read_text())
-        self.pending = second['blocks']['integer-triple-sumset-bound']['formalization']['unformalized_dependencies']
 
     def load(self):
         return load_catalog(self.corpus, settings.REPOSITORY_DIR)
@@ -108,22 +103,6 @@ class CorpusSourceTests(ExampleCorpusMixin, SimpleTestCase):
                 with self.assertRaisesRegex(ContentError, message):
                     self.load()
 
-    def test_missing_bindings_broken_references_and_lean_paths_fail_validation(self):
-        original = self.metadata.read_text()
-        for change in ("binding", "target", "lean", "references"):
-            metadata = json.loads(original)
-            if change == "binding":
-                metadata["blocks"]["missing"] = {}
-            elif change == "target":
-                metadata["blocks"]["sumset-lower-bound"]["references"][0]["block_id"] = "missing"
-            elif change == "lean":
-                metadata["blocks"]["sumset-lower-bound"]["formalization"]["source"] = "missing.lean"
-            else:
-                metadata["blocks"]["sumset-lower-bound"]["references"] = []
-            with self.subTest(change=change):
-                self.metadata.write_text(json.dumps(metadata))
-                with self.assertRaises(ContentError):
-                    self.load()
 
     def test_missing_and_duplicate_reading_order_entries_fail_validation(self):
         path = self.corpus / "reading-order.json"
@@ -170,152 +149,12 @@ class CorpusSourceTests(ExampleCorpusMixin, SimpleTestCase):
         self.assertIn(f'href="/static/entries/{FIRST}/notes.txt"', html)
 
     def test_metadata_has_only_the_essential_fields(self):
-        from .metadata import ENTRY_FIELDS, FORMAL_FIELDS
+        from .metadata import ENTRY_FIELDS
         for path in (self.corpus / 'entries').glob('*/entry.json'):
             metadata = json.loads(path.read_text())
             self.assertEqual(set(metadata), ENTRY_FIELDS)
-            for block in metadata['blocks'].values():
-                self.assertEqual(set(block), {'formalization', 'references'})
-                self.assertEqual(set(block['formalization']), FORMAL_FIELDS)
-                for reference in block['references']:
-                    self.assertEqual(set(reference), {'entry_id', 'block_id'})
+            self.assertNotIn('blocks', metadata)
 
-    def test_formalization_badge_is_derived_from_all_blocks_including_answers(self):
-        metadata = json.loads(self.metadata.read_text())
-        with override_settings(CORPUS_DIR=self.corpus):
-            url = reverse('catalog:entry', args=[FIRST])
-            response = self.client.get(url)
-            self.assertEqual(
-                response.context['entry']['formalization']['status'], 'complete')
-            self.assertContains(response, 'formalization-complete')
-            self.assertContains(response, '✓')
-            metadata['blocks']['nonempty-question']['formalization']['status'] = 'partial'
-            self.metadata.write_text(json.dumps(metadata))
-            response = self.client.get(url)
-            self.assertEqual(
-                response.context['entry']['formalization']['status'], 'partial')
-            self.assertContains(response, 'Partially formalized')
-            for block in metadata['blocks'].values():
-                block['formalization']['status'] = 'not_started'
-            self.metadata.write_text(json.dumps(metadata))
-            response = self.client.get(url)
-            self.assertEqual(
-                response.context['entry']['formalization']['status'], 'not_started')
-            self.assertContains(response, 'Formalization not started')
-
-    def test_partial_formalizations_allow_missing_declarations(self):
-        metadata = json.loads(self.metadata.read_text())
-        formal = metadata['blocks']['translation']['formalization']
-        formal.update(status='partial', declaration=None,
-                      source=None, module=None, verification_report=None)
-        self.metadata.write_text(json.dumps(metadata))
-        self.assertEqual(self.load()[FIRST]
-                         ['formalization']['status'], 'partial')
-        formal['status'] = 'complete'
-        self.metadata.write_text(json.dumps(metadata))
-        with self.assertRaisesRegex(ContentError, 'Complete formalizations need'):
-            self.load()
-
-    def test_complete_formalizations_reject_pending_dependencies_even_without_report_checks(self):
-        original = self.metadata.read_text()
-        for block_id in ('translation', 'nonempty-sumset'):
-            for check_reports in (True, False):
-                with self.subTest(block=block_id, check_reports=check_reports):
-                    metadata = json.loads(original)
-                    metadata['blocks'][block_id]['formalization']['unformalized_dependencies'] = self.pending
-                    self.metadata.write_text(json.dumps(metadata))
-                    with self.assertRaisesRegex(ContentError, 'cannot have unformalized dependencies'):
-                        load_catalog(
-                            self.corpus, settings.REPOSITORY_DIR, check_reports=check_reports)
-
-    def test_pending_dependencies_require_valid_unique_local_lean_bindings(self):
-        metadata = json.loads(self.metadata.read_text())
-        formal = metadata['blocks']['translation']['formalization']
-        formal.update(declaration=None, source=None,
-                      module=None, verification_report=None)
-        for status in ('partial', 'not_started'):
-            formal.update(
-                status=status, unformalized_dependencies=self.pending)
-            self.metadata.write_text(json.dumps(metadata))
-            self.assertEqual(self.load()[
-                             FIRST]['blocks_by_id']['translation']['formalization']['status'], status)
-        for invalid in (
-                None, 'A statement', [None], [1], ['A statement'], [{}],
-                [self.pending[0], self.pending[0]],
-                [{**self.pending[0], 'declaration': 'not a Lean name'}],
-                [{**self.pending[0], 'source': '../../secrets.lean'}],
-                [{**self.pending[0], 'source': None}],
-                [{**self.pending[0], 'module': 'Mathlib.Data.Finset.Card'}]):
-            with self.subTest(dependencies=invalid):
-                formal['unformalized_dependencies'] = invalid
-                self.metadata.write_text(json.dumps(metadata))
-                with self.assertRaises(ContentError):
-                    self.load()
-
-    def test_partial_integer_bound_displays_pending_statements_and_entry_badge(self):
-        with override_settings(CORPUS_DIR=self.corpus):
-            response = self.client.get(reverse('catalog:entry', args=[SECOND]))
-            entry = response.context['entry']
-            self.assertEqual(entry['formalization']['status'], 'partial')
-            self.assertEqual(entry['formalization']['complete'], 4)
-            self.assertEqual(entry['formalization']['total'], 5)
-            block = entry['blocks_by_id']['integer-triple-sumset-bound']
-            self.assertEqual(block['label'], 'Theorem 2')
-            self.assertEqual(block['formalization']['status'], 'partial')
-            self.assertIsNone(block['formalization']['declaration'])
-            self.assertIsNone(block['formalization']['verification_report'])
-            self.assertContains(response, 'formalization-partial')
-            self.assertRegex(response.content.decode(),
-                             r'2\s+statements pending')
-            self.assertContains(response, 'Unproved dependencies')
-            for dependency in block['formalization']['unformalized_dependencies']:
-                url = dependency['source_url']
-                self.assertTrue(url.startswith('/lean/formal/'))
-                self.assertContains(response, f'href="{escape(url)}"')
-                self.assertContains(response, dependency['declaration'])
-            self.assertEqual(
-                entries()[FIRST]['formalization']['status'], 'complete')
-
-    def test_dependency_links_show_escaped_lean_source_and_return_to_the_block(self):
-        block_id = 'integer-triple-sumset-bound'
-        with override_settings(CORPUS_DIR=self.corpus):
-            for dependency in self.pending:
-                url = lean_source_url(
-                    dependency, entry_id=SECOND, block_id=block_id)
-                response = self.client.get(url)
-                self.assertRegex(response.content.decode(),
-                                 r'Proof\s+incomplete')
-                self.assertContains(response, 'sorry')
-                self.assertContains(response, dependency['declaration'])
-                source = (settings.REPOSITORY_DIR /
-                          dependency['source']).read_text()
-                self.assertContains(response, escape(source))
-                self.assertContains(
-                    response, f'href="/entries/{SECOND}/#{block_id}"')
-                self.assertNotContains(response, 'katex.min.js')
-                self.assertEqual(self.client.head(url).status_code, 200)
-                self.assertEqual(self.client.post(url).status_code, 405)
-
-    def test_complete_formalizations_link_to_local_and_mathlib_source_files(self):
-        with override_settings(CORPUS_DIR=self.corpus):
-            record = entries()[FIRST]
-            response = self.client.get(reverse('catalog:entry', args=[FIRST]))
-            for block_id in ('sumset-lower-bound', 'nonempty-sumset', 'nonempty-question'):
-                block = record['blocks_by_id'][block_id]
-                formal = block['formalization']
-                self.assertContains(
-                    response, f'href="{escape(formal["source_url"])}"')
-                viewer = self.client.get(formal['source_url'])
-                self.assertContains(viewer, 'Formalization complete')
-                self.assertContains(viewer, formal['declaration'])
-                return_url = reverse('catalog:entry', args=[FIRST])
-                if block['kind'] == 'question':
-                    return_url += '?answer=' + block_id
-                self.assertEqual(
-                    viewer.context['return_url'], return_url + '#' + block_id)
-                if formal['is_mathlib']:
-                    self.assertContains(
-                        viewer, 'github.com/leanprover-community/mathlib4/blob/')
 
     def test_citations_display_compact_authors_titles_years_and_source_links(self):
         metadata = json.loads(self.metadata.read_text())
@@ -372,30 +211,14 @@ class CorpusSourceTests(ExampleCorpusMixin, SimpleTestCase):
             entry = response.context['entry']
             self.assertEqual(entry['formalization']['status'], 'not_started')
             self.assertEqual(entry['formalization']['complete'], 0)
-            self.assertContains(response, 'Formalization not started', count=5)
+            self.assertContains(response, 'Formalization: Not started')
             self.assertContains(
                 response, 'href="https://doi.org/10.1112/jlms/s1-34.3.352"')
             self.assertNotContains(response, 'href="/lean/')
             for block in entry['blocks']:
                 formal = block['formalization']
                 self.assertEqual(formal['status'], 'not_started')
-                for field in ('declaration', 'source', 'module', 'verification_report'):
-                    self.assertIsNone(formal[field])
-                self.assertEqual(formal['unformalized_dependencies'], [])
-
-    def test_mathlib_declarations_do_not_require_a_local_proof(self):
-        catalog = self.load()
-        formal = catalog[FIRST]['blocks_by_id']['nonempty-sumset']['formalization']
-        self.assertEqual(formal['declaration'], 'Finset.Nonempty.add')
-        self.assertEqual(
-            formal['source'], 'Mathlib/Algebra/Group/Pointwise/Finset/Basic.lean')
-        self.assertTrue(formal['is_mathlib'])
-        self.assertTrue(formal['source_url'].startswith('/lean/Mathlib/'))
-        metadata = json.loads(self.metadata.read_text())
-        metadata['blocks']['nonempty-sumset']['formalization']['declaration'] = 'Finset.missing_declaration'
-        self.metadata.write_text(json.dumps(metadata))
-        with self.assertRaisesRegex(ContentError, 'Declaration missing'):
-            self.load()
+                self.assertIsNone(block['formal_ids'])
 
     def test_equation_references_and_tables_render_with_math_and_accessible_links(self):
         entry = self.load()[FIRST]

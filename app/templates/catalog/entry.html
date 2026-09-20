@@ -43,14 +43,11 @@
       {% for block in entry.blocks %}
       <section id="{{ block.id }}" class="math-block math-block-{{ block.kind }}"
         aria-labelledby="{{ block.id }}-title">
-        <div class="block-heading">
-          <span class="eyebrow">{{ block.label }}</span>
-          <a class="block-permalink" href="#{{ block.id }}"
-            aria-label="Link to {{ block.label }}: {{ block.title }}">#</a>
-        </div>
-        <h2 id="{{ block.id }}-title">{{ block.title }}</h2>
-        {{ block.html }}
         {% include "catalog/_verification.html" %}
+        <div class="block-title-row">
+          <h2 id="{{ block.id }}-title">{{ block.title }}</h2>
+        </div>
+        {{ block.html }}
       </section>
       {% endfor %}
       {% if entry.status == "draft" %}

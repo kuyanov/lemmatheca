@@ -6,7 +6,7 @@ from catalog.sources import ContentError
 
 
 class Command(BaseCommand):
-    help = "Validate corpus sources, references, assets, reading order, and Lean bindings."
+    help = "Validate corpus sources, HTML references, assets, reading order, and formal node links."
 
     def handle(self, **options):
         try:

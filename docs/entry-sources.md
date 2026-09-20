@@ -10,7 +10,7 @@ The required entry fields are exactly:
 
 ```text
 id, title, based_on, primary_area, additional_areas,
-status, reading_time, summary, abstract, blocks
+status, reading_time, summary, abstract
 ```
 
 `status` is the editorial state, currently `draft` for all examples; it is
@@ -44,99 +44,35 @@ For example:
 ]
 ```
 
-Top-level `authors`, `license`, and `source` fields have been removed. Citation
-authors identify the cited work, not the writer of the entry. Bibliographic
-sources are separate from each block's mathematical `references` and Lean `source`.
+Top-level `authors`, `license`, and `source` fields are not part of the contract.
+Citation authors identify the cited work, not the writer of the entry. JSON also
+has no `blocks`, `references`, or formalization fields: HTML is the single source
+of block structure and human links. Git records history.
 
-`blocks` is keyed by the stable IDs in the HTML. Every block has exactly
-`formalization` and `references`:
+## Optional formal nodes
 
-```json
-"nonempty-sumset": {
-  "formalization": {
-    "status": "complete",
-    "declaration": "Finset.Nonempty.add",
-    "source": "Mathlib/Algebra/Group/Pointwise/Finset/Basic.lean",
-    "verification_report": "formal/checks/sumsets.json",
-    "module": "Mathlib.Algebra.Group.Pointwise.Finset.Basic",
-    "unformalized_dependencies": []
-  },
-  "references": []
-}
+A human-only submission needs no Lean work. Leave `data-formal` absent for blocks
+whose formalization has not started. After planning and human review, use:
+
+```html
+<section id="two-inclusions" data-kind="lemma" data-formal="example-subset-antisymm example-set-ext">
+  <h2>Equality from two inclusions</h2>
+  <p>Human statement and proof…</p>
+</section>
 ```
 
-A reference has only `entry_id` and `block_id`. Its target must exist and match a
-mathematical citation in the HTML. There are no entry, proof, or reference version
-fields; Git records change history. Block kinds, titles, and order live in HTML.
+Every listed ID must resolve to `formal/nodes/<id>.json`; IDs must be distinct.
+Use `data-formal=""` only after reviewing that the block has nothing to formalize.
+A definition can link to an existing Lean definition, and a question links its
+answer or counterexample. A block may link to several nodes from different modules.
 
-Formalization statuses are `not_started`, `partial`, and `complete`. Unfinished
-bindings may use `null` for missing declaration, module, source, and report fields.
-A complete binding requires all four, its declaration must occur in a passing
-report, and `unformalized_dependencies` must be empty. A nonempty list with
-`status: "complete"` is a validation error, including when regenerating reports.
-
-`unformalized_dependencies` links to Lean statements whose proofs are unfinished.
-Each item has exactly `declaration`, `module`, and `source`, identifying a local
-Lean declaration with the same module/path conventions as a block binding. Names
-must be unique within the list. Free-text statements are no longer accepted.
-The website links each declaration to the shared Lean file viewer with a return
-link to the citing block. Completed formalizations use the same viewer. No Lean
-compiler runs during page requests.
-
-For a partial proof plan without a main Lean declaration yet, use:
-
-```json
-"formalization": {
-  "status": "partial",
-  "declaration": null,
-  "source": null,
-  "verification_report": null,
-  "module": null,
-  "unformalized_dependencies": [
-    {
-      "declaration": "Lemmatheca.Pending.increasing_list_length_le_card",
-      "module": "Lemmatheca.Combinatorics.Additive.Pending.IncreasingListCard",
-      "source": "formal/Lemmatheca/Combinatorics/Additive/Pending/IncreasingListCard.lean"
-    }
-  ]
-}
-```
-
-The example helper has an explicit type and an unfinished proof:
-
-```lean
-theorem increasing_list_length_le_card (S : Finset ℤ) (chain : List ℤ)
-    (hincreasing : chain.Pairwise (· < ·))
-    (hmem : ∀ z ∈ chain, z ∈ S) :
-    chain.length ≤ S.card := by
-  sorry
-```
-
-Keep pending helpers in dedicated source files so that a link shows just the
-relevant statement and its imports. The examples use `Additive/Pending/` modules,
-which are not imported by the main library. The check command builds them
-explicitly and records their axiom dependencies separately. `sorry` permits Lean
-to check the statement's type; it does not prove the statement.
-
-An existing, checked mathlib result can discharge an obligation. It does not
-belong on this list merely because its proof lives outside Lemmatheca. The list is
-author-maintained, not automatically extracted from a proof term.
-
-The list can also accompany `not_started`; a nonempty list always prevents
-completion, but an empty list alone never establishes it. Removing obligations
-still requires a complete binding and a passing check before setting `complete`.
-The integer bound in the archived **Adding three sets** example demonstrates a partial block with two
-pending statements with `sorry`; the main theorem has no complete Lean proof.
-
-The entry badge is derived from **all** blocks, including definitions and question
-answers: all complete → complete; all not started → not started; every other
-combination → partial. A question's status describes its answer or counterexample.
-A complete formalization does not imply editorial publication or human approval.
-
-The archived **Finding a monotone subsequence** example, based on Seidenberg's one-page paper and
-Björner–Stanley's exposition, is reserved for a later formalization-cost experiment.
-All four blocks use `not_started`, with null declaration/module/source/report
-fields and an empty dependency list. It has no Lean file or mathlib binding.
+The badge next to the title shows concise derived progress. For linked blocks,
+it expands into node IDs, each linked to a node page with status and Lean source.
+Nodes and verification evidence belong to the [formal layer](../formal/README.md#formal-nodes),
+not entry JSON. The [corpus README](../corpus/README.md#block-to-node-mapping)
+explains aggregation and the review convention. Definition 1 of sets-and-maps
+has nine nodes with individually tracked review; the other blocks have no mappings.
+Statement writing and proving remain separate measurement tasks.
 
 ## HTML, equations, and tables
 
@@ -179,7 +115,7 @@ an explicit `\tag`; the renderer generates the tag. Labels must be unique, and
 missing references fail validation. Forward references work. Prose references and
 standalone `\(\eqref{...}\)` become clickable `(1)` links. References embedded in a
 larger formula become the parenthesized number within that formula. Equation
-references are local to the entry; they do not belong in block `references`.
+references are local to the entry and need no JSON record.
 
 Ordinary tables, captions, headers, lists, emphasis, and images are supported:
 
@@ -212,7 +148,7 @@ Give each figure a stable ID and one caption. The reader inserts **Figure 1**,
 
 The link text becomes **Figure 1** automatically, including in forward references.
 A missing target fails validation. Figure references stay within the entry and
-are not block dependencies, so they need no JSON `references` record. They provide
+need no separate JSON record. They provide
 a return link to the citing block, just like mathematical references.
 
 ## Links, assets, and reading order
@@ -241,30 +177,19 @@ Keep inactive examples in `corpus/backup/`, outside `entries/`. They are not ser
 validated, or included in formalization checks. `taxonomy_complete.json` is a
 reference copy; only `taxonomy.json` controls browsing and area validation.
 
-## Lean bindings and checks
+## Formal nodes and checks
 
-For local code, use a `Lemmatheca.*` module and a repository-relative source such as
-`formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean`. For existing mathlib
-code, use a `Mathlib.*` module and a mathlib-relative source such as the example
-above. No local wrapper proof is required. Source links open the general viewer
-at `/lean/<source>/`, using the metadata's source path unchanged. Examples:
+Local nodes name a `Lemmatheca.*` module; mathlib nodes name a `Mathlib.*` module.
+The source path is inferred from that module. Each node page shows the full
+escaped source, line anchors, and a highlighted declaration line when it can be
+inferred. Qualified namespaces, comments, and ordinary declaration forms are
+handled; generated declarations may have no inferred line. Node links preserve
+a return to the referring block and reopen question answers when appropriate.
 
-- `/lean/formal/Lemmatheca/Combinatorics/Additive/FiniteSumsets.lean/`
-- `/lean/Mathlib/Algebra/Group/Pointwise/Finset/Basic.lean/`
-
-Any `.lean` file under the local `formal/` tree (excluding hidden directories) or
-the pinned `Mathlib/` tree can be viewed without an entry binding. The viewer
-displays the whole file. Entry-generated links add `from`, `at`, and `declaration`
-parameters; a matching binding supplies that declaration's status and return link.
-Standalone views do not assign a verification status to the file. The viewer also
-links mathlib source to the exact commit pinned in `formal/lake-manifest.json`.
-
-The ignored mathlib checkout is optional on a read-only web server. For complete
-mathlib bindings, catalog validation checks the declaration and source path
-against the committed verification report. If a referenced mathlib source is not
-installed, its viewer offers the pinned GitHub link. Local Lemmatheca files are
-still required. The verification command itself compiles the pinned dependencies
-and requires the source files before writing a new report.
+Source is displayed on the node page; there is no separate file viewer.
+A file alone has no verification status. Missing pinned mathlib sources
+have a GitHub fallback when registered by a node; local Lemmatheca sources must
+exist. No Lean process runs while serving a page.
 
 ```sh
 uv run python app/manage.py check_formalizations
@@ -272,13 +197,13 @@ uv run python app/manage.py validate_corpus
 uv run python app/manage.py test catalog
 ```
 
-`check_formalizations` builds the Lean project, imports the bound modules, checks
-every complete declaration and its transitive axioms. It also type-checks pending
-dependencies, recording them separately with their axioms (including `sorryAx`). It writes the reports named in the metadata, with source hashes
-and the pinned environment. Incomplete blocks are not certified or promoted. Rerun after
-changing bound code, metadata, or mathematical content. A report is a local
-check record, not a maintainer approval or proof of agreement with the human text.
+The checker reads nodes independently of entries, builds their modules, checks
+declarations and transitive axioms, and writes `formal/checks/nodes.json`.
+A declaration using `sorry`, including through another theorem, remains pending.
+An empty registry skips Lean; the current registry checks Definition 1's nodes. See
+[verification and review](verification-and-review.md) for evidence and limitations.
 
 The corpus contains trusted repository-owned HTML, parsed as content rather than
 executed as Django templates. This parser is not an upload sanitizer. Public
-submissions, full dependency extraction, and the public AI API remain future work.
+submissions, full proof-dependency extraction, and autonomous proving remain
+future work. The formal API is read-only.

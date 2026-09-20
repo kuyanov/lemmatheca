@@ -18,7 +18,8 @@ research-agent infrastructure are later stages. See the
 | Tests | Django's test runner, plus manual browser checks |
 
 `DATABASES` is empty. Accounts, sessions, Django admin, PostgreSQL, task queues,
-AI model integrations, search services, and a public API are not implemented.
+AI model integrations, search services, and a human-corpus API are not implemented.
+The separate read-only formal-node API is available in the same Django process.
 There is no configured Ruff/pytest or CI pipeline. Dependency pins already exist;
 upgrade Lean and mathlib together deliberately rather than during an experiment.
 
@@ -33,6 +34,7 @@ lemmatheca/
 │   ├── config/                     # Settings, root URLs, WSGI, development 404 middleware
 │   ├── catalog/                    # File loader, validators, rendering, views, tests
 │   │   └── management/commands/    # validate_corpus and check_formalizations
+│   ├── formalization/              # Node registry, readiness, source locations, API/views
 │   ├── templates/                  # Shared Django layout and reader pages
 │   └── static/                     # CSS, small JS, self-hosted vendor/katex
 ├── corpus/
@@ -41,7 +43,7 @@ lemmatheca/
 │   ├── backup/<entry-id>/          # Archived examples, not served as entries
 │   ├── reading-order.json
 │   └── entries/<entry-id>/
-│       ├── entry.json              # Identity, bibliography, areas, blocks and bindings
+│       ├── entry.json              # Identity, bibliography, areas, editorial/reading metadata
 │       ├── entry.html              # Human mathematical sections, without Django tags
 │       └── assets/                 # Optional entry-local illustrations/supplements
 ├── formal/
@@ -55,7 +57,8 @@ lemmatheca/
 │   │       ├── Sumsets.lean
 │   │       ├── FiniteSumsets.lean
 │   │       └── Pending/            # Explicit unfinished helper statements
-│   └── checks/sumsets.json         # Generated verification record
+│   ├── nodes/<id>.json             # Formal declarations, dependencies, review
+│   └── checks/                    # nodes.json when checked; historical sumsets.json
 ├── .vscode/settings.json           # Lean and HTML editing configuration
 ├── pyproject.toml
 └── uv.lock
@@ -74,28 +77,30 @@ an entry between subjects does not require moving either its folder or its proof
 ## Source and rendering flow
 
 1. `catalog.content` reads taxonomy, reading order, and each entry's HTML/JSON.
-   It validates metadata, assets, mathematical references, and formal bindings.
+   It validates metadata, assets, mathematical references, and formal node IDs.
 2. The HTML parser derives block kinds, titles, order, local numbering, and equation
-   labels, plus figure numbers and links. Metadata supplies citations, reading information, references, and
-   formalization records. There is one editable source for each item.
+   labels, figure numbers, links, and `data-formal` mappings. Metadata supplies
+   citations and reading information. `formalization.nodes` resolves formal links
+   and derives readiness. There is one editable source for each item.
 3. Views render the parsed content through shared Django templates. KaTeX runs in
    the browser on entry pages; no AI or Lean process runs during a page request.
-4. Editing an active entry, taxonomy, or reading-order file invalidates the catalog cache. Entry assets are registered
+4. Editing an active entry, taxonomy, reading order, node, report, or checked source
+   invalidates the catalog cache. Entry assets are registered
    with Django staticfiles at startup; adding a new asset directory needs a restart.
 
 The reader lists entries under `corpus/entries/`, including drafts. It currently
 contains only **Sets and maps: a first guide**, under **Logic and foundations →
 Set theory**. `corpus/backup/` and `taxonomy_complete.json` are not live inputs;
-regression tests use temporary copies of the archived examples. Primary areas determine listings
+regression tests use temporary copies of archived human text with old JSON block
+metadata removed. Node tests use isolated fixtures. Primary areas determine listings
 and “Next entry” order. Additional areas are stored but do not currently create
 extra listings. Editorial status is descriptive metadata, not a permission gate.
 The parser accepts trusted repository content; it is not a public-upload sanitizer.
 
 The schema and HTML conventions are documented in [entry authoring](entry-sources.md).
 Entry JSON has no slug, revision, top-level author/license/source fields, or global
-external-lemma registry. `based_on` holds bibliography; block `references` hold
-mathematical links. Git supplies history. Agents can already read these files
-without waiting for an API.
+external-lemma registry. `based_on` holds bibliography; mathematical links live
+only in HTML. There are no JSON `blocks` or `references`. Git supplies history.
 
 ## Routes and interface
 
@@ -104,9 +109,11 @@ without waiting for an API.
 | `/` | Top-level subject links and an example entry |
 | `/areas/<path>/` | Breadcrumbs, child subjects, entries in this primary area |
 | `/entries/<id>/` | Human note, contents, mathematical blocks, badges, source links |
-| `/lean/<source>/` | Escaped Lean source from the allowed local or mathlib trees |
+| `/formal/nodes/<id>/` | Node status, declaration, dependencies, and source with inferred line |
+| `/api/formal/nodes/` | Read-only JSON node list |
+| `/api/formal/nodes/<id>/` | Read-only JSON node details |
 
-There are no submission, account, review, search, or API endpoints. Login and
+There are no submission, account, review, search, or write API endpoints. Login and
 submission buttons open placeholder dialogs. Missing HTML routes use the custom
 404 page in both development and production.
 
@@ -125,26 +132,34 @@ On narrow screens the outline stays in the normal page flow below the header.
 
 ## Formal verification and its limits
 
-Each block has `not_started`, `partial`, or `complete` formalization status.
-A question uses its answer's status. The entry badge aggregates every block.
-Bindings point to local `Lemmatheca.*` or pinned `Mathlib.*` declarations.
-Unproved helper statements are explicit local Lean bindings under
-`unformalized_dependencies`; a nonempty list prevents complete status.
+A missing `data-formal` attribute means not started; an empty attribute means
+not applicable. Otherwise the block badge counts ready nodes and displays a
+percentage until complete. The badge sits beside the title and opens a list of
+node links. Entry totals deduplicate shared nodes and keep unplanned blocks from
+claiming full coverage. Questions map their answers.
 
-`check_formalizations` validates the corpus, builds the main library and bound
-modules, and checks complete declarations and their transitive axiom dependencies.
-Archived entries are excluded. With the current unformalized entry there is nothing
-to check, so the command does not launch Lean or overwrite old reports.
-Only `propext`, `Classical.choice`, and `Quot.sound` are allowed for complete proofs.
-Pending helper statements are checked separately and may use `sorryAx`. Reports
-record bindings, hashes, axiom lists, and environment pins. The command does not
-write proofs or automatically promote statuses. It is not an AI experiment runner.
+Nodes live in `formal/nodes/<id>.json`, with declaration/module, dependencies,
+and statement review. Nodes can exist without an entry. Source paths are inferred
+from modules. The formal API and node pages use `app/formalization/`; the reader
+calls the same Python layer without making an HTTP request to itself.
 
-The reader checks membership in a passing report and, for mathlib bindings, that
-the source was recorded. It does not recompile or compare every recorded hash
-against current files on each request. Regenerate reports after relevant changes.
-A passing report does not certify the human/formal correspondence, proof strategy,
-novelty, or complete mathematical dependency graph.
+`check_formalizations` builds registered modules, checks declarations and their
+transitive axioms, and writes `formal/checks/nodes.json`. `sorryAx` means pending;
+only `propext`, `Classical.choice`, and `Quot.sound` are allowed for complete proofs.
+A ready node additionally needs statement review and ready declared dependencies.
+The reader checks current fingerprints without compiling. Node/source/environment
+changes invalidate affected evidence, except for `reviewed` toggles, which update
+approval without discarding Lean evidence. Source is shown directly on node pages;
+there is no separate file-viewer route. The registry currently contains nine
+proposed nodes for Definition 1 of sets-and-maps. With an empty registry, the
+checker skips Lean. Historical reports are untouched.
+
+Committing reviewed HTML mappings records coverage approval; the node review flag
+records statement approval. These are manual repository conventions. The checker
+does not enforce an autonomous agent's target lock or prove correspondence with
+human text. It fingerprints ordinary source imports, not arbitrary metaprogram
+inputs. Full proof-graph extraction and model runners remain future work. See
+[verification and review](verification-and-review.md) for the exact boundaries.
 
 Read-only deployments retain tracked `corpus/` and `formal/` files. The ignored
 mathlib checkout is optional: when a referenced file is missing, the viewer offers
@@ -168,7 +183,7 @@ statement alignment, proof explanations, and the failures found by experiments.
 When there is useful corpus coverage and actual contribution demand, add accounts,
 submission previews, selected maintainer roles, review history, and publication
 controls. PostgreSQL may then hold operational records; the Git corpus should
-remain the authoritative mathematical source. Search projections, a read-only API,
+remain the authoritative mathematical source. Search projections, a human-corpus API,
 release manifests, object storage, and job queues can be introduced as needed.
 These are options for later work, not prerequisites for the current experiment.
 

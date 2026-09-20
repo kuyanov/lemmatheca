@@ -613,7 +613,7 @@ button {
 }
 
 .entry-bibliography a,
-.verification-note a {
+.formal-node-list a {
   color: var(--green);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -629,6 +629,9 @@ button {
   color: var(--muted);
   font-size: 10px;
   line-height: 1.3;
+  font-family: var(--sans);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .formalization-complete {
@@ -637,7 +640,12 @@ button {
   color: var(--green);
 }
 
-.formalization-partial {
+.formalization-partial,
+.formalization-declaration_missing,
+.formalization-review_pending,
+.formalization-verification_needed,
+.formalization-proof_pending,
+.formalization-dependencies_pending {
   background: #f5f0e4;
   border-color: #e4d8b9;
   color: #806221;
@@ -867,24 +875,6 @@ button {
   margin-right: var(--space-sm)
 }
 
-.verification-note {
-  font-family: var(--sans);
-  font-size: 11px;
-  color: #7b8474;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  padding: 8px 0;
-  margin-top: 16px;
-}
-
-.verification-note summary {
-  cursor: pointer;
-  list-style: revert;
-  font-weight: 500;
-  min-height: 24px;
-  line-height: 24px;
-}
-
 .status-dot {
   display: inline-block;
   width: 5px;
@@ -892,11 +882,6 @@ button {
   background: #a49563;
   border-radius: 50%;
   margin: 0 7px 1px 0
-}
-
-.verification-note p {
-  padding: 8px 0 0;
-  line-height: 1.6;
 }
 
 .back-link {
@@ -908,10 +893,6 @@ button {
   color: var(--green);
   min-height: 28px;
   align-items: center;
-}
-
-.verification-note code {
-  overflow-wrap: anywhere;
 }
 
 .lean-file-page {
@@ -960,6 +941,31 @@ button {
   font-size: 13px;
   line-height: 1.7;
   tab-size: 2;
+}
+
+.lean-numbered {
+  padding: 12px 0;
+}
+
+.source-line {
+  display: block;
+  min-width: max-content;
+  padding-right: 16px;
+  scroll-margin-top: var(--anchor-offset);
+}
+
+.line-number {
+  display: inline-block;
+  width: 4em;
+  padding-right: 1em;
+  text-align: right;
+  color: var(--muted);
+  user-select: none;
+}
+
+.declaration-line,
+.source-line:target {
+  background: #e0eadb;
 }
 
 .entry-navigation {
@@ -1034,16 +1040,93 @@ button {
   border-top-color: var(--green);
 }
 
-.math-block:target>h2 {
+.math-block:target .block-title-row>h2 {
   color: var(--green);
 }
 
 .block-heading {
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 6px;
   font-family: var(--sans);
+}
+
+.block-title-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.block-title-row h2 {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.formal-nodes {
+  max-width: 100%;
+  margin-bottom: 6px;
+  font-family: var(--sans);
+}
+
+.formal-nodes>summary {
+  cursor: pointer;
+  list-style: none;
+  margin-bottom: 0;
+}
+
+.formal-nodes>summary::-webkit-details-marker {
+  display: none;
+}
+
+.formalization-chevron {
+  display: block;
+  flex: none;
+  margin-left: 3px;
+}
+
+.formal-nodes[open] {
+  margin-bottom: 12px;
+}
+
+.formal-nodes[open] .formalization-chevron {
+  transform: rotate(180deg);
+}
+
+.formal-node-list,
+.proof-body .formal-node-list {
+  list-style: none;
+  padding: 8px 0 0;
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 12px;
+}
+
+.formal-node-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.formal-node-list a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.node-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  background: none;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .block-permalink {
@@ -1085,12 +1168,6 @@ button {
 
 .question-answer[open] .answer-hide {
   display: inline;
-}
-
-.math-block .verification-note {
-  margin-top: 12px;
-  border-bottom: 0;
-  padding-bottom: 0;
 }
 
 .entry-review-note {
@@ -1563,7 +1640,7 @@ button {
   .entry-navigation,
   .reading-return,
   .block-permalink,
-  .verification-note,
+  .formal-node-list,
   dialog {
     display: none
   }

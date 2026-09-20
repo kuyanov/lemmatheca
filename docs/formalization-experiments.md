@@ -39,8 +39,10 @@ be familiar to a model; describe this as practical workflow evaluation, not evid
 of novelty or uncontaminated generalization. A later unfamiliar-paper set can
 probe transfer separately.
 
-**Sets and maps: a first guide** is the active human-text baseline; its 21 blocks
-remain unformalized until a measured pass. The archived **Finding a monotone
+**Sets and maps: a first guide** is the active human-text baseline. Definition 1
+has nine proposed nodes from a declaration pilot, with review and new proofs
+pending; its other 20 blocks remain untouched for a measured pass. Do not treat
+the declaration pilot as a held-out or cost-measured run. The archived **Finding a monotone
 subsequence** is another reserved candidate: keep its four blocks
 `not_started` until a measured attempt is explicitly launched. Its short human
 proof is not a promise that the required Lean infrastructure will be short.

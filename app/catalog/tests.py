@@ -230,14 +230,6 @@ class CatalogTests(ExampleCorpusMixin, SimpleTestCase):
             "class") == "question-answer"]
         self.assertEqual(sum("open" in item for item in answers), 1)
 
-    def test_recorded_references_resolve_to_blocks(self):
-        for entry in entries().values():
-            for block in entry["blocks"]:
-                for reference in block.get("references", []):
-                    target = entries()[reference["entry_id"]]
-                    self.assertIn(reference["block_id"],
-                                  target["blocks_by_id"])
-
     def test_invalid_return_anchor_falls_back_to_the_source_article(self):
         source = entries()["thm-triple-sumset-lower-bound"]
         target = example_entry()

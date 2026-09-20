@@ -9,7 +9,8 @@ Ordinary checked mathlib infrastructure can be reused without rebuilding a separ
 foundation library or obtaining per-lemma exceptions.
 
 The active [corpus](../corpus/README.md) starts with **Sets and maps: a first guide**,
-whose 21 blocks remain `not_started`. The two sumset notes and the unformalized
+whose first definition has nine proposed nodes awaiting review and proof work;
+its other 20 blocks remain `not_started`. The two sumset notes and the unformalized
 Erdős–Szekeres note are preserved in `corpus/backup/`, outside the live reader. For standard-corpus construction, bind existing declarations when
 appropriate. For proof-translation experiments, the plans below specify which
 human argument to preserve; these are different evaluation tasks.

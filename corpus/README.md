@@ -10,8 +10,9 @@ The active draft is [Sets and maps: a first guide](entries/sets-and-maps/entry.h
 with [metadata](entries/sets-and-maps/entry.json), under **Logic and foundations →
 Set theory**. Based on chapters 2–4 of Tim Button's Open Logic textbook, it covers
 sets, maps, notation, short proofs, a numbered map diagram, and four questions
-with collapsible answers. Estimated reading time: 40 minutes. All 21 blocks are
-`not_started`; formalization is reserved for a measured pass.
+with collapsible answers. Estimated reading time: 40 minutes. Definition 1 links
+to nine formal nodes whose review is tracked individually, with new proofs left pending.
+The other 20 blocks remain `not_started` for a measured pass.
 
 The earlier examples are archived outside the live entry tree:
 
@@ -21,36 +22,73 @@ The earlier examples are archived outside the live entry tree:
 - [Finding a monotone subsequence](backup/thm-erdos-szekeres/entry.html): four unformalized
   blocks based on Seidenberg's proof, reserved for a future measured experiment.
 
-`backup/` is excluded from listings, entry routes, static asset collection, corpus
-validation, and formalization checks. Tests load temporary copies of these examples
-to exercise features such as cross-entry links and complete/partial badges.
-[Taxonomy](taxonomy.json) contains only the working areas;
-[taxonomy_complete.json](taxonomy_complete.json) keeps the broader taxonomy for reference.
-To restore an archived entry, move it into `entries/`, restore its subjects to the
-active taxonomy, and add its ID to the primary area's reading order. Restore any
-entries it references as well, and revalidate its bindings.
+`backup/` is excluded from the live corpus. Its JSON preserves the previous
+format as a historical snapshot. Tests copy the human HTML and ordinary metadata
+into temporary fixtures; formal-node tests use separate fixtures. To restore an
+archived entry, remove its old JSON `blocks`, add its subjects and reading-order
+record, and restore entries linked by its HTML. Register formal nodes and add
+reviewed HTML mappings separately; old reports do not certify new nodes.
+[Taxonomy](taxonomy.json) contains the working areas;
+[taxonomy_complete.json](taxonomy_complete.json) is reference material only.
 
-Each folder owns its HTML, JSON, and assets. [Taxonomy](taxonomy.json) describes
-subjects; [reading order](reading-order.json) controls listings and “Next entry”.
-The compact JSON has no version fields or separate proof records. Unproved Lean
-statements are listed per block as `unformalized_dependencies`, each with a
-`declaration`, `module`, and `source`. The website links both pending dependencies
-and completed formalizations to the general Lean file viewer.
-A nonempty list prevents `complete` status; existing,
-checked mathlib lemmas are not pending dependencies. The `based_on` bibliography
-appears as **Based on:** with authors, linked title, and year. Only the first source
-is initially visible; additional sources expand on demand. Full publication
-details remain in JSON. An empty list, as in the original sumset examples, omits that row.
-The website also displays a formalization badge derived from the block statuses.
+## Entry format
 
-The active entry remains a draft awaiting maintainer review. See the
-[authoring guide](../docs/entry-sources.md).
+Each folder owns its HTML, JSON, and assets. JSON contains only:
+
+```text
+id, title, based_on, primary_area, additional_areas,
+status, reading_time, summary, abstract
+```
+
+There are no JSON blocks, formalization objects, or duplicated references.
+The HTML owns block IDs, kinds, titles, order, and links. The reader validates
+HTML reference targets directly and derives local labels and return navigation.
+`status` is editorial and independent of formal readiness. The `based_on`
+bibliography shows the first source compactly, with further sources collapsed.
+[Reading order](reading-order.json) controls listings and “Next entry”. See the
+[authoring guide](../docs/entry-sources.md) for equations, figures, tables, and links.
+
+## Block-to-node mapping
+
+Human-only submissions need no formalization records. A mathematical section in
+`entry.html` can optionally link to records in `formal/nodes/<id>.json`:
+
+| HTML attribute | Meaning |
+| --- | --- |
+| No `data-formal` attribute | Formalization not started; planning is still needed |
+| `data-formal=""` | Not applicable: nothing to formalize |
+| `data-formal="example-lemma1 example-lemma2"` | Both formal nodes cover this block |
+
+Node IDs are stable references independent of displayed numbers and categories.
+The same node can serve several blocks or entries. An entry-prefixed ID is fine,
+but reordering an article must not rename it. Unknown or duplicate node IDs are
+validation errors. A question maps its answer or counterexample. Definitions may
+map to existing Lean definitions; no artificial theorem is needed.
+
+In the [submission pipeline](../README.md#submission-and-formalization-pipeline),
+AI proposes statements and mappings for human review. Committing `data-formal`
+is currently the maintainer's record of approving coverage, including empty
+mappings. Proposed mappings must be reviewed before being merged. There is no
+separate mapping-review service yet. Nodes also record statement review; changing
+the intended statement requires renewed review before autonomous proving.
+
+Each block's header badge shows **Not started**, **N/A**, **✓ Complete**, or **◷ 50%**.
+If there are nodes, the badge opens a list of their IDs, status icons, and links
+to dedicated source pages. No verification footer is needed.
+
+Block percentages count ready nodes, not estimated effort. Entry badges show
+**Not started**, **Partial**, or **Complete**, without a percentage. Entry totals
+deduplicate shared nodes, and the tooltip gives the count of unmapped blocks.
+An entry stays **Partial** when linked nodes are ready but other blocks are still
+unmapped. An entry with only not-applicable blocks is N/A, not verified.
+See [formal nodes](../formal/README.md#formal-nodes) for readiness and evidence.
 
 ## Growing the collection
 
 Choose a book section and related mathlib modules, match their hypotheses and
-definitions, then group the material into a readable note. Bind existing checked
-mathlib declarations directly; reserve new Lean proofs for missing mathematics or
+definitions, then group the material into a readable note. Human text can be
+submitted before any Lean work. During its formalization pass, reuse matching
+checked mathlib declarations; reserve new Lean proofs for missing mathematics or
 experiments on translating a particular argument. A correct binding alone does
 not establish that the human proof's strategy has been formalized.
 
@@ -62,8 +100,9 @@ an entry. Additional areas are metadata only in the current reader.
 
 Keep prompts, attempts, cost measurements, and human review time in experiment
 records outside `entry.json`. No run-record system is implemented yet. The
-Erdős–Szekeres and sets-and-maps entries remain unformalized until measured attempts
-are launched.
+Erdős–Szekeres entry and the remaining sets-and-maps blocks are reserved for
+measured attempts. Definition 1's declaration pilot is available for review;
+it does not include a measured proof-writing run.
 
 ## Validation
 
