@@ -11,7 +11,6 @@ import tempfile
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from catalog.sources import ContentError
 from formalization.lean import verification_inputs
 from formalization.nodes import ALLOWED_AXIOMS, REPORT, REPORT_VERSION, file_hash, load_nodes, node_fingerprint
 
@@ -24,20 +23,24 @@ class Command(BaseCommand):
         formal_dir = root / 'formal'
         try:
             nodes = load_nodes(root, check_reports=False)
-            bound = {key: node for key, node in nodes.items() if node['declaration']}
+            bound = {key: node for key,
+                     node in nodes.items() if node['declaration']}
             if not bound:
                 self.stdout.write('No formal node declarations to check.')
                 return
             inputs = verification_inputs(root, bound)
-            before = {path.relative_to(root).as_posix(): file_hash(path) for path in sorted(inputs)}
-            fingerprints = {key: node_fingerprint(node) for key, node in nodes.items()}
-        except (ContentError, ValueError, OSError) as error:
+            before = {path.relative_to(root).as_posix(): file_hash(
+                path) for path in sorted(inputs)}
+            fingerprints = {key: node_fingerprint(
+                node) for key, node in nodes.items()}
+        except (ValueError, OSError) as error:
             raise CommandError(str(error)) from error
         lake = shutil.which('lake') or str(Path.home() / '.elan/bin/lake')
         modules = sorted({node['module'] for node in bound.values()})
         names = sorted({node['declaration'] for node in bound.values()})
         source = '\n'.join(f'import {module}' for module in modules) + '\n\n'
-        source += '\n'.join(f'#check {name}\n#print axioms {name}' for name in names) + '\n'
+        source += '\n'.join(
+            f'#check {name}\n#print axioms {name}' for name in names) + '\n'
 
         def run(args):
             try:
@@ -57,21 +60,26 @@ class Command(BaseCommand):
             output = run(['env', 'lean', check.name])
         declarations = {}
         for name in names:
-            pattern = re.escape("'" + name + "'") + r" (?:depends on axioms: \[([^\]]*)\]|does not depend on any axioms)"
+            pattern = re.escape(
+                "'" + name + "'") + r" (?:depends on axioms: \[([^\]]*)\]|does not depend on any axioms)"
             match = re.search(pattern, output)
             if not match:
                 raise CommandError(f'No axiom result for {name}:\n{output}')
-            axioms = [value.strip() for value in (match[1] or '').split(',') if value.strip()]
+            axioms = [value.strip() for value in (
+                match[1] or '').split(',') if value.strip()]
             if set(axioms) - ALLOWED_AXIOMS - {'sorryAx'}:
                 raise CommandError(f'{name} uses unapproved axioms: {axioms}')
-            declarations[name] = {'axioms': axioms, 'status': 'pending' if 'sorryAx' in axioms else 'complete'}
+            declarations[name] = {
+                'axioms': axioms, 'status': 'pending' if 'sorryAx' in axioms else 'complete'}
         try:
             after_nodes = load_nodes(root, check_reports=False)
             after_inputs = verification_inputs(root, bound)
-            after = {path.relative_to(root).as_posix(): file_hash(path) for path in sorted(after_inputs)}
+            after = {path.relative_to(root).as_posix(): file_hash(
+                path) for path in sorted(after_inputs)}
             if before != after or fingerprints != {key: node_fingerprint(node) for key, node in after_nodes.items()}:
-                raise CommandError('Formal inputs changed during verification; rerun the check.')
-        except (ContentError, ValueError, OSError) as error:
+                raise CommandError(
+                    'Formal inputs changed during verification; rerun the check.')
+        except (ValueError, OSError) as error:
             raise CommandError(str(error)) from error
         report = {
             'format_version': REPORT_VERSION, 'build': 'passed', 'checked_on': datetime.now(timezone.utc).isoformat(),
@@ -89,6 +97,7 @@ class Command(BaseCommand):
             json.dump(report, temporary, indent=2)
             temporary.write('\n')
         Path(temporary.name).replace(destination)
-        ready = sum(node['status'] == 'complete' for node in load_nodes(root).values())
+        ready = sum(node['status'] ==
+                    'complete' for node in load_nodes(root).values())
         self.stdout.write(self.style.SUCCESS(
             f'Checked {len(bound)} node declarations: {ready} ready, {len(nodes) - ready} pending.'))

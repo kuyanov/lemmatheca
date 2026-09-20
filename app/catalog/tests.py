@@ -9,7 +9,7 @@ from django.template.loader import get_template
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 
-from .content import ancestors, area_link, areas, children, entries, example_entry, next_entry
+from .content import ancestors, area_link, area_list, areas, children, entries, next_entry
 from .testing import ExampleCorpusMixin
 
 
@@ -43,10 +43,21 @@ class LinkParser(HTMLParser):
 
 
 class ActiveCorpusTests(SimpleTestCase):
+    def test_home_uses_reading_order_without_a_hard_coded_example(self):
+        source = entries()['sets-and-maps']
+        featured = {**source, 'id': 'new-first-entry', 'title': 'A new first entry',
+                    'url': '/entries/new-first-entry/'}
+        with patch('catalog.views.entries', return_value={featured['id']: featured}) as load:
+            response = self.client.get('/')
+            self.assertContains(response, featured['title'])
+            self.assertContains(response, featured['url'])
+            load.assert_called_once()
+        with patch('catalog.views.entries', return_value={}):
+            self.assertNotContains(self.client.get('/'), 'class="featured-proof"')
+
     def test_only_working_areas_and_entries_are_live(self):
         self.assertEqual(set(areas()), {'logic-and-foundations', 'set-theory'})
         self.assertEqual(set(entries()), {'sets-and-maps'})
-        self.assertEqual(example_entry()['id'], 'sets-and-maps')
         home = self.client.get('/')
         self.assertContains(home, 'Sets and maps: a first guide')
         self.assertContains(
@@ -151,7 +162,7 @@ class CatalogTests(ExampleCorpusMixin, SimpleTestCase):
                 self.assertEqual(len(parser.ids), len(set(parser.ids)))
                 for block in entry["blocks"]:
                     self.assertIn(block["id"], parser.ids)
-                if entry == example_entry():
+                if entry["id"] == "sets-and-maps":
                     self.assertContains(article, "Lemma 2")
                     self.assertContains(article, "Definition 2")
                     self.assertContains(article, "map.svg")
@@ -199,10 +210,9 @@ class CatalogTests(ExampleCorpusMixin, SimpleTestCase):
         unrelated = {**first, "id": "unrelated",
                      "primary_area": "group-theory"}
         catalog = {item["id"]: item for item in [first, unrelated, second]}
-        with patch("catalog.content.entries", return_value=catalog):
-            self.assertEqual(next_entry(first), second)
-            self.assertIsNone(next_entry(second))
-            self.assertIsNone(next_entry(unrelated))
+        self.assertEqual(next_entry(first, catalog), second)
+        self.assertIsNone(next_entry(second, catalog))
+        self.assertIsNone(next_entry(unrelated, catalog))
 
     def test_questions_are_collapsed_and_returning_to_an_answer_reopens_it(self):
         for entry in entries().values():
@@ -232,7 +242,7 @@ class CatalogTests(ExampleCorpusMixin, SimpleTestCase):
 
     def test_invalid_return_anchor_falls_back_to_the_source_article(self):
         source = entries()["thm-triple-sumset-lower-bound"]
-        target = example_entry()
+        target = entries()["sets-and-maps"]
         target_url = reverse("catalog:entry", args=[target["id"]])
         for anchor in ["missing", "https://example.com/", "<script>"]:
             with self.subTest(anchor=anchor):
@@ -258,13 +268,15 @@ class CatalogTests(ExampleCorpusMixin, SimpleTestCase):
                         area)["url"])
 
     def test_entry_counts_include_descendants_but_not_unrelated_areas(self):
+        catalog = entries()
+        cards = {item["id"]: item for parent in [None, *areas()]
+                 for item in area_list(parent, catalog)}
         for area_id, count in [("combinatorics", 3), ("additive-combinatorics", 2),
                                ("sumsets", 2), ("extremal-combinatorics", 1),
                                ("logic-and-foundations", 1), ("set-theory", 1)]:
             with self.subTest(area=area_id):
-                self.assertEqual(area_link(areas()[area_id])[
-                                 "entry_count"], count)
-        self.assertEqual(area_link(areas()["algebra"])["entry_count"], 0)
+                self.assertEqual(cards[area_id]["entry_count"], count)
+        self.assertEqual(cards["algebra"]["entry_count"], 0)
 
     def test_browsing_does_not_load_the_math_renderer(self):
         self.assertNotContains(self.client.get("/"), "katex.min.js")

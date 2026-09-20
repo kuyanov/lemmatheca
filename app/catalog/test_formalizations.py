@@ -41,19 +41,18 @@ class ActiveFormalizationTests(SimpleTestCase):
         response = self.client.get('/entries/sets-and-maps/')
         self.assertNotContains(response, 'verification-note')
         self.assertContains(response, 'class="formal-nodes"', count=1)
-        self.assertContains(response, 'block-title-row', count=21)
+        self.assertContains(response, 'class="block-title"', count=21)
         nodes = self.client.get('/api/formal/nodes/').json()['nodes']
         self.assertEqual({node['id'] for node in nodes}, set(first['formal_ids']))
         self.assertEqual(first['formalization']['complete'], sum(node['status'] == 'complete' for node in nodes))
         for node in nodes:
             with self.subTest(node=node['id']):
-                url = f"/formal/nodes/{node['id']}/?from=sets-and-maps&at=sets-and-elements"
-                self.assertContains(response, url.replace('&', '&amp;'))
+                url = f"/formal/nodes/{node['id']}/"
+                self.assertContains(response, f'href="{url}"')
                 page = self.client.get(url)
                 self.assertContains(page, node['status_label'])
                 self.assertNotIn('reason', node)
                 self.assertNotContains(page, 'href="/lean/')
-                self.assertEqual(page.context['return_url'], '/entries/sets-and-maps/#sets-and-elements')
                 if page.context['lean_source'] is not None:
                     self.assertIsNotNone(page.context['declaration_line'])
 
@@ -133,7 +132,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         text = response.content.decode()
         title_start = text.index('id="block-0-title"')
         self.assertLess(text.index('class="formal-nodes"'), title_start)
-        self.assertContains(response, 'href="/formal/nodes/ready/?from=sets-and-maps&amp;at=block-0"')
+        self.assertContains(response, 'href="/formal/nodes/ready/"')
 
     def test_shared_nodes_are_counted_once_and_unknown_coverage_prevents_complete(self):
         self.write_html(('data-formal="ready"', 'data-formal="ready"', ''))
@@ -161,18 +160,14 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         response = self.client.get('/entries/sets-and-maps/')
         self.assertContains(response, '?from=sets-and-maps&amp;at=block-0#block-1')
 
-    def test_node_page_escapes_source_infers_line_and_returns_to_open_answer(self):
-        response = self.client.get('/formal/nodes/ready/?from=sets-and-maps&at=block-0')
+    def test_node_page_escapes_source_and_infers_line(self):
+        response = self.client.get('/formal/nodes/ready/')
         self.assertContains(response, 'Lemmatheca.ready')
         self.assertContains(response, '&lt;script&gt;')
         self.assertNotContains(response, '<script>alert')
         self.assertContains(response, 'href="#L3"')
         self.assertContains(response, 'class="source-line declaration-line" id="L3"')
         self.assertEqual(response.context['declaration_line'], 3)
-        self.assertEqual(response.context['return_url'], '/entries/sets-and-maps/?answer=block-0#block-0')
-        self.assertContains(self.client.get(response.context['return_url']), 'class="question-answer" open')
-        for query in ('?from=https://evil.test&at=block-0', '?from=sets-and-maps&at=block-1'):
-            self.assertEqual(self.client.get('/formal/nodes/ready/' + query).context['return_url'], '/')
         self.assertContains(self.client.get('/formal/nodes/pending/'), 'Proof pending')
         self.assertContains(self.client.get('/formal/nodes/dependent/'), '/formal/nodes/pending/')
 

@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 from django.conf import settings
 from django.test import SimpleTestCase
 
-from catalog.lean import lean_source_path
+from formalization.lean import lean_source_path
 from catalog.sources import ContentError
 
 
@@ -25,6 +25,3 @@ class LeanSourceTests(SimpleTestCase):
             (root / 'formal/Escape.lean').symlink_to(root / 'private.lean')
             with self.assertRaises(ContentError):
                 lean_source_path('formal/Escape.lean', root)
-
-    def test_standalone_source_viewer_is_removed(self):
-        self.assertEqual(self.client.get('/lean/formal/Lemmatheca.lean/').status_code, 404)

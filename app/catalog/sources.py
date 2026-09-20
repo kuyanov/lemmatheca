@@ -85,10 +85,7 @@ def parse_source(source):
             raise ContentError('Each figure needs one figcaption')
         caption = captions[0]
         label = f'Figure {number}'
-        # Accept old hand-written labels, but derive the displayed number from order.
-        caption.children = [Element('span', {'class': 'figure-label'}, [label]), *[
-            child for child in caption.children if not (isinstance(child, Element)
-                                                        and 'figure-label' in child.attrs.get('class', '').split())]]
+        caption.children.insert(0, Element('span', {'class': 'figure-label'}, [label]))
         if figure.attrs.get('id'):
             figures[figure.attrs['id']] = label
     ids = set()

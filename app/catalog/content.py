@@ -1,6 +1,7 @@
 """Load the file-backed corpus and its explicit editorial reading order."""
 
 from functools import lru_cache
+from collections import Counter
 from urllib.parse import quote
 
 from django.conf import settings
@@ -8,8 +9,8 @@ from django.urls import reverse
 
 from .sources import ContentError, Element, IDENTIFIER, asset_path, parse_source, reference_target
 from .metadata import validate_entry_metadata
-from .files import read_json
-from formalization.nodes import load_nodes, block_progress, entry_progress, node_url, formal_signature
+from .files import file_signature, read_json
+from formalization.nodes import load_nodes, block_progress, entry_progress, formal_signature
 
 
 def areas():
@@ -34,10 +35,10 @@ def area_path(area):
     return "/".join(item["id"] for item in ancestors(area))
 
 
-def load_catalog(corpus_dir, repository_dir, *, check_reports=True):
+def load_catalog(corpus_dir, repository_dir):
     """Validate all sources before making any entry available to the reader."""
     catalog = {}
-    formal_nodes = load_nodes(repository_dir, check_reports=check_reports)
+    formal_nodes = load_nodes(repository_dir)
     taxonomy = {area["id"] for area in read_json(
         corpus_dir / "taxonomy.json")["areas"]}
     for directory in sorted((corpus_dir / "entries").iterdir()):
@@ -55,10 +56,11 @@ def load_catalog(corpus_dir, repository_dir, *, check_reports=True):
             for block in blocks:
                 block['formalization'] = block_progress(block['formal_ids'], formal_nodes)
                 block['formal_nodes'] = [
-                    {**formal_nodes[node_id], 'url': node_url(node_id, entry['id'], block['id'])}
+                    formal_nodes[node_id]
                     for node_id in block['formal_ids'] or []]
             catalog[entry["id"]] = {
-                **entry, "directory": directory, "display_title": entry["title"],
+                **entry, "directory": directory,
+                "url": reverse("catalog:entry", args=[entry["id"]]),
                 "blocks": blocks, "blocks_by_id": {block["id"]: block for block in blocks},
                 "anchors": anchors, "figures": figures,
                 "formalization": entry_progress(blocks, formal_nodes),
@@ -123,19 +125,14 @@ def entries():
              name for name in ('taxonomy.json', 'reading-order.json')]
     paths.extend(path for path in (settings.CORPUS_DIR /
                  'entries').rglob('*') if path.is_file())
-    signature = tuple((str(path), path.stat().st_mtime_ns, path.stat().st_size)
-                      for path in sorted(paths))
+    signature = tuple(file_signature(path) for path in sorted(paths))
     signature += formal_signature(settings.REPOSITORY_DIR)
     return _cached_catalog(settings.CORPUS_DIR, settings.REPOSITORY_DIR, signature)
 
 
-def example_entry():
-    return entries()["sets-and-maps"]
-
-
-def next_entry(entry):
+def next_entry(entry, catalog):
     """Continue in the same primary area, following its catalog display order."""
-    siblings = (item for item in entries().values()
+    siblings = (item for item in catalog.values()
                 if item["primary_area"] == entry["primary_area"])
     for item in siblings:
         if item["id"] == entry["id"]:
@@ -144,11 +141,13 @@ def next_entry(entry):
 
 
 def area_link(area):
-    path = area_path(area)
-    entry_count = sum(
-        area["id"] in {item["id"]
-                       for item in ancestors(areas()[entry["primary_area"]])}
-        for entry in entries().values()
-    )
-    return {**area, "url": reverse("catalog:area", args=[path]),
-            "children_count": len(children(area["id"])), "entry_count": entry_count}
+    return {**area, "url": reverse("catalog:area", args=[area_path(area)])}
+
+
+def area_list(parent_id, catalog):
+    """Add listing counts once, without loading the corpus for navigation links."""
+    taxonomy = areas()
+    counts = Counter(ancestor['id'] for entry in catalog.values()
+                     for ancestor in ancestors(taxonomy[entry['primary_area']]))
+    return [{**area_link(area), 'children_count': len(children(area['id'])),
+             'entry_count': counts[area['id']]} for area in children(parent_id)]

@@ -4,12 +4,11 @@ from functools import lru_cache
 import hashlib
 import json
 import re
-from urllib.parse import urlencode
 
 from django.urls import reverse
 
-from catalog.files import read_json
-from catalog.lean import lean_source_path
+from catalog.files import file_signature, read_json
+from .lean import lean_source_path, local_sources
 from catalog.metadata import fields
 from catalog.sources import ContentError, IDENTIFIER
 
@@ -78,10 +77,7 @@ def report_is_current(report, root):
     if not isinstance(hashes, dict) or not {f'formal/{name}' for name in ENVIRONMENT} <= hashes.keys():
         return False
     # Changing any local source invalidates the run, including adding a new module.
-    local = {path.relative_to(root).as_posix() for path in (
-        root / 'formal/Lemmatheca').rglob('*.lean')}
-    if (root / 'formal/Lemmatheca.lean').exists():
-        local.add('formal/Lemmatheca.lean')
+    local = {path.relative_to(root).as_posix() for path in local_sources(root)}
     if local != {name for name in hashes if name.startswith('formal/Lemmatheca/')
                  or name == 'formal/Lemmatheca.lean'}:
         return False
@@ -165,7 +161,7 @@ def load_nodes(root, *, check_reports=True):
                   'complete')
         node.update(status=status, status_label=NODE_STATUS_LABELS[status],
                     checked_on=report.get('checked_on') if checked_current else None,
-                    url=node_url(node_id))
+                    url=reverse('formalization:node', args=[node_id]))
         visiting.remove(node_id)
         visited.add(node_id)
 
@@ -178,23 +174,14 @@ def formal_signature(root):
     paths = set((root / 'formal/nodes').glob('*.json'))
     if not paths:
         return ()
-    paths.update((root / 'formal/Lemmatheca').rglob('*.lean'))
-    paths.update(root / 'formal' / name for name in (*
-                 ENVIRONMENT, 'Lemmatheca.lean'))
+    paths.update(local_sources(root))
+    paths.update(root / 'formal' / name for name in ENVIRONMENT)
     report = root / REPORT
     paths.add(report)
     if report.exists():
         paths.update(report_input_path(root, name)
                      for name in read_json(report).get('sha256', {}))
-    return tuple((str(path), path.stat().st_mtime_ns, path.stat().st_ctime_ns, path.stat().st_size)
-                 if path.exists() else (str(path), None) for path in sorted(paths))
-
-
-def node_url(node_id, entry_id=None, block_id=None):
-    url = reverse('formalization:node', args=[node_id])
-    if entry_id and block_id:
-        url += '?' + urlencode({'from': entry_id, 'at': block_id})
-    return url
+    return tuple(file_signature(path) for path in sorted(paths))
 
 
 def progress(ids, nodes, *, unplanned=0, applicable=True):

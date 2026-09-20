@@ -5,6 +5,15 @@ import json
 from .sources import ContentError
 
 
+def file_signature(path):
+    """A cache key that also detects replacement or removal of a file."""
+    try:
+        stat = path.stat()
+    except FileNotFoundError:
+        return (str(path), None)
+    return (str(path), stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size)
+
+
 def read_json(path):
     def unique_object(pairs):
         result = {}
@@ -14,4 +23,3 @@ def read_json(path):
             result[key] = value
         return result
     return json.loads(path.read_text(), object_pairs_hook=unique_object)
-

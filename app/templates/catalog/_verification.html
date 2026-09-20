@@ -7,10 +7,7 @@
     {% for node in block.formal_nodes %}
     <li>
       <a href="{{ node.url }}"><code>{{ node.id }}</code></a>
-      <span class="node-status formalization-{{ node.status }}">
-        <span aria-hidden="true">{% if node.status == "complete" %}✓{% else %}◷{% endif %}</span>
-        {{ node.status_label }}
-      </span>
+      {% include "formalization/_status_badge.html" with node=node inline=True only %}
     </li>
     {% endfor %}
   </ul>

@@ -23,7 +23,7 @@
   <div class="proof-layout">
     <header class="proof-header">
       <div class="proof-meta"><span class="pill">{{ entry.status|title }}</span>
-        {% include "catalog/_formalization_badge.html" %}
+        {% include "catalog/_formalization_badge.html" with formal=entry.formalization only %}
       </div>
       <h1>{{ entry.title }}</h1>
       {% include "catalog/_bibliography.html" %}
@@ -44,9 +44,7 @@
       <section id="{{ block.id }}" class="math-block math-block-{{ block.kind }}"
         aria-labelledby="{{ block.id }}-title">
         {% include "catalog/_verification.html" %}
-        <div class="block-title-row">
-          <h2 id="{{ block.id }}-title">{{ block.title }}</h2>
-        </div>
+        <h2 class="block-title" id="{{ block.id }}-title">{{ block.title }}</h2>
         {{ block.html }}
       </section>
       {% endfor %}

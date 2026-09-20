@@ -43,4 +43,3 @@ STATICFILES_DIRS += [
     if directory.is_dir()
 ]
 STATIC_ROOT = REPOSITORY_DIR / "staticfiles"
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

@@ -1,4 +1,4 @@
-"""Exercise the new file contract, independently of the example page templates."""
+"""Exercise the corpus contract independently of the page templates."""
 
 import json
 from pathlib import Path

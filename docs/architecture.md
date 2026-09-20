@@ -53,6 +53,7 @@ lemmatheca/
 │   ├── Lemmatheca.lean
 │   ├── Lemmatheca/
 │   │   ├── AxiomChecks.lean
+│   │   ├── SetTheory/SetsAndElements.lean
 │   │   └── Combinatorics/Additive/
 │   │       ├── Sumsets.lean
 │   │       ├── FiniteSumsets.lean
@@ -87,6 +88,12 @@ an entry between subjects does not require moving either its folder or its proof
 4. Editing an active entry, taxonomy, reading order, node, report, or checked source
    invalidates the catalog cache. Entry assets are registered
    with Django staticfiles at startup; adding a new asset directory needs a restart.
+
+Reader views load the catalog once per request. Area listings derive their counts
+from that snapshot; breadcrumb links do not load the corpus. The homepage features
+the first entry in reading order. Formal node pages likewise load one registry
+snapshot. Source path validation and declaration locations live together in
+`formalization.lean`.
 
 The reader lists entries under `corpus/entries/`, including drafts. It currently
 contains only **Sets and maps: a first guide**, under **Logic and foundations →
