@@ -7,11 +7,30 @@ public contributions come later.
 
 ## Submission and formalization pipeline
 
-1. Write human mathematics in `entry.html`, with metadata in `entry.json`.
-2. Propose reusable formal nodes and link blocks to them with `data-formal`.
-   A maintainer reviews the statements and their coverage of the human text.
-3. Prove approved statements using Lean and existing nodes. Maintainers decide
-   what enters the library; AI supplies proposals and recommendations.
+1. **Choose sources.** Specify books, notes, or papers, including relevant
+   chapters or pages, and record the citations in `based_on`.
+2. **Draft the human entry.** Ask AI to prepare `entry.html` and `entry.json`,
+   without formalization.
+3. **Review the entry.** Check the mathematics, explanations, and presentation.
+4. **Prepare formal nodes.** Ask AI to reuse existing nodes or propose new
+   definitions and statements, linking blocks through `data-formal`. Check that
+   new Lean declarations compile; leave unfinished proofs as `sorry`.
+5. **Review correspondence.** Check the declarations and their coverage of each
+   block, including examples and question answers. Approve statements with
+   `reviewed: true`; record mapping approval through Git review.
+6. **Prove the nodes.** Later, use AI to work through the dependency DAG, following
+   the human proofs. Run `check_formalizations` and review whether the formal
+   arguments follow the intended reasoning. Changes to approved statements
+   require another review.
+
+Nodes are independent of entries. Agents can find human explanations by following
+`data-formal` mappings in reverse; a dedicated lookup API is planned. For each
+proof attempt, record the selected entry ID, block ID, and Git revision alongside
+the experiment logs, rather than assigning a single entry to the node. Confirm
+that the selected block contains a proof before treating the task as translation.
+
+The DAG is a manually maintained plan and may need new helper nodes during proving.
+Maintainers decide what enters the library; AI supplies proposals and recommendations.
 
 Measure statement writing and proof translation separately. Binding an existing
 mathlib result is useful corpus work, but does not show that a human argument was
