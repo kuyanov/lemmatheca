@@ -70,7 +70,8 @@ class NodeFixtureMixin(CorpusFixtureMixin):
         data = {'id': node_id, 'declaration': 'Lemmatheca.ready', 'module': 'Lemmatheca.Fixture',
                 'dependencies': [], 'review': None, **changes}
         if accepted and 'review' not in changes:
-            data['review'] = {'sha256': self.target_hash(data), 'recorded_at': '2026-09-20T12:00:00+00:00'}
+            data['review'] = {'sha256': self.target_hash(
+                data), 'recorded_at': '2026-09-20T12:00:00+00:00'}
         (self.node_dir / f'{node_id}.json').write_text(json.dumps(data))
 
     def write_html(self, attributes=('data-formal="ready pending"', 'data-formal=""')):
@@ -169,15 +170,18 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.write_report()
         path = self.root / REPORT
         report = json.loads(path.read_text())
-        report['nodes']['ready']['location'] = {'module': 'Lemmatheca.Fixture', 'line': 2}
+        report['nodes']['ready']['location'] = {
+            'module': 'Lemmatheca.Fixture', 'line': 2}
         path.write_text(json.dumps(report))
         with patch('subprocess.run') as lean:
             response = self.client.get('/formal/nodes/ready/')
         lean.assert_not_called()
         self.assertEqual(response.context['declaration_line'], 2)
         self.assertContains(response, 'href="#L2"')
-        self.assertContains(response, 'class="source-line declaration-line" id="L2"')
-        self.assertEqual(self.client.get('/api/formal/nodes/ready/').json()['declaration_line'], 2)
+        self.assertContains(
+            response, 'class="source-line declaration-line" id="L2"')
+        self.assertEqual(self.client.get(
+            '/api/formal/nodes/ready/').json()['declaration_line'], 2)
 
         for location in (None, {'module': 'Mathlib.Other', 'line': 2},
                          {'module': 'Lemmatheca.Fixture', 'line': True},
@@ -189,11 +193,60 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
                 response = self.client.get('/formal/nodes/ready/')
                 self.assertIsNone(response.context['declaration_line'])
 
-        report['nodes']['ready']['location'] = {'module': 'Lemmatheca.Fixture', 'line': 2}
+        report['nodes']['ready']['location'] = {
+            'module': 'Lemmatheca.Fixture', 'line': 2}
         path.write_text(json.dumps(report))
         self.source.write_text('\n' + self.source.read_text())
         response = self.client.get('/formal/nodes/ready/')
         self.assertIsNone(response.context['declaration_line'])
+
+    def test_generated_declaration_shows_its_signature_above_the_source_origin(self):
+        mathlib = self.formal / '.lake/packages/mathlib/Mathlib/Test.lean'
+        mathlib.parent.mkdir(parents=True)
+        original = ('@[to_additive]\n'
+                    'lemma IsSquare.one [MulOneClass α] : IsSquare (1 : α) := by simp\n')
+        mathlib.write_text(original)
+        self.write_node('ready', module='Mathlib.Test',
+                        declaration='Even.zero', accepted=False)
+        self.write_report()
+        path = self.root / REPORT
+        report = json.loads(path.read_text())
+        signature = 'Even.zero.{u} {α : Type u} [AddZeroClass α] :\n  Even (0 : α)'
+        report['nodes']['ready'].update(
+            signature=signature, location={'module': 'Mathlib.Test', 'line': 1})
+        path.write_text(json.dumps(report))
+        node_before = (self.node_dir / 'ready.json').read_bytes()
+        report_before = path.read_bytes()
+
+        with patch('subprocess.run') as lean:
+            response = self.client.get('/formal/nodes/ready/')
+            self.assertContains(response, signature)
+            self.assertContains(
+                response, 'aria-label="Checked Lean declaration"')
+            self.assertContains(response, 'Source origin:')
+            self.assertContains(response, 'IsSquare.one')
+            self.assertContains(response, 'href="#L1"')
+            self.assertLess(response.content.decode().index(signature),
+                            response.content.decode().index('IsSquare.one'))
+            node = self.client.get('/api/formal/nodes/ready/').json()
+            self.assertEqual(node['signature'], signature)
+            self.assertEqual(node['status'], 'review_pending')
+
+            # Web-only deployments can still show the generated declaration.
+            mathlib.unlink()
+            response = self.client.get('/formal/nodes/ready/')
+            self.assertContains(response, signature)
+            self.assertContains(response, '/Mathlib/Test.lean#L1')
+
+            # Stale evidence must not display a previously checked statement.
+            mathlib.write_text('-- changed\n' + original)
+            response = self.client.get('/formal/nodes/ready/')
+            self.assertNotContains(response, signature)
+            self.assertIsNone(response.context['node']['signature'])
+        lean.assert_not_called()
+        self.assertEqual(
+            (self.node_dir / 'ready.json').read_bytes(), node_before)
+        self.assertEqual(path.read_bytes(), report_before)
 
     def test_api_is_independent_of_corpus_and_read_only(self):
         self.html.unlink()
@@ -243,7 +296,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
 
     def test_forged_status_cycles_and_unknown_dependencies_are_rejected(self):
         for changes in ({'status': 'complete'}, {'review': True}, {'declaration': 'bad name'},
-                        {'review': {'sha256': 'bad', 'recorded_at': '2026-09-20T12:00:00+00:00'}},
+                        {'review': {'sha256': 'bad',
+                                    'recorded_at': '2026-09-20T12:00:00+00:00'}},
                         {'review': {'sha256': 'a' * 64, 'recorded_at': '2026-09-20'}},
                         {'module': '../secret'}, {'dependencies': ['missing']},
                         {'dependencies': ['ready']}, {'dependencies': ['pending', 'pending']}):
@@ -261,7 +315,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         report = json.loads(path.read_text())
         checked = report['nodes']['ready']
         for evidence in (None, {}, {**checked, 'target_sha256': None},
-                         {**checked, 'axioms': 'propext'}, {**checked, 'axioms': [None]},
+                         {**checked, 'axioms': 'propext'}, {**
+                                                            checked, 'axioms': [None]},
                          {**checked, 'axioms': ['untrustedAxiom']},
                          {**checked, 'axioms': ['sorryAx']}):
             with self.subTest(evidence=evidence):
@@ -330,7 +385,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.write_report()
         path = self.root / REPORT
         report = json.loads(path.read_text())
-        report['nodes']['ready']['location'] = {'module': 'Mathlib.Test', 'line': 2}
+        report['nodes']['ready']['location'] = {
+            'module': 'Mathlib.Test', 'line': 2}
         path.write_text(json.dumps(report))
         mathlib.unlink()
         self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
@@ -348,18 +404,21 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         mathlib = self.formal / '.lake/packages/mathlib/Mathlib/Test.lean'
         mathlib.parent.mkdir(parents=True)
         mathlib.write_text('public import Init.Data.Function\n')
-        self.write_node('ready', module='Mathlib.Test', declaration='Function.Injective')
+        self.write_node('ready', module='Mathlib.Test',
+                        declaration='Function.Injective')
         self.write_report()
         report_path = self.root / REPORT
         report = json.loads(report_path.read_text())
-        report['nodes']['ready']['location'] = {'module': 'Init.Data.Function', 'line': 2}
+        report['nodes']['ready']['location'] = {
+            'module': 'Init.Data.Function', 'line': 2}
         report_path.write_text(json.dumps(report))
         review_before = (self.node_dir / 'ready.json').read_bytes()
         report_before = report_path.read_bytes()
 
         version = pinned_lean_version(self.root)
         elan = self.root / 'elan'
-        source = elan / f'toolchains/leanprover--lean4---{version}/src/lean/Init/Data/Function.lean'
+        source = elan / \
+            f'toolchains/leanprover--lean4---{version}/src/lean/Init/Data/Function.lean'
         source.parent.mkdir(parents=True)
         source.write_text('namespace Function\ndef Injective (f : α → β) : Prop :=\n'
                           '  ∀ ⦃a₁ a₂⦄, f a₁ = f a₂ → a₁ = a₂\nend Function\n')
@@ -368,7 +427,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             response = self.client.get('/formal/nodes/ready/')
             self.assertContains(response, 'Init/Data/Function.lean')
             self.assertContains(response, 'href="#L2"')
-            self.assertContains(response, 'class="source-line declaration-line" id="L2"')
+            self.assertContains(
+                response, 'class="source-line declaration-line" id="L2"')
             self.assertContains(response, 'View pinned Lean source on GitHub')
             self.assertContains(response, upstream)
             node = self.client.get('/api/formal/nodes/ready/').json()
@@ -380,30 +440,37 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             source.unlink()
             response = self.client.get('/formal/nodes/ready/')
             self.assertContains(response, 'This Lean source is not installed')
-            self.assertContains(response, f'href="{upstream}">line 2</a>')
+            self.assertContains(
+                response, f'<a href="{upstream}">line 2</a>', html=True)
             self.assertNotContains(response, 'href="#L2"')
-            self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
+            self.assertEqual(load_nodes(self.root)[
+                             'ready']['status'], 'complete')
 
             mathlib.write_text('-- changed\n' + mathlib.read_text())
             node = self.client.get('/api/formal/nodes/ready/').json()
             self.assertEqual(node['status'], 'verification_needed')
             self.assertEqual(node['source'], 'Mathlib/Test.lean')
             self.assertIsNone(node['declaration_line'])
-            self.assertNotContains(self.client.get('/formal/nodes/ready/'), upstream)
+            self.assertNotContains(self.client.get(
+                '/formal/nodes/ready/'), upstream)
         lean.assert_not_called()
-        self.assertEqual((self.node_dir / 'ready.json').read_bytes(), review_before)
+        self.assertEqual(
+            (self.node_dir / 'ready.json').read_bytes(), review_before)
         self.assertEqual(report_path.read_bytes(), report_before)
 
     def test_reexported_mathlib_declaration_uses_a_fingerprinted_source(self):
         mathlib = self.formal / '.lake/packages/mathlib/Mathlib'
         mathlib.mkdir(parents=True)
         (mathlib / 'Import.lean').write_text('public import Mathlib.Definition\n')
-        (mathlib / 'Definition.lean').write_text('namespace Function\ndef test : Prop := True\nend Function\n')
-        self.write_node('ready', module='Mathlib.Import', declaration='Function.test')
+        (mathlib / 'Definition.lean').write_text(
+            'namespace Function\ndef test : Prop := True\nend Function\n')
+        self.write_node('ready', module='Mathlib.Import',
+                        declaration='Function.test')
         self.write_report()
         path = self.root / REPORT
         report = json.loads(path.read_text())
-        report['nodes']['ready']['location'] = {'module': 'Mathlib.Definition', 'line': 2}
+        report['nodes']['ready']['location'] = {
+            'module': 'Mathlib.Definition', 'line': 2}
         path.write_text(json.dumps(report))
         response = self.client.get('/formal/nodes/ready/')
         self.assertContains(response, 'Mathlib/Definition.lean')
@@ -429,12 +496,15 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
 
 
 class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
-    def run_check(self, axiom='sorryAx', side_effect=None):
+    def run_check(self, axiom='sorryAx', side_effect=None, *, include_signatures=True):
         output = ("'Lemmatheca.ready' does not depend on any axioms\n"
                   f"'Lemmatheca.unfinished' depends on axioms: [{axiom}]\n"
                   f"'Lemmatheca.dependent' depends on axioms: [{axiom}]\n"
                   'NODE_LOCATION Lemmatheca.ready Lemmatheca.Fixture 3\n')
         for name in ('Lemmatheca.ready', 'Lemmatheca.unfinished', 'Lemmatheca.dependent'):
+            if include_signatures:
+                output += 'NODE_SIGNATURE ' + json.dumps(
+                    {'name': name, 'signature': f'{name} : True'}) + '\n'
             output += 'REVIEW_CONSTANT ' + json.dumps(
                 {'name': name, 'payload': [name], 'references': []}) + '\n'
         result = CompletedProcess([], 0, stdout=output, stderr='')
@@ -454,9 +524,18 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual(report['nodes']['pending']['axioms'], ['sorryAx'])
         self.assertEqual(report['nodes']['ready']['location'],
                          {'module': 'Lemmatheca.Fixture', 'line': 3})
+        self.assertEqual(report['nodes']['ready']
+                         ['signature'], 'Lemmatheca.ready : True')
         self.assertNotIn('location', report['nodes']['pending'])
         self.assertEqual(load_nodes(self.root)[
                          'dependent']['status'], 'proof_pending')
+
+    def test_missing_signature_cannot_replace_verification_report(self):
+        path = self.root / REPORT
+        original = path.read_bytes()
+        with self.assertRaisesRegex(CommandError, 'No declaration signature'):
+            self.run_check(include_signatures=False)
+        self.assertEqual(path.read_bytes(), original)
 
     def test_custom_axiom_and_mid_run_source_changes_cannot_write_passing_report(self):
         original = (self.root / REPORT).read_text()

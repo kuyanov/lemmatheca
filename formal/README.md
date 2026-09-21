@@ -41,13 +41,32 @@ sources. The reader uses the pinned Elan toolchain's installed source when avail
 or a link to that Lean version on GitHub. Before a declaration exists, both
 `declaration` and `module` may be `null`, with `review: null`.
 
+Node pages also show the declaration signature exported by Lean during verification.
+For generated declarations, the source origin can name a different declaration:
+for example, `Even.zero` is generated from `IsSquare.one` by `to_additive`.
+The checked signature shows the actual target even when it has no handwritten
+source declaration. Stale verification hides that signature until rechecking.
+
+Reusable set and map definitions and theorems use the namespace
+`Lemmatheca.SetTheory` and live in `Lemmatheca/SetTheory.lean`. Entry-specific
+examples, diagram definitions, and formula-question answers use
+`Lemmatheca.Entry.SetsAndMaps` and live under `Lemmatheca/Entry/SetsAndMaps/`.
+The entry folder contains `SetsAndElements.lean`, `SetOperations.lean`, and `Maps.lean`.
+These example modules import their mathlib dependencies directly and compile independently.
+The entry's aggregate module imports all three plus the general theory.
+Import `Lemmatheca.SetTheory` for the reusable library or
+`Lemmatheca.Entry.SetsAndMaps` for the entry's examples too.
+
 The sets-and-maps entry has bindings for every mathematical block, including
-examples and question answers. Its local declarations are in `SetsAndElements`,
-`SetOperations`, and `Maps` under `Lemmatheca/SetTheory/`. The notation-and-conventions
-block has an empty mapping. All 121 nodes have accepted reviews and passing
-verification. Two proof passes completed 31 and 55 theorem proofs, preserving
-every reviewed target hash. These modules contain no `sorry` placeholders.
-Ambient types (or subtypes) specify each universe,
+examples and question answers. The notation-and-conventions block has an empty
+mapping. All 127 nodes have passing Lean verification: 85 bind directly to mathlib
+or Lean declarations, 9 to the general theory, and 33 to entry-specific declarations.
+The [mathlib binding audit](../docs/mathlib-binding-audit.md) records direct
+replacements, splits of bundled claims, and changes to examples and dependencies.
+New or changed nodes require explicit review; verification does not accept them.
+Dependency readiness can still prevent an approved node from being complete.
+These modules contain no `sorry`
+placeholders. Ambient types (or subtypes) specify each universe,
 domain, and codomain. In the formula question, the reciprocal is specified by
 `x * y = 1`, since Lean's division itself is total even at zero.
 

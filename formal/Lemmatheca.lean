@@ -1,3 +1,2 @@
-import Lemmatheca.Combinatorics.Additive.Sumsets
-import Lemmatheca.Combinatorics.Additive.FiniteSumsets
-import Lemmatheca.SetTheory.Maps
+import Lemmatheca.SetTheory
+import Lemmatheca.Entry.SetsAndMaps

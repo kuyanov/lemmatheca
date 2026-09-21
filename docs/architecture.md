@@ -53,10 +53,13 @@ lemmatheca/
 │   ├── Lemmatheca.lean
 │   ├── Lemmatheca/
 │   │   ├── ReviewChecks.lean       # Review snapshots and declaration locations
-│   │   ├── SetTheory/
-│   │   │   ├── SetsAndElements.lean
-│   │   │   ├── SetOperations.lean
-│   │   │   └── Maps.lean
+│   │   ├── SetTheory.lean          # Reusable set/map library
+│   │   ├── Entry/
+│   │   │   ├── SetsAndMaps.lean    # Imports this entry's examples
+│   │   │   └── SetsAndMaps/        # Namespace Lemmatheca.Entry.SetsAndMaps
+│   │   │       ├── SetsAndElements.lean
+│   │   │       ├── SetOperations.lean
+│   │   │       └── Maps.lean
 │   │   └── Combinatorics/Additive/
 │   │       ├── Sumsets.lean
 │   │       ├── FiniteSumsets.lean
@@ -163,12 +166,23 @@ changes invalidate affected evidence, except for `review` records, which update
 approval without discarding Lean evidence. Target hashes exclude theorem proofs
 and include referenced definitions; changed targets require renewed review.
 Source is shown directly on node pages;
-there is no separate file-viewer route. The registry currently contains 121 nodes
+there is no separate file-viewer route. The registry currently contains 127 nodes
 covering the mathematical blocks of sets-and-maps; its notation-and-conventions
-block has an empty mapping. All 121 nodes have accepted reviews and passing
-verification. The two proof passes preserve every target hash and leave no `sorry`
-placeholders in these modules. With an empty registry,
+block has an empty mapping. All 127 nodes have passing Lean verification, with no
+`sorry` placeholders. The [mathlib binding audit](mathlib-binding-audit.md) records
+direct library bindings and the replacement of bundled nodes with separate claims.
+Changed bindings and dependency lists require renewed review. Pending
+dependencies can also prevent approved nodes from being complete. With an empty registry,
 the checker skips Lean. Historical reports are untouched.
+
+Reusable set and map declarations live in the single `Lemmatheca/SetTheory.lean`
+module, under `Lemmatheca.SetTheory`. The entry's concrete examples, diagram, and
+formula questions use `Lemmatheca.Entry.SetsAndMaps` in three modules under
+`Lemmatheca/Entry/SetsAndMaps/`. Each example module imports mathlib directly;
+the entry's aggregate module imports all three and the general theory.
+Node IDs and declaration names are independent of source layout. Moving a node's
+import module refreshes its source path after verification and changes its review
+hash, so retained approval records become outdated until explicitly reviewed.
 
 Committing reviewed HTML mappings records coverage approval. The `review --accept`
 command records statement approval for selected nodes or an entry's linked nodes,

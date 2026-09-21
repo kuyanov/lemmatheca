@@ -41,22 +41,35 @@ def parse_checks(output, names):
                  for name, module, line in re.findall(
                      r'^NODE_LOCATION (\S+) (\S+) ([1-9][0-9]*)$', output, re.M)}
     try:
+        signatures = {}
+        for line in output.splitlines():
+            if line.startswith('NODE_SIGNATURE '):
+                item = json.loads(line.removeprefix('NODE_SIGNATURE '))
+                if not isinstance(item['signature'], str) or not item['signature'].strip():
+                    raise ValueError('Empty or invalid declaration signature')
+                signatures[item['name']] = item['signature']
         snapshots = [json.loads(line.removeprefix('REVIEW_CONSTANT '))
                      for line in output.splitlines() if line.startswith('REVIEW_CONSTANT ')]
-        target_hashes = declaration_hashes({item['name']: item for item in snapshots}, names)
+        target_hashes = declaration_hashes(
+            {item['name']: item for item in snapshots}, names)
     except (ValueError, KeyError, TypeError) as error:
         raise CommandError(f'Invalid review snapshots: {error}') from error
 
     declarations = {}
     for name in names:
-        pattern = re.escape(f"'{name}'") + r" (?:depends on axioms: \[([^\]]*)\]|does not depend on any axioms)"
+        if name not in signatures:
+            raise CommandError(f'No declaration signature for {name}')
+        pattern = re.escape(
+            f"'{name}'") + r" (?:depends on axioms: \[([^\]]*)\]|does not depend on any axioms)"
         match = re.search(pattern, output)
         if not match:
             raise CommandError(f'No axiom result for {name}:\n{output}')
-        axioms = [value.strip() for value in (match[1] or '').split(',') if value.strip()]
+        axioms = [value.strip()
+                  for value in (match[1] or '').split(',') if value.strip()]
         if set(axioms) - ALLOWED_AXIOMS - {'sorryAx'}:
             raise CommandError(f'{name} uses unapproved axioms: {axioms}')
-        declarations[name] = {'axioms': axioms, 'status': 'pending' if 'sorryAx' in axioms else 'complete'}
+        declarations[name] = {'axioms': axioms, 'status': 'pending' if 'sorryAx' in axioms else 'complete',
+                              'signature': signatures[name]}
         if name in locations:
             declarations[name]['location'] = locations[name]
     return declarations, target_hashes
@@ -73,12 +86,14 @@ class Command(BaseCommand):
 
     def verify_nodes(self, root):
         nodes = load_nodes(root, check_reports=False)
-        bound = {key: node for key, node in nodes.items() if node['declaration']}
+        bound = {key: node for key,
+                 node in nodes.items() if node['declaration']}
         if not bound:
             self.stdout.write('No formal node declarations to check.')
             return
         before = input_hashes(root, bound)
-        fingerprints = {key: node_fingerprint(node) for key, node in nodes.items()}
+        fingerprints = {key: node_fingerprint(
+            node) for key, node in nodes.items()}
         modules = sorted({node['module'] for node in bound.values()})
         names = sorted({node['declaration'] for node in bound.values()})
         formal_dir = root / 'formal'
@@ -105,7 +120,8 @@ class Command(BaseCommand):
         after_nodes = load_nodes(root, check_reports=False)
         if (before != input_hashes(root, bound)
                 or fingerprints != {key: node_fingerprint(node) for key, node in after_nodes.items()}):
-            raise CommandError('Formal inputs changed during verification; rerun the check.')
+            raise CommandError(
+                'Formal inputs changed during verification; rerun the check.')
 
         environment = {name: before[f'formal/{name}'] for name in ENVIRONMENT}
         report = {
@@ -131,6 +147,7 @@ class Command(BaseCommand):
         destination.parent.mkdir(parents=True, exist_ok=True)
         with staged_json(destination, report) as temporary:
             temporary.replace(destination)
-        ready = sum(node['status'] == 'complete' for node in load_nodes(root).values())
+        ready = sum(node['status'] ==
+                    'complete' for node in load_nodes(root).values())
         self.stdout.write(self.style.SUCCESS(
             f'Checked {len(bound)} node declarations: {ready} ready, {len(nodes) - ready} pending.'))

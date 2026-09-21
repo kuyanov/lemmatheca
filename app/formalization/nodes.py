@@ -203,9 +203,12 @@ def load_nodes(root, *, check_reports=True):
             node, evidence.get(node_id), report.get('sha256', {}))
         status = node_status(node, checked, nodes)
         target_hash = checked.get('target_sha256')
+        signature = checked.get('signature')
         source, line = (checked_source_location(node, checked, report)
                         if checked else (node['source'], None))
         node.update(source=source, status=status, status_label=NODE_STATUS_LABELS[status],
+                    signature=signature if isinstance(
+                        signature, str) else None,
                     target_sha256=target_hash,
                     review_current=bool(checked and node['review'] is not None
                                         and node['review']['sha256'] == target_hash),
