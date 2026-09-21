@@ -1,10 +1,24 @@
 """Lean source paths, declaration locations, and verification inputs."""
 
+import os
 import re
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 
 from catalog.files import read_json
 from catalog.sources import ContentError
+
+
+TOOLCHAIN_MODULES = ('Init', 'Lean', 'Std')
+
+
+def pinned_lean_version(root):
+    toolchain = (root / 'formal/lean-toolchain').read_text().strip()
+    match = re.fullmatch(
+        r'leanprover/lean4:(v[0-9]+\.[0-9]+\.[0-9]+(?:-[\w.-]+)?)', toolchain)
+    if not match:
+        raise ContentError(
+            'Lean source navigation requires a versioned leanprover/lean4 toolchain')
+    return match[1]
 
 
 def lean_source_path(source, repository_dir, *, require_file=True):
@@ -16,8 +30,15 @@ def lean_source_path(source, repository_dir, *, require_file=True):
         root = repository_dir / 'formal'
     elif parts[0] == 'Mathlib':
         root = repository_dir / 'formal/.lake/packages/mathlib/Mathlib'
+    elif parts[0] in TOOLCHAIN_MODULES:
+        version = pinned_lean_version(repository_dir)
+        elan = Path(os.environ.get(
+            'ELAN_HOME', Path.home() / '.elan')).expanduser()
+        root = elan / 'toolchains' / \
+            f'leanprover--lean4---{version}' / 'src/lean' / parts[0]
     else:
-        raise ContentError('Use a formal/ or Mathlib/ source path')
+        raise ContentError(
+            'Use a formal/, Mathlib/, Init/, Lean/, or Std/ source path')
     path = root.joinpath(*parts[1:])
     if not path.resolve().is_relative_to(root.resolve()):
         raise ContentError(f'Lean source is outside its source tree: {source}')
@@ -98,23 +119,36 @@ def declaration_line(source, declaration):
     return None
 
 
-def source_context(source, root, declaration=None):
+def source_context(source, root, declaration=None, *, checked_line=None):
     path = lean_source_path(source, root, require_file=False)
     text = path.read_text() if path.is_file() else None
     upstream = None
+    upstream_name = None
     if source.startswith('Mathlib/'):
         manifest = read_json(root / 'formal/lake-manifest.json')
         commit = next(item['rev'] for item in manifest['packages']
                       if item['name'] == 'mathlib')
         upstream = f'https://github.com/leanprover-community/mathlib4/blob/{commit}/{source}'
+        upstream_name = 'mathlib'
+    elif source.split('/')[0] in TOOLCHAIN_MODULES:
+        version = pinned_lean_version(root)
+        upstream = f'https://github.com/leanprover/lean4/blob/{version}/src/lean/{source}'
+        upstream_name = 'Lean'
     elif text is None:
         raise ContentError('Local Lean source is missing')
-    line = declaration_line(
-        text, declaration) if text is not None and declaration else None
+    # Current checker evidence includes Lean's locations for anonymous instances
+    # and other generated names that cannot be found by scanning source text.
+    line = checked_line if type(
+        checked_line) is int and checked_line > 0 else None
+    if text is not None and line is not None and line > len(text.splitlines()):
+        line = None
+    if line is None and text is not None and declaration:
+        line = declaration_line(text, declaration)
     return {'lean_source': text,
             'source_lines': [{'number': number, 'text': value, 'selected': number == line}
                              for number, value in enumerate(text.splitlines(), 1)] if text is not None else [],
-            'declaration_line': line, 'upstream_url': upstream + f'#L{line}' if upstream and line else upstream}
+            'declaration_line': line, 'upstream_name': upstream_name,
+            'upstream_url': upstream + f'#L{line}' if upstream and line else upstream}
 
 
 def verification_inputs(root, nodes):
@@ -131,7 +165,7 @@ def verification_inputs(root, nodes):
         if module in visited:
             continue
         visited.add(module)
-        if module.split('.')[0] in {'Init', 'Lean', 'Std'}:
+        if module.split('.')[0] in TOOLCHAIN_MODULES:
             continue  # These ship with the pinned Lean toolchain.
         relative = module.replace('.', '/') + '.lean'
         path = next(

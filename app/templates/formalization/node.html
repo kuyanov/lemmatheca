@@ -15,10 +15,12 @@
     {% if node.declaration %}
     <p class="lean-declaration"><code>{{ node.declaration }}</code></p>
     <p class="lean-file-path"><code>{{ node.source }}</code>{% if declaration_line %} ·
-      <a href="#L{{ declaration_line }}">line {{ declaration_line }}</a>{% endif %}
+      <a href="{% if lean_source is not None %}#L{{ declaration_line }}{% else %}{{ upstream_url }}{% endif %}">line
+        {{ declaration_line }}</a>{% endif %}
     </p>
     {% endif %}
-    {% if upstream_url %}<p><a href="{{ upstream_url }}">View pinned mathlib source on GitHub</a></p>{% endif %}
+    {% if upstream_url %}<p><a href="{{ upstream_url }}">View pinned {{ upstream_name }} source on GitHub</a></p>
+    {% endif %}
     {% if dependencies %}
     <details class="node-dependencies">
       <summary>Dependencies ({{ dependencies|length }})</summary>
@@ -37,7 +39,8 @@
   <pre class="lean-source" tabindex="0" aria-label="Lean source"><code>{% for line in source_lines %}<span class="source-line{% if line.selected %} declaration-line{% endif %}" id="L{{ line.number }}"><a class="line-number" href="#L{{ line.number }}" aria-label="Line {{ line.number }}">{{ line.number }}</a>{{ line.text }}
 </span>{% endfor %}</code></pre>
   {% elif node.source %}
-  <p>This mathlib source is not installed on this server. You can read it using the pinned GitHub link above.</p>
+  <p>This {{ upstream_name }} source is not installed on this server. You can read it using the pinned GitHub link
+    above.</p>
   {% else %}
   <p>No Lean declaration has been written for this node yet.</p>
   {% endif %}

@@ -15,6 +15,15 @@ uv run python app/manage.py validate_corpus
 uv run python app/manage.py test catalog
 ```
 
+After reviewing formal declarations, record approval with
+`uv run python app/manage.py review --accept --node <id>` or
+`uv run python app/manage.py review --accept --entry <id>`.
+Add `--dry-run` to preview node-record changes. The command refreshes Lean checks
+when necessary and stores hashes of the reviewed targets; it does not complete
+unfinished proofs or publish the entry.
+Replace `--accept` with `--retract` to clear existing approvals. Retraction supports
+the same selectors and `--dry-run`, preserves verification evidence, and never runs Lean.
+
 Tests use small isolated fixtures and one smoke test of the current corpus.
 Lean command tests mock Lean output; run `check_formalizations` to check
 actual proofs.

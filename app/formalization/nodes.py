@@ -8,20 +8,23 @@ import re
 from django.urls import reverse
 
 from catalog.files import file_signature, read_json
-from .lean import lean_source_path, local_sources
 from catalog.metadata import fields
 from catalog.sources import ContentError, IDENTIFIER
 
+from .lean import TOOLCHAIN_MODULES, lean_source_path, local_sources
+from .reviews import SHA256, validate_review
 
-NODE_FIELDS = {'id', 'declaration', 'module', 'dependencies', 'reviewed'}
+
+NODE_FIELDS = {'id', 'declaration', 'module', 'dependencies', 'review'}
 LEAN_NAME = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z", re.UNICODE)
 ALLOWED_AXIOMS = {'propext', 'Classical.choice', 'Quot.sound'}
 REPORT = 'formal/checks/nodes.json'
-REPORT_VERSION = 2
+REPORT_VERSION = 3
 ENVIRONMENT = ('lean-toolchain', 'lake-manifest.json', 'lakefile.toml')
 NODE_STATUS_LABELS = {
     'declaration_missing': 'Declaration missing',
     'review_pending': 'Pending review',
+    'review_outdated': 'Review outdated',
     'verification_needed': 'Verification needed',
     'proof_pending': 'Proof pending',
     'dependencies_pending': 'Dependencies pending',
@@ -29,19 +32,42 @@ NODE_STATUS_LABELS = {
 }
 
 
-def source_for_module(module):
+def source_for_module(module, *, allow_toolchain=False):
     if not isinstance(module, str) or not LEAN_NAME.fullmatch(module):
         raise ContentError('Invalid Lean module')
     if module.startswith('Lemmatheca.'):
         return 'formal/' + module.replace('.', '/') + '.lean'
-    if module.startswith('Mathlib.'):
+    if module.startswith('Mathlib.') or (allow_toolchain and '.' in module
+                                         and module.split('.')[0] in TOOLCHAIN_MODULES):
         return module.replace('.', '/') + '.lean'
     raise ContentError('Nodes must use Lemmatheca or Mathlib modules')
 
 
+def checked_source_location(node, checked, report):
+    """A declaration can originate in a different module from the node's import."""
+    location = checked.get('location')
+    if isinstance(location, dict) and type(location.get('line')) is int and location['line'] > 0:
+        try:
+            source = source_for_module(
+                location.get('module'), allow_toolchain=True)
+        except ContentError:
+            return node['source'], None
+        # Imported sources need current fingerprints; bundled Lean sources are
+        # covered by the pinned toolchain in the verification report.
+        if source.split('/')[0] in TOOLCHAIN_MODULES or source_input_key(source) in report.get('sha256', {}):
+            return source, location['line']
+    return node['source'], None
+
+
+def source_input_key(source):
+    if source and source.startswith('Mathlib/'):
+        return 'formal/.lake/packages/mathlib/' + source
+    return source
+
+
 def node_fingerprint(node):
     # Review is a human decision, independent of Lean's evidence for the target.
-    record = {key: node[key] for key in sorted(NODE_FIELDS - {'reviewed'})}
+    record = {key: node[key] for key in sorted(NODE_FIELDS - {'review'})}
     return hashlib.sha256(json.dumps(record, sort_keys=True).encode()).hexdigest()
 
 
@@ -91,6 +117,38 @@ def report_is_current(report, root):
     return True
 
 
+def current_node_evidence(node, checked, inputs):
+    """Ignore incomplete, stale, or inconsistent evidence for a declaration."""
+    if not isinstance(checked, dict) or checked.get('fingerprint') != node_fingerprint(node):
+        return {}
+    target_hash = checked.get('target_sha256')
+    axioms = checked.get('axioms')
+    if (not isinstance(target_hash, str) or not SHA256.fullmatch(target_hash)
+            or not isinstance(axioms, list) or any(not isinstance(axiom, str) for axiom in axioms)
+            or set(axioms) - ALLOWED_AXIOMS - {'sorryAx'}
+            or checked.get('status') != ('pending' if 'sorryAx' in axioms else 'complete')
+            or source_input_key(node['source']) not in inputs):
+        return {}
+    return checked
+
+
+def node_status(node, checked, nodes):
+    """Report the first remaining requirement, after resolving dependencies."""
+    if not node['declaration']:
+        return 'declaration_missing'
+    if node['review'] is None:
+        return 'review_pending'
+    if not checked:
+        return 'verification_needed'
+    if node['review']['sha256'] != checked['target_sha256']:
+        return 'review_outdated'
+    if checked['status'] == 'pending':
+        return 'proof_pending'
+    if any(nodes[item]['status'] != 'complete' for item in node['dependencies']):
+        return 'dependencies_pending'
+    return 'complete'
+
+
 def load_nodes(root, *, check_reports=True):
     nodes = {}
     directory = root / 'formal/nodes'
@@ -101,8 +159,7 @@ def load_nodes(root, *, check_reports=True):
         fields(node, NODE_FIELDS)
         if not isinstance(node['id'], str) or not IDENTIFIER.fullmatch(node['id']) or path.stem != node['id']:
             raise ContentError('Formal node ID must match its filename')
-        if type(node['reviewed']) is not bool:
-            raise ContentError('Node reviewed must be true or false')
+        validate_review(node['review'])
         if not isinstance(node['dependencies'], list) or any(
                 not isinstance(item, str) or not IDENTIFIER.fullmatch(item) for item in node['dependencies']):
             raise ContentError('Node dependencies must be a list of node IDs')
@@ -119,7 +176,7 @@ def load_nodes(root, *, check_reports=True):
             source = source_for_module(module)
             lean_source_path(
                 source, root, require_file=not module.startswith('Mathlib.'))
-        if node['reviewed'] and declaration is None:
+        if node['review'] is not None and declaration is None:
             raise ContentError(
                 'A node without a declaration cannot be reviewed')
         nodes[node['id']] = {**node, 'source': source}
@@ -142,26 +199,18 @@ def load_nodes(root, *, check_reports=True):
         node = nodes[node_id]
         for dependency in node['dependencies']:
             resolve(dependency)
-        checked = evidence.get(node_id, {})
-        source_key = (('formal/.lake/packages/mathlib/' + node['source'])
-                      if (node['module'] or '').startswith('Mathlib.') else node['source'])
-        axioms = checked.get('axioms')
-        checked_current = (checked.get('fingerprint') == node_fingerprint(node)
-                           and isinstance(axioms, list)
-                           and all(isinstance(axiom, str) for axiom in axioms)
-                           and set(axioms) <= ALLOWED_AXIOMS | {'sorryAx'}
-                           and checked.get('status') == ('pending' if 'sorryAx' in axioms else 'complete')
-                           and source_key in report.get('sha256', {}))
-        # A stale proof result cannot describe the current declaration.
-        status = ('declaration_missing' if not node['declaration'] else
-                  'review_pending' if not node['reviewed'] else
-                  'verification_needed' if not checked_current else
-                  'proof_pending' if checked['status'] == 'pending' else
-                  'dependencies_pending' if any(nodes[item]['status'] != 'complete' for item in node['dependencies']) else
-                  'complete')
-        node.update(status=status, status_label=NODE_STATUS_LABELS[status],
-                    checked_on=report.get(
-                        'checked_on') if checked_current else None,
+        checked = current_node_evidence(
+            node, evidence.get(node_id), report.get('sha256', {}))
+        status = node_status(node, checked, nodes)
+        target_hash = checked.get('target_sha256')
+        source, line = (checked_source_location(node, checked, report)
+                        if checked else (node['source'], None))
+        node.update(source=source, status=status, status_label=NODE_STATUS_LABELS[status],
+                    target_sha256=target_hash,
+                    review_current=bool(checked and node['review'] is not None
+                                        and node['review']['sha256'] == target_hash),
+                    declaration_line=line,
+                    checked_on=report.get('checked_on') if checked else None,
                     url=reverse('formalization:node', args=[node_id]))
         visiting.remove(node_id)
         visited.add(node_id)

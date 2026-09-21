@@ -34,5 +34,6 @@ def node_page(request, node_id):
         nodes[item] for item in node['dependencies']]}
     if node['source']:
         context.update(source_context(
-            node['source'], settings.REPOSITORY_DIR, node['declaration']))
+            node['source'], settings.REPOSITORY_DIR, node['declaration'],
+            checked_line=node['declaration_line']))
     return render(request, 'formalization/node.html', context)

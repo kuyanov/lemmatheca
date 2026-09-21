@@ -1,0 +1,99 @@
+import Lean
+
+/-!
+# Review target snapshots
+
+Export elaborated declarations and the constants that determine their meaning.
+Theorems contribute their types, not their proofs. Definitions contribute their
+bodies too; inductives include constructors, and recursors include their rules.
+Python computes SHA-256 over each target's reachable snapshot graph. Expression
+metadata and binder names are omitted so source positions and ordinary binder
+renaming do not affect the snapshot. These are review targets, not proof hashes.
+The exporter also reports source locations for the requested declarations.
+-/
+
+namespace Lemmatheca.ReviewChecks
+
+open Lean Elab Command
+
+private def tag (name : String) (args : List Json := []) : Json :=
+  toJson (Json.str name :: args)
+
+private partial def exprJson : Expr → Json
+  | .bvar n => tag "bvar" [toJson n]
+  | .fvar id => tag "fvar" [toJson (reprStr id)]
+  | .mvar id => tag "mvar" [toJson (reprStr id)]
+  | .sort level => tag "sort" [toJson (reprStr level)]
+  | .const name levels => tag "const" [toJson name.toString, toJson (reprStr levels)]
+  | .app f a => tag "app" [exprJson f, exprJson a]
+  | .lam _ type body info => tag "lam" [exprJson type, exprJson body, toJson (reprStr info)]
+  | .forallE _ type body info =>
+      tag "forall" [exprJson type, exprJson body, toJson (reprStr info)]
+  | .letE _ type value body nondep =>
+      tag "let" [exprJson type, exprJson value, exprJson body, toJson nondep]
+  | .lit value => tag "lit" [toJson (reprStr value)]
+  | .mdata _ body => exprJson body
+  | .proj name index body => tag "proj" [toJson name.toString, toJson index, exprJson body]
+
+private def snapshot (info : ConstantInfo) : Json × Array Name := Id.run do
+  let mut refs := info.type.getUsedConstants
+  let mut expressions := [exprJson info.type]
+  let details ← match info with
+    | .thmInfo _ => pure (tag "theorem")
+    | .defnInfo value => do
+        refs := refs ++ value.value.getUsedConstants
+        expressions := expressions ++ [exprJson value.value]
+        pure (tag "definition" [toJson (reprStr value.safety)])
+    | .opaqueInfo value => do
+        refs := refs ++ value.value.getUsedConstants
+        expressions := expressions ++ [exprJson value.value]
+        pure (tag "opaque" [toJson value.isUnsafe])
+    | .axiomInfo value => pure (tag "axiom" [toJson value.isUnsafe])
+    | .inductInfo value => do
+        refs := refs ++ value.all.toArray ++ value.ctors.toArray
+        pure (tag "inductive" [toJson (value.all.map Name.toString),
+          toJson (value.ctors.map Name.toString), toJson value.numParams,
+          toJson value.numIndices, toJson value.numNested, toJson value.isRec,
+          toJson value.isUnsafe, toJson value.isReflexive])
+    | .ctorInfo value => do
+        refs := refs.push value.induct
+        pure (tag "constructor" [toJson value.induct.toString, toJson value.cidx,
+          toJson value.numParams, toJson value.numFields, toJson value.isUnsafe])
+    | .recInfo value => do
+        refs := refs ++ value.all.toArray
+        for rule in value.rules do
+          refs := (refs.push rule.ctor) ++ rule.rhs.getUsedConstants
+        pure (tag "recursor" [toJson (value.all.map Name.toString),
+          toJson value.numParams, toJson value.numIndices, toJson value.numMotives,
+          toJson value.numMinors, toJson value.k, toJson value.isUnsafe,
+          toJson (value.rules.map fun rule =>
+            tag "rule" [toJson rule.ctor.toString, toJson rule.nfields, exprJson rule.rhs])])
+    | .quotInfo value =>
+        pure (tag "quotient" [toJson (match value.kind with
+          | .type => "type" | .ctor => "constructor" | .lift => "lift" | .ind => "induction")])
+  return (tag "declaration" [toJson (info.levelParams.map Name.toString),
+    details, toJson expressions], refs)
+
+private partial def emitSnapshot (name : Name) : StateT NameSet CommandElabM Unit := do
+  if (← get).contains name then return
+  modify (·.insert name)
+  let info ← getConstInfo name
+  let (payload, refs) := snapshot info
+  let record := Json.mkObj [("name", toJson name.toString), ("payload", payload),
+    ("references", toJson (refs.map Name.toString))]
+  logInfo s!"REVIEW_CONSTANT {record.compress}"
+  for ref in refs do emitSnapshot ref
+
+private def emitLocation (name : Name) : CommandElabM Unit := do
+  let some module ← findModuleOf? name | return
+  let some ranges ← findDeclarationRanges? name | return
+  logInfo m!"NODE_LOCATION {name} {module} {ranges.selectionRange.pos.line}"
+
+syntax "#review_targets " ident,+ : command
+
+elab_rules : command
+  | `(#review_targets $names:ident,*) => do
+      for name in names.getElems do emitLocation name.getId
+      let _ ← (names.getElems.forM fun name => emitSnapshot name.getId).run {}
+
+end Lemmatheca.ReviewChecks

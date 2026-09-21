@@ -33,7 +33,7 @@ lemmatheca/
 │   ├── manage.py
 │   ├── config/                     # Settings, root URLs, WSGI, development 404 middleware
 │   ├── catalog/                    # File loader, validators, rendering, views, tests
-│   │   └── management/commands/    # validate_corpus and check_formalizations
+│   │   └── management/commands/    # validate_corpus, check_formalizations, review
 │   ├── formalization/              # Node registry, readiness, source locations, API/views
 │   ├── templates/                  # Shared Django layout and reader pages
 │   └── static/                     # CSS, small JS, self-hosted vendor/katex
@@ -52,8 +52,11 @@ lemmatheca/
 │   ├── lake-manifest.json
 │   ├── Lemmatheca.lean
 │   ├── Lemmatheca/
-│   │   ├── AxiomChecks.lean
-│   │   ├── SetTheory/SetsAndElements.lean
+│   │   ├── ReviewChecks.lean       # Review snapshots and declaration locations
+│   │   ├── SetTheory/
+│   │   │   ├── SetsAndElements.lean
+│   │   │   ├── SetOperations.lean
+│   │   │   └── Maps.lean
 │   │   └── Combinatorics/Additive/
 │   │       ├── Sumsets.lean
 │   │       ├── FiniteSumsets.lean
@@ -146,8 +149,9 @@ node links. Entry totals deduplicate shared nodes and keep unplanned blocks from
 claiming full coverage. Questions map their answers.
 
 Nodes live in `formal/nodes/<id>.json`, with declaration/module, dependencies,
-and statement review. Nodes can exist without an entry. Source paths are inferred
-from modules. The formal API and node pages use `app/formalization/`; the reader
+and statement review. Nodes can exist without an entry. Source paths initially follow
+the import module; current checked locations identify the actual defining module,
+including sources bundled with the pinned Lean toolchain. The formal API and node pages use `app/formalization/`; the reader
 calls the same Python layer without making an HTTP request to itself.
 
 `check_formalizations` builds registered modules, checks declarations and their
@@ -155,16 +159,23 @@ transitive axioms, and writes `formal/checks/nodes.json`. `sorryAx` means pendin
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed for complete proofs.
 A ready node additionally needs statement review and ready declared dependencies.
 The reader checks current fingerprints without compiling. Node/source/environment
-changes invalidate affected evidence, except for `reviewed` toggles, which update
-approval without discarding Lean evidence. Source is shown directly on node pages;
-there is no separate file-viewer route. The registry currently contains nine
-proposed nodes for Definition 1 of sets-and-maps. With an empty registry, the
-checker skips Lean. Historical reports are untouched.
+changes invalidate affected evidence, except for `review` records, which update
+approval without discarding Lean evidence. Target hashes exclude theorem proofs
+and include referenced definitions; changed targets require renewed review.
+Source is shown directly on node pages;
+there is no separate file-viewer route. The registry currently contains 121 nodes
+covering the mathematical blocks of sets-and-maps; its notation-and-conventions
+block has an empty mapping. All 121 nodes have accepted reviews and passing
+verification. The two proof passes preserve every target hash and leave no `sorry`
+placeholders in these modules. With an empty registry,
+the checker skips Lean. Historical reports are untouched.
 
-Committing reviewed HTML mappings records coverage approval; the node review flag
-records statement approval. These are manual repository conventions. The checker
-does not enforce an autonomous agent's target lock or prove correspondence with
-human text. It fingerprints ordinary source imports, not arbitrary metaprogram
+Committing reviewed HTML mappings records coverage approval. The `review --accept`
+command records statement approval for selected nodes or an entry's linked nodes,
+binding it to hashes of elaborated targets, referenced declarations, node metadata,
+and the pinned environment. `review --retract` clears selected approvals without
+running Lean or discarding its verification evidence. The checker detects changed targets but does not
+prove correspondence with human text. It fingerprints ordinary source imports, not arbitrary metaprogram
 inputs. Full proof-graph extraction and model runners remain future work. See
 [verification and review](verification-and-review.md) for the exact boundaries.
 

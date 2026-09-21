@@ -1,3 +1,3 @@
 import Lemmatheca.Combinatorics.Additive.Sumsets
 import Lemmatheca.Combinatorics.Additive.FiniteSumsets
-import Lemmatheca.AxiomChecks
+import Lemmatheca.SetTheory.Maps

@@ -50,9 +50,12 @@ excluded, and an all-not-applicable entry displays N/A. Block percentages count
 nodes, not proof difficulty or effort; they do not measure entry-wide coverage.
 
 Committing a mapping, including an empty one, records the maintainer's coverage
-review. Node `reviewed` flags record statement review. These are manual repository
-conventions, not an authentication or review workflow. AI proposals require review
-before merge; future agents must keep approved targets fixed. Editorial status
+review. Node `review` records store target hashes and timestamps written by
+`review --accept`, for individual nodes or all linked nodes in an entry.
+`review --retract` clears those records without changing verification evidence. Fresh checks
+compare the current targets to those hashes; changed targets show **Review outdated**.
+The command records a maintainer's decision rather than providing authentication.
+AI proposals require review before merge; future agents must keep approved targets fixed. Editorial status
 remains independent of formal readiness.
 
 ## Sources and access
@@ -63,7 +66,7 @@ upstream attribution. A maintainer decides what is included.
 
 The read-only formal API exposes `/api/formal/nodes/` and
 `/api/formal/nodes/<id>/`, including derived `status`, `status_label`, dependencies, source,
-and node-page links. It does not load the human corpus. Node pages show escaped
+node-page links, `target_sha256`, and `review_current`. It does not load the human corpus. Node pages show escaped
 source with an inferred declaration line where possible. Human-corpus APIs,
 search, write endpoints, and autonomous workers remain future work.
 

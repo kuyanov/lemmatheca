@@ -16,12 +16,14 @@ public contributions come later.
    definitions and statements, linking blocks through `data-formal`. Check that
    new Lean declarations compile; leave unfinished proofs as `sorry`.
 5. **Review correspondence.** Check the declarations and their coverage of each
-   block, including examples and question answers. Approve statements with
-   `reviewed: true`; record mapping approval through Git review.
+   block, including examples and question answers. Record approval with
+   `review --accept --node <id>` or `review --accept --entry <id>`; the command saves
+   hashes of the reviewed targets. Use `--retract` to withdraw approval.
+   Record mapping approval through Git review.
 6. **Prove the nodes.** Later, use AI to work through the dependency DAG, following
    the human proofs. Run `check_formalizations` and review whether the formal
    arguments follow the intended reasoning. Changes to approved statements
-   require another review.
+   require another review; proof-only changes keep statement approval after rechecking.
 
 Nodes are independent of entries. Agents can find human explanations by following
 `data-formal` mappings in reverse; a dedicated lookup API is planned. For each

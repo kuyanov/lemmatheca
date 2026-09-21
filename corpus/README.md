@@ -36,7 +36,11 @@ records in `formal/nodes/` using its `data-formal` attribute:
 | `data-formal="node-a node-b"` | Formal nodes covering this block |
 
 Definitions can use existing Lean definitions; questions map their answers.
-Maintainers review both the declarations and coverage. Block percentages count
+Maintainers review both the declarations and coverage. Use
+`uv run python app/manage.py review --accept --entry <id>` to record approval of an
+entry's linked nodes, or `--node <id>` for an individual node. Replace `--accept`
+with `--retract` to withdraw approval. Reviews store
+target hashes, so changed declarations require renewed approval. Block percentages count
 ready nodes; entry badges show Not started, Partial, or Complete. See the
 [content model](../docs/content-model.md) and [formal nodes](../formal/README.md#formal-nodes).
 

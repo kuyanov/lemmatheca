@@ -2,6 +2,7 @@
 
 from io import StringIO
 import json
+import os
 from pathlib import Path
 import shutil
 from subprocess import CompletedProcess
@@ -16,8 +17,9 @@ from django.test import SimpleTestCase, override_settings
 from catalog.content import entries, load_catalog
 from catalog.sources import ContentError
 from catalog.testing import CorpusFixtureMixin
-from formalization.lean import verification_inputs
-from formalization.nodes import REPORT, REPORT_VERSION, file_hash, load_nodes, node_fingerprint
+from formalization.lean import pinned_lean_version, verification_inputs
+from formalization.nodes import ENVIRONMENT, REPORT, REPORT_VERSION, file_hash, load_nodes, node_fingerprint
+from formalization.reviews import declaration_hashes, review_target_hash
 
 
 class EmptyRegistryTests(SimpleTestCase):
@@ -58,9 +60,17 @@ class NodeFixtureMixin(CorpusFixtureMixin):
         self.write_html()
         self.write_report()
 
-    def write_node(self, node_id, **changes):
+    def target_hash(self, node):
+        name = node['declaration']
+        snapshots = {name: {'payload': [name], 'references': []}}
+        return review_target_hash(node_fingerprint(node), declaration_hashes(snapshots, [name])[name],
+                                  {name: file_hash(self.formal / name) for name in ENVIRONMENT})
+
+    def write_node(self, node_id, *, accepted=True, **changes):
         data = {'id': node_id, 'declaration': 'Lemmatheca.ready', 'module': 'Lemmatheca.Fixture',
-                'dependencies': [], 'reviewed': True, **changes}
+                'dependencies': [], 'review': None, **changes}
+        if accepted and 'review' not in changes:
+            data['review'] = {'sha256': self.target_hash(data), 'recorded_at': '2026-09-20T12:00:00+00:00'}
         (self.node_dir / f'{node_id}.json').write_text(json.dumps(data))
 
     def write_html(self, attributes=('data-formal="ready pending"', 'data-formal=""')):
@@ -76,6 +86,7 @@ class NodeFixtureMixin(CorpusFixtureMixin):
         report = {'format_version': REPORT_VERSION, 'build': 'passed', 'checked_on': '2026-09-20T12:00:00+00:00',
                   'sha256': {path.relative_to(self.root).as_posix(): file_hash(path) for path in paths},
                   'nodes': {key: {'fingerprint': node_fingerprint(node),
+                                  'target_sha256': self.target_hash(node),
                                   'status': 'complete' if key == 'ready' else 'pending',
                                   'axioms': [] if key == 'ready' else ['sorryAx']}
                             for key, node in nodes.items()}}
@@ -150,6 +161,40 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             response, 'class="source-line declaration-line" id="L3"')
         self.assertEqual(response.context['declaration_line'], 3)
 
+    def test_anonymous_instance_uses_current_checked_location(self):
+        self.source.write_text('namespace Lemmatheca\n'
+                               'instance : EmptyCollection (Set α) := ⟨fun _ => False⟩\n'
+                               'end Lemmatheca\n')
+        self.write_node('ready', declaration='Lemmatheca.instEmptyCollection')
+        self.write_report()
+        path = self.root / REPORT
+        report = json.loads(path.read_text())
+        report['nodes']['ready']['location'] = {'module': 'Lemmatheca.Fixture', 'line': 2}
+        path.write_text(json.dumps(report))
+        with patch('subprocess.run') as lean:
+            response = self.client.get('/formal/nodes/ready/')
+        lean.assert_not_called()
+        self.assertEqual(response.context['declaration_line'], 2)
+        self.assertContains(response, 'href="#L2"')
+        self.assertContains(response, 'class="source-line declaration-line" id="L2"')
+        self.assertEqual(self.client.get('/api/formal/nodes/ready/').json()['declaration_line'], 2)
+
+        for location in (None, {'module': 'Mathlib.Other', 'line': 2},
+                         {'module': 'Lemmatheca.Fixture', 'line': True},
+                         {'module': 'Lemmatheca.Fixture', 'line': 0},
+                         {'module': 'Lemmatheca.Fixture', 'line': 99}):
+            with self.subTest(location=location):
+                report['nodes']['ready']['location'] = location
+                path.write_text(json.dumps(report))
+                response = self.client.get('/formal/nodes/ready/')
+                self.assertIsNone(response.context['declaration_line'])
+
+        report['nodes']['ready']['location'] = {'module': 'Lemmatheca.Fixture', 'line': 2}
+        path.write_text(json.dumps(report))
+        self.source.write_text('\n' + self.source.read_text())
+        response = self.client.get('/formal/nodes/ready/')
+        self.assertIsNone(response.context['declaration_line'])
+
     def test_api_is_independent_of_corpus_and_read_only(self):
         self.html.unlink()
         response = self.client.get('/api/formal/nodes/ready/')
@@ -164,8 +209,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
 
     def test_node_statuses_identify_the_next_step_in_api_and_badge(self):
         self.write_node('unwritten', declaration=None,
-                        module=None, reviewed=False)
-        self.write_node('review', reviewed=False)
+                        module=None, accepted=False)
+        self.write_node('review', accepted=False)
         self.write_node('unchecked')
         cases = (
             ('unwritten', 'declaration_missing', 'Declaration missing'),
@@ -197,7 +242,9 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             response.context['entry']['blocks'][0]['formalization']['percent'], 0)
 
     def test_forged_status_cycles_and_unknown_dependencies_are_rejected(self):
-        for changes in ({'status': 'complete'}, {'reviewed': 'yes'}, {'declaration': 'bad name'},
+        for changes in ({'status': 'complete'}, {'review': True}, {'declaration': 'bad name'},
+                        {'review': {'sha256': 'bad', 'recorded_at': '2026-09-20T12:00:00+00:00'}},
+                        {'review': {'sha256': 'a' * 64, 'recorded_at': '2026-09-20'}},
                         {'module': '../secret'}, {'dependencies': ['missing']},
                         {'dependencies': ['ready']}, {'dependencies': ['pending', 'pending']}):
             with self.subTest(changes=changes):
@@ -209,16 +256,32 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         with self.assertRaisesRegex(ContentError, 'cycle'):
             load_nodes(self.root)
 
-    def test_review_toggle_updates_progress_without_invalidating_lean_evidence(self):
+    def test_incomplete_or_inconsistent_evidence_cannot_complete_a_node(self):
+        path = self.root / REPORT
+        report = json.loads(path.read_text())
+        checked = report['nodes']['ready']
+        for evidence in (None, {}, {**checked, 'target_sha256': None},
+                         {**checked, 'axioms': 'propext'}, {**checked, 'axioms': [None]},
+                         {**checked, 'axioms': ['untrustedAxiom']},
+                         {**checked, 'axioms': ['sorryAx']}):
+            with self.subTest(evidence=evidence):
+                report['nodes']['ready'] = evidence
+                path.write_text(json.dumps(report))
+                node = load_nodes(self.root)['ready']
+                self.assertEqual(node['status'], 'verification_needed')
+                self.assertIsNone(node['target_sha256'])
+                self.assertFalse(node['review_current'])
+
+    def test_review_record_updates_progress_without_invalidating_lean_evidence(self):
         report = (self.root / REPORT).read_bytes()
-        for reviewed, percent, label in ((False, 0, 'Pending review'), (True, 50, 'Complete'),
+        for accepted, percent, label in ((False, 0, 'Pending review'), (True, 50, 'Complete'),
                                          (False, 0, 'Pending review')):
-            with self.subTest(reviewed=reviewed):
-                self.write_node('ready', reviewed=reviewed)
+            with self.subTest(accepted=accepted):
+                self.write_node('ready', accepted=accepted)
                 node = self.client.get('/api/formal/nodes/ready/').json()
                 self.assertEqual(node['status_label'], label)
                 self.assertEqual(
-                    node['status'], 'complete' if reviewed else 'review_pending')
+                    node['status'], 'complete' if accepted else 'review_pending')
                 self.assertIsNotNone(node['checked_on'])
                 response = self.client.get('/entries/first/')
                 self.assertEqual(
@@ -265,15 +328,88 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.write_node('ready', module='Mathlib.Test',
                         declaration='Mathlib.test')
         self.write_report()
+        path = self.root / REPORT
+        report = json.loads(path.read_text())
+        report['nodes']['ready']['location'] = {'module': 'Mathlib.Test', 'line': 2}
+        path.write_text(json.dumps(report))
         mathlib.unlink()
         self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
         response = self.client.get('/formal/nodes/ready/')
         self.assertContains(response, 'This mathlib source is not installed')
         self.assertContains(
             response, 'github.com/leanprover-community/mathlib4/blob/')
+        self.assertContains(response, '/Mathlib/Test.lean#L2')
+        self.assertNotContains(response, 'href="#L2"')
         mathlib.write_text('-- Changed\n')
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
+
+    def test_imported_lean_declaration_uses_its_actual_source_and_pinned_fallback(self):
+        mathlib = self.formal / '.lake/packages/mathlib/Mathlib/Test.lean'
+        mathlib.parent.mkdir(parents=True)
+        mathlib.write_text('public import Init.Data.Function\n')
+        self.write_node('ready', module='Mathlib.Test', declaration='Function.Injective')
+        self.write_report()
+        report_path = self.root / REPORT
+        report = json.loads(report_path.read_text())
+        report['nodes']['ready']['location'] = {'module': 'Init.Data.Function', 'line': 2}
+        report_path.write_text(json.dumps(report))
+        review_before = (self.node_dir / 'ready.json').read_bytes()
+        report_before = report_path.read_bytes()
+
+        version = pinned_lean_version(self.root)
+        elan = self.root / 'elan'
+        source = elan / f'toolchains/leanprover--lean4---{version}/src/lean/Init/Data/Function.lean'
+        source.parent.mkdir(parents=True)
+        source.write_text('namespace Function\ndef Injective (f : α → β) : Prop :=\n'
+                          '  ∀ ⦃a₁ a₂⦄, f a₁ = f a₂ → a₁ = a₂\nend Function\n')
+        upstream = f'https://github.com/leanprover/lean4/blob/{version}/src/lean/Init/Data/Function.lean#L2'
+        with patch.dict(os.environ, {'ELAN_HOME': str(elan)}), patch('subprocess.run') as lean:
+            response = self.client.get('/formal/nodes/ready/')
+            self.assertContains(response, 'Init/Data/Function.lean')
+            self.assertContains(response, 'href="#L2"')
+            self.assertContains(response, 'class="source-line declaration-line" id="L2"')
+            self.assertContains(response, 'View pinned Lean source on GitHub')
+            self.assertContains(response, upstream)
+            node = self.client.get('/api/formal/nodes/ready/').json()
+            self.assertEqual(node['module'], 'Mathlib.Test')
+            self.assertEqual(node['source'], 'Init/Data/Function.lean')
+            self.assertEqual(node['declaration_line'], 2)
+            self.assertEqual(node['status'], 'complete')
+
+            source.unlink()
+            response = self.client.get('/formal/nodes/ready/')
+            self.assertContains(response, 'This Lean source is not installed')
+            self.assertContains(response, f'href="{upstream}">line 2</a>')
+            self.assertNotContains(response, 'href="#L2"')
+            self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
+
+            mathlib.write_text('-- changed\n' + mathlib.read_text())
+            node = self.client.get('/api/formal/nodes/ready/').json()
+            self.assertEqual(node['status'], 'verification_needed')
+            self.assertEqual(node['source'], 'Mathlib/Test.lean')
+            self.assertIsNone(node['declaration_line'])
+            self.assertNotContains(self.client.get('/formal/nodes/ready/'), upstream)
+        lean.assert_not_called()
+        self.assertEqual((self.node_dir / 'ready.json').read_bytes(), review_before)
+        self.assertEqual(report_path.read_bytes(), report_before)
+
+    def test_reexported_mathlib_declaration_uses_a_fingerprinted_source(self):
+        mathlib = self.formal / '.lake/packages/mathlib/Mathlib'
+        mathlib.mkdir(parents=True)
+        (mathlib / 'Import.lean').write_text('public import Mathlib.Definition\n')
+        (mathlib / 'Definition.lean').write_text('namespace Function\ndef test : Prop := True\nend Function\n')
+        self.write_node('ready', module='Mathlib.Import', declaration='Function.test')
+        self.write_report()
+        path = self.root / REPORT
+        report = json.loads(path.read_text())
+        report['nodes']['ready']['location'] = {'module': 'Mathlib.Definition', 'line': 2}
+        path.write_text(json.dumps(report))
+        response = self.client.get('/formal/nodes/ready/')
+        self.assertContains(response, 'Mathlib/Definition.lean')
+        self.assertContains(response, 'href="#L2"')
+        self.assertNotContains(response, 'Mathlib/Import.lean')
+        self.assertEqual(response.context['node']['status'], 'complete')
 
     def test_import_closure_includes_public_meta_and_all_imports_but_not_comments(self):
         external = self.formal / '.lake/packages/mathlib/Mathlib'
@@ -296,7 +432,11 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
     def run_check(self, axiom='sorryAx', side_effect=None):
         output = ("'Lemmatheca.ready' does not depend on any axioms\n"
                   f"'Lemmatheca.unfinished' depends on axioms: [{axiom}]\n"
-                  f"'Lemmatheca.dependent' depends on axioms: [{axiom}]\n")
+                  f"'Lemmatheca.dependent' depends on axioms: [{axiom}]\n"
+                  'NODE_LOCATION Lemmatheca.ready Lemmatheca.Fixture 3\n')
+        for name in ('Lemmatheca.ready', 'Lemmatheca.unfinished', 'Lemmatheca.dependent'):
+            output += 'REVIEW_CONSTANT ' + json.dumps(
+                {'name': name, 'payload': [name], 'references': []}) + '\n'
         result = CompletedProcess([], 0, stdout=output, stderr='')
 
         def execute(*args, **kwargs):
@@ -312,6 +452,9 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual(report['nodes']['ready']['status'], 'complete')
         self.assertEqual(report['nodes']['dependent']['status'], 'pending')
         self.assertEqual(report['nodes']['pending']['axioms'], ['sorryAx'])
+        self.assertEqual(report['nodes']['ready']['location'],
+                         {'module': 'Lemmatheca.Fixture', 'line': 3})
+        self.assertNotIn('location', report['nodes']['pending'])
         self.assertEqual(load_nodes(self.root)[
                          'dependent']['status'], 'proof_pending')
 
@@ -326,3 +469,12 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual((self.root / REPORT).read_text(), original)
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
+
+    def test_failed_report_replacement_preserves_evidence_and_cleans_staged_json(self):
+        path = self.root / REPORT
+        original = path.read_bytes()
+        with patch.object(Path, 'replace', side_effect=OSError('Cannot replace report')):
+            with self.assertRaisesRegex(CommandError, 'Cannot replace report'):
+                self.run_check()
+        self.assertEqual(path.read_bytes(), original)
+        self.assertEqual(set(path.parent.iterdir()), {path})

@@ -70,8 +70,13 @@ The badge next to the title shows concise derived progress. For linked blocks,
 it expands into node IDs, each linked to a node page with status and Lean source.
 Nodes and verification evidence belong to the [formal layer](../formal/README.md#formal-nodes),
 not entry JSON. The [corpus README](../corpus/README.md#block-to-node-mapping)
-explains aggregation and the review convention. Definition 1 of sets-and-maps
-has nine nodes with individually tracked review; the other blocks have no mappings.
+explains aggregation and the review convention. Every block of sets-and-maps now
+has a mapping: the notation-and-conventions block has nothing to formalize, and
+the mathematical blocks link definitions, statements, examples, and question answers.
+Reviews are recorded with `review --accept --node <id>` or `review --accept --entry <id>`.
+Use `--retract` instead of `--accept` to withdraw approval for the same selection.
+All 121 linked nodes have accepted reviews and passing verification. Their proofs
+preserve the reviewed target hashes; these modules contain no `sorry` placeholders.
 Statement writing and proving remain separate measurement tasks.
 
 ## HTML, equations, and tables
@@ -181,9 +186,11 @@ reference copy; only `taxonomy.json` controls browsing and area validation.
 
 Local nodes name a `Lemmatheca.*` module; mathlib nodes name a `Mathlib.*` module.
 The source path is inferred from that module. Each node page shows the full
-escaped source, line anchors, and a highlighted declaration line when it can be
-inferred. Qualified namespaces, comments, and ordinary declaration forms are
-handled; generated declarations may have no inferred line. Node links preserve
+escaped source, line anchors, and a highlighted declaration line. Current check
+reports supply Lean's source locations, including anonymous instances. Without
+that evidence, the reader infers lines for ordinary named declarations; generated
+declarations may then have no line. Locations are used only when their defining
+module matches the node's module. Node links preserve
 a return to the referring block and reopen question answers when appropriate.
 
 Source is displayed on the node page; there is no separate file viewer.
@@ -200,7 +207,7 @@ uv run python app/manage.py test catalog
 The checker reads nodes independently of entries, builds their modules, checks
 declarations and transitive axioms, and writes `formal/checks/nodes.json`.
 A declaration using `sorry`, including through another theorem, remains pending.
-An empty registry skips Lean; the current registry checks Definition 1's nodes. See
+An empty registry skips Lean; the current registry checks all sets-and-maps nodes. See
 [verification and review](verification-and-review.md) for evidence and limitations.
 
 The corpus contains trusted repository-owned HTML, parsed as content rather than

@@ -1,6 +1,9 @@
-"""Strict JSON loading shared by the human and formal catalogs."""
+"""JSON files and change detection shared by the human and formal catalogs."""
 
+from contextlib import contextmanager
 import json
+from pathlib import Path
+import tempfile
 
 from .sources import ContentError
 
@@ -23,3 +26,19 @@ def read_json(path):
             result[key] = value
         return result
     return json.loads(path.read_text(), object_pairs_hook=unique_object)
+
+
+@contextmanager
+def staged_json(path, value):
+    """Stage beside the destination for atomic replacement, cleaning up on failure."""
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile('w', dir=path.parent, prefix=f'.{path.stem}.',
+                                         suffix='.tmp', delete=False) as temporary:
+            temporary_path = Path(temporary.name)
+            json.dump(value, temporary, indent=2)
+            temporary.write('\n')
+        yield temporary_path
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
