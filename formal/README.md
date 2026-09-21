@@ -1,7 +1,18 @@
 # Lean formalization
 
+**Node dependencies are used only for proving.** A node's `dependencies` list is a
+manual plan of proof prerequisites, used to order proof work and determine
+readiness. Add a dependency because the proof needs it, not merely because a
+definition appears in the statement or a reader should learn it first. Keep direct,
+useful prerequisites rather than copying their transitive closure. Entry HTML owns
+human references and `data-formal` coverage; Lean imports resolve declarations.
+The list is not a complete extracted proof graph, and the axiom audit detects
+transitive `sorry` independently of these edges.
+
 Lean **4.34.0** and mathlib **v4.34.0** are pinned by `lean-toolchain`,
 `lakefile.toml`, and `lake-manifest.json`. Keep these fixed during an experiment.
+The root [pipeline](../README.md#submission-and-formalization-pipeline) links the
+reusable `.txt` prompts for adding and reviewing entries.
 
 ## Setup
 
@@ -33,6 +44,12 @@ independently of the entries that reference them.
   "review": null
 }
 ```
+
+Search the existing node registry and pinned Lean/mathlib sources before adding
+local declarations. Reuse an existing node when possible; otherwise bind directly
+to a library declaration when specialization or a straightforward reformulation
+covers the human claim. Avoid wrappers that only rename a theorem, reverse an
+equality, or bundle existing results. Record the correspondence for review.
 
 Local modules live in `Lemmatheca/`; existing mathlib declarations are also valid.
 The module specifies what to import. Current verification can locate the declaration

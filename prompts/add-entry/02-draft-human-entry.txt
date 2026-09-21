@@ -1,0 +1,42 @@
+Create the human-readable Lemmatheca entry without formalization.
+
+Inputs
+- Entry ID: <entry-id>
+- Agreed scope, audience, and prerequisites: <scope; audience; prerequisites>
+- Selected sources and outline: <source-selection result, including citations>
+
+Read README.md, corpus/README.md, docs/entry-sources.md, and docs/content-model.md.
+Inspect the current metadata schema, taxonomy, reading order, and nearby entries.
+Respect repository instructions and preserve unrelated work.
+
+1. Read the relevant source passages and write an original, mathematically precise
+   entry. State domains, codomains, hypotheses, quantifiers, and conventions where
+   they matter. Include useful examples, counterexamples, empty cases, and answers
+   to questions. Distinguish a definition, a claim, its explanation, and its proof.
+   Do not silently promote a conjecture to a theorem.
+2. Write concise human prose. Remove filler, redundant words, repeated conclusions,
+   generic motivational sentences, and explanations of what the next paragraph
+   will explain. Each sentence should add mathematical content or help the reader
+   understand it. Introduce notation once; reuse links instead of repeating whole
+   definitions or proofs. Keep necessary hypotheses and reasoning when shortening.
+   Do not repeat the site's glossary of definition, lemma, theorem, and question.
+3. Organize coherent blocks for readers, not one block per anticipated Lean node.
+   Use the repository's HTML conventions, stable block IDs, supported data-kind
+   values, mathematical notation, and collapsible question answers. Let the reader
+   generate numbering, navigation, and figure/equation references. Use figures or
+   tables only when they explain something more clearly, with accurate captions
+   and useful alternative text. Avoid Lean names and pipeline details in the prose.
+4. Create corpus/entries/<entry-id>/entry.html and entry.json, plus necessary assets.
+   Use only supported metadata fields and verified based_on citations. Keep the
+   editorial status draft, choose existing appropriate subject areas, and estimate
+   reading_time from the finished content. Add the entry once to the reading order
+   under its primary area. Preserve stable IDs if revising an existing draft.
+5. Leave data-formal absent for new blocks: their formalization has not started.
+   Do not use an empty mapping to mean "not done", add formal metadata to entry.json,
+   create Lean declarations, or change review records.
+
+Run uv run python app/manage.py validate_corpus. Inspect the rendered entry when
+a preview is available, checking equations, references, questions, tables, and
+figures; report any visual checks you could not perform. Fix errors in this work.
+Return the changed files, a concise description of the entry, validation results,
+and any unresolved mathematical or source questions for human review.

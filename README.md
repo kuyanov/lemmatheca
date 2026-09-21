@@ -7,21 +7,36 @@ public contributions come later.
 
 ## Submission and formalization pipeline
 
-1. **Choose sources.** Specify books, notes, or papers, including relevant
-   chapters or pages, and record the citations in `based_on`.
-2. **Draft the human entry.** Ask AI to prepare `entry.html` and `entry.json`,
+Copy the corresponding [AI prompt](prompts/add-entry/) into a new task and replace
+its `<...>` placeholders. Use them in order; the review prompts produce findings
+for the maintainer. For a measured experiment, retain the filled prompts and
+responses with the run logs, outside entry metadata. These are reusable queries,
+not an automated runner.
+
+1. **[Choose sources](prompts/add-entry/01-choose-sources.txt).** Specify books,
+   notes, or papers, including relevant chapters or pages, and record the selected
+   citations in `based_on` when drafting.
+2. **[Draft the human entry](prompts/add-entry/02-draft-human-entry.txt).** Ask AI
+   to prepare concise, original `entry.html` and `entry.json`,
    without formalization.
-3. **Review the entry.** Check the mathematics, explanations, and presentation.
-4. **Prepare formal nodes.** Ask AI to reuse existing nodes or propose new
-   definitions and statements, linking blocks through `data-formal`. Check that
-   new Lean declarations compile; leave unfinished proofs as `sorry`.
-5. **Review correspondence.** Check the declarations and their coverage of each
+3. **[Review the entry](prompts/add-entry/03-review-human-entry.txt).** Check the
+   mathematics, explanations, and presentation; remove redundant wording.
+4. **[Prepare formal nodes](prompts/add-entry/04-prepare-formal-nodes.txt).**
+   Reuse existing nodes and prefer built-in Lean/mathlib declarations over local
+   wrappers. Add missing definitions and statements, linking blocks through
+   `data-formal`. Check that new Lean declarations compile; leave new theorem
+   proofs as `sorry`.
+5. **[Review correspondence](prompts/add-entry/05-review-correspondence.txt).**
+   Independently check the declarations and their collective coverage of each
    block, including examples and question answers. Record approval with
    `review --accept --node <id>` or `review --accept --entry <id>`; the command saves
    hashes of the reviewed targets. Use `--retract` to withdraw approval.
-   Record mapping approval through Git review.
-6. **Prove the nodes.** Later, use AI to work through the dependency DAG, following
-   the human proofs. Run `check_formalizations` and review whether the formal
+   AI findings do not themselves accept reviews. Record mapping approval through
+   Git review. Several nodes may cover one block, and one node may serve several
+   blocks; avoid both redundant nodes and uncovered claims.
+6. **[Prove the nodes](prompts/add-entry/06-prove-reviewed-nodes.txt).** Later,
+   use AI to work through the dependency DAG, following the human proofs.
+   Run `check_formalizations` and review whether the formal
    arguments follow the intended reasoning. Changes to approved statements
    require another review; proof-only changes keep statement approval after rechecking.
 
@@ -31,7 +46,7 @@ proof attempt, record the selected entry ID, block ID, and Git revision alongsid
 the experiment logs, rather than assigning a single entry to the node. Confirm
 that the selected block contains a proof before treating the task as translation.
 
-The DAG is a manually maintained plan and may need new helper nodes during proving.
+Proof work may reveal a need for new helper nodes or revised prerequisites.
 Maintainers decide what enters the library; AI supplies proposals and recommendations.
 
 Measure statement writing and proof translation separately. Binding an existing

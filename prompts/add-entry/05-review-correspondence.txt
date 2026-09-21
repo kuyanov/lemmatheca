@@ -1,0 +1,60 @@
+Independently audit the correspondence between the human entry and its formal
+bindings. Check collective coverage and redundancy, not one-to-one matching.
+
+Input
+- Entry ID: <entry-id>
+
+Read README.md, formal/README.md, docs/verification-and-review.md, the entire human
+entry, all linked node records, and the actual target declarations. Inspect
+referenced definition bodies and the checked signatures in current verification
+evidence. Do not assume a prior AI's mapping or a passing Lean build is correct
+evidence of correspondence.
+
+1. Make a coverage table by block: human definitions/claims, covering node IDs,
+   any specialization or representation bridge, and gaps. Include examples,
+   question answers, counterexample witnesses, prose claims, and empty/boundary
+   cases. Explain each empty mapping; distinguish it from an unplanned block.
+2. Compare hypotheses, quantifiers, logical directions, conclusions, and domains.
+   Check existence as well as uniqueness, both inverse laws for the same inverse,
+   the surrounding set for complements, and the declared codomain for surjectivity
+   and composition. Verify relevant conventions, including total operations in
+   Lean that are partial in the prose, subtypes, and finite-cardinality functions.
+   Stronger or more general library statements are valid bindings when their
+   specialization covers the text; record that specialization explicitly.
+3. Search for unnecessary local wrappers and opportunities to reuse built-in Lean
+   or mathlib declarations and existing nodes. Find duplicate targets, redundant
+   directions of equivalences, and repeated coverage of the same claim. For each
+   proposed removal, explain why all human claims remain covered. Do not call an
+   explicitly stated example or distinct reformulation redundant merely because
+   it follows from earlier mathematics. Check why each linked node is useful.
+4. Review dependencies as proof prerequisites only. They do not encode reading
+   order, every concept in a statement, or block coverage. Identify unnecessary
+   edges, cycles, and missing planned prerequisites without recreating mathlib's
+   entire dependency graph. Keep this distinct from actual Lean axiom dependencies.
+5. Inspect current source locations and elaborated signatures. A generated target
+   may point to a differently named source origin, and the defining module may
+   differ from the import module. Neither alone establishes a binding error.
+   For non-obvious conversions, use small temporary Lean checks outside the tracked
+   source tree; do not prove pending production theorems during this review.
+
+Run uv run python app/manage.py validate_corpus. Refresh check_formalizations if
+verification is stale, and verify any non-obvious claimed conversions with Lean.
+Passing checks certify elaboration/proofs, not human correspondence or coverage.
+
+Return findings with concrete file/block/node references and suggested changes,
+then the coverage table and checks performed. Distinguish wrong statements,
+uncovered claims, implicit representation bridges, and optional simplifications.
+Identify exactly which nodes would need new review if suggestions are applied.
+Do not change bindings or review records during this audit.
+
+Human approval is a separate action after any requested revisions. Never treat
+"the audit passed" as permission to accept your own work. For a maintainer who
+explicitly approves the inspected targets, use these commands from the repository
+root (or --node <node-id> [<node-id> ...] for an individual selection):
+  uv run python app/manage.py review --accept --entry <entry-id> --dry-run
+  uv run python app/manage.py review --accept --entry <entry-id>
+Use review --retract with the same selectors only when withdrawal is requested.
+Do not edit hashes or timestamps manually. Acceptance refreshes checks if needed;
+there is no extra verification run solely because approval was recorded. Accepting
+an entry excludes unlinked dependencies, and mapping approval is separate Git
+review. Respect approval already explicitly given in the task context.

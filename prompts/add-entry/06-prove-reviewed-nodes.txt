@@ -1,0 +1,56 @@
+Prove the remaining accepted formal nodes for this Lemmatheca entry.
+
+Inputs
+- Entry ID: <entry-id>
+- Mode: <corpus proving, proof translation, or measured experiment with run spec>
+- Additional scope or constraints: <node selection or other constraints, if any>
+
+Read README.md, formal/README.md, docs/verification-and-review.md, and
+docs/formalization-experiments.md. Inspect the human entry, selected nodes, current
+review hashes, proof prerequisites, and Lean sources. Preserve unrelated work and
+keep the pinned environment fixed.
+
+1. Establish which nodes have a current accepted review and an unfinished proof.
+   Refresh check_formalizations when needed before deciding whether a review is
+   current. Preserve baseline target hashes and review records for comparison.
+   Work through accepted proof prerequisites first. The dependencies field plans
+   proving; it is not a reading order or a list of concepts appearing in a type.
+   If a needed target lacks approval or has an outdated review, report it and
+   continue independent accepted work. Do not accept it on your own.
+2. Preserve approved theorem statements, definition bodies, node targets, and
+   dependency metadata. Replace sorry proofs, not their goals. Do not weaken
+   hypotheses/conclusions or change a referenced definition to make a proof easier.
+   Use local have statements or unregistered implementation helpers where suitable;
+   do not create extra coverage nodes for routine intermediate steps. If a target
+   or proof-plan change is necessary, explain it for renewed review while completing
+   unaffected work. Do not silently rebind approved nodes or reaccept changed hashes.
+3. For corpus proving, follow the human proof where one is provided and reuse
+   standard Lean/mathlib prerequisites. Avoid recreating library definitions or
+   helper theorems. If an existing result already proves the whole target, report
+   the possible direct binding; any permitted use of that result is library reuse,
+   not evidence that the displayed human proof was translated.
+4. For proof translation, identify the entry/block and its actual human proof,
+   then preserve the important intermediate reasoning. Do not count calling the
+   target, an alias, or a stronger existing result as translating that argument.
+   If the block contains no proof, label the work as proof search. In measured
+   mode follow the supplied retrieval policy, budgets, and attempt limits; retain
+   prompts, attempts, feedback, interventions, and costs in the experiment logs,
+   not entry metadata or verification reports. Do not invent measured results.
+5. Check progress with Lean. Do not bypass failures with axioms, sorry, admit, or
+   unchecked shortcuts. Respect the allowed axioms in the checker. Keep source
+   organization compact and coherent; avoid cosmetic module moves during proving
+   because node metadata changes can invalidate review even without a mathematical
+   change. Do not alter human exposition merely to match a convenient proof.
+
+Run uv run python app/manage.py check_formalizations and
+uv run python app/manage.py validate_corpus after the proof changes. Run lake build
+from formal/ if aggregate imports or module organization changed. Verify that the
+completed nodes have no direct or transitive sorry and retain their accepted target
+hashes. Proof-only edits need fresh Lean evidence; they do not need reacceptance
+when the reviewed targets and metadata remain unchanged.
+
+Return proved node IDs, the checks run, whether target hashes stayed unchanged,
+and any deviations from the human argument. List remaining pending nodes with
+their concrete reasons. Report current dependency readiness separately from the
+success of an individual Lean proof. Do not claim the whole entry is complete if
+some mathematical blocks are unmapped, proofs remain pending, or reviews are stale.

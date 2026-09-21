@@ -1,0 +1,72 @@
+Prepare formal bindings for every mathematical claim in the reviewed entry,
+without proving new theorems.
+
+Input
+- Entry ID: <entry-id>
+
+Read README.md, formal/README.md, docs/entry-sources.md, and
+docs/verification-and-review.md. Inspect the full human entry, existing nodes,
+current Lean modules, and the pinned Lean/mathlib sources. Preserve unrelated work.
+
+1. Inventory the definitions and claims in every block, including examples,
+   question answers, witnesses, edge cases, and distinct assertions embedded in
+   prose. Make a block-to-claims-to-nodes map. Coverage is collective: several
+   nodes may cover a block, and a node may cover several blocks. Do not force a
+   one-to-one correspondence or create a node for every sentence or proof step.
+2. Search existing nodes first, then built-in Lean and pinned mathlib declarations,
+   before writing a local definition or theorem. Prefer direct library bindings.
+   Inspect signatures and definition bodies, not names alone. Consider generic
+   results, specializations, symmetry of equalities/equivalences, definitional
+   equality, and standard predicates such as Injective, LeftInverse, and Disjoint.
+   Do not make a local wrapper just to rename, specialize, reverse, or conjoin
+   existing results when the bindings can cover the text directly.
+3. Explain any representation change or specialization. Check that stronger library
+   results actually imply the human claim without extra assumptions. Existence
+   plus uniqueness is stronger than uniqueness alone; a left and a right inverse
+   must be the same map. Track ambient universes, subtypes, domains, and codomains.
+   Do not omit a codomain-restriction step when composition only assumes range
+   containment. Check conventions such as total division at zero or cardinalities
+   on infinite sets, and preserve the human meaning rather than silently changing it.
+4. Eliminate redundant coverage. A direction of a linked equivalence usually needs
+   no additional node; an existence-only consequence may duplicate an already
+   linked existence-and-uniqueness result. Keep concrete witnesses or distinct
+   reformulations when they express an additional claim actually made in the text.
+   Proof helpers need not all become registered nodes. Do not duplicate an existing
+   node just because another block or entry uses it.
+5. Implement missing definition bodies and declare missing theorems with by sorry.
+   Do not prove new theorem bodies at this stage or replace existing library proofs
+   with placeholders. Use standard library notation and predicates where possible.
+   Put reusable mathematics in an appropriate Lemmatheca.<Area> namespace/module;
+   put entry-specific examples under Lemmatheca.Entry.<EntryName>. Keep small related
+   general declarations together instead of creating nearly empty modules. Update
+   imports and node module paths when organizing sources. Prefer direct imports
+   needed by each module, and keep Lean/mathlib pins fixed.
+6. Create formal/nodes/<node-id>.json using exactly the current schema. Use stable
+   mathematical IDs. For a Lean core target, select an allowed Mathlib import module
+   exposing it; the defining Init/Std module is resolved separately by verification.
+   The dependencies field is used only for proving: record
+   direct prerequisites needed or deliberately planned for the proof, not concepts
+   merely named in the statement, reading prerequisites, or all imported modules.
+   Avoid cycles and transitive duplication; use [] when no node prerequisites are
+   needed. Do not reconstruct mathlib's foundation graph. Lean imports and the
+   separate axiom audit handle actual declaration references and transitive sorry.
+7. Link nodes with data-formal in entry.html. Mark a block data-formal="" only if
+   inspection establishes that it has nothing to formalize; explain that decision.
+   Keep uncompleted coverage visible rather than disguising it as not applicable.
+   Keep formal metadata out of entry.json. New nodes have review: null; preserve
+   existing review records and let checks expose outdated ones. Never auto-accept
+   new or changed targets, or edit review hashes/timestamps by hand.
+
+Run uv run python app/manage.py validate_corpus and
+uv run python app/manage.py check_formalizations. The latter may correctly report
+new proofs as pending. Fix declaration/import errors and inspect the checked
+signatures and source locations. Do not add line fields to node JSON or invent
+line numbers: verification resolves the actual defining source, including Lean
+core and anonymous instances. A generated declaration's source origin can have a
+different name (for example, Even.zero comes from IsSquare.one); verify the actual
+target signature instead of treating that origin as a wrong binding.
+
+Return the coverage map, new/rebound/retired node IDs with target declarations,
+reasons for local declarations, representation notes, proposed proof dependencies,
+and validation results. List all targets needing human review. Leave proof work
+and acceptance for the later pipeline steps.

@@ -75,9 +75,9 @@ has a mapping: the notation-and-conventions block has nothing to formalize, and
 the mathematical blocks link definitions, statements, examples, and question answers.
 Reviews are recorded with `review --accept --node <id>` or `review --accept --entry <id>`.
 Use `--retract` instead of `--accept` to withdraw approval for the same selection.
-All 121 linked nodes have accepted reviews and passing verification. Their proofs
-preserve the reviewed target hashes; these modules contain no `sorry` placeholders.
-Statement writing and proving remain separate measurement tasks.
+See the [formal README](../formal/README.md) for the current node inventory and
+verification workflow. Statement writing and proving remain separate measurement
+tasks.
 
 ## HTML, equations, and tables
 
@@ -187,10 +187,12 @@ reference copy; only `taxonomy.json` controls browsing and area validation.
 Local nodes name a `Lemmatheca.*` module; mathlib nodes name a `Mathlib.*` module.
 The source path is inferred from that module. Each node page shows the full
 escaped source, line anchors, and a highlighted declaration line. Current check
-reports supply Lean's source locations, including anonymous instances. Without
-that evidence, the reader infers lines for ordinary named declarations; generated
-declarations may then have no line. Locations are used only when their defining
-module matches the node's module. Node links preserve
+reports supply the checked signature and Lean's source locations, including
+anonymous instances. The defining module may differ from the node's import module,
+including a bundled Lean module. Generated declarations may have a differently
+named source origin; use the checked signature to identify the actual target.
+Without current evidence, the reader falls back to inferring lines for ordinary
+named declarations; generated declarations may then have no line. Node links preserve
 a return to the referring block and reopen question answers when appropriate.
 
 Source is displayed on the node page; there is no separate file viewer.
