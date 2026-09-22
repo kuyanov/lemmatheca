@@ -497,7 +497,12 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.assertContains(response, 'This mathlib source is not installed')
         self.assertContains(
             response, 'github.com/leanprover-community/mathlib4/blob/')
-        self.assertContains(response, '/Mathlib/Test.lean#L2')
+        self.assertContains(response, '/Mathlib/Test.lean#L2', count=1)
+        self.assertContains(response, 'Pinned mathlib source')
+        self.assertContains(
+            response,
+            '<p class="lean-file-path">Source origin: <code>Mathlib/Test.lean</code> · line 2</p>',
+            html=True)
         self.assertNotContains(response, 'href="#L2"')
         mathlib.write_text('-- Changed\n')
         self.assertEqual(load_nodes(self.root)[
@@ -544,7 +549,11 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             response = self.client.get('/formal/nodes/ready/')
             self.assertContains(response, 'This Lean source is not installed')
             self.assertContains(
-                response, f'<a href="{upstream}">line 2</a>', html=True)
+                response,
+                '<p class="lean-file-path">Source origin: <code>Init/Data/Function.lean</code> · line 2</p>',
+                html=True)
+            self.assertContains(response, f'href="{upstream}"', count=1)
+            self.assertContains(response, 'Pinned Lean source')
             self.assertNotContains(response, 'href="#L2"')
             self.assertEqual(load_nodes(self.root)[
                              'ready']['status'], 'complete')

@@ -83,8 +83,12 @@
     <h2 id="source-title" class="node-section-title">Source</h2>
     <div class="node-source-location">
       <p class="lean-file-path">Source origin: <code>{{ node.source }}</code>{% if declaration_line %} ·
-        <a href="{% if lean_source is not None %}#L{{ declaration_line }}{% else %}{{ upstream_url }}{% endif %}">line
-          {{ declaration_line }}</a>{% endif %}
+        {% if lean_source is not None %}
+        <a href="#L{{ declaration_line }}">line {{ declaration_line }}</a>
+        {% else %}
+        line {{ declaration_line }}
+        {% endif %}
+        {% endif %}
       </p>
       {% if upstream_url %}<a class="node-upstream-link" href="{{ upstream_url }}">Pinned {{ upstream_name }} source
         ↗</a>{% endif %}
