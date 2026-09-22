@@ -68,6 +68,13 @@ node links with adjacent statuses; each linked page shows its description. Full
 source also expands on demand. Line links open the source browser, including direct
 `#L<number>` links. Descriptions and dependency links wrap on narrow screens.
 
+The evidence panel uses two states per item: green **Reviewed on …** or amber
+**Under review** for declaration approval, and green **Verified on …** or amber
+**Not verified** for Lean verification. Verification requires valid evidence of a
+complete proof, independently of review approval; merely running a check does not
+mark a proof with `sorry` as verified. Expired evidence returns to the pending
+labels. The overall node badge and API status still identify the specific next step.
+
 Description edits are editorial changes: they refresh page content without
 invalidating Lean evidence or accepting/retracting a declaration review. The
 checked signature remains separate and appears only with current verification.

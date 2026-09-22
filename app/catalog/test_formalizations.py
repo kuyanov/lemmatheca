@@ -360,6 +360,42 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual(
             response.context['entry']['blocks'][0]['formalization']['percent'], 0)
 
+    def test_review_and_verification_labels_are_independent(self):
+        outdated = {'sha256': 'a' * 64, 'recorded_at': '2026-09-20T12:00:00+00:00'}
+        cases = (
+            ('ready', {}, True, True),
+            ('pending', None, True, False),
+            ('ready', {'accepted': False}, False, True),
+            ('ready', {'review': outdated}, False, True),
+            ('unchecked', {}, False, False),
+            ('unwritten', {'declaration': None, 'module': None, 'accepted': False}, False, False),
+        )
+        for node_id, changes, accepted, verified in cases:
+            with self.subTest(node=node_id, accepted=accepted, verified=verified):
+                if changes is not None:
+                    self.write_node(node_id, **changes)
+                response = self.client.get(f'/formal/nodes/{node_id}/')
+                self.assertEqual(response.context['node']['review_current'], accepted)
+                self.assertEqual(response.context['node']['verification_complete'], verified)
+                self.assertContains(response, 'Reviewed on <time' if accepted else 'Under review')
+                self.assertNotContains(response, 'Under review' if accepted else 'Reviewed on')
+                self.assertContains(response, 'Verified on <time' if verified else 'Not verified')
+                self.assertNotContains(response, 'Not verified' if verified else 'Verified on')
+                if accepted or verified:
+                    self.assertContains(response,
+                                        '<time datetime="2026-09-20T12:00:00+00:00">2026-09-20</time>',
+                                        html=True)
+                self.assertEqual(self.client.get(f'/api/formal/nodes/{node_id}/').json()[
+                    'verification_complete'], verified)
+
+    def test_stale_evidence_hides_review_and_verification_dates(self):
+        self.source.write_text(self.source.read_text() + '\n-- Source changed after verification.\n')
+        response = self.client.get('/formal/nodes/ready/')
+        self.assertContains(response, 'Under review')
+        self.assertContains(response, 'Not verified')
+        self.assertNotContains(response, '<time')
+        self.assertFalse(response.context['node']['verification_complete'])
+
     def test_forged_status_cycles_and_unknown_dependencies_are_rejected(self):
         for changes in ({'status': 'complete'}, {'review': True}, {'declaration': 'bad name'},
                         {'review': {'sha256': 'bad',
@@ -392,6 +428,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
                 self.assertEqual(node['status'], 'verification_needed')
                 self.assertIsNone(node['target_sha256'])
                 self.assertFalse(node['review_current'])
+                self.assertFalse(node['verification_complete'])
 
     def test_review_record_updates_progress_without_invalidating_lean_evidence(self):
         report = (self.root / REPORT).read_bytes()
@@ -488,7 +525,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         source.parent.mkdir(parents=True)
         source.write_text('namespace Function\ndef Injective (f : α → β) : Prop :=\n'
                           '  ∀ ⦃a₁ a₂⦄, f a₁ = f a₂ → a₁ = a₂\nend Function\n')
-        upstream = f'https://github.com/leanprover/lean4/blob/{version}/src/lean/Init/Data/Function.lean#L2'
+        upstream = f'https://github.com/leanprover/lean4/blob/{version}/src/Init/Data/Function.lean#L2'
         with patch.dict(os.environ, {'ELAN_HOME': str(elan)}), patch('subprocess.run') as lean:
             response = self.client.get('/formal/nodes/ready/')
             self.assertContains(response, 'Init/Data/Function.lean')

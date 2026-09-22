@@ -74,6 +74,13 @@ prerequisites, and escaped source with line links. Descriptions are reviewed thr
 Git and excluded from Lean evidence and target review hashes. Human-corpus APIs,
 search, write endpoints, and autonomous workers remain future work.
 
+`verification_complete` indicates valid Lean evidence with no direct or transitive
+`sorry`, independently of declaration review and the manually declared dependency
+statuses. `checked_on` records when a valid check ran, even if it found an unfinished
+proof. The node page uses `verification_complete` for **Verified on …** / **Not
+verified**, and `review_current` for **Reviewed on …** / **Under review**. The API
+and overall badge retain the detailed derived statuses.
+
 Agents can also read files directly. Formal dependencies are distinct from human
 citations: an explanatory link need not occur in a proof term, and a formal helper
 may be absent from the exposition. Declared node edges are not a complete extracted

@@ -217,6 +217,7 @@ def load_nodes(root, *, check_reports=True):
                     target_sha256=target_hash,
                     review_current=bool(checked and node['review'] is not None
                                         and node['review']['sha256'] == target_hash),
+                    verification_complete=bool(checked and checked['status'] == 'complete'),
                     declaration_line=line,
                     checked_on=report.get('checked_on') if checked else None,
                     url=reverse('formalization:node', args=[node_id]))

@@ -25,20 +25,23 @@
     <aside class="node-review-meta" aria-label="Declaration evidence">
       <dl>
         <div>
-          <dt>Declaration review</dt>
-          <dd>{% if node.review_current %}Accepted{% elif node.status == 'review_outdated' %}Needs another
-            review{% elif node.review %}Needs rechecking{% else %}Not accepted{% endif %}</dd>
+          <dt>Lean declaration</dt>
           {% if node.review_current %}
-          <dd class="node-meta-date"><time
-              datetime="{{ node.review.recorded_at }}">{{ node.review.recorded_at|slice:":10" }}</time></dd>
+          <dd class="node-status formalization-complete"><span aria-hidden="true">✓</span>
+            Reviewed on <time datetime="{{ node.review.recorded_at }}">{{ node.review.recorded_at|slice:":10" }}</time>
+          </dd>
+          {% else %}
+          <dd class="node-status formalization-review_pending"><span aria-hidden="true">◷</span> Under review</dd>
           {% endif %}
         </div>
         <div>
           <dt>Lean verification</dt>
-          {% if node.checked_on %}
-          <dd>Checked <time datetime="{{ node.checked_on }}">{{ node.checked_on|slice:":10" }}</time></dd>
+          {% if node.verification_complete %}
+          <dd class="node-status formalization-complete"><span aria-hidden="true">✓</span>
+            Verified{% if node.checked_on %} on <time
+              datetime="{{ node.checked_on }}">{{ node.checked_on|slice:":10" }}</time>{% endif %}</dd>
           {% else %}
-          <dd>Awaiting a current check</dd>
+          <dd class="node-status formalization-verification_needed"><span aria-hidden="true">◷</span> Not verified</dd>
           {% endif %}
         </div>
       </dl>
