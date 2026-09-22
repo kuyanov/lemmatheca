@@ -1,10 +1,10 @@
-Independently audit the correspondence between the human entry and its formal
+Independently audit the correspondence between the Lemmatheca entry and its formal
 bindings. Check collective coverage and redundancy, not one-to-one matching.
 
 Input
 - Entry ID: <entry-id>
 
-Read README.md, formal/README.md, docs/verification-and-review.md, the entire human
+Read README.md, formal/README.md, docs/verification-and-review.md, the entire
 entry, all linked node records and descriptions, and the actual target declarations.
 Inspect referenced definition bodies and the checked signatures in current verification
 evidence. Do not assume a prior AI's mapping or a passing Lean build is correct
@@ -42,24 +42,8 @@ evidence of correspondence.
    For non-obvious conversions, use small temporary Lean checks outside the tracked
    source tree; do not prove pending production theorems during this review.
 
-Run uv run python app/manage.py validate_corpus. Refresh check_formalizations if
-verification is stale, and verify any non-obvious claimed conversions with Lean.
-Passing checks certify elaboration/proofs, not human correspondence or coverage.
-
 Return findings with concrete file/block/node references and suggested changes,
 then the coverage table and checks performed. Distinguish wrong statements,
 uncovered claims, implicit representation bridges, and optional simplifications.
 Identify exactly which nodes would need new review if suggestions are applied.
 Do not change bindings or review records during this audit.
-
-Human approval is a separate action after any requested revisions. Never treat
-"the audit passed" as permission to accept your own work. For a maintainer who
-explicitly approves the inspected targets, use these commands from the repository
-root (or --node <node-id> [<node-id> ...] for an individual selection):
-  uv run python app/manage.py review --accept --entry <entry-id> --dry-run
-  uv run python app/manage.py review --accept --entry <entry-id>
-Use review --retract with the same selectors only when withdrawal is requested.
-Do not edit hashes or timestamps manually. Acceptance refreshes checks if needed;
-there is no extra verification run solely because approval was recorded. Accepting
-an entry excludes unlinked dependencies, and mapping approval is separate Git
-review. Respect approval already explicitly given in the task context.

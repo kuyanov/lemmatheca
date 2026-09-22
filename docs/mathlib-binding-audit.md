@@ -140,9 +140,12 @@ particular presentations. The remaining 33 entry declarations specify concrete
 sets, the diagram, counterexamples, or answers with additional conditions and witnesses.
 Bundled examples remain local when decomposing them would still require custom claims.
 
-The nine general declarations now share `formal/Lemmatheca/SetTheory.lean`.
-Their node modules are `Lemmatheca.SetTheory`; declaration names, statements, and
-proofs are unchanged. This consolidation retains approval records without accepting
-the changed module metadata. Entry example modules import mathlib directly instead
-of depending on each other or on the general theory; the entry's aggregate module
-still provides both the examples and the reusable library.
+After the subsequent source-layout cleanup, the nine general declarations share
+`formal/Lemmatheca/SetTheory/Basic.lean`, with node module
+`Lemmatheca.SetTheory.Basic`. The 33 entry declarations share
+`formal/Lemmatheca/Entry/SetsAndMaps.lean`, with node module
+`Lemmatheca.Entry.SetsAndMaps`. Declaration names, statements, and proofs are
+unchanged. `SetTheory.lean` imports the theory modules; the entry module imports
+the basic theory and its mathlib prerequisites. The maintainer authorized
+refreshing first-entry approvals affected by these module moves; this does not
+approve the new equivalence-relations nodes.

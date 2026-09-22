@@ -1,2 +1,3 @@
 import Lemmatheca.SetTheory
 import Lemmatheca.Entry.SetsAndMaps
+import Lemmatheca.Entry.EquivalenceRelations

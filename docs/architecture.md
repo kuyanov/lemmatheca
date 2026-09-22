@@ -174,20 +174,23 @@ and expandable proof dependencies with compact node links and adjacent statuses.
 An expandable source browser preserves line anchors; source-line links open it and
 scroll to their target.
 HTML in descriptions and source is escaped. Source is shown directly on node pages;
-there is no separate file-viewer route. The registry currently contains 127 nodes
-covering the mathematical blocks of sets-and-maps; its notation-and-conventions
-block has an empty mapping. All 127 nodes have passing Lean verification, with no
-`sorry` placeholders. The [mathlib binding audit](mathlib-binding-audit.md) records
+there is no separate file-viewer route. The registry currently contains 189 nodes.
+The 127 nodes for sets-and-maps have passing Lean verification, with no `sorry`
+placeholders; its notation-and-conventions block has an empty mapping.
+Equivalence-relations reuses ten nodes and adds 62 unreviewed targets, including
+21 statements with pending proofs. The [mathlib binding audit](mathlib-binding-audit.md) records
 direct library bindings and the replacement of bundled nodes with separate claims.
 Changed bindings and dependency lists require renewed review. Pending
 dependencies can also prevent approved nodes from being complete. With an empty registry,
 the checker skips Lean. Historical reports are untouched.
 
-Reusable set and map declarations live in the single `Lemmatheca/SetTheory.lean`
-module, under `Lemmatheca.SetTheory`. The entry's concrete examples, diagram, and
-formula questions use `Lemmatheca.Entry.SetsAndMaps` in three modules under
-`Lemmatheca/Entry/SetsAndMaps/`. Each example module imports mathlib directly;
-the entry's aggregate module imports all three and the general theory.
+Reusable set theory lives in `Lemmatheca/SetTheory/Basic.lean` and
+`Lemmatheca/SetTheory/EquivalenceRelations.lean`, under `Lemmatheca.SetTheory`.
+`Lemmatheca/SetTheory.lean` imports both. Each entry has a single module under
+`Lemmatheca/Entry/`: `SetsAndMaps.lean` and `EquivalenceRelations.lean`, with
+corresponding `Lemmatheca.Entry.*` namespaces. The sets-and-maps module groups
+its examples into sections and imports the basic theory and mathlib prerequisites.
+The equivalence-relations examples reuse that module's diagram definitions.
 Node IDs and declaration names are independent of source layout. Moving a node's
 import module refreshes its source path after verification and changes its review
 hash, so retained approval records become outdated until explicitly reviewed.

@@ -216,7 +216,7 @@ uv run python app/manage.py test catalog
 The checker reads nodes independently of entries, builds their modules, checks
 declarations and transitive axioms, and writes `formal/checks/nodes.json`.
 A declaration using `sorry`, including through another theorem, remains pending.
-An empty registry skips Lean; the current registry checks all sets-and-maps nodes. See
+An empty registry skips Lean; the current registry checks nodes across both entries. See
 [verification and review](verification-and-review.md) for evidence and limitations.
 
 The corpus contains trusted repository-owned HTML, parsed as content rather than

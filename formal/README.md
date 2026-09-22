@@ -88,18 +88,31 @@ The checked signature shows the actual target even when it has no handwritten
 source declaration. Stale verification hides that signature until rechecking.
 
 Reusable set and map definitions and theorems use the namespace
-`Lemmatheca.SetTheory` and live in `Lemmatheca/SetTheory.lean`. Entry-specific
-examples, diagram definitions, and formula-question answers use
-`Lemmatheca.Entry.SetsAndMaps` and live under `Lemmatheca/Entry/SetsAndMaps/`.
-The entry folder contains `SetsAndElements.lean`, `SetOperations.lean`, and `Maps.lean`.
-These example modules import their mathlib dependencies directly and compile independently.
-The entry's aggregate module imports all three plus the general theory.
-Import `Lemmatheca.SetTheory` for the reusable library or
-`Lemmatheca.Entry.SetsAndMaps` for the entry's examples too.
+`Lemmatheca.SetTheory` and live in `Lemmatheca/SetTheory/Basic.lean`.
+`Lemmatheca/SetTheory.lean` imports the reusable theory modules. Each entry has
+one source file under `Lemmatheca/Entry/`; its examples use the corresponding
+`Lemmatheca.Entry.<EntryName>` namespace.
+
+```text
+Lemmatheca/
+  SetTheory.lean
+  SetTheory/
+    Basic.lean
+    EquivalenceRelations.lean
+  Entry/
+    SetsAndMaps.lean
+    EquivalenceRelations.lean
+```
+
+`Entry/SetsAndMaps.lean` groups sets and elements, set operations, and map examples
+in sections. It imports `SetTheory.Basic` and its mathlib prerequisites.
+Import `Lemmatheca.SetTheory` for all reusable set theory,
+`Lemmatheca.SetTheory.Basic` for the basic sets-and-maps declarations, or
+`Lemmatheca.Entry.SetsAndMaps` for those declarations and the first entry's examples.
 
 The sets-and-maps entry has bindings for every mathematical block, including
 examples and question answers. The notation-and-conventions block has an empty
-mapping. All 127 nodes have passing Lean verification: 85 bind directly to mathlib
+mapping. Its 127 nodes have passing Lean verification: 85 bind directly to mathlib
 or Lean declarations, 9 to the general theory, and 33 to entry-specific declarations.
 The [mathlib binding audit](../docs/mathlib-binding-audit.md) records direct
 replacements, splits of bundled claims, and changes to examples and dependencies.
@@ -109,6 +122,19 @@ These modules contain no `sorry`
 placeholders. Ambient types (or subtypes) specify each universe,
 domain, and codomain. In the formula question, the reciprocal is specified by
 `x * y = 1`, since Lean's division itself is total even at zero.
+
+The equivalence-relations entry has bindings for all 16 blocks, reusing ten nodes
+and adding 62: 41 direct Lean/mathlib bindings and 21 statements awaiting proofs.
+All new nodes remain unreviewed. Seven reusable statements live in
+`Lemmatheca/SetTheory/EquivalenceRelations.lean`, under `Lemmatheca.SetTheory`;
+fourteen examples live in `Lemmatheca/Entry/EquivalenceRelations.lean`, under
+`Lemmatheca.Entry.EquivalenceRelations`. The root module imports both entries.
+Import `Lemmatheca.SetTheory.EquivalenceRelations` for the reusable additions alone.
+The [binding preparation record](../docs/equivalence-relations-bindings.md) lists
+coverage, target declarations, representation bridges, and proof prerequisites.
+In particular, `Setoid.classes` represents the quotient as a set of subsets,
+while the library equivalence to `Quotient` connects this with the type used for
+maps. These new modules contain `sorry` placeholders until review and proving.
 
 After inspecting the declarations and their correspondence to the human text,
 record your review from the repository root:
