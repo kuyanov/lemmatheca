@@ -24,11 +24,13 @@ not an automated runner.
 4. **[Prepare formal nodes](prompts/add-entry/04-prepare-formal-nodes.txt).**
    Reuse existing nodes and prefer built-in Lean/mathlib declarations over local
    wrappers. Add missing definitions and statements, linking blocks through
-   `data-formal`. Check that new Lean declarations compile; leave new theorem
-   proofs as `sorry`.
+   `data-formal`. Give each node a concise mathematical description: the theorem
+   statement or the object being defined, with its assumptions. Check that new
+   Lean declarations compile; leave new theorem proofs as `sorry`.
 5. **[Review correspondence](prompts/add-entry/05-review-correspondence.txt).**
    Independently check the declarations and their collective coverage of each
-   block, including examples and question answers. Record approval with
+   block, including examples and question answers. Compare node descriptions with
+   the actual declarations, too. Record approval with
    `review --accept --node <id>` or `review --accept --entry <id>`; the command saves
    hashes of the reviewed targets. Use `--retract` to withdraw approval.
    AI findings do not themselves accept reviews. Record mapping approval through
@@ -58,6 +60,11 @@ translated. See the [experiment plan](docs/formalization-experiments.md).
 A file-backed corpus, a Django reader, and a local Lean checker. The frontend uses
 plain HTML/CSS/JavaScript and self-hosted KaTeX. There is no database or frontend
 build step. Accounts, submissions, and autonomous AI workflows are not implemented.
+
+Node pages put a mathematical description above the checked Lean statement, with
+review/check dates, expandable proof prerequisites, and a source browser with line
+links. Descriptions are editorial text reviewed through Git; editing them does not
+change declaration approval or Lean evidence.
 
 | Folder | Purpose |
 | --- | --- |

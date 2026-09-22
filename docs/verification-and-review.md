@@ -13,7 +13,8 @@ grading service. Those public features are deferred.
 ## Nodes and human review
 
 A block optionally links formal nodes through HTML `data-formal`. A node names
-one local or mathlib declaration, its module, dependencies, and a `review`
+one local or mathlib declaration, a mathematical `description`, its module,
+proof dependencies, and a `review`
 record (or `null`). Definitions can bind to definitions or instances. A question binds its
 answer or counterexample. The [formal README](../formal/README.md#formal-nodes)
 specifies the schema; entry JSON contains no formal metadata.
@@ -38,9 +39,12 @@ without an approval are skipped.
 Review hashes cover elaborated theorem types, definition bodies, inductive
 constructors and recursor rules, and their reachable constants. Theorems contribute
 their statements, not their proofs, even when referenced by a definition. Expression
-metadata and binder names are omitted. Node metadata and the pinned environment
-also enter the hash. Changing a statement or a referenced definition invalidates
-review after rechecking; proof-only edits can retain it. This is a structural hash,
+metadata and binder names are omitted. Node ID, declaration, module, dependencies,
+and the pinned environment also enter the hash. The editorial description is
+excluded, just like human entry prose: review its accuracy through Git. Editing a
+description preserves verification and declaration approval; Lean does not check
+the description's correspondence. Changing a statement or a referenced definition
+invalidates review after rechecking; proof-only edits can retain it. This is a structural hash,
 not a test of mathematical equivalence. Proving agents must still preserve approved
 targets rather than silently reaccepting their own changes.
 
@@ -59,8 +63,9 @@ Run `uv run python app/manage.py check_formalizations`. The command:
 
 1. Loads the formal node registry independently of the human corpus and validates
    IDs, module paths, dependency targets, and acyclicity.
-2. Fingerprints node metadata except `review`, local Lemmatheca sources, imported dependency sources,
-   and the pinned environment, then runs `lake build` for registered modules.
+2. Fingerprints node metadata except `description` and `review`, local Lemmatheca
+   sources, imported dependency sources, and the pinned environment, then runs
+   `lake build` for registered modules.
 3. Imports these modules and runs `#print axioms` for each registered declaration.
 4. Allows `propext`, `Classical.choice`, and `Quot.sound` for complete proofs.
    Direct or transitive `sorryAx` means pending; other axioms fail the run.
@@ -82,8 +87,8 @@ JSON bindings and `checks/sumsets.json` remain historical records outside this p
 The reader derives readiness from current evidence, statement review, and ready
 node dependencies. For a reviewed declaration, a missing or stale report yields
 `verification_needed`, never `complete` or a proof status from outdated evidence.
-Node metadata other than `review`, source, dependency, or environment changes invalidate affected
-evidence. All local Lean sources are checked conservatively, so an unrelated
+Node metadata other than `description` and `review`, source, dependency, or
+environment changes invalidate affected evidence. All local Lean sources are checked conservatively, so an unrelated
 local edit can invalidate several nodes. File hashes are cached by file metadata;
 page requests never run Lean.
 

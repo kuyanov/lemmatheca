@@ -28,7 +28,9 @@ categories.
 
 Formal records live in `formal/nodes/<id>.json` and Lean modules in
 `formal/Lemmatheca/` or pinned mathlib. Each node names at most one declaration;
-blocks can link multiple nodes, and nodes can be shared. A node without a
+blocks can link multiple nodes, and nodes can be shared. Each node also has a
+required plain-text mathematical description, with optional LaTeX notation, for
+reviewing its statement or definition. A node without a
 declaration is an unreviewed placeholder. See the [schema](../formal/README.md#formal-nodes).
 
 | Mapping | Block status |
@@ -65,9 +67,11 @@ collapsed. Citation authors identify the cited work. Formal sources retain their
 upstream attribution. A maintainer decides what is included.
 
 The read-only formal API exposes `/api/formal/nodes/` and
-`/api/formal/nodes/<id>/`, including derived `status`, `status_label`, dependencies, source,
-node-page links, `target_sha256`, and `review_current`. It does not load the human corpus. Node pages show escaped
-source with an inferred declaration line where possible. Human-corpus APIs,
+`/api/formal/nodes/<id>/`, including `description`, derived `status`, `status_label`, dependencies, source,
+node-page links, `target_sha256`, and `review_current`. It does not load the human
+corpus. Node pages show the mathematical description, current checked signature, proof
+prerequisites, and escaped source with line links. Descriptions are reviewed through
+Git and excluded from Lean evidence and target review hashes. Human-corpus APIs,
 search, write endpoints, and autonomous workers remain future work.
 
 Agents can also read files directly. Formal dependencies are distinct from human

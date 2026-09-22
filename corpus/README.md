@@ -36,6 +36,9 @@ records in `formal/nodes/` using its `data-formal` attribute:
 | `data-formal="node-a node-b"` | Formal nodes covering this block |
 
 Definitions can use existing Lean definitions; questions map their answers.
+Each linked node has a short mathematical description on its node page. Review
+that description against the declaration as well as the entry; it is editorial
+text, separate from the checked Lean signature.
 Maintainers review both the declarations and coverage. Use
 `uv run python app/manage.py review --accept --entry <id>` to record approval of an
 entry's linked nodes, or `--node <id>` for an individual node. Replace `--accept`

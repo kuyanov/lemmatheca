@@ -151,8 +151,9 @@ percentage until complete. The badge sits beside the title and opens a list of
 node links. Entry totals deduplicate shared nodes and keep unplanned blocks from
 claiming full coverage. Questions map their answers.
 
-Nodes live in `formal/nodes/<id>.json`, with declaration/module, dependencies,
-and statement review. Nodes can exist without an entry. Source paths initially follow
+Nodes live in `formal/nodes/<id>.json`, with a required mathematical description,
+declaration/module, proof dependencies, and statement review. Nodes can exist
+without an entry. Source paths initially follow
 the import module; current checked locations identify the actual defining module,
 including sources bundled with the pinned Lean toolchain. The formal API and node pages use `app/formalization/`; the reader
 calls the same Python layer without making an HTTP request to itself.
@@ -162,10 +163,15 @@ transitive axioms, and writes `formal/checks/nodes.json`. `sorryAx` means pendin
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed for complete proofs.
 A ready node additionally needs statement review and ready declared dependencies.
 The reader checks current fingerprints without compiling. Node/source/environment
-changes invalidate affected evidence, except for `review` records, which update
+changes invalidate affected evidence, except for editorial `description` text and
+`review` records. Descriptions are reviewed through Git; review records update
 approval without discarding Lean evidence. Target hashes exclude theorem proofs
 and include referenced definitions; changed targets require renewed review.
-Source is shown directly on node pages;
+Node pages show descriptions with KaTeX, checked signatures, review/check dates,
+and expandable proof dependencies with compact node links and adjacent statuses.
+An expandable source browser preserves line anchors; source-line links open it and
+scroll to their target.
+HTML in descriptions and source is escaped. Source is shown directly on node pages;
 there is no separate file-viewer route. The registry currently contains 127 nodes
 covering the mathematical blocks of sets-and-maps; its notation-and-conventions
 block has an empty mapping. All 127 nodes have passing Lean verification, with no

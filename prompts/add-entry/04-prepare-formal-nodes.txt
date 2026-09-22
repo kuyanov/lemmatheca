@@ -42,8 +42,15 @@ current Lean modules, and the pinned Lean/mathlib sources. Preserve unrelated wo
    imports and node module paths when organizing sources. Prefer direct imports
    needed by each module, and keep Lean/mathlib pins fixed.
 6. Create formal/nodes/<node-id>.json using exactly the current schema. Use stable
-   mathematical IDs. For a Lean core target, select an allowed Mathlib import module
-   exposing it; the defining Init/Std module is resolved separately by verification.
+   mathematical IDs. Write a concise description for each node: state the theorem
+   with its hypotheses, or describe the object defined. Include the needed domains
+   and quantifiers; make it understandable without opening an entry. Use plain text
+   with optional LaTeX notation, escaped correctly in JSON, and no HTML or proofs.
+   Describe the actual target and explain an intended specialization if useful.
+   Descriptions are editorial text, excluded from Lean evidence and target hashes;
+   their accuracy still needs correspondence review. For a Lean core target, select
+   an allowed Mathlib import module exposing it; the defining Init/Std module is
+   resolved separately by verification.
    The dependencies field is used only for proving: record
    direct prerequisites needed or deliberately planned for the proof, not concepts
    merely named in the statement, reading prerequisites, or all imported modules.

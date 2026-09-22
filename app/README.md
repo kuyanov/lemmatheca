@@ -54,8 +54,20 @@ directory, or after Python changes when using `--noreload`.
 | --- | --- |
 | `/api/formal/nodes/` | Node records with derived statuses |
 | `/api/formal/nodes/<id>/` | One node as JSON |
-| `/formal/nodes/<id>/` | Node status, dependencies, and Lean source |
+| `/formal/nodes/<id>/` | Mathematical description, checked statement, proof prerequisites, and source |
 
 These endpoints allow GET and HEAD and work independently of the human corpus.
 They never run Lean. The [formal-node contract](../formal/README.md#formal-nodes)
 and [content model](../docs/content-model.md) define statuses and progress.
+
+Every node includes a required plain-text `description`, also returned by both
+API endpoints. Node pages render its mathematical notation using the local KaTeX
+assets and escape HTML. The description precedes the checked signature; review and
+verification dates remain visible. Proof dependencies expand to a compact list of
+node links with adjacent statuses; each linked page shows its description. Full
+source also expands on demand. Line links open the source browser, including direct
+`#L<number>` links. Descriptions and dependency links wrap on narrow screens.
+
+Description edits are editorial changes: they refresh page content without
+invalidating Lean evidence or accepting/retracting a declaration review. The
+checked signature remains separate and appears only with current verification.

@@ -67,7 +67,8 @@ class NodeFixtureMixin(CorpusFixtureMixin):
                                   {name: file_hash(self.formal / name) for name in ENVIRONMENT})
 
     def write_node(self, node_id, *, accepted=True, **changes):
-        data = {'id': node_id, 'declaration': 'Lemmatheca.ready', 'module': 'Lemmatheca.Fixture',
+        data = {'id': node_id, 'description': 'The proposition True holds.',
+                'declaration': 'Lemmatheca.ready', 'module': 'Lemmatheca.Fixture',
                 'dependencies': [], 'review': None, **changes}
         if accepted and 'review' not in changes:
             data['review'] = {'sha256': self.target_hash(
@@ -161,6 +162,71 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.assertContains(
             response, 'class="source-line declaration-line" id="L3"')
         self.assertEqual(response.context['declaration_line'], 3)
+
+    def test_description_is_escaped_math_ready_and_available_in_api(self):
+        description = r'For \(x < y\), <script>alert("description")</script> is text.'
+        self.write_node('ready', description=description)
+        response = self.client.get('/formal/nodes/ready/')
+        self.assertContains(response, r'For \(x &lt; y\)')
+        self.assertContains(
+            response, '&lt;script&gt;alert(&quot;description&quot;)&lt;/script&gt;')
+        self.assertNotContains(response, '<script>alert("description")')
+        self.assertContains(response, 'class="node-description" data-math')
+        self.assertContains(response, '/static/vendor/katex/katex.min.js')
+        self.assertContains(response, '/static/js/formal-node.js')
+        text = response.content.decode()
+        self.assertLess(text.index('class="node-description"'),
+                        text.index('id="declaration-title"'))
+        self.assertContains(
+            response, '<details class="node-source-browser" id="source-browser">')
+        self.assertEqual(self.client.get(
+            '/api/formal/nodes/ready/').json()['description'], description)
+        listed = self.client.get('/api/formal/nodes/').json()['nodes']
+        self.assertEqual(next(node for node in listed if node['id'] == 'ready')[
+                         'description'], description)
+
+    def test_description_edits_preserve_review_and_current_lean_evidence(self):
+        before = load_nodes(self.root)['ready']
+        report = (self.root / REPORT).read_bytes()
+        path = self.node_dir / 'ready.json'
+        record = json.loads(path.read_text())
+        record['description'] = 'An updated human description.'
+        path.write_text(json.dumps(record))
+        with patch('subprocess.run') as lean:
+            updated = self.client.get('/api/formal/nodes/ready/').json()
+            page = self.client.get('/formal/nodes/ready/')
+        lean.assert_not_called()
+        self.assertContains(page, record['description'])
+        for key in ('review', 'review_current', 'target_sha256', 'checked_on', 'status'):
+            self.assertEqual(updated[key], before[key])
+        self.assertEqual(updated['status'], 'complete')
+        self.assertEqual((self.root / REPORT).read_bytes(), report)
+
+    def test_description_is_required_and_nonempty(self):
+        for value in (None, '', ' \n ', 3, [], {}):
+            with self.subTest(value=value):
+                self.write_node('ready', description=value)
+                with self.assertRaisesRegex(ContentError, 'description must be nonempty text'):
+                    load_nodes(self.root)
+        path = self.node_dir / 'ready.json'
+        record = json.loads(path.read_text())
+        del record['description']
+        path.write_text(json.dumps(record))
+        with self.assertRaisesRegex(ContentError, 'Expected fields:.*description'):
+            load_nodes(self.root)
+
+    def test_proof_dependencies_show_links_and_statuses_without_descriptions(self):
+        description = r'A prerequisite involving \(A\subseteq B\).'
+        self.write_node(
+            'pending', declaration='Lemmatheca.unfinished', description=description)
+        response = self.client.get('/formal/nodes/dependent/')
+        self.assertContains(response, 'Proof dependencies')
+        self.assertContains(response, 'href="/formal/nodes/pending/"')
+        self.assertContains(
+            response, 'class="node-status formalization-proof_pending"')
+        self.assertNotContains(response, description)
+        self.assertContains(self.client.get(
+            '/formal/nodes/pending/'), description)
 
     def test_anonymous_instance_uses_current_checked_location(self):
         self.source.write_text('namespace Lemmatheca\n'
@@ -429,7 +495,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             self.assertContains(response, 'href="#L2"')
             self.assertContains(
                 response, 'class="source-line declaration-line" id="L2"')
-            self.assertContains(response, 'View pinned Lean source on GitHub')
+            self.assertContains(response, 'Pinned Lean source')
             self.assertContains(response, upstream)
             node = self.client.get('/api/formal/nodes/ready/').json()
             self.assertEqual(node['module'], 'Mathlib.Test')

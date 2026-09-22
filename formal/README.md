@@ -30,7 +30,8 @@ committed reports without installing it; missing mathlib sources link upstream.
 
 ## Formal nodes
 
-Each `nodes/<id>.json` names a declaration, its dependencies, and human review.
+Each `nodes/<id>.json` contains a mathematical description, a declaration,
+its proof prerequisites, and human review.
 
 Use stable IDs describing the mathematics, such as `set-insert-commute`,
 independently of the entries that reference them.
@@ -38,12 +39,34 @@ independently of the entries that reference them.
 ```json
 {
   "id": "set",
+  "description": "A set of elements of an ambient type is represented by a predicate on that type.",
   "declaration": "Set",
   "module": "Mathlib.Data.Set.Defs",
   "dependencies": [],
   "review": null
 }
 ```
+
+`description` is required, nonempty plain text. State the theorem with its
+hypotheses, or describe the object being defined; include the relevant domains and
+quantifiers. Keep it concise and understandable without opening an entry. For a
+generic library target, explain a useful specialization when the node ID suggests
+a concrete example. Avoid proofs, implementation commentary, HTML, and duplicated
+entry paragraphs. Mathematical notation supports `\(...\)` and `\[...\]`;
+escape backslashes in JSON, for example `"For every set \\(A\\), \\(A\\cup\\varnothing=A\\)."`.
+
+The description appears first on the node page, followed by the checked Lean
+signature. Review/check dates sit alongside it, proof dependencies expand to show
+compact node links with adjacent statuses, and the source file stays collapsed
+until opened. A source line link opens the file and scrolls to that line. The layout
+adapts to narrow screens; the API returns the same description as plain text.
+
+Descriptions are editorial aids, not Lean-checked statements. Review their
+correspondence through Git, as with entry prose and block mappings. They are
+excluded from verification fingerprints and target review hashes: correcting
+wording preserves current checks and declaration approval. Changing the actual
+target, module, proof prerequisites, or relevant Lean definitions still requires
+the usual recheck and, if the target hash changes, renewed approval.
 
 Search the existing node registry and pinned Lean/mathlib sources before adding
 local declarations. Reuse an existing node when possible; otherwise bind directly
@@ -113,8 +136,8 @@ instead of a boolean:
 ```
 
 The SHA-256 covers the elaborated target, referenced definitions and inductive
-constructors, node identity/dependencies, and pinned environment. Theorem proofs
-are excluded; definition bodies are included. Source comments and positions are
+constructors, node ID/declaration/module/dependencies, and pinned environment.
+Theorem proofs are excluded; definition bodies are included. Source comments and positions are
 excluded. A changed statement or relevant definition makes an existing review
 outdated after rechecking. A proof-only edit requires fresh verification but keeps
 an unchanged statement's approval. Hashes compare structural declarations, not
@@ -172,7 +195,7 @@ compiles the library; `check_formalizations` records the evidence used by the re
 The historical sumset report is retained separately from the active node checks.
 
 Rerun after changing declarations, dependencies, Lean sources, or environment pins.
-Review records do not invalidate evidence. Lean checks correctness; maintainers
-check correspondence with the human mathematics. See
+Descriptions and review records do not invalidate evidence. Lean checks
+correctness; maintainers check correspondence with the human mathematics. See
 [verification and review](../docs/verification-and-review.md) for evidence rules
 and [experiment design](../docs/formalization-experiments.md) for measured runs.

@@ -185,8 +185,15 @@ reference copy; only `taxonomy.json` controls browsing and area validation.
 ## Formal nodes and checks
 
 Local nodes name a `Lemmatheca.*` module; mathlib nodes name a `Mathlib.*` module.
-The source path is inferred from that module. Each node page shows the full
-escaped source, line anchors, and a highlighted declaration line. Current check
+The source path is inferred from that module. Each node needs a concise plain-text
+description stating its theorem or describing its defined object, including the
+necessary hypotheses and domains. The node page renders this description's math
+above the checked signature, with expandable proof prerequisites and source.
+Descriptions are reviewed through Git and do not change Lean evidence or target
+approval hashes. See the [node schema](../formal/README.md#formal-nodes).
+
+The source browser shows the full escaped source, line anchors, and a highlighted
+declaration line. Clicking a line link also opens the source browser. Current check
 reports supply the checked signature and Lean's source locations, including
 anonymous instances. The defining module may differ from the node's import module,
 including a bundled Lean module. Generated declarations may have a differently

@@ -15,7 +15,10 @@ from .lean import TOOLCHAIN_MODULES, lean_source_path, local_sources
 from .reviews import SHA256, validate_review
 
 
-NODE_FIELDS = {'id', 'declaration', 'module', 'dependencies', 'review'}
+NODE_FIELDS = {'id', 'description', 'declaration',
+               'module', 'dependencies', 'review'}
+# Editorial prose is reviewed through Git, separately from Lean target approval.
+TARGET_FIELDS = {'id', 'declaration', 'module', 'dependencies'}
 LEAN_NAME = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z", re.UNICODE)
 ALLOWED_AXIOMS = {'propext', 'Classical.choice', 'Quot.sound'}
 REPORT = 'formal/checks/nodes.json'
@@ -66,8 +69,8 @@ def source_input_key(source):
 
 
 def node_fingerprint(node):
-    # Review is a human decision, independent of Lean's evidence for the target.
-    record = {key: node[key] for key in sorted(NODE_FIELDS - {'review'})}
+    # Editorial descriptions and review decisions do not change the Lean target.
+    record = {key: node[key] for key in sorted(TARGET_FIELDS)}
     return hashlib.sha256(json.dumps(record, sort_keys=True).encode()).hexdigest()
 
 
@@ -159,6 +162,8 @@ def load_nodes(root, *, check_reports=True):
         fields(node, NODE_FIELDS)
         if not isinstance(node['id'], str) or not IDENTIFIER.fullmatch(node['id']) or path.stem != node['id']:
             raise ContentError('Formal node ID must match its filename')
+        if not isinstance(node['description'], str) or not node['description'].strip():
+            raise ContentError('Node description must be nonempty text')
         validate_review(node['review'])
         if not isinstance(node['dependencies'], list) or any(
                 not isinstance(item, str) or not IDENTIFIER.fullmatch(item) for item in node['dependencies']):

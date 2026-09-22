@@ -1,52 +1,103 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}{{ node.id }} — Lemmatheca{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'vendor/katex/katex.min.css' %}">
+<script src="{% static 'vendor/katex/katex.min.js' %}" defer></script>
+<script src="{% static 'vendor/katex/contrib/auto-render.min.js' %}" defer></script>
+<script src="{% static 'js/math.js' %}" defer></script>
+<script src="{% static 'js/formal-node.js' %}" defer></script>
+{% endblock %}
 {% block content %}
 <article class="formal-node-page">
-  <header>
-    <span class="eyebrow">Formal node</span>
-    <h1>{{ node.id }}</h1>
-    <div class="node-verification">
+  <header class="node-header">
+    <div class="node-heading-meta">
+      <span class="eyebrow">Formal node</span>
       {% include "formalization/_status_badge.html" with node=node only %}
-      {% if node.checked_on %}
-      <span class="node-check-date">Checked <time
-          datetime="{{ node.checked_on }}">{{ node.checked_on|slice:":10" }}</time></span>
-      {% endif %}
     </div>
-    {% if node.declaration %}
+    <h1>{{ node.id }}</h1>
+  </header>
+
+  <div class="node-overview">
+    <section class="node-statement" aria-labelledby="description-title">
+      <h2 id="description-title" class="node-section-title">Description</h2>
+      <p class="node-description" data-math>{{ node.description }}</p>
+    </section>
+    <aside class="node-review-meta" aria-label="Declaration evidence">
+      <dl>
+        <div>
+          <dt>Declaration review</dt>
+          <dd>{% if node.review_current %}Accepted{% elif node.status == 'review_outdated' %}Needs another
+            review{% elif node.review %}Needs rechecking{% else %}Not accepted{% endif %}</dd>
+          {% if node.review_current %}
+          <dd class="node-meta-date"><time
+              datetime="{{ node.review.recorded_at }}">{{ node.review.recorded_at|slice:":10" }}</time></dd>
+          {% endif %}
+        </div>
+        <div>
+          <dt>Lean verification</dt>
+          {% if node.checked_on %}
+          <dd>Checked <time datetime="{{ node.checked_on }}">{{ node.checked_on|slice:":10" }}</time></dd>
+          {% else %}
+          <dd>Awaiting a current check</dd>
+          {% endif %}
+        </div>
+      </dl>
+    </aside>
+  </div>
+
+  {% if node.declaration %}
+  <section class="node-section" aria-labelledby="declaration-title">
+    <h2 id="declaration-title" class="node-section-title">Lean declaration</h2>
     {% if node.signature %}
-    <pre class="lean-signature" aria-label="Checked Lean declaration"><code>{{ node.signature }}</code></pre>
+    <pre class="lean-signature" tabindex="0"
+      aria-label="Checked Lean declaration"><code>{{ node.signature }}</code></pre>
     {% else %}
     <p class="lean-declaration"><code>{{ node.declaration }}</code></p>
+    <p class="node-note">The checked statement will appear after Lean verification.</p>
     {% endif %}
-    <p class="lean-file-path">Source origin: <code>{{ node.source }}</code>{% if declaration_line %} ·
-      <a href="{% if lean_source is not None %}#L{{ declaration_line }}{% else %}{{ upstream_url }}{% endif %}">line
-        {{ declaration_line }}</a>{% endif %}
-    </p>
-    {% endif %}
-    {% if upstream_url %}<p><a href="{{ upstream_url }}">View pinned {{ upstream_name }} source on GitHub</a></p>
-    {% endif %}
-    {% if dependencies %}
-    <details class="node-dependencies">
-      <summary>Dependencies ({{ dependencies|length }})</summary>
-      <ul class="formal-node-list">
-        {% for dependency in dependencies %}
-        <li><a href="{{ dependency.url }}" target="_blank" rel="noopener"
-            title="Open in a new tab"><code>{{ dependency.id }}</code></a>
-          {% include "formalization/_status_badge.html" with node=dependency inline=True only %}
-        </li>
-        {% endfor %}
-      </ul>
-    </details>
-    {% endif %}
-  </header>
-  {% if node.source and lean_source is not None %}
-  <pre class="lean-source" tabindex="0" aria-label="Lean source"><code>{% for line in source_lines %}<span class="source-line{% if line.selected %} declaration-line{% endif %}" id="L{{ line.number }}"><a class="line-number" href="#L{{ line.number }}" aria-label="Line {{ line.number }}">{{ line.number }}</a>{{ line.text }}
-</span>{% endfor %}</code></pre>
-  {% elif node.source %}
-  <p>This {{ upstream_name }} source is not installed on this server. You can read it using the pinned GitHub link
-    above.</p>
+  </section>
   {% else %}
-  <p>No Lean declaration has been written for this node yet.</p>
+  <p class="node-note">No Lean declaration has been written for this node yet.</p>
+  {% endif %}
+
+  {% if dependencies %}
+  <details class="node-dependencies node-section">
+    <summary>Dependencies <span class="node-count">{{ dependencies|length }}</span></summary>
+    <ul class="node-prerequisite-list">
+      {% for dependency in dependencies %}
+      <li>
+        <a href="{{ dependency.url }}" target="_blank" rel="noopener"
+          title="Open in a new tab"><code>{{ dependency.id }}</code></a>
+        {% include "formalization/_status_badge.html" with node=dependency inline=True only %}
+      </li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+
+  {% if node.source %}
+  <section class="node-section node-source-section" aria-labelledby="source-title">
+    <h2 id="source-title" class="node-section-title">Source</h2>
+    <div class="node-source-location">
+      <p class="lean-file-path">Source origin: <code>{{ node.source }}</code>{% if declaration_line %} ·
+        <a href="{% if lean_source is not None %}#L{{ declaration_line }}{% else %}{{ upstream_url }}{% endif %}">line
+          {{ declaration_line }}</a>{% endif %}
+      </p>
+      {% if upstream_url %}<a class="node-upstream-link" href="{{ upstream_url }}">Pinned {{ upstream_name }} source
+        ↗</a>{% endif %}
+    </div>
+    {% if lean_source is not None %}
+    <details class="node-source-browser" id="source-browser">
+      <summary>Browse source file <span class="node-count">{{ source_lines|length }} lines</span></summary>
+      <pre class="lean-source" tabindex="0" aria-label="Lean source"><code>{% for line in source_lines %}<span class="source-line{% if line.selected %} declaration-line{% endif %}" id="L{{ line.number }}"><a class="line-number" href="#L{{ line.number }}" aria-label="Line {{ line.number }}">{{ line.number }}</a>{{ line.text }}
+</span>{% endfor %}</code></pre>
+    </details>
+    {% else %}
+    <p class="node-note">This {{ upstream_name }} source is not installed on this server. Read it using the pinned
+      source link above.</p>
+    {% endif %}
+  </section>
   {% endif %}
 </article>
 {% endblock %}
