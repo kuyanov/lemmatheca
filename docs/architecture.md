@@ -102,8 +102,10 @@ snapshot. Source path validation and declaration locations live together in
 `formalization.lean`.
 
 The reader lists entries under `corpus/entries/`, including drafts. It currently
-contains only **Sets and maps: a first guide**, under **Logic and foundations →
-Set theory**. `corpus/backup/` and `taxonomy_complete.json` are not live inputs;
+contains **Sets and maps: a first guide** followed by **Equivalence relations,
+partitions, and quotients**, under **Logic and foundations → Set theory**. The
+second entry is a human draft with formalization not started.
+`corpus/backup/` and `taxonomy_complete.json` are not live inputs;
 regression tests use temporary copies of archived human text with old JSON block
 metadata removed. Node tests use isolated fixtures. Primary areas determine listings
 and “Next entry” order. Additional areas are stored but do not currently create

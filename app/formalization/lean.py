@@ -132,7 +132,7 @@ def source_context(source, root, declaration=None, *, checked_line=None):
         upstream_name = 'mathlib'
     elif source.split('/')[0] in TOOLCHAIN_MODULES:
         version = pinned_lean_version(root)
-        upstream = f'https://github.com/leanprover/lean4/blob/{version}/src/lean/{source}'
+        upstream = f'https://github.com/leanprover/lean4/blob/{version}/src/{source}'
         upstream_name = 'Lean'
     elif text is None:
         raise ContentError('Local Lean source is missing')

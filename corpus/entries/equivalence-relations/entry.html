@@ -1,0 +1,423 @@
+<section id="relation-properties" data-kind="definition">
+  <h2>The defining properties of equivalence relations</h2>
+  <p>Two integers can have the same parity without being equal. Two inputs of a map can have the same
+    output without being the same input. An equivalence relation expresses this kind of agreement.</p>
+  <p>We use the sets, maps, and notation from the first entry, especially
+    <a href="../sets-and-maps/entry.html#pairs-and-relations">Ordered pairs and relations</a> and
+    <a href="../sets-and-maps/entry.html#images-and-preimages">Images and preimages</a>.
+    A relation on a set \(A\) is a subset \(R\subseteq A\times A\); we write \(a\,R\,b\) for
+    \((a,b)\in R\).
+  </p>
+  <p>A relation may satisfy some, all, or none of the three properties below. Requiring all three
+    gives an equivalence relation. Each condition must hold for every choice of its variables in \(A\).</p>
+  <table>
+    <caption>Properties used to define equivalence</caption>
+    <thead>
+      <tr>
+        <th scope="col">Property</th>
+        <th scope="col">Condition</th>
+        <th scope="col">Meaning</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Reflexive</strong></td>
+        <td>\(a\,R\,a\)</td>
+        <td>Each element is related to itself.</td>
+      </tr>
+      <tr>
+        <td><strong>Symmetric</strong></td>
+        <td>\(a\,R\,b\Rightarrow b\,R\,a\)</td>
+        <td>A related pair can be reversed.</td>
+      </tr>
+      <tr>
+        <td><strong>Transitive</strong></td>
+        <td>\(a\,R\,b\text{ and }b\,R\,c\Rightarrow a\,R\,c\)</td>
+        <td>Two successive relations give a third.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>To disprove symmetry, for example, it suffices to find \(a,b\in A\) with \(a\,R\,b\)
+    but not \(b\,R\,a\).</p>
+</section>
+
+<section id="equivalence-relations" data-kind="definition">
+  <h2>Equivalence relations</h2>
+  <p>An <strong>equivalence relation</strong> on \(A\) is a relation that is reflexive, symmetric, and
+    transitive. We usually write it as \(\sim\), and call \(a\) and \(b\) <strong>equivalent</strong>
+    when \(a\sim b\). The symbol always refers to a specified relation on a specified set.</p>
+  <p>Equality is an equivalence relation: \(a=a\); an equality can be reversed; and two equalities can
+    be chained. The <strong>universal relation</strong>, in which every pair of elements is related,
+    also satisfies all three conditions.</p>
+  <p>On \(\mathbb Z\), define <strong>equal parity</strong> by</p>
+  <div class="math-display">\[ a\sim b\iff
+    \exists k\in\mathbb Z,\ a-b=2k. \]</div>
+  <p>Reflexivity follows from \(a-a=2\cdot0\). If \(a-b=2k\), then \(b-a=2(-k)\), giving symmetry.
+    If also \(b-c=2\ell\), then \(a-c=2(k+\ell)\), giving transitivity. Thus equal parity is an
+    equivalence relation. For example, \(-1\sim3\), although \(-1\ne3\).</p>
+  <p>For a finite example, let \(A=\{0,1,2\}\) and set</p>
+  <div class="math-display">\[ a\sim b\iff
+    (a=b=0)\text{ or }a,b\in\{1,2\}. \]</div>
+  <p>Every element lies in exactly one of the two groups \(\{0\}\) and \(\{1,2\}\).
+    An element shares its own group; sharing a group is symmetric; and if \(a,b\) share a group and
+    \(b,c\) share a group, both groups must be the one containing \(b\). This verifies all three
+    properties. We will return to this example.</p>
+</section>
+
+<section id="are-all-three-needed" data-kind="question">
+  <h2>Can one condition be omitted?</h2>
+  <p>On \(A=\{0,1,2\}\), find a relation satisfying each pair of conditions but failing the third.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p><strong>Without reflexivity:</strong> take the empty relation. It is symmetric and transitive:
+        there are no related pairs to violate either implication. But \(0\) is not related to itself.</p>
+      <p><strong>Without symmetry:</strong> take the usual relation \(\leq\) restricted to \(A\).
+        It is reflexive and transitive, but \(0\leq1\) while \(1\nleq0\).</p>
+      <p><strong>Without transitivity:</strong> relate each element to itself, and also relate \(0\)
+        to \(1\), \(1\) to \(0\), \(1\) to \(2\), and \(2\) to \(1\). Every pair can be
+        reversed, but \(0\,R\,1\) and \(1\,R\,2\) hold while \(0\,R\,2\) does not.</p>
+      <p>In this last example, the elements related to \(0\) form \(\{0,1\}\), while those related to
+        \(2\) form \(\{1,2\}\). These sets overlap without being equal. Equivalence classes will
+        have a stronger property.</p>
+    </div>
+  </details>
+</section>
+
+<section id="equivalence-classes" data-kind="definition">
+  <h2>Classes and representatives</h2>
+  <p>Fix an equivalence relation \(\sim\) on \(A\). The <strong>equivalence class</strong> of
+    \(a\in A\) is</p>
+  <div class="math-display">\[ [a]=\{x\in A:a\sim x\}. \]</div>
+  <p>When several relations are in use, we write \([a]_{\sim}\) to distinguish them. Reflexivity gives
+    \(a\in[a]\), so every class is nonempty. Each element of a class is called a
+    <strong>representative</strong> of that class.
+  </p>
+  <p>In our finite example,</p>
+  <div class="math-display">\[ [0]=\{0\},\qquad [1]=[2]=\{1,2\}. \]</div>
+  <p>The class has two names, \([1]\) and \([2]\), because either member can represent it.
+    Neither member is preferred by the relation.</p>
+  <p>For equal parity on \(\mathbb Z\), the classes are</p>
+  <div class="math-display">\[ \begin{aligned}
+    E&amp;=\{2k:k\in\mathbb Z\},\\
+    O&amp;=\{2k+1:k\in\mathbb Z\}.
+    \end{aligned} \]</div>
+  <p>Every integer is even or odd, and never both. An even integer differs from \(0\) by an even
+    integer, so its class is \(E=[0]\); an odd integer similarly has class \(O=[1]\).
+    Thus there are two classes, even though each contains infinitely many integers.</p>
+  <p>Keep the objects distinct: \(a\) is an element of \(A\), while \([a]\) is a subset of \(A\).
+    Being in the same class does not assert equality of the representatives.</p>
+</section>
+
+<section id="equal-or-disjoint-classes" data-kind="lemma">
+  <h2>Classes are equal or disjoint</h2>
+  <div class="statement-box">
+    <p>For an equivalence relation on \(A\) and \(a,b\in A\),</p>
+    <div class="math-display">\[ a\sim b\quad\Longleftrightarrow\quad[a]=[b]. \]</div>
+    <p>Moreover, any two distinct classes are disjoint.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(a\sim b\). For every \(x\in A\), if \(a\sim x\), symmetry gives \(b\sim a\)
+    and transitivity gives \(b\sim x\). Conversely, \(b\sim x\) together with \(a\sim b\) gives
+    \(a\sim x\). Thus \(x\in[a]\) exactly when \(x\in[b]\), proving equality of the classes.</p>
+  <p>If \([a]=[b]\), then \(b\in[b]=[a]\) by reflexivity. The definition of \([a]\) gives
+    \(a\sim b\), proving the reverse implication.</p>
+  <p>Finally, suppose \(x\in[a]\cap[b]\). Then \(a\sim x\) and \(b\sim x\). Reversing the
+    second relation and using transitivity gives \(a\sim b\), so \([a]=[b]\). Therefore distinct
+    classes have empty intersection. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, if \(b\in[a]\), then \([b]=[a]\). Naming a class by another representative
+    leaves the set unchanged.</p>
+</section>
+
+<section id="partitions" data-kind="definition">
+  <h2>Partitions of a set</h2>
+  <p>A <strong>partition</strong> of \(A\) is a set \(\mathcal P\) of subsets of \(A\) satisfying:</p>
+  <ul>
+    <li>Every \(C\in\mathcal P\) is nonempty.</li>
+    <li>Distinct \(C,D\in\mathcal P\) are disjoint.</li>
+    <li>The members cover \(A\): \(\bigcup_{C\in\mathcal P}C=A\).</li>
+  </ul>
+  <p>The members of \(\mathcal P\) are its <strong>parts</strong>. Equivalently, they are nonempty
+    subsets of \(A\) such that every \(a\in A\) belongs to exactly one part. Coverage gives
+    existence, and disjointness gives uniqueness. Conversely, unique membership gives coverage and
+    prevents distinct parts from meeting.</p>
+  <p>For \(A=\{0,1,2\}\), the set \(\mathcal P=\{\{0\},\{1,2\}\}\) is a partition.
+    The family \(\{\{0,1\},\{1,2\}\}\) is not, because its distinct members both contain \(1\).
+    The family \(\{\{0\},\{1\}\}\) misses \(2\), and adding \(\varnothing\) to a partition
+    violates the nonempty-parts condition.</p>
+  <p>We use a set of parts, so listing the same part twice does not create two parts.</p>
+</section>
+
+<section id="partition-correspondence" data-kind="theorem">
+  <h2>Equivalence relations and partitions determine each other</h2>
+  <div class="statement-box">
+    <p>The classes of an equivalence relation on \(A\) form a partition of \(A\).
+      Conversely, a partition \(\mathcal P\) determines an equivalence relation by</p>
+    <div class="math-display">\[ a\sim_{\mathcal P} b\iff
+      \exists C\in\mathcal P,\ a,b\in C. \]</div>
+    <p>These two constructions undo each other.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Start with an equivalence relation. Each class \([a]\) contains \(a\), so no class is empty.
+    Every element lies in its own class, so the classes cover \(A\). Distinct classes are disjoint by
+    <a href="#equal-or-disjoint-classes">Classes are equal or disjoint</a>. Hence they form a partition.
+  </p>
+  <p>Now start with a partition \(\mathcal P\). Each \(a\in A\) belongs to a part, so
+    \(a\sim_{\mathcal P}a\). The definition is symmetric in \(a,b\). If
+    \(a\sim_{\mathcal P}b\) and \(b\sim_{\mathcal P}c\), choose parts \(C,D\) containing the
+    respective pairs. Both contain \(b\); disjointness forces \(C=D\). This part contains \(a,c\),
+    proving transitivity.</p>
+  <p>For each \(a\), let \(C\) be its unique part. An element \(b\) is related to \(a\) exactly
+    when it belongs to \(C\), so \([a]_{\sim_{\mathcal P}}=C\). Every part occurs this way:
+    it is nonempty, so take one of its members. Thus passing from a partition to its relation and back
+    recovers precisely the original parts.</p>
+  <p>In the other direction, start with \(\sim\) and form its classes. If \(a\sim b\), both lie
+    in \([a]\), so the partition relation relates them. If they lie in a common class \([c]\),
+    then \(c\sim a\) and \(c\sim b\); symmetry and transitivity give \(a\sim b\). Thus the
+    recovered relation is exactly \(\sim\).
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>This is a one-to-one correspondence: a partition records exactly which pairs are equivalent,
+    and an equivalence relation records exactly which elements belong to each part.</p>
+</section>
+
+<section id="quotient-set" data-kind="definition">
+  <h2>The quotient set and its projection</h2>
+  <p>The <strong>quotient set</strong> of \(A\) by an equivalence relation \(\sim\) is the set of
+    its equivalence classes:</p>
+  <div class="math-display">\[ A/{\sim}=\{[a]:a\in A\}. \]</div>
+  <p>Thus \([a]\subseteq A\), but \([a]\in A/{\sim}\). In particular,
+    \(A/{\sim}\subseteq\mathcal P(A)\), where \(\mathcal P(A)\) is the power set introduced in
+    <a href="../sets-and-maps/entry.html#power-sets">Sets whose elements are subsets</a>. As a set of subsets,
+    the quotient is the partition just constructed; when using it as the domain or codomain of a map,
+    we regard each whole class as one element.
+  </p>
+  <p>The <strong>quotient projection</strong> is the map</p>
+  <div class="math-display">\[ q:A\longrightarrow A/{\sim},\qquad q(a)=[a]. \]</div>
+  <p>Every class has a representative, so \(q\) is surjective.
+    <a href="#equal-or-disjoint-classes">Classes are equal or disjoint</a> also gives
+  </p>
+  <div class="math-display">\[ q(a)=q(b)\quad\Longleftrightarrow\quad a\sim b. \]</div>
+  <p>In our finite example, \(A/{\sim}=\{\{0\},\{1,2\}\}\). The projection sends \(0\) to
+    \(\{0\}\) and sends both \(1\) and \(2\) to \(\{1,2\}\), as shown in
+    <a href="#quotient-picture">Figure</a>.
+  </p>
+  <figure id="quotient-picture" class="proof-figure">
+    <div class="figure-image"><img src="assets/quotient.svg" width="720" height="300"
+        alt="The set A has elements 0, 1, 2, grouped into the classes {0} and {1, 2}. The projection q sends 0 to the quotient element {0}, and both 1 and 2 to the quotient element {1, 2}.">
+    </div>
+    <figcaption>One quotient element for each class. The arrows show the projection \(q\).</figcaption>
+  </figure>
+  <p>The original elements \(1\) and \(2\) remain distinct in \(A\). Their images in the quotient
+    coincide. For parity, the corresponding quotient is \(\{E,O\}\); the numbers \(0,1\) can label
+    its two classes, but the classes themselves are sets of integers.</p>
+</section>
+
+<section id="extreme-and-empty-cases" data-kind="question">
+  <h2>What happens at the extremes?</h2>
+  <p>Describe the quotient for equality and for the universal relation. When is the projection
+    injective? What are the equivalence relations, partitions, and quotients of the empty set?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>For equality, \([a]=\{a\}\). Thus \(A/{=}=\{\{a\}:a\in A\}\), and
+        \(a\mapsto\{a\}\) is a bijection from \(A\) to its quotient: it is onto by construction,
+        and \(\{a\}=\{b\}\) implies \(a=b\). The quotient is in bijection with \(A\);
+        we need not identify their elements.</p>
+      <p>For the universal relation on a nonempty set \(A\), every class is \(A\), so the quotient
+        is the singleton \(\{A\}\). The projection has the same value on every input.</p>
+      <p>For any equivalence relation, \(q\) is injective exactly when equivalent elements are equal:
+        use \(q(a)=q(b)\Longleftrightarrow a\sim b\). Since reflexivity already relates each
+        element to itself, this says precisely that the relation is equality.</p>
+      <p>On \(A=\varnothing\), the only relation is \(\varnothing\subseteq A\times A\).
+        All three equivalence conditions hold because there are no elements that could violate them.
+        There are no classes, so the quotient is \(\varnothing\), and its projection is the unique
+        map \(\varnothing\to\varnothing\).</p>
+      <p>The empty set has exactly one partition: the empty set of parts. It covers \(\varnothing\)
+        and satisfies the other conditions vacuously. The family \(\{\varnothing\}\) is not a
+        partition, because it contains an empty part. In this case equality and the universal relation
+        coincide, and their quotient is empty, rather than a singleton.</p>
+    </div>
+  </details>
+</section>
+
+<section id="rules-on-representatives" data-kind="question">
+  <h2>Does a rule on representatives define a map?</h2>
+  <p>For the parity relation on \(\mathbb Z\), consider the proposed rules</p>
+  <div class="math-display">\[ \begin{gathered}u([n])=n,\\
+    v([n])=\begin{cases}0&amp;\text{if }n\text{ is even},\\1&amp;\text{if }n\text{ is odd}.\end{cases}
+    \end{gathered} \]</div>
+  <p>Does the first define a map \(u:\mathbb Z/{\sim}\to\mathbb Z\)? Does the second define
+    a map \(v:\mathbb Z/{\sim}\to\{0,1\}\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The rule for \(u\) fails. Since \([0]=[2]\), it would require the same input class to have
+        both output \(0\) and output \(2\). It therefore does not define a map.</p>
+      <p>The rule for \(v\) works: representatives of the same class have the same parity, so they
+        give the same output. Equivalently, it is the map specified by \(v(E)=0\) and \(v(O)=1\).</p>
+      <p>A rule on representatives is <strong>well-defined</strong> when its output depends only on the
+        class, not on the representative used to name that class. Checking this is part of establishing
+        that the rule assigns exactly one output to each input.</p>
+      <p>It is possible to specify a different map by choosing \(0\) for \(E\) and \(1\) for \(O\).
+        That chosen map does not satisfy \(u([n])=n\) for every integer \(n\). A choice of particular
+        representatives does not repair the original rule.</p>
+    </div>
+  </details>
+</section>
+
+<section id="maps-from-quotients" data-kind="theorem">
+  <h2>When a map passes to the quotient</h2>
+  <div class="statement-box">
+    <p>Let \(\sim\) be an equivalence relation on \(A\), let \(q:A\to A/{\sim}\) be the
+      projection, and let \(f:A\to B\). A map \(\bar f:A/{\sim}\to B\) satisfying
+      \(f=\bar f\circ q\) exists if and only if</p>
+    <div class="math-display">\[ \begin{gathered}\forall a,b\in A,\\
+      a\sim b\Rightarrow f(a)=f(b).\end{gathered}
+      \label{eq:constant-on-classes} \]</div>
+    <p>When it exists, it is unique and is given by \(\bar f([a])=f(a)\).</p>
+  </div>
+  <p>Condition \eqref{eq:constant-on-classes} says that \(f\) is <strong>constant on each class</strong>.
+    Values on different classes may differ. The equation \(f=\bar f\circ q\) says that sending
+    \(a\) straight to \(f(a)\) gives the same result as first taking its class and then applying
+    \(\bar f\). We say that \(f\) <strong>factors through</strong> \(q\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Suppose such a map \(\bar f\) exists. If \(a\sim b\), then \(q(a)=q(b)\), hence
+    \(f(a)=\bar f(q(a))=\bar f(q(b))=f(b)\). This proves necessity.</p>
+  <p>Conversely, suppose \eqref{eq:constant-on-classes} holds. For each class \(C\), there is an
+    \(a\in C\), and all members of \(C\) have the same image under \(f\). Assign that unique
+    common value to \(\bar f(C)\). Thus every class receives one output in \(B\).
+    In particular, \(\bar f([a])=f(a)\), giving \(\bar f\circ q=f\).</p>
+  <p>For uniqueness, if \(g:A/{\sim}\to B\) also satisfies \(g\circ q=f\), then every class
+    can be written \([a]\), and</p>
+  <div class="math-display">\[ g([a])=g(q(a))=f(a)=\bar f([a]). \]</div>
+  <p>So \(g=\bar f\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Existence uses the agreement of values within a class; uniqueness uses that every class is reached
+    by \(q\). The construction assigns a common value without specifying a preferred representative.</p>
+</section>
+
+<section id="induced-map-properties" data-kind="lemma">
+  <h2>Which properties survive the quotient?</h2>
+  <p>Under the hypotheses of <a href="#maps-from-quotients">When a map passes to the quotient</a>,
+    suppose \(\bar f\) exists. Then</p>
+  <div class="math-display">\[ \bar f(A/{\sim})=f(A). \]</div>
+  <p>Consequently, \(\bar f\) is surjective onto \(B\) exactly when \(f\) is. Moreover,
+    \(\bar f\) is injective exactly when</p>
+  <div class="math-display">\[ \forall a,b\in A,\quad f(a)=f(b)\Rightarrow a\sim b. \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Every output \(f(a)\) equals \(\bar f([a])\), and every input to \(\bar f\) is some
+    class \([a]\). Therefore the images are equal, proving the surjectivity assertion.</p>
+  <p>If \(\bar f\) is injective and \(f(a)=f(b)\), then \(\bar f([a])=\bar f([b])\), so
+    \([a]=[b]\) and \(a\sim b\). Conversely, suppose the displayed condition holds. If
+    \(\bar f([a])=\bar f([b])\), then \(f(a)=f(b)\), hence \(a\sim b\) and \([a]=[b]\).
+    Every two quotient elements have representatives, so this proves injectivity.
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>Well-definedness requires equivalent inputs to have equal outputs. Injectivity of the induced
+    map requires the reverse implication. Both hold precisely when the classes group together all,
+    and only, inputs with the same output.</p>
+</section>
+
+<section id="maps-between-quotients" data-kind="question">
+  <h2>What if the output is also a class?</h2>
+  <p>For parity on \(\mathbb Z\), does \(s([n])=[n+1]\) define a map of \(\mathbb Z/{\sim}\)
+    to itself? More generally, for equivalence relations \(\sim\) on \(A\) and \(\approx\)
+    on \(B\), when does a map \(h:A\to B\) induce a map
+    \(H:A/{\sim}\to B/{\approx}\) by the rule \(H([a]_{\sim})=[h(a)]_{\approx}\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The parity rule works. If \(n-m=2k\), then \((n+1)-(m+1)=2k\), so equivalent inputs
+        have equivalent outputs. The induced map exchanges the even and odd classes; applying it twice
+        returns each class to itself.</p>
+      <p>In general, the necessary and sufficient condition is</p>
+      <div class="math-display">\[ a\sim a'\Rightarrow h(a)\approx h(a'). \]</div>
+      <p>Indeed, two representatives name the same input class exactly when \(a\sim a'\), and
+        the proposed outputs are the same quotient element exactly when \(h(a)\approx h(a')\).
+        This proves both necessity and sufficiency. It is also an application of the preceding
+        factorization theorem to the map \(a\mapsto[h(a)]_{\approx}\).</p>
+      <p>The outputs \(h(a)\) and \(h(a')\) need not be equal as elements of \(B\).
+        They must name the same class in the specified codomain \(B/{\approx}\).</p>
+    </div>
+  </details>
+</section>
+
+<section id="relation-from-a-map" data-kind="definition">
+  <h2>A map groups its inputs into fibres</h2>
+  <p>For any map \(f:A\to B\), define a relation on \(A\) by</p>
+  <div class="math-display">\[ a\sim_f b\quad\Longleftrightarrow\quad f(a)=f(b). \]</div>
+  <p>This is an equivalence relation. Reflexivity, symmetry, and transitivity follow respectively from
+    \(f(a)=f(a)\), reversing an equality, and chaining two equalities. It is sometimes called the
+    <strong>kernel relation</strong> of \(f\).
+  </p>
+  <p>Recall that the <strong>fibre</strong> over \(y\in B\) is the set
+    \(f^{-1}(\{y\})=\{x\in A:f(x)=y\}\). For this relation,</p>
+  <div class="math-display">\[ [a]_{\sim_f}=f^{-1}(\{f(a)\}). \]</div>
+  <p>Both sides consist of exactly those \(x\in A\) with \(f(x)=f(a)\). Thus every class is a
+    nonempty fibre. Conversely, if the fibre over \(y\) is nonempty, take \(a\) with \(f(a)=y\);
+    that fibre equals \([a]_{\sim_f}\). Consequently,</p>
+  <div class="math-display">\[ A/{\sim_f}=\{f^{-1}(\{y\}):y\in f(A)\}. \]</div>
+  <p>The restriction to \(y\in f(A)\) matters: missed outputs have empty fibres, and empty sets are
+    not classes. If \(f\) is injective, its nonempty fibres are singletons. If it is surjective,
+    every \(y\in B\) indexes a nonempty fibre.</p>
+  <p>Every equivalence relation also arises from a map in this way: for its projection \(q\), the
+    equality \(q(a)=q(b)\) holds exactly when \(a\sim b\). The original relation is therefore
+    the kernel relation of \(q\).</p>
+</section>
+
+<section id="finite-fibres-question" data-kind="question">
+  <h2>Recovering the finite example</h2>
+  <p>Let \(A=\{0,1,2\}\), let \(B=\{p,q,r\}\) have three distinct elements, and define
+    \(f(0)=p\), \(f(1)=f(2)=q\), as in
+    <a href="../sets-and-maps/entry.html#maps">Maps, inputs, and outputs</a>.
+    Find the fibres, the quotient by \(\sim_f\), and the induced map into \(B\).
+    Is the induced map bijective?
+  </p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The fibres over \(p,q,r\) are respectively \(\{0\}\), \(\{1,2\}\), and
+        \(\varnothing\). Hence the equivalence classes are exactly the two groups used throughout
+        this entry, and \(A/{\sim_f}=\{\{0\},\{1,2\}\}\).</p>
+      <p>The induced map sends \(\{0\}\) to \(p\) and \(\{1,2\}\) to \(q\). It is
+        injective because these outputs differ. It is not surjective onto \(B\), since \(r\) is
+        still missed. With codomain \(f(A)=\{p,q\}\), it is bijective.</p>
+      <p>Here the symbol \(q\) is one of the three output labels; the quotient projection is the
+        separate map \(a\mapsto[a]_{\sim_f}\).</p>
+    </div>
+  </details>
+</section>
+
+<section id="quotient-is-image" data-kind="theorem">
+  <h2>The quotient by fibres is in bijection with the image</h2>
+  <div class="statement-box">
+    <p>For a map \(f:A\to B\), let \(a\sim_f b\) mean \(f(a)=f(b)\). Then</p>
+    <div class="math-display">\[ \begin{gathered}\Phi:A/{\sim_f}\longrightarrow f(A),\\
+      \Phi([a]_{\sim_f})=f(a)\end{gathered} \]</div>
+    <p>is a bijection.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Every value \(f(a)\) lies in the stated codomain. If two representatives name the same class,
+    they are \(\sim_f\)-equivalent and so have equal images under \(f\). Thus \(\Phi\) is
+    well-defined.</p>
+  <p>If \(\Phi([a]_{\sim_f})=\Phi([b]_{\sim_f})\), then \(f(a)=f(b)\). By the definition of
+    \(\sim_f\), this gives \(a\sim_f b\), hence equality of the classes. So \(\Phi\) is
+    injective. For every \(y\in f(A)\), some \(a\in A\) satisfies \(f(a)=y\), and its class
+    maps to \(y\). So \(\Phi\) is surjective.
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>The inverse sends \(y\in f(A)\) to its fibre \(f^{-1}(\{y\})\). This fibre is one class,
+    and every member of it has output \(y\), so the two maps undo each other. It is unnecessary to
+    choose one particular input from each fibre.</p>
+  <p>Writing \(q_f(a)=[a]_{\sim_f}\) and letting \(\iota:f(A)\to B\) be the inclusion
+    \(\iota(y)=y\), we have the factorization</p>
+  <div class="math-display">\[ \begin{gathered}
+    A\xrightarrow{\ q_f\ }A/{\sim_f}
+    \xrightarrow{\ \Phi\ }f(A)\xrightarrow{\ \iota\ }B,\\
+    f=\iota\circ\Phi\circ q_f.
+    \end{gathered} \]</div>
+  <p>The first map is surjective, the middle map is bijective, and the last is injective. If \(f\)
+    is surjective, \(f(A)=B\), so the quotient is in bijection with all of \(B\). If \(A\) is
+    empty, both \(A/{\sim_f}\) and \(f(A)\) are empty, and the same proof gives their unique
+    bijection.</p>
+</section>

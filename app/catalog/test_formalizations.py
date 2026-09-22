@@ -220,7 +220,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.write_node(
             'pending', declaration='Lemmatheca.unfinished', description=description)
         response = self.client.get('/formal/nodes/dependent/')
-        self.assertContains(response, 'Proof dependencies')
+        self.assertContains(response, 'Dependencies')
         self.assertContains(response, 'href="/formal/nodes/pending/"')
         self.assertContains(
             response, 'class="node-status formalization-proof_pending"')
