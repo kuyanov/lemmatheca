@@ -123,7 +123,7 @@ placeholders. Ambient types (or subtypes) specify each universe,
 domain, and codomain. In the formula question, the reciprocal is specified by
 `x * y = 1`, since Lean's division itself is total even at zero.
 
-The equivalence-relations entry has bindings for all 16 blocks, reusing ten nodes
+The equivalence-relations entry has bindings for all 15 blocks, reusing ten nodes
 and adding 62: 41 direct Lean/mathlib bindings and 21 statements awaiting proofs.
 All new nodes remain unreviewed. Seven reusable statements live in
 `Lemmatheca/SetTheory/EquivalenceRelations.lean`, under `Lemmatheca.SetTheory`;
