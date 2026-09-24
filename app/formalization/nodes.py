@@ -275,10 +275,18 @@ def entry_progress(blocks, nodes):
                       unplanned=sum(block['formal_ids']
                                     is None for block in blocks),
                       applicable=any(block['formal_ids'] != [] for block in blocks))
-    # Linked nodes do not measure how much of an entire entry has been covered.
-    result.pop('percent')
-    if result['status'] == 'partial':
-        result['label'] = 'Partial'
-        result['description'] = 'Formalization partial; ' + \
-            result['description']
+    if result['unplanned']:
+        # An unmapped block leaves the entry's total number of nodes unknown.
+        result.pop('percent')
+        if result['unplanned'] < len(blocks):
+            result.update(status='partial', label='Partial')
+            result['description'] = 'Formalization partial; '
+            if result['total']:
+                result['description'] += f'{result["complete"]} of {result["total"]} nodes verified; '
+            result['description'] += f'{result["unplanned"]} blocks awaiting planning'
+    elif result['total']:
+        result['label'] = f'{result["percent"]}%'
+        result['description'] = f'{result["complete"]} of {result["total"]} nodes verified'
+    else:
+        result.pop('percent')
     return result

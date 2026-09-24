@@ -132,13 +132,42 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual(entries()['first']
                          ['formalization']['status'], 'complete')
         self.assertEqual(entries()['first']
-                         ['formalization']['label'], 'Complete')
+                         ['formalization']['label'], '100%')
+        self.assertEqual(entries()['first']['formalization']['percent'], 100)
+        self.write_html(('data-formal="ready pending"', 'data-formal="ready"', 'data-formal=""'))
+        progress = entries()['first']['formalization']
+        self.assertEqual((progress['complete'], progress['total']), (1, 2))
+        self.assertEqual(progress['label'], '50%')
+        self.assertEqual(progress['percent'], 50)
         self.write_html(('',))
         self.assertEqual(entries()['first']
                          ['formalization']['label'], 'Not started')
         self.write_html(('data-formal=""',))
         self.assertEqual(
             entries()['first']['formalization']['status'], 'not_applicable')
+
+    def test_entry_badges_distinguish_unknown_totals_from_known_node_percentages(self):
+        cases = (
+            (('', ''), 'not_started', 'Not started', None),
+            (('', 'data-formal=""'), 'partial', 'Partial', None),
+            (('data-formal="ready"', ''), 'partial', 'Partial', None),
+            (('data-formal=""', 'data-formal=""'), 'not_applicable', 'N/A', None),
+            (('data-formal="pending"', 'data-formal=""'), 'partial', '0%', 0),
+            (('data-formal="ready pending"', 'data-formal="ready"'), 'partial', '50%', 50),
+            (('data-formal="ready"', 'data-formal=""'), 'complete', '100%', 100),
+        )
+        for attributes, status, label, percent in cases:
+            with self.subTest(attributes=attributes):
+                self.write_html(attributes)
+                response = self.client.get('/entries/first/')
+                progress = response.context['entry']['formalization']
+                self.assertEqual(progress['status'], status)
+                self.assertEqual(progress['label'], label)
+                if percent is None:
+                    self.assertNotIn('percent', progress)
+                else:
+                    self.assertEqual(progress['percent'], percent)
+                self.assertContains(response, f'Formalization: {label}')
 
     def test_mapping_validation_and_html_references_without_json_records(self):
         for attr in ('data-formal="unknown"', 'data-formal="ready ready"',
@@ -445,7 +474,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
                 self.assertEqual(
                     response.context['entry']['blocks'][0]['formalization']['percent'], percent)
                 self.assertEqual(
-                    response.context['entry']['formalization']['label'], 'Partial')
+                    response.context['entry']['formalization']['label'], f'{percent}%')
                 self.assertContains(response, label)
                 self.assertEqual((self.root / REPORT).read_bytes(), report)
         self.assertEqual(self.client.get(

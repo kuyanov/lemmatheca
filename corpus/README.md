@@ -46,7 +46,10 @@ Maintainers review both the declarations and coverage. Use
 entry's linked nodes, or `--node <id>` for an individual node. Replace `--accept`
 with `--retract` to withdraw approval. Reviews store
 target hashes, so changed declarations require renewed approval. Block percentages count
-ready nodes; entry badges show Not started, Partial, or Complete. See the
+ready nodes. Entry badges show Not started when every block is unmapped, Partial
+while only some are unmapped, and a completed-node percentage (including 100%)
+once all blocks have mappings. Shared nodes count once; an entry containing only
+empty mappings displays N/A. Adding nodes can lower the percentage. See the
 [content model](../docs/content-model.md) and [formal nodes](../formal/README.md#formal-nodes).
 
 ## Organization

@@ -14,9 +14,6 @@ namespace Lemmatheca.SetTheory
 universe u v
 variable {α : Type u} {β : Type v}
 
-theorem not_symmetric_iff_witness (R : α → α → Prop) :
-    ¬ Std.Symm R ↔ ∃ a b, R a b ∧ ¬ R b a := by sorry
-
 theorem universal_relation_classes [Nonempty α] :
     (⊤ : Setoid α).classes = {Set.univ} := by sorry
 

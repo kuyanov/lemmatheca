@@ -45,11 +45,13 @@ declarations, review, verification, unfinished proofs, or dependencies. Missing 
 including transitive `sorry`, cannot count as ready. Definitions can use existing
 Lean definitions; questions map their answers or counterexamples.
 
-Entry badges show Not started, Partial, or Complete without a percentage.
-Their counts include distinct linked nodes only once. Unmapped blocks keep an
-entry Partial even when every linked node is ready. Not-applicable blocks are
-excluded, and an all-not-applicable entry displays N/A. Block percentages count
-nodes, not proof difficulty or effort; they do not measure entry-wide coverage.
+Entry badges show Not started when every block is unmapped, and Partial when
+some blocks are unmapped but others have mappings (including empty ones). Once
+every block has a mapping, the badge shows the percentage of distinct linked
+nodes that are ready, including 0% and 100%. Shared nodes count only once;
+not-applicable blocks add no nodes, and an all-not-applicable entry displays N/A.
+Adding nodes can lower the percentage. These percentages count nodes, not proof
+difficulty or effort, and depend on the current block mappings for coverage.
 
 Committing a mapping, including an empty one, records the maintainer's coverage
 review. Node `review` records store target hashes and timestamps written by
