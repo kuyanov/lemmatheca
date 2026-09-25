@@ -165,22 +165,27 @@ transitive axioms, and writes `formal/checks/nodes.json`. `sorryAx` means pendin
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed for complete proofs.
 A ready node additionally needs statement review and ready declared dependencies.
 The reader checks current fingerprints without compiling. Node/source/environment
-changes invalidate affected evidence, except for editorial `description` text and
-`review` records. Descriptions are reviewed through Git; review records update
-approval without discarding Lean evidence. Target hashes exclude theorem proofs
-and include referenced definitions; changed targets require renewed review.
+changes invalidate affected evidence, except for `description`, manual
+`dependencies`, and `review` records. Reports store semantic declaration hashes;
+the reader combines these with current node descriptions to compute review targets.
+Description edits invalidate approval immediately without discarding Lean evidence.
+Review hashes exclude environment pins, import modules, manual dependencies, and theorem proofs;
+they include descriptions and referenced definitions. Changed targets require
+renewed review. Entry text and coverage remain a separate Git review.
 Node pages show descriptions with KaTeX, checked signatures, review/check dates,
 and expandable proof dependencies with compact node links and adjacent statuses.
 An expandable source browser preserves line anchors; source-line links open it and
 scroll to their target.
 HTML in descriptions and source is escaped. Source is shown directly on node pages;
-there is no separate file-viewer route. The registry currently contains 189 nodes.
+there is no separate file-viewer route. The registry currently contains 188 nodes.
 The 127 nodes for sets-and-maps have passing Lean verification, with no `sorry`
 placeholders; its notation-and-conventions block has an empty mapping.
-Equivalence-relations reuses ten nodes and adds 62 unreviewed targets, including
-21 statements with pending proofs. The [mathlib binding audit](mathlib-binding-audit.md) records
+Equivalence-relations reuses ten nodes and adds 61 targets. All registered nodes
+have complete Lean verification and current approvals under the hash format that
+includes descriptions. Ordered sets has 19 blocks awaiting formal bindings.
+The [mathlib binding audit](mathlib-binding-audit.md) records
 direct library bindings and the replacement of bundled nodes with separate claims.
-Changed bindings and dependency lists require renewed review. Pending
+Changed descriptions and semantic targets require renewed review. Pending
 dependencies can also prevent approved nodes from being complete. With an empty registry,
 the checker skips Lean. Historical reports are untouched.
 
@@ -192,13 +197,14 @@ corresponding `Lemmatheca.Entry.*` namespaces. The sets-and-maps module groups
 its examples into sections and imports the basic theory and mathlib prerequisites.
 The equivalence-relations examples reuse that module's diagram definitions.
 Node IDs and declaration names are independent of source layout. Moving a node's
-import module refreshes its source path after verification and changes its review
-hash, so retained approval records become outdated until explicitly reviewed.
+import module refreshes its source path after verification and preserves approval
+when its declaration name and semantic hash remain unchanged.
 
 Committing reviewed HTML mappings records coverage approval. The `review --accept`
 command records statement approval for selected nodes or an entry's linked nodes,
-binding it to hashes of elaborated targets, referenced declarations, node metadata,
-and the pinned environment. `review --retract` clears selected approvals without
+binding it to hashes of elaborated targets, referenced declarations, node IDs,
+declaration names, and descriptions. Environment pins affect verification; after
+rechecking, unchanged target hashes retain approval. `review --retract` clears selected approvals without
 running Lean or discarding its verification evidence. The checker detects changed targets but does not
 prove correspondence with human text. It fingerprints ordinary source imports, not arbitrary metaprogram
 inputs. Full proof-graph extraction and model runners remain future work. See

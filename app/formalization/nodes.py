@@ -12,17 +12,17 @@ from catalog.metadata import fields
 from catalog.sources import ContentError, IDENTIFIER
 
 from .lean import TOOLCHAIN_MODULES, lean_source_path, local_sources
-from .reviews import SHA256, validate_review
+from .reviews import SHA256, review_target_hash, validate_review
 
 
 NODE_FIELDS = {'id', 'description', 'declaration',
                'module', 'dependencies', 'review'}
-# Editorial prose is reviewed through Git, separately from Lean target approval.
-TARGET_FIELDS = {'id', 'declaration', 'module', 'dependencies'}
+# Only the binding selects what Lean checks; proof planning is resolved separately.
+VERIFICATION_FIELDS = {'id', 'declaration', 'module'}
 LEAN_NAME = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z", re.UNICODE)
 ALLOWED_AXIOMS = {'propext', 'Classical.choice', 'Quot.sound'}
 REPORT = 'formal/checks/nodes.json'
-REPORT_VERSION = 3
+REPORT_VERSION = 4
 ENVIRONMENT = ('lean-toolchain', 'lake-manifest.json', 'lakefile.toml')
 NODE_STATUS_LABELS = {
     'declaration_missing': 'Declaration missing',
@@ -69,8 +69,8 @@ def source_input_key(source):
 
 
 def node_fingerprint(node):
-    # Editorial descriptions and review decisions do not change the Lean target.
-    record = {key: node[key] for key in sorted(TARGET_FIELDS)}
+    # Descriptions affect correspondence review, not Lean verification.
+    record = {key: node[key] for key in sorted(VERIFICATION_FIELDS)}
     return hashlib.sha256(json.dumps(record, sort_keys=True).encode()).hexdigest()
 
 
@@ -124,9 +124,9 @@ def current_node_evidence(node, checked, inputs):
     """Ignore incomplete, stale, or inconsistent evidence for a declaration."""
     if not isinstance(checked, dict) or checked.get('fingerprint') != node_fingerprint(node):
         return {}
-    target_hash = checked.get('target_sha256')
+    declaration_hash = checked.get('declaration_sha256')
     axioms = checked.get('axioms')
-    if (not isinstance(target_hash, str) or not SHA256.fullmatch(target_hash)
+    if (not isinstance(declaration_hash, str) or not SHA256.fullmatch(declaration_hash)
             or not isinstance(axioms, list) or any(not isinstance(axiom, str) for axiom in axioms)
             or set(axioms) - ALLOWED_AXIOMS - {'sorryAx'}
             or checked.get('status') != ('pending' if 'sorryAx' in axioms else 'complete')
@@ -135,7 +135,7 @@ def current_node_evidence(node, checked, inputs):
     return checked
 
 
-def node_status(node, checked, nodes):
+def node_status(node, checked, nodes, target_hash):
     """Report the first remaining requirement, after resolving dependencies."""
     if not node['declaration']:
         return 'declaration_missing'
@@ -143,7 +143,7 @@ def node_status(node, checked, nodes):
         return 'review_pending'
     if not checked:
         return 'verification_needed'
-    if node['review']['sha256'] != checked['target_sha256']:
+    if node['review']['sha256'] != target_hash:
         return 'review_outdated'
     if checked['status'] == 'pending':
         return 'proof_pending'
@@ -206,8 +206,11 @@ def load_nodes(root, *, check_reports=True):
             resolve(dependency)
         checked = current_node_evidence(
             node, evidence.get(node_id), report.get('sha256', {}))
-        status = node_status(node, checked, nodes)
-        target_hash = checked.get('target_sha256')
+        # Combine current prose with checked semantics so description edits take
+        # effect immediately, without rerunning Lean or rewriting its report.
+        target_hash = (review_target_hash(node, checked['declaration_sha256'])
+                       if checked else None)
+        status = node_status(node, checked, nodes, target_hash)
         signature = checked.get('signature')
         source, line = (checked_source_location(node, checked, report)
                         if checked else (node['source'], None))

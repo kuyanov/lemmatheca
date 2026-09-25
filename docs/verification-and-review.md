@@ -2,7 +2,10 @@
 
 Lean checks a formal declaration. Maintainers judge whether it expresses the
 intended human mathematics and whether the exposition is suitable for the library.
-These are separate decisions. AI may propose translations and grades; it cannot
+These are separate decisions. A proof can compile while establishing the wrong
+claim: for example, the prose could promise a unique solution while the declaration
+only asserts existence. Correspondence review catches that mismatch; proof
+verification alone cannot. AI may propose translations and grades; it cannot
 publish an entry.
 
 The current phase focuses on formalization experiments and standard-corpus
@@ -39,14 +42,36 @@ without an approval are skipped.
 Review hashes cover elaborated theorem types, definition bodies, inductive
 constructors and recursor rules, and their reachable constants. Theorems contribute
 their statements, not their proofs, even when referenced by a definition. Expression
-metadata and binder names are omitted. Node ID, declaration, module, dependencies,
-and the pinned environment also enter the hash. The editorial description is
-excluded, just like human entry prose: review its accuracy through Git. Editing a
-description preserves verification and declaration approval; Lean does not check
-the description's correspondence. Changing a statement or a referenced definition
-invalidates review after rechecking; proof-only edits can retain it. This is a structural hash,
-not a test of mathematical equivalence. Proving agents must still preserve approved
-targets rather than silently reaccepting their own changes.
+metadata and binder names are omitted. Node ID, declaration name, and the exact
+description text also enter the hash. The pinned environment, import module,
+and manual `dependencies` list do not. A referenced Lean definition affects
+the meaning of the statement; a manually listed proof prerequisite does not.
+
+The report stores the semantic declaration hash separately from node review.
+The reader combines current descriptions with current checked declaration hashes,
+so even a description-only edit invalidates approval immediately without running
+Lean. The stored approval remains available for comparison; it is never silently
+updated. This is a structural hash, not a test of mathematical equivalence.
+Proving agents must preserve approved targets rather than reaccepting their own
+changes.
+
+| Change | Correspondence approval | Lean evidence |
+| --- | --- | --- |
+| Node description, even a wording edit | Needs renewed approval immediately | Retained |
+| Theorem statement or reachable definition body | Needs renewed approval after rechecking | Needs rechecking |
+| Theorem proof only | Retained if the target is unchanged after rechecking | Needs rechecking |
+| Module move, same Lean name and semantic graph | Retained after rechecking | Needs rechecking |
+| Manual proof dependencies | Retained; dependency readiness is recomputed | Retained |
+| Review record | Changes approval | Retained |
+| Pinned environment | Retained if the target is unchanged after rechecking | Needs rechecking |
+| Entry text or `data-formal` mapping | Requires separate coverage review through Git | Retained |
+
+Environment pins remain in verification fingerprints. After an environment change,
+Lean must verify the declarations again and export fresh semantic hashes. Approval
+is retained when those hashes are unchanged. An upgrade that changes a statement
+or referenced definition still requires renewed review. Renaming a declaration or
+making a mathematically equivalent reformulation can also change this structural
+hash; unchanged mathematical meaning does not guarantee an unchanged hash.
 
 A node without a declaration shows **Declaration missing**; an unreviewed
 declaration shows **Pending review**. A recorded review with stale evidence shows
@@ -63,18 +88,19 @@ Run `uv run python app/manage.py check_formalizations`. The command:
 
 1. Loads the formal node registry independently of the human corpus and validates
    IDs, module paths, dependency targets, and acyclicity.
-2. Fingerprints node metadata except `description` and `review`, local Lemmatheca
+2. Fingerprints node ID, declaration, and import module, local Lemmatheca
    sources, imported dependency sources, and the pinned environment, then runs
    `lake build` for registered modules.
 3. Imports these modules and runs `#print axioms` for each registered declaration.
 4. Allows `propext`, `Classical.choice`, and `Quot.sound` for complete proofs.
    Direct or transitive `sorryAx` means pending; other axioms fail the run.
 5. Exports structural review snapshots independently of theorem proof terms,
-   hashes each target's reachable declarations and pinned context, and rejects
+   hashes each target's reachable declarations, and rejects
    missing snapshot data rather than accepting an incomplete hash.
 6. Rejects inputs changed during the run and atomically writes
    `formal/checks/nodes.json`, recording evidence for complete and pending proofs,
-   and Lean's declaration source locations when available. The reader uses these
+   semantic declaration hashes, and Lean's declaration source locations when
+   available. The reader uses these
    locations only with current evidence. Source links follow the defining module,
    which may differ from the node's import module. Imported mathlib/local sources
    must be fingerprinted; bundled Lean sources use the pinned toolchain version.
@@ -87,8 +113,8 @@ JSON bindings and `checks/sumsets.json` remain historical records outside this p
 The reader derives readiness from current evidence, statement review, and ready
 node dependencies. For a reviewed declaration, a missing or stale report yields
 `verification_needed`, never `complete` or a proof status from outdated evidence.
-Node metadata other than `description` and `review`, source, dependency, or
-environment changes invalidate affected evidence. All local Lean sources are checked conservatively, so an unrelated
+Binding, source, or environment changes invalidate affected evidence; descriptions,
+manual proof dependencies, and review records do not. All local Lean sources are checked conservatively, so an unrelated
 local edit can invalidate several nodes. File hashes are cached by file metadata;
 page requests never run Lean.
 
@@ -102,14 +128,38 @@ repository content.
 `review --accept` refreshes verification if the selected targets have no current
 hashes. Both review actions validate every selected node before writing and check
 for concurrent input changes. They stage records and replace each node file atomically. Existing
-approvals are never silently updated by `check_formalizations`. The migration from
-boolean flags recorded hashes for the 30 nodes approved at that time and left the
-other 91 unreviewed; its timestamps record migration time, not original review dates.
+approvals are never silently updated by `check_formalizations`.
+
+Report format 4 stores `declaration_sha256` instead of a precomputed review target;
+the API still exposes the dynamically computed `target_sha256`. Older reports need
+regeneration. Review hash version 2 includes descriptions, so approvals made with
+the previous format require explicit renewal. Their records and dates are
+preserved, but cannot approve descriptions that were outside the original hash.
 
 Node dependencies are explicitly maintained; Lean axiom checking catches
 transitive `sorry` even if an edge was not recorded. Full mathematical dependency
 extraction, proof-strategy correspondence, and novelty checks are separate work.
 A successful check does not itself establish that a human block is fully covered.
+
+## Remaining correspondence gaps
+
+Node approval checks **description ↔ Lean declaration**. Coverage review checks
+**entry claims ↔ linked node descriptions**, including specializations, omitted
+cases, and redundant nodes. `review --accept --entry` currently selects and accepts
+nodes; it does not create an independently tracked coverage approval. Editing an
+entry can therefore break correspondence while all its node approvals remain
+current. Coverage is still reviewed through Git.
+
+The next useful improvement is a separate per-block coverage record, bound to the
+reviewed mathematical text and selected node review targets. Text edits, changed
+mappings, or changed node targets would flag that block for review without revoking
+shared node approvals in other entries. Figure and table content, question answers,
+and surrounding assumptions must be considered when defining the reviewed scope.
+
+Readable approval snapshots would also help: retain the approved description and
+checked signature, then show their diff and which referenced definitions changed.
+A hash detects a mismatch but does not explain it. These coverage records and diff
+views are proposed improvements, not part of the current approval command.
 
 ## Experiment outcomes
 

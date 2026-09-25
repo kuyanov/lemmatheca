@@ -17,13 +17,14 @@ keep the pinned environment fixed.
    proving; it is not a reading order or a list of concepts appearing in a type.
    If a needed target lacks approval or has an outdated review, report it and
    continue independent accepted work. Do not accept it on your own.
-2. Preserve approved theorem statements, definition bodies, node targets, and
-   dependency metadata. Replace sorry proofs, not their goals. Do not weaken
+2. Preserve approved descriptions, theorem statements, definition bodies, and node
+   targets. Replace sorry proofs, not their goals. Do not weaken
    hypotheses/conclusions or change a referenced definition to make a proof easier.
    Use local have statements or unregistered implementation helpers where suitable;
    do not create extra coverage nodes for routine intermediate steps. If a target
-   or proof-plan change is necessary, explain it for renewed review while completing
-   unaffected work. Do not silently rebind approved nodes or reaccept changed hashes.
+   or description change is necessary, explain it for renewed review while completing
+   unaffected work. Proof-plan edits do not invalidate approval, but explain them
+   and check dependency readiness. Do not silently rebind approved nodes or reaccept changed hashes.
 3. For corpus proving, follow the human proof where one is provided and reuse
    standard Lean/mathlib prerequisites. Avoid recreating library definitions or
    helper theorems. If an existing result already proves the whole target, report
@@ -38,16 +39,16 @@ keep the pinned environment fixed.
    not entry metadata or verification reports. Do not invent measured results.
 5. Check progress with Lean. Do not bypass failures with axioms, sorry, admit, or
    unchecked shortcuts. Respect the allowed axioms in the checker. Keep source
-   organization compact and coherent; avoid cosmetic module moves during proving
-   because node metadata changes can invalidate review even without a mathematical
-   change. Do not alter human exposition merely to match a convenient proof.
+   organization compact and coherent. Module moves need fresh verification but
+   preserve approval when names and semantics stay unchanged. Do not alter human
+   exposition merely to match a convenient proof.
 
 Run uv run python app/manage.py check_formalizations and
 uv run python app/manage.py validate_corpus after the proof changes. Run lake build
 from formal/ if aggregate imports or module organization changed. Verify that the
 completed nodes have no direct or transitive sorry and retain their accepted target
 hashes. Proof-only edits need fresh Lean evidence; they do not need reacceptance
-when the reviewed targets and metadata remain unchanged.
+   when the reviewed descriptions and semantic targets remain unchanged.
 
 Return proved node IDs, the checks run, whether target hashes stayed unchanged,
 and any deviations from the human argument. List remaining pending nodes with

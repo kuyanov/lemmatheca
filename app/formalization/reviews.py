@@ -53,6 +53,8 @@ def declaration_hashes(records, names):
     return result
 
 
-def review_target_hash(fingerprint, declaration_sha256, environment):
-    return digest({'version': 1, 'node': fingerprint,
-                   'declaration': declaration_sha256, 'environment': environment})
+def review_target_hash(node, declaration_sha256):
+    """Bind the human description to the declaration's meaning, not its proof plan."""
+    reviewed = {key: node[key] for key in ('id', 'description', 'declaration')}
+    return digest({'version': 2, 'node': reviewed,
+                   'declaration': declaration_sha256})

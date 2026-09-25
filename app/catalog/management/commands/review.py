@@ -1,4 +1,4 @@
-"""Accept or retract a maintainer's review of formal targets."""
+"""Accept or retract a maintainer's review of description/declaration correspondence."""
 
 from contextlib import ExitStack
 from datetime import datetime, timezone
@@ -50,7 +50,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         action = parser.add_mutually_exclusive_group(required=True)
         action.add_argument('--accept', dest='action', action='store_const', const='accept',
-                            help='Record approval of current targets, refreshing Lean checks if needed.')
+                            help='Approve current descriptions against Lean declarations, refreshing checks if needed.')
         action.add_argument('--retract', dest='action', action='store_const', const='retract',
                             help='Clear recorded approvals without running Lean checks.')
         selection = parser.add_mutually_exclusive_group(required=True)

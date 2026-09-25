@@ -15,12 +15,15 @@ uv run python app/manage.py validate_corpus
 uv run python app/manage.py test catalog
 ```
 
-After reviewing formal declarations, record approval with
+After reviewing node descriptions against their Lean declarations, record approval
+with
 `uv run python app/manage.py review --accept --node <id>` or
 `uv run python app/manage.py review --accept --entry <id>`.
 Add `--dry-run` to preview node-record changes. The command refreshes Lean checks
 when necessary and stores hashes of the reviewed targets; it does not complete
 unfinished proofs or publish the entry.
+Whole-entry acceptance records the linked nodes' approvals; entry text and mapping
+coverage still need separate Git review.
 Replace `--accept` with `--retract` to clear existing approvals. Retraction supports
 the same selectors and `--dry-run`, preserves verification evidence, and never runs Lean.
 
@@ -65,8 +68,10 @@ API endpoints. Node pages render its mathematical notation using the local KaTeX
 assets and escape HTML. The description precedes the checked signature; review and
 verification dates remain visible. Proof dependencies expand to a compact list of
 node links with adjacent statuses; each linked page shows its description. Full
-source also expands on demand. Line links open the source browser, including direct
-`#L<number>` links. Descriptions and dependency links wrap on narrow screens.
+source also expands on demand. For installed sources, line links open the source
+browser, including direct `#L<number>` links. When a Lean or mathlib source is not
+installed, the line number is plain text and the pinned upstream link opens that
+line. Descriptions and dependency links wrap on narrow screens.
 
 The evidence panel uses two states per item: green **Reviewed on …** or amber
 **Under review** for declaration approval, and green **Verified on …** or amber
@@ -75,6 +80,9 @@ complete proof, independently of review approval; merely running a check does no
 mark a proof with `sorry` as verified. Expired evidence returns to the pending
 labels. The overall node badge and API status still identify the specific next step.
 
-Description edits are editorial changes: they refresh page content without
-invalidating Lean evidence or accepting/retracting a declaration review. The
-checked signature remains separate and appears only with current verification.
+Description edits invalidate correspondence approval immediately while retaining
+Lean evidence. Manual proof-dependency edits retain both; module moves and environment
+changes require Lean rechecking, then retain approval if the target hash is unchanged.
+The checked signature remains separate and appears only with current verification.
+The reader computes review targets from
+current descriptions and checked semantic declaration hashes, without running Lean.

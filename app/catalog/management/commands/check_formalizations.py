@@ -14,9 +14,9 @@ from django.core.management.base import BaseCommand, CommandError
 from catalog.files import staged_json
 from formalization.lean import verification_inputs
 from formalization.nodes import (
-    ALLOWED_AXIOMS, ENVIRONMENT, REPORT, REPORT_VERSION, file_hash, load_nodes, node_fingerprint,
+    ALLOWED_AXIOMS, REPORT, REPORT_VERSION, file_hash, load_nodes, node_fingerprint,
 )
-from formalization.reviews import declaration_hashes, review_target_hash
+from formalization.reviews import declaration_hashes
 
 
 def input_hashes(root, nodes):
@@ -123,7 +123,6 @@ class Command(BaseCommand):
             raise CommandError(
                 'Formal inputs changed during verification; rerun the check.')
 
-        environment = {name: before[f'formal/{name}'] for name in ENVIRONMENT}
         report = {
             'format_version': REPORT_VERSION,
             'build': 'passed',
@@ -133,8 +132,7 @@ class Command(BaseCommand):
                 key: {
                     'fingerprint': fingerprints[key],
                     **declarations[node['declaration']],
-                    'target_sha256': review_target_hash(
-                        fingerprints[key], target_hashes[node['declaration']], environment),
+                    'declaration_sha256': target_hashes[node['declaration']],
                 }
                 for key, node in bound.items()
             },

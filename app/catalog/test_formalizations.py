@@ -60,11 +60,13 @@ class NodeFixtureMixin(CorpusFixtureMixin):
         self.write_html()
         self.write_report()
 
-    def target_hash(self, node):
+    def declaration_hash(self, node):
         name = node['declaration']
         snapshots = {name: {'payload': [name], 'references': []}}
-        return review_target_hash(node_fingerprint(node), declaration_hashes(snapshots, [name])[name],
-                                  {name: file_hash(self.formal / name) for name in ENVIRONMENT})
+        return declaration_hashes(snapshots, [name])[name]
+
+    def target_hash(self, node):
+        return review_target_hash(node, self.declaration_hash(node))
 
     def write_node(self, node_id, *, accepted=True, **changes):
         data = {'id': node_id, 'description': 'The proposition True holds.',
@@ -88,7 +90,7 @@ class NodeFixtureMixin(CorpusFixtureMixin):
         report = {'format_version': REPORT_VERSION, 'build': 'passed', 'checked_on': '2026-09-20T12:00:00+00:00',
                   'sha256': {path.relative_to(self.root).as_posix(): file_hash(path) for path in paths},
                   'nodes': {key: {'fingerprint': node_fingerprint(node),
-                                  'target_sha256': self.target_hash(node),
+                                  'declaration_sha256': self.declaration_hash(node),
                                   'status': 'complete' if key == 'ready' else 'pending',
                                   'axioms': [] if key == 'ready' else ['sorryAx']}
                             for key, node in nodes.items()}}
@@ -214,7 +216,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual(next(node for node in listed if node['id'] == 'ready')[
                          'description'], description)
 
-    def test_description_edits_preserve_review_and_current_lean_evidence(self):
+    def test_description_edits_invalidate_review_but_preserve_current_lean_evidence(self):
         before = load_nodes(self.root)['ready']
         report = (self.root / REPORT).read_bytes()
         path = self.node_dir / 'ready.json'
@@ -226,9 +228,13 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             page = self.client.get('/formal/nodes/ready/')
         lean.assert_not_called()
         self.assertContains(page, record['description'])
-        for key in ('review', 'review_current', 'target_sha256', 'checked_on', 'status'):
+        for key in ('review', 'checked_on', 'verification_complete'):
             self.assertEqual(updated[key], before[key])
-        self.assertEqual(updated['status'], 'complete')
+        self.assertFalse(updated['review_current'])
+        self.assertNotEqual(updated['target_sha256'], before['target_sha256'])
+        self.assertEqual(updated['status'], 'review_outdated')
+        self.assertContains(page, 'Under review')
+        self.assertContains(page, 'Verified on')
         self.assertEqual((self.root / REPORT).read_bytes(), report)
 
     def test_description_is_required_and_nonempty(self):
@@ -243,6 +249,56 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         path.write_text(json.dumps(record))
         with self.assertRaisesRegex(ContentError, 'Expected fields:.*description'):
             load_nodes(self.root)
+
+    def test_proof_plan_edits_preserve_review_and_evidence_but_update_readiness(self):
+        before = load_nodes(self.root)['ready']
+        report = (self.root / REPORT).read_bytes()
+        path = self.node_dir / 'ready.json'
+        record = json.loads(path.read_text())
+        for dependencies, status in ((['pending'], 'dependencies_pending'), ([], 'complete')):
+            with self.subTest(dependencies=dependencies):
+                record['dependencies'] = dependencies
+                path.write_text(json.dumps(record))
+                updated = load_nodes(self.root)['ready']
+                for key in ('review', 'review_current', 'target_sha256', 'checked_on', 'verification_complete'):
+                    self.assertEqual(updated[key], before[key])
+                self.assertEqual(updated['status'], status)
+                self.assertEqual((self.root / REPORT).read_bytes(), report)
+
+    def test_module_migration_retains_review_after_verification_refresh(self):
+        before = load_nodes(self.root)['ready']
+        moved = self.source.with_name('Moved.lean')
+        self.source.rename(moved)
+        for path in self.node_dir.glob('*.json'):
+            record = json.loads(path.read_text())
+            record['module'] = 'Lemmatheca.Moved'
+            path.write_text(json.dumps(record))
+        self.assertEqual(load_nodes(self.root)['ready']['status'], 'verification_needed')
+        self.write_report()
+        updated = load_nodes(self.root)['ready']
+        for key in ('review', 'review_current', 'target_sha256', 'status'):
+            self.assertEqual(updated[key], before[key])
+        self.assertEqual(updated['source'], 'formal/Lemmatheca/Moved.lean')
+
+    def test_old_report_and_approval_cannot_certify_a_description(self):
+        path = self.node_dir / 'ready.json'
+        record = json.loads(path.read_text())
+        record['review']['sha256'] = 'a' * 64  # An approval from the previous hash format.
+        path.write_text(json.dumps(record))
+        approved = path.read_bytes()
+        report_path = self.root / REPORT
+        report = json.loads(report_path.read_text())
+        report['format_version'] = 3
+        for checked in report['nodes'].values():
+            checked['target_sha256'] = checked.pop('declaration_sha256')
+        report_path.write_text(json.dumps(report))
+        self.assertEqual(load_nodes(self.root)['ready']['status'], 'verification_needed')
+        self.write_report()
+        current = load_nodes(self.root)['ready']
+        self.assertEqual(current['status'], 'review_outdated')
+        self.assertTrue(current['verification_complete'])
+        self.assertFalse(current['review_current'])
+        self.assertEqual(path.read_bytes(), approved)
 
     def test_proof_dependencies_show_links_and_statuses_without_descriptions(self):
         description = r'A prerequisite involving \(A\subseteq B\).'
@@ -445,7 +501,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         path = self.root / REPORT
         report = json.loads(path.read_text())
         checked = report['nodes']['ready']
-        for evidence in (None, {}, {**checked, 'target_sha256': None},
+        for evidence in (None, {}, {**checked, 'declaration_sha256': None},
                          {**checked, 'axioms': 'propext'}, {**
                                                             checked, 'axioms': [None]},
                          {**checked, 'axioms': ['untrustedAxiom']},
@@ -637,17 +693,27 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
 
 
 class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
-    def run_check(self, axiom='sorryAx', side_effect=None, *, include_signatures=True):
+    def run_check(self, axiom='sorryAx', side_effect=None, *, include_signatures=True,
+                  ready_definition=None):
         output = ("'Lemmatheca.ready' does not depend on any axioms\n"
                   f"'Lemmatheca.unfinished' depends on axioms: [{axiom}]\n"
                   f"'Lemmatheca.dependent' depends on axioms: [{axiom}]\n"
                   'NODE_LOCATION Lemmatheca.ready Lemmatheca.Fixture 3\n')
         for name in ('Lemmatheca.ready', 'Lemmatheca.unfinished', 'Lemmatheca.dependent'):
             if include_signatures:
+                statement = ('Lemmatheca.predicate' if name == 'Lemmatheca.ready'
+                             and ready_definition is not None else 'True')
                 output += 'NODE_SIGNATURE ' + json.dumps(
-                    {'name': name, 'signature': f'{name} : True'}) + '\n'
+                    {'name': name, 'signature': f'{name} : {statement}'}) + '\n'
+            snapshot = {'name': name, 'payload': [name], 'references': []}
+            if name == 'Lemmatheca.ready' and ready_definition is not None:
+                snapshot.update(payload=[name, 'Lemmatheca.predicate'],
+                                references=['Lemmatheca.predicate'])
+            output += 'REVIEW_CONSTANT ' + json.dumps(snapshot) + '\n'
+        if ready_definition is not None:
             output += 'REVIEW_CONSTANT ' + json.dumps(
-                {'name': name, 'payload': [name], 'references': []}) + '\n'
+                {'name': 'Lemmatheca.predicate', 'payload': ['definition', ready_definition],
+                 'references': []}) + '\n'
         result = CompletedProcess([], 0, stdout=output, stderr='')
 
         def execute(*args, **kwargs):
@@ -677,6 +743,47 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         with self.assertRaisesRegex(CommandError, 'No declaration signature'):
             self.run_check(include_signatures=False)
         self.assertEqual(path.read_bytes(), original)
+
+    def test_environment_changes_require_rechecking_but_preserve_unchanged_approval(self):
+        for name in ENVIRONMENT:
+            with self.subTest(environment_file=name):
+                before = load_nodes(self.root)['ready']
+                approved = (self.node_dir / 'ready.json').read_bytes()
+                path = self.formal / name
+                # Even a formatting-only pin edit invalidates verification.
+                path.write_text(path.read_text() + '\n')
+                stale = load_nodes(self.root)['ready']
+                self.assertEqual(stale['status'], 'verification_needed')
+                self.assertFalse(stale['verification_complete'])
+                self.assertIsNone(stale['target_sha256'])
+                self.run_check()
+                updated = load_nodes(self.root)['ready']
+                self.assertEqual(updated['status'], 'complete')
+                self.assertTrue(updated['review_current'])
+                self.assertTrue(updated['verification_complete'])
+                self.assertEqual(updated['target_sha256'], before['target_sha256'])
+                self.assertEqual((self.node_dir / 'ready.json').read_bytes(), approved)
+                report = json.loads((self.root / REPORT).read_text())
+                self.assertEqual(report['sha256'][f'formal/{name}'], file_hash(path))
+
+    def test_environment_change_that_changes_a_referenced_definition_requires_review(self):
+        self.run_check(ready_definition='True')
+        call_command('review', '--accept', node=['ready'], stdout=StringIO())
+        before = load_nodes(self.root)['ready']
+        approved = (self.node_dir / 'ready.json').read_bytes()
+        path = self.formal / 'lake-manifest.json'
+        manifest = json.loads(path.read_text())
+        mathlib = next(package for package in manifest['packages'] if package['name'] == 'mathlib')
+        mathlib['rev'] = 'a' * 40
+        path.write_text(json.dumps(manifest))
+        self.run_check(ready_definition='True ∧ True')
+        updated = load_nodes(self.root)['ready']
+        self.assertEqual(updated['status'], 'review_outdated')
+        self.assertFalse(updated['review_current'])
+        self.assertTrue(updated['verification_complete'])
+        self.assertEqual(updated['signature'], before['signature'])
+        self.assertNotEqual(updated['target_sha256'], before['target_sha256'])
+        self.assertEqual((self.node_dir / 'ready.json').read_bytes(), approved)
 
     def test_custom_axiom_and_mid_run_source_changes_cannot_write_passing_report(self):
         original = (self.root / REPORT).read_text()

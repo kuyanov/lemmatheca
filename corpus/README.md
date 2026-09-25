@@ -3,7 +3,8 @@
 The active collection starts with [Sets and maps: a first guide](entries/sets-and-maps/entry.html),
 followed by [Equivalence relations, partitions, and quotients](entries/equivalence-relations/entry.html)
 and [Ordered sets: comparison, bounds, and quotients](entries/ordered-sets/entry.html).
-The first two entries have complete formal verification and accepted node reviews.
+The first two entries have complete formal verification and current node approvals:
+127 nodes for sets-and-maps and 71 for equivalence-relations, sharing ten nodes.
 The third is a human draft; its formalization has not started. All three retain
 draft editorial status. Entries are edited as repository files and reviewed manually;
 source credits appear in their metadata.
@@ -53,7 +54,12 @@ Maintainers review both the declarations and coverage. Use
 `uv run python app/manage.py review --accept --entry <id>` to record approval of an
 entry's linked nodes, or `--node <id>` for an individual node. Replace `--accept`
 with `--retract` to withdraw approval. Reviews store
-target hashes, so changed declarations require renewed approval. Block percentages count
+target hashes, so changed descriptions or declarations require renewed approval.
+Proof dependencies, module locations, and environment pins are excluded from those
+hashes. Module or environment changes need fresh verification before approval can
+be confirmed against the new declaration hash. Entry text
+and mapping changes still need separate coverage review through Git; accepting an
+entry records node approvals, not a versioned coverage approval. Block percentages count
 ready nodes. Entry badges show Not started when every block is unmapped, Partial
 while only some are unmapped, and a completed-node percentage (including 100%)
 once all blocks have mappings. Shared nodes count once; an entry containing only

@@ -8,6 +8,14 @@ useful prerequisites rather than copying their transitive closure. Entry HTML ow
 human references and `data-formal` coverage; Lean imports resolve declarations.
 The list is not a complete extracted proof graph, and the axiom audit detects
 transitive `sorry` independently of these edges.
+Changing this list can affect readiness, but does not invalidate correspondence
+approval or Lean evidence.
+
+**Review establishes correspondence, not proof completion.** Lean can prove a
+correct declaration that says something different from the human text. Reviewers
+compare the node description with the actual declaration, then check that the
+entry's linked nodes collectively cover its claims. Node approval tracks the first
+comparison; entry text and coverage remain a separate Git review.
 
 Lean **4.34.0** and mathlib **v4.34.0** are pinned by `lean-toolchain`,
 `lakefile.toml`, and `lake-manifest.json`. Keep these fixed during an experiment.
@@ -61,12 +69,14 @@ compact node links with adjacent statuses, and the source file stays collapsed
 until opened. A source line link opens the file and scrolls to that line. The layout
 adapts to narrow screens; the API returns the same description as plain text.
 
-Descriptions are editorial aids, not Lean-checked statements. Review their
-correspondence through Git, as with entry prose and block mappings. They are
-excluded from verification fingerprints and target review hashes: correcting
-wording preserves current checks and declaration approval. Changing the actual
-target, module, proof prerequisites, or relevant Lean definitions still requires
-the usual recheck and, if the target hash changes, renewed approval.
+Descriptions are human statements, not Lean-checked text. They are included in
+correspondence review hashes: any description edit, including a wording correction,
+requires renewed approval immediately. It preserves the current Lean evidence.
+The module, environment pins, and proof-planning dependencies are excluded from
+review hashes.
+Moving an unchanged declaration between modules requires a recheck but retains its
+approval when its Lean name and meaning are unchanged. Changing the statement or
+a referenced definition requires both a recheck and renewed approval.
 
 Search the existing node registry and pinned Lean/mathlib sources before adding
 local declarations. Reuse an existing node when possible; otherwise bind directly
@@ -74,8 +84,9 @@ to a library declaration when specialization or a straightforward reformulation
 covers the human claim. Avoid wrappers that only rename a theorem, reverse an
 equality, or bundle existing results. Record the correspondence for review.
 
-Local modules live in `Lemmatheca/`; existing mathlib declarations are also valid.
-The module specifies what to import. Current verification can locate the declaration
+Local modules live in `Lemmatheca/`; existing Lean and mathlib declarations are also
+valid targets. The node's module specifies a `Lemmatheca.*` or `Mathlib.*` import
+exposing that target. Current verification can locate the declaration
 in a different source module, including Lean's bundled `Init`, `Lean`, and `Std`
 sources. The reader uses the pinned Elan toolchain's installed source when available,
 or a link to that Lean version on GitHub. Before a declaration exists, both
@@ -89,12 +100,13 @@ source declaration. Stale verification hides that signature until rechecking.
 
 Reusable set and map definitions and theorems use the namespace
 `Lemmatheca.SetTheory` and live in `Lemmatheca/SetTheory/Basic.lean`.
-`Lemmatheca/SetTheory.lean` imports the reusable theory modules. Each entry has
-one source file under `Lemmatheca/Entry/`; its examples use the corresponding
+`Lemmatheca/SetTheory.lean` imports the reusable theory modules. Each formalized entry
+has one source file under `Lemmatheca/Entry/`; its examples use the corresponding
 `Lemmatheca.Entry.<EntryName>` namespace.
 
 ```text
 Lemmatheca/
+  ReviewChecks.lean
   SetTheory.lean
   SetTheory/
     Basic.lean
@@ -125,7 +137,7 @@ domain, and codomain. In the formula question, the reciprocal is specified by
 
 The equivalence-relations entry has bindings for all 15 blocks, reusing ten nodes
 and adding 61: 41 direct Lean/mathlib bindings and 20 local theorems.
-All 71 linked nodes have accepted reviews and passing verification. Six reusable
+All 71 linked nodes have current approvals and passing verification. Six reusable
 theorems live in
 `Lemmatheca/SetTheory/EquivalenceRelations.lean`, under `Lemmatheca.SetTheory`;
 fourteen examples live in `Lemmatheca/Entry/EquivalenceRelations.lean`, under
@@ -135,8 +147,11 @@ The [binding preparation record](../docs/equivalence-relations-bindings.md) list
 coverage, target declarations, representation bridges, and proof prerequisites.
 In particular, `Setoid.classes` represents the quotient as a set of subsets,
 while the library equivalence to `Quotient` connects this with the type used for
-maps. Both equivalence-relations modules are free of `sorry` placeholders;
-the proof pass preserved all accepted target hashes and review records.
+maps. Both equivalence-relations modules are free of `sorry` placeholders.
+
+The active registry has 188 nodes, all currently approved and verified. Ordered sets
+has 19 human blocks with no formal bindings yet. Historical additive-combinatorics
+sources and reports are separate from this registry.
 
 After inspecting the declarations and their correspondence to the human text,
 record your review from the repository root:
@@ -150,7 +165,7 @@ uv run python app/manage.py review --accept --entry sets-and-maps
 
 `--accept --entry` accepts each distinct linked node once; it rejects blocks without
 formal mappings. Empty mappings are allowed. Dependencies not linked from that
-entry are not automatically accepted. This records formal-target approval, not
+entry are not automatically accepted. This records description/declaration approval, not
 editorial publication or proof completion. Shared nodes keep one shared review.
 
 Acceptance refreshes Lean checks when needed, allows `sorry`, and writes a record
@@ -163,13 +178,26 @@ instead of a boolean:
 }
 ```
 
-The SHA-256 covers the elaborated target, referenced definitions and inductive
-constructors, node ID/declaration/module/dependencies, and pinned environment.
-Theorem proofs are excluded; definition bodies are included. Source comments and positions are
-excluded. A changed statement or relevant definition makes an existing review
-outdated after rechecking. A proof-only edit requires fresh verification but keeps
-an unchanged statement's approval. Hashes compare structural declarations, not
-arbitrary mathematical equivalence.
+The SHA-256 covers the node ID, description, declaration name, elaborated target,
+referenced definitions and inductive constructors. The pinned environment,
+theorem proofs, import module, manual proof dependencies, source comments, and
+positions are excluded; definition bodies are included. These referenced Lean
+definitions determine the statement's meaning and are distinct from the manual
+`dependencies` list. A changed statement or relevant definition makes an existing
+review outdated after rechecking. A proof-only edit requires fresh verification but
+keeps an unchanged statement's approval. Hashes compare structural declarations,
+not arbitrary mathematical equivalence.
+
+Environment pins remain part of verification fingerprints. Changing the Lean or
+mathlib environment requires fresh checks and declaration hashes. If the reviewed
+target is unchanged, approval is retained without reacceptance; if an upgraded
+definition or elaborated statement changes its hash, review is required again.
+
+Review hash version 2 binds descriptions. Any approval from the older format needs
+explicit renewal because its hash did not include the description; verification
+never migrates approvals automatically. Report format 4 stores declaration hashes
+separately and combines them with current descriptions when loading nodes. See the
+[review architecture](../docs/verification-and-review.md) for details and limitations.
 
 To withdraw approval, use the same selectors with `--retract`:
 
@@ -215,15 +243,15 @@ uv run python app/manage.py check_formalizations
 
 The command builds registered modules, checks declarations and transitive axioms,
 exports review snapshots through `Lemmatheca.ReviewChecks`, and writes
-`checks/nodes.json` with target hashes and source locations. Only `propext`, `Classical.choice`, and `Quot.sound`
+`checks/nodes.json` with semantic declaration hashes and source locations. Only `propext`, `Classical.choice`, and `Quot.sound`
 are allowed in complete proofs; `sorryAx` remains unfinished.
 
 The registry determines which declarations receive an axiom audit. `lake build`
 compiles the library; `check_formalizations` records the evidence used by the reader.
 The historical sumset report is retained separately from the active node checks.
 
-Rerun after changing declarations, dependencies, Lean sources, or environment pins.
-Descriptions and review records do not invalidate evidence. Lean checks
+Rerun after changing bindings, Lean sources, or environment pins.
+Descriptions, manual proof dependencies, and review records do not invalidate evidence. Lean checks
 correctness; maintainers check correspondence with the human mathematics. See
 [verification and review](../docs/verification-and-review.md) for evidence rules
 and [experiment design](../docs/formalization-experiments.md) for measured runs.

@@ -7,6 +7,13 @@ public contributions come later.
 
 ## Submission and formalization pipeline
 
+Correspondence review protects against proving the wrong statement: Lean can
+verify a declaration even when it does not express the human claim. Approval
+binds a node's description to its Lean declaration; entry text and block coverage
+also need human review. Proof-planning dependencies, module locations, and
+environment pins do not enter the review hash. See
+[verification and review](docs/verification-and-review.md).
+
 Copy the corresponding [AI prompt](prompts/add-entry/) into a new task and replace
 its `<...>` placeholders. Use them in order; the review prompts produce findings
 for the maintainer. For a measured experiment, retain the filled prompts and
@@ -39,8 +46,9 @@ not an automated runner.
 6. **[Prove the nodes](prompts/add-entry/06-prove-reviewed-nodes.txt).** Later,
    use AI to work through the dependency DAG, following the human proofs.
    Run `check_formalizations` and review whether the formal
-   arguments follow the intended reasoning. Changes to approved statements
-   require another review; proof-only changes keep statement approval after rechecking.
+   arguments follow the intended reasoning. Changes to approved descriptions or
+   statements require another review; proof-only changes keep statement approval
+   after rechecking.
 
 Nodes are independent of entries. Agents can find human explanations by following
 `data-formal` mappings in reverse; a dedicated lookup API is planned. For each
@@ -61,10 +69,16 @@ A file-backed corpus, a Django reader, and a local Lean checker. The frontend us
 plain HTML/CSS/JavaScript and self-hosted KaTeX. There is no database or frontend
 build step. Accounts, submissions, and autonomous AI workflows are not implemented.
 
+The corpus has three entries. *Sets and maps* and *Equivalence relations* have complete
+formal verification and current node approvals; *Ordered sets* is a human draft
+awaiting formalization. All three retain draft editorial status.
+
 Node pages put a mathematical description above the checked Lean statement, with
 review/check dates, expandable proof prerequisites, and a source browser with line
-links. Descriptions are editorial text reviewed through Git; editing them does not
-change declaration approval or Lean evidence.
+links. Editing a description invalidates its correspondence approval immediately,
+while preserving Lean evidence. Proof dependencies, module locations, and environment
+pins do not enter the review hash. Source moves and environment changes need fresh
+Lean verification; approval is retained if the declaration hash stays unchanged.
 
 | Folder | Purpose |
 | --- | --- |

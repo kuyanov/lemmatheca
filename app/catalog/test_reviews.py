@@ -35,11 +35,20 @@ class ReviewHashTests(SimpleTestCase):
         with self.assertRaisesRegex(ContentError, 'Missing review snapshot'):
             declaration_hashes(records, ['target'])
 
-    def test_metadata_and_pinned_environment_are_part_of_the_review(self):
-        original = review_target_hash('node', 'declaration', {'lean': 'version1'})
-        self.assertNotEqual(original, review_target_hash('changed', 'declaration', {'lean': 'version1'}))
-        self.assertNotEqual(original, review_target_hash('node', 'changed', {'lean': 'version1'}))
-        self.assertNotEqual(original, review_target_hash('node', 'declaration', {'lean': 'version2'}))
+    def test_review_covers_description_and_declaration_but_not_proof_planning(self):
+        node = {'id': 'node', 'description': 'Every element has property P.',
+                'declaration': 'Theorem', 'module': 'Old.Module', 'dependencies': []}
+        original = review_target_hash(node, 'declaration')
+        for field in ('id', 'description', 'declaration'):
+            with self.subTest(field=field):
+                self.assertNotEqual(original, review_target_hash(
+                    {**node, field: 'changed'}, 'declaration'))
+        for changes in ({'module': 'New.Module'}, {'dependencies': ['prerequisite']},
+                        {'review': {'sha256': original, 'recorded_at': 'today'}}):
+            with self.subTest(changes=changes):
+                self.assertEqual(original, review_target_hash(
+                    {**node, **changes}, 'declaration'))
+        self.assertNotEqual(original, review_target_hash(node, 'changed'))
 
 
 class ReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
@@ -101,6 +110,24 @@ class ReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
         self.assertIsNone(nodes['dependent']['review'])
         self.assertEqual((self.node_dir / 'dependent.json').read_bytes(), unlinked)
 
+    def test_accept_updated_description_uses_current_text_without_rechecking_lean(self):
+        self.accept(node=['ready'])
+        path = self.node_dir / 'ready.json'
+        node = json.loads(path.read_text())
+        previous_review = node['review']
+        node['description'] = 'The updated statement to review.'
+        path.write_text(json.dumps(node))
+        expected = load_nodes(self.root)['ready']['target_sha256']
+        report = (self.root / REPORT).read_bytes()
+        with patch('catalog.management.commands.review.call_command') as check:
+            self.accept(node=['ready'])
+        check.assert_not_called()
+        current = load_nodes(self.root)['ready']
+        self.assertEqual(current['review']['sha256'], expected)
+        self.assertNotEqual(current['review']['sha256'], previous_review['sha256'])
+        self.assertTrue(current['review_current'])
+        self.assertEqual((self.root / REPORT).read_bytes(), report)
+
     def test_dry_run_and_invalid_selections_do_not_accept_anything(self):
         before = self.node_records()
         self.assertIn('Would accept review for 2', self.accept(entry='first', dry_run=True))
@@ -149,7 +176,7 @@ class ReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
 
         path = self.root / REPORT
         report = json.loads(path.read_text())
-        report['nodes']['ready']['target_sha256'] = 'b' * 64
+        report['nodes']['ready']['declaration_sha256'] = 'b' * 64
         path.write_text(json.dumps(report))
         node = load_nodes(self.root)['ready']
         self.assertEqual(node['status'], 'review_outdated')
@@ -159,7 +186,22 @@ class ReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual((self.node_dir / 'ready.json').read_bytes(), accepted)
         self.accept(node=['ready'])
         self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
-        self.assertEqual(load_nodes(self.root)['ready']['review']['sha256'], 'b' * 64)
+        self.assertEqual(load_nodes(self.root)['ready']['review']['sha256'], node['target_sha256'])
+
+    def test_description_edit_during_refresh_cannot_be_accepted(self):
+        self.source.write_text(self.source.read_text() + '\n')
+
+        def edit_during_check(*args, **kwargs):
+            path = self.node_dir / 'ready.json'
+            node = json.loads(path.read_text())
+            node['description'] = 'Changed while acceptance was running.'
+            path.write_text(json.dumps(node))
+            self.write_report()
+
+        with patch('catalog.management.commands.review.call_command', side_effect=edit_during_check):
+            with self.assertRaisesRegex(CommandError, 'records changed during review'):
+                self.accept(node=['ready'])
+        self.assertIsNone(load_nodes(self.root)['ready']['review'])
 
     def test_changed_binding_cannot_carry_forward_an_old_approval(self):
         self.accept(node=['ready'])
@@ -244,7 +286,7 @@ class ReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
                     path.unlink()
                 else:
                     report = json.loads(path.read_text())
-                    report['nodes']['ready']['target_sha256'] = 'b' * 64
+                    report['nodes']['ready']['declaration_sha256'] = 'b' * 64
                     path.write_text(json.dumps(report))
                 report_before = path.read_bytes() if path.exists() else None
                 with patch('catalog.management.commands.review.call_command') as check:

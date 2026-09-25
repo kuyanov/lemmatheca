@@ -83,8 +83,8 @@ The read-only formal API exposes `/api/formal/nodes/` and
 `/api/formal/nodes/<id>/`, including `description`, derived `status`, `status_label`, dependencies, source,
 node-page links, `target_sha256`, and `review_current`. It does not load the human
 corpus. Node pages show the mathematical description, current checked signature, proof
-prerequisites, and escaped source with line links. Descriptions are reviewed through
-Git and excluded from Lean evidence and target review hashes. Human-corpus APIs,
+prerequisites, and escaped source with line links. Descriptions are included in
+correspondence review hashes but excluded from Lean evidence fingerprints. Human-corpus APIs,
 search, write endpoints, and autonomous workers remain future work.
 
 `verification_complete` indicates valid Lean evidence with no direct or transitive
