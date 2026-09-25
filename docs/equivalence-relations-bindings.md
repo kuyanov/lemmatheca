@@ -1,15 +1,14 @@
 # Equivalence-relations formal bindings
 
-This is the preparation record for pipeline step 4, not an independent
+This record describes the bindings and completed proof pass; it is not an independent
 correspondence review. Every one of the entry’s 15 blocks has a nonempty mapping.
-There are 72 distinct linked nodes: 62 new nodes and 10 reused nodes. No existing
-node is rebound or retired. All new nodes have `review: null` and need human review.
+There are 71 distinct linked nodes: 61 added for this entry and 10 reused nodes.
+All have accepted reviews and complete Lean verification.
 
-Of the new nodes, 41 bind directly to Lean or mathlib and have complete proof
-evidence. The other 21 are new theorem statements with `by sorry`: seven reusable
-statements in `Lemmatheca.SetTheory.EquivalenceRelations` and fourteen examples in
-`Lemmatheca.Entry.EquivalenceRelations`. These declarations compile, but their
-proofs are unfinished. No production theorem was proved or review accepted at this stage.
+Of the added nodes, 41 bind directly to Lean or mathlib. The other 20 are proved
+local theorems: six reusable results in `Lemmatheca.SetTheory.EquivalenceRelations`
+and fourteen examples in `Lemmatheca.Entry.EquivalenceRelations`. The proof pass
+preserved their statements, definition bodies, dependencies, and review records.
 
 ## Representations
 
@@ -68,7 +67,7 @@ They use library results and do not prove any pending production theorem.
 | [Which properties survive the quotient?](../corpus/entries/equivalence-relations/entry.html#induced-map-properties) | [quotient-lift-range](../formal/nodes/quotient-lift-range.json), [quotient-lift-surjective-iff](../formal/nodes/quotient-lift-surjective-iff.json), [quotient-lift-injective-iff](../formal/nodes/quotient-lift-injective-iff.json), [quotient-map-universal-property](../formal/nodes/quotient-map-universal-property.json) | The canonical lift has the same range and the stated surjectivity criterion. With R ≤ ker f already assumed, ker f = R is equivalent to the displayed reverse implication. Uniqueness transfers these statements to any factor map satisfying the text’s equation. |
 | [What if the output is also a class?](../corpus/entries/equivalence-relations/entry.html#maps-between-quotients) | [map-between-quotients](../formal/nodes/map-between-quotients.json), [quotient-map-universal-property](../formal/nodes/quotient-map-universal-property.json), [quotient-projection-equality](../formal/nodes/quotient-projection-equality.json), [int-parity-successor-descends](../formal/nodes/int-parity-successor-descends.json) | Quotient.map supplies the induced map. The universal property for f = q_B ∘ h and Quotient.eq give necessity as well as sufficiency of preservation of equivalence. The parity theorem specifies all representative values, swaps the two classes and includes involutivity. |
 | [A map groups its inputs into fibers](../corpus/entries/equivalence-relations/entry.html#relation-from-a-map) | [map-kernel-relation](../formal/nodes/map-kernel-relation.json), [map-kernel-class-fiber](../formal/nodes/map-kernel-class-fiber.json), [map-kernel-classes-nonempty-fibers](../formal/nodes/map-kernel-classes-nonempty-fibers.json), [map-fiber-nonempty-iff-in-range](../formal/nodes/map-fiber-nonempty-iff-in-range.json), [map-injective-iff-fibers-subsingleton](../formal/nodes/map-injective-iff-fibers-subsingleton.json), [map-surjective-iff-fibers-nonempty](../formal/nodes/map-surjective-iff-fibers-nonempty.json), [quotient-projection-kernel](../formal/nodes/quotient-projection-kernel.json) | Kernel equivalence, pointwise class/fiber equality, and the exact family of nonempty fibers are covered. A fiber at a missed value is empty by negating the nonempty criterion. Injectivity plus nonempty fibers gives singletons; surjectivity gives every fiber nonempty. ker_mk_eq recovers any original relation. |
-| [Recovering the finite example](../corpus/entries/equivalence-relations/entry.html#finite-fibres-question) | [map-diagram-values](../formal/nodes/map-diagram-values.json), [map-diagram-images-and-preimages](../formal/nodes/map-diagram-images-and-preimages.json), [map-diagram-fiber-p-and-range](../formal/nodes/map-diagram-fiber-p-and-range.json), [fin-three-two-block-classes](../formal/nodes/fin-three-two-block-classes.json), [map-kernel-lift](../formal/nodes/map-kernel-lift.json), [quotient-lift-injective-iff](../formal/nodes/quotient-lift-injective-iff.json), [quotient-lift-surjective-iff](../formal/nodes/quotient-lift-surjective-iff.json), [map-diagram-neither-injective-nor-surjective](../formal/nodes/map-diagram-neither-injective-nor-surjective.json), [quotient-kernel-equiv-range](../formal/nodes/quotient-kernel-equiv-range.json) | Reuse the original map, q/r fibers and failure of surjectivity. The new calculation supplies only the missing p fiber and range. kerLift computes to the existing map values; the generic injectivity criterion specializes with R = ker f. The surjectivity iff retains the missed r; quotientKerEquivRange covers the restricted codomain bijection. |
+| [Recovering the finite example](../corpus/entries/equivalence-relations/entry.html#finite-fibers-question) | [map-diagram-values](../formal/nodes/map-diagram-values.json), [map-diagram-images-and-preimages](../formal/nodes/map-diagram-images-and-preimages.json), [map-diagram-fiber-p-and-range](../formal/nodes/map-diagram-fiber-p-and-range.json), [fin-three-two-block-classes](../formal/nodes/fin-three-two-block-classes.json), [map-kernel-lift](../formal/nodes/map-kernel-lift.json), [quotient-lift-injective-iff](../formal/nodes/quotient-lift-injective-iff.json), [quotient-lift-surjective-iff](../formal/nodes/quotient-lift-surjective-iff.json), [map-diagram-neither-injective-nor-surjective](../formal/nodes/map-diagram-neither-injective-nor-surjective.json), [quotient-kernel-equiv-range](../formal/nodes/quotient-kernel-equiv-range.json) | Reuse the original map, q/r fibers and failure of surjectivity. The new calculation supplies only the missing p fiber and range. kerLift computes to the existing map values; the generic injectivity criterion specializes with R = ker f. The surjectivity iff retains the missed r; quotientKerEquivRange covers the restricted codomain bijection. |
 | [The quotient by fibers is in bijection with the image](../corpus/entries/equivalence-relations/entry.html#quotient-is-image) | [quotient-kernel-equiv-range](../formal/nodes/quotient-kernel-equiv-range.json), [quotient-image-inverse-fiber](../formal/nodes/quotient-image-inverse-fiber.json), [quotient-projection-surjective](../formal/nodes/quotient-projection-surjective.json), [subtype-inclusion-injective](../formal/nodes/subtype-inclusion-injective.json), [quotient-kernel-equiv-codomain](../formal/nodes/quotient-kernel-equiv-codomain.json), [empty-quotient](../formal/nodes/empty-quotient.json), [map-empty-domain-range](../formal/nodes/map-empty-domain-range.json), [map-empty-domain-unique](../formal/nodes/map-empty-domain-unique.json) | The library equivalence sends [a] to f(a) in the range subtype. Composing with its inclusion gives f by computation. The inverse-fiber statement records the explicit set returned, without imposing a representative choice. Projection surjectivity, inclusion injectivity, the surjective case and the unique empty case are covered. |
 
 ## New targets needing review
@@ -82,10 +81,10 @@ supply the evidence without recreating mathlib’s dependency graph.
 | Node | Target declaration | Evidence | Planned proof prerequisites |
 | --- | --- | --- | --- |
 | [disjoint-cover-unique-membership](../formal/nodes/disjoint-cover-unique-membership.json) | `Setoid.eqv_classes_of_disjoint_union` | Library proof complete | None |
-| [empty-equivalence-classes](../formal/nodes/empty-equivalence-classes.json) | `Lemmatheca.SetTheory.empty_equivalence_classes` | Proof pending | None |
-| [empty-partition-iff](../formal/nodes/empty-partition-iff.json) | `Lemmatheca.SetTheory.empty_partition_iff` | Proof pending | None |
+| [empty-equivalence-classes](../formal/nodes/empty-equivalence-classes.json) | `Lemmatheca.SetTheory.empty_equivalence_classes` | Lean proof complete | None |
+| [empty-partition-iff](../formal/nodes/empty-partition-iff.json) | `Lemmatheca.SetTheory.empty_partition_iff` | Lean proof complete | None |
 | [empty-quotient](../formal/nodes/empty-quotient.json) | `Quotient.instIsEmpty` | Library proof complete | None |
-| [empty-relation-equivalence](../formal/nodes/empty-relation-equivalence.json) | `Lemmatheca.SetTheory.empty_relation` | Proof pending | [map-empty-domain-equality](../formal/nodes/map-empty-domain-equality.json) |
+| [empty-relation-equivalence](../formal/nodes/empty-relation-equivalence.json) | `Lemmatheca.SetTheory.empty_relation` | Lean proof complete | [map-empty-domain-equality](../formal/nodes/map-empty-domain-equality.json) |
 | [equality-equivalence-relation](../formal/nodes/equality-equivalence-relation.json) | `eq_equivalence` | Library proof complete | None |
 | [equality-quotient-equivalence](../formal/nodes/equality-quotient-equivalence.json) | `Setoid.quotientBotEquiv` | Library proof complete | None |
 | [equivalence-class-contains-self](../formal/nodes/equivalence-class-contains-self.json) | `Setoid.refl'` | Library proof complete | None |
@@ -93,35 +92,35 @@ supply the evidence without recreating mathlib’s dependency graph.
 | [equivalence-relation](../formal/nodes/equivalence-relation.json) | `Equivalence` | Library proof complete | None |
 | [equivalence-relations-partitions-correspondence](../formal/nodes/equivalence-relations-partitions-correspondence.json) | `Setoid.Partition.orderIso` | Library proof complete | None |
 | [equivalent-iff-common-class](../formal/nodes/equivalent-iff-common-class.json) | `Setoid.rel_iff_exists_classes` | Library proof complete | None |
-| [fin-three-adjacency-not-transitive](../formal/nodes/fin-three-adjacency-not-transitive.json) | `Lemmatheca.Entry.EquivalenceRelations.adjacent_not_transitive` | Proof pending | None |
-| [fin-three-empty-relation-not-reflexive](../formal/nodes/fin-three-empty-relation-not-reflexive.json) | `Lemmatheca.Entry.EquivalenceRelations.empty_relation_not_reflexive` | Proof pending | None |
-| [fin-three-le-not-symmetric](../formal/nodes/fin-three-le-not-symmetric.json) | `Lemmatheca.Entry.EquivalenceRelations.le_relation_not_symmetric` | Proof pending | None |
-| [fin-three-missing-part-not-partition](../formal/nodes/fin-three-missing-part-not-partition.json) | `Lemmatheca.Entry.EquivalenceRelations.missing_part_not_partition` | Proof pending | [set-partition-covers](../formal/nodes/set-partition-covers.json) |
-| [fin-three-overlapping-parts-not-partition](../formal/nodes/fin-three-overlapping-parts-not-partition.json) | `Lemmatheca.Entry.EquivalenceRelations.overlapping_parts_not_partition` | Proof pending | [set-partition-parts-disjoint](../formal/nodes/set-partition-parts-disjoint.json) |
-| [fin-three-two-block-classes](../formal/nodes/fin-three-two-block-classes.json) | `Lemmatheca.Entry.EquivalenceRelations.finite_classes` | Proof pending | [fin-three-two-block-relation](../formal/nodes/fin-three-two-block-relation.json) |
-| [fin-three-two-block-relation](../formal/nodes/fin-three-two-block-relation.json) | `Lemmatheca.Entry.EquivalenceRelations.finite_relation_iff` | Proof pending | [map-diagram-values](../formal/nodes/map-diagram-values.json) |
+| [fin-three-adjacency-not-transitive](../formal/nodes/fin-three-adjacency-not-transitive.json) | `Lemmatheca.Entry.EquivalenceRelations.adjacent_not_transitive` | Lean proof complete | None |
+| [fin-three-empty-relation-not-reflexive](../formal/nodes/fin-three-empty-relation-not-reflexive.json) | `Lemmatheca.Entry.EquivalenceRelations.empty_relation_not_reflexive` | Lean proof complete | None |
+| [fin-three-le-not-symmetric](../formal/nodes/fin-three-le-not-symmetric.json) | `Lemmatheca.Entry.EquivalenceRelations.le_relation_not_symmetric` | Lean proof complete | None |
+| [fin-three-missing-part-not-partition](../formal/nodes/fin-three-missing-part-not-partition.json) | `Lemmatheca.Entry.EquivalenceRelations.missing_part_not_partition` | Lean proof complete | [set-partition-covers](../formal/nodes/set-partition-covers.json) |
+| [fin-three-overlapping-parts-not-partition](../formal/nodes/fin-three-overlapping-parts-not-partition.json) | `Lemmatheca.Entry.EquivalenceRelations.overlapping_parts_not_partition` | Lean proof complete | [set-partition-parts-disjoint](../formal/nodes/set-partition-parts-disjoint.json) |
+| [fin-three-two-block-classes](../formal/nodes/fin-three-two-block-classes.json) | `Lemmatheca.Entry.EquivalenceRelations.finite_classes` | Lean proof complete | [fin-three-two-block-relation](../formal/nodes/fin-three-two-block-relation.json) |
+| [fin-three-two-block-relation](../formal/nodes/fin-three-two-block-relation.json) | `Lemmatheca.Entry.EquivalenceRelations.finite_relation_iff` | Lean proof complete | [map-diagram-values](../formal/nodes/map-diagram-values.json) |
 | [int-congruence](../formal/nodes/int-congruence.json) | `Int.ModEq` | Library proof complete | None |
 | [int-congruence-equivalence](../formal/nodes/int-congruence-equivalence.json) | `Int.ModEq.instIsEquiv` | Library proof complete | None |
 | [int-congruence-iff-divides-difference](../formal/nodes/int-congruence-iff-divides-difference.json) | `Int.modEq_iff_dvd` | Library proof complete | None |
 | [int-even-or-odd-exclusively](../formal/nodes/int-even-or-odd-exclusively.json) | `Int.even_xor_odd` | Library proof complete | None |
-| [int-parity-classes](../formal/nodes/int-parity-classes.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_classes` | Proof pending | [int-congruence-iff-divides-difference](../formal/nodes/int-congruence-iff-divides-difference.json), [int-even-or-odd-exclusively](../formal/nodes/int-even-or-odd-exclusively.json) |
-| [int-parity-classes-infinite](../formal/nodes/int-parity-classes-infinite.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_classes_infinite` | Proof pending | None |
-| [int-parity-distinct-equivalent](../formal/nodes/int-parity-distinct-equivalent.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_distinct_equivalent` | Proof pending | None |
-| [int-parity-identity-not-descend](../formal/nodes/int-parity-identity-not-descend.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_identity_not_descend` | Proof pending | [quotient-projection-equality](../formal/nodes/quotient-projection-equality.json) |
-| [int-parity-label-descends](../formal/nodes/int-parity-label-descends.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_label_descends` | Proof pending | [quotient-map-universal-property](../formal/nodes/quotient-map-universal-property.json), [int-parity-classes](../formal/nodes/int-parity-classes.json) |
-| [int-parity-successor-descends](../formal/nodes/int-parity-successor-descends.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_successor_descends` | Proof pending | [map-between-quotients](../formal/nodes/map-between-quotients.json), [int-parity-classes](../formal/nodes/int-parity-classes.json) |
+| [int-parity-classes](../formal/nodes/int-parity-classes.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_classes` | Lean proof complete | [int-congruence-iff-divides-difference](../formal/nodes/int-congruence-iff-divides-difference.json), [int-even-or-odd-exclusively](../formal/nodes/int-even-or-odd-exclusively.json) |
+| [int-parity-classes-infinite](../formal/nodes/int-parity-classes-infinite.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_classes_infinite` | Lean proof complete | None |
+| [int-parity-distinct-equivalent](../formal/nodes/int-parity-distinct-equivalent.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_distinct_equivalent` | Lean proof complete | None |
+| [int-parity-identity-not-descend](../formal/nodes/int-parity-identity-not-descend.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_identity_not_descend` | Lean proof complete | [quotient-projection-equality](../formal/nodes/quotient-projection-equality.json) |
+| [int-parity-label-descends](../formal/nodes/int-parity-label-descends.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_label_descends` | Lean proof complete | [quotient-map-universal-property](../formal/nodes/quotient-map-universal-property.json), [int-parity-classes](../formal/nodes/int-parity-classes.json) |
+| [int-parity-successor-descends](../formal/nodes/int-parity-successor-descends.json) | `Lemmatheca.Entry.EquivalenceRelations.parity_successor_descends` | Lean proof complete | [map-between-quotients](../formal/nodes/map-between-quotients.json), [int-parity-classes](../formal/nodes/int-parity-classes.json) |
 | [map-between-quotients](../formal/nodes/map-between-quotients.json) | `Quotient.map` | Library proof complete | None |
-| [map-diagram-fiber-p-and-range](../formal/nodes/map-diagram-fiber-p-and-range.json) | `Lemmatheca.Entry.EquivalenceRelations.diagram_fiber_p_and_range` | Proof pending | [map-diagram-values](../formal/nodes/map-diagram-values.json) |
+| [map-diagram-fiber-p-and-range](../formal/nodes/map-diagram-fiber-p-and-range.json) | `Lemmatheca.Entry.EquivalenceRelations.diagram_fiber_p_and_range` | Lean proof complete | [map-diagram-values](../formal/nodes/map-diagram-values.json) |
 | [map-empty-domain-range](../formal/nodes/map-empty-domain-range.json) | `Set.range_eq_empty` | Library proof complete | None |
 | [map-fiber-nonempty-iff-in-range](../formal/nodes/map-fiber-nonempty-iff-in-range.json) | `Set.preimage_singleton_nonempty` | Library proof complete | None |
 | [map-injective-iff-kernel-equality](../formal/nodes/map-injective-iff-kernel-equality.json) | `Setoid.injective_iff_ker_bot` | Library proof complete | None |
 | [map-kernel-class-fiber](../formal/nodes/map-kernel-class-fiber.json) | `Setoid.ker_iff_mem_preimage` | Library proof complete | None |
-| [map-kernel-classes-nonempty-fibers](../formal/nodes/map-kernel-classes-nonempty-fibers.json) | `Lemmatheca.SetTheory.kernel_classes_eq_nonempty_fibers` | Proof pending | [map-kernel-class-fiber](../formal/nodes/map-kernel-class-fiber.json) |
+| [map-kernel-classes-nonempty-fibers](../formal/nodes/map-kernel-classes-nonempty-fibers.json) | `Lemmatheca.SetTheory.kernel_classes_eq_nonempty_fibers` | Lean proof complete | [map-kernel-class-fiber](../formal/nodes/map-kernel-class-fiber.json) |
 | [map-kernel-lift](../formal/nodes/map-kernel-lift.json) | `Setoid.kerLift` | Library proof complete | None |
 | [map-kernel-relation](../formal/nodes/map-kernel-relation.json) | `Setoid.ker` | Library proof complete | None |
 | [quotient-class-of-representative](../formal/nodes/quotient-class-of-representative.json) | `Setoid.quotientEquivClasses_mk_eq` | Library proof complete | None |
 | [quotient-equivalence-classes](../formal/nodes/quotient-equivalence-classes.json) | `Setoid.quotientEquivClasses` | Library proof complete | None |
-| [quotient-image-inverse-fiber](../formal/nodes/quotient-image-inverse-fiber.json) | `Lemmatheca.SetTheory.quotient_image_inverse_fiber` | Proof pending | [quotient-kernel-equiv-range](../formal/nodes/quotient-kernel-equiv-range.json), [map-kernel-class-fiber](../formal/nodes/map-kernel-class-fiber.json) |
+| [quotient-image-inverse-fiber](../formal/nodes/quotient-image-inverse-fiber.json) | `Lemmatheca.SetTheory.quotient_image_inverse_fiber` | Lean proof complete | [quotient-kernel-equiv-range](../formal/nodes/quotient-kernel-equiv-range.json), [map-kernel-class-fiber](../formal/nodes/map-kernel-class-fiber.json) |
 | [quotient-kernel-equiv-codomain](../formal/nodes/quotient-kernel-equiv-codomain.json) | `Setoid.quotientKerEquivOfSurjective` | Library proof complete | None |
 | [quotient-kernel-equiv-range](../formal/nodes/quotient-kernel-equiv-range.json) | `Setoid.quotientKerEquivRange` | Library proof complete | None |
 | [quotient-lift-injective-iff](../formal/nodes/quotient-lift-injective-iff.json) | `Setoid.lift_injective_iff_ker_eq_of_le` | Library proof complete | None |
@@ -132,7 +131,7 @@ supply the evidence without recreating mathlib’s dependency graph.
 | [quotient-projection-equality](../formal/nodes/quotient-projection-equality.json) | `Quotient.eq` | Library proof complete | None |
 | [quotient-projection-kernel](../formal/nodes/quotient-projection-kernel.json) | `Setoid.ker_mk_eq` | Library proof complete | None |
 | [quotient-projection-surjective](../formal/nodes/quotient-projection-surjective.json) | `Quotient.mk_surjective` | Library proof complete | None |
-| [relation-not-symmetric-iff-witness](../formal/nodes/relation-not-symmetric-iff-witness.json) | `Lemmatheca.SetTheory.not_symmetric_iff_witness` | Proof pending | None |
+| [relation-not-symmetric-iff-witness](../formal/nodes/relation-not-symmetric-iff-witness.json) | `Lemmatheca.SetTheory.not_symmetric_iff_witness` | Lean proof complete | None |
 | [relation-reflexive](../formal/nodes/relation-reflexive.json) | `Std.Refl` | Library proof complete | None |
 | [relation-symmetric](../formal/nodes/relation-symmetric.json) | `Std.Symm` | Library proof complete | None |
 | [relation-transitive](../formal/nodes/relation-transitive.json) | `IsTrans` | Library proof complete | None |
@@ -142,11 +141,11 @@ supply the evidence without recreating mathlib’s dependency graph.
 | [set-partition-parts-nonempty](../formal/nodes/set-partition-parts-nonempty.json) | `Setoid.nonempty_of_mem_partition` | Library proof complete | None |
 | [subtype-inclusion-injective](../formal/nodes/subtype-inclusion-injective.json) | `Subtype.val_injective` | Library proof complete | None |
 | [universal-equivalence-relation](../formal/nodes/universal-equivalence-relation.json) | `equivalence_true` | Library proof complete | None |
-| [universal-relation-classes](../formal/nodes/universal-relation-classes.json) | `Lemmatheca.SetTheory.universal_relation_classes` | Proof pending | None |
+| [universal-relation-classes](../formal/nodes/universal-relation-classes.json) | `Lemmatheca.SetTheory.universal_relation_classes` | Lean proof complete | None |
 
 ## Why local statements remain
 
-- The symmetry-witness criterion and universal/empty set descriptions have no
+- The universal/empty set descriptions have no
   matching direct declaration in the searched quotient/partition API.
 - `kernel_classes_eq_nonempty_fibers` identifies the *entire* family of classes
   with exactly the fibers indexed by the range. The existing
@@ -161,17 +160,28 @@ supply the evidence without recreating mathlib’s dependency graph.
   `adjacent`, `parityLabel`, and the two setoid abbreviations are unregistered
   helpers whose bodies remain part of their targets’ review hashes.
 
-Proof prerequisites are direct planned proof uses, not reading order. The finite
-relation and p-fiber/range calculation use the existing diagram values; the finite
-classes use the relation characterization. The parity classes use the congruence
-criterion and exclusive even/odd alternatives. The two partition counterexamples
-use the corresponding necessary partition condition. The representative rules use
-quotient equality or the induced-map constructions, with parity classes for their
-values. The empty-relation statement uses uniqueness of functions from an empty
-domain. The family-of-fibers and inverse-fiber statements use the library kernel
-class description and, for the inverse, the range equivalence. Other proofs can
-use definitions, elementary logic, finite case analysis, or library results without
-adding registry edges.
+The approved proof prerequisites remain unchanged. They are a manual proof plan,
+not reading order or an extracted list of every theorem used in the finished proofs.
+
+## Proof methods
+
+- Finite calculations use case analysis on `Fin 3` and the existing diagram map.
+  The class calculation uses `finite_relation_iff`. The partition counterexamples
+  use disjointness at the shared element 1 and failure to cover the element 2.
+- Parity classes use equality of remainders modulo two and the standard even/odd
+  characterizations. This uses the library's remainder representation instead of
+  reconstructing each divisibility witness in the prose. Both classes are infinite
+  because their parametrizations are injective maps from the integers.
+- `Quotient.lift` and `Quotient.map` construct the representative-independent maps.
+  The parity label respects equality of remainders; adding one preserves congruence,
+  and adding two preserves each class. The failed identity rule uses the explicit
+  witnesses 0 and 2, as in the entry.
+- The empty cases eliminate impossible elements, and the universal class follows
+  from its definition. The kernel-class family proof supplies representatives for
+  range elements in both directions. The inverse-fiber proof uses the library
+  quotient equivalence and its class-of-representative formula.
+
+This is corpus proving with library reuse, not a measured proof-translation experiment.
 
 ## Reused nodes
 
@@ -180,16 +190,10 @@ adding registry edges.
 ## Validation
 
 - `validate_corpus`: two entries and 36 blocks validated.
-- `lake build`: aggregate library and entry imports compile; only the expected
-  warnings for unfinished new proofs remain.
-- `test catalog`: all 59 tests pass.
-- `check_formalizations`: 189 declarations checked, 127 ready and 62 awaiting
-  review. Of the new targets, 41 have complete Lean evidence and 21 have `sorry`.
+- `lake build`: aggregate library and entry imports compile.
+- `check_formalizations`: all 188 registered declarations are ready. No registered
+  declaration depends on `sorryAx`; all 71 entry nodes and their prerequisites are complete.
 - Every new declaration has a checked signature and defining source line.
-- The initial binding preparation preserved all 127 existing node files and
-  target hashes. A subsequent layout cleanup moved 42 first-entry node modules
-  and refreshed their approvals with the maintainer's authorization. The new
-  equivalence-relations nodes remain unreviewed. Lean and mathlib pins are
-  unchanged. There are no duplicate target declarations or unlinked new nodes.
-
-Proof completion and independent correspondence review are later pipeline steps.
+- The proof pass preserved all 188 target hashes, node records, and approvals.
+  Lean and mathlib pins are unchanged. Both active entries are fully formalized;
+  editorial publication remains a separate decision.

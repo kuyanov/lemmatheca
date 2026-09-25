@@ -2,8 +2,9 @@
 
 The active collection starts with [Sets and maps: a first guide](entries/sets-and-maps/entry.html),
 followed by [Equivalence relations, partitions, and quotients](entries/equivalence-relations/entry.html).
-The second entry is a human draft awaiting review and formalization. Entries are
-edited as repository files and reviewed manually; source credits appear in their metadata.
+Both entries have complete formal verification and accepted node reviews; their
+editorial status remains draft. Entries are edited as repository files and reviewed
+manually; source credits appear in their metadata.
 
 ## Entry format
 

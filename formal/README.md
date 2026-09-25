@@ -124,8 +124,9 @@ domain, and codomain. In the formula question, the reciprocal is specified by
 `x * y = 1`, since Lean's division itself is total even at zero.
 
 The equivalence-relations entry has bindings for all 15 blocks, reusing ten nodes
-and adding 62: 41 direct Lean/mathlib bindings and 21 statements awaiting proofs.
-All new nodes remain unreviewed. Seven reusable statements live in
+and adding 61: 41 direct Lean/mathlib bindings and 20 local theorems.
+All 71 linked nodes have accepted reviews and passing verification. Six reusable
+theorems live in
 `Lemmatheca/SetTheory/EquivalenceRelations.lean`, under `Lemmatheca.SetTheory`;
 fourteen examples live in `Lemmatheca/Entry/EquivalenceRelations.lean`, under
 `Lemmatheca.Entry.EquivalenceRelations`. The root module imports both entries.
@@ -134,7 +135,8 @@ The [binding preparation record](../docs/equivalence-relations-bindings.md) list
 coverage, target declarations, representation bridges, and proof prerequisites.
 In particular, `Setoid.classes` represents the quotient as a set of subsets,
 while the library equivalence to `Quotient` connects this with the type used for
-maps. These new modules contain `sorry` placeholders until review and proving.
+maps. Both equivalence-relations modules are free of `sorry` placeholders;
+the proof pass preserved all accepted target hashes and review records.
 
 After inspecting the declarations and their correspondence to the human text,
 record your review from the repository root:

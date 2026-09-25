@@ -1,7 +1,7 @@
 {
   "format_version": 3,
   "build": "passed",
-  "checked_on": "2026-09-24T00:41:57.030095+00:00",
+  "checked_on": "2026-09-25T15:02:28.278946+00:00",
   "command": "python app/manage.py check_formalizations",
   "nodes": {
     "disjoint-cover-unique-membership": {
@@ -22,26 +22,29 @@
     "empty-equivalence-classes": {
       "fingerprint": "6913ad74cdca3daba752496c4500e52a32837edc0ff939aa03cc5d707171ef64",
       "axioms": [
-        "sorryAx"
+        "propext",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.SetTheory.empty_equivalence_classes.{u} {\u03b1 : Type u} [IsEmpty \u03b1] (s : Setoid \u03b1) : s.classes = \u2205",
       "location": {
         "module": "Lemmatheca.SetTheory.EquivalenceRelations",
-        "line": 23
+        "line": 29
       },
       "target_sha256": "463b1f5b1b75c857993c82b8e1847bedf0f0c3d598a7989548e38b63f104037c"
     },
     "empty-partition-iff": {
       "fingerprint": "049a8ed217fc24c20b618ebc38b78f4ae888517605cfeab2fd2b1c16e4b26b4b",
       "axioms": [
-        "sorryAx"
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.SetTheory.empty_partition_iff.{u} {\u03b1 : Type u} [IsEmpty \u03b1] (P : Set (Set \u03b1)) : Setoid.IsPartition P \u2194 P = \u2205",
       "location": {
         "module": "Lemmatheca.SetTheory.EquivalenceRelations",
-        "line": 26
+        "line": 34
       },
       "target_sha256": "1d635f0150a0d5463711e1bb17f088f55dc8c1394bca22545d9d4af7334f38c8"
     },
@@ -59,13 +62,13 @@
     "empty-relation-equivalence": {
       "fingerprint": "00942268602bccc7a07934a2901f35a53ee98209ce8815f73c8ec2dc31aba119",
       "axioms": [
-        "sorryAx"
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.SetTheory.empty_relation.{u} {\u03b1 : Type u} [IsEmpty \u03b1] (R : \u03b1 \u2192 \u03b1 \u2192 Prop) :\n  (R = fun x x_1 => False) \u2227 Equivalence R",
       "location": {
         "module": "Lemmatheca.SetTheory.EquivalenceRelations",
-        "line": 20
+        "line": 21
       },
       "target_sha256": "cef4a6fd5bf928c5fa23a3b624ee1bdba31c8290ecbd7038cf8f23589bbcbc6e"
     },
@@ -157,40 +160,40 @@
       "fingerprint": "044d8349a3fa6ed5f25d31c85df2081ef0043bbd4d0f329a16001ace4871893c",
       "axioms": [
         "propext",
-        "sorryAx"
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.adjacent_not_transitive :\n  Std.Refl Lemmatheca.Entry.EquivalenceRelations.adjacent \u2227\n    Std.Symm Lemmatheca.Entry.EquivalenceRelations.adjacent \u2227\n      Lemmatheca.Entry.EquivalenceRelations.adjacent 0 1 \u2227\n        Lemmatheca.Entry.EquivalenceRelations.adjacent 1 2 \u2227\n          \u00acLemmatheca.Entry.EquivalenceRelations.adjacent 0 2 \u2227\n            {x | Lemmatheca.Entry.EquivalenceRelations.adjacent 0 x} = {0, 1} \u2227\n              {x | Lemmatheca.Entry.EquivalenceRelations.adjacent 2 x} = {1, 2}",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 44
+        "line": 47
       },
       "target_sha256": "5e31c7f876c9ff5bfa7846361588fd72dec7550b4356dbc08f0a47237c4da6de"
     },
     "fin-three-empty-relation-not-reflexive": {
       "fingerprint": "1c69a48988c3505ea5f520139b4e291feb28b36eb0a2ec2eba31ba360b707916",
       "axioms": [
-        "sorryAx"
+        "propext"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.empty_relation_not_reflexive :\n  (Std.Symm fun x x_1 => False) \u2227 (IsTrans (Fin 3) fun x x_1 => False) \u2227 \u00acStd.Refl fun x x_1 => False",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 29
+        "line": 30
       },
       "target_sha256": "77f8780b23826bd90d268d2341bce638c5f6a81a7cfbf2d984e5f8175c5e71e0"
     },
     "fin-three-le-not-symmetric": {
       "fingerprint": "74b5e9c606d4f718eb35fa2647279c27f5013d9fef8c84c3b0f2bed2a6a24611",
       "axioms": [
-        "propext",
-        "sorryAx"
+        "propext"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.le_relation_not_symmetric :\n  (Std.Refl fun x1 x2 => x1 \u2264 x2) \u2227 (IsTrans (Fin 3) fun x1 x2 => x1 \u2264 x2) \u2227 0 \u2264 1 \u2227 \u00ac1 \u2264 0",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 34
+        "line": 36
       },
       "target_sha256": "6b944e22ead4561155ddf325164b2e23d73ee7089ce1490de045cd6df2765de5"
     },
@@ -198,13 +201,14 @@
       "fingerprint": "80c4ca44d08166b0327aed4c37b83dedd7a363513a6cdc15268c9b4d28e6821d",
       "axioms": [
         "propext",
-        "sorryAx"
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.missing_part_not_partition : \u00acSetoid.IsPartition {{0}, {1}} \u2227 2 \u2209 \u22c3\u2080 {{0}, {1}}",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 71
+        "line": 159
       },
       "target_sha256": "c13bc68768ca49435fef455246b98796ec3d21ac3592a2e7e63d630559a2ba7f"
     },
@@ -212,13 +216,14 @@
       "fingerprint": "d9dbede498bb7d04ba10c57022b781b2a3315f14eaf0ce1641114f87ea2cc3df",
       "axioms": [
         "propext",
-        "sorryAx"
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.overlapping_parts_not_partition :\n  \u00acSetoid.IsPartition {{0, 1}, {1, 2}} \u2227 {0, 1} \u2229 {1, 2} = {1}",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 67
+        "line": 141
       },
       "target_sha256": "64cdbb7e92ec0b9b3fc94e45abffbe0af6c4e4161bc14e0b8e5548e7c8e4ee4d"
     },
@@ -226,13 +231,14 @@
       "fingerprint": "15d308676f63461279b6cede8409ccb8b73d3963a534b9cc21c5d1c40f7fba28",
       "axioms": [
         "propext",
-        "sorryAx"
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.finite_classes :\n  {x | Lemmatheca.Entry.EquivalenceRelations.finiteSetoid x 0} = {0} \u2227\n    {x | Lemmatheca.Entry.EquivalenceRelations.finiteSetoid x 1} = {1, 2} \u2227\n      {x | Lemmatheca.Entry.EquivalenceRelations.finiteSetoid x 2} = {1, 2} \u2227\n        Lemmatheca.Entry.EquivalenceRelations.finiteSetoid.classes = {{0}, {1, 2}}",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 49
+        "line": 60
       },
       "target_sha256": "8123081999942c357cef68d6507802ddf199205fbb66d06d05d4e2b558680523"
     },
@@ -240,13 +246,14 @@
       "fingerprint": "e9f61b8cbd91e0758e66ef28eae5106f10cad5b7c36cf1c1554fde5d516c4067",
       "axioms": [
         "propext",
-        "sorryAx"
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.finite_relation_iff (a b : Fin 3) :\n  Lemmatheca.Entry.EquivalenceRelations.finiteSetoid a b \u2194 a = 0 \u2227 b = 0 \u2228 a \u2208 {1, 2} \u2227 b \u2208 {1, 2}",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 22
+        "line": 21
       },
       "target_sha256": "ca27951802f01deea444d62a269cc98470c2d3817a16129aca324dcdf2fd7234"
     },
@@ -303,13 +310,15 @@
     "int-parity-classes-infinite": {
       "fingerprint": "d071946c5d1a7efc34fdb37a4bb21fb399abb41456cc5f6d2ea6aa3118f5ee8a",
       "axioms": [
-        "sorryAx"
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.parity_classes_infinite :\n  (Set.range fun k => 2 * k).Infinite \u2227 (Set.range fun k => 2 * k + 1).Infinite",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 63
+        "line": 135
       },
       "target_sha256": "61344e64dbc4d4b77108df6521cea6b7771418fe69276fe0c9ae4add662f08bb"
     },
@@ -317,24 +326,21 @@
       "fingerprint": "b8e8e6473a83a55ab66ad2ba9a536cc6275967f1bc8590145bb1a3d5e0ceae23",
       "axioms": [
         "propext",
-        "sorryAx",
         "Classical.choice",
         "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.parity_classes :\n  (\u2200 (n : \u2124),\n      {x | Lemmatheca.Entry.EquivalenceRelations.paritySetoid x n} =\n        if Even n then Set.range fun k => 2 * k else Set.range fun k => 2 * k + 1) \u2227\n    Lemmatheca.Entry.EquivalenceRelations.paritySetoid.classes =\n        {Set.range fun k => 2 * k, Set.range fun k => 2 * k + 1} \u2227\n      (Set.range fun k => 2 * k) \u2260 Set.range fun k => 2 * k + 1",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 55
+        "line": 98
       },
       "target_sha256": "5125d0f65b3893ecf634122c9c89e0aae7d2e894b3518d6c9c719cdd50499104"
     },
     "int-parity-distinct-equivalent": {
       "fingerprint": "b1965265987e0051204b4fd4d9397df4ac7a5427c071009f52e323e0f2a5bfb9",
-      "axioms": [
-        "sorryAx"
-      ],
-      "status": "pending",
+      "axioms": [],
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.parity_distinct_equivalent : -1 \u2261 3 [ZMOD 2] \u2227 -1 \u2260 3",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
@@ -345,13 +351,15 @@
     "int-parity-identity-not-descend": {
       "fingerprint": "9655b762d62c59811f4acb1274e440dd61184b175056e4cae4e32abeb7195226",
       "axioms": [
-        "sorryAx"
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.parity_identity_not_descend : \u27e60\u27e7 = \u27e62\u27e7 \u2227 0 \u2260 2 \u2227 \u00ac\u2203 u, \u2200 (n : \u2124), u \u27e6n\u27e7 = n",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 75
+        "line": 167
       },
       "target_sha256": "4d3aee34111f56a1fcc10cea14eddfade949e304b50c532cf0b2533b42186593"
     },
@@ -359,28 +367,29 @@
       "fingerprint": "e9e21db8dbbbcfce7ea7fd2926be192d8fbd44b1f2c8465c08a24b76d482235a",
       "axioms": [
         "propext",
-        "sorryAx",
         "Classical.choice",
         "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.parity_label_descends :\n  \u2203 v, (\u2200 (n : \u2124), v \u27e6n\u27e7 = Lemmatheca.Entry.EquivalenceRelations.parityLabel n) \u2227 v \u27e60\u27e7 = 0 \u2227 v \u27e61\u27e7 = 1",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 83
+        "line": 182
       },
       "target_sha256": "60c26e7a49d8e98587d6d93eefb8e5d1a6d2353a94d4334e7ab5ce08eb6723b3"
     },
     "int-parity-successor-descends": {
       "fingerprint": "9911039bcfe22051970183b3c9c1b120d8cc8462b185b4d1a5a04aab6f4b1d92",
       "axioms": [
-        "sorryAx"
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.parity_successor_descends :\n  \u2203 s, (\u2200 (n : \u2124), s \u27e6n\u27e7 = \u27e6n + 1\u27e7) \u2227 s \u27e60\u27e7 = \u27e61\u27e7 \u2227 s \u27e61\u27e7 = \u27e60\u27e7 \u2227 Function.Involutive s",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 88
+        "line": 193
       },
       "target_sha256": "95d009b1cd96eecd65e1b65dfe730738575c5f73b5dbf9139aa4d7b89e92c8a9"
     },
@@ -467,13 +476,14 @@
       "fingerprint": "2183fe4dc22e9c844d391385bd6b8e9c857d99363af4a9d26da9000638124762",
       "axioms": [
         "propext",
-        "sorryAx"
+        "Classical.choice",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.Entry.EquivalenceRelations.diagram_fiber_p_and_range :\n  Lemmatheca.Entry.SetsAndMaps.diagramMap \u207b\u00b9' {Lemmatheca.Entry.SetsAndMaps.MapLabel.p} = {0} \u2227\n    Set.range Lemmatheca.Entry.SetsAndMaps.diagramMap =\n      {Lemmatheca.Entry.SetsAndMaps.MapLabel.p, Lemmatheca.Entry.SetsAndMaps.MapLabel.q}",
       "location": {
         "module": "Lemmatheca.Entry.EquivalenceRelations",
-        "line": 95
+        "line": 213
       },
       "target_sha256": "ce3c449c04e2f1dbb298e39deb2dc40b8a69cdb51bd70f63d5c98d96ccf6ab6a"
     },
@@ -820,13 +830,14 @@
     "map-kernel-classes-nonempty-fibers": {
       "fingerprint": "1c60848aa422493e1e8c17d608c5715582ea10ae2ca51b1089214e0bd9b22a95",
       "axioms": [
-        "sorryAx"
+        "propext",
+        "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.SetTheory.kernel_classes_eq_nonempty_fibers.{u, v} {\u03b1 : Type u} {\u03b2 : Type v} (f : \u03b1 \u2192 \u03b2) :\n  (Setoid.ker f).classes = Set.range fun y => f \u207b\u00b9' {\u2191y}",
       "location": {
         "module": "Lemmatheca.SetTheory.EquivalenceRelations",
-        "line": 29
+        "line": 45
       },
       "target_sha256": "6a945969b8d21020f2997419f97978fd1f9ee7a958bc69c6228239329baa9cb5"
     },
@@ -1224,15 +1235,14 @@
       "fingerprint": "bba12c3e03c993d28be9ff8ef20f1ca5da6b6071a06fc374a870f6cd3599c12a",
       "axioms": [
         "propext",
-        "sorryAx",
         "Classical.choice",
         "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.SetTheory.quotient_image_inverse_fiber.{u, v} {\u03b1 : Type u} {\u03b2 : Type v} (f : \u03b1 \u2192 \u03b2) (y : \u2191(Set.range f)) :\n  \u2191((Setoid.ker f).quotientEquivClasses ((Setoid.quotientKerEquivRange f).symm y)) = f \u207b\u00b9' {\u2191y}",
       "location": {
         "module": "Lemmatheca.SetTheory.EquivalenceRelations",
-        "line": 32
+        "line": 54
       },
       "target_sha256": "1fb1d1226e79c9bf5462fb36d208c642ede2b60e0f4e98520ac8a736770ed664"
     },
@@ -2423,14 +2433,13 @@
       "fingerprint": "e00db35ca9bbb6017232a6cec4cea6a525e80cc1fa05493d774abcdf59225ac7",
       "axioms": [
         "propext",
-        "sorryAx",
         "Quot.sound"
       ],
-      "status": "pending",
+      "status": "complete",
       "signature": "Lemmatheca.SetTheory.universal_relation_classes.{u} {\u03b1 : Type u} [Nonempty \u03b1] : \u22a4.classes = {Set.univ}",
       "location": {
         "module": "Lemmatheca.SetTheory.EquivalenceRelations",
-        "line": 17
+        "line": 16
       },
       "target_sha256": "7e39c8add06fd992d2be9de8b0def6f5f586555058557ea43c0bf4493a69738e"
     }
@@ -3948,11 +3957,11 @@
     "formal/Lemmatheca/Combinatorics/Additive/Pending/IncreasingListCard.lean": "2cdef4693eef488f131f1af7adb5c80a5a328bd700ef6a306717532a975cc49d",
     "formal/Lemmatheca/Combinatorics/Additive/Pending/IntegerSumsetChain.lean": "060921f6c8de7d39a7485be9ea152849df73d49b55b3e984e12dc1bf326762d0",
     "formal/Lemmatheca/Combinatorics/Additive/Sumsets.lean": "e6414bc7c8e17754c4ed9d3d94abb0edb70c8065c55a859532ab0f3d80d2d1c0",
-    "formal/Lemmatheca/Entry/EquivalenceRelations.lean": "2688951828a25a0521fd06417c097ac5d32bf5951e6459e3fa6fa1d29bfc9bc3",
+    "formal/Lemmatheca/Entry/EquivalenceRelations.lean": "3be9fbb13ac5e6a163f9102ef49f3158e140ffca397bad5c4f2755d3bf93a26b",
     "formal/Lemmatheca/Entry/SetsAndMaps.lean": "c1fcdd0e813761fa83f4626710b8221653866812369e6e3712a78eb3cf655533",
     "formal/Lemmatheca/ReviewChecks.lean": "00600a3241b055c542d10659ceffa6166166307647364656b6c23592d1982d91",
     "formal/Lemmatheca/SetTheory/Basic.lean": "1a83642d5cde1cffc326edd1f18e092c3edac4490d826b209dcbde7f902228c6",
-    "formal/Lemmatheca/SetTheory/EquivalenceRelations.lean": "f48cffec8ec7858e0bd69a3e5774a9cf178e6aa95a18e9eeab39ca5d9f9303c8",
+    "formal/Lemmatheca/SetTheory/EquivalenceRelations.lean": "09a6a4ba19f18cf2b3ab4254e78f85302278741ae3182750724c3e328be5d0a4",
     "formal/Lemmatheca/SetTheory.lean": "c00fd640a7c5132a6db6277891f97760a29137101d58471e1ab540c68caebc44",
     "formal/Lemmatheca.lean": "38410c020569645980efea0c73d79984f5be8052eba8779b3a7ebc442835f72f",
     "formal/lake-manifest.json": "364593e731276580ed27270a25a7db9b544d78778e11ab9b0a9b82fd248eaca5",
