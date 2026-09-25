@@ -14,10 +14,21 @@ in separate experiment records.
 ## Numbering and navigation
 
 Blocks are numbered separately by kind within an entry. These display numbers
-are never identifiers. Local links show the derived label; cross-entry links show
-the result's name. Both return to the citing block, reopening an answer when needed.
-Equations and figures have their own local labels. Tables and images belong to
-the human source; assets stay inside the entry folder.
+are never identifiers. Source references use `href="entry-id#block-id"` across entries
+and `href="#block-id"` within an entry. The catalog resolves stable entry IDs and
+the renderer generates reader URLs; neither area paths nor file paths belong in
+entry references. Reclassifying an entry requires no reference edits.
+
+Links preserve non-empty source text and inline formatting.
+Empty or whitespace-only links use a generated label: the block kind and number
+for local references, the target heading for cross-entry references, and the figure
+or table number for local figure/table references. Prefer empty same-entry links for automatic
+numbering and explicit cross-entry text that fits the sentence. References return
+to the citing block, reopening an answer when needed.
+Equations, figures, and tables have separate numbering within each entry. Figures
+and tables each have one caption, with a generated label; referenced elements need
+stable IDs. Tables and images belong to the human source; assets stay inside the
+entry folder.
 
 Categories form a browsing hierarchy; reading order is explicit by primary area.
 Only `corpus/entries/` and the working taxonomy are live inputs. Archived examples

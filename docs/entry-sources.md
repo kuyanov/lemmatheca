@@ -122,15 +122,24 @@ standalone `\(\eqref{...}\)` become clickable `(1)` links. References embedded i
 larger formula become the parenthesized number within that formula. Equation
 references are local to the entry and need no JSON record.
 
-Ordinary tables, captions, headers, lists, emphasis, and images are supported:
+Give each table a stable ID and exactly one caption. Tables are numbered
+**Table 1**, **Table 2**, … in source order within each entry, separately from
+figures and equations. Write the caption without its number:
 
 ```html
-<table>
+<table id="addition-table">
   <caption>A small addition table</caption>
   <thead><tr><th scope="col">\(a\)</th><th scope="col">\(a+1\)</th></tr></thead>
   <tbody><tr><td>\(0\)</td><td>\(1\)</td></tr></tbody>
 </table>
+<p>The values in <a href="#addition-table"></a> illustrate addition by one.</p>
 ```
+
+The empty reference becomes **Table 1**, including when it precedes the table.
+Explicit link text and inline formatting are preserved; prefer empty table links
+for automatic numbering. References are local to the entry and provide a return
+link to the citing block, reopening an answer when needed. Missing targets,
+duplicate IDs, and missing or multiple captions fail validation.
 
 Tables receive a keyboard-focusable scrolling container, keeping wide tables
 inside the reading column. Math works in cells and captions. The first example
@@ -148,28 +157,43 @@ Give each figure a stable ID and one caption. The reader inserts **Figure 1**,
   </div>
   <figcaption>Every input has one output.</figcaption>
 </figure>
-<p>The map in <a href="#map-picture">Figure</a> misses one element of its codomain.</p>
+<p>The map in <a href="#map-picture"></a> misses one element of its codomain.</p>
 ```
 
-The link text becomes **Figure 1** automatically, including in forward references.
+The empty link becomes **Figure 1** automatically, including in forward references.
+Non-empty link text is preserved, but prefer empty local figure references so their
+numbers stay current. Do not use "Figure" as placeholder text or hardcode a number.
 A missing target fails validation. Figure references stay within the entry and
 need no separate JSON record. They provide
 a return link to the citing block, just like mathematical references.
 
 ## Links, assets, and reading order
 
+Reference another entry by its stable ID and the target block ID, using
+`href="entry-id#block-id"`. Same-entry references use `href="#block-id"` or a local
+figure, table, or equation anchor. Entry references are resolved through the catalog when
+rendering; do not include area paths, `../`, `entry.html`, or reader URLs in source
+references. Unknown entry IDs and missing blocks fail validation.
+
 ```html
-<a href="#nonempty-triple-sumset">Nonempty triple sumsets</a>
-<a href="../thm-sumset-lower-bound/entry.html#sumset-lower-bound">Sumset lower bound</a>
+<a href="#nonempty-triple-sumset"></a>
+<a href="thm-sumset-lower-bound#sumset-lower-bound">Sumset lower bound</a>
 <img src="assets/figure.svg" alt="A translation injection" width="720" height="280">
 <a href="assets/supplement.pdf">Supplement</a>
 ```
 
-Local mathematical links receive local numbers; cross-entry links show the result
-name. Both record the source block for the return link. IDs stay fixed when titles
-or categories change. Reader URLs use `/entries/<id>/`.
+Non-empty link text and inline formatting are preserved. Only empty or whitespace-only
+links receive generated labels: local mathematical links show the block kind and number,
+local figure/table links show their number, and cross-entry links show the target heading.
+Prefer empty same-entry links for automatic
+numbering and explicit cross-entry text that fits the sentence, such as
+`<a href="sets-and-maps#pairs-and-relations">binary relation</a>`.
+Both kinds record the source block for the return link. IDs stay fixed when titles
+or categories change. The renderer currently generates `/entries/<id>/` URLs, so
+moving an entry between subareas needs no edits to references.
 Direct visits have no top back button. Following a block reference, including one
-within the same entry, or a figure reference shows the sticky return bar; bottom navigation remains available in either case.
+within the same entry, or a figure/table reference shows the sticky return bar;
+bottom navigation remains available in either case.
 
 Only active entry `assets/` directories are registered with Django's static-file system.
 `collectstatic` includes them without exposing source HTML/JSON. Restart the server

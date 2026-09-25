@@ -16,15 +16,17 @@ from .testing import CorpusFixtureMixin
 class RepositoryTests(SimpleTestCase):
     def test_current_corpus_renders(self):
         catalog = entries()
-        entry = next(iter(catalog.values()))
         home = self.client.get('/')
-        self.assertContains(home, entry['title'])
-        self.assertContains(home, entry['url'])
-        self.assertContains(self.client.get(
-            area_link(areas()[entry['primary_area']])['url']), entry['url'])
-        article = self.client.get(entry['url'])
-        self.assertContains(article, entry['title'])
-        self.assertContains(article, 'katex.min.js')
+        first = next(iter(catalog.values()))
+        self.assertContains(home, first['title'])
+        self.assertContains(home, first['url'])
+        for entry in catalog.values():
+            with self.subTest(entry=entry['id']):
+                self.assertContains(self.client.get(
+                    area_link(areas()[entry['primary_area']])['url']), entry['url'])
+                article = self.client.get(entry['url'])
+                self.assertContains(article, entry['title'])
+                self.assertContains(article, 'katex.min.js')
         for asset in ('vendor/katex/katex.min.js', 'vendor/katex/katex.min.css',
                       'vendor/katex/fonts/KaTeX_Main-Regular.woff2'):
             self.assertIsNotNone(finders.find(asset))
@@ -63,24 +65,63 @@ class ReaderTests(CorpusFixtureMixin, SimpleTestCase):
             self.assertNotContains(self.client.get(
                 '/'), 'class="featured-proof"')
 
-    def test_cross_reference_returns_to_the_citing_answer(self):
+    def test_references_return_to_the_citing_answer(self):
         article = self.client.get('/entries/first/')
         self.assertNotContains(article, 'class="question-answer" open')
-        target = '/entries/second/?from=first&at=question#result'
-        self.assertContains(article, target.replace('&', '&amp;'))
-        result = self.client.get(target)
-        self.assertContains(result, 'class="reading-return"')
-        self.assertEqual(
-            result.context['return_url'], '/entries/first/?answer=question#question')
-        returned = self.client.get(result.context['return_url'])
-        self.assertContains(returned, 'class="question-answer" open')
+        for target in ('/entries/second/?from=first&at=question#result',
+                       '/entries/first/?from=first&at=question#notation'):
+            with self.subTest(target=target):
+                self.assertContains(article, target.replace('&', '&amp;'))
+                result = self.client.get(target)
+                self.assertContains(result, 'class="reading-return"')
+                self.assertEqual(
+                    result.context['return_url'], '/entries/first/?answer=question#question')
+                returned = self.client.get(result.context['return_url'])
+                self.assertContains(returned, 'class="question-answer" open')
         # Rendering an open answer must not mutate the cached source.
         self.assertNotContains(self.client.get(
             '/entries/first/'), 'class="question-answer" open')
 
-    def test_local_block_and_figure_references_offer_a_return(self):
+    def test_entry_references_survive_moving_to_another_subarea(self):
+        target = '/entries/second/?from=first&at=question#result'
+        self.assertContains(self.client.get('/entries/first/'),
+                            target.replace('&', '&amp;'))
+        source = self.corpus / 'entries/first/entry.html'
+        original_source = source.read_text()
+        taxonomy_path = self.corpus / 'taxonomy.json'
+        taxonomy = json.loads(taxonomy_path.read_text())
+        taxonomy['areas'].append({
+            'id': 'orders', 'title': 'Orders', 'parent': 'math',
+            'description': 'Ordered sets.',
+        })
+        taxonomy_path.write_text(json.dumps(taxonomy))
+        metadata_path = self.corpus / 'entries/second/entry.json'
+        metadata = json.loads(metadata_path.read_text())
+        metadata['primary_area'] = 'orders'
+        metadata_path.write_text(json.dumps(metadata))
+        (self.corpus / 'reading-order.json').write_text(json.dumps({
+            'format_version': 1,
+            'areas': {'sets': ['first'], 'orders': ['second']},
+        }))
+
+        self.assertEqual(source.read_text(), original_source)
+        self.assertContains(self.client.get('/entries/first/'),
+                            target.replace('&', '&amp;'))
+        moved = self.client.get(target)
+        self.assertContains(moved, 'href="/areas/math/orders/"')
+        self.assertEqual(moved.context['return_url'],
+                         '/entries/first/?answer=question#question')
+        returned = self.client.get(moved.context['return_url'])
+        self.assertContains(returned, 'class="question-answer" open')
+        self.assertContains(self.client.get('/areas/math/orders/'),
+                            'href="/entries/second/"')
+        self.assertNotContains(self.client.get('/areas/math/sets/'),
+                               'href="/entries/second/"')
+
+    def test_local_block_figure_and_table_references_offer_a_return(self):
         article = self.client.get('/entries/first/')
-        for target, label in (('sets', 'Definition 1'), ('diagram', 'Figure 1')):
+        for target, label in (('sets', 'Definition 1'), ('diagram', 'Figure 1'),
+                              ('notation', 'Table 1')):
             with self.subTest(target=target):
                 url = f'/entries/first/?from=first&at=bound#{target}'
                 self.assertContains(article, url.replace('&', '&amp;'))

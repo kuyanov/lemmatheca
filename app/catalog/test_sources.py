@@ -3,7 +3,8 @@
 import json
 
 from django.contrib.staticfiles import finders
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
+from django.urls import include, path
 
 from .content import entries, load_catalog
 from .sources import ContentError, render_block
@@ -45,7 +46,9 @@ class SourceTests(CorpusFixtureMixin, SimpleTestCase):
         definition = render_block(
             entry['blocks_by_id']['sets'], entry, catalog)
         self.assertIn('class="table-scroll"', definition)
-        self.assertIn('<caption>Notation</caption>', definition)
+        self.assertIn('<caption><span class="table-label">Table 1</span> Notation</caption>', definition)
+        self.assertIn('aria-label="Table 1 Notation"', definition)
+        self.assertIn('>Table 1</a>', proof)
         self.assertIn(r'\(a+b\)', definition)
         self.assertIn('<span class="figure-label">Figure 1</span>', definition)
         self.assertIn('>Figure 1</a>', proof)
@@ -53,18 +56,117 @@ class SourceTests(CorpusFixtureMixin, SimpleTestCase):
         self.assertIsNotNone(finders.find('entries/first/diagram.svg'))
         self.assertIsNone(finders.find('entries/first/entry.json'))
 
+    def test_table_numbers_refresh_independently_of_figures_and_other_entries(self):
+        original = self.source.read_text().replace(
+            '<h2>Sets</h2>', '<h2>Sets</h2><p>See <a href="#notation"></a>.</p>')
+        self.source.write_text(original)
+        catalog = entries()
+        entry = catalog['first']
+        definition = render_block(entry['blocks_by_id']['sets'], entry, catalog)
+        self.assertIn('>Table 1</a>', definition)
+
+        self.source.write_text(original.replace('<table id="notation">', '''
+<table><caption>An earlier table</caption><tr><td>Earlier</td></tr></table>
+<table id="notation">'''))
+        second = self.corpus / 'entries/second/entry.html'
+        second.write_text(second.read_text().replace('</section>', '''
+<table id="other-table"><caption>Other entry</caption><tr><td>Other</td></tr></table>
+</section>'''))
+        catalog = entries()
+        entry = catalog['first']
+        definition = render_block(entry['blocks_by_id']['sets'], entry, catalog)
+        self.assertIn('>Table 2</a>', definition)
+        self.assertIn('<span class="table-label">Table 1</span> An earlier table', definition)
+        self.assertIn('<span class="table-label">Table 2</span> Notation', definition)
+        self.assertIn('<span class="figure-label">Figure 1</span>', definition)
+        self.assertEqual(render_block(entry['blocks_by_id']['sets'], entry, catalog), definition)
+        other = catalog['second']
+        self.assertIn('<span class="table-label">Table 1</span> Other entry',
+                      render_block(other['blocks_by_id']['result'], other, catalog))
+
+    def test_reference_text_takes_priority_over_generated_labels(self):
+        original = self.source.read_text()
+        for href, target in (
+            ('#sets', '/entries/first/?from=first&at=reference#sets'),
+            ('first#sets', '/entries/first/?from=first&at=reference#sets'),
+            ('second#result',
+             '/entries/second/?from=first&at=reference#result'),
+            ('#diagram', '/entries/first/?from=first&at=reference#diagram'),
+            ('#notation', '/entries/first/?from=first&at=reference#notation'),
+        ):
+            for text in ('binary relation', r'<em>the sets \(A\) &amp; \(B\)</em>'):
+                with self.subTest(href=href, text=text):
+                    self.source.write_text(original + f'''
+<section id="reference" data-kind="lemma"><h2>References</h2>
+  <p>See <a href="{href}">{text}</a>.</p>
+</section>''')
+                    catalog = self.load()
+                    entry = catalog['first']
+                    block = entry['blocks_by_id']['reference']
+                    rendered = render_block(block, entry, catalog)
+                    self.assertIn(f'>{text}</a>', rendered)
+                    self.assertIn(f'href="{target.replace("&", "&amp;")}"', rendered)
+                    # Rendering twice must preserve the cached source and its markup.
+                    self.assertEqual(render_block(block, entry, catalog), rendered)
+
+    def test_empty_reference_text_uses_generated_labels(self):
+        original = self.source.read_text()
+        for href, label in (
+            ('#sets', 'Definition 1'),
+            ('first#sets', 'Definition 1'),
+            ('second#result', 'Another result'),
+            ('#diagram', 'Figure 1'),
+            ('#notation', 'Table 1'),
+        ):
+            for text in ('', ' \n\t ', '<span> &nbsp; </span>'):
+                with self.subTest(href=href, text=text):
+                    self.source.write_text(original + f'''
+<section id="reference" data-kind="lemma"><h2>References</h2>
+  <p>See <a href="{href}">{text}</a>.</p>
+</section>''')
+                    catalog = self.load()
+                    entry = catalog['first']
+                    rendered = render_block(entry['blocks_by_id']['reference'], entry, catalog)
+                    self.assertIn(f'>{label}</a>', rendered)
+
+    def test_entry_reference_url_is_resolved_when_rendering(self):
+        catalog = self.load()
+        entry = catalog['first']
+        block = entry['blocks_by_id']['question']
+
+        class MovedRoutes:
+            urlpatterns = [path('reader/', include('catalog.urls'))]
+
+        with override_settings(ROOT_URLCONF=MovedRoutes):
+            rendered = render_block(block, entry, catalog)
+        self.assertIn(
+            'href="/reader/entries/second/?from=first&amp;at=question#result"', rendered)
+        self.assertIn('>Another result</a>', rendered)
+
     def test_invalid_references_assets_and_markup_are_rejected(self):
         original = self.source.read_text()
         for before, after, message in (
             ('id="equality"', 'id="sets"', 'duplicate anchor'),
+            ('id="notation"', 'id="diagram"', 'duplicate anchor'),
             ('href="#sets"', 'href="#missing"', 'Broken source link'),
-            ('../second/entry.html#result',
-             '../missing/entry.html#result', 'Broken source link'),
+            ('second#result',
+             'missing#result', 'Broken source link'),
+            ('second#result', 'second#missing', 'Broken source link'),
+            ('second#result', 'second', 'Broken source link'),
+            ('second#result', 'second?area=sets#result', 'Broken source link'),
+            ('second#result', 'first#diagram', 'must name a mathematical block'),
+            ('second#result', 'first#notation', 'must name a mathematical block'),
+            ('second#result', '../second/entry.html#result', 'Use entry-id#block-id'),
+            ('second#result', '/entries/second/#result', 'Use entry-id#block-id'),
+            ('#sets', 'entry.html#sets', 'Use entry-id#block-id'),
             ('assets/diagram.svg', 'assets/missing.svg', 'Missing or escaped asset'),
             ('assets/diagram.svg', 'assets/../../taxonomy.json', 'entry-local'),
             (r'\eqref{eq:bound}', r'\eqref{missing}',
              'Unknown equation reference'),
             ('</figure>', '</figcaption>', 'Unbalanced closing tag'),
+            ('<caption>Notation</caption>', '', 'Each table needs one caption'),
+            ('<caption>Notation</caption>',
+             '<caption>Notation</caption><caption>Extra</caption>', 'Each table needs one caption'),
         ):
             with self.subTest(change=after):
                 self.source.write_text(original.replace(before, after))

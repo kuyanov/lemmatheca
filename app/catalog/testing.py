@@ -11,7 +11,7 @@ from django.test import override_settings
 FIRST_SOURCE = r'''
 <section id="sets" data-kind="definition">
   <h2>Sets</h2><p>Some sets \(A\) and \(B\).</p>
-  <table><caption>Notation</caption><tr><th scope="col">Sum</th></tr>
+  <table id="notation"><caption>Notation</caption><tr><th scope="col">Sum</th></tr>
     <tr><td>\(a+b\)</td></tr></table>
   <figure id="diagram"><img src="assets/diagram.svg" alt="Two sets">
     <figcaption>A picture.</figcaption></figure>
@@ -19,19 +19,19 @@ FIRST_SOURCE = r'''
 <section id="equality" data-kind="definition"><h2>Equality</h2><p>Equal sets.</p></section>
 <section id="bound" data-kind="lemma">
   <h2>A basic bound</h2>
-  <p>Use <a href="#sets">Sets</a> and <a href="#diagram">Figure</a>.
+  <p>Use <a href="#sets"></a>, <a href="#diagram"></a>, and <a href="#notation"></a>.
     See \eqref{eq:bound}, \(\eqref{eq:bound}\), and \(1+\eqref{eq:bound}\).</p>
   <div class="math-display">\[1 \le 2.\label{eq:bound}\]</div>
 </section>
 <section id="question" data-kind="question">
   <h2>Why?</h2><details class="question-answer"><summary>Answer</summary>
-    <p>See <a href="../second/entry.html#result">Another result</a>.</p>
+    <p>See <a href="second#result">Another result</a> and <a href="#notation"></a>.</p>
   </details>
 </section>
 '''
 SECOND_SOURCE = '''
 <section id="result" data-kind="theorem"><h2>Another result</h2>
-  <p>Use <a href="../first/entry.html#bound">A basic bound</a>.</p>
+  <p>Use <a href="first#bound">A basic bound</a>.</p>
 </section>
 '''
 

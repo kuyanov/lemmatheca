@@ -51,7 +51,7 @@ def load_catalog(corpus_dir, repository_dir):
                 raise ContentError("Entry ID must match its folder name")
             if not {entry["primary_area"], *entry.get("additional_areas", [])} <= taxonomy:
                 raise ContentError("Unknown area")
-            blocks, anchors, counts, figures = parse_source(
+            blocks, anchors, counts, captioned = parse_source(
                 (directory / "entry.html").read_text())
             for block in blocks:
                 block['formalization'] = block_progress(
@@ -63,7 +63,7 @@ def load_catalog(corpus_dir, repository_dir):
                 **entry, "directory": directory,
                 "url": reverse("catalog:entry", args=[entry["id"]]),
                 "blocks": blocks, "blocks_by_id": {block["id"]: block for block in blocks},
-                "anchors": anchors, "figures": figures,
+                "anchors": anchors, "captioned": captioned,
                 "formalization": entry_progress(blocks, formal_nodes),
                 "based_on": [
                     {**citation, 'doi_url': 'https://doi.org/' + quote(citation['doi'], safe='/')

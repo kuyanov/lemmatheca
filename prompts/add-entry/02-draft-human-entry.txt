@@ -32,9 +32,19 @@ Respect repository instructions and preserve unrelated work.
 3. Organize coherent blocks for readers, not one block per anticipated Lean node.
    Use the repository's HTML conventions, stable block IDs, supported data-kind
    values, mathematical notation, and collapsible question answers. Let the reader
-   generate numbering, navigation, and figure/equation references. Use figures or
-   tables only when they explain something more clearly, with accurate captions
-   and useful alternative text. Avoid Lean names and pipeline details in the prose.
+   generate numbering, navigation, and figure/table/equation references. Use stable
+   href="entry-id#block-id" references across entries and href="#block-id" locally;
+   the reader resolves the actual URLs. Do not put area paths, ../, entry.html,
+   or rendered reader URLs in entry references. Prefer empty links
+   for same-entry block, figure, and table references so their numbers are generated, and
+   explicit, meaningful text for cross-entry links, such as "binary relation".
+   Non-empty link text and inline formatting are preserved; only empty or whitespace-only
+   links receive generated labels (local block kind and number, cross-entry heading,
+   or figure/table number). Check that the rendered sentence is grammatical. Do not hardcode
+   reference numbers or use placeholder text such as "Figure" or "Table" in numbered links.
+   Use figures or tables only when they explain something more clearly. Give each a
+   stable ID and exactly one accurate caption, without a number; give images useful
+   alternative text. Avoid Lean names and pipeline details in the prose.
 4. Create corpus/entries/<entry-id>/entry.html and entry.json, plus necessary assets.
    Use only supported metadata fields and verified based_on citations. Keep the
    editorial status draft, choose existing appropriate subject areas, and estimate

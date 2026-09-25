@@ -86,7 +86,7 @@ an entry between subjects does not require moving either its folder or its proof
 1. `catalog.content` reads taxonomy, reading order, and each entry's HTML/JSON.
    It validates metadata, assets, mathematical references, and formal node IDs.
 2. The HTML parser derives block kinds, titles, order, local numbering, and equation
-   labels, figure numbers, links, and `data-formal` mappings. Metadata supplies
+   labels, figure/table numbers, links, and `data-formal` mappings. Metadata supplies
    citations and reading information. `formalization.nodes` resolves formal links
    and derives readiness. There is one editable source for each item.
 3. Views render the parsed content through shared Django templates. KaTeX runs in
@@ -134,7 +134,7 @@ submission buttons open placeholder dialogs. Missing HTML routes use the custom
 
 The header shows authors, linked title, and year for the first **Based on:**
 citation, with further sources in a native HTML disclosure. Direct entry visits
-have no top back button. Local and cross-entry block references, and local figure
+have no top back button. Local and cross-entry block references, and local figure/table
 references, include the source entry and block
 so a sticky return bar can go back precisely, reopening a question answer when
 needed. Bottom back links and same-area “Next entry” links remain available.

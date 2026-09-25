@@ -77,18 +77,19 @@ def parse_source(source):
         raise ContentError(f"Unclosed <{parser.stack[-1].tag}>")
     from .equations import prepare_equations
     prepare_equations(parser.root)
-    figures = {}
-    for number, figure in enumerate((node for node in parser.root.walk() if node.tag == 'figure'), 1):
-        captions = [node for node in figure.children if isinstance(
-            node, Element) and node.tag == 'figcaption']
-        if len(captions) != 1:
-            raise ContentError('Each figure needs one figcaption')
-        caption = captions[0]
-        label = f'Figure {number}'
-        caption.children.insert(0, Element(
-            'span', {'class': 'figure-label'}, [label]))
-        if figure.attrs.get('id'):
-            figures[figure.attrs['id']] = label
+    captioned = {}
+    for tag, caption_tag in (('figure', 'figcaption'), ('table', 'caption')):
+        elements = (node for node in parser.root.walk() if node.tag == tag)
+        for number, element in enumerate(elements, 1):
+            captions = [node for node in element.children if isinstance(
+                node, Element) and node.tag == caption_tag]
+            if len(captions) != 1:
+                raise ContentError(f'Each {tag} needs one {caption_tag}')
+            label = f'{tag.capitalize()} {number}'
+            captions[0].children[:0] = [
+                Element('span', {'class': f'{tag}-label'}, [label]), ' ']
+            if element.attrs.get('id'):
+                captioned[element.attrs['id']] = {'kind': tag, 'label': label}
     ids = set()
     for node in parser.root.walk():
         if "id" in node.attrs:
@@ -134,28 +135,25 @@ def parse_source(source):
             raise ContentError(f"Reserved heading anchor: {heading_id}")
     if not blocks:
         raise ContentError("An entry must contain at least one block")
-    return blocks, ids, counts, figures
+    return blocks, ids, counts, captioned
 
 
 def reference_target(href, entry_id, catalog):
-    """Resolve source-relative math links; ordinary local figure links stay local."""
+    """Resolve entry-id#block-id or #anchor without relying on file paths."""
     url = urlsplit(href)
     if url.scheme or url.netloc:
         return None
-    if url.path in ("", "entry.html"):
-        target_id = entry_id
-    else:
-        match = re.fullmatch(r"\.\./([^/]+)/entry\.html", url.path)
-        if not match:
-            raise ContentError(f"Unsupported relative link: {href}")
-        target_id = match[1]
+    if url.path and not IDENTIFIER.fullmatch(url.path):
+        raise ContentError(
+            f"Use entry-id#block-id or #anchor for source references: {href}")
+    target_id = url.path or entry_id
     target = catalog.get(target_id)
     if url.query or not target or url.fragment not in target["anchors"]:
         raise ContentError(f"Broken source link: {href}")
     if url.fragment not in target["blocks_by_id"]:
-        if target_id != entry_id:
+        if url.path:
             raise ContentError(
-                f"Cross-entry references must name a mathematical block: {href}")
+                f"Entry ID references must name a mathematical block: {href}")
         return None
     return target, target["blocks_by_id"][url.fragment]
 
@@ -196,13 +194,16 @@ def render_block(block, entry, catalog, expanded_answer=None):
                     label = result["title"]
                 attrs.update(href=url, **{"class": "lemma-reference"},
                              title=f"{result['label']} — {result['title']} · {target['title']}")
-                children = [label]
-            elif not link.scheme and not link.netloc and link.fragment in entry['figures']:
-                figure_id = link.fragment
+                if not node.text().strip():
+                    children = [label]
+            elif not link.scheme and not link.netloc and link.fragment in entry['captioned']:
+                anchor = link.fragment
+                target = entry['captioned'][anchor]
                 query = urlencode({"from": entry["id"], "at": block["id"]})
-                attrs.update(href=reverse('catalog:entry', args=[entry['id']]) + f'?{query}#{figure_id}',
-                             **{'class': 'figure-reference'})
-                children = [entry['figures'][figure_id]]
+                attrs.update(href=reverse('catalog:entry', args=[entry['id']]) + f'?{query}#{anchor}',
+                             **{'class': f'{target["kind"]}-reference'})
+                if not node.text().strip():
+                    children = [target['label']]
         if node.tag == "img":
             relative = asset_path(entry["directory"], attrs.get("src", ""))
             attrs["src"] = static(f"entries/{entry['id']}/{relative}")

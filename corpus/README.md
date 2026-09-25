@@ -1,10 +1,12 @@
 # Mathematical corpus
 
 The active collection starts with [Sets and maps: a first guide](entries/sets-and-maps/entry.html),
-followed by [Equivalence relations, partitions, and quotients](entries/equivalence-relations/entry.html).
-Both entries have complete formal verification and accepted node reviews; their
-editorial status remains draft. Entries are edited as repository files and reviewed
-manually; source credits appear in their metadata.
+followed by [Equivalence relations, partitions, and quotients](entries/equivalence-relations/entry.html)
+and [Ordered sets: comparison, bounds, and quotients](entries/ordered-sets/entry.html).
+The first two entries have complete formal verification and accepted node reviews.
+The third is a human draft; its formalization has not started. All three retain
+draft editorial status. Entries are edited as repository files and reviewed manually;
+source credits appear in their metadata.
 
 ## Entry format
 
@@ -23,6 +25,11 @@ status, reading_time, summary, abstract
 ```
 
 HTML owns mathematical blocks, titles, links, and formal-node mappings.
+Cross-entry references use `href="entry-id#block-id"`; same-entry references use
+`href="#block-id"`. The reader resolves the stable IDs to URLs, independently of
+subject areas. Prefer empty local links for generated numbering and explicit
+cross-entry text that fits the sentence. Figures and tables have separate numbering
+within each entry; give each a stable ID and one caption without a number.
 `status` is editorial; formal readiness is derived separately. Write original
 exposition and cite sources in `based_on`. See the
 [authoring guide](../docs/entry-sources.md) for the full source format.

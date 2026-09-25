@@ -1,0 +1,525 @@
+<section id="partial-and-total-orders" data-kind="definition">
+  <h2>Partial and total orders</h2>
+  <p>Inclusion compares sets, but it does not compare every pair: neither \(\{0\}\subseteq\{1\}\)
+    nor \(\{1\}\subseteq\{0\}\). An order can record comparisons without requiring all
+    elements to lie in a single sequence.</p>
+  <p>A <strong>partial order</strong> on a set \(P\) is a
+    <a href="sets-and-maps#pairs-and-relations">binary relation</a>, written
+    \(\leq\), with the following properties for all \(a,b,c\in P\):
+  </p>
+  <table id="partial-order-axioms-table">
+    <caption>Axioms of a partial order</caption>
+    <thead>
+      <tr>
+        <th scope="col">Property</th>
+        <th scope="col">Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Reflexivity</th>
+        <td>\(a\leq a\).</td>
+      </tr>
+      <tr>
+        <th scope="row">Antisymmetry</th>
+        <td>\(a\leq b\) and \(b\leq a\) imply \(a=b\).</td>
+      </tr>
+      <tr>
+        <th scope="row">Transitivity</th>
+        <td>\(a\leq b\) and \(b\leq c\) imply \(a\leq c\).</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>The pair \((P,\leq)\) is a <strong>partially ordered set</strong>, or <strong>poset</strong>.
+    The symbol \(\leq\) denotes the chosen relation; it need not be numerical comparison.
+    We write \(b\geq a\) for \(a\leq b\).</p>
+  <p>Elements \(a,b\) are <strong>comparable</strong> if \(a\leq b\) or \(b\leq a\).
+    Otherwise they are <strong>incomparable</strong>. A partial order in which every pair is
+    comparable is a <strong>total order</strong>, also called a <strong>linear order</strong>.
+    The usual orders on \(\mathbb N,\mathbb Z,\mathbb Q,\mathbb R\) are total.</p>
+  <p>Antisymmetry is different from the symmetry required of an
+    <a href="equivalence-relations#relation-properties">equivalence relation</a>:
+    comparisons in both directions force equality. It does not mean that symmetry fails.
+    Equality itself is both symmetric and a partial order. In this order, distinct elements are
+    incomparable; it is total exactly when \(P\) has at most one element.
+  </p>
+</section>
+
+<section id="orders-from-inclusion-and-divisibility" data-kind="definition">
+  <h2>Inclusion, divisibility, and inherited orders</h2>
+  <p>For a fixed set \(U\), inclusion is a partial order on the
+    <a href="sets-and-maps#power-sets">power set</a> \(\mathcal P(U)\).
+    Every set includes itself; transitivity and antisymmetry are the inclusion rules from
+    <a href="sets-and-maps#two-inclusions">Equality from two inclusions</a>.
+    If \(U\) contains distinct \(p,q\), its singleton subsets \(\{p\},\{q\}\) are incomparable.
+  </p>
+  <p>On the positive integers \(\mathbb N_{&gt;0}=\{1,2,3,\ldots\}\), define
+    <strong>divisibility</strong> by
+  </p>
+  <div class="math-display">\[ a\mid b\quad\Longleftrightarrow\quad
+    b=ak\text{ for some }k\in\mathbb N_{&gt;0}. \]</div>
+  <p>This is a partial order. Reflexivity uses \(a=a\cdot1\); if \(b=ak\) and \(c=b\ell\),
+    then \(c=a(k\ell)\), giving transitivity. If also \(a=b\ell\), cancellation in
+    \(a=ak\ell\) gives \(k\ell=1\). Positive integers with product \(1\) are both \(1\),
+    so \(a=b\). The order is not total: neither \(2\mid3\) nor \(3\mid2\).</p>
+  <p>A subset \(S\subseteq P\) carries the <strong>inherited order</strong>: compare its
+    elements by the same rule as in \(P\). Each partial-order axiom remains true because it
+    already holds for all elements of \(P\). For example, we can restrict divisibility to</p>
+  <div class="math-display">\[ D=\{1,2,3,4,6,12\}, \]</div>
+  <p>the positive divisors of \(12\). In this order \(3\) is below \(6\), but \(3\) and
+    \(4\) are incomparable, despite their usual numerical comparison.</p>
+  <p>Reversing a partial order also gives a partial order: define \(a\leq_{\mathrm{op}}b\)
+    to mean \(b\leq a\). Reflexivity and antisymmetry are unchanged, and transitivity follows
+    by reading the two comparisons in reverse. This <strong>opposite order</strong> lets us
+    turn statements about elements above a set into statements about elements below it.</p>
+</section>
+
+<section id="strict-orders" data-kind="lemma">
+  <h2>Strict and non-strict comparison</h2>
+  <div class="statement-box">
+    <p>A <strong>strict partial order</strong> is an irreflexive, transitive relation:
+      \(a&lt;a\) never holds, and \(a&lt;b&lt;c\) implies \(a&lt;c\).
+      A partial order determines a strict partial order by</p>
+    <div class="math-display">\[ a&lt;b\quad\Longleftrightarrow\quad a\leq b\text{ and }a\ne b. \]</div>
+    <p>Conversely, a strict partial order determines a partial order by</p>
+    <div class="math-display">\[ a\leq b\quad\Longleftrightarrow\quad a&lt;b\text{ or }a=b. \]</div>
+    <p>These constructions undo each other.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Start with a partial order. The strict relation is irreflexive by definition. If
+    \(a&lt;b\) and \(b&lt;c\), then \(a\leq c\). Were \(a=c\), we would have both
+    \(a\leq b\) and \(b\leq a\), forcing \(a=b\), a contradiction. Thus \(a&lt;c\).</p>
+  <p>Now start with a strict partial order. Adding equality gives reflexivity. If
+    \(a\leq b\) and \(b\leq a\) with \(a\ne b\), then \(a&lt;b&lt;a\), contradicting
+    irreflexivity. For transitivity, suppose \(a\leq b\leq c\). If either comparison is
+    equality, substitute it; otherwise use transitivity of \(&lt;\).</p>
+  <p>Removing equality and putting it back restores the original partial order. Putting equality
+    into a strict order and then removing it restores the strict relation, since irreflexivity
+    already excludes equal endpoints. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For a total order, exactly one of \(a&lt;b\), \(a=b\), or \(b&lt;a\) holds. In a partial
+    order there is a fourth possibility: incomparability. Thus \(a\nleq b\) does not generally
+    imply \(b&lt;a\). The strict order associated with inclusion is proper inclusion \(\subsetneq\).</p>
+</section>
+
+<section id="chains-and-hasse-diagrams" data-kind="definition">
+  <h2>Chains and finite order diagrams</h2>
+  <p>A <strong>chain</strong> in a poset is a subset whose elements are pairwise comparable.
+    An <strong>antichain</strong> is a subset whose distinct elements are pairwise incomparable.
+    In \(D\) with divisibility, \(\{1,2,4,12\}\) is a chain and \(\{4,6\}\) is an antichain.</p>
+  <p>An element \(b\) <strong>covers</strong> \(a\) if \(a&lt;b\) and there is no
+    \(c\in P\) with \(a&lt;c&lt;b\). A <strong>Hasse diagram</strong> for a finite poset draws
+    each element as a point and joins \(a\) to \(b\) when \(b\) covers \(a\), placing
+    \(b\) higher. Loops and comparisons already implied by transitivity are omitted.</p>
+  <figure id="divisors-diagram" class="proof-figure">
+    <div class="figure-image"><img src="assets/divisors.svg" width="720" height="300"
+        alt="Hasse diagram of the positive divisors of 12. From bottom to top the rows are 1; 2 and 3; 4 and 6; 12. Cover edges join 1 to 2 and 3, 2 to 4 and 6, 3 to 6, and 4 and 6 to 12. A highlighted path runs through 1, 2, 4, 12.">
+    </div>
+    <figcaption>Divisibility on \(D\). The highlighted path is a chain; \(4\) and \(6\) are incomparable.</figcaption>
+  </figure>
+  <p>In a finite poset, \(a&lt;b\) exactly when there is a path from \(a\) to \(b\) going
+    upward along edges. One direction follows from transitivity. For the other, start with
+    \(a&lt;b\) and insert an intermediate element whenever two successive elements do not
+    form a cover. Each insertion adds a new element to a strictly increasing chain, so finiteness
+    forces the process to stop.</p>
+  <p>Height alone does not give a comparison: in <a href="#divisors-diagram"></a>, \(3\)
+    lies lower than \(4\), but no upward path connects them. Nor do covers determine every infinite
+    order. In \(\mathbb Q\) with its usual order, \((a+b)/2\) lies strictly between any
+    \(a&lt;b\), so there are no covers.</p>
+</section>
+
+<section id="least-and-minimal-elements" data-kind="definition">
+  <h2>Least, greatest, minimal, and maximal</h2>
+  <p>Let \(S\) be a subset of a poset \(P\). The following conditions all require the
+    element under discussion to belong to \(S\):</p>
+  <table id="extremal-elements-table">
+    <caption>Extremal elements of a subset</caption>
+    <thead>
+      <tr>
+        <th scope="col">Term</th>
+        <th scope="col">Condition for \(m\in S\)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Least element</th>
+        <td>\(m\leq s\) for every \(s\in S\).</td>
+      </tr>
+      <tr>
+        <th scope="row">Minimal element</th>
+        <td>No \(s\in S\) satisfies \(s&lt;m\).</td>
+      </tr>
+      <tr>
+        <th scope="row">Greatest element</th>
+        <td>\(s\leq m\) for every \(s\in S\).</td>
+      </tr>
+      <tr>
+        <th scope="row">Maximal element</th>
+        <td>No \(s\in S\) satisfies \(m&lt;s\).</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>A least element is also called a <strong>minimum</strong>, written \(\min S\); a greatest
+    element is a <strong>maximum</strong>, written \(\max S\). If \(m,m'\) are both least,
+    then \(m\leq m'\) and \(m'\leq m\), so antisymmetry gives \(m=m'\). The same argument
+    proves uniqueness of a greatest element.</p>
+  <p>A least element \(m\) is the only minimal element: any other \(s\in S\) has \(m&lt;s\).
+    A minimal element, however, need not be comparable with every member of \(S\). Under
+    divisibility, both elements of \(\{4,6\}\) are minimal and maximal; the set has neither
+    a least nor a greatest element.</p>
+  <p>In a total order, a minimal element is least. For any \(s\in S\), comparability gives
+    \(m\leq s\) or \(s\leq m\); minimality forces equality in the second case.
+    Reversing the order shows that maximal elements are greatest there.</p>
+  <p>A least element of the whole poset is called its <strong>bottom</strong>, denoted
+    \(\bot\), and a greatest element its <strong>top</strong>, denoted \(\top\), when they
+    exist. For \((\mathcal P(U),\subseteq)\), they are \(\varnothing\) and \(U\).
+    For \(D\) under divisibility, they are \(1\) and \(12\).</p>
+</section>
+
+<section id="finite-extrema" data-kind="lemma">
+  <h2>Finite sets have minimal and maximal elements</h2>
+  <div class="statement-box">
+    <p>If \(S\) is a nonempty finite subset of a poset, then for every \(s\in S\) there
+      is a minimal element \(m\) of \(S\) with \(m\leq s\), and a maximal element
+      \(M\) of \(S\) with \(s\leq M\).</p>
+    <p>Consequently, if \(S\) has just one minimal element, it is least. If it has just one
+      maximal element, it is greatest.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Starting at \(s\), stop if it is minimal. Otherwise choose a strictly smaller element
+    of \(S\), and repeat. A strictly descending chain cannot revisit an element: transitivity
+    would produce \(x&lt;x\). Since \(S\) is finite, the process stops at a minimal element
+    \(m\); transitivity gives \(m\leq s\). Apply the same argument in the opposite order
+    for a maximal element above \(s\).</p>
+  <p>If \(m\) is the only minimal element, the minimal element found below each \(s\) must
+    be \(m\). Hence \(m\leq s\) for every \(s\in S\), making it least. Reverse the order
+    for the maximal case. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="unique-minimal-question" data-kind="question">
+  <h2>Can a unique minimal element fail to be least?</h2>
+  <p>Let \(P=\mathbb Z\cup\{\star\}\), where \(\star\) is a new element. Keep the usual
+    order on \(\mathbb Z\), add \(\star\leq\star\), and make \(\star\) incomparable
+    with every integer. Is this a partial order? Find its minimal and least elements.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>It is a partial order. Reflexivity holds in each part; comparisons involving
+        \(\star\) have equal endpoints, so antisymmetry and transitivity reduce either to
+        \(\star\leq\star\) or to the usual order on integers.</p>
+      <p>The element \(\star\) is minimal. No integer \(n\) is minimal because \(n-1&lt;n\).
+        Thus \(\star\) is the unique minimal element, but it is not least: for example,
+        \(\star\nleq0\). There is no least element, since a least element would have to be
+        minimal. The finiteness assumption in <a href="#finite-extrema"></a> matters.</p>
+    </div>
+  </details>
+</section>
+
+<section id="bounds" data-kind="definition">
+  <h2>Bounds belong to the ambient ordered set</h2>
+  <p>For \(S\subseteq P\), an <strong>upper bound</strong> of \(S\) in \(P\) is an
+    element \(u\in P\) such that \(s\leq u\) for every \(s\in S\). A
+    <strong>lower bound</strong> is an element \(\ell\in P\) such that \(\ell\leq s\)
+    for every \(s\in S\). A set is <strong>bounded above</strong> or
+    <strong>bounded below</strong> if the corresponding bound exists; it is
+    <strong>bounded</strong> if both exist.
+  </p>
+  <p>A bound need not belong to \(S\). In \(D\) under divisibility, \(12\) is an upper
+    bound of \(\{4,6\}\), and \(1,2\) are lower bounds; none belongs to \(\{4,6\}\).
+    An upper bound that does belong to \(S\) is exactly a greatest element of \(S\).
+    The analogous statement holds for lower bounds and least elements.</p>
+  <p>The ambient poset matters. The set \(\{4,6\}\) has an upper bound in \(D\), but
+    has none in \(D\setminus\{12\}\) with inherited divisibility: none of the remaining
+    elements is divisible by both \(4\) and \(6\).</p>
+</section>
+
+<section id="suprema-and-infima" data-kind="definition">
+  <h2>Suprema and infima</h2>
+  <p>The <strong>supremum</strong>, or <strong>least upper bound</strong>, of \(S\subseteq P\)
+    is an element \(u\in P\) satisfying both:</p>
+  <ol>
+    <li>Every \(s\in S\) satisfies \(s\leq u\).</li>
+    <li>For every upper bound \(v\in P\) of \(S\), we have \(u\leq v\).</li>
+  </ol>
+  <p>We write \(u=\sup_P S\), omitting the subscript when the ambient poset is clear.
+    Reversing the comparisons defines the <strong>infimum</strong>, or
+    <strong>greatest lower bound</strong>, \(\inf_P S\). Suprema and infima are unique when
+    they exist: two least upper bounds are each below the other, and antisymmetry makes them equal;
+    reverse the argument for greatest lower bounds.
+  </p>
+  <p>If \(S\) has a greatest element \(m\), then \(\sup S=m\): it bounds \(S\), and
+    every upper bound is above \(m\) because \(m\in S\). Conversely, if \(\sup S\in S\),
+    it is greatest. The corresponding equivalence holds between an infimum belonging to \(S\)
+    and a least element.</p>
+  <p>For \(S=(0,1)\subseteq\mathbb R\), we have \(\sup S=1\) and \(\inf S=0\), but
+    neither endpoint belongs to \(S\). To check the first assertion, \(1\) is an upper bound;
+    if \(v&lt;1\), then \((\max\{v,0\}+1)/2\) lies in \(S\) and exceeds \(v\), so
+    \(v\) is not an upper bound. Similarly, \(0\) is a lower bound; for any \(v&gt;0\),
+    the point \(\min\{v,1\}/2\) lies in \(S\) and is below \(v\).</p>
+  <p>In divisibility on \(D\),</p>
+  <div class="math-display">\[ \sup_D\{4,6\}=12,\qquad \inf_D\{4,6\}=2. \]</div>
+  <p>Indeed, the common upper bounds form \(\{12\}\), while the common lower bounds form
+    \(\{1,2\}\), whose greatest element for divisibility is \(2\). More generally, for
+    positive integers ordered by divisibility, a supremum is a least common multiple and an
+    infimum is a greatest common divisor, with “least” and “greatest” taken in this order.</p>
+</section>
+
+<section id="bounded-without-supremum" data-kind="question">
+  <h2>Does an upper bound guarantee a supremum?</h2>
+  <p>Let \(P=\{a,b,u,v\}\), with all four elements distinct. Besides reflexive comparisons,
+    the only comparisons are</p>
+  <div class="math-display">\[ a&lt;u,\quad a&lt;v,\quad b&lt;u,\quad b&lt;v. \]</div>
+  <p>Check that this defines a partial order. Does \(\{a,b\}\) have a supremum?
+    Does \(\{u,v\}\) have an infimum?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Reflexivity is included, and there are no strict comparisons in both directions.
+        No two strict comparisons can be composed, so transitivity only adds comparisons
+        already present. Thus this is a partial order.</p>
+      <p>The upper bounds of \(\{a,b\}\) are exactly \(u,v\). They are incomparable,
+        so neither is least among the upper bounds. Both are minimal upper bounds, but there
+        is no supremum. Dually, \(a,b\) are the lower bounds of \(\{u,v\}\), and neither
+        is greatest, so there is no infimum.</p>
+      <p>Even in a finite poset, having bounds does not guarantee a least upper bound or a
+        greatest lower bound.</p>
+    </div>
+  </details>
+</section>
+
+<section id="power-set-bounds" data-kind="theorem">
+  <h2>Unions and intersections are bounds in a power set</h2>
+  <div class="statement-box">
+    <p>Let \(U\) be a set and \(\mathcal F\subseteq\mathcal P(U)\) a family of subsets.
+      In \((\mathcal P(U),\subseteq)\), both bounds exist and are</p>
+    <div class="math-display">\[ \begin{aligned}
+      \sup\mathcal F&amp;=\bigcup_{A\in\mathcal F}A,\\
+      \inf\mathcal F&amp;=\{x\in U:\text{for every }A\in\mathcal F,\ x\in A\}.
+      \end{aligned} \]</div>
+    <p>The second set is the intersection of the family relative to \(U\). For the empty
+      family these formulas give \(\sup\varnothing=\varnothing\) and \(\inf\varnothing=U\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Every \(A\in\mathcal F\) is contained in the union, so the union is an upper bound.
+    If \(B\subseteq U\) is any upper bound, then \(A\subseteq B\) for all
+    \(A\in\mathcal F\). A member of the union belongs to some such \(A\), hence to
+    \(B\). Thus the union is contained in every upper bound.</p>
+  <p>Write \(I=\{x\in U:\text{for every }A\in\mathcal F,\ x\in A\}\). By definition
+    \(I\subseteq A\) for each \(A\in\mathcal F\), so \(I\) is a lower bound. If
+    \(B\subseteq U\) is another lower bound, each \(x\in B\) belongs to every
+    \(A\in\mathcal F\), hence to \(I\). Therefore \(B\subseteq I\).</p>
+  <p>When \(\mathcal F=\varnothing\), no element can belong to one of its members, so
+    the union is empty. Every \(x\in U\) satisfies the condition defining \(I\), because
+    there are no members to check. Hence \(I=U\).
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>For two subsets this gives \(\sup\{A,B\}=A\cup B\) and \(\inf\{A,B\}=A\cap B\).
+    A poset in which every pair has a supremum and an infimum is called a
+    <strong>lattice</strong>. If every subset, including the empty subset, has both, it is a
+    <strong>complete lattice</strong>. Thus \(\mathcal P(U)\) is a complete lattice.
+  </p>
+</section>
+
+<section id="empty-orders-and-bounds" data-kind="question">
+  <h2>What do the empty cases require?</h2>
+  <p>Which orders exist on the empty set? For an arbitrary poset \(P\), what are the bounds
+    of its empty subset, and when do \(\sup_P\varnothing\) and \(\inf_P\varnothing\) exist?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The only relation on \(\varnothing\) is empty. All the partial-order and
+        total-order conditions hold because there are no elements violating them. The same
+        relation is a strict partial order. There are no least, greatest, minimal, or maximal
+        elements, since each would have to belong to the empty set.</p>
+      <p>Every \(p\in P\) is both an upper and a lower bound of \(\varnothing\).
+        Therefore \(\sup_P\varnothing\) exists exactly when \(P\) has a bottom element,
+        and equals that element. Similarly, \(\inf_P\varnothing\) exists exactly when
+        \(P\) has a top element, and equals it.</p>
+      <p>For \(P=\varnothing\), neither bound exists: the set of candidates is empty.
+        For a singleton poset \(P=\{p\}\), both are \(p\). Distinguish an empty poset
+        from \(\mathcal P(\varnothing)=\{\varnothing\}\), which has one element and is
+        a complete lattice.</p>
+    </div>
+  </details>
+</section>
+
+<section id="order-maps" data-kind="definition">
+  <h2>Maps that preserve and reflect order</h2>
+  <p>Let \((P,\leq_P)\) and \((Q,\leq_Q)\) be posets. A map \(f:P\to Q\) is
+    <strong>monotone</strong>, or <strong>order-preserving</strong>, if
+  </p>
+  <div class="math-display">\[ a\leq_P b\quad\Longrightarrow\quad f(a)\leq_Q f(b). \]</div>
+  <p>It is an <strong>order embedding</strong> if it also reflects comparisons:</p>
+  <div class="math-display">\[ a\leq_P b\quad\Longleftrightarrow\quad f(a)\leq_Q f(b). \]</div>
+  <p>An <strong>order isomorphism</strong> is a bijective order embedding. Equivalently, it
+    is a bijection for which both \(f\) and \(f^{-1}\) are monotone: the reverse implication
+    in the displayed equivalence is precisely monotonicity of \(f^{-1}\) applied to
+    \(f(a),f(b)\).</p>
+  <p>Every order embedding is injective. If \(f(a)=f(b)\), reflection gives both
+    \(a\leq_P b\) and \(b\leq_P a\), so \(a=b\). A monotone map need not be injective;
+    for example, every constant map is monotone.</p>
+  <p>The inclusion of a subset with inherited order is an order embedding. The map
+    \(n\mapsto n+1\) is an order isomorphism from \(\mathbb Z\) to itself with its usual
+    order, with inverse \(n\mapsto n-1\). The identity map is monotone, and composites of
+    monotone maps are monotone: apply the two implications successively. Applying two
+    equivalences instead shows that composites of order embeddings are order embeddings;
+    with bijectivity, the same holds for order isomorphisms.</p>
+</section>
+
+<section id="monotone-bijection-question" data-kind="question">
+  <h2>Is a monotone bijection an order isomorphism?</h2>
+  <p>Take \(P=\{0,1\}\) ordered by equality and \(Q=\{0,1\}\) with the usual order.
+    For \(f:P\to Q\) defined by \(f(0)=0\) and \(f(1)=1\), decide whether it is
+    monotone, injective, surjective, and an order embedding. What changes if the domain of
+    an injective monotone map is totally ordered?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The map is bijective. It is monotone because its domain compares an element only
+        with itself. But \(f(0)\leq_Q f(1)\) while \(0\nleq_P1\), so it is not an
+        order embedding. Its inverse is not monotone. Thus injectivity, even together with
+        surjectivity and monotonicity, does not suffice for partial orders.</p>
+      <p>If \(P\) is totally ordered and \(f:P\to Q\) is injective and monotone, it does
+        reflect order. Suppose \(f(a)\leq_Q f(b)\). If \(a\nleq_P b\), totality gives
+        \(b&lt;_P a\). Monotonicity yields \(f(b)\leq_Q f(a)\), so antisymmetry and
+        injectivity give \(a=b\), a contradiction. Hence \(a\leq_P b\). In particular,
+        a monotone bijection from a total order to a poset is an order isomorphism.</p>
+    </div>
+  </details>
+</section>
+
+<section id="isomorphisms-preserve-bounds" data-kind="lemma">
+  <h2>Order isomorphisms preserve suprema and infima</h2>
+  <div class="statement-box">
+    <p>If \(f:P\to Q\) is an order isomorphism and \(S\subseteq P\) has supremum
+      \(u\), then \(f(S)\) has supremum \(f(u)\) in \(Q\). If \(S\) has infimum
+      \(\ell\), then \(\inf_Q f(S)=f(\ell)\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>For each \(s\in S\), \(s\leq_P u\), so \(f(s)\leq_Q f(u)\). Thus
+    \(f(u)\) is an upper bound of the
+    <a href="sets-and-maps#images-and-preimages">image</a> \(f(S)\).
+    If \(v\in Q\) is any upper bound of that image, monotonicity of \(f^{-1}\) gives
+    \(s\leq_P f^{-1}(v)\) for all \(s\in S\). Hence \(u\leq_P f^{-1}(v)\), and
+    applying \(f\) yields \(f(u)\leq_Q v\). This proves the least-upper-bound property.
+    Apply the argument to the opposite orders for the infimum.
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>Monotonicity alone only ensures that \(f(u)\) bounds the image. For example, define
+    \(f:\mathcal P(\{0,1\})\to\{0,1\}\), with inclusion in the domain and the usual
+    order in the codomain, by \(f(A)=1\) if \(A=\{0,1\}\), and \(f(A)=0\) otherwise.
+    This map is monotone: an input with value \(1\) has no larger distinct input, and \(0\)
+    is below either output. Yet for \(S=\{\{0\},\{1\}\}\),</p>
+  <div class="math-display">\[ f(\sup S)=1,\qquad \sup f(S)=\sup\{0\}=0. \]</div>
+</section>
+
+<section id="preorders" data-kind="definition">
+  <h2>Preorders allow comparison in both directions</h2>
+  <p>A <strong>preorder</strong> on a set \(A\) is a reflexive, transitive relation
+    \(\preccurlyeq\). It need not be antisymmetric. Every partial order is a preorder,
+    but different elements of a preordered set can satisfy both
+    \(a\preccurlyeq b\) and \(b\preccurlyeq a\).</p>
+  <p>For example, compare pairs in \(\mathbb R^2\) using only their first coordinate:</p>
+  <div class="math-display">\[ (x,s)\preccurlyeq(y,t)\quad\Longleftrightarrow\quad x\leq y. \]</div>
+  <p>Reflexivity and transitivity follow from the real order. Antisymmetry fails because
+    \((0,0)\preccurlyeq(0,1)\) and \((0,1)\preccurlyeq(0,0)\), although the pairs differ.</p>
+  <p>More generally, any map \(h:A\to P\) into a poset defines a preorder by
+    \(a\preccurlyeq b\) if \(h(a)\leq h(b)\). Again the two axioms follow from those of
+    \(P\). This preorder is a partial order exactly when \(h\) is injective: comparisons
+    in both directions force \(h(a)=h(b)\); conversely, equal images give comparisons in
+    both directions, which antisymmetry would force to have equal inputs.</p>
+  <p>The definition of a monotone map applies to preorders too, with the same implication
+    as in <a href="#order-maps"></a>.</p>
+</section>
+
+<section id="quotient-order" data-kind="theorem">
+  <h2>A preorder gives a partial order on its classes</h2>
+  <div class="statement-box">
+    <p>Let \((A,\preccurlyeq)\) be a preordered set. Define</p>
+    <div class="math-display">\[ a\sim b\quad\Longleftrightarrow\quad
+      a\preccurlyeq b\text{ and }b\preccurlyeq a. \]</div>
+    <p>Then \(\sim\) is an equivalence relation. The rule</p>
+    <div class="math-display">\[ [a]\leq[b]\quad\Longleftrightarrow\quad
+      a\preccurlyeq b \label{eq:quotient-order} \]</div>
+    <p>is independent of representatives and defines a partial order on
+      \(A/{\sim}\). The projection \(q:A\to A/{\sim}\), \(q(a)=[a]\), is monotone
+      and surjective.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Reflexivity of \(\preccurlyeq\) gives \(a\sim a\), and the definition is symmetric.
+    If \(a\sim b\) and \(b\sim c\), transitivity gives \(a\preccurlyeq c\) and
+    \(c\preccurlyeq a\), so \(a\sim c\). We may therefore form the
+    <a href="equivalence-relations#quotient-set">quotient set</a>.
+  </p>
+  <p>To check representatives, suppose \(a'\sim a\) and \(b'\sim b\). If
+    \(a\preccurlyeq b\), then</p>
+  <div class="math-display">\[ a'\preccurlyeq a\preccurlyeq b\preccurlyeq b', \]</div>
+  <p>so \(a'\preccurlyeq b'\). Conversely, \(a'\preccurlyeq b'\) gives
+    \(a\preccurlyeq a'\preccurlyeq b'\preccurlyeq b\), hence \(a\preccurlyeq b\).
+    Thus the truth of \eqref{eq:quotient-order} does not change when either representative changes.</p>
+  <p>Reflexivity and transitivity on classes now follow from the same properties on \(A\).
+    For antisymmetry, if \([a]\leq[b]\) and \([b]\leq[a]\), then \(a\sim b\), so
+    <a href="equivalence-relations#equal-or-disjoint-classes">their classes are equal</a>.
+    Finally, the defining rule gives monotonicity of \(q\), and every class has a representative,
+    giving surjectivity. <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>For the preorder on \(\mathbb R^2\) above, \((x,s)\sim(y,t)\) exactly when \(x=y\).
+    The classes are the vertical fibers \(\{x\}\times\mathbb R\). The map</p>
+  <div class="math-display">\[ \Phi:\mathbb R^2/{\sim}\longrightarrow\mathbb R,
+    \qquad \Phi([(x,s)])=x \]</div>
+  <p>is well defined and injective because equal classes are exactly those with equal first
+    coordinate. It is surjective because \(\Phi([(x,0)])=x\), and
+    \([(x,s)]\leq[(y,t)]\) exactly when \(x\leq y\). Hence \(\Phi\) is an order
+    isomorphism: the quotient recovers the usual ordered real line.</p>
+</section>
+
+<section id="monotone-maps-from-quotients" data-kind="theorem">
+  <h2>Monotone maps factor through the ordered quotient</h2>
+  <div class="statement-box">
+    <p>Let \(q:A\to A/{\sim}\) be the ordered quotient of a preorder from
+      <a href="#quotient-order"></a>, and let \(P\) be a poset.
+      Every monotone map \(f:A\to P\) has a unique monotone map
+    </p>
+    <div class="math-display">\[ \overline f:A/{\sim}\longrightarrow P \]</div>
+    <p>such that \(f=\overline f\circ q\). It is given by \(\overline f([a])=f(a)\).
+      Conversely, composing any monotone map \(A/{\sim}\to P\) with \(q\) gives a
+      monotone map \(A\to P\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>If \(a\sim b\), monotonicity gives \(f(a)\leq f(b)\) and \(f(b)\leq f(a)\).
+    Antisymmetry in \(P\) forces \(f(a)=f(b)\). Thus \(f\) is constant on each class.
+    The <a href="equivalence-relations#maps-from-quotients">factorization theorem</a>
+    gives a unique map \(\overline f\) with \(f=\overline f\circ q\).</p>
+  <p>If \([a]\leq[b]\), then \(a\preccurlyeq b\), so
+    \(\overline f([a])=f(a)\leq f(b)=\overline f([b])\). This proves monotonicity.
+    The converse follows by composing two monotone maps, since \(q\) is monotone.
+    <span class="qed" aria-label="End of proof">□</span>
+  </p>
+  <p>The hypothesis that \(P\) is a partial order is needed. The identity map of the
+    preordered plane is monotone, but it cannot factor through its quotient as a map back
+    to the plane: \((0,0)\) and \((0,1)\) have the same class and distinct images.</p>
+</section>
+
+<section id="which-identifications-work" data-kind="question">
+  <h2>Which identifications preserve comparison?</h2>
+  <p>If a preorder is already a partial order, what does its ordered quotient change?
+    Could we instead use any equivalence relation on a poset and define
+    \([a]\leq[b]\) by \(a\leq b\)? Test this rule for parity on the usual ordered integers.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>In a partial order, mutual comparison is equivalent to equality, so every quotient
+        class is a singleton. The projection is therefore bijective and preserves and reflects
+        order by \eqref{eq:quotient-order}. It is an order isomorphism.</p>
+      <p>An arbitrary equivalence relation need not work. For parity, \([0]=[2]\), but
+        \(0\leq1\) holds and \(2\leq1\) does not. The proposed comparison between the
+        even and odd classes changes with the representative. It is not well defined.</p>
+      <p>Replacing the rule by “some representatives are comparable in this direction”
+        does not produce a partial order here either. An even integer can be below an odd
+        one, as \(0\leq1\), and an odd one can be below an even one, as \(1\leq2\).
+        The two distinct parity classes would be comparable in both directions, violating
+        antisymmetry. The equivalence relation used in
+        <a href="#quotient-order"></a> is tied to the preorder itself.
+      </p>
+    </div>
+  </details>
+</section>
