@@ -55,8 +55,8 @@ Maintainers review both the declarations and coverage. Use
 entry's linked nodes, or `--node <id>` for an individual node. Replace `--accept`
 with `--retract` to withdraw approval. Reviews store
 target hashes, so changed descriptions or declarations require renewed approval.
-Proof dependencies, module locations, and environment pins are excluded from those
-hashes. Module or environment changes need fresh verification before approval can
+Node IDs, proof dependencies, module locations, and environment pins are excluded from those
+hashes. ID, module, or environment changes need fresh verification before approval can
 be confirmed against the new declaration hash. Entry text
 and mapping changes still need separate coverage review through Git; accepting an
 entry records node approvals, not a versioned coverage approval. Block percentages count

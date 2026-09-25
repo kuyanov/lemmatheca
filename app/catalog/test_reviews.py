@@ -35,15 +35,15 @@ class ReviewHashTests(SimpleTestCase):
         with self.assertRaisesRegex(ContentError, 'Missing review snapshot'):
             declaration_hashes(records, ['target'])
 
-    def test_review_covers_description_and_declaration_but_not_proof_planning(self):
+    def test_review_covers_description_and_declaration_but_not_id_or_proof_planning(self):
         node = {'id': 'node', 'description': 'Every element has property P.',
                 'declaration': 'Theorem', 'module': 'Old.Module', 'dependencies': []}
         original = review_target_hash(node, 'declaration')
-        for field in ('id', 'description', 'declaration'):
+        for field in ('description', 'declaration'):
             with self.subTest(field=field):
                 self.assertNotEqual(original, review_target_hash(
                     {**node, field: 'changed'}, 'declaration'))
-        for changes in ({'module': 'New.Module'}, {'dependencies': ['prerequisite']},
+        for changes in ({'id': 'renamed-node'}, {'module': 'New.Module'}, {'dependencies': ['prerequisite']},
                         {'review': {'sha256': original, 'recorded_at': 'today'}}):
             with self.subTest(changes=changes):
                 self.assertEqual(original, review_target_hash(
@@ -303,7 +303,7 @@ class ReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
         check.assert_not_called()
         self.assertEqual(self.node_records(), before)
 
-    def test_retract_blocks_dependent_readiness_without_clearing_its_review(self):
+    def test_retract_does_not_change_a_verified_dependent_node(self):
         self.accept(node=['ready'])
         self.write_node('dependent', declaration='Lemmatheca.dependent', dependencies=['ready'])
         self.write_report()
@@ -313,9 +313,15 @@ class ReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
         path.write_text(json.dumps(report))
         self.assertEqual(load_nodes(self.root)['dependent']['status'], 'complete')
         dependent_before = (self.node_dir / 'dependent.json').read_bytes()
+        report_before = path.read_bytes()
         self.retract(node=['ready'])
-        self.assertEqual(load_nodes(self.root)['dependent']['status'], 'dependencies_pending')
+        nodes = load_nodes(self.root)
+        self.assertEqual(nodes['ready']['status'], 'review_pending')
+        self.assertEqual(nodes['dependent']['status'], 'complete')
+        self.assertTrue(nodes['dependent']['review_current'])
+        self.assertTrue(nodes['dependent']['verification_complete'])
         self.assertEqual((self.node_dir / 'dependent.json').read_bytes(), dependent_before)
+        self.assertEqual(path.read_bytes(), report_before)
 
     def test_failed_staging_preserves_all_reviews_and_removes_temporary_files(self):
         dump = json.dump

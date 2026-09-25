@@ -42,8 +42,8 @@ without an approval are skipped.
 Review hashes cover elaborated theorem types, definition bodies, inductive
 constructors and recursor rules, and their reachable constants. Theorems contribute
 their statements, not their proofs, even when referenced by a definition. Expression
-metadata and binder names are omitted. Node ID, declaration name, and the exact
-description text also enter the hash. The pinned environment, import module,
+metadata and binder names are omitted. The declaration name and exact
+description text also enter the hash. The node ID, pinned environment, import module,
 and manual `dependencies` list do not. A referenced Lean definition affects
 the meaning of the statement; a manually listed proof prerequisite does not.
 
@@ -60,8 +60,9 @@ changes.
 | Node description, even a wording edit | Needs renewed approval immediately | Retained |
 | Theorem statement or reachable definition body | Needs renewed approval after rechecking | Needs rechecking |
 | Theorem proof only | Retained if the target is unchanged after rechecking | Needs rechecking |
+| Node ID rename, same description and declaration | Retained after refreshing the report under the new ID | Needs refreshing under the new ID |
 | Module move, same Lean name and semantic graph | Retained after rechecking | Needs rechecking |
-| Manual proof dependencies | Retained; dependency readiness is recomputed | Retained |
+| Manual proof dependencies | Retained; node completion is unchanged | Retained |
 | Review record | Changes approval | Retained |
 | Pinned environment | Retained if the target is unchanged after rechecking | Needs rechecking |
 | Entry text or `data-formal` mapping | Requires separate coverage review through Git | Retained |
@@ -78,8 +79,10 @@ declaration shows **Pending review**. A recorded review with stale evidence show
 **Verification needed** until a recheck can compare the target hash. A mismatch
 then shows **Review outdated**, which remains until the new target is reviewed
 and accepted. Recording a review does not invalidate Lean evidence. Approval alone
-cannot complete a node with a `sorry` proof or pending dependencies: these show
-**Proof pending** or **Dependencies pending**. The badge displays this status without
+cannot complete a node with direct or transitive `sorry`: it shows **Proof pending**.
+Manual proof dependencies do not gate completion; an unfinished or unreviewed
+listed prerequisite does not block a node whose own review and proof are complete.
+The badge displays this status without
 repeating it as reason text; the API exposes the same distinct status codes.
 
 ## Local check workflow
@@ -110,8 +113,8 @@ With no node declarations, the command skips Lean. Axiom auditing is driven by
 the node registry; the old fixed list of sumset checks has been removed. Archived
 JSON bindings and `checks/sumsets.json` remain historical records outside this pipeline.
 
-The reader derives readiness from current evidence, statement review, and ready
-node dependencies. For a reviewed declaration, a missing or stale report yields
+The reader derives readiness from the node's current evidence and correspondence
+review. For a reviewed declaration, a missing or stale report yields
 `verification_needed`, never `complete` or a proof status from outdated evidence.
 Binding, source, or environment changes invalidate affected evidence; descriptions,
 manual proof dependencies, and review records do not. All local Lean sources are checked conservatively, so an unrelated
@@ -132,9 +135,17 @@ approvals are never silently updated by `check_formalizations`.
 
 Report format 4 stores `declaration_sha256` instead of a precomputed review target;
 the API still exposes the dynamically computed `target_sha256`. Older reports need
-regeneration. Review hash version 2 includes descriptions, so approvals made with
-the previous format require explicit renewal. Their records and dates are
-preserved, but cannot approve descriptions that were outside the original hash.
+regeneration. Review hash version 3 excludes node IDs. At migration, current
+version-2 approvals were converted only when their full hashes matched the current
+description and checked declaration; their timestamps were preserved. Outdated and
+unreviewed records were left untouched. Approvals from before descriptions entered
+the hash still require explicit renewal: they cannot approve text outside their scope.
+
+To rename a node, update its `id`, JSON filename, `data-formal` mappings, and proof
+dependency references. Preserve its review record and run `check_formalizations`:
+verification reports remain indexed and fingerprinted by node ID, but an unchanged
+description and declaration retain the same review target. A Lean declaration
+rename can change its structural hash and still requires renewed review.
 
 Node dependencies are explicitly maintained; Lean axiom checking catches
 transitive `sorry` even if an edge was not recorded. Full mathematical dependency

@@ -50,10 +50,11 @@ declaration is an unreviewed placeholder. See the [schema](../formal/README.md#f
 | Empty `data-formal=""` | Not applicable |
 | Nonempty list | Complete if every node is ready; otherwise a percentage |
 
-A node is ready only with a reviewed statement, valid verification evidence, and
-ready declared dependencies. Other nodes have explicit statuses for missing
-declarations, review, verification, unfinished proofs, or dependencies. Missing proofs,
-including transitive `sorry`, cannot count as ready. Definitions can use existing
+A node is ready only with current correspondence approval and valid verification
+evidence of a complete proof. Other nodes have explicit statuses for missing
+declarations, review, verification, or unfinished proofs. Manually listed proof
+dependencies do not affect completion. Missing proofs, including transitive
+`sorry`, cannot count as ready. Definitions can use existing
 Lean definitions; questions map their answers or counterexamples.
 
 Entry badges show Not started when every block is unmapped, and Partial when

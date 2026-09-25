@@ -30,7 +30,6 @@ NODE_STATUS_LABELS = {
     'review_outdated': 'Review outdated',
     'verification_needed': 'Verification needed',
     'proof_pending': 'Proof pending',
-    'dependencies_pending': 'Dependencies pending',
     'complete': 'Complete',
 }
 
@@ -135,8 +134,8 @@ def current_node_evidence(node, checked, inputs):
     return checked
 
 
-def node_status(node, checked, nodes, target_hash):
-    """Report the first remaining requirement, after resolving dependencies."""
+def node_status(node, checked, target_hash):
+    """Report this node's first remaining review or verification requirement."""
     if not node['declaration']:
         return 'declaration_missing'
     if node['review'] is None:
@@ -147,8 +146,6 @@ def node_status(node, checked, nodes, target_hash):
         return 'review_outdated'
     if checked['status'] == 'pending':
         return 'proof_pending'
-    if any(nodes[item]['status'] != 'complete' for item in node['dependencies']):
-        return 'dependencies_pending'
     return 'complete'
 
 
@@ -191,6 +188,7 @@ def load_nodes(root, *, check_reports=True):
         report_path) if check_reports and nodes and report_path.exists() else {}
     current = bool(report) and report_is_current(report, root)
     evidence = report.get('nodes', {}) if current else {}
+    # Validate the proof plan's references and acyclicity, independently of status.
     visiting, visited = set(), set()
 
     def resolve(node_id):
@@ -210,7 +208,7 @@ def load_nodes(root, *, check_reports=True):
         # effect immediately, without rerunning Lean or rewriting its report.
         target_hash = (review_target_hash(node, checked['declaration_sha256'])
                        if checked else None)
-        status = node_status(node, checked, nodes, target_hash)
+        status = node_status(node, checked, target_hash)
         signature = checked.get('signature')
         source, line = (checked_source_location(node, checked, report)
                         if checked else (node['source'], None))

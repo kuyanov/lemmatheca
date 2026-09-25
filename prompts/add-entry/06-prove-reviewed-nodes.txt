@@ -15,6 +15,8 @@ keep the pinned environment fixed.
    current. Preserve baseline target hashes and review records for comparison.
    Work through accepted proof prerequisites first. The dependencies field plans
    proving; it is not a reading order or a list of concepts appearing in a type.
+   A node's completion depends only on its own review and Lean verification, not
+   the statuses of its planned prerequisites. Actual transitive sorry remains pending.
    If a needed target lacks approval or has an outdated review, report it and
    continue independent accepted work. Do not accept it on your own.
 2. Preserve approved descriptions, theorem statements, definition bodies, and node
@@ -24,7 +26,7 @@ keep the pinned environment fixed.
    do not create extra coverage nodes for routine intermediate steps. If a target
    or description change is necessary, explain it for renewed review while completing
    unaffected work. Proof-plan edits do not invalidate approval, but explain them
-   and check dependency readiness. Do not silently rebind approved nodes or reaccept changed hashes.
+   and keep the proof plan useful. Do not silently rebind approved nodes or reaccept changed hashes.
 3. For corpus proving, follow the human proof where one is provided and reuse
    standard Lean/mathlib prerequisites. Avoid recreating library definitions or
    helper theorems. If an existing result already proves the whole target, report
@@ -48,10 +50,11 @@ uv run python app/manage.py validate_corpus after the proof changes. Run lake bu
 from formal/ if aggregate imports or module organization changed. Verify that the
 completed nodes have no direct or transitive sorry and retain their accepted target
 hashes. Proof-only edits need fresh Lean evidence; they do not need reacceptance
-   when the reviewed descriptions and semantic targets remain unchanged.
+when the reviewed descriptions and semantic targets remain unchanged.
 
 Return proved node IDs, the checks run, whether target hashes stayed unchanged,
 and any deviations from the human argument. List remaining pending nodes with
-their concrete reasons. Report current dependency readiness separately from the
-success of an individual Lean proof. Do not claim the whole entry is complete if
-some mathematical blocks are unmapped, proofs remain pending, or reviews are stale.
+their concrete reasons. Mention unfinished planned prerequisites when relevant to
+remaining proof work; they do not block an already verified node. Do not claim the
+whole entry is complete if some mathematical blocks are unmapped or linked nodes
+lack current approval or verified proofs.

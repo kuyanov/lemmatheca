@@ -81,7 +81,8 @@ mark a proof with `sorry` as verified. Expired evidence returns to the pending
 labels. The overall node badge and API status still identify the specific next step.
 
 Description edits invalidate correspondence approval immediately while retaining
-Lean evidence. Manual proof-dependency edits retain both; module moves and environment
+Lean evidence. Manual proof-dependency edits retain both, and a listed prerequisite's
+status does not affect the node's completion. Node ID renames, module moves, and environment
 changes require Lean rechecking, then retain approval if the target hash is unchanged.
 The checked signature remains separate and appears only with current verification.
 The reader computes review targets from

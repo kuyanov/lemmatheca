@@ -54,7 +54,7 @@ def declaration_hashes(records, names):
 
 
 def review_target_hash(node, declaration_sha256):
-    """Bind the human description to the declaration's meaning, not its proof plan."""
-    reviewed = {key: node[key] for key in ('id', 'description', 'declaration')}
-    return digest({'version': 2, 'node': reviewed,
+    """Bind the human description to the declaration, independently of the node ID."""
+    reviewed = {key: node[key] for key in ('description', 'declaration')}
+    return digest({'version': 3, 'node': reviewed,
                    'declaration': declaration_sha256})

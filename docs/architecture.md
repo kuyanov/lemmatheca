@@ -163,13 +163,14 @@ calls the same Python layer without making an HTTP request to itself.
 `check_formalizations` builds registered modules, checks declarations and their
 transitive axioms, and writes `formal/checks/nodes.json`. `sorryAx` means pending;
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed for complete proofs.
-A ready node additionally needs statement review and ready declared dependencies.
+A ready node additionally needs current correspondence approval. The manually
+listed dependencies plan proof work; their statuses do not affect node completion.
 The reader checks current fingerprints without compiling. Node/source/environment
-changes invalidate affected evidence, except for `description`, manual
+changes invalidate Lean verification evidence, except for `description`, manual
 `dependencies`, and `review` records. Reports store semantic declaration hashes;
 the reader combines these with current node descriptions to compute review targets.
 Description edits invalidate approval immediately without discarding Lean evidence.
-Review hashes exclude environment pins, import modules, manual dependencies, and theorem proofs;
+Review hashes exclude node IDs, environment pins, import modules, manual dependencies, and theorem proofs;
 they include descriptions and referenced definitions. Changed targets require
 renewed review. Entry text and coverage remain a separate Git review.
 Node pages show descriptions with KaTeX, checked signatures, review/check dates,
@@ -185,8 +186,7 @@ have complete Lean verification and current approvals under the hash format that
 includes descriptions. Ordered sets has 19 blocks awaiting formal bindings.
 The [mathlib binding audit](mathlib-binding-audit.md) records
 direct library bindings and the replacement of bundled nodes with separate claims.
-Changed descriptions and semantic targets require renewed review. Pending
-dependencies can also prevent approved nodes from being complete. With an empty registry,
+Changed descriptions and semantic targets require renewed review. With an empty registry,
 the checker skips Lean. Historical reports are untouched.
 
 Reusable set theory lives in `Lemmatheca/SetTheory/Basic.lean` and
@@ -202,9 +202,11 @@ when its declaration name and semantic hash remain unchanged.
 
 Committing reviewed HTML mappings records coverage approval. The `review --accept`
 command records statement approval for selected nodes or an entry's linked nodes,
-binding it to hashes of elaborated targets, referenced declarations, node IDs,
+binding it to hashes of elaborated targets, referenced declarations,
 declaration names, and descriptions. Environment pins affect verification; after
-rechecking, unchanged target hashes retain approval. `review --retract` clears selected approvals without
+rechecking, unchanged target hashes retain approval. Node ID renames likewise
+retain approval after refreshing verification under the new ID.
+`review --retract` clears selected approvals without
 running Lean or discarding its verification evidence. The checker detects changed targets but does not
 prove correspondence with human text. It fingerprints ordinary source imports, not arbitrary metaprogram
 inputs. Full proof-graph extraction and model runners remain future work. See

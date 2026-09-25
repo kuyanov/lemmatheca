@@ -10,7 +10,7 @@ public contributions come later.
 Correspondence review protects against proving the wrong statement: Lean can
 verify a declaration even when it does not express the human claim. Approval
 binds a node's description to its Lean declaration; entry text and block coverage
-also need human review. Proof-planning dependencies, module locations, and
+also need human review. Node IDs, proof-planning dependencies, module locations, and
 environment pins do not enter the review hash. See
 [verification and review](docs/verification-and-review.md).
 
@@ -57,6 +57,8 @@ the experiment logs, rather than assigning a single entry to the node. Confirm
 that the selected block contains a proof before treating the task as translation.
 
 Proof work may reveal a need for new helper nodes or revised prerequisites.
+Manual dependencies guide proof work; a reviewed node with a verified proof is
+complete regardless of the statuses of its planned prerequisites.
 Maintainers decide what enters the library; AI supplies proposals and recommendations.
 
 Measure statement writing and proof translation separately. Binding an existing
@@ -76,9 +78,10 @@ awaiting formalization. All three retain draft editorial status.
 Node pages put a mathematical description above the checked Lean statement, with
 review/check dates, expandable proof prerequisites, and a source browser with line
 links. Editing a description invalidates its correspondence approval immediately,
-while preserving Lean evidence. Proof dependencies, module locations, and environment
-pins do not enter the review hash. Source moves and environment changes need fresh
-Lean verification; approval is retained if the declaration hash stays unchanged.
+while preserving Lean evidence. Node IDs, proof dependencies, module locations, and
+environment pins do not enter the review hash. Node renames, source moves, and
+environment changes need a verification refresh; approval is retained if the
+description and declaration hash stay unchanged.
 
 | Folder | Purpose |
 | --- | --- |

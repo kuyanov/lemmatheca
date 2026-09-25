@@ -250,19 +250,40 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         with self.assertRaisesRegex(ContentError, 'Expected fields:.*description'):
             load_nodes(self.root)
 
-    def test_proof_plan_edits_preserve_review_and_evidence_but_update_readiness(self):
+    def test_proof_plan_edits_preserve_review_evidence_and_completion(self):
         before = load_nodes(self.root)['ready']
         report = (self.root / REPORT).read_bytes()
         path = self.node_dir / 'ready.json'
         record = json.loads(path.read_text())
-        for dependencies, status in ((['pending'], 'dependencies_pending'), ([], 'complete')):
+        for dependencies in (['pending'], []):
             with self.subTest(dependencies=dependencies):
                 record['dependencies'] = dependencies
                 path.write_text(json.dumps(record))
                 updated = load_nodes(self.root)['ready']
                 for key in ('review', 'review_current', 'target_sha256', 'checked_on', 'verification_complete'):
                     self.assertEqual(updated[key], before[key])
-                self.assertEqual(updated['status'], status)
+                self.assertEqual(updated['status'], 'complete')
+                self.assertEqual((self.root / REPORT).read_bytes(), report)
+
+    def test_incomplete_planned_dependencies_do_not_block_a_verified_reviewed_node(self):
+        self.write_node('ready', dependencies=['pending'])
+        report = (self.root / REPORT).read_bytes()
+        cases = (
+            ('proof_pending', {}),
+            ('review_pending', {'accepted': False}),
+            ('verification_needed', {'declaration': 'Lemmatheca.ready'}),
+            ('review_outdated', {'review': {'sha256': 'a' * 64,
+                                          'recorded_at': '2026-09-20T12:00:00+00:00'}}),
+            ('declaration_missing', {'declaration': None, 'module': None, 'accepted': False}),
+        )
+        for status, changes in cases:
+            with self.subTest(dependency_status=status):
+                self.write_node('pending', **{'declaration': 'Lemmatheca.unfinished', **changes})
+                nodes = load_nodes(self.root)
+                self.assertEqual(nodes['pending']['status'], status)
+                self.assertEqual(nodes['ready']['status'], 'complete')
+                self.assertTrue(nodes['ready']['review_current'])
+                self.assertTrue(nodes['ready']['verification_complete'])
                 self.assertEqual((self.root / REPORT).read_bytes(), report)
 
     def test_module_migration_retains_review_after_verification_refresh(self):
@@ -436,14 +457,19 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.write_node('ready', dependencies=['pending'])
         self.write_report()
         self.assertEqual(self.client.get(
-            '/api/formal/nodes/ready/').json()['status'], 'dependencies_pending')
-        self.assertContains(self.client.get(
-            '/formal/nodes/ready/'), 'Dependencies pending', count=1)
+            '/api/formal/nodes/ready/').json()['status'], 'complete')
+        page = self.client.get('/formal/nodes/ready/')
+        self.assertContains(page, 'Complete', count=1)
+        self.assertContains(page, 'Proof pending', count=1)
         response = self.client.get('/entries/first/')
-        self.assertContains(response, 'Dependencies pending')
+        self.assertContains(response, 'Complete')
         self.assertContains(response, 'Proof pending')
         self.assertEqual(
-            response.context['entry']['blocks'][0]['formalization']['percent'], 0)
+            response.context['entry']['blocks'][0]['formalization']['percent'], 50)
+        self.write_html(('data-formal="ready"',))
+        response = self.client.get('/entries/first/')
+        self.assertEqual(response.context['entry']['formalization']['label'], '100%')
+        self.assertEqual(response.context['entry']['blocks'][0]['formalization']['status'], 'complete')
 
     def test_review_and_verification_labels_are_independent(self):
         outdated = {'sha256': 'a' * 64, 'recorded_at': '2026-09-20T12:00:00+00:00'}
@@ -561,7 +587,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.write_node('ready', dependencies=['pending'])
         self.write_report()
         self.assertEqual(load_nodes(self.root)[
-                         'ready']['status'], 'dependencies_pending')
+                         'ready']['status'], 'complete')
+        self.assertEqual(entries()['first']['formalization']['status'], 'complete')
 
     def test_missing_mathlib_checkout_uses_pinned_source_and_installed_edits_invalidate(self):
         mathlib = self.formal / '.lake/packages/mathlib/Mathlib/Test.lean'
@@ -723,7 +750,40 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         with patch('catalog.management.commands.check_formalizations.subprocess.run', side_effect=execute):
             call_command('check_formalizations', stdout=StringIO())
 
+    def test_node_id_rename_retains_review_after_verification_refresh(self):
+        self.write_node('dependent', declaration='Lemmatheca.dependent', dependencies=['ready'])
+        before = load_nodes(self.root)['ready']
+        path = self.node_dir / 'ready.json'
+        record = json.loads(path.read_text())
+        record['id'] = 'renamed-ready'
+        renamed = path.with_name('renamed-ready.json')
+        path.rename(renamed)
+        renamed.write_text(json.dumps(record))
+        approved = renamed.read_bytes()
+        dependent_path = self.node_dir / 'dependent.json'
+        dependent = json.loads(dependent_path.read_text())
+        dependent['dependencies'] = ['renamed-ready']
+        dependent_path.write_text(json.dumps(dependent))
+        self.write_html(('data-formal="renamed-ready pending"', 'data-formal=""'))
+
+        self.assertEqual(load_nodes(self.root)['renamed-ready']['status'], 'verification_needed')
+        self.run_check()
+        nodes = load_nodes(self.root)
+        self.assertNotIn('ready', nodes)
+        updated = nodes['renamed-ready']
+        for field in ('review', 'target_sha256', 'review_current', 'verification_complete', 'status'):
+            self.assertEqual(updated[field], before[field])
+        self.assertEqual(nodes['dependent']['dependencies'], ['renamed-ready'])
+        self.assertContains(self.client.get('/entries/first/'), 'href="/formal/nodes/renamed-ready/"')
+        output = StringIO()
+        with patch('catalog.management.commands.review.call_command') as check:
+            call_command('review', '--accept', node=['renamed-ready'], stdout=output)
+        check.assert_not_called()
+        self.assertIn('0 node(s); 1 skipped', output.getvalue())
+        self.assertEqual(renamed.read_bytes(), approved)
+
     def test_transitive_sorry_is_recorded_as_pending_never_complete(self):
+        self.write_node('dependent', declaration='Lemmatheca.dependent', dependencies=[])
         self.run_check()
         report = json.loads((self.root / REPORT).read_text())
         self.assertEqual(report['nodes']['ready']['status'], 'complete')
