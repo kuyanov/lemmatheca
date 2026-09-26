@@ -11,7 +11,8 @@ from django.test import SimpleTestCase
 
 from catalog.sources import ContentError
 from catalog.test_formalizations import NodeFixtureMixin
-from formalization.nodes import REPORT, load_nodes
+from formalization.nodes import load_nodes
+from formalization.verification import REPORT
 from formalization.reviews import declaration_hashes, review_target_hash
 
 

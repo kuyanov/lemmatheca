@@ -70,7 +70,7 @@ updated. This is a structural hash, not a test of mathematical equivalence.
 Proving agents must preserve approved targets rather than reaccepting their own
 changes.
 
-Stale verification does not retract a recorded review. When the approval matches
+Stale or failed verification does not retract a recorded review. When the approval matches
 the current description and the last checked declaration, the node page retains
 **Reviewed on …**, alongside **Not verified**. A stale check does not imply that
 the statement changed: proof edits alone also require fresh verification.
@@ -116,19 +116,19 @@ Run `uv run python app/manage.py check_formalizations`. The command:
 
 1. Loads the formal node registry independently of the human corpus and validates
    IDs, module paths, dependency targets, and acyclicity.
-2. Groups project nodes by their import module and all direct Mathlib bindings
-   under one `Mathlib` audit. Each group records its transitive local
+2. Groups all nodes by their declared import module, including Mathlib bindings.
+   Each group records its transitive local
    source imports, the `Lemmatheca.ReviewChecks` exporter, pinned environment, and
    verification policy. Mathlib and the other Lake packages share one installed-revision
    fingerprint. Node fingerprints cover ID, declaration, and import module.
    Groups with current evidence for all their nodes are reused, preserving check dates.
-   Reused groups need no import traversal or Lean process. For a stale group, the
+   Reused groups still require clean installed Git dependencies, but need no import
+   traversal or Lean process. For a stale group, the
    import walker still reads transitive library imports to collect local inputs;
    installed library files are represented by the shared revision fingerprint.
-3. Runs `lake build` for each stale group's import modules and the exporter, then
-   checks each declared import separately with `#print axioms` for its registered
-   declarations. The shared Mathlib record does not permit a binding to rely on
-   imports from another binding's module.
+3. Runs `lake build` for each stale group's import module and the exporter, then
+   checks that import separately with `#print axioms` for its registered declarations.
+   A binding cannot rely on imports from another group's module.
 4. Allows `propext`, `Classical.choice`, and `Quot.sound` for complete proofs.
    Direct or transitive `sorryAx` means pending; other axioms fail that group's check.
 5. Exports structural review snapshots independently of theorem proof terms,
@@ -145,16 +145,24 @@ Run `uv run python app/manage.py check_formalizations`. The command:
 
 Use `--module Lemmatheca.Entry.SetsAndMaps` to select registered import modules
 (multiple names are allowed), or `--force` to recheck even current modules. The
-flags can be combined. `--module Mathlib`, or any registered `Mathlib.*` module,
-selects the shared audit of all direct library bindings. Without selectors, every
-stale verification group is checked. A failed group loses its usable evidence,
-but successful and reused groups are
+flags can be combined. A registered `Mathlib.*` selector checks just that import;
+`--module Mathlib` selects all registered Mathlib modules as independent groups.
+Nodes with the same declared import share one group's outcome. Without selectors, every
+stale verification group is checked. A failed group retains its last successful
+snapshots for review history, while its verification is unavailable. Successful and reused groups are
 saved; the command then exits with an error. Concurrent report writes are rejected
 instead of overwriting another check's results.
 
 With no node declarations, the command skips Lean. Axiom auditing is driven by
 the node registry; the old fixed list of sumset checks has been removed. Archived
 JSON bindings and `checks/sumsets.json` remain historical records outside this pipeline.
+
+The [CI workflow](../.github/workflows/ci.yml) installs the pinned Lean environment,
+builds the project, and runs `check_formalizations --force` on pushes, pull requests,
+and manual runs. Its Lake cache retains dependencies and build artifacts, but
+every registered declaration is checked again. Lean errors, missing declarations,
+unapproved axioms, and invalid dependency checkouts fail the job. Pending proofs
+and human reviews remain allowed; CI neither records approval nor commits reports.
 
 The reader derives readiness from the node's current evidence and correspondence
 review. For a reviewed declaration, a missing or stale report yields
@@ -165,24 +173,33 @@ modules; unrelated modules keep their evidence and dates. Adding or removing an
 unimported module has no effect. Environment, exporter, or verification-policy
 changes invalidate all affected module records. Descriptions, manual proof
 dependencies, and review records do not invalidate Lean evidence. File hashes are
-cached by file metadata; page requests never run Lean.
+cached by file metadata; page requests never run Lean. `formalization/verification.py`
+owns these checks and shares current input hashes within each freshness operation,
+so modules with different saved versions of one input still compare against the
+same current snapshot. The dependency requirement is part of that cache's key:
+reader fallback for an absent checkout cannot satisfy a verification command.
 
-Installed Lake packages are assumed immutable. The shared library fingerprint
-records package names and installed Git revisions, without scanning source trees,
-hashing library contents, or checking for uncommitted edits. Lake's usual detached
-HEADs are read directly; Git resolves branches, packed refs, and linked worktrees.
-Source archives without Git metadata are trusted to match their manifest pins.
+Installed Lake packages must be clean Git checkouts. The shared library fingerprint
+records package names and installed revisions. A Git status query per package
+supplies the commit and checks staged, unstaged, untracked, and submodule changes;
+ignored build output is allowed. This handles detached HEADs, branches, packed
+refs, and linked worktrees without walking or hashing package sources in Python.
+Dirty checkouts, source archives without Git metadata, and unreadable Git status
+invalidate affected evidence and block verification, including cached reuse. The
+checker identifies invalid packages and does not modify or clean their files.
+Restore a clean checkout or commit intended dependency changes before retrying.
 Changing a package revision, adding or removing a package, or changing the project's
-manifest, toolchain, or Lake configuration invalidates affected evidence. Local edits
-inside installed packages are deliberately outside this check; keep reusable local
-changes in project sources. Local replacements of external module namespaces are
+manifest, toolchain, or Lake configuration invalidates affected evidence. Project
+proofs may remain uncommitted. Local replacements of external module namespaces are
 still content-hashed. Project files under `Lemmatheca/` retain per-module invalidation.
 
 A web-only deployment can omit Lake dependencies: the committed report and pinned
 environment are trusted when the dependency checkout is absent. With installed
-packages, the revision fingerprint is compared; removal of some packages needs
-rechecking. Individual library-file edits or removals are not detected. An unreadable
-installed Git revision invalidates evidence and blocks fresh verification.
+packages, cleanliness and the revision fingerprint are checked; removal of some
+packages needs rechecking. The verification command requires installed clean
+dependencies even when reusing evidence; the absent-dependency fallback is only
+for reading committed evidence. Policy version 6 requires checks under this rule;
+older policy evidence must be regenerated. Node approval hashes are unchanged.
 Missing local sources invalidate
 their module and its importers without blocking unrelated nodes. A different file
 resolving to the same imported module name also invalidates affected evidence.
@@ -196,13 +213,34 @@ actions validate every selected node before writing and check
 for concurrent input changes. They stage records and replace each node file atomically. Existing
 approvals are never silently updated by `check_formalizations`.
 
-Report format 7 has a `modules` map containing each project import module and one
-`Mathlib` record for direct library bindings. Records contain `status`, `checked_on`,
+Report format 8 has a `modules` map containing each project and Mathlib import
+module independently. Records contain `status`, `checked_on`,
 `policy_sha256`, and a direct `sha256` map from input path to fingerprint. The special
 `formal/.lake/packages` path represents the combined package revisions and local
 library overrides; ordinary file inputs use content hashes. Each
 record retains its own hashes, so refreshing one group cannot silently refresh
-another group's stale evidence. Failed records also contain an `error`.
+another group's stale evidence. Failed records also contain an `error`. If a prior
+check succeeded, a failed record includes `last_success`: the original successful
+module record, including its input hashes, policy, and check date. Existing node
+snapshots remain paired with that successful record; the failed attempt's hashes
+never certify them. Repeated failures replace the latest attempt and keep just one
+successful record, without nesting failure history. A first failure has no
+`last_success` and creates no node snapshots. A successful retry replaces the node
+snapshots and removes the failure and saved historical module record.
+
+The reader uses retained snapshots only for the historical review comparison;
+failed groups expose neither current target hashes nor current verification.
+Description and binding edits still prevent matching old approvals. The checker
+always retries failed groups, even if their last successful inputs match again.
+Format-7 shared Mathlib records migrate to separate import records with the
+original input hashes, check dates, node snapshots, and any `last_success` history.
+The reader adapts these records without writing; the checker persists format 8.
+Migration does not invent successful checks: a failed shared audit remains failed
+in each resulting module until that module passes a new check. Node fingerprints
+prevent a changed or newly added binding from using another binding's evidence.
+The full original input set is retained conservatively until a fresh check records
+the individual module's import closure. Current successful evidence can be reused;
+node approval hashes and review dates are unchanged.
 The report uses ordinary JSON, with no input table or numeric references.
 The reader ignores unsupported report formats, including the former indexed
 format, until the checker regenerates evidence. Individual installed-library file
@@ -210,7 +248,7 @@ hashes are no longer report inputs.
 The `nodes` map retains each declaration's axiom results, signature, source location,
 and `declaration_sha256`. The API exposes the dynamically computed `target_sha256`
 and the verification group's check date. Node bindings and source locations retain
-their exact `Mathlib.*` module names. Older report formats need regeneration with
+their exact `Mathlib.*` module names. Formats older than 7 need regeneration with
 `check_formalizations`. Verification-policy and report-format versions are separate;
 regenerating evidence does not accept reviews. Existing approvals are retained when
 their targets are unchanged.

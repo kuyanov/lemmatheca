@@ -40,6 +40,15 @@ lake build
 `.lake/` is local build/dependency data and is ignored by Git. The website can use
 committed reports without installing it; missing mathlib sources link upstream.
 
+The [CI workflow](../.github/workflows/ci.yml) installs this pinned environment,
+fetches the mathlib build cache, runs `lake build`, and then runs
+`uv run --locked python -u app/manage.py check_formalizations --force` from the
+repository root. The forced check verifies every registered declaration even
+when committed evidence is current. CI caches `.lake/` by operating system,
+architecture, and environment pins, retaining dependency Git metadata for the
+clean-checkout checks. Pending proofs and reviews are allowed under the existing
+checker policy; CI does not approve nodes or commit regenerated reports.
+
 ## Formal nodes
 
 Each `nodes/<id>.json` contains a mathematical description, a declaration,
@@ -212,12 +221,15 @@ Review hash version 3 excludes node IDs. Current version-2 approvals were conver
 by matching their full old hashes against checked targets, preserving timestamps
 and leaving other records untouched. Approvals predating descriptions still need
 explicit renewal; verification never accepts or migrates reviews automatically.
-Report format 7 stores path-to-hash maps directly in each verification record.
-Project modules have separate records; all direct Mathlib bindings share one
-`Mathlib` record. Each record includes the combined mathlib/Lake-library fingerprint
+Report format 8 stores path-to-hash maps directly in each verification record.
+Every project and Mathlib import module has a separate record. Each record
+includes the combined mathlib/Lake-library fingerprint
 when needed and keeps its own check date. Node records retain declaration hashes,
 axiom results, and exact source locations. Partial checks preserve other groups'
-snapshots. Regenerate older formats with `check_formalizations`; approvals are
+snapshots. Format-7 shared audits are split while preserving snapshots, original
+input hashes, check dates, and failure history; the checker persists this migration
+without rerunning current checks. Regenerate earlier formats with
+`check_formalizations`; approvals are
 retained when targets are unchanged. The reader combines declaration
 hashes with current descriptions when loading nodes. See the
 [review architecture](../docs/verification-and-review.md) for details and limitations.
@@ -263,18 +275,23 @@ From the repository root:
 uv run python app/manage.py check_formalizations
 ```
 
-The command reuses current verification records and builds stale project modules
-and the shared Mathlib group. It checks declarations and transitive axioms,
+The command reuses current verification records and builds stale project and
+Mathlib import modules independently. It checks declarations and transitive axioms,
 exports review snapshots through `Lemmatheca.ReviewChecks`, and writes
 `checks/nodes.json` with semantic declaration hashes and source locations. Only `propext`, `Classical.choice`, and `Quot.sound`
 are allowed in complete proofs; `sorryAx` remains unfinished.
 
 Each module fingerprints its local source import closure, the exporter, pinned
 environment, and verification policy. One combined revision hash covers installed
-mathlib and companion packages, including Aesop. These packages are assumed immutable;
-freshness checks read Git revisions without hashing their sources or detecting local
-library edits. Fresh verification still traverses source imports and invokes Lake/Lean.
-Source archives without Git metadata are trusted to match the manifest.
+mathlib and companion packages, including Aesop. Installed dependencies must be
+clean Git checkouts. Git status supplies each revision and detects staged,
+unstaged, untracked, and submodule changes; ignored build output is allowed.
+Dirty or unreadable checkouts and source archives without Git metadata invalidate
+affected evidence and block verification, including reuse of cached checks. The
+error identifies the affected packages. Commit intended dependency changes or
+restore a clean checkout before checking again; the command never cleans files.
+Project sources may have uncommitted changes and remain content-hashed. Fresh
+verification still traverses source imports and invokes Lake/Lean.
 Changes to installed package revisions or project environment pins invalidate checks
 using the snapshot. Local replacements of library modules remain content-hashed. A local
 project edit invalidates that module and its transitive importers; unrelated modules
@@ -287,14 +304,21 @@ To select registered import modules or deliberately rerun current checks:
 
 ```sh
 uv run python app/manage.py check_formalizations --module Lemmatheca.Entry.SetsAndMaps
+uv run python app/manage.py check_formalizations --module Mathlib.Data.Setoid.Basic
 uv run python app/manage.py check_formalizations --module Mathlib
 uv run python app/manage.py check_formalizations --force
 ```
 
 `--module` accepts multiple module names and can be combined with `--force`.
-Selecting any registered `Mathlib.*` import selects the whole Mathlib audit.
-Every binding is still checked through its own declared import module. A failed
-library audit invalidates that group's evidence without discarding local checks.
+Selecting a registered `Mathlib.*` import checks only that module. `--module Mathlib`
+is a shortcut for selecting all registered Mathlib imports independently. Nodes
+using the same import share a verification group. A failed module makes that group
+unverified while preserving other project and Mathlib modules' checks. It keeps
+the group's last successful node snapshots and original input hashes for review
+history. Unchanged nodes retain **Reviewed on …**, alongside **Not verified**;
+changed descriptions or bindings stop matching their saved approvals. The next
+successful check replaces the snapshots and clears the failure. No review records
+are changed automatically.
 
 The registry determines which declarations receive an axiom audit. `lake build`
 compiles the library; `check_formalizations` records the evidence used by the reader.

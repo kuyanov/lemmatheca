@@ -100,7 +100,7 @@ search, write endpoints, and autonomous workers remain future work.
 `verification_complete` indicates valid Lean evidence with no direct or transitive
 `sorry`, independently of declaration review and the manually declared dependency
 statuses. `checked_on` records when a valid check ran for the node's verification
-group (its project module or the shared Mathlib audit),
+group (its declared project or Mathlib import module),
 even if it found an unfinished proof; checks of unrelated modules do not change
 this date. The node page uses `verification_complete` for **Verified on …** / **Not
 verified**, and `review_matches_last_check` for **Reviewed on …** / **Under review**.

@@ -14,16 +14,20 @@ research-agent infrastructure are later stages. See the
 | Persistent mathematical source | Git-tracked HTML, JSON, images, and Lean files |
 | Browser | Plain CSS, small local JavaScript, pinned self-hosted KaTeX and fonts |
 | Formal environment | Lean 4.34.0, Lake, mathlib pinned by `lakefile.toml` and `lake-manifest.json` |
-| Validation and verification | Django management commands; Lean builds run locally on demand |
+| Validation and verification | Django management commands; Lean builds run locally and in CI |
 | Tests | Django's test runner, plus manual browser checks |
-| CI | GitHub Actions runs catalog tests and corpus validation on Python 3.12–3.14 |
+| CI | GitHub Actions runs catalog tests and corpus validation on Python 3.12–3.14, plus a separate Lean verification job |
 
 `DATABASES` is empty. Accounts, sessions, Django admin, PostgreSQL, task queues,
 AI model integrations, search services, and a human-corpus API are not implemented.
 The separate read-only formal-node API is available in the same Django process.
 The [CI workflow](../.github/workflows/ci.yml) runs on pushes, pull requests, and
-manual dispatch with locked Python dependencies and committed formal evidence;
-it does not install Lean or run formal verification. There is no configured Ruff/pytest.
+manual dispatch with locked Python dependencies. The Python matrix uses committed
+formal evidence. A separate job installs the pinned Lean environment, fetches the
+mathlib build cache, builds the project, and runs `check_formalizations --force`.
+Lake dependencies and build files are cached with environment-specific keys;
+verification is always rerun. CI does not approve nodes or commit generated reports.
+There is no configured Ruff/pytest.
 Dependency pins already exist;
 upgrade Lean and mathlib together deliberately rather than during an experiment.
 
@@ -31,7 +35,7 @@ upgrade Lean and mathlib together deliberately rather than during an experiment.
 
 ```text
 lemmatheca/
-├── .github/workflows/ci.yml         # Tests and corpus validation
+├── .github/workflows/ci.yml         # Tests, corpus validation, and Lean verification
 ├── README.md
 ├── docs/                           # Architecture, authoring, experiments, verification
 ├── app/
@@ -166,20 +170,39 @@ the import module; current checked locations identify the actual defining module
 including sources bundled with the pinned Lean toolchain. The formal API and node pages use `app/formalization/`; the reader
 calls the same Python layer without making an HTTP request to itself.
 
+Within that layer, `nodes.py` validates the registry and proof-plan graph, derives
+node statuses, and computes block/entry progress. `verification.py` handles report
+compatibility, input fingerprints, module freshness, retained successful snapshots,
+and verification cache signatures. `lean.py` handles environment and source paths,
+dependency checkout inspection, and import traversal; `reviews.py` defines review
+hashes. The management command invokes Lean and writes reports. Proof-plan
+validation is independent of status calculation and does not recurse through node
+statuses. Shared current input hashes are read once per freshness operation and
+compared with each module's own recorded hashes, including after partial rechecks.
+
 `check_formalizations` reuses current modules and builds stale registered import
 modules independently, checks declarations and their transitive axioms, and writes
-`formal/checks/nodes.json`. Report format 7 stores direct input-path/hash maps,
-policy hashes, and check dates per project module, plus one `Mathlib` verification
-record for direct library bindings. Each binding is checked in its declared import
-module; axiom results remain per declaration. Mathlib and its companion Lake packages
-have one shared revision fingerprint. Installed packages are assumed immutable:
-freshness checks use their Git revisions instead of hashing library files.
+`formal/checks/nodes.json`. Report format 8 stores direct input-path/hash maps,
+policy hashes, and check dates per import module, including separate `Mathlib.*`
+records. Each binding is checked in its declared import module; axiom results remain
+per declaration. `--module Mathlib` selects all registered Mathlib imports without
+combining their outcomes. Format-7 shared records are split with their original
+snapshots, input hashes, dates, and failure history intact. Mathlib and its companion Lake packages
+have one shared revision fingerprint. Installed packages must be clean Git
+checkouts: freshness checks query Git status and revisions instead of hashing
+library files in Python. Dirty checkouts and archives without Git metadata make
+affected evidence stale and block verification, including cached reuse. Ignored
+build output is allowed, and project sources may have uncommitted changes.
 Fresh verification still traverses imports and invokes Lake/Lean for each selected group.
 Environment pins and package revisions invalidate groups using that snapshot;
 local library-module overrides remain content-hashed. Records preserve their own input hashes during partial rechecks. Local project edits
 invalidate a module and its transitive importers; unrelated modules keep their
 evidence. Failed checks are recorded alongside independent successes, with a
-nonzero command exit. `sorryAx` means pending;
+nonzero command exit. A failed group retains its node snapshots and one
+`last_success` module record with the original successful input hashes and date.
+This preserves historical review labels; the failed group's verification remains
+unavailable until a successful retry replaces its snapshots and clears the failure.
+`sorryAx` means pending;
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed for complete proofs.
 A ready node additionally needs current correspondence approval. The manually
 listed dependencies plan proof work; their statuses do not affect node completion.

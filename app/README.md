@@ -17,8 +17,10 @@ uv run python app/manage.py test catalog
 
 The [CI workflow](../.github/workflows/ci.yml) runs the catalog tests and corpus
 validation on pushes, pull requests, and manual runs across Python 3.12–3.14.
-It installs dependencies from `uv.lock` and uses committed verification evidence,
-so the jobs do not need a Lean installation.
+These jobs install dependencies from `uv.lock` and use committed verification
+evidence without installing Lean. A separate job installs the pinned Lean
+environment, builds the project, and runs `check_formalizations --force` for all
+registered declarations.
 
 After reviewing node descriptions against their Lean declarations, record approval
 with
@@ -49,15 +51,21 @@ Tests use small isolated fixtures and one smoke test of the current corpus.
 Lean command tests mock Lean output; run `check_formalizations` to check
 actual proofs in stale modules, or add `--force` to recheck every registered module.
 Module evidence includes transitive local source imports and a shared revision hash
-for installed mathlib/Lake packages. Those packages are assumed immutable, so
-freshness checks read revisions without hashing their sources. Rechecking a stale
+for installed mathlib/Lake packages. They must be clean Git checkouts: freshness
+checks read revisions and Git status, without hashing package sources in Python.
+Dirty checkouts and source archives invalidate affected evidence and block checks,
+including cached reuse. Ignored build output is allowed; uncommitted project
+proofs are checked normally. Rechecking a stale
 module still traverses its imports, builds it, and runs Lean declaration probes.
 Unrelated modules retain their evidence and
 check dates after local edits or failures elsewhere; environment-pin and installed
 package-revision changes invalidate checks using that environment.
-The report uses direct path-to-hash maps, with separate project-module records and
-one Mathlib audit record. `--module Mathlib` selects that audit; every direct library
-binding is still checked through its specified import.
+The report uses direct path-to-hash maps, with a separate record for every project
+or Mathlib import module. `--module Mathlib.Data.Setoid.Basic` selects just that
+module; `--module Mathlib` selects all registered Mathlib imports, each checked
+independently. Binding errors leave unrelated modules' evidence and dates intact.
+Format-7 shared audits migrate to format 8 with their original snapshots, input
+hashes, dates, and any failure history; migration does not accept node reviews.
 
 Open <http://127.0.0.1:8000/>. For another device on your local network, set
 `DJANGO_ALLOWED_HOSTS` to include the host address and run the development server
@@ -74,6 +82,13 @@ The website can run without Lean installed. Keep the tracked `corpus/` and
 - `formalization/`: formal node storage, statuses, source locations, and API/views.
 - `config/`: Django settings, routing, and development error handling.
 - `templates/` and `static/`: shared presentation and self-hosted KaTeX.
+
+The formalization layer separates registry validation and progress (`nodes.py`),
+verification reports and freshness (`verification.py`), Lean sources and environment
+inspection (`lean.py`), and correspondence hashes (`reviews.py`). Registry-only
+callers use `read_registry`; page/API callers use `load_nodes` to attach derived
+review and verification state. Proof dependencies are validated independently of
+those states.
 
 Reader routes are `/`, `/areas/<path>/`, and `/entries/<id>/`. File changes are
 picked up on the next request. Restart the server when adding an entry's asset
@@ -107,6 +122,9 @@ The evidence panel uses two states per item: green **Reviewed on …** or amber
 complete proof, independently of review approval; merely running a check does not
 mark a proof with `sorry` as verified. Stale evidence shows **Not verified**, while
 an approval matching the last checked statement retains **Reviewed on …**.
+Failed checks also retain that historical review label: the report saves the last
+successful snapshots and their original input hashes separately from the latest
+failure. Failed groups remain unverified and are retried by the next check.
 This historical comparison does not make the API's
 `review_current` true or expose a current target hash. The overall node badge and
 API status still identify the specific next step.

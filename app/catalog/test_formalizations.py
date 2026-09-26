@@ -17,11 +17,11 @@ from django.test import SimpleTestCase, override_settings
 from catalog.content import entries, load_catalog
 from catalog.sources import ContentError
 from catalog.testing import CorpusFixtureMixin
-from formalization.lean import LIBRARY_INPUT, pinned_lean_version, verification_inputs
-from formalization.nodes import (ENVIRONMENT, REPORT, REPORT_VERSION, file_hash,
-                                 load_nodes, node_fingerprint, verification_group,
-                                 verification_input_hash, verification_policy_hash)
+from formalization.lean import ENVIRONMENT, LIBRARY_INPUT, pinned_lean_version, run_git, verification_inputs
+from formalization.nodes import load_nodes, validate_dependencies
 from formalization.reviews import declaration_hashes, review_target_hash
+from formalization.verification import (REPORT, REPORT_VERSION, file_hash, node_fingerprint,
+                                        verification_input_hash, verification_policy_hash)
 
 
 class EmptyRegistryTests(SimpleTestCase):
@@ -87,16 +87,33 @@ class NodeFixtureMixin(CorpusFixtureMixin):
             '<details class="question-answer"><summary>Answer</summary><p>Explanation.</p></details></section>'
             for i, attribute in enumerate(attributes)))
 
+    def library_git(self, package, *args):
+        directory = self.formal / \
+            LIBRARY_INPUT.removeprefix('formal/') / package
+        return run_git(['git', '-C', str(directory), '-c', 'core.hooksPath=/dev/null', *args],
+                       check=True, capture_output=True, text=True).stdout.strip()
+
+    def commit_library(self, package):
+        directory = self.formal / \
+            LIBRARY_INPUT.removeprefix('formal/') / package
+        directory.mkdir(parents=True, exist_ok=True)
+        if not (directory / '.git').exists():
+            self.library_git(package, 'init', '--initial-branch=main')
+        self.library_git(package, 'add', '.')
+        self.library_git(package, '-c', 'user.name=Test', '-c', 'user.email=test@example.com',
+                         '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Test library')
+        return self.library_git(package, 'rev-parse', 'HEAD')
+
     def write_report(self):
         nodes = load_nodes(self.root, check_reports=False)
-        groups = {verification_group(node['module'])
+        groups = {node['module']
                   for node in nodes.values() if node['module']}
         report = {'format_version': REPORT_VERSION,
                   'modules': {group: {
                       'status': 'passed', 'checked_on': '2026-09-20T12:00:00+00:00',
                       'policy_sha256': verification_policy_hash(),
                       'sha256': {path.relative_to(self.root).as_posix(): verification_input_hash(path, self.root)
-                                 for node in nodes.values() if verification_group(node['module']) == group
+                                 for node in nodes.values() if node['module'] == group
                                  for path in verification_inputs(self.root, node['module'])},
                   } for group in groups},
                   'nodes': {key: {'fingerprint': node_fingerprint(node),
@@ -110,6 +127,14 @@ class NodeFixtureMixin(CorpusFixtureMixin):
 
 
 class NodeTests(NodeFixtureMixin, SimpleTestCase):
+    def test_long_proof_plan_is_validated_without_recursive_status_resolution(self):
+        nodes = {f'node-{i}': {'dependencies': [f'node-{i + 1}'] if i < 1499 else []}
+                 for i in range(1500)}
+        validate_dependencies(nodes)
+        nodes['node-1499']['dependencies'] = ['node-0']
+        with self.assertRaisesRegex(ContentError, 'cycle'):
+            validate_dependencies(nodes)
+
     def test_attribute_states_and_concise_header_progress(self):
         self.write_html(('data-formal="ready pending"', 'data-formal=""', ''))
         response = self.client.get('/entries/first/')
@@ -396,6 +421,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         mathlib.write_text(original)
         self.write_node('ready', module='Mathlib.Test',
                         declaration='Even.zero', accepted=False)
+        self.commit_library('mathlib')
         self.write_report()
         path = self.root / REPORT
         report = json.loads(path.read_text())
@@ -421,7 +447,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             self.assertEqual(node['status'], 'review_pending')
 
             # Web-only deployments can still show the generated declaration.
-            mathlib.unlink()
+            shutil.rmtree(self.formal / '.lake/packages')
             response = self.client.get('/formal/nodes/ready/')
             self.assertContains(response, signature)
             self.assertContains(response, '/Mathlib/Test.lean#L1')
@@ -648,13 +674,14 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual(entries()['first']
                          ['formalization']['status'], 'complete')
 
-    def test_missing_mathlib_checkout_uses_pinned_source_and_archives_trust_the_pin(self):
+    def test_missing_mathlib_checkout_uses_pinned_source_but_archives_are_unverified(self):
         mathlib = self.formal / '.lake/packages/mathlib/Mathlib/Test.lean'
         mathlib.parent.mkdir(parents=True)
         mathlib.write_text(
             'namespace Mathlib\ntheorem test : True := by trivial\nend Mathlib\n')
         self.write_node('ready', module='Mathlib.Test',
                         declaration='Mathlib.test')
+        self.commit_library('mathlib')
         self.write_report()
         path = self.root / REPORT
         report = json.loads(path.read_text())
@@ -677,7 +704,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         mathlib.parent.mkdir(parents=True)
         mathlib.write_text('-- Restored from a source archive\n')
         self.assertEqual(load_nodes(self.root)[
-                         'ready']['status'], 'complete')
+                         'ready']['status'], 'verification_needed')
 
     def test_imported_lean_declaration_uses_its_actual_source_and_pinned_fallback(self):
         mathlib = self.formal / '.lake/packages/mathlib/Mathlib/Test.lean'
@@ -685,6 +712,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         mathlib.write_text('public import Init.Data.Function\n')
         self.write_node('ready', module='Mathlib.Test',
                         declaration='Function.Injective')
+        self.commit_library('mathlib')
         self.write_report()
         report_path = self.root / REPORT
         report = json.loads(report_path.read_text())
@@ -753,6 +781,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             'namespace Function\ndef test : Prop := True\nend Function\n')
         self.write_node('ready', module='Mathlib.Import',
                         declaration='Function.test')
+        self.commit_library('mathlib')
         self.write_report()
         path = self.root / REPORT
         report = json.loads(path.read_text())
@@ -772,6 +801,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         (external / 'B.lean').write_text('-- import Missing\nimport all Init.Control.Option\n')
         self.source.write_text(
             'public import Mathlib.A\n' + self.source.read_text())
+        self.commit_library('mathlib')
         self.write_report()
         self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
         report = json.loads((self.root / REPORT).read_text())
@@ -780,7 +810,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             report['modules']['Lemmatheca.Fixture']['sha256'])
         (external / 'B.lean').write_text('-- changed\n')
         self.assertEqual(load_nodes(self.root)[
-                         'ready']['status'], 'complete')
+                         'ready']['status'], 'verification_needed')
 
 
 class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
@@ -893,6 +923,12 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         stale = load_nodes(self.root)['ready']
         self.assertTrue(stale['review_matches_last_check'])
         self.assertFalse(stale['review_current'])
+        with self.assertRaisesRegex(CommandError, 'No declaration signature'):
+            self.run_check(ready_definition='False', include_signatures=False)
+        failed = load_nodes(self.root)['ready']
+        self.assertTrue(failed['review_matches_last_check'])
+        self.assertFalse(failed['review_current'])
+        self.assertFalse(failed['verification_complete'])
         self.run_check(ready_definition='False')
         node = load_nodes(self.root)['ready']
         self.assertEqual(node['status'], 'review_outdated')
@@ -905,12 +941,17 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
 
     def test_missing_signature_invalidates_module_evidence(self):
         path = self.root / REPORT
+        before = json.loads(path.read_text())
         with self.assertRaisesRegex(CommandError, 'No declaration signature'):
             self.run_check(include_signatures=False)
         report = json.loads(path.read_text())
         self.assertEqual(report['modules']
                          ['Lemmatheca.Fixture']['status'], 'failed')
-        self.assertNotIn('ready', report['nodes'])
+        self.assertEqual(report['nodes'], before['nodes'])
+        self.assertEqual(report['modules']['Lemmatheca.Fixture']['last_success'],
+                         before['modules']['Lemmatheca.Fixture'])
+        self.assertTrue(load_nodes(self.root)[
+                        'ready']['review_matches_last_check'])
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
 

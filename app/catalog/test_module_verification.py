@@ -16,8 +16,10 @@ from django.test import SimpleTestCase
 
 from catalog.content import entries
 from catalog.test_formalizations import NodeFixtureMixin
-from formalization.lean import LIBRARY_INPUT, library_revisions, run_git
-from formalization.nodes import ALLOWED_AXIOMS, ENVIRONMENT, REPORT, REPORT_VERSION, library_hash, load_nodes
+from formalization.lean import ENVIRONMENT, LIBRARY_INPUT, library_revisions
+from formalization.nodes import load_nodes
+from formalization.verification import (ALLOWED_AXIOMS, REPORT, REPORT_VERSION,
+                                        file_hash, library_hash, module_is_current)
 
 
 class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
@@ -139,8 +141,13 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
                          before['nodes']['independent'])
         for module in failed:
             self.assertEqual(after['modules'][module]['status'], 'failed')
+            self.assertEqual(after['modules'][module]
+                             ['last_success'], before['modules'][module])
+        self.assertEqual(after['nodes'], before['nodes'])
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
+        self.assertTrue(load_nodes(self.root)[
+                        'ready']['review_matches_last_check'])
         self.assertEqual(load_nodes(self.root)[
                          'independent']['status'], 'complete')
 
@@ -148,6 +155,9 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
         with self.assertRaises(CommandError):
             self.check(failing=failed)
         updated = self.report()
+        for module in failed:
+            self.assertEqual(updated['modules'][module]
+                             ['last_success'], before['modules'][module])
         self.assertNotEqual(updated['modules'][self.independent_module]['checked_on'],
                             before['modules'][self.independent_module]['checked_on'])
         self.assertEqual(load_nodes(self.root)[
@@ -175,7 +185,7 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
                 self.assertTrue(all(
                     node['status'] == 'verification_needed' for node in load_nodes(self.root).values()))
                 path.write_text(original)
-        with patch('formalization.nodes.ALLOWED_AXIOMS', ALLOWED_AXIOMS - {'Quot.sound'}):
+        with patch('formalization.verification.ALLOWED_AXIOMS', ALLOWED_AXIOMS - {'Quot.sound'}):
             self.assertTrue(all(
                 node['status'] == 'verification_needed' for node in load_nodes(self.root).values()))
 
@@ -280,7 +290,8 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
         hashes = original['modules'][self.fixture_module]['sha256']
         path = self.source.relative_to(self.root).as_posix()
         for invalid in ({}, [], None, {**hashes, path: 'invalid hash'}, {**hashes, path: True},
-                        {**hashes, 'formal/.lake/packages/mathlib/Mathlib/Old.lean': 'a' * 64}):
+                        {**hashes, 'formal/.lake/packages/mathlib/Mathlib/Old.lean': 'a' * 64},
+                        {**hashes, 'formal/Lemmatheca/Bad\x00.lean': 'a' * 64}):
             with self.subTest(hashes=invalid):
                 report = deepcopy(original)
                 report['modules'][self.fixture_module]['sha256'] = invalid
@@ -292,6 +303,18 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
                 self.assertEqual(
                     entries()['first']['formalization']['status'], 'partial')
 
+    def test_unreadable_input_invalidates_only_affected_modules(self):
+        def read_hash(path):
+            if path == self.source:
+                raise PermissionError('Cannot read source')
+            return file_hash(path)
+
+        with patch('formalization.verification.file_hash', side_effect=read_hash):
+            nodes = load_nodes(self.root)
+        self.assertEqual(nodes['ready']['status'], 'verification_needed')
+        self.assertTrue(nodes['ready']['review_matches_last_check'])
+        self.assertEqual(nodes['independent']['status'], 'complete')
+
     def add_library(self):
         sources = []
         for package, module in (('mathlib', 'Mathlib/Support'), ('aesop', 'Aesop/Constants')):
@@ -300,16 +323,11 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
             path.parent.mkdir(parents=True)
             path.write_text('-- Library source\n')
             sources.append(path)
-            self.set_library_revision(package, 'a' * 40)
+            self.commit_library(package)
         self.source.write_text(
             'import Mathlib.Support\n' + self.source.read_text())
         self.check()
         return sources
-
-    def set_library_revision(self, package, revision):
-        git = self.formal / '.lake/packages' / package / '.git'
-        git.mkdir(parents=True, exist_ok=True)
-        (git / 'HEAD').write_text(revision + '\n')
 
     def add_library_bindings(self):
         for node_id, module in (('library-first', 'Mathlib.First'), ('library-second', 'Mathlib.Second')):
@@ -319,88 +337,296 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
             path.write_text(f'theorem {module}.result : True := by trivial\n')
             self.write_node(node_id, module=module,
                             declaration=f'{module}.result')
+        self.commit_library('mathlib')
         self.check()
 
-    def test_mathlib_bindings_share_one_record_but_check_their_own_imports(self):
+    def test_partial_rechecks_share_one_current_library_snapshot(self):
+        mathlib, _ = self.add_library()
+        mathlib.write_text(mathlib.read_text() + '-- Updated library\n')
+        self.commit_library('mathlib')
+        self.check(modules=[self.fixture_module])
+        with patch('formalization.verification.library_revisions', wraps=library_revisions) as revisions:
+            nodes = load_nodes(self.root)
+        revisions.assert_called_once_with(self.root, required=False)
+        self.assertEqual(nodes['ready']['status'], 'complete')
+        self.assertEqual(nodes['uses-fixture']['status'], 'verification_needed')
+        self.assertEqual(nodes['independent']['status'], 'complete')
+
+    def test_reader_cache_cannot_bypass_required_dependency_checkouts(self):
+        self.add_library_bindings()
+        record = self.report()['modules']['Mathlib.First']
+        shutil.rmtree(self.formal / '.lake/packages')
+        cache = {}
+        self.assertTrue(module_is_current(record, self.root, 'Mathlib.First', input_cache=cache))
+        self.assertFalse(module_is_current(record, self.root, 'Mathlib.First',
+                                           input_cache=cache, require_libraries=True))
+
+    def test_mathlib_bindings_have_separate_records_and_import_probes(self):
         self.add_library_bindings()
         report = self.report()
-        self.assertIn('Mathlib', report['modules'])
-        self.assertFalse(any(name.startswith('Mathlib.')
-                         for name in report['modules']))
+        self.assertNotIn('Mathlib', report['modules'])
         self.assertNotIn('inputs', report)
         self.assertEqual(set(self.built), {'Mathlib.First', 'Mathlib.Second'})
         self.assertEqual(self.probes, [['Mathlib.First', 'Lemmatheca.ReviewChecks'],
                                        ['Mathlib.Second', 'Lemmatheca.ReviewChecks']])
-        self.assertIsInstance(report['modules']['Mathlib']['sha256'], dict)
         nodes = load_nodes(self.root)
         for key in ('library-first', 'library-second'):
-            self.assertEqual(nodes[key]['status'], 'complete')
-            self.assertEqual(nodes[key]['checked_on'],
-                             report['modules']['Mathlib']['checked_on'])
-        self.assertEqual(nodes['library-first']['module'], 'Mathlib.First')
-        self.assertEqual(nodes['library-second']['module'], 'Mathlib.Second')
+            node = nodes[key]
+            record = report['modules'][node['module']]
+            self.assertEqual(node['status'], 'complete')
+            self.assertEqual(node['checked_on'], record['checked_on'])
+            self.assertIn(LIBRARY_INPUT, record['sha256'])
+            self.assertFalse(any(path.startswith(LIBRARY_INPUT + '/')
+                             for path in record['sha256']))
+        self.assertEqual(report['modules']['Mathlib.First']['sha256'][LIBRARY_INPUT],
+                         report['modules']['Mathlib.Second']['sha256'][LIBRARY_INPUT])
 
-    def test_mathlib_selector_refreshes_the_shared_audit_and_preserves_local_records(self):
+    def test_mathlib_selectors_and_new_bindings_only_refresh_selected_modules(self):
         self.add_library_bindings()
         before = self.report()
         self.check(modules=['Mathlib.First'], force=True)
-        self.assertEqual(set(self.built), {'Mathlib.First', 'Mathlib.Second'})
+        self.assertEqual(self.built, ['Mathlib.First'])
         for name, record in before['modules'].items():
-            if name != 'Mathlib':
+            if name != 'Mathlib.First':
                 self.assertEqual(self.report()['modules'][name], record)
+        self.check(modules=['Mathlib', 'Mathlib.First'], force=True)
+        self.assertEqual(self.built, ['Mathlib.First', 'Mathlib.Second'])
         self.check(modules=['Mathlib'])
         self.assertEqual(self.built, [])
         with self.assertRaisesRegex(CommandError, 'Unknown registered modules'):
             self.check(modules=['Mathlib.Unregistered'])
+        before = self.report()['modules']['Mathlib.Second']
         self.write_node('another-library-binding',
                         module='Mathlib.First', declaration='Mathlib.First.another')
         self.check()
-        self.assertEqual(set(self.built), {'Mathlib.First', 'Mathlib.Second'})
+        self.assertEqual(self.built, ['Mathlib.First'])
+        self.assertEqual(self.report()['modules']['Mathlib.Second'], before)
         self.assertEqual(load_nodes(self.root)[
                          'another-library-binding']['status'], 'complete')
 
     def test_local_proof_edits_preserve_mathlib_verification(self):
         self.add_library_bindings()
-        before = self.report()['modules']['Mathlib']
+        before = self.report()
         self.source.write_text(self.source.read_text() +
                                '\n-- Local proof edit\n')
         nodes = load_nodes(self.root)
         self.assertEqual(nodes['ready']['status'], 'verification_needed')
         self.assertEqual(nodes['library-first']['status'], 'complete')
         self.check()
-        self.assertNotIn('Mathlib.First', self.built)
-        self.assertEqual(self.report()['modules']['Mathlib'], before)
+        for module in ('Mathlib.First', 'Mathlib.Second'):
+            self.assertNotIn(module, self.built)
+            self.assertEqual(
+                self.report()['modules'][module], before['modules'][module])
 
-    def test_failed_mathlib_audit_discards_no_local_evidence(self):
+    def test_failed_mathlib_module_preserves_other_modules_and_historical_review(self):
         self.add_library_bindings()
         before = self.report()
-        with self.assertRaisesRegex(CommandError, 'Cannot audit Mathlib.Second'):
+        # An early failure must not prevent a later independent module succeeding.
+        with self.assertRaisesRegex(CommandError, 'Cannot audit Mathlib.First'):
             self.check(modules=['Mathlib'], force=True,
-                       failing_probes=['Mathlib.Second'])
+                       failing_probes=['Mathlib.First'])
         report = self.report()
-        self.assertEqual(report['modules']['Mathlib']['status'], 'failed')
-        for key in ('library-first', 'library-second'):
-            self.assertNotIn(key, report['nodes'])
-            self.assertEqual(load_nodes(self.root)[
-                             key]['status'], 'verification_needed')
-        self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
+        self.assertEqual(report['modules']
+                         ['Mathlib.First']['status'], 'failed')
+        self.assertEqual(report['modules']['Mathlib.First']
+                         ['last_success'], before['modules']['Mathlib.First'])
+        self.assertEqual(report['nodes'], before['nodes'])
+        nodes = load_nodes(self.root)
+        node = nodes['library-first']
+        self.assertEqual(node['status'], 'verification_needed')
+        self.assertTrue(node['review_matches_last_check'])
+        self.assertFalse(node['review_current'])
+        self.assertFalse(node['verification_complete'])
+        self.assertIsNone(node['target_sha256'])
+        self.assertIsNone(node['signature'])
+        self.assertIsNone(node['checked_on'])
+        page = self.client.get(node['url'])
+        self.assertContains(page, 'Reviewed on <time')
+        self.assertContains(page, 'Not verified')
+        self.assertNotContains(page, 'Under review')
+        self.assertEqual(nodes['library-second']['status'], 'complete')
+        self.assertNotEqual(report['modules']['Mathlib.Second']['checked_on'],
+                            before['modules']['Mathlib.Second']['checked_on'])
         self.assertEqual(report['modules'][self.fixture_module],
                          before['modules'][self.fixture_module])
 
-    def test_reused_evidence_does_not_scan_or_hash_library_sources(self):
-        _, aesop = self.add_library()
+        # Failed modules are retried even at unchanged inputs; successful ones reuse evidence.
+        self.check(modules=['Mathlib'])
+        self.assertEqual(self.built, ['Mathlib.First'])
+        self.assertNotIn('last_success', self.report()
+                         ['modules']['Mathlib.First'])
+        self.assertEqual(
+            self.report()['modules']['Mathlib.Second'], report['modules']['Mathlib.Second'])
+        self.assertEqual(load_nodes(self.root)[
+                         'library-first']['status'], 'complete')
+
+    def shared_mathlib_report(self, *, failed=False):
         report = self.report()
-        self.assertNotIn('inputs', report)
+        modules = report['modules']
+        shared = deepcopy(modules['Mathlib.First'])
+        shared['sha256'] = {path: value for module, record in modules.items()
+                            if module.startswith('Mathlib.') for path, value in record['sha256'].items()}
+        if failed:
+            shared = {**shared, 'status': 'failed', 'error': 'Previous shared audit failed',
+                      'last_success': deepcopy(shared)}
+        report.update(format_version=7, modules={
+            **{module: record for module, record in modules.items() if not module.startswith('Mathlib.')},
+            'Mathlib': shared,
+        })
+        (self.root / REPORT).write_text(json.dumps(report))
+        return report
+
+    def test_shared_audit_migration_preserves_checks_dates_snapshots_and_approvals(self):
+        self.add_library_bindings()
+        old = self.shared_mathlib_report()
+        approvals = {path: path.read_bytes()
+                     for path in self.node_dir.glob('*.json')}
+        nodes = load_nodes(self.root)
+        for key in ('library-first', 'library-second'):
+            self.assertEqual(nodes[key]['status'], 'complete')
+        # Reader never writes.
+        self.assertEqual(self.report()['format_version'], 7)
+        self.check()
+        migrated = self.report()
+        self.assertEqual(self.built, [])
+        self.assertEqual(migrated['format_version'], REPORT_VERSION)
+        self.assertNotIn('Mathlib', migrated['modules'])
+        for module in ('Mathlib.First', 'Mathlib.Second'):
+            self.assertEqual(migrated['modules']
+                             [module], old['modules']['Mathlib'])
+        self.assertEqual(migrated['nodes'], old['nodes'])
+        self.assertEqual({path: path.read_bytes()
+                         for path in approvals}, approvals)
+
+    def test_failed_shared_audit_migration_keeps_history_and_requires_individual_rechecks(self):
+        self.add_library_bindings()
+        old = self.shared_mathlib_report(failed=True)
+        for key in ('library-first', 'library-second'):
+            node = load_nodes(self.root)[key]
+            self.assertEqual(node['status'], 'verification_needed')
+            self.assertTrue(node['review_matches_last_check'])
+        self.check(modules=['Mathlib.First'])
+        self.assertEqual(self.built, ['Mathlib.First'])
+        self.assertEqual(
+            self.report()['modules']['Mathlib.Second'], old['modules']['Mathlib'])
+        nodes = load_nodes(self.root)
+        self.assertEqual(nodes['library-first']['status'], 'complete')
+        self.assertEqual(nodes['library-second']
+                         ['status'], 'verification_needed')
+        self.assertTrue(nodes['library-second']['review_matches_last_check'])
+        self.check(modules=['Mathlib'])
+        self.assertEqual(self.built, ['Mathlib.Second'])
+
+    def test_shared_audit_migration_cannot_certify_a_changed_binding(self):
+        self.add_library_bindings()
+        self.shared_mathlib_report()
+        self.write_node('library-second', module='Mathlib.Second',
+                        declaration='Mathlib.Second.missing')
+        nodes = load_nodes(self.root)
+        self.assertEqual(nodes['library-first']['status'], 'complete')
+        self.assertEqual(nodes['library-second']
+                         ['status'], 'verification_needed')
+        with self.assertRaisesRegex(CommandError, 'Cannot audit Mathlib.Second'):
+            self.check(failing_probes=['Mathlib.Second'])
+        self.assertEqual(self.built, ['Mathlib.Second'])
+        self.assertEqual(load_nodes(self.root)[
+                         'library-first']['status'], 'complete')
+
+    def test_bad_binding_and_description_edits_cannot_match_saved_review_snapshots(self):
+        self.add_library_bindings()
+        before = self.report()
+        path = self.node_dir / 'library-second.json'
+        original = path.read_text()
+        binding = json.loads(original)
+        binding['declaration'] = 'Mathlib.Second.missing'
+        path.write_text(json.dumps(binding))
+        with self.assertRaisesRegex(CommandError, 'Cannot audit Mathlib.Second'):
+            self.check(modules=['Mathlib'], failing_probes=['Mathlib.Second'])
+        self.assertEqual(self.report()['nodes'], before['nodes'])
+        nodes = load_nodes(self.root)
+        self.assertTrue(nodes['library-first']['review_matches_last_check'])
+        self.assertEqual(nodes['library-first']['status'], 'complete')
+        self.assertEqual(self.built, ['Mathlib.Second'])
+        self.assertEqual(
+            self.report()['modules']['Mathlib.First'], before['modules']['Mathlib.First'])
+        self.assertFalse(nodes['library-second']['review_matches_last_check'])
+        self.assertContains(self.client.get(
+            nodes['library-second']['url']), 'Under review')
+
+        path.write_text(original)
+        self.assertTrue(load_nodes(self.root)[
+                        'library-second']['review_matches_last_check'])
+        binding = json.loads(original)
+        binding['description'] = 'A changed claim that needs another correspondence review.'
+        path.write_text(json.dumps(binding))
+        self.assertFalse(load_nodes(self.root)[
+                         'library-second']['review_matches_last_check'])
+        self.assertTrue(load_nodes(self.root)[
+                        'library-first']['review_matches_last_check'])
+
+    def test_failed_attempts_retain_original_inputs_even_when_new_inputs_are_unavailable(self):
+        self.add_library()
+        before = self.report()
+        original = self.source.read_text()
+        self.source.write_text(
+            original + '\n-- Changed since the successful check\n')
+        with self.assertRaisesRegex(CommandError, 'Cannot build'):
+            self.check(modules=[self.fixture_module],
+                       failing=[self.fixture_module])
+        failed = self.report()['modules'][self.fixture_module]
+        self.assertNotEqual(failed['sha256'], failed['last_success']['sha256'])
+        self.assertEqual(failed['last_success'],
+                         before['modules'][self.fixture_module])
+
+        self.source.unlink()
+        with self.assertRaisesRegex(CommandError, 'Missing imported Lean source'):
+            self.check(modules=[self.fixture_module])
+        failed = self.report()['modules'][self.fixture_module]
+        self.assertEqual(failed['sha256'], {})
+        self.assertEqual(failed['last_success'],
+                         before['modules'][self.fixture_module])
+        self.assertEqual(self.report()['nodes'], before['nodes'])
+        self.assertTrue(load_nodes(self.root)[
+                        'ready']['review_matches_last_check'])
+        self.write_html(('data-formal="ready"',))
+        self.assertEqual(entries()['first']
+                         ['formalization']['status'], 'partial')
+
+        self.source.write_text(original)
+        self.assertFalse(load_nodes(self.root)[
+                         'ready']['verification_complete'])
+        self.check(modules=[self.fixture_module])
+        self.assertNotIn('last_success', self.report()[
+                         'modules'][self.fixture_module])
+        self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
+
+    def test_first_failure_has_no_successful_history_and_does_not_create_snapshots(self):
+        self.add_module('new-node', 'Lemmatheca.New')
+        with self.assertRaisesRegex(CommandError, 'Cannot build'):
+            self.check(modules=['Lemmatheca.New'], failing=['Lemmatheca.New'])
+        failed = self.report()['modules']['Lemmatheca.New']
+        self.assertEqual(failed['status'], 'failed')
+        self.assertNotIn('last_success', failed)
+        self.assertNotIn('new-node', self.report()['nodes'])
+        node = load_nodes(self.root)['new-node']
+        self.assertFalse(node['review_matches_last_check'])
+        self.assertFalse(node['verification_complete'])
+
+    def test_clean_cached_evidence_uses_git_without_python_scans_or_source_hashes(self):
+        _, aesop = self.add_library()
+        ignore = aesop.parents[1] / '.gitignore'
+        ignore.write_text('.lake/\n')
+        self.commit_library('aesop')
+        self.check()
+        report = self.report()
         hashes = report['modules'][self.fixture_module]['sha256']
         self.assertIn(LIBRARY_INPUT, hashes)
         self.assertFalse(any(path.startswith(LIBRARY_INPUT + '/')
                          for path in hashes))
-        self.write_html(('data-formal="ready"',))
-        self.assertEqual(entries()['first']
-                         ['formalization']['status'], 'complete')
-        original = aesop.read_text()
-        read_bytes = Path.read_bytes
-        walk = os.walk
+        build = ignore.parent / '.lake/build'
+        build.mkdir(parents=True)
+        (build / 'Constants.olean').write_text('Ignored build output')
+        read_bytes, walk = Path.read_bytes, os.walk
 
         def read_local(path):
             self.assertFalse(path.is_relative_to(
@@ -412,42 +638,100 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
                 self.formal / '.lake/packages'))
             return walk(path)
 
-        for change in ('edit', 'remove', 'add'):
+        with patch.object(Path, 'read_bytes', read_local), patch('formalization.lean.os.walk', walk_local):
+            self.assertEqual(load_nodes(self.root)[
+                             'ready']['status'], 'complete')
+            self.check()
+        self.assertEqual(self.built, [])
+        self.assertEqual(self.report(), report)
+
+    def test_dirty_packages_invalidate_reader_cache_and_block_verification(self):
+        _, aesop = self.add_library()
+        self.library_git('aesop', 'config', 'status.showUntrackedFiles', 'no')
+        self.write_html(('data-formal="ready"',))
+        original = aesop.read_text()
+        for change in ('unstaged', 'staged', 'deleted', 'untracked'):
             with self.subTest(change=change):
+                self.assertEqual(
+                    entries()['first']['formalization']['status'], 'complete')
                 added = aesop.with_name('New.lean')
-                if change == 'edit':
-                    aesop.write_text(
-                        original + '-- Edited without changing the revision pin.\n')
-                elif change == 'remove':
+                if change in ('unstaged', 'staged'):
+                    aesop.write_text(original + '-- An uncommitted edit\n')
+                    if change == 'staged':
+                        self.library_git('aesop', 'add', '.')
+                elif change == 'deleted':
                     aesop.unlink()
                 else:
-                    added.write_text('-- Added library source\n')
-                with patch.object(Path, 'read_bytes', read_local), patch('formalization.lean.os.walk', walk_local):
-                    self.assertEqual(load_nodes(self.root)[
-                                     'ready']['status'], 'complete')
-                    self.assertEqual(
-                        entries()['first']['formalization']['status'], 'complete')
-                    self.check()
+                    added.write_text('-- Untracked library source\n')
+                self.assertEqual(load_nodes(self.root)[
+                                 'ready']['status'], 'verification_needed')
+                self.assertEqual(
+                    entries()['first']['formalization']['status'], 'partial')
+                self.assertEqual(load_nodes(self.root)[
+                                 'independent']['status'], 'complete')
+                with self.assertRaisesRegex(CommandError, 'aesop: uncommitted or untracked files'):
+                    self.check(modules=[self.fixture_module])
                 self.assertEqual(self.built, [])
-                self.assertEqual(self.report(), report)
+                self.assertEqual(
+                    self.report()['modules'][self.fixture_module]['status'], 'failed')
+                self.library_git('aesop', 'reset', '--mixed', 'HEAD')
                 aesop.write_text(original)
                 added.unlink(missing_ok=True)
-                self.assertEqual(load_nodes(self.root)[
-                                 'ready']['status'], 'complete')
+                self.check(modules=[self.fixture_module])
+                self.assertEqual(
+                    entries()['first']['formalization']['status'], 'complete')
+
+    def test_archives_cannot_be_verified_and_dirty_changes_during_check_fail(self):
+        _, aesop = self.add_library()
+        original = aesop.read_text()
+        with self.assertRaisesRegex(CommandError, 'aesop: uncommitted or untracked files'):
+            self.check(modules=[self.fixture_module], force=True,
+                       during_check=lambda module: aesop.write_text(original + '-- Changed during check\n'))
+        self.assertEqual(self.report()['modules']
+                         [self.fixture_module]['status'], 'failed')
+        aesop.write_text(original)
+        self.check(modules=[self.fixture_module])
+        shutil.rmtree(aesop.parents[1] / '.git')
+        self.assertEqual(load_nodes(self.root)[
+                         'ready']['status'], 'verification_needed')
+        with self.assertRaisesRegex(CommandError, 'aesop: missing Git checkout metadata'):
+            self.check(modules=[self.fixture_module])
+        self.assertEqual(self.built, [])
+
+    def test_web_only_evidence_can_be_read_but_not_reused_for_verification(self):
+        self.add_library_bindings()
+        shutil.rmtree(self.formal / '.lake/packages')
+        self.assertEqual(load_nodes(self.root)[
+                         'library-first']['status'], 'complete')
+        with self.assertRaisesRegex(CommandError, 'Missing imported Lean source'):
+            self.check(modules=['Mathlib'])
+        self.assertEqual(self.built, [])
+
+    def test_unavailable_git_makes_library_evidence_stale(self):
+        self.add_library()
+        with patch('formalization.lean.run_git', side_effect=FileNotFoundError('git')):
+            self.assertEqual(load_nodes(self.root)[
+                             'ready']['status'], 'verification_needed')
+            self.assertEqual(load_nodes(self.root)[
+                             'independent']['status'], 'complete')
+            with self.assertRaisesRegex(CommandError, 'cannot read Git checkout status'):
+                self.check(modules=[self.fixture_module])
+        self.assertEqual(self.built, [])
 
     def test_installed_revision_and_package_inventory_changes_invalidate_library_users(self):
         self.add_library()
+        original = self.library_git('aesop', 'rev-parse', 'HEAD')
         self.write_html(('data-formal="ready"',))
         self.assertEqual(entries()['first']
                          ['formalization']['status'], 'complete')
-        self.set_library_revision('aesop', 'b' * 40)
+        self.commit_library('aesop')
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
         self.assertEqual(load_nodes(self.root)[
                          'independent']['status'], 'complete')
         self.assertEqual(entries()['first']
                          ['formalization']['status'], 'partial')
-        self.set_library_revision('aesop', 'a' * 40)
+        self.library_git('aesop', 'checkout', '--detach', original)
         self.assertEqual(entries()['first']
                          ['formalization']['status'], 'complete')
 
@@ -458,56 +742,45 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
                          'ready']['status'], 'verification_needed')
         removed.rename(package)
         self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
-        self.set_library_revision('extra-package', 'c' * 40)
+        self.commit_library('extra-package')
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
 
     def test_unreadable_installed_revision_cannot_be_verified(self):
         self.add_library()
-        self.set_library_revision('aesop', 'not a revision')
+        (self.formal / '.lake/packages/aesop/.git/HEAD').write_text('not a revision\n')
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
-        with self.assertRaisesRegex(CommandError, 'unreadable package revisions'):
+        with self.assertRaisesRegex(CommandError, 'clean Git checkouts'):
             self.check(modules=[self.fixture_module])
         self.assertEqual(load_nodes(self.root)[
                          'independent']['status'], 'complete')
 
     def test_git_branches_packed_refs_and_worktrees_resolve_to_commits(self):
         self.add_library()
-        package = self.formal / '.lake/packages/aesop'
-        shutil.rmtree(package / '.git')
-
-        def git(*args):
-            return run_git(['git', '-C', str(package), *args], check=True,
-                           capture_output=True, text=True).stdout.strip()
-
-        def commit():
-            git('-c', 'user.name=Test', '-c', 'user.email=test@example.com',
-                '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Test revision')
-            return git('rev-parse', 'HEAD')
-
-        git('init', '--initial-branch=main')
-        first = commit()
+        first = self.library_git('aesop', 'rev-parse', 'HEAD')
         self.assertEqual(library_revisions(self.root)['aesop'], first)
-        self.check()
-        second = commit()
+        second = self.commit_library('aesop')
         self.assertNotEqual(first, second)
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
         self.assertEqual(load_nodes(self.root)[
                          'independent']['status'], 'complete')
         fingerprint = library_hash(self.root)
-        git('pack-refs', '--all', '--prune')
+        self.library_git('aesop', 'pack-refs', '--all', '--prune')
         self.assertEqual(library_revisions(self.root)['aesop'], second)
         self.assertEqual(library_hash(self.root), fingerprint)
-        git('worktree', 'add', '--detach',
-            str(package.with_name('linked')), first)
+        linked = self.formal / '.lake/packages/linked'
+        self.library_git('aesop', 'worktree', 'add',
+                         '--detach', str(linked), first)
         self.assertEqual(library_revisions(self.root)['linked'], first)
+        (linked / 'Aesop/Constants.lean').write_text('-- Edited linked checkout\n')
+        self.assertIsNone(library_revisions(self.root)['linked'])
 
     def test_library_snapshots_remain_distinct_across_partial_rechecks(self):
         self.add_library()
         before = self.report()
-        self.set_library_revision('aesop', 'b' * 40)
+        self.commit_library('aesop')
         self.check(modules=[self.fixture_module])
         partial = self.report()
         self.assertNotEqual(partial['modules'][self.fixture_module]['sha256'][LIBRARY_INPUT],
@@ -530,7 +803,7 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
         self.add_library()
         with self.assertRaisesRegex(CommandError, 'changed during verification'):
             self.check(modules=[self.fixture_module], force=True,
-                       during_check=lambda module: self.set_library_revision('aesop', 'b' * 40))
+                       during_check=lambda module: self.commit_library('aesop'))
         self.assertEqual(self.report()['modules']
                          [self.fixture_module]['status'], 'failed')
         self.assertEqual(load_nodes(self.root)[
@@ -563,6 +836,7 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
         external = self.formal / '.lake/packages/mathlib/Mathlib/Support.lean'
         external.parent.mkdir(parents=True)
         external.write_text('-- Pinned source\n')
+        self.commit_library('mathlib')
         self.source.write_text(
             'import Mathlib.Support\n' + self.source.read_text())
         self.check()

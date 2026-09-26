@@ -10,9 +10,22 @@ from catalog.files import file_signature, read_json
 from catalog.sources import ContentError
 
 
+ENVIRONMENT = ('lean-toolchain', 'lake-manifest.json', 'lakefile.toml')
+LEAN_NAME = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z", re.UNICODE)
 TOOLCHAIN_MODULES = ('Init', 'Lean', 'Std')
 REVIEW_MODULE = 'Lemmatheca.ReviewChecks'
 LIBRARY_INPUT = 'formal/.lake/packages'
+
+
+def source_for_module(module, *, allow_toolchain=False):
+    if not isinstance(module, str) or not LEAN_NAME.fullmatch(module):
+        raise ContentError('Invalid Lean module')
+    if module.startswith('Lemmatheca.'):
+        return 'formal/' + module.replace('.', '/') + '.lean'
+    if module.startswith('Mathlib.') or (allow_toolchain and '.' in module
+                                         and module.split('.')[0] in TOOLCHAIN_MODULES):
+        return module.replace('.', '/') + '.lean'
+    raise ContentError('Nodes must use Lemmatheca or Mathlib modules')
 
 
 def library_packages(root):
@@ -21,33 +34,39 @@ def library_packages(root):
                   if path.is_dir() and not path.name.startswith('.')) if directory.exists() else []
 
 
-def library_revisions(root):
-    """Treat installed Lake packages as immutable checkouts, without scanning sources."""
-    pins = {item['name']: item.get('rev') for item in
-            read_json(root / 'formal/lake-manifest.json')['packages']}
-    revisions = {}
+def library_revisions(root, *, required=False):
+    """Fingerprint clean Lake checkouts using Git, without hashing library sources."""
+    revisions, errors = {}, []
     for package in library_packages(root):
-        git = package / '.git'
-        if not git.exists():
-            # Source archives without Git metadata are trusted to match the lockfile.
-            revisions[package.name] = pins.get(package.name)
+        revisions[package.name] = None
+        if not (package / '.git').exists():
+            errors.append(f'{package.name}: missing Git checkout metadata')
+            # Never let Git fall back to the enclosing project checkout.
             continue
-        revision = None
         try:
-            # Lake normally uses detached HEADs; reading these avoids a subprocess
-            # per package. Git handles branches, packed refs, and linked worktrees.
-            head = (git / 'HEAD').read_text().strip() if git.is_dir() else ''
-            if re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', head):
-                revision = head
+            # One status query supplies HEAD and checks staged, unstaged, untracked,
+            # and submodule changes. Ignored Lake build output is allowed. Override
+            # status settings so user configuration cannot hide ordinary changes.
+            result = run_git(['git', '--no-optional-locks', '-C', str(package),
+                              '-c', 'core.fsmonitor=false',
+                              'status', '--porcelain=v2', '--branch', '-z',
+                              '--untracked-files=normal', '--ignore-submodules=none'],
+                             capture_output=True, text=True, errors='replace', check=True, timeout=10)
+            records = result.stdout.split('\0')
+            revision = next((line.removeprefix('# branch.oid ') for line in records
+                             if line.startswith('# branch.oid ')), '')
+            if not re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', revision):
+                errors.append(f'{package.name}: no valid HEAD commit')
+            elif any(line and not line.startswith('# ') for line in records):
+                errors.append(
+                    f'{package.name}: uncommitted or untracked files')
             else:
-                result = run_git(['git', '--no-optional-locks', '-C', str(package),
-                                  'rev-parse', '--verify', 'HEAD'],
-                                 capture_output=True, text=True, check=True, timeout=5)
-                revision = result.stdout.strip()
+                revisions[package.name] = revision
         except (OSError, SubprocessError):
-            # Unreadable revisions invalidate evidence and cannot be checked.
-            pass
-        revisions[package.name] = revision
+            errors.append(f'{package.name}: cannot read Git checkout status')
+    if required and errors:
+        raise ContentError(
+            'Lean libraries require clean Git checkouts:\n' + '\n'.join(errors))
     return revisions
 
 
@@ -249,7 +268,6 @@ def _source_imports(path, signature):
 
 def verification_inputs(root, module):
     """Local import closure and environment, with one shared library fingerprint."""
-    from .nodes import ENVIRONMENT
     paths = {root / 'formal' / name for name in ENVIRONMENT}
     roots = source_roots(root)
     modules = [module, REVIEW_MODULE]

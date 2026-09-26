@@ -1,9 +1,6 @@
 """File-backed formal nodes. Completion is evidence, not an editable status."""
 
-from functools import lru_cache
-import hashlib
-import json
-import re
+from graphlib import CycleError, TopologicalSorter
 
 from django.urls import reverse
 
@@ -11,22 +8,16 @@ from catalog.files import file_signature, read_json
 from catalog.metadata import fields
 from catalog.sources import ContentError, IDENTIFIER
 
-from .lean import (LIBRARY_INPUT, REVIEW_MODULE, TOOLCHAIN_MODULES, lean_source_path,
-                   library_overrides, library_revisions, local_sources, module_source_path, source_roots)
-from .reviews import SHA256, digest, review_target_hash, validate_review
+from .lean import LEAN_NAME, lean_source_path, source_for_module
+from .reviews import review_target_hash, validate_review
+from .verification import (
+    REPORT, checked_source_location, current_node_evidence, module_is_current,
+    normalize_verification_report, successful_module_snapshot, verification_signature,
+)
 
 
 NODE_FIELDS = {'id', 'description', 'declaration',
                'module', 'dependencies', 'review'}
-# Only the binding selects what Lean checks; proof planning is resolved separately.
-VERIFICATION_FIELDS = {'id', 'declaration', 'module'}
-LEAN_NAME = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z", re.UNICODE)
-ALLOWED_AXIOMS = {'propext', 'Classical.choice', 'Quot.sound'}
-REPORT = 'formal/checks/nodes.json'
-REPORT_VERSION = 7
-# Storage-only report changes must not invalidate existing verification.
-VERIFICATION_POLICY_VERSION = 5
-ENVIRONMENT = ('lean-toolchain', 'lake-manifest.json', 'lakefile.toml')
 NODE_STATUS_LABELS = {
     'declaration_missing': 'Declaration missing',
     'review_pending': 'Pending review',
@@ -35,167 +26,6 @@ NODE_STATUS_LABELS = {
     'proof_pending': 'Proof pending',
     'complete': 'Complete',
 }
-
-
-def verification_group(module):
-    """Library bindings share one audit; project modules remain independent."""
-    return 'Mathlib' if module and module.startswith('Mathlib.') else module
-
-
-def source_for_module(module, *, allow_toolchain=False):
-    if not isinstance(module, str) or not LEAN_NAME.fullmatch(module):
-        raise ContentError('Invalid Lean module')
-    if module.startswith('Lemmatheca.'):
-        return 'formal/' + module.replace('.', '/') + '.lean'
-    if module.startswith('Mathlib.') or (allow_toolchain and '.' in module
-                                         and module.split('.')[0] in TOOLCHAIN_MODULES):
-        return module.replace('.', '/') + '.lean'
-    raise ContentError('Nodes must use Lemmatheca or Mathlib modules')
-
-
-def checked_source_location(node, checked, report):
-    """A declaration can originate in a different module from the node's import."""
-    location = checked.get('location')
-    if isinstance(location, dict) and type(location.get('line')) is int and location['line'] > 0:
-        try:
-            source = source_for_module(
-                location.get('module'), allow_toolchain=True)
-        except ContentError:
-            return node['source'], None
-        # Imported sources need current fingerprints; bundled Lean sources are
-        # covered by the pinned toolchain in the verification report.
-        if (source.split('/')[0] in TOOLCHAIN_MODULES
-                or source_is_fingerprinted(source, report.get('sha256', {}))):
-            return source, location['line']
-    return node['source'], None
-
-
-def source_input_key(source):
-    if source and source.startswith('Mathlib/'):
-        return LIBRARY_INPUT
-    return source
-
-
-def source_is_fingerprinted(source, inputs):
-    return isinstance(inputs, dict) and source_input_key(source) in inputs
-
-
-def node_fingerprint(node):
-    # Descriptions affect correspondence review, not Lean verification.
-    record = {key: node[key] for key in sorted(VERIFICATION_FIELDS)}
-    return hashlib.sha256(json.dumps(record, sort_keys=True).encode()).hexdigest()
-
-
-def file_hash(path):
-    stat = path.stat()
-    return _file_hash(path, stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size)
-
-
-@lru_cache(maxsize=16384)
-def _file_hash(path, modified, changed, size):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def library_hash(root, *, required=False):
-    revisions = library_revisions(root)
-    if required and (not revisions or any(revision is None for revision in revisions.values())):
-        raise ContentError(
-            'Missing installed Lean libraries or unreadable package revisions')
-    overrides = {path.relative_to(root).as_posix(): file_hash(path)
-                 for path in library_overrides(root)}
-    return digest({'revisions': revisions, 'overrides': overrides}) if revisions or overrides else None
-
-
-def verification_input_hash(path, root):
-    if path != root / LIBRARY_INPUT:
-        return file_hash(path)
-    return library_hash(root, required=True)
-
-
-def report_input_path(root, relative):
-    """Reports may fingerprint Lean sources and environment files, never arbitrary files."""
-    if not isinstance(relative, str):
-        raise ContentError('Invalid verification input path')
-    parts = relative.split('/')
-    if any(not part or part in ('.', '..') for part in parts) or '\\' in relative:
-        raise ContentError('Invalid verification input path')
-    path = root / relative
-    formal = root / 'formal'
-    allowed = (relative == LIBRARY_INPUT or relative in {f'formal/{name}' for name in ENVIRONMENT}
-               or (relative.startswith('formal/') and relative.endswith('.lean')
-                   and not any(part.startswith('.') for part in parts)))
-    if not allowed or not path.resolve().is_relative_to(formal.resolve()):
-        raise ContentError(
-            'Verification input is outside the formal source tree')
-    return path
-
-
-def verification_policy_hash():
-    return digest({'version': VERIFICATION_POLICY_VERSION, 'allowed_axioms': sorted(ALLOWED_AXIOMS)})
-
-
-def input_module(relative):
-    """Recover the module name from a recorded local Lean source path."""
-    return '.'.join(relative.split('/')[1:]).removesuffix('.lean')
-
-
-def module_is_current(record, root, module, *, input_cache=None):
-    if (not isinstance(record, dict) or record.get('status') != 'passed'
-            or record.get('policy_sha256') != verification_policy_hash()
-            or not isinstance(record.get('checked_on'), str) or not record['checked_on']):
-        return False
-    hashes = record.get('sha256')
-    required = {f'formal/{name}' for name in ENVIRONMENT}
-    module_input = (LIBRARY_INPUT if module == 'Mathlib'
-                    else source_input_key(source_for_module(module)))
-    required.update((module_input,
-                     source_for_module(REVIEW_MODULE)))
-    if not isinstance(hashes, dict) or not required <= hashes.keys():
-        return False
-    cache = input_cache if input_cache is not None else {}
-    roots = source_roots(root)
-
-    def matches(relative, expected):
-        path = report_input_path(root, relative)
-        if relative == LIBRARY_INPUT:
-            # With no dependency checkout, serve pinned, committed evidence.
-            actual = library_hash(root)
-            return actual is None or actual == expected
-        if relative.endswith('.lean'):
-            resolved = module_source_path(input_module(
-                relative), root, roots=roots, required=False)
-            if resolved is not None and resolved != path:
-                # A new source shadows the previously resolved module.
-                return False
-        return path.is_file() and file_hash(path) == expected
-
-    for relative, expected in hashes.items():
-        if not isinstance(expected, str) or not SHA256.fullmatch(expected):
-            return False
-        key = (relative, expected)
-        if key not in cache:
-            try:
-                cache[key] = matches(relative, expected)
-            except ContentError:
-                cache[key] = False
-        if not cache[key]:
-            return False
-    return True
-
-
-def current_node_evidence(node, checked, inputs):
-    """Validate a node snapshot; source freshness is checked at module level."""
-    if not isinstance(checked, dict) or checked.get('fingerprint') != node_fingerprint(node):
-        return {}
-    declaration_hash = checked.get('declaration_sha256')
-    axioms = checked.get('axioms')
-    if (not isinstance(declaration_hash, str) or not SHA256.fullmatch(declaration_hash)
-            or not isinstance(axioms, list) or any(not isinstance(axiom, str) for axiom in axioms)
-            or set(axioms) - ALLOWED_AXIOMS - {'sorryAx'}
-            or checked.get('status') != ('pending' if 'sorryAx' in axioms else 'complete')
-            or not source_is_fingerprinted(node['source'], inputs)):
-        return {}
-    return checked
 
 
 def node_status(node, checked, target_hash):
@@ -213,11 +43,13 @@ def node_status(node, checked, target_hash):
     return 'complete'
 
 
-def load_nodes(root, *, check_reports=True):
+def read_registry(root):
+    """Load and validate node records independently of verification evidence."""
     nodes = {}
     directory = root / 'formal/nodes'
+    resolved_directory = directory.resolve()
     for path in sorted(directory.glob('*.json')):
-        if not path.resolve().is_relative_to(directory.resolve()):
+        if not path.resolve().is_relative_to(resolved_directory):
             raise ContentError('Formal node is outside formal/nodes')
         node = read_json(path)
         fields(node, NODE_FIELDS)
@@ -246,37 +78,46 @@ def load_nodes(root, *, check_reports=True):
             raise ContentError(
                 'A node without a declaration cannot be reviewed')
         nodes[node['id']] = {**node, 'source': source}
+    validate_dependencies(nodes)
+    return nodes
+
+
+def validate_dependencies(nodes):
+    """Proof plans must reference an acyclic graph; they never gate completion."""
+    graph = {node_id: node['dependencies'] for node_id, node in nodes.items()}
+    for dependencies in graph.values():
+        for dependency in dependencies:
+            if dependency not in nodes:
+                raise ContentError(f'Unknown formal node: {dependency}')
+    try:
+        TopologicalSorter(graph).prepare()
+    except CycleError as error:
+        raise ContentError(
+            f'Formal dependency cycle at {error.args[1][0]}') from error
+
+
+def load_nodes(root, *, check_reports=True):
+    """Attach each node's own review and verification status to the registry."""
+    nodes = read_registry(root)
 
     report_path = root / REPORT
     report = read_json(
         report_path) if check_reports and nodes and report_path.exists() else {}
-    supported = report.get('format_version') == REPORT_VERSION
-    evidence = report.get('nodes', {}) if supported else {}
-    modules = report.get('modules', {}) if supported else {}
+    report = normalize_verification_report(report, nodes)
+    evidence = report.get('nodes', {})
+    modules = report.get('modules', {})
     input_cache = {}
-    current_modules = {module: modules[module] for module in {verification_group(node['module']) for node in nodes.values()}
+    current_modules = {module for module in {node['module'] for node in nodes.values()}
                        if module in modules and module_is_current(modules[module], root, module,
                                                                   input_cache=input_cache)}
-    # Validate the proof plan's references and acyclicity, independently of status.
-    visiting, visited = set(), set()
-
-    def resolve(node_id):
-        if node_id not in nodes:
-            raise ContentError(f'Unknown formal node: {node_id}')
-        if node_id in visiting:
-            raise ContentError(f'Formal dependency cycle at {node_id}')
-        if node_id in visited:
-            return
-        visiting.add(node_id)
-        node = nodes[node_id]
-        for dependency in node['dependencies']:
-            resolve(dependency)
-        group = verification_group(node['module'])
+    for node_id, node in nodes.items():
+        group = node['module']
         module_report = modules.get(group, {})
+        successful = successful_module_snapshot(module_report)
         last_checked = current_node_evidence(
-            node, evidence.get(node_id), module_report.get('sha256', {})
-        ) if module_report.get('status') == 'passed' else {}
-        # A stale source does not retract a recorded approval. Compare current
+            node, evidence.get(node_id), successful.get('sha256', {})
+        ) if successful else {}
+        # Stale or failed verification does not retract a recorded approval. Compare current
         # prose with the last checked semantics for the historical review label,
         # but expose a current target only after the module has been rechecked.
         last_target = (review_target_hash(node, last_checked['declaration_sha256'])
@@ -301,42 +142,15 @@ def load_nodes(root, *, check_reports=True):
                     checked_on=module_report.get(
                         'checked_on') if checked else None,
                     url=reverse('formalization:node', args=[node_id]))
-        visiting.remove(node_id)
-        visited.add(node_id)
-
-    for node_id in nodes:
-        resolve(node_id)
     return nodes
 
 
 def formal_signature(root):
-    paths = set((root / 'formal/nodes').glob('*.json'))
+    """Watch the registry and its verification inputs for catalog/review changes."""
+    paths = sorted((root / 'formal/nodes').glob('*.json'))
     if not paths:
         return ()
-    paths.update(local_sources(root))
-    paths.update(root / 'formal' / name for name in ENVIRONMENT)
-    report = root / REPORT
-    paths.add(report)
-    library_signature = ()
-    if report.exists():
-        saved = read_json(report)
-        records = saved.get('modules', {}).values() if saved.get(
-            'format_version') == REPORT_VERSION else ()
-        inputs = {name for record in records if isinstance(record.get('sha256'), dict)
-                  for name in record['sha256']}
-        roots = source_roots(root)
-        for name in inputs:
-            try:
-                paths.add(report_input_path(root, name))
-            except ContentError:
-                # Invalid evidence is stale; its report is still watched.
-                continue
-            if name == LIBRARY_INPUT:
-                library_signature = ((LIBRARY_INPUT, library_hash(root)),)
-            if name.endswith('.lean'):
-                relative = input_module(name).replace('.', '/') + '.lean'
-                paths.update(base / relative for base in roots)
-    return tuple(file_signature(path) for path in sorted(paths)) + library_signature
+    return tuple(file_signature(path) for path in paths) + verification_signature(root)
 
 
 def progress(ids, nodes, *, unplanned=0, applicable=True):

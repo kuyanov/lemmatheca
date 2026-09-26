@@ -246,9 +246,12 @@ uv run python app/manage.py test catalog
 The checker reads nodes independently of entries, reuses current module records,
 builds stale modules, checks declarations and transitive axioms, and writes
 `formal/checks/nodes.json`. Evidence covers each module's transitive local imports
-and a shared mathlib/Lake-package revision fingerprint. Installed packages are assumed
-immutable; changing their revision or the environment pins invalidates checks using
-that environment. Unrelated local edits leave it intact. Failed modules do not discard other successful
+and a shared mathlib/Lake-package revision fingerprint. Installed dependencies must
+be clean Git checkouts; staged, unstaged, or untracked changes block verification,
+as do source archives without Git metadata. Ignored build output is allowed.
+Changing package revisions or environment pins invalidates affected checks.
+Project proofs may remain uncommitted; unrelated local edits leave evidence intact.
+Failed modules do not discard other successful
 checks, though the command exits with an error.
 A declaration using `sorry`, including through another theorem, remains pending.
 An empty registry skips Lean; the current registry covers the two formalized entries.

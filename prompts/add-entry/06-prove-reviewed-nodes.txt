@@ -50,8 +50,10 @@ uv run python app/manage.py validate_corpus after the proof changes. Run lake bu
 from formal/ if aggregate imports or module organization changed. The checker
 refreshes stale modules and their affected importers, preserving unrelated evidence
 and dates. Use --module <module> for a targeted check, or --force for a deliberate
-recheck of current modules. Direct Mathlib bindings share one audit: --module Mathlib
-or a registered Mathlib.* module selects that whole group. A failure still saves independent successful checks;
+recheck of current modules. Mathlib bindings are grouped by their declared import
+module: a registered Mathlib.* selector checks only that module, while --module
+Mathlib selects all registered Mathlib imports independently. Nodes with the same
+import share a group's outcome. A failure still saves independent successful checks;
 resolve every failure in scope before declaring the work complete. Verify that the
 completed nodes have no direct or transitive sorry and retain their accepted target
 hashes. Proof-only edits need fresh Lean evidence; they do not need reacceptance

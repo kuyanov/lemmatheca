@@ -122,12 +122,20 @@ description and declaration hash stay unchanged.
 Lean verification is tracked per import module and its transitive local source imports.
 Editing a proof invalidates its module and any importers; unrelated modules retain
 their evidence and check dates. The checker reuses current modules and saves
-successful checks even when another module fails.
+successful checks even when another module fails. A failed group retains its last
+successful snapshots for review history, so unchanged nodes keep their review
+labels while verification shows Not verified. A later successful check replaces
+the snapshots and clears the failure.
 Mathlib and its companion Lake packages share one revision fingerprint. Installed
-libraries are treated as immutable; source trees are not scanned for local edits.
-Environment-pin or installed-revision changes invalidate checks using them. Direct Mathlib bindings share
-one verification record; local modules retain separate records. Each record stores
-its input hashes directly.
+dependencies must be clean Git checkouts: Git status checks reject staged,
+unstaged, and untracked changes, while allowing ignored build output. Archives
+without Git metadata cannot be verified. Project proofs may remain uncommitted;
+their contents are hashed separately.
+Environment-pin or installed-revision changes invalidate checks using them.
+Project and Mathlib imports each have their own verification record. Changing or
+breaking one binding only requires rechecking its import module; other modules
+keep their evidence and check dates. Nodes using the same import remain grouped
+together. Each record stores its input hashes directly.
 
 | Folder | Purpose |
 | --- | --- |
@@ -154,8 +162,10 @@ uv run python app/manage.py test catalog
 
 [GitHub Actions](.github/workflows/ci.yml) runs these checks on every push and pull
 request using Python 3.12, 3.13, and 3.14 and the locked dependencies. It also supports
-manual runs. CI uses the committed formal evidence; Lean verification remains a
-separate local check.
+manual runs. A separate Lean job installs the pinned formal environment, builds
+the project, and runs `check_formalizations --force` to verify every registered
+declaration. Lake dependencies and build files are cached by environment pins;
+the verification command still runs on every job.
 
 With the [Lean environment](formal/README.md) installed:
 
