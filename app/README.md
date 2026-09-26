@@ -15,6 +15,11 @@ uv run python app/manage.py validate_corpus
 uv run python app/manage.py test catalog
 ```
 
+The [CI workflow](../.github/workflows/ci.yml) runs the catalog tests and corpus
+validation on pushes, pull requests, and manual runs across Python 3.12–3.14.
+It installs dependencies from `uv.lock` and uses committed verification evidence,
+so the jobs do not need a Lean installation.
+
 After reviewing node descriptions against their Lean declarations, record approval
 with
 `uv run python app/manage.py review --accept --node <id>` or

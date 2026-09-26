@@ -16,17 +16,22 @@ research-agent infrastructure are later stages. See the
 | Formal environment | Lean 4.34.0, Lake, mathlib pinned by `lakefile.toml` and `lake-manifest.json` |
 | Validation and verification | Django management commands; Lean builds run locally on demand |
 | Tests | Django's test runner, plus manual browser checks |
+| CI | GitHub Actions runs catalog tests and corpus validation on Python 3.12–3.14 |
 
 `DATABASES` is empty. Accounts, sessions, Django admin, PostgreSQL, task queues,
 AI model integrations, search services, and a human-corpus API are not implemented.
 The separate read-only formal-node API is available in the same Django process.
-There is no configured Ruff/pytest or CI pipeline. Dependency pins already exist;
+The [CI workflow](../.github/workflows/ci.yml) runs on pushes, pull requests, and
+manual dispatch with locked Python dependencies and committed formal evidence;
+it does not install Lean or run formal verification. There is no configured Ruff/pytest.
+Dependency pins already exist;
 upgrade Lean and mathlib together deliberately rather than during an experiment.
 
 ## Existing folder layout
 
 ```text
 lemmatheca/
+├── .github/workflows/ci.yml         # Tests and corpus validation
 ├── README.md
 ├── docs/                           # Architecture, authoring, experiments, verification
 ├── app/

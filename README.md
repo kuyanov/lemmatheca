@@ -116,6 +116,11 @@ uv run python app/manage.py validate_corpus
 uv run python app/manage.py test catalog
 ```
 
+[GitHub Actions](.github/workflows/ci.yml) runs these checks on every push and pull
+request using Python 3.12, 3.13, and 3.14 and the locked dependencies. It also supports
+manual runs. CI uses the committed formal evidence; Lean verification remains a
+separate local check.
+
 With the [Lean environment](formal/README.md) installed:
 
 ```sh
