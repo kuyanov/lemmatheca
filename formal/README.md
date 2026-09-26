@@ -46,12 +46,14 @@ committed reports without installing it; missing mathlib sources link upstream.
 
 The [CI workflow](../.github/workflows/ci.yml) installs this pinned environment,
 fetches the mathlib build cache, runs `lake build`, and then runs
-`uv run --locked python -u app/manage.py check_formalizations --force` from the
-repository root. The forced check verifies every registered declaration even
-when committed evidence is current. CI caches `.lake/` by operating system,
+`uv run --locked python -u app/manage.py check_formalizations --force --check` from
+the repository root. It first requires a current committed report, then verifies
+every registered declaration and compares fresh evidence with the saved evidence,
+ignoring check dates. The report is never rewritten in this mode. CI caches `.lake/` by operating system,
 architecture, and environment pins, retaining dependency Git metadata for the
 clean-checkout checks. Pending proofs and reviews are allowed under the existing
-checker policy; CI does not approve nodes or commit regenerated reports.
+checker policy; CI does not approve nodes. Refresh and commit the report alongside
+formal input changes so the freshness check passes.
 
 ## Formal nodes
 
@@ -311,7 +313,18 @@ uv run python app/manage.py check_formalizations --module Lemmatheca.Entry.SetsA
 uv run python app/manage.py check_formalizations --module Mathlib.Data.Setoid.Basic
 uv run python app/manage.py check_formalizations --module Mathlib
 uv run python app/manage.py check_formalizations --force
+uv run python app/manage.py check_formalizations --check
+uv run python app/manage.py check_formalizations --force --check
 ```
+
+`--check` validates the whole saved report without running Lean or writing it:
+format, module/node membership, input fingerprints, policy, and node evidence
+must be current. Missing, failed, stale, or obsolete records fail the command.
+It requires clean installed dependencies for library-backed evidence. Combine it
+with `--force` to compare fresh Lean results too, ignoring only module check dates.
+With `--module`, the freshness check still covers the whole report, while the
+fresh Lean checks are limited to the selected modules. To fix a failure, run
+`check_formalizations --force` without `--check` and commit `checks/nodes.json`.
 
 `--module` accepts multiple module names and can be combined with `--force`.
 Selecting a registered `Mathlib.*` import checks only that module. `--module Mathlib`

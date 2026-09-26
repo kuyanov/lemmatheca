@@ -83,6 +83,6 @@ jobs:
           # Use the explicit cache above to include the environment pins in formal/.
           use-github-cache: "false"
 
-      - name: Check all formalizations
-        # Always run Lean, even when the committed verification report is current.
-        run: uv run --locked python -u app/manage.py check_formalizations --force
+      - name: Check all formalizations and the committed report
+        # Reject stale evidence before running Lean; compare fresh evidence without writing it.
+        run: uv run --locked python -u app/manage.py check_formalizations --force --check

@@ -24,9 +24,11 @@ The separate read-only formal-node API is available in the same Django process.
 The [CI workflow](../.github/workflows/ci.yml) runs on pushes, pull requests, and
 manual dispatch with locked Python dependencies. The Python matrix uses committed
 formal evidence. A separate job installs the pinned Lean environment, fetches the
-mathlib build cache, builds the project, and runs `check_formalizations --force`.
+mathlib build cache, builds the project, and runs `check_formalizations --force --check`.
 Lake dependencies and build files are cached with environment-specific keys;
-verification is always rerun. CI does not approve nodes or commit generated reports.
+the saved report must be current before Lean reruns. Fresh evidence is compared
+with the committed report, ignoring module check dates. CI never rewrites the report
+or approves nodes.
 There is no configured Ruff/pytest.
 Dependency pins already exist;
 upgrade Lean and mathlib together deliberately rather than during an experiment.

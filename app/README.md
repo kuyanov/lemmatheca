@@ -19,8 +19,9 @@ The [CI workflow](../.github/workflows/ci.yml) runs the catalog tests and corpus
 validation on pushes, pull requests, and manual runs across Python 3.12–3.14.
 These jobs install dependencies from `uv.lock` and use committed verification
 evidence without installing Lean. A separate job installs the pinned Lean
-environment, builds the project, and runs `check_formalizations --force` for all
-registered declarations.
+environment, builds the project, and runs `check_formalizations --force --check`
+for all registered declarations. It rejects a stale committed report and compares
+fresh evidence with it, ignoring check dates, without rewriting the report.
 
 After reviewing node descriptions against their Lean declarations, record approval
 with
@@ -54,6 +55,8 @@ See the [review workflow](../README.md#recording-reviews).
 Tests use small isolated fixtures and one smoke test of the current corpus.
 Lean command tests mock Lean output; run `check_formalizations` to check
 actual proofs in stale modules, or add `--force` to recheck every registered module.
+Use `--check` alone for a read-only freshness check, or `--force --check` for the CI
+comparison. Refresh and commit `formal/checks/nodes.json` after changing formal inputs.
 Module evidence includes transitive local source imports and a shared revision hash
 for installed mathlib/Lake packages. They must be clean Git checkouts: freshness
 checks read revisions and Git status, without hashing package sources in Python.

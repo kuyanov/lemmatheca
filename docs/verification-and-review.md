@@ -175,16 +175,32 @@ snapshots for review history, while its verification is unavailable. Successful 
 saved; the command then exits with an error. Concurrent report writes are rejected
 instead of overwriting another check's results.
 
+Use `check_formalizations --check` to validate the whole saved report without
+running Lean or writing it. It rejects a missing or old-format report, missing or
+obsolete module/node records, stale input or binding fingerprints, failed checks,
+and incomplete node evidence. Installed dependencies must meet the same clean-Git
+requirement as verification. Pending proofs and node reviews are allowed.
+Description and review edits alone do not require refreshing Lean evidence.
+
+Combine `--check` with `--force` to rerun Lean after freshness passes and compare
+the resulting report with the saved one. Only module `checked_on` timestamps are
+ignored; axiom results, signatures, declaration hashes, locations, and input hashes
+must agree. Neither success nor failure rewrites the report. `--module` can limit
+the fresh Lean checks, but the initial freshness check still covers the whole
+report. Refresh stale evidence with `check_formalizations --force` without `--check`,
+then commit `formal/checks/nodes.json` alongside the changed inputs.
+
 With no node declarations, the command skips Lean. Axiom auditing is driven by
 the node registry; the old fixed list of sumset checks has been removed. Archived
 JSON bindings and `checks/sumsets.json` remain historical records outside this pipeline.
 
 The [CI workflow](../.github/workflows/ci.yml) installs the pinned Lean environment,
-builds the project, and runs `check_formalizations --force` on pushes, pull requests,
+builds the project, and runs `check_formalizations --force --check` on pushes, pull requests,
 and manual runs. Its Lake cache retains dependencies and build artifacts, but
-every registered declaration is checked again. Lean errors, missing declarations,
+the committed report must pass freshness validation before every registered
+declaration is checked again and its evidence compared. Lean errors, missing declarations,
 unapproved axioms, and invalid dependency checkouts fail the job. Pending proofs
-and human reviews remain allowed; CI neither records approval nor commits reports.
+and human reviews remain allowed; CI neither records approval nor rewrites reports.
 
 The reader derives readiness from the node's current evidence and correspondence
 review. For a reviewed declaration, a missing or stale report yields

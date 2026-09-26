@@ -19,7 +19,7 @@ from catalog.test_formalizations import NodeFixtureMixin
 from formalization.lean import ENVIRONMENT, LIBRARY_INPUT, library_revisions
 from formalization.nodes import load_nodes
 from formalization.verification import (ALLOWED_AXIOMS, REPORT, REPORT_VERSION,
-                                        file_hash, library_hash, module_is_current)
+                                        file_hash, library_hash, module_is_current, report_freshness_errors)
 
 
 class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
@@ -48,7 +48,7 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
     def report(self):
         return json.loads((self.root / REPORT).read_text())
 
-    def check(self, *, modules=None, force=False, failing=(), failing_probes=(), during_check=None):
+    def check(self, *, modules=None, force=False, check_only=False, failing=(), failing_probes=(), during_check=None):
         self.built = []
         self.probes = []
 
@@ -81,9 +81,154 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
 
         output = StringIO()
         with patch('catalog.management.commands.check_formalizations.subprocess.run', side_effect=run):
-            call_command('check_formalizations', module=modules, force=force,
+            call_command('check_formalizations', module=modules, force=force, check=check_only,
                          stdout=output, stderr=StringIO())
         return output.getvalue()
+
+    def test_report_check_is_read_only_and_allows_pending_proofs_and_reviews(self):
+        before = (self.root / REPORT).read_bytes()
+        self.write_node('ready', description='New wording.',
+                        review=None, dependencies=['pending'])
+        output = self.check(check_only=True)
+        self.assertIn('verification report is current', output)
+        self.assertEqual(self.built, [])
+        self.assertEqual(self.probes, [])
+        self.assertEqual((self.root / REPORT).read_bytes(), before)
+
+    def test_report_check_rejects_stale_inputs_and_policy_without_running_lean(self):
+        before = (self.root / REPORT).read_bytes()
+        for path in (self.source, self.formal / 'Lemmatheca/ReviewChecks.lean',
+                     *(self.formal / name for name in ENVIRONMENT)):
+            with self.subTest(path=path):
+                original = path.read_bytes()
+                path.write_bytes(original + b'\n')
+                with self.assertRaisesRegex(CommandError, 'Stale or failed module'):
+                    self.check(check_only=True, force=True)
+                self.assertEqual(self.built, [])
+                self.assertEqual((self.root / REPORT).read_bytes(), before)
+                path.write_bytes(original)
+        with patch('formalization.verification.ALLOWED_AXIOMS', ALLOWED_AXIOMS - {'Quot.sound'}):
+            with self.assertRaisesRegex(CommandError, 'Stale or failed module'):
+                self.check(check_only=True)
+
+    def test_report_check_cannot_start_lean_if_inputs_change_after_validation(self):
+        before = (self.root / REPORT).read_bytes()
+
+        def validate_then_edit(*args):
+            errors = report_freshness_errors(*args)
+            self.source.write_text(
+                self.source.read_text() + '\n-- Changed during checking\n')
+            return errors
+
+        with patch('catalog.management.commands.check_formalizations.report_freshness_errors',
+                   side_effect=validate_then_edit):
+            with self.assertRaisesRegex(CommandError, 'Inputs changed during report validation'):
+                self.check(check_only=True)
+        self.assertEqual(self.built, [])
+        self.assertEqual((self.root / REPORT).read_bytes(), before)
+
+    def test_report_check_rejects_missing_legacy_failed_and_incomplete_reports(self):
+        original = self.report()
+        cases = []
+        for version in (4, 7):
+            cases.append({**original, 'format_version': version})
+        cases.append({**original, 'modules': []})
+        for section, key in (('modules', self.fixture_module), ('nodes', 'ready')):
+            report = deepcopy(original)
+            del report[section][key]
+            cases.append(report)
+        report = deepcopy(original)
+        report['modules'][self.fixture_module]['status'] = 'failed'
+        report['modules'][self.fixture_module]['last_success'] = original['modules'][self.fixture_module]
+        cases.append(report)
+        report = deepcopy(original)
+        del report['nodes']['ready']['declaration_sha256']
+        cases.append(report)
+        for report in cases:
+            with self.subTest(report=report):
+                (self.root / REPORT).write_text(json.dumps(report))
+                before = (self.root / REPORT).read_bytes()
+                with self.assertRaisesRegex(CommandError, 'commit the updated report'):
+                    self.check(check_only=True)
+                self.assertEqual(self.built, [])
+                self.assertEqual((self.root / REPORT).read_bytes(), before)
+        (self.root / REPORT).unlink()
+        with self.assertRaisesRegex(CommandError, 'Missing report'):
+            self.check(check_only=True)
+        self.assertFalse((self.root / REPORT).exists())
+
+    def test_report_check_detects_registry_additions_changes_and_removals(self):
+        path = self.node_dir / 'independent.json'
+        original = path.read_bytes()
+        before = (self.root / REPORT).read_bytes()
+        self.write_node('independent', declaration=f'{self.independent_module}.changed',
+                        module=self.independent_module)
+        with self.assertRaisesRegex(CommandError, 'Stale node evidence: independent'):
+            self.check(check_only=True)
+        path.write_bytes(original)
+        self.write_node('new-binding', declaration=f'{self.independent_module}.result',
+                        module=self.independent_module)
+        with self.assertRaisesRegex(CommandError, 'Missing nodes: new-binding'):
+            self.check(check_only=True)
+        (self.node_dir / 'new-binding.json').unlink()
+        path.unlink()
+        with self.assertRaisesRegex(CommandError, 'Obsolete modules: Lemmatheca.Independent'):
+            self.check(check_only=True)
+        self.assertEqual((self.root / REPORT).read_bytes(), before)
+        self.check()
+        self.assertEqual(self.built, [])
+        self.check(check_only=True)
+
+    def test_removing_all_nodes_requires_pruning_the_report_without_lean(self):
+        for path in self.node_dir.glob('*.json'):
+            path.unlink()
+        with self.assertRaisesRegex(CommandError, 'Obsolete modules'):
+            self.check(check_only=True)
+        self.check()
+        self.assertEqual(self.built, [])
+        self.assertEqual(self.report()['modules'], {})
+        self.assertEqual(self.report()['nodes'], {})
+        self.check(check_only=True)
+
+    def test_forced_report_check_compares_fresh_evidence_without_changing_dates(self):
+        before = (self.root / REPORT).read_bytes()
+        self.check(check_only=True, force=True)
+        self.assertEqual(set(self.built), set(self.report()['modules']))
+        self.assertEqual((self.root / REPORT).read_bytes(), before)
+
+    def test_forced_report_check_rejects_incorrect_saved_results(self):
+        original = self.report()
+        for changes in ({'signature': 'Lemmatheca.ready : False'},
+                        {'axioms': ['sorryAx'], 'status': 'pending'},
+                        {'declaration_sha256': '0' * 64}):
+            with self.subTest(changes=changes):
+                report = deepcopy(original)
+                report['nodes']['ready'].update(changes)
+                (self.root / REPORT).write_text(json.dumps(report))
+                before = (self.root / REPORT).read_bytes()
+                with self.assertRaisesRegex(CommandError, 'Saved evidence differs'):
+                    self.check(check_only=True, force=True)
+                self.assertEqual((self.root / REPORT).read_bytes(), before)
+                self.assertEqual(set(self.built), set(original['modules']))
+
+    def test_forced_report_check_keeps_the_committed_report_on_lean_failure(self):
+        before = (self.root / REPORT).read_bytes()
+        with self.assertRaisesRegex(CommandError, 'Cannot audit'):
+            self.check(check_only=True, force=True,
+                       failing_probes=[self.fixture_module])
+        self.assertEqual((self.root / REPORT).read_bytes(), before)
+
+    def test_report_check_requires_clean_installed_libraries(self):
+        _, aesop = self.add_library()
+        before = (self.root / REPORT).read_bytes()
+        aesop.write_text(aesop.read_text() + '-- Dirty checkout\n')
+        with self.assertRaisesRegex(CommandError, 'Stale or failed module'):
+            self.check(check_only=True)
+        self.assertEqual(self.built, [])
+        shutil.rmtree(self.formal / '.lake/packages')
+        with self.assertRaisesRegex(CommandError, 'Stale or failed module'):
+            self.check(check_only=True)
+        self.assertEqual((self.root / REPORT).read_bytes(), before)
 
     def test_edit_invalidates_only_the_module_and_transitive_importers(self):
         before = self.report()
@@ -349,7 +494,8 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
             nodes = load_nodes(self.root)
         revisions.assert_called_once_with(self.root, required=False)
         self.assertEqual(nodes['ready']['status'], 'complete')
-        self.assertEqual(nodes['uses-fixture']['status'], 'verification_needed')
+        self.assertEqual(nodes['uses-fixture']
+                         ['status'], 'verification_needed')
         self.assertEqual(nodes['independent']['status'], 'complete')
 
     def test_reader_cache_cannot_bypass_required_dependency_checkouts(self):
@@ -357,7 +503,8 @@ class ModuleVerificationTests(NodeFixtureMixin, SimpleTestCase):
         record = self.report()['modules']['Mathlib.First']
         shutil.rmtree(self.formal / '.lake/packages')
         cache = {}
-        self.assertTrue(module_is_current(record, self.root, 'Mathlib.First', input_cache=cache))
+        self.assertTrue(module_is_current(record, self.root,
+                        'Mathlib.First', input_cache=cache))
         self.assertFalse(module_is_current(record, self.root, 'Mathlib.First',
                                            input_cache=cache, require_libraries=True))
 

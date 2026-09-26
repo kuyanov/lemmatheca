@@ -53,8 +53,12 @@ and dates. Use --module <module> for a targeted check, or --force for a delibera
 recheck of current modules. Mathlib bindings are grouped by their declared import
 module: a registered Mathlib.* selector checks only that module, while --module
 Mathlib selects all registered Mathlib imports independently. Nodes with the same
-import share a group's outcome. A failure still saves independent successful checks;
-resolve every failure in scope before declaring the work complete. Verify that the
+import share a group's outcome. A failure still saves independent successful checks.
+Commit the refreshed formal/checks/nodes.json alongside proof and binding changes.
+Run check_formalizations --check to confirm the saved report is current. CI runs
+--force --check to compare fresh Lean evidence with that report, ignoring check dates
+and leaving it unchanged; it fails if the report was not refreshed.
+Resolve every failure in scope before declaring the work complete. Verify that the
 completed nodes have no direct or transitive sorry and retain their accepted target
 hashes. Proof-only edits need fresh Lean evidence; they do not need reacceptance
 when the reviewed descriptions and semantic targets remain unchanged.

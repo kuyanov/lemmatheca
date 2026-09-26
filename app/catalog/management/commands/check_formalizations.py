@@ -18,6 +18,7 @@ from formalization.verification import (
     ALLOWED_AXIOMS, REPORT, REPORT_VERSION, current_node_evidence,
     module_is_current, node_fingerprint, verification_policy_hash,
     normalize_verification_report, verification_input_hash, successful_module_snapshot,
+    comparable_report, report_freshness_errors,
 )
 from formalization.reviews import declaration_hashes
 
@@ -87,15 +88,18 @@ class Command(BaseCommand):
                             help='Select registered import modules; Mathlib selects all registered Mathlib modules independently.')
         parser.add_argument('--force', action='store_true',
                             help='Recheck selected modules even when their evidence is current.')
+        parser.add_argument('--check', action='store_true',
+                            help='Require the whole saved report to be current, without writing it. '
+                                 'With --force, also compare fresh Lean evidence, ignoring check dates.')
 
     def handle(self, **options):
         try:
             self.verify_nodes(settings.REPOSITORY_DIR,
-                              options['module'], force=options['force'])
+                              options['module'], force=options['force'], check_only=options['check'])
         except (ValueError, OSError) as error:
             raise CommandError(str(error)) from error
 
-    def verify_nodes(self, root, selected=None, *, force=False):
+    def verify_nodes(self, root, selected=None, *, force=False, check_only=False):
         nodes = read_registry(root)
         bound = {key: node for key,
                  node in nodes.items() if node['declaration']}
@@ -112,12 +116,22 @@ class Command(BaseCommand):
             raise CommandError(
                 'Unknown registered modules: ' + ', '.join(sorted(unknown)))
         selected = sorted(selectors)
-        if not bound:
-            self.stdout.write('No formal node declarations to check.')
-            return
         destination = root / REPORT
         report_signature = file_signature(destination)
         previous = read_json(destination) if destination.exists() else {}
+
+        def stale_report(details):
+            raise CommandError(
+                f'{REPORT} is out of date:\n' + '\n'.join(details)
+                + '\nRun python app/manage.py check_formalizations --force and commit the updated report.')
+
+        if check_only:
+            errors = report_freshness_errors(previous, nodes, root)
+            if errors:
+                stale_report(errors)
+        if not bound and not previous:
+            self.stdout.write('No formal node declarations to check.')
+            return
         normalized = normalize_verification_report(previous, nodes)
         report = {
             'format_version': REPORT_VERSION,
@@ -151,6 +165,9 @@ class Command(BaseCommand):
                             for key, node in group.items())):
                 reused.append(module)
                 continue
+            if check_only and not force:
+                stale_report(
+                    [f'Inputs changed during report validation: {module}'])
             self.stdout.write(f'Checking {module} ({len(group)} node(s))…')
             before = {}
             try:
@@ -197,7 +214,13 @@ class Command(BaseCommand):
         if file_signature(destination) != report_signature:
             raise CommandError(
                 'Verification report changed during checking; rerun the check.')
-        if report != previous:
+        if check_only and failures:
+            raise CommandError('\n\n'.join(
+                f'{module}: {error}' for module, error in failures.items()))
+        if check_only and comparable_report(report) != comparable_report(previous):
+            stale_report(
+                ['Saved evidence differs from the current check (excluding check dates).'])
+        if not check_only and report != previous:
             destination.parent.mkdir(parents=True, exist_ok=True)
             with staged_json(destination, report) as temporary:
                 temporary.replace(destination)
@@ -207,6 +230,9 @@ class Command(BaseCommand):
         self.stdout.write(style(
             f'Checked {len(checked)} verification group(s); reused {len(reused)}; failed {len(failures)}. '
             f'{ready} nodes ready, {len(nodes) - ready} pending.'))
+        if check_only:
+            self.stdout.write(self.style.SUCCESS(
+                'Committed verification report is current; report left unchanged.'))
         if failures:
             raise CommandError('\n\n'.join(
                 f'{module}: {error}' for module, error in failures.items()))

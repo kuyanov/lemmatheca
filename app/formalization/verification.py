@@ -183,6 +183,50 @@ def current_node_evidence(node, checked, inputs):
     return checked
 
 
+def report_freshness_errors(report, nodes, root):
+    """Validate the complete saved report without migrating it or invoking Lean."""
+    bound = {key: node for key, node in nodes.items() if node['declaration']}
+    if not bound and not report:
+        return []
+    if not isinstance(report, dict) or report.get('format_version') != REPORT_VERSION:
+        return [f'Missing report or unsupported format; expected version {REPORT_VERSION}.']
+    modules, evidence = report.get('modules'), report.get('nodes')
+    if not isinstance(modules, dict) or not isinstance(evidence, dict):
+        return ['Report must contain modules and nodes maps.']
+    groups = {}
+    for key, node in bound.items():
+        groups.setdefault(node['module'], {})[key] = node
+    errors = []
+    for label, saved, expected in (('modules', modules, groups), ('nodes', evidence, bound)):
+        missing, obsolete = expected.keys() - saved.keys(), saved.keys() - expected.keys()
+        if missing:
+            errors.append(f'Missing {label}: ' + ', '.join(sorted(missing)))
+        if obsolete:
+            errors.append(f'Obsolete {label}: ' + ', '.join(sorted(obsolete)))
+    cache = {}
+    for module, group in sorted(groups.items()):
+        if module not in modules:
+            continue
+        record = modules[module]
+        if not module_is_current(record, root, module, input_cache=cache, require_libraries=True):
+            errors.append(f'Stale or failed module: {module}')
+            continue
+        stale = [key for key, node in group.items()
+                 if key in evidence and not current_node_evidence(node, evidence[key], record['sha256'])]
+        if stale:
+            errors.append('Stale node evidence: ' + ', '.join(sorted(stale)))
+    return errors
+
+
+def comparable_report(report):
+    """Check dates change on a fresh run; all other saved evidence must agree."""
+    return {**report, 'modules': {
+        module: {key: value for key, value in record.items() if key !=
+                 'checked_on'}
+        for module, record in report['modules'].items()
+    }}
+
+
 def checked_source_location(node, checked, report):
     """A declaration can originate in a different module from the node's import."""
     location = checked.get('location')

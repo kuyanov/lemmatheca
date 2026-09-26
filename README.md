@@ -166,15 +166,22 @@ uv run python app/manage.py test catalog
 [GitHub Actions](.github/workflows/ci.yml) runs these checks on every push and pull
 request using Python 3.12, 3.13, and 3.14 and the locked dependencies. It also supports
 manual runs. A separate Lean job installs the pinned formal environment, builds
-the project, and runs `check_formalizations --force` to verify every registered
-declaration. Lake dependencies and build files are cached by environment pins;
-the verification command still runs on every job.
+the project, and runs `check_formalizations --force --check`. This rejects stale
+committed reports and compares every registered declaration's fresh Lean evidence
+with the saved report, ignoring check dates. It leaves the report unchanged.
+Lake dependencies and build files are cached by environment pins; verification
+still runs on every job once report freshness passes.
 
 With the [Lean environment](formal/README.md) installed:
 
 ```sh
 uv run python app/manage.py check_formalizations
+uv run python app/manage.py check_formalizations --check
 ```
+
+The second command checks report freshness without running Lean or writing files.
+After changing formal inputs, refresh and commit `formal/checks/nodes.json` with
+the changes. Use `--force --check` to reproduce CI's fresh-evidence comparison.
 
 Serving the website does not require Lean or mathlib installed. Keep the tracked
 corpus, Lean sources, reports, and Lake manifest; missing mathlib sources link to
