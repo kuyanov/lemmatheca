@@ -191,7 +191,8 @@ the reader combines these with current node descriptions to compute review targe
 Description edits invalidate approval immediately without discarding Lean evidence.
 Review hashes exclude node IDs, environment pins, import modules, manual dependencies, and theorem proofs;
 they include descriptions and referenced definitions. Changed targets require
-renewed review. Entry text and coverage remain a separate Git review.
+renewed review. Entry text, rendering, and coverage have a separate editorial
+review recorded by `review --accept --entry <id>`.
 Node pages show descriptions with KaTeX, checked signatures, review/check dates,
 and expandable proof dependencies with compact node links and adjacent statuses.
 An expandable source browser preserves line anchors; source-line links open it and
@@ -219,14 +220,24 @@ Node IDs and declaration names are independent of source layout. Moving a node's
 import module refreshes its source path after verification and preserves approval
 when its declaration name and semantic hash remain unchanged.
 
-Committing reviewed HTML mappings records coverage approval. The `review --accept`
-command records statement approval for selected nodes or an entry's linked nodes,
+The `review --accept --node` and `review --accept --nodes-from-entry`
+commands record statement approval for selected nodes or an entry's linked nodes,
 binding it to hashes of elaborated targets, referenced declarations,
 declaration names, and descriptions. Environment pins affect verification; after
 rechecking, unchanged target hashes retain approval. Node ID renames likewise
 retain approval after refreshing verification under the new ID.
-`review --retract` clears selected approvals without
-running Lean or discarding its verification evidence. The checker detects changed targets but does not
+`--retract` with these selectors clears selected approvals without
+running Lean or discarding its verification evidence.
+`review --accept --entry <id>` separately records review of text correctness,
+rendering, and complete, nonredundant coverage. It validates the corpus and requires
+every block to have a mapping (empty is allowed) and every linked node to name a
+declaration. It changes editorial status from `draft` to `final`, hiding the Draft
+badge and review note. Node approvals and Lean evidence are untouched, and
+unfinished proofs and unapproved nodes are allowed. `--retract --entry` restores
+draft status. Entry actions never run Lean and support `--dry-run`; unchanged
+statuses are skipped. This status is manual, not hash-bound, so substantive content,
+asset, mapping, or linked-statement changes require retraction and renewed review.
+The checker detects changed targets but does not
 prove correspondence with human text. It fingerprints ordinary source imports, not arbitrary metaprogram
 inputs. Full proof-graph extraction and model runners remain future work. See
 [verification and review](verification-and-review.md) for the exact boundaries.

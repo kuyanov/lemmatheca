@@ -31,7 +31,8 @@ Cross-entry references use `href="entry-id#block-id"`; same-entry references use
 subject areas. Prefer empty local links for generated numbering and explicit
 cross-entry text that fits the sentence. Figures and tables have separate numbering
 within each entry; give each a stable ID and one caption without a number.
-`status` is editorial; formal readiness is derived separately. Write original
+`status` is `draft` or `final`; formal readiness is derived separately. Only drafts
+show an editorial badge. Write original
 exposition and cite sources in `based_on`. See the
 [authoring guide](../docs/entry-sources.md) for the full source format.
 
@@ -51,15 +52,26 @@ Each linked node has a short mathematical description on its node page. Review
 that description against the declaration as well as the entry; it is editorial
 text, separate from the checked Lean signature.
 Maintainers review both the declarations and coverage. Use
-`uv run python app/manage.py review --accept --entry <id>` to record approval of an
+`uv run python app/manage.py review --accept --nodes-from-entry <id>` to record approval of an
 entry's linked nodes, or `--node <id>` for an individual node. Replace `--accept`
 with `--retract` to withdraw approval. Reviews store
 target hashes, so changed descriptions or declarations require renewed approval.
 Node IDs, proof dependencies, module locations, and environment pins are excluded from those
 hashes. ID, module, or environment changes need fresh verification before approval can
-be confirmed against the new declaration hash. Entry text
-and mapping changes still need separate coverage review through Git; accepting an
-entry records node approvals, not a versioned coverage approval. Block percentages count
+be confirmed against the new declaration hash.
+
+Use `uv run python app/manage.py review --accept --entry <id>` separately after
+checking that the human text is correct, the page renders properly, and nodes
+cover all blocks without redundant nodes or uncovered statements. This changes
+`status` to `final` and hides the Draft badge and review note. Every block must have
+a mapping (empty is allowed), and every linked node must name a declaration.
+Proofs and node approvals may still be unfinished. Entry approval never runs Lean
+or changes node records; `--retract --entry <id>` restores `draft`. All review
+selectors support `--dry-run`. Entry status is manual and is not automatically
+invalidated by edits; retract and review again after substantive text, asset,
+mapping, or linked-statement changes. See the [review workflow](../README.md#recording-reviews).
+
+Block percentages count
 ready nodes. Entry badges show Not started when every block is unmapped, Partial
 while only some are unmapped, and a completed-node percentage (including 100%)
 once all blocks have mappings. Shared nodes count once; an entry containing only

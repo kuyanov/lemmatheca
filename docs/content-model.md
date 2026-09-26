@@ -65,14 +65,23 @@ not-applicable blocks add no nodes, and an all-not-applicable entry displays N/A
 Adding nodes can lower the percentage. These percentages count nodes, not proof
 difficulty or effort, and depend on the current block mappings for coverage.
 
-Committing a mapping, including an empty one, records the maintainer's coverage
-review. Node `review` records store target hashes and timestamps written by
-`review --accept`, for individual nodes or all linked nodes in an entry.
-`review --retract` clears those records without changing verification evidence. Fresh checks
+Node `review` records store target hashes and timestamps written by
+`review --accept --node <id>` or `review --accept --nodes-from-entry <id>`.
+`--retract` with these selectors clears those records without changing verification evidence. Fresh checks
 compare the current targets to those hashes; changed targets show **Review outdated**.
 The command records a maintainer's decision rather than providing authentication.
 AI proposals require review before merge; future agents must keep approved targets fixed. Editorial status
 remains independent of formal readiness.
+
+`review --accept --entry <id>` records a separate maintainer review of mathematical
+correctness, rendered presentation, and complete, nonredundant block coverage. It
+validates the corpus and requires every block to have a mapping (possibly empty)
+and every linked node to name a declaration. It changes editorial `status` from
+`draft` to `final`; the Draft badge and review note disappear. It leaves node
+approvals and Lean evidence unchanged, allowing unfinished proofs and unapproved
+nodes. `review --retract --entry <id>` restores `draft`. Both actions support
+`--dry-run` and never run Lean. Entry status is not hash-bound: substantive changes
+to text, assets, mappings, or linked statements need retraction and renewed review.
 
 ## Sources and access
 

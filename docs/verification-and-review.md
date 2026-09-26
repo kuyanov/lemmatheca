@@ -22,22 +22,37 @@ record (or `null`). Definitions can bind to definitions or instances. A question
 answer or counterexample. The [formal README](../formal/README.md#formal-nodes)
 specifies the schema; entry JSON contains no formal metadata.
 
-A maintainer reviews proposed statements and coverage before proof work. Committing
-HTML mappings records coverage approval, including an empty mapping for material
-that needs no formalization. Run `review --accept --node <id> [<id> ...]` or
-`review --accept --entry <id>` through `app/manage.py` to record statement approval.
+A maintainer reviews proposed statements and coverage before proof work. An empty
+mapping explicitly marks material that needs no formalization.
+Run `review --accept --node <id> [<id> ...]` or
+`review --accept --nodes-from-entry <id>` through `app/manage.py` to record statement approval.
 The command saves a SHA-256 target hash and a recording timestamp in each selected
 node. `--dry-run` previews the changes; repeated acceptance preserves current
-records. Whole-entry acceptance deduplicates linked nodes and rejects unplanned
-blocks. It does not automatically accept unlinked dependencies or publish an entry.
+records. `--nodes-from-entry` deduplicates linked nodes and rejects unplanned
+blocks. It does not automatically accept unlinked dependencies or change entry status.
 Maintainers retain the final inclusion decision.
 
-Use `review --retract` with the same node or entry selectors to withdraw approval.
+Use `review --retract` with the same node selectors to withdraw approval.
 It clears existing review records to `null` without running Lean or changing
-verification evidence, even when checks are missing or stale. Entry retraction
+verification evidence, even when checks are missing or stale. `--nodes-from-entry` retraction
 skips unmapped blocks and leaves unlinked nodes alone. Shared nodes have one
 review across all entries. `--dry-run` also works for retraction, and nodes
 without an approval are skipped.
+
+Entry review is a separate action: `review --accept --entry <id>` records that the
+maintainer checked the text for errors, inspected its rendered presentation, and
+confirmed that all blocks are covered without redundant nodes or missing claims.
+It validates the corpus and requires explicit mappings on every block and a
+declaration for every linked node; an empty mapping is allowed. These structural
+checks cannot establish semantic coverage or visual correctness automatically.
+The command changes `entry.json` status from `draft` to `final`, removing the Draft
+badge and review note. It never runs Lean or changes node reviews or verification.
+Unfinished proofs, pending node approvals, and missing verification evidence are
+allowed. `--retract --entry <id>` returns the entry to `draft`, even with unplanned
+blocks or invalid HTML. Both entry actions support `--dry-run` and skip unchanged
+statuses. Entry status has no content hash; after substantive text, asset, mapping,
+or linked-statement changes, retract and repeat the entry review. Git records the
+history of these decisions. See the [review workflow](../README.md#recording-reviews).
 
 Review hashes cover elaborated theorem types, definition bodies, inductive
 constructors and recursor rules, and their reachable constants. Theorems contribute
@@ -75,7 +90,7 @@ or referenced definition is detected when Lean exports the new semantic hash.
 | Manual proof dependencies | Retained; node completion is unchanged | Retained |
 | Review record | Changes approval | Retained |
 | Pinned environment | Retained if the target is unchanged after rechecking | Needs rechecking |
-| Entry text or `data-formal` mapping | Requires separate coverage review through Git | Retained |
+| Entry text or `data-formal` mapping | Node approval retained; retract and repeat the separate entry review | Retained |
 
 Environment pins remain in verification fingerprints. After an environment change,
 Lean must verify the declarations again and export fresh semantic hashes. Approval
@@ -175,7 +190,7 @@ The import scanner supports ordinary module imports and does not audit arbitrary
 metaprogram file access or custom build steps. The command operates on trusted
 repository content.
 
-`review --accept` refreshes the selected nodes' modules if their targets have no
+`review --accept --node` and `review --accept --nodes-from-entry` refresh the selected nodes' modules if their targets have no
 current hashes. Unrelated failed modules do not block this refresh. Both review
 actions validate every selected node before writing and check
 for concurrent input changes. They stage records and replace each node file atomically. Existing
@@ -220,10 +235,11 @@ A successful check does not itself establish that a human block is fully covered
 
 Node approval checks **description ↔ Lean declaration**. Coverage review checks
 **entry claims ↔ linked node descriptions**, including specializations, omitted
-cases, and redundant nodes. `review --accept --entry` currently selects and accepts
-nodes; it does not create an independently tracked coverage approval. Editing an
-entry can therefore break correspondence while all its node approvals remain
-current. Coverage is still reviewed through Git.
+cases, and redundant nodes. `review --accept --entry` records this decision through
+the entry's `final` status, independently of node approval and proof completion.
+This editorial status is manual, without automatic invalidation: editing an entry
+can break correspondence while its status and node approvals remain unchanged.
+Maintainers must retract and renew entry review after substantive changes.
 
 The next useful improvement is a separate per-block coverage record, bound to the
 reviewed mathematical text and selected node review targets. Text edits, changed
@@ -273,4 +289,4 @@ makes the final publication decision.
 Git commits and target hashes identify what was reviewed and checked. There are
 no entry/proof version counters in the metadata. After changing mathematical
 content, rerun checks and review changed targets. Human text and mapping coverage
-still require Git review; the node hash does not certify unchanged human prose.
+require a separate entry review; the node hash does not certify unchanged human prose.

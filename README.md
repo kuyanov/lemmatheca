@@ -26,8 +26,9 @@ not an automated runner.
 2. **[Draft the human entry](prompts/add-entry/02-draft-human-entry.txt).** Ask AI
    to prepare concise, original `entry.html` and `entry.json`,
    without formalization.
-3. **[Review the entry](prompts/add-entry/03-review-human-entry.txt).** Check the
-   mathematics, explanations, and presentation; remove redundant wording.
+3. **[Review the human draft](prompts/add-entry/03-review-human-entry.txt).** Check
+   the mathematics, explanations, and presentation; remove redundant wording.
+   Keep it a draft until the later coverage review is complete.
 4. **[Prepare formal nodes](prompts/add-entry/04-prepare-formal-nodes.txt).**
    Reuse existing nodes and prefer built-in Lean/mathlib declarations over local
    wrappers. Add missing definitions and statements, linking blocks through
@@ -38,11 +39,12 @@ not an automated runner.
    Independently check the declarations and their collective coverage of each
    block, including examples and question answers. Compare node descriptions with
    the actual declarations, too. Record approval with
-   `review --accept --node <id>` or `review --accept --entry <id>`; the command saves
+   `review --accept --node <id>` or `review --accept --nodes-from-entry <id>`; the command saves
    hashes of the reviewed targets. Use `--retract` to withdraw approval.
-   AI findings do not themselves accept reviews. Record mapping approval through
-   Git review. Several nodes may cover one block, and one node may serve several
-   blocks; avoid both redundant nodes and uncovered claims.
+   AI findings do not themselves accept reviews. Several nodes may cover one
+   block, and one node may serve several blocks; avoid both redundant nodes and
+   uncovered claims. Once the text, rendering, and coverage have been checked,
+   record a separate entry review as described below.
 6. **[Prove the nodes](prompts/add-entry/06-prove-reviewed-nodes.txt).** Later,
    use AI to work through the dependency DAG, following the human proofs.
    Run `check_formalizations` and review whether the formal
@@ -64,6 +66,40 @@ Maintainers decide what enters the library; AI supplies proposals and recommenda
 Measure statement writing and proof translation separately. Binding an existing
 mathlib result is useful corpus work, but does not show that a human argument was
 translated. See the [experiment plan](docs/formalization-experiments.md).
+
+## Recording reviews
+
+Run these commands from the repository root after making the corresponding
+maintainer decision:
+
+```sh
+uv run python app/manage.py review --accept --node <node-id> [<node-id> ...]
+uv run python app/manage.py review --accept --nodes-from-entry <entry-id>
+uv run python app/manage.py review --accept --entry <entry-id>
+```
+
+The first two approve node descriptions against Lean declarations. The second
+selects every distinct node linked from the entry, leaving its editorial status
+unchanged. The third records an **entry review**: check that the mathematics and
+explanations contain no errors, that the rendered text, formulas, figures, tables,
+links, and answers display correctly, and that nodes collectively cover every
+block without redundant nodes or uncovered statements.
+
+Entry acceptance validates the corpus and requires a mapping on every block and
+a declaration for each linked node. Use an explicit empty `data-formal=""` where
+nothing needs formalizing. The command records the human decision; it cannot judge
+mathematical correctness, visual rendering, or semantic coverage automatically.
+It changes `entry.json` from `draft` to `final`, removing the Draft badge and review
+note. It neither runs Lean nor changes node approvals or verification evidence.
+Unfinished proofs and unapproved nodes are allowed; formal progress stays visible
+and independent of editorial approval.
+
+Use `--retract` with the same selector to withdraw that review; for `--entry`, this
+returns the entry to `draft`. All selectors support `--dry-run`, and repeated
+actions leave unchanged records intact. Node acceptance may refresh Lean evidence
+even during a dry run. Entry status is a manual decision, without a content hash:
+after substantive changes to text, assets, mappings, or linked statements, retract
+and repeat the entry review. Commit review changes alongside the reviewed work.
 
 ## Current implementation
 

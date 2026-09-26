@@ -13,10 +13,14 @@ id, title, based_on, primary_area, additional_areas,
 status, reading_time, summary, abstract
 ```
 
-`status` is the editorial state, currently `draft` for all examples; it is
-independent of formalization. `reading_time` is a positive integer number of
-minutes. The entry page displays its title, editorial status, and a bibliography
-labelled **Based on:**.
+`status` is the editorial state: `draft` or `final`, independent of formalization.
+New entries start as drafts. Record the review of correctness, rendering, and
+block coverage with `review --accept --entry <id>` to set `final`; use `--retract`
+to return to `draft`. Only drafts show an editorial badge and review note. Entry
+review allows unfinished proofs and leaves node approvals unchanged; see the
+[review workflow](../README.md#recording-reviews) for requirements and re-reviewing edits.
+`reading_time` is a positive integer number of minutes. The entry page displays its
+title and a bibliography labelled **Based on:**.
 
 `based_on` is a list of citations. Use an empty list for original material without
 an external source; the page then omits the bibliography. Each citation requires
@@ -73,7 +77,8 @@ not entry JSON. The [corpus README](../corpus/README.md#block-to-node-mapping)
 explains aggregation and the review convention. Every block of sets-and-maps now
 has a mapping: the notation-and-conventions block has nothing to formalize, and
 the mathematical blocks link definitions, statements, examples, and question answers.
-Reviews are recorded with `review --accept --node <id>` or `review --accept --entry <id>`.
+Node reviews are recorded with `review --accept --node <id>` or
+`review --accept --nodes-from-entry <id>`; neither changes editorial status.
 Use `--retract` instead of `--accept` to withdraw approval for the same selection.
 See the [formal README](../formal/README.md) for the current node inventory and
 verification workflow. Statement writing and proving remain separate measurement

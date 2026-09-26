@@ -17,7 +17,9 @@ detected through transitive `sorryAx` and leaves the node's own proof pending.
 correct declaration that says something different from the human text. Reviewers
 compare the node description with the actual declaration, then check that the
 entry's linked nodes collectively cover its claims. Node approval tracks the first
-comparison; entry text and coverage remain a separate Git review.
+comparison; entry text, rendering, and coverage have a separate entry review
+recorded by `review --accept --entry <id>`. This sets editorial status to `final`
+without requiring completed proofs. See the [review workflow](../README.md#recording-reviews).
 
 Lean **4.34.0** and mathlib **v4.34.0** are pinned by `lean-toolchain`,
 `lakefile.toml`, and `lake-manifest.json`. Keep these fixed during an experiment.
@@ -160,11 +162,11 @@ record your review from the repository root:
 ```sh
 uv run python app/manage.py review --accept --node set-intersection
 uv run python app/manage.py review --accept --node set-union set-complement
-uv run python app/manage.py review --accept --entry sets-and-maps --dry-run
-uv run python app/manage.py review --accept --entry sets-and-maps
+uv run python app/manage.py review --accept --nodes-from-entry sets-and-maps --dry-run
+uv run python app/manage.py review --accept --nodes-from-entry sets-and-maps
 ```
 
-`--accept --entry` accepts each distinct linked node once; it rejects blocks without
+`--accept --nodes-from-entry` accepts each distinct linked node once; it rejects blocks without
 formal mappings. Empty mappings are allowed. Dependencies not linked from that
 entry are not automatically accepted. This records description/declaration approval, not
 editorial publication or proof completion. Shared nodes keep one shared review.
@@ -224,13 +226,13 @@ To withdraw approval, use the same selectors with `--retract`:
 
 ```sh
 uv run python app/manage.py review --retract --node set-intersection
-uv run python app/manage.py review --retract --entry sets-and-maps --dry-run
-uv run python app/manage.py review --retract --entry sets-and-maps
+uv run python app/manage.py review --retract --nodes-from-entry sets-and-maps --dry-run
+uv run python app/manage.py review --retract --nodes-from-entry sets-and-maps
 ```
 
 Retraction sets existing review records to `null`, leaving other node metadata
 and verification evidence intact. It does not run Lean and works with missing or
-stale verification and outdated approvals. Whole-entry retraction clears each
+stale verification and outdated approvals. `--nodes-from-entry` retraction clears each
 distinct linked node once, skipping unmapped blocks; unlinked nodes retain their
 reviews. Retracting a shared node affects every entry using it. Nodes without a
 review are skipped.

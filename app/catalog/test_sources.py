@@ -46,7 +46,8 @@ class SourceTests(CorpusFixtureMixin, SimpleTestCase):
         definition = render_block(
             entry['blocks_by_id']['sets'], entry, catalog)
         self.assertIn('class="table-scroll"', definition)
-        self.assertIn('<caption><span class="table-label">Table 1</span> Notation</caption>', definition)
+        self.assertIn(
+            '<caption><span class="table-label">Table 1</span> Notation</caption>', definition)
         self.assertIn('aria-label="Table 1 Notation"', definition)
         self.assertIn('>Table 1</a>', proof)
         self.assertIn(r'\(a+b\)', definition)
@@ -62,7 +63,8 @@ class SourceTests(CorpusFixtureMixin, SimpleTestCase):
         self.source.write_text(original)
         catalog = entries()
         entry = catalog['first']
-        definition = render_block(entry['blocks_by_id']['sets'], entry, catalog)
+        definition = render_block(
+            entry['blocks_by_id']['sets'], entry, catalog)
         self.assertIn('>Table 1</a>', definition)
 
         self.source.write_text(original.replace('<table id="notation">', '''
@@ -74,12 +76,16 @@ class SourceTests(CorpusFixtureMixin, SimpleTestCase):
 </section>'''))
         catalog = entries()
         entry = catalog['first']
-        definition = render_block(entry['blocks_by_id']['sets'], entry, catalog)
+        definition = render_block(
+            entry['blocks_by_id']['sets'], entry, catalog)
         self.assertIn('>Table 2</a>', definition)
-        self.assertIn('<span class="table-label">Table 1</span> An earlier table', definition)
-        self.assertIn('<span class="table-label">Table 2</span> Notation', definition)
+        self.assertIn(
+            '<span class="table-label">Table 1</span> An earlier table', definition)
+        self.assertIn(
+            '<span class="table-label">Table 2</span> Notation', definition)
         self.assertIn('<span class="figure-label">Figure 1</span>', definition)
-        self.assertEqual(render_block(entry['blocks_by_id']['sets'], entry, catalog), definition)
+        self.assertEqual(render_block(
+            entry['blocks_by_id']['sets'], entry, catalog), definition)
         other = catalog['second']
         self.assertIn('<span class="table-label">Table 1</span> Other entry',
                       render_block(other['blocks_by_id']['result'], other, catalog))
@@ -105,9 +111,11 @@ class SourceTests(CorpusFixtureMixin, SimpleTestCase):
                     block = entry['blocks_by_id']['reference']
                     rendered = render_block(block, entry, catalog)
                     self.assertIn(f'>{text}</a>', rendered)
-                    self.assertIn(f'href="{target.replace("&", "&amp;")}"', rendered)
+                    self.assertIn(
+                        f'href="{target.replace("&", "&amp;")}"', rendered)
                     # Rendering twice must preserve the cached source and its markup.
-                    self.assertEqual(render_block(block, entry, catalog), rendered)
+                    self.assertEqual(render_block(
+                        block, entry, catalog), rendered)
 
     def test_empty_reference_text_uses_generated_labels(self):
         original = self.source.read_text()
@@ -126,7 +134,8 @@ class SourceTests(CorpusFixtureMixin, SimpleTestCase):
 </section>''')
                     catalog = self.load()
                     entry = catalog['first']
-                    rendered = render_block(entry['blocks_by_id']['reference'], entry, catalog)
+                    rendered = render_block(
+                        entry['blocks_by_id']['reference'], entry, catalog)
                     self.assertIn(f'>{label}</a>', rendered)
 
     def test_entry_reference_url_is_resolved_when_rendering(self):

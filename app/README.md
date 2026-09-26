@@ -23,14 +23,27 @@ so the jobs do not need a Lean installation.
 After reviewing node descriptions against their Lean declarations, record approval
 with
 `uv run python app/manage.py review --accept --node <id>` or
-`uv run python app/manage.py review --accept --entry <id>`.
+`uv run python app/manage.py review --accept --nodes-from-entry <id>`.
 Add `--dry-run` to preview node-record changes. The command refreshes Lean checks
 for the selected nodes' modules when necessary and stores hashes of the reviewed
 targets; it does not complete unfinished proofs or publish the entry.
-Whole-entry acceptance records the linked nodes' approvals; entry text and mapping
-coverage still need separate Git review.
+`--nodes-from-entry` reviews each distinct linked node and leaves the entry's
+editorial status unchanged.
 Replace `--accept` with `--retract` to clear existing approvals. Retraction supports
 the same selectors and `--dry-run`, preserves verification evidence, and never runs Lean.
+
+For a separate entry review, use
+`uv run python app/manage.py review --accept --entry <id>` after checking the
+mathematics, rendered page, and complete block-to-node coverage. This validates the
+corpus, requires every block to have a mapping and every linked node to have a
+declaration, then changes `status` from `draft` to `final`. Empty mappings are allowed.
+The Draft badge disappears from the entry page and area listing, together with the
+entry's review note. Unfinished proofs and unapproved nodes are allowed; node
+approvals and verification evidence stay unchanged, and Lean is never run.
+`review --retract --entry <id>` restores draft status, even if the entry's HTML is
+currently invalid or mappings are unfinished. Both actions support `--dry-run`.
+Entry status is manual: substantive edits need retraction and renewed review.
+See the [review workflow](../README.md#recording-reviews).
 
 Tests use small isolated fixtures and one smoke test of the current corpus.
 Lean command tests mock Lean output; run `check_formalizations` to check

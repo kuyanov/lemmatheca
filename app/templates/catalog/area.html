@@ -21,8 +21,9 @@
     <h2 id="statements-title">Entries</h2><span>{{ entries|length }} entr{{ entries|length|pluralize:"y,ies" }}</span>
   </div>
   {% for entry in entries %}
-  <a class="entry-row" href="{{ entry.url }}"><span class="entry-type"><span
-        class="pill">{{ entry.status|title }}</span>{% include "catalog/_formalization_badge.html" with formal=entry.formalization only %}</span>
+  <a class="entry-row" href="{{ entry.url }}"><span class="entry-type">
+      {% if entry.status == "draft" %}<span class="pill">Draft</span>{% endif %}
+      {% include "catalog/_formalization_badge.html" with formal=entry.formalization only %}</span>
     <div>
       <h3>{{ entry.title }}</h3>
       <p>{{ entry.summary }}</p>

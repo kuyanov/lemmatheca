@@ -19,8 +19,8 @@ from catalog.sources import ContentError
 from catalog.testing import CorpusFixtureMixin
 from formalization.lean import LIBRARY_INPUT, pinned_lean_version, verification_inputs
 from formalization.nodes import (ENVIRONMENT, REPORT, REPORT_VERSION, file_hash,
-                                load_nodes, node_fingerprint, verification_group,
-                                verification_input_hash, verification_policy_hash)
+                                 load_nodes, node_fingerprint, verification_group,
+                                 verification_input_hash, verification_policy_hash)
 from formalization.reviews import declaration_hashes, review_target_hash
 
 
@@ -89,7 +89,8 @@ class NodeFixtureMixin(CorpusFixtureMixin):
 
     def write_report(self):
         nodes = load_nodes(self.root, check_reports=False)
-        groups = {verification_group(node['module']) for node in nodes.values() if node['module']}
+        groups = {verification_group(node['module'])
+                  for node in nodes.values() if node['module']}
         report = {'format_version': REPORT_VERSION,
                   'modules': {group: {
                       'status': 'passed', 'checked_on': '2026-09-20T12:00:00+00:00',
@@ -145,7 +146,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual(entries()['first']
                          ['formalization']['label'], '100%')
         self.assertEqual(entries()['first']['formalization']['percent'], 100)
-        self.write_html(('data-formal="ready pending"', 'data-formal="ready"', 'data-formal=""'))
+        self.write_html(('data-formal="ready pending"',
+                        'data-formal="ready"', 'data-formal=""'))
         progress = entries()['first']['formalization']
         self.assertEqual((progress['complete'], progress['total']), (1, 2))
         self.assertEqual(progress['label'], '50%')
@@ -282,12 +284,14 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             ('review_pending', {'accepted': False}),
             ('verification_needed', {'declaration': 'Lemmatheca.ready'}),
             ('review_outdated', {'review': {'sha256': 'a' * 64,
-                                          'recorded_at': '2026-09-20T12:00:00+00:00'}}),
-            ('declaration_missing', {'declaration': None, 'module': None, 'accepted': False}),
+                                            'recorded_at': '2026-09-20T12:00:00+00:00'}}),
+            ('declaration_missing', {
+             'declaration': None, 'module': None, 'accepted': False}),
         )
         for status, changes in cases:
             with self.subTest(dependency_status=status):
-                self.write_node('pending', **{'declaration': 'Lemmatheca.unfinished', **changes})
+                self.write_node(
+                    'pending', **{'declaration': 'Lemmatheca.unfinished', **changes})
                 nodes = load_nodes(self.root)
                 self.assertEqual(nodes['pending']['status'], status)
                 self.assertEqual(nodes['ready']['status'], 'complete')
@@ -303,7 +307,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             record = json.loads(path.read_text())
             record['module'] = 'Lemmatheca.Moved'
             path.write_text(json.dumps(record))
-        self.assertEqual(load_nodes(self.root)['ready']['status'], 'verification_needed')
+        self.assertEqual(load_nodes(self.root)[
+                         'ready']['status'], 'verification_needed')
         self.write_report()
         updated = load_nodes(self.root)['ready']
         for key in ('review', 'review_current', 'target_sha256', 'status'):
@@ -313,7 +318,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
     def test_old_report_and_approval_cannot_certify_a_description(self):
         path = self.node_dir / 'ready.json'
         record = json.loads(path.read_text())
-        record['review']['sha256'] = 'a' * 64  # An approval from the previous hash format.
+        # An approval from the previous hash format.
+        record['review']['sha256'] = 'a' * 64
         path.write_text(json.dumps(record))
         approved = path.read_bytes()
         report_path = self.root / REPORT
@@ -322,7 +328,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         for checked in report['nodes'].values():
             checked['target_sha256'] = checked.pop('declaration_sha256')
         report_path.write_text(json.dumps(report))
-        self.assertEqual(load_nodes(self.root)['ready']['status'], 'verification_needed')
+        self.assertEqual(load_nodes(self.root)[
+                         'ready']['status'], 'verification_needed')
         self.write_report()
         current = load_nodes(self.root)['ready']
         self.assertEqual(current['status'], 'review_outdated')
@@ -478,30 +485,40 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             response.context['entry']['blocks'][0]['formalization']['percent'], 50)
         self.write_html(('data-formal="ready"',))
         response = self.client.get('/entries/first/')
-        self.assertEqual(response.context['entry']['formalization']['label'], '100%')
-        self.assertEqual(response.context['entry']['blocks'][0]['formalization']['status'], 'complete')
+        self.assertEqual(
+            response.context['entry']['formalization']['label'], '100%')
+        self.assertEqual(
+            response.context['entry']['blocks'][0]['formalization']['status'], 'complete')
 
     def test_review_and_verification_labels_are_independent(self):
-        outdated = {'sha256': 'a' * 64, 'recorded_at': '2026-09-20T12:00:00+00:00'}
+        outdated = {'sha256': 'a' * 64,
+                    'recorded_at': '2026-09-20T12:00:00+00:00'}
         cases = (
             ('ready', {}, True, True),
             ('pending', None, True, False),
             ('ready', {'accepted': False}, False, True),
             ('ready', {'review': outdated}, False, True),
             ('unchecked', {}, False, False),
-            ('unwritten', {'declaration': None, 'module': None, 'accepted': False}, False, False),
+            ('unwritten', {'declaration': None,
+             'module': None, 'accepted': False}, False, False),
         )
         for node_id, changes, accepted, verified in cases:
             with self.subTest(node=node_id, accepted=accepted, verified=verified):
                 if changes is not None:
                     self.write_node(node_id, **changes)
                 response = self.client.get(f'/formal/nodes/{node_id}/')
-                self.assertEqual(response.context['node']['review_current'], accepted)
-                self.assertEqual(response.context['node']['verification_complete'], verified)
-                self.assertContains(response, 'Reviewed on <time' if accepted else 'Under review')
-                self.assertNotContains(response, 'Under review' if accepted else 'Reviewed on')
-                self.assertContains(response, 'Verified on <time' if verified else 'Not verified')
-                self.assertNotContains(response, 'Not verified' if verified else 'Verified on')
+                self.assertEqual(
+                    response.context['node']['review_current'], accepted)
+                self.assertEqual(
+                    response.context['node']['verification_complete'], verified)
+                self.assertContains(
+                    response, 'Reviewed on <time' if accepted else 'Under review')
+                self.assertNotContains(
+                    response, 'Under review' if accepted else 'Reviewed on')
+                self.assertContains(
+                    response, 'Verified on <time' if verified else 'Not verified')
+                self.assertNotContains(
+                    response, 'Not verified' if verified else 'Verified on')
                 if accepted or verified:
                     self.assertContains(response,
                                         '<time datetime="2026-09-20T12:00:00+00:00">2026-09-20</time>',
@@ -511,7 +528,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
 
     def test_proof_edit_keeps_last_review_visible_without_certifying_the_current_target(self):
         approved = (self.node_dir / 'ready.json').read_bytes()
-        self.source.write_text(self.source.read_text().replace('by trivial', 'by sorry'))
+        self.source.write_text(
+            self.source.read_text().replace('by trivial', 'by sorry'))
         with patch('subprocess.run') as lean:
             response = self.client.get('/formal/nodes/ready/')
             node = self.client.get('/api/formal/nodes/ready/').json()
@@ -530,18 +548,20 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual((self.node_dir / 'ready.json').read_bytes(), approved)
 
     def test_stale_evidence_does_not_hide_description_binding_or_review_changes(self):
-        self.source.write_text(self.source.read_text() + '\n-- Stale verification.\n')
+        self.source.write_text(self.source.read_text() +
+                               '\n-- Stale verification.\n')
         path = self.node_dir / 'ready.json'
         original = json.loads(path.read_text())
         for changes in ({'description': 'A stronger claim.'}, {'declaration': 'Lemmatheca.unfinished'},
                         {'review': None}, {'review': {'sha256': 'a' * 64,
-                                                     'recorded_at': original['review']['recorded_at']}}):
+                                                      'recorded_at': original['review']['recorded_at']}}):
             with self.subTest(changes=changes):
                 path.write_text(json.dumps({**original, **changes}))
                 response = self.client.get('/formal/nodes/ready/')
                 self.assertContains(response, 'Under review')
                 self.assertNotContains(response, 'Reviewed on')
-                self.assertFalse(response.context['node']['review_matches_last_check'])
+                self.assertFalse(
+                    response.context['node']['review_matches_last_check'])
                 self.assertFalse(response.context['node']['review_current'])
 
     def test_forged_status_cycles_and_unknown_dependencies_are_rejected(self):
@@ -625,7 +645,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.write_report()
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'complete')
-        self.assertEqual(entries()['first']['formalization']['status'], 'complete')
+        self.assertEqual(entries()['first']
+                         ['formalization']['status'], 'complete')
 
     def test_missing_mathlib_checkout_uses_pinned_source_and_archives_trust_the_pin(self):
         mathlib = self.formal / '.lake/packages/mathlib/Mathlib/Test.lean'
@@ -710,7 +731,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
 
             manifest_path = self.formal / 'lake-manifest.json'
             manifest = json.loads(manifest_path.read_text())
-            next(item for item in manifest['packages'] if item['name'] == 'mathlib')['rev'] = 'b' * 40
+            next(item for item in manifest['packages'] if item['name'] == 'mathlib')[
+                'rev'] = 'b' * 40
             manifest_path.write_text(json.dumps(manifest))
             node = self.client.get('/api/formal/nodes/ready/').json()
             self.assertEqual(node['status'], 'verification_needed')
@@ -793,7 +815,8 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
             call_command('check_formalizations', force=True, stdout=StringIO())
 
     def test_node_id_rename_retains_review_after_verification_refresh(self):
-        self.write_node('dependent', declaration='Lemmatheca.dependent', dependencies=['ready'])
+        self.write_node(
+            'dependent', declaration='Lemmatheca.dependent', dependencies=['ready'])
         before = load_nodes(self.root)['ready']
         path = self.node_dir / 'ready.json'
         record = json.loads(path.read_text())
@@ -806,9 +829,11 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         dependent = json.loads(dependent_path.read_text())
         dependent['dependencies'] = ['renamed-ready']
         dependent_path.write_text(json.dumps(dependent))
-        self.write_html(('data-formal="renamed-ready pending"', 'data-formal=""'))
+        self.write_html(
+            ('data-formal="renamed-ready pending"', 'data-formal=""'))
 
-        self.assertEqual(load_nodes(self.root)['renamed-ready']['status'], 'verification_needed')
+        self.assertEqual(load_nodes(self.root)[
+                         'renamed-ready']['status'], 'verification_needed')
         self.run_check()
         nodes = load_nodes(self.root)
         self.assertNotIn('ready', nodes)
@@ -816,16 +841,19 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         for field in ('review', 'target_sha256', 'review_current', 'verification_complete', 'status'):
             self.assertEqual(updated[field], before[field])
         self.assertEqual(nodes['dependent']['dependencies'], ['renamed-ready'])
-        self.assertContains(self.client.get('/entries/first/'), 'href="/formal/nodes/renamed-ready/"')
+        self.assertContains(self.client.get('/entries/first/'),
+                            'href="/formal/nodes/renamed-ready/"')
         output = StringIO()
         with patch('catalog.management.commands.review.call_command') as check:
-            call_command('review', '--accept', node=['renamed-ready'], stdout=output)
+            call_command('review', '--accept',
+                         node=['renamed-ready'], stdout=output)
         check.assert_not_called()
         self.assertIn('0 node(s); 1 skipped', output.getvalue())
         self.assertEqual(renamed.read_bytes(), approved)
 
     def test_transitive_sorry_is_recorded_as_pending_never_complete(self):
-        self.write_node('dependent', declaration='Lemmatheca.dependent', dependencies=[])
+        self.write_node(
+            'dependent', declaration='Lemmatheca.dependent', dependencies=[])
         self.run_check()
         report = json.loads((self.root / REPORT).read_text())
         self.assertEqual(report['nodes']['ready']['status'], 'complete')
@@ -842,7 +870,8 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
     def test_rechecking_sorry_keeps_approval_but_leaves_the_proof_pending(self):
         before = load_nodes(self.root)['ready']
         approved = (self.node_dir / 'ready.json').read_bytes()
-        self.source.write_text(self.source.read_text().replace('by trivial', 'by sorry'))
+        self.source.write_text(
+            self.source.read_text().replace('by trivial', 'by sorry'))
         self.run_check(ready_axiom='sorryAx')
         node = load_nodes(self.root)['ready']
         self.assertEqual(node['target_sha256'], before['target_sha256'])
@@ -859,7 +888,8 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         self.run_check(ready_definition='True')
         call_command('review', '--accept', node=['ready'], stdout=StringIO())
         approved = (self.node_dir / 'ready.json').read_bytes()
-        self.source.write_text(self.source.read_text() + '\n-- Definition changed.\n')
+        self.source.write_text(self.source.read_text() +
+                               '\n-- Definition changed.\n')
         stale = load_nodes(self.root)['ready']
         self.assertTrue(stale['review_matches_last_check'])
         self.assertFalse(stale['review_current'])
@@ -878,9 +908,11 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         with self.assertRaisesRegex(CommandError, 'No declaration signature'):
             self.run_check(include_signatures=False)
         report = json.loads(path.read_text())
-        self.assertEqual(report['modules']['Lemmatheca.Fixture']['status'], 'failed')
+        self.assertEqual(report['modules']
+                         ['Lemmatheca.Fixture']['status'], 'failed')
         self.assertNotIn('ready', report['nodes'])
-        self.assertEqual(load_nodes(self.root)['ready']['status'], 'verification_needed')
+        self.assertEqual(load_nodes(self.root)[
+                         'ready']['status'], 'verification_needed')
 
     def test_environment_changes_require_rechecking_but_preserve_unchanged_approval(self):
         for name in ENVIRONMENT:
@@ -899,8 +931,10 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
                 self.assertEqual(updated['status'], 'complete')
                 self.assertTrue(updated['review_current'])
                 self.assertTrue(updated['verification_complete'])
-                self.assertEqual(updated['target_sha256'], before['target_sha256'])
-                self.assertEqual((self.node_dir / 'ready.json').read_bytes(), approved)
+                self.assertEqual(
+                    updated['target_sha256'], before['target_sha256'])
+                self.assertEqual(
+                    (self.node_dir / 'ready.json').read_bytes(), approved)
                 report = json.loads((self.root / REPORT).read_text())
                 self.assertEqual(report['modules']['Lemmatheca.Fixture']['sha256'][f'formal/{name}'],
                                  file_hash(path))
@@ -912,7 +946,8 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         approved = (self.node_dir / 'ready.json').read_bytes()
         path = self.formal / 'lake-manifest.json'
         manifest = json.loads(path.read_text())
-        mathlib = next(package for package in manifest['packages'] if package['name'] == 'mathlib')
+        mathlib = next(
+            package for package in manifest['packages'] if package['name'] == 'mathlib')
         mathlib['rev'] = 'a' * 40
         path.write_text(json.dumps(manifest))
         self.run_check(ready_definition='True ∧ True')
@@ -927,12 +962,14 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
     def test_custom_axiom_and_mid_run_source_changes_cannot_write_passing_report(self):
         with self.assertRaisesRegex(CommandError, 'unapproved axioms'):
             self.run_check('untrustedAxiom')
-        self.assertEqual(load_nodes(self.root)['ready']['status'], 'verification_needed')
+        self.assertEqual(load_nodes(self.root)[
+                         'ready']['status'], 'verification_needed')
         with self.assertRaisesRegex(CommandError, 'changed during verification'):
             self.run_check(side_effect=lambda: self.source.write_text(
                 self.source.read_text() + '\n'))
         report = json.loads((self.root / REPORT).read_text())
-        self.assertEqual(report['modules']['Lemmatheca.Fixture']['status'], 'failed')
+        self.assertEqual(report['modules']
+                         ['Lemmatheca.Fixture']['status'], 'failed')
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
 

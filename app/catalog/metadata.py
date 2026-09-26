@@ -41,6 +41,8 @@ def validate_entry_metadata(entry):
     for key in ('id', 'title', 'primary_area', 'status', 'summary', 'abstract'):
         if not isinstance(entry[key], str) or not entry[key].strip():
             raise ContentError(f"{key} must be nonempty text")
+    if entry['status'] not in {'draft', 'final'}:
+        raise ContentError('status must be draft or final')
     if not isinstance(entry['based_on'], list):
         raise ContentError('based_on must be a list of citations')
     for citation in entry['based_on']:

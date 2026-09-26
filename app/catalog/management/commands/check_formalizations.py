@@ -22,7 +22,8 @@ from formalization.reviews import declaration_hashes
 
 
 def input_hashes(root, modules):
-    paths = {path for module in modules for path in verification_inputs(root, module)}
+    paths = {
+        path for module in modules for path in verification_inputs(root, module)}
     return {path.relative_to(root).as_posix(): verification_input_hash(path, root)
             for path in sorted(paths)}
 
@@ -89,7 +90,8 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         try:
-            self.verify_nodes(settings.REPOSITORY_DIR, options['module'], force=options['force'])
+            self.verify_nodes(settings.REPOSITORY_DIR,
+                              options['module'], force=options['force'])
         except (ValueError, OSError) as error:
             raise CommandError(str(error)) from error
 
@@ -99,11 +101,14 @@ class Command(BaseCommand):
                  node in nodes.items() if node['declaration']}
         groups = {}
         for key, node in bound.items():
-            groups.setdefault(verification_group(node['module']), {})[key] = node
+            groups.setdefault(verification_group(
+                node['module']), {})[key] = node
         selectors = set(selected) if selected is not None else set(groups)
-        unknown = selectors - (groups.keys() | {node['module'] for node in bound.values()})
+        unknown = selectors - \
+            (groups.keys() | {node['module'] for node in bound.values()})
         if unknown:
-            raise CommandError('Unknown registered modules: ' + ', '.join(sorted(unknown)))
+            raise CommandError(
+                'Unknown registered modules: ' + ', '.join(sorted(unknown)))
         selected = sorted({verification_group(module) for module in selectors})
         if not bound:
             self.stdout.write('No formal node declarations to check.')
@@ -148,14 +153,17 @@ class Command(BaseCommand):
             try:
                 imports = sorted({node['module'] for node in group.values()})
                 before = input_hashes(root, imports)
-                fingerprints = {key: node_fingerprint(node) for key, node in group.items()}
+                fingerprints = {key: node_fingerprint(
+                    node) for key, node in group.items()}
                 run(['build', *imports, REVIEW_MODULE])
                 evidence = {}
                 # Audit each declared import separately: importing every Mathlib
                 # module together could conceal a binding to the wrong module.
                 for imported in imports:
-                    imported_nodes = {key: node for key, node in group.items() if node['module'] == imported}
-                    names = sorted({node['declaration'] for node in imported_nodes.values()})
+                    imported_nodes = {
+                        key: node for key, node in group.items() if node['module'] == imported}
+                    names = sorted({node['declaration']
+                                   for node in imported_nodes.values()})
                     with tempfile.NamedTemporaryFile('w', suffix='.lean', prefix='NodeCheck', dir=formal_dir) as check:
                         check.write(check_source(imported, names))
                         check.flush()
@@ -169,7 +177,8 @@ class Command(BaseCommand):
                 if (before != input_hashes(root, imports)
                         or fingerprints != {key: node_fingerprint(node) for key, node in after.items()
                                             if verification_group(node['module']) == module}):
-                    raise CommandError('Formal inputs changed during verification; rerun the check.')
+                    raise CommandError(
+                        'Formal inputs changed during verification; rerun the check.')
                 report['modules'][module] = {
                     'status': 'passed', 'checked_on': datetime.now(timezone.utc).isoformat(),
                     'policy_sha256': verification_policy_hash(), 'sha256': before,
@@ -186,7 +195,8 @@ class Command(BaseCommand):
                     report['nodes'].pop(key, None)
 
         if file_signature(destination) != report_signature:
-            raise CommandError('Verification report changed during checking; rerun the check.')
+            raise CommandError(
+                'Verification report changed during checking; rerun the check.')
         if report != previous:
             destination.parent.mkdir(parents=True, exist_ok=True)
             with staged_json(destination, report) as temporary:
@@ -198,4 +208,5 @@ class Command(BaseCommand):
             f'Checked {len(checked)} verification group(s); reused {len(reused)}; failed {len(failures)}. '
             f'{ready} nodes ready, {len(nodes) - ready} pending.'))
         if failures:
-            raise CommandError('\n\n'.join(f'{module}: {error}' for module, error in failures.items()))
+            raise CommandError('\n\n'.join(
+                f'{module}: {error}' for module, error in failures.items()))
