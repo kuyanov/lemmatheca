@@ -22,7 +22,7 @@ Use stable IDs independent of subject categories. JSON contains:
 
 ```text
 id, title, based_on, primary_area, additional_areas,
-status, reading_time, summary, abstract
+review, reading_time, summary, abstract
 ```
 
 HTML owns mathematical blocks, titles, links, and formal-node mappings.
@@ -31,8 +31,10 @@ Cross-entry references use `href="entry-id#block-id"`; same-entry references use
 subject areas. Prefer empty local links for generated numbering and explicit
 cross-entry text that fits the sentence. Figures and tables have separate numbering
 within each entry; give each a stable ID and one caption without a number.
-`status` is `draft` or `final`; formal readiness is derived separately. Only drafts
-show an editorial badge. Write original
+`review` is `null` for a new draft, or a `{sha256, recorded_at}` approval record.
+The reader derives `final` only when its hash matches the current entry; otherwise
+it shows `draft`. There is no stored `status` field. Formal readiness is derived
+separately. Only drafts show an editorial badge. Write original
 exposition and cite sources in `based_on`. See the
 [authoring guide](../docs/entry-sources.md) for the full source format.
 
@@ -62,14 +64,16 @@ be confirmed against the new declaration hash.
 
 Use `uv run python app/manage.py review --accept --entry <id>` separately after
 checking that the human text is correct, the page renders properly, and nodes
-cover all blocks without redundant nodes or uncovered statements. This changes
-`status` to `final` and hides the Draft badge and review note. Every block must have
+cover all blocks without redundant nodes or uncovered statements. This records
+approval and hides the Draft badge and review note. Every block must have
 a mapping (empty is allowed), and every linked node must name a declaration.
 Proofs and node approvals may still be unfinished. Entry approval never runs Lean
 or changes node records; `--retract --entry <id>` restores `draft`. All review
-selectors support `--dry-run`. Entry status is manual and is not automatically
-invalidated by edits; retract and review again after substantive text, asset,
-mapping, or linked-statement changes. See the [review workflow](../README.md#recording-reviews).
+selectors support `--dry-run`. Metadata, HTML, asset, or linked node description
+edits invalidate approval and restore Draft automatically. The HTML includes the
+node IDs. Declarations, other node fields, unlinked descriptions, and Lean evidence
+are excluded from this hash. Review and accept the changed entry
+again when ready. See the [review workflow](../README.md#recording-reviews).
 
 Block percentages count
 ready nodes. Entry badges show Not started when every block is unmapped, Partial

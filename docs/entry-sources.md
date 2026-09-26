@@ -10,13 +10,17 @@ The required entry fields are exactly:
 
 ```text
 id, title, based_on, primary_area, additional_areas,
-status, reading_time, summary, abstract
+review, reading_time, summary, abstract
 ```
 
-`status` is the editorial state: `draft` or `final`, independent of formalization.
-New entries start as drafts. Record the review of correctness, rendering, and
-block coverage with `review --accept --entry <id>` to set `final`; use `--retract`
-to return to `draft`. Only drafts show an editorial badge and review note. Entry
+`review` is `null` for a new entry. `review --accept --entry <id>` stores a record
+with `sha256` and a timezone-aware ISO `recorded_at` timestamp after review of
+correctness, rendering, and block coverage. The reader derives `final` when the
+hash matches the current entry and `draft` otherwise; do not store a `status` field.
+Metadata, HTML (including node links), asset, and linked node description edits
+invalidate approval. The review record, declarations, other node fields, and
+unlinked descriptions are excluded. Use `--retract` to clear the
+record. Only drafts show an editorial badge and review note. Entry
 review allows unfinished proofs and leaves node approvals unchanged; see the
 [review workflow](../README.md#recording-reviews) for requirements and re-reviewing edits.
 `reading_time` is a positive integer number of minutes. The entry page displays its

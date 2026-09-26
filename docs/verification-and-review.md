@@ -45,14 +45,36 @@ confirmed that all blocks are covered without redundant nodes or missing claims.
 It validates the corpus and requires explicit mappings on every block and a
 declaration for every linked node; an empty mapping is allowed. These structural
 checks cannot establish semantic coverage or visual correctness automatically.
-The command changes `entry.json` status from `draft` to `final`, removing the Draft
-badge and review note. It never runs Lean or changes node reviews or verification.
+The command stores `review: {sha256, recorded_at}` in `entry.json`; new entries use
+`review: null`. Editorial status is derived, with no stored `status`: a matching
+approval makes the entry `final`, removing the Draft badge and review note.
+It never runs Lean or changes node reviews or verification.
 Unfinished proofs, pending node approvals, and missing verification evidence are
 allowed. `--retract --entry <id>` returns the entry to `draft`, even with unplanned
 blocks or invalid HTML. Both entry actions support `--dry-run` and skip unchanged
-statuses. Entry status has no content hash; after substantive text, asset, mapping,
-or linked-statement changes, retract and repeat the entry review. Git records the
-history of these decisions. See the [review workflow](../README.md#recording-reviews).
+approvals. Git records the history of these decisions.
+
+Entry hash version 2 covers all metadata fields except `review`, the exact
+`entry.html` bytes, and the relative paths and contents of every file under the
+entry's `assets/`, plus a map from each directly linked node ID to its description.
+Shared nodes are included once; unlinked nodes and proof prerequisites are excluded.
+HTML includes the selected node IDs, so mapping edits invalidate
+approval. JSON formatting and key order do not matter; HTML whitespace does.
+Adding, removing, renaming, or editing an asset invalidates approval, as does
+editing a linked description. Node declarations, modules, proof dependencies,
+node approvals, Lean sources, reports, and environment pins are excluded. Shared
+templates/styles, other entries, taxonomy, and reading order are also outside
+this entry-owned content hash.
+
+A mismatch displays Draft on the entry and area pages without rewriting the
+saved approval. Reviewing and accepting the current content replaces the saved
+hash and timestamp. Reverting content exactly restores a matching approval;
+explicit retraction clears it, so reverting cannot restore a retracted approval.
+All existing entries were drafts and migrated to `review: null`; no entry was
+auto-approved. Any version-1 entry approval needs renewed review because it did
+not cover linked descriptions; hashes are not upgraded automatically. Approval
+writes also reject concurrent changes to entry files or linked descriptions.
+See the [review workflow](../README.md#recording-reviews).
 
 Review hashes cover elaborated theorem types, definition bodies, inductive
 constructors and recursor rules, and their reachable constants. Theorems contribute
@@ -274,15 +296,15 @@ A successful check does not itself establish that a human block is fully covered
 Node approval checks **description ↔ Lean declaration**. Coverage review checks
 **entry claims ↔ linked node descriptions**, including specializations, omitted
 cases, and redundant nodes. `review --accept --entry` records this decision through
-the entry's `final` status, independently of node approval and proof completion.
-This editorial status is manual, without automatic invalidation: editing an entry
-can break correspondence while its status and node approvals remain unchanged.
-Maintainers must retract and renew entry review after substantive changes.
+the entry's content hash, independently of node approval and proof completion.
+Entry and linked-description edits invalidate it automatically. Declaration
+changes belong to node review and do not invalidate entry approval. Changes to
+unlinked descriptions also leave it intact.
 
 The next useful improvement is a separate per-block coverage record, bound to the
-reviewed mathematical text and selected node review targets. Text edits, changed
-mappings, or changed node targets would flag that block for review without revoking
-shared node approvals in other entries. Figure and table content, question answers,
+reviewed mathematical text, selected node IDs, and descriptions. Text, mapping,
+or description edits could then flag only the affected block instead of the entire
+entry. Figure and table content, question answers,
 and surrounding assumptions must be considered when defining the reviewed scope.
 
 Readable approval snapshots would also help: retain the approved description and

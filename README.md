@@ -89,17 +89,20 @@ Entry acceptance validates the corpus and requires a mapping on every block and
 a declaration for each linked node. Use an explicit empty `data-formal=""` where
 nothing needs formalizing. The command records the human decision; it cannot judge
 mathematical correctness, visual rendering, or semantic coverage automatically.
-It changes `entry.json` from `draft` to `final`, removing the Draft badge and review
-note. It neither runs Lean nor changes node approvals or verification evidence.
+It stores a `review` hash and timestamp in `entry.json`. A matching hash makes the
+entry `final`, removing the Draft badge and review note. It neither runs Lean nor
+changes node approvals or verification evidence.
 Unfinished proofs and unapproved nodes are allowed; formal progress stays visible
 and independent of editorial approval.
 
 Use `--retract` with the same selector to withdraw that review; for `--entry`, this
 returns the entry to `draft`. All selectors support `--dry-run`, and repeated
 actions leave unchanged records intact. Node acceptance may refresh Lean evidence
-even during a dry run. Entry status is a manual decision, without a content hash:
-after substantive changes to text, assets, mappings, or linked statements, retract
-and repeat the entry review. Commit review changes alongside the reviewed work.
+even during a dry run. Entry edits invalidate approval automatically: the hash
+covers metadata, HTML (including node IDs), entry assets, and linked node
+descriptions. Lean declarations, other node fields, and verification evidence are
+excluded. A stale approval displays as Draft until reviewed again;
+`--retract --entry` clears the record. Commit review changes alongside the reviewed work.
 
 ## Current implementation
 

@@ -9,6 +9,7 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import SimpleTestCase
 
+from catalog.content import entries
 from catalog.sources import ContentError
 from catalog.test_formalizations import NodeFixtureMixin
 from formalization.nodes import load_nodes
@@ -414,7 +415,10 @@ class EntryReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
             self.assertIn('already final; skipped',
                           self.review_entry('accept'))
         check.assert_not_called()
-        self.assertEqual(json.loads(accepted), {**before, 'status': 'final'})
+        record = json.loads(accepted)['review']
+        self.assertEqual(set(record), {'sha256', 'recorded_at'})
+        self.assertEqual(record['sha256'], entries()['first']['target_sha256'])
+        self.assertEqual(json.loads(accepted), {**before, 'review': record})
         self.assertEqual(self.metadata_path.read_bytes(), accepted)
         self.assertEqual({path: path.read_bytes()
                          for path in formal_before}, formal_before)
@@ -450,8 +454,9 @@ class EntryReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
                               self.review_entry(action, dry_run=True))
                 self.assertEqual(self.metadata_path.read_bytes(), before)
                 self.review_entry(action)
-                self.assertEqual(json.loads(self.metadata_path.read_text())[
-                                 'status'], desired)
+                self.assertEqual(entries()['first']['status'], desired)
+                if action == 'retract':
+                    self.assertIsNone(json.loads(self.metadata_path.read_text())['review'])
                 after = self.metadata_path.read_bytes()
                 self.assertIn('skipped', self.review_entry(action))
                 self.assertEqual(self.metadata_path.read_bytes(), after)
@@ -480,8 +485,7 @@ class EntryReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
     def test_all_empty_mappings_can_be_reviewed(self):
         self.write_html(('data-formal=""', 'data-formal=""'))
         self.review_entry('accept')
-        self.assertEqual(json.loads(self.metadata_path.read_text())[
-                         'status'], 'final')
+        self.assertEqual(entries()['first']['status'], 'final')
 
     def test_invalid_entries_cannot_be_accepted(self):
         before = self.metadata_path.read_bytes()
@@ -495,9 +499,9 @@ class EntryReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
             self.assertEqual(self.metadata_path.read_bytes(), before)
         self.write_html()
         metadata = json.loads(before)
-        metadata['status'] = 'published'
+        metadata['review'] = {'sha256': 'invalid', 'recorded_at': '2026-09-20'}
         self.metadata_path.write_text(json.dumps(metadata))
-        with self.assertRaisesRegex(CommandError, 'status must be draft or final'):
+        with self.assertRaisesRegex(CommandError, 'Entry review must be null or a sha256'):
             call_command('validate_corpus', stdout=StringIO())
 
     def test_retraction_allows_unplanned_or_broken_content(self):
@@ -507,13 +511,154 @@ class EntryReviewCommandTests(NodeFixtureMixin, SimpleTestCase):
                 self.review_entry('accept')
                 self.html.write_text(source)
                 self.review_entry('retract')
-                self.assertEqual(json.loads(self.metadata_path.read_text())[
-                                 'status'], 'draft')
+                self.assertIsNone(json.loads(self.metadata_path.read_text())['review'])
+
+    def test_text_and_mapping_edits_invalidate_approval_and_can_be_reaccepted(self):
+        source = self.html.read_text()
+        for changed in (source + '\n', source.replace('A mathematical claim.', 'A revised claim.'),
+                        source.replace('ready pending', 'pending')):
+            with self.subTest(source=changed):
+                self.html.write_text(source)
+                self.review_entry('accept')
+                approved = self.metadata_path.read_bytes()
+                self.html.write_text(changed)
+                entry = entries()['first']
+                self.assertEqual(entry['status'], 'draft')
+                self.assertFalse(entry['review_current'])
+                self.assertEqual(self.metadata_path.read_bytes(), approved)
+                self.assertContains(self.client.get('/entries/first/'),
+                                    '<span class="pill">Draft</span>', html=True)
+                self.assertContains(self.client.get('/areas/math/sets/'),
+                                    '<span class="pill">Draft</span>', html=True)
+                self.assertIn('Accepted entry review', self.review_entry('accept'))
+                self.assertEqual(entries()['first']['status'], 'final')
+                self.assertNotEqual(self.metadata_path.read_bytes(), approved)
+
+    def test_metadata_is_hashed_semantically_and_review_record_is_excluded(self):
+        self.review_entry('accept')
+        approved = json.loads(self.metadata_path.read_text())
+        self.metadata_path.write_text(json.dumps(approved, sort_keys=True, indent=4, ensure_ascii=False))
+        self.assertEqual(entries()['first']['status'], 'final')
+        for field, value in (('title', 'New title'), ('summary', 'New summary'),
+                             ('abstract', 'New abstract'), ('reading_time', 10),
+                             ('based_on', [{'authors': ['Author'], 'title': 'Source'}])):
+            with self.subTest(field=field):
+                self.metadata_path.write_text(json.dumps({**approved, field: value}))
+                self.assertEqual(entries()['first']['status'], 'draft')
+        approved['review']['recorded_at'] = '2026-09-21T12:00:00+00:00'
+        self.metadata_path.write_text(json.dumps(approved))
+        self.assertEqual(entries()['first']['status'], 'final')
+
+    def test_asset_edits_additions_and_removals_invalidate_approval(self):
+        asset = self.html.parent / 'assets/diagram.svg'
+        original = asset.read_bytes()
+        self.review_entry('accept')
+        asset.write_bytes(original + b'\n')
+        self.assertEqual(entries()['first']['status'], 'draft')
+        asset.write_bytes(original)
+        self.assertEqual(entries()['first']['status'], 'final')
+        added = asset.with_name('extra.svg')
+        added.write_bytes(original)
+        self.assertEqual(entries()['first']['status'], 'draft')
+        added.unlink()
+        self.assertEqual(entries()['first']['status'], 'final')
+        asset.unlink()
+        self.assertEqual(entries()['first']['status'], 'draft')
+
+    def test_linked_description_edits_require_entry_review_again(self):
+        self.review_entry('accept')
+        approved = self.metadata_path.read_bytes()
+        node_path = self.node_dir / 'ready.json'
+        node = json.loads(node_path.read_text())
+        node['description'] = 'A stronger statement.'
+        node_path.write_text(json.dumps(node))
+        entry = entries()['first']
+        self.assertEqual(entry['status'], 'draft')
+        self.assertFalse(entry['review_current'])
+        self.assertEqual(self.metadata_path.read_bytes(), approved)
+        self.assertContains(self.client.get('/entries/first/'),
+                            '<span class="pill">Draft</span>', html=True)
+        with patch('catalog.management.commands.review.call_command') as check:
+            self.review_entry('accept')
+        check.assert_not_called()
+        self.assertEqual(entries()['first']['status'], 'final')
+        self.assertNotEqual(self.metadata_path.read_bytes(), approved)
+        self.assertEqual(json.loads(node_path.read_text()), node)
+
+    def test_only_linked_descriptions_affect_entry_approval_among_node_data(self):
+        self.review_entry('accept')
+        node_path = self.node_dir / 'ready.json'
+        original = json.loads(node_path.read_text())
+        for field, value in (('declaration', 'Lemmatheca.changed'),
+                             ('review', None), ('dependencies', ['dependent']),
+                             ('module', 'Lemmatheca.Relocated')):
+            with self.subTest(field=field):
+                node_path.write_text(json.dumps({**original, field: value}))
+                self.assertEqual(entries()['first']['status'], 'final')
+        node_path.write_text(json.dumps(original))
+        self.source.write_text(self.source.read_text() + '\n-- Proof edit\n')
+        self.assertEqual(entries()['first']['status'], 'final')
+        (self.root / REPORT).unlink()
+        self.assertEqual(entries()['first']['status'], 'final')
+        self.write_node('unlinked', description='An unrelated statement.')
+        self.assertEqual(entries()['first']['status'], 'final')
+        self.write_node('dependent', description='A changed proof prerequisite.', dependencies=['pending'])
+        self.assertEqual(entries()['first']['status'], 'final')
+
+    def test_concurrent_linked_description_changes_are_not_approved(self):
+        before = self.metadata_path.read_bytes()
+        node_path = self.node_dir / 'ready.json'
+        original = json.loads(node_path.read_text())
+        dump = json.dump
+        for remove in (False, True):
+            with self.subTest(remove=remove):
+                node_path.write_text(json.dumps(original))
+
+                def edit_during_staging(*args, **kwargs):
+                    if remove:
+                        node_path.unlink()
+                    else:
+                        node_path.write_text(json.dumps({**original, 'description': 'Changed claim.'}))
+                    return dump(*args, **kwargs)
+
+                with patch('catalog.files.json.dump', side_effect=edit_during_staging):
+                    with self.assertRaisesRegex(CommandError, 'Entry review inputs changed'):
+                        self.review_entry('accept')
+                self.assertEqual(self.metadata_path.read_bytes(), before)
+                self.assertFalse(list(self.html.parent.glob('*.tmp')))
+
+    def test_concurrent_declaration_edit_does_not_change_entry_review_target(self):
+        node_path = self.node_dir / 'ready.json'
+        node = json.loads(node_path.read_text())
+        target = entries()['first']['target_sha256']
+        dump = json.dump
+
+        def edit_during_staging(*args, **kwargs):
+            node_path.write_text(json.dumps({**node, 'declaration': 'Lemmatheca.changed'}))
+            return dump(*args, **kwargs)
+
+        with patch('catalog.files.json.dump', side_effect=edit_during_staging):
+            self.review_entry('accept')
+        self.assertEqual(entries()['first']['status'], 'final')
+        self.assertEqual(entries()['first']['target_sha256'], target)
+
+    def test_stale_review_retraction_does_not_need_current_hash_or_valid_html(self):
+        self.review_entry('accept')
+        self.html.write_text('<section')
+        self.review_entry('retract')
+        self.assertIsNone(json.loads(self.metadata_path.read_text())['review'])
+
+    def test_retraction_after_edit_does_not_restore_approval_when_text_is_reverted(self):
+        source = self.html.read_bytes()
+        self.review_entry('accept')
+        self.html.write_bytes(source + b'\n')
+        self.review_entry('retract')
+        self.html.write_bytes(source)
+        self.assertEqual(entries()['first']['status'], 'draft')
 
     def test_concurrent_edits_are_not_overwritten_or_approved(self):
         dump = json.dump
-        for path in (self.metadata_path, self.html, self.html.parent / 'assets/diagram.svg',
-                     self.node_dir / 'pending.json'):
+        for path in (self.metadata_path, self.html, self.html.parent / 'assets/diagram.svg'):
             with self.subTest(path=path):
                 before = self.metadata_path.read_bytes()
                 original = path.read_bytes()

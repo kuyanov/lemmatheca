@@ -254,12 +254,18 @@ running Lean or discarding its verification evidence.
 `review --accept --entry <id>` separately records review of text correctness,
 rendering, and complete, nonredundant coverage. It validates the corpus and requires
 every block to have a mapping (empty is allowed) and every linked node to name a
-declaration. It changes editorial status from `draft` to `final`, hiding the Draft
+declaration. `catalog/reviews.py` hashes entry metadata (excluding `review`), raw
+HTML, all entry assets, and descriptions of directly linked nodes. The command
+stores that hash and a timestamp in
+`entry.json`'s `review` record. A matching hash derives `final`, hiding the Draft
 badge and review note. Node approvals and Lean evidence are untouched, and
 unfinished proofs and unapproved nodes are allowed. `--retract --entry` restores
 draft status. Entry actions never run Lean and support `--dry-run`; unchanged
-statuses are skipped. This status is manual, not hash-bound, so substantive content,
-asset, mapping, or linked-statement changes require retraction and renewed review.
+approvals are skipped. Entry or linked-description edits restore `draft`
+automatically without rewriting source files. Node IDs are covered by the HTML;
+declarations, other node fields, and Lean evidence do not enter the entry hash.
+Descriptions are checked again before saving approval to reject concurrent edits.
+The former manually stored `status` is replaced by `review`.
 The checker detects changed targets but does not
 prove correspondence with human text. It fingerprints ordinary source imports, not arbitrary metaprogram
 inputs. Full proof-graph extraction and model runners remain future work. See

@@ -38,13 +38,17 @@ For a separate entry review, use
 `uv run python app/manage.py review --accept --entry <id>` after checking the
 mathematics, rendered page, and complete block-to-node coverage. This validates the
 corpus, requires every block to have a mapping and every linked node to have a
-declaration, then changes `status` from `draft` to `final`. Empty mappings are allowed.
+declaration, then records a review hash and timestamp. Empty mappings are allowed.
 The Draft badge disappears from the entry page and area listing, together with the
 entry's review note. Unfinished proofs and unapproved nodes are allowed; node
 approvals and verification evidence stay unchanged, and Lean is never run.
 `review --retract --entry <id>` restores draft status, even if the entry's HTML is
 currently invalid or mappings are unfinished. Both actions support `--dry-run`.
-Entry status is manual: substantive edits need retraction and renewed review.
+Entry status is derived: a matching approval is `final`; otherwise it is `draft`.
+The hash covers entry metadata, HTML (including node IDs), assets, and linked node
+descriptions. It excludes the review record, declarations, other node fields, and
+Lean evidence. Entry or linked-description edits restore the
+Draft badge automatically. New entries use `review: null`, with no stored `status`.
 See the [review workflow](../README.md#recording-reviews).
 
 Tests use small isolated fixtures and one smoke test of the current corpus.
@@ -82,6 +86,10 @@ The website can run without Lean installed. Keep the tracked `corpus/` and
 - `formalization/`: formal node storage, statuses, source locations, and API/views.
 - `config/`: Django settings, routing, and development error handling.
 - `templates/` and `static/`: shared presentation and self-hosted KaTeX.
+
+`catalog/reviews.py` hashes entry content and linked descriptions and guards entry
+approval writes against concurrent edits to those inputs. Entry review checks
+text-to-description correspondence; node review checks descriptions against Lean.
 
 The formalization layer separates registry validation and progress (`nodes.py`),
 verification reports and freshness (`verification.py`), Lean sources and environment

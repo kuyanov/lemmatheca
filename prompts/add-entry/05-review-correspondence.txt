@@ -50,7 +50,11 @@ uncovered claims, implicit representation bridges, and optional simplifications.
 Identify exactly which nodes would need new review if suggestions are applied.
 Node decisions are recorded by the maintainer with review --accept --node or
 review --accept --nodes-from-entry. A separate review --accept --entry records
-approval of the human text, rendered presentation, and coverage and changes draft
-to final; unfinished proofs are allowed. Coverage findings from this audit support
-that entry decision but do not replace checking the rendered page or text for errors.
-Do not change bindings, node review records, or entry status during this audit.
+approval of the human text, rendered presentation, and coverage using a hash of
+entry metadata, HTML (including node IDs), assets, and linked node descriptions.
+A matching hash makes the entry final; edits to those inputs make it draft again.
+Declarations and other node fields are excluded: node review covers the
+description-to-Lean correspondence. Unfinished proofs are allowed. Coverage findings
+from this audit support that entry decision but do not replace checking the rendered
+page or text for errors.
+Do not change bindings, node review records, or entry review records during this audit.

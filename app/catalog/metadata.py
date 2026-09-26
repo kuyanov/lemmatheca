@@ -4,9 +4,10 @@ import re
 from urllib.parse import urlsplit
 
 from .sources import ContentError
+from formalization.reviews import validate_review
 
 ENTRY_FIELDS = {'id', 'title', 'based_on', 'primary_area', 'additional_areas',
-                'status', 'reading_time', 'summary', 'abstract'}
+                'review', 'reading_time', 'summary', 'abstract'}
 CITATION_FIELDS = {'authors', 'title'}
 CITATION_OPTIONAL_FIELDS = {'year', 'venue',
                             'volume', 'issue', 'pages', 'doi', 'url'}
@@ -38,11 +39,10 @@ def validate_citation(citation):
 
 def validate_entry_metadata(entry):
     fields(entry, ENTRY_FIELDS)
-    for key in ('id', 'title', 'primary_area', 'status', 'summary', 'abstract'):
+    for key in ('id', 'title', 'primary_area', 'summary', 'abstract'):
         if not isinstance(entry[key], str) or not entry[key].strip():
             raise ContentError(f"{key} must be nonempty text")
-    if entry['status'] not in {'draft', 'final'}:
-        raise ContentError('status must be draft or final')
+    validate_review(entry['review'], label='Entry')
     if not isinstance(entry['based_on'], list):
         raise ContentError('based_on must be a list of citations')
     for citation in entry['based_on']:

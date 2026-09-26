@@ -9,8 +9,9 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 
 from catalog.content import load_catalog
-from catalog.files import file_signature, read_json, staged_json
+from catalog.files import read_json, staged_json
 from catalog.metadata import validate_entry_metadata
+from catalog.reviews import descriptions_match, entry_review_signature
 from catalog.sources import IDENTIFIER, parse_source
 from formalization.nodes import formal_signature, load_nodes
 
@@ -50,15 +51,6 @@ def select_nodes(root, nodes, options):
     return selected, entry_path, entry_source
 
 
-def entry_review_signature(directory, root):
-    """Detect edits to the entry, assets, or node records during acceptance."""
-    paths = [directory / 'entry.json', directory / 'entry.html']
-    paths.extend(path for path in (
-        directory / 'assets').rglob('*') if path.is_file())
-    paths.extend((root / 'formal/nodes').glob('*.json'))
-    return tuple(file_signature(path) for path in sorted(paths))
-
-
 class Command(BaseCommand):
     help = 'Accept or retract a formal-node review or an entry editorial and coverage review.'
 
@@ -93,12 +85,13 @@ class Command(BaseCommand):
         if not IDENTIFIER.fullmatch(entry_id) or not directory.is_dir():
             raise CommandError(f'Unknown entry: {entry_id}')
         path = directory / 'entry.json'
-        signature = entry_review_signature(directory, settings.REPOSITORY_DIR)
+        signature = entry_review_signature(directory)
         metadata = read_json(path)
         validate_entry_metadata(metadata)
         if metadata['id'] != entry_id:
             raise CommandError('Entry ID must match its folder name')
         accepting = options['action'] == 'accept'
+        descriptions = {}
         if accepting:
             entry = load_catalog(settings.CORPUS_DIR,
                                  settings.REPOSITORY_DIR)[entry_id]
@@ -112,16 +105,27 @@ class Command(BaseCommand):
             if missing:
                 raise CommandError('Declarations missing: ' +
                                    ', '.join(sorted(missing)))
+            descriptions = {node['id']: node['description']
+                            for block in entry['blocks'] for node in block['formal_nodes']}
+
+        def inputs_changed():
+            return (signature != entry_review_signature(directory)
+                    or not descriptions_match(settings.REPOSITORY_DIR / 'formal/nodes', descriptions))
 
         status = 'final' if accepting else 'draft'
-        if metadata['status'] == status:
+        if inputs_changed():
+            raise CommandError('Entry review inputs changed; rerun the command.')
+        if (entry['review_current'] if accepting else metadata['review'] is None):
             self.stdout.write(
                 f'Entry {entry_id} is already {status}; skipped.')
             return
-        metadata['status'] = status
+        metadata['review'] = {
+            'sha256': entry['target_sha256'],
+            'recorded_at': datetime.now(timezone.utc).isoformat(),
+        } if accepting else None
         if not options['dry_run']:
             with staged_json(path, metadata) as temporary:
-                if signature != entry_review_signature(directory, settings.REPOSITORY_DIR):
+                if inputs_changed():
                     raise CommandError(
                         'Entry review inputs changed; rerun the command.')
                 temporary.replace(path)

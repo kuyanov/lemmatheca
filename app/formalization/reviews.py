@@ -16,13 +16,13 @@ def digest(value):
         value, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
 
 
-def validate_review(review):
+def validate_review(review, *, label='Node'):
     if review is None:
         return
     if (not isinstance(review, dict) or set(review) != {'sha256', 'recorded_at'}
             or not isinstance(review['sha256'], str) or not SHA256.fullmatch(review['sha256'])):
         raise ContentError(
-            'Node review must be null or a sha256 and recorded_at record')
+            f'{label} review must be null or a sha256 and recorded_at record')
     try:
         date = datetime.fromisoformat(review['recorded_at'])
         if date.utcoffset() is None:

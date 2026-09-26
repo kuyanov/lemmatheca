@@ -72,7 +72,7 @@ class CorpusFixtureMixin:
         directory.mkdir(parents=True, exist_ok=True)
         (directory / 'entry.json').write_text(json.dumps({
             'id': entry_id, 'title': f'Entry {entry_id}', 'based_on': [],
-            'primary_area': 'sets', 'additional_areas': [], 'status': 'draft',
+            'primary_area': 'sets', 'additional_areas': [], 'review': None,
             'reading_time': 1, 'summary': 'A short example.', 'abstract': 'Some mathematics.',
         }))
         (directory / 'entry.html').write_text(source)

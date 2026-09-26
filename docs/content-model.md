@@ -6,7 +6,8 @@ proofs, and explanations. Each mathematical block is addressed by
 contract.
 
 Entry JSON contains identity, `based_on` citations, subject memberships, editorial
-status, reading time, summary, and abstract. HTML owns block IDs, titles, kinds,
+approval (`review`), reading time, summary, and abstract. Editorial status is
+derived from that approval's hash. HTML owns block IDs, titles, kinds,
 order, links, and optional `data-formal` mappings. There are no JSON block records
 or duplicated references. Git supplies history; model attempts and costs belong
 in separate experiment records.
@@ -76,12 +77,15 @@ remains independent of formal readiness.
 `review --accept --entry <id>` records a separate maintainer review of mathematical
 correctness, rendered presentation, and complete, nonredundant block coverage. It
 validates the corpus and requires every block to have a mapping (possibly empty)
-and every linked node to name a declaration. It changes editorial `status` from
-`draft` to `final`; the Draft badge and review note disappear. It leaves node
+and every linked node to name a declaration. It stores a hash and timestamp in
+`entry.json`'s `review` field. A matching hash derives `final`; the Draft badge and
+review note disappear. It leaves node
 approvals and Lean evidence unchanged, allowing unfinished proofs and unapproved
 nodes. `review --retract --entry <id>` restores `draft`. Both actions support
-`--dry-run` and never run Lean. Entry status is not hash-bound: substantive changes
-to text, assets, mappings, or linked statements need retraction and renewed review.
+`--dry-run` and never run Lean. The hash covers metadata, HTML (including node IDs),
+entry assets, and linked node descriptions. Edits to those inputs make the entry
+a draft until approval matches again. Declarations, other node fields, unlinked
+descriptions, proofs, and Lean verification are outside this hash.
 
 ## Sources and access
 

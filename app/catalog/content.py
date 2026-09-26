@@ -10,6 +10,7 @@ from django.urls import reverse
 from .sources import ContentError, Element, IDENTIFIER, asset_path, parse_source, reference_target
 from .metadata import validate_entry_metadata
 from .files import file_signature, read_json
+from .reviews import entry_review_hash
 from formalization.nodes import load_nodes, block_progress, entry_progress, formal_signature
 
 
@@ -51,16 +52,22 @@ def load_catalog(corpus_dir, repository_dir):
                 raise ContentError("Entry ID must match its folder name")
             if not {entry["primary_area"], *entry.get("additional_areas", [])} <= taxonomy:
                 raise ContentError("Unknown area")
-            blocks, anchors, counts, captioned = parse_source(
-                (directory / "entry.html").read_text())
+            source = (directory / "entry.html").read_bytes()
+            blocks, anchors, counts, captioned = parse_source(source.decode())
             for block in blocks:
                 block['formalization'] = block_progress(
                     block['formal_ids'], formal_nodes)
                 block['formal_nodes'] = [
                     formal_nodes[node_id]
                     for node_id in block['formal_ids'] or []]
+            descriptions = {node['id']: node['description']
+                            for block in blocks for node in block['formal_nodes']}
+            target_hash = entry_review_hash(entry, source, directory, descriptions)
+            review_current = entry['review'] is not None and entry['review']['sha256'] == target_hash
             catalog[entry["id"]] = {
                 **entry, "directory": directory,
+                "status": "final" if review_current else "draft",
+                "review_current": review_current, "target_sha256": target_hash,
                 "url": reverse("catalog:entry", args=[entry["id"]]),
                 "blocks": blocks, "blocks_by_id": {block["id"]: block for block in blocks},
                 "anchors": anchors, "captioned": captioned,

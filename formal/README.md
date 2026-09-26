@@ -18,8 +18,12 @@ correct declaration that says something different from the human text. Reviewers
 compare the node description with the actual declaration, then check that the
 entry's linked nodes collectively cover its claims. Node approval tracks the first
 comparison; entry text, rendering, and coverage have a separate entry review
-recorded by `review --accept --entry <id>`. This sets editorial status to `final`
-without requiring completed proofs. See the [review workflow](../README.md#recording-reviews).
+recorded by `review --accept --entry <id>`. Entry approval hashes metadata, HTML
+(including node IDs), assets, and linked node descriptions. Declaration changes
+belong to node review; other node fields and Lean evidence do not enter the entry hash.
+The reader shows `final` while that hash matches, without requiring completed
+proofs. Entry or linked-description edits restore `draft`.
+See the [review workflow](../README.md#recording-reviews).
 
 Lean **4.34.0** and mathlib **v4.34.0** are pinned by `lean-toolchain`,
 `lakefile.toml`, and `lake-manifest.json`. Keep these fixed during an experiment.
