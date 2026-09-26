@@ -39,11 +39,13 @@ be familiar to a model; describe this as practical workflow evaluation, not evid
 of novelty or uncontaminated generalization. A later unfamiliar-paper set can
 probe transfer separately.
 
-**Sets and maps: a first guide** is the active human-text baseline. Its original
-nine-node declaration pilot has been extended with 112 proposed nodes covering
+**Sets and maps: a first guide** is the initial human-text baseline. Its original
+nine-node declaration pilot was extended with 112 proposed nodes covering
 the remaining mathematical blocks, including examples and question answers. The
-notation-and-conventions block has nothing to formalize. All 121 nodes now have
-accepted reviews and passing verification. Two proof passes completed 31 and 55
+notation-and-conventions block has nothing to formalize. Those 121 nodes received
+accepted reviews and passing verification. Subsequent standardization produced
+the current 127-node mapping; see the [formal inventory](../formal/README.md#formal-nodes).
+Two proof passes completed 31 and 55
 theorem proofs while preserving their review hashes, leaving no `sorry` placeholders
 in these modules. These declaration and proof passes are not held-out or
 cost-measured runs. The archived **Finding a monotone

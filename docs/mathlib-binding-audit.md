@@ -19,8 +19,10 @@ Two retained examples now state their claims using standard predicates:
 
 These two reviews were also retracted because their elaborated statements changed.
 The follow-up below splits bundled claims into standard library nodes and updates
-their references. All 127 current nodes pass Lean verification. Changed nodes await
-explicit review; approved nodes can still await their dependencies.
+their references. All 127 nodes in the current first-entry mapping now have
+accepted reviews and complete Lean verification. The retractions below describe
+the audit history; they are not outstanding review requests. Manual dependencies
+plan proof work and do not block completion of a reviewed, verified node.
 
 ## Replacement targets
 
@@ -81,10 +83,10 @@ verification records their actual defining source and line.
 
 ## Split bundles and further standardization
 
-This pass creates 14 nodes, rebinds two existing nodes, updates four dependent
-nodes, and retires eight bundled nodes. All 20 new or updated records have
-`review: null`; unchanged node records retain their reviews. Ten local wrappers
-are removed. Lean checked that the listed library statements together recover
+This pass created 14 nodes, rebound two existing nodes, updated four dependent
+nodes, and retired eight bundled nodes. All 20 new or updated records were left
+with `review: null` for subsequent approval; unchanged records retained their reviews.
+Ten local wrappers were removed. Lean checked that the listed library statements together recover
 every claim in the removed bundles, including the existence part of uniqueness.
 
 | Retired node | Replacement nodes |
@@ -103,7 +105,7 @@ membership in a powerset is definitionally the subset relation. Neither existing
 node is changed or duplicated. The entry maps both claims, and the empty-set/singleton
 question similarly reuses `set-empty-subset` for its inclusion answer.
 
-New and rebound library targets for review:
+Library targets introduced or rebound in this pass:
 
 | Node | Library declaration | Review note |
 | --- | --- | --- |
@@ -124,7 +126,7 @@ New and rebound library targets for review:
 | [map-empty-domain-unique](../formal/nodes/map-empty-domain-unique.json) | `Pi.uniqueOfIsEmpty` | The Unique instance contains both a map and uniqueness. Specialize the dependent codomain to a constant type. |
 | [map-nonempty-to-empty-impossible](../formal/nodes/map-nonempty-to-empty-impossible.json) | `isEmpty_fun` | Characterizes emptiness of the function type by nonempty domain and empty codomain; IsEmpty is equivalent to absence of inhabitants. |
 
-Also review these four updated records:
+This pass also updated four records:
 
 - [map-inverse-exists-iff-bijective](../formal/nodes/map-inverse-exists-iff-bijective.json): dependency on `map-inverse` replaced by both standard inverse nodes; the library target is unchanged.
 - [map-inverse-unique](../formal/nodes/map-inverse-unique.json): dependency on `map-inverse` replaced by both standard inverse nodes; the library target is unchanged.

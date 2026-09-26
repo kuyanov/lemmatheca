@@ -19,14 +19,14 @@
   </header>
 
   <div class="node-overview">
-    <section class="node-statement" aria-labelledby="description-title">
+    <section class="node-statement" aria-label="Mathematical description">
       <p class="node-description" data-math>{{ node.description }}</p>
     </section>
     <aside class="node-review-meta" aria-label="Declaration evidence">
       <dl>
         <div>
           <dt>Lean declaration</dt>
-          {% if node.review_current %}
+          {% if node.review_matches_last_check %}
           <dd class="node-status formalization-complete"><span aria-hidden="true">✓</span>
             Reviewed on <time datetime="{{ node.review.recorded_at }}">{{ node.review.recorded_at|slice:":10" }}</time>
           </dd>
@@ -100,8 +100,9 @@
 </span>{% endfor %}</code></pre>
     </details>
     {% else %}
-    <p class="node-note">This {{ upstream_name }} source is not installed on this server. Read it using the pinned
-      source link above.</p>
+    <p class="node-note">{% if upstream_url %}This {{ upstream_name }} source is not installed on this server.
+      Read it using the pinned source link above.{% else %}This source file is missing from the repository.{% endif %}
+    </p>
     {% endif %}
   </section>
   {% endif %}

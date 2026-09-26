@@ -11,7 +11,7 @@ foundation library or obtaining per-lemma exceptions.
 The active [corpus](../corpus/README.md) starts with **Sets and maps: a first guide**,
 whose mathematical blocks now have reviewed formal bindings and checked proofs, including examples
 and question answers. The notation-and-conventions block has nothing to formalize.
-All 121 nodes have accepted reviews and passing verification. The proof passes
+All 127 first-entry nodes have accepted reviews and passing verification. The proof passes
 preserved the reviewed target hashes and left no `sorry` placeholders in these
 modules. The two sumset notes and the unformalized
 Erdős–Szekeres note are preserved in `corpus/backup/`, outside the live reader. For standard-corpus construction, bind existing declarations when
@@ -163,7 +163,8 @@ commands with manual review; they are not all automated gates in the current app
 - Definitions and hypotheses on the page match the elaborated Lean types.
 - Human proof steps have corresponding formal steps and declared prerequisites.
 - Complete proofs have no direct or transitive `sorryAx` or disallowed axioms.
-  Pending helpers are reported separately and do not make a partial block complete.
+  Unfinished registered helpers have their own statuses; manually listing them as
+  prerequisites does not block a verified node. Actual use of `sorry` does.
 - The reviewed statement has the intended hypotheses, including boundary cases;
   compilation alone is not enough. Check for target-theorem shortcuts separately.
 - A changed human proof receives fresh correspondence review even if the Lean

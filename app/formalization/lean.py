@@ -2,13 +2,76 @@
 
 import os
 import re
+from functools import lru_cache
 from pathlib import Path, PurePosixPath
+from subprocess import SubprocessError, run as run_git
 
-from catalog.files import read_json
+from catalog.files import file_signature, read_json
 from catalog.sources import ContentError
 
 
 TOOLCHAIN_MODULES = ('Init', 'Lean', 'Std')
+REVIEW_MODULE = 'Lemmatheca.ReviewChecks'
+LIBRARY_INPUT = 'formal/.lake/packages'
+
+
+def library_packages(root):
+    directory = root / LIBRARY_INPUT
+    return sorted(path for path in directory.iterdir()
+                  if path.is_dir() and not path.name.startswith('.')) if directory.exists() else []
+
+
+def library_revisions(root):
+    """Treat installed Lake packages as immutable checkouts, without scanning sources."""
+    pins = {item['name']: item.get('rev') for item in
+            read_json(root / 'formal/lake-manifest.json')['packages']}
+    revisions = {}
+    for package in library_packages(root):
+        git = package / '.git'
+        if not git.exists():
+            # Source archives without Git metadata are trusted to match the lockfile.
+            revisions[package.name] = pins.get(package.name)
+            continue
+        revision = None
+        try:
+            # Lake normally uses detached HEADs; reading these avoids a subprocess
+            # per package. Git handles branches, packed refs, and linked worktrees.
+            head = (git / 'HEAD').read_text().strip() if git.is_dir() else ''
+            if re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', head):
+                revision = head
+            else:
+                result = run_git(['git', '--no-optional-locks', '-C', str(package),
+                                  'rev-parse', '--verify', 'HEAD'],
+                                 capture_output=True, text=True, check=True, timeout=5)
+                revision = result.stdout.strip()
+        except (OSError, SubprocessError):
+            # Unreadable revisions invalidate evidence and cannot be checked.
+            pass
+        revisions[package.name] = revision
+    return revisions
+
+
+def library_overrides(root):
+    """Local replacements of library modules still need source-content hashes."""
+    def lean_files(directory):
+        for base, directories, files in os.walk(directory):
+            directories[:] = sorted(
+                name for name in directories if not name.startswith('.'))
+            for name in files:
+                if name.endswith('.lean') or name in ('lakefile.toml', 'lake-manifest.json', 'lean-toolchain'):
+                    yield Path(base) / name
+
+    paths = set()
+    # Project modules keep their own, per-import-closure fingerprints.
+    formal = root / 'formal'
+    for directory in formal.iterdir() if formal.exists() else ():
+        if directory.is_dir() and not directory.name.startswith('.') and directory.name != 'Lemmatheca':
+            paths.update(lean_files(directory))
+    namespaces = {path.stem for package in library_packages(root) for path in package.iterdir()
+                  if not path.name.startswith('.') and (path.is_dir() or path.suffix == '.lean')}
+    paths.update(
+        formal / f'{name}.lean' for name in namespaces if (formal / f'{name}.lean').is_file())
+    return paths
 
 
 def pinned_lean_version(root):
@@ -50,7 +113,7 @@ def lean_source_path(source, repository_dir, *, require_file=True):
 
 
 def local_sources(root):
-    """Local modules whose changes invalidate formal evidence."""
+    """Local modules watched for changes by the reader's catalog cache."""
     paths = set((root / 'formal/Lemmatheca').rglob('*.lean'))
     if (root / 'formal/Lemmatheca.lean').exists():
         paths.add(root / 'formal/Lemmatheca.lean')
@@ -135,7 +198,7 @@ def source_context(source, root, declaration=None, *, checked_line=None):
         upstream = f'https://github.com/leanprover/lean4/blob/{version}/src/{source}'
         upstream_name = 'Lean'
     elif text is None:
-        raise ContentError('Local Lean source is missing')
+        upstream_name = 'local Lean'
     # Current checker evidence includes Lean's locations for anonymous instances
     # and other generated names that cannot be found by scanning source text.
     line = checked_line if type(
@@ -151,14 +214,45 @@ def source_context(source, root, declaration=None, *, checked_line=None):
             'upstream_url': upstream + f'#L{line}' if upstream and line else upstream}
 
 
-def verification_inputs(root, nodes):
-    """Fingerprint local sources and the source imports of all checked modules."""
+def source_roots(root):
+    return [root / 'formal', *sorted((root / 'formal/.lake/packages').glob('*'))]
+
+
+def module_source_path(module, root, *, roots=None, required=True):
+    if not re.fullmatch(r"[\w']+(?:\.[\w']+)*", module):
+        raise ContentError(f'Invalid imported Lean module: {module}')
+    relative = module.replace('.', '/') + '.lean'
+    path = next((base / relative for base in (roots if roots is not None else source_roots(root))
+                 if (base / relative).is_file()), None)
+    if path is None:
+        if required:
+            raise ContentError(f'Missing imported Lean source: {module}')
+        return None
+    if not path.resolve().is_relative_to((root / 'formal').resolve()):
+        raise ContentError('Imported Lean source is outside formal/')
+    return path
+
+
+@lru_cache(maxsize=8192)
+def _source_imports(path, signature):
+    imports = []
+    for match in re.finditer(r'^\s*(?:(?:public|private|meta)\s+)*import\s+([^\n]+)',
+                             code_only(path.read_text()), re.M):
+        names = match[1].split()
+        if names and names[0] == 'all':
+            names = names[1:]
+        if any(not re.fullmatch(r"[\w']+(?:\.[\w']+)*", name) for name in names):
+            raise ContentError(f'Cannot fingerprint imports in {path}')
+        imports.extend(names)
+    return tuple(imports)
+
+
+def verification_inputs(root, module):
+    """Local import closure and environment, with one shared library fingerprint."""
     from .nodes import ENVIRONMENT
-    paths = local_sources(root)
-    paths.update(root / 'formal' / name for name in ENVIRONMENT)
-    roots = [root / 'formal', *
-             sorted((root / 'formal/.lake/packages').glob('*'))]
-    modules = [node['module'] for node in nodes.values() if node['module']]
+    paths = {root / 'formal' / name for name in ENVIRONMENT}
+    roots = source_roots(root)
+    modules = [module, REVIEW_MODULE]
     visited = set()
     while modules:
         module = modules.pop()
@@ -167,20 +261,8 @@ def verification_inputs(root, nodes):
         visited.add(module)
         if module.split('.')[0] in TOOLCHAIN_MODULES:
             continue  # These ship with the pinned Lean toolchain.
-        relative = module.replace('.', '/') + '.lean'
-        path = next(
-            (base / relative for base in roots if (base / relative).is_file()), None)
-        if path is None:
-            raise ContentError(f'Missing imported Lean source: {module}')
-        if not path.resolve().is_relative_to((root / 'formal').resolve()):
-            raise ContentError('Imported Lean source is outside formal/')
-        paths.add(path)
-        code = code_only(path.read_text())
-        for match in re.finditer(r'^\s*(?:(?:public|private|meta)\s+)*import\s+([^\n]+)', code, re.M):
-            imports = match[1].split()
-            if imports and imports[0] == 'all':
-                imports = imports[1:]
-            if any(not re.fullmatch(r"[\w']+(?:\.[\w']+)*", item) for item in imports):
-                raise ContentError(f'Cannot fingerprint imports in {module}')
-            modules.extend(imports)
+        path = module_source_path(module, root, roots=roots)
+        paths.add(
+            root / LIBRARY_INPUT if path.is_relative_to(root / LIBRARY_INPUT) else path)
+        modules.extend(_source_imports(path, file_signature(path)))
     return paths

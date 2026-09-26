@@ -11,8 +11,9 @@ from catalog.files import file_signature, read_json
 from catalog.metadata import fields
 from catalog.sources import ContentError, IDENTIFIER
 
-from .lean import TOOLCHAIN_MODULES, lean_source_path, local_sources
-from .reviews import SHA256, review_target_hash, validate_review
+from .lean import (LIBRARY_INPUT, REVIEW_MODULE, TOOLCHAIN_MODULES, lean_source_path,
+                   library_overrides, library_revisions, local_sources, module_source_path, source_roots)
+from .reviews import SHA256, digest, review_target_hash, validate_review
 
 
 NODE_FIELDS = {'id', 'description', 'declaration',
@@ -22,7 +23,9 @@ VERIFICATION_FIELDS = {'id', 'declaration', 'module'}
 LEAN_NAME = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z", re.UNICODE)
 ALLOWED_AXIOMS = {'propext', 'Classical.choice', 'Quot.sound'}
 REPORT = 'formal/checks/nodes.json'
-REPORT_VERSION = 4
+REPORT_VERSION = 7
+# Storage-only report changes must not invalidate existing verification.
+VERIFICATION_POLICY_VERSION = 5
 ENVIRONMENT = ('lean-toolchain', 'lake-manifest.json', 'lakefile.toml')
 NODE_STATUS_LABELS = {
     'declaration_missing': 'Declaration missing',
@@ -32,6 +35,11 @@ NODE_STATUS_LABELS = {
     'proof_pending': 'Proof pending',
     'complete': 'Complete',
 }
+
+
+def verification_group(module):
+    """Library bindings share one audit; project modules remain independent."""
+    return 'Mathlib' if module and module.startswith('Mathlib.') else module
 
 
 def source_for_module(module, *, allow_toolchain=False):
@@ -56,15 +64,20 @@ def checked_source_location(node, checked, report):
             return node['source'], None
         # Imported sources need current fingerprints; bundled Lean sources are
         # covered by the pinned toolchain in the verification report.
-        if source.split('/')[0] in TOOLCHAIN_MODULES or source_input_key(source) in report.get('sha256', {}):
+        if (source.split('/')[0] in TOOLCHAIN_MODULES
+                or source_is_fingerprinted(source, report.get('sha256', {}))):
             return source, location['line']
     return node['source'], None
 
 
 def source_input_key(source):
     if source and source.startswith('Mathlib/'):
-        return 'formal/.lake/packages/mathlib/' + source
+        return LIBRARY_INPUT
     return source
+
+
+def source_is_fingerprinted(source, inputs):
+    return isinstance(inputs, dict) and source_input_key(source) in inputs
 
 
 def node_fingerprint(node):
@@ -83,44 +96,95 @@ def _file_hash(path, modified, changed, size):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def library_hash(root, *, required=False):
+    revisions = library_revisions(root)
+    if required and (not revisions or any(revision is None for revision in revisions.values())):
+        raise ContentError(
+            'Missing installed Lean libraries or unreadable package revisions')
+    overrides = {path.relative_to(root).as_posix(): file_hash(path)
+                 for path in library_overrides(root)}
+    return digest({'revisions': revisions, 'overrides': overrides}) if revisions or overrides else None
+
+
+def verification_input_hash(path, root):
+    if path != root / LIBRARY_INPUT:
+        return file_hash(path)
+    return library_hash(root, required=True)
+
+
 def report_input_path(root, relative):
     """Reports may fingerprint Lean sources and environment files, never arbitrary files."""
+    if not isinstance(relative, str):
+        raise ContentError('Invalid verification input path')
     parts = relative.split('/')
     if any(not part or part in ('.', '..') for part in parts) or '\\' in relative:
         raise ContentError('Invalid verification input path')
     path = root / relative
     formal = root / 'formal'
-    allowed = (relative in {f'formal/{name}' for name in ENVIRONMENT}
-               or (relative.startswith('formal/') and relative.endswith('.lean')))
+    allowed = (relative == LIBRARY_INPUT or relative in {f'formal/{name}' for name in ENVIRONMENT}
+               or (relative.startswith('formal/') and relative.endswith('.lean')
+                   and not any(part.startswith('.') for part in parts)))
     if not allowed or not path.resolve().is_relative_to(formal.resolve()):
         raise ContentError(
             'Verification input is outside the formal source tree')
     return path
 
 
-def report_is_current(report, root):
-    if report.get('format_version') != REPORT_VERSION or report.get('build') != 'passed':
+def verification_policy_hash():
+    return digest({'version': VERIFICATION_POLICY_VERSION, 'allowed_axioms': sorted(ALLOWED_AXIOMS)})
+
+
+def input_module(relative):
+    """Recover the module name from a recorded local Lean source path."""
+    return '.'.join(relative.split('/')[1:]).removesuffix('.lean')
+
+
+def module_is_current(record, root, module, *, input_cache=None):
+    if (not isinstance(record, dict) or record.get('status') != 'passed'
+            or record.get('policy_sha256') != verification_policy_hash()
+            or not isinstance(record.get('checked_on'), str) or not record['checked_on']):
         return False
-    hashes = report.get('sha256')
-    if not isinstance(hashes, dict) or not {f'formal/{name}' for name in ENVIRONMENT} <= hashes.keys():
+    hashes = record.get('sha256')
+    required = {f'formal/{name}' for name in ENVIRONMENT}
+    module_input = (LIBRARY_INPUT if module == 'Mathlib'
+                    else source_input_key(source_for_module(module)))
+    required.update((module_input,
+                     source_for_module(REVIEW_MODULE)))
+    if not isinstance(hashes, dict) or not required <= hashes.keys():
         return False
-    # Changing any local source invalidates the run, including adding a new module.
-    local = {path.relative_to(root).as_posix() for path in local_sources(root)}
-    if local != {name for name in hashes if name.startswith('formal/Lemmatheca/')
-                 or name == 'formal/Lemmatheca.lean'}:
-        return False
-    for relative, expected in hashes.items():
+    cache = input_cache if input_cache is not None else {}
+    roots = source_roots(root)
+
+    def matches(relative, expected):
         path = report_input_path(root, relative)
-        # A web-only deployment may omit Lake's pinned dependency checkout.
-        if not path.exists() and relative.startswith('formal/.lake/packages/'):
-            continue
-        if not path.is_file() or file_hash(path) != expected:
+        if relative == LIBRARY_INPUT:
+            # With no dependency checkout, serve pinned, committed evidence.
+            actual = library_hash(root)
+            return actual is None or actual == expected
+        if relative.endswith('.lean'):
+            resolved = module_source_path(input_module(
+                relative), root, roots=roots, required=False)
+            if resolved is not None and resolved != path:
+                # A new source shadows the previously resolved module.
+                return False
+        return path.is_file() and file_hash(path) == expected
+
+    for relative, expected in hashes.items():
+        if not isinstance(expected, str) or not SHA256.fullmatch(expected):
+            return False
+        key = (relative, expected)
+        if key not in cache:
+            try:
+                cache[key] = matches(relative, expected)
+            except ContentError:
+                cache[key] = False
+        if not cache[key]:
             return False
     return True
 
 
 def current_node_evidence(node, checked, inputs):
-    """Ignore incomplete, stale, or inconsistent evidence for a declaration."""
+    """Validate a node snapshot; source freshness is checked at module level."""
     if not isinstance(checked, dict) or checked.get('fingerprint') != node_fingerprint(node):
         return {}
     declaration_hash = checked.get('declaration_sha256')
@@ -129,7 +193,7 @@ def current_node_evidence(node, checked, inputs):
             or not isinstance(axioms, list) or any(not isinstance(axiom, str) for axiom in axioms)
             or set(axioms) - ALLOWED_AXIOMS - {'sorryAx'}
             or checked.get('status') != ('pending' if 'sorryAx' in axioms else 'complete')
-            or source_input_key(node['source']) not in inputs):
+            or not source_is_fingerprinted(node['source'], inputs)):
         return {}
     return checked
 
@@ -176,8 +240,8 @@ def load_nodes(root, *, check_reports=True):
             if not isinstance(declaration, str) or not LEAN_NAME.fullmatch(declaration):
                 raise ContentError('Invalid Lean declaration name')
             source = source_for_module(module)
-            lean_source_path(
-                source, root, require_file=not module.startswith('Mathlib.'))
+            # A missing module makes its evidence stale, not the whole registry invalid.
+            lean_source_path(source, root, require_file=False)
         if node['review'] is not None and declaration is None:
             raise ContentError(
                 'A node without a declaration cannot be reviewed')
@@ -186,8 +250,13 @@ def load_nodes(root, *, check_reports=True):
     report_path = root / REPORT
     report = read_json(
         report_path) if check_reports and nodes and report_path.exists() else {}
-    current = bool(report) and report_is_current(report, root)
-    evidence = report.get('nodes', {}) if current else {}
+    supported = report.get('format_version') == REPORT_VERSION
+    evidence = report.get('nodes', {}) if supported else {}
+    modules = report.get('modules', {}) if supported else {}
+    input_cache = {}
+    current_modules = {module: modules[module] for module in {verification_group(node['module']) for node in nodes.values()}
+                       if module in modules and module_is_current(modules[module], root, module,
+                                                                  input_cache=input_cache)}
     # Validate the proof plan's references and acyclicity, independently of status.
     visiting, visited = set(), set()
 
@@ -202,25 +271,35 @@ def load_nodes(root, *, check_reports=True):
         node = nodes[node_id]
         for dependency in node['dependencies']:
             resolve(dependency)
-        checked = current_node_evidence(
-            node, evidence.get(node_id), report.get('sha256', {}))
-        # Combine current prose with checked semantics so description edits take
-        # effect immediately, without rerunning Lean or rewriting its report.
-        target_hash = (review_target_hash(node, checked['declaration_sha256'])
-                       if checked else None)
+        group = verification_group(node['module'])
+        module_report = modules.get(group, {})
+        last_checked = current_node_evidence(
+            node, evidence.get(node_id), module_report.get('sha256', {})
+        ) if module_report.get('status') == 'passed' else {}
+        # A stale source does not retract a recorded approval. Compare current
+        # prose with the last checked semantics for the historical review label,
+        # but expose a current target only after the module has been rechecked.
+        last_target = (review_target_hash(node, last_checked['declaration_sha256'])
+                       if last_checked else None)
+        review_matches_last_check = bool(last_checked and node['review'] is not None
+                                         and node['review']['sha256'] == last_target)
+        checked = last_checked if group in current_modules else {}
+        target_hash = last_target if checked else None
         status = node_status(node, checked, target_hash)
         signature = checked.get('signature')
-        source, line = (checked_source_location(node, checked, report)
+        source, line = (checked_source_location(node, checked, module_report)
                         if checked else (node['source'], None))
         node.update(source=source, status=status, status_label=NODE_STATUS_LABELS[status],
                     signature=signature if isinstance(
                         signature, str) else None,
                     target_sha256=target_hash,
-                    review_current=bool(checked and node['review'] is not None
-                                        and node['review']['sha256'] == target_hash),
-                    verification_complete=bool(checked and checked['status'] == 'complete'),
+                    review_matches_last_check=review_matches_last_check,
+                    review_current=bool(checked and review_matches_last_check),
+                    verification_complete=bool(
+                        checked and checked['status'] == 'complete'),
                     declaration_line=line,
-                    checked_on=report.get('checked_on') if checked else None,
+                    checked_on=module_report.get(
+                        'checked_on') if checked else None,
                     url=reverse('formalization:node', args=[node_id]))
         visiting.remove(node_id)
         visited.add(node_id)
@@ -238,10 +317,26 @@ def formal_signature(root):
     paths.update(root / 'formal' / name for name in ENVIRONMENT)
     report = root / REPORT
     paths.add(report)
+    library_signature = ()
     if report.exists():
-        paths.update(report_input_path(root, name)
-                     for name in read_json(report).get('sha256', {}))
-    return tuple(file_signature(path) for path in sorted(paths))
+        saved = read_json(report)
+        records = saved.get('modules', {}).values() if saved.get(
+            'format_version') == REPORT_VERSION else ()
+        inputs = {name for record in records if isinstance(record.get('sha256'), dict)
+                  for name in record['sha256']}
+        roots = source_roots(root)
+        for name in inputs:
+            try:
+                paths.add(report_input_path(root, name))
+            except ContentError:
+                # Invalid evidence is stale; its report is still watched.
+                continue
+            if name == LIBRARY_INPUT:
+                library_signature = ((LIBRARY_INPUT, library_hash(root)),)
+            if name.endswith('.lean'):
+                relative = input_module(name).replace('.', '/') + '.lean'
+                paths.update(base / relative for base in roots)
+    return tuple(file_signature(path) for path in sorted(paths)) + library_signature
 
 
 def progress(ids, nodes, *, unplanned=0, applicable=True):

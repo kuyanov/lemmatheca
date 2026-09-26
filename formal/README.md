@@ -189,6 +189,12 @@ review outdated after rechecking. A proof-only edit requires fresh verification 
 keeps an unchanged statement's approval. Hashes compare structural declarations,
 not arbitrary mathematical equivalence.
 
+While verification is stale, the node page retains the review date when it matches
+the current description and last checked declaration, alongside **Not verified**.
+Proof edits alone can make verification stale without changing the statement or
+its correspondence approval. Current review targets and node completion still
+require fresh evidence.
+
 Environment pins remain part of verification fingerprints. Changing the Lean or
 mathlib environment requires fresh checks and declaration hashes. If the reviewed
 target is unchanged, approval is retained without reacceptance; if an upgraded
@@ -204,8 +210,14 @@ Review hash version 3 excludes node IDs. Current version-2 approvals were conver
 by matching their full old hashes against checked targets, preserving timestamps
 and leaving other records untouched. Approvals predating descriptions still need
 explicit renewal; verification never accepts or migrates reviews automatically.
-Report format 4 stores declaration hashes
-separately and combines them with current descriptions when loading nodes. See the
+Report format 7 stores path-to-hash maps directly in each verification record.
+Project modules have separate records; all direct Mathlib bindings share one
+`Mathlib` record. Each record includes the combined mathlib/Lake-library fingerprint
+when needed and keeps its own check date. Node records retain declaration hashes,
+axiom results, and exact source locations. Partial checks preserve other groups'
+snapshots. Regenerate older formats with `check_formalizations`; approvals are
+retained when targets are unchanged. The reader combines declaration
+hashes with current descriptions when loading nodes. See the
 [review architecture](../docs/verification-and-review.md) for details and limitations.
 
 To withdraw approval, use the same selectors with `--retract`:
@@ -249,10 +261,38 @@ From the repository root:
 uv run python app/manage.py check_formalizations
 ```
 
-The command builds registered modules, checks declarations and transitive axioms,
+The command reuses current verification records and builds stale project modules
+and the shared Mathlib group. It checks declarations and transitive axioms,
 exports review snapshots through `Lemmatheca.ReviewChecks`, and writes
 `checks/nodes.json` with semantic declaration hashes and source locations. Only `propext`, `Classical.choice`, and `Quot.sound`
 are allowed in complete proofs; `sorryAx` remains unfinished.
+
+Each module fingerprints its local source import closure, the exporter, pinned
+environment, and verification policy. One combined revision hash covers installed
+mathlib and companion packages, including Aesop. These packages are assumed immutable;
+freshness checks read Git revisions without hashing their sources or detecting local
+library edits. Fresh verification still traverses source imports and invokes Lake/Lean.
+Source archives without Git metadata are trusted to match the manifest.
+Changes to installed package revisions or project environment pins invalidate checks
+using the snapshot. Local replacements of library modules remain content-hashed. A local
+project edit invalidates that module and its transitive importers; unrelated modules
+keep their evidence and dates. A failed
+check does not discard successful checks for other modules, but the command exits
+with an error. Missing local modules invalidate affected evidence without blocking
+unrelated nodes in the reader.
+
+To select registered import modules or deliberately rerun current checks:
+
+```sh
+uv run python app/manage.py check_formalizations --module Lemmatheca.Entry.SetsAndMaps
+uv run python app/manage.py check_formalizations --module Mathlib
+uv run python app/manage.py check_formalizations --force
+```
+
+`--module` accepts multiple module names and can be combined with `--force`.
+Selecting any registered `Mathlib.*` import selects the whole Mathlib audit.
+Every binding is still checked through its own declared import module. A failed
+library audit invalidates that group's evidence without discarding local checks.
 
 The registry determines which declarations receive an axiom audit. `lake build`
 compiles the library; `check_formalizations` records the evidence used by the reader.

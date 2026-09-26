@@ -11,23 +11,26 @@ import tempfile
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from catalog.files import staged_json
-from formalization.lean import verification_inputs
+from catalog.files import file_signature, read_json, staged_json
+from formalization.lean import REVIEW_MODULE, verification_inputs
 from formalization.nodes import (
-    ALLOWED_AXIOMS, REPORT, REPORT_VERSION, file_hash, load_nodes, node_fingerprint,
+    ALLOWED_AXIOMS, REPORT, REPORT_VERSION, current_node_evidence,
+    load_nodes, module_is_current, node_fingerprint, verification_policy_hash,
+    verification_group, verification_input_hash,
 )
 from formalization.reviews import declaration_hashes
 
 
-def input_hashes(root, nodes):
-    return {path.relative_to(root).as_posix(): file_hash(path)
-            for path in sorted(verification_inputs(root, nodes))}
+def input_hashes(root, modules):
+    paths = {path for module in modules for path in verification_inputs(root, module)}
+    return {path.relative_to(root).as_posix(): verification_input_hash(path, root)
+            for path in sorted(paths)}
 
 
-def check_source(modules, names):
+def check_source(module, names):
     return '\n'.join([
-        *(f'import {module}' for module in modules),
-        'import Lemmatheca.ReviewChecks',
+        f'import {module}',
+        f'import {REVIEW_MODULE}',
         'set_option maxRecDepth 10000',
         'set_option maxHeartbeats 0',
         *(f'#print axioms {name}' for name in names),
@@ -76,26 +79,47 @@ def parse_checks(output, names):
 
 
 class Command(BaseCommand):
-    help = 'Check node declarations and transitive axioms; record complete and pending proofs.'
+    help = 'Refresh stale project modules and the shared Mathlib audit; check each declaration and its axioms.'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--module', nargs='+', metavar='MODULE',
+                            help='Select project modules or Mathlib (any registered Mathlib module selects the shared audit).')
+        parser.add_argument('--force', action='store_true',
+                            help='Recheck selected modules even when their evidence is current.')
 
     def handle(self, **options):
         try:
-            self.verify_nodes(settings.REPOSITORY_DIR)
+            self.verify_nodes(settings.REPOSITORY_DIR, options['module'], force=options['force'])
         except (ValueError, OSError) as error:
             raise CommandError(str(error)) from error
 
-    def verify_nodes(self, root):
+    def verify_nodes(self, root, selected=None, *, force=False):
         nodes = load_nodes(root, check_reports=False)
         bound = {key: node for key,
                  node in nodes.items() if node['declaration']}
+        groups = {}
+        for key, node in bound.items():
+            groups.setdefault(verification_group(node['module']), {})[key] = node
+        selectors = set(selected) if selected is not None else set(groups)
+        unknown = selectors - (groups.keys() | {node['module'] for node in bound.values()})
+        if unknown:
+            raise CommandError('Unknown registered modules: ' + ', '.join(sorted(unknown)))
+        selected = sorted({verification_group(module) for module in selectors})
         if not bound:
             self.stdout.write('No formal node declarations to check.')
             return
-        before = input_hashes(root, bound)
-        fingerprints = {key: node_fingerprint(
-            node) for key, node in nodes.items()}
-        modules = sorted({node['module'] for node in bound.values()})
-        names = sorted({node['declaration'] for node in bound.values()})
+        destination = root / REPORT
+        report_signature = file_signature(destination)
+        previous = read_json(destination) if destination.exists() else {}
+        supported = previous.get('format_version') == REPORT_VERSION
+        report = {
+            'format_version': REPORT_VERSION,
+            'command': 'python app/manage.py check_formalizations',
+            'modules': {module: record for module, record in previous.get('modules', {}).items()
+                        if supported and module in groups},
+            'nodes': {key: record for key, record in previous.get('nodes', {}).items()
+                      if supported and key in bound},
+        }
         formal_dir = root / 'formal'
         lake = shutil.which('lake') or str(Path.home() / '.elan/bin/lake')
 
@@ -109,43 +133,69 @@ class Command(BaseCommand):
                 raise CommandError(result.stdout + result.stderr)
             return result.stdout + result.stderr
 
-        self.stdout.write('Building the pinned Lean modules…')
-        run(['build', *modules, 'Lemmatheca.ReviewChecks'])
-        with tempfile.NamedTemporaryFile('w', suffix='.lean', prefix='NodeCheck', dir=formal_dir) as check:
-            check.write(check_source(modules, names))
-            check.flush()
-            output = run(['env', 'lean', check.name])
-        declarations, target_hashes = parse_checks(output, names)
-
-        after_nodes = load_nodes(root, check_reports=False)
-        if (before != input_hashes(root, bound)
-                or fingerprints != {key: node_fingerprint(node) for key, node in after_nodes.items()}):
-            raise CommandError(
-                'Formal inputs changed during verification; rerun the check.')
-
-        report = {
-            'format_version': REPORT_VERSION,
-            'build': 'passed',
-            'checked_on': datetime.now(timezone.utc).isoformat(),
-            'command': 'python app/manage.py check_formalizations',
-            'nodes': {
-                key: {
-                    'fingerprint': fingerprints[key],
-                    **declarations[node['declaration']],
-                    'declaration_sha256': target_hashes[node['declaration']],
+        checked, reused, failures = [], [], {}
+        input_cache = {}
+        for module in selected:
+            group = groups[module]
+            record = report['modules'].get(module)
+            if (not force and module_is_current(record, root, module, input_cache=input_cache)
+                    and all(current_node_evidence(node, report['nodes'].get(key), record['sha256'])
+                            for key, node in group.items())):
+                reused.append(module)
+                continue
+            self.stdout.write(f'Checking {module} ({len(group)} node(s))…')
+            before = {}
+            try:
+                imports = sorted({node['module'] for node in group.values()})
+                before = input_hashes(root, imports)
+                fingerprints = {key: node_fingerprint(node) for key, node in group.items()}
+                run(['build', *imports, REVIEW_MODULE])
+                evidence = {}
+                # Audit each declared import separately: importing every Mathlib
+                # module together could conceal a binding to the wrong module.
+                for imported in imports:
+                    imported_nodes = {key: node for key, node in group.items() if node['module'] == imported}
+                    names = sorted({node['declaration'] for node in imported_nodes.values()})
+                    with tempfile.NamedTemporaryFile('w', suffix='.lean', prefix='NodeCheck', dir=formal_dir) as check:
+                        check.write(check_source(imported, names))
+                        check.flush()
+                        output = run(['env', 'lean', check.name])
+                    declarations, target_hashes = parse_checks(output, names)
+                    evidence.update({key: {
+                        'fingerprint': fingerprints[key], **declarations[node['declaration']],
+                        'declaration_sha256': target_hashes[node['declaration']],
+                    } for key, node in imported_nodes.items()})
+                after = load_nodes(root, check_reports=False)
+                if (before != input_hashes(root, imports)
+                        or fingerprints != {key: node_fingerprint(node) for key, node in after.items()
+                                            if verification_group(node['module']) == module}):
+                    raise CommandError('Formal inputs changed during verification; rerun the check.')
+                report['modules'][module] = {
+                    'status': 'passed', 'checked_on': datetime.now(timezone.utc).isoformat(),
+                    'policy_sha256': verification_policy_hash(), 'sha256': before,
                 }
-                for key, node in bound.items()
-            },
-            'sha256': before,
-            'notes': ['Statement review and correspondence with the human text remain human decisions.',
-                      'sorryAx, including transitive use, always means pending.',
-                      'Declared node dependencies are checked separately from Lean axiom dependencies.'],
-        }
-        destination = root / REPORT
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        with staged_json(destination, report) as temporary:
-            temporary.replace(destination)
+                report['nodes'].update(evidence)
+                checked.append(module)
+            except (CommandError, ValueError, OSError) as error:
+                failures[module] = str(error)
+                report['modules'][module] = {
+                    'status': 'failed', 'checked_on': datetime.now(timezone.utc).isoformat(),
+                    'policy_sha256': verification_policy_hash(), 'sha256': before, 'error': str(error),
+                }
+                for key in group:
+                    report['nodes'].pop(key, None)
+
+        if file_signature(destination) != report_signature:
+            raise CommandError('Verification report changed during checking; rerun the check.')
+        if report != previous:
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            with staged_json(destination, report) as temporary:
+                temporary.replace(destination)
         ready = sum(node['status'] ==
                     'complete' for node in load_nodes(root).values())
-        self.stdout.write(self.style.SUCCESS(
-            f'Checked {len(bound)} node declarations: {ready} ready, {len(nodes) - ready} pending.'))
+        style = self.style.ERROR if failures else self.style.SUCCESS
+        self.stdout.write(style(
+            f'Checked {len(checked)} verification group(s); reused {len(reused)}; failed {len(failures)}. '
+            f'{ready} nodes ready, {len(nodes) - ready} pending.'))
+        if failures:
+            raise CommandError('\n\n'.join(f'{module}: {error}' for module, error in failures.items()))

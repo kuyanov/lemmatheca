@@ -20,8 +20,8 @@ with
 `uv run python app/manage.py review --accept --node <id>` or
 `uv run python app/manage.py review --accept --entry <id>`.
 Add `--dry-run` to preview node-record changes. The command refreshes Lean checks
-when necessary and stores hashes of the reviewed targets; it does not complete
-unfinished proofs or publish the entry.
+for the selected nodes' modules when necessary and stores hashes of the reviewed
+targets; it does not complete unfinished proofs or publish the entry.
 Whole-entry acceptance records the linked nodes' approvals; entry text and mapping
 coverage still need separate Git review.
 Replace `--accept` with `--retract` to clear existing approvals. Retraction supports
@@ -29,7 +29,17 @@ the same selectors and `--dry-run`, preserves verification evidence, and never r
 
 Tests use small isolated fixtures and one smoke test of the current corpus.
 Lean command tests mock Lean output; run `check_formalizations` to check
-actual proofs.
+actual proofs in stale modules, or add `--force` to recheck every registered module.
+Module evidence includes transitive local source imports and a shared revision hash
+for installed mathlib/Lake packages. Those packages are assumed immutable, so
+freshness checks read revisions without hashing their sources. Rechecking a stale
+module still traverses its imports, builds it, and runs Lean declaration probes.
+Unrelated modules retain their evidence and
+check dates after local edits or failures elsewhere; environment-pin and installed
+package-revision changes invalidate checks using that environment.
+The report uses direct path-to-hash maps, with separate project-module records and
+one Mathlib audit record. `--module Mathlib` selects that audit; every direct library
+binding is still checked through its specified import.
 
 Open <http://127.0.0.1:8000/>. For another device on your local network, set
 `DJANGO_ALLOWED_HOSTS` to include the host address and run the development server
@@ -77,8 +87,11 @@ The evidence panel uses two states per item: green **Reviewed on …** or amber
 **Under review** for declaration approval, and green **Verified on …** or amber
 **Not verified** for Lean verification. Verification requires valid evidence of a
 complete proof, independently of review approval; merely running a check does not
-mark a proof with `sorry` as verified. Expired evidence returns to the pending
-labels. The overall node badge and API status still identify the specific next step.
+mark a proof with `sorry` as verified. Stale evidence shows **Not verified**, while
+an approval matching the last checked statement retains **Reviewed on …**.
+This historical comparison does not make the API's
+`review_current` true or expose a current target hash. The overall node badge and
+API status still identify the specific next step.
 
 Description edits invalidate correspondence approval immediately while retaining
 Lean evidence. Manual proof-dependency edits retain both, and a listed prerequisite's

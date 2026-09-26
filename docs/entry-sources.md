@@ -228,8 +228,9 @@ a return to the referring block and reopen question answers when appropriate.
 
 Source is displayed on the node page; there is no separate file viewer.
 A file alone has no verification status. Missing pinned mathlib sources
-have a GitHub fallback when registered by a node; local Lemmatheca sources must
-exist. No Lean process runs while serving a page.
+have a GitHub fallback when registered by a node. Missing local sources invalidate
+affected module evidence and show a missing-source message. No Lean process runs
+while serving a page.
 
 ```sh
 uv run python app/manage.py check_formalizations
@@ -237,10 +238,16 @@ uv run python app/manage.py validate_corpus
 uv run python app/manage.py test catalog
 ```
 
-The checker reads nodes independently of entries, builds their modules, checks
-declarations and transitive axioms, and writes `formal/checks/nodes.json`.
+The checker reads nodes independently of entries, reuses current module records,
+builds stale modules, checks declarations and transitive axioms, and writes
+`formal/checks/nodes.json`. Evidence covers each module's transitive local imports
+and a shared mathlib/Lake-package revision fingerprint. Installed packages are assumed
+immutable; changing their revision or the environment pins invalidates checks using
+that environment. Unrelated local edits leave it intact. Failed modules do not discard other successful
+checks, though the command exits with an error.
 A declaration using `sorry`, including through another theorem, remains pending.
-An empty registry skips Lean; the current registry checks nodes across both entries. See
+An empty registry skips Lean; the current registry covers the two formalized entries.
+Ordered sets awaits formal bindings. See
 [verification and review](verification-and-review.md) for evidence and limitations.
 
 The corpus contains trusted repository-owned HTML, parsed as content rather than

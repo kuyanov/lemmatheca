@@ -70,7 +70,9 @@ class Command(BaseCommand):
             originals = {key: path.read_bytes() for key, path in paths.items()}
             if accepting and any(nodes[key]['target_sha256'] is None for key in selected):
                 self.stdout.write('Refreshing Lean verification and review target hashes…')
-                call_command('check_formalizations', stdout=self.stdout, stderr=self.stderr)
+                call_command('check_formalizations',
+                             module=sorted({nodes[key]['module'] for key in selected}),
+                             stdout=self.stdout, stderr=self.stderr)
 
             signature = formal_signature(root)
             nodes = load_nodes(root)

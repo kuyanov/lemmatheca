@@ -55,6 +55,16 @@ updated. This is a structural hash, not a test of mathematical equivalence.
 Proving agents must preserve approved targets rather than reaccepting their own
 changes.
 
+Stale verification does not retract a recorded review. When the approval matches
+the current description and the last checked declaration, the node page retains
+**Reviewed on …**, alongside **Not verified**. A stale check does not imply that
+the statement changed: proof edits alone also require fresh verification.
+The API's `review_matches_last_check` exposes this historical comparison;
+`review_current` remains false and `target_sha256` remains unavailable until a fresh
+check. Historical approval cannot complete a node or be used to accept a new target.
+Description and binding edits still stop matching immediately; a changed statement
+or referenced definition is detected when Lean exports the new semantic hash.
+
 | Change | Correspondence approval | Lean evidence |
 | --- | --- | --- |
 | Node description, even a wording edit | Needs renewed approval immediately | Retained |
@@ -91,16 +101,25 @@ Run `uv run python app/manage.py check_formalizations`. The command:
 
 1. Loads the formal node registry independently of the human corpus and validates
    IDs, module paths, dependency targets, and acyclicity.
-2. Fingerprints node ID, declaration, and import module, local Lemmatheca
-   sources, imported dependency sources, and the pinned environment, then runs
-   `lake build` for registered modules.
-3. Imports these modules and runs `#print axioms` for each registered declaration.
+2. Groups project nodes by their import module and all direct Mathlib bindings
+   under one `Mathlib` audit. Each group records its transitive local
+   source imports, the `Lemmatheca.ReviewChecks` exporter, pinned environment, and
+   verification policy. Mathlib and the other Lake packages share one installed-revision
+   fingerprint. Node fingerprints cover ID, declaration, and import module.
+   Groups with current evidence for all their nodes are reused, preserving check dates.
+   Reused groups need no import traversal or Lean process. For a stale group, the
+   import walker still reads transitive library imports to collect local inputs;
+   installed library files are represented by the shared revision fingerprint.
+3. Runs `lake build` for each stale group's import modules and the exporter, then
+   checks each declared import separately with `#print axioms` for its registered
+   declarations. The shared Mathlib record does not permit a binding to rely on
+   imports from another binding's module.
 4. Allows `propext`, `Classical.choice`, and `Quot.sound` for complete proofs.
-   Direct or transitive `sorryAx` means pending; other axioms fail the run.
+   Direct or transitive `sorryAx` means pending; other axioms fail that group's check.
 5. Exports structural review snapshots independently of theorem proof terms,
    hashes each target's reachable declarations, and rejects
    missing snapshot data rather than accepting an incomplete hash.
-6. Rejects inputs changed during the run and atomically writes
+6. Rejects inputs or group membership changed during that group's check and atomically writes
    `formal/checks/nodes.json`, recording evidence for complete and pending proofs,
    semantic declaration hashes, and Lean's declaration source locations when
    available. The reader uses these
@@ -109,6 +128,15 @@ Run `uv run python app/manage.py check_formalizations`. The command:
    must be fingerprinted; bundled Lean sources use the pinned toolchain version.
    This also supplies line links for anonymous instances without running Lean on page requests.
 
+Use `--module Lemmatheca.Entry.SetsAndMaps` to select registered import modules
+(multiple names are allowed), or `--force` to recheck even current modules. The
+flags can be combined. `--module Mathlib`, or any registered `Mathlib.*` module,
+selects the shared audit of all direct library bindings. Without selectors, every
+stale verification group is checked. A failed group loses its usable evidence,
+but successful and reused groups are
+saved; the command then exits with an error. Concurrent report writes are rejected
+instead of overwriting another check's results.
+
 With no node declarations, the command skips Lean. Axiom auditing is driven by
 the node registry; the old fixed list of sumset checks has been removed. Archived
 JSON bindings and `checks/sumsets.json` remain historical records outside this pipeline.
@@ -116,26 +144,62 @@ JSON bindings and `checks/sumsets.json` remain historical records outside this p
 The reader derives readiness from the node's current evidence and correspondence
 review. For a reviewed declaration, a missing or stale report yields
 `verification_needed`, never `complete` or a proof status from outdated evidence.
-Binding, source, or environment changes invalidate affected evidence; descriptions,
-manual proof dependencies, and review records do not. All local Lean sources are checked conservatively, so an unrelated
-local edit can invalidate several nodes. File hashes are cached by file metadata;
-page requests never run Lean.
+Binding changes invalidate the changed node's evidence. Local project source edits invalidate
+the module and its transitive importers, including other declarations in those
+modules; unrelated modules keep their evidence and dates. Adding or removing an
+unimported module has no effect. Environment, exporter, or verification-policy
+changes invalidate all affected module records. Descriptions, manual proof
+dependencies, and review records do not invalidate Lean evidence. File hashes are
+cached by file metadata; page requests never run Lean.
+
+Installed Lake packages are assumed immutable. The shared library fingerprint
+records package names and installed Git revisions, without scanning source trees,
+hashing library contents, or checking for uncommitted edits. Lake's usual detached
+HEADs are read directly; Git resolves branches, packed refs, and linked worktrees.
+Source archives without Git metadata are trusted to match their manifest pins.
+Changing a package revision, adding or removing a package, or changing the project's
+manifest, toolchain, or Lake configuration invalidates affected evidence. Local edits
+inside installed packages are deliberately outside this check; keep reusable local
+changes in project sources. Local replacements of external module namespaces are
+still content-hashed. Project files under `Lemmatheca/` retain per-module invalidation.
 
 A web-only deployment can omit Lake dependencies: the committed report and pinned
-environment are trusted when external files are absent; installed dependency
-sources are compared with their recorded hashes. Local Lean sources must exist.
+environment are trusted when the dependency checkout is absent. With installed
+packages, the revision fingerprint is compared; removal of some packages needs
+rechecking. Individual library-file edits or removals are not detected. An unreadable
+installed Git revision invalidates evidence and blocks fresh verification.
+Missing local sources invalidate
+their module and its importers without blocking unrelated nodes. A different file
+resolving to the same imported module name also invalidates affected evidence.
 The import scanner supports ordinary module imports and does not audit arbitrary
 metaprogram file access or custom build steps. The command operates on trusted
 repository content.
 
-`review --accept` refreshes verification if the selected targets have no current
-hashes. Both review actions validate every selected node before writing and check
+`review --accept` refreshes the selected nodes' modules if their targets have no
+current hashes. Unrelated failed modules do not block this refresh. Both review
+actions validate every selected node before writing and check
 for concurrent input changes. They stage records and replace each node file atomically. Existing
 approvals are never silently updated by `check_formalizations`.
 
-Report format 4 stores `declaration_sha256` instead of a precomputed review target;
-the API still exposes the dynamically computed `target_sha256`. Older reports need
-regeneration. Review hash version 3 excludes node IDs. At migration, current
+Report format 7 has a `modules` map containing each project import module and one
+`Mathlib` record for direct library bindings. Records contain `status`, `checked_on`,
+`policy_sha256`, and a direct `sha256` map from input path to fingerprint. The special
+`formal/.lake/packages` path represents the combined package revisions and local
+library overrides; ordinary file inputs use content hashes. Each
+record retains its own hashes, so refreshing one group cannot silently refresh
+another group's stale evidence. Failed records also contain an `error`.
+The report uses ordinary JSON, with no input table or numeric references.
+The reader ignores unsupported report formats, including the former indexed
+format, until the checker regenerates evidence. Individual installed-library file
+hashes are no longer report inputs.
+The `nodes` map retains each declaration's axiom results, signature, source location,
+and `declaration_sha256`. The API exposes the dynamically computed `target_sha256`
+and the verification group's check date. Node bindings and source locations retain
+their exact `Mathlib.*` module names. Older report formats need regeneration with
+`check_formalizations`. Verification-policy and report-format versions are separate;
+regenerating evidence does not accept reviews. Existing approvals are retained when
+their targets are unchanged.
+Review hash version 3 still excludes node IDs. At its migration, current
 version-2 approvals were converted only when their full hashes matched the current
 description and checked declaration; their timestamps were preserved. Outdated and
 unreviewed records were left untouched. Approvals from before descriptions entered

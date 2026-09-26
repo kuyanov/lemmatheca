@@ -17,8 +17,10 @@ from django.test import SimpleTestCase, override_settings
 from catalog.content import entries, load_catalog
 from catalog.sources import ContentError
 from catalog.testing import CorpusFixtureMixin
-from formalization.lean import pinned_lean_version, verification_inputs
-from formalization.nodes import ENVIRONMENT, REPORT, REPORT_VERSION, file_hash, load_nodes, node_fingerprint
+from formalization.lean import LIBRARY_INPUT, pinned_lean_version, verification_inputs
+from formalization.nodes import (ENVIRONMENT, REPORT, REPORT_VERSION, file_hash,
+                                load_nodes, node_fingerprint, verification_group,
+                                verification_input_hash, verification_policy_hash)
 from formalization.reviews import declaration_hashes, review_target_hash
 
 
@@ -48,6 +50,7 @@ class NodeFixtureMixin(CorpusFixtureMixin):
             shutil.copyfile(repository / 'formal' / name, self.formal / name)
         self.source = self.formal / 'Lemmatheca/Fixture.lean'
         self.source.parent.mkdir()
+        (self.source.parent / 'ReviewChecks.lean').write_text('import Lean\n')
         self.source.write_text('-- <script>alert("source")</script>\nnamespace Lemmatheca\n'
                                'theorem ready : True := by trivial\n'
                                'theorem unfinished : True := by sorry\n'
@@ -86,14 +89,20 @@ class NodeFixtureMixin(CorpusFixtureMixin):
 
     def write_report(self):
         nodes = load_nodes(self.root, check_reports=False)
-        paths = verification_inputs(self.root, nodes)
-        report = {'format_version': REPORT_VERSION, 'build': 'passed', 'checked_on': '2026-09-20T12:00:00+00:00',
-                  'sha256': {path.relative_to(self.root).as_posix(): file_hash(path) for path in paths},
+        groups = {verification_group(node['module']) for node in nodes.values() if node['module']}
+        report = {'format_version': REPORT_VERSION,
+                  'modules': {group: {
+                      'status': 'passed', 'checked_on': '2026-09-20T12:00:00+00:00',
+                      'policy_sha256': verification_policy_hash(),
+                      'sha256': {path.relative_to(self.root).as_posix(): verification_input_hash(path, self.root)
+                                 for node in nodes.values() if verification_group(node['module']) == group
+                                 for path in verification_inputs(self.root, node['module'])},
+                  } for group in groups},
                   'nodes': {key: {'fingerprint': node_fingerprint(node),
                                   'declaration_sha256': self.declaration_hash(node),
                                   'status': 'complete' if key == 'ready' else 'pending',
                                   'axioms': [] if key == 'ready' else ['sorryAx']}
-                            for key, node in nodes.items()}}
+                            for key, node in nodes.items() if node['declaration']}}
         path = self.root / REPORT
         path.parent.mkdir(exist_ok=True)
         path.write_text(json.dumps(report))
@@ -411,7 +420,8 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             self.assertContains(response, '/Mathlib/Test.lean#L1')
 
             # Stale evidence must not display a previously checked statement.
-            mathlib.write_text('-- changed\n' + original)
+            toolchain = self.formal / 'lean-toolchain'
+            toolchain.write_text(toolchain.read_text() + '\n')
             response = self.client.get('/formal/nodes/ready/')
             self.assertNotContains(response, signature)
             self.assertIsNone(response.context['node']['signature'])
@@ -499,13 +509,40 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
                 self.assertEqual(self.client.get(f'/api/formal/nodes/{node_id}/').json()[
                     'verification_complete'], verified)
 
-    def test_stale_evidence_hides_review_and_verification_dates(self):
-        self.source.write_text(self.source.read_text() + '\n-- Source changed after verification.\n')
-        response = self.client.get('/formal/nodes/ready/')
-        self.assertContains(response, 'Under review')
+    def test_proof_edit_keeps_last_review_visible_without_certifying_the_current_target(self):
+        approved = (self.node_dir / 'ready.json').read_bytes()
+        self.source.write_text(self.source.read_text().replace('by trivial', 'by sorry'))
+        with patch('subprocess.run') as lean:
+            response = self.client.get('/formal/nodes/ready/')
+            node = self.client.get('/api/formal/nodes/ready/').json()
+        lean.assert_not_called()
+        self.assertContains(response, 'Reviewed on <time')
+        self.assertNotContains(response, 'Under review')
         self.assertContains(response, 'Not verified')
-        self.assertNotContains(response, '<time')
-        self.assertFalse(response.context['node']['verification_complete'])
+        self.assertNotContains(response, 'Verified on')
+        self.assertTrue(node['review_matches_last_check'])
+        self.assertFalse(node['review_current'])
+        self.assertFalse(node['verification_complete'])
+        self.assertIsNone(node['target_sha256'])
+        self.assertIsNone(node['checked_on'])
+        self.assertIsNone(node['signature'])
+        self.assertEqual(node['status'], 'verification_needed')
+        self.assertEqual((self.node_dir / 'ready.json').read_bytes(), approved)
+
+    def test_stale_evidence_does_not_hide_description_binding_or_review_changes(self):
+        self.source.write_text(self.source.read_text() + '\n-- Stale verification.\n')
+        path = self.node_dir / 'ready.json'
+        original = json.loads(path.read_text())
+        for changes in ({'description': 'A stronger claim.'}, {'declaration': 'Lemmatheca.unfinished'},
+                        {'review': None}, {'review': {'sha256': 'a' * 64,
+                                                     'recorded_at': original['review']['recorded_at']}}):
+            with self.subTest(changes=changes):
+                path.write_text(json.dumps({**original, **changes}))
+                response = self.client.get('/formal/nodes/ready/')
+                self.assertContains(response, 'Under review')
+                self.assertNotContains(response, 'Reviewed on')
+                self.assertFalse(response.context['node']['review_matches_last_check'])
+                self.assertFalse(response.context['node']['review_current'])
 
     def test_forged_status_cycles_and_unknown_dependencies_are_rejected(self):
         for changes in ({'status': 'complete'}, {'review': True}, {'declaration': 'bad name'},
@@ -590,7 +627,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
                          'ready']['status'], 'complete')
         self.assertEqual(entries()['first']['formalization']['status'], 'complete')
 
-    def test_missing_mathlib_checkout_uses_pinned_source_and_installed_edits_invalidate(self):
+    def test_missing_mathlib_checkout_uses_pinned_source_and_archives_trust_the_pin(self):
         mathlib = self.formal / '.lake/packages/mathlib/Mathlib/Test.lean'
         mathlib.parent.mkdir(parents=True)
         mathlib.write_text(
@@ -603,7 +640,7 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         report['nodes']['ready']['location'] = {
             'module': 'Mathlib.Test', 'line': 2}
         path.write_text(json.dumps(report))
-        mathlib.unlink()
+        shutil.rmtree(self.formal / '.lake/packages')
         self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
         response = self.client.get('/formal/nodes/ready/')
         self.assertContains(response, 'This mathlib source is not installed')
@@ -616,9 +653,10 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             '<p class="lean-file-path">Source origin: <code>Mathlib/Test.lean</code> · line 2</p>',
             html=True)
         self.assertNotContains(response, 'href="#L2"')
-        mathlib.write_text('-- Changed\n')
+        mathlib.parent.mkdir(parents=True)
+        mathlib.write_text('-- Restored from a source archive\n')
         self.assertEqual(load_nodes(self.root)[
-                         'ready']['status'], 'verification_needed')
+                         'ready']['status'], 'complete')
 
     def test_imported_lean_declaration_uses_its_actual_source_and_pinned_fallback(self):
         mathlib = self.formal / '.lake/packages/mathlib/Mathlib/Test.lean'
@@ -670,7 +708,10 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
             self.assertEqual(load_nodes(self.root)[
                              'ready']['status'], 'complete')
 
-            mathlib.write_text('-- changed\n' + mathlib.read_text())
+            manifest_path = self.formal / 'lake-manifest.json'
+            manifest = json.loads(manifest_path.read_text())
+            next(item for item in manifest['packages'] if item['name'] == 'mathlib')['rev'] = 'b' * 40
+            manifest_path.write_text(json.dumps(manifest))
             node = self.client.get('/api/formal/nodes/ready/').json()
             self.assertEqual(node['status'], 'verification_needed')
             self.assertEqual(node['source'], 'Mathlib/Test.lean')
@@ -713,16 +754,17 @@ class NodeTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual(load_nodes(self.root)['ready']['status'], 'complete')
         report = json.loads((self.root / REPORT).read_text())
         self.assertIn(
-            'formal/.lake/packages/mathlib/Mathlib/B.lean', report['sha256'])
+            LIBRARY_INPUT,
+            report['modules']['Lemmatheca.Fixture']['sha256'])
         (external / 'B.lean').write_text('-- changed\n')
         self.assertEqual(load_nodes(self.root)[
-                         'ready']['status'], 'verification_needed')
+                         'ready']['status'], 'complete')
 
 
 class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
     def run_check(self, axiom='sorryAx', side_effect=None, *, include_signatures=True,
-                  ready_definition=None):
-        output = ("'Lemmatheca.ready' does not depend on any axioms\n"
+                  ready_definition=None, ready_axiom=''):
+        output = (f"'Lemmatheca.ready' depends on axioms: [{ready_axiom}]\n"
                   f"'Lemmatheca.unfinished' depends on axioms: [{axiom}]\n"
                   f"'Lemmatheca.dependent' depends on axioms: [{axiom}]\n"
                   'NODE_LOCATION Lemmatheca.ready Lemmatheca.Fixture 3\n')
@@ -748,7 +790,7 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
                 side_effect()
             return result
         with patch('catalog.management.commands.check_formalizations.subprocess.run', side_effect=execute):
-            call_command('check_formalizations', stdout=StringIO())
+            call_command('check_formalizations', force=True, stdout=StringIO())
 
     def test_node_id_rename_retains_review_after_verification_refresh(self):
         self.write_node('dependent', declaration='Lemmatheca.dependent', dependencies=['ready'])
@@ -797,12 +839,48 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual(load_nodes(self.root)[
                          'dependent']['status'], 'proof_pending')
 
-    def test_missing_signature_cannot_replace_verification_report(self):
+    def test_rechecking_sorry_keeps_approval_but_leaves_the_proof_pending(self):
+        before = load_nodes(self.root)['ready']
+        approved = (self.node_dir / 'ready.json').read_bytes()
+        self.source.write_text(self.source.read_text().replace('by trivial', 'by sorry'))
+        self.run_check(ready_axiom='sorryAx')
+        node = load_nodes(self.root)['ready']
+        self.assertEqual(node['target_sha256'], before['target_sha256'])
+        self.assertTrue(node['review_current'])
+        self.assertTrue(node['review_matches_last_check'])
+        self.assertFalse(node['verification_complete'])
+        self.assertEqual(node['status'], 'proof_pending')
+        self.assertEqual((self.node_dir / 'ready.json').read_bytes(), approved)
+        page = self.client.get('/formal/nodes/ready/')
+        self.assertContains(page, 'Reviewed on <time')
+        self.assertContains(page, 'Not verified')
+
+    def test_rechecking_changed_definition_requires_review_again(self):
+        self.run_check(ready_definition='True')
+        call_command('review', '--accept', node=['ready'], stdout=StringIO())
+        approved = (self.node_dir / 'ready.json').read_bytes()
+        self.source.write_text(self.source.read_text() + '\n-- Definition changed.\n')
+        stale = load_nodes(self.root)['ready']
+        self.assertTrue(stale['review_matches_last_check'])
+        self.assertFalse(stale['review_current'])
+        self.run_check(ready_definition='False')
+        node = load_nodes(self.root)['ready']
+        self.assertEqual(node['status'], 'review_outdated')
+        self.assertFalse(node['review_matches_last_check'])
+        self.assertFalse(node['review_current'])
+        page = self.client.get('/formal/nodes/ready/')
+        self.assertContains(page, 'Under review')
+        self.assertNotContains(page, 'Reviewed on')
+        self.assertEqual((self.node_dir / 'ready.json').read_bytes(), approved)
+
+    def test_missing_signature_invalidates_module_evidence(self):
         path = self.root / REPORT
-        original = path.read_bytes()
         with self.assertRaisesRegex(CommandError, 'No declaration signature'):
             self.run_check(include_signatures=False)
-        self.assertEqual(path.read_bytes(), original)
+        report = json.loads(path.read_text())
+        self.assertEqual(report['modules']['Lemmatheca.Fixture']['status'], 'failed')
+        self.assertNotIn('ready', report['nodes'])
+        self.assertEqual(load_nodes(self.root)['ready']['status'], 'verification_needed')
 
     def test_environment_changes_require_rechecking_but_preserve_unchanged_approval(self):
         for name in ENVIRONMENT:
@@ -824,7 +902,8 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
                 self.assertEqual(updated['target_sha256'], before['target_sha256'])
                 self.assertEqual((self.node_dir / 'ready.json').read_bytes(), approved)
                 report = json.loads((self.root / REPORT).read_text())
-                self.assertEqual(report['sha256'][f'formal/{name}'], file_hash(path))
+                self.assertEqual(report['modules']['Lemmatheca.Fixture']['sha256'][f'formal/{name}'],
+                                 file_hash(path))
 
     def test_environment_change_that_changes_a_referenced_definition_requires_review(self):
         self.run_check(ready_definition='True')
@@ -846,14 +925,14 @@ class FormalizationCommandTests(NodeFixtureMixin, SimpleTestCase):
         self.assertEqual((self.node_dir / 'ready.json').read_bytes(), approved)
 
     def test_custom_axiom_and_mid_run_source_changes_cannot_write_passing_report(self):
-        original = (self.root / REPORT).read_text()
         with self.assertRaisesRegex(CommandError, 'unapproved axioms'):
             self.run_check('untrustedAxiom')
-        self.assertEqual((self.root / REPORT).read_text(), original)
+        self.assertEqual(load_nodes(self.root)['ready']['status'], 'verification_needed')
         with self.assertRaisesRegex(CommandError, 'changed during verification'):
             self.run_check(side_effect=lambda: self.source.write_text(
                 self.source.read_text() + '\n'))
-        self.assertEqual((self.root / REPORT).read_text(), original)
+        report = json.loads((self.root / REPORT).read_text())
+        self.assertEqual(report['modules']['Lemmatheca.Fixture']['status'], 'failed')
         self.assertEqual(load_nodes(self.root)[
                          'ready']['status'], 'verification_needed')
 

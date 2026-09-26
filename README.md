@@ -83,6 +83,16 @@ environment pins do not enter the review hash. Node renames, source moves, and
 environment changes need a verification refresh; approval is retained if the
 description and declaration hash stay unchanged.
 
+Lean verification is tracked per import module and its transitive local source imports.
+Editing a proof invalidates its module and any importers; unrelated modules retain
+their evidence and check dates. The checker reuses current modules and saves
+successful checks even when another module fails.
+Mathlib and its companion Lake packages share one revision fingerprint. Installed
+libraries are treated as immutable; source trees are not scanned for local edits.
+Environment-pin or installed-revision changes invalidate checks using them. Direct Mathlib bindings share
+one verification record; local modules retain separate records. Each record stores
+its input hashes directly.
+
 | Folder | Purpose |
 | --- | --- |
 | [`corpus/`](corpus/README.md) | Entry sources, assets, taxonomy, and reading order |

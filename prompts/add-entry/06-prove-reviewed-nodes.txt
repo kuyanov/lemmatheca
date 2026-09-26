@@ -47,7 +47,12 @@ keep the pinned environment fixed.
 
 Run uv run python app/manage.py check_formalizations and
 uv run python app/manage.py validate_corpus after the proof changes. Run lake build
-from formal/ if aggregate imports or module organization changed. Verify that the
+from formal/ if aggregate imports or module organization changed. The checker
+refreshes stale modules and their affected importers, preserving unrelated evidence
+and dates. Use --module <module> for a targeted check, or --force for a deliberate
+recheck of current modules. Direct Mathlib bindings share one audit: --module Mathlib
+or a registered Mathlib.* module selects that whole group. A failure still saves independent successful checks;
+resolve every failure in scope before declaring the work complete. Verify that the
 completed nodes have no direct or transitive sorry and retain their accepted target
 hashes. Proof-only edits need fresh Lean evidence; they do not need reacceptance
 when the reviewed descriptions and semantic targets remain unchanged.

@@ -53,13 +53,13 @@ lemmatheca/
 │   ├── Lemmatheca.lean
 │   ├── Lemmatheca/
 │   │   ├── ReviewChecks.lean       # Review snapshots and declaration locations
-│   │   ├── SetTheory.lean          # Reusable set/map library
+│   │   ├── SetTheory.lean          # Imports the reusable set-theory modules
+│   │   ├── SetTheory/
+│   │   │   ├── Basic.lean
+│   │   │   └── EquivalenceRelations.lean
 │   │   ├── Entry/
-│   │   │   ├── SetsAndMaps.lean    # Imports this entry's examples
-│   │   │   └── SetsAndMaps/        # Namespace Lemmatheca.Entry.SetsAndMaps
-│   │   │       ├── SetsAndElements.lean
-│   │   │       ├── SetOperations.lean
-│   │   │       └── Maps.lean
+│   │   │   ├── SetsAndMaps.lean    # Namespace Lemmatheca.Entry.SetsAndMaps
+│   │   │   └── EquivalenceRelations.lean
 │   │   └── Combinatorics/Additive/
 │   │       ├── Sumsets.lean
 │   │       ├── FiniteSumsets.lean
@@ -102,9 +102,10 @@ snapshot. Source path validation and declaration locations live together in
 `formalization.lean`.
 
 The reader lists entries under `corpus/entries/`, including drafts. It currently
-contains **Sets and maps: a first guide** followed by **Equivalence relations,
-partitions, and quotients**, under **Logic and foundations → Set theory**. The
-second entry is a human draft with formalization not started.
+contains **Sets and maps: a first guide**, **Equivalence relations, partitions, and
+quotients**, and **Ordered sets: comparison, bounds, and quotients**, in that order
+under **Logic and foundations → Set theory**. The first two are fully formalized;
+ordered sets awaits formal bindings. All three have draft editorial status.
 `corpus/backup/` and `taxonomy_complete.json` are not live inputs;
 regression tests use temporary copies of archived human text with old JSON block
 metadata removed. Node tests use isolated fixtures. Primary areas determine listings
@@ -124,7 +125,7 @@ only in HTML. There are no JSON `blocks` or `references`. Git supplies history.
 | `/` | Top-level subject links and an example entry |
 | `/areas/<path>/` | Breadcrumbs, child subjects, entries in this primary area |
 | `/entries/<id>/` | Human note, contents, mathematical blocks, badges, source links |
-| `/formal/nodes/<id>/` | Node status, declaration, dependencies, and source with inferred line |
+| `/formal/nodes/<id>/` | Description, status, checked declaration, proof dependencies, and source with checked or inferred line |
 | `/api/formal/nodes/` | Read-only JSON node list |
 | `/api/formal/nodes/<id>/` | Read-only JSON node details |
 
@@ -160,14 +161,27 @@ the import module; current checked locations identify the actual defining module
 including sources bundled with the pinned Lean toolchain. The formal API and node pages use `app/formalization/`; the reader
 calls the same Python layer without making an HTTP request to itself.
 
-`check_formalizations` builds registered modules, checks declarations and their
-transitive axioms, and writes `formal/checks/nodes.json`. `sorryAx` means pending;
+`check_formalizations` reuses current modules and builds stale registered import
+modules independently, checks declarations and their transitive axioms, and writes
+`formal/checks/nodes.json`. Report format 7 stores direct input-path/hash maps,
+policy hashes, and check dates per project module, plus one `Mathlib` verification
+record for direct library bindings. Each binding is checked in its declared import
+module; axiom results remain per declaration. Mathlib and its companion Lake packages
+have one shared revision fingerprint. Installed packages are assumed immutable:
+freshness checks use their Git revisions instead of hashing library files.
+Fresh verification still traverses imports and invokes Lake/Lean for each selected group.
+Environment pins and package revisions invalidate groups using that snapshot;
+local library-module overrides remain content-hashed. Records preserve their own input hashes during partial rechecks. Local project edits
+invalidate a module and its transitive importers; unrelated modules keep their
+evidence. Failed checks are recorded alongside independent successes, with a
+nonzero command exit. `sorryAx` means pending;
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed for complete proofs.
 A ready node additionally needs current correspondence approval. The manually
 listed dependencies plan proof work; their statuses do not affect node completion.
-The reader checks current fingerprints without compiling. Node/source/environment
-changes invalidate Lean verification evidence, except for `description`, manual
-`dependencies`, and `review` records. Reports store semantic declaration hashes;
+The reader checks current fingerprints without compiling. Binding changes
+invalidate that node's evidence; source, environment, and policy changes invalidate
+affected module records. `description`, manual `dependencies`, and `review` changes
+preserve Lean evidence. Reports store semantic declaration hashes per node;
 the reader combines these with current node descriptions to compute review targets.
 Description edits invalidate approval immediately without discarding Lean evidence.
 Review hashes exclude node IDs, environment pins, import modules, manual dependencies, and theorem proofs;
@@ -214,7 +228,8 @@ inputs. Full proof-graph extraction and model runners remain future work. See
 
 Read-only deployments retain tracked `corpus/` and `formal/` files. The ignored
 mathlib checkout is optional: when a referenced file is missing, the viewer offers
-the exact pinned GitHub source. Missing local Lean sources still fail validation.
+the exact pinned GitHub source. Missing local Lean sources invalidate affected
+module evidence and show a missing-source message; unrelated nodes remain usable.
 
 ## Near-term additions
 

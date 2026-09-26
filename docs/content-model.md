@@ -82,7 +82,7 @@ upstream attribution. A maintainer decides what is included.
 
 The read-only formal API exposes `/api/formal/nodes/` and
 `/api/formal/nodes/<id>/`, including `description`, derived `status`, `status_label`, dependencies, source,
-node-page links, `target_sha256`, and `review_current`. It does not load the human
+node-page links, `target_sha256`, `review_current`, and `review_matches_last_check`. It does not load the human
 corpus. Node pages show the mathematical description, current checked signature, proof
 prerequisites, and escaped source with line links. Descriptions are included in
 correspondence review hashes but excluded from Lean evidence fingerprints. Human-corpus APIs,
@@ -90,10 +90,16 @@ search, write endpoints, and autonomous workers remain future work.
 
 `verification_complete` indicates valid Lean evidence with no direct or transitive
 `sorry`, independently of declaration review and the manually declared dependency
-statuses. `checked_on` records when a valid check ran, even if it found an unfinished
-proof. The node page uses `verification_complete` for **Verified on …** / **Not
-verified**, and `review_current` for **Reviewed on …** / **Under review**. The API
-and overall badge retain the detailed derived statuses.
+statuses. `checked_on` records when a valid check ran for the node's verification
+group (its project module or the shared Mathlib audit),
+even if it found an unfinished proof; checks of unrelated modules do not change
+this date. The node page uses `verification_complete` for **Verified on …** / **Not
+verified**, and `review_matches_last_check` for **Reviewed on …** / **Under review**.
+If evidence is stale and the description and binding still match the last checked
+target, its recorded review stays visible alongside **Not verified**.
+`review_current` requires fresh evidence, and `target_sha256` remains
+unavailable while stale; the historical comparison cannot certify current source
+or complete a node. The API and overall badge retain the detailed derived statuses.
 
 Agents can also read files directly. Formal dependencies are distinct from human
 citations: an explanatory link need not occur in a proof term, and a formal helper
