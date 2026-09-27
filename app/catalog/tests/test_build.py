@@ -23,26 +23,34 @@ class ProofResultsTests(SimpleTestCase):
         (self.root / "nodes").mkdir()
         self.path = self.root / "nodes/example.json"
         write_json(self.path, {"id": "example", "module": "Lemmatheca", "declaration": "example",
-                               "verified": True, "signature": "example : True"})
+                               "verified": True, "signature": "example : True", "declaration_line": 5})
 
-    def test_build_error_invalidates_previous_result(self):
-        with patch("catalog.proofs.subprocess.run", side_effect=subprocess.CalledProcessError(1, "lake")):
-            with self.assertRaises(subprocess.CalledProcessError):
-                build(self.root, self.root)
-        node = read_json(self.path)
-        self.assertFalse(node["verified"])
-        self.assertEqual(node["module"], "Lemmatheca")
-        self.assertNotIn("signature", node)
+    def test_build_or_check_error_and_interruption_write_nothing(self):
+        previous = self.path.read_bytes()
+        modified = self.path.stat().st_mtime_ns
+        for error in (subprocess.CalledProcessError(1, "lake"), KeyboardInterrupt()):
+            for first_result in ([], [subprocess.CompletedProcess([], 0)]):
+                with self.subTest(error=type(error), check=bool(first_result)):
+                    with patch("catalog.proofs.subprocess.run", side_effect=[*first_result, error]), \
+                            patch("catalog.proofs.save_results") as save:
+                        with self.assertRaises(type(error)):
+                            build(self.root, self.root)
+                        save.assert_not_called()
+                    self.assertEqual(self.path.read_bytes(), previous)
+                    self.assertEqual(self.path.stat().st_mtime_ns, modified)
 
-    def test_missing_or_malformed_result_invalidates_previous_result(self):
-        for output in ("", 'NODE_STATUS {"declaration":"example","verified":"true"}'):
+    def test_missing_or_malformed_result_writes_nothing(self):
+        previous = self.path.read_bytes()
+        for output in ("", 'NODE_STATUS {"declaration":"example","verified":"true"}',
+                       'NODE_STATUS {', 'NODE_STATUS {"declaration":"other","verified":true}',
+                       'NODE_STATUS {"declaration":"example","verified":true}\n' * 2):
             with self.subTest(output=output):
-                write_json(
-                    self.path, {**read_json(self.path), "verified": True})
-                with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
+                with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)), \
+                        patch("catalog.proofs.save_results") as save:
                     with self.assertRaises(ValueError):
                         build(self.root, self.root)
-                self.assertFalse(read_json(self.path)["verified"])
+                    save.assert_not_called()
+                self.assertEqual(self.path.read_bytes(), previous)
 
     def test_metadata_changes_during_build_are_preserved(self):
         def run(command, **kwargs):
@@ -141,16 +149,17 @@ theorem unsupported : False := assumption
             record = node("complete")
             record["declaration"] = "doesNotExist"
             write_json(corpus / "nodes/complete.json", record)
+            previous = {
+                name: (corpus / "nodes" / f"{name}.json").read_bytes() for name in names}
             with self.assertRaises(CommandError):
                 run_build()
-            self.assertTrue(all(not node(name)["verified"] for name in names))
+            for name in names:
+                self.assertEqual(
+                    (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])
 
             module.write_text(source + "\nthis is not Lean\n")
             with self.assertRaises(CommandError):
                 run_build()
             for name in names:
-                self.assertFalse(node(name)["verified"])
                 self.assertEqual(
-                    node(name)["module"], "Lemmatheca.Examples" if name != "unbound" else None)
-                self.assertNotIn("signature", node(name))
-                self.assertNotIn("declaration_line", node(name))
+                    (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])

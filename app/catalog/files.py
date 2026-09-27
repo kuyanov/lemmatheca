@@ -2,11 +2,22 @@
 
 import json
 from pathlib import Path
+import re
 from tempfile import NamedTemporaryFile
 
 
 def read_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def read_record(path, identifier):
+    # IDs may come from URLs, including the contextual back-link query string.
+    if not isinstance(identifier, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", identifier):
+        raise FileNotFoundError(f"Invalid corpus ID: {identifier}")
+    record = read_json(path)
+    if record["id"] != identifier:
+        raise ValueError(f"ID does not match path: {path}")
+    return record
 
 
 def write_json(path, record):
@@ -28,9 +39,6 @@ def records(corpus, kind):
     pattern = "nodes/*.json" if kind == "node" else "entries/*/entry.json"
     result = {}
     for path in sorted(corpus.glob(pattern)):
-        record = read_json(path)
         expected = path.stem if kind == "node" else path.parent.name
-        if record["id"] != expected:
-            raise ValueError(f"ID does not match path: {path}")
-        result[expected] = record
+        result[expected] = read_record(path, expected)
     return result

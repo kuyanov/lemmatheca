@@ -22,8 +22,9 @@ effect. A declaration is verified only if its axioms are among `propext`,
 For a definition, verified means the definition is checked under the same rule.
 See Lean's [axiom documentation](https://lean-lang.org/doc/reference/latest/Axioms/).
 
-A missing declaration or compilation error fails the command and resets all
-nodes to `verified: false` and clears the signature and source line, preserving `module`.
+A missing declaration, compilation error, or interrupted check fails the command
+without writing node JSON. Verification, signatures, and source lines continue to
+describe the last successful build.
 Unbound nodes remain not verified. Unfinished proofs are a valid build result, so `sorry` alone
 does not cause the command to fail.
 

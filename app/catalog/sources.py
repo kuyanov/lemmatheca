@@ -140,7 +140,7 @@ def parse_source(source):
     return blocks, ids, counts, captioned
 
 
-def reference_target(href, entry_id, catalog):
+def reference_target(href, entry_id, read_entry):
     """Resolve entry-id#block-id or #anchor without relying on file paths."""
     url = urlsplit(href)
     if url.scheme or url.netloc:
@@ -149,7 +149,7 @@ def reference_target(href, entry_id, catalog):
         raise ContentError(
             f"Use entry-id#block-id or #anchor for source references: {href}")
     target_id = url.path or entry_id
-    target = catalog.get(target_id)
+    target = read_entry(target_id)
     if url.query or not target or url.fragment not in target["anchors"]:
         raise ContentError(f"Broken source link: {href}")
     if url.fragment not in target["blocks_by_id"]:
@@ -169,8 +169,8 @@ def asset_path(entry_dir, src):
     return path.relative_to("assets").as_posix()
 
 
-def render_block(block, entry, catalog, expanded_answer=None):
-    """Render a fresh string; cached source trees are never mutated by requests."""
+def render_block(block, entry, read_entry, expanded_answer=None):
+    """Resolve references on demand and render without mutating source trees."""
     def render(node):
         if isinstance(node, str):
             return escape(node, quote=False)
@@ -184,7 +184,7 @@ def render_block(block, entry, catalog, expanded_answer=None):
                 attrs["href"] = static(f"entries/{entry['id']}/{relative}")
                 resolved = None
             else:
-                resolved = reference_target(href, entry["id"], catalog)
+                resolved = reference_target(href, entry["id"], read_entry)
             if resolved:
                 target, result = resolved
                 query = urlencode({"from": entry["id"], "at": block["id"]})

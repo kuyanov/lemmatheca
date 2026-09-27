@@ -1,24 +1,31 @@
 """Read entry metadata, HTML, navigation files, and validate local asset paths."""
 
-from .files import read_json, records
+from django.conf import settings
+
+from .files import read_json, read_record
 
 
-def read_entries(corpus):
-    entries = records(corpus, "entry")
-    for entry in entries.values():
-        directory = corpus / "entries" / entry["id"]
-        entry["directory"] = directory
-        entry["source"] = (
-            directory / "entry.html").read_text(encoding="utf-8")
-    return entries
+def read_entry_metadata(identifier, corpus=None):
+    corpus = corpus or settings.CORPUS_DIR
+    return read_record(corpus / "entries" / str(identifier) / "entry.json", identifier)
 
 
-def read_areas(corpus):
+def read_entry(identifier, corpus=None):
+    corpus = corpus or settings.CORPUS_DIR
+    entry = read_entry_metadata(identifier, corpus)
+    directory = corpus / "entries" / identifier
+    return {**entry, "directory": directory,
+            "source": (directory / "entry.html").read_text(encoding="utf-8")}
+
+
+def read_areas(corpus=None):
+    corpus = corpus or settings.CORPUS_DIR
     return {area["id"]: area for area in read_json(corpus / "taxonomy.json")["areas"]}
 
 
-def read_reading_order(corpus):
-    return read_json(corpus / "reading-order.json")["areas"]
+def read_area_entries(corpus=None):
+    corpus = corpus or settings.CORPUS_DIR
+    return read_json(corpus / "area_entries.json")["areas"]
 
 
 def is_local_asset(directory, source):

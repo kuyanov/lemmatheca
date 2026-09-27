@@ -6,9 +6,15 @@ The Django app reads these files directly. There is no database.
 - `entries/<id>/entry.html`: trusted HTML sections with an `id`, `data-kind`, and heading.
 - `entries/<id>/assets/`: figures referenced as `assets/filename.svg` in the HTML.
 - `nodes/<id>.json`: mathematical description, Lean binding, dependencies, and status.
-- `taxonomy.json` and `reading-order.json`: area hierarchy and entry reading order.
+- `taxonomy.json`: area hierarchy.
+- `area_entries.json`: each area's entry IDs in reading order.
 
 File and directory names must match their record's `id`.
+Add each entry to its primary area's list in `area_entries.json`; this index drives
+area listings, counts, the featured entry, and next-entry links. Unlisted entries
+can still be opened by ID but do not appear in navigation. The server does not scan
+entry directories to discover or append unlisted entries.
+
 Link a section to nodes with space-separated IDs in `data-formal`:
 
 ```html
@@ -41,8 +47,8 @@ A node looks like this:
 It is true only when the Lean declaration checks without `sorry`, directly or
 indirectly, and uses only Lean's usual logical axioms. New nodes start with
 `verified: false` and may have a null module/declaration until formalized.
-Unbound nodes and nodes affected by a failed build are not verified.
-Results describe the last build; rerun it after changing Lean code or bindings.
+Unbound nodes are not verified. An unsuccessful build leaves all node JSON untouched.
+Results describe the last successful build; rerun it after changing Lean code or bindings.
 Reviews of entries and nodes happen on GitHub, with no review fields in the corpus.
 
 `module` is the Lean module that defines the declaration. The build imports it
@@ -50,8 +56,8 @@ and updates it to the defining module reported by Lean. The node page uses the
 same field for its source browser.
 
 The build also saves `signature` and `declaration_line` for the node page's
-checked statement and source links. Failed builds clear these display fields
-but preserve `module` so the binding can be checked again.
+checked statement and source links. Failed builds preserve these fields along with
+the verification flag and module binding.
 
 The reader labels nodes **Verified** or **Not verified**. Entry and block badges
 summarize verification progress; entries have no separate status.

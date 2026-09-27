@@ -4,7 +4,9 @@ import os
 from pathlib import Path
 import re
 
-from .files import read_json, records, write_json
+from django.conf import settings
+
+from .files import read_json, read_record, records, write_json
 
 LEAN_MODULE = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z")
 TOOLCHAIN_MODULES = {"Init", "Lean", "Std"}
@@ -12,6 +14,16 @@ TOOLCHAIN_MODULES = {"Init", "Lean", "Std"}
 
 def read_nodes(corpus):
     return records(corpus, "node")
+
+
+def node_ids(corpus=None):
+    corpus = corpus or settings.CORPUS_DIR
+    return [path.stem for path in sorted((corpus / "nodes").glob("*.json"))]
+
+
+def read_node(identifier, corpus=None):
+    corpus = corpus or settings.CORPUS_DIR
+    return read_record(corpus / "nodes" / f"{identifier}.json", identifier)
 
 
 def source_for_module(module):

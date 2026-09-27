@@ -8,12 +8,13 @@ from django.core.management import get_commands
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 
-from catalog.content import entries, next_entry
+from catalog.content import add_progress, load_entry, next_entry
+from catalog.entry_files import read_area_entries, read_entry_metadata
 from catalog.files import read_json, records, write_json
 
 
 class ReaderTests(SimpleTestCase):
-    def test_reading_order_and_next_entry_with_unlisted_entries(self):
+    def test_area_index_and_next_entry_use_only_listed_metadata(self):
         with TemporaryDirectory() as directory:
             corpus = Path(directory)
             for identifier, area in [("alpha", "first"), ("alpha-tail", "first"),
@@ -22,24 +23,19 @@ class ReaderTests(SimpleTestCase):
                 entry_dir.mkdir(parents=True)
                 write_json(entry_dir / "entry.json",
                            {"id": identifier, "primary_area": area})
-                (entry_dir / "entry.html").write_text(
-                    '<section id="definition" data-kind="definition" data-formal="">'
-                    '<h2>Definition</h2><p>Example.</p></section>')
-            write_json(corpus / "reading-order.json", {
-                "areas": {"first": ["zeta", "missing", "omega", "zeta"], "second": ["beta"]},
+            write_json(corpus / "area_entries.json", {
+                "areas": {"first": ["zeta", "omega"], "second": ["beta"]},
             })
 
-            catalog = entries(corpus)
-            self.assertEqual(
-                list(catalog), ["zeta", "omega", "beta", "alpha", "alpha-tail"])
-            self.assertEqual(next_entry(
-                catalog["zeta"], catalog)["id"], "omega")
-            self.assertEqual(next_entry(
-                catalog["omega"], catalog)["id"], "alpha")
-            self.assertEqual(next_entry(catalog["alpha"], catalog)[
-                             "id"], "alpha-tail")
-            self.assertIsNone(next_entry(catalog["alpha-tail"], catalog))
-            self.assertIsNone(next_entry(catalog["beta"], catalog))
+            # No HTML files exist: next-entry navigation needs metadata only.
+            with override_settings(CORPUS_DIR=corpus):
+                index = read_area_entries()
+                self.assertEqual(index["first"], ["zeta", "omega"])
+                self.assertEqual(next_entry(
+                    read_entry_metadata("zeta"), index)["id"], "omega")
+                for identifier in ("omega", "alpha", "alpha-tail", "beta"):
+                    self.assertIsNone(next_entry(
+                        read_entry_metadata(identifier), index))
 
     def test_corpus_pages_and_links(self):
         self.assertContains(self.client.get("/"), "Sets and maps")
@@ -50,7 +46,8 @@ class ReaderTests(SimpleTestCase):
         area = self.client.get("/areas/logic-and-foundations/set-theory/")
         self.assertContains(area, "Sets and maps")
         self.assertNotContains(area, "Draft")
-        for identifier, entry in entries(settings.CORPUS_DIR).items():
+        for identifier in records(settings.CORPUS_DIR, "entry"):
+            entry = load_entry(identifier)
             response = self.client.get(f"/entries/{identifier}/")
             self.assertContains(response, entry["title"])
             self.assertNotRegex(response.content.decode(),
@@ -145,7 +142,8 @@ class ReaderTests(SimpleTestCase):
             path = corpus / "nodes/set.json"
             node = read_json(path)
             with override_settings(CORPUS_DIR=corpus):
-                before = entries()["sets-and-maps"]["formalization"]
+                before = add_progress(load_entry(
+                    "sets-and-maps"))["formalization"]
                 write_json(path, {**node, "verified": False})
                 response = self.client.get("/formal/nodes/set/")
                 self.assertContains(response, "Not verified")
@@ -153,7 +151,8 @@ class ReaderTests(SimpleTestCase):
                     response, f'href="#L{node["declaration_line"]}"')
                 self.assertFalse(self.client.get(
                     "/api/formal/nodes/set/").json()["verified"])
-                after = entries()["sets-and-maps"]["formalization"]
+                after = add_progress(load_entry(
+                    "sets-and-maps"))["formalization"]
                 self.assertEqual(after["complete"], before["complete"] - 1)
                 self.assertEqual(after["total"], before["total"])
                 entry = self.client.get("/entries/sets-and-maps/")
