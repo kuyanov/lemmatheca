@@ -59,8 +59,8 @@ jobs:
       - name: Run tests
         run: uv run --locked python app/manage.py test catalog
 
-      - name: Build and update node proof data
+      - name: Build and update proof data and entry summaries
         run: uv run --locked python app/manage.py build
 
-      - name: Check committed proof data
-        run: git diff --exit-code -- corpus/nodes
+      - name: Check committed proof data and entry summaries
+        run: git diff --exit-code -- corpus/nodes corpus/entries

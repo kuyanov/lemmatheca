@@ -105,6 +105,13 @@ class ReaderTests(SimpleTestCase):
         self.assertContains(self.client.get(
             "/entries/ordered-sets/"), "Formalization: Not started")
 
+    def test_saved_entry_summaries_match_current_block_bindings_and_node_results(self):
+        for identifier in records(settings.CORPUS_DIR, "entry"):
+            with self.subTest(entry=identifier):
+                saved = read_entry_metadata(identifier)["formalization"]
+                self.assertEqual(saved, add_progress(
+                    load_entry(identifier))["formalization"])
+
     def test_node_declarations_and_source_links_do_not_run_lean(self):
         nodes = records(settings.CORPUS_DIR, "node")
         identifier = "nat-membership-and-inclusion-example"

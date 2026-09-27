@@ -11,6 +11,7 @@ from django.test import SimpleTestCase, override_settings
 from catalog.entry_files import read_entry, read_entry_metadata
 from catalog.files import write_json
 from catalog.node_files import read_node
+from catalog.progress import entry_progress
 
 
 class LocalReadTests(SimpleTestCase):
@@ -42,6 +43,8 @@ class LocalReadTests(SimpleTestCase):
             write_json(directory / "entry.json", {
                 "id": identifier, "title": identifier.title(), "primary_area": area,
                 "summary": identifier, "reading_time": 5,
+                "formalization": entry_progress(
+                    [{"formal_ids": [formal]}], {formal: {"verified": True}}),
             })
             (directory / "entry.html").write_text(
                 f'<section id="fact" data-kind="lemma" data-formal="{formal}">'
@@ -94,14 +97,14 @@ class LocalReadTests(SimpleTestCase):
             self.assertEqual([item["entry_count"]
                              for item in area.context["areas"]], [2, 1])
 
-    def test_area_loads_only_its_indexed_entries_and_shared_nodes_once(self):
-        with self.only_reads("taxonomy.json", "area_entries.json", "nodes/proof.json",
-                             "entries/alpha/entry.json", "entries/alpha/entry.html",
-                             "entries/next/entry.json", "entries/next/entry.html") as reads:
+    def test_area_reads_only_indexed_metadata_without_html_or_nodes(self):
+        with self.only_reads("taxonomy.json", "area_entries.json",
+                             "entries/alpha/entry.json", "entries/next/entry.json") as reads:
             response = self.client.get("/areas/root/first/")
             self.assertEqual([item["id"] for item in response.context["entries"]], [
                              "alpha", "next"])
             self.assertNotContains(response, "Remote")
+            self.assertContains(response, "Formalization: 100%", count=2)
         self.assertTrue(all(count == 1 for count in reads.values()))
 
     def test_entry_reads_references_once_without_their_nodes_or_transitive_links(self):

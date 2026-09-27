@@ -58,8 +58,8 @@ def read_source(module, root):
     return path.read_text(encoding="utf-8").splitlines()
 
 
-def save_results(corpus, nodes, results):
-    verified = 0
+def prepare_results(corpus, nodes, results):
+    updated = {}
     for identifier, node in nodes.items():
         path = corpus / "nodes" / f"{identifier}.json"
         record = read_json(path)
@@ -71,6 +71,11 @@ def save_results(corpus, nodes, results):
         for field in ("signature", "declaration_line"):
             record.pop(field, None)
         record.update(result)
-        write_json(path, record)
-        verified += record["verified"]
-    return verified
+        updated[identifier] = record
+    return updated
+
+
+def save_results(corpus, nodes):
+    for identifier, node in nodes.items():
+        write_json(corpus / "nodes" / f"{identifier}.json", node)
+    return sum(node["verified"] for node in nodes.values())

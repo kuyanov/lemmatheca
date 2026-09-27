@@ -36,11 +36,15 @@ every node JSON. A node is **Verified** when its Lean declaration checks without
 Additional axioms beyond Lean's usual logical foundations also prevent verification.
 Definitions use the same check. Unbound nodes remain not verified.
 Entry and block badges summarize the proportion of verified nodes.
+The build also saves each entry's derived `formalization` summary in `entry.json`,
+so area listings need no HTML parsing or node reads. Rerun it after changing entry
+HTML or formal node bindings, and commit the updated entry metadata as well.
 
 The single `module` field identifies the declaration's defining module and is
 used for both imports and source browsing. The build refreshes it from Lean and
 saves the declaration signature and source line. Build or declaration errors exit
-unsuccessfully without writing any node JSON; previous verification data stays intact.
+unsuccessfully without writing node JSON or entry summaries; previous data stays intact.
+Entry summaries are also validated before any results are saved.
 
 Verification reflects the last successful build. Rerun the command after changing Lean code
 or node bindings, then commit the updated node JSON with the sources. The website
@@ -64,9 +68,10 @@ Requests read individual records through `read_entry(id)`, `read_entry_metadata(
 and `read_node(id)`. `corpus/area_entries.json` lists each area's entries in reading
 order and supplies navigation counts. Home and next-entry links need metadata only;
 entry pages load their own nodes and directly referenced entries, while node pages
-load only their node and direct dependency hints. Area badges read the entries and
-nodes listed in that area. Repeated references are reused within a response; there
-is no catalog cache to invalidate. The full node API and build command still read
+load only their node and direct dependency hints. Area pages read only the listed
+entries' JSON metadata, including their precomputed badges. Repeated references
+are reused within a response; there is no server-side catalog cache to invalidate.
+The full node API and build command still read
 all nodes because their output covers the whole collection.
 
 ## Checks
@@ -85,7 +90,8 @@ and failed builds. To run just those build tests:
 uv run python app/manage.py test catalog.tests.test_build
 ```
 
-CI runs the suite, builds the corpus proofs, and checks that committed proof data matches.
+CI runs the suite, builds the corpus proofs, and checks that committed proof data
+and entry summaries match.
 
 To measure response times and corpus file reads:
 
@@ -96,22 +102,6 @@ uv run python app/manage.py shell -c 'from catalog.tests.benchmark_reader import
 This measures 50 responses per route after five warmup requests, with `DEBUG=False`.
 It reports median and p95 milliseconds through Django's request handler, including
 file reads and template rendering but excluding HTTP transport and static assets.
-
-Local measurements before and after switching to direct reads (3 entries, 188 nodes):
-
-| Response | Median before → after (ms) | Corpus reads before → after |
-| --- | ---: | ---: |
-| Home | 16.917 → 0.366 | 203 → 3 |
-| Logic and foundations area | 16.437 → 0.362 | 206 → 2 |
-| Set theory entry list | 16.291 → 16.155 | 205 → 196 |
-| Sets and maps entry | 20.366 → 12.692 | 201 → 132 |
-| Ordered sets entry | 18.851 → 10.061 | 201 → 8 |
-| Set-subset-transitive node | 34.754 → 26.648 | 188 → 2 |
-| Set-subset-transitive API | 7.922 → 0.134 | 188 → 1 |
-
-The set-theory list currently contains every entry, so its badges still need all
-their nodes. Entry and node detail costs depend on their content and direct
-references, not on unrelated entries or nodes elsewhere in the corpus.
 
 For deployment, set `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, and
 `DJANGO_ALLOWED_HOSTS`, serve `config.wsgi:application` from `app/`, and serve the

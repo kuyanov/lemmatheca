@@ -82,9 +82,9 @@ def load_entry(identifier):
     }
 
 
-def add_progress(entry, read_node=load_node):
+def add_progress(entry):
     """Attach saved proof status from only the nodes used by this entry."""
-    nodes = {identifier: read_node(identifier) for identifier in
+    nodes = {identifier: load_node(identifier) for identifier in
              {identifier for block in entry["blocks"] for identifier in block["formal_ids"] or []}}
     for block in entry["blocks"]:
         block["formalization"] = block_progress(block["formal_ids"], nodes)

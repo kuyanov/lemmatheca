@@ -1,4 +1,4 @@
-"""Build one Lean project, then persist declaration-level proof results."""
+"""Build Lean and prepare proof results and entry summaries before saving them."""
 
 import json
 import re
@@ -6,7 +6,10 @@ import subprocess
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-from .node_files import TOOLCHAIN_MODULES, read_nodes, save_results
+from .entry_files import entry_ids, read_entry, save_entries
+from .node_files import TOOLCHAIN_MODULES, prepare_results, read_nodes, save_results
+from .progress import entry_progress
+from .sources import parse_source
 
 MODULE = re.compile(r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*")
 
@@ -47,4 +50,15 @@ def build(corpus, formal):
     if results.keys() != declarations:
         raise ValueError(
             "Lean did not report every registered declaration.")
-    return save_results(corpus, nodes, results), len(nodes)
+    updated = prepare_results(corpus, nodes, results)
+    entries = {}
+    for identifier in entry_ids(corpus):
+        entry = read_entry(identifier, corpus)
+        blocks, *_ = parse_source(entry.pop("source"))
+        entry.pop("directory")
+        entry["formalization"] = entry_progress(blocks, updated)
+        entries[identifier] = entry
+    # Validate every summary against the new proof results before writing either.
+    verified = save_results(corpus, updated)
+    save_entries(corpus, entries)
+    return verified, len(nodes)

@@ -15,6 +15,9 @@ registered declaration and writes the boolean `verified` into `corpus/nodes/*.js
 Each node's `module` is used for the import and source browser, and is updated to
 the defining module reported by Lean. The build also records the pretty-printed
 `signature` and `declaration_line` to display declarations and link to exact source lines.
+It then computes entry-list verification summaries from the HTML block bindings
+and saves them as `formalization` in each `corpus/entries/<id>/entry.json`.
+All proof results and entry summaries are validated before either is written.
 `Lemmatheca/ProofStatus.lean` uses Lean's transitive axiom collection, so a proof
 that relies on an unfinished helper is also not verified. A word in a comment has no
 effect. A declaration is verified only if its axioms are among `propext`,
@@ -23,7 +26,7 @@ For a definition, verified means the definition is checked under the same rule.
 See Lean's [axiom documentation](https://lean-lang.org/doc/reference/latest/Axioms/).
 
 A missing declaration, compilation error, or interrupted check fails the command
-without writing node JSON. Verification, signatures, and source lines continue to
+without writing node JSON or entry summaries. Verification, signatures, and source lines continue to
 describe the last successful build.
 Unbound nodes remain not verified. Unfinished proofs are a valid build result, so `sorry` alone
 does not cause the command to fail.

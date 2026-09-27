@@ -2,7 +2,7 @@
 
 The Django app reads these files directly. There is no database.
 
-- `entries/<id>/entry.json`: title, summary, sources, area, and reading time.
+- `entries/<id>/entry.json`: title, summary, sources, area, reading time, and generated formalization summary.
 - `entries/<id>/entry.html`: trusted HTML sections with an `id`, `data-kind`, and heading.
 - `entries/<id>/assets/`: figures referenced as `assets/filename.svg` in the HTML.
 - `nodes/<id>.json`: mathematical description, Lean binding, dependencies, and status.
@@ -14,6 +14,13 @@ Add each entry to its primary area's list in `area_entries.json`; this index dri
 area listings, counts, the featured entry, and next-entry links. Unlisted entries
 can still be opened by ID but do not appear in navigation. The server does not scan
 entry directories to discover or append unlisted entries.
+
+`python app/manage.py build` generates the `formalization` object in each entry's
+metadata from its HTML block bindings and the new node verification results. It
+contains the counts, status, and display labels needed for the entry-list badge.
+Do not edit it by hand. Area pages read only this metadata, without parsing entry
+HTML or loading nodes. Run the build after changing an entry's HTML or node bindings
+and commit the refreshed metadata. Failed builds leave existing summaries intact.
 
 Link a section to nodes with space-separated IDs in `data-formal`:
 

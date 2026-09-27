@@ -2,7 +2,11 @@
 
 from django.conf import settings
 
-from .files import read_json, read_record
+from .files import read_json, read_record, write_json
+
+
+def entry_ids(corpus):
+    return [path.parent.name for path in sorted((corpus / "entries").glob("*/entry.json"))]
 
 
 def read_entry_metadata(identifier, corpus=None):
@@ -16,6 +20,11 @@ def read_entry(identifier, corpus=None):
     directory = corpus / "entries" / identifier
     return {**entry, "directory": directory,
             "source": (directory / "entry.html").read_text(encoding="utf-8")}
+
+
+def save_entries(corpus, entries):
+    for identifier, entry in entries.items():
+        write_json(corpus / "entries" / identifier / "entry.json", entry)
 
 
 def read_areas(corpus=None):

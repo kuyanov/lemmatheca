@@ -32,13 +32,11 @@ def area(request, path):
     if current is None or area_path(current, taxonomy) != path:
         raise Http404("This area is not in the library.")
     area_entries = read_area_entries()
-    # Shared nodes are read once for this response, never cached across requests.
-    read_node = cache(load_node)
     return render(request, "catalog/area.html", {
         "area": current,
         "breadcrumbs": [area_link(item, taxonomy) for item in ancestors(current, taxonomy)],
         "areas": area_list(current["id"], taxonomy, area_entries),
-        "entries": [add_progress(load_entry(identifier), read_node)
+        "entries": [load_entry_metadata(identifier)
                     for identifier in area_entries.get(current["id"], [])],
     })
 
