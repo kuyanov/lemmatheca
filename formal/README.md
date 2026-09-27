@@ -1,36 +1,120 @@
 # Lean project
 
-All active formalizations belong to this Lake project. Its toolchain and mathlib
-revision are pinned in `lean-toolchain`, `lakefile.toml`, and `lake-manifest.json`.
-The Lean environment is assumed to be installed.
+All active formalizations share the Lake project in this directory. The environment
+is pinned by [lean-toolchain](lean-toolchain), [lakefile.toml](lakefile.toml), and
+[lake-manifest.json](lake-manifest.json). Use those files as the version authority;
+keep their pins fixed unless an environment upgrade is part of the task. The Lean
+environment and dependency sources are assumed to be installed.
+
+## Formal nodes
+
+Node records live in `corpus/nodes/<id>.json`, independently of the entries that
+reference them. A new binding can be written as:
+
+```json
+{
+  "id": "set-subset-transitive",
+  "description": "If A is a subset of B and B is a subset of C, then A is a subset of C.",
+  "module": "Mathlib.Data.Set.Basic",
+  "declaration": "Set.Subset.trans",
+  "dependencies": ["set-subset"],
+  "verified": false
+}
+```
+
+Use stable mathematical IDs and reuse existing nodes where possible. `description`
+is plain text stating the result with its hypotheses, domains, and quantifiers,
+or describing the object being defined. It should make sense without opening an
+entry. Mathematical notation is supported; escape LaTeX backslashes in JSON, for
+example `"For every set \\(A\\), \\(A\\cup\\varnothing=A\\)."`. Avoid HTML, proofs,
+and implementation commentary in descriptions.
+
+`declaration` is the full Lean name. `module` is the module that defines it, used
+for both importing and browsing its source. There is no separate import/source
+module field. A node can bind directly to a local, mathlib, or Lean core declaration.
+Before a target exists, `module` and `declaration` may both be `null`; start new
+nodes with `verified: false`.
+
+The build writes `verified`, the pretty-printed `signature`, and `declaration_line`,
+and refreshes `module` from Lean's defining-module information. Do not fabricate
+these results or source locations. Generated declarations may point to a source
+origin with a different name; compare the exported signature with the actual target.
+The reader uses local project, Lake dependency, and Elan toolchain sources for its
+source browser and line links.
+
+## Bindings and proof planning
+
+Inspect existing nodes and the pinned library before introducing declarations.
+Prefer direct bindings to existing definitions or theorems, including suitable
+specializations and equivalent formulations. Avoid wrappers whose only purpose is
+to rename, reverse, or bundle existing results. Explain representation changes in
+the GitHub review, and check domains, quantifiers, conventions, and assumptions.
+Several nodes may collectively cover a block, and one node may serve several blocks.
+See the [mapping contract](../corpus/README.md#block-to-node-mapping).
+
+`dependencies` contains direct proof-planning hints. It is not a reading order,
+a list of every concept in a statement, or an extracted Lean dependency graph.
+Keep useful prerequisites without cycles or their transitive closure. A listed
+hint's verification flag does not determine the node's flag. Lean's actual use of
+an unfinished declaration does affect verification, even if that declaration is
+not listed as a hint.
+
+Put local modules under `Lemmatheca/` and import them from `Lemmatheca.lean`.
+Use appropriate namespaces for reusable mathematics and
+`Lemmatheca.Entry.<EntryName>` for entry-specific examples. Keep related declarations
+together rather than creating nearly empty modules. Use the existing Lean project;
+do not introduce separate per-entry Lake projects.
+
+## Build and verification
 
 From the repository root:
 
 ```sh
 uv run python app/manage.py build
+uv run python app/manage.py test catalog
 ```
 
-The command builds `Lemmatheca` and the modules bound by nodes, then checks every
-registered declaration and writes the boolean `verified` into `corpus/nodes/*.json`.
-Each node's `module` is used for the import and source browser, and is updated to
-the defining module reported by Lean. The build also records the pretty-printed
-`signature` and `declaration_line` to display declarations and link to exact source lines.
-It then computes entry-list verification summaries from the HTML block bindings
-and saves them as `formalization` in each `corpus/entries/<id>/entry.json`.
-All proof results and entry summaries are validated before either is written.
-`Lemmatheca/ProofStatus.lean` uses Lean's transitive axiom collection, so a proof
-that relies on an unfinished helper is also not verified. A word in a comment has no
-effect. A declaration is verified only if its axioms are among `propext`,
-`Classical.choice`, and `Quot.sound`; additional axioms are not accepted as proofs.
-For a definition, verified means the definition is checked under the same rule.
-See Lean's [axiom documentation](https://lean-lang.org/doc/reference/latest/Axioms/).
+The build reads the node registry, builds `Lemmatheca` and the bound non-core
+modules, and checks each registered declaration with `Lemmatheca/ProofStatus.lean`.
+Core modules are supplied by the toolchain. The checker collects transitive axioms:
+only `propext`, `Classical.choice`, and `Quot.sound` are allowed. Direct or inherited
+`sorryAx`, or additional axioms, give `verified: false`. Definitions use the same
+rule; a comment containing the word `sorry` does not affect the result.
 
-A missing declaration, compilation error, or interrupted check fails the command
-without writing node JSON or entry summaries. Verification, signatures, and source lines continue to
-describe the last successful build.
-Unbound nodes remain not verified. Unfinished proofs are a valid build result, so `sorry` alone
-does not cause the command to fail.
+A successful build may contain unfinished proofs. It records those nodes as
+Not verified, while declarations that pass the check become Verified. Unbound
+nodes are Not verified. A missing declaration, invalid binding, or compilation
+error fails the build instead of producing a new verification result.
 
-Add local modules under `Lemmatheca/` and import them from `Lemmatheca.lean`.
-Bind nodes using their full declaration name and module. Mathlib bindings use
-this same environment. The website reads saved results and never invokes Lean.
+After checking Lean, the build parses entry HTML and computes entry-list summaries
+from the new results. It validates all summaries before saving node records and the
+`formalization` object in each `corpus/entries/<id>/entry.json`. Failed Lean checks
+or invalid summaries write neither set of results; prior saved data stays intact.
+Individual JSON files are replaced atomically.
+
+Commit changed Lean sources, bindings, and all generated node and entry JSON
+alongside the change. Verification describes the last successful build: the server
+never runs Lean or performs source-freshness checks on a page request. Rerun the
+build after editing proofs, bindings, or entry block mappings. To compile locally
+while working, `lake build` from `formal/` is useful, but it does not refresh corpus
+JSON; finish with the Django build command.
+
+The [CI workflow](../.github/workflows/ci.yml) installs the pinned environment,
+runs the tests and build, then checks that committed node results and entry
+summaries match regenerated files. The tests exercise successful, unfinished,
+unsupported-axiom, missing-declaration, and failed builds in an isolated Lean project.
+`.lake/` contains ignored local dependencies and build output.
+
+## Review and proving
+
+Reviews of human exposition and formal correspondence take place on GitHub. There
+are no in-app approvals, review commands, hashes, or dates. Verification checks the
+Lean declaration; it does not prove that the description or entry says the same
+thing. Review the mathematical text, block coverage, and description-to-declaration
+correspondence separately.
+
+Use the [entry workflow prompts](../prompts/README.md). Preserve the intended
+statement and definitions while replacing unfinished proofs. Use unregistered
+helpers for routine proof steps; add a node only when it represents useful
+mathematical coverage. Keep proof-search or translation logs outside corpus
+metadata, and distinguish library reuse from translating a particular human proof.

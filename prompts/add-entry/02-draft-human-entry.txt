@@ -1,0 +1,49 @@
+Create the human-readable Lemmatheca entry before formalization.
+
+Inputs
+- Entry ID: <entry-id>
+- Agreed scope, reader, and prerequisites: <scope; audience; prerequisites>
+- Selected sources and outline: <source-selection result with citations>
+- Reading-time target: <rough upper bound, if any>
+
+Read README.md, corpus/README.md, app/README.md, and prompts/README.md.
+Inspect nearby entries, corpus/taxonomy.json, and corpus/area_entries.json.
+Preserve unrelated work and existing stable IDs when revising an entry.
+
+1. Read the relevant source passages and write original, precise mathematics.
+   State domains, codomains, hypotheses, quantifiers, and conventions where they
+   matter. Include useful examples, counterexamples, edge cases, and answers to
+   questions. Distinguish definitions, claims, explanations, and proofs.
+2. Use concise prose without filler, repeated conclusions, or unnecessary narration.
+   Introduce notation once and link existing prerequisites. Preserve the hypotheses
+   and reasoning when shortening. Match existing terminology, including "fiber" and
+   "fibers". Treat the reading-time target as a guide, not a reason to omit necessary
+   explanations or add padding. Estimate reading_time from the finished content.
+3. Organize coherent mathematical sections using the HTML contract in corpus/README.md.
+   Use stable block IDs, supported data-kind values, and one direct h2 per block.
+   Let the reader generate numbering, navigation, and equation/figure/table labels.
+   Use #block-id for local references and entry-id#block-id across entries. Prefer
+   empty local links for generated numbering and meaningful cross-entry link text.
+   Use collapsible question answers. Figures and tables need stable IDs and captions
+   without hard-coded numbers; images need useful alternative text. Keep Lean names
+   and build-process details out of the exposition.
+4. Write corpus/entries/<entry-id>/entry.html and entry.json, plus necessary assets.
+   Use the author-maintained metadata fields and verified based_on citations from
+   corpus/README.md. Choose a primary area and list the ID once, in reading order,
+   under that area in corpus/area_entries.json. There are no review or editorial
+   status fields to add.
+5. Leave data-formal absent for new blocks. An empty mapping means nothing needs
+   formalizing, not that work is unfinished. Preserve existing mappings on an
+   edited entry unless the changed mathematics requires revisiting them. Do not
+   create new Lean declarations or node records in this drafting step.
+
+Run uv run python app/manage.py build, then uv run python app/manage.py test catalog.
+The build uses the existing Lean project and generates entry.json's formalization
+summary; do not calculate or edit it by hand. Keep generated JSON changes with the
+source edits. A failed build preserves previous results, so it is not a successful
+refresh. Report a blocker in unrelated work without altering that work to bypass it.
+
+Inspect the rendered entry, including equations, references, hidden answers, tables,
+and figures. Restart the development server if adding a new assets directory.
+Return the changed files, the checks performed, and unresolved mathematical or source
+questions for GitHub review. Describe any visual checks that could not be completed.

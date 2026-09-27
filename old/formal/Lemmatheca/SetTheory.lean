@@ -1,2 +1,0 @@
-import Lemmatheca.SetTheory.Basic
-import Lemmatheca.SetTheory.EquivalenceRelations

@@ -14,13 +14,13 @@ uv run python app/manage.py runserver
 ```
 
 Open <http://127.0.0.1:8000/> and browse the area hierarchy to find entries.
-The reader retains the original styles, table layout, contents sidebar, next-entry
-links, and contextual back links (including reopening question answers).
+The reader provides a contents sidebar, next-entry links, and contextual back links
+that can reopen question answers.
 Formal nodes open from entry badges at `/formal/nodes/<id>/`; there is no separate
 Nodes section. Node pages show verification, the mathematical description, the
 Lean declaration, and a source browser with declaration line links.
 There is no database, migration step, or frontend build. KaTeX is bundled locally.
-The read-only `/api/formal/nodes/` endpoints remain available.
+The read-only node API is documented in [app/README.md](app/README.md).
 
 ## Verification
 
@@ -46,16 +46,18 @@ saves the declaration signature and source line. Build or declaration errors exi
 unsuccessfully without writing node JSON or entry summaries; previous data stays intact.
 Entry summaries are also validated before any results are saved.
 
-Verification reflects the last successful build. Rerun the command after changing Lean code
-or node bindings, then commit the updated node JSON with the sources. The website
-only reads these saved flags. See [formal/README.md](formal/README.md) for details.
+Verification reflects the last successful build; serving a page does not check
+whether Lean sources have changed. Rerun the command after changing Lean code or
+bindings, then commit the updated node JSON and entry summaries with the sources.
+See [formal/README.md](formal/README.md) for the verification rules.
 
 ## Layout
 
 - [`corpus/`](corpus/README.md): entries, nodes, assets, taxonomy, and `area_entries.json`.
-- `app/`: Django settings, reader, and templates.
+- [`app/`](app/README.md): Django settings, reader, templates, and local assets.
 - [`formal/`](formal/README.md): the single active Lean project.
 - `app/catalog/management/commands/build.py`: the Lean build command.
+- [`prompts/`](prompts/README.md): reusable entry authoring, review, and proving prompts.
 - `old/`: archived implementation, unused by the app and build command.
 
 The backend is one Django app, `catalog`. Its `urls.py` and `views.py` serve
@@ -71,8 +73,27 @@ entry pages load their own nodes and directly referenced entries, while node pag
 load only their node and direct dependency hints. Area pages read only the listed
 entries' JSON metadata, including their precomputed badges. Repeated references
 are reused within a response; there is no server-side catalog cache to invalidate.
-The full node API and build command still read
-all nodes because their output covers the whole collection.
+The full node API and build command read all nodes because their output covers
+the whole collection.
+
+## Contributing
+
+Use the [authoring workflow](prompts/README.md) to choose sources, draft an entry,
+review its mathematics, prepare formal bindings, review their correspondence, and
+prove the selected statements. The [corpus guide](corpus/README.md) defines HTML,
+metadata, links, and block mappings; the [Lean guide](formal/README.md) covers nodes
+and proofs.
+
+Reviews and their decisions belong in GitHub pull requests. The app stores no
+entry or node approvals, review hashes, or review dates. A verified Lean declaration
+still needs human review of its correspondence to the prose. Keep entry and block
+IDs stable, reuse existing nodes where they cover the same mathematics, and include
+generated JSON changes in the pull request.
+
+After source or binding changes, run the build before the tests so stored entry
+summaries match the edited content. Inspect the rendered entry and linked node
+pages as part of review. Keep experiment logs and temporary proof attempts outside
+corpus metadata. `old/` is a historical reference, not the active workflow.
 
 ## Checks
 
