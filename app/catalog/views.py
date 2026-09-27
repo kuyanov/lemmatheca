@@ -1,10 +1,11 @@
 from urllib.parse import urlencode
 
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_safe
 
-from .content import ancestors, area_link, area_list, area_path, areas, entries, next_entry
+from .content import (ancestors, area_link, area_list, area_path, areas,
+                      entries, load_nodes, next_entry, node_source)
 from .sources import render_block
 
 
@@ -70,3 +71,30 @@ def entry(request, entry_id):
         "return_label": return_label,
         "breadcrumbs": [area_link(item) for item in ancestors(areas()[record["primary_area"]])],
     })
+
+
+def get_node(nodes, identifier):
+    if identifier not in nodes:
+        raise Http404("This formal node is not in the library.")
+    return nodes[identifier]
+
+
+@require_safe
+def node_page(request, node_id):
+    nodes = load_nodes()
+    node = get_node(nodes, node_id)
+    context = {"node": node, "dependencies": [
+        nodes[identifier] for identifier in node.get("dependencies", [])]}
+    if node["source"]:
+        context.update(node_source(node))
+    return render(request, "catalog/node.html", context)
+
+
+@require_safe
+def node_list(request):
+    return JsonResponse({"nodes": list(load_nodes().values())})
+
+
+@require_safe
+def node_detail(request, node_id):
+    return JsonResponse(get_node(load_nodes(), node_id))

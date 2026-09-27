@@ -1,0 +1,20 @@
+{% if entry.based_on %}
+<div class="entry-bibliography" aria-label="Sources">
+  <p class="bibliography-primary">
+    <span class="bibliography-label">Based on:</span>
+    {% include "catalog/_citation.html" with citation=entry.based_on.0 only %}
+  </p>
+  {% with more_sources=entry.based_on|slice:"1:" %}
+  {% if more_sources %}
+  <details class="bibliography-more">
+    <summary>{{ more_sources|length }} more source{{ more_sources|length|pluralize }}</summary>
+    <ul>
+      {% for citation in more_sources %}
+      <li>{% include "catalog/_citation.html" with citation=citation only %}</li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+  {% endwith %}
+</div>
+{% endif %}

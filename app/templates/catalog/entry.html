@@ -22,7 +22,7 @@
 <article class="proof-article" data-math>
   <div class="proof-layout">
     <header class="proof-header">
-      <div class="proof-meta">{% if entry.status == "draft" %}<span class="pill">Draft</span>{% endif %}
+      <div class="proof-meta">
         {% include "catalog/_formalization_badge.html" with formal=entry.formalization only %}
       </div>
       <h1>{{ entry.title }}</h1>
@@ -43,14 +43,11 @@
       {% for block in entry.blocks %}
       <section id="{{ block.id }}" class="math-block math-block-{{ block.kind }}"
         aria-labelledby="{{ block.id }}-title">
-        {% include "catalog/_verification.html" %}
+        {% include "catalog/_block_heading.html" with block=block only %}
         <h2 class="block-title" id="{{ block.id }}-title">{{ block.title }}</h2>
         {{ block.html }}
       </section>
       {% endfor %}
-      {% if entry.status == "draft" %}
-      <p class="entry-review-note">A draft, awaiting maintainer review.</p>
-      {% endif %}
       <nav class="entry-navigation" aria-label="Entry navigation">
         {% include "catalog/_entry_back.html" %}
         {% if next_entry %}

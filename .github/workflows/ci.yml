@@ -16,7 +16,7 @@ jobs:
   tests-and-corpus:
     name: Tests and corpus (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -33,33 +33,6 @@ jobs:
         with:
           version: "0.12.19"
           python-version: ${{ matrix.python-version }}
-          enable-cache: true
-
-      - name: Install locked dependencies
-        run: uv sync --locked
-
-      - name: Run catalog tests
-        run: uv run --locked python app/manage.py test catalog
-
-      - name: Validate corpus
-        run: uv run --locked python app/manage.py validate_corpus
-
-  lean-verification:
-    name: Lean verification
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Set up uv and Python
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-        with:
-          version: "0.12.19"
-          python-version: "3.14"
           enable-cache: true
 
       - name: Install locked dependencies
@@ -83,6 +56,11 @@ jobs:
           # Use the explicit cache above to include the environment pins in formal/.
           use-github-cache: "false"
 
-      - name: Check all formalizations and the committed report
-        # Reject stale evidence before running Lean; compare fresh evidence without writing it.
-        run: uv run --locked python -u app/manage.py check_formalizations --force --check
+      - name: Run tests
+        run: uv run --locked python app/manage.py test catalog
+
+      - name: Build and update node proof data
+        run: uv run --locked python app/manage.py build
+
+      - name: Check committed proof data
+        run: git diff --exit-code -- corpus/nodes

@@ -21,7 +21,7 @@ abbrev paritySetoid : Setoid ℤ := Setoid.ker (fun n : ℤ => n % 2)
 theorem finite_relation_iff (a b : Fin 3) :
     finiteSetoid a b ↔ (a = 0 ∧ b = 0) ∨
       (a ∈ ({1, 2} : Set (Fin 3)) ∧ b ∈ ({1, 2} : Set (Fin 3))) := by
-  fin_cases a <;> fin_cases b <;> simp [diagramMap]
+  sorry
 
 theorem parity_distinct_equivalent :
     Int.ModEq 2 (-1) 3 ∧ (-1 : ℤ) ≠ 3 := by

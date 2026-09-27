@@ -22,13 +22,11 @@
   </div>
   {% for entry in entries %}
   <a class="entry-row" href="{{ entry.url }}"><span class="entry-type">
-      {% if entry.status == "draft" %}<span class="pill">Draft</span>{% endif %}
       {% include "catalog/_formalization_badge.html" with formal=entry.formalization only %}</span>
     <div>
       <h3>{{ entry.title }}</h3>
       <p>{{ entry.summary }}</p>
-      <p class="entry-contents">{{ entry.contents_summary }}</p><span class="text-link">Read the entry <span
-          aria-hidden="true">→</span></span>
+      <span class="entry-meta">{{ entry.reading_time }} min read</span>
     </div><span class="entry-arrow" aria-hidden="true">↗</span>
   </a>
   {% endfor %}

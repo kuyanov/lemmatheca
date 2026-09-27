@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ node.id }} — Lemmatheca{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'vendor/katex/katex.min.css' %}">
+<script src="{% static 'vendor/katex/katex.min.js' %}" defer></script>
+<script src="{% static 'vendor/katex/contrib/auto-render.min.js' %}" defer></script>
+<script src="{% static 'js/math.js' %}" defer></script>
+<script src="{% static 'js/formal-node.js' %}" defer></script>
+{% endblock %}
+{% block content %}
+<article class="formal-node-page">
+  <header class="node-header">
+    <div class="node-heading-meta">
+      <span class="eyebrow">Formal node</span>
+      {% include "catalog/_node_status.html" with node=node only %}
+    </div>
+    <h1>{{ node.id }}</h1>
+    <p class="node-description" data-math>{{ node.description }}</p>
+  </header>
+
+  <section class="node-section" aria-labelledby="declaration-title">
+    <h2 id="declaration-title" class="node-section-title">Lean declaration</h2>
+    {% if node.declaration %}
+    <pre class="lean-signature" tabindex="0"
+      aria-label="Lean declaration"><code>{{ node.signature|default:node.declaration }}</code></pre>
+    {% if not node.signature %}
+    <p class="node-note">The declaration signature will appear after the next successful build.</p>
+    {% endif %}
+    {% else %}
+    <p class="node-note">No Lean declaration has been written for this node yet.</p>
+    {% endif %}
+
+    {% if node.source %}
+    <p class="lean-file-path"><code>{{ node.source }}</code>{% if declaration_line %} ·
+      <a href="#L{{ declaration_line }}">line {{ declaration_line }}</a>{% endif %}
+    </p>
+    <details class="node-source-browser" id="source-browser">
+      <summary>Browse source file <span class="node-count">{{ source_lines|length }} lines</span></summary>
+      <pre class="lean-source" tabindex="0" aria-label="Lean source"><code>{% for line in source_lines %}<span class="source-line{% if line.selected %} declaration-line{% endif %}" id="L{{ line.number }}"><a class="line-number" href="#L{{ line.number }}" aria-label="Line {{ line.number }}">{{ line.number }}</a>{{ line.text }}
+</span>{% endfor %}</code></pre>
+    </details>
+    {% endif %}
+  </section>
+
+  {% if dependencies %}
+  <details class="node-dependencies node-section">
+    <summary>Dependencies <span class="node-count">{{ dependencies|length }}</span></summary>
+    {% include "catalog/_node_list.html" with nodes=dependencies list_class="node-prerequisite-list" only %}
+  </details>
+  {% endif %}
+</article>
+{% endblock %}

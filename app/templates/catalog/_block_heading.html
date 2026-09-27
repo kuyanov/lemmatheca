@@ -1,3 +1,17 @@
-<span class="eyebrow">{{ block.label }}</span>
-<a class="block-permalink" href="#{{ block.id }}" aria-label="Link to {{ block.label }}: {{ block.title }}">#</a>
-{% include "catalog/_formalization_badge.html" with formal=block.formalization expandable=block.formal_nodes only %}
+{% if block.formal_nodes %}
+<details class="formal-nodes">
+  <summary class="block-heading"
+    aria-label="{{ block.label }}: {{ block.formalization.description }}. Show formal nodes">
+    <span class="eyebrow">{{ block.label }}</span>
+    <a class="block-permalink" href="#{{ block.id }}" aria-label="Link to {{ block.label }}: {{ block.title }}">#</a>
+    {% include "catalog/_formalization_badge.html" with formal=block.formalization expandable=block.formal_nodes only %}
+  </summary>
+  {% include "catalog/_node_list.html" with nodes=block.formal_nodes only %}
+</details>
+{% else %}
+<div class="block-heading">
+  <span class="eyebrow">{{ block.label }}</span>
+  <a class="block-permalink" href="#{{ block.id }}" aria-label="Link to {{ block.label }}: {{ block.title }}">#</a>
+  {% include "catalog/_formalization_badge.html" with formal=block.formalization expandable=block.formal_nodes only %}
+</div>
+{% endif %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="home-intro">
+  <div>
+    <p class="eyebrow">Repository of mathematics</p>
+    <h1>For brilliant ideas,<br>see below</h1>
+    <p class="intro-text">
+      Explore mathematical knowledge packaged into a single repository. In addition to human-readable definitions,
+      theorems, and proofs, we provide Lean-based verification. Our goal is to turn textbooks, papers, and new research
+      into a growing, unified library of mathematics.</p>
+  </div>
+  {% if example %}
+  <a class="featured-proof" href="{{ example.url }}">
+    <span class="eyebrow">A place to begin <span aria-hidden="true">↗</span></span>
+    <span class="featured-drawing"
+      aria-hidden="true"><span></span><span></span><span></span><i>→</i><span></span><span></span><span></span></span>
+    <span class="featured-category">{{ example_area.title }}</span>
+    <h2>{{ example.title }}</h2>
+    <p>{{ example.summary }}</p>
+    <span class="text-link">Read the entry <span aria-hidden="true">→</span></span>
+  </a>
+  {% endif %}
+</section>
+<section class="browse-section" aria-labelledby="areas-title">
+  <div class="section-heading">
+    <h2 id="areas-title">Browse by area</h2><span>{{ areas|length }} area{{ areas|length|pluralize }}</span>
+  </div>
+  {% include "catalog/_area_list.html" %}
+</section>
+{% endblock %}

@@ -12,6 +12,8 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
+from .entry_files import is_local_asset
+
 
 class ContentError(ValueError):
     """An entry's source or metadata is inconsistent."""
@@ -162,8 +164,7 @@ def asset_path(entry_dir, src):
     path = PurePosixPath(src)
     if not src.startswith("assets/") or ".." in path.parts or "\\" in src:
         raise ContentError(f"Assets must use entry-local assets/ paths: {src}")
-    resolved = (entry_dir / src).resolve()
-    if not resolved.is_relative_to((entry_dir / "assets").resolve()) or not resolved.is_file():
+    if not is_local_asset(entry_dir, src):
         raise ContentError(f"Missing or escaped asset: {src}")
     return path.relative_to("assets").as_posix()
 
