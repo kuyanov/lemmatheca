@@ -58,7 +58,6 @@ See [formal/README.md](formal/README.md) for the verification rules.
 - [`formal/`](formal/README.md): the single active Lean project.
 - `app/catalog/management/commands/build.py`: the Lean build command.
 - [`prompts/`](prompts/README.md): reusable entry authoring, review, and proving prompts.
-- `old/`: archived implementation, unused by the app and build command.
 
 The backend is one Django app, `catalog`. Its `urls.py` and `views.py` serve
 entries, nodes, and the node API. `entry_files.py` handles entry HTML, metadata,
@@ -93,7 +92,7 @@ generated JSON changes in the pull request.
 After source or binding changes, run the build before the tests so stored entry
 summaries match the edited content. Inspect the rendered entry and linked node
 pages as part of review. Keep experiment logs and temporary proof attempts outside
-corpus metadata. `old/` is a historical reference, not the active workflow.
+corpus metadata.
 
 ## Checks
 

@@ -34,6 +34,5 @@ a successful Lean build alone does not establish that the prose was formalized.
 
 The maintained contracts are [corpus/README.md](../corpus/README.md),
 [formal/README.md](../formal/README.md), and [app/README.md](../app/README.md).
-`old/` contains historical material, including earlier versions of these prompts.
 Keep experiment-specific budgets, retrieval rules, attempts, and measurements in a
 separate run specification and logs rather than adding them to corpus metadata.
