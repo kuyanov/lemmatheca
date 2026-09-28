@@ -24,8 +24,8 @@ stable when changing titles or subject categories.
 `taxonomy.json` defines areas with `id`, `title`, `parent`, and `description`.
 `area_entries.json` maps primary area IDs to ordered entry-ID lists under `areas`.
 Add each entry once to its primary area's list. This index controls listings,
-navigation counts, the featured entry, and the next-entry link. An unlisted entry
-can still be opened by ID but is not added to navigation by directory scanning.
+navigation counts, the featured entry, and the next-entry link. The validator rejects missing, duplicated, unlisted, or incorrectly assigned entries.
+Every parent must exist, and the area hierarchy must be acyclic.
 `additional_areas` is metadata; current listings use the primary-area index.
 
 ## Entry metadata
@@ -62,7 +62,9 @@ entry metadata. There are no stored review records or entry approval flags.
 ## HTML and references
 
 Use trusted HTML fragments with explicitly closed elements. Every top-level block
-is a `section` with a stable `id`, a `data-kind`, and one direct, nonempty `h2`:
+is a `section` with a stable `id`, a `data-kind`, and one direct, nonempty `h2`.
+The `h2` contains plain text (including math notation), without attributes or
+nested markup, since the reader generates the heading and its anchor:
 
 ```html
 <section id="translation" data-kind="definition">
@@ -162,15 +164,39 @@ Use the [authoring prompts](../prompts/README.md). Review the human mathematics 
 the description-to-declaration correspondence separately on GitHub; a passing Lean
 check does not establish that the intended statement was formalized.
 
-From the repository root, after making changes:
+From the repository root, at any stage of authoring:
 
 ```sh
+uv run python app/manage.py validate_corpus
+```
+
+The validator checks the complete corpus without rendering HTML, running Lean, or
+writing files. It reports the first failure with its file path. It validates
+metadata types and IDs, citations, HTML structure, anchors and equations, local
+assets, cross-entry block links, formal bindings, node dependency references and
+cycles, area parents and cycles, and the primary-area reading index. Entry links
+may be cyclic; node dependency hints and area parents may not. Deeply nested HTML
+is rejected before it can exhaust the reader's recursive renderer.
+
+Missing `data-formal`, unbound nodes, and absent generated summaries/signatures are
+valid. Existing generated data is checked for shape, not freshness, so this command
+does not force a build during drafting. Unknown metadata fields are rejected to
+catch typos. Lean bindings are checked for shape; declaration existence and proof
+verification belong to `build`. For deployment, `validate_corpus --check-sources`
+also checks that each bound module's local source is readable UTF-8, once per
+module. This option needs installed sources but still does not invoke Lean.
+Use `--corpus <directory>` to check a separate corpus.
+
+Before submitting source or binding changes:
+
+```sh
+uv run python app/manage.py validate_corpus
 uv run python app/manage.py build
 uv run python app/manage.py test catalog
 ```
 
 The build checks declarations, parses entries, and refreshes node data and entry-list
-summaries. Reader tests also exercise rendering and references. Inspect the edited
+summaries. Reader smoke tests also exercise representative pages and references. Inspect the edited
 pages for mathematical layout, working links, questions, and figures. CI checks
 that the generated JSON matches the committed files. See [app/README.md](../app/README.md)
 for serving and deployment.

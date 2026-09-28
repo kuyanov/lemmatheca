@@ -4,11 +4,9 @@
 def progress(groups, nodes):
     """Combine node lists; None means unplanned, while [] means not applicable."""
     ids = {identifier for group in groups for identifier in group or []}
-    unknown = ids - nodes.keys()
-    if unknown:
-        raise ValueError(f"Unknown formal node: {sorted(unknown)[0]}")
     unplanned = sum(group is None for group in groups)
-    complete = sum(nodes[identifier].get("verified", False) for identifier in ids)
+    complete = sum(nodes[identifier].get("verified", False)
+                   for identifier in ids)
     total = len(ids)
     if total:
         status = "complete" if complete == total and not unplanned else "partial"
@@ -17,12 +15,14 @@ def progress(groups, nodes):
     else:
         status = "not_started" if unplanned == len(groups) else "partial"
 
-    result = {"status": status, "complete": complete, "total": total, "unplanned": unplanned}
+    result = {"status": status, "complete": complete,
+              "total": total, "unplanned": unplanned}
     if total and not unplanned:
         result["percent"] = complete * 100 // total
         label = f'{result["percent"]}%'
     else:
-        label = {"not_started": "Not started", "not_applicable": "N/A", "partial": "Partial"}[status]
+        label = {"not_started": "Not started",
+                 "not_applicable": "N/A", "partial": "Partial"}[status]
 
     if status == "not_started":
         description = "Formalization not started"

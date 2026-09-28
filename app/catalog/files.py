@@ -14,10 +14,7 @@ def read_record(path, identifier):
     # IDs may come from URLs, including the contextual back-link query string.
     if not isinstance(identifier, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", identifier):
         raise FileNotFoundError(f"Invalid corpus ID: {identifier}")
-    record = read_json(path)
-    if record["id"] != identifier:
-        raise ValueError(f"ID does not match path: {path}")
-    return record
+    return read_json(path)
 
 
 def write_json(path, record):

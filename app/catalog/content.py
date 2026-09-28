@@ -67,13 +67,12 @@ def load_entry_metadata(identifier):
 def load_entry(identifier):
     """Parse one entry without loading its nodes or following its references."""
     entry = read_entry(identifier)
-    blocks, anchors, counts, captioned = parse_source(entry.pop("source"))
+    blocks, counts, captioned = parse_source(entry.pop("source"))
     return {
         **entry,
         "url": reverse("catalog:entry", args=[identifier]),
         "blocks": blocks,
         "blocks_by_id": {block["id"]: block for block in blocks},
-        "anchors": anchors,
         "captioned": captioned,
         "contents_summary": " · ".join(
             f"{count} {kind}{'s' if count != 1 else ''}" for kind, count in counts.items()),

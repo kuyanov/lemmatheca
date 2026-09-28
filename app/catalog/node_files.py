@@ -27,13 +27,11 @@ def read_node(identifier, corpus=None):
 
 
 def source_for_module(module):
-    if not isinstance(module, str) or not LEAN_MODULE.fullmatch(module):
-        raise ValueError("Invalid Lean source module")
     source = module.replace(".", "/") + ".lean"
     return "formal/" + source if module.split(".")[0] == "Lemmatheca" else source
 
 
-def read_source(module, root):
+def source_path(module, root):
     source = source_for_module(module)
     namespace = module.split(".")[0]
     if namespace == "Lemmatheca":
@@ -49,13 +47,17 @@ def read_source(module, root):
     else:
         packages = read_json(root / "formal/lake-manifest.json")["packages"]
         package = next(
-            package for package in packages if package["name"].lower() == namespace.lower())
+            (package for package in packages if package["name"].lower() == namespace.lower()), None)
+        if package is None:
+            raise FileNotFoundError(
+                f"No installed package for Lean module: {module}")
         directory = root / "formal/.lake/packages" / package["name"]
         relative = source
-    path = directory / relative
-    if not path.resolve().is_relative_to(directory.resolve()):
-        raise ValueError("Lean source is outside its source tree")
-    return path.read_text(encoding="utf-8").splitlines()
+    return directory / relative
+
+
+def read_source(module, root):
+    return source_path(module, root).read_text(encoding="utf-8").splitlines()
 
 
 def prepare_results(corpus, nodes, results):

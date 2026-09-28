@@ -70,6 +70,7 @@ do not introduce separate per-entry Lake projects.
 From the repository root:
 
 ```sh
+uv run python app/manage.py validate_corpus
 uv run python app/manage.py build
 uv run python app/manage.py test catalog
 ```
@@ -99,8 +100,8 @@ build after editing proofs, bindings, or entry block mappings. To compile locall
 while working, `lake build` from `formal/` is useful, but it does not refresh corpus
 JSON; finish with the Django build command.
 
-The [CI workflow](../.github/workflows/ci.yml) installs the pinned environment,
-runs the tests and build, then checks that committed node results and entry
+The [CI workflow](../.github/workflows/ci.yml) validates the corpus, installs the
+pinned environment, checks source availability, runs the tests and build, then checks that committed node results and entry
 summaries match regenerated files. The tests exercise successful, unfinished,
 unsupported-axiom, missing-declaration, and failed builds in an isolated Lean project.
 `.lake/` contains ignored local dependencies and build output.

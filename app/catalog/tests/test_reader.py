@@ -10,7 +10,8 @@ from django.urls import reverse
 
 from catalog.content import add_progress, load_entry, next_entry
 from catalog.entry_files import read_area_entries, read_entry_metadata
-from catalog.files import read_json, records, write_json
+from catalog.files import read_json, write_json
+from catalog.node_files import read_node
 
 
 class ReaderTests(SimpleTestCase):
@@ -37,7 +38,7 @@ class ReaderTests(SimpleTestCase):
                     self.assertIsNone(next_entry(
                         read_entry_metadata(identifier), index))
 
-    def test_corpus_pages_and_links(self):
+    def test_representative_pages_and_links(self):
         self.assertContains(self.client.get("/"), "Sets and maps")
         self.assertContains(self.client.get(
             "/"), "/areas/logic-and-foundations/")
@@ -46,7 +47,7 @@ class ReaderTests(SimpleTestCase):
         area = self.client.get("/areas/logic-and-foundations/set-theory/")
         self.assertContains(area, "Sets and maps")
         self.assertNotContains(area, "Draft")
-        for identifier in records(settings.CORPUS_DIR, "entry"):
+        for identifier in ("sets-and-maps", "equivalence-relations", "ordered-sets"):
             entry = load_entry(identifier)
             response = self.client.get(f"/entries/{identifier}/")
             self.assertContains(response, entry["title"])
@@ -60,7 +61,7 @@ class ReaderTests(SimpleTestCase):
         response = self.client.get("/entries/ordered-sets/")
         self.assertContains(
             response, '/entries/sets-and-maps/?from=ordered-sets&amp;at=partial-and-total-orders#pairs-and-relations')
-        for identifier in records(settings.CORPUS_DIR, "node"):
+        for identifier in ("set", "set-subset-transitive", "order-equality"):
             self.assertEqual(self.client.get(
                 f"/node/{identifier}/").status_code, 200)
 
@@ -107,28 +108,29 @@ class ReaderTests(SimpleTestCase):
             "/entries/ordered-sets/"), f"Formalization: {summary['label']}")
 
     def test_saved_entry_summaries_match_current_block_bindings_and_node_results(self):
-        for identifier in records(settings.CORPUS_DIR, "entry"):
+        for identifier in ("sets-and-maps", "equivalence-relations", "ordered-sets"):
             with self.subTest(entry=identifier):
                 saved = read_entry_metadata(identifier)["formalization"]
                 self.assertEqual(saved, add_progress(
                     load_entry(identifier))["formalization"])
 
     def test_node_declarations_and_source_links_do_not_run_lean(self):
-        nodes = records(settings.CORPUS_DIR, "node")
         identifier = "nat-membership-and-inclusion-example"
+        node = read_node(identifier)
+        library_node = read_node("set-subset-transitive")
         with patch("subprocess.run", side_effect=AssertionError("Page requests must not run Lean")):
             response = self.client.get(f"/node/{identifier}/")
-        self.assertContains(response, nodes[identifier]["declaration"])
+        self.assertContains(response, node["declaration"])
         self.assertContains(response, "Verified")
         self.assertNotContains(response, "View declaration")
         self.assertNotContains(response, "Reviewed")
         self.assertContains(
-            response, f'href="#L{nodes[identifier]["declaration_line"]}"')
+            response, f'href="#L{node["declaration_line"]}"')
         self.assertContains(response, 'class="source-line declaration-line"')
         self.assertContains(response, 'class="node-source-browser"')
         library = self.client.get("/node/set-subset-transitive/")
         self.assertContains(
-            library, f'href="#L{nodes["set-subset-transitive"]["declaration_line"]}"')
+            library, f'href="#L{library_node["declaration_line"]}"')
         self.assertContains(library, 'class="source-line declaration-line"')
         self.assertNotContains(library, "Pinned")
         api = self.client.get(f"/api/node/{identifier}/").json()
@@ -141,7 +143,7 @@ class ReaderTests(SimpleTestCase):
         self.assertTrue(api["verified"])
         self.assertNotIn("status", api)
         self.assertNotIn("source_module", api)
-        self.assertEqual(api["module"], nodes[identifier]["module"])
+        self.assertEqual(api["module"], node["module"])
 
     def test_verification_flag_controls_pages_and_entry_progress(self):
         with TemporaryDirectory() as directory:
@@ -175,9 +177,10 @@ class ReaderTests(SimpleTestCase):
 
     def test_corpus_has_only_verification_status_and_no_review_command(self):
         self.assertNotIn("review", get_commands())
-        for kind in ("node", "entry"):
-            for record in records(settings.CORPUS_DIR, kind).values():
-                self.assertFalse(
-                    {"approved", "review", "proven", "sorry", "status"} & record.keys())
-                if kind == "node":
-                    self.assertIs(type(record["verified"]), bool)
+        self.assertIs(type(read_node("set")["verified"]), bool)
+
+    def test_reader_does_not_repeat_offline_content_or_asset_checks(self):
+        with patch("catalog.validation.checked_source", side_effect=AssertionError("Offline check")), \
+                patch("catalog.entry_files.is_local_asset", side_effect=AssertionError("Asset stat")):
+            self.assertContains(self.client.get(
+                "/entries/sets-and-maps/"), "Sets and maps")

@@ -89,19 +89,33 @@ still needs human review of its correspondence to the prose. Keep entry and bloc
 IDs stable, reuse existing nodes where they cover the same mathematics, and include
 generated JSON changes in the pull request.
 
-After source or binding changes, run the build before the tests so stored entry
-summaries match the edited content. Inspect the rendered entry and linked node
-pages as part of review. Keep experiment logs and temporary proof attempts outside
-corpus metadata.
+Run `validate_corpus` during drafting and after source or binding changes. Before
+submitting, run the build before the tests so stored entry summaries match the
+edited content. Inspect the rendered entry and linked node pages as part of review.
+Keep experiment logs and temporary proof attempts outside corpus metadata.
 
 ## Checks
+
+At any authoring stage, without Lean or a prior build:
+
+```sh
+uv run python app/manage.py validate_corpus
+```
+
+This read-only command checks entry metadata and HTML structure, references,
+assets, node records and dependency hints, the area hierarchy, and reading order.
+It reads one record at a time and does not render pages. Unplanned blocks, unbound
+nodes, and absent or stale generated results are allowed. Use `--check-sources`
+to also check the installed Lean source files. Proof correctness and generated
+result freshness remain the build's responsibility.
 
 ```sh
 uv run python app/manage.py test catalog
 ```
 
 Tests live in `app/catalog/tests/` and require the pinned Lean environment.
-They check pages, corpus links, verification badges, and result persistence.
+They check representative pages, corpus validation, verification badges, and
+result persistence.
 The build command is also exercised in an isolated Lean project with completed
 proofs, direct and inherited `sorry`, unsupported axioms, missing declarations,
 and failed builds. To run just those build tests:
@@ -110,8 +124,9 @@ and failed builds. To run just those build tests:
 uv run python app/manage.py test catalog.tests.test_build
 ```
 
-CI runs the suite, builds the corpus proofs, and checks that committed proof data
-and entry summaries match.
+CI validates the corpus before installing Lean, checks installed sources, runs the
+suite, builds the corpus proofs, and checks that committed proof data and entry
+summaries match.
 
 To measure response times and corpus file reads:
 

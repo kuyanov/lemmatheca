@@ -11,6 +11,7 @@ Run from the repository root using the Python version range in
 
 ```sh
 uv sync --locked
+uv run python app/manage.py validate_corpus
 uv run python app/manage.py build
 uv run python app/manage.py test catalog
 uv run python app/manage.py runserver
@@ -35,12 +36,13 @@ The backend is a single Django app, `catalog`:
 | `catalog/urls.py`, `catalog/views.py` | Entry, area, node, and API requests |
 | `catalog/entry_files.py` | Direct entry and metadata reads, navigation files, local assets, summary writes |
 | `catalog/node_files.py` | Direct node reads, installed Lean sources, proof-result preparation and writes |
-| `catalog/files.py` | Shared JSON reading, record IDs, atomic replacement of individual JSON files |
+| `catalog/files.py` | Shared JSON reading, request ID guards, atomic replacement of individual JSON files |
 | `catalog/content.py` | Reader data, navigation, and block badges |
 | `catalog/sources.py`, `catalog/equations.py` | Trusted HTML parsing, references, equation labels, and rendering |
 | `catalog/progress.py` | Shared entry/block verification summaries |
 | `catalog/proofs.py` | Lean build, declaration checks, and entry-summary generation |
-| `catalog/management/commands/build.py` | Django build command |
+| `catalog/validation.py` | Offline metadata, HTML, reference, and hierarchy validation |
+| `catalog/management/commands/` | Independent `validate_corpus` and Lean `build` commands |
 | `catalog/tests/` | Reader, locality, summary, and Lean-build checks |
 
 `config/` contains settings, URL inclusion, middleware, and the WSGI entry point.
@@ -57,7 +59,10 @@ entries only as needed for headings, anchors, and contextual return links, reusi
 them within that request. Node pages load the requested node, its direct dependency
 hints, and the defining source file. The single-node API reads only that node.
 The full node API and build command enumerate nodes because they cover the collection.
-Page requests never launch Lean or write corpus data.
+Page requests never launch Lean or write corpus data. They trust corpus structure
+validated offline; metadata ID matching, HTML consistency, reference existence, and
+asset filesystem checks do not run in the reader. Checks on user-supplied record IDs
+and area URLs still protect filesystem access and return 404 for invalid routes.
 
 ## Routes
 
@@ -81,13 +86,19 @@ upstream-source fallback. Login and contribution controls are presentation place
 
 ## Checks and deployment
 
-The [CI workflow](../.github/workflows/ci.yml) installs the pinned Lean environment,
-runs the tests, runs `app/manage.py build`, and rejects changes to committed node
-data or entry summaries. Build tests exercise a separate temporary Lean project.
-Locality tests prevent area and detail views from loading unrelated content.
+Run `uv run python app/manage.py validate_corpus` while editing. It is independent
+of the build and permits missing or stale generated results. The optional
+`--check-sources` checks installed source files without invoking Lean.
+
+The [CI workflow](../.github/workflows/ci.yml) validates the corpus before installing
+Lean, checks installed sources, runs the tests and `app/manage.py build`, and rejects
+changes to committed node data or entry summaries. Build tests exercise a separate
+temporary Lean project. Locality tests prevent area and detail views from loading
+unrelated content.
 
 The [root README](../README.md#checks) documents the optional response benchmark.
 
+Validate the deployed corpus with `validate_corpus --check-sources` before serving it.
 For deployment, set `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, and explicit
 `DJANGO_ALLOWED_HOSTS`. Serve `config.wsgi:application` from `app/` with a production
 WSGI server and run `uv run python app/manage.py collectstatic` to collect assets.
@@ -95,3 +106,35 @@ Serve the collected `staticfiles/` directory at `/static/`. Keep the corpus and
 installed Lean sources available to the server. Entry source HTML and JSON are
 read as content, not published as static files; only entry `assets/` directories
 are registered for static serving.
+
+## Scaling
+
+Validation takes O(B + R) time, where B is the input byte count and R is the number
+of references. Each entry JSON, entry HTML, and node JSON is opened once. It keeps
+one HTML tree/record at a time, plus compact area parents, entry block IDs,
+cross-entry links, and node hint edges. Memory therefore grows with these indexes
+and the largest record, rather than all prose, signatures, or HTML trees. Graph
+checks use iterative traversal, including for long chains and shared dependencies.
+Optional source checks add the bytes of each distinct bound source file.
+
+This removes validation from response time and keeps corpus checks suitable for a
+growing collection. It does not make every other pipeline stage independent of
+corpus size:
+
+- Navigation reloads the taxonomy and area index. Subtree counts currently walk
+  ancestor chains; a deep taxonomy can make this quadratic in the number of areas.
+- Area pages load all listed metadata without pagination. Entry pages parse their
+  HTML and directly referenced entries, and load their bound nodes. Node pages
+  load direct hints and render the entire defining Lean source file.
+- The full node API returns every record. Large consumers will need pagination.
+- The build holds the registry, results, and pending summaries in memory and
+  checks all declarations. Per-file writes are atomic, but publication of the
+  entire corpus is not a single atomic operation.
+- Static asset directories are scanned at process startup. Lean builds and the
+  Python-version CI matrix remain more expensive than corpus validation.
+
+The next steps at larger scale are precomputed reference/navigation indexes,
+paginated listings/API results, and staged build output published as one snapshot.
+Reader tests use representative pages; exhaustive corpus checks do not render the
+whole collection. Keep the corpus immutable while validating and publishing it,
+since validation is a check of the files it reads, not a persistent runtime cache.

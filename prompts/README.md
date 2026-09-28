@@ -20,9 +20,15 @@ Human-only entries are supported. Leave formalization unplanned until bindings
 are prepared; an empty mapping means there is nothing to formalize, not unfinished
 work. The build generates the entry-list summary even for a human-only entry.
 
-After editing HTML, bindings, or proofs, run from the repository root:
+At every stage, run `uv run python app/manage.py validate_corpus`. This read-only
+check needs no Lean build and accepts unplanned blocks, unbound nodes, and missing
+or stale generated results. It checks the corpus structure and references without
+rendering pages. Review-only steps can run it without changing saved proof data.
+
+Before submitting changes to HTML, bindings, or proofs, run from the repository root:
 
 ```sh
+uv run python app/manage.py validate_corpus
 uv run python app/manage.py build
 uv run python app/manage.py test catalog
 ```

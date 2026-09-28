@@ -54,8 +54,13 @@ def build(corpus, formal):
     entries = {}
     for identifier in entry_ids(corpus):
         entry = read_entry(identifier, corpus)
-        blocks, *_ = parse_source(entry.pop("source"))
+        blocks, *_ = parse_source(entry.pop("source"), validate=True)
         entry.pop("directory")
+        for block in blocks:
+            for node_id in block["formal_ids"] or []:
+                if node_id not in updated:
+                    raise ValueError(
+                        f"{identifier}: unknown formal node: {node_id}")
         entry["formalization"] = entry_progress(blocks, updated)
         entries[identifier] = entry
     # Validate every summary against the new proof results before writing either.

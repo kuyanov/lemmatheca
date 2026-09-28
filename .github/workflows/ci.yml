@@ -38,6 +38,9 @@ jobs:
       - name: Install locked dependencies
         run: uv sync --locked
 
+      - name: Validate corpus before setting up Lean
+        run: uv run --locked python app/manage.py validate_corpus
+
       - name: Cache Lake dependencies and build files
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -55,6 +58,9 @@ jobs:
           use-mathlib-cache: "true"
           # Use the explicit cache above to include the environment pins in formal/.
           use-github-cache: "false"
+
+      - name: Check installed corpus sources
+        run: uv run --locked python app/manage.py validate_corpus --check-sources
 
       - name: Run tests
         run: uv run --locked python app/manage.py test catalog

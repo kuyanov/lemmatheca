@@ -4,19 +4,11 @@ from collections import Counter
 from dataclasses import dataclass, field
 from html import escape
 from html.parser import HTMLParser
-from pathlib import PurePosixPath
-import re
 from urllib.parse import urlencode, urlsplit
 
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-
-from .entry_files import is_local_asset
-
-
-class ContentError(ValueError):
-    """An entry's source or metadata is inconsistent."""
 
 
 @dataclass
@@ -38,7 +30,6 @@ class Element:
 
 VOID_ELEMENTS = {"img", "br", "hr", "wbr"}
 KINDS = {"definition", "lemma", "theorem", "question"}
-IDENTIFIER = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9_-]*\Z")
 
 
 class SourceParser(HTMLParser):
@@ -50,8 +41,6 @@ class SourceParser(HTMLParser):
         self.stack = [self.root]
 
     def handle_starttag(self, tag, attrs):
-        if len(dict(attrs)) != len(attrs):
-            raise ContentError(f"Duplicate attributes on <{tag}>")
         node = Element(tag, dict(attrs))
         self.stack[-1].children.append(node)
         if tag not in VOID_ELEMENTS:
@@ -63,110 +52,60 @@ class SourceParser(HTMLParser):
             self.handle_endtag(tag)
 
     def handle_endtag(self, tag):
-        if len(self.stack) == 1 or self.stack[-1].tag != tag:
-            raise ContentError(f"Unbalanced closing tag </{tag}>")
         self.stack.pop()
 
     def handle_data(self, data):
         self.stack[-1].children.append(data)
 
 
-def parse_source(source):
-    parser = SourceParser()
-    parser.feed(source)
-    parser.close()
-    if len(parser.stack) != 1:
-        raise ContentError(f"Unclosed <{parser.stack[-1].tag}>")
+def parse_source(source, *, validate=False):
+    if validate:
+        from .validation import checked_source
+        root, *_ = checked_source(source)
+    else:
+        parser = SourceParser()
+        parser.feed(source)
+        parser.close()
+        root = parser.root
     from .equations import prepare_equations
-    prepare_equations(parser.root)
+    prepare_equations(root)
     captioned = {}
     for tag, caption_tag in (('figure', 'figcaption'), ('table', 'caption')):
-        elements = (node for node in parser.root.walk() if node.tag == tag)
+        elements = (node for node in root.walk() if node.tag == tag)
         for number, element in enumerate(elements, 1):
-            captions = [node for node in element.children if isinstance(
-                node, Element) and node.tag == caption_tag]
-            if len(captions) != 1:
-                raise ContentError(f'Each {tag} needs one {caption_tag}')
+            caption = next(node for node in element.children
+                           if isinstance(node, Element) and node.tag == caption_tag)
             label = f'{tag.capitalize()} {number}'
-            captions[0].children[:0] = [
+            caption.children[:0] = [
                 Element('span', {'class': f'{tag}-label'}, [label]), ' ']
             if element.attrs.get('id'):
                 captioned[element.attrs['id']] = {'kind': tag, 'label': label}
-    ids = set()
-    for node in parser.root.walk():
-        if "id" in node.attrs:
-            identifier = node.attrs["id"]
-            if not identifier or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:-]*", identifier) or identifier in ids:
-                raise ContentError(
-                    f"Invalid or duplicate anchor: {identifier}")
-            ids.add(identifier)
     counts = Counter()
     blocks = []
-    for node in parser.root.children:
-        if isinstance(node, str) and not node.strip():
+    for node in root.children:
+        if not isinstance(node, Element):
             continue
-        if not isinstance(node, Element) or node.tag != "section":
-            raise ContentError(
-                "Entry content must be inside top-level <section> blocks")
-        block_id, kind = node.attrs.get("id"), node.attrs.get("data-kind")
-        if not block_id or kind not in KINDS:
-            raise ContentError(
-                "Each section needs an id and a supported data-kind")
-        headings = [child for child in node.children
-                    if isinstance(child, Element) and child.tag == "h2"]
-        if len(headings) != 1 or not headings[0].text().strip():
-            raise ContentError(f"{block_id}: expected one nonempty <h2> title")
-        formal_ids = None
-        if 'data-formal' in node.attrs:
-            value = node.attrs['data-formal']
-            if value is None:
-                raise ContentError(
-                    'Use data-formal="" for a block with nothing to formalize')
-            formal_ids = value.split()
-            if any(not IDENTIFIER.fullmatch(value) for value in formal_ids):
-                raise ContentError(f'{block_id}: invalid formal node ID')
-            if len(formal_ids) != len(set(formal_ids)):
-                raise ContentError(f'{block_id}: duplicate formal node ID')
+        block_id, kind = node.attrs['id'], node.attrs['data-kind']
+        heading = next(child for child in node.children
+                       if isinstance(child, Element) and child.tag == 'h2')
+        formal_ids = node.attrs['data-formal'].split(
+        ) if 'data-formal' in node.attrs else None
         counts[kind] += 1
         blocks.append({"id": block_id, "kind": kind, "formal_ids": formal_ids,
-                       "title": headings[0].text().strip(),
+                       "title": heading.text().strip(),
                        "label": f"{kind.capitalize()} {counts[kind]}",
-                       "nodes": [child for child in node.children if child is not headings[0]]})
-        heading_id = f"{block_id}-title"
-        if heading_id in ids:
-            raise ContentError(f"Reserved heading anchor: {heading_id}")
-    if not blocks:
-        raise ContentError("An entry must contain at least one block")
-    return blocks, ids, counts, captioned
+                       "nodes": [child for child in node.children if child is not heading]})
+    return blocks, counts, captioned
 
 
 def reference_target(href, entry_id, read_entry):
-    """Resolve entry-id#block-id or #anchor without relying on file paths."""
+    """Resolve validated entry references; local non-block anchors stay unchanged."""
     url = urlsplit(href)
     if url.scheme or url.netloc:
         return None
-    if url.path and not IDENTIFIER.fullmatch(url.path):
-        raise ContentError(
-            f"Use entry-id#block-id or #anchor for source references: {href}")
-    target_id = url.path or entry_id
-    target = read_entry(target_id)
-    if url.query or not target or url.fragment not in target["anchors"]:
-        raise ContentError(f"Broken source link: {href}")
-    if url.fragment not in target["blocks_by_id"]:
-        if url.path:
-            raise ContentError(
-                f"Entry ID references must name a mathematical block: {href}")
-        return None
-    return target, target["blocks_by_id"][url.fragment]
-
-
-def asset_path(entry_dir, src):
-    path = PurePosixPath(src)
-    if not src.startswith("assets/") or ".." in path.parts or "\\" in src:
-        raise ContentError(f"Assets must use entry-local assets/ paths: {src}")
-    if not is_local_asset(entry_dir, src):
-        raise ContentError(f"Missing or escaped asset: {src}")
-    return path.relative_to("assets").as_posix()
+    target = read_entry(url.path or entry_id)
+    block = target["blocks_by_id"].get(url.fragment)
+    return (target, block) if block else None
 
 
 def render_block(block, entry, read_entry, expanded_answer=None):
@@ -180,7 +119,7 @@ def render_block(block, entry, read_entry, expanded_answer=None):
             href = attrs.get("href", "")
             link = urlsplit(href)
             if href.startswith("assets/"):
-                relative = asset_path(entry["directory"], href)
+                relative = href.removeprefix("assets/")
                 attrs["href"] = static(f"entries/{entry['id']}/{relative}")
                 resolved = None
             else:
@@ -206,7 +145,7 @@ def render_block(block, entry, read_entry, expanded_answer=None):
                 if not node.text().strip():
                     children = [target['label']]
         if node.tag == "img":
-            relative = asset_path(entry["directory"], attrs.get("src", ""))
+            relative = attrs["src"].removeprefix("assets/")
             attrs["src"] = static(f"entries/{entry['id']}/{relative}")
         if node.tag == "details" and "question-answer" in attrs.get("class", "").split():
             attrs.pop("open", None)

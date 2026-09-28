@@ -49,7 +49,8 @@ sources. Use the single project in formal/ and preserve unrelated work.
    unplanned blocks distinguishable from empty mappings. The build owns the derived
    formalization object in entry.json; do not write it manually.
 
-Run uv run python app/manage.py build, then uv run python app/manage.py test catalog.
+Run uv run python app/manage.py validate_corpus during authoring; it does not need
+Lean or generated results. Before submitting changes, run uv run python app/manage.py build, then uv run python app/manage.py test catalog.
 The build checks all registered declarations, saves verified/signature/source-line
 data, and refreshes entry summaries. A theorem using sorry is a valid unfinished
 result; a missing declaration or compile error fails the build and preserves prior

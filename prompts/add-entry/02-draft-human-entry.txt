@@ -37,7 +37,8 @@ Preserve unrelated work and existing stable IDs when revising an entry.
    edited entry unless the changed mathematics requires revisiting them. Do not
    create new Lean declarations or node records in this drafting step.
 
-Run uv run python app/manage.py build, then uv run python app/manage.py test catalog.
+Run uv run python app/manage.py validate_corpus during authoring; it does not need
+Lean or generated results. Before submitting changes, run uv run python app/manage.py build, then uv run python app/manage.py test catalog.
 The build uses the existing Lean project and generates entry.json's formalization
 summary; do not calculate or edit it by hand. Keep generated JSON changes with the
 source edits. A failed build preserves previous results, so it is not a successful

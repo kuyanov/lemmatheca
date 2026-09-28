@@ -2,7 +2,7 @@
 
 import re
 
-from .sources import ContentError, Element
+from .sources import Element
 
 LABEL = re.compile(r'\\label\{([A-Za-z0-9][A-Za-z0-9_.:-]*)\}')
 EQREF = re.compile(r'\\eqref\{([^{}]+)\}')
@@ -19,16 +19,7 @@ def prepare_equations(root):
         if not labels:
             continue
         match = re.fullmatch(r'\s*\\\[(.*?)\\\]\s*', text, re.DOTALL)
-        if len(labels) != 1 or not match or any(isinstance(child, Element) for child in node.children):
-            raise ContentError(
-                'Use one equation label in one plain display-math element')
         label = labels[0]
-        if label in numbers or (node.attrs.get('id') and node.attrs['id'] != label):
-            raise ContentError(
-                f'Duplicate or conflicting equation label: {label}')
-        if r'\tag' in text:
-            raise ContentError(
-                'Labelled equations are numbered automatically; omit \\tag')
         number = len(numbers) + 1
         numbers[label] = number
         node.attrs['id'] = label
@@ -36,8 +27,6 @@ def prepare_equations(root):
             r'\[' + LABEL.sub('', match[1]) + rf'\tag{{{number}}}\]']
 
     def number(label):
-        if label not in numbers:
-            raise ContentError(f'Unknown equation reference: {label}')
         return f'({numbers[label]})'
 
     def link(label):
@@ -73,9 +62,6 @@ def prepare_equations(root):
                 visit(child)
                 children.append(child)
             else:
-                if r'\label{' in child:
-                    raise ContentError(
-                        'Equation labels belong inside a math-display element')
                 children.extend(expand(child))
         node.children = children
     visit(root)

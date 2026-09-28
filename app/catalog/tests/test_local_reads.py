@@ -142,9 +142,6 @@ class LocalReadTests(SimpleTestCase):
                     with self.subTest(identifier=identifier, read=read.__name__):
                         with self.assertRaises(FileNotFoundError):
                             read(identifier)
-        write_json(self.corpus / "nodes/proof.json", {"id": "wrong"})
-        with self.assertRaisesRegex(ValueError, "ID does not match path"):
-            read_node("proof")
 
     def test_missing_and_invalid_queries_still_fall_back_to_area(self):
         for source in ("missing", "../../outside"):
