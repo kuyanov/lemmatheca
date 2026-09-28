@@ -6,8 +6,8 @@ from catalog.progress import block_progress, entry_progress
 
 class ProgressBadgeTests(SimpleTestCase):
     nodes = {
-        "done": {"id": "done", "verified": True, "url": "/formal/nodes/done/"},
-        "pending": {"id": "pending", "verified": False, "url": "/formal/nodes/pending/"},
+        "done": {"id": "done", "verified": True, "url": "/node/done/"},
+        "pending": {"id": "pending", "verified": False, "url": "/node/pending/"},
     }
 
     def test_entry_and_block_badges_use_the_same_status_labels_and_icons(self):
@@ -62,7 +62,7 @@ class ProgressBadgeTests(SimpleTestCase):
                     self.assertIn('formalization-chevron', html)
                     for identifier in ids:
                         self.assertIn(
-                            f'href="/formal/nodes/{identifier}/"', html)
+                            f'href="/node/{identifier}/"', html)
                 else:
                     self.assertNotIn('<details', html)
                     self.assertNotIn('formalization-chevron', html)

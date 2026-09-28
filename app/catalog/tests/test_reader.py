@@ -56,20 +56,20 @@ class ReaderTests(SimpleTestCase):
             for block in entry["blocks"]:
                 self.assertContains(response, f'id="{block["id"]}"')
                 for node in block["formal_ids"] or []:
-                    self.assertContains(response, f'/formal/nodes/{node}/')
+                    self.assertContains(response, f'/node/{node}/')
         response = self.client.get("/entries/ordered-sets/")
         self.assertContains(
             response, '/entries/sets-and-maps/?from=ordered-sets&amp;at=partial-and-total-orders#pairs-and-relations')
         for identifier in records(settings.CORPUS_DIR, "node"):
             self.assertEqual(self.client.get(
-                f"/formal/nodes/{identifier}/").status_code, 200)
+                f"/node/{identifier}/").status_code, 200)
 
     def test_missing_records_and_read_only_views(self):
-        for url in ["/entries/missing/", "/formal/nodes/missing/", "/api/formal/nodes/missing/",
+        for url in ["/entries/missing/", "/node/missing/", "/api/node/missing/",
                     "/areas/set-theory/", "/areas/missing/"]:
             self.assertEqual(self.client.get(url).status_code, 404)
         for url in ["/", "/areas/logic-and-foundations/", "/entries/sets-and-maps/",
-                    "/formal/nodes/set/", "/api/formal/nodes/", "/api/formal/nodes/set/"]:
+                    "/node/set/", "/api/node/", "/api/node/set/"]:
             self.assertEqual(self.client.post(url).status_code, 405)
 
     def test_contextual_navigation_and_question_return(self):
@@ -102,8 +102,9 @@ class ReaderTests(SimpleTestCase):
         self.assertNotContains(response, "Draft")
         self.assertContains(response, "Formalization: 100%")
         self.assertNotContains(response, "awaiting maintainer review")
+        summary = read_entry_metadata("ordered-sets")["formalization"]
         self.assertContains(self.client.get(
-            "/entries/ordered-sets/"), "Formalization: Not started")
+            "/entries/ordered-sets/"), f"Formalization: {summary['label']}")
 
     def test_saved_entry_summaries_match_current_block_bindings_and_node_results(self):
         for identifier in records(settings.CORPUS_DIR, "entry"):
@@ -116,7 +117,7 @@ class ReaderTests(SimpleTestCase):
         nodes = records(settings.CORPUS_DIR, "node")
         identifier = "nat-membership-and-inclusion-example"
         with patch("subprocess.run", side_effect=AssertionError("Page requests must not run Lean")):
-            response = self.client.get(f"/formal/nodes/{identifier}/")
+            response = self.client.get(f"/node/{identifier}/")
         self.assertContains(response, nodes[identifier]["declaration"])
         self.assertContains(response, "Verified")
         self.assertNotContains(response, "View declaration")
@@ -125,16 +126,16 @@ class ReaderTests(SimpleTestCase):
             response, f'href="#L{nodes[identifier]["declaration_line"]}"')
         self.assertContains(response, 'class="source-line declaration-line"')
         self.assertContains(response, 'class="node-source-browser"')
-        library = self.client.get("/formal/nodes/set-subset-transitive/")
+        library = self.client.get("/node/set-subset-transitive/")
         self.assertContains(
             library, f'href="#L{nodes["set-subset-transitive"]["declaration_line"]}"')
         self.assertContains(library, 'class="source-line declaration-line"')
         self.assertNotContains(library, "Pinned")
-        api = self.client.get(f"/api/formal/nodes/{identifier}/").json()
+        api = self.client.get(f"/api/node/{identifier}/").json()
         self.assertEqual(api["url"], reverse(
             "catalog:node", args=[identifier]))
         self.assertEqual(reverse("catalog:node_detail", args=[
-                         identifier]), f"/api/formal/nodes/{identifier}/")
+                         identifier]), f"/api/node/{identifier}/")
         self.assertIn(api, self.client.get(
             reverse("catalog:node_list")).json()["nodes"])
         self.assertTrue(api["verified"])
@@ -152,12 +153,12 @@ class ReaderTests(SimpleTestCase):
                 before = add_progress(load_entry(
                     "sets-and-maps"))["formalization"]
                 write_json(path, {**node, "verified": False})
-                response = self.client.get("/formal/nodes/set/")
+                response = self.client.get("/node/set/")
                 self.assertContains(response, "Not verified")
                 self.assertContains(
                     response, f'href="#L{node["declaration_line"]}"')
                 self.assertFalse(self.client.get(
-                    "/api/formal/nodes/set/").json()["verified"])
+                    "/api/node/set/").json()["verified"])
                 after = add_progress(load_entry(
                     "sets-and-maps"))["formalization"]
                 self.assertEqual(after["complete"], before["complete"] - 1)
@@ -167,7 +168,7 @@ class ReaderTests(SimpleTestCase):
                 self.assertNotContains(entry, "Draft")
                 write_json(
                     path, {"id": "set", "description": "A set.", "verified": False})
-                response = self.client.get("/formal/nodes/set/")
+                response = self.client.get("/node/set/")
                 self.assertContains(response, "Not verified")
                 self.assertContains(response, "No Lean declaration")
                 self.assertNotContains(response, "View declaration")

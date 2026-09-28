@@ -16,7 +16,7 @@ uv run python app/manage.py runserver
 Open <http://127.0.0.1:8000/> and browse the area hierarchy to find entries.
 The reader provides a contents sidebar, next-entry links, and contextual back links
 that can reopen question answers.
-Formal nodes open from entry badges at `/formal/nodes/<id>/`; there is no separate
+Formal nodes open from entry badges at `/node/<id>/`; there is no separate
 Nodes section. Node pages show verification, the mathematical description, the
 Lean declaration, and a source browser with declaration line links.
 There is no database, migration step, or frontend build. KaTeX is bundled locally.

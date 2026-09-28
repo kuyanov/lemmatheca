@@ -124,16 +124,16 @@ class LocalReadTests(SimpleTestCase):
     def test_node_page_reads_only_node_and_direct_hints_and_api_only_node(self):
         with self.only_reads("nodes/proof.json", "nodes/hint.json") as reads:
             self.assertContains(self.client.get(
-                "/formal/nodes/proof/"), "Verified")
+                "/node/proof/"), "Verified")
         self.assertEqual(reads, {"nodes/proof.json": 1, "nodes/hint.json": 1})
         with self.only_reads("nodes/proof.json") as reads:
             self.assertTrue(self.client.get(
-                "/api/formal/nodes/proof/").json()["verified"])
+                "/api/node/proof/").json()["verified"])
         self.assertEqual(reads.total(), 1)
         write_json(self.corpus / "nodes/proof.json",
                    {"id": "proof", "verified": False})
         self.assertFalse(self.client.get(
-            "/api/formal/nodes/proof/").json()["verified"])
+            "/api/node/proof/").json()["verified"])
 
     def test_invalid_identifiers_never_open_files(self):
         with patch.object(Path, "open", side_effect=AssertionError("Invalid ID reached the filesystem")):
@@ -151,5 +151,5 @@ class LocalReadTests(SimpleTestCase):
             response = self.client.get("/entries/alpha/", {"from": source})
             self.assertEqual(
                 response.context["return_url"], "/areas/root/first/")
-        for url in ("/entries/missing/", "/formal/nodes/missing/", "/api/formal/nodes/../"):
+        for url in ("/entries/missing/", "/node/missing/", "/api/node/../"):
             self.assertEqual(self.client.get(url).status_code, 404)

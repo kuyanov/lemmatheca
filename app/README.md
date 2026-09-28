@@ -66,9 +66,9 @@ Page requests never launch Lean or write corpus data.
 | `/` | Area browsing and a featured entry |
 | `/areas/<path>/` | Subareas and entries listed for the area |
 | `/entries/<id>/` | Mathematical entry, references, questions, and block badges |
-| `/formal/nodes/<id>/` | Description, verification, Lean signature, dependencies, and source |
-| `/api/formal/nodes/` | All node records as JSON |
-| `/api/formal/nodes/<id>/` | One node record as JSON |
+| `/node/<id>/` | Description, verification, Lean signature, dependencies, and source |
+| `/api/node/` | All node records as JSON |
+| `/api/node/<id>/` | One node record as JSON |
 
 Reader and API routes accept GET and HEAD. There is no separate nodes index page.
 The API adds reader URLs and source paths to the saved node fields. Verification
