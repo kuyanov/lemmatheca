@@ -1,13 +1,28 @@
+# Step 3: Review the human entry
+
+Follow the [single-step execution instructions](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
+Complete this step using the supplied inputs and current repository files;
+return its deliverable without starting the next stage.
+
 Independently review the human mathematics and presentation of a Lemmatheca entry.
 
-Input
-- Entry ID: <entry-id>
+## Inputs
 
-Read README.md, corpus/README.md, app/README.md, and the complete entry, including
+- Entry ID (required): the existing entry to review.
+- Review focus or source material (optional): otherwise review the full entry and
+  inspect the sources cited in its metadata.
+
+## Context
+
+Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
+[app guide](../docs/app.md), and the complete entry, including
 metadata, cited passages, linked prerequisites, figures, proofs, and hidden answers.
 Judge the current files on their merits rather than relying on a prior summary.
 
+## Work
+
 Check the following:
+
 - Claims have the correct hypotheses, quantifiers, domains, codomains, and
   conclusions. Test relevant empty, singleton, boundary, finite, and infinite
   cases. Check both directions of equivalences and the witnesses in examples.
@@ -18,11 +33,21 @@ Check the following:
   and citations accurately support the material.
 - Prose avoids filler, repeated definitions and conclusions, and unnecessary
   meta-commentary while retaining essential hypotheses and logical transitions.
-- HTML, metadata, references, assets, and corpus/area_entries.json follow the
+- HTML, metadata, references, assets, and `corpus/area_entries.json` follow the
   current contract. Inspect the rendered page, including hidden answers and narrow
   layouts where relevant. Unplanned formal mappings are allowed at this stage.
 - The entry-list summary is generated data from the build, not an editorial
   approval. Flag missing or inconsistent generated data without fabricating it.
+
+## Checks
+
+```sh
+uv run python app/manage.py validate_corpus
+```
+
+This read-only check does not invoke Lean or refresh saved verification data.
+
+## Deliverable
 
 Return findings ordered by importance, with file/line or block references, why each
 issue matters, and a concrete correction. Separate mathematical errors from optional
@@ -34,6 +59,3 @@ formal nodes, or run the writing build command. Reader tests may be run to check
 rendering and references. Reviews and decisions belong in the GitHub pull request;
 return the findings here unless posting a review was explicitly requested. There
 is no app approval or draft/final flag to set.
-
-Run uv run python app/manage.py validate_corpus as a read-only structure and
-reference check. It does not invoke Lean or refresh saved verification data.

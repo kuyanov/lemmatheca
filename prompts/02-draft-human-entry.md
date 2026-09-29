@@ -1,14 +1,28 @@
+# Step 2: Draft the human entry
+
+Follow the [single-step execution instructions](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
+Complete this step using the supplied inputs and current repository files;
+return its deliverable without starting the next stage.
+
 Create the human-readable Lemmatheca entry before formalization.
 
-Inputs
-- Entry ID: <entry-id>
-- Agreed scope, reader, and prerequisites: <scope; audience; prerequisites>
-- Selected sources and outline: <source-selection result with citations>
-- Reading-time target: <rough upper bound, if any>
+## Inputs
 
-Read README.md, corpus/README.md, app/README.md, and prompts/README.md.
-Inspect nearby entries, corpus/taxonomy.json, and corpus/area_entries.json.
+- Entry ID and scope (required): use the task's requested topic and audience.
+- Selected sources and outline: use the supplied step-1 report or recover them
+  from the referenced planning material or existing entry. Identify any essential
+  source material that is unavailable rather than inventing it.
+- Reading-time target (optional): estimate from the finished content if omitted.
+- Review findings (optional): apply relevant findings when revising an entry.
+
+## Context
+
+Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
+[app guide](../docs/app.md), and [contribution workflow](../CONTRIBUTING.md).
+Inspect nearby entries, `corpus/taxonomy.json`, and `corpus/area_entries.json`.
 Preserve unrelated work and existing stable IDs when revising an entry.
+
+## Work
 
 1. Read the relevant source passages and write original, precise mathematics.
    State domains, codomains, hypotheses, quantifiers, and conventions where they
@@ -19,32 +33,44 @@ Preserve unrelated work and existing stable IDs when revising an entry.
    and reasoning when shortening. Match existing terminology, including "fiber" and
    "fibers". Treat the reading-time target as a guide, not a reason to omit necessary
    explanations or add padding. Estimate reading_time from the finished content.
-3. Organize coherent mathematical sections using the HTML contract in corpus/README.md.
+3. Organize coherent mathematical sections using the HTML contract in [corpus guide](../docs/corpus.md).
    Use stable block IDs, supported data-kind values, and one direct h2 per block.
    Let the reader generate numbering, navigation, and equation/figure/table labels.
-   Use #block-id for local references and entry-id#block-id across entries. Prefer
+   Use `#block-id` for local references and `entry-id#block-id` across entries. Prefer
    empty local links for generated numbering and meaningful cross-entry link text.
    Use collapsible question answers. Figures and tables need stable IDs and captions
    without hard-coded numbers; images need useful alternative text. Keep Lean names
    and build-process details out of the exposition.
-4. Write corpus/entries/<entry-id>/entry.html and entry.json, plus necessary assets.
-   Use the author-maintained metadata fields and verified based_on citations from
-   corpus/README.md. Choose a primary area and list the ID once, in reading order,
-   under that area in corpus/area_entries.json. There are no review or editorial
+4. Write `corpus/entries/<entry-id>/entry.html` and entry.json, plus necessary assets.
+   Use the author-maintained metadata fields and inspected `based_on` citations from
+   [corpus guide](../docs/corpus.md). Choose a primary area and list the ID once, in reading order,
+   under that area in `corpus/area_entries.json`. There are no review or editorial
    status fields to add.
 5. Leave data-formal absent for new blocks. An empty mapping means nothing needs
    formalizing, not that work is unfinished. Preserve existing mappings on an
    edited entry unless the changed mathematics requires revisiting them. Do not
    create new Lean declarations or node records in this drafting step.
 
-Run uv run python app/manage.py validate_corpus during authoring; it does not need
-Lean or generated results. Before submitting changes, run uv run python app/manage.py build, then uv run python app/manage.py test catalog.
-The build uses the existing Lean project and generates entry.json's formalization
+## Checks
+
+Run from the repository root:
+
+```sh
+uv run python app/manage.py validate_corpus
+uv run python app/manage.py build
+uv run python app/manage.py test catalog
+```
+
+Validation can also run during authoring without Lean or generated results.
+The build uses the existing Lean project and generates `entry.json`'s `formalization`
 summary; do not calculate or edit it by hand. Keep generated JSON changes with the
 source edits. A failed build preserves previous results, so it is not a successful
 refresh. Report a blocker in unrelated work without altering that work to bypass it.
 
 Inspect the rendered entry, including equations, references, hidden answers, tables,
 and figures. Restart the development server if adding a new assets directory.
+
+## Deliverable
+
 Return the changed files, the checks performed, and unresolved mathematical or source
 questions for GitHub review. Describe any visual checks that could not be completed.

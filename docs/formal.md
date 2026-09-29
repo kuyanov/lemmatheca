@@ -1,10 +1,12 @@
 # Lean project
 
-All active formalizations share the Lake project in this directory. The environment
-is pinned by [lean-toolchain](lean-toolchain), [lakefile.toml](lakefile.toml), and
-[lake-manifest.json](lake-manifest.json). Use those files as the version authority;
+All active formalizations share the Lake project in [`formal/`](../formal/).
+The environment is pinned by [lean-toolchain](../formal/lean-toolchain),
+[lakefile.toml](../formal/lakefile.toml), and
+[lake-manifest.json](../formal/lake-manifest.json). Use those files as the version authority;
 keep their pins fixed unless an environment upgrade is part of the task. The Lean
-environment and dependency sources are assumed to be installed.
+environment and dependency sources are assumed to be installed; see the
+[setup instructions](../README.md#lean-environment) for a fresh checkout.
 
 ## Formal nodes
 
@@ -50,7 +52,7 @@ specializations and equivalent formulations. Avoid wrappers whose only purpose i
 to rename, reverse, or bundle existing results. Explain representation changes in
 the GitHub review, and check domains, quantifiers, conventions, and assumptions.
 Several nodes may collectively cover a block, and one node may serve several blocks.
-See the [mapping contract](../corpus/README.md#block-to-node-mapping).
+See the [mapping contract](corpus.md#block-to-node-mapping).
 
 `dependencies` contains direct proof-planning hints. It is not a reading order,
 a list of every concept in a statement, or an extracted Lean dependency graph.
@@ -59,7 +61,8 @@ hint's verification flag does not determine the node's flag. Lean's actual use o
 an unfinished declaration does affect verification, even if that declaration is
 not listed as a hint.
 
-Put local modules under `Lemmatheca/` and import them from `Lemmatheca.lean`.
+Put local modules under `formal/Lemmatheca/` and import them from
+`formal/Lemmatheca.lean`.
 Use appropriate namespaces for reusable mathematics and
 `Lemmatheca.Entry.<EntryName>` for entry-specific examples. Keep related declarations
 together rather than creating nearly empty modules. Use the existing Lean project;
@@ -76,7 +79,7 @@ uv run python app/manage.py test catalog
 ```
 
 The build reads the node registry, builds `Lemmatheca` and the bound non-core
-modules, and checks each registered declaration with `Lemmatheca/ProofStatus.lean`.
+modules, and checks each registered declaration with `formal/Lemmatheca/ProofStatus.lean`.
 Core modules are supplied by the toolchain. The checker collects transitive axioms:
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed. Direct or inherited
 `sorryAx`, or additional axioms, give `verified: false`. Definitions use the same
@@ -104,7 +107,7 @@ The [CI workflow](../.github/workflows/ci.yml) validates the corpus, installs th
 pinned environment, checks source availability, runs the tests and build, then checks that committed node results and entry
 summaries match regenerated files. The tests exercise successful, unfinished,
 unsupported-axiom, missing-declaration, and failed builds in an isolated Lean project.
-`.lake/` contains ignored local dependencies and build output.
+`formal/.lake/` contains ignored local dependencies and build output.
 
 ## Review and proving
 
@@ -114,7 +117,7 @@ Lean declaration; it does not prove that the description or entry says the same
 thing. Review the mathematical text, block coverage, and description-to-declaration
 correspondence separately.
 
-Use the [entry workflow prompts](../prompts/README.md). Preserve the intended
+Use the [contribution workflow](../CONTRIBUTING.md). Preserve the intended
 statement and definitions while replacing unfinished proofs. Use unregistered
 helpers for routine proof steps; add a node only when it represents useful
 mathematical coverage. Keep proof-search or translation logs outside corpus

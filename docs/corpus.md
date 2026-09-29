@@ -155,12 +155,13 @@ is empty. Wholly unplanned entries display Not started; partly unplanned entries
 display Partial. These are formalization summaries, not GitHub review decisions.
 Node pages themselves display only Verified or Not verified.
 
-The [Lean guide](../formal/README.md#formal-nodes) defines node records, descriptions,
+The [Lean guide](formal.md#formal-nodes) defines node records, descriptions,
 bindings, and the distinction between proof-planning hints and actual Lean dependencies.
 
 ## Authoring and checks
 
-Use the [authoring prompts](../prompts/README.md). Review the human mathematics and
+Use the [contribution workflow](../CONTRIBUTING.md) and its per-step prompts.
+Review the human mathematics and
 the description-to-declaration correspondence separately on GitHub; a passing Lean
 check does not establish that the intended statement was formalized.
 
@@ -198,5 +199,5 @@ uv run python app/manage.py test catalog
 The build checks declarations, parses entries, and refreshes node data and entry-list
 summaries. Reader smoke tests also exercise representative pages and references. Inspect the edited
 pages for mathematical layout, working links, questions, and figures. CI checks
-that the generated JSON matches the committed files. See [app/README.md](../app/README.md)
+that the generated JSON matches the committed files. See the [app guide](app.md)
 for serving and deployment.

@@ -1,143 +1,132 @@
 # Lemmatheca
 
-A library of mathematical entries and formal nodes, served by a small Django app.
-The corpus is stored in files; formal proofs share one Lean project.
-Reviews happen on GitHub and are not tracked by the app.
+Lemmatheca aims to bring mathematics together in a connected library of readable
+explanations and computer-checked results. An **entry** develops a topic through
+definitions, theorems, proofs, examples, and questions. A **node** records one
+reusable mathematical definition or claim and connects it to a declaration in
+[Lean](https://lean-lang.org/), a language that checks formal mathematical proofs.
+Different entries can share the same nodes.
 
-## Run
+The website lets readers browse mathematical areas, follow references between
+entries, and inspect the formal statements and proofs behind an entry's blocks.
+The content lives in HTML and JSON files, so writing, reviewing, and changing it
+uses the same Git workflow as the application code.
 
-With Python 3.12–3.14 and uv installed:
+## Plan
+
+Grow the library topic by topic: choose sources, write clear exposition, review
+the mathematics, connect its claims to formal nodes, review those connections,
+and complete the proofs. Human exposition can be contributed before its
+formalization is ready.
+
+The long-term aim is broad mathematical coverage with reusable results across
+subjects. The project keeps one shared Lean library, favors existing results in
+mathlib (Lean's community mathematics library), and keeps the reader simple as the
+corpus grows. Human review takes place on GitHub; Lean verification is a separate
+check. A correct formal proof still needs review to establish that it expresses
+the intended mathematics.
+
+## Main components
+
+| Location | Purpose |
+| --- | --- |
+| [`corpus/`](corpus/) | Entries, figures, node records, mathematical areas, and reading order; see the [corpus guide](docs/corpus.md) |
+| [`formal/`](formal/) | One Lean project containing local definitions and proofs, with pinned mathlib dependencies; see the [formalization guide](docs/formal.md) |
+| [`app/`](app/) | A Django reader, templates, CSS, JavaScript, and commands for validation and builds; see the [app guide](docs/app.md) |
+| [`prompts/`](prompts/) | Six independently runnable Markdown instructions for authors and AI agents |
+| [`docs/`](docs/README.md) | Detailed documentation and maintenance guides |
+
+There is no database, migration step, or frontend build. The server reads local
+files; the build precomputes verification summaries so listing pages need only
+entry metadata. KaTeX, used to display mathematical notation, is bundled locally.
+
+## Setup
+
+Clone this repository and open a terminal in its root directory. You need Git,
+Python 3.12–3.14, [uv](https://docs.astral.sh/uv/getting-started/installation/) for
+Python dependencies, and Lean for proof builds, node source browsing, and the full
+test suite. Commands below run from the repository root unless they explicitly
+change directory.
+
+### Python environment
+
+Install uv using its linked platform instructions. On macOS or Linux:
 
 ```sh
-uv sync --locked
-uv run python app/manage.py runserver
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Open <http://127.0.0.1:8000/> and browse the area hierarchy to find entries.
-The reader provides a contents sidebar, next-entry links, and contextual back links
-that can reopen question answers.
-Formal nodes open from entry badges at `/node/<id>/`; there is no separate
-Nodes section. Node pages show verification, the mathematical description, the
-Lean declaration, and a source browser with declaration line links.
-There is no database, migration step, or frontend build. KaTeX is bundled locally.
-The read-only node API is documented in [app/README.md](app/README.md).
-
-## Verification
-
-With the pinned Lean environment available:
+Open a new terminal if needed so `uv` is on your `PATH`. Then install a supported
+Python and the locked project dependencies:
 
 ```sh
-uv run python app/manage.py build
-```
-
-The command builds the project and updates the single `verified` status flag in
-every node JSON. A node is **Verified** when its Lean declaration checks without
-`sorry`, including in any transitive dependency. Otherwise it is **Not verified**.
-Additional axioms beyond Lean's usual logical foundations also prevent verification.
-Definitions use the same check. Unbound nodes remain not verified.
-Entry and block badges summarize the proportion of verified nodes.
-The build also saves each entry's derived `formalization` summary in `entry.json`,
-so area listings need no HTML parsing or node reads. Rerun it after changing entry
-HTML or formal node bindings, and commit the updated entry metadata as well.
-
-The single `module` field identifies the declaration's defining module and is
-used for both imports and source browsing. The build refreshes it from Lean and
-saves the declaration signature and source line. Build or declaration errors exit
-unsuccessfully without writing node JSON or entry summaries; previous data stays intact.
-Entry summaries are also validated before any results are saved.
-
-Verification reflects the last successful build; serving a page does not check
-whether Lean sources have changed. Rerun the command after changing Lean code or
-bindings, then commit the updated node JSON and entry summaries with the sources.
-See [formal/README.md](formal/README.md) for the verification rules.
-
-## Layout
-
-- [`corpus/`](corpus/README.md): entries, nodes, assets, taxonomy, and `area_entries.json`.
-- [`app/`](app/README.md): Django settings, reader, templates, and local assets.
-- [`formal/`](formal/README.md): the single active Lean project.
-- `app/catalog/management/commands/build.py`: the Lean build command.
-- [`prompts/`](prompts/README.md): reusable entry authoring, review, and proving prompts.
-
-The backend is one Django app, `catalog`. Its `urls.py` and `views.py` serve
-entries, nodes, and the node API. `entry_files.py` handles entry HTML, metadata,
-navigation files, and asset checks; `node_files.py` handles node JSON, Lean source
-files, and saving build results. `content.py` prepares reader data, `sources.py`
-renders entry HTML, and `progress.py` computes verification summaries.
-
-Requests read individual records through `read_entry(id)`, `read_entry_metadata(id)`,
-and `read_node(id)`. `corpus/area_entries.json` lists each area's entries in reading
-order and supplies navigation counts. Home and next-entry links need metadata only;
-entry pages load their own nodes and directly referenced entries, while node pages
-load only their node and direct dependency hints. Area pages read only the listed
-entries' JSON metadata, including their precomputed badges. Repeated references
-are reused within a response; there is no server-side catalog cache to invalidate.
-The full node API and build command read all nodes because their output covers
-the whole collection.
-
-## Contributing
-
-Use the [authoring workflow](prompts/README.md) to choose sources, draft an entry,
-review its mathematics, prepare formal bindings, review their correspondence, and
-prove the selected statements. The [corpus guide](corpus/README.md) defines HTML,
-metadata, links, and block mappings; the [Lean guide](formal/README.md) covers nodes
-and proofs.
-
-Reviews and their decisions belong in GitHub pull requests. The app stores no
-entry or node approvals, review hashes, or review dates. A verified Lean declaration
-still needs human review of its correspondence to the prose. Keep entry and block
-IDs stable, reuse existing nodes where they cover the same mathematics, and include
-generated JSON changes in the pull request.
-
-Run `validate_corpus` during drafting and after source or binding changes. Before
-submitting, run the build before the tests so stored entry summaries match the
-edited content. Inspect the rendered entry and linked node pages as part of review.
-Keep experiment logs and temporary proof attempts outside corpus metadata.
-
-## Checks
-
-At any authoring stage, without Lean or a prior build:
-
-```sh
+uv python install 3.12
+uv sync --locked --python 3.12
 uv run python app/manage.py validate_corpus
 ```
 
-This read-only command checks entry metadata and HTML structure, references,
-assets, node records and dependency hints, the area hierarchy, and reading order.
-It reads one record at a time and does not render pages. Unplanned blocks, unbound
-nodes, and absent or stale generated results are allowed. Use `--check-sources`
-to also check the installed Lean source files. Proof correctness and generated
-result freshness remain the build's responsibility.
+uv creates a local `.venv/`; `uv run` uses it without manual activation.
+`validate_corpus` checks content structure and references without Lean, a prior
+build, or any file writes, so it is also useful while drafting an entry.
+
+### Lean environment
+
+Install [Elan, Lean's version manager](https://github.com/leanprover/elan#installation).
+On macOS or Linux:
 
 ```sh
+curl https://elan.lean-lang.org/elan-init.sh -sSf | sh
+```
+
+For Windows, use the installer on the linked Elan page. Open a new terminal after
+installation so `elan`, `lean`, and `lake` are on your `PATH`. Lake is Lean's build
+and dependency tool; Elan selects the version pinned by this repository when run
+inside `formal/`.
+
+From the repository root:
+
+```sh
+cd formal
+lake --version
+lake exe cache get
+cd ..
+uv run python app/manage.py build
+uv run python app/manage.py validate_corpus --check-sources
 uv run python app/manage.py test catalog
 ```
 
-Tests live in `app/catalog/tests/` and require the pinned Lean environment.
-They check representative pages, corpus validation, verification badges, and
-result persistence.
-The build command is also exercised in an isolated Lean project with completed
-proofs, direct and inherited `sorry`, unsupported axioms, missing declarations,
-and failed builds. To run just those build tests:
+The first Lake command installs the pinned toolchain if it is missing.
+`lake exe cache get` fetches dependencies and cached mathlib build files, avoiding
+compiling the whole library locally. Initial setup needs network access and can
+take time. Keep [lean-toolchain](formal/lean-toolchain),
+[lakefile.toml](formal/lakefile.toml), and [lake-manifest.json](formal/lake-manifest.json)
+unchanged during ordinary authoring; `lake update` is for dependency upgrades.
+
+The Django `build` command compiles Lean and refreshes node verification,
+declaration signatures, source lines, and entry summaries. **Verified** means
+the declaration uses no unfinished proof (`sorry`), including through its actual
+dependencies, and no unsupported axioms. A build can succeed with unfinished
+nodes marked **Not verified**. A compilation or declaration-check failure leaves
+previous saved results intact. See the [verification rules](docs/formal.md#build-and-verification).
+
+### Run the reader
 
 ```sh
-uv run python app/manage.py test catalog.tests.test_build
+uv run python app/manage.py runserver
 ```
 
-CI validates the corpus before installing Lean, checks installed sources, runs the
-suite, builds the corpus proofs, and checks that committed proof data and entry
-summaries match.
+Open <http://127.0.0.1:8000/>. Browse an area to open an entry, then use its
+formalization badges to inspect nodes and their Lean sources. Verification badges
+reflect the last successful build; requests do not run Lean. After changing
+content mappings or proofs, rerun `build` and include the generated JSON changes.
+Stop the development server with Ctrl+C.
 
-To measure response times and corpus file reads:
+For production settings, the read-only API, and performance details, see the
+[app guide](docs/app.md).
 
-```sh
-uv run python app/manage.py shell -c 'from catalog.tests.benchmark_reader import benchmark; benchmark()'
-```
+## Contributing
 
-This measures 50 responses per route after five warmup requests, with `DEBUG=False`.
-It reports median and p95 milliseconds through Django's request handler, including
-file reads and template rendering but excluding HTTP transport and static assets.
-
-For deployment, set `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, and
-`DJANGO_ALLOWED_HOSTS`, serve `config.wsgi:application` from `app/`, and serve the
-output of `uv run python app/manage.py collectstatic` at `/static/`.
+Start with [CONTRIBUTING.md](CONTRIBUTING.md). It describes the complete six-step
+pipeline, what each step produces, how to run an individual step with an AI agent,
+and which checks to run before submitting changes. The [documentation index](docs/README.md)
+links to the content contracts, proof rules, and app maintenance guide.

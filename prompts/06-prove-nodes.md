@@ -1,14 +1,29 @@
+# Step 6: Prove nodes
+
+Follow the [single-step execution instructions](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
+Complete this step using the supplied inputs and current repository files;
+return its deliverable without starting the next stage.
+
 Prove the selected formal nodes for a Lemmatheca entry.
 
-Inputs
-- Entry ID: <entry-id>
-- Node selection and constraints: <requested scope>
-- Mode: <corpus proving, human-proof translation, or measured experiment>
-- Relevant GitHub review findings or run specification: <context, if any>
+## Inputs
 
-Read README.md, corpus/README.md, formal/README.md, and prompts/README.md.
+- Entry ID or explicit node selection (required): identify the requested targets.
+  For an entry with no narrower selection, work on its remaining unfinished nodes.
+- Constraints and GitHub review findings (optional): use the supplied scope and
+  mathematical decisions; inspect the actual sources before relying on saved flags.
+- Mode (optional): default to corpus proving. Use human-proof translation or a
+  measured experiment only when requested, with the relevant proof or run
+  specification supplied.
+
+## Context
+
+Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
+[formalization guide](../docs/formal.md), and [contribution workflow](../CONTRIBUTING.md).
 Inspect the human entry, selected node descriptions and declarations, proof-planning
 hints, and Lean sources. Preserve unrelated work and the pinned environment.
+
+## Work
 
 1. Establish which selected proofs are unfinished from the actual sources and
    relevant checks. The verified flag records the last successful build, not a
@@ -39,19 +54,30 @@ hints, and Lean sources. Preserve unrelated work and the pinned environment.
    or unchecked shortcuts. Use the single formal/ project and keep module organization
    compact. Update imports and module bindings when a permitted source move requires it.
 
-Run uv run python app/manage.py validate_corpus during authoring; it does not need
-Lean or generated results. Before submitting changes, run uv run python app/manage.py build, then uv run python app/manage.py test catalog.
+## Checks
+
+Run from the repository root:
+
+```sh
+uv run python app/manage.py validate_corpus
+uv run python app/manage.py build
+uv run python app/manage.py test catalog
+```
+
+Validation can also run during authoring without Lean or generated results.
 The build checks the whole registry, including transitive axioms, and regenerates
 node verification/signatures/source lines and entry-list summaries. Commit generated
-corpus/nodes/*.json and corpus/entries/*/entry.json changes with the proofs. A plain
-lake build is useful while working but does not update this JSON.
+`corpus/nodes/*.json` and `corpus/entries/*/entry.json` changes with the proofs. A plain
+`lake build` is useful while working but does not update this JSON.
 
 Failed compilation or declaration checks leave previous results intact. Treat that
 as a failed refresh, not proof of the current source state. Fix failures in scope
 and report unrelated blockers without discarding saved data or changing unrelated
-statements. After a successful build, confirm completed nodes have verified: true
+statements. After a successful build, confirm completed nodes have `verified: true`
 and no direct or inherited sorry. Unfinished proofs can compile while remaining
 Not verified, so a successful build is not by itself a completion claim.
+
+## Deliverable
 
 Return proved node IDs, checks performed, any statement/binding changes needing
 GitHub review, and deviations from the human argument. List remaining selected

@@ -1,13 +1,27 @@
+# Step 5: Review correspondence
+
+Follow the [single-step execution instructions](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
+Complete this step using the supplied inputs and current repository files;
+return its deliverable without starting the next stage.
+
 Independently audit correspondence between a Lemmatheca entry and its formal
 bindings. Check collective coverage and redundancy, not one-to-one matching.
 
-Input
-- Entry ID: <entry-id>
+## Inputs
 
-Read README.md, corpus/README.md, formal/README.md, the full entry, linked node
+- Entry ID (required): the existing entry whose formal bindings should be audited.
+- Preparation report or review focus (optional): use it as context, while checking
+  coverage independently against the current files.
+
+## Context
+
+Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
+[formalization guide](../docs/formal.md), the full entry, linked node
 records, and the actual Lean declarations. Inspect referenced definitions and
 saved signatures alongside the sources. Saved verification describes the last
 successful build; it is not a live freshness check or evidence of correspondence.
+
+## Work
 
 1. Make a coverage table by block: human definitions and claims, covering node IDs,
    specialization or representation bridges, and gaps. Include examples, hidden
@@ -19,7 +33,9 @@ successful build; it is not a live freshness check or evidence of correspondence
    set for complements, and codomains for surjectivity and composition. Inspect
    conventions involving total operations, subtypes, and cardinalities. A more
    general library result is a valid binding only when the specialization covers
-   the human claim; record that specialization explicitly.
+   the human claim; record that specialization explicitly. For custom types,
+   inspect elaborated expressions to check which order or other instance Lean
+   actually selected, especially in comparisons involving concrete literals.
 3. Find opportunities to reuse nodes and library declarations, unnecessary wrappers,
    duplicate targets, redundant directions of equivalences, and repeated coverage.
    Explain why each proposed removal preserves the human claims. Do not discard
@@ -38,6 +54,16 @@ successful build; it is not a live freshness check or evidence of correspondence
    results. If build output is missing or stale, report that it needs regeneration
    with app/manage.py build; do not infer fresh verification from old JSON.
 
+## Checks
+
+```sh
+uv run python app/manage.py validate_corpus
+```
+
+This read-only check does not invoke Lean or refresh saved verification data.
+
+## Deliverable
+
 Return findings with concrete file/block/node references, their consequences, and
 suggested changes, followed by the coverage table and checks performed. Distinguish
 incorrect bindings, missing coverage, unstated representation bridges, and optional
@@ -49,6 +75,3 @@ proofs, and do not run the writing build command. Review decisions belong in the
 GitHub pull request; return findings here unless posting was explicitly requested.
 There are no approval records, hashes, or review dates to update in the app. Human
 text and rendering still need their own review even when the Lean proof is verified.
-
-Run uv run python app/manage.py validate_corpus as a read-only structure and
-reference check. It does not invoke Lean or refresh saved verification data.

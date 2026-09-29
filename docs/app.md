@@ -20,7 +20,7 @@ uv run python app/manage.py runserver
 The build assumes the pinned Lean environment is installed. It updates node
 verification and precomputes entry-list badges. Run it after editing entry HTML,
 node bindings, or Lean code, and include the generated JSON in the change.
-See the [corpus guide](../corpus/README.md) and [Lean guide](../formal/README.md).
+See the [corpus guide](corpus.md) and [Lean guide](formal.md).
 
 Open <http://127.0.0.1:8000/>. Existing content files are read on each request;
 there is no persistent catalog cache. Restart the server when adding an entry's
@@ -29,7 +29,8 @@ also require a restart when running with `--noreload`.
 
 ## Code layout and reads
 
-The backend is a single Django app, `catalog`:
+The backend is a single Django app, `catalog`. Paths in this table are relative
+to `app/`:
 
 | File | Responsibility |
 | --- | --- |
@@ -45,8 +46,9 @@ The backend is a single Django app, `catalog`:
 | `catalog/management/commands/` | Independent `validate_corpus` and Lean `build` commands |
 | `catalog/tests/` | Reader, locality, summary, and Lean-build checks |
 
-`config/` contains settings, URL inclusion, middleware, and the WSGI entry point.
-`templates/` and `static/` contain presentation and local vendor assets.
+`app/config/` contains settings, URL inclusion, middleware, and the WSGI entry point.
+`app/templates/` and `app/static/` contain presentation and
+[local vendor assets](vendor.md).
 
 Requests use `read_entry(id)`, `read_entry_metadata(id)`, and `read_node(id)`.
 Home, area listings, and next-entry navigation use JSON metadata. In particular,
@@ -84,7 +86,7 @@ link declaration lines into the local source browser. The server is expected to
 have project, dependency, and pinned toolchain sources installed; there is no
 upstream-source fallback. Login and contribution controls are presentation placeholders.
 
-## Checks and deployment
+## Checks
 
 Run `uv run python app/manage.py validate_corpus` while editing. It is independent
 of the build and permits missing or stale generated results. The optional
@@ -96,7 +98,25 @@ changes to committed node data or entry summaries. Build tests exercise a separa
 temporary Lean project. Locality tests prevent area and detail views from loading
 unrelated content.
 
-The [root README](../README.md#checks) documents the optional response benchmark.
+To run only the isolated Lean-build tests:
+
+```sh
+uv run python app/manage.py test catalog.tests.test_build
+```
+
+### Response benchmark
+
+To measure response times and corpus file reads:
+
+```sh
+uv run python app/manage.py shell -c 'from catalog.tests.benchmark_reader import benchmark; benchmark()'
+```
+
+This measures 50 responses per route after five warmup requests, with `DEBUG=False`.
+It reports median and p95 milliseconds through Django's request handler, including
+file reads and template rendering but excluding HTTP transport and static assets.
+
+## Deployment
 
 Validate the deployed corpus with `validate_corpus --check-sources` before serving it.
 For deployment, set `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, and explicit
