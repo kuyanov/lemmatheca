@@ -4,12 +4,12 @@ These prompts describe the active repository architecture. Paths inside a prompt
 are relative to the repository root. Fill in the inputs before using a prompt and
 carry the agreed scope and relevant review findings into the next step.
 
-1. [Choose sources and scope](add-entry/01-choose-sources.txt).
-2. [Draft the human entry](add-entry/02-draft-human-entry.txt).
-3. [Review the human mathematics and presentation](add-entry/03-review-human-entry.txt).
-4. [Prepare formal nodes and block bindings](add-entry/04-prepare-formal-nodes.txt).
-5. [Review correspondence and coverage](add-entry/05-review-correspondence.txt).
-6. [Prove the selected nodes](add-entry/06-prove-nodes.txt).
+1. [Choose sources and scope](01-choose-sources.txt).
+2. [Draft the human entry](02-draft-human-entry.txt).
+3. [Review the human mathematics and presentation](03-review-human-entry.txt).
+4. [Prepare formal nodes and block bindings](04-prepare-formal-nodes.txt).
+5. [Review correspondence and coverage](05-review-correspondence.txt).
+6. [Prove the selected nodes](06-prove-nodes.txt).
 
 Reviews produce findings for the GitHub pull request. They do not update approval
 fields or automatically publish, approve, or merge anything. Address findings as
