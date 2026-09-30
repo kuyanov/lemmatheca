@@ -42,6 +42,7 @@ to `app/`:
 | `catalog/sources.py`, `catalog/equations.py` | Trusted HTML parsing, references, equation labels, and rendering |
 | `catalog/progress.py` | Shared entry/block verification summaries |
 | `catalog/proofs.py` | Lean build, declaration checks, and entry-summary generation |
+| `catalog/statistics.py` | Build-time corpus totals and contributor count; direct snapshot read for the home page |
 | `catalog/validation.py` | Offline metadata, HTML, reference, and hierarchy validation |
 | `catalog/management/commands/` | Independent `validate_corpus` and Lean `build` commands |
 | `catalog/tests/` | Reader, locality, summary, and Lean-build checks |
@@ -51,7 +52,8 @@ to `app/`:
 [local vendor assets](vendor.md).
 
 Requests use `read_entry(id)`, `read_entry_metadata(id)`, and `read_node(id)`.
-Home, area listings, and next-entry navigation use JSON metadata. In particular,
+Home reads only taxonomy, reading order, and `corpus/statistics.json`. Area listings
+and next-entry navigation use JSON metadata. In particular,
 area pages use the saved `formalization` summary: they open neither entry HTML nor
 node JSON. The small taxonomy and `area_entries.json` index provide area navigation
 and reading order.
@@ -70,7 +72,7 @@ and area URLs still protect filesystem access and return 404 for invalid routes.
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Area browsing and a featured entry |
+| `/` | Area browsing, corpus counts, and entry/node verification totals |
 | `/areas/<path>/` | Subareas and entries listed for the area |
 | `/entries/<id>/` | Mathematical entry, references, questions, and block badges |
 | `/node/<id>/` | Description, verification, Lean signature, dependencies, and source |
@@ -84,7 +86,24 @@ comes from the saved `verified` flag, not a live proof check or GitHub review st
 Node pages render plain-text descriptions with math, escape the Lean source, and
 link declaration lines into the local source browser. The server is expected to
 have project, dependency, and pinned toolchain sources installed; there is no
-upstream-source fallback. Login and contribution controls are presentation placeholders.
+upstream-source fallback. Login is a presentation placeholder; the contribution
+dialog links to the GitHub repository and explains how to get involved.
+
+### Home-page statistics
+
+`build` saves `corpus/statistics.json` after all proof checks and summary preparation
+succeed. It records entry and node totals, verified totals, and the contributor
+count. The home page counts all areas in the taxonomy, including subareas.
+The statistics grid uses decorative icons for entries, nodes, areas, and
+contributors, with verification totals shown as text.
+
+Contributors are distinct author names from `git shortlog --summary HEAD`, which
+respects `.mailmap`. They are repository commit authors, not the authors of cited
+sources. Refresh the build after a new contributor's first commit; uncommitted
+work is not part of Git history. CI checks out full history for this calculation.
+Shallow checkouts and source archives retain the previous count, or display an
+unknown count if no snapshot exists. Serving pages needs neither Git nor network
+access. Before the first build, unavailable statistics display a dash.
 
 ## Checks
 

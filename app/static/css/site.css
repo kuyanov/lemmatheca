@@ -172,7 +172,7 @@ button {
 
 .home-intro {
   display: grid;
-  grid-template-columns: 1fr 330px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 48px;
   align-items: center;
   padding: var(--space-xl) 0;
@@ -193,66 +193,100 @@ button {
   max-width: 610px
 }
 
-.featured-proof {
-  background: var(--soft-green);
-  padding: 20px 24px;
-  border-radius: 4px;
-  transition: background .2s
+.library-overview {
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #d5dfd2;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f1f5ed, #f8f9f4);
 }
 
-.featured-proof:hover {
-  background: #e5ecdf
+.library-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
 }
 
-.featured-proof>.eyebrow {
-  display: flex;
-  justify-content: space-between
+.library-metric {
+  min-width: 0;
+  padding: 24px 28px;
 }
 
-.featured-drawing {
+.library-metric:nth-child(odd) {
+  border-right: 1px solid #dce3d6;
+}
+
+.library-metric:nth-child(-n+2) {
+  border-bottom: 1px solid #dce3d6;
+}
+
+.library-metric dt {
+  font-size: clamp(16px, 1.4vw, 18px);
+  font-weight: 500;
+  line-height: 1.4;
+  color: #52654f;
+}
+
+.library-metric dd {
+  margin: 0;
+}
+
+.metric-visual {
   display: flex;
   align-items: center;
-  gap: 13px;
-  height: 36px;
-  margin-top: 4px;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 80px;
+  padding-bottom: 8px;
 }
 
-.featured-drawing span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--green)
+.metric-value {
+  font: 48px/1 var(--serif);
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -1.5px;
+  color: var(--green);
 }
 
-.featured-drawing i {
-  font-style: normal;
-  font-size: 23px;
-  color: #799180;
-  margin: 0 3px
+.metric-icon,
+.metric-tree,
+.metric-people {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  stroke: #7f9686;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.featured-drawing span:nth-of-type(n+4) {
-  background: #fff;
-  border: 1px solid var(--green)
+.metric-icon-fill {
+  fill: #dce7d5;
 }
 
-.featured-category {
+.metric-node-center {
+  fill: #7b9768;
+  stroke: #7b9768;
+}
+
+.metric-tree circle {
+  fill: #dce7d5;
+  stroke: #7b9768;
+}
+
+.metric-tree circle:first-of-type {
+  fill: #7b9768;
+}
+
+.metric-people circle {
+  fill: #e5e8d9;
+}
+
+.metric-detail {
+  display: block;
   font-size: 11px;
-  color: #667c69
-}
-
-.featured-proof h2 {
-  font-family: var(--serif);
-  font-size: 24px;
-  line-height: 1.2;
-  margin-top: 6px;
-  letter-spacing: -.5px
-}
-
-.featured-proof p {
-  font-size: 12px;
-  color: #687768;
-  margin: 8px 0 12px;
+  line-height: 1.5;
+  color: #61715c;
 }
 
 .text-link {
@@ -1333,6 +1367,17 @@ button {
   margin-bottom: 20px;
 }
 
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dialog-actions [hidden] {
+  display: none;
+}
+
 .skip-link {
   position: fixed;
   top: 10px;
@@ -1360,15 +1405,26 @@ button {
 
   .home-intro {
     gap: 28px;
-    grid-template-columns: 1fr 290px
   }
 
   .home-intro h1 {
     font-size: 46px;
   }
 
-  .featured-proof {
-    padding: 20px;
+  .library-metric {
+    padding: 20px 18px;
+  }
+
+  .metric-value {
+    font-size: 38px;
+  }
+
+  .metric-icon,
+  .metric-tree,
+  .metric-people {
+    flex-basis: 44px;
+    width: 44px;
+    height: 44px;
   }
 
   .area-grid {
@@ -1444,27 +1500,6 @@ button {
 
   .intro-text {
     font-size: 14px
-  }
-
-  .featured-proof {
-    padding: 16px 20px;
-  }
-
-  .featured-drawing {
-    display: none
-  }
-
-  .featured-category {
-    display: block;
-    margin-top: 10px;
-  }
-
-  .featured-proof h2 {
-    font-size: 24px;
-  }
-
-  .featured-proof p {
-    margin-bottom: 10px;
   }
 
   .section-heading {
@@ -1667,6 +1702,24 @@ button {
 
   .statement-equation {
     font-size: 16px
+  }
+}
+
+@media(max-width:360px) {
+  .library-metric {
+    padding-inline: 12px;
+  }
+
+  .metric-value {
+    font-size: 34px;
+  }
+
+  .metric-icon,
+  .metric-tree,
+  .metric-people {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
   }
 }
 

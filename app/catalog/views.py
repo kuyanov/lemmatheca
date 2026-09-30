@@ -10,18 +10,20 @@ from .content import (add_progress, ancestors, area_link, area_list, area_path,
 from .entry_files import read_area_entries, read_areas
 from .node_files import node_ids
 from .sources import render_block
+from .statistics import read_statistics
 
 
 @require_safe
 def home(request):
     taxonomy, area_entries = read_areas(), read_area_entries()
-    example_id = next((identifier for group in area_entries.values()
-                      for identifier in group), None)
-    example = load_entry_metadata(example_id) if example_id else None
+    statistics = read_statistics()
+    roots = sum(area["parent"] is None for area in taxonomy.values())
     return render(request, "catalog/home.html", {
         "areas": area_list(None, taxonomy, area_entries),
-        "example": example,
-        "example_area": taxonomy[example['primary_area']] if example else None,
+        "statistics": statistics,
+        "area_count": len(taxonomy),
+        "root_area_count": roots,
+        "subarea_count": len(taxonomy) - roots,
     })
 
 

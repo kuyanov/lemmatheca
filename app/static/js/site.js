@@ -3,14 +3,16 @@
 const dialog = document.getElementById("placeholder-dialog");
 const title = document.getElementById("dialog-title");
 const description = document.getElementById("dialog-description");
+const contributeLink = document.getElementById("contribute-link");
 const messages = {
   login: ["Your place in the library.", "Accounts are coming soon. For now, everything in Lemmatheca is open to explore — no login needed."],
-  submit: ["There’s room for your ideas.", "Contributions are coming soon. You’ll be able to share an argument and help Lemmatheca grow. This preview does not collect or submit anything."],
+  submit: ["There’s room for your ideas.", "Add an entry, improve an explanation, or help prove a result. Contributions and reviews happen in our GitHub repository — the contribution guide will help you get started."],
 };
 
 document.querySelectorAll("[data-placeholder]").forEach((button) => {
   button.addEventListener("click", () => {
     [title.textContent, description.textContent] = messages[button.dataset.placeholder];
+    contributeLink.hidden = button.dataset.placeholder !== "submit";
     dialog.showModal();
   });
 });

@@ -10,17 +10,47 @@
       and proofs, we provide Lean-based verification. Our goal is to turn textbooks, papers, and new research
       into a growing, unified library of mathematics.</p>
   </div>
-  {% if example %}
-  <a class="featured-proof" href="{{ example.url }}">
-    <span class="eyebrow">A place to begin <span aria-hidden="true">↗</span></span>
-    <span class="featured-drawing"
-      aria-hidden="true"><span></span><span></span><span></span><i>→</i><span></span><span></span><span></span></span>
-    <span class="featured-category">{{ example_area.title }}</span>
-    <h2>{{ example.title }}</h2>
-    <p>{{ example.summary }}</p>
-    <span class="text-link">Read the entry <span aria-hidden="true">→</span></span>
-  </a>
-  {% endif %}
+  <section class="library-overview" aria-label="Library statistics">
+    <dl class="library-metrics">
+      {% include "catalog/_library_metric.html" with label="Entries" icon="entry" value=statistics.entries complete=statistics.verified_entries detail="fully formalized" %}
+      {% include "catalog/_library_metric.html" with label="Nodes" icon="node" value=statistics.nodes complete=statistics.verified_nodes detail="verified in Lean" %}
+      <div class="library-metric metric-areas">
+        <dt>Areas</dt>
+        <dd>
+          <div class="metric-visual">
+            <span class="metric-value">{{ area_count }}</span>
+            <svg class="metric-tree" viewBox="0 0 64 56" fill="none" aria-hidden="true">
+              <path d="M32 13v14M12 43V27h40v16M32 27v16" />
+              <circle cx="32" cy="10" r="6" />
+              <circle cx="12" cy="46" r="5" />
+              <circle cx="32" cy="46" r="5" />
+              <circle cx="52" cy="46" r="5" />
+            </svg>
+          </div>
+          <span class="metric-detail">{{ root_area_count }} broad area{{ root_area_count|pluralize }} ·
+            {{ subarea_count }} subarea{{ subarea_count|pluralize }}</span>
+        </dd>
+      </div>
+      <div class="library-metric metric-contributors">
+        <dt>Contributors</dt>
+        <dd>
+          <div class="metric-visual">
+            <span class="metric-value">{{ statistics.contributors|default_if_none:"—" }}</span>
+            <svg class="metric-people" viewBox="0 0 64 56" fill="none" aria-hidden="true">
+              <circle cx="32" cy="17" r="8" />
+              <path d="M17 48v-5a15 15 0 0 1 30 0v5" />
+              <circle cx="10" cy="25" r="5" />
+              <path d="M2 45v-4a8 8 0 0 1 11-7" />
+              <circle cx="54" cy="25" r="5" />
+              <path d="M62 45v-4a8 8 0 0 0-11-7" />
+            </svg>
+          </div>
+          <span class="metric-detail">{% if statistics.contributors != None %}Repository commit authors{% else %}Made
+            together on GitHub{% endif %}</span>
+        </dd>
+      </div>
+    </dl>
+  </section>
 </section>
 <section class="browse-section" aria-labelledby="areas-title">
   <div class="section-heading">

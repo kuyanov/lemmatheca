@@ -58,6 +58,19 @@ class CorpusValidationTests(SimpleTestCase):
         with self.assertRaisesRegex(CorpusError, fragment):
             validate_corpus(self.corpus)
 
+    def test_optional_statistics_are_checked_for_shape_not_freshness(self):
+        path = self.corpus / "statistics.json"
+        snapshot = {"entries": 8, "verified_entries": 3, "nodes": 20,
+                    "verified_nodes": 12, "contributors": None}
+        write_json(path, snapshot)
+        validate_corpus(self.corpus)
+        for change, message in [({"nodes": "20"}, "nonnegative integer"),
+                                ({"contributors": True}, "nonnegative integer"),
+                                ({"verified_entries": 9}, "exceed the total")]:
+            with self.subTest(change=change):
+                write_json(path, {**snapshot, **change})
+                self.assert_invalid(message)
+
     def test_command_is_offline_read_only_and_allows_unbuilt_work(self):
         self.html(self.source, '<a href="beta#fact"></a>', formal='proof')
         before = {path: path.read_bytes()

@@ -39,7 +39,9 @@ class ReaderTests(SimpleTestCase):
                         read_entry_metadata(identifier), index))
 
     def test_representative_pages_and_links(self):
-        self.assertContains(self.client.get("/"), "Sets and maps")
+        self.assertContains(self.client.get("/"), 'aria-label="Library statistics"')
+        self.assertContains(self.client.get("/"),
+                            'href="https://github.com/kuyanov/lemmatheca"')
         self.assertContains(self.client.get(
             "/"), "/areas/logic-and-foundations/")
         self.assertNotContains(self.client.get("/"), 'href="/nodes/"')

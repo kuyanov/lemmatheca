@@ -103,7 +103,8 @@ take time. Keep [lean-toolchain](formal/lean-toolchain),
 unchanged during ordinary authoring; `lake update` is for dependency upgrades.
 
 The Django `build` command compiles Lean and refreshes node verification,
-declaration signatures, source lines, and entry summaries. **Verified** means
+declaration signatures, source lines, entry summaries, and home-page statistics.
+**Verified** means
 the declaration uses no unfinished proof (`sorry`), including through its actual
 dependencies, and no unsupported axioms. A build can succeed with unfinished
 nodes marked **Not verified**. A compilation or declaration-check failure leaves

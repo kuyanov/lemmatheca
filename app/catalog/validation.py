@@ -334,6 +334,20 @@ def validate_corpus(corpus, *, source_root=None):
     edges. Generated proof data need not be present or current. Optional source
     checks use the installed files only; neither mode invokes Lean or the build.
     """
+    statistics = corpus / "statistics.json"
+    if statistics.exists():
+        with checking(statistics):
+            snapshot = json_object(statistics)
+            fields(snapshot, ("entries", "verified_entries", "nodes",
+                              "verified_nodes", "contributors"))
+            for key, value in snapshot.items():
+                if key == "contributors" and value is None:
+                    continue
+                require(type(value) is int and value >= 0,
+                        f"{key} must be a nonnegative integer")
+            for kind in ("entries", "nodes"):
+                require(snapshot[f"verified_{kind}"] <= snapshot[kind],
+                        f"Verified {kind} exceed the total")
     taxonomy = corpus / "taxonomy.json"
     with checking(taxonomy):
         document = json_object(taxonomy)

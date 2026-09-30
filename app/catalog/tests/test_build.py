@@ -33,12 +33,18 @@ class ProofResultsTests(SimpleTestCase):
         self.source.write_text(
             '<section id="fact" data-kind="lemma" data-formal="example">'
             '<h2>Example</h2><p>True.</p></section>')
+        self.statistics = self.root / "statistics.json"
+        write_json(self.statistics, {
+            "entries": 1, "verified_entries": 1, "nodes": 1,
+            "verified_nodes": 1, "contributors": 2,
+        })
 
     def test_build_or_check_error_and_interruption_write_nothing(self):
         previous = self.path.read_bytes()
         modified = self.path.stat().st_mtime_ns
         entry_before = self.metadata.read_bytes()
         entry_modified = self.metadata.stat().st_mtime_ns
+        statistics_before = self.statistics.read_bytes()
         for error in (subprocess.CalledProcessError(1, "lake"), KeyboardInterrupt()):
             for first_result in ([], [subprocess.CompletedProcess([], 0)]):
                 with self.subTest(error=type(error), check=bool(first_result)):
@@ -52,6 +58,7 @@ class ProofResultsTests(SimpleTestCase):
                     self.assertEqual(self.metadata.read_bytes(), entry_before)
                     self.assertEqual(
                         self.metadata.stat().st_mtime_ns, entry_modified)
+                    self.assertEqual(self.statistics.read_bytes(), statistics_before)
 
     def test_missing_or_malformed_result_writes_nothing(self):
         previous = self.path.read_bytes()
@@ -67,6 +74,16 @@ class ProofResultsTests(SimpleTestCase):
                     save.assert_not_called()
                 self.assertEqual(self.path.read_bytes(), previous)
                 self.assertEqual(self.metadata.read_bytes(), entry_before)
+
+    def test_statistics_error_preserves_all_published_results(self):
+        paths = (self.path, self.metadata, self.statistics)
+        before = [path.read_bytes() for path in paths]
+        output = 'NODE_STATUS {"declaration":"example","verified":false}'
+        with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)), \
+                patch("catalog.proofs.prepare_statistics", side_effect=OSError("Cannot read history")):
+            with self.assertRaises(OSError):
+                build(self.root, self.root)
+        self.assertEqual([path.read_bytes() for path in paths], before)
 
     def test_summaries_use_new_proof_results_and_preserve_metadata(self):
         for verified, label in [(False, "0%"), (True, "100%")]:
@@ -84,6 +101,10 @@ class ProofResultsTests(SimpleTestCase):
                 self.assertEqual(entry["reading_time"], 5)
                 self.assertNotIn("source", entry)
                 self.assertNotIn("directory", entry)
+                self.assertEqual(read_json(self.statistics), {
+                    "entries": 1, "verified_entries": int(verified), "nodes": 1,
+                    "verified_nodes": int(verified), "contributors": 2,
+                })
 
     def test_invalid_entry_source_or_binding_prevents_all_writes(self):
         node_before, entry_before = self.path.read_bytes(), self.metadata.read_bytes()

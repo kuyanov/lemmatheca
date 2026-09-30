@@ -67,7 +67,8 @@ uv run python app/manage.py test catalog
 Validation can also run during authoring without Lean or generated results.
 The build checks the whole registry, including transitive axioms, and regenerates
 node verification/signatures/source lines and entry-list summaries. Commit generated
-`corpus/nodes/*.json` and `corpus/entries/*/entry.json` changes with the proofs. A plain
+`corpus/nodes/*.json`, `corpus/entries/*/entry.json`, and `corpus/statistics.json`
+changes with the proofs. A plain
 `lake build` is useful while working but does not update this JSON.
 
 Failed compilation or declaration checks leave previous results intact. Treat that

@@ -23,6 +23,10 @@ class LocalReadTests(SimpleTestCase):
         settings.enable()
         self.addCleanup(settings.disable)
         (self.corpus / "nodes").mkdir()
+        write_json(self.corpus / "statistics.json", {
+            "entries": 3, "verified_entries": 1, "nodes": 3,
+            "verified_nodes": 2, "contributors": 4,
+        })
         write_json(self.corpus / "taxonomy.json", {"areas": [
             {"id": "root", "title": "Root", "parent": None},
             {"id": "first", "title": "First", "parent": "root"},
@@ -87,15 +91,35 @@ class LocalReadTests(SimpleTestCase):
         with self.only_reads("nodes/proof.json"):
             self.assertTrue(read_node("proof")["verified"])
 
-    def test_home_and_parent_area_use_only_navigation_and_featured_metadata(self):
-        with self.only_reads("taxonomy.json", "area_entries.json", "entries/alpha/entry.json"):
+    def test_home_and_parent_area_read_only_navigation_and_statistics(self):
+        with self.only_reads("taxonomy.json", "area_entries.json", "statistics.json") as reads, \
+                patch("subprocess.run", side_effect=AssertionError("No Git or Lean in requests")):
             home = self.client.get("/")
-            self.assertContains(home, "Alpha")
+            self.assertContains(home, "1 of 3 fully verified")
+            self.assertContains(home, "2 of 3 verified in Lean")
+            self.assertEqual(home.context["statistics"]["contributors"], 4)
+            self.assertNotContains(home, "Alpha")
+            self.assertNotContains(home, "featured-proof")
             self.assertEqual(home.context["areas"][0]["entry_count"], 3)
+            self.assertEqual(home.context["area_count"], 3)
+        self.assertEqual(reads.total(), 3)
         with self.only_reads("taxonomy.json", "area_entries.json"):
             area = self.client.get("/areas/root/")
             self.assertEqual([item["entry_count"]
                              for item in area.context["areas"]], [2, 1])
+
+    def test_home_handles_an_unbuilt_or_empty_corpus_snapshot(self):
+        (self.corpus / "statistics.json").unlink()
+        response = self.client.get("/")
+        self.assertContains(response, "Awaiting the first build", count=2)
+        self.assertContains(response,
+                            '<span class="metric-detail">Made together on GitHub</span>', html=True)
+        write_json(self.corpus / "statistics.json", {
+            "entries": 0, "verified_entries": 0, "nodes": 0,
+            "verified_nodes": 0, "contributors": 0,
+        })
+        response = self.client.get("/")
+        self.assertContains(response, "0 of 0 verified in Lean")
 
     def test_area_reads_only_indexed_metadata_without_html_or_nodes(self):
         with self.only_reads("taxonomy.json", "area_entries.json",

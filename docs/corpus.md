@@ -15,6 +15,7 @@ corpus/
   nodes/<node-id>.json
   taxonomy.json
   area_entries.json
+  statistics.json           # Generated home-page counts
 ```
 
 File and directory names must match their record's `id`. Entry and node IDs start
@@ -24,7 +25,8 @@ stable when changing titles or subject categories.
 `taxonomy.json` defines areas with `id`, `title`, `parent`, and `description`.
 `area_entries.json` maps primary area IDs to ordered entry-ID lists under `areas`.
 Add each entry once to its primary area's list. This index controls listings,
-navigation counts, the featured entry, and the next-entry link. The validator rejects missing, duplicated, unlisted, or incorrectly assigned entries.
+navigation counts and the next-entry link. The validator rejects missing,
+duplicated, unlisted, or incorrectly assigned entries.
 Every parent must exist, and the area hierarchy must be acyclic.
 `additional_areas` is metadata; current listings use the primary-area index.
 
@@ -54,6 +56,11 @@ Do not edit it by hand. Area pages read only this metadata, without parsing entr
 HTML or loading nodes. Rerun `uv run python app/manage.py build` after changing HTML,
 bindings, or proofs and commit the refreshed entry and node JSON. Failed checks or
 invalid entry summaries leave the previous generated data intact.
+
+The build also writes `corpus/statistics.json` for the home-page statistics grid. Like entry
+summaries, it is generated data and should be included with source changes. Its
+schema is validated when present, without requiring freshness during authoring.
+See the [statistics guide](app.md#home-page-statistics) for contributor counting.
 
 Block structure, human references, and formal-node mappings belong in HTML, not
 in extra metadata lists. Keep prompts, proof attempts, and experiment logs outside

@@ -1,0 +1,23 @@
+<div class="library-metric">
+  <dt>{{ label }}</dt>
+  <dd>
+    <div class="metric-visual">
+      <span class="metric-value">{{ value|default_if_none:"—" }}</span>
+      <svg class="metric-icon metric-{{ icon }}" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+        {% if icon == "entry" %}
+        <path class="metric-icon-fill" d="M28 16c-6-5-13-6-21-4v30c8-2 15-1 21 4 6-5 13-6 21-4V12c-8-2-15-1-21 4Z" />
+        <path d="M28 16v30M13 21c3 0 6 1 9 3M13 29c3 0 6 1 9 3M34 24c3-2 6-3 9-3M34 32c3-2 6-3 9-3" />
+        {% else %}
+        <path d="m11 12 17 16 18-15M11 45l17-17 17 16" />
+        <circle class="metric-icon-fill" cx="11" cy="12" r="4" />
+        <circle class="metric-icon-fill" cx="46" cy="13" r="4" />
+        <circle class="metric-icon-fill" cx="11" cy="45" r="4" />
+        <circle class="metric-icon-fill" cx="45" cy="44" r="4" />
+        <circle class="metric-node-center" cx="28" cy="28" r="7" />
+        {% endif %}
+      </svg>
+    </div>
+    <span class="metric-detail">{% if value != None %}{{ complete }} of {{ value }} {{ detail }}{% else %}Awaiting the
+      first build{% endif %}</span>
+  </dd>
+</div>
