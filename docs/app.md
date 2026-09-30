@@ -117,6 +117,12 @@ changes to committed node data or entry summaries. Build tests exercise a separa
 temporary Lean project. Locality tests prevent area and detail views from loading
 unrelated content.
 
+Reader tests check response data, navigation targets, source anchors, disclosure
+behavior, and accessibility. Keep assertions independent of CSS classes, exact
+copy, icons, whitespace, and attribute ordering; use the test HTML helper when
+checking rendered links or structure. Verification expectations should come from
+controlled fixtures or saved node data, not the corpus's current completion rate.
+
 To run only the isolated Lean-build tests:
 
 ```sh

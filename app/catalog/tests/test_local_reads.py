@@ -13,6 +13,8 @@ from catalog.files import write_json
 from catalog.node_files import read_node
 from catalog.progress import entry_progress
 
+from .html import HTML
+
 
 class LocalReadTests(SimpleTestCase):
     def setUp(self):
@@ -23,10 +25,11 @@ class LocalReadTests(SimpleTestCase):
         settings.enable()
         self.addCleanup(settings.disable)
         (self.corpus / "nodes").mkdir()
-        write_json(self.corpus / "statistics.json", {
-            "entries": 3, "verified_entries": 1, "nodes": 3,
-            "verified_nodes": 2, "contributors": 4,
-        })
+        self.statistics = {
+            "entries": 3, "verified_entries": 1, "nodes": 23,
+            "verified_nodes": 17, "contributors": 19,
+        }
+        write_json(self.corpus / "statistics.json", self.statistics)
         write_json(self.corpus / "taxonomy.json", {"areas": [
             {"id": "root", "title": "Root", "parent": None},
             {"id": "first", "title": "First", "parent": "root"},
@@ -95,40 +98,41 @@ class LocalReadTests(SimpleTestCase):
         with self.only_reads("taxonomy.json", "area_entries.json", "statistics.json") as reads, \
                 patch("subprocess.run", side_effect=AssertionError("No Git or Lean in requests")):
             home = self.client.get("/")
-            self.assertContains(home, "1 of 3 fully verified")
-            self.assertContains(home, "2 of 3 verified in Lean")
-            self.assertEqual(home.context["statistics"]["contributors"], 4)
-            self.assertNotContains(home, "Alpha")
-            self.assertNotContains(home, "featured-proof")
+            self.assertEqual(home.status_code, 200)
+            self.assertEqual(home.context["statistics"], self.statistics)
+            page = HTML.from_response(home)
+            for count in self.statistics.values():
+                self.assertRegex(page.root.text, rf"\b{count}\b")
             self.assertEqual(home.context["areas"][0]["entry_count"], 3)
             self.assertEqual(home.context["area_count"], 3)
         self.assertEqual(reads.total(), 3)
         with self.only_reads("taxonomy.json", "area_entries.json"):
             area = self.client.get("/areas/root/")
+            self.assertEqual(area.status_code, 200)
             self.assertEqual([item["entry_count"]
                              for item in area.context["areas"]], [2, 1])
 
     def test_home_handles_an_unbuilt_or_empty_corpus_snapshot(self):
         (self.corpus / "statistics.json").unlink()
         response = self.client.get("/")
-        self.assertContains(response, "Awaiting the first build", count=2)
-        self.assertContains(response,
-                            '<span class="metric-detail">Made together on GitHub</span>', html=True)
-        write_json(self.corpus / "statistics.json", {
-            "entries": 0, "verified_entries": 0, "nodes": 0,
-            "verified_nodes": 0, "contributors": 0,
-        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context["statistics"], dict.fromkeys(self.statistics))
+        empty = dict.fromkeys(self.statistics, 0)
+        write_json(self.corpus / "statistics.json", empty)
         response = self.client.get("/")
-        self.assertContains(response, "0 of 0 verified in Lean")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["statistics"], empty)
 
     def test_area_reads_only_indexed_metadata_without_html_or_nodes(self):
         with self.only_reads("taxonomy.json", "area_entries.json",
                              "entries/alpha/entry.json", "entries/next/entry.json") as reads:
             response = self.client.get("/areas/root/first/")
+            self.assertEqual(response.status_code, 200)
             self.assertEqual([item["id"] for item in response.context["entries"]], [
                              "alpha", "next"])
-            self.assertNotContains(response, "Remote")
-            self.assertContains(response, "Formalization: 100%", count=2)
+            self.assertTrue(all(entry["formalization"]["status"] == "complete"
+                                for entry in response.context["entries"]))
         self.assertTrue(all(count == 1 for count in reads.values()))
 
     def test_entry_reads_references_once_without_their_nodes_or_transitive_links(self):
@@ -137,18 +141,22 @@ class LocalReadTests(SimpleTestCase):
                              "entries/remote/entry.json", "entries/remote/entry.html",
                              "entries/next/entry.json") as reads:
             response = self.client.get("/entries/alpha/?from=remote&at=fact")
-            self.assertContains(response, "Remote fact")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.context["return_entry"]["id"], "remote")
             self.assertEqual(
                 response.context["return_url"], "/entries/remote/#fact")
             self.assertEqual(response.context["next_entry"]["id"], "next")
             self.assertEqual(
-                response.context["entry"]["formalization"]["label"], "100%")
+                response.context["entry"]["formalization"]["percent"], 100)
         self.assertTrue(all(count == 1 for count in reads.values()))
 
     def test_node_page_reads_only_node_and_direct_hints_and_api_only_node(self):
         with self.only_reads("nodes/proof.json", "nodes/hint.json") as reads:
-            self.assertContains(self.client.get(
-                "/node/proof/"), "Verified")
+            response = self.client.get("/node/proof/")
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.context["node"]["verified"])
+            self.assertEqual(
+                [node["id"] for node in response.context["dependencies"]], ["hint"])
         self.assertEqual(reads, {"nodes/proof.json": 1, "nodes/hint.json": 1})
         with self.only_reads("nodes/proof.json") as reads:
             self.assertTrue(self.client.get(
