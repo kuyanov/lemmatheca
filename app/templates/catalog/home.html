@@ -15,7 +15,11 @@
       {% include "catalog/_library_metric.html" with label="Entries" icon="entry" value=statistics.entries complete=statistics.verified_entries detail="fully formalized" %}
       {% include "catalog/_library_metric.html" with label="Nodes" icon="node" value=statistics.nodes complete=statistics.verified_nodes detail="verified in Lean" %}
       <div class="library-metric metric-areas">
-        <dt>Areas</dt>
+        <dt>
+          <a class="metric-link" href="#areas-title">
+            <span class="metric-link-label">Areas</span><span aria-hidden="true">→</span>
+          </a>
+        </dt>
         <dd>
           <div class="metric-visual">
             <span class="metric-value">{{ area_count }}</span>
@@ -32,7 +36,12 @@
         </dd>
       </div>
       <div class="library-metric metric-contributors">
-        <dt>Contributors</dt>
+        <dt>
+          <a class="metric-link" href="https://github.com/kuyanov/lemmatheca/graphs/contributors" target="_blank"
+            rel="noopener">
+            <span class="metric-link-label">Contributors</span><span aria-hidden="true">→</span>
+          </a>
+        </dt>
         <dd>
           <div class="metric-visual">
             <span class="metric-value">{{ statistics.contributors|default_if_none:"—" }}</span>
@@ -54,7 +63,7 @@
 </section>
 <section class="browse-section" aria-labelledby="areas-title">
   <div class="section-heading">
-    <h2 id="areas-title">Browse by area</h2><span>{{ areas|length }} area{{ areas|length|pluralize }}</span>
+    <h2 id="areas-title">Browse by area</h2>
   </div>
   {% include "catalog/_area_list.html" %}
 </section>
