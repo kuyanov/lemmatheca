@@ -42,7 +42,7 @@ to `app/`:
 | `catalog/sources.py`, `catalog/equations.py` | Trusted HTML parsing, references, equation labels, and rendering |
 | `catalog/progress.py` | Shared entry/block verification summaries |
 | `catalog/proofs.py` | Lean build, declaration checks, and entry-summary generation |
-| `catalog/statistics.py` | Build-time corpus totals and contributor count; direct snapshot read for the home page |
+| `catalog/statistics.py` | Build-time totals, count history, and Git backfill; direct snapshot read for the home page |
 | `catalog/validation.py` | Offline metadata, HTML, reference, and hierarchy validation |
 | `catalog/management/commands/` | Independent `validate_corpus` and Lean `build` commands |
 | `catalog/tests/` | Reader, locality, summary, and Lean-build checks |
@@ -92,17 +92,43 @@ dialog links to the GitHub repository and explains how to get involved.
 ### Home-page statistics
 
 `build` saves `corpus/statistics.json` after all proof checks and summary preparation
-succeed. It records entry and node totals, verified totals, and the contributor
-count. The home page counts all areas in the taxonomy, including subareas.
+succeed. It records entry and node totals, verified totals, all taxonomy areas
+(including subareas), and the contributor count.
 The statistics grid uses decorative icons for entries, nodes, areas, and
-contributors, with verification totals shown as text.
+contributors, with verification totals shown as text. Each card has an independent
+chart toggle. The charts replace the card's contents without changing its height;
+entry and node charts show both total and verified counts. Charts use small SVGs
+and the saved JSON, with no chart library, extra endpoint, or Git call on requests.
+Smooth curves with a subtle area fill connect the recorded points to today's
+current counts from the snapshot. Curves stay within each segment's count range.
+This display endpoint does not add a point to the saved history.
+
+`history` contains four series: `entries`, `nodes`, `areas`, and `contributors`.
+Each point has a UTC `at` timestamp and a nonnegative `count`. Entry and node
+points also have a `verified` count, so both chart lines share the same timestamps.
+A successful build appends a point when either count changes, including decreases.
+Unchanged builds preserve the history exactly; failed builds publish neither new
+counts nor history. Graphs use their legends in place of card titles to leave more
+room for the plot.
+
+When history is absent, the first build imports the local Git history through
+`HEAD`. Use a full, up-to-date clone of the GitHub repository. The import follows
+mainline commits and reads only changed metadata blobs, retaining compact counts
+and proof flags rather than historical HTML or complete records. Legacy
+`formal/nodes` files contribute to node totals. Verified counts include only saved
+proof flags and entry summaries, starting at zero before these records exist; old
+review approvals are not proof results. Contributor history includes authors from
+merged branches. Later builds append the current results without replaying Git
+history, preserving any manual trimming of historical points. Fetching GitHub and
+rebuilding old Lean projects are not part of the build.
 
 Contributors are distinct author names from `git shortlog --summary HEAD`, which
 respects `.mailmap`. They are repository commit authors, not the authors of cited
 sources. Refresh the build after a new contributor's first commit; uncommitted
 work is not part of Git history. CI checks out full history for this calculation.
-Shallow checkouts and source archives retain the previous count, or display an
-unknown count if no snapshot exists. Serving pages needs neither Git nor network
+Shallow checkouts and source archives preserve existing history and contributor
+counts; without a saved snapshot, contributors remain unknown and other series
+start at the first successful build. Serving pages needs neither Git nor network
 access. Before the first build, unavailable statistics display a dash.
 
 ## Checks

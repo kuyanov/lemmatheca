@@ -216,6 +216,7 @@ button {
 }
 
 .library-metric {
+  position: relative;
   min-width: 0;
   padding: 24px 28px;
 }
@@ -282,6 +283,7 @@ button {
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transform: translateY(4px);
 }
 
 .metric-icon-fill {
@@ -330,6 +332,123 @@ button {
 
 .metric-progress-value {
   stroke: var(--green);
+}
+
+.metric-history-toggle {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 5px;
+  border-radius: 4px;
+  background: transparent;
+  color: #7f8e79;
+}
+
+.metric-history-toggle svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.metric-history-toggle:hover,
+.metric-history-toggle[aria-expanded="true"] {
+  background: #e2eadc;
+  color: var(--green);
+}
+
+.metric-history-toggle:focus-visible {
+  outline-offset: 2px;
+}
+
+.metric-history {
+  position: absolute;
+  inset: 32px 28px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.metric-history[hidden],
+.metric-history-toggle[hidden] {
+  display: none;
+}
+
+.library-metric.is-history dt,
+.library-metric.is-history .metric-visual,
+.library-metric.is-history .metric-detail {
+  visibility: hidden;
+}
+
+.metric-plot {
+  flex: 1;
+  min-height: 0;
+}
+
+.metric-plot svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.metric-chart-grid {
+  stroke: #dce3d6;
+  stroke-dasharray: 2 3;
+}
+
+.metric-chart-axis {
+  font: 9px var(--sans);
+  fill: var(--muted);
+}
+
+.metric-chart-dates,
+.metric-chart-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px 8px;
+  color: #61715c;
+  font-size: 9px;
+  line-height: 1.3;
+}
+
+.metric-chart-legend {
+  margin-top: 8px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.metric-chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.metric-chart-legend i {
+  width: 9px;
+  height: 2px;
+  background: currentColor;
+}
+
+.metric-series-total {
+  color: #819875;
+}
+
+.metric-series-verified {
+  color: var(--green);
+}
+
+.metric-chart-empty {
+  margin: auto 0;
+  font-size: 11px;
+  color: var(--muted);
 }
 
 .text-link {
@@ -1459,6 +1578,17 @@ button {
     padding: 20px 18px;
   }
 
+  .metric-history {
+    inset: 28px 18px 14px;
+  }
+
+  .metric-history-toggle {
+    top: 3px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+  }
+
   .metric-value {
     font-size: 38px;
   }
@@ -1752,6 +1882,15 @@ button {
 @media(max-width:360px) {
   .library-metric {
     padding-inline: 12px;
+  }
+
+  .metric-history {
+    left: 12px;
+    right: 12px;
+  }
+
+  .metric-chart-legend span {
+    flex-basis: 100%;
   }
 
   .metric-value {

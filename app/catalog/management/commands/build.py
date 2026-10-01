@@ -7,7 +7,7 @@ from catalog.proofs import build
 
 
 class Command(BaseCommand):
-    help = "Build Lean and update node verification, entry summaries, and home-page statistics."
+    help = "Build Lean and update node verification, entry summaries, and statistics with count history."
 
     def handle(self, *args, **options):
         try:

@@ -27,7 +27,7 @@ class LocalReadTests(SimpleTestCase):
         (self.corpus / "nodes").mkdir()
         self.statistics = {
             "entries": 3, "verified_entries": 1, "nodes": 23,
-            "verified_nodes": 17, "contributors": 19,
+            "verified_nodes": 17, "areas": 3, "contributors": 19,
         }
         write_json(self.corpus / "statistics.json", self.statistics)
         write_json(self.corpus / "taxonomy.json", {"areas": [

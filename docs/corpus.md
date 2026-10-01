@@ -15,7 +15,7 @@ corpus/
   nodes/<node-id>.json
   taxonomy.json
   area_entries.json
-  statistics.json           # Generated home-page counts
+  statistics.json           # Generated home-page counts and change history
 ```
 
 File and directory names must match their record's `id`. Entry and node IDs start
@@ -60,7 +60,14 @@ invalid entry summaries leave the previous generated data intact.
 The build also writes `corpus/statistics.json` for the home-page statistics grid. Like entry
 summaries, it is generated data and should be included with source changes. Its
 schema is validated when present, without requiring freshness during authoring.
-See the [statistics guide](app.md#home-page-statistics) for contributor counting.
+Its `history` has four lists: `entries`, `nodes`, `areas`, and `contributors`.
+Entry and node points pair the total and verified counts as
+`{ "at": "…", "count": …, "verified": … }`; area and contributor points use
+`{ "at": "…", "count": … }`. Timestamps are UTC. A point is added when either
+count changes; unchanged builds add nothing. Validation checks chronological order,
+changed counts, current endpoints, and verified totals. Existing snapshots without
+history remain valid until the next build fills it in.
+See the [statistics guide](app.md#home-page-statistics) for Git backfill and contributor counting.
 
 Block structure, human references, and formal-node mappings belong in HTML, not
 in extra metadata lists. Keep prompts, proof attempts, and experiment logs outside

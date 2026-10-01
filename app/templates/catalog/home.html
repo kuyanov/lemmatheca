@@ -1,5 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
+{% block extra_head %}
+<script src="{% static 'js/statistics.js' %}" defer></script>{% endblock %}
 {% block content %}
+{{ statistics|json_script:"statistics-data" }}
 <section class="home-intro">
   <div class="home-intro-copy">
     <p class="eyebrow">Repository of mathematics</p>
@@ -12,8 +16,8 @@
   </div>
   <section class="library-overview" aria-label="Library statistics">
     <dl class="library-metrics">
-      {% include "catalog/_library_metric.html" with label="Entries" icon="entry" value=statistics.entries complete=statistics.verified_entries detail="fully formalized" %}
-      {% include "catalog/_library_metric.html" with label="Nodes" icon="node" value=statistics.nodes complete=statistics.verified_nodes detail="verified in Lean" %}
+      {% include "catalog/_library_metric.html" with key="entries" label="Entries" icon="entry" value=statistics.entries complete=statistics.verified_entries detail="fully formalized" %}
+      {% include "catalog/_library_metric.html" with key="nodes" label="Nodes" icon="node" value=statistics.nodes complete=statistics.verified_nodes detail="verified in Lean" %}
       <div class="library-metric metric-areas">
         <dt>
           <a class="metric-link" href="#areas-title">
@@ -33,6 +37,7 @@
           </div>
           <span class="metric-detail">{{ root_area_count }} broad area{{ root_area_count|pluralize }} ·
             {{ subarea_count }} subarea{{ subarea_count|pluralize }}</span>
+          {% include "catalog/_metric_history.html" with key="areas" label="Areas" only %}
         </dd>
       </div>
       <div class="library-metric metric-contributors">
@@ -56,6 +61,7 @@
           </div>
           <span class="metric-detail">{% if statistics.contributors != None %}Repository commit authors{% else %}Made
             together on GitHub{% endif %}</span>
+          {% include "catalog/_metric_history.html" with key="contributors" label="Contributors" only %}
         </dd>
       </div>
     </dl>

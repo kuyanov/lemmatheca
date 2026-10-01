@@ -34,6 +34,7 @@ class ProofResultsTests(SimpleTestCase):
             '<section id="fact" data-kind="lemma" data-formal="example">'
             '<h2>Example</h2><p>True.</p></section>')
         self.statistics = self.root / "statistics.json"
+        write_json(self.root / "taxonomy.json", {"areas": []})
         write_json(self.statistics, {
             "entries": 1, "verified_entries": 1, "nodes": 1,
             "verified_nodes": 1, "contributors": 2,
@@ -58,7 +59,8 @@ class ProofResultsTests(SimpleTestCase):
                     self.assertEqual(self.metadata.read_bytes(), entry_before)
                     self.assertEqual(
                         self.metadata.stat().st_mtime_ns, entry_modified)
-                    self.assertEqual(self.statistics.read_bytes(), statistics_before)
+                    self.assertEqual(
+                        self.statistics.read_bytes(), statistics_before)
 
     def test_missing_or_malformed_result_writes_nothing(self):
         previous = self.path.read_bytes()
@@ -101,10 +103,16 @@ class ProofResultsTests(SimpleTestCase):
                 self.assertEqual(entry["reading_time"], 5)
                 self.assertNotIn("source", entry)
                 self.assertNotIn("directory", entry)
-                self.assertEqual(read_json(self.statistics), {
+                statistics = read_json(self.statistics)
+                self.assertEqual({key: value for key, value in statistics.items() if key != "history"}, {
                     "entries": 1, "verified_entries": int(verified), "nodes": 1,
-                    "verified_nodes": int(verified), "contributors": 2,
+                    "verified_nodes": int(verified), "areas": 0, "contributors": 2,
                 })
+                for key, points in statistics["history"].items():
+                    self.assertEqual(points[-1]["count"], statistics[key])
+                    if key in ("entries", "nodes"):
+                        self.assertEqual(
+                            points[-1]["verified"], statistics[f"verified_{key}"])
 
     def test_invalid_entry_source_or_binding_prevents_all_writes(self):
         node_before, entry_before = self.path.read_bytes(), self.metadata.read_bytes()
@@ -165,6 +173,7 @@ class LeanBuildTests(SimpleTestCase):
             root = Path(directory)
             corpus, formal = root / "corpus", root / "formal"
             (corpus / "nodes").mkdir(parents=True)
+            write_json(corpus / "taxonomy.json", {"areas": []})
             (formal / "Lemmatheca").mkdir(parents=True)
             shutil.copyfile(settings.REPOSITORY_DIR /
                             "formal/lean-toolchain", formal / "lean-toolchain")
@@ -244,9 +253,12 @@ theorem unsupported : False := assumption
             previous = {
                 name: (corpus / "nodes" / f"{name}.json").read_bytes() for name in names}
             entry_before = entry_file.read_bytes()
+            statistics_before = (corpus / "statistics.json").read_bytes()
             with self.assertRaises(CommandError):
                 run_build()
             self.assertEqual(entry_file.read_bytes(), entry_before)
+            self.assertEqual(
+                (corpus / "statistics.json").read_bytes(), statistics_before)
             for name in names:
                 self.assertEqual(
                     (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])
@@ -255,6 +267,8 @@ theorem unsupported : False := assumption
             with self.assertRaises(CommandError):
                 run_build()
             self.assertEqual(entry_file.read_bytes(), entry_before)
+            self.assertEqual(
+                (corpus / "statistics.json").read_bytes(), statistics_before)
             for name in names:
                 self.assertEqual(
                     (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])

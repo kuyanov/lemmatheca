@@ -1,6 +1,7 @@
 """Offline corpus checks: one record/tree at a time, compact reference indexes only."""
 
 from contextlib import contextmanager
+from datetime import datetime, timedelta
 import json
 from pathlib import PurePosixPath
 import re
@@ -10,6 +11,7 @@ from .entry_files import is_local_asset
 from .equations import EQREF, LABEL
 from .node_files import LEAN_MODULE, source_path
 from .sources import Element, KINDS, SourceParser
+from .statistics import COUNTS, METRICS
 
 ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]*\Z")
 ANCHOR = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]*\Z")
@@ -327,6 +329,52 @@ def node_metadata(record, expected):
     return dependencies
 
 
+def validate_statistics(snapshot):
+    fields(snapshot, ("entries", "verified_entries", "nodes", "verified_nodes", "contributors"),
+           ("areas", "history"))
+    for key in COUNTS:
+        if key not in snapshot or (key == "contributors" and snapshot[key] is None):
+            continue
+        require(type(snapshot[key]) is int and snapshot[key] >= 0,
+                f"{key} must be a nonnegative integer")
+    for kind in ("entries", "nodes"):
+        require(snapshot[f"verified_{kind}"] <=
+                snapshot[kind], f"Verified {kind} exceed the total")
+    if "history" not in snapshot:
+        return
+    history = snapshot["history"]
+    fields(history, METRICS)
+    for key, points in history.items():
+        require(isinstance(points, list), f"History for {key} must be a list")
+        counts = ("count", "verified") if key in (
+            "entries", "nodes") else ("count",)
+        previous, previous_at = None, None
+        for point in points:
+            fields(point, ("at", *counts))
+            text(point["at"], "History timestamp")
+            at = datetime.fromisoformat(point["at"])
+            require(at.utcoffset() == timedelta(0),
+                    "History timestamps must use UTC")
+            for field in counts:
+                require(type(point[field]) is int and point[field] >= 0,
+                        "History counts must be nonnegative integers")
+            if "verified" in counts:
+                require(point["verified"] <= point["count"],
+                        f"Historical verified {key} exceed the total")
+            if previous is not None:
+                require(at >= previous_at,
+                        "History timestamps must be chronological")
+                require(any(point[field] != previous[field] for field in counts),
+                        "History must record changes only")
+            previous, previous_at = point, at
+        if points:
+            require(points[-1]["count"] == snapshot.get(key),
+                    f"History for {key} must end at the current count")
+            if "verified" in counts:
+                require(points[-1]["verified"] == snapshot[f"verified_{key}"],
+                        f"History for {key} must end at the current verified count")
+
+
 def validate_corpus(corpus, *, source_root=None):
     """O(input bytes + reference edges) time; never retain whole entry/node records.
 
@@ -337,17 +385,7 @@ def validate_corpus(corpus, *, source_root=None):
     statistics = corpus / "statistics.json"
     if statistics.exists():
         with checking(statistics):
-            snapshot = json_object(statistics)
-            fields(snapshot, ("entries", "verified_entries", "nodes",
-                              "verified_nodes", "contributors"))
-            for key, value in snapshot.items():
-                if key == "contributors" and value is None:
-                    continue
-                require(type(value) is int and value >= 0,
-                        f"{key} must be a nonnegative integer")
-            for kind in ("entries", "nodes"):
-                require(snapshot[f"verified_{kind}"] <= snapshot[kind],
-                        f"Verified {kind} exceed the total")
+            validate_statistics(json_object(statistics))
     taxonomy = corpus / "taxonomy.json"
     with checking(taxonomy):
         document = json_object(taxonomy)
