@@ -1,4 +1,4 @@
-"""Small, build-time snapshot for the home page; requests never scan the corpus."""
+"""Home-page snapshot updated after merges; requests never scan the corpus."""
 
 from collections import Counter
 from datetime import datetime, timezone
@@ -20,7 +20,7 @@ def timestamp():
 
 
 def append_counts(history, counts, at):
-    """Store changes only; rebuilding an unchanged corpus leaves its history intact."""
+    """Store changes only; refreshing unchanged counts leaves history intact."""
     # Commits and local clocks can go backwards; preserve order across all series.
     at = max([at, *(points[-1]["at"] for points in history.values() if points)],
              key=datetime.fromisoformat)
@@ -54,13 +54,14 @@ def read_statistics(corpus=None):
 
 
 def contributor_count(repository, previous=None):
-    # Source archives can serve and build using the last published count.
+    # Source archives can serve and refresh using the last published count.
     if not has_history(repository):
         return previous
     authors = git(repository, "shortlog", "--summary", "HEAD")
-    # shortlog groups by author name and respects .mailmap aliases. Neither
-    # author names nor email addresses are published in the statistics file.
-    return len(authors.splitlines())
+    # shortlog groups names and respects .mailmap. Exclude automation, including
+    # the statistics workflow itself. No author identities are published.
+    return sum(not line.rsplit("\t", 1)[-1].endswith("[bot]")
+               for line in authors.splitlines())
 
 
 def history_from_git(corpus, repository):
@@ -145,23 +146,30 @@ def history_from_git(corpus, repository):
                      for date, name in (line.split("\t", 1) for line in author_log.splitlines())]
     author_history = {"contributors": []}
     for at, name in sorted(dated_authors):
-        authors.add(name)
+        if not name.endswith("[bot]"):
+            authors.add(name)
         append_counts(author_history, {"contributors": len(authors)}, at)
     history["contributors"] = author_history["contributors"]
     return history
 
 
-def prepare_statistics(corpus, repository, entries, nodes):
+def prepare_statistics(corpus, repository):
     previous = read_statistics(corpus)
     counts = {
-        "entries": len(entries),
-        "verified_entries": sum(entry["formalization"]["status"] == "complete"
-                                for entry in entries.values()),
-        "nodes": len(nodes),
-        "verified_nodes": sum(node["verified"] for node in nodes.values()),
+        "entries": 0, "verified_entries": 0, "nodes": 0, "verified_nodes": 0,
         "areas": len(read_json(corpus / "taxonomy.json")["areas"]),
         "contributors": contributor_count(repository, previous.get("contributors")),
     }
+    # Read one JSON record at a time; neither HTML nor Lean sources are needed.
+    for path in (corpus / "entries").glob("*/entry.json"):
+        entry = read_json(path)
+        counts["entries"] += 1
+        counts["verified_entries"] += entry.get(
+            "formalization", {}).get("status") == "complete"
+    for path in (corpus / "nodes").glob("*.json"):
+        node = read_json(path)
+        counts["nodes"] += 1
+        counts["verified_nodes"] += node["verified"] is True
     history = previous.get("history")
     if history is None:
         history = history_from_git(corpus, repository)

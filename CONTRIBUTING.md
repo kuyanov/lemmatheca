@@ -149,9 +149,11 @@ uv run python app/manage.py test catalog
 ```
 
 The build owns node verification, signatures, declaration lines, defining modules,
-and entry `formalization` summaries, plus `corpus/statistics.json` for the home page.
-Include its generated JSON changes with the
-sources. Failed compilation or declaration checks write no new results; old flags
+and entry `formalization` summaries. Include these generated JSON changes with the
+sources. Leave `corpus/statistics.json` to the
+[statistics workflow](.github/workflows/statistics.yml), which refreshes it after
+pushes to `main` and includes newly merged contributors.
+Failed compilation or declaration checks write no new results; old flags
 do not establish that the edited sources are verified. Review-only steps inspect
 saved data and report missing or stale results without running the writing build.
 

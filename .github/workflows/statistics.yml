@@ -1,0 +1,57 @@
+name: Statistics
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: statistics-main
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out main with its complete author history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.12.19"
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Refresh and commit statistics
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            # Recompute after concurrent pushes; never rebase stale statistics or force-push.
+            git fetch origin main
+            git reset --hard origin/main
+            uv sync --locked
+            uv run --locked python app/manage.py validate_corpus
+            uv run --locked python app/manage.py update_statistics
+            git add -- corpus/statistics.json
+            if git diff --cached --quiet; then
+              exit 0
+            fi
+            git commit -m 'Update home-page statistics'
+            # Push with GITHUB_TOKEN so this commit does not trigger another workflow run.
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+          echo 'Could not publish statistics after three attempts.' >&2
+          exit 1

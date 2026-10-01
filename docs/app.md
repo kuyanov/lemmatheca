@@ -42,9 +42,9 @@ to `app/`:
 | `catalog/sources.py`, `catalog/equations.py` | Trusted HTML parsing, references, equation labels, and rendering |
 | `catalog/progress.py` | Shared entry/block verification summaries |
 | `catalog/proofs.py` | Lean build, declaration checks, and entry-summary generation |
-| `catalog/statistics.py` | Build-time totals, count history, and Git backfill; direct snapshot read for the home page |
+| `catalog/statistics.py` | Saved-metadata totals, count history, and Git backfill; direct snapshot read for the home page |
 | `catalog/validation.py` | Offline metadata, HTML, reference, and hierarchy validation |
-| `catalog/management/commands/` | Independent `validate_corpus` and Lean `build` commands |
+| `catalog/management/commands/` | Independent `validate_corpus`, Lean `build`, and `update_statistics` commands |
 | `catalog/tests/` | Reader, locality, summary, and Lean-build checks |
 
 `app/config/` contains settings, URL inclusion, middleware, and the WSGI entry point.
@@ -91,9 +91,26 @@ dialog links to the GitHub repository and explains how to get involved.
 
 ### Home-page statistics
 
-`build` saves `corpus/statistics.json` after all proof checks and summary preparation
-succeed. It records entry and node totals, verified totals, all taxonomy areas
-(including subareas), and the contributor count.
+The [statistics workflow](../.github/workflows/statistics.yml) refreshes
+`corpus/statistics.json` after pushes to `main`. It records entry and node totals,
+verified totals, all taxonomy areas (including subareas), and the contributor count.
+The proof build does not touch this file, so parallel contributions do not produce
+competing statistics changes. New authors are counted after their commits reach
+`main`.
+
+The workflow runs `uv run --locked python app/manage.py update_statistics` using
+the committed entry summaries and node verification flags. This command reads one
+metadata record at a time and needs neither Lean nor entry HTML. It validates the
+snapshot before replacing the file atomically and leaves unchanged files untouched.
+For maintenance, run the same command locally or manually dispatch the workflow on
+`main`; contributors normally leave statistics generation to automation.
+
+Runs are serialized and commit only the statistics file. If `main` advances before
+the push, the workflow fetches it and recomputes, retrying up to three times without
+force-pushing. The workflow uses `GITHUB_TOKEN` with `contents: write`; repository
+rules must permit this automatic commit to `main`. Its push does not recursively
+start another workflow ([GitHub's token behavior](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow#triggering-a-workflow-from-a-workflow)).
+
 The statistics grid uses decorative icons for entries, nodes, areas, and
 contributors, with verification totals shown as text. Each card has an independent
 chart toggle. The charts replace the card's contents without changing its height;
@@ -106,30 +123,31 @@ This display endpoint does not add a point to the saved history.
 `history` contains four series: `entries`, `nodes`, `areas`, and `contributors`.
 Each point has a UTC `at` timestamp and a nonnegative `count`. Entry and node
 points also have a `verified` count, so both chart lines share the same timestamps.
-A successful build appends a point when either count changes, including decreases.
-Unchanged builds preserve the history exactly; failed builds publish neither new
+A successful refresh appends a point when either count changes, including decreases.
+Unchanged refreshes preserve the history exactly; failed refreshes publish neither new
 counts nor history. Graphs use their legends in place of card titles to leave more
 room for the plot.
 
-When history is absent, the first build imports the local Git history through
+When history is absent, the first refresh imports the local Git history through
 `HEAD`. Use a full, up-to-date clone of the GitHub repository. The import follows
 mainline commits and reads only changed metadata blobs, retaining compact counts
 and proof flags rather than historical HTML or complete records. Legacy
 `formal/nodes` files contribute to node totals. Verified counts include only saved
 proof flags and entry summaries, starting at zero before these records exist; old
 review approvals are not proof results. Contributor history includes authors from
-merged branches. Later builds append the current results without replaying Git
-history, preserving any manual trimming of historical points. Fetching GitHub and
-rebuilding old Lean projects are not part of the build.
+merged branches. Later refreshes append the current results without replaying Git
+history, preserving any manual trimming of historical points. The command itself
+does not fetch GitHub or rebuild old Lean projects.
 
 Contributors are distinct author names from `git shortlog --summary HEAD`, which
-respects `.mailmap`. They are repository commit authors, not the authors of cited
-sources. Refresh the build after a new contributor's first commit; uncommitted
-work is not part of Git history. CI checks out full history for this calculation.
+respects `.mailmap`, excluding names ending in `[bot]` so automation does not count
+as a contributor. They are repository commit authors, not the authors of cited
+sources; uncommitted work is not part of Git history. The statistics workflow
+checks out full history for this calculation.
 Shallow checkouts and source archives preserve existing history and contributor
 counts; without a saved snapshot, contributors remain unknown and other series
-start at the first successful build. Serving pages needs neither Git nor network
-access. Before the first build, unavailable statistics display a dash.
+start at the first successful refresh. Serving pages needs neither Git nor network
+access. Before the first snapshot, unavailable statistics display a dash.
 
 ## Checks
 

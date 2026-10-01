@@ -7,11 +7,9 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 from .entry_files import entry_ids, read_entry, save_entries
-from .files import write_json
 from .node_files import TOOLCHAIN_MODULES, prepare_results, read_nodes, save_results
 from .progress import entry_progress
 from .sources import parse_source
-from .statistics import prepare_statistics
 
 MODULE = re.compile(r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*")
 
@@ -65,9 +63,7 @@ def build(corpus, formal):
                         f"{identifier}: unknown formal node: {node_id}")
         entry["formalization"] = entry_progress(blocks, updated)
         entries[identifier] = entry
-    statistics = prepare_statistics(corpus, formal.parent, entries, updated)
-    # Prepare every result before writing, including the home-page snapshot.
+    # Prepare every proof result and entry summary before writing.
     verified = save_results(corpus, updated)
     save_entries(corpus, entries)
-    write_json(corpus / "statistics.json", statistics)
     return verified, len(nodes)

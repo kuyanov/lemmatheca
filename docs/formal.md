@@ -94,13 +94,12 @@ After checking Lean, the build parses entry HTML and computes entry-list summari
 from the new results. It validates all summaries before saving node records and the
 `formalization` object in each `corpus/entries/<id>/entry.json`. Failed Lean checks
 or invalid summaries write neither set of results; prior saved data stays intact.
-The build also prepares the home-page statistics and count history before saving
-any results. Changed counts append timestamped history points; unchanged counts
-keep their previous series. Failed builds leave the history intact too.
-Individual JSON files are replaced atomically.
+Individual JSON files are replaced atomically. Home-page statistics and count
+history are updated separately by automation after pushes to `main`; the proof
+build neither reads nor writes `corpus/statistics.json`.
 
 Commit changed Lean sources, bindings, and all generated node and entry JSON
-alongside the change, including `corpus/statistics.json`. Verification describes
+alongside the change. Verification describes
 the last successful build: the server
 never runs Lean or performs source-freshness checks on a page request. Rerun the
 build after editing proofs, bindings, or entry block mappings. To compile locally

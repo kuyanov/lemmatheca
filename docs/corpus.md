@@ -57,16 +57,18 @@ HTML or loading nodes. Rerun `uv run python app/manage.py build` after changing 
 bindings, or proofs and commit the refreshed entry and node JSON. Failed checks or
 invalid entry summaries leave the previous generated data intact.
 
-The build also writes `corpus/statistics.json` for the home-page statistics grid. Like entry
-summaries, it is generated data and should be included with source changes. Its
-schema is validated when present, without requiring freshness during authoring.
+The [statistics workflow](../.github/workflows/statistics.yml) writes
+`corpus/statistics.json` after pushes to `main`, using saved metadata and Git
+authors. Contribution branches should leave this file unchanged; the proof build
+does not update it. Its schema is validated when present, without requiring
+freshness during authoring.
 Its `history` has four lists: `entries`, `nodes`, `areas`, and `contributors`.
 Entry and node points pair the total and verified counts as
 `{ "at": "…", "count": …, "verified": … }`; area and contributor points use
 `{ "at": "…", "count": … }`. Timestamps are UTC. A point is added when either
-count changes; unchanged builds add nothing. Validation checks chronological order,
+count changes; unchanged refreshes add nothing. Validation checks chronological order,
 changed counts, current endpoints, and verified totals. Existing snapshots without
-history remain valid until the next build fills it in.
+history remain valid until the next statistics refresh fills it in.
 See the [statistics guide](app.md#home-page-statistics) for Git backfill and contributor counting.
 
 Block structure, human references, and formal-node mappings belong in HTML, not

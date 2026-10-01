@@ -1,15 +1,17 @@
 """Statistics history is built once from Git, then records only changed counts."""
 
 from copy import deepcopy
+from io import StringIO
 import os
 from pathlib import Path
 import subprocess
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from django.test import SimpleTestCase
+from django.core.management import call_command, CommandError
+from django.test import SimpleTestCase, override_settings
 
-from catalog.files import write_json
+from catalog.files import read_json, write_json
 from catalog.statistics import append_counts, contributor_count, history_from_git, prepare_statistics
 from catalog.validation import validate_statistics
 
@@ -29,7 +31,10 @@ class ContributorTests(SimpleTestCase):
             for name, email in [("Alice", "alice@example.test"),
                                 ("Alice", "alias@example.test"),
                                 ("A. Example", "third@example.test"),
-                                ("Bob", "bob@example.test")]:
+                                ("Bob", "bob@example.test"),
+                                ("github-actions[bot]",
+                                 "actions@example.test"),
+                                ("dependabot[bot]", "dependabot@example.test")]:
                 git("-c", f"user.name={name}", "-c", f"user.email={email}",
                     "commit", "--allow-empty", "--quiet", "-m", "Example")
             (root / ".mailmap").write_text(
@@ -80,6 +85,10 @@ class StatisticsHistoryTests(SimpleTestCase):
             write_json(path, entry)
         for identifier, node in self.nodes.items():
             write_json(self.corpus / "nodes" / f"{identifier}.json", node)
+
+    def refresh(self):
+        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root):
+            return call_command("update_statistics", stdout=StringIO())
 
     def test_git_replays_changes_deletions_and_renames_without_rendering(self):
         first = self.commit(1)
@@ -133,6 +142,8 @@ class StatisticsHistoryTests(SimpleTestCase):
 
     def test_merge_counts_corpus_once_and_includes_branch_authors(self):
         self.commit(1)
+        self.refresh()
+        self.commit(1, "github-actions[bot]")
         self.git("checkout", "--quiet", "-b", "contribution")
         self.nodes["new"] = {"verified": False}
         self.save_records()
@@ -149,53 +160,121 @@ class StatisticsHistoryTests(SimpleTestCase):
         self.assertEqual(history["nodes"][-1]["at"],
                          "2026-01-04T12:00:00+00:00")
         self.assertEqual(history["contributors"][-1]["count"], 2)
+        self.refresh()
+        self.assertEqual(
+            read_json(self.corpus / "statistics.json")["contributors"], 2)
 
-    def test_build_appends_only_changed_counts_and_preserves_history(self):
+    def test_refresh_appends_only_changed_counts_and_preserves_history(self):
         self.commit(1)
         with patch("catalog.statistics.timestamp", return_value="2026-02-01T12:00:00+00:00"):
             first = prepare_statistics(
-                self.corpus, self.root, self.entries, self.nodes)
+                self.corpus, self.root)
         write_json(self.corpus / "statistics.json", first)
         validate_statistics(first)
         with patch("catalog.statistics.history_from_git", side_effect=AssertionError("Already imported")), \
                 patch("catalog.statistics.timestamp", return_value="2026-02-02T12:00:00+00:00"):
             self.assertEqual(prepare_statistics(
-                self.corpus, self.root, self.entries, self.nodes), first)
+                self.corpus, self.root), first)
             self.nodes["proof"]["verified"] = True
+            self.save_records()
             changed = prepare_statistics(
-                self.corpus, self.root, self.entries, self.nodes)
+                self.corpus, self.root)
         expected = deepcopy(first["history"])
         expected["nodes"].append(
             {"at": "2026-02-02T12:00:00+00:00", "count": 1, "verified": 1})
         self.assertEqual(changed["history"], expected)
         validate_statistics(changed)
 
-    def test_build_keeps_manually_trimmed_history(self):
+    def test_refresh_reads_saved_counts_without_lean_or_html(self):
+        self.commit(1)
+        self.refresh()
+        self.entries["alpha"]["formalization"]["status"] = "complete"
+        self.entries["draft"] = {}
+        self.nodes["proof"]["verified"] = True
+        self.save_records()
+        records = {path: path.read_bytes() for path in self.corpus.glob("**/*.json")
+                   if path.name != "statistics.json"}
+        with patch("catalog.proofs.build", side_effect=AssertionError("No Lean build")), \
+                patch("catalog.sources.parse_source", side_effect=AssertionError("No HTML parsing")):
+            self.refresh()
+        snapshot = read_json(self.corpus / "statistics.json")
+        self.assertEqual({key: snapshot[key] for key in ("entries", "verified_entries", "nodes", "verified_nodes")},
+                         {"entries": 2, "verified_entries": 1, "nodes": 1, "verified_nodes": 1})
+        self.assertEqual({path: path.read_bytes()
+                         for path in records}, records)
+        validate_statistics(snapshot)
+
+    def test_new_author_appears_after_commit_but_bot_refresh_changes_nothing(self):
+        self.commit(1)
+        self.refresh()
+        self.commit(2, "github-actions[bot]")
+        self.commit(3, "Bob")
+        self.refresh()
+        path = self.corpus / "statistics.json"
+        snapshot = read_json(path)
+        self.assertEqual(snapshot["contributors"], 2)
+        self.assertEqual([point["count"]
+                         for point in snapshot["history"]["contributors"]], [1, 2])
+        before, modified = path.read_bytes(), path.stat().st_mtime_ns
+        self.commit(4, "github-actions[bot]")
+        self.refresh()
+        self.assertEqual(path.read_bytes(), before)
+        self.assertEqual(path.stat().st_mtime_ns, modified)
+        self.assertEqual([point["count"] for point in history_from_git(
+            self.corpus, self.root)["contributors"]], [1, 2])
+
+    def test_refresh_errors_preserve_the_published_snapshot(self):
+        self.commit(1)
+        self.refresh()
+        path = self.corpus / "statistics.json"
+        before = path.read_bytes()
+        with patch("catalog.statistics.git", side_effect=subprocess.CalledProcessError(1, "git")):
+            with self.assertRaises(CommandError):
+                self.refresh()
+        self.assertEqual(path.read_bytes(), before)
+        (self.corpus / "nodes/proof.json").write_text("Invalid JSON")
+        with self.assertRaises(CommandError):
+            self.refresh()
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_refresh_validates_history_before_writing(self):
+        self.commit(1)
+        self.refresh()
+        path = self.corpus / "statistics.json"
+        snapshot = read_json(path)
+        snapshot["history"]["nodes"][0]["verified"] = 2
+        write_json(path, snapshot)
+        before = path.read_bytes()
+        with self.assertRaises(CommandError):
+            self.refresh()
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_refresh_keeps_manually_trimmed_history(self):
         self.commit(1)
         self.nodes["proof"]["verified"] = True
         self.save_records()
         self.commit(2)
         previous = prepare_statistics(
-            self.corpus, self.root, self.entries, self.nodes)
+            self.corpus, self.root)
         previous["history"]["nodes"].pop(0)
         write_json(self.corpus / "statistics.json", previous)
         with patch("catalog.statistics.history_from_git", side_effect=AssertionError("Keep edited history")):
             self.assertEqual(prepare_statistics(
-                self.corpus, self.root, self.entries, self.nodes), previous)
+                self.corpus, self.root), previous)
 
     def test_shallow_clone_preserves_recorded_history(self):
         self.commit(1)
         previous = prepare_statistics(
-            self.corpus, self.root, self.entries, self.nodes)
+            self.corpus, self.root)
         write_json(self.corpus / "statistics.json", previous)
         (self.root / ".git/shallow").write_text(self.git("rev-parse", "HEAD"))
         self.assertEqual(prepare_statistics(
-            self.corpus, self.root, self.entries, self.nodes), previous)
+            self.corpus, self.root), previous)
 
     def test_same_second_changes_and_backwards_clocks_keep_valid_history(self):
         self.commit(1)
         snapshot = prepare_statistics(
-            self.corpus, self.root, self.entries, self.nodes)
+            self.corpus, self.root)
         at = "2026-02-01T12:00:00+00:00"
         snapshot.update(nodes=2, verified_nodes=2)
         append_counts(snapshot["history"], snapshot, at)
@@ -212,7 +291,7 @@ class StatisticsHistoryTests(SimpleTestCase):
     def test_history_validation_rejects_invalid_points_and_inconsistent_totals(self):
         self.commit(1)
         snapshot = prepare_statistics(
-            self.corpus, self.root, self.entries, self.nodes)
+            self.corpus, self.root)
         validate_statistics(snapshot)
         for point in ({"at": "bad", "count": 1, "verified": 0},
                       {"at": "2026-01-01T00:00:00", "count": 1, "verified": 0},

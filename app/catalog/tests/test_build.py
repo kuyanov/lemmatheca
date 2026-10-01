@@ -34,7 +34,6 @@ class ProofResultsTests(SimpleTestCase):
             '<section id="fact" data-kind="lemma" data-formal="example">'
             '<h2>Example</h2><p>True.</p></section>')
         self.statistics = self.root / "statistics.json"
-        write_json(self.root / "taxonomy.json", {"areas": []})
         write_json(self.statistics, {
             "entries": 1, "verified_entries": 1, "nodes": 1,
             "verified_nodes": 1, "contributors": 2,
@@ -77,17 +76,17 @@ class ProofResultsTests(SimpleTestCase):
                 self.assertEqual(self.path.read_bytes(), previous)
                 self.assertEqual(self.metadata.read_bytes(), entry_before)
 
-    def test_statistics_error_preserves_all_published_results(self):
-        paths = (self.path, self.metadata, self.statistics)
-        before = [path.read_bytes() for path in paths]
+    def test_build_does_not_read_or_write_statistics(self):
+        self.statistics.write_text(
+            "A malformed snapshot must not affect a proof build.")
+        before = self.statistics.read_bytes()
         output = 'NODE_STATUS {"declaration":"example","verified":false}'
-        with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)), \
-                patch("catalog.proofs.prepare_statistics", side_effect=OSError("Cannot read history")):
-            with self.assertRaises(OSError):
-                build(self.root, self.root)
-        self.assertEqual([path.read_bytes() for path in paths], before)
+        with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
+            self.assertEqual(build(self.root, self.root), (0, 1))
+        self.assertEqual(self.statistics.read_bytes(), before)
 
     def test_summaries_use_new_proof_results_and_preserve_metadata(self):
+        statistics_before = self.statistics.read_bytes()
         for verified, label in [(False, "0%"), (True, "100%")]:
             with self.subTest(verified=verified):
                 output = 'NODE_STATUS {"declaration":"example","verified":' + \
@@ -103,16 +102,8 @@ class ProofResultsTests(SimpleTestCase):
                 self.assertEqual(entry["reading_time"], 5)
                 self.assertNotIn("source", entry)
                 self.assertNotIn("directory", entry)
-                statistics = read_json(self.statistics)
-                self.assertEqual({key: value for key, value in statistics.items() if key != "history"}, {
-                    "entries": 1, "verified_entries": int(verified), "nodes": 1,
-                    "verified_nodes": int(verified), "areas": 0, "contributors": 2,
-                })
-                for key, points in statistics["history"].items():
-                    self.assertEqual(points[-1]["count"], statistics[key])
-                    if key in ("entries", "nodes"):
-                        self.assertEqual(
-                            points[-1]["verified"], statistics[f"verified_{key}"])
+                self.assertEqual(self.statistics.read_bytes(),
+                                 statistics_before)
 
     def test_invalid_entry_source_or_binding_prevents_all_writes(self):
         node_before, entry_before = self.path.read_bytes(), self.metadata.read_bytes()
@@ -173,7 +164,6 @@ class LeanBuildTests(SimpleTestCase):
             root = Path(directory)
             corpus, formal = root / "corpus", root / "formal"
             (corpus / "nodes").mkdir(parents=True)
-            write_json(corpus / "taxonomy.json", {"areas": []})
             (formal / "Lemmatheca").mkdir(parents=True)
             shutil.copyfile(settings.REPOSITORY_DIR /
                             "formal/lean-toolchain", formal / "lean-toolchain")
@@ -216,6 +206,7 @@ theorem unsupported : False := assumption
 
             self.assertEqual(
                 run_build(), "Updated 6 nodes: 1 verified, 5 not verified.")
+            self.assertFalse((corpus / "statistics.json").exists())
             self.assertEqual(read_json(entry_file)[
                              "formalization"]["label"], "25%")
             self.assertTrue(node("complete")["verified"])
@@ -253,12 +244,10 @@ theorem unsupported : False := assumption
             previous = {
                 name: (corpus / "nodes" / f"{name}.json").read_bytes() for name in names}
             entry_before = entry_file.read_bytes()
-            statistics_before = (corpus / "statistics.json").read_bytes()
             with self.assertRaises(CommandError):
                 run_build()
             self.assertEqual(entry_file.read_bytes(), entry_before)
-            self.assertEqual(
-                (corpus / "statistics.json").read_bytes(), statistics_before)
+            self.assertFalse((corpus / "statistics.json").exists())
             for name in names:
                 self.assertEqual(
                     (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])
@@ -267,8 +256,7 @@ theorem unsupported : False := assumption
             with self.assertRaises(CommandError):
                 run_build()
             self.assertEqual(entry_file.read_bytes(), entry_before)
-            self.assertEqual(
-                (corpus / "statistics.json").read_bytes(), statistics_before)
+            self.assertFalse((corpus / "statistics.json").exists())
             for name in names:
                 self.assertEqual(
                     (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])
