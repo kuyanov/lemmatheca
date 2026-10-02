@@ -1,0 +1,13 @@
+{
+  "id": "well-order-three-case-induction",
+  "description": "For a well-ordered linear order, a property holds everywhere if it holds at minimal points, passes from an immediate predecessor to its successor, and holds at limit points whenever it holds at all earlier points.",
+  "module": "Lemmatheca.SetTheory.WellOrders",
+  "declaration": "Lemmatheca.SetTheory.three_case_induction",
+  "dependencies": [
+    "well-founded-induction",
+    "order-point-case-classification"
+  ],
+  "verified": false,
+  "declaration_line": 52,
+  "signature": "Lemmatheca.SetTheory.three_case_induction.{u} {α : Type u} [LinearOrder α] [WellFoundedLT α] (P : α → Prop)\n  (base : ∀ (a : α), IsMin a → P a) (step : ∀ (a b : α), a ⋖ b → P a → P b)\n  (limit : ∀ (b : α), Order.IsSuccLimit b → (∀ a < b, P a) → P b) (a : α) : P a"
+}

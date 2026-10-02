@@ -1,0 +1,10 @@
+{
+  "id": "well-founded-recursion-equation",
+  "description": "The function defined by well-founded recursion satisfies the given rule at every point, using its own values at all predecessors.",
+  "module": "Init.WF",
+  "declaration": "WellFounded.fix_eq",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 139,
+  "signature": "WellFounded.fix_eq.{u, v} {α : Sort u} {C : α → Sort v} {r : α → α → Prop} (hwf : WellFounded r)\n  (F : (x : α) → ((y : α) → r y x → C y) → C x) (x : α) : hwf.fix F x = F x fun y x => hwf.fix F y"
+}
