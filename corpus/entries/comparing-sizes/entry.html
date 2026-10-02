@@ -1,0 +1,336 @@
+<section id="cardinality-comparison" data-kind="definition">
+  <h2>Comparing sets through maps</h2>
+  <p>For finite sets, counting gives a natural number. For arbitrary sets, we compare
+    size by using the <a href="sets-and-maps#kinds-of-maps">injective and bijective maps</a>
+    already introduced. Write</p>
+  <div class="math-display">\[
+    |A|=|B| \quad\Longleftrightarrow\quad
+    \text{there is a bijection }A\longrightarrow B,
+  \]</div>
+  <div class="math-display">\[
+    |A|\le |B| \quad\Longleftrightarrow\quad
+    \text{there is an injection }A\longrightarrow B.
+  \]</div>
+  <p>These are statements about sets and maps; we do not yet need to assign a particular
+    object called a cardinal number to each size. For finite sets the notation agrees with
+    <a href="finite-and-countable-sets#finite-cardinality">ordinary cardinality</a>.
+    Define \(|A|&lt;|B|\) to mean \(|A|\le|B|\) and \(|A|\ne|B|\).</p>
+  <p>An injection identifies \(A\) with its image inside \(B\). Inclusion therefore gives
+    \(|A|\le|B|\) whenever \(A\subseteq B\), but a proper inclusion need not give a strict
+    inequality of sizes.</p>
+</section>
+
+<section id="comparison-laws" data-kind="lemma">
+  <h2>Equality and comparison survive a change of names</h2>
+  <p>Equality of cardinality is reflexive, symmetric, and transitive. The comparison
+    \(|A|\le|B|\) is reflexive and transitive. Both relations are unchanged if either
+    set is replaced by a set in bijection with it.</p>
+  <p class="proof-label">Proof</p>
+  <p>The identity map supplies reflexivity. The inverse of a bijection supplies symmetry,
+    and composing bijections supplies transitivity. Composing injections also gives an
+    injection. Finally, if \(u:A'\to A\) and \(v:B\to B'\) are bijections and
+    \(f:A\to B\) is an injection, then \(v\circ f\circ u:A'\to B'\) is an injection.
+    Apply the inverse bijections to reverse this implication. The same argument works
+    for bijections. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Thus a relabeling preserves size. It need not preserve an order placed on the set:
+    <a href="ordered-sets#order-maps">order isomorphisms</a> must also preserve and reflect
+    comparison of elements.</p>
+</section>
+
+<section id="proper-subset-question" data-kind="question">
+  <h2>Can a proper subset have the same size?</h2>
+  <p>Compare \(\mathbb N\) with its positive elements and with its even elements. Why does
+    the corresponding phenomenon fail for finite sets?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The maps \(n\mapsto n+1\) and \(n\mapsto2n\) are bijections onto the positive and
+        even natural numbers, respectively. Their inverses, on these restricted codomains,
+        are \(k\mapsto k-1\) and \(k\mapsto k/2\). Both subsets are proper, yet both have
+        the size of \(\mathbb N\).</p>
+      <p>If \(S\subsetneq A\) and \(A\) is finite, a bijection \(A\to S\), followed by
+        inclusion into \(A\), would be an injective self-map of \(A\) missing an element.
+        This contradicts the
+        <a href="finite-and-countable-sets#finite-self-maps">finite self-map theorem</a>.
+        One injection that misses a point does not, by itself, prove a strict size
+        inequality for infinite sets.</p>
+    </div>
+  </details>
+</section>
+
+<section id="cantor-schroeder-bernstein" data-kind="theorem">
+  <h2>Injections in both directions give a bijection</h2>
+  <div class="statement-box">
+    <p>If \(f:A\to B\) and \(g:B\to A\) are injective, then there is a bijection
+      \(h:A\to B\). This is the <strong>Cantor–Schröder–Bernstein theorem</strong>.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>The inverse \(g^{-1}:g(B)\to B\) is defined on the image of \(g\), not necessarily
+    on all of \(A\). We will use \(f\) on one part of \(A\) and this inverse on the rest.
+    Starting with the elements outside the image of \(g\), define</p>
+  <div class="math-display">\[
+    C_0=A\setminus g(B),\qquad C_{n+1}=g(f(C_n)),\qquad
+    C=\bigcup_{n\in\mathbb N}C_n.
+  \]</div>
+  <p>The set \(C\) contains \(C_0\), and \(g(f(C))\subseteq C\): applying \(g\circ f\)
+    to a member of \(C_n\) puts it in \(C_{n+1}\). Every \(a\notin C\) belongs to
+    \(g(B)\), since it is not in \(C_0\). Consequently the following rule defines a map:</p>
+  <div class="math-display">\[
+    h(a)=
+    \begin{cases}
+      f(a),&amp;a\in C,\\
+      g^{-1}(a),&amp;a\in A\setminus C.
+    \end{cases}
+    \label{eq:bernstein-map}
+  \]</div>
+  <p><strong>Injectivity.</strong> Within \(C\), equality of outputs implies equality
+    of inputs by injectivity of \(f\). Outside \(C\), apply \(g\) to equal outputs.
+    A collision between the two parts is impossible: if \(a\in C\), \(a'\notin C\),
+    and \(f(a)=g^{-1}(a')\), then \(a'=g(f(a))\in C\), a contradiction.</p>
+  <p><strong>Surjectivity.</strong> Fix \(b\in B\). If \(g(b)\notin C\), then
+    \(h(g(b))=b\). If \(g(b)\in C\), it lies in some \(C_n\).
+    It cannot lie in \(C_0=A\setminus g(B)\), so \(n=k+1\) for some \(k\).
+    There is an \(a\in C_k\) with \(g(b)=g(f(a))\).
+    Injectivity of \(g\) gives \(b=f(a)=h(a)\).
+    Thus every \(b\) has a preimage under the same map \(h\).
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The construction also covers empty sets. If \(A=\varnothing\), the injection
+    \(g:B\to A\) forces \(B=\varnothing\), and \(h\) is the empty bijection.</p>
+</section>
+
+<section id="bernstein-example" data-kind="question">
+  <h2>What does the constructed bijection do?</h2>
+  <p>Take \(A=B=\mathbb N\), \(f(n)=n+1\), and \(g(n)=n+2\).
+    Find the sets \(C_n\) and the first six values of the map in
+    \eqref{eq:bernstein-map}.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Here \(C_0=\{0,1\}\), and \(g(f(n))=n+3\).
+        Hence \(C_k=\{3k,3k+1\}\) and
+        \(C=\{n:n\equiv0\text{ or }1\pmod3\}\).</p>
+      <p>On \(C\), the rule is \(h(n)=n+1\); on its complement, the inverse of \(g\)
+        gives \(h(n)=n-2\). Thus the values at inputs \(0,1,2,3,4,5\) are
+        \(1,2,0,4,5,3\). Each block of three consecutive numbers is cyclically
+        rearranged. Neither given injection was surjective, but the combined map is.</p>
+    </div>
+  </details>
+</section>
+
+<section id="strict-comparison" data-kind="lemma">
+  <h2>What strict comparison rules out</h2>
+  <p>We have \(|A|=|B|\) if and only if \(|A|\le|B|\) and \(|B|\le|A|\).
+    In particular,</p>
+  <div class="math-display">\[
+    |A|&lt;|B|
+    \quad\Longleftrightarrow\quad
+    |A|\le|B|\ \text{and there is no injection }B\longrightarrow A.
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>A bijection and its inverse give the two injections; the converse is
+    <a href="#cantor-schroeder-bernstein"></a>. If \(|A|\le|B|\), an injection back
+    would therefore give a bijection, and a bijection would give an injection back.
+    Negating these equivalent possibilities gives the displayed equivalence.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Strict comparison is transitive. If \(|A|&lt;|B|&lt;|D|\), compose the forward
+    injections to get \(|A|\le|D|\). An injection \(D\to A\), composed with \(B\to D\),
+    would give the prohibited injection \(B\to A\). Thus \(|A|&lt;|D|\).
+    The theorem compares a specified pair once the injections are available; it
+    does not supply an injection in one direction for every arbitrary pair of sets.</p>
+</section>
+
+<section id="uncountability" data-kind="definition">
+  <h2>To be uncountable is to defeat every list</h2>
+  <p>A set is <strong>uncountable</strong> if it is not countable. By the
+    <a href="finite-and-countable-sets#countable-encodings">encoding characterization</a>,
+    this means there is no injection from it into \(\mathbb N\).
+    For a nonempty set \(A\), the
+    <a href="finite-and-countable-sets#surjective-lists">list characterization</a>
+    gives the equivalent assertion that no map \(\mathbb N\to A\) is surjective.</p>
+  <p>To prove this last assertion, take an arbitrary proposed list
+    \(a_0,a_1,a_2,\ldots\) and construct an element outside its range.
+    Repetitions are allowed. A proof must defeat every proposed list, not merely a
+    particular ordering that happens to omit some elements.</p>
+  <p>Uncountability passes to any set containing an uncountable subset. More generally,
+    if \(U\) is uncountable and \(U\to V\) is injective, then \(V\) is uncountable:
+    an encoding \(V\to\mathbb N\) would compose to an encoding of \(U\).</p>
+</section>
+
+<section id="cantor-power-set" data-kind="theorem">
+  <h2>A power set is strictly larger</h2>
+  <div class="statement-box">
+    <p>For every set \(A\), there is no surjection \(A\to\mathcal P(A)\), and
+      \(|A|&lt;|\mathcal P(A)|\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Fix any map \(F:A\to\mathcal P(A)\), and define</p>
+  <div class="math-display">\[
+    D=\{a\in A:a\notin F(a)\}.
+    \label{eq:diagonal-subset}
+  \]</div>
+  <p>Since \(D\subseteq A\), it is an element of the required codomain.
+    For each \(a\in A\), its membership in \(D\) differs from its membership in \(F(a)\).
+    Therefore \(D\ne F(a)\) for every \(a\), and \(F\) is not surjective.
+    Equivalently, assuming \(F(a)=D\) would give
+    \(a\in D\Longleftrightarrow a\notin D\).</p>
+  <p>The singleton map \(a\mapsto\{a\}\) is an injection \(A\to\mathcal P(A)\):
+    equality of singleton sets implies equality of their elements.
+    There is no bijection, since every bijection is surjective. Together these facts
+    prove the strict inequality. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>When \(A=\varnothing\), its power set is \(\{\varnothing\}\), so the conclusion
+    is the familiar inequality \(0&lt;1\). For an \(n\)-element set, recording which
+    of its \(n\) elements belong to a subset gives \(2^n\) possibilities.
+    The diagonal proof applies whether or not \(A\) is finite.</p>
+</section>
+
+<section id="diagonal-subset-question" data-kind="question">
+  <h2>Which subset is omitted?</h2>
+  <p>For \(A=\mathbb N\), compute \eqref{eq:diagonal-subset} when
+    \(F(n)=\{n\}\), and when \(F(n)=\{0,\ldots,n-1\}\).
+    What changes if the second rule is instead \(F(n)=\{0,\ldots,n\}\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>For the singleton map, every \(n\) belongs to \(F(n)\), so \(D=\varnothing\).
+        No singleton is empty. For the initial-segment map, \(n\notin F(n)\) for every
+        \(n\), so \(D=\mathbb N\); every listed initial segment is finite.</p>
+      <p>If the rule is instead \(F(n)=\{0,\ldots,n\}\), every diagonal membership
+        is true and \(D=\varnothing\), which again is not listed.
+        The omitted subset depends on the proposed list. This does not weaken the
+        conclusion: each map omits the subset constructed from that very map.</p>
+    </div>
+  </details>
+</section>
+
+<section id="binary-sequences" data-kind="definition">
+  <h2>Subsets as infinite binary sequences</h2>
+  <p>Let \(2^{\mathbb N}\) denote the set of all functions
+    \(s:\mathbb N\to\{0,1\}\). Here the notation describes a set of sequences;
+    it is different from the single number \(2^n\) for finite \(n\).</p>
+  <p>A subset \(S\subseteq\mathbb N\) determines its characteristic sequence</p>
+  <div class="math-display">\[
+    \chi_S(n)=
+    \begin{cases}1,&amp;n\in S,\\0,&amp;n\notin S.\end{cases}
+  \]</div>
+  <p>Conversely, a binary sequence \(s\) determines \(S_s=\{n:s(n)=1\}\).
+    We have \(S_{\chi_S}=S\), and \(\chi_{S_s}=s\), by checking membership or values
+    at each natural number. These two maps are inverses, so
+    \(|2^{\mathbb N}|=|\mathcal P(\mathbb N)|\).
+    In particular, both sets are uncountable: a countable power set would have a
+    surjective list from \(\mathbb N\), contrary to <a href="#cantor-power-set"></a>.</p>
+</section>
+
+<section id="diagonal-sequences" data-kind="theorem">
+  <h2>Changing the diagonal defeats a sequence list</h2>
+  <p>For any proposed list \(s_0,s_1,\ldots\) of members of \(2^{\mathbb N}\), the
+    sequence \(d(n)=1-s_n(n)\) belongs to \(2^{\mathbb N}\) and is absent from the list.</p>
+  <p class="proof-label">Proof</p>
+  <p>Each \(s_n(n)\) is zero or one, so \(d(n)\) is also zero or one and differs from it.
+    Thus \(d\ne s_n\) for every \(n\), with coordinate \(n\) witnessing the difference.
+    No proposed list is surjective. <span class="qed" aria-label="End of proof">□</span></p>
+  <table id="binary-diagonal-table">
+    <caption>A sample list, with the inspected diagonal entries in bold</caption>
+    <thead><tr><th scope="col">Sequence</th><th scope="col">Coordinate 0</th><th scope="col">Coordinate 1</th><th scope="col">Coordinate 2</th><th scope="col">Coordinate 3</th><th scope="col">Later coordinates</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">\(s_0\)</th><td><strong>0</strong></td><td>0</td><td>1</td><td>0</td><td>\(\ldots\)</td></tr>
+      <tr><th scope="row">\(s_1\)</th><td>1</td><td><strong>1</strong></td><td>0</td><td>0</td><td>\(\ldots\)</td></tr>
+      <tr><th scope="row">\(s_2\)</th><td>0</td><td>1</td><td><strong>1</strong></td><td>0</td><td>\(\ldots\)</td></tr>
+      <tr><th scope="row">\(s_3\)</th><td>1</td><td>0</td><td>0</td><td><strong>0</strong></td><td>\(\ldots\)</td></tr>
+      <tr><th scope="row">\(d\)</th><td>1</td><td>0</td><td>0</td><td>1</td><td>\(\ldots\)</td></tr>
+    </tbody>
+  </table>
+  <p>In <a href="#binary-diagonal-table"></a>, only a finite part of the array is shown.
+    The rule defines every coordinate of \(d\). The position at which \(d\) differs
+    from a row may change from row to row; one coordinate need not distinguish it
+    from all rows simultaneously.</p>
+</section>
+
+<section id="finite-sequences-question" data-kind="question">
+  <h2>Do finite binary words already form an uncountable set?</h2>
+  <p>Compare all finite binary words with all infinite binary sequences.
+    What about infinite sequences with only finitely many ones?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Finite words are countable. Encode a word \((b_0,\ldots,b_{r-1})\) by
+        \(2^r+\sum_{j=0}^{r-1}b_j2^j\).
+        Its code lies between \(2^r\) and \(2^{r+1}-1\), so the code determines the length.
+        Within that interval, uniqueness of the binary digits determines the word.
+        The empty word has code one.</p>
+      <p>Sequences with finitely many ones are also countable: encode such a sequence by
+        \(\sum_{\{j:s(j)=1\}}2^j\), a finite sum.
+        Different finite supports have different sums. At their largest differing
+        index \(k\), the term \(2^k\) outweighs all possible smaller terms together,
+        whose sum is \(2^k-1\). The all-zero sequence has code zero.</p>
+      <p>For the full set of infinite sequences, there is no last nonzero position
+        in general, and the finite integer code does not apply. The diagonal theorem
+        proves that this full set is uncountable.</p>
+    </div>
+  </details>
+</section>
+
+<section id="uncountable-reals" data-kind="theorem">
+  <h2>The real interval and the real line are uncountable</h2>
+  <p>The interval \((0,1)\), the real line \(\mathbb R\), and the set
+    \(\mathbb R\setminus\mathbb Q\) of irrational numbers are uncountable.</p>
+  <p class="proof-label">Proof</p>
+  <p>We use the usual decimal-expansion facts: every member of \((0,1)\) has an expansion
+    \(0.a_0a_1a_2\ldots\), and choosing the expansion that is not eventually all nines
+    makes it unique. For example, use \(0.5000\ldots\) rather than \(0.4999\ldots\).</p>
+  <p>Given any list \(x_0,x_1,\ldots\) in \((0,1)\), write the \(n\)-th entry as
+    \(x_n=0.a_{n,0}a_{n,1}\ldots\) in this convention. Set</p>
+  <div class="math-display">\[
+    b_n=\begin{cases}2,&amp;a_{n,n}=1,\\1,&amp;a_{n,n}\ne1,\end{cases}
+    \qquad y=0.b_0b_1b_2\ldots .
+  \]</div>
+  <p>The digits of \(y\) are all one or two, so
+    \(1/9\le y\le2/9\) and \(y\in(0,1)\).
+    Its expansion is not eventually nine. It differs from the chosen expansion of
+    \(x_n\) at digit \(n\), so uniqueness gives \(y\ne x_n\) for every \(n\).
+    Thus no list covers \((0,1)\).</p>
+  <p>Since \((0,1)\subseteq\mathbb R\), the real line is uncountable as well.
+    If the irrationals were countable, their union with the
+    <a href="finite-and-countable-sets#rational-enumeration">countable set of rationals</a>
+    would be countable by
+    <a href="finite-and-countable-sets#finite-unions">closure under finite unions</a>.
+    That union is \(\mathbb R\), a contradiction.
+    <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="real-interval-sizes" data-kind="lemma">
+  <h2>Different lengths can have the same cardinality</h2>
+  <p>For real numbers \(a&lt;b\), the intervals \((a,b)\), \((0,1)\), and the whole
+    real line have the same cardinality.</p>
+  <p class="proof-label">Proof</p>
+  <p>The affine map \(t\mapsto a+(b-a)t\) bijects \((0,1)\) with \((a,b)\);
+    its inverse is \(x\mapsto(x-a)/(b-a)\).
+    To compare with the whole line, use</p>
+  <div class="math-display">\[
+    u:\mathbb R\longrightarrow(-1,1),\qquad u(x)=\frac{x}{1+|x|}.
+  \]</div>
+  <p>Its values lie strictly between minus one and one. For \(t\in(-1,1)\), the positive
+    denominator \(1-|t|\) makes \(v(t)=t/(1-|t|)\) well defined.
+    The identities \(|v(t)|=|t|/(1-|t|)\) and
+    \(|u(x)|=|x|/(1+|x|)\) give \(u(v(t))=t\) and \(v(u(x))=x\).
+    Finally \(t\mapsto(t+1)/2\) bijects \((-1,1)\) with \((0,1)\).
+    Compose these bijections. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Cardinality records the possibility of a bijection. It does not record interval
+    length, nor does it require the bijection to preserve distances.</p>
+</section>
+
+<section id="larger-sizes" data-kind="theorem">
+  <h2>There is always a larger size</h2>
+  <p>Starting with any set \(A\) and repeatedly taking power sets gives strict comparisons</p>
+  <div class="math-display">\[
+    |A|&lt;|\mathcal P(A)|&lt;|\mathcal P(\mathcal P(A))|&lt;\cdots .
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Apply <a href="#cantor-power-set"></a> to each set in turn. Thus there cannot be
+    a set whose cardinality is at least that of every set: its own power set would
+    have a strictly larger cardinality.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Already \(\mathbb N\) and \(\mathcal P(\mathbb N)\) have different infinite sizes.
+    “Uncountable” rules out a natural-number encoding; it does not assert that all
+    uncountable sets have the same size. For example, both \(\mathbb R\) and
+    \(\mathcal P(\mathbb R)\) are uncountable, but their cardinalities are different.</p>
+</section>

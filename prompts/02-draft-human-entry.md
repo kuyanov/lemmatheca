@@ -46,6 +46,15 @@ Preserve unrelated work and existing stable IDs when revising an entry.
    [corpus guide](../docs/corpus.md). Choose a primary area and list the ID once, in reading order,
    under that area in `corpus/area_entries.json`. There are no review or editorial
    status fields to add.
+   Write the abstract for readers new to the topic or who have not read the entry.
+   Use simple language, explain essential unfamiliar terms, and emphasize the main
+   results and what they mean. Make it understandable on its own; avoid a section
+   itinerary, proof techniques, and notation that requires the entry's definitions.
+   Keep necessary conditions, expressing them in plain language where possible.
+   Develop one connected paragraph around the entry's central idea. Let each
+   sentence build on the previous one, linking the motivating idea to the main
+   conclusions. Choose results that support this thread rather than listing every
+   topic; transitions should express a real relationship between ideas.
 5. Leave data-formal absent for new blocks. An empty mapping means nothing needs
    formalizing, not that work is unfinished. Preserve existing mappings on an
    edited entry unless the changed mathematics requires revisiting them. Do not

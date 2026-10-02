@@ -33,6 +33,13 @@ Check the following:
   and citations accurately support the material.
 - Prose avoids filler, repeated definitions and conclusions, and unnecessary
   meta-commentary while retaining essential hypotheses and logical transitions.
+- The abstract stands on its own for readers new to the topic or who have not read
+  the entry. It uses simple language, explains essential unfamiliar terms, and
+  emphasizes the main results and their meaning rather than proof techniques or
+  a section itinerary. Its claims match the entry and retain necessary conditions.
+  Check that it develops a connected idea: each sentence builds on the preceding
+  context, and the selected results belong to that thread. Flag isolated facts or
+  transitions that suggest a relationship the mathematics does not support.
 - HTML, metadata, references, assets, and `corpus/area_entries.json` follow the
   current contract. Inspect the rendered page, including hidden answers and narrow
   layouts where relevant. Unplanned formal mappings are allowed at this stage.

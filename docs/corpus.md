@@ -41,8 +41,15 @@ reading_time, summary, abstract
 
 `reading_time` is an estimated positive integer number of minutes, allowing time
 for the arguments and questions. `summary` is the short listing description;
-`abstract` introduces the entry on its own page. Write original exposition and
-credit inspected sources in `based_on`.
+`abstract` introduces the entry on its own page. It should stand on its own for
+readers new to the topic or who have not read the entry. Use simple language and
+explain essential unfamiliar terms. Focus on the main results and what they mean,
+preserving necessary conditions, rather than proof techniques or a section itinerary.
+Avoid notation that requires the entry's definitions. Develop one connected
+paragraph around the central idea, with each sentence building on the previous
+one. Select results that support this thread rather than listing every topic,
+and make the relationships between ideas explicit. Write original exposition
+and credit inspected sources in `based_on`.
 
 `based_on` is a list of citations with `authors` (names) and `title`. Optional
 publication details include `year`, `venue`, `volume`, `issue`, `pages`, `doi`, and

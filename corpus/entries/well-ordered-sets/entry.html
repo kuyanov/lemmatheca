@@ -1,0 +1,430 @@
+<section id="well-orders" data-kind="definition">
+  <h2>Every nonempty subset has a first element</h2>
+  <p>A <strong>well-order</strong> on a set \(A\) is a
+    <a href="ordered-sets#partial-and-total-orders">total order</a> \(\le\) such that
+    every nonempty subset \(S\subseteq A\) has a least element.
+    Its strict order is \(x&lt;y\) when \(x\le y\) and \(x\ne y\).
+    We call \((A,\le)\) a <strong>well-ordered set</strong>.</p>
+  <p>“Every subset” includes infinite subsets and \(A\) itself. Having a least element
+    in \(A\) alone is insufficient. A least element of a nonempty subset is unique:
+    two such elements would each be at most the other, so antisymmetry makes them equal.
+    In a total order, a <a href="ordered-sets#least-and-minimal-elements">minimal element</a>
+    is least, because it is comparable with every other element.</p>
+  <p>The empty set with its empty order is well-ordered: it has no nonempty subsets.
+    Every singleton is well-ordered. The natural numbers with their usual order
+    are well-ordered by the least-member principle used in
+    <a href="finite-and-countable-sets#finite-sets">finite counting</a>.
+    We continue to take \(\mathbb N=\{0,1,2,\ldots\}\).</p>
+</section>
+
+<section id="inherited-well-orders" data-kind="lemma">
+  <h2>Subsets inherit a well-order</h2>
+  <p>Every subset of a well-ordered set is well-ordered by the restricted order.
+    Every finite totally ordered set is well-ordered.</p>
+  <p class="proof-label">Proof</p>
+  <p>If \(B\subseteq A\), the restricted relation is still a total order.
+    A nonempty subset of \(B\) is a nonempty subset of \(A\), and its least element
+    remains least in the restricted order. For a finite total order, every nonempty
+    subset is finite and has a minimal element by
+    <a href="ordered-sets#finite-extrema">the finite-extrema lemma</a>.
+    Totality makes that element least.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Totality matters in the finite assertion. Two distinct incomparable elements,
+    with only reflexive comparisons, form a finite partial order whose full set
+    has no least element.</p>
+</section>
+
+<section id="well-order-tests" data-kind="question">
+  <h2>Which familiar orders are well-orders?</h2>
+  <p>Consider \(\mathbb Z\), \(\mathbb Q\), \(\mathbb R\), and \([0,1]\) in their
+    usual orders. Does the answer mean that \(\mathbb Z\) cannot be well-ordered
+    by a different relation?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The usual order on \(\mathbb Z\) is not a well-order: the whole set has no least
+        integer, since \(z-1&lt;z\). The usual orders on \(\mathbb Q\) and \(\mathbb R\)
+        also fail. The subset \((0,1)\cap\mathbb Q\), or \((0,1)\) respectively,
+        has no least element, since \(0&lt;x/2&lt;x\) for any of its elements.
+        The same subset disproves well-ordering of \([0,1]\), even though that interval
+        itself has the least element zero.</p>
+      <p>A different order on \(\mathbb Z\) does work. Use the bijection
+        \(z:\mathbb N\to\mathbb Z\) from
+        <a href="finite-and-countable-sets#integer-enumeration">the integer enumeration</a>
+        and declare \(z(i)\prec z(j)\) exactly when \(i&lt;j\).
+        A nonempty set of integers has a nonempty set of indices, hence a least index.
+        This order begins \(0\prec-1\prec1\prec-2\prec2\prec\cdots\).
+        Well-ordering is a property of the chosen relation as well as the underlying set.</p>
+    </div>
+  </details>
+</section>
+
+<section id="well-orders-beyond-naturals" data-kind="definition">
+  <h2>A last point and successive infinite blocks</h2>
+  <p>Let \(L=\mathbb N\sqcup\{\ell\}\), where \(\ell\) is a new element distinct
+    from every natural number. Keep the usual order among naturals and put \(n&lt;\ell\)
+    for every \(n\in\mathbb N\). This is a well-order: a nonempty subset containing
+    a natural number has a least natural member, and the only nonempty subset with
+    no natural members is \(\{\ell\}\).</p>
+  <p>Another well-order is the lexicographic order on \(\mathbb N\times\mathbb N\):</p>
+  <div class="math-display">\[
+    (i,j)&lt;_{\mathrm{lex}}(k,m)
+    \quad\Longleftrightarrow\quad
+    i&lt;k\ \text{or}\ (i=k\ \text{and}\ j&lt;m).
+  \]</div>
+  <p>It consists of the entire block
+    \((0,0),(0,1),(0,2),\ldots\), then the block
+    \((1,0),(1,1),\ldots\), and so on.
+    Lexicographic comparison is a total order. To find the least member of a nonempty
+    subset, first take the least first coordinate that occurs, and then take the least
+    second coordinate among members with that first coordinate.</p>
+  <p>Both examples are countably infinite as sets: enumerate \(L\) by putting \(\ell\)
+    first and then the naturals, and use
+    <a href="finite-and-countable-sets#finite-products">countability of finite products</a>
+    for \(\mathbb N\times\mathbb N\), which is infinite since \(n\mapsto(n,0)\) is injective.
+    Neither has the same order
+    structure as the usual natural numbers. In \(L\), the point \(\ell\) is greatest.
+    In the lexicographic example, \((1,0)\) has infinitely many predecessors.
+    Every natural number has only finitely many predecessors in its usual order.
+    A size comparison, as in <a href="comparing-sizes#comparison-laws">cardinality</a>,
+    does not preserve these order properties.</p>
+</section>
+
+<section id="initial-segments" data-kind="definition">
+  <h2>Initial segments contain everything earlier</h2>
+  <p>A subset \(I\subseteq A\) is an <strong>initial segment</strong> if it is
+    downward closed: whenever \(x\in I\) and \(y&lt;x\), we have \(y\in I\).
+    We allow \(I=\varnothing\) and \(I=A\). For \(a\in A\), write</p>
+  <div class="math-display">\[
+    A_{&lt;a}=\{x\in A:x&lt;a\}.
+  \]</div>
+  <p>This is a proper initial segment, because it does not contain \(a\).
+    We use the order inherited from \(A\) on each segment.
+    The closed segment \(\{x\in A:x\le a\}\) is also downward closed.</p>
+  <p>For \(\mathbb N\), the segment \(\mathbb N_{&lt;n}\) is
+    \(\{0,\ldots,n-1\}\). In \(L\), the segment \(L_{&lt;\ell}\) is all of
+    \(\mathbb N\). In the lexicographic example, the segment below \((1,0)\)
+    is \(\{0\}\times\mathbb N\).
+    An inherited well-order need not be an initial segment:
+    the even natural numbers contain two but omit the earlier number one.</p>
+</section>
+
+<section id="classification-of-initial-segments" data-kind="lemma">
+  <h2>Every proper initial segment ends at a cut</h2>
+  <p>If \(I\subsetneq A\) is an initial segment of a well-ordered set, there is a
+    unique \(a\in A\) such that \(I=A_{&lt;a}\). It is the least member of \(A\setminus I\).
+    The initial segments of \(A\) are linearly ordered by inclusion.</p>
+  <p class="proof-label">Proof</p>
+  <p>The nonempty complement has a least member \(a\). Every \(x&lt;a\) belongs to
+    \(I\), or \(a\) would not be least in the complement.
+    Conversely, if \(x\in I\), then \(x\ne a\); the possibility \(a&lt;x\) would force
+    \(a\in I\) by downward closure. Thus \(x&lt;a\), giving \(I=A_{&lt;a}\).
+    The least missing member determines \(a\) uniquely.</p>
+  <p>If \(a&lt;b\), then \(A_{&lt;a}\subsetneq A_{&lt;b}\): transitivity gives the
+    inclusion, and \(a\) belongs only to the latter segment. Totality compares any
+    two endpoints; \(A\) itself contains every initial segment.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In a nonempty well-order, the empty segment is the segment below its least element.
+    For the empty well-order there are no proper initial segments.</p>
+</section>
+
+<section id="successors-and-limits" data-kind="definition">
+  <h2>Some points have no immediate predecessor</h2>
+  <p>If \(a\) is not greatest, its <strong>successor</strong> is the least member of
+    \(\{x\in A:a&lt;x\}\), written \(s(a)\).
+    Thus \(a&lt;s(a)\) and no element lies strictly between them.
+    A point \(b\) is a <strong>successor point</strong> if \(b=s(a)\) for some \(a\);
+    that \(a\) is its immediate predecessor.</p>
+  <p>For a nonempty well-order, every point is exactly one of: its least point,
+    a successor point, or a <strong>limit point</strong>, meaning a nonleast point
+    with no immediate predecessor.
+    Here “limit” describes the order; no topological limit is being defined.</p>
+  <p>A greatest point has no successor, but it may itself be a successor point or a
+    limit point. In a finite nonempty well-order, every point after the first has
+    an immediate predecessor: its nonempty finite predecessor set has a greatest member.</p>
+  <p>In \(L\), each \(n+1\) succeeds \(n\), while \(\ell\) is a limit point and is also
+    greatest. In the lexicographic order, \((i,j+1)\) succeeds \((i,j)\);
+    each \((i,0)\) with \(i&gt;0\) is a limit point.</p>
+  <p>If \(b\) is a limit point, then for every \(a&lt;b\) there is some \(c\) with
+    \(a&lt;c&lt;b\). Otherwise \(a\) would be greatest among the predecessors of \(b\),
+    making \(b=s(a)\). This explains why no last predecessor is available at a limit point.</p>
+</section>
+
+<section id="well-order-induction" data-kind="theorem">
+  <h2>Induction from all earlier elements</h2>
+  <div class="statement-box">
+    <p>Let \(P(a)\) be a property of elements of a well-ordered set \(A\). If</p>
+    <div class="math-display">\[
+      \forall a\in A,\quad
+      \bigl((\forall b&lt;a,\ P(b))\Longrightarrow P(a)\bigr),
+    \]</div>
+    <p>then \(P(a)\) holds for every \(a\in A\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>If the set \(E=\{a\in A:\neg P(a)\}\) were nonempty, take its least member \(e\).
+    Every \(b&lt;e\) lies outside \(E\), so \(P(b)\) holds for all such \(b\).
+    The assumed implication then gives \(P(e)\), contradicting \(e\in E\).
+    Thus \(E\) is empty. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The premise is called the <strong>induction step</strong>.
+    At the least point there are no earlier elements, so its antecedent is true
+    and the step must establish the base case. For \(A=\mathbb N\), this is strong
+    induction. For \(A=\varnothing\), the conclusion is vacuous.</p>
+</section>
+
+<section id="induction-characterizes-well-ordering" data-kind="lemma">
+  <h2>The induction principle detects a well-order</h2>
+  <p>A total order is a well-order if and only if the principle in
+    <a href="#well-order-induction"></a> holds for every property of its elements.</p>
+  <p class="proof-label">Proof</p>
+  <p>One direction is the theorem. Conversely, suppose a nonempty subset \(S\) has
+    no least element. Let \(P(a)\) mean \(a\notin S\).
+    If all elements below \(a\) satisfy \(P\), then \(a\) cannot belong to \(S\):
+    in a total order, a member of \(S\) with no member of \(S\) below it would be least.
+    Thus \(P\) satisfies the induction step. The principle would make \(P\) true
+    everywhere, contradicting nonemptiness of \(S\).
+    <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="three-case-induction" data-kind="lemma">
+  <h2>Base, successor, and limit cases</h2>
+  <p>On a nonempty well-order, it suffices to prove \(P\) at the least point,
+    prove \(P(s(a))\) whenever \(s(a)\) exists and \(P(a)\) holds, and prove \(P(b)\)
+    at each limit point \(b\) assuming \(P(a)\) for every \(a&lt;b\).</p>
+  <p class="proof-label">Proof</p>
+  <p>To check the step of <a href="#well-order-induction"></a> at \(b\), assume \(P\)
+    below \(b\). If \(b\) is least, use the base case. If \(b=s(a)\), the assumption
+    includes \(P(a)\), so use the successor case. Otherwise \(b\) is a limit point,
+    and its case applies. The induction theorem gives the result.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The limit case is essential when the order has limit points. Its hypothesis
+    concerns the entire earlier segment, which may be infinite.</p>
+</section>
+
+<section id="missing-limit-question" data-kind="question">
+  <h2>Why are base and successor cases insufficient?</h2>
+  <p>In \(L=\mathbb N\sqcup\{\ell\}\), let \(P(x)\) mean \(x\in\mathbb N\).
+    Does it satisfy the base and successor requirements? Does it hold everywhere?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The least point is zero, where \(P\) holds. The successor of each natural
+        number \(n\) is \(n+1\), where it also holds. The point \(\ell\) has no successor,
+        so there is no extra successor requirement starting there.</p>
+      <p>Nevertheless \(P(\ell)\) is false. All predecessors of \(\ell\) satisfy \(P\),
+        precisely the hypothesis under which the limit case would require \(P(\ell)\).
+        This property fails the full induction step at \(\ell\).</p>
+    </div>
+  </details>
+</section>
+
+<section id="unique-order-isomorphism" data-kind="theorem">
+  <h2>An order isomorphism between well-orders is unique</h2>
+  <p>If \(f,g:A\to B\) are order isomorphisms between well-ordered sets, then \(f=g\).</p>
+  <p class="proof-label">Proof</p>
+  <p>By <a href="#well-order-induction"></a>, fix \(a\in A\) and assume \(f(b)=g(b)\)
+    for every \(b&lt;a\).
+    Suppose \(f(a)&lt;g(a)\), using the order on \(B\).
+    The point \(b=g^{-1}(f(a))\) lies below \(a\), because \(g\) reflects order.
+    The hypothesis gives \(f(b)=g(b)=f(a)\).
+    Injectivity of \(f\) then gives \(b=a\), contradicting \(b&lt;a\).
+    The possibility \(g(a)&lt;f(a)\) is ruled out by exchanging \(f\) and \(g\).
+    Totality on \(B\) leaves \(f(a)=g(a)\).
+    Induction proves equality at every input.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, the only order automorphism of a well-order is the identity.
+    Arbitrary bijections between the underlying sets can still be plentiful.</p>
+</section>
+
+<section id="no-proper-initial-isomorphism" data-kind="theorem">
+  <h2>A well-order is not isomorphic to a proper initial segment</h2>
+  <p>A well-ordered set \(A\) is not order-isomorphic to \(A_{&lt;a}\) for any \(a\in A\).</p>
+  <p class="proof-label">Proof</p>
+  <p>First, every strictly increasing map \(f:A\to A\) satisfies \(x\le f(x)\).
+    Otherwise take the least \(x\) with \(f(x)&lt;x\).
+    Minimality gives \(f(x)\le f(f(x))\), since \(f(x)\) is earlier than \(x\).
+    But strict increase applied to \(f(x)&lt;x\) gives \(f(f(x))&lt;f(x)\),
+    a contradiction.</p>
+  <p>Now an order isomorphism \(A\to A_{&lt;a}\), followed by inclusion into \(A\),
+    would be strictly increasing and satisfy \(f(a)&lt;a\).
+    This contradicts the preceding inequality.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The natural numbers are in bijection with their proper subset of positive elements.
+    That subset is not an initial segment of the usual natural-number order.
+    The theorem concerns both the order structure and the position of the subset.</p>
+</section>
+
+<section id="well-founded-relations" data-kind="definition">
+  <h2>Well-founded reasoning allows incomparable elements</h2>
+  <p>A relation \(R\) on a set \(A\) is <strong>well-founded</strong> if every
+    nonempty subset \(S\subseteq A\) contains an \(R\)-minimal member:
+    an \(a\in S\) for which there is no \(b\in S\) with \(b\,R\,a\).
+    The direction \(b\,R\,a\) means that \(b\) is a permitted earlier dependency of \(a\).</p>
+  <p>The strict relation of a well-order is well-founded. Totality is not required
+    for a general well-founded relation. For example, on \(\{p,q,r\}\) take just
+    \(p\,R\,r\) and \(q\,R\,r\).
+    Every nonempty subset has an \(R\)-minimal member, although \(p\) and \(q\)
+    are incomparable. A subset containing only \(r\) has \(r\) as a minimal member.</p>
+  <p>We use a strict dependency relation: a self-dependency \(a\,R\,a\) would violate
+    well-foundedness on \(\{a\}\).
+    Well-foundedness also rules out an infinite descending sequence
+    \(a_{n+1}\,R\,a_n\): the set of its values would have a minimal member \(a_k\),
+    yet \(a_{k+1}\) would be an earlier member of that same set.</p>
+</section>
+
+<section id="well-founded-induction" data-kind="theorem">
+  <h2>Induction along a well-founded relation</h2>
+  <p>Let \(R\) be well-founded on \(A\). If for every \(a\in A\), the truth of \(P(b)\)
+    for all \(b\,R\,a\) implies \(P(a)\), then \(P\) holds everywhere on \(A\).</p>
+  <p class="proof-label">Proof</p>
+  <p>A nonempty set of counterexamples would have an \(R\)-minimal member \(a\).
+    Every \(b\,R\,a\) would satisfy \(P\), since no such \(b\) could belong to the
+    counterexample set. The step would give \(P(a)\), a contradiction.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>A useful way to establish well-foundedness is a <strong>natural-number measure</strong>.
+    If \(\mu:A\to\mathbb N\) satisfies \(\mu(b)&lt;\mu(a)\) whenever \(b\,R\,a\),
+    choose a member of any nonempty \(S\) having the least occurring measure.
+    It has no \(R\)-predecessor in \(S\).
+    For instance, proper divisibility of positive integers is well-founded, because
+    a positive proper divisor is smaller than the integer it divides.</p>
+</section>
+
+<section id="recursion-rules" data-kind="definition">
+  <h2>A recursion rule reads the earlier history</h2>
+  <p>Induction proves properties; <strong>recursion</strong> defines values.
+    Let \(A\) be well-ordered and let \(S\) be a fixed set of possible values.
+    For every \(a\in A\), suppose a map</p>
+  <div class="math-display">\[
+    \Phi_a:S^{A_{&lt;a}}\longrightarrow S
+  \]</div>
+  <p>has been given, where \(S^{A_{&lt;a}}\) denotes all functions from the earlier
+    segment \(A_{&lt;a}\) to \(S\).
+    The intended definition of \(F:A\to S\) is</p>
+  <div class="math-display">\[
+    F(a)=\Phi_a\bigl(F|_{A_{&lt;a}}\bigr).
+    \label{eq:well-order-recursion}
+  \]</div>
+  <p>The rule at \(a\) is specified for every possible earlier history, not only for
+    histories we expect to obtain. At the least point, its input is the unique empty
+    function. At a limit point, the history can have an infinite domain.
+    The rules may depend on the position \(a\), and need not describe an algorithm.</p>
+  <p>A <strong>partial solution</strong> is a function \(h:I\to S\), with \(I\) an
+    initial segment of \(A\), satisfying the same equation at every \(a\in I\).
+    Downward closure ensures that the whole segment \(A_{&lt;a}\) is in its domain,
+    so the restriction needed by the equation exists.</p>
+</section>
+
+<section id="compatible-partial-solutions" data-kind="lemma">
+  <h2>Partial solutions agree wherever both are defined</h2>
+  <p>Any two partial solutions for the same rules agree on the intersection of their
+    domains. In particular, there is at most one full solution of
+    \eqref{eq:well-order-recursion}.</p>
+  <p class="proof-label">Proof</p>
+  <p>Let \(h:I\to S\) and \(k:J\to S\) be partial solutions.
+    If they disagree anywhere in \(I\cap J\), take the least disagreement \(a\).
+    Every predecessor of \(a\) lies in both domains and has the same value under the
+    two functions. Thus their restrictions to \(A_{&lt;a}\) are equal.
+    Applying the same map \(\Phi_a\) gives \(h(a)=k(a)\), a contradiction.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This agreement is what permits compatible pieces of a recursive definition to be
+    assembled, including across infinitely many earlier positions.</p>
+</section>
+
+<section id="well-order-recursion" data-kind="theorem">
+  <h2>The recursion rules give a unique function</h2>
+  <div class="statement-box">
+    <p>For the well-order \(A\), fixed value set \(S\), and maps \(\Phi_a\) in
+      <a href="#recursion-rules"></a>, there exists a unique function \(F:A\to S\)
+      satisfying \eqref{eq:well-order-recursion} at every \(a\in A\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Regard partial solutions as their graphs, subsets of \(A\times S\).
+    The collection \(\mathcal H\) of all such solutions is therefore a set, contained
+    in \(\mathcal P(A\times S)\); it contains the empty solution.
+    Form the union of their graphs,
+    \(F=\bigcup_{h\in\mathcal H}h\).
+    By <a href="#compatible-partial-solutions"></a>, two graphs never assign different
+    values to the same input, so this union is a function into \(S\).
+    Its domain \(D\), the union of their initial segments, is itself an initial segment.</p>
+  <p>For any \(a\in D\), some partial solution \(h\) contains \(a\) in its domain.
+    It also contains every predecessor of \(a\). Compatibility makes the restriction
+    of \(F\) to those predecessors equal to the restriction of \(h\).
+    Hence \(F\) obeys the recursion rule at \(a\), and is a partial solution.</p>
+  <p>If \(D\ne A\), take the least missing point \(a\).
+    Then \(D=A_{&lt;a}\) by <a href="#classification-of-initial-segments"></a>.
+    Extend \(F\) to a function \(\widetilde F\) by assigning
+    \(\widetilde F(a)=\Phi_a(F|_D)\) and keeping its values on \(D\).
+    The extended domain \(D\cup\{a\}\) is an initial segment.
+    No earlier equation changes, because the newly assigned point is later than
+    every member of \(D\); the new equation holds by construction.
+    This gives another member of \(\mathcal H\).
+    Its graph must already be contained in the union defining \(F\), contradicting
+    that \(a\) was missing. Thus \(D=A\), proving existence.
+    Uniqueness follows from <a href="#compatible-partial-solutions"></a>.
+    <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="natural-number-recursion" data-kind="lemma">
+  <h2>Ordinary recursive sequences are a special case</h2>
+  <p>Given a set \(S\), an element \(c\in S\), and a map
+    \(T:\mathbb N\times S\to S\), there is a unique \(F:\mathbb N\to S\) with</p>
+  <div class="math-display">\[
+    F(0)=c,\qquad F(n+1)=T(n,F(n)).
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Set \(\Phi_0(u)=c\). At \(n+1\), let
+    \(\Phi_{n+1}(u)=T(n,u(n))\); the coordinate \(n\) is in the earlier segment,
+    so this value is available. The full recursion theorem supplies a unique
+    function. Its equations are exactly the two displayed rules.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For example, choose \(S=\mathbb N\), \(c=1\), and \(T(n,x)=(n+1)x\).
+    The resulting function is factorial:
+    \(F(0)=1\), \(F(1)=1\), \(F(2)=2\), \(F(3)=6\), and \(F(4)=24\).
+    A rule can also read several earlier coordinates, as in the Fibonacci rules
+    \(F(0)=0\), \(F(1)=1\), and \(F(n+2)=F(n+1)+F(n)\).</p>
+</section>
+
+<section id="recursion-at-a-limit-question" data-kind="question">
+  <h2>What value belongs at a limit point?</h2>
+  <p>On \(L=\mathbb N\sqcup\{\ell\}\), take the value set \(S=\mathcal P(\mathbb N)\)
+    and the rules</p>
+  <div class="math-display">\[
+    F(0)=\varnothing,\qquad F(n+1)=F(n)\cup\{n\},\qquad
+    F(\ell)=\bigcup_{n\in\mathbb N}F(n).
+  \]</div>
+  <p>Find \(F(n)\) and \(F(\ell)\). Would the first two rules alone determine the value
+    at \(\ell\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Induction on natural numbers gives \(F(n)=\{0,\ldots,n-1\}\).
+        Their union is \(\mathbb N\): each \(k\) belongs to \(F(k+1)\), and every
+        term is a subset of \(\mathbb N\). Thus \(F(\ell)=\mathbb N\).</p>
+      <p>These are valid recursion rules on all histories. At zero the rule returns
+        the empty set; at \(n+1\) it returns \(u(n)\cup\{n\}\);
+        at \(\ell\) it returns the union of the values of \(u:\mathbb N\to\mathcal P(\mathbb N)\).
+        Each output is in the fixed value set \(S\).</p>
+      <p>The first two rules impose no equation at \(\ell\). Any subset of \(\mathbb N\)
+        could be assigned there while retaining those two rules.
+        The specified limit rule makes the full solution unique.</p>
+    </div>
+  </details>
+</section>
+
+<section id="recursion-boundary-cases" data-kind="question">
+  <h2>What do the empty and singleton cases require?</h2>
+  <p>What is recursion on the empty well-order? On a singleton \(\{a\}\)?
+    Can a nonempty well-order have a recursive solution with empty value set?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>For \(A=\varnothing\), there are no rules to specify and there is one function
+        \(A\to S\), the empty function, even if \(S=\varnothing\).
+        On \(\{a\}\), the earlier segment is empty, so the unique value is
+        \(F(a)=\Phi_a(\varnothing)\), where the argument denotes the empty function.</p>
+      <p>If \(A\) is nonempty and \(S=\varnothing\), there is no function \(A\to S\).
+        The hypotheses of the recursion theorem cannot be met either:
+        at the least point, the history set \(S^\varnothing\) has the empty function
+        as its sole element, and no map from this singleton into \(\varnothing\) exists.</p>
+    </div>
+  </details>
+</section>
