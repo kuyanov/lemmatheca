@@ -1,0 +1,13 @@
+{
+  "id": "surjective-list-deduplication",
+  "description": "For a surjective list f : ℕ → A with A infinite, increasingly enumerating the first-occurrence indices gives a bijective list of A. The selected indices are exactly all first-occurrence indices, and the least-occurrence code of each retained value is its selected original index.",
+  "module": "Lemmatheca.SetTheory.Countability",
+  "declaration": "Lemmatheca.SetTheory.dedup_spec",
+  "dependencies": [
+    "surjective-list-first-occurrence",
+    "infinite-natural-subset-enumeration"
+  ],
+  "verified": true,
+  "declaration_line": 70,
+  "signature": "Lemmatheca.SetTheory.dedup_spec.{u} {α : Type u} [Infinite α] (f : ℕ → α) (hf : Function.Surjective f) :\n  StrictMono (Lemmatheca.SetTheory.dedupIndex f) ∧\n    Set.range (Lemmatheca.SetTheory.dedupIndex f) = Lemmatheca.SetTheory.firstIndices f ∧\n      Function.Bijective (Lemmatheca.SetTheory.dedup f) ∧\n        ∀ (n : ℕ),\n          Lemmatheca.SetTheory.firstOccurrence f hf (Lemmatheca.SetTheory.dedup f n) =\n            Lemmatheca.SetTheory.dedupIndex f n"
+}

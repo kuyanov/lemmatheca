@@ -1,0 +1,12 @@
+{
+  "id": "repeated-natural-enumeration",
+  "description": "The list n ↦ floor(n/2) is surjective onto ℕ but not injective. Each k occurs at 2k and 2k + 1, its first-occurrence index is 2k, and retaining first occurrences gives the identity list.",
+  "module": "Lemmatheca.Entry.FiniteAndCountableSets",
+  "declaration": "Lemmatheca.Entry.FiniteAndCountableSets.repeated_naturals_list",
+  "dependencies": [
+    "surjective-list-deduplication"
+  ],
+  "verified": true,
+  "declaration_line": 63,
+  "signature": "Lemmatheca.Entry.FiniteAndCountableSets.repeated_naturals_list :\n  (Function.Surjective fun n => n / 2) ∧\n    (¬Function.Injective fun n => n / 2) ∧\n      (∀ (n : ℕ), 2 * n / 2 = n ∧ (2 * n + 1) / 2 = n) ∧\n        (∀ (n : ℕ), Lemmatheca.SetTheory.dedupIndex (fun k => k / 2) n = 2 * n) ∧\n          (Lemmatheca.SetTheory.dedup fun n => n / 2) = id"
+}
