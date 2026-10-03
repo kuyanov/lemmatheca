@@ -3,7 +3,9 @@ import Mathlib.Data.Nat.Nth
 import Mathlib.Data.Nat.Sqrt
 import Mathlib.Basic.Denumerable
 import Mathlib.Algebra.Group.Nat.Even
+import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.Tactic.Linarith
+import Lemmatheca.SetTheory.Cardinality
 
 /-!
 # Explicit lists and the diagonal enumeration
@@ -204,5 +206,32 @@ theorem productEnumeration_bijective (e : ℕ ≃ α) (f : ℕ ≃ β) :
   have hδ : Function.Bijective cantorUnpair :=
     ⟨cantor_inverse_laws.2.injective, cantor_inverse_laws.1.surjective⟩
   exact (e.prodCongr f).bijective.comp hδ
+
+/-- Encode a finite subset using powers of two at its elements' natural-number codes. -/
+def finiteSubsetCode (c : α → ℕ) (s : Finset α) : ℕ :=
+  ∑ a ∈ s, 2 ^ c a
+
+/-- Distinct finite subsets have distinct codes when the element code is injective. -/
+theorem finiteSubsetCode_injective (c : α → ℕ) (hc : Function.Injective c) :
+    Function.Injective (finiteSubsetCode c) := by
+  classical
+  let binary (s : Finset ℕ) : FiniteSupportBinary :=
+    ⟨fun n => decide (n ∈ s), by simp⟩
+  have hcode (s : Finset α) :
+      finiteSupportCode (binary (s.image c)) = finiteSubsetCode c s := by
+    have hs : (binary (s.image c)).property.toFinset = s.image c := by
+      ext n
+      simp [binary]
+    rw [finiteSupportCode, hs, Finset.sum_image]
+    · rfl
+    · intro a _ b _ hab
+      exact hc hab
+  intro s t h
+  apply Finset.image_injective hc
+  have he : binary (s.image c) = binary (t.image c) :=
+    finiteSupportCode_spec.1 ((hcode s).trans (h.trans (hcode t).symm))
+  ext n
+  have hn := congrArg (fun b : FiniteSupportBinary => b.val n) he
+  simpa [binary] using hn
 
 end Lemmatheca.SetTheory

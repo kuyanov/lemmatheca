@@ -330,4 +330,7 @@ theorem ternaryCode_spec :
       rw [he, _root_.sub_self] at h
       exact hpos.not_ge h
 
+/-- CH asserts that the continuum is the least uncountable cardinal. -/
+def ContinuumHypothesis : Prop := Cardinal.continuum.{u} = Cardinal.aleph.{u} 1
+
 end Lemmatheca.Entry.InfiniteCardinalArithmetic
