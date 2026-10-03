@@ -5,3 +5,7 @@ import Lemmatheca.Entry.FiniteAndCountableSets
 import Lemmatheca.Entry.ComparingSizes
 import Lemmatheca.Entry.WellOrderedSets
 import Lemmatheca.ProofStatus
+import Lemmatheca.SetTheory.Ordinals
+import Lemmatheca.SetTheory.Choice
+import Lemmatheca.Entry.OrdinalArithmetic
+import Lemmatheca.Entry.InfiniteCardinalArithmetic

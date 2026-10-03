@@ -1,0 +1,12 @@
+{
+  "id": "choice-bounded-listing-exhausts",
+  "description": "Given a selector for nonempty subsets of A and an ordinal that cannot inject into A, the bounded recursive listing has a first marker; its preceding values biject that initial segment onto A.",
+  "module": "Lemmatheca.SetTheory.Choice",
+  "declaration": "Lemmatheca.SetTheory.choiceListing_exhausts",
+  "dependencies": [
+    "well-order-recursion-exists-unique"
+  ],
+  "verified": false,
+  "declaration_line": 52,
+  "signature": "Lemmatheca.SetTheory.choiceListing_exhausts.{u} {α : Type u} (h : Ordinal.{u}) (hh : ¬Nonempty (h.ToType ↪ α))\n  (s : (B : Set α) → B.Nonempty → α) (hs : ∀ (B : Set α) (hn : B.Nonempty), s B hn ∈ B) :\n  have f := Lemmatheca.SetTheory.recursiveValue (Lemmatheca.SetTheory.choiceListingRule h s);\n  ∃ l,\n    f l = none ∧ (∀ b < l, f b ≠ none) ∧ (Function.Injective fun b => f ↑b) ∧ (Set.range fun b => f ↑b) = Set.range some"
+}
