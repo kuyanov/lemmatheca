@@ -29,6 +29,11 @@ Check the following:
 - Proofs establish the stated conclusions without circular reasoning and explain
   the important steps at the intended reader's level. Questions have correct
   answers. Figures and tables agree with the mathematics.
+- Figures match the website's current typography, muted green palette, and panel
+  and caption styling, as defined in `app/static/css/site.css` and nearby figures.
+  Check the `proof-figure` and `figure-image` wrappers, readable labels and legends,
+  and spacing without overlap or clipping at the displayed size and in relevant
+  narrow layouts.
 - Definitions and notation are consistent, prerequisites are introduced or linked,
   and citations accurately support the material.
 - Prose avoids filler, repeated definitions and conclusions, and unnecessary

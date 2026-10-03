@@ -1,0 +1,130 @@
+<section id="choice-functions" data-kind="definition">
+  <h2>Making one selection for each member of a family</h2>
+<p>Let \((A_i)_{i\in I}\) be a family of nonempty sets, and put \(U=\bigcup_{i\in I}A_i\). A <strong>choice function</strong> is a function \(c:I\to U\) such that \(c(i)\in A_i\) for every \(i\in I\). The <strong>axiom of choice</strong>, abbreviated AC, says that every such set-indexed family has a choice function.</p>
+<p>Each individual set being nonempty says that a suitable value exists for each index. AC supplies a single function making all those selections together. We will show that this principle is equivalent to two statements about orders. The arguments use ordinary set formation, including the <a href="ordinals#order-types">Replacement principle</a>, but invoke choice only where indicated.</p>
+</section>
+
+<section id="choices-without-the-axiom" data-kind="lemma">
+  <h2>Some families already provide a rule for choosing</h2>
+<p>A finite family of nonempty sets has a choice function without assuming AC. So does any family of nonempty subsets of a given well-ordered set.</p>
+<p class="proof-label">Proof</p>
+<p>For a finite family, induct on its number of indices. The empty family has the empty function. At the next step, choose a member of the one additional nonempty set and extend the earlier function. For subsets of a well-ordered set, assign to each subset its least member. Uniqueness specifies a function on the entire family. <span class="qed" aria-label="End of proof">□</span></p>
+<p>For example, nonempty subsets of \(\mathbb N\) have canonical least members. A general countably indexed family need not come with such a rule; finite induction by itself does not supply one function on all its indices.</p>
+</section>
+
+<section id="empty-family-question" data-kind="question">
+  <h2>What happens when emptiness is allowed?</h2>
+<p>Compare a family with no indices and a family containing an empty set.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>If \(I=\varnothing\), the empty function is the unique choice function. If \(A_i=\varnothing\) for some index \(i\), no choice function exists: its value at that index would have to belong to the empty set. Thus AC requires each member of the family to be nonempty, but allows the family itself to be empty.</p></div>
+  </details>
+</section>
+
+<section id="well-ordering-principle" data-kind="definition">
+  <h2>Every set can be arranged in a well-order</h2>
+<p>The <strong>well-ordering principle</strong> says that every set admits a well-order. It asserts that some suitable order exists, not that any order already given is a well-order. For instance, the usual order on \(\mathbb R\) is not a well-order: the interval \((0,1)\) has no least point.</p>
+<p>A well-order permits selection by least members and supports <a href="well-ordered-sets#well-order-recursion">recursion</a>. Its unique <a href="ordinals#unique-ordinal-representative">ordinal representative</a> records the order, but the principle does not prescribe which order to use.</p>
+</section>
+
+<section id="zorns-lemma" data-kind="definition">
+  <h2>Chains with upper bounds lead to maximal elements</h2>
+<p><strong>Zorn’s lemma</strong> states: if a nonempty partially ordered set \(P\) has an upper bound in \(P\) for every chain, then \(P\) has a maximal element. A <a href="ordered-sets#chains-and-hasse-diagrams">chain</a> is a subset whose points are pairwise comparable, and an upper bound \(u\) of a chain \(C\) satisfies \(c\le u\) for every \(c\in C\).</p>
+<p>A <strong>maximal</strong> point \(m\) has no point strictly above it. A <strong>greatest</strong> point lies above every point of \(P\). These notions differ: in a two-point antichain both points are maximal, and neither is greatest. Zorn’s lemma guarantees maximality.</p>
+<p>Here the empty subset counts as a chain. In a nonempty poset it has an upper bound, since any point is one. All posets and families under discussion are sets; we do not apply Zorn’s lemma to the collection of all ordinals.</p>
+</section>
+
+<section id="finite-chains-question" data-kind="question">
+  <h2>Is it enough to bound every finite chain?</h2>
+<p>Every finite chain in \(\mathbb N\) has an upper bound. Does Zorn’s lemma give a largest natural number?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. The chain \(\mathbb N\) itself has no upper bound in \(\mathbb N\), so the hypothesis fails. Bounding only finite chains is insufficient. Moreover, the conclusion of Zorn’s lemma would be a maximal point; it would be greatest here because the order is total.</p></div>
+  </details>
+</section>
+
+<section id="hartogs-bound" data-kind="lemma">
+  <h2>A set cannot contain distinct choices for arbitrarily long</h2>
+<p>For every set \(A\), there is an ordinal \(h\) for which no injection \(h\to A\) exists. This fact, called <strong>Hartogs’s theorem</strong>, does not require AC.</p>
+<p class="proof-label">Proof</p>
+<p>All well-orders on subsets of \(A\) form a set: their domains belong to \(\mathcal P(A)\), and their relations belong to \(\mathcal P(A\times A)\). Each has a unique ordinal type. Replacement collects these types into a set \(T\). Let \(h=\sup\{\alpha+1:\alpha\in T\}\), which exists by <a href="ordinals#ordinal-suprema">the supremum theorem</a>.</p>
+<p>If \(h\) injected into \(A\), transport its well-order to the image. This would make \(h\) one of the types in \(T\), and hence \(h+1\le h\), a contradiction. <span class="qed" aria-label="End of proof">□</span></p>
+<p>Only a set of order types is collected. There is no appeal to a set of all ordinals. The empty well-order is among the possibilities, so the bound also works when \(A\) is empty.</p>
+</section>
+
+<section id="choice-implies-well-ordering" data-kind="theorem">
+  <h2>Choice lets us list an entire set in well-ordered stages</h2>
+<p>AC implies the well-ordering principle.</p>
+<p class="proof-label">Proof</p>
+<p>Fix a set \(A\). Apply AC to its nonempty subsets to obtain a selector \(s\), with \(s(B)\in B\). Fix a marker \(*\) outside \(A\), and an ordinal \(h\) as in <a href="#hartogs-bound"></a>. Use recursion on \(h\), with fixed value set \(A\cup\{*\}\). Given earlier values \(f\mathbin{\upharpoonright}\alpha\), let</p>
+<div class="math-display">\[
+f(\alpha)=
+\begin{cases}
+s\bigl(A\setminus\operatorname{ran}(f\mathbin{\upharpoonright}\alpha)\bigr),&amp;\text{if this remaining set is nonempty},\\
+*,&amp;\text{otherwise}.
+\end{cases}
+\]</div>
+<p>This rule is defined for every history, so the <a href="well-ordered-sets#well-order-recursion">recursion theorem</a> applies. Before the first marker, each value is a new member of \(A\). If a marker never appeared, \(f\) would inject \(h\) into \(A\), contradicting the bound. Let \(\lambda\) be the first marker stage. At that stage nothing remains, so \(f\mathbin{\upharpoonright}\lambda\) is a bijection onto \(A\). Transfer the ordinal order of \(\lambda\) along it to well-order \(A\). For \(A=\varnothing\), the first marker occurs at zero and the resulting order is empty. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="well-ordering-implies-zorn" data-kind="theorem">
+  <h2>A well-order prevents endless strict extension</h2>
+<p>The well-ordering principle implies Zorn’s lemma.</p>
+<p class="proof-label">Proof</p>
+<p>Let \(P\) satisfy Zorn’s hypotheses, and fix a well-order of its underlying set. Suppose there is no maximal point. Every chain \(C\) then has a <em>strict</em> upper bound: take an upper bound \(u\). If \(u\notin C\), every point of \(C\) is strictly below \(u\). If \(u\in C\), nonmaximality gives \(v&gt;u\), which is strictly above all of \(C\). For the empty chain any point is a strict upper bound, vacuously.</p>
+<p>Choose for each chain the least strict upper bound in the fixed well-order of \(P\). Recursively on a Hartogs bound \(h\) for \(P\), make the next value this chosen bound of the earlier values. To define the rule on all possible histories, use a fixed point of the nonempty set \(P\) whenever the history has no strict upper bound.</p>
+<p>Induction shows that the actual history is always a chain and that every new value is strictly above all earlier values. At a limit, any two earlier values already occur together at an earlier stage. Thus the fallback is never used, and the recursion gives an injection \(h\to P\). This contradicts <a href="#hartogs-bound"></a>. A maximal point must exist. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="zorn-implies-choice" data-kind="theorem">
+  <h2>A maximal partial selection must select everywhere</h2>
+<p>Zorn’s lemma implies AC.</p>
+<p class="proof-label">Proof</p>
+<p>For a family \((A_i)_{i\in I}\) of nonempty sets, order its partial choice functions by extension of their graphs. These graphs are subsets of \(I\times U\), where \(U=\bigcup_i A_i\), so they form a set. The empty graph is one such function.</p>
+<p>The union of a chain of partial choice functions is a partial choice function: any two assigned values at the same index occur together in one of the functions in the chain, and therefore agree. Every assigned value still belongs to the required set. The union extends every member of the chain; the empty chain has the empty function as an upper bound.</p>
+<p>Zorn gives a maximal partial function \(c\). If an index \(i\) were missing from its domain, take one member \(a\in A_i\). Adjoining \((i,a)\) would properly extend \(c\), a contradiction. Thus \(c\) is defined on all of \(I\). Choosing this one witness in a contradiction argument does not assume a simultaneous choice function for the original family. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="three-equivalent-principles" data-kind="theorem">
+  <h2>The three principles have the same strength</h2>
+<p>The axiom of choice, the well-ordering principle, and Zorn’s lemma are equivalent.</p>
+<p class="proof-label">Proof</p>
+<p>The preceding results give the cycle AC implies well-ordering, well-ordering implies Zorn, and Zorn implies AC. Following the cycle yields every other implication. There is also a direct proof that well-ordering implies AC: well-order the union of a family of nonempty sets and choose the least member of each set. <span class="qed" aria-label="End of proof">□</span></p>
+<p>The principles offer different ways to express the same assumption. Choice functions specify selections, well-orders permit least-element arguments and recursion, and Zorn’s lemma turns closure under chains into a maximal object.</p>
+</section>
+
+<section id="sections-of-surjections" data-kind="lemma">
+  <h2>Choice is also a way to reverse surjections</h2>
+<p>AC is equivalent to the assertion that every surjection \(p:E\to I\) has a <strong>section</strong>: a map \(s:I\to E\) with \(p\circ s=\operatorname{id}_I\).</p>
+<p class="proof-label">Proof</p>
+<p>Under AC, choose one point of every nonempty fiber \(p^{-1}(\{i\})\); these choices form a section. Conversely, for nonempty sets \(A_i\), let \(E=\{(i,a):i\in I,\ a\in A_i\}\). Projection onto \(I\) is surjective. A section has the form \(s(i)=(i,c(i))\), and its second coordinates give a choice function. Empty index sets cause no difficulty. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="adjoining-a-comparison" data-kind="lemma">
+  <h2>Two incomparable points can be placed in order</h2>
+<p>Let \(R\) be a strict partial order on \(A\), and write \(\le_R\) for its reflexive closure. If \(a,b\) are incomparable, the relation</p>
+<div class="math-display">\[
+R'=R\cup\{(x,y):x\le_R a\text{ and }b\le_R y\}
+\]</div>
+<p>is a strict partial order extending \(R\) and containing \((a,b)\).</p>
+<p class="proof-label">Proof</p>
+<p>A new loop at \(x\) would imply \(b\le_R x\le_R a\), contrary to incomparability. For transitivity, two old comparisons compose in \(R\). An old comparison followed by a new one still has its first point below \(a\); a new comparison followed by an old one still has its last point above \(b\). In either case the composed comparison is new or already old. Two new consecutive comparisons would require \(b\le_R y\le_R a\) at their middle point, which is impossible. Thus \(R'\) is irreflexive and transitive. The pair \((a,b)\) is genuinely new. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="order-extension" data-kind="theorem">
+  <h2>Every partial order can be extended to a total order</h2>
+<p>Assuming AC, every partial order on a set \(A\) has a total order extension on the same set.</p>
+<p class="proof-label">Proof</p>
+<p>Let \(R_0\) be its strict part. Order by inclusion the set of all strict partial orders on \(A\) containing \(R_0\). It is nonempty because it contains \(R_0\). The union of a chain is irreflexive. It is transitive because any two consecutive comparisons in the union belong together to one member of the chain. The union is therefore an upper bound; for the empty chain use \(R_0\).</p>
+<p>Zorn gives a maximal relation \(R\). If two points were incomparable, <a href="#adjoining-a-comparison"></a> would produce a larger strict partial order, contradicting maximality. Thus \(R\) compares every pair of distinct points. Its reflexive closure is the required total order and preserves every original comparison. The construction also covers the empty set. <span class="qed" aria-label="End of proof">□</span></p>
+<p>Maximality here concerns inclusion of order relations. It does not claim that the elements of \(A\) themselves have a greatest point.</p>
+</section>
+
+<section id="extension-question" data-kind="question">
+  <h2>Must an extension be unique or well-ordered?</h2>
+<p>What total extensions does a two-point antichain have? Does the extension theorem ensure a well-order?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Its two total extensions put either point first, so uniqueness fails. Totality alone does not ensure well-ordering. Indeed, an extension of the usual total order on \(\mathbb Z\) must keep that order, which has no least element. The well-ordering principle gives some well-order of the underlying set; it need not preserve a previously specified partial order.</p></div>
+  </details>
+</section>

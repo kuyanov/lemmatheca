@@ -41,6 +41,13 @@ Preserve unrelated work and existing stable IDs when revising an entry.
    Use collapsible question answers. Figures and tables need stable IDs and captions
    without hard-coded numbers; images need useful alternative text. Keep Lean names
    and build-process details out of the exposition.
+   Match figures to the website's existing visual style. Inspect
+   `app/static/css/site.css` and nearby entry figures: use serif mathematical labels,
+   muted green accents, thin lines, subdued fills, and clear spacing. Prefer SVG for
+   mathematical diagrams. Use `class="proof-figure"` on the figure, wrap its image
+   in `class="figure-image"`, and keep the caption directly inside the figure so
+   the reader applies its standard panel and caption styling. Give images intrinsic
+   width and height, and make labels and legends readable at the displayed size.
 4. Write `corpus/entries/<entry-id>/entry.html` and entry.json, plus necessary assets.
    Use the author-maintained metadata fields and inspected `based_on` citations from
    [corpus guide](../docs/corpus.md). Choose a primary area and list the ID once, in reading order,
@@ -77,7 +84,9 @@ source edits. A failed build preserves previous results, so it is not a successf
 refresh. Report a blocker in unrelated work without altering that work to bypass it.
 
 Inspect the rendered entry, including equations, references, hidden answers, tables,
-and figures. Restart the development server if adding a new assets directory.
+and figures. Check that figure panels and captions match the site, labels do not
+overlap or clip, and diagrams fit the reading column and relevant narrow layouts.
+Restart the development server if adding a new assets directory.
 
 ## Deliverable
 

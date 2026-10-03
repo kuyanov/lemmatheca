@@ -1,0 +1,137 @@
+<section id="ordered-sums" data-kind="definition">
+  <h2>Putting one order after another</h2>
+<p>Ordinals describe <a href="ordinals#order-types">well-order types</a>. Their arithmetic describes how those orders fit together. For well-ordered sets \(A,B\), form the tagged set \((\{0\}\times A)\cup(\{1\}\times B)\). Keep the order within each part and put every point of the first part before every point of the second. This is the <strong>ordered sum</strong>.</p>
+<p>It is a well-order: a nonempty subset that meets the first part has its least point there; otherwise its least point lies in the second part. The <strong>ordinal sum</strong> \(\alpha+\beta\) is the unique ordinal of this order type. The tags distinguish points even when the two original sets overlap. Replacing either order by an isomorphic one gives an isomorphic sum.</p>
+</section>
+
+<section id="addition-recursion" data-kind="theorem">
+  <h2>Addition follows the stages of the second order</h2>
+<p>Ordinal addition satisfies</p>
+<div class="math-display">\[
+\begin{aligned}
+\alpha+0&amp;=\alpha,\\
+\alpha+(\beta+1)&amp;=(\alpha+\beta)+1,\\
+\alpha+\lambda&amp;=\sup_{\beta&lt;\lambda}(\alpha+\beta)\quad(\lambda\text{ a nonzero limit}).
+\end{aligned}
+\]</div>
+<p class="proof-label">Proof</p>
+<p>An empty second part adds nothing. Appending a successor order adds one last point. At a limit, the portions consisting of the first part and the points below \(\beta\) in the second part are nested initial segments. They cover the whole sum, because every point of \(\lambda\) lies below some larger point of \(\lambda\). Their ordinal representatives are therefore nested initial segments too: uniqueness of order isomorphisms makes the identifications agree. Their union is the ordinal of the entire sum, and a union of ordinals is their <a href="ordinals#ordinal-suprema">supremum</a>. <span class="qed" aria-label="End of proof">□</span></p>
+<p>These equations also determine addition uniquely by <a href="well-ordered-sets#three-case-induction">induction over zero, successors, and limits</a>. The order construction supplies the values; the recursion equations describe them. This avoids presuming that all ordinal values belong to a single fixed set.</p>
+</section>
+
+<section id="addition-identities" data-kind="lemma">
+  <h2>Zero and finite orders behave as expected</h2>
+<p>For every ordinal \(\beta\), \(0+\beta=\beta\), and \(\alpha+1\) is the <a href="ordinals#successor-ordinals">successor</a> of \(\alpha\). For natural numbers \(m,n\), ordinal \(m+n\) agrees with ordinary addition.</p>
+<p class="proof-label">Proof</p>
+<p>An empty first part leaves exactly the second order. A singleton second part adds a greatest point. Two finite consecutive blocks have \(m+n\) points in their usual finite order; equivalently, induction on \(n\) applies the successor equation. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="addition-order-matters" data-kind="theorem">
+  <h2>A finite beginning can disappear into an infinite order</h2>
+<p>\(1+\omega=\omega\), but \(\omega+1&gt;\omega\). In particular, ordinal addition is not commutative.</p>
+<p class="proof-label">Proof</p>
+<p>Map the extra first point of \(1+\omega\) to \(0\), and map the point \(n\) of the following block to \(n+1\). This is an order isomorphism onto \(\omega\). In \(\omega+1\), the extra point comes last. Its order type is a proper successor of \(\omega\), which has no greatest point. More generally, \(k+\omega=\omega\) for every finite \(k\), by listing the initial \(k\) points before the remaining natural positions. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="finite-end-question" data-kind="question">
+  <h2>Does a finite end disappear too?</h2>
+<p>What are \(3+\omega\) and \(\omega+3\)? Are both limit ordinals?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The first is \(\omega\), a limit. The second consists of the natural positions followed by three last positions. It is \(((\omega+1)+1)+1\), a successor with greatest point \(\omega+2\). Moving the finite block from beginning to end changes the order type.</p></div>
+  </details>
+</section>
+
+<section id="addition-comparison" data-kind="lemma">
+  <h2>Addition is strict in its second argument</h2>
+<p>If \(\beta&lt;\gamma\), then \(\alpha+\beta&lt;\alpha+\gamma\). If \(\alpha\le\alpha'\), then \(\alpha+\beta\le\alpha'+\beta\). The latter inequality need not be strict.</p>
+<p class="proof-label">Proof</p>
+<p>The first sum is a proper initial segment of the second: take the first block and just the first \(\beta\) positions of its second block. Apply <a href="ordinals#types-and-embeddings">comparison by initial segments</a>. For the second assertion, induct on \(\beta\). At zero it is the assumed inequality; at a successor use monotonicity of ordinal successors; at a limit take suprema of the earlier inequalities. <span class="qed" aria-label="End of proof">□</span></p>
+<p>For example, \(1&lt;2\) but \(1+\omega=2+\omega\). Thus a common <em>left</em> summand can be cancelled, by strictness in the second argument, whereas a common right summand cannot always be cancelled.</p>
+</section>
+
+<section id="addition-associative" data-kind="theorem">
+  <h2>Three consecutive orders can be grouped either way</h2>
+<p>Ordinal addition is associative: \((\alpha+\beta)+\gamma=\alpha+(\beta+\gamma)\).</p>
+<p class="proof-label">Proof</p>
+<p>Both constructions put an \(\alpha\)-block first, a \(\beta\)-block second, and a \(\gamma\)-block third. Removing the nested tags and assigning a tag for the block gives order isomorphisms to the same three-block order. The unique ordinal representatives are equal. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="ordered-products" data-kind="definition">
+  <h2>Multiplication counts repeated blocks</h2>
+<p>The <strong>ordinal product</strong> \(\alpha\cdot\beta\) is the order type of \(\beta\) consecutive copies of \(\alpha\). On \(\beta\times\alpha\), put</p>
+<div class="math-display">\[
+(b,a)&lt;(b',a')\quad\Longleftrightarrow\quad b&lt;b'\ \text{or}\ (b=b'\text{ and }a&lt;a').
+\]</div>
+<p>The right factor indexes the blocks; the left factor gives the order within each block. A nonempty subset has a least occupied block and then a least point in that block, so the order is a well-order. Its type is independent of the chosen representatives.</p>
+</section>
+
+<section id="multiplication-recursion" data-kind="theorem">
+  <h2>Products also have successor and limit rules</h2>
+<p>The product satisfies</p>
+<div class="math-display">\[
+\begin{aligned}
+\alpha\cdot0&amp;=0,\\
+\alpha\cdot(\beta+1)&amp;=\alpha\cdot\beta+\alpha,\\
+\alpha\cdot\lambda&amp;=\sup_{\beta&lt;\lambda}(\alpha\cdot\beta)\quad(\lambda\text{ a nonzero limit}).
+\end{aligned}
+\]</div>
+<p class="proof-label">Proof</p>
+<p>No blocks give the empty order. A successor number of blocks adds one final \(\alpha\)-block. At a limit, the products with earlier block counts are initial segments covering the product. As in <a href="#addition-recursion"></a>, their ordinal representatives have union equal to its order type. Induction proves uniqueness from the equations. <span class="qed" aria-label="End of proof">□</span></p>
+<p>Also \(0\cdot\beta=0\), \(1\cdot\beta=\beta\), and \(\alpha\cdot1=\alpha\), directly from the block construction. Finite products agree with ordinary products of natural numbers.</p>
+</section>
+
+<section id="multiplication-comparison" data-kind="lemma">
+  <h2>A larger number of nonempty blocks gives a larger order</h2>
+<p>If \(\alpha&gt;0\) and \(\beta&lt;\gamma\), then \(\alpha\cdot\beta&lt;\alpha\cdot\gamma\). For fixed \(\beta\), the product is nondecreasing in \(\alpha\).</p>
+<p class="proof-label">Proof</p>
+<p>The first \(\beta\) blocks form a proper initial segment of the \(\gamma\)-block order; the remaining blocks are nonempty because \(\alpha&gt;0\). For the second claim, induct on \(\beta\). The successor step uses the induction hypothesis and both monotonicity statements for addition, and the limit step takes suprema. <span class="qed" aria-label="End of proof">□</span></p>
+<p>The condition \(\alpha&gt;0\) matters: all products with left factor zero are zero.</p>
+</section>
+
+<section id="infinite-block-examples" data-kind="lemma">
+  <h2>Two points per block differ from two infinite blocks</h2>
+<p>\(2\cdot\omega=\omega\), while \(\omega\cdot2=\omega+\omega&gt;\omega\). Thus multiplication, like addition, is not commutative.</p>
+<p class="proof-label">Proof</p>
+<p>For finite \(n\), \(2\cdot n=2n\), and the supremum of these finite ordinals is \(\omega\). Alternatively, send \((n,i)\), for \(i&lt;2\), to \(2n+i\); this lists the two-point blocks in their order. The product \(\omega\cdot2\) has two successive infinite blocks, with the first a proper initial segment. <span class="qed" aria-label="End of proof">□</span></p>
+<figure id="repeated-blocks" class="proof-figure">
+  <div class="figure-image">
+    <img src="assets/blocks.svg" width="720" height="360" alt="Two times omega consists of infinitely many two-point blocks, forming the natural-number order. Omega times two consists of two successive infinite blocks, with the second starting at omega." />
+  </div>
+  <figcaption>Changing which factor supplies the blocks changes the order</figcaption>
+</figure>
+<p>Write \(\omega^2\) for \(\omega\cdot\omega\): a first infinite block, then a second, and so on through natural-number many blocks. This notation here denotes the square; general ordinal exponentiation is beyond this entry.</p>
+</section>
+
+<section id="multiplication-associative" data-kind="theorem">
+  <h2>Grouping repeated blocks does not change the order</h2>
+<p>\((\alpha\cdot\beta)\cdot\gamma=\alpha\cdot(\beta\cdot\gamma)\).</p>
+<p class="proof-label">Proof</p>
+<p>The left side has \(\gamma\) groups, each containing \(\beta\) blocks of type \(\alpha\). Its points can be written as \((c,b,a)\), compared first by \(c\), then \(b\), then \(a\). The right side orders the same triples in exactly that way: its blocks are indexed by the order of pairs \((c,b)\). Rebracketing the tuples is an order isomorphism, including when a factor is empty. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="left-distributivity" data-kind="theorem">
+  <h2>A fixed block type distributes over block counts</h2>
+<p>Ordinal multiplication is left distributive:</p>
+<div class="math-display">\[\alpha\cdot(\beta+\gamma)=\alpha\cdot\beta+\alpha\cdot\gamma.\]</div>
+<p class="proof-label">Proof</p>
+<p>The block index order \(\beta+\gamma\) places the \(\beta\)-indexed blocks first and the \(\gamma\)-indexed blocks second. Separating these groups gives the ordered sum on the right. <span class="qed" aria-label="End of proof">□</span></p>
+<p>Right distributivity fails: \((1+1)\cdot\omega=2\cdot\omega=\omega\), whereas \(1\cdot\omega+1\cdot\omega=\omega+\omega&gt;\omega\).</p>
+</section>
+
+<section id="compute-products" data-kind="question">
+  <h2>Where does the extra last point go?</h2>
+<p>Compute \((\omega+1)\cdot2\) and \(2\cdot(\omega+1)\).</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The first is \((\omega+1)+(\omega+1)=\omega+(1+\omega)+1=\omega\cdot2+1\), using associativity and \(1+\omega=\omega\). The second is \(2\cdot\omega+2=\omega+2\). In the first product each of two infinite blocks has an extra last point, but the first such point can be absorbed into the beginning of the second block.</p></div>
+  </details>
+</section>
+
+<section id="countable-orders" data-kind="lemma">
+  <h2>These different orders can still have the same size</h2>
+<p>If \(\alpha\) and \(\beta\) are countable ordinals, then \(\alpha+\beta\) and \(\alpha\cdot\beta\) are countable as sets.</p>
+<p class="proof-label">Proof</p>
+<p>The sum has the underlying set of a tagged union of two countable sets; the product has the underlying set \(\beta\times\alpha\). Apply <a href="finite-and-countable-sets#finite-unions">countability of finite unions</a> and <a href="finite-and-countable-sets#finite-products">finite products</a>. Taking an order isomorphism to the ordinal representative preserves cardinality. <span class="qed" aria-label="End of proof">□</span></p>
+<p>In particular, \(\omega\), \(\omega+1\), \(\omega\cdot2\), and \(\omega^2\) are all countably infinite, although their well-orders are different. Ordinal arithmetic records those orders; <a href="infinite-cardinal-arithmetic#cardinal-operations">cardinal arithmetic</a> records only sizes.</p>
+</section>

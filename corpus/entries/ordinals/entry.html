@@ -1,0 +1,298 @@
+<section id="order-types" data-kind="definition">
+  <h2>Order type records positions, not just size</h2>
+<p>A <strong>well-order</strong> puts a first element in every nonempty subset.
+    We now want names for the order structures themselves. Two well-ordered sets have
+    the same <strong>order type</strong> when there is an
+    <a href="ordered-sets#order-maps">order isomorphism</a> between them.
+    Such an isomorphism is unique by
+    <a href="well-ordered-sets#unique-order-isomorphism">the uniqueness theorem for well-orders</a>.</p>
+  <p>An <strong>ordinal</strong> is a canonical representative of a well-order type.
+    Before constructing these representatives, keep three examples in mind: the natural
+    numbers, the natural numbers followed by a last point, and successive infinite
+    blocks. They are all countably infinite as sets, but their orders differ.</p>
+  <p>We use ordinary set formation, including the principle that the uniquely specified
+    values of a rule on a set form a set. This is the set-collection principle called
+    <em>Replacement</em>. We do not form a set of all sets or all well-orders, and none
+    of the results in this entry requires the axiom of choice.</p>
+</section>
+
+<section id="transitive-sets" data-kind="definition">
+  <h2>A set can contain its own earlier positions</h2>
+<p>A set \(T\) is <strong>transitive</strong> if every member is also a subset:
+    \(x\in T\) implies \(x\subseteq T\). Equivalently,
+    \(z\in y\in T\) implies \(z\in T\). This describes membership; it is different
+    from transitivity of a binary relation.</p>
+  <p>A <strong>von Neumann ordinal</strong> is a transitive set \(\alpha\) on which
+    membership is a strict well-order. Thus, for members of \(\alpha\), the comparison
+    \(x&lt;y\) means \(x\in y\). Write \(\alpha&lt;\beta\) for \(\alpha\in\beta\), and
+    \(\alpha\le\beta\) for \(\alpha=\beta\) or \(\alpha&lt;\beta\). We will prove that
+    these comparisons also order different ordinals.</p>
+  <p>The first examples are</p>
+  <div class="math-display">\[
+    0=\varnothing,\qquad 1=\{0\},\qquad 2=\{0,1\},\qquad
+    3=\{0,1,2\}.
+  \]</div>
+  <p>Each position is represented by the set of positions before it. An ordinal cannot
+    belong to itself: if \(\alpha\in\alpha\), the membership relation on \(\alpha\)
+    would not be irreflexive.</p>
+</section>
+
+<section id="ordinal-initial-segments" data-kind="lemma">
+  <h2>Members of an ordinal are its initial segments</h2>
+<p>If \(\beta\in\alpha\), then \(\beta\) is an ordinal and, as an ordered set,
+    is exactly the segment of \(\alpha\) below \(\beta\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Transitivity of \(\alpha\) gives \(\beta\subseteq\alpha\).
+    If \(z\in y\in\beta\), all three points \(z,y,\beta\) lie in \(\alpha\).
+    Transitivity of its strict membership order gives \(z\in\beta\), so \(\beta\)
+    is a transitive set. Its membership order is inherited from \(\alpha\), hence is
+    a well-order. Finally, the predecessors of \(\beta\) are precisely its members.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, every member of an ordinal is an ordinal. Moreover, a subset
+    \(I\subseteq\alpha\) that is an initial segment is either \(\alpha\) itself or
+    one of its members. Indeed, if \(I\) is proper, the
+    <a href="well-ordered-sets#classification-of-initial-segments">least missing point</a>
+    \(\beta\) gives \(I=\{\gamma\in\alpha:\gamma\in\beta\}=\beta\).</p>
+</section>
+
+<section id="ordinal-comparison" data-kind="theorem">
+  <h2>Any two ordinals can be compared</h2>
+<p>For ordinals \(\alpha,\beta\), exactly one of
+    \(\alpha&lt;\beta\), \(\alpha=\beta\), or \(\beta&lt;\alpha\) holds. Also,</p>
+  <div class="math-display">\[
+    \alpha\le\beta\ \Longleftrightarrow\ \alpha\subseteq\beta,
+    \qquad
+    \alpha&lt;\beta\ \Longleftrightarrow\ \alpha\subsetneq\beta.
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>The intersection \(\delta=\alpha\cap\beta\) is transitive, and its membership
+    order is inherited from \(\alpha\), so it is an ordinal. It is an initial segment
+    of both orders: if \(x\in\delta\) and \(y\in x\), transitivity puts \(y\)
+    in both \(\alpha\) and \(\beta\).</p>
+  <p>If \(\delta\) were proper in both, the preceding lemma would give
+    \(\delta\in\alpha\) and \(\delta\in\beta\), hence \(\delta\in\delta\),
+    which is impossible. Thus one of \(\alpha,\beta\) is a subset of the other.
+    If \(\alpha\subsetneq\beta\), transitivity makes \(\alpha\) an initial segment
+    of \(\beta\), so the same lemma gives \(\alpha\in\beta\).
+    Conversely, \(\alpha\in\beta\) gives \(\alpha\subseteq\beta\), with equality
+    excluded by irreflexivity. The alternatives are mutually exclusive, since a strict
+    well-order has no cycles.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Membership comparison of ordinals is transitive: \(\alpha\in\beta\in\gamma\)
+    implies \(\alpha\in\gamma\), since \(\gamma\) is a transitive set.</p>
+</section>
+
+<section id="least-ordinal" data-kind="theorem">
+  <h2>Every nonempty set of ordinals has a least member</h2>
+<p>Let \(S\) be a nonempty set of ordinals. There is a unique least member of \(S\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Fix \(\alpha\in S\). If no member of \(S\) is below \(\alpha\), ordinal
+    comparison makes \(\alpha\) least. Otherwise \(S\cap\alpha\) is a nonempty
+    subset of the well-order \(\alpha\); let \(\beta\) be its least member.
+    Any member \(\gamma\in S\) below \(\beta\) would also lie in \(S\cap\alpha\),
+    contradicting that choice of \(\beta\). Thus \(\beta\) is least in all of \(S\).
+    Uniqueness follows from antisymmetry.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Consequently the comparison of ordinals restricts to a well-order on any set of
+    ordinals. We may use
+    <a href="well-ordered-sets#well-order-induction">induction from all earlier elements</a>
+    on any such set, using its inherited order.</p>
+</section>
+
+<section id="unique-ordinal-representative" data-kind="theorem">
+  <h2>Each well-order has one ordinal representative</h2>
+<p>Every well-ordered set \((A,&lt;)\) is order-isomorphic to a unique ordinal.
+    We denote this ordinal by \(\operatorname{ot}(A,&lt;)\).</p>
+  <p class="proof-label">Proof</p>
+  <p>First, an isomorphism \(f:\alpha\to\beta\) between ordinals must fix every
+    point. By induction on \(\xi\in\alpha\), assume \(f(\eta)=\eta\) for all
+    \(\eta&lt;\xi\). An order isomorphism maps the whole segment below \(\xi\) onto
+    the segment below \(f(\xi)\), so</p>
+  <div class="math-display">\[
+    f(\xi)=\{f(\eta):\eta&lt;\xi\}=\{\eta:\eta&lt;\xi\}=\xi.
+  \]</div>
+  <p>Surjectivity then gives \(\alpha=\beta\). This also proves that an ordinal
+    representative of an initial segment, when it exists, is uniquely determined.</p>
+  <p>For existence, use induction on \(a\in A\). Suppose every segment \(A_{&lt;b}\)
+    with \(b&lt;a\) has an ordinal representative \(\rho(b)\). Collect these uniquely
+    specified representatives by Replacement. If \(b&lt;c&lt;a\), the segment \(A_{&lt;b}\)
+    corresponds, under the isomorphism for \(A_{&lt;c}\), to a proper initial segment of
+    \(\rho(c)\). Hence \(\rho(b)\in\rho(c)\). Every member of \(\rho(c)\) is
+    obtained this way from a unique \(b&lt;c\).</p>
+  <p>It follows that \(\{\rho(b):b&lt;a\}\) is a transitive set, ordered by membership
+    exactly as \(A_{&lt;a}\). It is an ordinal and supplies the required representative
+    \(\rho(a)\). Induction gives these representatives for every \(a\).
+    Another application of Replacement collects their range. The same argument shows
+    that \(\alpha=\{\rho(a):a\in A\}\) is an ordinal and that
+    \(a\mapsto\rho(a)\) is an order isomorphism onto it.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The empty well-order has type \(0\). The theorem names order types without
+    trying to make a set of all well-orders or their equivalence classes.</p>
+</section>
+
+<section id="types-and-embeddings" data-kind="lemma">
+  <h2>Ordinal comparison means inclusion of an earlier segment</h2>
+<p>A well-order of type \(\alpha\) is isomorphic to an initial segment of a
+    well-order of type \(\beta\) exactly when \(\alpha\le\beta\).
+    The segment is proper exactly when \(\alpha&lt;\beta\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Transfer the proposed segment to \(\beta\) using its ordinal representative.
+    By <a href="#ordinal-initial-segments"></a>, that segment is \(\beta\) or an
+    ordinal \(\gamma\in\beta\). Its type is the segment itself, so uniqueness gives
+    \(\alpha=\beta\) or \(\alpha=\gamma&lt;\beta\). Conversely, inclusion of
+    \(\alpha\) into \(\beta\) has precisely the required initial-segment range.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This compares all pairs of well-orders. An arbitrary increasing injection need
+    not have an initial-segment range: \(n\mapsto n+1\) is increasing on
+    \(\mathbb N\), but its image omits the first point.</p>
+</section>
+
+<section id="successor-ordinals" data-kind="definition">
+  <h2>A successor adds one final point</h2>
+<p>The <strong>successor</strong> of an ordinal \(\alpha\) is</p>
+  <div class="math-display">\[
+    \alpha+1=\alpha\cup\{\alpha\}.
+  \]</div>
+  <p>This is an ordinal. It is transitive because the members of its new point
+    \(\alpha\) are already in the old set; membership orders the old points as before
+    and puts \(\alpha\) after all of them. A nonempty subset either contains an old
+    point and has an old least member, or is the singleton \(\{\alpha\}\).</p>
+  <p>It is the least ordinal strictly above \(\alpha\): if \(\alpha&lt;\beta\), then
+    transitivity gives \(\alpha\cup\{\alpha\}\subseteq\beta\).
+    Thus \(\alpha&lt;\beta\) is equivalent to \(\alpha+1\le\beta\).
+    The notation anticipates the addition developed in the next entry.</p>
+  <p>An ordinal is a successor exactly when its order has a greatest point.
+    If that point is \(\alpha\), all other members are exactly the members of
+    \(\alpha\), so the ordinal is \(\alpha+1\). This predecessor \(\alpha\) is unique.</p>
+</section>
+
+<section id="limit-ordinals" data-kind="definition">
+  <h2>A nonzero limit has no final point</h2>
+<p>A <strong>limit ordinal</strong> is a nonzero ordinal that is not a successor.
+    Under this convention, \(0\) is neither a successor nor a limit.
+    By <a href="#successor-ordinals"></a>, a limit ordinal has no greatest member.</p>
+  <p>For a nonzero ordinal \(\lambda\), the following conditions are equivalent:
+    it is a limit; for every \(\beta&lt;\lambda\), one has \(\beta+1&lt;\lambda\);
+    and</p>
+  <div class="math-display">\[
+    \lambda=\bigcup_{\beta&lt;\lambda}\beta.
+  \]</div>
+  <p>Indeed, if there is no greatest member, each \(\beta\) has a larger member,
+    and its successor still lies below \(\lambda\). Every member \(\beta\) then
+    belongs to the member \(\beta+1\), proving the union identity; the reverse
+    inclusion follows from transitivity. A successor cannot satisfy that identity,
+    since its final member is not in the union of its members.</p>
+</section>
+
+<section id="omega" data-kind="definition">
+  <h2>The natural numbers form the first limit ordinal</h2>
+<p>Define the finite ordinals by \(0=\varnothing\) and
+    \(n+1=n\cup\{n\}\). Induction gives \(n=\{0,\ldots,n-1\}\).
+    The set</p>
+  <div class="math-display">\[
+    \omega=\{0,1,2,\ldots\}
+  \]</div>
+  <p>of these finite ordinals is transitive, and membership agrees with the usual
+    natural-number order. It is therefore an ordinal. It has no greatest point,
+    so it is a limit. Its members are all the finite ordinals, which makes it the
+    least infinite ordinal and the least limit ordinal.</p>
+  <p>The notation \(\omega\) emphasizes order type, while \(\mathbb N\) names the
+    familiar underlying set of numbers. The ordinal \(\omega+1\) has a final point
+    after all finite positions. It is larger as an ordinal, although it is still
+    countably infinite as a set.</p>
+  <figure id="ordinal-examples" class="proof-figure">
+    <div class="figure-image">
+      <img src="assets/order-types.svg" width="720" height="360" alt="Three countably infinite well-orders. Omega has natural-number positions and no last point. Omega plus one adds a final point labelled omega. Omega times two has two successive infinite blocks, with the second starting at omega." />
+    </div>
+    <figcaption>Infinite orders with the same countable size and different arrangements</figcaption>
+  </figure>
+</section>
+
+<section id="positions-versus-size" data-kind="question">
+  <h2>Can adding a last point preserve size?</h2>
+<p>Give a bijection between \(\omega+1\) and \(\omega\).
+    Why does it fail to be an order isomorphism?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Send the new final point \(\omega\) to \(0\), and send each finite ordinal
+        \(n\) to \(n+1\). These images cover all naturals without repetition.
+        The map sends the greatest point to the first point, so it does not preserve order.
+        There is no order isomorphism at all: its image would make \(\omega\) have a
+        greatest point. A bijection records size, not the arrangement of positions.</p>
+</div>
+  </details>
+</section>
+
+<section id="ordinal-suprema" data-kind="theorem">
+  <h2>The supremum of a set of ordinals is their union</h2>
+<p>For any set \(S\) of ordinals, including the empty set,</p>
+  <div class="math-display">\[
+    \sup S=\bigcup S.
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>The union is a transitive set of ordinals. Ordinal comparison makes its membership
+    relation total, and <a href="#least-ordinal"></a> gives a least element in every
+    nonempty subset, so it is an ordinal. Each \(\alpha\in S\) is a subset of the
+    union, hence is at most that ordinal. If \(\gamma\) is any other upper bound,
+    every \(\alpha\in S\) is a subset of \(\gamma\), so their union is too.
+    This proves leastness of the upper bound.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The empty supremum is \(0\). If \(S\) has a greatest member, its supremum is
+    that member. If \(S\) is nonempty and has no greatest member, its supremum is a
+    limit ordinal. Its supremum is nonzero, since a nonempty set with supremum zero would contain only zero and have a greatest member. It cannot be a successor \(\beta+1\), because the union would then
+    contain \(\beta\) in some \(\alpha\in S\), forcing \(\alpha=\beta+1\) to be
+    greatest in \(S\).</p>
+</section>
+
+<section id="supremum-question" data-kind="question">
+  <h2>Must a supremum belong to the set?</h2>
+<p>Compute \(\sup\{n:n&lt;\omega\}\),
+    \(\sup\{\omega\}\), and \(\sup\{\omega+n:n&lt;\omega\}\).
+    Here \(\omega+n\) means adding \(n\) final points. Which sets contain their supremum?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The first supremum is \(\omega\), absent from the set of finite ordinals.
+        The second is \(\omega\), which is present. The third is the order type of
+        two successive natural-number blocks: the first block contributes the initial
+        \(\omega\) positions, and the union of all finite tails contributes a second
+        infinite block. It is absent from the displayed set, whose tails are all finite.
+        The next entry denotes this type by \(\omega+\omega=\omega\cdot2\).</p>
+</div>
+  </details>
+</section>
+
+<section id="transfinite-methods" data-kind="lemma">
+  <h2>Induction and recursion use all earlier ordinals</h2>
+<p>For a fixed ordinal \(\theta\), its elements form a well-ordered set. The
+    <a href="well-ordered-sets#three-case-induction">three-case induction principle</a>
+    therefore proves a property at every \(\alpha&lt;\theta\) by checking zero,
+    successor positions, and nonzero limit positions. At a limit, the hypothesis
+    concerns all earlier ordinals, not a nonexistent last predecessor.</p>
+  <p>Likewise, for a fixed value set \(S\), maps
+    \(\Phi_\alpha:S^\alpha\to S\) give a unique function \(F:\theta\to S\) with
+    \(F(\alpha)=\Phi_\alpha(F|_\alpha)\), by the
+    <a href="well-ordered-sets#well-order-recursion">recursion theorem</a>.
+    Here the earlier segment below \(\alpha\) is literally the set \(\alpha\).</p>
+  <p>When the values are sets with no fixed value set specified in advance, one needs
+    the set-valued form of recursion together with Replacement. Compatible solutions
+    on earlier segments determine the unique next value; Replacement collects those
+    uniquely determined earlier values at each set-sized stage. This is the same
+    compatibility argument used in <a href="#unique-ordinal-representative"></a>,
+    with the additional set-collection step made explicit. It does not assert the
+    existence of a set containing every possible value at every ordinal.</p>
+</section>
+
+<section id="no-set-of-all-ordinals" data-kind="theorem">
+  <h2>The ordinals do not form one set</h2>
+<p>There is no set containing every ordinal.</p>
+  <p class="proof-label">Proof</p>
+  <p>If \(S\) contained every ordinal, separate out its ordinal members and take their
+    supremum \(\gamma\). Then \(\gamma+1\) would also be among those members,
+    forcing \(\gamma+1\le\gamma\), a contradiction.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Thus “all ordinals” is a collection, often called a <em>proper class</em>, rather
+    than a set. Suprema in this entry are taken over sets. There is a larger ordinal
+    than any given ordinal, but not a set containing all of them.</p>
+</section>
