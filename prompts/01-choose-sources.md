@@ -28,6 +28,15 @@ Respect repository instructions and preserve unrelated work.
    the proposed definitions, results, examples, and proofs. Verify bibliographic
    details. Distinguish inspected sources from inaccessible suggestions; never
    invent citations or claim to have read unavailable material.
+   Check the mathematical rigor of the passages being used, including definitions,
+   hypotheses, proof steps, examples, and cited prerequisites. Trace nontrivial
+   omissions and appeals to other results; a source's reputation alone does not
+   establish correctness. Distinguish a valid compressed argument from a genuine
+   gap, and distinguish source defects from uncertainty in your own checking.
+   Report every identified error or gap with its source location, affected claim,
+   consequence, and a proposed repair or supplementary source. Mark unavailable
+   or unchecked arguments explicitly. Return this assessment before any entry is
+   drafted or formalizations are added; do not silently repair or carry gaps forward.
 2. Propose a coherent reading unit with clear prerequisites and boundaries. Link
    existing entries where useful rather than repeating whole explanations, while
    keeping enough context to understand the new entry. Do not expand its scope
@@ -58,5 +67,8 @@ record which reuse candidates could not be checked and complete the source plan.
 Return the proposed ID, scope, outline, entry links, primary area and reading-order
 placement, and a source-to-outline map with precise locations. Include proposed
 `based_on` citation objects following the [corpus guide](../docs/corpus.md).
-List checks performed and unresolved questions for the drafting step.
+Include the source-rigor assessment: findings with precise locations, proposed
+repairs, and any unchecked material. State explicitly if no gaps were found in the
+inspected passages, without claiming more than was checked. List checks performed
+and unresolved questions for the drafting step.
 Do not create entries, nodes, proofs, or generated summaries at this stage.

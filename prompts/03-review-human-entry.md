@@ -23,6 +23,12 @@ Judge the current files on their merits rather than relying on a prior summary.
 
 Check the following:
 
+- The cited source passages are mathematically rigorous, rather than merely
+  matching the entry. Inspect their hypotheses, arguments, examples, nontrivial
+  omissions, and referenced prerequisites. Check the earlier source-rigor report
+  and any claimed repairs. Report source errors or gaps separately from entry
+  errors, with precise source locations, affected claims, and consequences. Flag
+  missing pre-draft assessments and any arguments that remain unchecked.
 - Claims have the correct hypotheses, quantifiers, domains, codomains, and
   conclusions. Test relevant empty, singleton, boundary, finite, and infinite
   cases. Check both directions of equivalences and the witnesses in examples.
@@ -65,6 +71,8 @@ Return findings ordered by importance, with file/line or block references, why e
 issue matters, and a concrete correction. Separate mathematical errors from optional
 editorial improvements. State what was checked and any unavailable source or visual
 checks. Include a concise list of revisions needed before formalization.
+Source gaps must be reported before affected drafting revisions or formalizations
+are added; identify which claims still need checked repairs or supporting arguments.
 
 This is a read-only review. Do not rewrite the entry or generated JSON, create
 formal nodes, or run the writing build command. Reader tests may be run to check

@@ -24,6 +24,19 @@ Preserve unrelated work and existing stable IDs when revising an entry.
 
 ## Work
 
+Before writing the draft, inspect the step-1 source-rigor assessment against the
+passages needed for this entry. If it is missing or the scope or sources changed,
+check those passages for mathematical rigor yourself. Check hypotheses, logical
+steps, examples, and nontrivial omissions or cited dependencies. Report identified
+errors, gaps, and unchecked arguments in the task discussion **before drafting**,
+with precise source locations, affected claims, consequences, and proposed repairs.
+An existing applicable report need not be repeated. Establish a checked repair or
+supporting argument before using an affected claim; do not silently fill a gap or
+write an unsupported argument as proved. If a necessary claim remains unsupported,
+report the affected drafting work as blocked and continue independent work where
+possible. This assessment does not require an approval flag or automatic permission
+request.
+
 1. Read the relevant source passages and write original, precise mathematics.
    State domains, codomains, hypotheses, quantifiers, and conventions where they
    matter. Include useful examples, counterexamples, edge cases, and answers to
@@ -92,3 +105,6 @@ Restart the development server if adding a new assets directory.
 
 Return the changed files, the checks performed, and unresolved mathematical or source
 questions for GitHub review. Describe any visual checks that could not be completed.
+Include the source-rigor findings reported before drafting, their resolutions, and
+any remaining gaps or unchecked material. Separate repairs to source arguments
+from editorial changes to the entry.

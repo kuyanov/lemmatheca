@@ -23,6 +23,19 @@ sources. Use the single project in formal/ and preserve unrelated work.
 
 ## Work
 
+Before adding formalizations, inspect the source-rigor assessment and relevant
+source passages supporting the entry. If the assessment is missing, incomplete,
+or no longer applies to the current scope, check the needed passages for rigorous
+statements and arguments, including nontrivial omissions and cited prerequisites.
+Report source errors, gaps, and unchecked arguments in the task discussion
+**before creating or changing formal definitions, theorem statements, nodes, or
+bindings**. Give precise source locations, affected claims, consequences, and
+proposed repairs. Do not silently inherit or repair a gap; establish a checked
+repair or supporting argument before formalizing the affected claim. Leave
+unresolved affected work distinguishably unplanned and continue independent work
+where possible. An applicable earlier report need not be repeated. A library
+theorem or successful Lean check does not certify the rigor of the source argument.
+
 1. Inventory definitions and claims in every block, including examples, question
    answers, witnesses, edge cases, and assertions embedded in prose. Make a
    block-to-claims-to-nodes map. Coverage is collective: multiple nodes may cover a
@@ -89,3 +102,5 @@ declarations, representation notes, proof-planning hints, and checks performed.
 Include generated JSON changes and list questions for correspondence review on
 GitHub. Do not claim that passing Lean checks establish correspondence or record
 any approval in the corpus.
+Include the source-rigor findings reported before formalization, checked repairs,
+and unresolved gaps or unchecked material, identifying affected unplanned work.

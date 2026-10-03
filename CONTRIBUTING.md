@@ -31,6 +31,17 @@ entries and formal nodes to reuse. The result is a source-to-outline map and
 proposed `based_on` citations, with unavailable sources and open questions made
 explicit. This step produces a plan; it does not create content or proofs.
 
+Check the mathematical rigor of the source passages used, not just their relevance
+or reputation. Inspect hypotheses, arguments, examples, nontrivial omissions, and
+cited prerequisites. Report identified errors or gaps with precise source locations,
+affected claims, consequences, and proposed repairs **before drafting the entry or
+adding formalizations**. Distinguish genuine gaps from valid compressed arguments
+and from uncertainty in the check; mark unavailable or unchecked material explicitly.
+Carry this assessment between steps, checking new or changed material when needed.
+Establish a checked repair or supporting argument before using an affected claim;
+report unresolved affected work and continue independent work where possible.
+Source rigor, entry correctness, and Lean verification are separate checks.
+
 ### 2. Draft the human entry
 
 Write original exposition in `corpus/entries/<id>/entry.html`, its metadata in
