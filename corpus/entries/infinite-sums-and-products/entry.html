@@ -1,0 +1,106 @@
+<section id="indexed-cardinal-operations" data-kind="definition">
+  <h2>An indexed sum tags points, while an indexed product chooses coordinates</h2>
+  <p>We assume the <a href="axiom-of-choice#three-equivalent-principles">axiom of choice</a> throughout. For a set \(I\) and a family of sets \((A_i)_{i\in I}\), define</p>
+  <div class="math-display">\[
+    \coprod_{i\in I}A_i=\{(i,a):i\in I,\ a\in A_i\},\qquad
+    \prod_{i\in I}A_i=\{f:\operatorname{dom}(f)=I,\ f(i)\in A_i\text{ for all }i\in I\}.
+  \]</div>
+  <p>In the product, functions may be viewed as taking values in \(\bigcup_{i\in I}A_i\). Put \(\kappa_i=|A_i|\). The <strong>cardinal sum</strong> \(\sum_{i\in I}\kappa_i\) is the size of the tagged union, and the <strong>cardinal product</strong> \(\prod_{i\in I}\kappa_i\) is the size of the function set. These extend the <a href="infinite-cardinal-arithmetic#cardinal-operations">binary operations</a>.</p>
+  <p>The tags keep overlapping sets distinct. The product asks for one value at every coordinate. Over the empty index set the sum is zero and the product is one, because there is exactly one empty function. If any factor is empty, the product is empty. Under choice, a product of nonempty factors is nonempty.</p>
+</section>
+
+<section id="indexed-relabeling" data-kind="lemma">
+  <h2>Changing representatives or index labels preserves the size</h2>
+  <p>If \(|A_i|=|B_i|\) for every \(i\), the two tagged unions have equal sizes, and the two products have equal sizes. Replacing the index set by a bijective copy also preserves each size.</p>
+  <p class="proof-label">Proof</p>
+  <p>Choice lets us select bijections \(e_i:A_i\to B_i\) simultaneously. On sums use \((i,a)\mapsto(i,e_i(a))\). On products send \(f\) to the function \(i\mapsto e_i(f(i))\). Applying the inverse bijections gives inverse maps. A bijection of index sets merely renames the first tag, or reindexes a function by composition. The empty cases obey these same rules. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="constant-families" data-kind="lemma">
+  <h2>Constant families recover multiplication and exponentiation</h2>
+  <p>If \(|I|=\lambda\) and \(\kappa_i=\kappa\) for all \(i\), then</p>
+  <div class="math-display">\[\sum_{i\in I}\kappa=\lambda\cdot\kappa,\qquad \prod_{i\in I}\kappa=\kappa^\lambda.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>Choose a single representative \(A\) of \(\kappa\) and replace the family by copies of \(A\), using <a href="#indexed-relabeling"></a>. The tagged union is \(I\times A\), and the product is the set of all functions \(I\to A\). These are the defining sets for the two cardinal operations. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Thus countably many singleton summands have sum \(\aleph_0\), while countably many two-element factors have product \(2^{\aleph_0}\), the <a href="infinite-cardinal-arithmetic#size-of-the-continuum">size of the real numbers</a>.</p>
+</section>
+
+<section id="indexed-bounds" data-kind="lemma">
+  <h2>Coordinatewise bounds give bounds for sums and products</h2>
+  <p>If \(\kappa_i\le\lambda_i\) for all \(i\in I\), then \(\sum_i\kappa_i\le\sum_i\lambda_i\) and \(\prod_i\kappa_i\le\prod_i\lambda_i\). In particular, if every \(\kappa_i\le\kappa\), then \(\sum_i\kappa_i\le|I|\cdot\kappa\) and \(\prod_i\kappa_i\le\kappa^{|I|}\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Select injections \(e_i:A_i\to B_i\) simultaneously. Apply them to tagged points or to each coordinate of a function. The resulting maps are injective: tags distinguish different summands, and a differing coordinate remains different after an injection. For the final bounds take a constant family on the right and use <a href="#constant-families"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="infinite-sum-formula" data-kind="theorem">
+  <h2>An infinite sum of nonzero cardinals has a simple size</h2>
+  <p>If \(I\) is infinite and every \(\kappa_i&gt;0\), put \(\lambda=|I|\) and \(\nu=\sup_{i\in I}\kappa_i\). Then</p>
+  <div class="math-display">\[\sum_{i\in I}\kappa_i=\lambda\cdot\nu=\max(\lambda,\nu).\]</div>
+  <p class="proof-label">Proof</p>
+  <p>The supremum is a cardinal by <a href="cofinality#successor-cardinals">closure of cardinals under suprema</a>. Each summand embeds into the tagged union, so its size is an upper bound for every \(\kappa_i\), hence for \(\nu\). Choosing one point in every nonempty summand also embeds \(I\) into the union, giving the lower bound \(\lambda\). The upper bound from <a href="#indexed-bounds"></a> is \(\lambda\cdot\nu\), which equals \(\max(\lambda,\nu)\) by <a href="infinite-cardinal-arithmetic#infinite-sums-and-products">infinite cardinal multiplication</a>, since \(\lambda\) is infinite and \(\nu\) is nonzero. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Zero summands can be discarded, but the size of the remaining index set must then be used. For example, infinitely many zero summands still sum to zero.</p>
+</section>
+
+<section id="aleph-sum-question" data-kind="question">
+  <h2>Can a sum reach a size that none of its summands reaches?</h2>
+  <p>Compute \(\sum_{n&lt;\omega}\aleph_n\). Does the supremum need to occur among the summands?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The answer is \(\max(\aleph_0,\sup_n\aleph_n)=\aleph_\omega\). Every individual \(\aleph_n\) is smaller. The supremum need not be attained; the lower bound in <a href="#infinite-sum-formula"></a> uses the fact that the whole sum bounds every summand, not the existence of a largest one.</p></div>
+  </details>
+</section>
+
+<section id="konigs-inequality" data-kind="theorem">
+  <h2>König’s inequality makes a sum strictly smaller than a product</h2>
+  <p>For any set \(I\) and cardinal families with \(\kappa_i&lt;\lambda_i\) for every \(i\in I\),</p>
+  <div class="math-display">\[\sum_{i\in I}\kappa_i&lt;\prod_{i\in I}\lambda_i.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>Represent the cardinals by initial ordinals and suppose \(F:\coprod_i\kappa_i\to\prod_i\lambda_i\) is any function. For each coordinate \(i\), the values \(F(i,a)(i)\), for \(a&lt;\kappa_i\), occupy a subset of \(\lambda_i\) of size at most \(\kappa_i\). Since \(\kappa_i&lt;\lambda_i\), choose the least missing value \(h(i)\). This defines an element \(h\) of the product. It differs from \(F(i,a)\) at coordinate \(i\), for every tagged point \((i,a)\), so \(F\) is not surjective.</p>
+  <p>The product is nonempty: each \(\lambda_i&gt;0\), and the function constantly equal to ordinal zero is in it. If it injected into the sum, a left inverse to that injection, sending unused points to a fixed product element, would be a surjection from the sum onto the product. The preceding argument rules this out. Cardinal comparability under choice therefore gives the strict inequality. For empty \(I\), it reads \(0&lt;1\), and the same diagonal argument has empty domain and the empty function as its missing value. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This includes <a href="comparing-sizes#cantor-power-set">Cantor’s theorem</a>: over \(I=\kappa\), take every smaller factor equal to one and every larger factor equal to two. The sum is \(\kappa\), and the product is \(2^\kappa\).</p>
+</section>
+
+<section id="cofinal-power-growth" data-kind="theorem">
+  <h2>Raising an infinite cardinal to its cofinality increases its size</h2>
+  <p>Every infinite cardinal \(\kappa\) satisfies \(\kappa&lt;\kappa^{\operatorname{cf}(\kappa)}\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Put \(\mu=\operatorname{cf}(\kappa)\) and choose a cofinal map \(g:\mu\to\kappa\). Every \(g(i)\), as a set of earlier ordinals, has cardinality \(\rho_i&lt;\kappa\). The sum of these cardinalities equals \(\kappa\). For the upper bound, the tagged union embeds into \(\mu\times\kappa\), of size \(\kappa\), since \(\mu\le\kappa\). For the lower bound, \(\bigcup_i g(i)=\kappa\), because \(\kappa\) is a limit and the range is cofinal. Map each point to its copy in the least indexed set containing it; this injects \(\kappa\) into the tagged union. Now <a href="#konigs-inequality"></a> gives</p>
+  <div class="math-display">\[\kappa=\sum_{i&lt;\mu}\rho_i&lt;\prod_{i&lt;\mu}\kappa=\kappa^\mu.\]</div>
+  <p>Zero values of \(\rho_i\) cause no problem: König’s inequality permits them. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="monotone-cardinal-powers" data-kind="lemma">
+  <h2>More coordinates cannot reduce a nonempty function space</h2>
+  <p>If \(\theta&gt;0\) and \(\mu\le\lambda\), then \(\theta^\mu\le\theta^\lambda\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Represent the domain of size \(\mu\) as a subset of a domain of size \(\lambda\). Fix one value in the nonempty codomain of size \(\theta\). Extend every function by that fixed value on the extra coordinates. Restriction recovers the original function, so extension is injective. This also covers an empty smaller domain. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="power-set-cofinality" data-kind="theorem">
+  <h2>A power-set size has cofinality greater than its exponent</h2>
+  <p>If \(\kappa\) is infinite, then \(\operatorname{cf}(2^\kappa)&gt;\kappa\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Put \(\theta=2^\kappa\). If \(\operatorname{cf}(\theta)\le\kappa\), <a href="#cofinal-power-growth"></a> and <a href="#monotone-cardinal-powers"></a> would give</p>
+  <div class="math-display">\[
+    \theta&lt;\theta^{\operatorname{cf}(\theta)}\le\theta^\kappa
+    =(2^\kappa)^\kappa=2^{\kappa\cdot\kappa}=2^\kappa=\theta.
+  \]</div>
+  <p>The equalities use <a href="infinite-cardinal-arithmetic#power-laws">currying of functions</a> and the infinite square theorem. This contradiction proves the result. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="continuum-restriction" data-kind="theorem">
+  <h2>The continuum cannot be reached by a countable cofinal sequence</h2>
+  <p>The cardinal \(\mathfrak c=|\mathbb R|=2^{\aleph_0}\) has \(\operatorname{cf}(\mathfrak c)&gt;\aleph_0\). In particular, \(\mathfrak c\ne\aleph_\omega\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Apply <a href="#power-set-cofinality"></a> to \(\aleph_0\), using <a href="infinite-cardinal-arithmetic#size-of-the-continuum">the size of the real numbers</a>. The cardinal \(\aleph_\omega\) has <a href="cofinality#aleph-omega">countable cofinality</a>, so it cannot equal \(\mathfrak c\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This is a restriction on the continuum’s size; it does not identify that size or decide the <a href="infinite-cardinal-arithmetic#continuum-hypothesis">continuum hypothesis</a>.</p>
+</section>
+
+<section id="strictness-question" data-kind="question">
+  <h2>Why do the hypotheses of König’s inequality matter?</h2>
+  <p>Can strict coordinatewise inequalities be replaced by weak inequalities? Does \(\operatorname{cf}(\mathfrak c)&gt;\aleph_0\) alone imply that \(\mathfrak c\) is regular?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No to both. Take countably many coordinates with \(\kappa_i=\lambda_i=1\). The sum is \(\aleph_0\), but the product is one, so even a weak sum–product comparison fails. Regularity would require \(\operatorname{cf}(\mathfrak c)=\mathfrak c\), a stronger equality than the lower bound just proved. The lower bound rules out countable cofinality and makes no assertion that the continuum is regular.</p></div>
+  </details>
+</section>

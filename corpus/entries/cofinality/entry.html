@@ -1,0 +1,84 @@
+<section id="cofinal-subsets" data-kind="definition">
+  <h2>A cofinal subset reaches past every earlier position</h2>
+  <p>A subset \(C\) of an ordinal \(\alpha\) is <strong>cofinal</strong> if for every \(\beta&lt;\alpha\) there is \(\gamma\in C\) with \(\beta\le\gamma\). This concerns positions in the order, rather than the size of all its points. We assume the <a href="axiom-of-choice#three-equivalent-principles">axiom of choice</a> throughout this entry and identify cardinals with their <a href="infinite-cardinal-arithmetic#initial-cardinals">initial ordinals</a>.</p>
+  <p>The <strong>cofinality</strong> \(\operatorname{cf}(\alpha)\) is the least cardinality of a cofinal subset of \(\alpha\). It exists: \(\alpha\) itself is cofinal, so the candidate sizes form a nonempty set of cardinals at most \(|\alpha|\). Equivalently, it is the least cardinal \(\mu\) admitting a function \(\mu\to\alpha\) with cofinal range, since a cofinal subset can be enumerated and the range of such a function has size at most \(\mu\).</p>
+  <p>Thus \(\operatorname{cf}(\alpha)\le|\alpha|\). The empty subset is cofinal in zero, so \(\operatorname{cf}(0)=0\). A successor \(\beta+1\) has cofinal singleton \(\{\beta\}\), so \(\operatorname{cf}(\beta+1)=1\).</p>
+</section>
+
+<section id="limit-cofinality" data-kind="lemma">
+  <h2>At a nonzero limit, cofinal means having the whole limit as supremum</h2>
+  <p>For a nonzero limit ordinal \(\alpha\), a subset \(C\subseteq\alpha\) is cofinal exactly when \(\sup C=\alpha\). Every such cofinal subset is infinite.</p>
+  <p class="proof-label">Proof</p>
+  <p>If \(C\) is cofinal, any \(\beta&lt;\alpha\) has \(\beta+1&lt;\alpha\), and some \(\gamma\in C\) satisfies \(\beta+1\le\gamma\). Hence no \(\beta&lt;\alpha\) bounds \(C\), and its supremum is \(\alpha\). Conversely, a failure of cofinality would give a \(\beta&lt;\alpha\) larger than every member of \(C\), forcing \(\sup C\le\beta\). A nonempty finite subset has a greatest element, which cannot be cofinal in a limit; the empty subset cannot be cofinal either. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, \(\operatorname{cf}(\alpha)\ge\aleph_0\) for nonzero limits. The supremum characterization fails for successors: the cofinal singleton \(\{\beta\}\) in \(\beta+1\) has supremum \(\beta\), not \(\beta+1\).</p>
+</section>
+
+<section id="countable-examples" data-kind="lemma">
+  <h2>Very different limits can have the same cofinality</h2>
+  <p>Every nonzero countable limit ordinal has cofinality \(\aleph_0\). In particular, \(\operatorname{cf}(\omega)=\operatorname{cf}(\omega^2)=\operatorname{cf}(\omega^\omega)=\aleph_0\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The lower bound is <a href="#limit-cofinality"></a>, and the ordinal itself is a countable cofinal subset, giving the upper bound. For explicit examples, the natural positions are cofinal in \(\omega\), the starts \(\omega\cdot n\) of successive blocks are cofinal in \(\omega^2\), and the powers \(\omega^n\) are cofinal in <a href="ordinal-powers#first-infinite-powers">\(\omega^\omega\)</a>. Each sequence has the asserted supremum by the corresponding limit rule. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="increasing-cofinal-sequences" data-kind="theorem">
+  <h2>A limit has a strictly increasing cofinal sequence of minimal size</h2>
+  <p>If \(\alpha\) is a nonzero limit and \(\mu=\operatorname{cf}(\alpha)\), there is a strictly increasing function \(g:\mu\to\alpha\) with cofinal range. Every subset of \(\alpha\) of size less than \(\mu\) is bounded below \(\alpha\).</p>
+  <p class="proof-label">Proof</p>
+  <p>A smaller subset is not cofinal by minimality of \(\mu\). A failure of cofinality supplies a \(\beta&lt;\alpha\) strictly above all its members. Start with any cofinal map \(f:\mu\to\alpha\). Recursively put</p>
+  <div class="math-display">\[
+    g(i)=\max\left(f(i),\sup_{j&lt;i}\bigl(g(j)+1\bigr)\right).
+  \]</div>
+  <p>Every \(g(j)+1\) is below \(\alpha\), since \(\alpha\) is a limit. The set of earlier values has size at most \(|i|&lt;\mu\), because \(\mu\) is an infinite initial ordinal. The boundedness just proved ensures that its supremum is also below \(\alpha\). Thus the recursion always produces a value in \(\alpha\), including at zero where the empty supremum is zero. It gives \(g(j)&lt;g(i)\) for \(j&lt;i\), and \(g(i)\ge f(i)\) makes its range cofinal. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="regular-cofinality" data-kind="theorem">
+  <h2>Cofinality itself cannot be approached with fewer stages</h2>
+  <p>If \(\alpha\) is a nonzero limit and \(\mu=\operatorname{cf}(\alpha)\), then \(\operatorname{cf}(\mu)=\mu\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Take the increasing cofinal map \(g:\mu\to\alpha\) from <a href="#increasing-cofinal-sequences"></a>. If a cofinal set \(D\subseteq\mu\) had size less than \(\mu\), then \(g[D]\) would be cofinal in \(\alpha\): given \(\beta&lt;\alpha\), choose \(i\) with \(\beta\le g(i)\), then \(d\in D\) with \(i\le d\), and use \(g(i)\le g(d)\). This contradicts the definition of \(\mu\). Therefore \(\operatorname{cf}(\mu)\ge\mu\); the reverse bound follows because \(\mu\) itself is cofinal. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The increasing condition matters here: an arbitrary function with cofinal range need not remain cofinal when restricted to a cofinal subset of its domain.</p>
+</section>
+
+<section id="regular-and-singular" data-kind="definition">
+  <h2>Regular cardinals resist shorter approaches</h2>
+  <p>An infinite cardinal \(\kappa\) is <strong>regular</strong> if \(\operatorname{cf}(\kappa)=\kappa\), and <strong>singular</strong> if \(\operatorname{cf}(\kappa)&lt;\kappa\). Every infinite initial ordinal is a <a href="infinite-cardinal-arithmetic#infinite-cardinals-are-limits">limit ordinal</a>, so its cofinality is infinite. For a regular cardinal, every subset of size less than \(\kappa\) is bounded below \(\kappa\); this boundedness also implies regularity.</p>
+  <p>The cardinal \(\aleph_0\) is regular: a finite subset of \(\omega\) is bounded, whereas \(\omega\) itself is cofinal. By <a href="#regular-cofinality"></a>, the cofinality of every nonzero limit is a regular cardinal.</p>
+</section>
+
+<section id="successor-cardinals" data-kind="definition">
+  <h2>A cardinal successor differs from an ordinal successor</h2>
+  <p>The <strong>successor cardinal</strong> \(\kappa^+\) is the least cardinal strictly greater than \(\kappa\). It exists: <a href="comparing-sizes#cantor-power-set">Cantor’s theorem</a> supplies a larger cardinal, and we can take the least among the larger cardinals up to that bound. Every ordinal \(\beta&lt;\kappa^+\) has \(|\beta|\le\kappa\), since its cardinality is a cardinal below \(\kappa^+\).</p>
+  <p>Starting with \(\aleph_0\), put \(\aleph_{n+1}=\aleph_n^+\) for natural \(n\), and define \(\aleph_\omega=\sup_{n&lt;\omega}\aleph_n\). This supremum is a cardinal. More generally, if \(K\) is a nonempty set of cardinals and \(\rho=\sup K\) were not initial, its cardinality \(\nu&lt;\rho\) would lie below some \(\kappa\in K\). But inclusion \(\kappa\subseteq\rho\) would give \(\kappa\le|\rho|=\nu\), a contradiction.</p>
+  <p>For infinite \(\kappa\), the ordinal successor \(\kappa+1\) has the same cardinality as \(\kappa\), whereas \(\kappa^+\) is strictly larger. In particular, \(\kappa^+\) is a limit ordinal, despite being a successor among cardinals.</p>
+</section>
+
+<section id="successors-are-regular" data-kind="theorem">
+  <h2>Every successor of an infinite cardinal is regular</h2>
+  <p>If \(\kappa\) is an infinite cardinal, then \(\operatorname{cf}(\kappa^+)=\kappa^+\).</p>
+  <p class="proof-label">Proof</p>
+  <p>If \(C\subseteq\kappa^+\) were cofinal and \(|C|&lt;\kappa^+\), then \(|C|\le\kappa\). Each \(\gamma\in C\) has size at most \(\kappa\); choice lets us select injections \(e_\gamma:\gamma\to\kappa\). Since \(\kappa^+\) is a limit, cofinality gives \(\bigcup C=\kappa^+\). Send each \(x&lt;\kappa^+\) to \((\gamma,e_\gamma(x))\), where \(\gamma\) is the least member of \(C\) containing \(x\). This injects \(\kappa^+\) into \(C\times\kappa\), whose size is at most \(\kappa\cdot\kappa=\kappa\) by <a href="infinite-cardinal-arithmetic#infinite-square">the square theorem</a>. This contradicts \(\kappa^+&gt;\kappa\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="aleph-omega" data-kind="theorem">
+  <h2>The first limit of the aleph sequence is singular</h2>
+  <p>\(\operatorname{cf}(\aleph_\omega)=\aleph_0&lt;\aleph_\omega\). Among infinite cardinals, \(\aleph_\omega\) is the first singular one.</p>
+  <p class="proof-label">Proof</p>
+  <p>The increasing sequence \(\aleph_0,\aleph_1,\ldots\) has supremum \(\aleph_\omega\), so it is cofinal there. No finite subset is cofinal in this limit ordinal, giving cofinality exactly \(\aleph_0\). The supremum is strictly above every \(\aleph_n\), in particular above \(\aleph_0\). Any infinite cardinal below it lies below some \(\aleph_n\), and the definition of consecutive cardinal successors then places it among the earlier finite-index alephs. These are regular by <a href="#regular-and-singular"></a> and <a href="#successors-are-regular"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="regular-unions" data-kind="theorem">
+  <h2>Regularity means smaller unions stay smaller</h2>
+  <p>An infinite cardinal \(\kappa\) is regular exactly when every family \((A_i)_{i\in I}\) with \(|I|&lt;\kappa\) and \(|A_i|&lt;\kappa\) for all \(i\) satisfies \(\left|\bigcup_{i\in I}A_i\right|&lt;\kappa\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(\kappa\) is regular. For \(\kappa=\aleph_0\), this is <a href="finite-and-countable-sets#finite-unions">a finite union of finite sets</a>. For uncountable \(\kappa\), the set of cardinals \(\{|A_i|:i\in I\}\) has size less than \(\kappa\), so it is bounded by some ordinal \(\eta&lt;\kappa\). The infinite cardinal \(\nu=\max(\aleph_0,|I|,|\eta|)\) is below \(\kappa\) and bounds every \(|A_i|\). Choice supplies injections of the sets into \(\nu\), and a well-order on \(I\) chooses the least index containing each point of the union. This injects the union into \(I\times\nu\), of size at most \(\nu^2=\nu&lt;\kappa\). An empty family has empty union.</p>
+  <p>Conversely, if \(\kappa\) is singular, take a cofinal \(C\subseteq\kappa\) of size \(\operatorname{cf}(\kappa)&lt;\kappa\). Regard its members as sets of earlier ordinals. Each has cardinality less than \(\kappa\), but \(\bigcup_{\gamma\in C}\gamma=\kappa\), because \(\kappa\) is a limit. This family violates the union property. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="uniform-bounds-question" data-kind="question">
+  <h2>Does a common size bound change the union problem?</h2>
+  <p>Can countably many sets of size less than \(\aleph_\omega\) have a union of size \(\aleph_\omega\)? What if they all have size at most one fixed \(\aleph_m\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Yes: take the sets \(A_n=\aleph_n\). Their union is \(\aleph_\omega\). But with a fixed bound \(\aleph_m\), choice and least-index coding inject the union into \(\omega\times\aleph_m\), which has size \(\aleph_m&lt;\aleph_\omega\). The singular example succeeds because the sizes of the sets have no common cardinal bound below \(\aleph_\omega\).</p></div>
+  </details>
+</section>

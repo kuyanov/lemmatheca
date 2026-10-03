@@ -1,0 +1,118 @@
+<section id="proper-filters" data-kind="definition">
+  <h2>A filter records which subsets count as large</h2>
+  <p>A <strong>proper filter</strong> on a set \(X\) is a family \(\mathcal F\subseteq\mathcal P(X)\) such that \(X\in\mathcal F\), \(\varnothing\notin\mathcal F\), the intersection of any two members is a member, and every subset of \(X\) containing a member is itself a member. In this entry, “filter” always means a proper filter.</p>
+  <p>These rules express a consistent notion of largeness: the whole space is large, the empty set is not, two large conditions can hold together, and enlarging a large set keeps it large. Induction gives closure under every finite intersection, with the empty intersection interpreted as \(X\). Closure under infinite intersections is not required.</p>
+  <p>There is no proper filter on the empty set, since its whole space is empty. On nonempty \(X\), the family \(\{X\}\) is a filter and is contained in every filter on \(X\).</p>
+</section>
+
+<section id="principal-filters" data-kind="definition">
+  <h2>A fixed nonempty set generates a principal filter</h2>
+  <p>For a nonempty subset \(S\subseteq X\), its <strong>principal filter</strong> is \(\mathcal F_S=\{A\subseteq X:S\subseteq A\}\). It is a filter: every member contains \(S\), intersections preserve this condition, and the empty set cannot contain \(S\).</p>
+  <p>For \(x\in X\), write \(\mathcal U_x=\mathcal F_{\{x\}}\). Its members are exactly the subsets containing \(x\). A filter is called <strong>principal</strong> if it equals \(\mathcal F_S\) for some nonempty \(S\); otherwise it is <strong>nonprincipal</strong>.</p>
+</section>
+
+<section id="cofinite-filter" data-kind="lemma">
+  <h2>Ignoring finitely many exceptions gives a filter on an infinite set</h2>
+  <p>If \(X\) is infinite, the <strong>cofinite filter</strong> is \(\mathcal F_{\mathrm{cof}}=\{A\subseteq X:X\setminus A\text{ is finite}\}\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The complement of \(X\) is empty, while the complement of the empty set is the infinite set \(X\). A superset of a cofinite set has a smaller, hence finite, complement. Also \(X\setminus(A\cap B)=(X\setminus A)\cup(X\setminus B)\), a union of two finite sets when \(A,B\) are cofinite. These verify the filter rules. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>On \(\mathbb N\), membership means that a condition holds for all but finitely many natural numbers. For finite \(X\), this same family contains the empty set and is not a proper filter.</p>
+</section>
+
+<section id="infinite-intersection-question" data-kind="question">
+  <h2>Must infinitely many large sets have a large intersection?</h2>
+  <p>In the cofinite filter on \(\mathbb N\), consider \(T_n=\{m\in\mathbb N:m\ge n\}\). Is \(\bigcap_{n\in\mathbb N}T_n\) a member?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Every \(T_n\) is cofinite, and every finite intersection is another tail, hence cofinite. The intersection of all tails is empty: no natural number is at least every natural number. It is therefore not a filter member. The distinction between finite and infinite intersections is essential.</p></div>
+  </details>
+</section>
+
+<section id="finite-intersection-property" data-kind="definition">
+  <h2>A family can generate a filter exactly when its finite requirements are compatible</h2>
+  <p>A family \(\mathcal B\subseteq\mathcal P(X)\) has the <strong>finite intersection property</strong> if every finite subfamily has nonempty intersection. The empty subfamily has intersection \(X\), so this condition requires \(X\ne\varnothing\). It allows \(\mathcal B\) itself to be empty when \(X\) is nonempty.</p>
+  <p>Define the generated family by</p>
+  <div class="math-display">\[
+    \langle\mathcal B\rangle=
+    \left\{A\subseteq X:\text{some finite }\mathcal E\subseteq\mathcal B
+    \text{ satisfies }\bigcap\mathcal E\subseteq A\right\}.
+  \]</div>
+  <p>Finite intersections of the proposed generators supply the basic large sets; taking supersets then supplies the whole filter.</p>
+</section>
+
+<section id="generated-filter" data-kind="theorem">
+  <h2>The generated filter is the least filter containing its generators</h2>
+  <p>A family \(\mathcal B\) is contained in a proper filter exactly when it has the finite intersection property. In that case, \(\langle\mathcal B\rangle\) is a proper filter and is contained in every filter containing \(\mathcal B\).</p>
+  <p class="proof-label">Proof</p>
+  <p>If a proper filter contains \(\mathcal B\), every finite intersection of generators is a filter member and cannot be empty. Conversely, suppose the finite intersection property holds. The empty subfamily puts \(X\) in the generated family. No finite intersection can be contained in the empty set, so the empty set is excluded. Upward closure follows from containment. If finite subfamilies \(\mathcal E,\mathcal D\) witness membership of \(A,B\), their union witnesses membership of \(A\cap B\), because its intersection is contained in both sets. Thus the generated family is a proper filter. Every generator belongs to it by its singleton subfamily. Any filter containing the generators must contain their finite intersections and all supersets, proving minimality. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>On \(\mathbb N\), the tails \(T_n\) from <a href="#infinite-intersection-question"></a> generate the cofinite filter: each finite intersection is a tail, and every cofinite set contains a tail. For an empty generating family on nonempty \(X\), the result is \(\{X\}\).</p>
+</section>
+
+<section id="adjoining-one-set" data-kind="lemma">
+  <h2>A new set can be made large unless its complement is already large</h2>
+  <p>Given a filter \(\mathcal F\) on \(X\) and \(A\subseteq X\), there is a filter containing both \(\mathcal F\) and \(A\) exactly when \(X\setminus A\notin\mathcal F\).</p>
+  <p class="proof-label">Proof</p>
+  <p>If the complement belongs to \(\mathcal F\), any such extension would contain both \(A\) and its complement and therefore their empty intersection. Conversely, if the complement does not belong, every \(B\in\mathcal F\) meets \(A\): otherwise \(B\subseteq X\setminus A\) would put the complement in \(\mathcal F\). A finite intersection of members of \(\mathcal F\) is still a member, so it too meets \(A\). Consequently \(\mathcal F\cup\{A\}\) has the finite intersection property; apply <a href="#generated-filter"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="ultrafilter-decision" data-kind="definition">
+  <h2>An ultrafilter chooses exactly one side of every complement pair</h2>
+  <p>An <strong>ultrafilter</strong> on \(X\) is a filter \(\mathcal U\) such that, for every \(A\subseteq X\), either \(A\in\mathcal U\) or \(X\setminus A\in\mathcal U\). It cannot contain both, since their intersection is empty. Thus exactly one belongs.</p>
+  <p>Each \(\mathcal U_x\) is an ultrafilter: exactly one of \(A\) and its complement contains \(x\). The cofinite filter on \(\mathbb N\) is not an ultrafilter: neither the even numbers nor the odd numbers are cofinite.</p>
+</section>
+
+<section id="maximal-filters" data-kind="theorem">
+  <h2>Ultrafilters are exactly the maximal proper filters</h2>
+  <p>A filter \(\mathcal U\) is an ultrafilter exactly when it has no strictly larger proper filter on the same set.</p>
+  <p class="proof-label">Proof</p>
+  <p>If a maximal filter omitted both \(A\) and its complement, <a href="#adjoining-one-set"></a> would give a proper extension containing \(A\), contradicting maximality. Hence a maximal filter decides every complement pair. Conversely, suppose an ultrafilter had a proper extension containing a new member \(A\). Since \(A\notin\mathcal U\), its complement belongs to \(\mathcal U\) and therefore to the extension. The extension would contain the empty intersection, a contradiction. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Maximality here is under inclusion of families of subsets. It does not assert that an ultrafilter contains every other filter; different point ultrafilters already give distinct maximal examples.</p>
+</section>
+
+<section id="ultrafilter-extension" data-kind="theorem">
+  <h2>Every proper filter extends to an ultrafilter</h2>
+  <p>Assuming the axiom of choice, for each filter \(\mathcal F\) on \(X\) there is an ultrafilter \(\mathcal U\supseteq\mathcal F\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Order the proper filters containing \(\mathcal F\) by inclusion. They form a set, since each is a member of \(\mathcal P(\mathcal P(X))\), and this set is nonempty because it contains \(\mathcal F\). For a nonempty chain, take the union of its filters. It contains \(X\) and excludes the empty set. It is upward closed. If \(A,B\) belong to the union, they belong to two filters of the chain; the larger of these filters contains both, hence also \(A\cap B\). Thus the union is a proper filter and an upper bound for the chain. The empty chain has \(\mathcal F\) as an upper bound.</p>
+  <p><a href="axiom-of-choice#zorns-lemma">Zorn’s lemma</a> now supplies a maximal member. Any proper extension would still contain \(\mathcal F\), so it is maximal among all proper filters on \(X\). By <a href="#maximal-filters"></a> it is an ultrafilter. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Combining this with <a href="#generated-filter"></a>, every family with the finite intersection property is contained in an ultrafilter. The use of Zorn’s lemma is the choice assumption in this existence proof.</p>
+</section>
+
+<section id="finite-partitions" data-kind="lemma">
+  <h2>An ultrafilter selects one cell of every finite partition</h2>
+  <p>If finitely many pairwise disjoint subsets partition \(X\), exactly one cell belongs to an ultrafilter \(\mathcal U\) on \(X\). In particular, if a finite set belongs to \(\mathcal U\), some singleton belongs to \(\mathcal U\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Two different cells cannot both belong, because their intersection is empty. If no cell belonged, all their complements would belong, so their finite intersection, the empty set, would belong. This proves the partition statement. If a finite \(A\in\mathcal U\) contained no singleton in \(\mathcal U\), all complements of its singletons would belong; intersecting these finitely many complements would put \(X\setminus A\) in \(\mathcal U\), contradicting \(A\in\mathcal U\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="principal-ultrafilters" data-kind="theorem">
+  <h2>A finite large set forces an ultrafilter to concentrate on one point</h2>
+  <p>For an ultrafilter \(\mathcal U\), the following are equivalent: it contains a finite set; it contains a singleton \(\{x\}\); it equals \(\mathcal U_x\); it is principal.</p>
+  <p class="proof-label">Proof</p>
+  <p>A finite member supplies a singleton by <a href="#finite-partitions"></a>. If \(\{x\}\in\mathcal U\), upward closure puts every set containing \(x\) in \(\mathcal U\). No set omitting \(x\) can belong, because its intersection with \(\{x\}\) is empty. Thus \(\mathcal U=\mathcal U_x\), which is principal. If \(\mathcal U=\mathcal F_S\) is principal, choose \(x\in S\). Then \(\mathcal F_S\subseteq\mathcal U_x\); maximality forces equality, giving a singleton and therefore a finite member. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>It follows that every ultrafilter on a nonempty finite set is a point ultrafilter, since its whole space is a finite member.</p>
+</section>
+
+<section id="nonprincipal-existence" data-kind="theorem">
+  <h2>There are ultrafilters on the natural numbers that contain no finite set</h2>
+  <p>Assuming choice, every infinite set \(X\), and in particular \(\mathbb N\), has a nonprincipal ultrafilter. For ultrafilters on infinite \(X\), nonprincipality is equivalent to containing the cofinite filter.</p>
+  <p class="proof-label">Proof</p>
+  <p>Extend the cofinite filter using <a href="#ultrafilter-extension"></a>. If a finite set belonged to this extension, its cofinite complement would belong too, giving an empty intersection. Therefore the extension has no finite member and is nonprincipal by <a href="#principal-ultrafilters"></a>. Conversely, a nonprincipal ultrafilter has no finite member. Deciding the complement of each finite subset then puts every cofinite subset in it. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This proves existence without selecting a particular nonprincipal ultrafilter. On \(\mathbb N\), such an ultrafilter extends the notion of “all but finitely many” by deciding every other subset as well.</p>
+</section>
+
+<section id="finite-changes" data-kind="lemma">
+  <h2>Finite changes do not affect membership in a nonprincipal ultrafilter</h2>
+  <p>If \(\mathcal U\) is nonprincipal and subsets \(A,B\subseteq X\) differ on only finitely many points, then \(A\in\mathcal U\) exactly when \(B\in\mathcal U\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Let \(D=(A\setminus B)\cup(B\setminus A)\), which is finite. Its complement belongs to \(\mathcal U\) by <a href="#nonprincipal-existence"></a>. If \(A\in\mathcal U\), the intersection \(A\cap(X\setminus D)\) belongs and is contained in \(B\), so \(B\in\mathcal U\). Interchange \(A,B\) for the converse. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="partition-choice-question" data-kind="question">
+  <h2>Can either the even or the odd numbers be declared large?</h2>
+  <p>Must all nonprincipal ultrafilters on \(\mathbb N\) make the same choice between even and odd numbers?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. Every cofinite set meets the infinite set of even numbers, so <a href="#adjoining-one-set"></a> gives a filter containing the cofinite filter and the evens. Extend it to an ultrafilter, which remains nonprincipal. The same construction with the odds gives another nonprincipal ultrafilter. Each decides the even–odd partition, and they decide it differently. A nonprincipal ultrafilter need not regard every infinite set as large.</p></div>
+  </details>
+</section>

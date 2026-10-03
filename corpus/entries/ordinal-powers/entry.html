@@ -1,0 +1,102 @@
+<section id="ordinal-exponentiation" data-kind="definition">
+  <h2>Powers continue multiplication through ordinal stages</h2>
+  <p>The product \(\alpha\cdot\beta\) consists of \(\beta\) successive <a href="ordinal-arithmetic#ordered-products">blocks of type \(\alpha\)</a>. Powers repeat this operation. For a positive ordinal \(\alpha\), <a href="ordinals#transfinite-methods">transfinite recursion</a> defines</p>
+  <div class="math-display">\[
+    \alpha^0=1,\qquad \alpha^{\beta+1}=\alpha^\beta\cdot\alpha,\qquad
+    \alpha^\lambda=\sup_{\beta&lt;\lambda}\alpha^\beta
+    \quad(\lambda\text{ a nonzero limit}).
+  \]</div>
+  <p>At a limit, the powers at earlier stages determine the answer. Set \(0^0=1\) and \(0^\beta=0\) for \(\beta&gt;0\); the displayed limit rule is restricted to positive bases. Induction gives \(1^\beta=1\) for every \(\beta\). Finite powers of finite ordinals agree with the usual natural-number powers.</p>
+  <p>All operations in this entry are <strong>ordinal</strong> operations. A power describes an order, whereas <a href="infinite-cardinal-arithmetic#cardinal-operations">cardinal exponentiation</a> counts functions. Neither interpretation should be substituted for the other.</p>
+</section>
+
+<section id="increasing-powers" data-kind="lemma">
+  <h2>A base greater than one gives strictly increasing powers</h2>
+  <p>If \(\alpha&gt;1\), then \(\alpha^\beta&gt;0\) and \(\beta&lt;\gamma\) implies \(\alpha^\beta&lt;\alpha^\gamma\). At a nonzero limit exponent, the power is a limit ordinal.</p>
+  <p class="proof-label">Proof</p>
+  <p>Induction gives positivity: the initial value is one, a product of positive ordinals is positive, and a limit supremum contains the initial value. For each positive \(p\), <a href="ordinal-arithmetic#multiplication-comparison">strict comparison of block counts</a> gives \(p=p\cdot1&lt;p\cdot\alpha\). Thus each successor power exceeds its predecessor. Induction on \(\gamma\), using this fact at successors and the supremum rule at limits, gives strict increase. At a limit exponent these strictly increasing earlier values have no greatest member, so their supremum is a limit ordinal. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="first-infinite-powers" data-kind="lemma">
+  <h2>Infinite powers can still describe countable orders</h2>
+  <p>For each finite \(m\ge2\), \(m^\omega=\omega\). By contrast, \(\omega^2\) consists of countably many infinite blocks, and \(\omega^\omega=\sup_{n&lt;\omega}\omega^n\) is larger than each \(\omega^n\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The finite natural-number powers \(m^n\) are unbounded among the natural numbers, so their ordinal supremum is \(\omega\). The successor rule gives \(\omega^2=\omega\cdot\omega\); the limit rule and <a href="#increasing-powers"></a> give the assertions about \(\omega^\omega\).</p>
+  <p>Each \(\omega^n\) is countable, by induction using <a href="ordinal-arithmetic#countable-orders">countable products of orders</a>. Their union \(\omega^\omega\) is countable by <a href="infinite-cardinal-arithmetic#countable-unions">countability of countable unions</a>, which uses choice. Thus these strictly different order types all have the same infinite cardinality. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="powers-versus-functions" data-kind="question">
+  <h2>What does two to the omega mean?</h2>
+  <p>Why does ordinal \(2^\omega=\omega\) not contradict the uncountability of all binary sequences?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The ordinal power is the supremum of the finite orders \(2^n\). It has countably many positions. The cardinal power \(2^{\aleph_0}\) counts all functions from \(\mathbb N\) to \(\{0,1\}\), including infinitely supported sequences. That collection is <a href="comparing-sizes#binary-sequences">uncountable</a>. The base and exponent do not specify the meaning of the operation by themselves; the ordinal or cardinal convention matters.</p></div>
+  </details>
+</section>
+
+<section id="powers-dominate-exponents" data-kind="lemma">
+  <h2>The powers of omega eventually exceed any fixed ordinal</h2>
+  <p>For every ordinal \(\gamma\), \(\gamma\le\omega^\gamma\). Consequently, for any \(\alpha\), the exponents satisfying \(\omega^\gamma\le\alpha\) form a set contained in \(\alpha+1\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Use transfinite induction. At zero, \(0\le1\). If \(\gamma\le\omega^\gamma\), strict increase gives \(\gamma+1\le\omega^\gamma+1\le\omega^{\gamma+1}\). At a limit \(\lambda\), take suprema in \(\gamma\le\omega^\gamma\le\omega^\lambda\) for \(\gamma&lt;\lambda\). If \(\omega^\gamma\le\alpha\), this inequality forces \(\gamma\le\alpha\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The inequality can be equality. We do not assume that the exponent of a leading power is always smaller than the ordinal it describes.</p>
+</section>
+
+<section id="leading-power" data-kind="theorem">
+  <h2>Every nonzero ordinal has a largest leading power</h2>
+  <p>For every \(\alpha&gt;0\), there is a unique \(\beta\) with \(\omega^\beta\le\alpha&lt;\omega^{\beta+1}\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Let \(S=\{\gamma:\omega^\gamma\le\alpha\}\). This is a set by <a href="#powers-dominate-exponents"></a>, and it contains zero. Put \(\beta=\sup S\). If \(\beta=0\), it belongs to \(S\). If \(\beta\) is a successor and did not belong to \(S\), its predecessor would bound \(S\), contradicting the supremum. If \(\beta\) is a nonzero limit, each \(\delta&lt;\beta\) lies below some member of \(S\), so \(\omega^\delta\le\alpha\); continuity gives \(\omega^\beta\le\alpha\). Thus \(\beta\) is the greatest member of \(S\). Its successor does not belong to \(S\), giving the upper inequality. Strict increase of powers makes \(\beta\) unique. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="leading-coefficient" data-kind="lemma">
+  <h2>The leading power has a finite coefficient and a smaller remainder</h2>
+  <p>For \(\alpha&gt;0\), take \(\beta\) from <a href="#leading-power"></a>. There are unique \(n\in\mathbb N\), \(n&gt;0\), and \(r&lt;\omega^\beta\) such that</p>
+  <div class="math-display">\[\alpha=\omega^\beta\cdot n+r.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>The successor and product limit rules give \(\omega^{\beta+1}=\omega^\beta\cdot\omega=\sup_{k&lt;\omega}\omega^\beta\cdot k\). Since \(\alpha\) is smaller than this supremum, there is a largest finite \(n\) with \(\omega^\beta\cdot n\le\alpha\); it is positive. <a href="ordinal-arithmetic#initial-segment-remainder">Removing this initial segment</a> gives a unique \(r\) with the displayed equality. If \(r\ge\omega^\beta\), addition comparison would give \(\alpha\ge\omega^\beta\cdot(n+1)\), contradicting maximality. Conversely, every \(r&lt;\omega^\beta\) places the sum in the interval from \(\omega^\beta\cdot n\) to \(\omega^\beta\cdot(n+1)\), excluding its upper endpoint. These disjoint intervals determine \(n\); cancellation of a common left summand determines \(r\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="small-sums" data-kind="lemma">
+  <h2>Terms below a power of omega remain below it when added</h2>
+  <p>If \(\gamma&gt;0\) and \(x,y&lt;\omega^\gamma\), then \(x+y&lt;\omega^\gamma\). In particular, a finite sum of terms \(\omega^{\delta_i}\cdot n_i\), with \(\delta_i&lt;\gamma\) and finite \(n_i\), is below \(\omega^\gamma\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Induct on positive \(\gamma\). If \(\gamma=\delta+1\), choose positive finite \(k,l\) such that \(x&lt;\omega^\delta\cdot k\) and \(y&lt;\omega^\delta\cdot l\), using the supremum over finite block counts. Monotonicity and <a href="ordinal-arithmetic#left-distributivity">left distributivity</a> give \(x+y\le\omega^\delta\cdot(k+l)&lt;\omega^\gamma\). If \(\gamma\) is a nonzero limit, continuity supplies a common positive \(\delta&lt;\gamma\) with both \(x,y&lt;\omega^\delta\); apply the induction hypothesis. Finally, \(\omega^{\delta_i}\cdot n_i&lt;\omega^{\delta_i+1}\le\omega^\gamma\). Repeated use of the first assertion proves the finite-sum assertion, with the empty sum equal to zero. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="cantor-normal-form" data-kind="theorem">
+  <h2>Every nonzero ordinal has a unique Cantor normal form</h2>
+  <p>Every \(\alpha&gt;0\) has exactly one expression</p>
+  <div class="math-display">\[
+    \alpha=\omega^{\beta_0}\cdot n_0+\omega^{\beta_1}\cdot n_1+\cdots+\omega^{\beta_{k-1}}\cdot n_{k-1},
+    \qquad \beta_0&gt;\beta_1&gt;\cdots&gt;\beta_{k-1},
+  \]</div>
+  <p>where \(k\) is a positive finite integer and every coefficient \(n_i\) is a positive finite integer. This is the <strong>Cantor normal form</strong>. Zero has the empty expression.</p>
+  <p class="proof-label">Proof</p>
+  <p>Repeatedly apply <a href="#leading-coefficient"></a> to the nonzero remainder. The next leading exponent is strictly smaller than the preceding exponent, because the remainder is below its leading power. The procedure must stop after finitely many steps: an infinite strictly decreasing sequence of ordinals would have a least member, and its next term would be smaller. The final zero remainder gives the required finite expression.</p>
+  <p>To check uniqueness for <em>any</em> expression of the required shape, its tail after the first term is below \(\omega^{\beta_0}\) by <a href="#small-sums"></a>; if \(\beta_0=0\), there can be no later term and the tail is zero. Hence the whole expression lies between \(\omega^{\beta_0}\cdot n_0\) and \(\omega^{\beta_0}\cdot(n_0+1)\), excluding the upper endpoint. This identifies its leading exponent and coefficient as those of the construction. The unique initial-segment remainder identifies its tail. Repeat this argument until both expressions end; a remaining nonempty tail would be positive. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Positive coefficients are essential: allowing zero would let us insert irrelevant terms and destroy uniqueness.</p>
+</section>
+
+<section id="normal-form-comparison" data-kind="theorem">
+  <h2>Normal forms compare at their first difference</h2>
+  <p>Compare the exponent–coefficient pairs from left to right. At the first difference, the greater exponent gives the greater ordinal; for equal exponents, the greater coefficient gives the greater ordinal. If one list is a proper prefix of the other, the longer list gives the greater ordinal.</p>
+  <p class="proof-label">Proof</p>
+  <p>Cancel the common initial terms using <a href="ordinal-arithmetic#addition-comparison">strictness in the second summand</a>. A remaining expression with leading exponent \(\beta\) is at least \(\omega^\beta\) and below \(\omega^{\beta+1}\). If \(\beta&lt;\gamma\), this upper bound is at most \(\omega^\gamma\), the lower bound of the other expression. With the same exponent, the disjoint coefficient intervals from <a href="#leading-coefficient"></a> determine the comparison. A nonempty remaining tail is positive, which settles the prefix case. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="normal-form-examples" data-kind="question">
+  <h2>How much information does a normal form retain?</h2>
+  <p>Write \(\omega^2+\omega+\omega+5\) in normal form and compare it with \(\omega^2\cdot2\). What does the theorem say about ordinals below \(\omega^\omega\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The normal form is \(\omega^2+\omega\cdot2+5\). It is smaller than \(\omega^2\cdot2\): the leading exponents agree, but the first coefficient is one rather than two. Below \(\omega^\omega\), the leading exponent, and therefore every exponent, is a natural number. These ordinals are exactly the finite expressions \(\omega^m\cdot a_m+\cdots+\omega\cdot a_1+a_0\) with natural coefficients, omitting zero terms. Indeed, each such expression is below \(\omega^{m+1}&lt;\omega^\omega\), and the normal-form theorem gives the converse. The zero polynomial represents zero.</p></div>
+  </details>
+</section>
+
+<section id="absorption-by-powers" data-kind="lemma">
+  <h2>A larger power absorbs a smaller beginning</h2>
+  <p>If \(\gamma&gt;0\) and \(x&lt;\omega^\gamma\), then \(x+\omega^\gamma=\omega^\gamma\). For example, \((\omega^2+\omega\cdot3+7)+\omega^2=\omega^2\cdot2\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The ordinal \(\omega^\gamma\) is a limit. The limit rule for addition gives \(x+\omega^\gamma=\sup_{y&lt;\omega^\gamma}(x+y)\). Every term is below \(\omega^\gamma\) by <a href="#small-sums"></a>, while \(y\le x+y\) gives the reverse bound after taking suprema. For the example, associativity separates the first \(\omega^2\) from its smaller tail; that tail is absorbed by the appended \(\omega^2\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
