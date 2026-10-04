@@ -9,3 +9,7 @@ import Lemmatheca.SetTheory.Ordinals
 import Lemmatheca.SetTheory.Choice
 import Lemmatheca.Entry.OrdinalArithmetic
 import Lemmatheca.Entry.InfiniteCardinalArithmetic
+import Lemmatheca.Entry.OrdinalPowers
+import Lemmatheca.Entry.Cofinality
+import Lemmatheca.Entry.InfiniteSumsAndProducts
+import Lemmatheca.Entry.FiltersAndUltrafilters
