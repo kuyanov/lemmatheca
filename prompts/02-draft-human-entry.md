@@ -51,6 +51,13 @@ request.
    Let the reader generate numbering, navigation, and equation/figure/table labels.
    Use `#block-id` for local references and `entry-id#block-id` across entries. Prefer
    empty local links for generated numbering and meaningful cross-entry link text.
+   Entries may be reordered or moved into separate subareas. Keep exposition and
+   metadata independent of reading-order position and area membership: name and
+   link prerequisites or related topics by stable entry and block IDs. Do not use
+   "the next entry," "the previous entries," or cross-entry claims that something
+   was "introduced earlier." State the conventions needed by this entry locally.
+   Cross-entry links must work across areas; do not embed area paths in them.
+   References to mathematical order or steps within the current proof are fine.
    Use collapsible question answers. Figures and tables need stable IDs and captions
    without hard-coded numbers; images need useful alternative text. Keep Lean names
    and build-process details out of the exposition.

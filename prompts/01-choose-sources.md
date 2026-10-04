@@ -41,6 +41,10 @@ Respect repository instructions and preserve unrelated work.
    existing entries where useful rather than repeating whole explanations, while
    keeping enough context to understand the new entry. Do not expand its scope
    merely to match available Lean lemmas.
+   Treat reading-order placement and area membership as provisional: entries may
+   be reordered or moved into separate subareas. Identify prerequisites by stable
+   entry and block IDs, independently of adjacency or a shared area. Plan named
+   links rather than references to "the previous entry" or "the next entries."
 3. Inspect `corpus/nodes/` and the pinned Lean/mathlib sources for likely reusable
    bindings. Read signatures and relevant definitions, not just names. Flag
    representation differences and missing results without starting formalization.

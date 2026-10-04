@@ -45,6 +45,12 @@ Check the following:
   layouts.
 - Definitions and notation are consistent, prerequisites are introduced or linked,
   and citations accurately support the material.
+- Exposition and metadata remain valid if entries are reordered or moved into
+  separate subareas. Flag references to "the next entry," "previous entries," or
+  material "introduced earlier" in another entry. Require named links using stable
+  entry and block IDs, without assumptions of adjacency, a shared area, or area
+  paths in links. Check that necessary conventions are stated locally. Distinguish
+  these issues from references to mathematical order or steps within a proof.
 - Prose avoids filler, repeated definitions and conclusions, and unnecessary
   meta-commentary while retaining essential hypotheses and logical transitions.
 - The abstract stands on its own for readers new to the topic or who have not read
