@@ -38,8 +38,11 @@ Check the following:
 - Figures match the website's current typography, muted green palette, and panel
   and caption styling, as defined in `app/static/css/site.css` and nearby figures.
   Check the `proof-figure` and `figure-image` wrappers, readable labels and legends,
-  and spacing without overlap or clipping at the displayed size and in relevant
-  narrow layouts.
+  and spacing without overlap or clipping. Always inspect the desktop reader at
+  normal zoom: fonts should be proportionate to the surrounding text, with clear
+  separation between labels, legends, and bottom notes. Flag oversized fonts or
+  cramped spacing even when the figure fits its panel. Also check relevant narrow
+  layouts.
 - Definitions and notation are consistent, prerequisites are introduced or linked,
   and citations accurately support the material.
 - Prose avoids filler, repeated definitions and conclusions, and unnecessary

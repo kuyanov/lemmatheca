@@ -61,6 +61,10 @@ request.
    in `class="figure-image"`, and keep the caption directly inside the figure so
    the reader applies its standard panel and caption styling. Give images intrinsic
    width and height, and make labels and legends readable at the displayed size.
+   Always check typography and spacing in the desktop reader at normal zoom.
+   Keep figure fonts proportionate to the surrounding text, avoiding oversized
+   labels. Leave clear space between labels, legends, and bottom notes. Adjust
+   the figure height when needed to provide that space.
 4. Write `corpus/entries/<entry-id>/entry.html` and entry.json, plus necessary assets.
    Use the author-maintained metadata fields and inspected `based_on` citations from
    [corpus guide](../docs/corpus.md). Choose a primary area and list the ID once, in reading order,
@@ -97,8 +101,10 @@ source edits. A failed build preserves previous results, so it is not a successf
 refresh. Report a blocker in unrelated work without altering that work to bypass it.
 
 Inspect the rendered entry, including equations, references, hidden answers, tables,
-and figures. Check that figure panels and captions match the site, labels do not
-overlap or clip, and diagrams fit the reading column and relevant narrow layouts.
+and figures. Always verify font sizes and spacing in the desktop layout, then
+check relevant narrow layouts. Check that figure panels and captions match the
+site, labels do not overlap or clip, notes have enough separation from nearby
+labels, and diagrams fit the reading column.
 Restart the development server if adding a new assets directory.
 
 ## Deliverable
