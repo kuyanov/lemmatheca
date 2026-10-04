@@ -25,15 +25,6 @@ hints, and Lean sources. Preserve unrelated work and the pinned environment.
 
 ## Work
 
-Check the source-rigor findings and their resolutions for the selected claims,
-especially when following or translating a human proof. If an applicable assessment
-is missing, inspect the relevant source arguments and report errors, gaps, and
-unchecked material before changing affected formalizations. Give precise source
-locations and consequences, and establish a checked repair before relying on a
-defective argument. Continue independent proof work where possible. Distinguish
-proving a result by another route from repairing or translating its source proof;
-a successful Lean proof does not retroactively validate the source argument.
-
 1. Establish which selected proofs are unfinished from the actual sources and
    relevant checks. The verified flag records the last successful build, not a
    live source audit. There is no in-app approval state or hash to consult; take
@@ -65,21 +56,22 @@ a successful Lean proof does not retroactively validate the source argument.
 
 ## Checks
 
-Run from the repository root:
+Check edited proofs with Lean while working. After proof changes, run from the
+repository root:
 
 ```sh
-uv run python app/manage.py validate_corpus
 uv run python app/manage.py build
-uv run python app/manage.py test catalog
 ```
 
-Validation can also run during authoring without Lean or generated results.
 The build checks the whole registry, including transitive axioms, and regenerates
 node verification/signatures/source lines and entry-list summaries. Commit generated
 `corpus/nodes/*.json` and `corpus/entries/*/entry.json` changes with the proofs.
 Leave `corpus/statistics.json` unchanged; automation refreshes it on `main` after
 merging. A plain
 `lake build` is useful while working but does not update this JSON.
+Run `uv run python app/manage.py validate_corpus` if node records, bindings, or
+entry structure also changed. Run relevant catalog tests only if reader or
+build-tooling code changes, or when investigating an integration failure.
 
 Failed compilation or declaration checks leave previous results intact. Treat that
 as a failed refresh, not proof of the current source state. Fix failures in scope
@@ -94,5 +86,3 @@ Return proved node IDs, checks performed, any statement/binding changes needing
 GitHub review, and deviations from the human argument. List remaining selected
 work with concrete reasons. Do not claim complete entry coverage merely because
 the selected proofs are verified when blocks remain unplanned or claims uncovered.
-Include source gaps reported before the proof work, checked repairs, and remaining
-source-rigor concerns.

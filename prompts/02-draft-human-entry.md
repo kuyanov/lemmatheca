@@ -24,11 +24,11 @@ Preserve unrelated work and existing stable IDs when revising an entry.
 
 ## Work
 
-Before writing the draft, inspect the step-1 source-rigor assessment against the
-passages needed for this entry. If it is missing or the scope or sources changed,
-check those passages for mathematical rigor yourself. Check hypotheses, logical
-steps, examples, and nontrivial omissions or cited dependencies. Report identified
-errors, gaps, and unchecked arguments in the task discussion **before drafting**,
+Before writing the draft, check the needed source passages for mathematical rigor.
+Use a supplied step-1 source-rigor assessment where it applies; if it is missing
+or the scope or sources changed, check the passages yourself. Check hypotheses,
+logical steps, examples, and nontrivial omissions or cited dependencies. Report
+identified errors, gaps, and unchecked arguments in the task discussion **before drafting**,
 with precise source locations, affected claims, consequences, and proposed repairs.
 An existing applicable report need not be repeated. Establish a checked repair or
 supporting argument before using an affected claim; do not silently fill a gap or
@@ -93,19 +93,19 @@ request.
 
 ## Checks
 
-Run from the repository root:
+After editing corpus files, run from the repository root:
 
 ```sh
 uv run python app/manage.py validate_corpus
-uv run python app/manage.py build
-uv run python app/manage.py test catalog
 ```
 
-Validation can also run during authoring without Lean or generated results.
-The build uses the existing Lean project and generates `entry.json`'s `formalization`
-summary; do not calculate or edit it by hand. Keep generated JSON changes with the
-source edits. A failed build preserves previous results, so it is not a successful
-refresh. Report a blocker in unrelated work without altering that work to bypass it.
+When adding an entry or changing its block inventory or formal mappings, refresh
+the generated `formalization` summary with
+`uv run python app/manage.py build`. Keep generated JSON changes with the source
+edits; do not calculate summaries by hand. A failed build preserves previous
+results, so report the failed refresh and any unrelated blocker.
+Run relevant catalog tests only when reader or build-tooling code changes, or
+when investigating a rendering or integration failure.
 
 Inspect the rendered entry, including equations, references, hidden answers, tables,
 and figures. Always verify font sizes and spacing in the desktop layout, then

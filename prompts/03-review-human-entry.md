@@ -9,26 +9,20 @@ Independently review the human mathematics and presentation of a Lemmatheca entr
 ## Inputs
 
 - Entry ID (required): the existing entry to review.
-- Review focus or source material (optional): otherwise review the full entry and
-  inspect the sources cited in its metadata.
+- Review focus or source material (optional): otherwise review the full entry.
 
 ## Context
 
 Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
 [app guide](../docs/app.md), and the complete entry, including
-metadata, cited passages, linked prerequisites, figures, proofs, and hidden answers.
+metadata, linked prerequisites, figures, proofs, and hidden answers. Consult cited
+passages as needed to check attribution or resolve ambiguities.
 Judge the current files on their merits rather than relying on a prior summary.
 
 ## Work
 
 Check the following:
 
-- The cited source passages are mathematically rigorous, rather than merely
-  matching the entry. Inspect their hypotheses, arguments, examples, nontrivial
-  omissions, and referenced prerequisites. Check the earlier source-rigor report
-  and any claimed repairs. Report source errors or gaps separately from entry
-  errors, with precise source locations, affected claims, and consequences. Flag
-  missing pre-draft assessments and any arguments that remain unchecked.
 - Claims have the correct hypotheses, quantifiers, domains, codomains, and
   conclusions. Test relevant empty, singleton, boundary, finite, and infinite
   cases. Check both directions of equivalences and the witnesses in examples.
@@ -68,11 +62,11 @@ Check the following:
 
 ## Checks
 
-```sh
-uv run python app/manage.py validate_corpus
-```
-
-This read-only check does not invoke Lean or refresh saved verification data.
+Review the current mathematics and rendered presentation. Inspect cited passages
+where needed to check attribution or resolve an ambiguity in the entry.
+Run `uv run python app/manage.py validate_corpus` only when investigating a
+structural or reference concern. No build or catalog test run is required for
+an ordinary read-only review.
 
 ## Deliverable
 
@@ -80,11 +74,9 @@ Return findings ordered by importance, with file/line or block references, why e
 issue matters, and a concrete correction. Separate mathematical errors from optional
 editorial improvements. State what was checked and any unavailable source or visual
 checks. Include a concise list of revisions needed before formalization.
-Source gaps must be reported before affected drafting revisions or formalizations
-are added; identify which claims still need checked repairs or supporting arguments.
 
 This is a read-only review. Do not rewrite the entry or generated JSON, create
-formal nodes, or run the writing build command. Reader tests may be run to check
-rendering and references. Reviews and decisions belong in the GitHub pull request;
-return the findings here unless posting a review was explicitly requested. There
+formal nodes, or run the writing build command. Reviews and decisions belong in
+the GitHub pull request; return the findings here unless posting a review was
+explicitly requested. There
 is no app approval or draft/final flag to set.

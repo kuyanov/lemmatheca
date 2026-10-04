@@ -23,19 +23,6 @@ sources. Use the single project in formal/ and preserve unrelated work.
 
 ## Work
 
-Before adding formalizations, inspect the source-rigor assessment and relevant
-source passages supporting the entry. If the assessment is missing, incomplete,
-or no longer applies to the current scope, check the needed passages for rigorous
-statements and arguments, including nontrivial omissions and cited prerequisites.
-Report source errors, gaps, and unchecked arguments in the task discussion
-**before creating or changing formal definitions, theorem statements, nodes, or
-bindings**. Give precise source locations, affected claims, consequences, and
-proposed repairs. Do not silently inherit or repair a gap; establish a checked
-repair or supporting argument before formalizing the affected claim. Leave
-unresolved affected work distinguishably unplanned and continue independent work
-where possible. An applicable earlier report need not be repeated. A library
-theorem or successful Lean check does not certify the rigor of the source argument.
-
 1. Inventory definitions and claims in every block, including examples, question
    answers, witnesses, edge cases, and assertions embedded in prose. Make a
    block-to-claims-to-nodes map. Coverage is collective: multiple nodes may cover a
@@ -80,12 +67,12 @@ theorem or successful Lean check does not certify the rigor of the source argume
 
 ## Checks
 
-Run from the repository root:
+After changing node records, block mappings, or Lean declarations, run from the
+repository root:
 
 ```sh
 uv run python app/manage.py validate_corpus
 uv run python app/manage.py build
-uv run python app/manage.py test catalog
 ```
 
 Validation can also run during authoring without Lean or generated results.
@@ -94,6 +81,8 @@ data, and refreshes entry summaries. A theorem using sorry is a valid unfinished
 result; a missing declaration or compile error fails the build and preserves prior
 results. Inspect the resulting signatures and defining source locations. A generated
 target can point to a differently named source origin; judge its actual signature.
+Run relevant catalog tests only if reader or build-tooling code changes, or when
+investigating an integration failure.
 
 ## Deliverable
 
@@ -102,5 +91,3 @@ declarations, representation notes, proof-planning hints, and checks performed.
 Include generated JSON changes and list questions for correspondence review on
 GitHub. Do not claim that passing Lean checks establish correspondence or record
 any approval in the corpus.
-Include the source-rigor findings reported before formalization, checked repairs,
-and unresolved gaps or unchecked material, identifying affected unplanned work.

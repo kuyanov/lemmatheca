@@ -23,13 +23,6 @@ successful build; it is not a live freshness check or evidence of correspondence
 
 ## Work
 
-Inspect the earlier source-rigor assessment and any claimed repairs alongside the
-source passages relevant to the audited claims. Report newly found source errors,
-gaps, or unchecked arguments separately from binding errors, with precise locations
-and consequences. A correct formal binding does not validate the source's proof.
-Identify repairs needed before further affected drafting or formalization changes;
-do not silently resolve them within this read-only audit.
-
 1. Make a coverage table by block: human definitions and claims, covering node IDs,
    specialization or representation bridges, and gaps. Include examples, hidden
    answers, witnesses, prose claims, and relevant boundary cases. Explain empty
@@ -63,11 +56,11 @@ do not silently resolve them within this read-only audit.
 
 ## Checks
 
-```sh
-uv run python app/manage.py validate_corpus
-```
-
-This read-only check does not invoke Lean or refresh saved verification data.
+Inspect the current entry, node records, and Lean declarations. Use focused Lean
+checks when needed to resolve signature or representation questions. Run
+`uv run python app/manage.py validate_corpus` only when investigating a structural
+or binding-reference concern. No build or catalog test run is required for this
+read-only audit.
 
 ## Deliverable
 
@@ -76,8 +69,6 @@ suggested changes, followed by the coverage table and checks performed. Distingu
 incorrect bindings, missing coverage, unstated representation bridges, and optional
 simplifications. Explain any correspondence that needs renewed discussion after a
 proposed statement or description change.
-Include remaining source-rigor concerns and whether they were reported before the
-affected drafting and formalization work.
 
 Keep this audit read-only: do not change bindings, descriptions, generated data, or
 proofs, and do not run the writing build command. Review decisions belong in the

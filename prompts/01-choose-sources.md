@@ -35,8 +35,8 @@ Respect repository instructions and preserve unrelated work.
    gap, and distinguish source defects from uncertainty in your own checking.
    Report every identified error or gap with its source location, affected claim,
    consequence, and a proposed repair or supplementary source. Mark unavailable
-   or unchecked arguments explicitly. Return this assessment before any entry is
-   drafted or formalizations are added; do not silently repair or carry gaps forward.
+   or unchecked arguments explicitly. Return this assessment for use in step 2,
+   before drafting the entry.
 2. Propose a coherent reading unit with clear prerequisites and boundaries. Link
    existing entries where useful rather than repeating whole explanations, while
    keeping enough context to understand the new entry. Do not expand its scope
@@ -55,16 +55,10 @@ Respect repository instructions and preserve unrelated work.
 ## Checks
 
 Verify the proposed entry ID and reading-order placement against the current
-corpus, and check each citation against an inspected source. Run the existing
-corpus's read-only structural check as a baseline:
-
-```sh
-uv run python app/manage.py validate_corpus
-```
-
-Report existing failures without editing unrelated content. Do not run the
-writing build command in this planning step. If Lean sources are unavailable,
-record which reuse candidates could not be checked and complete the source plan.
+corpus, and check each citation against an inspected source. Planning changes no
+corpus files, so it requires no validator, build, or catalog test run. If Lean
+sources are unavailable, record which reuse candidates could not be checked and
+complete the source plan.
 
 ## Deliverable
 

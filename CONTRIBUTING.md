@@ -34,15 +34,19 @@ explicit. This step produces a plan; it does not create content or proofs.
 Check the mathematical rigor of the source passages used, not just their relevance
 or reputation. Inspect hypotheses, arguments, examples, nontrivial omissions, and
 cited prerequisites. Report identified errors or gaps with precise source locations,
-affected claims, consequences, and proposed repairs **before drafting the entry or
-adding formalizations**. Distinguish genuine gaps from valid compressed arguments
+affected claims, consequences, and proposed repairs for use in step 2.
+Distinguish genuine gaps from valid compressed arguments
 and from uncertainty in the check; mark unavailable or unchecked material explicitly.
-Carry this assessment between steps, checking new or changed material when needed.
-Establish a checked repair or supporting argument before using an affected claim;
-report unresolved affected work and continue independent work where possible.
-Source rigor, entry correctness, and Lean verification are separate checks.
 
 ### 2. Draft the human entry
+
+Before drafting, check the needed source passages for mathematical rigor. Use an
+available step-1 assessment where it applies; check the passages yourself if the
+assessment is missing or the scope or sources changed. Report errors, gaps, and
+unchecked arguments before drafting, and establish a checked repair or supporting
+argument before using an affected claim. Report unresolved affected work and
+continue independent work where possible. Later steps review the current entry
+and Lean declarations without requiring this assessment.
 
 Write original exposition in `corpus/entries/<id>/entry.html`, its metadata in
 `entry.json`, and any figures in `assets/`. Include definitions, arguments,
@@ -56,7 +60,8 @@ summary with the build. Human-only entries are supported throughout the pipeline
 
 ### 3. Review the human mathematics and presentation
 
-Read the full entry, including hidden answers and cited material. Check statements,
+Read the full entry, including hidden answers. Consult cited material as needed
+to check attribution or resolve ambiguities. Check statements,
 proofs, examples, prerequisites, notation, citations, references, and the rendered
 layout. Return findings with precise locations, consequences, and suggested
 corrections. Separate errors from optional editorial improvements and state any
@@ -142,7 +147,11 @@ request, or in an explicitly requested report file. They are not corpus metadata
 
 ## Validation and submission
 
-At any stage, run this read-only check from the repository root:
+Choose checks that match the changes. Planning and ordinary read-only reviews
+need no blanket command run; use focused checks to investigate specific concerns.
+After editing corpus files in drafting or formal-node preparation, or changing
+node records, bindings, or entry structure while proving, run this read-only check
+from the repository root:
 
 ```sh
 uv run python app/manage.py validate_corpus
@@ -152,11 +161,11 @@ It needs no Lean installation or prior build, permits unplanned blocks and unbou
 nodes, and checks the shape rather than freshness of generated data. Once Lean
 sources are installed, add `--check-sources` to check source availability.
 
-After changing entry HTML, bindings, or proofs, run:
+After changing Lean declarations, bindings, or proofs, or adding an entry or
+changing its block inventory, refresh generated data with:
 
 ```sh
 uv run python app/manage.py build
-uv run python app/manage.py test catalog
 ```
 
 The build owns node verification, signatures, declaration lines, defining modules,
@@ -168,7 +177,10 @@ Failed compilation or declaration checks write no new results; old flags
 do not establish that the edited sources are verified. Review-only steps inspect
 saved data and report missing or stale results without running the writing build.
 
-For app changes, run the relevant tests and inspect affected pages. Documentation
+For reader or build-tooling code changes, run the relevant tests (for example,
+`uv run python app/manage.py test catalog`) and inspect affected pages. Catalog
+tests can also help investigate rendering or integration failures; routine
+content and proof edits do not require them. Documentation
 changes need link and command checks, not a proof rebuild. Inspect mathematical
 layout, references, hidden answers, and figures when changing reader content.
 [CI](.github/workflows/ci.yml) validates the corpus before installing Lean, checks
