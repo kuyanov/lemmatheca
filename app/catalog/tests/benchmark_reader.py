@@ -18,8 +18,8 @@ PATHS = (
     "/areas/logic-and-foundations/set-theory/",
     "/entries/sets-and-maps/",
     "/entries/ordered-sets/",
-    "/node/set-subset-transitive/",
-    "/api/node/set-subset-transitive/",
+    "/nodes/set-subset-transitive/",
+    "/api/nodes/set-subset-transitive/",
 )
 
 

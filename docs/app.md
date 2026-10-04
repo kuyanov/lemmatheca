@@ -75,9 +75,9 @@ and area URLs still protect filesystem access and return 404 for invalid routes.
 | `/` | Area browsing, corpus counts, and entry/node verification totals |
 | `/areas/<path>/` | Subareas and entries listed for the area |
 | `/entries/<id>/` | Mathematical entry, references, questions, and block badges |
-| `/node/<id>/` | Description, verification, Lean signature, dependencies, and source |
-| `/api/node/` | All node records as JSON |
-| `/api/node/<id>/` | One node record as JSON |
+| `/nodes/<id>/` | Description, verification, Lean signature, dependencies, and source |
+| `/api/nodes/` | All node records as JSON |
+| `/api/nodes/<id>/` | One node record as JSON |
 
 Reader and API routes accept GET and HEAD. There is no separate nodes index page.
 The API adds reader URLs and source paths to the saved node fields. Verification

@@ -8,8 +8,8 @@ from .html import HTML
 
 class ProgressBadgeTests(SimpleTestCase):
     nodes = {
-        "done": {"id": "done", "verified": True, "url": "/node/done/"},
-        "pending": {"id": "pending", "verified": False, "url": "/node/pending/"},
+        "done": {"id": "done", "verified": True, "url": "/nodes/done/"},
+        "pending": {"id": "pending", "verified": False, "url": "/nodes/pending/"},
     }
 
     def test_entry_and_block_badges_display_the_same_progress(self):

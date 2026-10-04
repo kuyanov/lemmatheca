@@ -89,14 +89,16 @@ class ReaderTests(SimpleTestCase):
             for link in map(urlsplit, page.hrefs)))
         for identifier in ("set", "set-subset-transitive", "order-equality"):
             self.assertEqual(self.client.get(
-                f"/node/{identifier}/").status_code, 200)
+                f"/nodes/{identifier}/").status_code, 200)
 
     def test_missing_records_and_read_only_views(self):
-        for url in ["/entries/missing/", "/node/missing/", "/api/node/missing/",
-                    "/areas/set-theory/", "/areas/missing/"]:
+        for url in ["/entries/missing/", "/nodes/missing/", "/api/nodes/missing/",
+                    "/areas/set-theory/", "/areas/missing/",
+                    "/node/set/", "/api/node/", "/api/node/set/"]:
             self.assertEqual(self.client.get(url).status_code, 404)
         for url in ["/", "/areas/logic-and-foundations/", "/entries/sets-and-maps/",
-                    "/node/set/", "/api/node/", "/api/node/set/"]:
+                    "/nodes/set/", "/api/nodes/", "/api/nodes/set/"]:
+            self.assertEqual(self.client.head(url).status_code, 200)
             self.assertEqual(self.client.post(url).status_code, 405)
 
     def test_contextual_navigation_and_question_return(self):
@@ -171,11 +173,13 @@ class ReaderTests(SimpleTestCase):
             self.assertEqual(
                 response.context["node"]["verified"], record["verified"])
             self.assert_source_link(response, record)
-        api = self.client.get(f"/api/node/{identifier}/").json()
+        api = self.client.get(f"/api/nodes/{identifier}/").json()
+        self.assertEqual(api["url"], f"/nodes/{identifier}/")
         self.assertEqual(api["url"], reverse(
             "catalog:node", args=[identifier]))
         self.assertEqual(reverse("catalog:node_detail", args=[
-                         identifier]), f"/api/node/{identifier}/")
+                         identifier]), f"/api/nodes/{identifier}/")
+        self.assertEqual(reverse("catalog:node_list"), "/api/nodes/")
         self.assertIn(api, self.client.get(
             reverse("catalog:node_list")).json()["nodes"])
         self.assertEqual(api["verified"], node["verified"])
@@ -191,17 +195,17 @@ class ReaderTests(SimpleTestCase):
             node = read_json(path)
             with override_settings(CORPUS_DIR=corpus):
                 write_json(path, {**node, "verified": True})
-                verified_page = self.page(self.client.get("/node/set/"))
+                verified_page = self.page(self.client.get("/nodes/set/"))
                 before = add_progress(load_entry(
                     "sets-and-maps"))["formalization"]
                 write_json(path, {**node, "verified": False})
-                response = self.client.get("/node/set/")
+                response = self.client.get("/nodes/set/")
                 self.assert_source_link(response, node)
                 self.assertFalse(response.context["node"]["verified"])
                 self.assertNotEqual(verified_page.root.text,
                                     self.page(response).root.text)
                 self.assertFalse(self.client.get(
-                    "/api/node/set/").json()["verified"])
+                    "/api/nodes/set/").json()["verified"])
                 after = add_progress(load_entry(
                     "sets-and-maps"))["formalization"]
                 self.assertEqual(after["complete"], before["complete"] - 1)
@@ -215,7 +219,7 @@ class ReaderTests(SimpleTestCase):
                                     for record in block["formal_nodes"]))
                 write_json(
                     path, {"id": "set", "description": "A set.", "verified": False})
-                response = self.client.get("/node/set/")
+                response = self.client.get("/nodes/set/")
                 self.assertEqual(response.status_code, 200)
                 self.assertFalse(response.context["node"]["verified"])
                 self.assertIsNone(response.context["node"].get("declaration"))
