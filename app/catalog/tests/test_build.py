@@ -1,7 +1,6 @@
 """Proof result persistence and the build command against an isolated Lean project."""
 
 from io import StringIO
-import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -24,7 +23,7 @@ class ProofResultsTests(SimpleTestCase):
         (self.root / "nodes").mkdir()
         self.path = self.root / "nodes/example.json"
         write_json(self.path, {"id": "example", "module": "Lemmatheca", "declaration": "example",
-                               "axioms": [], "verified": True, "signature": "example : True", "declaration_line": 5})
+                               "verified": True, "signature": "example : True", "declaration_line": 5})
         directory = self.root / "entries/example"
         directory.mkdir(parents=True)
         self.metadata = directory / "entry.json"
@@ -66,11 +65,11 @@ class ProofResultsTests(SimpleTestCase):
         previous = self.path.read_bytes()
         entry_before = self.metadata.read_bytes()
         for output in ("", 'NODE_STATUS {"declaration":"example","verified":"true"}',
-                       'NODE_STATUS []', 'NODE_STATUS {"verified":true,"lean_axioms":[]}',
-                       'NODE_STATUS {"declaration":[],"verified":true,"lean_axioms":[]}',
-                       'NODE_STATUS {"declaration":"example","verified":true,"lean_axioms":[],"axioms":["choice"]}',
-                       'NODE_STATUS {', 'NODE_STATUS {"declaration":"other","verified":true,"lean_axioms":[]}',
-                       'NODE_STATUS {"declaration":"example","verified":true,"lean_axioms":[]}\n' * 2):
+                       'NODE_STATUS []', 'NODE_STATUS {"verified":true}',
+                       'NODE_STATUS {"declaration":[],"verified":true}',
+                       'NODE_STATUS {"declaration":"example","verified":true,"axioms":["choice"]}',
+                       'NODE_STATUS {', 'NODE_STATUS {"declaration":"other","verified":true}',
+                       'NODE_STATUS {"declaration":"example","verified":true}\n' * 2):
             with self.subTest(output=output):
                 with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)), \
                         patch("catalog.proofs.save_results") as save:
@@ -84,7 +83,7 @@ class ProofResultsTests(SimpleTestCase):
         self.statistics.write_text(
             "A malformed snapshot must not affect a proof build.")
         before = self.statistics.read_bytes()
-        output = 'NODE_STATUS {"declaration":"example","verified":false,"lean_axioms":[]}'
+        output = 'NODE_STATUS {"declaration":"example","verified":false}'
         with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
             self.assertEqual(build(self.root, self.root), (0, 1))
         self.assertEqual(self.statistics.read_bytes(), before)
@@ -94,7 +93,7 @@ class ProofResultsTests(SimpleTestCase):
         for verified, label in [(False, "0%"), (True, "100%")]:
             with self.subTest(verified=verified):
                 output = 'NODE_STATUS {"declaration":"example","verified":' + \
-                    str(verified).lower() + ',"lean_axioms":[]}'
+                    str(verified).lower() + '}'
                 with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
                     build(self.root, self.root)
                 entry = read_json(self.metadata)
@@ -116,7 +115,7 @@ class ProofResultsTests(SimpleTestCase):
                        valid_source.replace("</section>", "")):
             with self.subTest(source=source):
                 self.source.write_text(source)
-                output = 'NODE_STATUS {"declaration":"example","verified":false,"lean_axioms":[]}'
+                output = 'NODE_STATUS {"declaration":"example","verified":false}'
                 with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)), \
                         patch("catalog.proofs.save_results") as save_nodes, \
                         patch("catalog.proofs.save_entries") as save_entries:
@@ -136,11 +135,11 @@ class ProofResultsTests(SimpleTestCase):
             entry["reading_time"] = 10
             write_json(self.metadata, entry)
             return subprocess.CompletedProcess(command, 0,
-                                               'NODE_STATUS {"declaration":"example","verified":false,"lean_axioms":[],"module":"Lemmatheca.Examples"}\n')
+                                               'NODE_STATUS {"declaration":"example","verified":false,"module":"Lemmatheca.Examples"}\n')
         with patch("catalog.proofs.subprocess.run", side_effect=run):
             self.assertEqual(build(self.root, self.root), (0, 1))
         self.assertEqual(read_json(self.path), {"id": "example", "module": "Lemmatheca.Examples", "declaration": "example",
-                                                "description": "Updated description.", "axioms": [], "verified": False})
+                                                "description": "Updated description.", "verified": False})
         self.assertEqual(read_json(self.metadata)["reading_time"], 10)
         self.assertEqual(read_json(self.metadata)[
                          "formalization"]["label"], "0%")
@@ -151,7 +150,7 @@ class ProofResultsTests(SimpleTestCase):
             node["declaration"] = "other"
             write_json(self.path, node)
             return subprocess.CompletedProcess(command, 0,
-                                               'NODE_STATUS {"declaration":"example","verified":true,"lean_axioms":[]}\n')
+                                               'NODE_STATUS {"declaration":"example","verified":true}\n')
         with patch("catalog.proofs.subprocess.run", side_effect=run):
             self.assertEqual(build(self.root, self.root), (0, 1))
         node = read_json(self.path)
@@ -161,78 +160,17 @@ class ProofResultsTests(SimpleTestCase):
         self.assertEqual(read_json(self.metadata)[
                          "formalization"]["label"], "0%")
 
-    def test_current_axiom_allowance_is_used_and_preserved_during_build(self):
-        for declared, verified in [(["choice"], True), ([], False)]:
-            with self.subTest(declared=declared):
-                def run(command, **kwargs):
-                    node = read_json(self.path)
-                    node["axioms"] = declared
-                    write_json(self.path, node)
-                    return subprocess.CompletedProcess(command, 0, "NODE_STATUS " + json.dumps({
-                        "declaration": "example", "verified": True,
-                        "lean_axioms": ["Classical.choice"],
-                    }))
-                with patch("catalog.proofs.subprocess.run", side_effect=run):
-                    self.assertEqual(
-                        build(self.root, self.root), (int(verified), 1))
-                node = read_json(self.path)
-                self.assertEqual(node["axioms"], declared)
-                self.assertEqual(node["verified"], verified)
-                self.assertNotIn("lean_axioms", node)
-
-    def test_invalid_axiom_reports_or_metadata_write_nothing(self):
-        before = self.path.read_bytes(), self.metadata.read_bytes()
-        for actual in (None, "Classical.choice", [None], [""], ["Quot.sound", "Quot.sound"]):
-            with self.subTest(actual=actual):
-                output = "NODE_STATUS " + json.dumps({"declaration": "example", "verified": True,
-                                                      "lean_axioms": actual})
-                with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
-                    with self.assertRaisesRegex(ValueError, "axiom result"):
-                        build(self.root, self.root)
-                self.assertEqual(
-                    before, (self.path.read_bytes(), self.metadata.read_bytes()))
-        node = read_json(self.path)
-        del node["axioms"]
-        write_json(self.path, node)
-        with patch("catalog.proofs.subprocess.run") as run:
-            with self.assertRaisesRegex(ValueError, "axioms must be a list"):
-                build(self.root, self.root)
-            run.assert_not_called()
-
-    def test_hint_axiom_mismatch_prevents_all_build_writes(self):
-        node = read_json(self.path)
-        node["dependencies"] = ["prerequisite"]
-        write_json(self.path, node)
-        other = self.root / "nodes/prerequisite.json"
-        write_json(other, {"id": "prerequisite", "axioms": [
-                   "choice"], "verified": False})
-        before = self.path.read_bytes(), other.read_bytes(), self.metadata.read_bytes()
-        for actual in ([], ["Classical.choice"]):
-            with self.subTest(actual=actual):
-                output = 'NODE_STATUS ' + json.dumps({"declaration": "example", "verified": True,
-                                                     "lean_axioms": actual})
-                with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
-                    with self.assertRaisesRegex(ValueError, "example: dependencies require undeclared axioms: choice"):
-                        build(self.root, self.root)
-                self.assertEqual(before, (self.path.read_bytes(), other.read_bytes(),
-                                         self.metadata.read_bytes()))
-        node["axioms"] = ["choice"]
-        write_json(self.path, node)
-        with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
-            self.assertEqual(build(self.root, self.root), (1, 2))
-        self.assertTrue(read_json(self.path)["verified"])
-        self.assertEqual(read_json(self.path)["axioms"], ["choice"])
-
     def test_missing_hint_dependency_still_prevents_all_writes(self):
         node = read_json(self.path)
         node["dependencies"] = ["missing"]
         write_json(self.path, node)
         before = self.path.read_bytes(), self.metadata.read_bytes()
-        output = 'NODE_STATUS {"declaration":"example","verified":true,"lean_axioms":[]}'
+        output = 'NODE_STATUS {"declaration":"example","verified":true}'
         with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
             with self.assertRaisesRegex(ValueError, "example: missing dependency missing"):
                 build(self.root, self.root)
-        self.assertEqual(before, (self.path.read_bytes(), self.metadata.read_bytes()))
+        self.assertEqual(before, (self.path.read_bytes(),
+                         self.metadata.read_bytes()))
 
 
 class LeanBuildTests(SimpleTestCase):
@@ -265,7 +203,7 @@ theorem unsupported : False := assumption
             for name in names:
                 write_json(corpus / "nodes" / f"{name}.json", {
                     "id": name, "module": "Lemmatheca" if name != "unbound" else None,
-                    "declaration": name if name != "unbound" else None, "axioms": [], "verified": False,
+                    "declaration": name if name != "unbound" else None, "verified": False,
                 })
             entry_file = corpus / "entries/example/entry.json"
             entry_file.parent.mkdir(parents=True)
@@ -339,8 +277,8 @@ theorem unsupported : False := assumption
                     (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])
 
 
-class AxiomVerificationTests(SimpleTestCase):
-    def test_direct_inherited_and_type_axioms_against_node_allowances(self):
+class DefaultProofAxiomTests(SimpleTestCase):
+    def test_choice_is_supported_directly_indirectly_and_in_types(self):
         with TemporaryDirectory() as directory:
             formal = Path(directory)
             (formal / "Lemmatheca").mkdir()
@@ -363,50 +301,22 @@ theorem typeOnly (x : chosenType) : x = x := rfl
             (formal / "Lemmatheca.lean").write_text("import Lemmatheca.Examples\n")
             corpus = formal / "corpus"
             (corpus / "nodes").mkdir(parents=True)
-            # A shared declaration is checked against each node's own allowance.
-            cases = [("complete", "complete", [], True),
-                     ("selector", "selector", [], False),
-                     ("selector-allowed", "selector", ["choice"], True),
-                     ("indirect", "indirectSelector", [], False),
-                     ("indirect-allowed",
-                      "indirectSelector", ["choice"], True),
-                     ("type-only", "typeOnly", [], False),
-                     ("type-only-allowed", "typeOnly", ["choice"], True),
-                     ("unfinished", "unfinished", ["choice"], False),
-                     ("unsupported", "unsupported", ["choice"], False),
-                     ("nat", "Nat.succ_ne_zero", [], True),
-                     ("propext", "propext", [], True),
-                     ("quotient", "Quot.sound", [], True)]
-            for identifier, declaration, axioms, verified in cases:
+            cases = [("complete", "complete", True),
+                     ("selector", "selector", True),
+                     ("indirect", "indirectSelector", True),
+                     ("type-only", "typeOnly", True),
+                     ("unfinished", "unfinished", False),
+                     ("unsupported", "unsupported", False),
+                     ("nat", "Nat.succ_ne_zero", True),
+                     ("propext", "propext", True),
+                     ("quotient", "Quot.sound", True)]
+            for identifier, declaration, verified in cases:
                 write_json(corpus / "nodes" / f"{identifier}.json", {
                     "id": identifier, "module": "Lemmatheca.Examples",
-                    "declaration": declaration, "axioms": axioms, "verified": False})
-            self.assertEqual(build(corpus, formal), (7, 12))
-            for identifier, _, axioms, verified in cases:
+                    "declaration": declaration, "verified": False})
+            self.assertEqual(build(corpus, formal), (7, 9))
+            for identifier, _, verified in cases:
                 node = read_json(corpus / "nodes" / f"{identifier}.json")
-                self.assertEqual(node["axioms"], axioms)
                 self.assertEqual(node["verified"], verified)
+                self.assertNotIn("axioms", node)
                 self.assertNotIn("lean_axioms", node)
-
-            # Diagnostic reports still expose the full transitive kernel axioms.
-            path = formal / "Report.lean"
-            declarations = sorted(
-                {declaration for _, declaration, _, _ in cases})
-            path.write_text("import Lemmatheca.Examples\n" + "\n".join(
-                f"#node_status {json.dumps(name)}" for name in declarations) + "\n")
-            report = subprocess.run(["lake", "env", "lean", str(path)],
-                                    cwd=formal, capture_output=True, text=True)
-            self.assertEqual(report.returncode, 0,
-                             report.stdout + report.stderr)
-            results = {result["declaration"]: result for line in report.stdout.splitlines()
-                       if line.startswith("NODE_STATUS ")
-                       for result in [json.loads(line.removeprefix("NODE_STATUS "))]}
-            self.assertEqual(results.keys(), set(declarations))
-            for name in ("selector", "indirectSelector", "typeOnly"):
-                self.assertIn("Classical.choice", results[name]["lean_axioms"])
-            for name, axiom in (("unfinished", "sorryAx"), ("unsupported", "assumption")):
-                self.assertFalse(results[name]["verified"])
-                self.assertIn(axiom, results[name]["lean_axioms"])
-            self.assertEqual(results["propext"]["lean_axioms"], ["propext"])
-            self.assertEqual(results["Quot.sound"]
-                             ["lean_axioms"], ["Quot.sound"])

@@ -79,14 +79,8 @@ implement the required definitions and write theorem statements with `by sorry`
 (the explicit Lean placeholder for an unfinished proof). Preserve existing proofs;
 proving new theorems belongs to step 6.
 
-Create node records with a required `axioms` array of additional assumptions above
-ZF and link them from blocks with `data-formal`. The current convention is
-`axioms: ["choice"]` for every node, including definitions and conditional
-choice-principle statements. We permit ambient AC throughout the mathlib-based
-formal project; verification does not certify weaker axiom strength.
-Every node must include all axioms declared by its direct proof-planning
-dependencies; mismatches fail validation and prevent build writes. Coverage can be
-collective: several nodes can cover one block, and one node can serve many entries.
+Create node records and link them from blocks with `data-formal`. Several nodes
+can cover one block, and one node can serve many entries.
 An empty mapping means there is nothing to formalize; it must not hide unfinished
 work. Record representation choices and specializations for the next reviewer.
 Build to check that bindings exist and generate signatures, source lines, and
@@ -107,8 +101,7 @@ to statements or representations need renewed correspondence review.
 
 ### 6. Prove the selected nodes
 
-Complete the selected unfinished proofs and address unmet axiom allowances in the
-shared `formal/` project. Preserve
+Complete the selected unfinished proofs in the shared `formal/` project. Preserve
 the intended statements, definitions, and node targets; explain any necessary
 correction and identify the correspondence review it requires. Reuse library
 results and unregistered helpers where appropriate. JSON `dependencies` are
@@ -121,7 +114,7 @@ keep attempts, budgets, and measurements outside corpus metadata.
 
 Finish with the build and inspect the selected nodes' saved verification flags.
 A successful compilation alone is insufficient because Lean accepts `sorry`, and
-a complete proof may exceed its node's declared axiom allowance.
+a complete proof may use an unsupported custom axiom.
 Return proved IDs, checks, any statement changes, and concrete remaining work.
 
 ## Prerequisites and scope
@@ -162,28 +155,13 @@ reused as a ZF-only result without a suitable argument. Distinguish mathematical
 implications from claims of non-implication, independence, or relative consistency;
 the latter require their own logical framework and model arguments. Likewise,
 closure properties of a set do not by themselves establish that it is a model of
-an axiom system. Lean verification permits `Classical.choice` only when the node declares
-`"choice"` in its `axioms` array. This is a conservative kernel dependency check,
-not a certificate of provability from first-order ZF or a weaker choice principle.
-Claims about axiom strength need an appropriate formal encoding and assumption
-audit, or an explicit report that this aspect remains outside formal coverage.
-For now, all formal nodes declare `axioms: ["choice"]`, including those covering
-human ZF-only arguments, definitions, and comparisons of choice principles.
-The pinned mathlib development uses ambient Choice through classical reasoning,
-representations, and library proofs; isolating AC is outside ordinary corpus
-verification. This convention permits AC without asserting its mathematical
-necessity. Preserve the human arguments' stated assumptions and review their
-axiom-strength claims separately; an ambient ZFC proof does not establish them.
-Do not introduce narrower node allowances during ordinary authoring unless that
-change is explicitly requested. Corpus validation requires each node's allowance
-to contain every axiom declared by its direct dependencies. A mismatch is an
-error, and the build checks the same rule before writing any results. Actual
-transitive Lean axioms determine verification independently of the hints;
-unfinished or unsupported proofs remain unverified while other nodes are checked.
-Use the checker's [read-only kernel-axiom reports](docs/formal.md#inspecting-kernel-axioms)
-to investigate failing allowances.
-Neither a pass nor a failure of a kernel check establishes mathematical necessity
-or ZF derivability.
+an axiom system.
+
+Formal verification uses classical Lean and mathlib with Choice permitted by
+default. It does not certify derivability from first-order ZF or weaker choice
+principles. Preserve the human arguments' stated assumptions, assess such claims
+separately, and report any limits on formal coverage. See the
+[verification rules](docs/formal.md#build-and-verification).
 
 ## Running one step with an AI agent
 
@@ -230,7 +208,7 @@ It needs no Lean installation or prior build, permits unplanned blocks and unbou
 nodes, and checks the shape rather than freshness of generated data. Once Lean
 sources are installed, add `--check-sources` to check source availability.
 
-After changing Lean declarations, bindings, axiom allowances, or proofs, or adding an entry or
+After changing Lean declarations, bindings, or proofs, or adding an entry or
 changing its block inventory, refresh generated data with:
 
 ```sh

@@ -114,21 +114,10 @@ The Django `build` command compiles Lean and refreshes node verification,
 declaration signatures, source lines, and entry summaries. Home-page statistics
 are updated automatically after pushes to `main`, including newly merged contributors;
 contribution branches do not need to regenerate `corpus/statistics.json`.
-**Verified** means
-the declaration uses no unfinished proof (`sorry`), including through its actual
-dependencies, and uses only the axioms allowed by the node's required `axioms`
-field. For now, every node uses `["choice"]`: formal verification permits ambient
-AC throughout the mathlib-based project, including definitions and implications
-between choice principles. This allowance does not claim that AC is necessary.
-Human arguments may establish ZF-only results, but a Verified badge does not
-certify that axiom strength. Node pages display the formal allowance.
-A build can succeed with unfinished proofs
-or unmet axiom allowances marked **Not verified**, while checking all other nodes.
-`validate_corpus` fails if a node omits an axiom declared by a direct dependency.
-The build rejects the same mismatch before saving results; verification also
-checks each node's actual transitive Lean axioms independently of these hints.
-These kernel checks do not establish derivability from first-order ZF. A compilation
-or declaration-check failure leaves previous saved results intact. See the
+**Verified** means the declaration and its Lean dependencies contain no unfinished
+proofs (`sorry`) and use only the default axioms: `propext`, `Classical.choice`, and
+`Quot.sound`. Unfinished or unsupported proofs are marked **Not verified** without
+preventing the build from checking the remaining nodes. See the
 [verification rules](docs/formal.md#build-and-verification).
 
 ### Run the reader
@@ -140,7 +129,7 @@ uv run python app/manage.py runserver
 Open <http://127.0.0.1:8000/>. Browse an area to open an entry, then use its
 formalization badges to inspect nodes and their Lean sources. Verification badges
 reflect the last successful build; requests do not run Lean. After changing
-content mappings, node bindings, axiom allowances, or proofs, rerun `build` and
+content mappings, node bindings, or proofs, rerun `build` and
 include the generated JSON changes.
 Stop the development server with Ctrl+C.
 

@@ -11,7 +11,6 @@ from django.core.management import get_commands
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 
-from catalog.axioms import AXIOM_LABELS
 from catalog.content import add_progress, load_entry, next_entry
 from catalog.entry_files import read_area_entries, read_entry_metadata
 from catalog.files import read_json, write_json
@@ -245,18 +244,15 @@ class ReaderTests(SimpleTestCase):
                 self.assertIsNone(response.context["node"].get("declaration"))
                 self.assertIsNone(response.context["node"]["source"])
 
-    def test_node_pages_and_api_show_declared_additional_axioms(self):
+    def test_node_pages_and_api_have_no_axiom_metadata(self):
         source = (settings.REPOSITORY_DIR / "app/templates/catalog/node.html").read_text()
         renamed = re.sub(r"(<h2\b[^>]*>).*?(</h2>)",
                          r"\1Renamed <em>section</em> heading\2", source, flags=re.DOTALL)
         with TemporaryDirectory() as directory:
             corpus = Path(directory)
             (corpus / "nodes").mkdir()
-            cases = [("narrow-allowance", []), ("choice-allowance", ["choice"])]
-            for identifier, axioms in cases:
-                write_json(corpus / "nodes" / f"{identifier}.json",
-                           {"id": identifier, "description": "An unbound example.",
-                            "axioms": axioms, "verified": False})
+            write_json(corpus / "nodes/example.json",
+                       {"id": "example", "description": "An unbound example.", "verified": False})
             for renamed_headings in (False, True):
                 template = deepcopy(settings.TEMPLATES[0])
                 template["APP_DIRS"] = False
@@ -266,20 +262,16 @@ class ReaderTests(SimpleTestCase):
                     "django.template.loaders.filesystem.Loader",
                     "django.template.loaders.app_directories.Loader",
                 ]
-                with override_settings(CORPUS_DIR=corpus, TEMPLATES=[template]):
-                    for identifier, axioms in cases:
-                        with self.subTest(identifier=identifier, renamed_headings=renamed_headings):
-                            response = self.client.get(f"/nodes/{identifier}/")
-                            page = self.page(response)
-                            section = self.assert_labelled_section(page, "axioms-title")
-                            values = page.find_all("p", within=section)
-                            self.assertEqual(len(values), 1)
-                            self.assertIn("ZF", values[0].text)
-                            labels = [AXIOM_LABELS[axiom] for axiom in axioms]
-                            self.assertEqual(response.context["axiom_labels"], labels)
-                            for axiom, label in AXIOM_LABELS.items():
-                                self.assertEqual(label in values[0].text, axiom in axioms)
-                            self.assertEqual(self.client.get(f"/api/nodes/{identifier}/").json()["axioms"], axioms)
+                with self.subTest(renamed_headings=renamed_headings), \
+                        override_settings(CORPUS_DIR=corpus, TEMPLATES=[template]):
+                    response = self.client.get("/nodes/example/")
+                    page = self.page(response)
+                    self.assertNotIn("axioms-title", page.ids)
+                    self.assertNotIn("axioms", response.context["node"])
+                    self.assertNotIn("axioms", self.client.get("/api/nodes/example/").json())
+                    nodes = self.client.get("/api/nodes/").json()["nodes"]
+                    self.assertEqual([node["id"] for node in nodes], ["example"])
+                    self.assertNotIn("axioms", nodes[0])
 
     def test_corpus_has_only_verification_status_and_no_review_command(self):
         self.assertNotIn("review", get_commands())

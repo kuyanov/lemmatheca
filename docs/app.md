@@ -19,7 +19,7 @@ uv run python app/manage.py runserver
 
 The build assumes the pinned Lean environment is installed. It updates node
 verification and precomputes entry-list badges. Run it after adding an entry or
-changing its block inventory, formal mappings, node bindings, axiom allowances,
+changing its block inventory, formal mappings, node bindings,
 or Lean code, and include the generated JSON in the change.
 See the [corpus guide](corpus.md) and [Lean guide](formal.md).
 
@@ -42,7 +42,6 @@ to `app/`:
 | `catalog/content.py` | Reader data, navigation, and block badges |
 | `catalog/sources.py`, `catalog/equations.py` | Trusted HTML parsing, references, equation labels, and rendering |
 | `catalog/progress.py` | Shared entry/block verification summaries |
-| `catalog/axioms.py` | Supported axiom allowances, required dependency inheritance, and per-node kernel-axiom checks |
 | `catalog/proofs.py` | Lean build, declaration checks, and entry-summary generation |
 | `catalog/statistics.py` | Saved-metadata totals, count history, and Git backfill; direct snapshot read for the home page |
 | `catalog/validation.py` | Offline metadata, HTML, reference, and hierarchy validation |
@@ -77,7 +76,7 @@ and area URLs still protect filesystem access and return 404 for invalid routes.
 | `/` | Area browsing, corpus counts, and entry/node verification totals |
 | `/areas/<path>/` | Subareas and entries listed for the area |
 | `/entries/<id>/` | Mathematical entry, references, questions, and block badges |
-| `/nodes/<id>/` | Description, declared axioms, verification, Lean signature, dependencies, and source |
+| `/nodes/<id>/` | Description, verification, Lean signature, dependencies, and source |
 | `/api/nodes/` | All node records as JSON |
 | `/api/nodes/<id>/` | One node record as JSON |
 
@@ -85,8 +84,8 @@ Reader and API routes accept GET and HEAD. There is no separate nodes index page
 The API adds reader URLs and source paths to the saved node fields. Verification
 comes from the saved `verified` flag, not a live proof check or GitHub review state.
 
-Node pages display the node's declared axioms above ZF, render plain-text descriptions
-with math, escape the Lean source, and link declaration lines into the local source
+Node pages render plain-text descriptions with math, escape the Lean source,
+and link declaration lines into the local source
 browser. The server is expected to
 have project, dependency, and pinned toolchain sources installed; there is no
 upstream-source fallback. Login is a presentation placeholder; the contribution
@@ -170,8 +169,9 @@ copy, icons, whitespace, and attribute ordering; use the test HTML helper when
 checking rendered links or structure. Locate labelled sections using stable
 `aria-labelledby` relationships and require nonempty headings without fixing their
 wording. Check displayed data within the relevant section, using response context
-or corpus records for expected values. The axioms display test uses isolated
-allowance fixtures and exercises renamed headings with an in-memory template.
+or corpus records for expected values. Node-page/API tests check that axiom
+metadata and its page section are absent, using an isolated fixture and renamed
+headings with an in-memory template.
 Verification expectations should come from
 controlled fixtures or saved node data, not the corpus's current completion rate.
 

@@ -6,7 +6,7 @@ Start with the [project overview and setup](../README.md), then follow
 | Guide | Contents |
 | --- | --- |
 | [Corpus](corpus.md) | Entry metadata, HTML, references, assets, block-to-node mappings, taxonomy, and validation |
-| [Formalization](formal.md) | Node records, declared axioms, Lean bindings, proof planning, verification, and generated results |
+| [Formalization](formal.md) | Node records, Lean bindings, proof planning, verification, and generated results |
 | [Web app](app.md) | Architecture, routes, local reads, tests, benchmarks, deployment, and scaling |
 | [Vendor assets](vendor.md) | Bundled KaTeX provenance, license, and update procedure |
 | [Contribution workflow](../CONTRIBUTING.md) | The six authoring stages and links to their executable Markdown prompts |
@@ -24,10 +24,6 @@ add them when suitable entries become available. Substantial missing prerequisit
 must instead be developed, or the dependent material narrowed or deferred; merely
 recording them does not make an entry ready.
 
-Every formal node currently declares `axioms: ["choice"]`, permitting ambient AC
-throughout the mathlib-based project. Verification checks proof completeness and
-supported kernel axioms; it does not certify the axiom strength of a human ZF-only
-argument or a comparison of choice principles. Unfinished or unsupported proofs
-remain unverified while the build processes the rest. Dependency-allowance
-mismatches fail corpus validation and prevent build writes. See the
-[axiom contract](formal.md#formal-nodes).
+Formal verification uses classical Lean with Choice permitted by default. See the
+[verification rules](formal.md#build-and-verification) for the supported axioms and
+badge criteria.

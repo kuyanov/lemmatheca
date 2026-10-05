@@ -49,10 +49,8 @@ Check the following:
   recommend concrete entry titles, following the
   [scope guidance](../CONTRIBUTING.md#prerequisites-and-scope). Check claims about
   axiom strength separately from ordinary implications and set-closure properties.
-  All formal nodes currently permit ambient AC, so their allowances and Verified
-  badges do not certify a human ZF-only proof or a comparison of weaker principles.
-  Review those arguments separately; an actual selection argument must be
-  justified by its stated mathematical axioms.
+  Review these arguments under their stated axioms; Verified badges do not
+  establish axiom strength.
 - Exposition and metadata remain valid if entries are reordered or moved into
   separate subareas. Flag references to "the next entry," "previous entries," or
   material "introduced earlier" in another entry. Require named links using stable

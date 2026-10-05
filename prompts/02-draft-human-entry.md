@@ -59,14 +59,12 @@ request.
    State domains, codomains, hypotheses, quantifiers, and conventions where they
    matter. Include useful examples, counterexamples, edge cases, and answers to
    questions. Distinguish definitions, claims, explanations, and proofs.
-   State the background axioms when their strength matters. Formal nodes currently
-   all use `axioms: ["choice"]`; this permits ambient AC in Lean and does not
-   determine which axioms the human argument needs. Check reused human arguments
-   and distinguish an assumed principle from a proposition merely
-   being defined or used as an explicit premise. A proof using full Choice must
-   not be presented as ZF-only. Prove implications
-   with the stated assumptions; do not infer strict weakness or independence
-   merely from them. Defer model-theoretic or topological applications when their
+   State the background axioms when their strength matters and check that reused
+   arguments respect them. Distinguish definitions, explicit premises, and
+   assertions of a principle. Proving an implication does not establish strict
+   weakness or independence. Follow the
+   [assumption guidance](../CONTRIBUTING.md#prerequisites-and-scope).
+   Defer model-theoretic or topological applications when their
    substantial prerequisites are missing, naming the needed entries in the handoff.
 2. Use concise prose without filler, repeated conclusions, or unnecessary narration.
    Introduce notation once and link existing prerequisites. Preserve the hypotheses

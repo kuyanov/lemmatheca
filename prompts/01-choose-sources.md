@@ -51,11 +51,9 @@ Respect repository instructions and preserve unrelated work.
    propose useful future links in the handoff. A missing link alone is not a proof
    gap. Do not plan major dependencies on substantial theory missing from the corpus.
    Map the needed results to current entry/block IDs and inspect their assumptions.
-   Identify any extra axioms above ZF needed by the planned human arguments.
-   All formal nodes currently permit ambient AC; their allowances and Verified
-   badges do not establish the axiom strength of a human ZF-only argument.
-   Check the mathematical arguments themselves before reusing a result under
-   weaker assumptions, and identify any axiom-strength claim outside formal coverage.
+   Identify the axioms needed by the planned human arguments. Check arguments
+   before reusing results under weaker assumptions; a Verified badge does not
+   establish axiom strength.
    Separate ready human prerequisites, formal readiness, short lemmas to develop
    locally, and missing substantial theories. For a missing theory, recommend the
    area and concrete entry titles to start, identify the affected claims, and

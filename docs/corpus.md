@@ -61,7 +61,7 @@ The build generates an additional `formalization` object containing the counts,
 status, percentage when applicable, label, and description for the entry-list badge.
 Do not edit it by hand. Area pages read only this metadata, without parsing entry
 HTML or loading nodes. Rerun `uv run python app/manage.py build` after changing HTML,
-bindings, axiom allowances, or proofs and commit the refreshed entry and node JSON. Failed checks or
+bindings, or proofs and commit the refreshed entry and node JSON. Failed checks or
 invalid entry summaries leave the previous generated data intact.
 
 The [statistics workflow](../.github/workflows/statistics.yml) writes
@@ -176,19 +176,15 @@ Badges count distinct verified nodes, so shared nodes count once per entry. With
 all blocks mapped, they display the verified proportion, or N/A if every mapping
 is empty. Wholly unplanned entries display Not started; partly unplanned entries
 display Partial. These are formalization summaries, not GitHub review decisions.
-Node pages display the declared additional axioms above ZF, together with Verified
-or Not verified.
+Node pages display Verified or Not verified, the mathematical description, Lean
+declaration, dependencies, and source. There is no axiom section.
 
 The [Lean guide](formal.md#formal-nodes) defines node records, descriptions,
 bindings, and the distinction between proof-planning hints and actual Lean dependencies.
-Every node, including an unbound one, requires an `axioms` array. The current
-convention is `["choice"]` everywhere, permitting ambient AC in the mathlib-based
-formal project without asserting that AC is mathematically necessary. A node's
-allowance must include every axiom declared by its direct dependencies; mismatches
-fail validation and prevent build writes. Verification compares actual Lean
-axioms against this authored allowance, which the build preserves. Human ZF-only
-arguments and claims about weaker choice principles need separate assessment;
-the Verified badge does not certify their axiom strength.
+Node records have no axiom field. Formal verification permits `propext`,
+`Classical.choice`, and `Quot.sound` by default, without asserting their mathematical
+necessity. Human ZF-only arguments and claims about weaker choice principles need
+separate assessment; the Verified badge does not certify their axiom strength.
 
 ## Authoring and checks
 
@@ -207,15 +203,10 @@ The validator checks the complete corpus without rendering HTML, running Lean, o
 writing files. It reports the first failure with its file path. It validates
 metadata types and IDs, citations, HTML structure, anchors and equations, local
 assets, cross-entry block links, formal bindings, node dependency references and
-cycles, supported axiom identifiers and dependency inheritance, area parents and
+cycles, area parents and
 cycles, and the primary-area reading index. Entry links
 may be cyclic; node dependency hints and area parents may not. Deeply nested HTML
 is rejected before it can exhaust the reader's recursive renderer.
-
-Dependency-allowance mismatches are errors. The diagnostic identifies a source
-node, each missing axiom, and the direct prerequisites declaring it. Direct-edge
-checks enforce inheritance along longer chains. Verification independently checks
-the actual transitive Lean axioms against each node's own allowance.
 
 Missing `data-formal`, unbound nodes, and absent generated summaries/signatures are
 valid. Existing generated data is checked for shape, not freshness, so this command
@@ -227,7 +218,7 @@ module. This option needs installed sources but still does not invoke Lean.
 Use `--corpus <directory>` to check a separate corpus.
 
 After adding an entry or changing its block inventory, formal mappings, node
-bindings, axiom allowances, or Lean declarations and proofs, refresh generated data:
+bindings, or Lean declarations and proofs, refresh generated data:
 
 ```sh
 uv run python app/manage.py build
