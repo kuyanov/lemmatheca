@@ -110,7 +110,7 @@ The Django `build` command compiles Lean and refreshes node verification,
 declaration signatures, source lines, and entry summaries. Home-page statistics
 are updated automatically after pushes to `main`, including newly merged contributors;
 contribution branches do not need to regenerate `corpus/statistics.json`.
-**Verified** means the declaration contains no unfinished proofs (`sorry`) and use only the default axioms: `propext`, `Classical.choice`, and
+**Verified** means the declaration and its dependencies contain no unfinished proofs (`sorry`) and use only the default axioms: `propext`, `Classical.choice`, and
 `Quot.sound`. Unfinished or unsupported proofs are marked **Not verified** without
 preventing the build from checking the remaining nodes. See the
 [verification rules](docs/formal.md#build-and-verification).

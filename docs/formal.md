@@ -66,7 +66,7 @@ Keep useful prerequisites without cycles or their transitive closure.
 A listed hint's verification flag does not determine the node's flag. Lean's
 actual use of an unfinished declaration does affect verification, even if that
 declaration is not listed as a hint. Validation checks dependency references and
-cycles, without per-node axiom inheritance.
+cycles.
 
 Put local modules under `formal/Lemmatheca/` and import them from
 `formal/Lemmatheca.lean`.
@@ -145,8 +145,7 @@ LEAN
 Replace the declaration name and import its module if it is not included in
 `Lemmatheca`. Lean's `#print axioms` reports actual kernel dependencies;
 `#node_status` reports verification, the signature, and source information.
-Neither command adds an axiom field to node JSON. Choice is always permitted by
-the proof checker. These kernel checks do not establish mathematical necessity
+Choice is always permitted by the proof checker. These kernel checks do not establish mathematical necessity
 or derivability from first-order ZF; classical logic and library representations
 can introduce `Classical.choice` independently of a human selection argument.
 

@@ -1,0 +1,105 @@
+<section id="relations-as-membership" data-kind="definition">
+  <h2>When an abstract relation can become membership</h2>
+  <p>Suppose points are linked by a relation \(R\), with \(b\,R\,a\) meaning that \(b\) is a predecessor of \(a\). Can we replace each point by a set so that these links become exactly membership links? The <strong>Mostowski collapse</strong> answers yes when the relation is well-founded and different points have different predecessor sets.</p>
+  <p>Throughout, the carrier \(A\) and relation \(R\subseteq A\times A\) are sets. We work in ZF without assuming Choice, using <a href="well-ordered-sets#well-founded-induction">well-founded induction</a>, <a href="axiomatic-set-theory#replacement">Replacement</a>, and <a href="ordinals#transitive-sets">transitive sets</a>. We develop recursion on \(R\) locally; \(R\) need not be a well-order, a partial order, or even a transitive relation.</p>
+</section>
+
+<section id="well-founded-and-extensional" data-kind="definition">
+  <h2>The two hypotheses describe predecessors</h2>
+  <p>Write \(\operatorname{pred}_R(a)=\{b\in A:b\,R\,a\}\). The relation is <strong>well-founded</strong> if every nonempty subset \(B\subseteq A\) has an \(R\)-minimal point: some \(a\in B\) with no \(b\in B\) satisfying \(b\,R\,a\). It is <strong>extensional</strong> if</p>
+  <div class="math-display">\[ \operatorname{pred}_R(a)=\operatorname{pred}_R(b)\quad\Longrightarrow\quad a=b. \]</div>
+  <p>Well-foundedness supports induction from predecessors. Extensionality says that predecessor sets distinguish the points. For membership on a transitive set, Foundation gives well-foundedness and Extensionality gives the second property, since all members of every point lie in the carrier.</p>
+  <p>The empty carrier satisfies both conditions. A finite relation with no directed cycles is well-founded: if a nonempty subset had no minimal point, repeatedly following a predecessor within it for more steps than its finite size would repeat a point and produce a cycle. This finite argument needs no infinite sequence of choices.</p>
+</section>
+
+<section id="downward-closed-domains" data-kind="definition">
+  <h2>Partial definitions must include all predecessors</h2>
+  <p>A subset \(D\subseteq A\) is <strong>downward closed</strong> under \(R\) if \(a\in D\) implies \(\operatorname{pred}_R(a)\subseteq D\). For each \(a\in A\), let \(D_a\) be the intersection of all downward-closed subsets containing \(a\). This is a set: the family is a nonempty subfamily of \(\mathcal P(A)\), since it contains \(A\) itself.</p>
+  <p>Intersections of downward-closed sets are downward closed. Thus \(D_a\) is the smallest such domain containing \(a\). If \(a\in D\) and \(D\) is downward closed, then \(D_a\subseteq D\). These domains let us collect uniquely specified local solutions instead of choosing arbitrary partial solutions.</p>
+</section>
+
+<section id="well-founded-set-valued-recursion" data-kind="theorem">
+  <h2>A well-founded relation supports set-valued recursion</h2>
+  <p>Let \(R\) be well-founded on the set \(A\). Suppose a formula with fixed set parameters specifies exactly one set \(H(a,h)\) for each \(a\in A\) and each set function \(h\) with domain \(\operatorname{pred}_R(a)\). There is a unique set function \(F\) on \(A\) such that</p>
+  <div class="math-display">\[ F(a)=H\bigl(a,F\mathbin{\upharpoonright}\operatorname{pred}_R(a)\bigr)\qquad(a\in A). \label{eq:relation-recursion} \]</div>
+  <p>No fixed set containing all possible outputs is assumed. The rule reads the function on the immediate predecessors, not just the unordered collection of its values.</p>
+  <p class="proof-label">Proof</p>
+  <p>Call a function <em>good</em> if its domain is a downward-closed subset of \(A\) and it obeys \eqref{eq:relation-recursion} there. Any two good functions agree on the intersection of their domains. Otherwise the set of disagreements has an \(R\)-minimal point \(a\). Every predecessor of \(a\) belongs to both domains and is an agreement point. The two input functions to \(H\) are therefore equal, forcing agreement at \(a\) too.</p>
+  <p>We prove by well-founded induction that each \(a\in A\) belongs to the domain of a good function. Suppose this is true for all \(b\,R\,a\). A good function containing \(b\) restricts to a good function on \(D_b\), and compatibility makes this restriction unique. Denote it \(g_b\). Replacement collects the uniquely specified graphs \(g_b\) as \(b\) ranges over \(\operatorname{pred}_R(a)\).</p>
+  <p>Their union \(g\) is a good function, since the graphs agree on overlaps. Its domain \(D\) is downward closed and includes all predecessors of \(a\). If \(a\in D\), it already gives the desired local solution. Otherwise extend it by the value \(H(a,g\mathbin{\upharpoonright}\operatorname{pred}_R(a))\). The enlarged domain \(D\cup\{a\}\) is downward closed. No old point has \(a\) as a predecessor, since downward closure would then force \(a\in D\); thus none of the old equations changes. This is a good function containing \(a\), completing the induction.</p>
+  <p>Now the unique good function on \(D_a\) exists for every \(a\in A\). Replacement collects all these graphs, and their compatible union has domain \(A\) and satisfies the rule. Compatibility proves uniqueness. For \(A=\varnothing\), this union is the empty function. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The use of Replacement is essential to this argument: uniqueness lets us collect one local function for each index without invoking Choice. The theorem extends <a href="well-ordered-sets#well-order-recursion">fixed-value recursion on well-orders</a> in both its relation and its possible outputs.</p>
+</section>
+
+<section id="collapse-map" data-kind="definition">
+  <h2>Replace each point by the sets representing its predecessors</h2>
+  <p>For a well-founded relation \(R\) on \(A\), define the <strong>collapse map</strong> \(\pi\) by</p>
+  <div class="math-display">\[ \pi(a)=\{\pi(b):b\,R\,a\}. \label{eq:collapse} \]</div>
+  <p>Apply <a href="#well-founded-set-valued-recursion"></a> with \(H(a,h)=\operatorname{ran}(h)\). The output is a set for every allowed history, so \(\pi\) exists uniquely as a set function on \(A\). Its image \(M=\{\pi(a):a\in A\}\) is a set by Replacement. We regard \(\pi\) as a surjection \(A\to M\).</p>
+  <p>A point with no predecessors becomes \(\varnothing\). If its only predecessor has already become \(\varnothing\), it becomes \(\{\varnothing\}\). This rule exists even when \(R\) is not extensional; in that case distinct points may collapse to the same set.</p>
+</section>
+
+<section id="transitive-image" data-kind="lemma">
+  <h2>The image is transitive and preserves every relation link</h2>
+  <p>The set \(M\) is transitive, and \(b\,R\,a\) implies \(\pi(b)\in\pi(a)\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The implication follows directly from \eqref{eq:collapse}. For transitivity, if \(u\in v\in M\), write \(v=\pi(a)\). The same equation supplies \(b\,R\,a\) with \(u=\pi(b)\), so \(u\in M\). Thus every member of every element of \(M\) lies in \(M\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Reflection of a link needs more: from \(\pi(b)\in\pi(a)\) we get some predecessor \(c\,R\,a\) with \(\pi(c)=\pi(b)\). We may conclude \(c=b\) only after proving injectivity.</p>
+</section>
+
+<section id="collapse-injective" data-kind="theorem">
+  <h2>Extensionality prevents different points from merging</h2>
+  <p>If \(R\) is also extensional, then \(\pi\) is injective.</p>
+  <p class="proof-label">Proof</p>
+  <p>Use well-founded induction on \(a\) to prove the statement \(P(a)\): for <em>every</em> \(b\in A\), equality \(\pi(a)=\pi(b)\) implies \(a=b\). Assume \(P(c)\) for all \(c\,R\,a\), and suppose \(\pi(a)=\pi(b)\).</p>
+  <p>If \(c\,R\,a\), then \(\pi(c)\in\pi(b)\), so some \(d\,R\,b\) satisfies \(\pi(c)=\pi(d)\). The induction hypothesis at \(c\) gives \(c=d\). Thus every predecessor of \(a\) is a predecessor of \(b\). Conversely, if \(d\,R\,b\), equality of the images supplies \(c\,R\,a\) with \(\pi(d)=\pi(c)\); the same hypothesis at \(c\) gives \(d=c\). The predecessor sets are equal. Extensionality gives \(a=b\), proving \(P(a)\). Induction completes the proof. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The universal quantifier over \(b\) is important: the induction hypothesis at a predecessor of \(a\) can compare it with any point, even one unrelated to \(a\).</p>
+</section>
+
+<section id="mostowski-collapse-theorem" data-kind="theorem">
+  <h2>Existence and uniqueness of the transitive representation</h2>
+  <p>If \(R\) is a well-founded extensional relation on a set \(A\), there is a unique transitive set \(M\) and unique bijection \(\pi:A\to M\) such that</p>
+  <div class="math-display">\[ b\,R\,a\quad\Longleftrightarrow\quad\pi(b)\in\pi(a). \]</div>
+  <p>This is the <strong>Mostowski collapse theorem</strong>.</p>
+  <p class="proof-label">Proof</p>
+  <p>The constructed map is surjective onto its image, and <a href="#collapse-injective"></a> proves injectivity. Transitivity and preservation were proved in <a href="#transitive-image"></a>. For reflection, if \(\pi(b)\in\pi(a)\), the recursion equation gives a predecessor \(c\,R\,a\) with \(\pi(c)=\pi(b)\). Injectivity gives \(c=b\).</p>
+  <p>For uniqueness, suppose \(\sigma:A\to N\) is another such bijection, with \(N\) transitive. Every member \(u\) of \(\sigma(a)\) lies in \(N\), so surjectivity gives \(u=\sigma(b)\) for some \(b\in A\). Reflection then gives \(b\,R\,a\). Preservation gives the reverse inclusion, proving</p>
+  <div class="math-display">\[ \sigma(a)=\{\sigma(b):b\,R\,a\}. \]</div>
+  <p>Thus \(\sigma\) satisfies the same recursion as \(\pi\). Uniqueness in <a href="#well-founded-set-valued-recursion"></a> gives \(\sigma=\pi\), and their images give \(N=M\). The empty carrier collapses to the empty set by the empty function. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="finite-collapse-example" data-kind="lemma">
+  <h2>A collapse need not produce an ordinal</h2>
+  <p>Let \(A=\{p,q,r\}\), with distinct points, and let \(R\) consist exactly of \(p\,R\,q\) and \(q\,R\,r\). The predecessor sets are \(\varnothing\), \(\{p\}\), and \(\{q\}\), so the relation is extensional. Assign heights \(0,1,2\) to \(p,q,r\), respectively. Moving to a predecessor strictly lowers height, which <a href="foundation-and-rank#ordinal-height-and-well-foundedness">certifies well-foundedness</a>.</p>
+  <div class="math-display">\[ \pi(p)=0,\qquad\pi(q)=\{0\},\qquad\pi(r)=\{\{0\}\},\qquad M=\{0,\{0\},\{\{0\}\}\}. \]</div>
+  <p>The image \(M\) is transitive, but it is not an ordinal: membership on \(M\) is not a transitive relation. We have \(0\in\{0\}\in\{\{0\}\}\) but \(0\notin\{\{0\}\}\), matching the absence of \(p\,R\,r\) in the original relation.</p>
+  <figure id="collapse-picture" class="proof-figure">
+    <div class="figure-image"><img src="assets/collapse.svg" width="760" height="340" alt="The relation links p to q and q to r. The collapse sends them respectively to the empty set, its singleton, and the singleton of that singleton, with the same two membership links." /></div>
+    <figcaption>The arrows point from a predecessor to its successor, and from a member to the set containing it. There is no arrow directly from \(p\) to \(r\), or from \(0\) to \(\{\{0\}\}\).</figcaption>
+  </figure>
+</section>
+
+<section id="hypotheses-question" data-kind="question">
+  <h2>What fails when one hypothesis is removed?</h2>
+  <p>Consider the empty relation on two distinct points, and the relation consisting of a self-loop on one point. Which collapse conclusions can hold?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The empty relation on \(\{p,q\}\) is well-founded but not extensional: both predecessor sets are empty. Its recursive map sends both points to \(0\), giving the transitive image \(\{0\}\) but no injective collapse. No bijective representation on a transitive set can exist, since such a representation must satisfy the same recursion.</p><p>The self-loop on \(\{p\}\) is extensional but not well-founded. A membership representation would require \(\pi(p)\in\pi(p)\), contrary to Foundation. The recursion equation would be \(\pi(p)=\{\pi(p)\}\), which has no solution in ZF. Thus extensionality alone does not guarantee even existence.</p></div>
+  </details>
+</section>
+
+<section id="transitive-sets-fixed" data-kind="lemma">
+  <h2>A transitive set is already its own collapse</h2>
+  <p>For membership restricted to a transitive set \(T\), the collapse is \(T\) itself and the map is the identity.</p>
+  <p class="proof-label">Proof</p>
+  <p>Foundation and Extensionality give the two relation hypotheses. Because \(T\) is transitive, the predecessors of \(x\in T\) are exactly all members of \(x\). The identity therefore satisfies \(x=\{y:y\in x\}\), the collapse equation. Uniqueness gives the result. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Consequently any membership isomorphism between transitive sets is the identity and the two sets are equal: apply uniqueness to the identity and the given isomorphism on the same domain.</p>
+</section>
+
+<section id="well-orders-collapse-to-ordinals" data-kind="lemma">
+  <h2>For well-orders, the representation is an ordinal</h2>
+  <p>The collapse of a strict well-order on a set is its unique ordinal representative.</p>
+  <p class="proof-label">Proof</p>
+  <p>A strict well-order is well-founded. It is extensional because if \(a&lt;b\), then \(a\) is a predecessor of \(b\) but not of itself; thus distinct points cannot have identical predecessor sets. The collapse produces a transitive set on which membership, transported along the bijection, is a strict well-order. This is exactly <a href="ordinals#transitive-sets">the definition of a von Neumann ordinal</a>. The <a href="ordinals#unique-ordinal-representative">uniqueness of ordinal representatives</a> identifies it with the order type. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The theorem concerns set-sized relations. Applications to models and elementary substructures require additional logical definitions and results, which are outside this entry.</p>
+</section>

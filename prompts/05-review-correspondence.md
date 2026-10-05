@@ -79,5 +79,3 @@ proposed statement or description change.
 Keep this audit read-only: do not change bindings, descriptions, generated data, or
 proofs, and do not run the writing build command. Review decisions belong in the
 GitHub pull request; return findings here unless posting was explicitly requested.
-There are no approval records, hashes, or review dates to update in the app. Human
-text and rendering still need their own review even when the Lean proof is verified.

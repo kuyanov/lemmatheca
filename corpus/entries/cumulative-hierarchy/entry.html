@@ -1,0 +1,108 @@
+<section id="stages-and-background" data-kind="definition">
+  <h2>Sets arranged by the depth of their members</h2>
+  <p>Begin with no sets, form all subsets of what is available, and repeat. After infinitely many steps, take the union of the stages already constructed and continue. Ordinals index this process, giving a set \(V_\alpha\) at each stage \(\alpha\). The resulting <strong>cumulative hierarchy</strong> contains every set somewhere.</p>
+  <p>We work in ZF, including Foundation, without assuming Choice. We use <a href="ordinals#transfinite-methods">transfinite induction</a>, <a href="axiomatic-set-theory#powerset">Power Set</a>, <a href="axiomatic-set-theory#replacement">Replacement</a>, and the <a href="foundation-and-rank#membership-rank">membership rank</a> of a set. The recursion argument below allows values that are sets without requiring a fixed set of possible outputs.</p>
+</section>
+
+<section id="set-valued-ordinal-recursion" data-kind="theorem">
+  <h2>Recursion can produce sets without a fixed output bound</h2>
+  <p>Suppose a formula with fixed set parameters specifies exactly one set \(H(\beta,h)\) whenever \(\beta\) is an ordinal and \(h\) is a set function with domain \(\beta\). For every ordinal \(\theta\), there is a unique set function \(f_\theta\) on \(\theta\) satisfying</p>
+  <div class="math-display">\[ f_\theta(\beta)=H(\beta,f_\theta\mathbin{\upharpoonright}\beta)\qquad(\beta&lt;\theta). \]</div>
+  <p>The functions agree on overlapping domains. Consequently \(F(\beta)=f_{\beta+1}(\beta)\) is a definable class function satisfying the same rule at every ordinal. A class function here is a formula specifying a unique output, as in <a href="axiomatic-set-theory#sets-and-classes">the sets-and-classes convention</a>; it is not a set of all its pairs.</p>
+  <p class="proof-label">Proof</p>
+  <p>Call a function on an ordinal an <em>approximation</em> if it satisfies the rule there. Two approximations agree on their common domain: at a least disagreement \(\beta\), their restrictions to \(\beta\) agree, so the rule specifies the same next value. Restrictions of approximations are again approximations.</p>
+  <p>For existence, use transfinite induction on the domain. The empty function works at zero. At a successor \(\gamma+1\), extend the unique approximation \(h\) on \(\gamma\) by the pair \((\gamma,H(\gamma,h))\). At a nonzero limit \(\lambda\), the induction hypothesis and uniqueness specify exactly one approximation on each \(\gamma&lt;\lambda\). Replacement collects these graphs into a set. Their union is a function on \(\lambda\), by compatibility. For \(\beta&lt;\lambda\), it agrees with the approximation on \(\beta+1&lt;\lambda\), so its equation at \(\beta\) holds.</p>
+  <p>This proves existence and uniqueness on every set ordinal. Compatibility then gives \(F\mathbin{\upharpoonright}\beta=f_\beta\); Replacement makes this restriction a set function. Thus the class rule holds as well. At no step did we collect all approximations over all ordinals into a set. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Unlike <a href="well-ordered-sets#well-order-recursion">recursion into a fixed value set</a>, this theorem can repeatedly apply Power Set without knowing a bound on the values in advance.</p>
+</section>
+
+<section id="hierarchy-definition" data-kind="definition">
+  <h2>Power sets at successors and unions at limits</h2>
+  <p>Define the stages by</p>
+  <div class="math-display">\[ V_0=\varnothing,\qquad V_{\alpha+1}=\mathcal P(V_\alpha),\qquad V_\lambda=\bigcup_{\beta&lt;\lambda}V_\beta\quad(\lambda\text{ a nonzero limit}). \]</div>
+  <p>For a history \(h\) on \(\alpha\), the rule returns \(\varnothing\) at zero, \(\mathcal P(h(\beta))\) when \(\alpha=\beta+1\), and \(\bigcup\operatorname{ran}(h)\) at a nonzero limit. Each is a uniquely specified set for every history, so <a href="#set-valued-ordinal-recursion"></a> applies. At limits, Replacement collects the earlier stages and Union forms their union.</p>
+  <p>Write \(V=\{x:\exists\alpha\text{ an ordinal},\ x\in V_\alpha\}\). This notation defines a class. It does not assert that there is a set containing all stages or all sets.</p>
+</section>
+
+<section id="transitive-and-increasing" data-kind="theorem">
+  <h2>Stages are transitive and never lose earlier sets</h2>
+  <p>Each \(V_\alpha\) is <a href="ordinals#transitive-sets">transitive</a>, and \(\alpha\le\beta\) implies \(V_\alpha\subseteq V_\beta\).</p>
+  <p class="proof-label">Proof</p>
+  <p>If \(T\) is transitive, every \(x\in T\) satisfies \(x\subseteq T\), hence \(T\subseteq\mathcal P(T)\). Moreover \(\mathcal P(T)\) is transitive: if \(x\subseteq T\) and \(y\in x\), then \(y\in T\), so \(y\subseteq T\) and \(y\in\mathcal P(T)\). A union of transitive sets is transitive, since a member of one constituent has all its members in that constituent.</p>
+  <p>Transfinite induction now proves both assertions. Zero is immediate. At a successor, transitivity follows from the power-set observation, and \(V_\gamma\subseteq V_{\gamma+1}\) retains every earlier stage. At a limit, the union is transitive and contains every earlier stage. Equality of indices gives equality of stages, completing the non-strict inclusion claim. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="rank-characterizes-stages" data-kind="theorem">
+  <h2>A stage contains exactly the sets of smaller rank</h2>
+  <p>For every set \(x\) and ordinal \(\alpha\),</p>
+  <div class="math-display">\[ x\in V_\alpha\quad\Longleftrightarrow\quad\operatorname{rank}(x)&lt;\alpha. \label{eq:stage-rank} \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Use transfinite induction on \(\alpha\), proving the equivalence for all \(x\) together. At zero, neither side holds. At a successor, the induction hypothesis and <a href="foundation-and-rank#membership-rank">the rank equation</a> give</p>
+  <div class="math-display">\[ \begin{aligned}
+    x\in V_{\beta+1}&amp;\Longleftrightarrow x\subseteq V_\beta\\
+    &amp;\Longleftrightarrow\forall y\in x\ (\operatorname{rank}(y)&lt;\beta)\\
+    &amp;\Longleftrightarrow\sup_{y\in x}(\operatorname{rank}(y)+1)\le\beta\\
+    &amp;\Longleftrightarrow\operatorname{rank}(x)&lt;\beta+1.
+  \end{aligned} \]</div>
+  <p>Here \(\rho&lt;\beta\) is equivalent to \(\rho+1\le\beta\), and a supremum is at most \(\beta\) exactly when all its terms are. These statements include the empty family and \(\beta=0\).</p>
+  <p>At a nonzero limit \(\lambda\), membership in the union means membership in some \(V_\beta\) with \(\beta&lt;\lambda\), hence rank below \(\lambda\). Conversely, if \(\rho=\operatorname{rank}(x)&lt;\lambda\), then \(\rho+1&lt;\lambda\), since \(\lambda\) is a limit. The induction hypothesis puts \(x\) in \(V_{\rho+1}\), one of the stages in the union. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="every-set-has-a-stage" data-kind="theorem">
+  <h2>Every set appears, and rank identifies its first stage</h2>
+  <p>Every set \(x\) belongs to \(V_{\operatorname{rank}(x)+1}\), and this is its least membership stage. Also, for every ordinal \(\alpha\),</p>
+  <div class="math-display">\[ x\subseteq V_\alpha\quad\Longleftrightarrow\quad\operatorname{rank}(x)\le\alpha. \]</div>
+  <p class="proof-label">Proof</p>
+  <p>The first assertion follows from \eqref{eq:stage-rank}, because the least ordinal strictly above \(\operatorname{rank}(x)\) is its successor. For the second, \(x\subseteq V_\alpha\) means that every \(y\in x\) has rank below \(\alpha\). This is equivalent to every \(\operatorname{rank}(y)+1\) being at most \(\alpha\), hence to their supremum being at most \(\alpha\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Thus rank is the first stage that contains \(x\) as a <em>subset</em>; the next stage first contains it as a <em>member</em>. Foundation enters through the existence of membership rank for every set. The class \(V\) is therefore the class of all sets, which <a href="axiomatic-set-theory#no-universal-set">cannot be a set</a>.</p>
+</section>
+
+<section id="strict-growth-and-stage-ranks" data-kind="lemma">
+  <h2>Each new stage is genuinely larger</h2>
+  <p>For every ordinal \(\alpha\),</p>
+  <div class="math-display">\[ V_\alpha\in V_{\alpha+1}\setminus V_\alpha,\qquad\operatorname{rank}(V_\alpha)=\alpha,\qquad V_\alpha\cap\mathrm{Ord}=\alpha. \]</div>
+  <p>The last equality abbreviates the set \(\{\beta\in V_\alpha:\beta\text{ is an ordinal}\}\); it does not intersect two sets when one is a proper class.</p>
+  <p class="proof-label">Proof</p>
+  <p>The inclusion \(V_\alpha\subseteq V_\alpha\) puts \(V_\alpha\) in its power set, whereas Foundation gives \(V_\alpha\notin V_\alpha\). The subset characterization bounds its rank by \(\alpha\). Every \(\beta&lt;\alpha\) has <a href="foundation-and-rank#ordinal-ranks">rank \(\beta\)</a>, so \eqref{eq:stage-rank} puts it in \(V_\alpha\). The rank equation therefore bounds \(\operatorname{rank}(V_\alpha)\) below by \(\sup_{\beta&lt;\alpha}(\beta+1)=\alpha\). This proves the rank equality, including zero. Applying \eqref{eq:stage-rank} to ordinals also proves the last equality. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, \(V_\alpha\subsetneq V_\beta\) whenever \(\alpha&lt;\beta\): the set \(V_\alpha\) itself is already a member of \(V_{\alpha+1}\subseteq V_\beta\), but not of \(V_\alpha\).</p>
+</section>
+
+<section id="finite-stages" data-kind="lemma">
+  <h2>The first stages can be written out completely</h2>
+  <p>Put \(0=\varnothing\) and \(1=\{0\}\). Then</p>
+  <div class="math-display">\[ V_0=\varnothing,\qquad V_1=\{0\},\qquad V_2=\{0,1\},\qquad V_3=\{0,\{0\},\{1\},\{0,1\}\}. \]</div>
+  <p>Every finite stage is finite. If \(v_n=|V_n|\), then \(v_0=0\) and \(v_{n+1}=2^{v_n}\), giving \(0,1,2,4,16,65536,\ldots\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The displayed sets follow by taking successive power sets. A finite set with \(m\) members has \(2^m\) subsets: fix its finite enumeration and encode a subset by its \(m\) binary membership choices. Induction on \(m\) doubles the number of such strings at each added position. Applying this to \(V_n\) proves finiteness and the recurrence. <span class="qed" aria-label="End of proof">□</span></p>
+  <figure id="finite-stage-picture" class="proof-figure">
+    <div class="figure-image"><img src="assets/finite-stages.svg" width="760" height="280" alt="Four consecutive power-set steps start with the empty stage and give stages with one, two, four, and sixteen members. At the limit omega the finite stages are united." /></div>
+    <figcaption>Finite stages grow by taking power sets. The limit stage \(V_\omega\) contains every set that occurs in one of them.</figcaption>
+  </figure>
+</section>
+
+<section id="hereditarily-finite-sets" data-kind="theorem">
+  <h2>The first limit stage consists of hereditarily finite sets</h2>
+  <p>A set \(x\) is <strong>hereditarily finite</strong> if \(\operatorname{TC}(\{x\})\) is finite: only finitely many sets occur when we include \(x\), its members, their members, and so on. Then</p>
+  <div class="math-display">\[ x\in V_\omega\quad\Longleftrightarrow\quad\operatorname{rank}(x)&lt;\omega\quad\Longleftrightarrow\quad x\text{ is hereditarily finite}. \]</div>
+  <p class="proof-label">Proof</p>
+  <p>The first equivalence is \eqref{eq:stage-rank}. If \(x\in V_\omega\), it belongs to some finite stage \(V_n\). That stage is transitive and finite. Since \(\{x\}\subseteq V_n\), <a href="foundation-and-rank#transitive-closure-construction">leastness of transitive closure</a> gives \(\operatorname{TC}(\{x\})\subseteq V_n\), so the closure is finite.</p>
+  <p>Conversely, let \(T=\operatorname{TC}(\{x\})\) be finite. Use membership induction on \(T\) to prove that every \(y\in T\) has finite rank. All members of \(y\) lie in \(T\), and there are finitely many of them. By the induction hypothesis their ranks are natural numbers. Their successor ranks have a finite maximum, or supremum zero if there are no members. The rank equation therefore gives a natural-number rank for \(y\). In particular \(x\) has finite rank. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>These are exactly the sets built from the empty set by finitely many layers of finite set formation. Although every member of \(V_\omega\) is finite, \(V_\omega\) itself is infinite: it contains every finite ordinal.</p>
+</section>
+
+<section id="finite-versus-hereditarily-finite" data-kind="question">
+  <h2>Can a finite set first appear after all finite stages?</h2>
+  <p>Find the least membership stages of \(\omega\), \(\{\omega\}\), and \(V_\omega\). Which of these sets are finite or hereditarily finite?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Their ranks are \(\omega\), \(\omega+1\), and \(\omega\), respectively. Thus their least membership stages are \(V_{\omega+1}\), \(V_{\omega+2}\), and \(V_{\omega+1}\). None belongs to \(V_\omega\), so none is hereditarily finite. The singleton \(\{\omega\}\) is finite, but its membership descendants include every natural number. Both \(\omega\) and \(V_\omega\) are infinite.</p></div>
+  </details>
+</section>
+
+<section id="closure-within-stages" data-kind="lemma">
+  <h2>Simple set operations remain within suitable stages</h2>
+  <p>If \(x\in V_\alpha\), then every subset of \(x\) and \(\bigcup x\) also belong to \(V_\alpha\). If \(x,y\in V_\alpha\), then \(\{x,y\}\in V_{\alpha+1}\) and \(\mathcal P(x)\in V_{\alpha+1}\). At a nonzero limit \(\lambda\), pairs and power sets of members of \(V_\lambda\) stay in \(V_\lambda\).</p>
+  <p class="proof-label">Proof</p>
+  <p>For \(u\subseteq x\), <a href="foundation-and-rank#membership-lowers-rank">rank monotonicity</a> gives \(\operatorname{rank}(u)\le\operatorname{rank}(x)&lt;\alpha\). Also, <a href="foundation-and-rank#rank-calculations">the union formula</a> gives \(\operatorname{rank}(\bigcup x)\le\operatorname{rank}(x)\). Apply \eqref{eq:stage-rank} to both. For the pair and power set, their ranks are \(\max(\operatorname{rank}(x),\operatorname{rank}(y))+1\) and \(\operatorname{rank}(x)+1\). These are at most \(\alpha\), hence below \(\alpha+1\). If \(\alpha=\lambda\) is a limit, the successor of each ordinal below \(\lambda\) is still below \(\lambda\), proving the stronger assertion. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>These are closure statements about sets and operations. They do not assert that a stage satisfies ZF or another axiom system. Such assertions require a separate account of formulas and their interpretation in structures.</p>
+</section>
