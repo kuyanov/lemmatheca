@@ -1,17 +1,17 @@
-<section id="construction-and-embedding" data-kind="definition">
+<section id="construction-and-embedding" data-kind="definition" data-formal="integer-quotient-identification rational-quotient-identification dedekind-cut-carrier">
   <h2>Extend the numbers by identifying equivalent descriptions</h2>
   <p>The <a href="natural-numbers-as-sets#addition-and-multiplication">natural numbers</a> support addition and multiplication, but equations such as \(x+3=1\) and \(3x=1\) need new numbers. We will construct integers and rationals using <a href="equivalence-relations#quotient-set">quotient sets</a>, then fill the gaps in the rational order using sets of rationals.</p>
   <p>All constructions take place in ZF, without Choice. Write \([a,b]_{\mathbb Z}\) for an integer class and \([a,b]_{\mathbb Q}\) for a rational class. These are different equivalence relations on different sets. We identify old numbers with their images under the embeddings established below; the raw sets representing the numbers need not literally be nested.</p>
 </section>
 
-<section id="integer-equivalence" data-kind="definition">
+<section id="integer-equivalence" data-kind="definition" data-formal="integer-formal-difference-relation integer-difference-quotient integer-difference-class">
   <h2>An integer is a formal difference of natural numbers</h2>
   <p>On \(\omega\times\omega\), define</p>
   <div class="math-display">\[ (a,b)\sim_{\mathbb Z}(c,d)\quad\Longleftrightarrow\quad a+d=c+b. \]</div>
   <p>The pair describes the intended difference \(a-b\), but the definition uses only natural-number addition. It identifies \((1,3)\) with \((4,6)\), for example. Define \(\mathbb Z=(\omega\times\omega)/{\sim_{\mathbb Z}}\), once the relation is shown to be an equivalence.</p>
 </section>
 
-<section id="integer-equivalence-proof" data-kind="lemma">
+<section id="integer-equivalence-proof" data-kind="lemma" data-formal="integer-formal-difference-equivalence quotient-equivalence-classes">
   <h2>Formal differences give an equivalence relation</h2>
   <p>The relation \(\sim_{\mathbb Z}\) is reflexive, symmetric, and transitive.</p>
   <p class="proof-label">Proof</p>
@@ -19,7 +19,7 @@
   <p>Every class is a subset of \(\omega\times\omega\), so Separation on its power set constructs the quotient. We do not have to choose a representative from every class.</p>
 </section>
 
-<section id="integer-operations" data-kind="definition">
+<section id="integer-operations" data-kind="definition" data-formal="integer-class-addition integer-class-negation integer-class-multiplication integer-class-order integer-class-representative-formulas">
   <h2>Arithmetic and order on integer classes</h2>
   <p>Set \(0_{\mathbb Z}=[0,0]_{\mathbb Z}\), \(1_{\mathbb Z}=[1,0]_{\mathbb Z}\), and define</p>
   <div class="math-display">\[ \begin{aligned}
@@ -31,7 +31,7 @@
   <p>The multiplication formula records \((a-b)(c-d)=(ac+bd)-(ad+bc)\) without using subtraction on natural numbers. We must check that the resulting classes and comparison are independent of representatives.</p>
 </section>
 
-<section id="integer-well-defined" data-kind="lemma">
+<section id="integer-well-defined" data-kind="lemma" data-formal="integer-quotient-identification integer-class-representative-formulas integer-difference-value">
   <h2>The representative formulas are well-defined</h2>
   <p>The rules in <a href="#integer-operations"></a> define operations and an order on \(\mathbb Z\).</p>
   <p class="proof-label">Proof</p>
@@ -42,7 +42,7 @@
   <p>For order, adding \(b'\) to \(a+d\le c+b\), substituting \(a+b'=a'+b\), and cancelling \(b\) gives \(a'+d\le c+b'\), with every step reversible. Changing \((c,d)\) follows by the same argument. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="integer-normal-forms" data-kind="lemma">
+<section id="integer-normal-forms" data-kind="lemma" data-formal="integer-class-unique-sign-form natural-integer-class-embedding">
   <h2>Each integer has one sign and one magnitude</h2>
   <p>Every integer has a unique form \([k,0]_{\mathbb Z}\) with \(k\in\omega\), or \([0,k]_{\mathbb Z}\) with \(k\in\omega\setminus\{0\}\). The map \(n\mapsto[n,0]_{\mathbb Z}\) is injective and preserves addition, multiplication, zero, one, and order.</p>
   <p class="proof-label">Proof</p>
@@ -50,7 +50,7 @@
   <p>Injectivity of the embedding follows from \([m,0]=[n,0]\) iff \(m=n\). Substitution into the arithmetic and order formulas proves their preservation. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="integers-ordered-ring" data-kind="theorem">
+<section id="integers-ordered-ring" data-kind="theorem" data-formal="integer-quotient-commutative-ring integer-quotient-total-order integer-quotient-domain integer-quotient-ordered-ring positive-mul-order-reflection positive-mul-strict-order-reflection nonzero-multiplicative-cancellation">
   <h2>The integers form an ordered ring without zero divisors</h2>
   <p>Addition and multiplication on \(\mathbb Z\) are associative and commutative, with identities \(0\) and \(1\). Every integer has an additive inverse, and multiplication distributes over addition. The order is total, translation preserves and reflects it, and multiplication by a positive integer does the same. A product is zero only if a factor is zero.</p>
   <p class="proof-label">Proof</p>
@@ -63,21 +63,21 @@
   <p>A <strong>commutative ring</strong> means a set with these additive, multiplicative, inverse, and distributive laws. Here \(0\ne1\). Absence of zero divisors also gives cancellation of any nonzero multiplicative factor: \(xy=xz\) implies \(x(y-z)=0\), hence \(y=z\) when \(x\ne0\).</p>
 </section>
 
-<section id="rational-equivalence" data-kind="definition">
+<section id="rational-equivalence" data-kind="definition" data-formal="rational-formal-fraction-relation rational-fraction-quotient rational-fraction-class">
   <h2>A rational number is a formal fraction</h2>
   <p>On \(\mathbb Z\times(\mathbb Z\setminus\{0\})\), define</p>
   <div class="math-display">\[ (a,b)\sim_{\mathbb Q}(c,d)\quad\Longleftrightarrow\quad ad=cb. \]</div>
   <p>Define \(\mathbb Q\) as the quotient by this relation. Write \([a,b]_{\mathbb Q}\), or \(a/b\) after the construction is justified. The denominator is required to be nonzero. Thus \((1,2)\), \((2,4)\), and \((-1,-2)\) describe the same rational number.</p>
 </section>
 
-<section id="rational-equivalence-proof" data-kind="lemma">
+<section id="rational-equivalence-proof" data-kind="lemma" data-formal="rational-formal-fraction-equivalence">
   <h2>Nonzero denominators make cross multiplication transitive</h2>
   <p>The relation \(\sim_{\mathbb Q}\) is an equivalence relation.</p>
   <p class="proof-label">Proof</p>
   <p>Reflexivity and symmetry are immediate from equality and commutativity. If \(ad=cb\) and \(cf=ed\), then \(adf=cbf=edb\). Since \(d\ne0\), integer cancellation gives \(af=eb\). This proves transitivity. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="rational-field" data-kind="theorem">
+<section id="rational-field" data-kind="theorem" data-formal="rational-quotient-identification rational-class-addition rational-class-negation rational-class-multiplication rational-class-inversion rational-class-order rational-class-representative-formulas rational-positive-denominator-form rational-positive-denominator-order integer-rational-class-embedding rational-quotient-field rational-quotient-total-order rational-quotient-ordered-field rational-fraction-value">
   <h2>The fractions form an ordered field</h2>
   <p>Use the following operations on rational classes:</p>
   <div class="math-display">\[ \frac ab+\frac cd=\frac{ad+cb}{bd},\qquad \frac ab\frac cd=\frac{ac}{bd},\qquad -\frac ab=\frac{-a}{b},\qquad \left(\frac ab\right)^{-1}=\frac ba\quad(a\ne0). \]</div>
@@ -90,7 +90,7 @@
   <p>Any finite list of fractions can be written over a common positive denominator: use the product of their positive denominators, multiplying each numerator by the other factors. Addition, equality, and comparison then reduce to the corresponding integer facts. Associativity, commutativity, and distributivity for the fraction formulas follow by cross multiplication from the ring laws for integers. Positive fractions have positive numerators in this normalization, so positive products are positive and the order is compatible with multiplication. Finally, \([a,1]=[c,1]\) iff \(a=c\); the formulas immediately give preservation by the embedding. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="zero-denominator-question" data-kind="question">
+<section id="zero-denominator-question" data-kind="question" data-formal="zero-denominator-breaks-transitivity">
   <h2>Why not allow every denominator?</h2>
   <p>What goes wrong if the rational relation is defined on all of \(\mathbb Z\times\mathbb Z\), including \((0,0)\)?</p>
   <details class="question-answer">
@@ -99,7 +99,7 @@
   </details>
 </section>
 
-<section id="rational-density-and-grids" data-kind="lemma">
+<section id="rational-density-and-grids" data-kind="lemma" data-formal="order-midpoint-above-left order-midpoint-below-right archimedean-natural-upper-bound archimedean-fine-reciprocal-grid">
   <h2>Rational numbers provide arbitrarily fine grids</h2>
   <p>Between any two distinct rationals there is another rational. Every rational is bounded above by a natural number. For every rational \(\varepsilon&gt;0\), some positive natural number \(n\) satisfies \(1/n&lt;\varepsilon\).</p>
   <p class="proof-label">Proof</p>
@@ -107,7 +107,7 @@
   <p>These facts concern the constructed rational field. They do not use real numbers or their completeness.</p>
 </section>
 
-<section id="dedekind-cuts" data-kind="definition">
+<section id="dedekind-cuts" data-kind="definition" data-formal="dedekind-cut-condition dedekind-cut-carrier rational-lower-set rational-lower-set-is-cut rational-cut-embedding">
   <h2>Fill a gap by recording all rationals below it</h2>
   <p>A <strong>Dedekind cut</strong> is a subset \(A\subseteq\mathbb Q\) which is nonempty and proper, is downward closed, and has no greatest member. In symbols,</p>
   <div class="math-display">\[ q\in A,\ p&lt;q\Rightarrow p\in A,\qquad q\in A\Rightarrow\exists r\in A\,(q&lt;r). \]</div>
@@ -119,7 +119,7 @@
   </figure>
 </section>
 
-<section id="cut-order-and-embedding" data-kind="lemma">
+<section id="cut-order-and-embedding" data-kind="lemma" data-formal="dedekind-cuts-total-order rational-cuts-order-embedding dedekind-cut-member-bounds">
   <h2>Cuts form a total order extending the rationals</h2>
   <p>Inclusion totally orders \(\mathbb R\). The map \(\iota:\mathbb Q\to\mathbb R\) preserves and reflects order and is injective. If \(q\in A\), then \(\iota(q)&lt;A\); if \(q\notin A\), then \(A\le\iota(q)\).</p>
   <p class="proof-label">Proof</p>
@@ -127,7 +127,7 @@
   <p>If \(p&lt;q\), then \(\iota(p)\subsetneq\iota(q)\), with \(p\) witnessing strictness. Totality gives reflection and injectivity. If \(q\in A\), downward closure gives \(\iota(q)\subseteq A\), and \(q\) witnesses strictness. If \(q\notin A\), every member of \(A\) is strictly below \(q\), so \(A\subseteq\iota(q)\). <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="cut-completeness" data-kind="theorem">
+<section id="cut-completeness" data-kind="theorem" data-formal="dedekind-cut-union-supremum dedekind-cut-union-boundaries">
   <h2>A bounded nonempty family of cuts has a least upper bound</h2>
   <p>If \(\mathcal A\subseteq\mathbb R\) is nonempty and has an upper bound in \(\mathbb R\), then</p>
   <div class="math-display">\[ \sup\mathcal A=\bigcup\mathcal A. \]</div>
@@ -137,7 +137,7 @@
   <p>This is <strong>Dedekind completeness</strong>. The hypotheses cannot be dropped: the empty union is not a cut, and the union of all rational cuts is \(\mathbb Q\), also not a cut.</p>
 </section>
 
-<section id="cut-approximations" data-kind="lemma">
+<section id="cut-approximations" data-kind="lemma" data-formal="dedekind-cut-rational-brackets rational-cuts-order-dense">
   <h2>A cut can be bracketed as closely as desired by rationals</h2>
   <p>For a cut \(A\) and rational \(\varepsilon&gt;0\), there are \(a\in A\) and \(b\notin A\) with \(0&lt;b-a&lt;\varepsilon\). Rational cuts are also order-dense: if \(A&lt;B\), then some \(q\) satisfies \(A&lt;\iota(q)&lt;B\).</p>
   <p class="proof-label">Proof</p>
@@ -145,14 +145,14 @@
   <p>For density, take \(r\in B\setminus A\), then \(s\in B\) with \(s&gt;r\), and choose rational \(q\) between \(r,s\). We have \(A\le\iota(r)&lt;\iota(q)&lt;B\). <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="cut-addition-and-negation" data-kind="definition">
+<section id="cut-addition-and-negation" data-kind="definition" data-formal="dedekind-cut-addition dedekind-cut-negation rational-cuts-add-neg-preservation">
   <h2>Add cuts and reverse their signs</h2>
   <p>Write \(0_{\mathbb R}=\iota(0)\) and \(1_{\mathbb R}=\iota(1)\). For cuts \(A,B\), define</p>
   <div class="math-display">\[ A+B=\{a+b:a\in A,\ b\in B\},\qquad -A=\{t\in\mathbb Q:\exists u\notin A\ (t&lt;-u)\}. \]</div>
   <p>The strict inequality in negation excludes a possible rational boundary. For example, \(-\iota(q)=\iota(-q)\), including when \(q=0\).</p>
 </section>
 
-<section id="cuts-ordered-additive-group" data-kind="theorem">
+<section id="cuts-ordered-additive-group" data-kind="theorem" data-formal="dedekind-cut-add-neg-closure dedekind-cut-add-associativity dedekind-cut-add-commutativity dedekind-cut-add-zero dedekind-cut-additive-inverse dedekind-cut-add-order rational-cuts-add-neg-preservation">
   <h2>Cuts form an ordered additive group</h2>
   <p>The operations above produce cuts. Addition is associative and commutative, zero is an identity, and \(-A\) is an additive inverse. Translation preserves and reflects order, and \(\iota(p+q)=\iota(p)+\iota(q)\).</p>
   <p class="proof-label">Proof</p>
@@ -163,7 +163,7 @@
   <p>Inclusion is preserved when adding the same cut; adding its inverse proves reflection. Finally, sums of rationals below \(p,q\) lie below \(p+q\). If \(t&lt;p+q\), let \(h=(p+q-t)/2&gt;0\); then \(t=(p-h)+(q-h)\). This proves the embedding identity. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="cut-multiplication" data-kind="definition">
+<section id="cut-multiplication" data-kind="definition" data-formal="dedekind-cut-nonnegative-product dedekind-cut-absolute-value dedekind-cut-multiplication dedekind-cut-mul-zero dedekind-cut-nonnegative-product-agreement">
   <h2>Multiply nonnegative cuts, then handle every sign</h2>
   <p>For \(A,B\ge0_{\mathbb R}\), define</p>
   <div class="math-display">\[ A\odot B=\{t\in\mathbb Q:t&lt;0\ \text{or}\ \exists a\in A\,\exists b\in B\ (a&gt;0,\ b&gt;0,\ t&lt;ab)\}. \]</div>
@@ -171,7 +171,7 @@
   <p>These clauses cover positive, negative, and zero factors separately, including zero times a negative cut.</p>
 </section>
 
-<section id="multiplication-brackets" data-kind="lemma">
+<section id="multiplication-brackets" data-kind="lemma" data-formal="dedekind-cut-mul-closure dedekind-cut-mul-nonnegative-monotone rational-cuts-mul-preservation dedekind-cut-product-error-bound">
   <h2>Rational bounds control products of cuts</h2>
   <p>Multiplication produces cuts, agrees with rational multiplication, and is monotone in each nonnegative factor. More generally, if</p>
   <div class="math-display">\[ \iota(p-\varepsilon)\le A\le\iota(p+\varepsilon),\qquad \iota(q-\varepsilon)\le B\le\iota(q+\varepsilon), \]</div>
@@ -182,7 +182,7 @@
   <p>For general intervals, split each interval at zero if it crosses zero. Nonnegative monotonicity and order reversal by negation bound each sign case by the minimum and maximum of the four rational endpoint products. Every endpoint product has the form \((p+s)(q+t)\), with \(s,t\in\{-\varepsilon,\varepsilon\}\), and differs from \(pq\) by at most \(\varepsilon(|p|+|q|)+\varepsilon^2\). If an interval crosses zero, the additional endpoint products involving zero satisfy the same bound, since the corresponding \(|p|\) or \(|q|\) is at most \(\varepsilon\). This proves the asserted bracket. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="cut-ring-laws" data-kind="theorem">
+<section id="cut-ring-laws" data-kind="theorem" data-formal="dedekind-cut-mul-associativity dedekind-cut-mul-commutativity dedekind-cut-mul-one dedekind-cut-distributivity dedekind-cut-positive-product rational-cuts-order-embedding">
   <h2>Rational approximation proves the ring laws</h2>
   <p>Cut multiplication is associative and commutative, has identity \(\iota(1)\), and distributes over addition. Thus the cuts, with the operations defined above, form a commutative ring with \(0\ne1\). Products of positive cuts are positive, so its total order is compatible with multiplication.</p>
   <p class="proof-label">Proof</p>
@@ -193,7 +193,7 @@
   <p>If \(A,B&gt;0\), both contain positive rationals \(a,b\), and their product contains a positive rational below \(ab\); hence \(AB&gt;0\). Together with distributivity, this gives order compatibility, using the positive difference between two ordered cuts as for the integers. Finally, \(\iota(0)\ne\iota(1)\) by injectivity of the rational embedding. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="cut-inverses" data-kind="theorem">
+<section id="cut-inverses" data-kind="theorem" data-formal="dedekind-cut-positive-inverse dedekind-cut-inversion dedekind-cut-positive-inverse-law dedekind-cut-nonzero-inverse-law dedekind-cut-union-supremum">
   <h2>Every nonzero cut has a multiplicative inverse</h2>
   <p>For \(A&gt;0\), define</p>
   <div class="math-display">\[ A^{-1}=\{t\in\mathbb Q:t&lt;0\ \text{or}\ \exists u&gt;0\ (u\notin A,\ t&lt;1/u)\}. \]</div>
@@ -204,7 +204,7 @@
   <p>For rational \(0\le t&lt;1\), choose \(a\in A,u\notin A\) with \(u-a&lt;(1-t)a_0\). We may replace \(a\) by \(\max(a,a_0)\), keeping it in \(A\) and only shrinking the gap. Then \(u&gt;a\ge a_0\), so \(u-a&lt;(1-t)u\), giving \(a/u&gt;t\). Choose a positive rational \(b\) strictly between \(t/a\) and \(1/u\). It belongs to \(A^{-1}\) and \(ab&gt;t\), so \(t\in AA^{-1}\). Negative \(t\) already belong by definition. This gives the reverse inclusion. The sign laws give the inverse for negative cuts as well. Completeness was proved in <a href="#cut-completeness"></a>. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="irrational-cut-question" data-kind="question">
+<section id="irrational-cut-question" data-kind="question" data-formal="square-root-two-cut square-root-two-is-cut square-root-two-cut-not-rational square-root-two-rational-improvement">
   <h2>Does every cut come from a rational number?</h2>
   <p>Consider \(D=\{q\in\mathbb Q:q&lt;0\ \text{or}\ q^2&lt;2\}\). Show that it is a cut and is not \(\iota(r)\) for any rational \(r\).</p>
   <details class="question-answer">
@@ -213,7 +213,7 @@
   </details>
 </section>
 
-<section id="unique-complete-ordered-field" data-kind="theorem">
+<section id="unique-complete-ordered-field" data-kind="theorem" data-formal="cut-field-isomorphism-condition complete-ordered-field-cut-uniqueness">
   <h2>Completeness determines the ordered field up to isomorphism</h2>
   <p>Every Dedekind-complete ordered field \(K\) is isomorphic to the cut field by a unique order-preserving field isomorphism fixing the rational numbers.</p>
   <p class="proof-label">Proof</p>

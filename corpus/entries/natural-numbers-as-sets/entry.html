@@ -1,4 +1,4 @@
-<section id="zero-and-successor" data-kind="definition">
+<section id="zero-and-successor" data-kind="definition" data-formal="natural-number-set-realization ordinal-zero-is-empty ordinal-successor-set zf-inductive-set zf-omega-contains-zero zf-omega-successor-closed">
   <h2>Start with the empty set and add a successor</h2>
   <p>The natural numbers can be constructed inside <a href="axiomatic-set-theory#membership-language">ZF</a>. Put \(0=\varnothing\) and \(S(x)=x\cup\{x\}\). The first stages are</p>
   <div class="math-display">\[ 0=\varnothing,\qquad 1=S(0)=\{0\},\qquad 2=S(1)=\{0,1\},\qquad 3=S(2)=\{0,1,2\}. \]</div>
@@ -6,7 +6,7 @@
   <p>The aim is to discard those extra objects without already assuming a set of natural numbers. We use the <a href="ordinals#transitive-sets">von Neumann ordinals</a> to identify the resulting order structure.</p>
 </section>
 
-<section id="least-inductive-set" data-kind="theorem">
+<section id="least-inductive-set" data-kind="theorem" data-formal="omega-least-inductive omega-unique-least-inductive">
   <h2>There is a unique least inductive set</h2>
   <p>There is an inductive set \(\omega\) contained in every inductive set. It is independent of the inductive set initially supplied by Infinity.</p>
   <p class="proof-label">Proof</p>
@@ -16,7 +16,7 @@
   <p>The universal quantifier over \(J\) ranges over sets. We do not need a set of all inductive sets to take their intersection.</p>
 </section>
 
-<section id="induction-on-omega" data-kind="theorem">
+<section id="induction-on-omega" data-kind="theorem" data-formal="omega-subset-induction omega-predicate-induction">
   <h2>Leastness gives induction</h2>
   <p>If \(A\subseteq\omega\), \(0\in A\), and \(n\in A\) implies \(S(n)\in A\), then \(A=\omega\). Consequently, for any formula \(P(n)\) with fixed set parameters,</p>
   <div class="math-display">\[ P(0)\ \text{and}\ \forall n\in\omega\,[P(n)\Rightarrow P(S(n))]\quad\Rightarrow\quad\forall n\in\omega\,P(n). \]</div>
@@ -25,7 +25,7 @@
   <p>This is induction for every subset of the constructed set \(\omega\). Its formula instances do not assert a single first-order axiom quantifying over all formulas.</p>
 </section>
 
-<section id="omega-is-an-ordinal" data-kind="lemma">
+<section id="omega-is-an-ordinal" data-kind="lemma" data-formal="omega-members-natural-realizations omega-set-ordinal-identification ordinal-canonical-set-is-ordinal ordinal-members-are-ordinals transitive-zf-set">
   <h2>The natural numbers form an ordinal</h2>
   <p>Every member of \(\omega\) is an ordinal, every such member is a subset of \(\omega\), and \(\omega\) itself is an ordinal.</p>
   <p class="proof-label">Proof</p>
@@ -33,7 +33,7 @@
   <p>The <a href="ordinals#ordinal-comparison">comparison of ordinals</a> gives a strict total membership order on \(\omega\), and every nonempty subset has a <a href="ordinals#least-ordinal">least member</a>. This makes the transitive set \(\omega\) a von Neumann ordinal. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="peano-properties" data-kind="theorem">
+<section id="peano-properties" data-kind="theorem" data-formal="zf-omega-successor-closed omega-peano-properties omega-subset-induction">
   <h2>Zero, successor, and induction satisfy the Peano properties</h2>
   <p>On \(\omega\), successor maps into \(\omega\), never takes the value \(0\), and is injective. Every nonzero member of \(\omega\) is the successor of exactly one member. Together with <a href="#induction-on-omega"></a>, these are the Peano properties of the constructed natural numbers.</p>
   <p class="proof-label">Proof</p>
@@ -41,7 +41,7 @@
   <p>By Separation the set \(D=\{0\}\cup\{S(n):n\in\omega\}\) is a subset of \(\omega\). It contains zero, and if \(x\in D\subseteq\omega\), then \(S(x)\in D\). Induction gives \(D=\omega\). Therefore every nonzero member has a predecessor; its uniqueness follows from injectivity. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="finite-ordinals-and-first-limit" data-kind="lemma">
+<section id="finite-ordinals-and-first-limit" data-kind="lemma" data-formal="omega-exactly-finite-ordinals omega-has-no-greatest-member omega-set-ordinal-identification omega-is-limit omega-least-limit">
   <h2>Finite stages lead to the first nonzero limit ordinal</h2>
   <p>The members of \(\omega\) are precisely the finite ordinals. The ordinal \(\omega\) has no greatest member and is the least nonzero limit ordinal.</p>
   <p class="proof-label">Proof</p>
@@ -50,13 +50,13 @@
   <p>We identify \(\mathbb N\) with this constructed \(\omega\), including \(0\). This gives the natural-number order a set-theoretic realization.</p>
 </section>
 
-<section id="natural-order" data-kind="definition">
+<section id="natural-order" data-kind="definition" data-formal="natural-set-order-correspondence ordinal-membership-well-order natural-successor-upper-bound-cases order-nat-linear">
   <h2>Membership is the usual order on natural numbers</h2>
   <p>For \(m,n\in\omega\), define \(m&lt;n\) by \(m\in n\), and \(m\le n\) by \(m\subseteq n\). Ordinal comparison shows that this is a well-order, with least member zero. Each \(n\) is the set of its predecessors, and \(S(n)\) is its immediate successor.</p>
   <p>In particular, if \(m\le S(n)\), then either \(m=S(n)\) or \(m\le n\). We will use this description of initial segments when connecting order with addition.</p>
 </section>
 
-<section id="recursion-on-omega" data-kind="theorem">
+<section id="recursion-on-omega" data-kind="theorem" data-formal="omega-members-natural-realizations natural-set-order-correspondence natural-sequence-existence-uniqueness natural-parameter-sequence-uniqueness">
   <h2>A starting value and a step determine one sequence</h2>
   <p>Let \(C\) be a set, \(c\in C\), and \(g:C\to C\). There is a unique function \(f:\omega\to C\) with</p>
   <div class="math-display">\[ f(0)=c,\qquad f(S(n))=g(f(n))\quad(n\in\omega). \]</div>
@@ -65,7 +65,7 @@
   <p>The assumption \(c\in C\) excludes an empty codomain. Parameter-dependent steps \(g_n:C\to C\) work in the same way: the recursion rule also knows its position \(n\).</p>
 </section>
 
-<section id="addition-and-multiplication" data-kind="definition">
+<section id="addition-and-multiplication" data-kind="definition" data-formal="natural-addition natural-multiplication addition-zero-right natural-add-successor natural-multiply-zero natural-multiply-successor natural-ordinal-addition natural-ordinal-multiplication">
   <h2>Arithmetic is defined by recursion</h2>
   <p>For each \(m\in\omega\), define addition and multiplication by</p>
   <div class="math-display">\[ m+0=m,\qquad m+S(n)=S(m+n),\qquad m\cdot0=0,\qquad m\cdot S(n)=m\cdot n+m. \]</div>
@@ -73,7 +73,7 @@
   <p>Write \(1=S(0)\); the addition equations give \(m+1=S(m)\). For example, \(2+2=S(S(2))=4\), and \(2\cdot3=(2\cdot2)+2=6\). These operations agree with <a href="ordinal-arithmetic#addition-identities">ordinal addition</a> and <a href="ordinal-arithmetic#multiplication-recursion">ordinal multiplication</a> on finite ordinals, since they satisfy the same recurrences and those recurrences determine unique functions.</p>
 </section>
 
-<section id="addition-laws" data-kind="theorem">
+<section id="addition-laws" data-kind="theorem" data-formal="addition-zero-left natural-add-commutative addition-associativity natural-add-cancel-right">
   <h2>Addition is associative, commutative, and cancellative</h2>
   <p>For natural numbers \(a,b,c\),</p>
   <div class="math-display">\[ 0+a=a,\qquad a+b=b+a,\qquad (a+b)+c=a+(b+c),\qquad a+c=b+c\Rightarrow a=b. \]</div>
@@ -83,7 +83,7 @@
   <p>Associativity follows by induction on \(c\): the base removes zero, and both successor cases are the successors of the two expressions in the induction hypothesis. Cancellation follows by induction on \(c\); at a successor step, injectivity of \(S\) reduces the equality to the preceding step. Commutativity gives cancellation on either side. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="order-and-addition" data-kind="theorem">
+<section id="order-and-addition" data-kind="theorem" data-formal="natural-unique-additive-difference natural-order-add-translation natural-strict-order-add-translation">
   <h2>Order records how much must be added</h2>
   <p>For \(m,n\in\omega\),</p>
   <div class="math-display">\[ m\le n\quad\Longleftrightarrow\quad\exists!k\in\omega\,(m+k=n). \]</div>
@@ -93,7 +93,7 @@
   <p>If \(m\le n\), write \(n=m+k\); associativity gives \(n+c=(m+c)+k\). Thus translation preserves order. If \(m&gt;n\), the same representation has a nonzero difference, and translation preserves that strict inequality as well. Totality then shows that translation reflects order. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="multiplication-laws" data-kind="theorem">
+<section id="multiplication-laws" data-kind="theorem" data-formal="multiplication-associativity natural-mul-commutative multiplication-one-left multiplication-one-right natural-multiply-zero natural-zero-multiply multiplication-left-distributive natural-add-mul-distributive natural-mul-zero-criterion natural-positive-mul-order natural-positive-mul-strict-order">
   <h2>Multiplication has the familiar arithmetic laws</h2>
   <p>Multiplication is associative and commutative, has identity \(1\) and absorbing element \(0\), and distributes over addition. Multiplication by a positive natural number preserves and reflects order, and \(ab=0\) exactly when \(a=0\) or \(b=0\).</p>
   <p class="proof-label">Proof</p>
@@ -102,7 +102,7 @@
   <p>If \(a,b&gt;0\), write \(b=S(k)\); then \(ab=ak+a\ge a&gt;0\). If \(m&lt;n\), write \(n=m+d\) with \(d&gt;0\). For \(c&gt;0\), distributivity gives \(nc=mc+dc&gt;mc\). The non-strict version follows too, and totality gives reflection. Zero factors have zero product directly, completing the last assertion. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="unique-natural-number-system" data-kind="theorem">
+<section id="unique-natural-number-system" data-kind="theorem" data-formal="peano-system-unique-isomorphism">
   <h2>Any full Peano system has the same structure</h2>
   <p>Let \(C\) be a set with \(c\in C\) and an injective map \(g:C\to C\) whose image omits \(c\). Assume that the only subset of \(C\) containing \(c\) and closed under \(g\) is \(C\). The recursive map \(f:\omega\to C\) from <a href="#recursion-on-omega"></a> is a unique bijection preserving zero and successor.</p>
   <p class="proof-label">Proof</p>
@@ -110,7 +110,7 @@
   <p>The hypothesis concerns every subset of \(C\), not merely subsets definable by formulas in an arithmetic language. Replacing it with only first-order arithmetic induction would be a different assertion.</p>
 </section>
 
-<section id="extra-point-question" data-kind="question">
+<section id="extra-point-question" data-kind="question" data-formal="natural-extra-point-successor natural-extra-point-counterexample">
   <h2>Why is subset induction necessary?</h2>
   <p>Take a tagged copy of \(\omega\) and one extra point \(\star\). Let zero be the tagged zero, let successor act normally on the copy, and put \(g(\star)=\star\). Which Peano property fails?</p>
   <details class="question-answer">

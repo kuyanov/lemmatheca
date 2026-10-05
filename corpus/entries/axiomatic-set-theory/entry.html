@@ -1,4 +1,4 @@
-<section id="membership-language" data-kind="definition">
+<section id="membership-language" data-kind="definition" data-formal="zf-set-members zf-subset-criterion">
   <h2>One relation describes a universe of sets</h2>
   <p>The <a href="sets-and-maps#sets-and-elements">language of sets and maps</a> lets us work with numbers, maps, and collections without choosing their internal construction. We now ask which assumptions justify those constructions. In <strong>ZF</strong>, or Zermelo–Fraenkel set theory, every object over which we quantify is a set. The basic relation is membership, \(x\in y\); equality belongs to the underlying logic. Numbers and maps will be represented by sets rather than added as separate kinds of object.</p>
   <p>We use classical first-order logic. A <strong>formula</strong> is a finite expression made from membership, equality, logical connectives, and quantifiers over sets. A formula may have fixed set parameters. For example, \(\varphi(x,B)\) might mean \(x\in B\). Subset notation abbreviates</p>
@@ -6,7 +6,7 @@
   <p>An <strong>axiom</strong> is an assumption of the theory. A theorem must follow from the axioms and logic. The axioms below specify set constructions and restrictions on membership; listing them does not itself prove that the theory is consistent.</p>
 </section>
 
-<section id="extensionality-and-empty-set" data-kind="definition">
+<section id="extensionality-and-empty-set" data-kind="definition" data-formal="zf-extensionality zf-empty-has-no-members zf-empty-uniqueness">
   <h2>Members determine a set</h2>
   <p><strong>Extensionality</strong> says that sets with exactly the same members are equal:</p>
   <div class="math-display">\[ \forall A\,\forall B\,\bigl[\forall x\,(x\in A\Longleftrightarrow x\in B)\Rightarrow A=B\bigr]. \]</div>
@@ -14,7 +14,7 @@
   <p>Extensionality is a criterion for equality, not permission to collect everything satisfying a condition. We still need existence axioms.</p>
 </section>
 
-<section id="separation" data-kind="definition">
+<section id="separation" data-kind="definition" data-formal="zf-separation-members zf-intersection-members zf-difference-members">
   <h2>Separate a definable part of an existing set</h2>
   <p>For each formula \(\varphi(x,p_1,\ldots,p_k)\), the <strong>Separation schema</strong> asserts that for every set \(A\) and every choice of set parameters there is a set \(B\) satisfying</p>
   <div class="math-display">\[ \forall x\,\bigl[x\in B\Longleftrightarrow x\in A\ \text{and}\ \varphi(x,p_1,\ldots,p_k)\bigr]. \]</div>
@@ -22,7 +22,7 @@
   <p>For instance, \(A\cap C\) and \(A\setminus C\) exist by separating elements that belong, or do not belong, to the parameter \(C\). Separation gives definable subsets; it does not assert that every subset can be defined by a formula.</p>
 </section>
 
-<section id="no-universal-set" data-kind="theorem">
+<section id="no-universal-set" data-kind="theorem" data-formal="zf-russell-subset russell-bounded-separation-argument zf-russell-subset-not-member zf-universal-class-proper">
   <h2>Russell’s argument rules out a universal set</h2>
   <p>For every set \(A\), the set \(R_A=\{x\in A:x\notin x\}\) is not a member of \(A\). In particular, no set contains every set.</p>
   <p class="proof-label">Proof</p>
@@ -30,14 +30,14 @@
   <p>This proof uses Separation, not Foundation. Unrestricted comprehension, asserting a set \(\{x:\varphi(x)\}\) for every condition without a bounding set, would fail for \(\varphi(x)\) meaning \(x\notin x\).</p>
 </section>
 
-<section id="sets-and-classes" data-kind="definition">
+<section id="sets-and-classes" data-kind="definition" data-formal="zf-class-predicate zf-proper-class zf-universal-class-proper zf-proper-class-not-member no-set-of-all-ordinals">
   <h2>Classes describe collections that may be too large</h2>
   <p>A <strong>definable class</strong> is the collection described by a formula with fixed set parameters. Class notation \(C=\{x:\varphi(x)\}\) abbreviates that condition: \(x\in C\) means \(\varphi(x)\). It does not add an object to the universe. The class is a <strong>proper class</strong> if no set has exactly those members.</p>
   <p>The class \(V=\{x:x=x\}\) of all sets is proper by <a href="#no-universal-set"></a>. The <a href="ordinals#no-set-of-all-ordinals">class of all ordinals</a> is another example. A set is also described by a class condition, such as \(x\in A\), but a proper class cannot be a member of a set.</p>
   <p>In ZF we quantify over sets, not over arbitrary classes. Statements using class notation must expand into formulas about sets. We will use only definable classes here; theories that take classes as additional objects require their own axioms.</p>
 </section>
 
-<section id="pairing-and-union" data-kind="definition">
+<section id="pairing-and-union" data-kind="definition" data-formal="zf-pair-members zf-singleton-members zf-union-members zf-binary-union-members">
   <h2>Pairing and Union build collections from existing sets</h2>
   <p><strong>Pairing</strong> asserts that for any sets \(a,b\), a set \(\{a,b\}\) exists with precisely those members. Taking \(a=b\) gives the singleton \(\{a\}\).</p>
   <p><strong>Union</strong> asserts that for every set \(\mathcal A\), a set \(\bigcup\mathcal A\) exists such that</p>
@@ -45,7 +45,7 @@
   <p>Consequently \(A\cup B=\bigcup\{A,B\}\) exists. Union collects members of members: \(\bigcup\{\{a\},\{b,c\}\}=\{a,b,c\}\). The family \(\mathcal A\) must itself be a set; Union does not collect a proper class of sets into a set.</p>
 </section>
 
-<section id="intersection-boundaries" data-kind="question">
+<section id="intersection-boundaries" data-kind="question" data-formal="zf-nonempty-intersection-members zf-relative-empty-intersection zf-universal-class-proper zf-empty-intersection-convention">
   <h2>What happens to an empty intersection?</h2>
   <p>How do we construct the intersection of a nonempty set \(\mathcal A\) of sets? Why can we not use the same unrestricted membership condition when \(\mathcal A=\varnothing\)?</p>
   <details class="question-answer">
@@ -54,14 +54,14 @@
   </details>
 </section>
 
-<section id="powerset" data-kind="definition">
+<section id="powerset" data-kind="definition" data-formal="zf-powerset-members">
   <h2>Power Set collects all subsets at once</h2>
   <p>The <strong>Power Set axiom</strong> asserts that for every set \(A\), a set \(\mathcal P(A)\) exists with</p>
   <div class="math-display">\[ B\in\mathcal P(A)\quad\Longleftrightarrow\quad B\subseteq A. \]</div>
   <p>This collects all subsets, rather than only the subsets described by a selected list of formulas. Together with Separation it lets us construct sets of relations and maps.</p>
 </section>
 
-<section id="ordered-pairs-and-products" data-kind="lemma">
+<section id="ordered-pairs-and-products" data-kind="lemma" data-formal="zf-kuratowski-pair zf-kuratowski-pair-equality zf-cartesian-product zf-cartesian-product-members zf-empty-product-cases">
   <h2>Ordered pairs and products are sets</h2>
   <p>Define the <strong>Kuratowski pair</strong> by \(\langle a,b\rangle=\{\{a\},\{a,b\}\}\). Then \(\langle a,b\rangle=\langle c,d\rangle\) exactly when \(a=c\) and \(b=d\). For sets \(A,B\), the collection \(A\times B\) of these pairs is a set.</p>
   <p class="proof-label">Proof</p>
@@ -69,7 +69,7 @@
   <p>If \(a\in A\) and \(b\in B\), both \(\{a\}\) and \(\{a,b\}\) are subsets of \(A\cup B\). The pair therefore belongs to \(\mathcal P(\mathcal P(A\cup B))\). Separate from this set the objects equal to \(\langle a,b\rangle\) for some \(a\in A,b\in B\). This gives \(A\times B\), including the empty product when either factor is empty. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="function-sets" data-kind="lemma">
+<section id="function-sets" data-kind="lemma" data-formal="zf-function-graph zf-function-set zf-function-set-members zf-empty-function-set-cases zf-definable-image-members zf-definable-image">
   <h2>Graphs and collections of functions need no new axiom</h2>
   <p>A <strong>function</strong> \(f:A\to B\) is represented by its graph, a subset of \(A\times B\) with exactly one pair \(\langle a,b\rangle\) for every \(a\in A\). The collection \(B^A\) of all such graphs is a set.</p>
   <p class="proof-label">Proof</p>
@@ -77,7 +77,7 @@
   <p>For a fixed graph \(f:A\to B\), its image is a subset of the already known set \(B\), so Separation suffices. Replacement is useful when no such output bound has yet been constructed.</p>
 </section>
 
-<section id="replacement" data-kind="definition">
+<section id="replacement" data-kind="definition" data-formal="zf-unique-output-replacement zf-unique-output-graph set-family-replacement zf-restricted-function-graph">
   <h2>Replacement collects uniquely specified outputs</h2>
   <p>For each formula \(\psi(x,y,p_1,\ldots,p_k)\), the <strong>Replacement schema</strong> says: if for every \(x\in A\) there is exactly one set \(y\) satisfying \(\psi\), then a set \(B\) exists with</p>
   <div class="math-display">\[ y\in B\quad\Longleftrightarrow\quad\exists x\in A\,\psi(x,y,p_1,\ldots,p_k). \]</div>
@@ -86,27 +86,27 @@
   <p>Existence and uniqueness are hypotheses to prove. Replacement is not a choice principle: it does not choose among several possible outputs. Nor does it collect the outputs of a proper-class domain into a set.</p>
 </section>
 
-<section id="infinity" data-kind="definition">
+<section id="infinity" data-kind="definition" data-formal="zf-inductive-set zf-omega zf-omega-contains-zero zf-omega-successor-closed">
   <h2>Infinity supplies one set containing all finite stages</h2>
   <p>Write \(S(x)=x\cup\{x\}\). A set \(I\) is <strong>inductive</strong> if \(\varnothing\in I\) and \(x\in I\) implies \(S(x)\in I\). The <strong>Infinity axiom</strong> asserts that an inductive set exists.</p>
   <p>The other construction axioms build \(0=\varnothing\), \(1=S(0)\), \(2=S(1)\), and every subsequent finite stage. Infinity goes further: it places all these stages inside one set. The <a href="natural-numbers-as-sets#least-inductive-set">least inductive set</a> gives a construction of \(\omega\).</p>
 </section>
 
-<section id="foundation" data-kind="definition">
+<section id="foundation" data-kind="definition" data-formal="zf-foundation-minimal-member zf-foundation-two-nonempty-minima">
   <h2>Foundation requires a membership-minimal member</h2>
   <p>The <strong>Foundation axiom</strong>, also called Regularity, says that every nonempty set \(A\) has a member \(a\) such that \(a\cap A=\varnothing\). Equivalently, no member of \(A\) belongs to \(a\).</p>
   <p>This does not say that \(a\) is empty or unique. For example, let \(0=\varnothing\), \(1=\{0\}\), \(2=\{0,1\}\), and \(A=\{1,\{2\}\}\). Both members have empty intersection with \(A\), although neither is empty.</p>
   <p>Foundation controls membership, whereas the axioms above mostly construct sets. Its consequences, including membership induction and ranks, are developed in <a href="foundation-and-rank#foundation-minimality">the foundation entry</a>.</p>
 </section>
 
-<section id="choice-and-zfc" data-kind="definition">
+<section id="choice-and-zfc" data-kind="definition" data-formal="zf-family-choice-graph zf-empty-function-set-cases choice-principle">
   <h2>Choice is a further assumption</h2>
   <p>The axioms and schemas just stated form our presentation of <strong>ZF</strong>. <strong>ZFC</strong> is ZF together with the <a href="axiom-of-choice#choice-functions">Axiom of Choice</a>: for every set \(\mathcal A\) of nonempty sets there is a function \(c\) on \(\mathcal A\) with \(c(A)\in A\) for each \(A\in\mathcal A\).</p>
   <p>The empty family has the empty choice function. For a nonempty family, the difficulty is supplying one function that makes all selections together. Replacement collects outputs of a uniquely specified rule; Choice asserts existence of a selection even when such a rule has not been supplied.</p>
   <p>The constructions of <a href="natural-numbers-as-sets#least-inductive-set">natural numbers</a>, <a href="constructing-number-systems#construction-and-embedding">integers, rationals, and real numbers</a>, and <a href="foundation-and-rank#membership-rank">membership ranks</a> use ZF and do not require Choice. An assertion that some principle cannot be proved from ZF would require a separate independence argument; none is being claimed merely by giving it a different name.</p>
 </section>
 
-<section id="axiom-audit-question" data-kind="question">
+<section id="axiom-audit-question" data-kind="question" data-formal="zf-family-powersets-bounded zf-unique-output-replacement zf-powerset-members">
   <h2>Which axiom collects a family of power sets?</h2>
   <p>Given a set \(A\), justify the existence of \(\{\mathcal P(x):x\in A\}\). Does the justification require Choice?</p>
   <details class="question-answer">

@@ -1,10 +1,10 @@
-<section id="foundation-minimality" data-kind="definition">
+<section id="foundation-minimality" data-kind="definition" data-formal="zf-foundation-minimal-member">
   <h2>Membership has minimal elements inside every nonempty set</h2>
   <p>The <a href="axiomatic-set-theory#foundation">Foundation axiom</a> says that every nonempty set \(A\) contains a member \(a\) such that \(a\cap A=\varnothing\). This is a minimality condition for membership: no member of \(A\) is a member of \(a\). It does not require \(a\) to be empty, nor does it compare all members of \(A\) in a linear order.</p>
   <p>In this entry we work in ZF, including Foundation, without Choice. We reuse <a href="ordinals#ordinal-comparison">ordinal comparison</a> and <a href="ordinals#ordinal-suprema">suprema of sets of ordinals</a>. These will measure how far membership descends, even when a set has infinitely many members.</p>
 </section>
 
-<section id="no-membership-cycles" data-kind="theorem">
+<section id="no-membership-cycles" data-kind="theorem" data-formal="set-self-membership-impossible zf-membership-asymmetric no-finite-membership-cycles membership-not-transitive-example">
   <h2>There are no finite membership cycles</h2>
   <p>No set belongs to itself. More generally, there is no finite nonempty list of sets \(x_0,\ldots,x_{n-1}\) with \(x_{i+1}\in x_i\) for successive positions and \(x_0\in x_{n-1}\).</p>
   <p class="proof-label">Proof</p>
@@ -12,7 +12,7 @@
   <p>In particular, \(x\in y\) and \(y\in x\) cannot both hold. But membership still need not be transitive: with \(0=\varnothing\), \(a=\{0\}\), and \(b=\{a\}\), we have \(0\in a\in b\) but \(0\notin b\).</p>
 </section>
 
-<section id="no-descending-sequence" data-kind="lemma">
+<section id="no-descending-sequence" data-kind="lemma" data-formal="zf-membership-well-founded well-founded-no-descending-sequence">
   <h2>No sequence can keep moving to a member forever</h2>
   <p>There is no function \(f\) on \(\omega\) with \(f(n+1)\in f(n)\) for every \(n\).</p>
   <p class="proof-label">Proof</p>
@@ -20,14 +20,14 @@
   <p>We proved this consequence directly. The reverse method of turning a failure of minimality into a descending sequence would require a principle for making successive selections; we do not use it here.</p>
 </section>
 
-<section id="transitive-sets-and-closures" data-kind="definition">
+<section id="transitive-sets-and-closures" data-kind="definition" data-formal="transitive-zf-set zf-transitivity-union-criterion transitive-closure transitive-closure-leastness-condition membership-not-transitive-example">
   <h2>A transitive set contains its members’ members</h2>
   <p>A set \(T\) is <strong>transitive</strong> if \(y\in T\) implies \(y\subseteq T\), equivalently \(\bigcup T\subseteq T\). This is the <a href="ordinals#transitive-sets">transitive-set convention</a> used for ordinals. It differs from transitivity of the relation \(\in\).</p>
   <p>A <strong>transitive closure</strong> of a set \(x\) is the smallest transitive set containing \(x\) as a subset. We write it \(\operatorname{TC}(x)\). To include \(x\) itself as a member as well as all its descendants, use \(\operatorname{TC}(\{x\})\). These two expressions have different roles.</p>
   <p>For example, \(T=\{0,\{0\},\{\{0\}\}\}\) is transitive. But the membership relation on \(T\) is not transitive, since \(0\in\{0\}\in\{\{0\}\}\) and \(0\notin\{\{0\}\}\).</p>
 </section>
 
-<section id="transitive-closure-construction" data-kind="theorem">
+<section id="transitive-closure-construction" data-kind="theorem" data-formal="transitive-closure-stages transitive-closure transitive-closure-construction-spec transitive-closure-unique-least">
   <h2>Iterating Union constructs the transitive closure</h2>
   <p>For a set \(x\), recursively put</p>
   <div class="math-display">\[ X_0=x,\qquad X_{n+1}=X_n\cup\bigcup X_n,\qquad \operatorname{TC}(x)=\bigcup_{n\in\omega}X_n. \]</div>
@@ -37,7 +37,7 @@
   <p>The sequence is increasing, so \(x\subseteq\operatorname{TC}(x)\). If \(y\in\operatorname{TC}(x)\), it belongs to some \(X_n\); every \(z\in y\) lies in \(\bigcup X_n\subseteq X_{n+1}\), hence in the closure. Thus the closure is transitive. If \(U\) is transitive and \(x\subseteq U\), induction gives \(X_n\subseteq U\) for every \(n\), so the union is contained in \(U\). This proves leastness and uniqueness. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="closure-examples" data-kind="question">
+<section id="closure-examples" data-kind="question" data-formal="transitive-closure-examples transitive-closure-transitive-fixed">
   <h2>Which sets are included in a closure?</h2>
   <p>Put \(0=\varnothing\), \(a=\{0\}\), \(b=\{a\}\), and \(x=\{a,b\}\). Compute \(\operatorname{TC}(x)\) and \(\operatorname{TC}(\{x\})\). Also compute the closure of the empty set and the closure of a transitive set \(T\).</p>
   <details class="question-answer">
@@ -46,7 +46,7 @@
   </details>
 </section>
 
-<section id="set-induction" data-kind="theorem">
+<section id="set-induction" data-kind="theorem" data-formal="zf-membership-induction">
   <h2>Foundation gives induction over all sets</h2>
   <p>Let \(P(x)\) be any formula with fixed set parameters. If</p>
   <div class="math-display">\[ \forall x\,\bigl[(\forall y\in x\,P(y))\Rightarrow P(x)\bigr], \]</div>
@@ -56,7 +56,7 @@
   <p>The collection of all counterexamples might be a proper class. The transitive closure provides the set-sized search space to which Foundation applies.</p>
 </section>
 
-<section id="induction-implies-foundation" data-kind="lemma">
+<section id="induction-implies-foundation" data-kind="lemma" data-formal="membership-induction-principle membership-induction-implies-minimality">
   <h2>Membership induction also implies Foundation</h2>
   <p>Over the other axioms of ZF, the membership-induction schema implies Foundation.</p>
   <p class="proof-label">Proof</p>
@@ -64,7 +64,7 @@
   <p>This equivalence compares an axiom with a schema: each application of induction concerns one formula and its parameters.</p>
 </section>
 
-<section id="local-rank-recursion" data-kind="theorem">
+<section id="local-rank-recursion" data-kind="theorem" data-formal="local-membership-rank-equation local-membership-rank-unique zf-membership-well-founded">
   <h2>A transitive set has a unique membership-rank function</h2>
   <p>If \(T\) is a transitive set, there is a unique function \(r_T\) on \(T\) taking ordinal values and satisfying</p>
   <div class="math-display">\[ r_T(x)=\sup\{r_T(y)+1:y\in x\}\quad(x\in T). \]</div>
@@ -77,7 +77,7 @@
   <p>This proof does not assume a set of all ordinals as codomain. It constructs each value locally, then uses Replacement to collect the values on a set.</p>
 </section>
 
-<section id="membership-rank" data-kind="definition">
+<section id="membership-rank" data-kind="definition" data-formal="local-membership-rank-agreement set-membership-rank-equation">
   <h2>The rank of a set is independent of its surrounding carrier</h2>
   <p>For a set \(x\), define</p>
   <div class="math-display">\[ \operatorname{rank}(x)=r_{\operatorname{TC}(\{x\})}(x). \]</div>
@@ -86,7 +86,7 @@
   <p>This is a definable class function: it gives exactly one ordinal for each set. Its values on any set-sized domain form a set by Replacement. We have not made a set containing all input-output pairs.</p>
 </section>
 
-<section id="membership-lowers-rank" data-kind="theorem">
+<section id="membership-lowers-rank" data-kind="theorem" data-formal="zf-membership-lowers-rank zf-subset-rank-monotone set-rank-zero-iff-empty proper-inclusion-equal-rank-example">
   <h2>Every membership step strictly lowers rank</h2>
   <p>If \(y\in x\), then \(\operatorname{rank}(y)&lt;\operatorname{rank}(x)\). If \(x\subseteq z\), then \(\operatorname{rank}(x)\le\operatorname{rank}(z)\). A set has rank zero exactly when it is empty.</p>
   <p class="proof-label">Proof</p>
@@ -98,7 +98,7 @@
   </figure>
 </section>
 
-<section id="rank-calculations" data-kind="theorem">
+<section id="rank-calculations" data-kind="theorem" data-formal="zf-singleton-rank zf-pair-rank set-union-rank-supremum zf-powerset-rank zf-empty-rank">
   <h2>Ranks of standard set constructions</h2>
   <p>For any sets \(x,y\),</p>
   <div class="math-display">\[ \begin{aligned}
@@ -114,7 +114,7 @@
   <p>The \(+1\) in these formulas is ordinal successor. In particular, \(\operatorname{rank}(\mathcal P(\varnothing))=1\), even though its only member is empty.</p>
 </section>
 
-<section id="ordinal-ranks" data-kind="theorem">
+<section id="ordinal-ranks" data-kind="theorem" data-formal="ordinal-set-rank omega-set-ordinal-identification">
   <h2>An ordinal is its own membership rank</h2>
   <p>For every ordinal \(\alpha\), \(\operatorname{rank}(\alpha)=\alpha\). In particular, natural numbers have their own finite ranks and \(\operatorname{rank}(\omega)=\omega\).</p>
   <p class="proof-label">Proof</p>
@@ -123,7 +123,7 @@
   <p>Every \(\beta+1\) in this family is at most \(\alpha\), while each \(\gamma&lt;\alpha\) belongs to the successor \(\gamma+1\) occurring in the family. Thus its union, and hence its supremum, is precisely \(\alpha\). At zero both are empty. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="closure-preserves-rank" data-kind="lemma">
+<section id="closure-preserves-rank" data-kind="lemma" data-formal="transitive-closure-rank-preserved zf-binary-union-rank zf-indexed-union-rank zf-singleton-rank">
   <h2>Taking transitive closure preserves rank</h2>
   <p>For every set \(x\), \(\operatorname{rank}(\operatorname{TC}(x))=\operatorname{rank}(x)\).</p>
   <p class="proof-label">Proof</p>
@@ -131,7 +131,7 @@
   <p>Consequently \(\operatorname{TC}(\{x\})\) has rank \(\operatorname{rank}(x)+1\), in agreement with the fact that it contains \(x\) as a member.</p>
 </section>
 
-<section id="ordinal-height-and-well-foundedness" data-kind="lemma">
+<section id="ordinal-height-and-well-foundedness" data-kind="lemma" data-formal="decreasing-ordinal-height-well-founded">
   <h2>Decreasing ordinal heights certify well-foundedness</h2>
   <p>Let \(R\) be a relation on a set \(A\). Suppose each \(a\in A\) is assigned an ordinal \(h(a)\), with \(b\,R\,a\) implying \(h(b)&lt;h(a)\). Then \(R\) is well-founded on \(A\).</p>
   <p class="proof-label">Proof</p>
@@ -139,7 +139,7 @@
   <p>Membership rank supplies such a height on every set of sets. For a general relation the height has domain its carrier \(A\), rather than automatically all sets.</p>
 </section>
 
-<section id="rank-versus-size-question" data-kind="question">
+<section id="rank-versus-size-question" data-kind="question" data-formal="singleton-ordinal-rank-and-size omega-rank-and-singleton-sizes zf-singleton-cardinality">
   <h2>Does large rank mean large cardinality?</h2>
   <p>Compare the cardinalities and ranks of \(\omega\), \(\{\omega\}\), and \(\{\{\omega\}\}\). Can a singleton have arbitrarily large rank?</p>
   <details class="question-answer">

@@ -13,3 +13,7 @@ import Lemmatheca.Entry.OrdinalPowers
 import Lemmatheca.Entry.Cofinality
 import Lemmatheca.Entry.InfiniteSumsAndProducts
 import Lemmatheca.Entry.FiltersAndUltrafilters
+import Lemmatheca.Entry.AxiomaticSetTheory
+import Lemmatheca.Entry.NaturalNumbersAsSets
+import Lemmatheca.Entry.FoundationAndRank
+import Lemmatheca.Entry.ConstructingNumberSystems
