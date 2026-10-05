@@ -10,8 +10,7 @@ first. The contracts for [corpus content](docs/corpus.md),
 Each step has an executable Markdown prompt in `prompts/`. A contribution may
 complete one step or several. Start from the current files and supplied scope;
 there is no need to repeat finished steps when, for example, proving existing
-nodes. Review findings and decisions belong in GitHub pull requests. The app
-stores no approval flags, review hashes, or review dates.
+nodes. Review findings and decisions belong in GitHub pull requests.
 
 | Step | Input | Output | Changes repository content? |
 | --- | --- | --- | --- |
@@ -194,9 +193,7 @@ request, or in an explicitly requested report file. They are not corpus metadata
 
 ## Validation and submission
 
-Choose checks that match the changes. Planning and ordinary read-only reviews
-need no blanket command run; use focused checks to investigate specific concerns.
-After editing corpus files in drafting or formal-node preparation, or changing
+Choose checks that match the changes. After editing corpus files in drafting or formal-node preparation, or changing
 node records, bindings, or entry structure while proving, run this read-only check
 from the repository root:
 

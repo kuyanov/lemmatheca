@@ -23,8 +23,7 @@ changing its block inventory, formal mappings, node bindings,
 or Lean code, and include the generated JSON in the change.
 See the [corpus guide](corpus.md) and [Lean guide](formal.md).
 
-Open <http://127.0.0.1:8000/>. Existing content files are read on each request;
-there is no persistent catalog cache. Restart the server when adding an entry's
+Open <http://127.0.0.1:8000/>. Restart the server when adding an entry's
 asset directory, since Django registers those directories at startup. Python edits
 also require a restart when running with `--noreload`.
 
@@ -80,9 +79,7 @@ and area URLs still protect filesystem access and return 404 for invalid routes.
 | `/api/nodes/` | All node records as JSON |
 | `/api/nodes/<id>/` | One node record as JSON |
 
-Reader and API routes accept GET and HEAD. There is no separate nodes index page.
-The API adds reader URLs and source paths to the saved node fields. Verification
-comes from the saved `verified` flag, not a live proof check or GitHub review state.
+Reader and API routes accept GET and HEAD. The API adds reader URLs and source paths to the saved node fields. Verification comes from the saved `verified` flag.
 
 Node pages render plain-text descriptions with math, escape the Lean source,
 and link declaration lines into the local source
@@ -110,17 +107,7 @@ For maintenance, run the same command locally or manually dispatch the workflow 
 Runs are serialized and commit only the statistics file. If `main` advances before
 the push, the workflow fetches it and recomputes, retrying up to three times without
 force-pushing. The workflow uses `GITHUB_TOKEN` with `contents: write`; repository
-rules must permit this automatic commit to `main`. Its push does not recursively
-start another workflow ([GitHub's token behavior](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow#triggering-a-workflow-from-a-workflow)).
-
-The statistics grid uses decorative icons for entries, nodes, areas, and
-contributors, with verification totals shown as text. Each card has an independent
-chart toggle. The charts replace the card's contents without changing its height;
-entry and node charts show both total and verified counts. Charts use small SVGs
-and the saved JSON, with no chart library, extra endpoint, or Git call on requests.
-Smooth curves with a subtle area fill connect the recorded points to today's
-current counts from the snapshot. Curves stay within each segment's count range.
-This display endpoint does not add a point to the saved history.
+rules must permit this automatic commit to `main`.
 
 `history` contains four series: `entries`, `nodes`, `areas`, and `contributors`.
 Each point has a UTC `at` timestamp and a nonnegative `count`. Entry and node
@@ -169,10 +156,7 @@ copy, icons, whitespace, and attribute ordering; use the test HTML helper when
 checking rendered links or structure. Locate labelled sections using stable
 `aria-labelledby` relationships and require nonempty headings without fixing their
 wording. Check displayed data within the relevant section, using response context
-or corpus records for expected values. Node-page/API tests check that axiom
-metadata and its page section are absent, using an isolated fixture and renamed
-headings with an in-memory template.
-Verification expectations should come from
+or corpus records for expected values. Verification expectations should come from
 controlled fixtures or saved node data, not the corpus's current completion rate.
 
 To run only the isolated Lean-build tests:

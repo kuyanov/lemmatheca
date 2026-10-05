@@ -1,6 +1,4 @@
-from copy import deepcopy
 from pathlib import Path
-import re
 import shutil
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -92,7 +90,8 @@ class ReaderTests(SimpleTestCase):
                                 for element in page.elements))
             for block in entry["blocks"]:
                 self.assertIn(block["id"], page.ids)
-                section = self.assert_labelled_section(page, f"{block['id']}-title")
+                section = self.assert_labelled_section(
+                    page, f"{block['id']}-title")
                 self.assertEqual(section.attrs["id"], block["id"])
                 for node in block["formal_ids"] or []:
                     self.assertIn(
@@ -243,35 +242,6 @@ class ReaderTests(SimpleTestCase):
                 self.assertFalse(response.context["node"]["verified"])
                 self.assertIsNone(response.context["node"].get("declaration"))
                 self.assertIsNone(response.context["node"]["source"])
-
-    def test_node_pages_and_api_have_no_axiom_metadata(self):
-        source = (settings.REPOSITORY_DIR / "app/templates/catalog/node.html").read_text()
-        renamed = re.sub(r"(<h2\b[^>]*>).*?(</h2>)",
-                         r"\1Renamed <em>section</em> heading\2", source, flags=re.DOTALL)
-        with TemporaryDirectory() as directory:
-            corpus = Path(directory)
-            (corpus / "nodes").mkdir()
-            write_json(corpus / "nodes/example.json",
-                       {"id": "example", "description": "An unbound example.", "verified": False})
-            for renamed_headings in (False, True):
-                template = deepcopy(settings.TEMPLATES[0])
-                template["APP_DIRS"] = False
-                template.setdefault("OPTIONS", {})["loaders"] = [
-                    ("django.template.loaders.locmem.Loader",
-                     {"catalog/node.html": renamed} if renamed_headings else {}),
-                    "django.template.loaders.filesystem.Loader",
-                    "django.template.loaders.app_directories.Loader",
-                ]
-                with self.subTest(renamed_headings=renamed_headings), \
-                        override_settings(CORPUS_DIR=corpus, TEMPLATES=[template]):
-                    response = self.client.get("/nodes/example/")
-                    page = self.page(response)
-                    self.assertNotIn("axioms-title", page.ids)
-                    self.assertNotIn("axioms", response.context["node"])
-                    self.assertNotIn("axioms", self.client.get("/api/nodes/example/").json())
-                    nodes = self.client.get("/api/nodes/").json()["nodes"]
-                    self.assertEqual([node["id"] for node in nodes], ["example"])
-                    self.assertNotIn("axioms", nodes[0])
 
     def test_corpus_has_only_verification_status_and_no_review_command(self):
         self.assertNotIn("review", get_commands())

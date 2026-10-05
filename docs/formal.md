@@ -32,14 +32,12 @@ example `"For every set \\(A\\), \\(A\\cup\\varnothing=A\\)."`. Avoid HTML, proo
 and implementation commentary in descriptions.
 
 `declaration` is the full Lean name. `module` is the module that defines it, used
-for both importing and browsing its source. There is no separate import/source
-module field. A node can bind directly to a local, mathlib, or Lean core declaration.
+for both importing and browsing its source. A node can bind directly to a local, mathlib, or Lean core declaration.
 Before a target exists, `module` and `declaration` may both be `null`; start new
 nodes with `verified: false`.
 
 Formalization uses classical Lean and mathlib with `propext`, `Classical.choice`,
-and `Quot.sound` permitted by default. Node records have no axiom field or
-per-node axiom allowance, and node pages have no axiom section. This convention
+and `Quot.sound` permitted by default. This convention
 permits Choice without asserting that it is mathematically necessary.
 A Verified badge checks the Lean declaration; it does not certify provability
 from first-order ZF or the strength of a weaker choice principle. Assess those
@@ -128,8 +126,8 @@ pinned environment, checks source availability, runs the tests and build, then c
 summaries match regenerated files. The tests exercise successful, unfinished,
 unsupported-axiom, missing-declaration, and failed builds in an isolated Lean
 project. They also check Choice used directly, through other declarations, or in
-a type, metadata edits during builds, and node-page/API presentation without axiom
-metadata. `formal/.lake/` contains ignored local dependencies and build output.
+a type, and metadata edits during builds. `formal/.lake/` contains ignored local
+dependencies and build output.
 
 ### Inspecting kernel axioms
 
@@ -154,9 +152,7 @@ can introduce `Classical.choice` independently of a human selection argument.
 
 ## Review and proving
 
-Reviews of human exposition and formal correspondence take place on GitHub. There
-are no in-app approvals, review commands, hashes, or dates. Verification checks the
-Lean declaration; it does not prove that the description or entry says the same
+Reviews of human exposition and formal correspondence take place on GitHub. Verification checks the Lean declaration; it does not prove that the description or entry says the same
 thing. Review the mathematical text, block coverage, and description-to-declaration
 correspondence separately.
 

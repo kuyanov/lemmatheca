@@ -44,10 +44,6 @@ the intended mathematics.
 | [`prompts/`](prompts/) | Six independently runnable Markdown instructions for authors and AI agents |
 | [`docs/`](docs/README.md) | Detailed documentation and maintenance guides |
 
-There is no database, migration step, or frontend build. The server reads local
-files; the build precomputes verification summaries so listing pages need only
-entry metadata. KaTeX, used to display mathematical notation, is bundled locally.
-
 ## Setup
 
 Clone this repository and open a terminal in its root directory. You need Git,
@@ -114,8 +110,7 @@ The Django `build` command compiles Lean and refreshes node verification,
 declaration signatures, source lines, and entry summaries. Home-page statistics
 are updated automatically after pushes to `main`, including newly merged contributors;
 contribution branches do not need to regenerate `corpus/statistics.json`.
-**Verified** means the declaration and its Lean dependencies contain no unfinished
-proofs (`sorry`) and use only the default axioms: `propext`, `Classical.choice`, and
+**Verified** means the declaration contains no unfinished proofs (`sorry`) and use only the default axioms: `propext`, `Classical.choice`, and
 `Quot.sound`. Unfinished or unsupported proofs are marked **Not verified** without
 preventing the build from checking the remaining nodes. See the
 [verification rules](docs/formal.md#build-and-verification).

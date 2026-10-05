@@ -78,9 +78,7 @@ changed counts, current endpoints, and verified totals. Existing snapshots witho
 history remain valid until the next statistics refresh fills it in.
 See the [statistics guide](app.md#home-page-statistics) for Git backfill and contributor counting.
 
-Block structure, human references, and formal-node mappings belong in HTML, not
-in extra metadata lists. Keep prompts, proof attempts, and experiment logs outside
-entry metadata. There are no stored review records or entry approval flags.
+Block structure, human references, and formal-node mappings belong in HTML.
 
 ## HTML and references
 
@@ -177,11 +175,10 @@ all blocks mapped, they display the verified proportion, or N/A if every mapping
 is empty. Wholly unplanned entries display Not started; partly unplanned entries
 display Partial. These are formalization summaries, not GitHub review decisions.
 Node pages display Verified or Not verified, the mathematical description, Lean
-declaration, dependencies, and source. There is no axiom section.
+declaration, dependencies, and source.
 
 The [Lean guide](formal.md#formal-nodes) defines node records, descriptions,
-bindings, and the distinction between proof-planning hints and actual Lean dependencies.
-Node records have no axiom field. Formal verification permits `propext`,
+bindings, and the distinction between proof-planning hints and actual Lean dependencies. Formal verification permits `propext`,
 `Classical.choice`, and `Quot.sound` by default, without asserting their mathematical
 necessity. Human ZF-only arguments and claims about weaker choice principles need
 separate assessment; the Verified badge does not certify their axiom strength.

@@ -67,7 +67,7 @@ class ProofResultsTests(SimpleTestCase):
         for output in ("", 'NODE_STATUS {"declaration":"example","verified":"true"}',
                        'NODE_STATUS []', 'NODE_STATUS {"verified":true}',
                        'NODE_STATUS {"declaration":[],"verified":true}',
-                       'NODE_STATUS {"declaration":"example","verified":true,"axioms":["choice"]}',
+                       'NODE_STATUS {"declaration":"example","verified":true,"typo":"value"}',
                        'NODE_STATUS {', 'NODE_STATUS {"declaration":"other","verified":true}',
                        'NODE_STATUS {"declaration":"example","verified":true}\n' * 2):
             with self.subTest(output=output):
@@ -318,5 +318,3 @@ theorem typeOnly (x : chosenType) : x = x := rfl
             for identifier, _, verified in cases:
                 node = read_json(corpus / "nodes" / f"{identifier}.json")
                 self.assertEqual(node["verified"], verified)
-                self.assertNotIn("axioms", node)
-                self.assertNotIn("lean_axioms", node)

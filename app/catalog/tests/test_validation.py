@@ -250,7 +250,7 @@ class CorpusValidationTests(SimpleTestCase):
             ({'module': '../Lemmatheca', 'declaration': 'proof'}, 'Invalid Lean module'),
             ({'declaration_line': False}, 'positive integer'),
             ({'signature': []}, 'signature must'),
-            ({'axioms': ['choice']}, 'Unknown fields: axioms'),
+            ({'typo': 'value'}, 'Unknown fields: typo'),
         ]:
             with self.subTest(update=update):
                 write_json(self.node, {**original, **update})
