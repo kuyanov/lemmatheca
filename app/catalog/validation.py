@@ -7,6 +7,7 @@ from pathlib import PurePosixPath
 import re
 from urllib.parse import urlsplit
 
+from .axioms import check_axiom_dependencies, check_axioms
 from .entry_files import is_local_asset
 from .equations import EQREF, LABEL
 from .node_files import LEAN_MODULE, source_path
@@ -305,10 +306,11 @@ def entry_metadata(record, expected, areas):
 
 
 def node_metadata(record, expected):
-    fields(record, ("id", "description", "verified"),
+    fields(record, ("id", "description", "axioms", "verified"),
            ("module", "declaration", "dependencies", "signature", "declaration_line"))
     require(record["id"] == expected, "ID does not match filename")
     text(record["description"], "description")
+    check_axioms(record["axioms"])
     require(type(record["verified"]) is bool, "verified must be a boolean")
     dependencies = record.get("dependencies", [])
     identifiers(dependencies, "dependency")
@@ -420,7 +422,7 @@ def validate_corpus(corpus, *, source_root=None):
                 listed[entry_id] = area
     del document
 
-    graph, modules = {}, set()
+    graph, requirements, modules = {}, {}, set()
     nodes_dir = corpus / "nodes"
     require(nodes_dir.is_dir(), f"Missing node directory: {nodes_dir}")
     for path in nodes_dir.iterdir():
@@ -430,6 +432,7 @@ def validate_corpus(corpus, *, source_root=None):
             identifier(path.stem)
             record = json_object(path)
             graph[path.stem] = node_metadata(record, path.stem)
+            requirements[path.stem] = set(record["axioms"])
             module = record.get("module")
             if source_root is not None and module and module not in modules:
                 modules.add(module)
@@ -441,8 +444,9 @@ def validate_corpus(corpus, *, source_root=None):
                         pass
     with checking(nodes_dir):
         acyclic(graph, "Node dependencies")
+        check_axiom_dependencies(graph, requirements)
     node_ids = set(graph)
-    del graph
+    del graph, requirements
 
     blocks_by_entry, links = {}, []
     entries_dir = corpus / "entries"

@@ -45,6 +45,22 @@ Respect repository instructions and preserve unrelated work.
    be reordered or moved into separate subareas. Identify prerequisites by stable
    entry and block IDs, independently of adjacency or a shared area. Plan named
    links rather than references to "the previous entry" or "the next entries."
+   Apply the [prerequisite and scope guidance](../CONTRIBUTING.md#prerequisites-and-scope).
+   Consult the [reference backlog](../docs/reference-backlog.md). Familiar background,
+   including standard real-number facts, may be used without a corpus reference;
+   propose useful future links in the handoff. A missing link alone is not a proof
+   gap. Do not plan major dependencies on substantial theory missing from the corpus.
+   Map the needed results to current entry/block IDs and inspect their assumptions.
+   Identify any extra axioms above ZF needed by the planned human arguments.
+   All formal nodes currently permit ambient AC; their allowances and Verified
+   badges do not establish the axiom strength of a human ZF-only argument.
+   Check the mathematical arguments themselves before reusing a result under
+   weaker assumptions, and identify any axiom-strength claim outside formal coverage.
+   Separate ready human prerequisites, formal readiness, short lemmas to develop
+   locally, and missing substantial theories. For a missing theory, recommend the
+   area and concrete entry titles to start, identify the affected claims, and
+   propose a useful scope that can be added now. Do not treat available mathlib
+   coverage as a substitute for reader prerequisites.
 3. Inspect `corpus/nodes/` and the pinned Lean/mathlib sources for likely reusable
    bindings. Read signatures and relevant definitions, not just names. Flag
    representation differences and missing results without starting formalization.
@@ -69,4 +85,6 @@ Include the source-rigor assessment: findings with precise locations, proposed
 repairs, and any unchecked material. State explicitly if no gaps were found in the
 inspected passages, without claiming more than was checked. List checks performed
 and unresolved questions for the drafting step.
+Include the prerequisite map, a recommendation on what can be added now, and any
+areas or entries needed before the deferred material, with reasons.
 Do not create entries, nodes, proofs, or generated summaries at this stage.

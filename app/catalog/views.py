@@ -5,6 +5,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_safe
 
+from .axioms import AXIOM_LABELS
 from .content import (add_progress, ancestors, area_link, area_list, area_path,
                       load_entry, load_entry_metadata, load_node, next_entry, node_source)
 from .entry_files import read_area_entries, read_areas
@@ -103,6 +104,8 @@ def node_page(request, node_id):
     node = get_node(node_id)
     context = {"node": node, "dependencies": [
         load_node(identifier) for identifier in node.get("dependencies", [])]}
+    context["axiom_labels"] = [AXIOM_LABELS[axiom]
+                               for axiom in node.get("axioms", [])]
     if node["source"]:
         context.update(node_source(node))
     return render(request, "catalog/node.html", context)

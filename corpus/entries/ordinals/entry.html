@@ -264,7 +264,7 @@
   </details>
 </section>
 
-<section id="transfinite-methods" data-kind="lemma" data-formal="ordinal-three-case-recursion well-order-recursion-rule well-order-recursion-exists-unique set-family-replacement">
+<section id="transfinite-methods" data-kind="lemma" data-formal="ordinal-three-case-recursion well-order-recursion-rule well-order-recursion-exists-unique partial-recursive-solutions-compatible set-family-replacement zf-unique-output-replacement zf-unique-output-graph">
   <h2>Induction and recursion use all earlier ordinals</h2>
 <p>For a fixed ordinal \(\theta\), its elements form a well-ordered set. The
     <a href="well-ordered-sets#three-case-induction">three-case induction principle</a>
@@ -276,13 +276,50 @@
     \(F(\alpha)=\Phi_\alpha(F|_\alpha)\), by the
     <a href="well-ordered-sets#well-order-recursion">recursion theorem</a>.
     Here the earlier segment below \(\alpha\) is literally the set \(\alpha\).</p>
-  <p>When the values are sets with no fixed value set specified in advance, one needs
-    the set-valued form of recursion together with Replacement. Compatible solutions
-    on earlier segments determine the unique next value; Replacement collects those
-    uniquely determined earlier values at each set-sized stage. This is the same
-    compatibility argument used in <a href="#unique-ordinal-representative"></a>,
-    with the additional set-collection step made explicit. It does not assert the
-    existence of a set containing every possible value at every ordinal.</p>
+  <p>The values may instead be sets with no containing set \(S\) specified in
+    advance. For this we use <a href="axiomatic-set-theory#replacement">Replacement</a>
+    to collect uniquely determined outputs, rather than choosing them.</p>
+  <p><strong>Set-valued recursion.</strong> Suppose a rule \(\Phi\), defined by a
+    formula with fixed set parameters, assigns exactly one set \(\Phi(\alpha,h)\)
+    to every ordinal \(\alpha\) and every set-function \(h\) with domain \(\alpha\).
+    For every ordinal \(\theta\), there is a unique set-function \(F_\theta\) with
+    domain \(\theta\) satisfying</p>
+  <div class="math-display">\[
+    F_\theta(\alpha)=\Phi(\alpha,F_\theta|_\alpha)
+    \qquad(\alpha&lt;\theta).
+  \]</div>
+  <p>The rule must supply an output for every such history, not just histories
+    already known to satisfy the equations. Its description is a definable rule;
+    we do not assume its entire graph is a set.</p>
+  <p class="proof-label">Proof</p>
+  <p>Call a set-function \(f\) a partial solution if its domain is an ordinal
+    \(\beta\) and \(f(\alpha)=\Phi(\alpha,f|_\alpha)\) for every \(\alpha&lt;\beta\).
+    Two partial solutions agree wherever both are defined. Otherwise the set of
+    their disagreement positions has a least member \(\alpha\). Their restrictions
+    to \(\alpha\) agree, so the rule gives the same value at \(\alpha\), a
+    contradiction. Restrictions of a partial solution are again partial solutions.
+    In particular, a partial solution on any given domain is unique.</p>
+  <p>Fix \(\theta\). By transfinite induction, construct a partial solution on
+    every \(\beta\le\theta\). At zero the empty function works. If \(f_\beta\)
+    exists, the rule supplies the set \(y=\Phi(\beta,f_\beta)\). Adjoin the pair
+    \((\beta,y)\) to its graph. This extends the domain to \(\beta+1\), preserves
+    every earlier equation, and satisfies the new equation at \(\beta\).</p>
+  <p>At a nonzero limit \(\lambda\le\theta\), a unique partial solution \(f_\gamma\)
+    exists for every \(\gamma&lt;\lambda\). Replacement collects these uniquely
+    specified graphs into a set indexed by the set \(\lambda\). Their union is a
+    set-function, because the graphs agree on overlaps. Its domain is
+    \(\bigcup_{\gamma&lt;\lambda}\gamma=\lambda\). For each \(\alpha&lt;\lambda\),
+    we have \(\alpha+1&lt;\lambda\), so \(f_{\alpha+1}\) supplies both the value
+    at \(\alpha\) and its entire earlier history. The union therefore satisfies
+    the equation at \(\alpha\). This completes the induction. Its solution on
+    \(\theta\) is \(F_\theta\), and compatibility proves uniqueness.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>If \(\eta\le\theta\), compatibility gives \(F_\theta|_\eta=F_\eta\).
+    Thus the solutions describe one definable class function on all ordinals:
+    its value at \(\alpha\) is \(F_{\alpha+1}(\alpha)\), and each restriction
+    to a set-sized ordinal is a set-function. Replacement also collects the
+    values on any such domain. This does not make the whole class graph a set,
+    and the argument requires no Choice.</p>
 </section>
 
 <section id="no-set-of-all-ordinals" data-kind="theorem" data-formal="no-set-of-all-ordinals ordinals-not-a-small-set ordinal-successor-set">

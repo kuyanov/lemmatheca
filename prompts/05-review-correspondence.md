@@ -36,6 +36,20 @@ successful build; it is not a live freshness check or evidence of correspondence
    the human claim; record that specialization explicitly. For custom types,
    inspect elaborated expressions to check which order or other instance Lean
    actually selected, especially in comparisons involving concrete literals.
+   Check whether claims of provability in a weaker axiom system or independence
+   are actually encoded. A verified ambient theorem, even with a choice premise,
+   is not evidence of the claimed axiom strength. Report missing logical
+   prerequisites or limits of coverage using the
+   [assumption guidance](../CONTRIBUTING.md#prerequisites-and-scope).
+   Check the required node `axioms` array against the current convention:
+   every node permits ambient AC via `["choice"]`. Human assumptions, including
+   entry-wide ZF-only claims and explicit choice-principle premises, need separate
+   review; a Verified ambient theorem does not certify weaker axiom strength.
+   Review definitions and explicit premises separately from unconditional assertions
+   of a principle. Use read-only `#node_status`
+   checks for transitive kernel-axiom reports when assessing axiom strength.
+   Distinguish actual selection from classical logic or
+   representation dependencies; neither a pass nor a failure proves ZF derivability.
 3. Find opportunities to reuse nodes and library declarations, unnecessary wrappers,
    duplicate targets, redundant directions of equivalences, and repeated coverage.
    Explain why each proposed removal preserves the human claims. Do not discard
@@ -44,7 +58,13 @@ successful build; it is not a live freshness check or evidence of correspondence
 4. Review dependencies as proof-planning hints. Identify unnecessary edges, cycles,
    or useful missing hints without reconstructing mathlib's dependency graph. A
    hint's saved verification flag does not control the reviewed node's status;
-   actual Lean use of an unfinished declaration is detected separately.
+   actual Lean use of an unfinished declaration is detected separately. Review
+   dependency allowances: each source node must include every axiom declared by
+   its direct prerequisites. Mismatches fail validation and prevent build writes.
+   A broader allowance does not establish actual use or mathematical necessity.
+   Flag an argument that needs a stronger result than its assumptions permit;
+   preserve the current ambient-AC convention and report weaker axiom-strength
+   claims that remain outside formal coverage.
 5. Check the full declaration name and defining module. There is one module field
    for both import and source browsing. Generated declarations may point to a
    differently named source origin; compare signatures rather than names alone.

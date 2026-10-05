@@ -39,6 +39,20 @@ Check the following:
   layouts.
 - Definitions and notation are consistent, prerequisites are introduced or linked,
   and citations accurately support the material.
+  Familiar background, including standard real-number facts, may be used without
+  an entry reference. Distinguish useful future links from mathematical gaps and
+  major dependencies on substantial missing theory. Consult the
+  [reference backlog](../docs/reference-backlog.md) and propose additions or fulfilled
+  items in the handoff; do not edit it during this read-only review.
+  Check that linked results supply the needed content with compatible assumptions,
+  including across areas. Flag missing substantial prerequisite theories and
+  recommend concrete entry titles, following the
+  [scope guidance](../CONTRIBUTING.md#prerequisites-and-scope). Check claims about
+  axiom strength separately from ordinary implications and set-closure properties.
+  All formal nodes currently permit ambient AC, so their allowances and Verified
+  badges do not certify a human ZF-only proof or a comparison of weaker principles.
+  Review those arguments separately; an actual selection argument must be
+  justified by its stated mathematical axioms.
 - Exposition and metadata remain valid if entries are reordered or moved into
   separate subareas. Flag references to "the next entry," "previous entries," or
   material "introduced earlier" in another entry. Require named links using stable

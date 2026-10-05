@@ -14,17 +14,22 @@ open Lemmatheca.Entry.AxiomaticSetTheory
 open scoped ZFSet Ordinal
 universe u v
 
-noncomputable def naturalSet (n : ℕ) : ZFSet.{u} := (n : Ordinal.{u}).toZFSet
+def naturalSet (n : ℕ) : ZFSet.{u} := ZFSet.mk (PSet.ofNat n)
+
+private theorem naturalSet_zero : naturalSet.{u} 0 = ∅ := rfl
+
+private theorem naturalSet_succ (n : ℕ) :
+    naturalSet.{u} (n + 1) = insert (naturalSet n) (naturalSet n) := rfl
 
 private theorem ofNat_naturalSet (n : ℕ) :
-    ZFSet.mk (PSet.ofNat n) = naturalSet.{u} n := by
+    ZFSet.mk (PSet.ofNat n) = naturalSet.{u} n := rfl
+
+private theorem naturalSet_eq_toZFSet (n : ℕ) :
+    naturalSet.{u} n = (n : Ordinal.{u}).toZFSet := by
   induction n with
-  | zero => simp [naturalSet, PSet.ofNat, Ordinal.toZFSet_zero]; rfl
+  | zero => exact Ordinal.toZFSet_zero.symm
   | succ n ih =>
-    rw [naturalSet, Nat.cast_succ, Ordinal.toZFSet_add_one]
-    change insert (ZFSet.mk (PSet.ofNat n)) (ZFSet.mk (PSet.ofNat n)) = _
-    rw [ih]
-    rfl
+    rw [naturalSet_succ, Nat.cast_succ, Ordinal.toZFSet_add_one, ih]
 
 theorem omega_members (x : ZFSet.{u}) : x ∈ ZFSet.omega ↔ ∃ n, naturalSet n = x := by
   induction x using Quotient.inductionOn with
@@ -42,6 +47,7 @@ theorem omega_eq_ordinal : ZFSet.omega.{u} = Ordinal.omega0.toZFSet := by
   apply ZFSet.ext
   intro x
   rw [omega_members, Ordinal.mem_toZFSet_iff]
+  simp only [naturalSet_eq_toZFSet]
   constructor
   · rintro ⟨n,rfl⟩
     exact ⟨n, Ordinal.natCast_lt_omega0 n, rfl⟩
@@ -53,8 +59,8 @@ theorem omega_least (I : ZFSet.{u}) (hI : IsInductive I) : ZFSet.omega ⊆ I := 
   have hn : ∀ n : ℕ, naturalSet.{u} n ∈ I := by
     intro n
     induction n with
-    | zero => simpa [naturalSet] using hI.1
-    | succ n ih => simpa [naturalSet,Nat.cast_succ,Ordinal.toZFSet_add_one] using hI.2 _ ih
+    | zero => rw [naturalSet_zero]; exact hI.1
+    | succ n ih => rw [naturalSet_succ]; exact hI.2 _ ih
   intro x hx
   obtain ⟨n,rfl⟩ := (omega_members x).mp hx
   exact hn n
@@ -80,35 +86,57 @@ theorem omega_predicate_induction (P : ZFSet.{u} → Prop) (hz : P ∅)
   intro n hn
   exact (ZFSet.mem_sep.mp (he.symm ▸ hn)).2
 
+private theorem naturalSet_members (n : ℕ) (x : ZFSet.{u}) :
+    x ∈ naturalSet n ↔ ∃ k < n, naturalSet k = x := by
+  induction n with
+  | zero =>
+    rw [naturalSet_zero]
+    exact ⟨fun h => (ZFSet.notMem_empty _ h).elim,
+      fun ⟨k, hk, _⟩ => (Nat.not_lt_zero k hk).elim⟩
+  | succ n ih =>
+    rw [naturalSet_succ, ZFSet.mem_insert_iff, ih]
+    constructor
+    · rintro (h | ⟨k, hk, he⟩)
+      · exact ⟨n, Nat.lt_succ_self n, h.symm⟩
+      · exact ⟨k, Nat.lt_succ_of_lt hk, he⟩
+    · rintro ⟨k, hk, he⟩
+      rcases Nat.lt_succ_iff_lt_or_eq.mp hk with hk | rfl
+      · exact Or.inr ⟨k, hk, he⟩
+      · exact Or.inl he.symm
+
+private theorem naturalSet_mem_of_lt {m n : ℕ} (h : m < n) :
+    naturalSet.{u} m ∈ naturalSet n := (naturalSet_members n _).mpr ⟨m, h, rfl⟩
+
+private theorem naturalSet_injective : Function.Injective naturalSet.{u} := by
+  intro m n he
+  rcases Nat.lt_trichotomy m n with h | h | h
+  · exact (ZFSet.mem_irrefl _ (he ▸ naturalSet_mem_of_lt h)).elim
+  · exact h
+  · exact (ZFSet.mem_irrefl _ (he.symm ▸ naturalSet_mem_of_lt h)).elim
+
 theorem omega_peano :
     (∀ n ∈ ZFSet.omega.{u}, insert n n ≠ ∅) ∧
     (∀ n ∈ ZFSet.omega.{u}, ∀ m ∈ ZFSet.omega, insert n n = insert m m → n = m) ∧
     (∀ n ∈ ZFSet.omega.{u}, n ≠ ∅ → ∃! m, m ∈ ZFSet.omega ∧ insert m m = n) := by
-  have hOrd : ZFSet.IsOrdinal ZFSet.omega.{u} := omega_eq_ordinal ▸ ZFSet.isOrdinal_toZFSet _
-  refine ⟨?_,?_,?_⟩
-  · intro n hn he
+  refine ⟨?_, ?_, ?_⟩
+  · intro n _ he
     exact ZFSet.notMem_empty n (he ▸ ZFSet.mem_insert n n)
   · intro n hn m hm he
-    have hnr := Ordinal.toZFSet_add_one n.rank
-    have hmr := Ordinal.toZFSet_add_one m.rank
-    have hnO := hOrd.mem hn
-    have hmO := hOrd.mem hm
-    rw [hnO.toZFSet_rank_eq] at hnr
-    rw [hmO.toZFSet_rank_eq] at hmr
-    have hh := Ordinal.toZFSet_injective (hnr.trans (he.trans hmr.symm))
-    exact hnO.rank_inj hmO |>.mp (Order.succ_injective (α := Ordinal.{u}) (by simpa only [Order.succ_eq_add_one] using hh))
+    obtain ⟨j, rfl⟩ := (omega_members n).mp hn
+    obtain ⟨k, rfl⟩ := (omega_members m).mp hm
+    rw [← naturalSet_succ, ← naturalSet_succ] at he
+    exact congrArg naturalSet (Nat.succ_inj.mp (naturalSet_injective he))
   · intro n hn hne
-    obtain ⟨k,rfl⟩ := (omega_members n).mp hn
-    have hk : k ≠ 0 := by intro h; exact hne (by simp [h,naturalSet])
-    obtain ⟨k,rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk
-    refine ⟨naturalSet k, ⟨(omega_members _).mpr ⟨k,rfl⟩, ?_⟩, ?_⟩
-    · simp [naturalSet,Nat.cast_succ,Ordinal.toZFSet_add_one]
-    · intro m hm
-      obtain ⟨j,rfl⟩ := (omega_members m).mp hm.1
-      have h : (j : Ordinal.{u}) + 1 = k + 1 := Ordinal.toZFSet_injective (by
-        simpa [naturalSet,Nat.cast_succ,Ordinal.toZFSet_add_one] using hm.2)
-      have hj : j = k := Nat.cast_injective (Order.succ_injective (α := Ordinal.{u}) (by simpa only [Order.succ_eq_add_one] using h))
-      exact congrArg naturalSet hj
+    obtain ⟨k, rfl⟩ := (omega_members n).mp hn
+    have hk : k ≠ 0 := fun h => hne (h ▸ naturalSet_zero)
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk
+    refine ⟨naturalSet k, ⟨(omega_members _).mpr ⟨k, rfl⟩,
+      (naturalSet_succ k).symm⟩, ?_⟩
+    intro m hm
+    obtain ⟨j, rfl⟩ := (omega_members m).mp hm.1
+    have he := hm.2
+    rw [← naturalSet_succ] at he
+    exact congrArg naturalSet (Nat.succ_inj.mp (naturalSet_injective he))
 
 theorem finite_ordinals (a : ZFSet.{u}) (ha : a.IsOrdinal) :
     a ∈ ZFSet.omega ↔ Finite a := by
@@ -131,7 +159,20 @@ theorem omega_no_greatest : ∀ n ∈ ZFSet.omega.{u}, ∃ m ∈ ZFSet.omega, n 
 theorem naturalSet_order (m n : ℕ) :
     (naturalSet.{u} m ∈ naturalSet n ↔ m < n) ∧
       (naturalSet.{u} m ⊆ naturalSet n ↔ m ≤ n) := by
-  simp [naturalSet,Ordinal.toZFSet_mem_toZFSet_iff,Ordinal.toZFSet_subset_toZFSet_iff]
+  constructor
+  · constructor
+    · intro h
+      obtain ⟨k, hk, he⟩ := (naturalSet_members n _).mp h
+      exact naturalSet_injective he ▸ hk
+    · exact naturalSet_mem_of_lt
+  · constructor
+    · intro h
+      rcases le_or_gt m n with hle | hlt
+      · exact hle
+      · exact (ZFSet.mem_irrefl _ (h (naturalSet_mem_of_lt hlt))).elim
+    · intro h x hx
+      obtain ⟨k, hk, rfl⟩ := (naturalSet_members m x).mp hx
+      exact naturalSet_mem_of_lt (Nat.lt_of_lt_of_le hk h)
 
 theorem sequence_unique (C : Type v) (c : C) (g : C → C) :
     ∃! f : ℕ → C, f 0 = c ∧ ∀ n, f (n + 1) = g (f n) := by
@@ -194,26 +235,28 @@ theorem extra_point_counterexample :
       (fun n : ℕ => (n : WithTop ℕ)) := by
   have hinj : Function.Injective extraPointSucc := by
     intro a b h
-    induction a using WithTop.recTopCoe with
+    cases a with
     | top =>
-      induction b using WithTop.recTopCoe with
+      cases b with
       | top => rfl
-      | coe b => change (⊤ : WithTop ℕ) = ((b+1 : ℕ) : WithTop ℕ) at h; exact (WithTop.coe_ne_top h.symm).elim
+      | coe b => cases h
     | coe a =>
-      induction b using WithTop.recTopCoe with
-      | top => simp [extraPointSucc] at h
-      | coe b => simpa [extraPointSucc] using h
-  refine ⟨hinj,?_,?_,?_⟩
-  · intro x
-    induction x using WithTop.recTopCoe with
-    | top => simp [extraPointSucc]
-    | coe n => simp [extraPointSucc]
-  · refine ⟨⟨0,rfl⟩,?_,?_⟩
-    · rintro x ⟨n,rfl⟩
-      exact ⟨n+1,rfl⟩
+      cases b with
+      | top => cases h
+      | coe b => exact congrArg some (Nat.succ_inj.mp (Option.some.inj h))
+  refine ⟨hinj, ?_, ?_, ?_⟩
+  · intro x h
+    cases x with
+    | top => cases h
+    | coe n => exact Nat.noConfusion (Option.some.inj h)
+  · refine ⟨⟨0, rfl⟩, ?_, ?_⟩
+    · rintro x ⟨n, rfl⟩
+      exact ⟨n+1, rfl⟩
     · intro he
-      have hm : (⊤ : WithTop ℕ) ∈ Set.range (fun n : ℕ => (n : WithTop ℕ)) := he.symm ▸ Set.mem_univ _
-      simpa using hm
+      have hm : (⊤ : WithTop ℕ) ∈ Set.range (fun n : ℕ => (n : WithTop ℕ)) :=
+        he.symm ▸ Set.mem_univ _
+      obtain ⟨n, hn⟩ := hm
+      cases hn
   · funext n
     induction n with
     | zero => rfl

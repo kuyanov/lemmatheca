@@ -40,6 +40,19 @@ sources. Use the single project in formal/ and preserve unrelated work.
    rather than adapting it silently to a convenient library declaration. Inspect
    elaborated comparisons and instances for custom types and concrete literals;
    a type annotation alone may not select the intended relation.
+   For claims about axiom strength, apply the
+   [assumption guidance](../CONTRIBUTING.md#prerequisites-and-scope): an ambient
+   Lean proof using `Classical.choice` does not certify a ZF-only argument or a
+   comparison of weaker choice principles. Identify the required encoding and any
+   missing logic prerequisites; report limits of coverage rather than binding a
+   metatheoretic claim to an ordinary theorem with a different meaning.
+   All nodes currently permit ambient AC, including nodes covering human ZF-only
+   results and definitions of choice principles. Ordinary verification checks the
+   ambient Lean statement; report any axiom-strength claim outside formal coverage
+   separately. Use the checker's
+   [read-only kernel-axiom reports](../docs/formal.md#inspecting-kernel-axioms)
+   to investigate kernel dependencies when relevant; ordinary formalization does
+   not require isolating AC from mathlib.
 4. Remove redundant coverage while retaining explicitly stated witnesses and
    distinct claims. A linked equivalence may already cover its two directions.
    Proof helpers need not become registered nodes. Reuse existing nodes across
@@ -54,12 +67,20 @@ sources. Use the single project in formal/ and preserve unrelated work.
    quantifiers. Optional LaTeX must be escaped for JSON. Bind declaration to its full
    Lean name and module to its defining module, including Lean core modules where
    appropriate. An unbound planned node may have both fields null. New nodes start
-   with `verified: false`. Do not add review fields, a separate source-module field,
+   with `verified: false`. Every node currently needs `axioms: ["choice"]`,
+   including definitions, human ZF-only results, and conditional implications.
+   This is authored metadata; the build must not infer it from kernel dependencies.
+   The allowance permits ambient AC without claiming mathematical necessity or
+   verification of weaker axiom strength. Do not add review fields, a separate source-module field,
    or invented verification signatures or line numbers.
 7. Set dependencies to direct proof-planning hints, not reading prerequisites,
    concepts merely mentioned in a statement, or imported modules. Avoid cycles and
    transitive duplication. These hints do not determine verification; Lean checks
-   actual transitive axioms independently.
+   actual transitive axioms independently. Each node must include every axiom
+   declared by its direct dependencies. Mismatches fail validation and prevent
+   build writes; direct-edge checks enforce inheritance along longer chains.
+   Use the current uniform AC allowance rather than introducing narrower
+   contracts unless an axiom-isolation task is explicitly requested.
 8. Link the nodes using `data-formal` in `entry.html`. Use `data-formal=""` only for a
    block with nothing to formalize, and explain that decision. Leave genuinely
    unplanned blocks distinguishable from empty mappings. The build owns the derived
@@ -78,7 +99,8 @@ uv run python app/manage.py build
 Validation can also run during authoring without Lean or generated results.
 The build checks all registered declarations, saves verified/signature/source-line
 data, and refreshes entry summaries. A theorem using sorry is a valid unfinished
-result; a missing declaration or compile error fails the build and preserves prior
+result, as is a proof exceeding its node's axiom allowance. The build continues
+checking the other nodes; a missing declaration or compile error fails the build and preserves prior
 results. Inspect the resulting signatures and defining source locations. A generated
 target can point to a differently named source origin; judge its actual signature.
 Run relevant catalog tests only if reader or build-tooling code changes, or when

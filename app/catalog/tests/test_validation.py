@@ -10,6 +10,7 @@ from django.conf import settings
 from django.core.management import call_command, CommandError
 from django.test import SimpleTestCase
 
+from catalog.axioms import check_axiom_dependencies
 from catalog.files import read_json, write_json
 from catalog.validation import CorpusError, acyclic, validate_corpus
 
@@ -35,7 +36,7 @@ class CorpusValidationTests(SimpleTestCase):
         self.node = self.corpus / 'nodes/proof.json'
         write_json(self.node, {'id': 'proof', 'description': 'A planned proof.',
                                'verified': False, 'module': None, 'declaration': None,
-                               'dependencies': []})
+                               'dependencies': [], 'axioms': []})
         self.metadata = self.corpus / 'entries/alpha/entry.json'
         self.source = self.corpus / 'entries/alpha/entry.html'
 
@@ -250,6 +251,11 @@ class CorpusValidationTests(SimpleTestCase):
             ({'module': '../Lemmatheca', 'declaration': 'proof'}, 'Invalid Lean module'),
             ({'declaration_line': False}, 'positive integer'),
             ({'signature': []}, 'signature must'),
+            ({'axioms': None}, 'axioms must be a list'),
+            ({'axioms': 'choice'}, 'axioms must be a list'),
+            ({'axioms': ['choice', 'choice']}, 'Duplicate axiom'),
+            ({'axioms': ['Choice']}, 'Unknown axiom'),
+            ({'axioms': [None]}, 'Unknown axiom'),
         ]:
             with self.subTest(update=update):
                 write_json(self.node, {**original, **update})
@@ -258,6 +264,60 @@ class CorpusValidationTests(SimpleTestCase):
         write_json(self.node.with_name('other.json'), {
                    **original, 'id': 'other', 'dependencies': ['proof']})
         self.assert_invalid('cycle')
+
+    def test_axioms_are_required_even_for_unbound_nodes(self):
+        original = read_json(self.node)
+        del original['axioms']
+        write_json(self.node, original)
+        self.assert_invalid('Missing fields: axioms')
+
+    def test_dependency_axiom_mismatches_fail_validation_without_writes(self):
+        original = read_json(self.node)
+        other = self.node.with_name('other.json')
+        # A result may use more assumptions than its prerequisite.
+        write_json(self.node, {**original, 'axioms': ['choice'], 'dependencies': ['other']})
+        write_json(other, {**original, 'id': 'other'})
+        validate_corpus(self.corpus)
+        # A stronger prerequisite fails even when both nodes are unbound.
+        write_json(self.node, {**original, 'dependencies': ['other', 'last']})
+        write_json(other, {**original, 'id': 'other', 'axioms': ['choice']})
+        write_json(self.node.with_name('last.json'), {**original, 'id': 'last', 'axioms': ['choice']})
+        before = {path: path.read_bytes()
+                  for path in self.corpus.rglob('*') if path.is_file()}
+        output, errors = StringIO(), StringIO()
+        with self.assertRaises(CommandError) as raised:
+            call_command('validate_corpus', corpus=self.corpus, stdout=output, stderr=errors)
+        self.assertIn('proof: dependencies require undeclared axioms: choice (last, other)',
+                      str(raised.exception))
+        self.assertEqual(output.getvalue(), '')
+        self.assertEqual(errors.getvalue(), '')
+        self.assertEqual(before, {path: path.read_bytes()
+                                 for path in self.corpus.rglob('*') if path.is_file()})
+
+        # Direct-edge checks enforce inheritance along longer chains.
+        write_json(self.node, {**original, 'dependencies': ['other']})
+        write_json(other, {**original, 'id': 'other', 'dependencies': ['last']})
+        self.assert_invalid('other: dependencies require undeclared axioms: choice')
+        write_json(other, {**original, 'id': 'other', 'axioms': ['choice'], 'dependencies': ['last']})
+        self.assert_invalid('proof: dependencies require undeclared axioms: choice')
+        write_json(self.node, {**original, 'axioms': ['choice'], 'dependencies': ['other']})
+        self.assertEqual(validate_corpus(self.corpus), (2, 3, 2))
+
+    def test_dependency_error_lists_every_extra_axiom_for_its_source(self):
+        # Vocabulary-independent grouping, also covering future supported axioms.
+        graph = {'first': ['both', 'one'], 'second': ['both'], 'both': [], 'one': []}
+        requirements = {'first': set(), 'second': {'a'}, 'both': {'a', 'b'}, 'one': {'a'}}
+        with self.assertRaises(ValueError) as raised:
+            check_axiom_dependencies(graph, requirements)
+        self.assertEqual(str(raised.exception),
+                         'first: dependencies require undeclared axioms: a (both, one); b (both)')
+        requirements['first'] = {'a', 'b'}
+        with self.assertRaises(ValueError) as raised:
+            check_axiom_dependencies(graph, requirements)
+        self.assertEqual(str(raised.exception),
+                         'second: dependencies require undeclared axioms: b (both)')
+        requirements['second'] = {'a', 'b'}
+        check_axiom_dependencies(graph, requirements)
 
     def test_area_tree_and_reading_order(self):
         original = read_json(self.taxonomy)

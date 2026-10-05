@@ -6,6 +6,9 @@
   "dependencies": [
     "well-order-recursion-exists-unique"
   ],
+  "axioms": [
+    "choice"
+  ],
   "verified": true,
   "declaration_line": 110,
   "signature": "Lemmatheca.SetTheory.choiceListing_exhausts.{u} {α : Type u} (h : Ordinal.{u}) (hh : ¬Nonempty (h.ToType ↪ α))\n  (s : (B : Set α) → B.Nonempty → α) (hs : ∀ (B : Set α) (hn : B.Nonempty), s B hn ∈ B) :\n  have f := Lemmatheca.SetTheory.recursiveValue (Lemmatheca.SetTheory.choiceListingRule h s);\n  ∃ l,\n    f l = none ∧ (∀ b < l, f b ≠ none) ∧ (Function.Injective fun b => f ↑b) ∧ (Set.range fun b => f ↑b) = Set.range some"

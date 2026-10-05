@@ -20,13 +20,25 @@ theorem firstPointEnumeration_order_iso :
   constructor
   · constructor
     · intro x y h
-      cases x <;> cases y <;> simp_all [firstPointEnumeration]
+      cases x with
+      | inl a =>
+        cases y with
+        | inl b => cases a; cases b; rfl
+        | inr b => exact Nat.noConfusion h
+      | inr a =>
+        cases y with
+        | inl b => exact Nat.noConfusion h
+        | inr b => exact congrArg Sum.inr (Nat.succ_inj.mp h)
     · intro n
       cases n with
       | zero => exact ⟨Sum.inl (), rfl⟩
       | succ n => exact ⟨Sum.inr n, rfl⟩
   · intro x y
-    cases x <;> cases y <;> simp [firstPointEnumeration, emptyRelation]
+    cases x <;> cases y <;>
+      simp only [Sum.lex_inl_inl, Sum.lex_inr_inl, Sum.lex_inr_inr,
+        firstPointEnumeration, emptyRelation, Nat.not_lt_zero, Nat.zero_lt_succ,
+        Nat.succ_lt_succ_iff]
+    exact ⟨fun _ => trivial, fun _ => Sum.Lex.sep _ _⟩
 
 def twoPointBlocks (p : ℕ × Fin 2) : ℕ := 2 * p.1 + p.2.val
 
@@ -51,7 +63,13 @@ theorem twoPointBlocks_order_iso :
     have ha := a.isLt
     have hb := b.isLt
     simp only [Prod.lex_iff, twoPointBlocks, Fin.lt_def]
-    omega
+    constructor
+    · rintro (h | ⟨h, h'⟩) <;> omega
+    · intro h
+      rcases Nat.lt_trichotomy i j with hij | hij | hij
+      · exact Or.inl hij
+      · exact Or.inr ⟨hij, by omega⟩
+      · omega
 
 /-- Recursion determines addition, including every nonzero limit stage. -/
 theorem addition_recursion_unique (f : Ordinal → Ordinal → Ordinal)

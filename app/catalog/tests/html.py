@@ -56,9 +56,11 @@ class HTML(HTMLParser):
         for element in self.stack:
             element.parts.append(data)
 
-    def find_all(self, tag=None, **attrs):
+    def find_all(self, tag=None, *, within=None, **attrs):
+        """Find matching descendants, optionally scoped to a containing element."""
         return [element for element in self.elements
                 if (tag is None or element.tag == tag)
+                and (within is None or within in element.ancestors())
                 and all(key in element.attrs and element.attrs[key] == value
                         for key, value in attrs.items())]
 

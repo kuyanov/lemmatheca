@@ -9,7 +9,8 @@ Prove the selected formal nodes for a Lemmatheca entry.
 ## Inputs
 
 - Entry ID or explicit node selection (required): identify the requested targets.
-  For an entry with no narrower selection, work on its remaining unfinished nodes.
+  For an entry with no narrower selection, work on its remaining unverified nodes,
+  including complete proofs that exceed their declared axiom allowances.
 - Constraints and GitHub review findings (optional): use the supplied scope and
   mathematical decisions; inspect the actual sources before relying on saved flags.
 - Mode (optional): default to corpus proving. Use human-proof translation or a
@@ -25,8 +26,8 @@ hints, and Lean sources. Preserve unrelated work and the pinned environment.
 
 ## Work
 
-1. Establish which selected proofs are unfinished from the actual sources and
-   relevant checks. The verified flag records the last successful build, not a
+1. Establish which selected nodes have unfinished proofs or unmet axiom allowances
+   from the actual sources and relevant checks. The verified flag records the last successful build, not a
    live source audit. There is no in-app approval state or hash to consult; take
    scope from the request and agreed mathematical statements. Resolve relevant
    correspondence findings before changing the affected target, while continuing
@@ -40,6 +41,22 @@ hints, and Lean sources. Preserve unrelated work and the pinned environment.
    first. They are not reading order or a complete extracted dependency graph.
    An unfinished hint does not automatically make this node unverified, but actual
    transitive use of sorry does. Keep any proof-plan edits direct and explain them.
+   Preserve any stated limits on axiomatic strength, following the
+   [assumption guidance](../CONTRIBUTING.md#prerequisites-and-scope). Do not use
+   ambient Choice to claim that an argument requires only ZF, countable choice,
+   or dependent choice. If the encoding cannot express the requested strength,
+   report that correspondence issue and continue independent proof work.
+   Preserve the current `axioms: ["choice"]` convention for every node, including
+   definitions and nodes covering human ZF-only results. Ordinary corpus proving
+   permits ambient AC through mathlib; isolating AC requires an explicit request.
+   Verification checks actual transitive kernel axioms against each allowance
+   and still rejects unfinished proofs and unsupported axioms. Each node must
+   include every axiom declared by its direct dependencies; a mismatch fails
+   validation and prevents build writes. Use the checker's
+   [read-only kernel-axiom reports](../docs/formal.md#inspecting-kernel-axioms)
+   and explain remaining dependencies with their cause where known.
+   Ordinary badges are determined by the per-node axiom check as well as proof
+   completeness.
 4. In corpus-proving mode, follow the human proof where given and reuse Lean/mathlib
    results rather than rebuilding library foundations. If a library declaration
    already covers the whole target, report a possible direct binding; using it is
@@ -50,7 +67,7 @@ hints, and Lean sources. Preserve unrelated work and the pinned environment.
    label the work as proof search. In measured mode, follow the supplied retrieval
    rules, budgets, and attempt limits. Keep attempts, feedback, interventions, and
    measurements in separate logs, not corpus metadata. Do not invent measurements.
-6. Check proofs with Lean. Do not bypass failures by adding axioms, sorry, admit,
+6. Check proofs with Lean. Do not bypass failures by adding unsupported axioms, sorry, admit,
    or unchecked shortcuts. Use the single formal/ project and keep module organization
    compact. Update imports and module bindings when a permitted source move requires it.
 
@@ -76,9 +93,13 @@ build-tooling code changes, or when investigating an integration failure.
 Failed compilation or declaration checks leave previous results intact. Treat that
 as a failed refresh, not proof of the current source state. Fix failures in scope
 and report unrelated blockers without discarding saved data or changing unrelated
-statements. After a successful build, confirm completed nodes have `verified: true`
-and no direct or inherited sorry. Unfinished proofs can compile while remaining
-Not verified, so a successful build is not by itself a completion claim.
+statements. After a successful build, confirm completed nodes have `verified: true`,
+no direct or inherited sorry, and no axioms exceeding their declared allowance.
+Unfinished proofs and unmet axiom allowances can compile while remaining Not
+verified; the build still checks all other nodes. A successful build is not by
+itself a completion claim. Compare any changed proof with the human text; repair
+a clear mathematical error in the text when authorized, explain the correction,
+and identify any renewed correspondence review needed.
 
 ## Deliverable
 

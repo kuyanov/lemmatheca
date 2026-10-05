@@ -6,6 +6,7 @@ import re
 
 from django.conf import settings
 
+from .axioms import check_axioms, permits_lean_axioms
 from .files import read_json, read_record, records, write_json
 
 LEAN_MODULE = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z")
@@ -65,11 +66,16 @@ def prepare_results(corpus, nodes, results):
     for identifier, node in nodes.items():
         path = corpus / "nodes" / f"{identifier}.json"
         record = read_json(path)
+        check_axioms(record.get("axioms"))
         # Preserve metadata edited while Lean was running.
         if (record.get("module"), record.get("declaration")) != (node.get("module"), node.get("declaration")):
             result = {"verified": False}
         else:
-            result = results.get(node.get("declaration"), {"verified": False})
+            result = results.get(node.get("declaration"), {
+                                 "verified": False}).copy()
+            actual = result.pop("lean_axioms", [])
+            result["verified"] = result["verified"] and permits_lean_axioms(
+                record["axioms"], actual)
         for field in ("signature", "declaration_line"):
             record.pop(field, None)
         record.update(result)

@@ -1,4 +1,6 @@
+from copy import deepcopy
 from pathlib import Path
+import re
 import shutil
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -9,6 +11,7 @@ from django.core.management import get_commands
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 
+from catalog.axioms import AXIOM_LABELS
 from catalog.content import add_progress, load_entry, next_entry
 from catalog.entry_files import read_area_entries, read_entry_metadata
 from catalog.files import read_json, write_json
@@ -30,6 +33,16 @@ class ReaderTests(SimpleTestCase):
         selected = [line["number"]
                     for line in response.context["source_lines"] if line["selected"]]
         self.assertEqual(selected, [node["declaration_line"]])
+
+    def assert_labelled_section(self, page, heading_id):
+        sections = [section for section in page.find_all("section")
+                    if heading_id in section.attrs.get("aria-labelledby", "").split()]
+        self.assertEqual(len(sections), 1)
+        headings = page.find_all(id=heading_id, within=sections[0])
+        self.assertEqual(len(headings), 1)
+        self.assertRegex(headings[0].tag, r"^h[1-6]$")
+        self.assertTrue(headings[0].text)
+        return sections[0]
 
     def test_area_index_and_next_entry_use_only_listed_metadata(self):
         with TemporaryDirectory() as directory:
@@ -68,7 +81,8 @@ class ReaderTests(SimpleTestCase):
             entry = load_entry(identifier)
             response = self.client.get(f"/entries/{identifier}/")
             page = self.page(response)
-            self.assertIn(entry["title"], page.root.text)
+            self.assertEqual([heading.text for heading in page.find_all("h1")],
+                             [" ".join(entry["title"].split())])
             for link in page.find_all("a"):
                 # Link text may contain nested markup, icons, or an accessible label.
                 self.assertTrue(link.text or link.attrs.get("aria-label") or
@@ -79,6 +93,8 @@ class ReaderTests(SimpleTestCase):
                                 for element in page.elements))
             for block in entry["blocks"]:
                 self.assertIn(block["id"], page.ids)
+                section = self.assert_labelled_section(page, f"{block['id']}-title")
+                self.assertEqual(section.attrs["id"], block["id"])
                 for node in block["formal_ids"] or []:
                     self.assertIn(
                         reverse("catalog:node", args=[node]), page.hrefs)
@@ -169,7 +185,11 @@ class ReaderTests(SimpleTestCase):
                 response = self.client.get(
                     reverse("catalog:node", args=[target]))
             page = self.page(response)
-            self.assertIn(record["declaration"], page.root.text)
+            section = self.assert_labelled_section(page, "declaration-title")
+            signatures = [element for element in page.find_all("pre", within=section)
+                          if not any(parent.tag == "details" for parent in element.ancestors())]
+            self.assertEqual(len(signatures), 1)
+            self.assertIn(record["declaration"], signatures[0].text)
             self.assertEqual(
                 response.context["node"]["verified"], record["verified"])
             self.assert_source_link(response, record)
@@ -224,6 +244,42 @@ class ReaderTests(SimpleTestCase):
                 self.assertFalse(response.context["node"]["verified"])
                 self.assertIsNone(response.context["node"].get("declaration"))
                 self.assertIsNone(response.context["node"]["source"])
+
+    def test_node_pages_and_api_show_declared_additional_axioms(self):
+        source = (settings.REPOSITORY_DIR / "app/templates/catalog/node.html").read_text()
+        renamed = re.sub(r"(<h2\b[^>]*>).*?(</h2>)",
+                         r"\1Renamed <em>section</em> heading\2", source, flags=re.DOTALL)
+        with TemporaryDirectory() as directory:
+            corpus = Path(directory)
+            (corpus / "nodes").mkdir()
+            cases = [("narrow-allowance", []), ("choice-allowance", ["choice"])]
+            for identifier, axioms in cases:
+                write_json(corpus / "nodes" / f"{identifier}.json",
+                           {"id": identifier, "description": "An unbound example.",
+                            "axioms": axioms, "verified": False})
+            for renamed_headings in (False, True):
+                template = deepcopy(settings.TEMPLATES[0])
+                template["APP_DIRS"] = False
+                template.setdefault("OPTIONS", {})["loaders"] = [
+                    ("django.template.loaders.locmem.Loader",
+                     {"catalog/node.html": renamed} if renamed_headings else {}),
+                    "django.template.loaders.filesystem.Loader",
+                    "django.template.loaders.app_directories.Loader",
+                ]
+                with override_settings(CORPUS_DIR=corpus, TEMPLATES=[template]):
+                    for identifier, axioms in cases:
+                        with self.subTest(identifier=identifier, renamed_headings=renamed_headings):
+                            response = self.client.get(f"/nodes/{identifier}/")
+                            page = self.page(response)
+                            section = self.assert_labelled_section(page, "axioms-title")
+                            values = page.find_all("p", within=section)
+                            self.assertEqual(len(values), 1)
+                            self.assertIn("ZF", values[0].text)
+                            labels = [AXIOM_LABELS[axiom] for axiom in axioms]
+                            self.assertEqual(response.context["axiom_labels"], labels)
+                            for axiom, label in AXIOM_LABELS.items():
+                                self.assertEqual(label in values[0].text, axiom in axioms)
+                            self.assertEqual(self.client.get(f"/api/nodes/{identifier}/").json()["axioms"], axioms)
 
     def test_corpus_has_only_verification_status_and_no_review_command(self):
         self.assertNotIn("review", get_commands())

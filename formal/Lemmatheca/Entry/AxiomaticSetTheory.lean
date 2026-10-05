@@ -48,7 +48,25 @@ theorem relative_intersection_empty (U : ZFSet.{u}) :
 
 theorem product_empty_cases (A : ZFSet.{u}) :
     ZFSet.prod ∅ A = ∅ ∧ ZFSet.prod A ∅ = ∅ := by
-  constructor <;> apply ZFSet.ext <;> simp
+  constructor
+  · apply ZFSet.ext
+    intro z
+    constructor
+    · intro hz
+      unfold ZFSet.prod ZFSet.pairSep at hz
+      obtain ⟨a, ha, _, _, _, _⟩ := (ZFSet.mem_sep.mp hz).2
+      exact (ZFSet.notMem_empty a ha).elim
+    · intro hz
+      exact (ZFSet.notMem_empty z hz).elim
+  · apply ZFSet.ext
+    intro z
+    constructor
+    · intro hz
+      unfold ZFSet.prod ZFSet.pairSep at hz
+      obtain ⟨_, _, b, hb, _, _⟩ := (ZFSet.mem_sep.mp hz).2
+      exact (ZFSet.notMem_empty b hb).elim
+    · intro hz
+      exact (ZFSet.notMem_empty z hz).elim
 
 theorem function_set_empty_cases (A B : ZFSet.{u}) :
     ZFSet.funs ∅ B = {∅} ∧ (A ≠ ∅ → ZFSet.funs A ∅ = ∅) := by
@@ -69,7 +87,9 @@ theorem function_set_empty_cases (A B : ZFSet.{u}) :
     simp only [ZFSet.mem_funs, ZFSet.notMem_empty, iff_false, ZFSet.IsFunc, prod0']
     rintro ⟨hf, hg⟩
     have he : f = ∅ := le_antisymm hf (ZFSet.empty_subset _)
-    obtain ⟨x, hx⟩ := (ZFSet.eq_empty_or_nonempty A).resolve_left hA
+    apply hA
+    apply (ZFSet.eq_empty A).mpr
+    intro x hx
     obtain ⟨y, hy, _⟩ := hg x hx
     exact ZFSet.notMem_empty _ (he ▸ hy)
 

@@ -79,7 +79,13 @@ implement the required definitions and write theorem statements with `by sorry`
 (the explicit Lean placeholder for an unfinished proof). Preserve existing proofs;
 proving new theorems belongs to step 6.
 
-Create node records and link them from blocks with `data-formal`. Coverage can be
+Create node records with a required `axioms` array of additional assumptions above
+ZF and link them from blocks with `data-formal`. The current convention is
+`axioms: ["choice"]` for every node, including definitions and conditional
+choice-principle statements. We permit ambient AC throughout the mathlib-based
+formal project; verification does not certify weaker axiom strength.
+Every node must include all axioms declared by its direct proof-planning
+dependencies; mismatches fail validation and prevent build writes. Coverage can be
 collective: several nodes can cover one block, and one node can serve many entries.
 An empty mapping means there is nothing to formalize; it must not hide unfinished
 work. Record representation choices and specializations for the next reviewer.
@@ -101,7 +107,8 @@ to statements or representations need renewed correspondence review.
 
 ### 6. Prove the selected nodes
 
-Complete the selected unfinished proofs in the shared `formal/` project. Preserve
+Complete the selected unfinished proofs and address unmet axiom allowances in the
+shared `formal/` project. Preserve
 the intended statements, definitions, and node targets; explain any necessary
 correction and identify the correspondence review it requires. Reuse library
 results and unregistered helpers where appropriate. JSON `dependencies` are
@@ -113,8 +120,70 @@ library theorem. Measured experiments require an explicit run specification;
 keep attempts, budgets, and measurements outside corpus metadata.
 
 Finish with the build and inspect the selected nodes' saved verification flags.
-A successful compilation alone is insufficient because Lean accepts `sorry`.
+A successful compilation alone is insufficient because Lean accepts `sorry`, and
+a complete proof may exceed its node's declared axiom allowance.
 Return proved IDs, checks, any statement changes, and concrete remaining work.
+
+## Prerequisites and scope
+
+Before proposing or drafting an entry, check which definitions and results its
+arguments actually need against the current corpus. Record existing prerequisites
+by stable entry and block IDs, including those in other areas. Distinguish human
+coverage from formal readiness: a library theorem or verified node does not supply
+an explanation for the reader, and a drafted entry may still have unfinished nodes.
+
+Familiar background may be used without an entry reference. This includes elementary
+arithmetic, ordinary classical reasoning, and standard real-number facts used in
+examples or short supporting arguments. A missing corpus reference for such a fact
+is not itself a mathematical gap or a drafting blocker. Record useful future links
+in [the reference backlog](docs/reference-backlog.md), with the consuming entry/block
+IDs, the precise fact used, and an existing or proposed target. As relevant areas
+develop, add links to blocks that actually establish those facts and remove the
+fulfilled backlog items. Review steps remain read-only: propose backlog updates in
+their handoff rather than editing the document during a review.
+
+Entries should have no major dependencies on substantial theory missing from the
+corpus. Judge the scope and role of a prerequisite, not just whether its subject is
+familiar: using real-number order or a geometric-series estimate is different from
+assuming a substantial analysis theorem or an entire theory. Accepted background
+must still be correct, with compatible assumptions. The backlog records future
+references, not permission to defer essential justification or missing major theory.
+
+A short supporting lemma can be developed within the proposed entry when it fits
+its central subject. If a substantial prerequisite theory is missing, recommend
+the area and specific entry titles to start, explain which claims need them, and
+choose a narrower useful scope or defer the dependent material. Do not overload an
+entry with another area's foundations or create prerequisite entries unless the
+task authorizes them. Return this assessment in the planning or drafting handoff;
+do not add readiness or approval fields to corpus metadata.
+
+Check assumptions as well as topics. A result proved using full Choice cannot be
+reused as a ZF-only result without a suitable argument. Distinguish mathematical
+implications from claims of non-implication, independence, or relative consistency;
+the latter require their own logical framework and model arguments. Likewise,
+closure properties of a set do not by themselves establish that it is a model of
+an axiom system. Lean verification permits `Classical.choice` only when the node declares
+`"choice"` in its `axioms` array. This is a conservative kernel dependency check,
+not a certificate of provability from first-order ZF or a weaker choice principle.
+Claims about axiom strength need an appropriate formal encoding and assumption
+audit, or an explicit report that this aspect remains outside formal coverage.
+For now, all formal nodes declare `axioms: ["choice"]`, including those covering
+human ZF-only arguments, definitions, and comparisons of choice principles.
+The pinned mathlib development uses ambient Choice through classical reasoning,
+representations, and library proofs; isolating AC is outside ordinary corpus
+verification. This convention permits AC without asserting its mathematical
+necessity. Preserve the human arguments' stated assumptions and review their
+axiom-strength claims separately; an ambient ZFC proof does not establish them.
+Do not introduce narrower node allowances during ordinary authoring unless that
+change is explicitly requested. Corpus validation requires each node's allowance
+to contain every axiom declared by its direct dependencies. A mismatch is an
+error, and the build checks the same rule before writing any results. Actual
+transitive Lean axioms determine verification independently of the hints;
+unfinished or unsupported proofs remain unverified while other nodes are checked.
+Use the checker's [read-only kernel-axiom reports](docs/formal.md#inspecting-kernel-axioms)
+to investigate failing allowances.
+Neither a pass nor a failure of a kernel check establishes mathematical necessity
+or ZF derivability.
 
 ## Running one step with an AI agent
 
@@ -161,7 +230,7 @@ It needs no Lean installation or prior build, permits unplanned blocks and unbou
 nodes, and checks the shape rather than freshness of generated data. Once Lean
 sources are installed, add `--check-sources` to check source availability.
 
-After changing Lean declarations, bindings, or proofs, or adding an entry or
+After changing Lean declarations, bindings, axiom allowances, or proofs, or adding an entry or
 changing its block inventory, refresh generated data with:
 
 ```sh

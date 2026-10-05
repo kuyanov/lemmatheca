@@ -72,7 +72,15 @@ def topEnumeration : ℕ → WithTop ℕ
 theorem topEnumeration_bijective : Function.Bijective topEnumeration := by
   constructor
   · intro a b h
-    cases a <;> cases b <;> simpa [topEnumeration] using h
+    cases a with
+    | zero =>
+      cases b with
+      | zero => rfl
+      | succ b => cases h
+    | succ a =>
+      cases b with
+      | zero => cases h
+      | succ b => exact congrArg Nat.succ (Option.some.inj h)
   · intro x
     cases x with
     | top => exact ⟨0, rfl⟩
@@ -144,12 +152,12 @@ theorem proper_subsets_not_initial :
   constructor
   · intro h
     have h2 : 2 ∈ Lemmatheca.Entry.SetsAndMaps.evenNaturals := by
-      norm_num [Lemmatheca.Entry.SetsAndMaps.evenNaturals]
-    have h1 := h (show (1 : ℕ) ≤ 2 by omega) h2
-    norm_num [Lemmatheca.Entry.SetsAndMaps.evenNaturals] at h1
+      exact ⟨1, rfl⟩
+    obtain ⟨k, hk⟩ := h (show (1 : ℕ) ≤ 2 by decide) h2
+    omega
   · intro h
-    have := h (show (0 : ℕ) ≤ 1 by omega) (show 1 ∈ {n : ℕ | 0 < n} by simp)
-    simpa using this
+    exact Nat.not_lt_zero 0 (h (show (0 : ℕ) ≤ 1 by decide)
+      (show 1 ∈ {n : ℕ | 0 < n} from Nat.zero_lt_succ 0))
 
 theorem missing_limit_case :
     (0 : WithTop ℕ) ≠ ⊤ ∧

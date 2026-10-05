@@ -19,6 +19,14 @@ the mathematics, connect its claims to formal nodes, review those connections,
 and complete the proofs. Human exposition can be contributed before its
 formalization is ready.
 
+Entries should have no major dependencies on substantial theory missing from the
+corpus. Familiar background, including elementary arithmetic and standard facts
+about real numbers, may be used without an entry reference. Track useful future
+links in the [reference backlog](docs/reference-backlog.md) and add them as the
+relevant areas develop. A missing substantial prerequisite must be developed,
+or the dependent material narrowed or deferred; the backlog does not waive this
+requirement. See the [scope guidance](CONTRIBUTING.md#prerequisites-and-scope).
+
 The long-term aim is broad mathematical coverage with reusable results across
 subjects. The project keeps one shared Lean library, favors existing results in
 mathlib (Lean's community mathematics library), and keeps the reader simple as the
@@ -108,9 +116,20 @@ are updated automatically after pushes to `main`, including newly merged contrib
 contribution branches do not need to regenerate `corpus/statistics.json`.
 **Verified** means
 the declaration uses no unfinished proof (`sorry`), including through its actual
-dependencies, and no unsupported axioms. A build can succeed with unfinished
-nodes marked **Not verified**. A compilation or declaration-check failure leaves
-previous saved results intact. See the [verification rules](docs/formal.md#build-and-verification).
+dependencies, and uses only the axioms allowed by the node's required `axioms`
+field. For now, every node uses `["choice"]`: formal verification permits ambient
+AC throughout the mathlib-based project, including definitions and implications
+between choice principles. This allowance does not claim that AC is necessary.
+Human arguments may establish ZF-only results, but a Verified badge does not
+certify that axiom strength. Node pages display the formal allowance.
+A build can succeed with unfinished proofs
+or unmet axiom allowances marked **Not verified**, while checking all other nodes.
+`validate_corpus` fails if a node omits an axiom declared by a direct dependency.
+The build rejects the same mismatch before saving results; verification also
+checks each node's actual transitive Lean axioms independently of these hints.
+These kernel checks do not establish derivability from first-order ZF. A compilation
+or declaration-check failure leaves previous saved results intact. See the
+[verification rules](docs/formal.md#build-and-verification).
 
 ### Run the reader
 
@@ -121,7 +140,8 @@ uv run python app/manage.py runserver
 Open <http://127.0.0.1:8000/>. Browse an area to open an entry, then use its
 formalization badges to inspect nodes and their Lean sources. Verification badges
 reflect the last successful build; requests do not run Lean. After changing
-content mappings or proofs, rerun `build` and include the generated JSON changes.
+content mappings, node bindings, axiom allowances, or proofs, rerun `build` and
+include the generated JSON changes.
 Stop the development server with Ctrl+C.
 
 For production settings, the read-only API, and performance details, see the

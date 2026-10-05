@@ -14,25 +14,60 @@ def closureStage (x : ZFSet.{u}) : ℕ → ZFSet.{u}
   | 0 => x
   | n + 1 => closureStage x n ∪ ZFSet.sUnion (closureStage x n)
 
-noncomputable def transitiveClosure (x : ZFSet.{u}) : ZFSet.{u} :=
-  ZFSet.iUnion (closureStage x)
+-- Lift the entire explicit pre-set construction through the quotient once.
+-- No representatives are selected independently for the countable family.
+private def preClosureStage (x : PSet.{u}) : ℕ → PSet.{u}
+  | 0 => x
+  | n + 1 => PSet.sUnion ({preClosureStage x n, PSet.sUnion (preClosureStage x n)} : PSet)
+
+private theorem preClosureStage_mk (x : PSet.{u}) (n : ℕ) :
+    ZFSet.mk (preClosureStage x n) = closureStage (ZFSet.mk x) n := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    change ZFSet.mk (preClosureStage x n) ∪ ZFSet.sUnion (ZFSet.mk (preClosureStage x n)) = _
+    rw [ih]
+    rfl
+
+private def preClosure (x : PSet.{u}) : PSet.{u} :=
+  ⟨Σ n : ULift ℕ, (preClosureStage x n.down).Type,
+    fun p => (preClosureStage x p.1.down).Func p.2⟩
+
+private theorem mem_preClosure (x : PSet.{u}) (z : ZFSet.{u}) :
+    z ∈ ZFSet.mk (preClosure x) ↔ ∃ n, z ∈ closureStage (ZFSet.mk x) n := by
+  induction z using Quotient.inductionOn with
+  | _ z =>
+    simp only [← preClosureStage_mk]
+    change (∃ i : (Σ n : ULift ℕ, (preClosureStage x n.down).Type),
+      PSet.Equiv z ((preClosureStage x i.1.down).Func i.2)) ↔
+      ∃ n : ℕ, ∃ i, PSet.Equiv z ((preClosureStage x n).Func i)
+    exact ⟨fun ⟨⟨n,i⟩,h⟩ => ⟨n.down,i,h⟩,
+      fun ⟨n,i,h⟩ => ⟨⟨⟨n⟩,i⟩,h⟩⟩
+
+def transitiveClosure (x : ZFSet.{u}) : ZFSet.{u} :=
+  Quotient.lift (fun a => ZFSet.mk (preClosure a)) (fun a b h => by
+    apply ZFSet.ext
+    intro z
+    rw [mem_preClosure,mem_preClosure,ZFSet.sound h]) x
+
+theorem mem_transitiveClosure {x z : ZFSet.{u}} :
+    z ∈ transitiveClosure x ↔ ∃ n, z ∈ closureStage x n := by
+  induction x using Quotient.inductionOn with
+  | _ x => exact mem_preClosure x z
 
 def IsTransitiveClosure (x T : ZFSet.{u}) : Prop :=
   T.IsTransitive ∧ x ⊆ T ∧ ∀ U, U.IsTransitive → x ⊆ U → T ⊆ U
 
 theorem transitiveClosure_spec (x : ZFSet.{u}) :
     IsTransitiveClosure x (transitiveClosure x) := by
-  have hs (n : ℕ) : closureStage x n ⊆ closureStage x (n+1) := by
-    intro z hz
-    exact ZFSet.mem_union.mpr (Or.inl hz)
-  have hb : x ⊆ transitiveClosure x := ZFSet.subset_iUnion (closureStage x) 0
+  have hb : x ⊆ transitiveClosure x := fun z hz => mem_transitiveClosure.mpr ⟨0, hz⟩
   refine ⟨?_,hb,?_⟩
   · intro y hy z hz
-    obtain ⟨n,hn⟩ := ZFSet.mem_iUnion.mp hy
-    exact ZFSet.mem_iUnion.mpr ⟨n+1,ZFSet.mem_union.mpr
+    obtain ⟨n,hn⟩ := mem_transitiveClosure.mp hy
+    exact mem_transitiveClosure.mpr ⟨n+1,ZFSet.mem_union.mpr
       (Or.inr (ZFSet.mem_sUnion_of_mem hz hn))⟩
   · intro U hU hx z hz
-    obtain ⟨n,hn⟩ := ZFSet.mem_iUnion.mp hz
+    obtain ⟨n,hn⟩ := mem_transitiveClosure.mp hz
     have hc : ∀ k, closureStage x k ⊆ U := by
       intro k
       induction k with
@@ -77,20 +112,14 @@ theorem membership_not_transitive :
 
 theorem no_finite_membership_cycle (n : ℕ) (f : Fin (n + 1) → ZFSet.{u}) :
     ¬ ∀ i, f (i + 1) ∈ f i := by
-  classical
-  let A := ZFSet.range f
-  have hne : A ≠ ∅ := by
-    intro h
-    have hm : f 0 ∈ A := ZFSet.mem_range_self 0
-    rw [h] at hm
-    exact ZFSet.notMem_empty _ hm
-  obtain ⟨a,ha,hmin⟩ := ZFSet.regularity A hne
-  obtain ⟨i,rfl⟩ := ZFSet.mem_range.mp ha
   intro hf
-  have hm : f (i+1) ∈ A ∩ f i := ZFSet.mem_inter.mpr
-    ⟨ZFSet.mem_range_self (f := f) (i+1),hf i⟩
-  rw [hmin] at hm
-  exact ZFSet.notMem_empty _ hm
+  have h : ∀ a : ZFSet.{u}, ∀ i, f i = a → False := by
+    intro a
+    induction a using ZFSet.inductionOn with
+    | _ a ih =>
+      intro i hi
+      exact ih (f (i + 1)) (hi ▸ hf i) (i + 1) rfl
+  exact h (f 0) 0 rfl
 
 def MembershipInduction {α : Type v} (M : α → α → Prop) : Prop :=
   ∀ P : α → Prop, (∀ x, (∀ y, M y x → P y) → P x) → ∀ x, P x
@@ -185,7 +214,12 @@ theorem closure_rank (x : ZFSet.{u}) : (transitiveClosure x).rank = x.rank := by
     | succ n ih =>
       change (closureStage x n ∪ ZFSet.sUnion (closureStage x n)).rank = x.rank
       rw [ZFSet.rank_union,max_eq_left (ZFSet.rank_sUnion_le _),ih]
-  simp [transitiveClosure,ZFSet.rank_iUnion,hs]
+  have he : transitiveClosure x = ZFSet.iUnion (closureStage x) := by
+    apply ZFSet.ext
+    intro z
+    rw [mem_transitiveClosure, ZFSet.mem_iUnion]
+  rw [he]
+  simp [ZFSet.rank_iUnion, hs]
 
 theorem rank_inclusion_not_strict :
     let z : ZFSet.{u} := ∅
@@ -294,8 +328,20 @@ theorem closure_examples :
       · exact hx'
   refine ⟨hX,hX',transitiveClosure_fixed ∅ ZFSet.isTransitive_empty,?_⟩
   intro hx
-  have hh := ZFSet.rank_lt_of_mem hx
-  rw [closure_rank] at hh
-  exact lt_irrefl _ hh
+  rw [hX] at hx
+  change x ∈ ({z,a,b} : ZFSet.{u}) at hx
+  simp only [ZFSet.mem_insert_iff,ZFSet.mem_singleton] at hx
+  have hax : a ∈ x := ZFSet.mem_pair.mpr (Or.inl rfl)
+  have hbx : b ∈ x := ZFSet.mem_pair.mpr (Or.inr rfl)
+  rcases hx with he | he | he
+  · rw [he] at hax
+    exact ZFSet.notMem_empty a hax
+  · rw [he] at hbx
+    have hbz : b = z := ZFSet.mem_singleton.mp hbx
+    have hab : a ∈ b := ZFSet.mem_singleton.mpr rfl
+    rw [hbz] at hab
+    exact ZFSet.notMem_empty a hab
+  · rw [he] at hbx
+    exact ZFSet.mem_irrefl b hbx
 
 end Lemmatheca.Entry.FoundationAndRank

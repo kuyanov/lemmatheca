@@ -24,6 +24,24 @@ Preserve unrelated work and existing stable IDs when revising an entry.
 
 ## Work
 
+Check the [prerequisites and scope](../CONTRIBUTING.md#prerequisites-and-scope)
+against the current entries before drafting. Link available results by stable IDs
+and check that their assumptions fit the proposed use. Develop short supporting
+lemmas locally when they fit the topic. If a substantial theory from another area
+is missing, report the affected claims, recommend that area's first entry titles,
+and draft an independent useful scope within the task's authorization. Make any
+scope reduction explicit; do not silently omit a requested central result or
+create entries in other areas. Distinguish human prerequisite coverage from
+availability of Lean declarations and from formal verification.
+
+Consult and maintain the [reference backlog](../docs/reference-backlog.md). Familiar
+background, including standard real-number facts, may be used without an entry
+reference and does not block drafting merely because a link is unavailable. Record
+useful future references with the consuming entry/block IDs and precise facts needed.
+When suitable target blocks become available, add the entry links and remove the
+fulfilled items. The backlog does not permit major dependencies on substantial
+theory missing from the corpus or excuse incorrect or unsupported reasoning.
+
 Before writing the draft, check the needed source passages for mathematical rigor.
 Use a supplied step-1 source-rigor assessment where it applies; if it is missing
 or the scope or sources changed, check the passages yourself. Check hypotheses,
@@ -41,6 +59,15 @@ request.
    State domains, codomains, hypotheses, quantifiers, and conventions where they
    matter. Include useful examples, counterexamples, edge cases, and answers to
    questions. Distinguish definitions, claims, explanations, and proofs.
+   State the background axioms when their strength matters. Formal nodes currently
+   all use `axioms: ["choice"]`; this permits ambient AC in Lean and does not
+   determine which axioms the human argument needs. Check reused human arguments
+   and distinguish an assumed principle from a proposition merely
+   being defined or used as an explicit premise. A proof using full Choice must
+   not be presented as ZF-only. Prove implications
+   with the stated assumptions; do not infer strict weakness or independence
+   merely from them. Defer model-theoretic or topological applications when their
+   substantial prerequisites are missing, naming the needed entries in the handoff.
 2. Use concise prose without filler, repeated conclusions, or unnecessary narration.
    Introduce notation once and link existing prerequisites. Preserve the hypotheses
    and reasoning when shortening. Match existing terminology, including "fiber" and
@@ -121,3 +148,5 @@ questions for GitHub review. Describe any visual checks that could not be comple
 Include the source-rigor findings reported before drafting, their resolutions, and
 any remaining gaps or unchecked material. Separate repairs to source arguments
 from editorial changes to the entry.
+Include prerequisite links, supporting lemmas developed locally, explicit scope
+changes, and recommendations for missing areas or entries.

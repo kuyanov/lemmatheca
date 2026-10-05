@@ -74,10 +74,48 @@ noncomputable def integerOrderedRing :
     IsStrictOrderedRing Integer := by
   letI := integerCommRing
   letI := integerOrder
-  exact Function.Injective.isStrictOrderedRing integerValue
-    integerEquiv.ringEquiv.map_zero integerEquiv.ringEquiv.map_one
-    integerEquiv.ringEquiv.map_add integerEquiv.ringEquiv.map_mul
-    (fun {_ _} => Iff.rfl) (fun {_ _} => Iff.rfl)
+  have hadd (x y : Integer) : integerValue (x + y) = integerValue x + integerValue y :=
+    integerEquiv.ringEquiv.map_add x y
+  have hmul (x y : Integer) : integerValue (x * y) = integerValue x * integerValue y :=
+    integerEquiv.ringEquiv.map_mul x y
+  have hzero : integerValue (0 : Integer) = 0 := integerEquiv.ringEquiv.map_zero
+  have hone : integerValue (1 : Integer) = 1 := integerEquiv.ringEquiv.map_one
+  refine {
+    add_le_add_left := ?_
+    le_of_add_le_add_left := ?_
+    zero_le_one := ?_
+    exists_pair_ne := ?_
+    mul_lt_mul_of_pos_left := ?_
+    mul_lt_mul_of_pos_right := ?_ }
+  · intro a b h c
+    change integerValue (a + c) ≤ integerValue (b + c)
+    rw [hadd, hadd]
+    exact Int.add_le_add_right h _
+  · intro a b c h
+    change integerValue b ≤ integerValue c
+    change integerValue (a + b) ≤ integerValue (a + c) at h
+    rw [hadd, hadd] at h
+    exact Int.le_of_add_le_add_left h
+  · change integerValue (0 : Integer) ≤ integerValue (1 : Integer)
+    rw [hzero, hone]
+    decide
+  · refine ⟨integerOfInt 0, integerOfInt 1, ?_⟩
+    intro h
+    have he := congrArg integerValue h
+    rw [integer_value_of, integer_value_of] at he
+    exact (by decide : (0 : ℤ) ≠ 1) he
+  · intro a ha b c hbc
+    change integerValue (a * b) < integerValue (a * c)
+    rw [hmul, hmul]
+    apply Int.mul_lt_mul_of_pos_left hbc
+    change integerValue (0 : Integer) < integerValue a at ha
+    exact hzero ▸ ha
+  · intro c hc a b hab
+    change integerValue (a * c) < integerValue (b * c)
+    rw [hmul, hmul]
+    apply Int.mul_lt_mul_of_pos_right hab
+    change integerValue (0 : Integer) < integerValue c at hc
+    exact hzero ▸ hc
 
 theorem integer_representative_formulas (a b c d : ℕ) :
     integerAdd (integerClass a b) (integerClass c d) = integerClass (a + c) (b + d) ∧
@@ -98,7 +136,7 @@ theorem integer_representative_formulas (a b c d : ℕ) :
     simp only [integerMul,integer_value_of,hv,Nat.cast_add,Nat.cast_mul]
     ring
   · change ((a : ℤ) - b ≤ c - d) ↔ a + d ≤ c + b
-    omega
+    constructor <;> intro h <;> omega
 
 theorem integer_normal_form (x : Integer) :
     ∃! p : ℕ × Bool, (p.2 = true → 0 < p.1) ∧
@@ -112,19 +150,40 @@ theorem integer_normal_form (x : Integer) :
     obtain ⟨a,b⟩ := p; obtain ⟨c,d⟩ := r
     have hh := congrArg integerValue he
     clear he
-    cases b <;> cases d <;> simp_all [hv] <;> omega
+    cases b with
+    | false =>
+      cases d with
+      | false =>
+        simp only [Bool.false_eq_true, if_false, hv] at hh
+        exact congrArg (fun n => (n, false)) (show a = c from by omega)
+      | true =>
+        have hc : 0 < c := hr rfl
+        simp only [Bool.false_eq_true, if_false, if_true, hv] at hh
+        omega
+    | true =>
+      have ha : 0 < a := hp rfl
+      cases d with
+      | false =>
+        simp only [Bool.false_eq_true, if_false, if_true, hv] at hh
+        omega
+      | true =>
+        simp only [if_true, hv] at hh
+        exact congrArg (fun n => (n, true)) (show a = c from by omega)
   cases hz : integerValue x with
   | ofNat n =>
     refine ⟨(n,false),⟨by simp,?_⟩,?_⟩
-    · apply hi; simpa [hv] using hz
+    · apply hi
+      exact hz.trans (Int.sub_zero (n : ℤ)).symm
     · intro p hp
-      exact hunique p (n,false) hp.1 (by simp) (hp.2.symm.trans (hi (by simpa [hv] using hz)))
+      exact hunique p (n,false) hp.1 (by simp) (hp.2.symm.trans (hi (by exact hz.trans (Int.sub_zero (n : ℤ)).symm)))
   | negSucc n =>
     have hx : x = integerClass 0 (n+1) := by
-      apply hi; simpa [hv,Int.negSucc_eq] using hz
-    refine ⟨(n+1,true),⟨by simp,hx⟩,?_⟩
+      apply hi
+      change integerValue x = 0 - ((n + 1 : ℕ) : ℤ)
+      omega
+    refine ⟨(n+1,true),⟨fun _ => Nat.succ_pos n,hx⟩,?_⟩
     intro p hp
-    exact hunique p (n+1,true) hp.1 (by simp) (hp.2.symm.trans hx)
+    exact hunique p (n+1,true) hp.1 (fun _ => Nat.succ_pos n) (hp.2.symm.trans hx)
 
 theorem natural_integer_embedding :
     Function.Injective (fun n : ℕ => integerClass n 0) ∧
@@ -145,21 +204,25 @@ theorem natural_integer_embedding :
     apply (show Function.Injective integerValue from integerEquiv.injective)
     simp [integerMul,integer_value_of,hv]
   · intro m n
-    simp [IntegerLE,hv]
+    change ((m : ℤ) - 0 ≤ (n : ℤ) - 0) ↔ m ≤ n
+    constructor <;> intro h <;> omega
 
 abbrev FractionRep := ℤ × {b : ℤ // b ≠ 0}
 def RationalRel (p q : FractionRep) : Prop := p.1 * q.2.val = q.1 * p.2.val
 
 theorem rationalRel_equivalence : Equivalence RationalRel := by
-  have he (p q : FractionRep) : RationalRel p q ↔
-      (p.1 : ℚ) / p.2.val = (q.1 : ℚ) / q.2.val := by
-    rw [div_eq_div_iff (by exact_mod_cast p.2.property) (by exact_mod_cast q.2.property)]
-    unfold RationalRel
-    norm_cast
-  refine ⟨fun p => (he p p).mpr rfl,?_,?_⟩
-  · intro p q h; exact (he q p).mpr ((he p q).mp h).symm
-  · intro p q r hpq hqr
-    exact (he p r).mpr (((he p q).mp hpq).trans ((he q r).mp hqr))
+  refine ⟨fun p => rfl, fun {_ _} h => h.symm, ?_⟩
+  intro p q r hpq hqr
+  change p.1 * q.2.val = q.1 * p.2.val at hpq
+  change q.1 * r.2.val = r.1 * q.2.val at hqr
+  change p.1 * r.2.val = r.1 * p.2.val
+  apply mul_right_cancel₀ q.2.property
+  calc
+    (p.1 * r.2.val) * q.2.val = (p.1 * q.2.val) * r.2.val := by ring
+    _ = (q.1 * p.2.val) * r.2.val := by rw [hpq]
+    _ = (q.1 * r.2.val) * p.2.val := by ring
+    _ = (r.1 * q.2.val) * p.2.val := by rw [hqr]
+    _ = (r.1 * p.2.val) * q.2.val := by ring
 
 def rationalSetoid : Setoid FractionRep := ⟨RationalRel, rationalRel_equivalence⟩
 def Rational := Quotient rationalSetoid
