@@ -1,29 +1,12 @@
+import Lemmatheca.SetTheory.Basic
 import Lemmatheca.SetTheory.WellOrders
-import Lemmatheca.Entry.FiniteAndCountableSets
-import Mathlib.Order.WithBot
-import Mathlib.Data.Prod.Lex
-import Mathlib.Data.Nat.Factorial.Basic
-import Mathlib.Data.Nat.Fib.Basic
 
-/-!
-# Well-ordered-sets entry: concrete relations and worked answers
-
-`WithTop ℕ` represents the natural numbers followed by the new point ℓ.
-`ℕ ×ₗ ℕ` carries first-coordinate-priority lexicographic order, not product order.
-Integer comparison below is explicitly pulled back along `Equiv.intEquivNat`.
--/
+/-! Particular examples and counterexamples for the human entry. -/
 
 namespace Lemmatheca.Entry.WellOrderedSets
-
 open Lemmatheca.SetTheory
 
-def integerEnumerationLT (a b : ℤ) : Prop := Equiv.intEquivNat a < Equiv.intEquivNat b
-
-private theorem noMin_not_wellFounded (A : Type*) [LinearOrder A] [Nonempty A]
-    [NoMinOrder A] : ¬ WellFounded ((· < ·) : A → A → Prop) := by
-  intro h
-  obtain ⟨b, hb⟩ := exists_lt (h.min Set.univ Set.univ_nonempty)
-  exact h.not_lt_min Set.univ (Set.mem_univ b) hb
+open Lemmatheca.SetTheory
 
 theorem usual_orders_fail :
     ¬ WellFounded ((· < ·) : ℤ → ℤ → Prop) ∧
@@ -147,11 +130,11 @@ theorem lex_successors_limits :
       · exact (not_isMax m) hm
 
 theorem proper_subsets_not_initial :
-    ¬ IsLowerSet Lemmatheca.Entry.SetsAndMaps.evenNaturals ∧
+    ¬ IsLowerSet Lemmatheca.SetTheory.evenNaturals ∧
     ¬ IsLowerSet {n : ℕ | 0 < n} := by
   constructor
   · intro h
-    have h2 : 2 ∈ Lemmatheca.Entry.SetsAndMaps.evenNaturals := by
+    have h2 : 2 ∈ Lemmatheca.SetTheory.evenNaturals := by
       exact ⟨1, rfl⟩
     obtain ⟨k, hk⟩ := h (show (1 : ℕ) ≤ 2 by decide) h2
     omega
@@ -187,15 +170,6 @@ theorem forkDependency_spec :
     subst b
     norm_num [forkDependency]
 
-theorem proper_positive_divisibility_wellFounded :
-    WellFounded (fun a b : ℕ+ => a ∣ b ∧ a ≠ b) := by
-  refine (measure (fun a : ℕ+ => a.val)).wf.mono ?_
-  intro a b h
-  have hd : a.val ∣ b.val := PNat.dvd_iff.mp h.1
-  have hle := Nat.le_of_dvd b.property hd
-  have hne : a.val ≠ b.val := fun he => h.2 (Subtype.ext he)
-  exact lt_of_le_of_ne hle hne
-
 theorem factorial_prefix : (List.range 5).map Nat.factorial = [1, 1, 2, 6, 24] := by
   decide
 
@@ -210,17 +184,6 @@ def limitSetRule : RecursionRule (WithTop ℕ) (Set ℕ)
   | some (n + 1), h => h ⟨(n : WithTop ℕ), by
       change (n : WithTop ℕ) < ((n + 1 : ℕ) : WithTop ℕ)
       exact WithTop.coe_lt_coe.mpr (Nat.lt_succ_self n)⟩ ∪ {n}
-
-private theorem natural_segment_step (n : ℕ) :
-    Set.Iio (n + 1) = Set.Iio n ∪ {n} := by
-  ext k
-  simp only [Set.mem_Iio, Set.mem_union, Set.mem_singleton_iff]
-  omega
-
-private theorem natural_segment_union : (⋃ n : ℕ, Set.Iio n) = Set.univ := by
-  ext k
-  simp only [Set.mem_iUnion, Set.mem_Iio, Set.mem_univ, iff_true]
-  exact ⟨k + 1, by omega⟩
 
 theorem limitSetValue_spec :
     (∀ x, limitSetValue x = limitSetRule x (fun b => limitSetValue b.val)) ∧

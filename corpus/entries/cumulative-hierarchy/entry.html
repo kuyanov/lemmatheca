@@ -1,10 +1,10 @@
-<section id="stages-and-background" data-kind="definition">
+<section id="stages-and-background" data-kind="definition" data-formal="ordinal-order-well-founded zf-powerset-members mostowski-recursion-exists-unique">
   <h2>Sets arranged by the depth of their members</h2>
   <p>Begin with no sets, form all subsets of what is available, and repeat. After infinitely many steps, take the union of the stages already constructed and continue. Ordinals index this process, giving a set \(V_\alpha\) at each stage \(\alpha\). The resulting <strong>cumulative hierarchy</strong> contains every set somewhere.</p>
   <p>We work in ZF, including Foundation, without assuming Choice. We use <a href="ordinals#transfinite-methods">transfinite induction</a>, <a href="axiomatic-set-theory#powerset">Power Set</a>, <a href="axiomatic-set-theory#replacement">Replacement</a>, and the <a href="foundation-and-rank#membership-rank">membership rank</a> of a set. The recursion argument below allows values that are sets without requiring a fixed set of possible outputs.</p>
 </section>
 
-<section id="set-valued-ordinal-recursion" data-kind="theorem">
+<section id="set-valued-ordinal-recursion" data-kind="theorem" data-formal="mostowski-recursion-rule mostowski-recursive-value mostowski-recursion-exists-unique mostowski-partial-solutions-agree zf-ordinal-class-recursion-schema">
   <h2>Recursion can produce sets without a fixed output bound</h2>
   <p>Suppose a formula with fixed set parameters specifies exactly one set \(H(\beta,h)\) whenever \(\beta\) is an ordinal and \(h\) is a set function with domain \(\beta\). For every ordinal \(\theta\), there is a unique set function \(f_\theta\) on \(\theta\) satisfying</p>
   <div class="math-display">\[ f_\theta(\beta)=H(\beta,f_\theta\mathbin{\upharpoonright}\beta)\qquad(\beta&lt;\theta). \]</div>
@@ -16,7 +16,7 @@
   <p>Unlike <a href="well-ordered-sets#well-order-recursion">recursion into a fixed value set</a>, this theorem can repeatedly apply Power Set without knowing a bound on the values in advance.</p>
 </section>
 
-<section id="hierarchy-definition" data-kind="definition">
+<section id="hierarchy-definition" data-kind="definition" data-formal="cumulative-hierarchy hierarchy-zero-stage hierarchy-successor-stage hierarchy-limit-stage">
   <h2>Power sets at successors and unions at limits</h2>
   <p>Define the stages by</p>
   <div class="math-display">\[ V_0=\varnothing,\qquad V_{\alpha+1}=\mathcal P(V_\alpha),\qquad V_\lambda=\bigcup_{\beta&lt;\lambda}V_\beta\quad(\lambda\text{ a nonzero limit}). \]</div>
@@ -24,7 +24,7 @@
   <p>Write \(V=\{x:\exists\alpha\text{ an ordinal},\ x\in V_\alpha\}\). This notation defines a class. It does not assert that there is a set containing all stages or all sets.</p>
 </section>
 
-<section id="transitive-and-increasing" data-kind="theorem">
+<section id="transitive-and-increasing" data-kind="theorem" data-formal="hierarchy-stages-transitive hierarchy-stage-inclusion">
   <h2>Stages are transitive and never lose earlier sets</h2>
   <p>Each \(V_\alpha\) is <a href="ordinals#transitive-sets">transitive</a>, and \(\alpha\le\beta\) implies \(V_\alpha\subseteq V_\beta\).</p>
   <p class="proof-label">Proof</p>
@@ -32,7 +32,7 @@
   <p>Transfinite induction now proves both assertions. Zero is immediate. At a successor, transitivity follows from the power-set observation, and \(V_\gamma\subseteq V_{\gamma+1}\) retains every earlier stage. At a limit, the union is transitive and contains every earlier stage. Equality of indices gives equality of stages, completing the non-strict inclusion claim. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="rank-characterizes-stages" data-kind="theorem">
+<section id="rank-characterizes-stages" data-kind="theorem" data-formal="hierarchy-membership-rank hierarchy-subset-rank">
   <h2>A stage contains exactly the sets of smaller rank</h2>
   <p>For every set \(x\) and ordinal \(\alpha\),</p>
   <div class="math-display">\[ x\in V_\alpha\quad\Longleftrightarrow\quad\operatorname{rank}(x)&lt;\alpha. \label{eq:stage-rank} \]</div>
@@ -48,7 +48,7 @@
   <p>At a nonzero limit \(\lambda\), membership in the union means membership in some \(V_\beta\) with \(\beta&lt;\lambda\), hence rank below \(\lambda\). Conversely, if \(\rho=\operatorname{rank}(x)&lt;\lambda\), then \(\rho+1&lt;\lambda\), since \(\lambda\) is a limit. The induction hypothesis puts \(x\) in \(V_{\rho+1}\), one of the stages in the union. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="every-set-has-a-stage" data-kind="theorem">
+<section id="every-set-has-a-stage" data-kind="theorem" data-formal="hierarchy-containing-stage hierarchy-rank-successor-membership hierarchy-universe-exhaustion no-universal-set hierarchy-least-stage hierarchy-subset-rank">
   <h2>Every set appears, and rank identifies its first stage</h2>
   <p>Every set \(x\) belongs to \(V_{\operatorname{rank}(x)+1}\), and this is its least membership stage. Also, for every ordinal \(\alpha\),</p>
   <div class="math-display">\[ x\subseteq V_\alpha\quad\Longleftrightarrow\quad\operatorname{rank}(x)\le\alpha. \]</div>
@@ -57,7 +57,7 @@
   <p>Thus rank is the first stage that contains \(x\) as a <em>subset</em>; the next stage first contains it as a <em>member</em>. Foundation enters through the existence of membership rank for every set. The class \(V\) is therefore the class of all sets, which <a href="axiomatic-set-theory#no-universal-set">cannot be a set</a>.</p>
 </section>
 
-<section id="strict-growth-and-stage-ranks" data-kind="lemma">
+<section id="strict-growth-and-stage-ranks" data-kind="lemma" data-formal="hierarchy-stage-rank hierarchy-stage-membership hierarchy-ordinal-part hierarchy-stage-inclusion">
   <h2>Each new stage is genuinely larger</h2>
   <p>For every ordinal \(\alpha\),</p>
   <div class="math-display">\[ V_\alpha\in V_{\alpha+1}\setminus V_\alpha,\qquad\operatorname{rank}(V_\alpha)=\alpha,\qquad V_\alpha\cap\mathrm{Ord}=\alpha. \]</div>
@@ -67,7 +67,7 @@
   <p>In particular, \(V_\alpha\subsetneq V_\beta\) whenever \(\alpha&lt;\beta\): the set \(V_\alpha\) itself is already a member of \(V_{\alpha+1}\subseteq V_\beta\), but not of \(V_\alpha\).</p>
 </section>
 
-<section id="finite-stages" data-kind="lemma">
+<section id="finite-stages" data-kind="lemma" data-formal="hierarchy-finite-stages">
   <h2>The first stages can be written out completely</h2>
   <p>Put \(0=\varnothing\) and \(1=\{0\}\). Then</p>
   <div class="math-display">\[ V_0=\varnothing,\qquad V_1=\{0\},\qquad V_2=\{0,1\},\qquad V_3=\{0,\{0\},\{1\},\{0,1\}\}. \]</div>
@@ -80,7 +80,7 @@
   </figure>
 </section>
 
-<section id="hereditarily-finite-sets" data-kind="theorem">
+<section id="hereditarily-finite-sets" data-kind="theorem" data-formal="hierarchy-hereditarily-finite hierarchy-hereditarily-finite-iff hierarchy-omega-stage">
   <h2>The first limit stage consists of hereditarily finite sets</h2>
   <p>A set \(x\) is <strong>hereditarily finite</strong> if \(\operatorname{TC}(\{x\})\) is finite: only finitely many sets occur when we include \(x\), its members, their members, and so on. Then</p>
   <div class="math-display">\[ x\in V_\omega\quad\Longleftrightarrow\quad\operatorname{rank}(x)&lt;\omega\quad\Longleftrightarrow\quad x\text{ is hereditarily finite}. \]</div>
@@ -90,7 +90,7 @@
   <p>These are exactly the sets built from the empty set by finitely many layers of finite set formation. Although every member of \(V_\omega\) is finite, \(V_\omega\) itself is infinite: it contains every finite ordinal.</p>
 </section>
 
-<section id="finite-versus-hereditarily-finite" data-kind="question">
+<section id="finite-versus-hereditarily-finite" data-kind="question" data-formal="hierarchy-finite-vs-hereditary hierarchy-least-stage">
   <h2>Can a finite set first appear after all finite stages?</h2>
   <p>Find the least membership stages of \(\omega\), \(\{\omega\}\), and \(V_\omega\). Which of these sets are finite or hereditarily finite?</p>
   <details class="question-answer">
@@ -99,10 +99,29 @@
   </details>
 </section>
 
-<section id="closure-within-stages" data-kind="lemma">
+<section id="closure-within-stages" data-kind="lemma" data-formal="hierarchy-subset-closure hierarchy-stage-closure">
   <h2>Simple set operations remain within suitable stages</h2>
   <p>If \(x\in V_\alpha\), then every subset of \(x\) and \(\bigcup x\) also belong to \(V_\alpha\). If \(x,y\in V_\alpha\), then \(\{x,y\}\in V_{\alpha+1}\) and \(\mathcal P(x)\in V_{\alpha+1}\). At a nonzero limit \(\lambda\), pairs and power sets of members of \(V_\lambda\) stay in \(V_\lambda\).</p>
   <p class="proof-label">Proof</p>
   <p>For \(u\subseteq x\), <a href="foundation-and-rank#membership-lowers-rank">rank monotonicity</a> gives \(\operatorname{rank}(u)\le\operatorname{rank}(x)&lt;\alpha\). Also, <a href="foundation-and-rank#rank-calculations">the union formula</a> gives \(\operatorname{rank}(\bigcup x)\le\operatorname{rank}(x)\). Apply \eqref{eq:stage-rank} to both. For the pair and power set, their ranks are \(\max(\operatorname{rank}(x),\operatorname{rank}(y))+1\) and \(\operatorname{rank}(x)+1\). These are at most \(\alpha\), hence below \(\alpha+1\). If \(\alpha=\lambda\) is a limit, the successor of each ordinal below \(\lambda\) is still below \(\lambda\), proving the stronger assertion. <span class="qed" aria-label="End of proof">□</span></p>
   <p>These are closure statements about sets and operations. They do not assert that a stage satisfies ZF or another axiom system. Such assertions require a separate account of formulas and their interpretation in structures.</p>
+</section>
+
+<section id="hierarchy-implies-foundation" data-kind="theorem" data-formal="decreasing-ordinal-height-well-founded zf-foundation-hierarchy-equivalence">
+  <h2>Exhausting the universe by stages is equivalent to Foundation</h2>
+  <p>Work for this block with the axioms of ZF except Foundation, and do not assume Choice. The assertion that every set belongs to some \(V_\alpha\) is equivalent to Foundation.</p>
+  <p class="proof-label">Proof</p>
+  <p>Construct the stages using <a href="#set-valued-ordinal-recursion"></a>. Its proof uses well-foundedness of ordinal order, not Foundation for arbitrary sets. The proof of <a href="#transitive-and-increasing"></a> likewise needs no Foundation. We can therefore use the stages, their defining equations, and their transitivity and inclusion properties under the present weaker assumptions.</p>
+  <p>Suppose every set belongs to a stage, and let \(A\) be nonempty. There is a stage meeting \(A\), since any one \(a\in A\) belongs to some stage. Choose the least ordinal \(\alpha\) with \(A\cap V_\alpha\ne\varnothing\), by searching among ordinals at most such a witness. It is not zero. It cannot be a limit, because membership in a limit stage comes from an earlier stage. Thus \(\alpha=\beta+1\). For \(a\in A\cap V_{\beta+1}\), we have \(a\subseteq V_\beta\), while \(A\cap V_\beta=\varnothing\). Hence \(a\cap A=\varnothing\), which is Foundation.</p>
+  <p>Conversely, Foundation gives membership rank for every set, and <a href="#every-set-has-a-stage"></a> places it in the stage just above its rank. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Equivalently, Foundation says that every set has an ordinal membership rank satisfying \(\operatorname{rank}(x)=\sup_{y\in x}(\operatorname{rank}(y)+1)\). For the reverse implication, take a member of any nonempty \(A\) with least rank, using Replacement to collect the ranks. If it had a member in \(A\), that member would have smaller rank, a contradiction. Here “rank” includes the membership equation; an arbitrary assignment of ordinal labels would not suffice.</p>
+</section>
+
+<section id="scott-cardinals" data-kind="definition" data-formal="hierarchy-scott-rank hierarchy-scott-cardinal hierarchy-scott-cardinal-spec hierarchy-scott-cardinal-eq-iff disjoint-union-relabeling product-relabeling function-set-relabeling zf-scott-cardinal-construction">
+  <h2>Scott's trick represents sizes by sets without Choice</h2>
+  <p>Work again in ZF, including Foundation. For a set \(A\), let \(\rho_A\) be the least rank of a set bijective with \(A\). This least rank exists: \(A\) itself is a witness, so Separation on \(\operatorname{rank}(A)+1\) gives a nonempty set of candidate ranks. Define its <strong>Scott cardinal</strong> by</p>
+  <div class="math-display">\[ \operatorname{sc}(A)=\{B\in V_{\rho_A+1}:\operatorname{rank}(B)=\rho_A\text{ and }B\text{ is bijective with }A\}. \]</div>
+  <p>This is a nonempty set by Separation and <a href="#rank-characterizes-stages"></a>. It contains all representatives of the smallest possible rank, so no one representative is chosen. This construction is called <strong>Scott's trick</strong>.</p>
+  <p>Sets \(A,B\) are bijective exactly when \(\operatorname{sc}(A)=\operatorname{sc}(B)\). A bijection makes their rank candidates and least-rank representatives identical. Conversely, a member of their common nonempty Scott cardinal is bijective with both sets, and composing bijections identifies \(A\) with \(B\).</p>
+  <p>Consequently, the comparison \(\operatorname{sc}(A)\le\operatorname{sc}(B)\) can mean that \(A\) injects into \(B\), and sums, products, and powers can be represented by \(\operatorname{sc}(A\sqcup B)\), \(\operatorname{sc}(A\times B)\), and \(\operatorname{sc}(A^B)\). The explicit <a href="infinite-cardinal-arithmetic#independent-of-representatives">relabeling bijections</a> prove independence of the representatives in ZF. Scott cardinals need not be ordinals, and this construction does not make every pair comparable or every infinite square equal to its factor.</p>
 </section>

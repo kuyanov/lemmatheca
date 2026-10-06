@@ -1,6 +1,8 @@
-import Lemmatheca.SetTheory.Ordinals
+import Lemmatheca.SetTheory.WellOrders
+import Mathlib.SetTheory.ZFC.Ordinal
 import Mathlib.Order.Extension.Linear
-import Mathlib.SetTheory.Cardinal.Arithmetic
+
+/-! Reusable Choice definitions and results. -/
 
 /-! Universe-relative formulations of choice and its equivalents.
 These are statements within Lean's classical foundation, not an independence development over ZF.
@@ -17,47 +19,11 @@ def WellOrderingPrinciple : Prop :=
   ∀ α : Type u, ∃ r : α → α → Prop, IsWellOrder α r
 
 def ZornPrinciple : Prop :=
-  ∀ (α : Type u) (p : PartialOrder α),
+  ∀ (α : Type u) (_p : PartialOrder α),
     Nonempty α → (∀ c : Set α, IsChain (· ≤ ·) c → BddAbove c) → ∃ m : α, IsMax m
 
 def SplitSurjections : Prop :=
   ∀ (E I : Type u) (p : E → I), Surjective p → ∃ s : I → E, RightInverse s p
-
-theorem choice_iff_wellOrdering : ChoicePrinciple.{u} ↔ WellOrderingPrinciple.{u} := by
-  -- Library reuse in Lean's classical foundation, rather than a ZF independence proof.
-  constructor
-  · intro _ α
-    exact ⟨WellOrderingRel, inferInstance⟩
-  · intro h ι α A hA
-    classical
-    obtain ⟨r, hr⟩ := h α
-    exact ⟨fun i => hr.wf.min (A i) (hA i), fun i => hr.wf.min_mem (A i) (hA i)⟩
-
-theorem wellOrdering_iff_zorn : WellOrderingPrinciple.{u} ↔ ZornPrinciple.{u} := by
-  constructor
-  · intro _ α p _ h
-    letI := p
-    exact zorn_le h
-  · intro _ α
-    exact ⟨WellOrderingRel, inferInstance⟩
-
-theorem choice_iff_splitSurjections : ChoicePrinciple.{u} ↔ SplitSurjections.{u} := by
-  constructor
-  · intro h E I p hp
-    obtain ⟨s, hs⟩ := h I E (fun i => {e | p e = i}) hp
-    exact ⟨s, hs⟩
-  · intro h ι α A hA
-    let E := {p : ι × α // p.2 ∈ A p.1}
-    let p : E → ι := fun x => x.val.1
-    have hp : Surjective p := by
-      intro i
-      obtain ⟨a, ha⟩ := hA i
-      exact ⟨⟨(i, a), ha⟩, rfl⟩
-    obtain ⟨s, hs⟩ := h E ι p hp
-    refine ⟨fun i => (s i).val.2, fun i => ?_⟩
-    have hi := (s i).property
-    have he : (s i).val.1 = i := hs i
-    simpa only [he] using hi
 
 /-- The Hartogs bound is the supremum of successors of well-ordered subset types. -/
 def hartogsTypes (α : Type u) : Set Ordinal.{u} :=
@@ -74,7 +40,7 @@ theorem hartogsBound_spec (α : Type u) :
   let B : Ordinal.{u} := (Order.succ (Cardinal.mk α)).ord
   have hlt : ∀ o ∈ hartogsTypes α, o < B := by
     rintro o ⟨s, r, h, rfl⟩
-    letI := h
+    let := h
     apply Cardinal.card_le_iff.mp
     rw [Ordinal.card_type]
     exact Cardinal.mk_subtype_le _
@@ -93,7 +59,7 @@ theorem hartogsBound_spec (α : Type u) :
   have hr : IsWellOrder (Set.range e) r := (RelIso.preimage f (· < ·)).toRelEmbedding.isWellOrder
   have ht : t ∈ hartogsTypes α := by
     refine ⟨Set.range e, r, hr, ?_⟩
-    letI := hr
+    let := hr
     calc
       t = Ordinal.type ((· < ·) : t.ToType → t.ToType → Prop) := (Ordinal.type_toType t).symm
       _ = Ordinal.type r := Ordinal.type_eq.mpr ⟨(RelIso.preimage f (· < ·)).symm⟩
@@ -201,7 +167,7 @@ theorem adjoinComparison_spec {α : Type u} (r : α → α → Prop)
 
 end Lemmatheca.SetTheory
 
-namespace Lemmatheca.Entry.AxiomOfChoice
+namespace Lemmatheca.SetTheory
 open Set
 universe u v
 
@@ -210,42 +176,18 @@ theorem empty_choice_cases {ι : Type u} {α : Type v} (A : ι → Set α) :
     ((∃ i, A i = ∅) → ¬ ∃ c : ι → α, ∀ i, c i ∈ A i) := by
   constructor
   · intro h
-    letI := h
+    let := h
     refine ⟨isEmptyElim, fun i => isEmptyElim i, ?_⟩
     intro c _
     exact funext fun i => isEmptyElim i
   · rintro ⟨i, hi⟩ ⟨c, hc⟩
     simpa [hi] using hc i
 
-/-- Exactly two strict total orders extend the strict empty relation on two points. -/
-theorem two_point_extensions :
-    {r : Fin 2 → Fin 2 → Prop | Std.Irrefl r ∧ IsTrans (Fin 2) r ∧
-      ∀ a b, a ≠ b → r a b ∨ r b a} =
-    {((· < ·) : Fin 2 → Fin 2 → Prop), (fun a b : Fin 2 => b < a)} := by
-  ext r
-  simp only [Set.mem_ofPred_eq, Set.mem_insert_iff, Set.mem_singleton_iff]
-  constructor
-  · rintro ⟨hi, ht, htot⟩
-    have hir : ∀ a, ¬ r a a := hi.irrefl
-    have htr : ∀ a b c, r a b → r b c → r a c := ht.trans
-    rcases htot 0 1 (by decide) with h | h
-    · left
-      funext a b
-      fin_cases a <;> fin_cases b <;> apply propext <;> norm_num <;> grind
-    · right
-      funext a b
-      fin_cases a <;> fin_cases b <;> apply propext <;> norm_num <;> grind
-  · rintro (rfl | rfl)
-    · exact ⟨inferInstance, inferInstance, fun a b h => lt_or_gt_of_ne h⟩
-    · refine ⟨⟨fun a => lt_irrefl a⟩, ⟨fun a b c hab hbc => hbc.trans hab⟩, ?_⟩
-      intro a b h
-      exact (lt_or_gt_of_ne h).symm
-
 theorem total_extension_unique {α : Type u} (r s : α → α → Prop)
     (hr : IsLinearOrder α r) (hs : IsPartialOrder α s) (he : ∀ a b, r a b → s a b) :
     r = s := by
-  letI := hr
-  letI := hs
+  let := hr
+  let := hs
   funext a b
   apply propext
   refine ⟨he a b, fun hab => ?_⟩
@@ -255,4 +197,4 @@ theorem total_extension_unique {α : Type u} (r s : α → α → Prop)
     subst b
     exact refl_of r a
 
-end Lemmatheca.Entry.AxiomOfChoice
+end Lemmatheca.SetTheory

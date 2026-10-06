@@ -46,6 +46,8 @@ Respect repository instructions and preserve unrelated work.
    entry and block IDs, independently of adjacency or a shared area. Plan named
    links rather than references to "the previous entry" or "the next entries."
    Apply the [prerequisite and scope guidance](../CONTRIBUTING.md#prerequisites-and-scope).
+   Choose placement and plan the summary and abstract using the
+   [reading-order criteria](../CONTRIBUTING.md#reading-order).
    Consult the [reference backlog](../docs/reference-backlog.md). Familiar background,
    including standard real-number facts, may be used without a corpus reference;
    propose useful future links in the handoff. A missing link alone is not a proof

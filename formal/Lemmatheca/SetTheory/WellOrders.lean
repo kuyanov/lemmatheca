@@ -3,7 +3,11 @@ import Mathlib.Order.UpperLower.Basic
 import Mathlib.Order.SuccPred.Limit
 import Mathlib.Order.Preorder.Finite
 import Mathlib.Order.WellFoundedSet
+import Mathlib.Logic.Equiv.Nat
+import Mathlib.Data.PNat.Equiv
 import Mathlib.Tactic
+
+/-! Reusable WellOrders definitions and results. -/
 
 /-!
 # Well-orders: histories and partial recursive solutions
@@ -106,5 +110,43 @@ theorem recursion_empty_values_impossible [WellFoundedLT α] [Nonempty α] :
   exact ⟨fun Φ => Empty.elim (Φ a (fun b => False.elim (ha b)))⟩
 
 end Ordered
+
+end Lemmatheca.SetTheory
+
+/-! Standard comparison relations, well-foundedness criteria, and natural
+initial-segment identities. Integer comparison is pulled back along
+`Equiv.intEquivNat`. -/
+
+namespace Lemmatheca.SetTheory
+
+open Lemmatheca.SetTheory
+
+def integerEnumerationLT (a b : ℤ) : Prop := Equiv.intEquivNat a < Equiv.intEquivNat b
+
+theorem noMin_not_wellFounded (A : Type*) [LinearOrder A] [Nonempty A]
+    [NoMinOrder A] : ¬ WellFounded ((· < ·) : A → A → Prop) := by
+  intro h
+  obtain ⟨b, hb⟩ := exists_lt (h.min Set.univ Set.univ_nonempty)
+  exact h.not_lt_min Set.univ (Set.mem_univ b) hb
+
+theorem proper_positive_divisibility_wellFounded :
+    WellFounded (fun a b : ℕ+ => a ∣ b ∧ a ≠ b) := by
+  refine (measure (fun a : ℕ+ => a.val)).wf.mono ?_
+  intro a b h
+  have hd : a.val ∣ b.val := PNat.dvd_iff.mp h.1
+  have hle := Nat.le_of_dvd b.property hd
+  have hne : a.val ≠ b.val := fun he => h.2 (Subtype.ext he)
+  exact lt_of_le_of_ne hle hne
+
+theorem natural_segment_step (n : ℕ) :
+    Set.Iio (n + 1) = Set.Iio n ∪ {n} := by
+  ext k
+  simp only [Set.mem_Iio, Set.mem_union, Set.mem_singleton_iff]
+  omega
+
+theorem natural_segment_union : (⋃ n : ℕ, Set.Iio n) = Set.univ := by
+  ext k
+  simp only [Set.mem_iUnion, Set.mem_Iio, Set.mem_univ, iff_true]
+  exact ⟨k + 1, by omega⟩
 
 end Lemmatheca.SetTheory

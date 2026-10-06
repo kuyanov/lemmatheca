@@ -1,17 +1,17 @@
-<section id="choice-and-background" data-kind="definition">
+<section id="choice-and-background" data-kind="definition" data-formal="choice-principle countable-definition">
   <h2>Different amounts of choice for different tasks</h2>
   <p>The <a href="axiom-of-choice#choice-functions">axiom of choice</a> supplies selections for arbitrary set-indexed families of nonempty sets. Two more restricted principles concern countably many selections: <strong>countable choice</strong> chooses from a given sequence of sets, while <strong>dependent choice</strong> permits each successive selection to depend on earlier selections.</p>
   <p>Our background theory is ZF. Each result states when it additionally assumes one of these principles. We use <a href="finite-and-countable-sets#finite-sets">finite sets</a>, <a href="finite-and-countable-sets#countable-sets">countability</a>, and <a href="natural-numbers-as-sets#recursion-on-omega">natural-number recursion</a>, writing \(\omega\) for the natural numbers as sets. An <strong>infinite</strong> set means one that is not finite; we do not build the existence of a countably infinite subset into this definition.</p>
 </section>
 
-<section id="countable-choice" data-kind="definition">
+<section id="countable-choice" data-kind="definition" data-formal="weaker-choice-countable-choice weaker-choice-countable-indices weaker-choice-finite-prefix selections-transfer-along-enumeration">
   <h2>Countable choice selects from a prescribed sequence</h2>
   <p>The <strong>axiom of countable choice</strong>, written \(\mathrm{AC}_\omega\), says: for every sequence \((A_n)_{n\in\omega}\) of nonempty sets, there is a function \(c\) on \(\omega\) with \(c(n)\in A_n\) for every \(n\).</p>
   <p>No disjointness or distinctness of the sets is required. All candidate values belong to the set \(U=\bigcup_{n\in\omega}A_n\), and the resulting function has codomain \(U\). This is equivalent to allowing any countable index set: finite families have <a href="axiom-of-choice#choices-without-the-axiom">choice functions in ZF</a>, and a countably infinite index set has a bijection with \(\omega\) along which we can transfer the sequence and the selections.</p>
   <p>For every finite \(m\), a choice function on the first \(m\) sets exists in ZF. These separate finite existence statements do not themselves supply one function on all of \(\omega\). Replacement collects uniquely specified outputs, not unspecified selections.</p>
 </section>
 
-<section id="dependent-choice" data-kind="definition">
+<section id="dependent-choice" data-kind="definition" data-formal="weaker-choice-serial weaker-choice-dependent-choice weaker-choice-empty-serial natural-recursion">
   <h2>Dependent choice follows a relation from a starting point</h2>
   <p>A relation \(R\subseteq X\times X\) is <strong>serial</strong> if every \(x\in X\) has some successor \(y\in X\) with \(x\,R\,y\). The <strong>axiom of dependent choice</strong>, written DC, says: for every nonempty set \(X\), every serial relation \(R\) on it, and every prescribed \(x_0\in X\), there is a function \(f:\omega\to X\) such that</p>
   <div class="math-display">\[ f(0)=x_0,\qquad f(n)\,R\,f(n+1)\quad(n\in\omega). \]</div>
@@ -19,7 +19,7 @@
   <p>The nonemptiness assumption matters: the empty relation on the empty carrier is serial vacuously, but there is no function from \(\omega\) into the empty set.</p>
 </section>
 
-<section id="starting-point-version" data-kind="lemma">
+<section id="starting-point-version" data-kind="lemma" data-formal="weaker-choice-unstarted-dependent-choice weaker-choice-starting-point-iff finite-relation-history finite-relation-histories-serial relation-sequence-from-history-path">
   <h2>Allowing an unspecified start gives the same principle</h2>
   <p>DC is equivalent to the version that asks only for some infinite \(R\)-sequence on each nonempty serial carrier, without specifying its first point.</p>
   <p class="proof-label">Proof</p>
@@ -27,14 +27,14 @@
   <p>An infinite sequence of such extensions, supplied by the unspecified-start version, consists of compatible paths whose lengths increase by one each time. Their union is a function on \(\omega\), since those lengths are unbounded in \(\omega\). Every path starts at \(x_0\), and each successive pair in the union occurs in a sufficiently long path. Thus the union is an \(R\)-sequence with the prescribed start. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="ac-implies-dc" data-kind="theorem">
+<section id="ac-implies-dc" data-kind="theorem" data-formal="weaker-choice-ac-implies-dc natural-recursion">
   <h2>Full choice supplies a step function</h2>
   <p>Over ZF, \(\mathrm{AC}\Rightarrow\mathrm{DC}\).</p>
   <p class="proof-label">Proof</p>
   <p>Let \(X\) be nonempty and \(R\) serial, and fix \(x_0\in X\). For each \(x\in X\), the successor set \(S_x=\{y\in X:x\,R\,y\}\) is nonempty. Apply AC to this \(X\)-indexed family to obtain \(g:X\to X\) with \(g(x)\in S_x\). Recursion from \(x_0\) gives a sequence with \(f(n+1)=g(f(n))\), hence \(f(n)\,R\,f(n+1)\). <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="dc-implies-countable-choice" data-kind="theorem">
+<section id="dc-implies-countable-choice" data-kind="theorem" data-formal="weaker-choice-dc-implies-countable-choice one-term-history-extension finite-selection-history finite-selection-histories-serial choice-function-from-selection-path">
   <h2>Successive extensions choose from an entire sequence</h2>
   <p>Over ZF, \(\mathrm{DC}\Rightarrow\mathrm{AC}_\omega\). Consequently</p>
   <div class="math-display">\[ \mathrm{AC}\ \Longrightarrow\ \mathrm{DC}\ \Longrightarrow\ \mathrm{AC}_\omega. \]</div>
@@ -45,7 +45,7 @@
   <p>These proofs establish the displayed implications. They do not prove that any reverse implication fails; non-implication and independence require separate model arguments.</p>
 </section>
 
-<section id="successive-selections" data-kind="lemma">
+<section id="successive-selections" data-kind="lemma" data-formal="weaker-choice-successive-selections one-term-history-extension history-path-extraction">
   <h2>A whole finite history can be the state of a selection process</h2>
   <p>Assume DC. Let \(X\) be a set and \(T\) a nonempty set of finite sequences in \(X\). If every \(s\in T\) has a one-term extension in \(T\), then for any prescribed \(s_0\in T\) there is a sequence \(f:\omega\to X\) extending \(s_0\), whose initial segment of each length at least \(\operatorname{dom}(s_0)\) belongs to \(T\).</p>
   <p class="proof-label">Proof</p>
@@ -53,13 +53,13 @@
   <p>Thus a requirement may depend on the entire finite history, rather than only its last selected element. The proof does not replace that requirement by independent choices from a predetermined family.</p>
 </section>
 
-<section id="dedekind-infinity" data-kind="definition">
+<section id="dedekind-infinity" data-kind="definition" data-formal="weaker-choice-dedekind-infinite weaker-choice-finite-not-dedekind weaker-choice-dedekind-characterizations">
   <h2>Dedekind infinity means matching a proper subset</h2>
   <p>A set \(A\) is <strong>Dedekind infinite</strong> if there is a bijection from \(A\) onto a proper subset of itself. Equivalently, there is an injective self-map \(u:A\to A\) that is not surjective: restricting its codomain to its image gives the bijection, and composing a proper-subset bijection with inclusion gives the self-map. A set that is not Dedekind infinite is <strong>Dedekind finite</strong>.</p>
   <p>Every finite set is Dedekind finite, by <a href="finite-and-countable-sets#finite-self-maps">the finite self-map theorem</a>. Hence every Dedekind-infinite set is infinite. The converse is a distinct assertion, for which we will explicitly assume countable choice.</p>
 </section>
 
-<section id="dedekind-characterizations" data-kind="theorem">
+<section id="dedekind-characterizations" data-kind="theorem" data-formal="weaker-choice-dedekind-characterizations zf-dedekind-infinity-characterizations">
   <h2>Dedekind infinity is equivalent to a countably infinite subset</h2>
   <p>In ZF, a set \(A\) is Dedekind infinite if and only if there is an injection \(e:\omega\to A\), or equivalently a countably infinite subset of \(A\).</p>
   <p class="proof-label">Proof</p>
@@ -67,7 +67,7 @@
   <p>Conversely, let \(e:\omega\to A\) be injective. Define \(u(e(n))=e(n+1)\), and let \(u(x)=x\) outside \(e(\omega)\). Injectivity of \(e\) makes the definition unambiguous. The two image parts are disjoint, and the shift is injective on the first, so \(u\) is injective on \(A\). Its image is exactly \(A\setminus\{e(0)\}\), a proper subset. Finally, an injection is a bijection onto its image, establishing the countably infinite subset formulation. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="countable-choice-and-infinity" data-kind="theorem">
+<section id="countable-choice-and-infinity" data-kind="theorem" data-formal="weaker-choice-infinite-contains-naturals supplied-finite-injections-countable-union">
   <h2>Countable choice makes every infinite set Dedekind infinite</h2>
   <p>Assume \(\mathrm{AC}_\omega\). Every infinite set contains a countably infinite subset, and hence is Dedekind infinite.</p>
   <p class="proof-label">Proof</p>
@@ -79,7 +79,7 @@
   <p>Countable choice was applied to the already defined sets of finite injections. Simply saying “choose a new element at each step” would instead invoke a successive-selection principle without identifying it.</p>
 </section>
 
-<section id="countable-unions" data-kind="theorem">
+<section id="countable-unions" data-kind="theorem" data-formal="weaker-choice-encoded-union countable-indexed-unions countable-union-least-index-code countable-union-least-index-injective countable-choice-countable-unions">
   <h2>Countable choice makes a countable union countable</h2>
   <p>Assume \(\mathrm{AC}_\omega\). If \((A_n)_{n\in\omega}\) is a sequence of countable sets, then \(U=\bigcup_n A_n\) is countable, including when some or all \(A_n\) are empty.</p>
   <p class="proof-label">Proof</p>
@@ -90,7 +90,7 @@
   <p>If encodings \(j_n\) are supplied as part of the data, this construction works in ZF without countable choice. The extra principle is used to pass from “each set admits an encoding” to “a sequence of encodings exists.”</p>
 </section>
 
-<section id="well-foundedness-and-descending-sequences" data-kind="theorem">
+<section id="well-foundedness-and-descending-sequences" data-kind="theorem" data-formal="weaker-choice-descending-sequence well-founded-no-descending-sequence well-founded-minimal-criterion">
   <h2>Dependent choice turns failure of minimality into a descending sequence</h2>
   <p>In ZF, a well-founded relation on a set has no infinite descending sequence. Under DC, the converse also holds.</p>
   <p class="proof-label">Proof</p>
@@ -99,11 +99,21 @@
   <p>This is why a ZF-only argument must not replace the minimal-element definition of well-foundedness by the absence of infinite descending sequences without an additional justification.</p>
 </section>
 
-<section id="selection-question" data-kind="question">
+<section id="selection-question" data-kind="question" data-formal="weaker-choice-select-minima weaker-choice-successive-selections weaker-choice-countable-choice natural-recursion">
   <h2>Which constructions already specify their next value?</h2>
   <p>Compare choosing from nonempty subsets of \(\omega\), iterating a given function, and extending arbitrary finite choice functions. Where is an additional choice principle used?</p>
   <details class="question-answer">
     <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
     <div class="answer-body"><p>Nonempty subsets of \(\omega\) have uniquely specified least members, so taking minima needs no extra principle, even for a set-indexed family. Iterating a supplied function also needs only recursion. Arbitrary extendible finite histories provide possible next values without specifying a rule for selecting them; DC supplies a coherent infinite chain of extensions. For a prescribed sequence of nonempty sets, countable choice suffices for the full choice function, as its definition states.</p><p>None of these examples proves a non-implication between principles. Constructing infinite Dedekind-finite sets in models or separating AC, DC, and countable choice requires model-theoretic material outside this entry.</p></div>
   </details>
+</section>
+
+<section id="countable-ordinals-bounded" data-kind="theorem" data-formal="weaker-choice-countable-ordinals-bounded weaker-choice-omega-one-regular encoded-countable-ordinals-bound">
+  <h2>Countably many countable ordinals stay below omega one</h2>
+  <p>Assume countable choice. Every countable set \(C\subseteq\omega_1\) has a strict upper bound below \(\omega_1\): there is \(\beta&lt;\omega_1\) with \(\alpha&lt;\beta\) for all \(\alpha\in C\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Recall that <a href="axiom-of-choice#first-uncountable-ordinal">\(\omega_1\)</a> consists of the countable ordinals. Each \(\alpha+1\), for \(\alpha\in C\), is countable. If \(C\) is nonempty, list it using <a href="finite-and-countable-sets#surjective-lists">the list characterization of countability</a>, allowing repetitions when it is finite. By <a href="#countable-unions"></a>,</p>
+  <div class="math-display">\[ \beta=\bigcup_{\alpha\in C}(\alpha+1)=\sup_{\alpha\in C}(\alpha+1) \]</div>
+  <p>is countable, so \(\beta&lt;\omega_1\); and \(\alpha+1\le\beta\) gives \(\alpha&lt;\beta\). If \(C\) is empty, take \(\beta=0\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Thus countable choice suffices for the regularity of \(\omega_1\): any subset of \(\omega_1\) with smaller cardinality is countable and hence not cofinal. In the <a href="cofinality#cofinal-subsets">cofinality notation</a>, \(\operatorname{cf}(\omega_1)=\omega_1\). This conclusion was obtained from countable choice alone, without reusing a theorem whose proof assumes full Choice.</p>
 </section>

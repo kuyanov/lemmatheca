@@ -1,11 +1,9 @@
-import Mathlib.Data.Set.Countable
-import Mathlib.Data.Nat.Nth
-import Mathlib.Data.Nat.Sqrt
-import Mathlib.Basic.Denumerable
-import Mathlib.Algebra.Group.Nat.Even
-import Mathlib.Algebra.Ring.GeomSum
-import Mathlib.Tactic.Linarith
 import Lemmatheca.SetTheory.Cardinality
+import Mathlib.Data.Nat.Nth
+import Mathlib.Data.Fin.Pigeonhole
+import Mathlib.Data.Rat.Denumerable
+
+/-! Reusable Countability definitions and results. -/
 
 /-!
 # Explicit lists and the diagonal enumeration
@@ -233,5 +231,51 @@ theorem finiteSubsetCode_injective (c : α → ℕ) (hc : Function.Injective c) 
   ext n
   have hn := congrArg (fun b : FiniteSupportBinary => b.val n) he
   simpa [binary] using hn
+
+end Lemmatheca.SetTheory
+
+/-! Rational enumeration combines the integer equivalence with Cantor's
+pairing map. Fractions have positive denominator k+1, and strict increasing
+rational sequences cannot enumerate all rationals. -/
+
+namespace Lemmatheca.SetTheory
+
+open Lemmatheca.SetTheory
+
+/-- Fractions with integer numerator and positive denominator k+1. -/
+def rationalRepresentation (p : ℤ) (k : ℕ) : ℚ := (p : ℚ) / ((k : ℚ) + 1)
+
+theorem rationalRepresentation_surjective :
+    Function.Surjective (fun x : ℤ × ℕ => rationalRepresentation x.1 x.2) := by
+  intro q
+  refine ⟨(q.num, q.den - 1), ?_⟩
+  have hd : ((q.den - 1 : ℕ) : ℚ) + 1 = (q.den : ℚ) := by
+    have h : q.den - 1 + 1 = q.den := by have := q.den_pos; omega
+    exact_mod_cast h
+  dsimp [rationalRepresentation]
+  rw [hd]
+  exact q.num_div_den
+
+/-- A rational list using the integer equivalence and diagonal enumeration. -/
+def rationalList (n : ℕ) : ℚ :=
+  rationalRepresentation (Equiv.intEquivNat.symm (cantorUnpair n).1) (cantorUnpair n).2
+
+theorem rationalList_surjective : Function.Surjective rationalList := by
+  intro q
+  obtain ⟨⟨p, k⟩, hq⟩ := rationalRepresentation_surjective q
+  refine ⟨cantorPair (Equiv.intEquivNat p) k, ?_⟩
+  have hδ := cantor_inverse_laws.1 (Equiv.intEquivNat p, k)
+  change cantorUnpair (cantorPair (Equiv.intEquivNat p) k) = _ at hδ
+  simpa only [rationalList, hδ, Equiv.symm_apply_apply] using hq
+
+theorem increasing_rationals_not_enumeration (r : ℕ → ℚ) (hr : StrictMono r) :
+    (∀ n, r n ≠ r 0 - 1) ∧ ¬ Function.Surjective r := by
+  have hmiss (n : ℕ) : r n ≠ r 0 - 1 := by
+    have h := hr.monotone (Nat.zero_le n)
+    linarith
+  refine ⟨hmiss, ?_⟩
+  intro h
+  obtain ⟨n, hn⟩ := h (r 0 - 1)
+  exact hmiss n hn
 
 end Lemmatheca.SetTheory

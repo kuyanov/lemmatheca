@@ -44,16 +44,26 @@ sources. Use the single project in formal/ and preserve unrelated work.
    logical encoding and missing prerequisites using the
    [assumption guidance](../CONTRIBUTING.md#prerequisites-and-scope). Report limits
    of coverage rather than binding such a claim to an ordinary Lean theorem with
-   a different meaning.
+   a different meaning. Leave the intended claim unbound when a classical
+   declaration proves its principles or conclusion outright and does not encode
+   the claimed implication over ZF. Keep definitions bound and cover the actual
+   construction steps with supplied-data lemmas; do not add provable choice
+   premises to library facts as a substitute for the missing logical encoding.
 4. Remove redundant coverage while retaining explicitly stated witnesses and
    distinct claims. A linked equivalence may already cover its two directions.
    Proof helpers need not become registered nodes. Reuse existing nodes across
    entries instead of duplicating them.
 5. Implement missing definition bodies and declare missing theorem statements with
    `by sorry`. Do not replace existing proofs or prove new theorem bodies in this
-   step. Put local modules under `formal/Lemmatheca/`, use appropriate namespaces,
-   and add their imports to `formal/Lemmatheca.lean`. Group related mathematics in
-   coherent modules. Keep environment pins fixed.
+   step. Put reusable mathematics under the general theory layer, currently
+   `formal/Lemmatheca/SetTheory/`, even if introduced by or used in only one entry.
+   This includes general definitions, theorem statements, edge cases, and
+   construction lemmas; a standard construction on a particular carrier is still
+   reusable mathematics. Reserve `Entry/` and `Lemmatheca.Entry.<EntryName>` for
+   particular illustrative examples and counterexamples with no wider use, and
+   their example-specific helpers. General modules must not import entry modules.
+   Group related mathematics in coherent modules, remove empty example modules,
+   and add imports to `formal/Lemmatheca.lean`. Keep environment pins fixed.
 6. Create `corpus/nodes/<node-id>.json` using the current contract in [formalization guide](../docs/formal.md).
    Write a concise plain-text mathematical description with needed assumptions and
    quantifiers. Optional LaTeX must be escaped for JSON. Bind declaration to its full

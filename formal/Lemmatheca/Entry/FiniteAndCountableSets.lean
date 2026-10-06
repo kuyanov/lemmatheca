@@ -1,22 +1,10 @@
+import Lemmatheca.SetTheory.Basic
 import Lemmatheca.SetTheory.Countability
-import Lemmatheca.Entry.SetsAndMaps
-import Mathlib.Data.Fin.Pigeonhole
-import Mathlib.Data.Fintype.Pigeonhole
-import Mathlib.Basic.Finite.Prod
-import Mathlib.Data.PNat.Equiv
-import Mathlib.Data.Rat.Denumerable
-import Mathlib.Logic.Equiv.Prod
 
-/-!
-# Finite-and-countable-sets entry: witnesses and worked answers
-
-`Fin n` represents [n] = {0,...,n-1}; sets with specified domains use subtypes.
-The inverse of `Equiv.intEquivNat` is exactly 0,-1,1,-2,... .
-Rational division is total in Lean, but all denominators below are k+1 > 0.
-Concrete examples use the same explicit lists as the human entry.
--/
+/-! Particular examples and counterexamples for the human entry. -/
 
 namespace Lemmatheca.Entry.FiniteAndCountableSets
+open Lemmatheca.SetTheory
 
 open Lemmatheca.SetTheory
 
@@ -48,8 +36,8 @@ theorem predecessor_example :
 
 theorem even_naturals_enumeration :
     Function.Injective (fun n : ℕ => 2 * n) ∧
-      Set.range (fun n : ℕ => 2 * n) = SetsAndMaps.evenNaturals ∧
-        1 ∉ SetsAndMaps.evenNaturals := by
+      Set.range (fun n : ℕ => 2 * n) = Lemmatheca.SetTheory.evenNaturals ∧
+        1 ∉ Lemmatheca.SetTheory.evenNaturals := by
   refine ⟨fun a b h => by change 2 * a = 2 * b at h; omega, ?_, ?_⟩
   · ext n
     constructor
@@ -58,7 +46,7 @@ theorem even_naturals_enumeration :
       exact ⟨k, by omega⟩
     · rintro ⟨k, hk⟩
       exact ⟨k, by change 2 * k = n; omega⟩
-  · simp [SetsAndMaps.evenNaturals, Nat.even_iff]
+  · simp [Lemmatheca.SetTheory.evenNaturals, Nat.even_iff]
 
 theorem repeated_naturals_list :
     Function.Surjective (fun n : ℕ => n / 2) ∧
@@ -123,32 +111,6 @@ theorem row_first_not_enumeration :
 theorem pair_two_three_position :
     cantorPair 2 3 = 17 ∧ cantorUnpair 17 = (2, 3) := by decide +kernel
 
-/-- Fractions with integer numerator and positive denominator k+1. -/
-def rationalRepresentation (p : ℤ) (k : ℕ) : ℚ := (p : ℚ) / ((k : ℚ) + 1)
-
-theorem rationalRepresentation_surjective :
-    Function.Surjective (fun x : ℤ × ℕ => rationalRepresentation x.1 x.2) := by
-  intro q
-  refine ⟨(q.num, q.den - 1), ?_⟩
-  have hd : ((q.den - 1 : ℕ) : ℚ) + 1 = (q.den : ℚ) := by
-    have h : q.den - 1 + 1 = q.den := by have := q.den_pos; omega
-    exact_mod_cast h
-  dsimp [rationalRepresentation]
-  rw [hd]
-  exact q.num_div_den
-
-/-- The rational list using the entry's integer and diagonal enumerations. -/
-def rationalList (n : ℕ) : ℚ :=
-  rationalRepresentation (Equiv.intEquivNat.symm (cantorUnpair n).1) (cantorUnpair n).2
-
-theorem rationalList_surjective : Function.Surjective rationalList := by
-  intro q
-  obtain ⟨⟨p, k⟩, hq⟩ := rationalRepresentation_surjective q
-  refine ⟨cantorPair (Equiv.intEquivNat p) k, ?_⟩
-  have hδ := cantor_inverse_laws.1 (Equiv.intEquivNat p, k)
-  change cantorUnpair (cantorPair (Equiv.intEquivNat p) k) = _ at hδ
-  simpa only [rationalList, hδ, Equiv.symm_apply_apply] using hq
-
 theorem rationalList_prefix :
     (List.range 10).map rationalList =
       [0, 0, -1, 0, -(1 / 2), 1, 0, -(1 / 3), 1 / 2, -2] := by decide +kernel
@@ -190,15 +152,5 @@ theorem rationalList_first_five_distinct :
 theorem rational_two_thirds_position :
     Equiv.intEquivNat.symm 4 = 2 ∧ cantorPair 4 2 = 25 ∧
       cantorUnpair 25 = (4, 2) ∧ rationalList 25 = 2 / 3 := by decide +kernel
-
-theorem increasing_rationals_not_enumeration (r : ℕ → ℚ) (hr : StrictMono r) :
-    (∀ n, r n ≠ r 0 - 1) ∧ ¬ Function.Surjective r := by
-  have hmiss (n : ℕ) : r n ≠ r 0 - 1 := by
-    have h := hr.monotone (Nat.zero_le n)
-    linarith
-  refine ⟨hmiss, ?_⟩
-  intro h
-  obtain ⟨n, hn⟩ := h (r 0 - 1)
-  exact hmiss n hn
 
 end Lemmatheca.Entry.FiniteAndCountableSets

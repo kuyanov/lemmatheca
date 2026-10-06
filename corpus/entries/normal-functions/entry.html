@@ -1,0 +1,88 @@
+<section id="normal-functions" data-kind="definition" data-formal="normal-ordinal-function ordinal-addition-normal ordinal-multiplication-normal ordinal-power-normal normal-function-successor-not-normal">
+  <h2>Increasing ordinal functions that preserve limits</h2>
+  <p>A definable class function \(f:\mathrm{Ord}\to\mathrm{Ord}\) is <strong>normal</strong> if it is strictly increasing and, at every nonzero limit ordinal \(\lambda\),</p>
+  <div class="math-display">\[ f(\lambda)=\sup_{\alpha&lt;\lambda}f(\alpha). \]</div>
+  <p>A class function is a formula giving a unique ordinal value at each ordinal, with fixed set parameters; it is not a set containing all its input-output pairs. Replacement collects its values over any set of indices. We work in ZF without Choice, using <a href="ordinals#transfinite-methods">transfinite induction and set-valued recursion</a> and <a href="ordinal-powers#cantor-normal-form">Cantor normal form</a>.</p>
+  <p>For fixed \(\delta\), the functions \(\alpha\mapsto\delta+\alpha\), \(\alpha\mapsto\delta\cdot\alpha\) when \(\delta&gt;0\), and \(\alpha\mapsto\delta^\alpha\) when \(\delta&gt;1\) are normal, by the <a href="ordinal-arithmetic#addition-comparison">comparison</a> and limit rules of ordinal arithmetic and <a href="ordinal-powers#increasing-powers">ordinal powers</a>. The successor function is increasing but not normal: its value at \(\omega\) is \(\omega+1\), whereas the supremum of its finite values is \(\omega\).</p>
+</section>
+
+<section id="normal-functions-and-suprema" data-kind="lemma" data-formal="well-order-increasing-map-not-decreasing normal-function-nonempty-suprema normal-function-empty-supremum-example">
+  <h2>Normal functions stay above their indices and preserve nonempty suprema</h2>
+  <p>For every normal \(f\), \(\alpha\le f(\alpha)\). For every nonempty set \(S\) of ordinals,</p>
+  <div class="math-display">\[ f(\sup S)=\sup_{\alpha\in S}f(\alpha). \]</div>
+  <p class="proof-label">Proof</p>
+  <p>For the first assertion, use transfinite induction. Zero is immediate. Strict increase takes \(\alpha\le f(\alpha)\) to \(\alpha+1\le f(\alpha)+1\le f(\alpha+1)\). At a limit take suprema and use normality.</p>
+  <p>If \(S\) has a greatest member, monotonicity proves the second assertion. Otherwise \(\lambda=\sup S\) is a nonzero limit, and \(S\) is cofinal in it: every \(\beta&lt;\lambda\) is below some member of \(S\). The values on \(S\) therefore have the same supremum as all the values below \(\lambda\). Normality gives the claim. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The nonempty condition matters. For \(f(\alpha)=\omega^\alpha\), the empty supremum is zero, but \(f(0)=1\).</p>
+</section>
+
+<section id="closed-unbounded-fixed-points" data-kind="theorem" data-formal="normal-next-fixed-point normal-fixed-point-iteration-supremum normal-next-fixed-point-above-start normal-next-fixed-point-least normal-fixed-points-unbounded normal-function-fixed-points-closed normal-function-fixed-point zf-normal-function-goodstein-constructions">
+  <h2>Fixed points of a normal function form a closed unbounded class</h2>
+  <p>A <strong>fixed point</strong> satisfies \(f(\alpha)=\alpha\). The fixed points of a normal function are <strong>unbounded</strong>, meaning that there is one strictly above every ordinal. They are <strong>closed</strong>, meaning that the supremum of any nonempty set of fixed points is again a fixed point. These are properties of a class of ordinals, with no topological prerequisites.</p>
+  <p class="proof-label">Proof</p>
+  <p>Given \(\beta\), recursively put \(a_0=\beta\) and \(a_{n+1}=f(a_n)\), and let \(a=\sup_{n&lt;\omega}a_n\). Set-valued recursion and Replacement produce the sequence and its supremum. The sequence is nondecreasing by <a href="#normal-functions-and-suprema"></a>. That lemma also gives</p>
+  <div class="math-display">\[ f(a)=\sup_{n&lt;\omega}f(a_n)=\sup_{n&lt;\omega}a_{n+1}=a. \]</div>
+  <p>If \(c\ge\beta\) is fixed, induction gives \(a_n\le c\) for every \(n\), hence \(a\le c\). Thus \(a\) is the least fixed point at or above \(\beta\). Starting instead at \(\beta+1\) gives one strictly above \(\beta\).</p>
+  <p>For a nonempty set \(S\) of fixed points, the same supremum lemma gives \(f(\sup S)=\sup_{\alpha\in S}f(\alpha)=\sup S\), proving closure. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="epsilon-numbers" data-kind="definition" data-formal="epsilon-enumeration epsilon-enumeration-derivative epsilon-zero-least-fixed-point epsilon-enumeration-successor epsilon-omega-power-fixed normal-fixed-point-enumeration-limit normal-fixed-point-enumeration-normal normal-fixed-point-enumeration-range normal-fixed-point-enumeration">
+  <h2>Epsilon numbers are fixed points of powers of omega</h2>
+  <p>An <strong>epsilon number</strong> is an ordinal \(\varepsilon\) with \(\omega^\varepsilon=\varepsilon\). The function \(\alpha\mapsto\omega^\alpha\) is normal, so <a href="#closed-unbounded-fixed-points"></a> supplies a closed unbounded class of epsilon numbers.</p>
+  <p>Let \(\varepsilon_0\) be the least one. More generally, define \(\varepsilon_{\alpha+1}\) to be the least epsilon number strictly above \(\varepsilon_\alpha\), and at a nonzero limit put \(\varepsilon_\lambda=\sup_{\alpha&lt;\lambda}\varepsilon_\alpha\). Closedness makes the limit an epsilon number; strict increase makes it greater than all earlier values. The least-fixed-point construction specifies each successor value uniquely, so set-valued transfinite recursion defines this enumeration without Choice.</p>
+  <p>There is no epsilon number between consecutive values, and the limit value is the least upper bound of its predecessors. Thus this lists the epsilon numbers in their ordinal order. For any one epsilon number, its predecessors form a set; their order type locates it in the enumeration.</p>
+</section>
+
+<section id="epsilon-zero-towers" data-kind="theorem" data-formal="normal-function-tower normal-function-tower-spec">
+  <h2>The first epsilon number is the limit of finite towers</h2>
+  <p>Put \(t_0=1\) and \(t_{n+1}=\omega^{t_n}\). Then</p>
+  <div class="math-display">\[ \varepsilon_0=\sup_{n&lt;\omega}t_n=\sup\{1,\omega,\omega^\omega,\omega^{\omega^\omega},\ldots\}. \]</div>
+  <p class="proof-label">Proof</p>
+  <p>The sequence is strictly increasing: \(1&lt;\omega\), and strict increase of powers propagates each inequality. The iteration theorem makes its supremum a fixed point. Every epsilon number is at least one, so induction places every \(t_n\) below it. Their supremum is therefore the least epsilon number. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Every \(\alpha&lt;\varepsilon_0\) is below some finite tower. No finite tower is itself an epsilon number.</p>
+</section>
+
+<section id="hereditary-ordinal-forms" data-kind="theorem" data-formal="hereditary-cantor-expression hereditary-cantor-expression-value hereditary-cantor-normality hereditary-cantor-form-unique epsilon-zero-countable normal-function-hereditary-forms normal-function-notation-below-epsilon zf-normal-function-goodstein-constructions">
+  <h2>Ordinals below epsilon zero have finite hereditary expressions</h2>
+  <p>The ordinals below \(\varepsilon_0\) are exactly those expressible by finite terms built from zero using Cantor normal forms, with every exponent itself expressed in the same way. For example, \(\omega^{\omega^2+3}\cdot2+\omega+5\) is such a term. This is a <strong>hereditary Cantor normal form</strong>.</p>
+  <p class="proof-label">Proof</p>
+  <p>If \(\alpha&lt;t_{n+1}=\omega^{t_n}\), every exponent in its normal form is below \(t_n\). Indeed, an exponent at least \(t_n\) would make the leading term at least \(\omega^{t_n}\). Induction on \(n\), with \(\alpha&lt;t_0=1\) giving only zero, therefore expands all exponents in finitely many layers. Every \(\alpha&lt;\varepsilon_0\) has such a tower bound.</p>
+  <p>Conversely, argue by induction on a finite expression. Its already evaluated exponents are below \(\varepsilon_0\). Choose one tower \(t_n\) strictly above all of them. By <a href="ordinal-powers#small-sums">closure of smaller terms under finite sums</a>, the resulting normal form is below \(\omega^{t_n}=t_{n+1}&lt;\varepsilon_0\).</p>
+  <p>Finite expressions can be encoded by finite strings of natural numbers: use distinct symbols for punctuation, powers, and sums, and encode coefficients as natural numbers. A string is determined by its finite graph in \(\omega\times\omega\). The <a href="finite-and-countable-sets#finite-products">countability of pairs</a> and of their <a href="finite-and-countable-sets#finite-subset-family">finite subsets</a> therefore give a natural-number code for every string. Evaluation maps the valid strings onto \(\varepsilon_0\). Taking the least code of each ordinal injects \(\varepsilon_0\) into \(\omega\). Thus \(\varepsilon_0\) is countably infinite without using a choice axiom. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="hereditary-base-representations" data-kind="definition" data-formal="normal-function-eval-nat normal-function-canonical normal-function-hereditary normal-function-base-change normal-function-ordinal-measure normal-function-hereditary-spec normal-function-notation-below-epsilon">
+  <h2>Writing a number in a base also used inside its exponents</h2>
+  <p>For a natural-number base \(b\ge2\), write \(m\) uniquely as \(b^{e_0}c_0+\cdots+b^{e_{k-1}}c_{k-1}\), with decreasing exponents and \(0&lt;c_i&lt;b\), omitting zero coefficients. Repeated integer division by \(b\) gives the digits and proves uniqueness: the remainder is the last digit, and division strips it off. Now expand every exponent in base \(b\), and repeat inside its exponents. Every positive exponent used to represent \(m\) is smaller than \(m\), so natural-number induction gives a finite expression. Zero is the empty expression. This is the <strong>hereditary base-\(b\) representation</strong>.</p>
+  <p>For example, \(4=2^{2^1}\) in hereditary base two. Let \(B_b^c(m)\), for \(c&gt;b\), be the natural number obtained by replacing every occurrence of the base \(b\) by \(c\), including those in exponents. Coefficients stay unchanged. Let \(o_b(m)\) be the ordinal obtained by replacing those base occurrences by \(\omega\). It is below \(\varepsilon_0\) by <a href="#hereditary-ordinal-forms"></a>.</p>
+</section>
+
+<section id="base-change-and-descent" data-kind="lemma" data-formal="normal-function-base-change-spec normal-function-measure-strict-mono">
+  <h2>Base changes preserve the ordinal measure</h2>
+  <p>For \(b\ge2\), \(c&gt;b\), and natural numbers \(m,n\),</p>
+  <div class="math-display">\[ m&lt;n\ \Longrightarrow\ o_b(m)&lt;o_b(n),\qquad o_c(B_b^c(m))=o_b(m). \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Ordinary base representations compare at the highest exponent where their digits differ. A larger exponent outweighs all lower places, since their total is less than the next base power. Compare their lists of nonzero exponent–coefficient pairs, treating a missing suffix as smaller than a nonempty one. Induct simultaneously on \(\max(m,n)\) to show that this comparison is preserved when the base is replaced by \(c\) and when it is replaced by \(\omega\). All exponent comparisons concern smaller numbers, so the induction hypothesis applies to them. Coefficient comparisons are unchanged. For \(\omega\), <a href="ordinal-powers#normal-form-comparison">normal-form comparison</a> gives exactly this ordering. Zero and one have no positive exponent comparisons and start the induction.</p>
+  <p>In particular, base change keeps the exponents decreasing. The unchanged coefficients are less than \(b&lt;c\), so the resulting expression is already the canonical hereditary base-\(c\) representation of its value. Replacing \(c\) by \(\omega\) in it gives precisely the same hereditary ordinal term as replacing \(b\) by \(\omega\) in the original. This proves the second identity. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="goodstein-termination" data-kind="theorem" data-formal="normal-function-goodstein normal-function-goodstein-descent goodstein-termination zf-normal-function-goodstein-constructions">
+  <h2>Every Goodstein sequence eventually reaches zero</h2>
+  <p>Start with any natural number \(g_0\), using base two. At stage \(n\), let \(b=n+2\) and define</p>
+  <div class="math-display">\[ g_{n+1}=\begin{cases}B_b^{b+1}(g_n)-1,&amp;g_n&gt;0,\\0,&amp;g_n=0.\end{cases} \]</div>
+  <p>This is a <strong>Goodstein sequence</strong>. Despite possible rapid increases in its natural-number values, it reaches zero after finitely many steps.</p>
+  <p class="proof-label">Proof</p>
+  <p>Measure stage \(n\) by \(\alpha_n=o_{n+2}(g_n)\). If \(g_n&gt;0\), base change preserves positivity, and <a href="#base-change-and-descent"></a> gives</p>
+  <div class="math-display">\[ \alpha_{n+1}=o_{b+1}(B_b^{b+1}(g_n)-1)&lt;o_{b+1}(B_b^{b+1}(g_n))=o_b(g_n)=\alpha_n. \]</div>
+  <p>If zero were never reached, these ordinals would form an infinite strictly decreasing sequence. Its range is a set by Replacement and has a least ordinal; the next term after that ordinal would be smaller, a contradiction. Thus some \(g_n=0\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The proof uses ordinals below \(\varepsilon_0\) and no Choice. Assertions about which formal arithmetic systems can prove this theorem require a separate account of syntax, provability, and those systems.</p>
+</section>
+
+<section id="goodstein-growth-question" data-kind="question" data-formal="goodstein-four-example">
+  <h2>Can the number grow while its ordinal measure falls?</h2>
+  <p>Starting at four, compute the first three terms and their ordinal measures.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>In base two, \(g_0=2^{2^1}=4\), with measure \(\omega^\omega\). Base change to three and subtraction give \(g_1=3^3-1=2\cdot3^2+2\cdot3+2=26\), with measure \(\omega^2\cdot2+\omega\cdot2+2\). Base change to four and subtraction give \(g_2=2\cdot4^2+2\cdot4+1=41\), with measure \(\omega^2\cdot2+\omega\cdot2+1\). The numbers increase, while the ordinal measures strictly decrease.</p></div>
+  </details>
+</section>

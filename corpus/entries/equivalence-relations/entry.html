@@ -79,6 +79,26 @@
   </details>
 </section>
 
+<section id="relation-composition" data-kind="definition" data-formal="relation-composition relation-composition-associative relation-composition-right-identity relation-composition-left-identity relation-converse-composition">
+  <h2>Relations can be reversed and composed</h2>
+  <p>For \(R\subseteq A\times B\), its <strong>converse</strong> is \(R^{-1}=\{(b,a):(a,b)\in R\}\). If \(S\subseteq B\times C\), their <strong>composition</strong> is</p>
+  <div class="math-display">\[ S\circ R=\{(a,c):\exists b\in B\ (a\,R\,b\text{ and }b\,S\,c)\}. \]</div>
+  <p>The relation on the right is followed first. A relation may give several possible intermediate points, or none; composing relations does not require them to be functions.</p>
+  <p>Composition is associative: membership in either \(T\circ(S\circ R)\) or \((T\circ S)\circ R\) means that there are \(b,c\) with \(a\,R\,b\), \(b\,S\,c\), and \(c\,T\,d\). The diagonal \(\Delta_A=\{(a,a):a\in A\}\) is an identity: \(R\circ\Delta_A=R=\Delta_B\circ R\). Also \((S\circ R)^{-1}=R^{-1}\circ S^{-1}\), because reversing a two-step path reverses the order of its steps.</p>
+</section>
+
+<section id="relation-closures" data-kind="theorem" data-formal="relation-reflexive-closure order-comparable relation-transitive-closure relation-reflexive-transitive-closure relation-transitive-closure-least relation-reflexive-transitive-closure-least relation-equivalence-closure relation-equivalence-closure-property relation-equivalence-closure-least relation-equivalence-closure-paths relation-extension-relation-power relation-extension-paths-characterize-closures relation-extension-elementary-closures-least relation-extension-three-point-closures relation-transitive-closure-contains relation-transitive-closure-transitivity relation-reflexive-transitive-closure-contains relation-reflexive-transitive-closure-reflexivity relation-reflexive-transitive-closure-transitivity">
+  <h2>Adding the least number of pairs needed for a property</h2>
+  <p>A <strong>closure</strong> of \(R\subseteq A\times A\) for a specified property is the smallest relation containing \(R\) and having that property. The reflexive closure is \(R\cup\Delta_A\); the symmetric closure is \(R\cup R^{-1}\).</p>
+  <p>Define \(R^0=\Delta_A\) and \(R^{n+1}=R\circ R^n\). The <strong>transitive closure</strong> and <strong>reflexive transitive closure</strong> are, respectively,</p>
+  <div class="math-display">\[ R^+=\bigcup_{n\ge1}R^n,\qquad R^*=\bigcup_{n\ge0}R^n. \]</div>
+  <p>Thus \(a\,R^+\,b\) means that a finite path of positive length connects \(a\) to \(b\); \(R^*\) also allows a path of length zero. All these relations are subsets of \(A\times A\), including when \(A\) is empty.</p>
+  <p class="proof-label">Proof</p>
+  <p>The reflexive and symmetric formulas add exactly the required loops or reversed pairs, so any relation with the respective property containing \(R\) must contain them. Concatenating paths proves transitivity of \(R^+\) and \(R^*\). If a transitive relation contains \(R\), induction on path length shows that it contains every \(R^n\) for \(n\ge1\); if it is reflexive too, it also contains \(R^0\). This proves leastness.</p>
+  <p>The least equivalence relation containing \(R\) is \((R\cup R^{-1})^*\): paths can be reversed, the zero-length paths give reflexivity, and concatenation gives transitivity. Every equivalence relation containing \(R\) contains all these paths. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For \(R=\{(0,1),(1,2)\}\) on \(\{0,1,2\}\), \(R^+\) adds \((0,2)\), while \(R^*\) also adds the three loops. The equivalence closure relates every pair, since each point can be reached from every other after allowing reversed steps.</p>
+</section>
+
 <section id="equivalence-classes" data-kind="definition"
   data-formal="equivalence-classes quotient-class-of-representative equivalence-class-contains-self fin-three-two-block-classes int-even-or-odd-exclusively int-parity-classes int-parity-classes-infinite">
   <h2>Classes and representatives</h2>

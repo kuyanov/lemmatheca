@@ -1,8 +1,5 @@
-import Mathlib.SetTheory.Cardinal.Basic
 import Mathlib.Analysis.Real.Cardinality
 import Mathlib.Analysis.Real.OfDigits
-import Mathlib.Data.Fintype.Powerset
-import Mathlib.NumberTheory.Real.Irrational
 import Mathlib.Tactic
 
 /-!
@@ -384,7 +381,7 @@ private theorem decimalValue_mono (d e : DecimalDigits) (h : ∀ i, (d i).val �
   exact_mod_cast h i
 
 theorem decimalDiagonal_spec (x : ℕ → ℝ) (d : ℕ → DecimalDigits)
-    (hx : ∀ n, x n ∈ Set.Ioo 0 1)
+    (_hx : ∀ n, x n ∈ Set.Ioo 0 1)
     (hd : ∀ n, CanonicalDecimal (d n) ∧ decimalValue (d n) = x n) :
     decimalValue (decimalDiagonal d) ∈ Set.Ioo 0 1 ∧
     (1 / 9 : ℝ) ≤ decimalValue (decimalDiagonal d) ∧

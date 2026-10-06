@@ -1,5 +1,4 @@
 import Lemmatheca.SetTheory.Cardinality
-import Lemmatheca.Entry.FiniteAndCountableSets
 
 namespace Lemmatheca.Entry.ComparingSizes
 
@@ -29,7 +28,7 @@ theorem bernstein_example_regions :
     | succ k ih =>
       rw [bernsteinStage, ih]
       simp only [Set.image_pair]
-      congr 1 <;> omega
+      congr 1
   refine ⟨hstage, ?_⟩
   ext n
   simp only [bernsteinRegion, Set.mem_iUnion, hstage, Set.mem_insert_iff,

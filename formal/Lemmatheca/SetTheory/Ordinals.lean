@@ -1,6 +1,5 @@
 import Lemmatheca.SetTheory.WellOrders
 import Mathlib.SetTheory.ZFC.Ordinal
-import Mathlib.SetTheory.Ordinal.Family
 
 /-! Von Neumann sets are related to mathlib's well-order types by `Ordinal.toZFSetIso`.
 A `ZFSet.{u}` has small membership domains; arbitrary `Set Ordinal.{u}` need not.
@@ -20,7 +19,7 @@ theorem ordinal_union (S : ZFSet.{u}) (hS : ∀ a ∈ S, ZFSet.IsOrdinal a) :
     obtain ⟨b, hb, hab⟩ := ZFSet.mem_sUnion.mp ha
     exact (hS b hb).mem hab
 
-theorem ordinal_union_lub (S : ZFSet.{u}) (hS : ∀ a ∈ S, ZFSet.IsOrdinal a) :
+theorem ordinal_union_lub (S : ZFSet.{u}) (_hS : ∀ a ∈ S, ZFSet.IsOrdinal a) :
     (∀ a ∈ S, a ⊆ ⋃₀ S) ∧
     ∀ b : ZFSet.{u}, ZFSet.IsOrdinal b → (∀ a ∈ S, a ⊆ b) → ⋃₀ S ⊆ b := by
   constructor
@@ -71,7 +70,7 @@ theorem ordinal_union_limit (S : ZFSet.{u}) (hS : ∀ a ∈ S, a.IsOrdinal)
     obtain ⟨b, hb, hab⟩ := hng a ha
     have ham := ZFSet.mem_sUnion_of_mem hab hb
     intro he
-    simpa [he] using ham
+    simp [he] at ham
   · apply ZFSet.ext
     intro x
     constructor
@@ -85,6 +84,6 @@ theorem no_set_of_all_ordinals :
     ¬ ∃ S : ZFSet.{u}, ∀ a : ZFSet.{u}, a.IsOrdinal → a ∈ S := by
   rintro ⟨S, hS⟩
   have h := ZFSet.rank_lt_of_mem (hS S.rank.toZFSet (ZFSet.isOrdinal_toZFSet _))
-  simpa using h
+  simp at h
 
 end Lemmatheca.SetTheory

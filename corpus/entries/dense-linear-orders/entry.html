@@ -1,0 +1,51 @@
+<section id="density-and-completeness" data-kind="definition" data-formal="dense-order-order-dense dense-order-order-separable dense-order-dedekind-complete dense-order-rational-dense-reals rational-encodable encodable-carrier-countable ordered-semifield-dense ordered-ring-no-minimum ordered-ring-no-maximum dedekind-cuts-real-order-equivalence">
+  <h2>Dense orders leave room between every two points</h2>
+  <p>A nonempty <a href="ordered-sets#partial-and-total-orders">linear order</a> \(L\) is <strong>dense</strong> if whenever \(x&lt;y\), some \(z\) satisfies \(x&lt;z&lt;y\). It has <strong>no endpoints</strong> if every point has both a smaller and a larger point. A subset \(D\subseteq L\) is <strong>order-dense</strong> if every interval \(x&lt;y\) contains a member of \(D\) strictly between its endpoints. The order is <strong>separable</strong> if it has a countable order-dense subset.</p>
+  <p>We call \(L\) <strong>Dedekind complete</strong> if every nonempty subset bounded above has a <a href="ordered-sets#suprema-and-infima">least upper bound</a> in \(L\). This differs from a complete lattice: a line without endpoints has no upper bound for its whole carrier. The word “separable” here concerns order density; no topology is needed.</p>
+  <p>The rationals are countable, dense, and have no endpoints, by <a href="finite-and-countable-sets#rational-enumeration">rational enumeration</a> and <a href="constructing-number-systems#rational-density-and-grids">rational density</a>. Here \(\mathbb R\) denotes the ordered set of Dedekind cuts from <a href="constructing-number-systems#dedekind-cuts">the number-system construction</a>. It is complete and has the rationals as an order-dense subset, by <a href="constructing-number-systems#cut-completeness">cut completeness</a> and <a href="constructing-number-systems#cut-approximations">density of rational cuts</a>. We work in ZF; the constructions below require no Choice.</p>
+</section>
+
+<section id="finite-order-extension" data-kind="lemma" data-formal="finite-order-embedding-extension">
+  <h2>A finite matching can accommodate another point</h2>
+  <p>Let \(f\) be an order isomorphism between finite subsets of linear orders \(A,B\), and suppose \(B\) is nonempty, dense, and without endpoints. For any \(a\in A\) outside the domain, \(f\) extends to an order isomorphism on a domain also containing \(a\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Among the finitely many domain points below \(a\), take the greatest if one exists; among those above it, take the least if one exists. Their images specify where the new image must go. If both exist, use a point strictly between their images. If just one exists, use a point on the required side of it. If neither exists, the domain was empty and any point of \(B\) works. Density and absence of endpoints supply these points. No existing image occupies the chosen position, since the neighboring domain points were consecutive around \(a\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="countable-orders-embed-in-rationals" data-kind="theorem" data-formal="countable-order-dense-embedding zf-dense-order-constructions">
+  <h2>Every countable linear order embeds in the rationals</h2>
+  <p>Every countable linear order, and in particular every countable ordinal with its ordinal order, admits an <a href="ordered-sets#order-maps">order embedding</a> into \(\mathbb Q\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The empty order has the empty embedding. Otherwise fix a list \(a_0,a_1,\ldots\) covering the carrier, with repetitions allowed, and fix a list of \(\mathbb Q\). Start with the empty finite map. At stage \(n\), do nothing if \(a_n\) is already in its domain; otherwise apply <a href="#finite-order-extension"></a>. Among suitable rational images, use the one with least index in the rational list. This gives a specified step rule, so <a href="natural-numbers-as-sets#recursion-on-omega">natural-number recursion</a> constructs the sequence without any choice axiom.</p>
+  <p>The union of the finite maps is defined on every point and is injective. Any two points occur together at a finite stage, where their order is preserved and reflected. The union is therefore an order embedding. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>A well-ordered subset of \(\mathbb Q\) can have any countable ordinal type, even though the whole rational order is not a well-order. The embedding need not have a dense image.</p>
+</section>
+
+<section id="cantor-back-and-forth" data-kind="theorem" data-formal="cantor-back-and-forth zf-dense-order-constructions">
+  <h2>The rationals are the unique countable dense order without endpoints</h2>
+  <p>Any two nonempty countable dense linear orders without endpoints are order-isomorphic. Consequently every such order is order-isomorphic to \(\mathbb Q\). This is <strong>Cantor's back-and-forth theorem</strong>.</p>
+  <p class="proof-label">Proof</p>
+  <p>Fix enumerations of \(A\) and \(B\), and start with the empty finite isomorphism. At even stages, include the first unused point of \(A\) in its domain using <a href="#finite-order-extension"></a>. At odd stages, apply that lemma to the inverse map to include the first unused point of \(B\) in its range. Each time use the suitable new point of least index in the other enumeration. Both orders are infinite, so a first unused point always exists at a finite stage.</p>
+  <p>Recursion produces compatible finite maps. Their union preserves and reflects order, and the alternating steps eventually cover every point of both enumerations. Thus it is an order isomorphism \(A\to B\). The least-index rule avoids any appeal to dependent choice. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="real-order-characterization" data-kind="theorem" data-formal="dense-order-real-order-characterization dense-order-dense-identification-extension dense-order-dense-lower-lub zf-dense-order-constructions dedekind-cuts-real-order-equivalence">
+  <h2>Completeness and a countable dense subset characterize the real order</h2>
+  <p>Every nonempty Dedekind-complete dense linear order without endpoints that has a countable order-dense subset is order-isomorphic to \(\mathbb R\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Let \(D\) be a countable order-dense subset of \(L\). With its inherited order it is nonempty, dense, and has no endpoints: to find a point below a given \(d\in D\), first take a smaller point in \(L\), then use order density between it and \(d\); the other conditions follow the same way. By <a href="#cantor-back-and-forth"></a>, fix an isomorphism \(e:D\to\mathbb Q\).</p>
+  <p>Assign to each \(x\in L\) the rational lower set</p>
+  <div class="math-display">\[ C_x=\{e(d):d\in D,\ d&lt;x\}. \]</div>
+  <p>It is a <a href="constructing-number-systems#dedekind-cuts">Dedekind cut</a>. There are members of \(D\) below and above \(x\), so it is nonempty and proper. It is downward closed, and order density between \(d&lt;x\) gives another member strictly above \(e(d)\), so it has no greatest member. If \(x&lt;y\), a \(d\in D\) between them witnesses \(C_x\subsetneq C_y\).</p>
+  <p>Conversely, for any rational cut \(C\), put \(S=e^{-1}[C]\). It is nonempty and bounded above by the inverse image of any rational outside \(C\). Let \(x=\sup_L S\). If \(d\in S\), the absence of a greatest member gives \(d'\in S\) with \(d&lt;d'\le x\), hence \(d&lt;x\). If \(d\notin S\), downward closure makes \(d\) an upper bound of \(S\), hence \(x\le d\). Thus \(C_x=C\). This proves that \(x\mapsto C_x\) is an order isomorphism onto the real cuts. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Once \(e\) is fixed, this extension is unique: every \(x\) is the supremum of the points of \(D\) below it. Without fixing the dense-set identification, the order isomorphism need not be unique. This result concerns order alone; the <a href="constructing-number-systems#unique-complete-ordered-field">ordered-field characterization</a> additionally preserves arithmetic.</p>
+</section>
+
+<section id="hypotheses-question" data-kind="question" data-formal="dense-order-rationals-not-complete real-uncountability dense-order-rational-dense-reals">
+  <h2>Why do countability and completeness play different roles?</h2>
+  <p>Why does Cantor's theorem not identify \(\mathbb Q\) with \(\mathbb R\)? Does having a countable dense subset make an order countable?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Both are dense without endpoints, but the real carrier is uncountable, so the countable-order theorem does not apply. A countable dense subset need only supply points between other points; it need not contain every point of the order. The rationals inside the reals demonstrate this distinction. Completeness also separates the two orders: the rationals have missing cuts, while the real order realizes each rational cut as a point.</p></div>
+  </details>
+</section>

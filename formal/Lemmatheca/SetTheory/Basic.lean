@@ -1,6 +1,9 @@
 import Mathlib.Basic.IsEmpty.Defs
 import Mathlib.Data.Set.Prod
 import Mathlib.Tactic.Choose
+import Mathlib.Algebra.Group.Nat.Even
+
+/-! Reusable Basic definitions and results. -/
 
 /-!
 # Sets, relations, and maps
@@ -67,5 +70,8 @@ theorem empty_domain_graph [IsEmpty α] (f : α → β) :
     Set.graphOn f Set.univ = ∅ := by
   ext ⟨x, y⟩
   exact isEmptyElim x
+
+/-- The set of even natural numbers. -/
+def evenNaturals : Set ℕ := {n | Even n}
 
 end Lemmatheca.SetTheory

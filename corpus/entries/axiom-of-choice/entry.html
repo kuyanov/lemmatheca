@@ -76,7 +76,7 @@ s\bigl(A\setminus\operatorname{ran}(f\mathbin{\upharpoonright}\alpha)\bigr),&amp
 <p>Induction shows that the actual history is always a chain and that every new value is strictly above all earlier values. At a limit, any two earlier values already occur together at an earlier stage. Thus the fallback is never used, and the recursion gives an injection \(h\to P\). This contradicts <a href="#hartogs-bound"></a>. A maximal point must exist. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="zorn-implies-choice" data-kind="theorem" data-formal="choice-equivalent-well-ordering well-ordering-equivalent-zorn">
+<section id="zorn-implies-choice" data-kind="theorem" data-formal="choice-equivalent-well-ordering well-ordering-equivalent-zorn partial-selection-graph partial-selection-chain-union maximal-partial-selection-total">
   <h2>A maximal partial selection must select everywhere</h2>
 <p>Zorn’s lemma implies AC.</p>
 <p class="proof-label">Proof</p>
@@ -127,4 +127,37 @@ R'=R\cup\{(x,y):x\le_R a\text{ and }b\le_R y\}
     <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
     <div class="answer-body"><p>Its two total extensions put either point first, so uniqueness fails. Totality alone does not ensure well-ordering. Indeed, an extension of the usual total order on \(\mathbb Z\) must keep that order, which has no least element. The well-ordering principle gives some well-order of the underlying set; it need not preserve a previously specified partial order.</p></div>
   </details>
+</section>
+
+<section id="first-uncountable-ordinal" data-kind="definition" data-formal="choice-extension-hartogs-least choice-extension-hartogs-naturals choice-extension-first-uncountable-spec omega-one-initial-ordinal zf-hartogs-first-uncountable">
+  <h2>The first uncountable ordinal exists without Choice</h2>
+  <p>The bound in <a href="#hartogs-bound"></a> is the <strong>Hartogs number</strong> \(h(A)\): the least ordinal that does not inject into \(A\). Indeed, if \(\beta&lt;h(A)=\sup_{\alpha\in T}(\alpha+1)\), then \(\beta\le\alpha\) for some \(\alpha\in T\). Restricting the corresponding enumeration injects \(\beta\) into \(A\). The bound itself does not inject.</p>
+  <p>Define \(\omega_1=h(\omega)\). It is the <strong>first uncountable ordinal</strong>: its members are exactly the ordinals admitting an injection into \(\omega\), which are the <a href="finite-and-countable-sets#countable-encodings">countable ordinals</a>. Conversely, a countable ordinal cannot be at least \(\omega_1\), since restricting its injection would inject \(\omega_1\) into \(\omega\).</p>
+  <p>Every countable ordinal \(\alpha\) has countable successor \(\alpha+1\): shift an injection of \(\alpha\) into \(\omega\) to the positive integers and send the new point to zero. Thus \(\omega_1\) is a limit ordinal. It is not the successor \(\omega+1\), which is still countable. This construction takes place in ZF and assumes no Choice.</p>
+</section>
+
+<section id="cardinal-comparability" data-kind="theorem" data-formal="cardinal-comparability-principle choice-equivalent-cardinal-comparability hartogs-bound-no-injection relation-embedding-preserves-well-order">
+  <h2>Comparability of all sizes is equivalent to Choice</h2>
+  <p>Over ZF, AC is equivalent to the assertion that for every two sets \(A,B\), there is an injection \(A\to B\) or an injection \(B\to A\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Under AC, well-order both sets. Their ordinal types are comparable by <a href="ordinals#ordinal-comparison">ordinal comparison</a>; inclusion of the smaller type into the larger gives the required injection after transporting it to the sets.</p>
+  <p>Conversely, compare any set \(A\) with its <a href="#hartogs-bound">Hartogs bound</a> \(h\). There is no injection \(h\to A\), so comparability supplies an injection \(A\to h\). Pull back the ordinal order along this injection to well-order \(A\). The well-ordering principle implies AC by <a href="#three-equivalent-principles"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Cantor–Schröder–Bernstein proves that injections in both directions give equal sizes without Choice. Comparability asks for at least one direction for every pair of sets, and this stronger assertion is precisely where AC is needed.</p>
+</section>
+
+<section id="hausdorff-maximal-principle" data-kind="theorem" data-formal="hausdorff-maximal-principle choice-equivalent-hausdorff-principle maximal-chain-upper-bound-maximal">
+  <h2>Every chain extends to a maximal chain</h2>
+  <p>The <strong>Hausdorff maximal principle</strong> says that every chain in a partially ordered set is contained in a chain maximal under inclusion. Over ZF it is equivalent to AC.</p>
+  <p class="proof-label">Proof</p>
+  <p>Assume Zorn's lemma and fix a chain \(C_0\) in a poset \(P\). Order the set of chains containing \(C_0\) by inclusion. It is nonempty, and the union of a nonempty inclusion-chain is again a chain containing \(C_0\): two of its points occur together in one constituent. For the empty inclusion-chain use \(C_0\) as an upper bound. Zorn gives a maximal chain extending \(C_0\).</p>
+  <p>Conversely, suppose the maximal principle holds and \(P\) satisfies Zorn's hypotheses. Extend the empty chain to a maximal chain \(C\), and let \(u\) be an upper bound for \(C\). Since \(C\cup\{u\}\) is a chain, maximality forces \(u\in C\). If \(v&gt;u\), then \(C\cup\{v\}\) would be a larger chain. Thus \(u\) is maximal in \(P\), proving Zorn's lemma and hence AC. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="tukeys-lemma" data-kind="theorem" data-formal="finite-character-family tukey-maximal-principle choice-equivalent-tukey-principle choice-extension-chains-finite-character choice-extension-finite-character-empty finite-character-chain-union">
+  <h2>Finite tests lead to maximal members</h2>
+  <p>A family \(\mathcal F\subseteq\mathcal P(X)\) has <strong>finite character</strong> if, for every \(A\subseteq X\), membership \(A\in\mathcal F\) is equivalent to every finite subset of \(A\) belonging to \(\mathcal F\). <strong>Tukey's lemma</strong> says that if \(\mathcal F\) is nonempty and has finite character, every \(A_0\in\mathcal F\) extends to an inclusion-maximal member. Over ZF it is equivalent to AC.</p>
+  <p class="proof-label">Proof</p>
+  <p>Assume Zorn's lemma. Order the members of \(\mathcal F\) containing \(A_0\) by inclusion. For a nonempty chain, every finite subset of its union lies in one chain member: find a containing member for each of the finitely many points and take the largest of those finitely many members. Finite character puts the finite subset, and then the union, in \(\mathcal F\). The empty chain has upper bound \(A_0\). Zorn supplies a maximal extension.</p>
+  <p>Conversely, the family of chains in any poset has finite character: a subset is a chain exactly when every two of its points are comparable, and this is detected on finite subsets. Tukey's lemma therefore gives the Hausdorff maximal principle, and hence AC. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Finite character includes the empty subset in its tests. A nonempty family of finite character must contain the empty set.</p>
 </section>

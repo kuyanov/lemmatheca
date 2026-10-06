@@ -58,7 +58,12 @@ hints, and Lean sources. Preserve unrelated work and the pinned environment.
    measurements in separate logs, not corpus metadata. Do not invent measurements.
 6. Check proofs with Lean. Do not bypass failures by adding unsupported axioms, sorry, admit,
    or unchecked shortcuts. Use the single formal/ project and keep module organization
-   compact. Update imports and module bindings when a permitted source move requires it.
+   compact. Put reusable lemmas in the general theory layer, currently
+   `Lemmatheca.SetTheory`, even if they have only one current caller. `Entry/` is
+   reserved for particular illustrative examples and counterexamples with no
+   wider use, and their example-specific helpers. General theory must not import
+   entry modules. Update imports and module bindings when a permitted source move
+   requires it.
 
 ## Checks
 

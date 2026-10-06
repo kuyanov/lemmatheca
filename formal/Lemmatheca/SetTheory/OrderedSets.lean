@@ -1,9 +1,6 @@
-import Mathlib.Order.Antisymmetrization
-import Mathlib.Order.Preorder.Finite
 import Mathlib.Order.Bounds.OrderIso
 import Mathlib.Order.Interval.Finset.Basic
 import Mathlib.Order.Category.PartOrd
-import Mathlib.Data.Set.BooleanAlgebra
 
 /-!
 # Additional order statements

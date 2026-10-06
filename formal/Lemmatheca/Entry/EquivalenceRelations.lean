@@ -1,7 +1,6 @@
 import Lemmatheca.Entry.SetsAndMaps
 import Lemmatheca.SetTheory.EquivalenceRelations
 import Mathlib.Data.Int.ModEq
-import Mathlib.Algebra.Ring.Int.Parity
 
 /-!
 # Equivalence-relations entry: finite and parity examples
@@ -16,6 +15,7 @@ namespace Lemmatheca.Entry.EquivalenceRelations
 open Lemmatheca.Entry.SetsAndMaps
 
 abbrev finiteSetoid : Setoid (Fin 3) := Setoid.ker diagramMap
+
 abbrev paritySetoid : Setoid ℤ := Setoid.ker (fun n : ℤ => n % 2)
 
 theorem finite_relation_iff (a b : Fin 3) :

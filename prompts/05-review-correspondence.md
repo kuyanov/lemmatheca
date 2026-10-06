@@ -38,6 +38,14 @@ successful build; it is not a live freshness check or evidence of correspondence
    actually selected, especially in comparisons involving concrete literals.
    Choice is permitted by default. Check whether claims about weaker axiom systems
    or independence are actually encoded; a Verified badge does not establish them.
+   A provable choice premise does not make an ordinary Lean theorem a check of
+   restricted axiom strength, even if the proof uses it. Flag such bindings for
+   replacement by unbound logical claims and separately inspect the construction
+   lemmas with supplied data.
+   Check module placement as well: reusable definitions and results belong in
+   general theory, even if used by only one entry. `Entry/` should contain only
+   particular illustrative examples and counterexamples with no wider use, and
+   their example-specific helpers. General modules must not import entry modules.
    Distinguish definitions, explicit premises, and unconditional assertions of a
    principle. Report arguments exceeding their stated assumptions, missing logical
    prerequisites, and limits of coverage using the

@@ -34,6 +34,10 @@ scope reduction explicit; do not silently omit a requested central result or
 create entries in other areas. Distinguish human prerequisite coverage from
 availability of Lean declarations and from formal verification.
 
+Apply the [reading-order criteria](../CONTRIBUTING.md#reading-order) to entry
+placement, the sequence of blocks, and the summary and abstract. Check that each
+definition is introduced before its first use or reference.
+
 Consult and maintain the [reference backlog](../docs/reference-backlog.md). Familiar
 background, including standard real-number facts, may be used without an entry
 reference and does not block drafting merely because a link is unavailable. Record

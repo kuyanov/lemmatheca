@@ -42,6 +42,10 @@ permits Choice without asserting that it is mathematically necessary.
 A Verified badge checks the Lean declaration; it does not certify provability
 from first-order ZF or the strength of a weaker choice principle. Assess those
 human claims separately using their arguments and an appropriate logical encoding.
+Keep claims about implications or equivalences over ZF unbound until such an
+encoding exists. Adding a provable choice principle as a Lean premise, or using
+that premise in a proof, does not certify the stated axiom strength. Bind faithful
+principle definitions and construction lemmas with supplied data separately.
 
 The build writes `verified`, the pretty-printed `signature`, and `declaration_line`,
 and refreshes `module` from Lean's defining-module information. Do not fabricate
@@ -70,10 +74,18 @@ cycles.
 
 Put local modules under `formal/Lemmatheca/` and import them from
 `formal/Lemmatheca.lean`.
-Use appropriate namespaces for reusable mathematics and
-`Lemmatheca.Entry.<EntryName>` for entry-specific examples. Keep related declarations
-together rather than creating nearly empty modules. Use the existing Lean project;
-do not introduce separate per-entry Lake projects.
+Put reusable definitions, theorem statements, proofs, and construction lemmas in
+the general theory layer, currently `Lemmatheca.SetTheory`. This applies even when
+a declaration first appears in one entry or has only one current caller. Standard
+constructions on particular carriers, such as rational enumeration or Dedekind
+cuts, are still general theory.
+Reserve `Lemmatheca.Entry.<EntryName>` for particular illustrative examples and
+counterexamples with no wider mathematical use, plus their example-specific
+helpers. An entry module must not hold general definitions, general edge cases,
+or reusable steps of an argument. General modules must not import entry modules;
+examples import the theory they illustrate. Keep related declarations together,
+leave routine helpers private where possible, and remove empty entry modules.
+Use the existing Lean project; do not introduce separate per-entry Lake projects.
 
 ## Build and verification
 

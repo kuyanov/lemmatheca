@@ -1,37 +1,16 @@
+import Lemmatheca.SetTheory.RealMaps
 import Lemmatheca.SetTheory.Basic
-import Mathlib.Data.Set.Card
-import Mathlib.Algebra.Group.Nat.Even
-import Mathlib.Tactic.NormNum
-import Mathlib.Data.Set.Disjoint
-import Mathlib.Data.Set.Prod
-import Mathlib.Analysis.Real.Sqrt
-import Mathlib.Tactic.Choose
-import Mathlib.Tactic.FinCases
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
 
-/-!
-# Sets-and-maps entry: examples and question answers
-
-The diagram uses `Fin 3` for {0, 1, 2} and `MapLabel` for {p, q, r}.
-Lean's natural numbers include zero. Standard set and map laws are bound directly
-to mathlib; the general definitions are in `Lemmatheca.SetTheory.Basic`.
-
-Lean's real division is total, with 1 / 0 = 0. The formula question therefore
-uses the relation x * y = 1 to express the required reciprocal. Square roots
-are specified by their relation and the required nonnegative domain and codomain.
--/
+/-! Particular examples and counterexamples for the human entry. -/
 
 namespace Lemmatheca.Entry.SetsAndMaps
+open Lemmatheca.SetTheory Lemmatheca.SetTheory.RealMaps
 
 section SetsAndElements
 
 /-- The concrete set {2, 5, 8} in the human text has three elements. -/
 theorem three_element_example_card : ({2, 5, 8} : Set ℕ).ncard = 3 := by
   norm_num
-
-/-- The set E of even natural numbers; Lean's natural numbers include zero. -/
-def evenNaturals : Set ℕ := {n | Even n}
 
 end SetsAndElements
 
@@ -152,63 +131,9 @@ theorem diagram_map_graph :
   ext ⟨x, y⟩
   fin_cases x <;> cases y <;> simp [diagramMap]
 
-theorem reciprocal_at_zero_impossible : ¬ ∃ y : ℝ, (0 : ℝ) * y = 1 := by
-  simp
-
-/-- The reciprocal with the nonzero domain required in the answer. -/
-noncomputable def reciprocalNonzero (x : {x : ℝ // x ≠ 0}) : ℝ := 1 / x.val
-
-theorem reciprocal_nonzero_unique (x : {x : ℝ // x ≠ 0}) :
-    x.val * reciprocalNonzero x = 1 ∧ ∃! y : ℝ, x.val * y = 1 := by
-  have hmul : x.val * reciprocalNonzero x = 1 := by
-    simpa [reciprocalNonzero, one_div] using mul_inv_cancel₀ x.property
-  refine ⟨hmul, reciprocalNonzero x, hmul, ?_⟩
-  intro y hy
-  apply mul_left_cancel₀ x.property
-  exact hy.trans hmul.symm
-
-theorem negative_has_no_square_root (x : ℝ) (hx : x < 0) :
-    ¬ ∃ y : ℝ, y ^ 2 = x := by
-  rintro ⟨y, hy⟩
-  nlinarith [sq_nonneg y]
-
-theorem positive_has_two_square_roots (x : ℝ) (hx : 0 < x) :
-    ∃ y z : ℝ, y ≠ z ∧ ∀ t : ℝ, t ^ 2 = x ↔ t = y ∨ t = z := by
-  have hs := Real.sq_sqrt hx.le
-  refine ⟨Real.sqrt x, -Real.sqrt x, ?_, ?_⟩
-  · have hpos := Real.sqrt_pos.mpr hx
-    linarith
-  · intro t
-    constructor
-    · intro ht
-      have hprod : (t - Real.sqrt x) * (t + Real.sqrt x) = 0 := by nlinarith
-      rcases mul_eq_zero.mp hprod with h | h
-      · left
-        linarith
-      · right
-        linarith
-    · rintro (rfl | rfl) <;> nlinarith
-
 theorem four_has_two_square_roots :
     (2 : ℝ) ^ 2 = 4 ∧ (-2 : ℝ) ^ 2 = 4 ∧ (2 : ℝ) ≠ -2 := by
   norm_num
-
-theorem nonnegative_square_root_unique (x : {x : ℝ // 0 ≤ x}) :
-    ∃! y : {y : ℝ // 0 ≤ y}, y.val ^ 2 = x.val := by
-  refine ⟨⟨Real.sqrt x.val, Real.sqrt_nonneg _⟩, Real.sq_sqrt x.property, ?_⟩
-  intro y hy
-  apply Subtype.ext
-  have hy0 := y.property
-  have hs0 := Real.sqrt_nonneg x.val
-  have hs := Real.sq_sqrt x.property
-  dsimp at *
-  nlinarith
-
-theorem nonnegative_square_root_map_exists :
-    ∃ g : {x : ℝ // 0 ≤ x} → {y : ℝ // 0 ≤ y}, ∀ x, (g x).val ^ 2 = x.val := by
-  classical
-  choose g hg using fun x => (nonnegative_square_root_unique x).exists
-  exact ⟨g, hg⟩
 
 theorem composition_order_example :
     (∀ x : ℝ, ((fun y => 2 * y) ∘ (fun y => y + 1)) x = 2 * x + 2) ∧

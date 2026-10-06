@@ -78,6 +78,12 @@ implement the required definitions and write theorem statements with `by sorry`
 (the explicit Lean placeholder for an unfinished proof). Preserve existing proofs;
 proving new theorems belongs to step 6.
 
+Put reusable mathematics in the general theory layer, currently
+`formal/Lemmatheca/SetTheory/`, even when it originates in a single entry.
+Reserve `Entry/` for particular illustrative examples and counterexamples with
+no wider use, and their example-specific helpers. General theory must not import
+entry modules; examples import the theory they illustrate.
+
 Create node records and link them from blocks with `data-formal`. Several nodes
 can cover one block, and one node can serve many entries.
 An empty mapping means there is nothing to formalize; it must not hide unfinished
@@ -161,6 +167,26 @@ default. It does not certify derivability from first-order ZF or weaker choice
 principles. Preserve the human arguments' stated assumptions, assess such claims
 separately, and report any limits on formal coverage. See the
 [verification rules](docs/formal.md#build-and-verification).
+
+## Reading order
+
+Choose and review the reading order using these criteria:
+
+- Introduce each definition before using or referring to it, either locally or in
+  an earlier prerequisite entry. Check the order of blocks within entries as well
+  as the order of entries. Familiar background follows the scope policy above.
+- Progress from easier, well-known topics to less familiar, more advanced ones.
+- Group closely related topics together where prerequisites allow it.
+- Prefer a sequence in which each entry builds on the preceding one, while naming
+  and linking its actual prerequisites by stable IDs.
+- Make each summary and abstract understandable before reading the entry, using
+  preceding material and familiar background. Briefly explain any new terms;
+  neither should require definitions introduced only in the entry or later.
+
+Prerequisite order takes priority when these preferences conflict. Recheck it when
+adding, expanding, reordering, or moving entries into subareas. Keep entry prose
+independent of its position: refer to named topics and stable links rather than
+"the previous entry" or "the next entry."
 
 ## Running one step with an AI agent
 

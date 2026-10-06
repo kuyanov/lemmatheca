@@ -1,9 +1,6 @@
 import Lemmatheca.SetTheory.OrderedSets
 import Lemmatheca.Entry.EquivalenceRelations
 import Mathlib.Data.PNat.Prime
-import Mathlib.Data.Sum.Order
-import Mathlib.Order.Bounds.Basic
-import Mathlib.Order.Antichain
 import Mathlib.Tactic.IntervalCases
 
 /-!
@@ -350,6 +347,7 @@ instance planePreorder : Preorder (PreorderedPlane) := Preorder.lift (fun p : Pr
 
 
 -- Fix the relation's domain before pair literals can infer the usual product order.
+
 theorem plane_not_antisymmetric :
     ((· ≤ ·) : PreorderedPlane → PreorderedPlane → Prop) (0, 0) (0, 1) ∧
     ((· ≤ ·) : PreorderedPlane → PreorderedPlane → Prop) (0, 1) (0, 0) ∧
@@ -397,6 +395,7 @@ theorem plane_identity_not_factor :
 end Plane
 
 open Lemmatheca.Entry.EquivalenceRelations in
+
 theorem parity_comparison_not_well_defined :
     paritySetoid 0 2 ∧ (0 : ℤ) ≤ 1 ∧ ¬ (2 : ℤ) ≤ 1 := by
   change (0 : ℤ) % 2 = 2 % 2 ∧ (0 : ℤ) ≤ 1 ∧ ¬ (2 : ℤ) ≤ 1

@@ -427,6 +427,23 @@
   <div class="math-display">\[ f(\sup S)=1,\qquad \sup f(S)=\sup\{0\}=0. \]</div>
 </section>
 
+<section id="knaster-tarski" data-kind="theorem" data-formal="knaster-tarski-fixed-point-lattice monotone-least-fixed-point monotone-greatest-fixed-point monotone-fixed-point-leastness monotone-fixed-point-greatestness">
+  <h2>Monotone maps on complete lattices have fixed points</h2>
+  <p>Let \(L\) be a <a href="#power-set-bounds">complete lattice</a> and let \(f:L\to L\) be <a href="#order-maps">monotone</a>. A <strong>fixed point</strong> is an \(x\) with \(f(x)=x\). The <strong>Knaster–Tarski theorem</strong> says that the fixed points form a complete lattice in their inherited order. In particular, they have a least and a greatest element.</p>
+  <p class="proof-label">Proof</p>
+  <p>Put \(P=\{x\in L:f(x)\le x\}\) and \(p=\inf_L P\). For every \(x\in P\), monotonicity gives \(f(p)\le f(x)\le x\), so \(f(p)\le p\). Applying \(f\) gives \(f(f(p))\le f(p)\), hence \(f(p)\in P\) and \(p\le f(p)\). Thus \(p\) is fixed and lies below every fixed point. Reversing the order gives the greatest fixed point \(q=\sup_L\{x:x\le f(x)\}\). Completeness supplies these bounds, including for empty subsets; in particular \(L\) has a greatest and a least element.</p>
+  <p>For a set \(S\) of fixed points, put \(s=\sup_L S\). The interval \(L_s=\{x:s\le x\}\) is a complete lattice: its nonempty bounds are inherited from \(L\), its empty supremum is \(s\), and its empty infimum is the greatest element of \(L\). For every \(x\ge s\) and \(y\in S\), \(y=f(y)\le f(x)\); therefore \(s\le f(x)\), even if \(S\) is empty. The restriction of \(f\) to \(L_s\) has a least fixed point by the argument above. This point is exactly the least fixed upper bound of \(S\). Reversing the order gives its greatest fixed lower bound. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>These bounds among fixed points need not be their bounds in \(L\). No choice principle is used.</p>
+</section>
+
+<section id="fixed-point-size-comparison" data-kind="lemma" data-formal="relation-extension-comparison-operator relation-extension-comparison-operator-monotone relation-extension-fixed-point-bijection monotone-fixed-point-leastness">
+  <h2>A fixed point also gives a bijection from two injections</h2>
+  <p>Here is another proof of <a href="comparing-sizes#cantor-schroeder-bernstein">Cantor–Schröder–Bernstein</a>. Given injections \(u:A\to B\) and \(v:B\to A\), define a monotone map on \(\mathcal P(A)\) by</p>
+  <div class="math-display">\[ F(X)=A\setminus v[B\setminus u[X]]. \]</div>
+  <p>If \(X\subseteq Y\), taking an image preserves inclusion, taking the first complement reverses it, taking the next image preserves it, and taking the last complement reverses it again. Hence \(F(X)\subseteq F(Y)\). By <a href="#knaster-tarski"></a>, there is \(X=F(X)\), so \(A\setminus X=v[B\setminus u[X]]\).</p>
+  <p>Map \(X\) to \(u[X]\) using \(u\), and map \(A\setminus X\) to \(B\setminus u[X]\) using the inverse of the restricted injection \(v\). Both maps are bijections onto their respective parts, and the parts partition \(A\) and \(B\). Their union is a bijection \(A\to B\).</p>
+</section>
+
 <section id="preorders" data-kind="definition"
   data-formal="order-preorder order-partial order-induced-preorder real-plane-first-coordinate-preorder real-plane-first-coordinate-not-antisymmetric order-induced-antisymmetric-iff-injective order-monotone">
   <h2>Preorders allow comparison in both directions</h2>

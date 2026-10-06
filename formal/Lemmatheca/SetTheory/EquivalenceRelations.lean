@@ -1,5 +1,4 @@
 import Mathlib.Data.Setoid.Partition
-import Mathlib.Basic.IsEmpty.Defs
 
 /-!
 # Equivalence relations: additional set descriptions

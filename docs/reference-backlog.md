@@ -44,3 +44,15 @@ already supplies the fact, the remaining task is only to add a useful reference.
 Applications of the continuum result in `infinite-cardinal-arithmetic`,
 `ordinal-powers`, and `infinite-sums-and-products` can continue to reference the
 set-theory result itself. They need not each acquire duplicate analysis links.
+
+## Boundaries of the set-theory expansion
+
+The current corpus develops dense-order characterizations, normal functions and
+Goodstein termination, and elementary continuum-function calculations from its
+existing set-theoretic prerequisites. The following extensions need substantial
+theory beyond those arguments and are deferred:
+
+| Related entry/block IDs | Deferred material | Supporting development needed |
+| --- | --- | --- |
+| `continuum-function#continuum-restrictions`; `continuum-function#strong-limits-and-sch` | Easton's realization theorem for continuum functions on regular cardinals; consistency or independence results about GCH and SCH | Begin mathematical logic with **First-order logic: formulas, structures, and satisfaction** and **Models of set theory: relativization and absoluteness**, then set theory with **Forcing: partial orders, generic filters, and extensions**. A precise Easton statement must specify its model and cardinal-preservation framework; necessary inequalities alone are not a realization theorem. |
+| `normal-functions#goodstein-termination` | Unprovability of Goodstein's theorem in Peano arithmetic | **Formal arithmetic: axioms, syntax, and provability**, followed by **Ordinal analysis: induction strength and arithmetic proofs**. The present entry proves termination using ordinals; it makes no assertion about formal provability in arithmetic. |
