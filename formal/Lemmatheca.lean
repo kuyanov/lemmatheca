@@ -46,6 +46,7 @@ import Lemmatheca.SetTheory.OrdinalPowers
 import Lemmatheca.SetTheory.Ordinals
 import Lemmatheca.SetTheory.RealMaps
 import Lemmatheca.SetTheory.Relations
+import Lemmatheca.SetTheory.TransfiniteRecursion
 import Lemmatheca.SetTheory.WeakerChoice
 import Lemmatheca.SetTheory.WellFoundedRecursion
 import Lemmatheca.SetTheory.WellOrders

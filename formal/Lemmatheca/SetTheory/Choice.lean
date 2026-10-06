@@ -39,6 +39,19 @@ theorem finite_choice {ι : Type u} {α : Type v} [Finite ι] (A : ι → Set α
     | none => exact ha
     | some i => exact hc i
 
+/-- Least members assemble into a unique selector for any indexed family in a well-order. -/
+theorem well_ordered_family_choice {ι : Type u} {α : Type v} [LinearOrder α]
+    [WellFoundedLT α] (A : ι → Set α) (hA : ∀ i, (A i).Nonempty) :
+    ∃! c : ι → α, ∀ i, IsLeast (A i) (c i) := by
+  let c : ι → α := fun i => WellFoundedLT.min (A i) (hA i)
+  have hc : ∀ i, IsLeast (A i) (c i) := by
+    intro i
+    exact ⟨wellFounded_lt.min_mem (A i) (hA i), fun _ hx => WellFoundedLT.min_le hx⟩
+  refine ⟨c, hc, ?_⟩
+  intro d hd
+  funext i
+  exact (hd i).unique (hc i)
+
 def WellOrderingPrinciple : Prop :=
   ∀ α : Type u, ∃ r : α → α → Prop, IsWellOrder α r
 

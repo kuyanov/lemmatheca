@@ -4,7 +4,7 @@
 <p>Each individual set being nonempty says that a suitable value exists for each index. AC supplies a single function making all those selections together. We will show that this principle is equivalent to two statements about orders. The arguments use ordinary set formation, including the <a href="axiomatic-set-theory#replacement">Replacement principle</a>, but invoke choice only where indicated.</p>
 </section>
 
-<section id="choices-without-the-axiom" data-kind="lemma" data-formal="finite-family-choice well-founded-minimum-member well-order-minimum-least">
+<section id="choices-without-the-axiom" data-kind="lemma" data-formal="finite-family-choice well-ordered-family-choice">
   <h2>Some families already provide a rule for choosing</h2>
 <p>A finite family of nonempty sets has a choice function without assuming AC. So does any family of nonempty subsets of a given well-ordered set.</p>
 <p class="proof-label">Proof</p>
@@ -43,7 +43,7 @@
   </details>
 </section>
 
-<section id="hartogs-bound" data-kind="lemma" data-formal="hartogs-well-ordered-subset-types hartogs-bound hartogs-bound-no-injection set-family-replacement">
+<section id="hartogs-bound" data-kind="lemma" data-formal="hartogs-well-ordered-subset-types hartogs-bound hartogs-bound-no-injection">
   <h2>A set cannot contain distinct choices for arbitrarily long</h2>
 <p>For every set \(A\), there is an ordinal \(h\) for which no injection \(h\to A\) exists. This fact, called <strong>Hartogs’s theorem</strong>, does not require AC.</p>
 <p class="proof-label">Proof</p>
@@ -52,7 +52,7 @@
 <p>Only a set of order types is collected. There is no appeal to a set of all ordinals. The empty well-order is among the possibilities, so the bound also works when \(A\) is empty.</p>
 </section>
 
-<section id="choice-implies-well-ordering" data-kind="theorem" data-formal="choice-equivalent-well-ordering choice-bounded-listing-rule choice-bounded-listing-exhausts well-order-recursion-exists-unique hartogs-bound-no-injection ordinal-order-type-enumeration ordinal-empty-type">
+<section id="choice-implies-well-ordering" data-kind="theorem" data-formal="choice-equivalent-well-ordering choice-bounded-listing-rule choice-bounded-listing-exhausts">
   <h2>Choice lets us list an entire set in well-ordered stages</h2>
 <p>AC implies the well-ordering principle.</p>
 <p class="proof-label">Proof</p>
@@ -67,7 +67,7 @@ s\bigl(A\setminus\operatorname{ran}(f\mathbin{\upharpoonright}\alpha)\bigr),&amp
 <p>This rule is defined for every history, so the <a href="well-ordered-sets#well-order-recursion">recursion theorem</a> applies. Before the first marker, each value is a new member of \(A\). If a marker never appeared, \(f\) would inject \(h\) into \(A\), contradicting the bound. Let \(\lambda\) be the first marker stage. At that stage nothing remains, so \(f\mathbin{\upharpoonright}\lambda\) is a bijection onto \(A\). Transfer the ordinal order of \(\lambda\) along it to well-order \(A\). For \(A=\varnothing\), the first marker occurs at zero and the resulting order is empty. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="well-ordering-implies-zorn" data-kind="theorem" data-formal="well-ordering-equivalent-zorn hartogs-bound-no-injection well-order-recursion-exists-unique">
+<section id="well-ordering-implies-zorn" data-kind="theorem" data-formal="well-ordering-equivalent-zorn">
   <h2>A well-order prevents endless strict extension</h2>
 <p>The well-ordering principle implies Zorn’s lemma.</p>
 <p class="proof-label">Proof</p>
@@ -85,7 +85,7 @@ s\bigl(A\setminus\operatorname{ran}(f\mathbin{\upharpoonright}\alpha)\bigr),&amp
 <p>Zorn gives a maximal partial function \(c\). If an index \(i\) were missing from its domain, take one member \(a\in A_i\). Adjoining \((i,a)\) would properly extend \(c\), a contradiction. Thus \(c\) is defined on all of \(I\). Choosing this one witness in a contradiction argument does not assume a simultaneous choice function for the original family. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="three-equivalent-principles" data-kind="theorem" data-formal="choice-equivalent-well-ordering well-ordering-equivalent-zorn well-founded-minimum-member well-order-minimum-least">
+<section id="three-equivalent-principles" data-kind="theorem" data-formal="choice-equivalent-well-ordering well-ordering-equivalent-zorn">
   <h2>The three principles have the same strength</h2>
 <p>The axiom of choice, the well-ordering principle, and Zorn’s lemma are equivalent.</p>
 <p class="proof-label">Proof</p>
@@ -93,7 +93,7 @@ s\bigl(A\setminus\operatorname{ran}(f\mathbin{\upharpoonright}\alpha)\bigr),&amp
 <p>The principles offer different ways to express the same assumption. Choice functions specify selections, well-orders permit least-element arguments and recursion, and Zorn’s lemma turns closure under chains into a maximal object.</p>
 </section>
 
-<section id="sections-of-surjections" data-kind="lemma" data-formal="surjections-have-sections-principle choice-equivalent-sections map-surjective-iff-fibers-nonempty">
+<section id="sections-of-surjections" data-kind="lemma" data-formal="surjections-have-sections-principle choice-equivalent-sections">
   <h2>Choice is also a way to reverse surjections</h2>
 <p>AC is equivalent to the assertion that every surjection \(p:E\to I\) has a <strong>section</strong>: a map \(s:I\to E\) with \(p\circ s=\operatorname{id}_I\).</p>
 <p class="proof-label">Proof</p>
@@ -111,7 +111,7 @@ R'=R\cup\{(x,y):x\le_R a\text{ and }b\le_R y\}
 <p>A new loop at \(x\) would imply \(b\le_R x\le_R a\), contrary to incomparability. For transitivity, two old comparisons compose in \(R\). An old comparison followed by a new one still has its first point below \(a\); a new comparison followed by an old one still has its last point above \(b\). In either case the composed comparison is new or already old. Two new consecutive comparisons would require \(b\le_R y\le_R a\) at their middle point, which is impossible. Thus \(R'\) is irreflexive and transitive. The pair \((a,b)\) is genuinely new. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="order-extension" data-kind="theorem" data-formal="partial-order-linear-extension strict-order-adjoined-comparison-valid zorn-principle">
+<section id="order-extension" data-kind="theorem" data-formal="partial-order-linear-extension">
   <h2>Every partial order can be extended to a total order</h2>
 <p>Assuming AC, every partial order on a set \(A\) has a total order extension on the same set.</p>
 <p class="proof-label">Proof</p>
@@ -136,7 +136,7 @@ R'=R\cup\{(x,y):x\le_R a\text{ and }b\le_R y\}
   <p>Every countable ordinal \(\alpha\) has countable successor \(\alpha+1\): shift an injection of \(\alpha\) into \(\omega\) to the positive integers and send the new point to zero. Thus \(\omega_1\) is a limit ordinal. It is not the successor \(\omega+1\), which is still countable. This construction takes place in ZF and assumes no Choice.</p>
 </section>
 
-<section id="cardinal-comparability" data-kind="theorem" data-formal="cardinal-comparability-principle choice-equivalent-cardinal-comparability hartogs-bound-no-injection relation-embedding-preserves-well-order">
+<section id="cardinal-comparability" data-kind="theorem" data-formal="cardinal-comparability-principle choice-equivalent-cardinal-comparability relation-embedding-preserves-well-order">
   <h2>Comparability of all sizes is equivalent to Choice</h2>
   <p>Over ZF, AC is equivalent to the assertion that for every two sets \(A,B\), there is an injection \(A\to B\) or an injection \(B\to A\).</p>
   <p class="proof-label">Proof</p>

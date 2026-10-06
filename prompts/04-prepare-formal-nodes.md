@@ -46,12 +46,21 @@ sources. Use the single project in formal/ and preserve unrelated work.
    of coverage rather than binding such a claim to an ordinary Lean theorem with
    a different meaning. Leave the intended claim unbound when a classical
    declaration proves its principles or conclusion outright and does not encode
-   the claimed implication over ZF. Keep definitions bound and cover the actual
-   construction steps with supplied-data lemmas; do not add provable choice
-   premises to library facts as a substitute for the missing logical encoding.
+   the claimed implication over ZF. Keep faithful principle definitions bound and
+   cover the actual constructions with supplied-data lemmas; do not add provable
+   choice premises to library facts as a substitute for the missing logical encoding.
 4. Remove redundant coverage while retaining explicitly stated witnesses and
    distinct claims. A linked equivalence may already cover its two directions.
-   Proof helpers need not become registered nodes. Reuse existing nodes across
+   Bind the definitions actually given in the text and the stated mathematical
+   claims, examples, and answers. A separate definition binding may be dropped
+   when the text does not give that definition and the retained claims already
+   cover the construction. This applies to formal representation and implementation
+   helpers, not to definitions given in prose rather than a displayed formula.
+   Do not expand a block's bindings to include its claims' dependencies: helper
+   statements arising only in a proof need no separate block binding when the
+   retained nodes cover the stated claims and any explicit construction or witness.
+   Keep necessary Lean helpers; useful registered prerequisites may remain in
+   dependency hints without direct block links. Reuse existing nodes across
    entries instead of duplicating them.
 5. Implement missing definition bodies and declare missing theorem statements with
    `by sorry`. Do not replace existing proofs or prove new theorem bodies in this

@@ -54,7 +54,16 @@ successful build; it is not a live freshness check or evidence of correspondence
    duplicate targets, redundant directions of equivalences, and repeated coverage.
    Explain why each proposed removal preserves the human claims. Do not discard
    an explicitly stated witness or distinct reformulation merely because it follows
-   from other mathematics. Proof helpers need not all be registered nodes.
+   from other mathematics. Check whether each definition binding corresponds to
+   a definition actually given in the text, including prose definitions. If it
+   only exposes a formal representation or implementation helper, it may be
+   dropped when the retained nodes cover the construction and stated claims.
+   Bindings need not include the retained claims' dependencies or helper statements
+   arising only in their proofs. Retain coverage of the stated definitions,
+   claims, examples, answers, and explicit constructions or witnesses. Distinguish
+   removing a block binding from deleting a node record or Lean declaration:
+   useful nodes may still serve as dependency hints, and Lean helpers may still
+   be needed by retained proofs.
 4. Review dependencies as proof-planning hints. Identify unnecessary edges, cycles,
    or useful missing hints without reconstructing mathlib's dependency graph. A
    hint's saved verification flag does not control the reviewed node's status;

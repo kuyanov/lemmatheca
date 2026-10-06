@@ -1,0 +1,13 @@
+{
+  "id": "transfinite-recursive-class-function",
+  "description": "Every rule assigning exactly one output set to every ordinal and every set-function history on it determines a unique ordinal-indexed function satisfying the rule. Its graph on each ordinal domain is a recursive set-function; these graphs agree under restriction, and the values on each such domain form a set.",
+  "module": "Lemmatheca.SetTheory.TransfiniteRecursion",
+  "declaration": "Lemmatheca.SetTheory.TransfiniteRecursion.class_function_exists_unique",
+  "dependencies": [
+    "well-order-recursion-exists-unique",
+    "set-family-replacement"
+  ],
+  "verified": true,
+  "declaration_line": 208,
+  "signature": "Lemmatheca.SetTheory.TransfiniteRecursion.class_function_exists_unique.{u}\n  (Φ : Lemmatheca.SetTheory.TransfiniteRecursion.Rule) (hΦ : Lemmatheca.SetTheory.TransfiniteRecursion.IsTotalRule Φ) :\n  ∃! f,\n    (∀ (α : Ordinal.{u}), Φ α (Lemmatheca.SetTheory.TransfiniteRecursion.graph f α) (f α)) ∧\n      (∀ (θ : Ordinal.{u}),\n          Lemmatheca.SetTheory.TransfiniteRecursion.IsRecursiveSolution Φ θ\n            (Lemmatheca.SetTheory.TransfiniteRecursion.graph f θ)) ∧\n        (∀ (η θ : Ordinal.{u}),\n            η ≤ θ →\n              Lemmatheca.SetTheory.TransfiniteRecursion.restrict (Lemmatheca.SetTheory.TransfiniteRecursion.graph f θ)\n                  η.toZFSet =\n                Lemmatheca.SetTheory.TransfiniteRecursion.graph f η) ∧\n          ∀ (θ : Ordinal.{u}), ∃ B, ∀ (y : ZFSet.{u}), y ∈ B ↔ ∃ α < θ, f α = y"
+}
