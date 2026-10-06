@@ -33,7 +33,7 @@
   <p>There is no epsilon number between consecutive values, and the limit value is the least upper bound of its predecessors. Thus this lists the epsilon numbers in their ordinal order. For any one epsilon number, its predecessors form a set; their order type locates it in the enumeration.</p>
 </section>
 
-<section id="epsilon-zero-towers" data-kind="theorem" data-formal="normal-function-tower normal-function-tower-spec">
+<section id="epsilon-zero-towers" data-kind="theorem" data-formal="finite-omega-tower epsilon-zero-tower-specification">
   <h2>The first epsilon number is the limit of finite towers</h2>
   <p>Put \(t_0=1\) and \(t_{n+1}=\omega^{t_n}\). Then</p>
   <div class="math-display">\[ \varepsilon_0=\sup_{n&lt;\omega}t_n=\sup\{1,\omega,\omega^\omega,\omega^{\omega^\omega},\ldots\}. \]</div>
@@ -42,7 +42,7 @@
   <p>Every \(\alpha&lt;\varepsilon_0\) is below some finite tower. No finite tower is itself an epsilon number.</p>
 </section>
 
-<section id="hereditary-ordinal-forms" data-kind="theorem" data-formal="hereditary-cantor-expression hereditary-cantor-expression-value hereditary-cantor-normality hereditary-cantor-form-unique epsilon-zero-countable normal-function-hereditary-forms normal-function-notation-below-epsilon">
+<section id="hereditary-ordinal-forms" data-kind="theorem" data-formal="hereditary-cantor-expression hereditary-cantor-expression-value hereditary-cantor-normality hereditary-cantor-form-unique epsilon-zero-countable hereditary-cantor-forms-below-epsilon-zero finite-ordinal-notation-below-epsilon-zero">
   <h2>Ordinals below epsilon zero have finite hereditary expressions</h2>
   <p>The ordinals below \(\varepsilon_0\) are exactly those expressible by finite terms built from zero using Cantor normal forms, with every exponent itself expressed in the same way. For example, \(\omega^{\omega^2+3}\cdot2+\omega+5\) is such a term. This is a <strong>hereditary Cantor normal form</strong>.</p>
   <p class="proof-label">Proof</p>
@@ -51,13 +51,13 @@
   <p>Finite expressions can be encoded by finite strings of natural numbers: use distinct symbols for punctuation, powers, and sums, and encode coefficients as natural numbers. A string is determined by its finite graph in \(\omega\times\omega\). The <a href="finite-and-countable-sets#finite-products">countability of pairs</a> and of their <a href="finite-and-countable-sets#finite-subset-family">finite subsets</a> therefore give a natural-number code for every string. Evaluation maps the valid strings onto \(\varepsilon_0\). Taking the least code of each ordinal injects \(\varepsilon_0\) into \(\omega\). Thus \(\varepsilon_0\) is countably infinite without using a choice axiom. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="hereditary-base-representations" data-kind="definition" data-formal="normal-function-eval-nat normal-function-canonical normal-function-hereditary normal-function-base-change normal-function-ordinal-measure normal-function-hereditary-spec normal-function-notation-below-epsilon">
+<section id="hereditary-base-representations" data-kind="definition" data-formal="hereditary-base-expression-value canonical-hereditary-base-expression hereditary-base-expansion hereditary-base-change hereditary-ordinal-measure hereditary-base-expansion-spec finite-ordinal-notation-below-epsilon-zero">
   <h2>Writing a number in a base also used inside its exponents</h2>
   <p>For a natural-number base \(b\ge2\), write \(m\) uniquely as \(b^{e_0}c_0+\cdots+b^{e_{k-1}}c_{k-1}\), with decreasing exponents and \(0&lt;c_i&lt;b\), omitting zero coefficients. Repeated integer division by \(b\) gives the digits and proves uniqueness: the remainder is the last digit, and division strips it off. Now expand every exponent in base \(b\), and repeat inside its exponents. Every positive exponent used to represent \(m\) is smaller than \(m\), so natural-number induction gives a finite expression. Zero is the empty expression. This is the <strong>hereditary base-\(b\) representation</strong>.</p>
   <p>For example, \(4=2^{2^1}\) in hereditary base two. Let \(B_b^c(m)\), for \(c&gt;b\), be the natural number obtained by replacing every occurrence of the base \(b\) by \(c\), including those in exponents. Coefficients stay unchanged. Let \(o_b(m)\) be the ordinal obtained by replacing those base occurrences by \(\omega\). It is below \(\varepsilon_0\) by <a href="#hereditary-ordinal-forms"></a>.</p>
 </section>
 
-<section id="base-change-and-descent" data-kind="lemma" data-formal="normal-function-base-change-spec normal-function-measure-strict-mono">
+<section id="base-change-and-descent" data-kind="lemma" data-formal="hereditary-base-change-spec hereditary-ordinal-measure-strict-mono">
   <h2>Base changes preserve the ordinal measure</h2>
   <p>For \(b\ge2\), \(c&gt;b\), and natural numbers \(m,n\),</p>
   <div class="math-display">\[ m&lt;n\ \Longrightarrow\ o_b(m)&lt;o_b(n),\qquad o_c(B_b^c(m))=o_b(m). \]</div>
@@ -66,7 +66,7 @@
   <p>In particular, base change keeps the exponents decreasing. The unchanged coefficients are less than \(b&lt;c\), so the resulting expression is already the canonical hereditary base-\(c\) representation of its value. Replacing \(c\) by \(\omega\) in it gives precisely the same hereditary ordinal term as replacing \(b\) by \(\omega\) in the original. This proves the second identity. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="goodstein-termination" data-kind="theorem" data-formal="normal-function-goodstein normal-function-goodstein-descent goodstein-termination">
+<section id="goodstein-termination" data-kind="theorem" data-formal="goodstein-sequence goodstein-ordinal-descent goodstein-termination">
   <h2>Every Goodstein sequence eventually reaches zero</h2>
   <p>Start with any natural number \(g_0\), using base two. At stage \(n\), let \(b=n+2\) and define</p>
   <div class="math-display">\[ g_{n+1}=\begin{cases}B_b^{b+1}(g_n)-1,&amp;g_n&gt;0,\\0,&amp;g_n=0.\end{cases} \]</div>

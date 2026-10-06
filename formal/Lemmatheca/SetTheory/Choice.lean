@@ -1,4 +1,5 @@
 import Lemmatheca.SetTheory.WellOrders
+import Mathlib.Data.Fintype.Option
 import Mathlib.SetTheory.ZFC.Ordinal
 import Mathlib.Order.Extension.Linear
 
@@ -9,11 +10,34 @@ These are statements within Lean's classical foundation, not an independence dev
 `Option α` supplies an external marker `none` for the bounded listing construction. -/
 namespace Lemmatheca.SetTheory
 open Set Function
-universe u
+universe u v
 
 def ChoicePrinciple : Prop :=
   ∀ (ι α : Type u) (A : ι → Set α),
     (∀ i, (A i).Nonempty) → ∃ c : ι → α, ∀ i, c i ∈ A i
+
+/-- A finite family of nonempty subsets admits a selection, by finite induction. -/
+theorem finite_choice {ι : Type u} {α : Type v} [Finite ι] (A : ι → Set α)
+    (hA : ∀ i, (A i).Nonempty) : ∃ c : ι → α, ∀ i, c i ∈ A i := by
+  revert A
+  refine Finite.induction_empty_option
+    (P := fun I => ∀ A : I → Set α, (∀ i, (A i).Nonempty) →
+      ∃ c : I → α, ∀ i, c i ∈ A i) ?_ ?_ ?_ ι
+  · intro I J e ih A hA
+    obtain ⟨c, hc⟩ := ih (fun i => A (e i)) (fun i => hA (e i))
+    refine ⟨fun j => c (e.symm j), ?_⟩
+    intro j
+    simpa only [e.apply_symm_apply] using hc (e.symm j)
+  · intro A _
+    exact ⟨PEmpty.elim, fun i => PEmpty.elim i⟩
+  · intro I _ ih A hA
+    obtain ⟨c, hc⟩ := ih (fun i => A (some i)) (fun i => hA (some i))
+    obtain ⟨a, ha⟩ := hA none
+    refine ⟨fun i => i.elim a c, ?_⟩
+    intro i
+    cases i with
+    | none => exact ha
+    | some i => exact hc i
 
 def WellOrderingPrinciple : Prop :=
   ∀ α : Type u, ∃ r : α → α → Prop, IsWellOrder α r

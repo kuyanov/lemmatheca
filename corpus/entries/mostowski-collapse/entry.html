@@ -1,10 +1,10 @@
-<section id="relations-as-membership" data-kind="definition" data-formal="set-relation-between mostowski-extensional well-founded-definition">
+<section id="relations-as-membership" data-kind="definition" data-formal="set-relation-between relation-extensional well-founded-definition">
   <h2>When an abstract relation can become membership</h2>
   <p>Suppose points are linked by a relation \(R\), with \(b\,R\,a\) meaning that \(b\) is a predecessor of \(a\). Can we replace each point by a set so that these links become exactly membership links? The <strong>Mostowski collapse</strong> answers yes when the relation is well-founded and different points have different predecessor sets.</p>
   <p>Throughout, the carrier \(A\) and relation \(R\subseteq A\times A\) are sets. We work in ZF without assuming Choice, using <a href="well-ordered-sets#well-founded-induction">well-founded induction</a>, <a href="axiomatic-set-theory#replacement">Replacement</a>, and <a href="ordinals#transitive-sets">transitive sets</a>. We develop recursion on \(R\) locally; \(R\) need not be a well-order, a partial order, or even a transitive relation.</p>
 </section>
 
-<section id="well-founded-and-extensional" data-kind="definition" data-formal="mostowski-extensional well-founded-minimal-criterion mostowski-transitive-membership-hypotheses mostowski-empty-hypotheses finite-acyclic-relation-well-founded">
+<section id="well-founded-and-extensional" data-kind="definition" data-formal="relation-extensional well-founded-minimal-criterion transitive-membership-well-founded-extensional empty-relation-well-founded-extensional finite-acyclic-relation-well-founded">
   <h2>The two hypotheses describe predecessors</h2>
   <p>Write \(\operatorname{pred}_R(a)=\{b\in A:b\,R\,a\}\). The relation is <strong>well-founded</strong> if every nonempty subset \(B\subseteq A\) has an \(R\)-minimal point: some \(a\in B\) with no \(b\in B\) satisfying \(b\,R\,a\). It is <strong>extensional</strong> if</p>
   <div class="math-display">\[ \operatorname{pred}_R(a)=\operatorname{pred}_R(b)\quad\Longrightarrow\quad a=b. \]</div>
@@ -12,13 +12,13 @@
   <p>The empty carrier satisfies both conditions. A finite relation with no directed cycles is well-founded: if a nonempty subset had no minimal point, repeatedly following a predecessor within it for more steps than its finite size would repeat a point and produce a cycle. This finite argument needs no infinite sequence of choices.</p>
 </section>
 
-<section id="downward-closed-domains" data-kind="definition" data-formal="mostowski-downward-closed mostowski-downward-hull mostowski-downward-hull-spec">
+<section id="downward-closed-domains" data-kind="definition" data-formal="relation-downward-closed relation-downward-hull relation-downward-hull-spec">
   <h2>Partial definitions must include all predecessors</h2>
   <p>A subset \(D\subseteq A\) is <strong>downward closed</strong> under \(R\) if \(a\in D\) implies \(\operatorname{pred}_R(a)\subseteq D\). For each \(a\in A\), let \(D_a\) be the intersection of all downward-closed subsets containing \(a\). This is a set: the family is a nonempty subfamily of \(\mathcal P(A)\), since it contains \(A\) itself.</p>
   <p>Intersections of downward-closed sets are downward closed. Thus \(D_a\) is the smallest such domain containing \(a\). If \(a\in D\) and \(D\) is downward closed, then \(D_a\subseteq D\). These domains let us collect uniquely specified local solutions instead of choosing arbitrary partial solutions.</p>
 </section>
 
-<section id="well-founded-set-valued-recursion" data-kind="theorem" data-formal="mostowski-recursion-rule mostowski-recursive-value mostowski-recursion-exists-unique mostowski-partial-solutions-agree">
+<section id="well-founded-set-valued-recursion" data-kind="theorem" data-formal="well-founded-recursion-rule well-founded-recursive-value well-founded-recursion-exists-unique well-founded-partial-solutions-agree">
   <h2>A well-founded relation supports set-valued recursion</h2>
   <p>Let \(R\) be well-founded on the set \(A\). Suppose a formula with fixed set parameters specifies exactly one set \(H(a,h)\) for each \(a\in A\) and each set function \(h\) with domain \(\operatorname{pred}_R(a)\). There is a unique set function \(F\) on \(A\) such that</p>
   <div class="math-display">\[ F(a)=H\bigl(a,F\mathbin{\upharpoonright}\operatorname{pred}_R(a)\bigr)\qquad(a\in A). \label{eq:relation-recursion} \]</div>
@@ -88,7 +88,7 @@
   </details>
 </section>
 
-<section id="transitive-sets-fixed" data-kind="lemma" data-formal="mostowski-transitive-fixed mostowski-transitive-iso-identity">
+<section id="transitive-sets-fixed" data-kind="lemma" data-formal="mostowski-transitive-fixed transitive-membership-isomorphism-identity">
   <h2>A transitive set is already its own collapse</h2>
   <p>For membership restricted to a transitive set \(T\), the collapse is \(T\) itself and the map is the identity.</p>
   <p class="proof-label">Proof</p>
