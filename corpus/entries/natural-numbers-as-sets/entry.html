@@ -8,7 +8,9 @@
 
 <section id="least-inductive-set" data-kind="theorem" data-formal="omega-least-inductive omega-unique-least-inductive">
   <h2>There is a unique least inductive set</h2>
-  <p>There is an inductive set \(\omega\) contained in every inductive set. It is independent of the inductive set initially supplied by Infinity.</p>
+  <div class="statement-box">
+    <p>There is an inductive set \(\omega\) contained in every inductive set. It is independent of the inductive set initially supplied by Infinity.</p>
+  </div>
   <p class="proof-label">Proof</p>
   <p>Fix an inductive set \(I\). By Separation form</p>
   <div class="math-display">\[ W=\{x\in I:\forall J\,(J\text{ is inductive}\Rightarrow x\in J)\}. \]</div>
@@ -18,8 +20,10 @@
 
 <section id="induction-on-omega" data-kind="theorem" data-formal="omega-subset-induction omega-predicate-induction">
   <h2>Leastness gives induction</h2>
-  <p>If \(A\subseteq\omega\), \(0\in A\), and \(n\in A\) implies \(S(n)\in A\), then \(A=\omega\). Consequently, for any formula \(P(n)\) with fixed set parameters,</p>
-  <div class="math-display">\[ P(0)\ \text{and}\ \forall n\in\omega\,[P(n)\Rightarrow P(S(n))]\quad\Rightarrow\quad\forall n\in\omega\,P(n). \]</div>
+  <div class="statement-box">
+    <p>If \(A\subseteq\omega\), \(0\in A\), and \(n\in A\) implies \(S(n)\in A\), then \(A=\omega\). Consequently, for any formula \(P(n)\) with fixed set parameters,</p>
+    <div class="math-display">\[ P(0)\ \text{and}\ \forall n\in\omega\,[P(n)\Rightarrow P(S(n))]\quad\Rightarrow\quad\forall n\in\omega\,P(n). \]</div>
+  </div>
   <p class="proof-label">Proof</p>
   <p>The set \(A\) is inductive, so leastness gives \(\omega\subseteq A\); the opposite inclusion is assumed. For the formula version, Separation constructs \(A=\{n\in\omega:P(n)\}\), to which the first assertion applies. <span class="qed" aria-label="End of proof">□</span></p>
   <p>This is induction for every subset of the constructed set \(\omega\). Its formula instances do not assert a single first-order axiom quantifying over all formulas.</p>
@@ -104,7 +108,9 @@
 
 <section id="unique-natural-number-system" data-kind="theorem" data-formal="peano-system-unique-isomorphism">
   <h2>Any full Peano system has the same structure</h2>
-  <p>Let \(C\) be a set with \(c\in C\) and an injective map \(g:C\to C\) whose image omits \(c\). Assume that the only subset of \(C\) containing \(c\) and closed under \(g\) is \(C\). The recursive map \(f:\omega\to C\) from <a href="#recursion-on-omega"></a> is a unique bijection preserving zero and successor.</p>
+  <div class="statement-box">
+    <p>Let \(C\) be a set with \(c\in C\) and an injective map \(g:C\to C\) whose image omits \(c\). Assume that the only subset of \(C\) containing \(c\) and closed under \(g\) is \(C\). The recursive map \(f:\omega\to C\) from <a href="#recursion-on-omega"></a> is a unique bijection preserving zero and successor.</p>
+  </div>
   <p class="proof-label">Proof</p>
   <p>The image of \(f\) contains \(c\) and is closed under \(g\), so the subset assumption makes \(f\) surjective. To prove injectivity, induct on \(n\) to show that \(f(n)=f(m)\) implies \(n=m\) for all \(m\). At \(n=0\), any nonzero \(m=S(k)\) would put \(c=g(f(k))\) in the image of \(g\). At \(n=S(j)\), equality rules out \(m=0\); write \(m=S(k)\). Injectivity of \(g\) gives \(f(j)=f(k)\), and induction gives \(j=k\). Uniqueness is recursion uniqueness. <span class="qed" aria-label="End of proof">□</span></p>
   <p>The hypothesis concerns every subset of \(C\), not merely subsets definable by formulas in an arithmetic language. Replacing it with only first-order arithmetic induction would be a different assertion.</p>

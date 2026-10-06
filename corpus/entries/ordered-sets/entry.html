@@ -79,15 +79,13 @@
 <section id="strict-orders" data-kind="lemma"
   data-formal="order-strict order-strict-from-partial order-strict-comparison order-from-strict order-nonstrict-comparison order-trichotomy order-strict-asymmetric order-four-comparisons set-proper-subset set-singleton-inclusion">
   <h2>Strict and non-strict comparison</h2>
-  <div class="statement-box">
-    <p>A <strong>strict partial order</strong> is an irreflexive, transitive relation:
-      \(a&lt;a\) never holds, and \(a&lt;b&lt;c\) implies \(a&lt;c\).
-      A partial order determines a strict partial order by</p>
-    <div class="math-display">\[ a&lt;b\quad\Longleftrightarrow\quad a\leq b\text{ and }a\ne b. \]</div>
-    <p>Conversely, a strict partial order determines a partial order by</p>
-    <div class="math-display">\[ a\leq b\quad\Longleftrightarrow\quad a&lt;b\text{ or }a=b. \]</div>
-    <p>These constructions undo each other.</p>
-  </div>
+  <p>A <strong>strict partial order</strong> is an irreflexive, transitive relation:
+    \(a&lt;a\) never holds, and \(a&lt;b&lt;c\) implies \(a&lt;c\).
+    A partial order determines a strict partial order by</p>
+  <div class="math-display">\[ a&lt;b\quad\Longleftrightarrow\quad a\leq b\text{ and }a\ne b. \]</div>
+  <p>Conversely, a strict partial order determines a partial order by</p>
+  <div class="math-display">\[ a\leq b\quad\Longleftrightarrow\quad a&lt;b\text{ or }a=b. \]</div>
+  <p>These constructions undo each other.</p>
   <p class="proof-label">Proof</p>
   <p>Start with a partial order. The strict relation is irreflexive by definition. If
     \(a&lt;b\) and \(b&lt;c\), then \(a\leq c\). Were \(a=c\), we would have both
@@ -306,9 +304,9 @@
       \sup\mathcal F&amp;=\bigcup_{A\in\mathcal F}A,\\
       \inf\mathcal F&amp;=\{x\in U:\text{for every }A\in\mathcal F,\ x\in A\}.
       \end{aligned} \]</div>
-    <p>The second set is the intersection of the family relative to \(U\). For the empty
-      family these formulas give \(\sup\varnothing=\varnothing\) and \(\inf\varnothing=U\).</p>
   </div>
+  <p>The second set is the intersection of the family relative to \(U\). For the empty
+    family these formulas give \(\sup\varnothing=\varnothing\) and \(\inf\varnothing=U\).</p>
   <p class="proof-label">Proof</p>
   <p>Every \(A\in\mathcal F\) is contained in the union, so the union is an upper bound.
     If \(B\subseteq U\) is any upper bound, then \(A\subseteq B\) for all
@@ -404,11 +402,9 @@
 <section id="isomorphisms-preserve-bounds" data-kind="lemma"
   data-formal="order-isomorphism-preserves-supremum order-isomorphism-preserves-infimum order-monotone-image-upper-bound full-set-indicator full-set-indicator-monotone full-set-indicator-not-preserve-supremum">
   <h2>Order isomorphisms preserve suprema and infima</h2>
-  <div class="statement-box">
-    <p>If \(f:P\to Q\) is an order isomorphism and \(S\subseteq P\) has supremum
-      \(u\), then \(f(S)\) has supremum \(f(u)\) in \(Q\). If \(S\) has infimum
-      \(\ell\), then \(\inf_Q f(S)=f(\ell)\).</p>
-  </div>
+  <p>If \(f:P\to Q\) is an order isomorphism and \(S\subseteq P\) has supremum
+    \(u\), then \(f(S)\) has supremum \(f(u)\) in \(Q\). If \(S\) has infimum
+    \(\ell\), then \(\inf_Q f(S)=f(\ell)\).</p>
   <p class="proof-label">Proof</p>
   <p>For each \(s\in S\), \(s\leq_P u\), so \(f(s)\leq_Q f(u)\). Thus
     \(f(u)\) is an upper bound of the
@@ -429,7 +425,10 @@
 
 <section id="knaster-tarski" data-kind="theorem" data-formal="knaster-tarski-fixed-point-lattice monotone-least-fixed-point monotone-greatest-fixed-point monotone-fixed-point-leastness monotone-fixed-point-greatestness fixed-point-definition">
   <h2>Monotone maps on complete lattices have fixed points</h2>
-  <p>Let \(L\) be a <a href="#power-set-bounds">complete lattice</a> and let \(f:L\to L\) be <a href="#order-maps">monotone</a>. A <strong>fixed point</strong> is an \(x\) with \(f(x)=x\). The <strong>Knaster–Tarski theorem</strong> says that the fixed points form a complete lattice in their inherited order. In particular, they have a least and a greatest element.</p>
+  <p>A <strong>fixed point</strong> is an \(x\) with \(f(x)=x\).</p>
+  <div class="statement-box">
+    <p>Let \(L\) be a <a href="#power-set-bounds">complete lattice</a> and let \(f:L\to L\) be <a href="#order-maps">monotone</a>. The <strong>Knaster–Tarski theorem</strong> says that the fixed points form a complete lattice in their inherited order. In particular, they have a least and a greatest element.</p>
+  </div>
   <p class="proof-label">Proof</p>
   <p>Put \(P=\{x\in L:f(x)\le x\}\) and \(p=\inf_L P\). For every \(x\in P\), monotonicity gives \(f(p)\le f(x)\le x\), so \(f(p)\le p\). Applying \(f\) gives \(f(f(p))\le f(p)\), hence \(f(p)\in P\) and \(p\le f(p)\). Thus \(p\) is fixed and lies below every fixed point. Reversing the order gives the greatest fixed point \(q=\sup_L\{x:x\le f(x)\}\). Completeness supplies these bounds, including for empty subsets; in particular \(L\) has a greatest and a least element.</p>
   <p>For a set \(S\) of fixed points, put \(s=\sup_L S\). The interval \(L_s=\{x:s\le x\}\) is a complete lattice: its nonempty bounds are inherited from \(L\), its empty supremum is \(s\), and its empty infimum is the greatest element of \(L\). For every \(x\ge s\) and \(y\in S\), \(y=f(y)\le f(x)\); therefore \(s\le f(x)\), even if \(S\) is empty. The restriction of \(f\) to \(L_s\) has a least fixed point by the argument above. This point is exactly the least fixed upper bound of \(S\). Reversing the order gives its greatest fixed lower bound. <span class="qed" aria-label="End of proof">□</span></p>
@@ -467,11 +466,11 @@
 <section id="quotient-order" data-kind="theorem"
   data-formal="ordered-quotient-equivalence ordered-quotient ordered-quotient-partial-order ordered-quotient-representatives ordered-quotient-comparison quotient-projection-surjective real-plane-first-coordinate-classes real-plane-ordered-quotient-isomorphism">
   <h2>A preorder gives a partial order on its classes</h2>
+  <p>Define</p>
+  <div class="math-display">\[ a\sim b\quad\Longleftrightarrow\quad
+    a\preccurlyeq b\text{ and }b\preccurlyeq a. \]</div>
   <div class="statement-box">
-    <p>Let \((A,\preccurlyeq)\) be a preordered set. Define</p>
-    <div class="math-display">\[ a\sim b\quad\Longleftrightarrow\quad
-      a\preccurlyeq b\text{ and }b\preccurlyeq a. \]</div>
-    <p>Then \(\sim\) is an equivalence relation. The rule</p>
+    <p>Let \((A,\preccurlyeq)\) be a preordered set. Then \(\sim\) is an equivalence relation. The rule</p>
     <div class="math-display">\[ [a]\leq[b]\quad\Longleftrightarrow\quad
       a\preccurlyeq b \label{eq:quotient-order} \]</div>
     <p>is independent of representatives and defines a partial order on
@@ -509,16 +508,14 @@
 <section id="monotone-maps-from-quotients" data-kind="theorem"
   data-formal="ordered-quotient-universal-property order-identity-monotone real-plane-identity-not-factor">
   <h2>Monotone maps factor through the ordered quotient</h2>
-  <div class="statement-box">
-    <p>Let \(q:A\to A/{\sim}\) be the ordered quotient of a preorder from
-      <a href="#quotient-order"></a>, and let \(P\) be a poset.
-      Every monotone map \(f:A\to P\) has a unique monotone map
-    </p>
-    <div class="math-display">\[ \overline f:A/{\sim}\longrightarrow P \]</div>
-    <p>such that \(f=\overline f\circ q\). It is given by \(\overline f([a])=f(a)\).
-      Conversely, composing any monotone map \(A/{\sim}\to P\) with \(q\) gives a
-      monotone map \(A\to P\).</p>
-  </div>
+  <p>Let \(q:A\to A/{\sim}\) be the ordered quotient of a preorder from
+    <a href="#quotient-order"></a>, and let \(P\) be a poset.
+    Every monotone map \(f:A\to P\) has a unique monotone map
+  </p>
+  <div class="math-display">\[ \overline f:A/{\sim}\longrightarrow P \]</div>
+  <p>such that \(f=\overline f\circ q\). It is given by \(\overline f([a])=f(a)\).
+    Conversely, composing any monotone map \(A/{\sim}\to P\) with \(q\) gives a
+    monotone map \(A\to P\).</p>
   <p class="proof-label">Proof</p>
   <p>If \(a\sim b\), monotonicity gives \(f(a)\leq f(b)\) and \(f(b)\leq f(a)\).
     Antisymmetry in \(P\) forces \(f(a)=f(b)\). Thus \(f\) is constant on each class.

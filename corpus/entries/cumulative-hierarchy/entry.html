@@ -34,8 +34,10 @@
 
 <section id="rank-characterizes-stages" data-kind="theorem" data-formal="hierarchy-membership-rank hierarchy-subset-rank">
   <h2>A stage contains exactly the sets of smaller rank</h2>
-  <p>For every set \(x\) and ordinal \(\alpha\),</p>
-  <div class="math-display">\[ x\in V_\alpha\quad\Longleftrightarrow\quad\operatorname{rank}(x)&lt;\alpha. \label{eq:stage-rank} \]</div>
+  <div class="statement-box">
+    <p>For every set \(x\) and ordinal \(\alpha\),</p>
+    <div class="math-display">\[ x\in V_\alpha\quad\Longleftrightarrow\quad\operatorname{rank}(x)&lt;\alpha. \label{eq:stage-rank} \]</div>
+  </div>
   <p class="proof-label">Proof</p>
   <p>Use transfinite induction on \(\alpha\), proving the equivalence for all \(x\) together. At zero, neither side holds. At a successor, the induction hypothesis and <a href="foundation-and-rank#membership-rank">the rank equation</a> give</p>
   <div class="math-display">\[ \begin{aligned}
@@ -50,8 +52,10 @@
 
 <section id="every-set-has-a-stage" data-kind="theorem" data-formal="hierarchy-universe-exhaustion no-universal-set hierarchy-least-stage hierarchy-subset-rank">
   <h2>Every set appears, and rank identifies its first stage</h2>
-  <p>Every set \(x\) belongs to \(V_{\operatorname{rank}(x)+1}\), and this is its least membership stage. Also, for every ordinal \(\alpha\),</p>
-  <div class="math-display">\[ x\subseteq V_\alpha\quad\Longleftrightarrow\quad\operatorname{rank}(x)\le\alpha. \]</div>
+  <div class="statement-box">
+    <p>Every set \(x\) belongs to \(V_{\operatorname{rank}(x)+1}\), and this is its least membership stage. Also, for every ordinal \(\alpha\),</p>
+    <div class="math-display">\[ x\subseteq V_\alpha\quad\Longleftrightarrow\quad\operatorname{rank}(x)\le\alpha. \]</div>
+  </div>
   <p class="proof-label">Proof</p>
   <p>The first assertion follows from \eqref{eq:stage-rank}, because the least ordinal strictly above \(\operatorname{rank}(x)\) is its successor. For the second, \(x\subseteq V_\alpha\) means that every \(y\in x\) has rank below \(\alpha\). This is equivalent to every \(\operatorname{rank}(y)+1\) being at most \(\alpha\), hence to their supremum being at most \(\alpha\). <span class="qed" aria-label="End of proof">□</span></p>
   <p>Thus rank is the first stage that contains \(x\) as a <em>subset</em>; the next stage first contains it as a <em>member</em>. Foundation enters through the existence of membership rank for every set. The class \(V\) is therefore the class of all sets, which <a href="axiomatic-set-theory#no-universal-set">cannot be a set</a>.</p>
@@ -82,8 +86,11 @@
 
 <section id="hereditarily-finite-sets" data-kind="theorem" data-formal="hereditarily-finite-set hereditarily-finite-rank-and-stage hierarchy-omega-stage">
   <h2>The first limit stage consists of hereditarily finite sets</h2>
-  <p>A set \(x\) is <strong>hereditarily finite</strong> if \(\operatorname{TC}(\{x\})\) is finite: only finitely many sets occur when we include \(x\), its members, their members, and so on. Then</p>
-  <div class="math-display">\[ x\in V_\omega\quad\Longleftrightarrow\quad\operatorname{rank}(x)&lt;\omega\quad\Longleftrightarrow\quad x\text{ is hereditarily finite}. \]</div>
+  <p>A set \(x\) is <strong>hereditarily finite</strong> if \(\operatorname{TC}(\{x\})\) is finite: only finitely many sets occur when we include \(x\), its members, their members, and so on.</p>
+  <div class="statement-box">
+    <p>Then</p>
+    <div class="math-display">\[ x\in V_\omega\quad\Longleftrightarrow\quad\operatorname{rank}(x)&lt;\omega\quad\Longleftrightarrow\quad x\text{ is hereditarily finite}. \]</div>
+  </div>
   <p class="proof-label">Proof</p>
   <p>The first equivalence is \eqref{eq:stage-rank}. If \(x\in V_\omega\), it belongs to some finite stage \(V_n\). That stage is transitive and finite. Since \(\{x\}\subseteq V_n\), <a href="foundation-and-rank#transitive-closure-construction">leastness of transitive closure</a> gives \(\operatorname{TC}(\{x\})\subseteq V_n\), so the closure is finite.</p>
   <p>Conversely, let \(T=\operatorname{TC}(\{x\})\) be finite. Use membership induction on \(T\) to prove that every \(y\in T\) has finite rank. All members of \(y\) lie in \(T\), and there are finitely many of them. By the induction hypothesis their ranks are natural numbers. Their successor ranks have a finite maximum, or supremum zero if there are no members. The rank equation therefore gives a natural-number rank for \(y\). In particular \(x\) has finite rank. <span class="qed" aria-label="End of proof">□</span></p>

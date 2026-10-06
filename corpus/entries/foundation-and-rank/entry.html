@@ -48,9 +48,11 @@
 
 <section id="set-induction" data-kind="theorem" data-formal="zf-membership-induction">
   <h2>Foundation gives induction over all sets</h2>
-  <p>Let \(P(x)\) be any formula with fixed set parameters. If</p>
-  <div class="math-display">\[ \forall x\,\bigl[(\forall y\in x\,P(y))\Rightarrow P(x)\bigr], \]</div>
-  <p>then \(P(x)\) holds for every set \(x\). This is <strong>membership induction</strong>, also called set induction.</p>
+  <div class="statement-box">
+    <p>Let \(P(x)\) be any formula with fixed set parameters. If</p>
+    <div class="math-display">\[ \forall x\,\bigl[(\forall y\in x\,P(y))\Rightarrow P(x)\bigr], \]</div>
+    <p>then \(P(x)\) holds for every set \(x\). This is <strong>membership induction</strong>, also called set induction.</p>
+  </div>
   <p class="proof-label">Proof</p>
   <p>If \(P(a)\) fails, use \(D=\operatorname{TC}(\{a\})\), a transitive set with \(a\in D\). Separation constructs the nonempty set \(B=\{x\in D:\neg P(x)\}\). Foundation supplies \(b\in B\) with \(b\cap B=\varnothing\). Every member of \(b\) lies in \(D\), by transitivity, and none lies in \(B\); hence all satisfy \(P\). The assumed implication gives \(P(b)\), contradicting \(b\in B\). <span class="qed" aria-label="End of proof">□</span></p>
   <p>The collection of all counterexamples might be a proper class. The transitive closure provides the set-sized search space to which Foundation applies.</p>
@@ -66,8 +68,10 @@
 
 <section id="local-rank-recursion" data-kind="theorem" data-formal="local-membership-rank-equation local-membership-rank-unique">
   <h2>A transitive set has a unique membership-rank function</h2>
-  <p>If \(T\) is a transitive set, there is a unique function \(r_T\) on \(T\) taking ordinal values and satisfying</p>
-  <div class="math-display">\[ r_T(x)=\sup\{r_T(y)+1:y\in x\}\quad(x\in T). \]</div>
+  <div class="statement-box">
+    <p>If \(T\) is a transitive set, there is a unique function \(r_T\) on \(T\) taking ordinal values and satisfying</p>
+    <div class="math-display">\[ r_T(x)=\sup\{r_T(y)+1:y\in x\}\quad(x\in T). \]</div>
+  </div>
   <p>The supremum of the empty set of ordinals is zero. Membership on \(T\) is <a href="well-ordered-sets#well-founded-relations">well-founded</a> by Foundation, and transitivity ensures that all inputs on the right are in the domain.</p>
   <p class="proof-label">Proof</p>
   <p>Call an ordinal-valued function <em>good</em> if its domain is a transitive subset of \(T\) and it satisfies the displayed rule there. Two good functions agree on their common domain. Otherwise, by Separation and Foundation, their disagreements have a membership-minimal member \(x\). Every \(y\in x\) lies in both domains and is an agreement point, so the two suprema at \(x\) are equal, a contradiction. This proves compatibility, including uniqueness on any fixed domain.</p>
@@ -88,7 +92,9 @@
 
 <section id="membership-lowers-rank" data-kind="theorem" data-formal="zf-membership-lowers-rank zf-subset-rank-monotone set-rank-zero-iff-empty proper-inclusion-equal-rank-example">
   <h2>Every membership step strictly lowers rank</h2>
-  <p>If \(y\in x\), then \(\operatorname{rank}(y)&lt;\operatorname{rank}(x)\). If \(x\subseteq z\), then \(\operatorname{rank}(x)\le\operatorname{rank}(z)\). A set has rank zero exactly when it is empty.</p>
+  <div class="statement-box">
+    <p>If \(y\in x\), then \(\operatorname{rank}(y)&lt;\operatorname{rank}(x)\). If \(x\subseteq z\), then \(\operatorname{rank}(x)\le\operatorname{rank}(z)\). A set has rank zero exactly when it is empty.</p>
+  </div>
   <p class="proof-label">Proof</p>
   <p>For \(y\in x\), the supremum defining rank is at least \(\operatorname{rank}(y)+1\), hence strictly above \(\operatorname{rank}(y)\). For \(x\subseteq z\), the family used in the first supremum is contained in the family used in the second, giving the non-strict comparison. The empty set has rank zero by the empty-supremum convention; a nonempty set has a member, whose successor rank is at least one, so its rank is not zero. <span class="qed" aria-label="End of proof">□</span></p>
   <p>Inclusion need not strictly increase rank. The sets \(a=\{0\}\) and \(b=\{a\}\) have ranks one and two. Both \(\{b\}\) and its proper superset \(\{0,b\}\) have rank three. Rank measures membership depth, not how many members have been added.</p>

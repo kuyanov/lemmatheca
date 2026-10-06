@@ -100,6 +100,11 @@ sidebar, badges, and navigation. Do not include a document shell or Django templ
 instructions in the entry. The parser handles repository-owned HTML; it is not an
 upload sanitizer.
 
+Reserve accent green blocks (`class="statement-box"`) for the entry's main results.
+Select the central conclusions rather than boxing every theorem or lemma. Include
+the result's hypotheses and conclusion inside the box; keep definitions, supporting
+lemmas, routine facts, examples, questions, proof steps, and proofs outside it.
+
 Use `href="#block-id"` for a local block and `href="entry-id#block-id"` for another
 entry. Cross-entry references must target mathematical blocks. The renderer resolves
 IDs to URLs and loads referenced entries on demand. Do not use area paths, `../`,

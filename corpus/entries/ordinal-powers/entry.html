@@ -72,12 +72,14 @@
 
 <section id="cantor-normal-form" data-kind="theorem" data-formal="cantor-normal-form valid-cantor-normal-form finite-ordinal-polynomial-value cantor-normal-form-zero cantor-normal-form-characterization ordinals-below-omega">
   <h2>Every nonzero ordinal has a unique Cantor normal form</h2>
-  <p>Every \(\alpha&gt;0\) has exactly one expression</p>
-  <div class="math-display">\[
-    \alpha=\omega^{\beta_0}\cdot n_0+\omega^{\beta_1}\cdot n_1+\cdots+\omega^{\beta_{k-1}}\cdot n_{k-1},
-    \qquad \beta_0&gt;\beta_1&gt;\cdots&gt;\beta_{k-1},
-  \]</div>
-  <p>where \(k\) is a positive finite integer and every coefficient \(n_i\) is a positive finite integer. This is the <strong>Cantor normal form</strong>. Zero has the empty expression.</p>
+  <div class="statement-box">
+    <p>Every \(\alpha&gt;0\) has exactly one expression</p>
+    <div class="math-display">\[
+      \alpha=\omega^{\beta_0}\cdot n_0+\omega^{\beta_1}\cdot n_1+\cdots+\omega^{\beta_{k-1}}\cdot n_{k-1},
+      \qquad \beta_0&gt;\beta_1&gt;\cdots&gt;\beta_{k-1},
+    \]</div>
+    <p>where \(k\) is a positive finite integer and every coefficient \(n_i\) is a positive finite integer. This is the <strong>Cantor normal form</strong>. Zero has the empty expression.</p>
+  </div>
   <p class="proof-label">Proof</p>
   <p>Repeatedly apply <a href="#leading-coefficient"></a> to the nonzero remainder. The next leading exponent is strictly smaller than the preceding exponent, because the remainder is below its leading power. The procedure must stop after finitely many steps: an infinite strictly decreasing sequence of ordinals would have a least member, and its next term would be smaller. The final zero remainder gives the required finite expression.</p>
   <p>To check uniqueness for <em>any</em> expression of the required shape, its tail after the first term is below \(\omega^{\beta_0}\) by <a href="#small-sums"></a>; if \(\beta_0=0\), there can be no later term and the tail is zero. Hence the whole expression lies between \(\omega^{\beta_0}\cdot n_0\) and \(\omega^{\beta_0}\cdot(n_0+1)\), excluding the upper endpoint. This identifies its leading exponent and coefficient as those of the construction. The unique initial-segment remainder identifies its tail. Repeat this argument until both expressions end; a remaining nonempty tail would be positive. <span class="qed" aria-label="End of proof">□</span></p>
@@ -86,7 +88,9 @@
 
 <section id="normal-form-comparison" data-kind="theorem" data-formal="cantor-normal-form-lexicographic-comparison">
   <h2>Normal forms compare at their first difference</h2>
-  <p>Compare the exponent–coefficient pairs from left to right. At the first difference, the greater exponent gives the greater ordinal; for equal exponents, the greater coefficient gives the greater ordinal. If one list is a proper prefix of the other, the longer list gives the greater ordinal.</p>
+  <div class="statement-box">
+    <p>Compare the exponent–coefficient pairs from left to right. At the first difference, the greater exponent gives the greater ordinal; for equal exponents, the greater coefficient gives the greater ordinal. If one list is a proper prefix of the other, the longer list gives the greater ordinal.</p>
+  </div>
   <p class="proof-label">Proof</p>
   <p>Cancel the common initial terms using <a href="ordinal-arithmetic#addition-comparison">strictness in the second summand</a>. A remaining expression with leading exponent \(\beta\) is at least \(\omega^\beta\) and below \(\omega^{\beta+1}\). If \(\beta&lt;\gamma\), this upper bound is at most \(\omega^\gamma\), the lower bound of the other expression. With the same exponent, the disjoint coefficient intervals from <a href="#leading-coefficient"></a> determine the comparison. A nonempty remaining tail is positive, which settles the prefix case. <span class="qed" aria-label="End of proof">□</span></p>
 </section>

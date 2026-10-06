@@ -29,6 +29,11 @@ Check the following:
 - Proofs establish the stated conclusions without circular reasoning and explain
   the important steps at the intended reader's level. Questions have correct
   answers. Figures and tables agree with the mathematics.
+- Accent green blocks (`class="statement-box"`) highlight only the entry's main
+  results, with their hypotheses and conclusions included. Check their role in the
+  entry rather than their theorem or lemma label. Flag boxes around definitions,
+  supporting lemmas, routine facts, examples, questions, proof steps, or proofs,
+  and main results whose emphasis is lost among secondary boxes.
 - Figures match the website's current typography, muted green palette, and panel
   and caption styling, as defined in `app/static/css/site.css` and nearby figures.
   Check the `proof-figure` and `figure-image` wrappers, readable labels and legends,

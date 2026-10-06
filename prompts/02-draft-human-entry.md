@@ -90,6 +90,11 @@ request.
    Use collapsible question answers. Figures and tables need stable IDs and captions
    without hard-coded numbers; images need useful alternative text. Keep Lean names
    and build-process details out of the exposition.
+   Reserve accent green blocks (`class="statement-box"`) for the entry's main
+   results. Select the central conclusions of the entry rather than boxing every
+   theorem or lemma. Include the result's hypotheses and conclusion inside the box;
+   keep definitions, supporting lemmas, routine facts, examples, questions, proof
+   steps, and proofs outside it.
    Match figures to the website's existing visual style. Inspect
    `app/static/css/site.css` and nearby entry figures: use serif mathematical labels,
    muted green accents, thin lines, subdued fills, and clear spacing. Prefer SVG for

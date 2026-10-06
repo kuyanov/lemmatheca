@@ -18,7 +18,11 @@
 
 <section id="closed-unbounded-fixed-points" data-kind="theorem" data-formal="normal-next-fixed-point normal-fixed-point-iteration-supremum normal-next-fixed-point-above-start normal-next-fixed-point-least normal-fixed-points-unbounded normal-function-fixed-points-closed normal-function-fixed-point">
   <h2>Fixed points of a normal function form a closed unbounded class</h2>
-  <p>A <strong>fixed point</strong> satisfies \(f(\alpha)=\alpha\). The fixed points of a normal function are <strong>unbounded</strong>, meaning that there is one strictly above every ordinal. They are <strong>closed</strong>, meaning that the supremum of any nonempty set of fixed points is again a fixed point. These are properties of a class of ordinals, with no topological prerequisites.</p>
+  <p>A <strong>fixed point</strong> satisfies \(f(\alpha)=\alpha\).</p>
+  <div class="statement-box">
+    <p>The fixed points of a normal function are <strong>unbounded</strong>, meaning that there is one strictly above every ordinal. They are <strong>closed</strong>, meaning that the supremum of any nonempty set of fixed points is again a fixed point.</p>
+  </div>
+  <p>These are properties of a class of ordinals, with no topological prerequisites.</p>
   <p class="proof-label">Proof</p>
   <p>Given \(\beta\), recursively put \(a_0=\beta\) and \(a_{n+1}=f(a_n)\), and let \(a=\sup_{n&lt;\omega}a_n\). Set-valued recursion and Replacement produce the sequence and its supremum. The sequence is nondecreasing by <a href="#normal-functions-and-suprema"></a>. That lemma also gives</p>
   <div class="math-display">\[ f(a)=\sup_{n&lt;\omega}f(a_n)=\sup_{n&lt;\omega}a_{n+1}=a. \]</div>
@@ -35,8 +39,10 @@
 
 <section id="epsilon-zero-towers" data-kind="theorem" data-formal="finite-omega-tower epsilon-zero-tower-specification">
   <h2>The first epsilon number is the limit of finite towers</h2>
-  <p>Put \(t_0=1\) and \(t_{n+1}=\omega^{t_n}\). Then</p>
-  <div class="math-display">\[ \varepsilon_0=\sup_{n&lt;\omega}t_n=\sup\{1,\omega,\omega^\omega,\omega^{\omega^\omega},\ldots\}. \]</div>
+  <div class="statement-box">
+    <p>Put \(t_0=1\) and \(t_{n+1}=\omega^{t_n}\). Then</p>
+    <div class="math-display">\[ \varepsilon_0=\sup_{n&lt;\omega}t_n=\sup\{1,\omega,\omega^\omega,\omega^{\omega^\omega},\ldots\}. \]</div>
+  </div>
   <p class="proof-label">Proof</p>
   <p>The sequence is strictly increasing: \(1&lt;\omega\), and strict increase of powers propagates each inequality. The iteration theorem makes its supremum a fixed point. Every epsilon number is at least one, so induction places every \(t_n\) below it. Their supremum is therefore the least epsilon number. <span class="qed" aria-label="End of proof">□</span></p>
   <p>Every \(\alpha&lt;\varepsilon_0\) is below some finite tower. No finite tower is itself an epsilon number.</p>
@@ -44,7 +50,10 @@
 
 <section id="hereditary-ordinal-forms" data-kind="theorem" data-formal="hereditary-cantor-expression hereditary-cantor-expression-value hereditary-cantor-normality hereditary-cantor-form-unique epsilon-zero-countable hereditary-cantor-forms-below-epsilon-zero finite-ordinal-notation-below-epsilon-zero">
   <h2>Ordinals below epsilon zero have finite hereditary expressions</h2>
-  <p>The ordinals below \(\varepsilon_0\) are exactly those expressible by finite terms built from zero using Cantor normal forms, with every exponent itself expressed in the same way. For example, \(\omega^{\omega^2+3}\cdot2+\omega+5\) is such a term. This is a <strong>hereditary Cantor normal form</strong>.</p>
+  <div class="statement-box">
+    <p>The ordinals below \(\varepsilon_0\) are exactly those expressible by finite terms built from zero using Cantor normal forms, with every exponent itself expressed in the same way.</p>
+  </div>
+  <p>For example, \(\omega^{\omega^2+3}\cdot2+\omega+5\) is such a term. This is a <strong>hereditary Cantor normal form</strong>.</p>
   <p class="proof-label">Proof</p>
   <p>If \(\alpha&lt;t_{n+1}=\omega^{t_n}\), every exponent in its normal form is below \(t_n\). Indeed, an exponent at least \(t_n\) would make the leading term at least \(\omega^{t_n}\). Induction on \(n\), with \(\alpha&lt;t_0=1\) giving only zero, therefore expands all exponents in finitely many layers. Every \(\alpha&lt;\varepsilon_0\) has such a tower bound.</p>
   <p>Conversely, argue by induction on a finite expression. Its already evaluated exponents are below \(\varepsilon_0\). Choose one tower \(t_n\) strictly above all of them. By <a href="ordinal-powers#small-sums">closure of smaller terms under finite sums</a>, the resulting normal form is below \(\omega^{t_n}=t_{n+1}&lt;\varepsilon_0\).</p>
@@ -70,7 +79,10 @@
   <h2>Every Goodstein sequence eventually reaches zero</h2>
   <p>Start with any natural number \(g_0\), using base two. At stage \(n\), let \(b=n+2\) and define</p>
   <div class="math-display">\[ g_{n+1}=\begin{cases}B_b^{b+1}(g_n)-1,&amp;g_n&gt;0,\\0,&amp;g_n=0.\end{cases} \]</div>
-  <p>This is a <strong>Goodstein sequence</strong>. Despite possible rapid increases in its natural-number values, it reaches zero after finitely many steps.</p>
+  <p>This is a <strong>Goodstein sequence</strong>.</p>
+  <div class="statement-box">
+    <p>Despite possible rapid increases in its natural-number values, it reaches zero after finitely many steps.</p>
+  </div>
   <p class="proof-label">Proof</p>
   <p>Measure stage \(n\) by \(\alpha_n=o_{n+2}(g_n)\). If \(g_n&gt;0\), base change preserves positivity, and <a href="#base-change-and-descent"></a> gives</p>
   <div class="math-display">\[ \alpha_{n+1}=o_{b+1}(B_b^{b+1}(g_n)-1)&lt;o_{b+1}(B_b^{b+1}(g_n))=o_b(g_n)=\alpha_n. \]</div>
