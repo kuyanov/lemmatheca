@@ -1,10 +1,12 @@
 {
   "id": "weaker-choice-successive-selections",
-  "description": "Over first-order ZF with dependent choice, an extendible family of finite histories has an infinite sequence extending any prescribed member, with every longer finite prefix still in the family.",
-  "module": null,
-  "declaration": null,
+  "description": "If every member of a family T of finite histories has a one-term extension in T, then each prescribed history in T extends to an infinite sequence whose prefixes of every length at least the prescribed length belong to T.",
+  "module": "Lemmatheca.SetTheory.WeakerChoice",
+  "declaration": "Lemmatheca.SetTheory.WeakerChoice.successive_selections",
   "dependencies": [
     "history-path-extraction"
   ],
-  "verified": false
+  "verified": true,
+  "declaration_line": 208,
+  "signature": "Lemmatheca.SetTheory.WeakerChoice.successive_selections.{u} {α : Type u} (T : Set (List α))\n  (hT : ∀ s ∈ T, ∃ t ∈ T, Lemmatheca.SetTheory.WeakerChoice.OneTermExtension s t) (s₀ : List α) (hs₀ : s₀ ∈ T) :\n  ∃ f, (List.ofFn fun i => f ↑i) = s₀ ∧ ∀ (n : ℕ), (List.ofFn fun i => f ↑i) ∈ T"
 }

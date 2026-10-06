@@ -12,7 +12,9 @@ open Order
 open scoped Ordinal Cardinal
 
 /-! Universe-relative principles. Their implications in classical Lean do not
-certify their strength over first-order ZF; that requires a logical encoding. -/
+certify their strength over first-order ZF; that requires a logical encoding.
+The concrete existence results use the project's default Choice convention;
+they do not assert that countable choice or dependent choice alone suffices. -/
 
 /-- Choice functions for sequences of nonempty subsets of a common carrier. -/
 def CountableChoice : Prop := ∀ (α : Type u) (A : ℕ → Set α),
@@ -202,6 +204,33 @@ theorem history_path_extraction {α : Type u} (p : ℕ → List α)
   have he := congrArg (fun s : List α => s[i]?) ((hg (i + 1)).trans (hf (i + 1)).symm)
   simpa only [List.getElem?_ofFn, hi, dite_true, Option.some.injEq] using he
 
+/-- Extendible finite histories admit an infinite continuation of any prescribed history. -/
+theorem successive_selections {α : Type u} (T : Set (List α))
+    (hT : ∀ s ∈ T, ∃ t ∈ T, OneTermExtension s t)
+    (s₀ : List α) (hs₀ : s₀ ∈ T) :
+    ∃ f : ℕ → α,
+      List.ofFn (fun i : Fin s₀.length => f i.val) = s₀ ∧
+      ∀ n, List.ofFn (fun i : Fin (s₀.length + n) => f i.val) ∈ T := by
+  classical
+  have hext : ∀ s : T, ∃ t : T, OneTermExtension s.val t.val := by
+    intro s
+    obtain ⟨t, ht, hstep⟩ := hT s.val s.property
+    exact ⟨⟨t, ht⟩, hstep⟩
+  let next : T → T := fun s => (hext s).choose
+  let path : ℕ → T := Nat.rec ⟨s₀, hs₀⟩ (fun _ s => next s)
+  have hstep : ∀ n, OneTermExtension (path n).val (path (n + 1)).val := by
+    intro n
+    exact (hext (path n)).choose_spec
+  obtain ⟨f, hf, _⟩ := history_path_extraction (fun n => (path n).val) hstep
+  have hprefix : ∀ n, List.ofFn (fun i : Fin (s₀.length + n) => f i.val) =
+      (path n).val := hf
+  refine ⟨f, ?_, ?_⟩
+  · simpa only [Nat.add_zero] using
+      (hprefix 0).trans (show (path 0).val = s₀ from rfl)
+  · intro n
+    rw [hprefix n]
+    exact (path n).property
+
 /-- A supplied extension path of valid selection histories starting empty gives a choice function. -/
 theorem selections_of_history_path {α : Type u} (A : ℕ → Set α) (p : ℕ → List α)
     (hzero : p 0 = []) (hvalid : ∀ n, SelectionHistory A (p n))
@@ -269,6 +298,24 @@ theorem encoded_ordinals_bound {ι : Type u} [Countable ι] (a : ι → Ordinal.
   refine ⟨Ordinal.iSup_lt_of_lt_cof hindex hlt, ?_⟩
   intro i
   exact (lt_add_one (a i)).trans_le (le_ciSup Ordinal.bddAbove_of_small i)
+
+/-- A countable set below omega one is strictly bounded by the supremum of its successors. -/
+theorem countable_ordinals_bounded (S : Set Ordinal.{u}) (hS : S.Countable)
+    (hbound : ∀ a ∈ S, a < Ordinal.omega 1) :
+    (⨆ a : S, a.val + 1) < Ordinal.omega 1 ∧
+      ∀ a ∈ S, a < ⨆ b : S, b.val + 1 := by
+  let : Countable S := Set.countable_coe_iff.mpr hS
+  have hsucc : ∀ a : S, a.val + 1 < Ordinal.omega 1 := by
+    intro a
+    simpa only [Order.succ_eq_add_one] using
+      (Cardinal.isSuccLimit_omega 1).succ_lt (hbound a.val a.property)
+  have hb : BddAbove (Set.range fun a : S => a.val + 1) := by
+    refine ⟨Ordinal.omega 1, ?_⟩
+    rintro _ ⟨a, rfl⟩
+    exact (hsucc a).le
+  refine ⟨Ordinal.iSup_lt_omega_one hsucc, ?_⟩
+  intro a ha
+  exact (lt_add_one a).trans_le (le_ciSup hb ⟨a, ha⟩)
 
 /-- A nonempty finite relation path starts at the prescribed point. -/
 def RelationHistory {α : Type u} (R : α → α → Prop) (x₀ : α) (s : List α) : Prop :=
