@@ -38,10 +38,15 @@ successful build; it is not a live freshness check or evidence of correspondence
    actually selected, especially in comparisons involving concrete literals.
    Choice is permitted by default. Check whether claims about weaker axiom systems
    or independence are actually encoded; a Verified badge does not establish them.
+   Ordinary conclusions may be bound under default Choice even when the human proof
+   uses only countable or dependent choice. Assess the weaker-assumption argument
+   separately; do not require duplicate unbound nodes merely for those hypotheses.
+   Logical-strength claims, including principle implications, first-order schemas,
+   and axiom-system equivalences, still require a suitable encoding or an unbound node.
    A provable choice premise does not make an ordinary Lean theorem a check of
-   restricted axiom strength, even if the proof uses it. Flag such bindings for
-   replacement by unbound logical claims and separately inspect the construction
-   lemmas with supplied data.
+   restricted axiom strength, even if the proof uses it. When a binding is presented
+   as certifying that strength, require an unbound logical claim instead and
+   separately inspect construction lemmas with supplied data.
    Check module placement as well: reusable definitions and results belong in
    general theory, even if used by only one entry. `Entry/` should contain only
    particular illustrative examples and counterexamples with no wider use, and

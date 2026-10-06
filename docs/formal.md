@@ -42,10 +42,15 @@ permits Choice without asserting that it is mathematically necessary.
 A Verified badge checks the Lean declaration; it does not certify provability
 from first-order ZF or the strength of a weaker choice principle. Assess those
 human claims separately using their arguments and an appropriate logical encoding.
-Keep claims about implications or equivalences over ZF unbound until such an
-encoding exists. Adding a provable choice principle as a Lean premise, or using
-that premise in a proof, does not certify the stated axiom strength. Bind faithful
-principle definitions and construction lemmas with supplied data separately.
+Ordinary mathematical conclusions may be bound to classical Lean theorems even
+when the human argument assumes only countable or dependent choice. Such bindings
+verify the conclusion under the default foundation, not the sufficiency of those
+weaker assumptions; do not add a duplicate unbound node solely to record them.
+Claims whose content is logical strength, including implications or equivalences
+between choice principles, first-order recursion schemas, and equivalences between
+axiom systems, remain unbound until an appropriate encoding exists. Adding a
+provable choice principle as a Lean premise does not certify axiom strength.
+Bind faithful principle definitions and constructions with supplied data separately.
 
 The build writes `verified`, the pretty-printed `signature`, and `declaration_line`,
 and refreshes `module` from Lean's defining-module information. Do not fabricate

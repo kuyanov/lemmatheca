@@ -44,11 +44,14 @@ sources. Use the single project in formal/ and preserve unrelated work.
    logical encoding and missing prerequisites using the
    [assumption guidance](../CONTRIBUTING.md#prerequisites-and-scope). Report limits
    of coverage rather than binding such a claim to an ordinary Lean theorem with
-   a different meaning. Leave the intended claim unbound when a classical
-   declaration proves its principles or conclusion outright and does not encode
-   the claimed implication over ZF. Keep faithful principle definitions bound and
-   cover the actual constructions with supplied-data lemmas; do not add provable
-   choice premises to library facts as a substitute for the missing logical encoding.
+   a different meaning. Leave logical-strength claims, such as implications between
+   choice principles or first-order schemas, unbound until their intended logical
+   setting is encoded. Ordinary mathematical conclusions may use classical bindings
+   even when the human proof assumes only countable or dependent choice; these do
+   not certify the sufficiency of those assumptions. Do not add duplicate unbound
+   nodes solely for those weaker hypotheses. Keep faithful principle definitions
+   bound and cover constructions with supplied-data lemmas; adding provable choice
+   premises to library facts does not supply the missing logical encoding.
 4. Remove redundant coverage while retaining explicitly stated witnesses and
    distinct claims. A linked equivalence may already cover its two directions.
    Bind the definitions actually given in the text and the stated mathematical

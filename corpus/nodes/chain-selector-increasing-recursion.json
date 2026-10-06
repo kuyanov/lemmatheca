@@ -1,0 +1,12 @@
+{
+  "id": "chain-selector-increasing-recursion",
+  "description": "For any well-ordered index type and partial order P, a supplied function assigning a strict upper bound to each chain determines a strictly increasing map into P. Its value at each index is the supplied bound of the range of the earlier values.",
+  "module": "Lemmatheca.SetTheory.ChoicePrinciples",
+  "declaration": "Lemmatheca.SetTheory.ChoicePrinciples.increasing_map_of_chain_selector",
+  "dependencies": [
+    "well-order-recursion-exists-unique"
+  ],
+  "verified": true,
+  "declaration_line": 213,
+  "signature": "Lemmatheca.SetTheory.ChoicePrinciples.increasing_map_of_chain_selector.{u, v} {ι : Type u} {α : Type v} [LinearOrder ι]\n  [WellFoundedLT ι] [PartialOrder α] (next : Set α → α)\n  (hnext : ∀ (C : Set α), IsChain (fun x1 x2 => x1 ≤ x2) C → ∀ x ∈ C, x < next C) :\n  ∃ f, StrictMono f ∧ ∀ (a : ι), f a = next (Set.range fun b => f ↑b)"
+}

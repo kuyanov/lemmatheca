@@ -8,7 +8,7 @@ Their equivalences over ZF are unbound corpus claims: classical Lean proves
 the principles outright. The lemmas here describe constructions from supplied
 data and do not certify restricted axiom strength. -/
 set_option autoImplicit false
-universe u
+universe u v
 namespace Lemmatheca.SetTheory.ChoicePrinciples
 open Order
 open scoped Ordinal Cardinal
@@ -207,5 +207,42 @@ theorem maximal_partial_selection_total {ι α : Type u} (A : ι → Set α)
   · intro hp
     change p.2 = c p.1 at hp
     simpa only [← hp, Prod.eta] using hc p.1
+
+/-- A supplied strict-upper-bound selector recursively produces an increasing map
+on any well-order, with each value selected from the range of its earlier history. -/
+theorem increasing_map_of_chain_selector {ι : Type u} {α : Type v}
+    [LinearOrder ι] [WellFoundedLT ι] [PartialOrder α]
+    (next : Set α → α)
+    (hnext : ∀ C : Set α, IsChain (· ≤ ·) C → ∀ x ∈ C, x < next C) :
+    ∃ f : ι → α, StrictMono f ∧
+      ∀ a, f a = next (Set.range (fun b : Set.Iio a => f b.val)) := by
+  obtain ⟨f, hf, _⟩ := Lemmatheca.SetTheory.recursion_exists_unique
+    (fun _ h => next (Set.range h) : Lemmatheca.SetTheory.RecursionRule ι α)
+  have increasing : ∀ a : ι, ∀ b, b < a → f b < f a := by
+    intro a
+    induction a using (wellFounded_lt (α := ι)).induction with
+    | h a ih =>
+      have hchain : IsChain (· ≤ ·) (Set.range (fun b : Set.Iio a => f b.val)) := by
+        rintro x ⟨b, rfl⟩ y ⟨c, rfl⟩ _
+        rcases lt_trichotomy b.val c.val with hbc | hbc | hcb
+        · exact Or.inl (ih c.val c.property b.val hbc).le
+        · exact Or.inl (le_of_eq (congrArg f hbc))
+        · exact Or.inr (ih b.val b.property c.val hcb).le
+      intro b hb
+      rw [hf a]
+      exact hnext _ hchain (f b) ⟨⟨b, hb⟩, rfl⟩
+  exact ⟨f, fun _ _ h => increasing _ _ h, hf⟩
+
+/-- The second coordinates of a supplied section of the indexed-family projection
+assemble into a choice function, including for an empty index type. -/
+theorem choice_function_of_projection_section {ι : Type u} {α : Type v}
+    (A : ι → Set α) (s : ι → (i : ι) × A i)
+    (hs : Function.RightInverse s (fun p : (i : ι) × A i => p.1)) :
+    ∃ c : ι → α, (∀ i, c i ∈ A i) ∧ ∀ i, c i = (s i).2.val := by
+  refine ⟨fun i => (s i).2.val, ?_, fun _ => rfl⟩
+  intro i
+  have hmem := (s i).2.property
+  have hi : (s i).1 = i := hs i
+  simpa only [hi] using hmem
 
 end Lemmatheca.SetTheory.ChoicePrinciples

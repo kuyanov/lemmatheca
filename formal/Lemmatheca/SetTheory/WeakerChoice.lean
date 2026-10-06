@@ -367,4 +367,18 @@ theorem relation_sequence_of_history_path {α : Type u} (R : α → α → Prop)
       rw [List.length_ofFn]; omega
     simpa only [List.getElem_ofFn, Fin.val_mk] using hc.getElem n hn
 
+/-- Iterating a supplied valid step function gives a relation sequence from any
+prescribed starting point, with the same step function at every stage. -/
+theorem sequence_of_step_function {α : Type u} (R : α → α → Prop)
+    (g : α → α) (hg : ∀ x, R x (g x)) (x₀ : α) :
+    ∃ f : ℕ → α, f 0 = x₀ ∧ (∀ n, f (n + 1) = g (f n)) ∧
+      ∀ n, R (f n) (f (n + 1)) := by
+  refine ⟨fun n => g^[n] x₀, rfl, ?_, ?_⟩
+  · intro n
+    exact Function.iterate_succ_apply' g n x₀
+  · intro n
+    change R (g^[n] x₀) (g^[n + 1] x₀)
+    rw [Function.iterate_succ_apply']
+    exact hg _
+
 end Lemmatheca.SetTheory.WeakerChoice
