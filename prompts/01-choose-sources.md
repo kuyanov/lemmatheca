@@ -37,6 +37,14 @@ Respect repository instructions and preserve unrelated work.
    consequence, and a proposed repair or supplementary source. Mark unavailable
    or unchecked arguments explicitly. Return this assessment for use in step 2,
    before drafting the entry.
+   Prioritize false statements, missing necessary hypotheses, and failed arguments;
+   do not classify a valid compressed proof or missing explanation as an error.
+   Consult and maintain [Source errors](../corpus/source-errors.md) using the
+   [source-error contract](../docs/corpus.md#source-errors). Save confirmed defects,
+   checked repairs, and the actual reviewed scope before the handoff. Add or update
+   coverage for inspected publications even when no defect is found. Identify
+   inaccessible passages without claiming they were checked. This register is
+   the only corpus file this planning step may edit.
 2. Propose a coherent reading unit with clear prerequisites and boundaries. Link
    existing entries where useful rather than repeating whole explanations, while
    keeping enough context to understand the new entry. Do not expand its scope
@@ -48,13 +56,16 @@ Respect repository instructions and preserve unrelated work.
    Apply the [prerequisite and scope guidance](../CONTRIBUTING.md#prerequisites-and-scope).
    Choose placement and plan the summary and abstract using the
    [reading-order criteria](../CONTRIBUTING.md#reading-order).
-   Consult the [reference backlog](../docs/reference-backlog.md). Familiar background,
+   Consult the [upcoming-reference table](../corpus/reference-planning.md#upcoming-references).
+   Familiar background,
    including standard real-number facts, may be used without a corpus reference;
-   propose useful future-area links in the handoff using the backlog's four
-   columns. The table is for current consuming blocks; keep plans for entries
-   not yet drafted, correspondences still to prove, and deferred extensions
-   separate, in the handoff or [reference planning notes](../docs/reference-planning.md).
-   Do not edit the backlog during this planning step. A missing link alone is not
+   propose useful future-area links in the handoff using the table's four
+   columns. The table is for current consuming blocks. Keep proposed existing-target
+   integration notes, plans for entries not yet drafted, correspondences still to
+   prove, and deferred extensions separate from those rows, identifying the
+   corresponding planning sections in the same
+   [Reference backlog and planning](../corpus/reference-planning.md) document.
+   Do not edit that document during this planning step. A missing link alone is not
    a proof gap. Do not plan major dependencies on substantial theory missing from
    the corpus.
    Map the needed results to current entry/block IDs and inspect their assumptions.
@@ -77,7 +88,8 @@ Respect repository instructions and preserve unrelated work.
 
 Verify the proposed entry ID and reading-order placement against the current
 corpus, and check each citation against an inspected source. Planning changes no
-corpus files, so it requires no validator, build, or catalog test run. If Lean
+entry, node, proof, or generated files. Check source-error register links after
+updating it; no validator, build, or catalog test run is required. If Lean
 sources are unavailable, record which reuse candidates could not be checked and
 complete the source plan.
 
@@ -90,6 +102,8 @@ Include the source-rigor assessment: findings with precise locations, proposed
 repairs, and any unchecked material. State explicitly if no gaps were found in the
 inspected passages, without claiming more than was checked. List checks performed
 and unresolved questions for the drafting step.
+Include the saved source-error IDs and coverage updates, or explicitly state
+that the register already covers the inspected passages and needs no changes.
 Include the prerequisite map, a recommendation on what can be added now, and any
 areas or entries needed before the deferred material, with reasons.
 Do not create entries, nodes, proofs, or generated summaries at this stage.

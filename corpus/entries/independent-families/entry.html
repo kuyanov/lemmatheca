@@ -1,0 +1,132 @@
+<section id="independent-families" data-formal="independent-family" data-kind="definition">
+  <h2>Independence permits every finite pattern of membership</h2>
+  <p>Let \(X\) be an infinite set. A family \(\mathcal A\subseteq\mathcal P(X)\) is <strong>independent</strong> if, for every pair of disjoint finite subfamilies \(\mathcal E,\mathcal H\subseteq\mathcal A\), the set</p>
+  <div class="math-display">\[
+    C(\mathcal E,\mathcal H)
+      =\bigcap_{A\in\mathcal E}A\;\cap\!
+        \bigcap_{B\in\mathcal H}(X\setminus B)
+  \]</div>
+  <p>is infinite. The intersection of an empty subfamily is \(X\). Thus the empty pattern leaves all of \(X\), and \(\mathcal E=\{A\}\), \(\mathcal H=\varnothing\) asks that \(A\) be infinite. Reversing these choices asks that \(X\setminus A\) be infinite as well.</p>
+  <p>The two subfamilies must be disjoint: requiring a point both to belong and not to belong to the same set would be impossible. This notion concerns subsets and their complements; it has no probability assumption. Throughout the existence and counting arguments we work in ZFC.</p>
+</section>
+
+<section id="finite-pattern-example" data-formal="independent-pair-characterization independent-four-residue-example" data-kind="lemma">
+  <h2>Two sets have four patterns to satisfy</h2>
+  <p>For distinct subsets \(A,B\subseteq X\), the family \(\{A,B\}\) is independent exactly when all four cells</p>
+  <div class="math-display">\[
+    A\cap B,\qquad A\setminus B,\qquad
+    B\setminus A,\qquad X\setminus(A\cup B)
+  \]</div>
+  <p>are infinite. Necessity follows by choosing both sides for each of the two sets. Conversely, any pattern specifying fewer choices contains one of these four infinite cells.</p>
+  <p>For example, take \(X=\mathbb N\), \(A=\{4n,4n+1:n\in\mathbb N\}\) and \(B=\{4n,4n+2:n\in\mathbb N\}\). The four cells are respectively the numbers of the forms \(4n\), \(4n+1\), \(4n+2\), and \(4n+3\). Each is infinite, so this family is independent.</p>
+</section>
+
+<section id="partition-question" data-formal="independent-singleton-characterization independent-complement-pair-obstruction" data-kind="question">
+  <h2>Can an infinite partition be independent?</h2>
+  <p>Suppose \(X\) is partitioned into two infinite sets \(A\) and \(B\). Are \(\{A\}\) and \(\{A,B\}\) independent?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The one-member family is independent because both \(A\) and its complement \(B\) are infinite. The two-member family is not: the pattern requiring membership in both has empty intersection. Individually having infinite sides does not guarantee independence of a family.</p></div>
+  </details>
+</section>
+
+<section id="finite-records" data-formal="independent-records-countably-infinite independent-singleton-record-injection" data-kind="definition">
+  <h2>Finite records provide a countable testing set</h2>
+  <p>Write \([Y]^{&lt;\omega}\) for the family of finite subsets of \(Y\), and set</p>
+  <div class="math-display">\[
+    D=[\mathbb N]^{&lt;\omega}\times
+      [[\mathbb N]^{&lt;\omega}]^{&lt;\omega}.
+  \]</div>
+  <p>A record \((F,\mathcal K)\in D\) consists of a finite set of natural numbers and a finite family of finite sets of natural numbers. The family \(\mathcal K\) need not consist of subsets of \(F\).</p>
+  <p>The <a href="finite-and-countable-sets#finite-subset-family">finite subsets of a countable set</a> form a countable family. Applying this twice, then using <a href="finite-and-countable-sets#diagonal-enumeration">countability of a product</a>, shows that \(D\) is countable. The records \((\{n\},\varnothing)\) are distinct for distinct \(n\), so \(D\) is infinite. It therefore admits a bijection with \(\mathbb N\).</p>
+</section>
+
+<section id="trace-family" data-formal="independent-trace-family-map independent-trace-map-injective independent-singleton-trace-witness" data-kind="definition">
+  <h2>A subset is tested by its finite traces</h2>
+  <p>For each \(A\subseteq\mathbb N\), define a subset of records by</p>
+  <div class="math-display">\[
+    X_A=\{(F,\mathcal K)\in D:F\cap A\in\mathcal K\}.
+  \]</div>
+  <p>A record tests the trace \(F\cap A\) and accepts it exactly when it belongs to the finite list \(\mathcal K\).</p>
+  <p>The map \(A\mapsto X_A\) is injective. If \(A\ne B\), choose \(n\) belonging to one of them and not the other. The record \((\{n\},\{\{n\}\})\) lies in \(X_A\) exactly when \(n\in A\), and similarly for \(B\). It distinguishes the two record sets.</p>
+</section>
+
+<section id="separating-traces" data-formal="independent-finite-trace-separation" data-kind="lemma">
+  <h2>A finite coordinate set separates the required choices</h2>
+  <p>Let \(\mathcal E,\mathcal H\) be disjoint finite families of subsets of \(\mathbb N\). There is a finite \(F_0\subseteq\mathbb N\) such that, for every finite \(F\supseteq F_0\),</p>
+  <div class="math-display">\[
+    A\cap F\ne B\cap F
+    \quad(A\in\mathcal E,\ B\in\mathcal H).
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>For each such pair \((A,B)\), the sets differ because the families are disjoint. Choose one point of their symmetric difference. Let \(F_0\) contain these finitely many points. The chosen point for \((A,B)\) remains in every \(F\supseteq F_0\) and belongs to exactly one of \(A\cap F\), \(B\cap F\). If either family is empty, take \(F_0=\varnothing\); there are no pairwise requirements to check. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="independent-trace-family" data-formal="independent-trace-family" data-kind="lemma">
+  <h2>Every finite pattern accepts infinitely many records</h2>
+  <p>The family \(\{X_A:A\subseteq\mathbb N\}\) is independent on \(D\).</p>
+  <p class="proof-label">Proof</p>
+  <p>By injectivity, disjoint finite subfamilies of the record sets correspond to disjoint finite families \(\mathcal E,\mathcal H\) of their indices. Choose \(F_0\) as in <a href="#separating-traces"></a>. For any finite \(F\supseteq F_0\), let</p>
+  <div class="math-display">\[
+    \mathcal K_F=\{A\cap F:A\in\mathcal E\}.
+  \]</div>
+  <p>Then \((F,\mathcal K_F)\) belongs to every \(X_A\) with \(A\in\mathcal E\). It belongs to none of the \(X_B\) with \(B\in\mathcal H\), because no negative trace equals a positive trace.</p>
+  <p>There are infinitely many possible \(F\): use \(F_0\cup\{n\}\) for \(n\notin F_0\). Different such \(n\) give different first coordinates and hence different records. This proves that the cell for the pattern is infinite. The argument includes empty positive or negative families; when both are empty the cell is all of \(D\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="continuum-independent-family" data-formal="independent-continuum-family-existence independent-pulled-trace-map independent-pulled-trace-family" data-kind="theorem">
+  <h2>An independent family can have continuum many members</h2>
+  <div class="statement-box"><p>There exists an independent family \(\mathcal A\subseteq\mathcal P(\mathbb N)\) of cardinality \(\mathfrak c=2^{\aleph_0}\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Fix a bijection \(e:\mathbb N\to D\) and put \(I_A=e^{-1}[X_A]\) for every \(A\subseteq\mathbb N\). Preimages preserve intersections and complements, and a bijection preserves infinitude. Thus <a href="#independent-trace-family"></a> makes \(\mathcal A=\{I_A:A\subseteq\mathbb N\}\) independent on \(\mathbb N\).</p>
+  <p>The map \(A\mapsto I_A\) is injective because both \(e\) and \(A\mapsto X_A\) distinguish the relevant sets. It is a bijection from \(\mathcal P(\mathbb N)\) onto \(\mathcal A\), so \(|\mathcal A|=2^{\aleph_0}\). This is the <a href="infinite-cardinal-arithmetic#size-of-the-continuum">size of the real numbers</a>. No family of subsets of \(\mathbb N\) can have more members. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="side-choice-filter" data-formal="independent-side-choices independent-side-choice-finite-intersections independent-side-choice-free-ultrafilter" data-kind="lemma">
+  <h2>A complete assignment of sides generates a proper filter</h2>
+  <p>Let \(\mathcal A\) be independent on \(\mathbb N\). For an arbitrary function \(\varepsilon:\mathcal A\to\{0,1\}\), take the family</p>
+  <div class="math-display">\[
+    \mathcal G_\varepsilon=
+      \{A\in\mathcal A:\varepsilon(A)=1\}
+      \cup\{\mathbb N\setminus A:A\in\mathcal A,\ \varepsilon(A)=0\}
+      \cup\{C\subseteq\mathbb N:C\text{ is cofinite}\}.
+  \]</div>
+  <p>Every finite intersection of this family is nonempty. Indeed, the finitely many assigned sides have infinite intersection by independence. Intersecting with finitely many cofinite sets removes only finitely many points, leaving an infinite set. Repeated occurrences of the same side do not change the intersection.</p>
+  <p>The <a href="filters-and-ultrafilters#generated-filter">generated filter</a> is therefore proper. By <a href="filters-and-ultrafilters#ultrafilter-extension">ultrafilter extension</a>, assuming choice, it extends to an ultrafilter \(U_\varepsilon\). This ultrafilter contains the cofinite filter and hence is <a href="filters-and-ultrafilters#nonprincipal-existence">nonprincipal</a>.</p>
+  <p>This construction specifies sides only for the members of \(\mathcal A\). The ultrafilter decides all other subsets too; its extension need not be unique.</p>
+</section>
+
+<section id="distinct-choice-ultrafilters" data-formal="independent-distinct-side-choice-extensions independent-assignment-ultrafilter-injection" data-kind="lemma">
+  <h2>Different assignments cannot have the same extension</h2>
+  <p>If \(\varepsilon\ne\delta\), no ultrafilter can extend both \(\mathcal G_\varepsilon\) and \(\mathcal G_\delta\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Choose \(A\in\mathcal A\) with \(\varepsilon(A)\ne\delta(A)\). One family contains \(A\), while the other contains \(\mathbb N\setminus A\). A proper filter cannot contain both, because their intersection is empty. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Apply choice to select one extension for each assignment. The map \(\varepsilon\mapsto U_\varepsilon\) is injective, whatever extensions are selected.</p>
+</section>
+
+<section id="nonprincipal-ultrafilter-cardinality" data-formal="independent-nonprincipal-ultrafilter-cardinality" data-kind="theorem">
+  <h2>There are as many nonprincipal ultrafilters as families of subsets</h2>
+  <div class="statement-box"><p>Assuming choice, the set of nonprincipal ultrafilters on \(\mathbb N\) has cardinality \(2^{\mathfrak c}=2^{2^{\aleph_0}}\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Use the continuum-sized independent family in <a href="#continuum-independent-family"></a>. There are \(2^{\mathfrak c}\) binary-valued assignments to its members, by <a href="infinite-cardinal-arithmetic#power-sets-as-functions">coding subsets as binary choices</a>. The preceding construction provides that many distinct nonprincipal ultrafilters.</p>
+  <p>For the reverse bound, every ultrafilter on \(\mathbb N\) is a family of subsets of \(\mathbb N\), hence an element of \(\mathcal P(\mathcal P(\mathbb N))\). This set has cardinality \(2^{2^{\aleph_0}}\). The two bounds give equality. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Principal ultrafilters contribute only one for each natural number. The count above already attains the maximal possible size using nonprincipal ultrafilters alone.</p>
+</section>
+
+<section id="almost-disjoint-question" data-formal="independent-almost-disjoint-obstruction independent-singleton-characterization" data-kind="question">
+  <h2>Can a large almost disjoint family also be independent?</h2>
+  <p>The <a href="almost-disjoint-families#continuum-almost-disjoint-family">almost disjoint construction</a> gives continuum many infinite subsets of \(\mathbb N\). Could the same family be independent?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. Any two distinct members of an almost disjoint family have finite intersection, while independence requires their intersection to be infinite. Both kinds of family can be large, but they require different behaviour of finite intersections. A one-member family has no pairwise almost-disjointness restriction; it is independent exactly when its member and complement are both infinite.</p></div>
+  </details>
+</section>
+
+<section id="finite-universe-question" data-formal="independent-finite-carrier-obstruction finite-space-ultrafilter-principal finite-ultrafilter-cardinality" data-kind="question">
+  <h2>Why is the testing set infinite?</h2>
+  <p>Could a finite set \(X\) support an independent family under the definition used here? How many ultrafilters does a nonempty finite \(X\) have?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No independent family is possible on finite \(X\), since even the empty pattern would require \(X\) to be infinite. Every ultrafilter on finite \(X\) contains the finite set \(X\), so <a href="filters-and-ultrafilters#principal-ultrafilters">it is concentrated on one point</a>. Different points give different ultrafilters, and therefore there are exactly \(|X|\) ultrafilters. None is nonprincipal.</p></div>
+  </details>
+</section>

@@ -20,6 +20,13 @@ Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
 [formalization guide](../docs/formal.md), and [contribution workflow](../CONTRIBUTING.md).
 Inspect the full entry, `corpus/nodes/`, local Lean modules, and pinned library
 sources. Use the single project in formal/ and preserve unrelated work.
+Consult [Source errors](../corpus/source-errors.md) before reusing external source
+arguments. If source checks reveal a confirmed mathematical defect or extend
+reviewed coverage, maintain that register using the
+[source-error contract](../docs/corpus.md#source-errors). Prioritize false statements
+and failed arguments; missing explanation and valid compression are not errors.
+Keep entry and binding problems in the preparation report unless the external
+publication itself is demonstrably wrong. Report any saved register changes.
 
 ## Work
 

@@ -23,6 +23,13 @@ Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
 [formalization guide](../docs/formal.md), and [contribution workflow](../CONTRIBUTING.md).
 Inspect the human entry, selected node descriptions and declarations, proof-planning
 hints, and Lean sources. Preserve unrelated work and the pinned environment.
+Consult [Source errors](../corpus/source-errors.md) before following an external
+source argument. Save new confirmed source defects, checked repairs, and extensions
+of reviewed coverage using the [maintenance contract](../docs/corpus.md#source-errors).
+Prioritize false statements, invalid constructions, and failed deductions; valid
+compression and missing explanation are not errors. A proof-search difficulty or
+an incorrect corpus binding alone is not evidence of a source defect. Report any
+saved register changes and distinguish the corpus repair from upstream correction.
 
 ## Work
 
@@ -64,6 +71,14 @@ hints, and Lean sources. Preserve unrelated work and the pinned environment.
    wider use, and their example-specific helpers. General theory must not import
    entry modules. Update imports and module bindings when a permitted source move
    requires it.
+7. Inspect Lean and Lake warnings, including those exposed by the full build.
+   Fix causes in project-owned Lean sources while preserving the agreed mathematics;
+   do not weaken statements, add proof shortcuts, suppress diagnostics through local
+   or global linter settings, or change the pinned environment to quiet diagnostics.
+   Naming intentionally unused parameters with a leading underscore is legitimate
+   cleanup that preserves their hypotheses. Follow the
+   [build-warning guidance](../docs/formal.md#build-warnings) for deliberately
+   unfinished declarations and external dependency warnings.
 
 ## Checks
 
@@ -80,6 +95,13 @@ node verification/signatures/source lines and entry-list summaries. Commit gener
 Leave `corpus/statistics.json` unchanged; automation refreshes it on `main` after
 merging. A plain
 `lake build` is useful while working but does not update this JSON.
+Inspect the full build output, not just its exit status. After warning fixes, rerun
+the full command above and inspect its diagnostics again before reporting the
+warnings resolved. Distinguish remaining diagnostics from project sources and
+pinned dependencies, giving their locations and reasons. Existing deliberately
+unfinished declarations outside the selected work may retain `sorry` warnings;
+report them without claiming those proofs complete. Unbound nodes and Not verified
+results do not require artificial bindings or proofs merely to quiet build output.
 Run `uv run python app/manage.py validate_corpus` if node records, bindings, or
 entry structure also changed. Run relevant catalog tests only if reader or
 build-tooling code changes, or when investigating an integration failure.
@@ -98,6 +120,7 @@ and identify any renewed correspondence review needed.
 ## Deliverable
 
 Return proved node IDs, checks performed, any statement/binding changes needing
-GitHub review, and deviations from the human argument. List remaining selected
-work with concrete reasons. Do not claim complete entry coverage merely because
+GitHub review, deviations from the human argument, warning causes fixed, and any
+remaining diagnostics with their project or dependency origin. List remaining
+selected work with concrete reasons. Do not claim complete entry coverage merely because
 the selected proofs are verified when blocks remain unplanned or claims uncovered.

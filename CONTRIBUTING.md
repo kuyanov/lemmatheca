@@ -10,15 +10,18 @@ first. The contracts for [corpus content](docs/corpus.md),
 Each step has an executable Markdown prompt in `prompts/`. A contribution may
 complete one step or several. Start from the current files and supplied scope;
 there is no need to repeat finished steps when, for example, proving existing
-nodes. Review findings and decisions belong in GitHub pull requests.
+nodes. Entry review findings and decisions belong in GitHub pull requests.
+Confirmed mathematical defects in external publications also belong in the
+permanent [source-error register](corpus/source-errors.md), following the
+[maintenance contract](docs/corpus.md#source-errors).
 
 | Step | Input | Output | Changes repository content? |
 | --- | --- | --- | --- |
-| [1. Choose sources](prompts/01-choose-sources.md) | Topic, audience, scope, source constraints | Source-backed outline, citations, prerequisites, and placement | No |
+| [1. Choose sources](prompts/01-choose-sources.md) | Topic, audience, scope, source constraints | Source-backed outline, citations, prerequisites, placement, source-error records | Source-error register only |
 | [2. Draft the entry](prompts/02-draft-human-entry.md) | Source plan and intended entry ID | Original HTML, metadata, assets, reading-order placement | Yes |
-| [3. Review the entry](prompts/03-review-human-entry.md) | Current entry and its sources | Mathematical, editorial, and presentation findings | No |
+| [3. Review the entry](prompts/03-review-human-entry.md) | Current entry and its sources | Mathematical, editorial, presentation, and source-error findings | Source-error register only |
 | [4. Prepare formal nodes](prompts/04-prepare-formal-nodes.md) | Entry and relevant review findings | Node records, block mappings, missing definitions and theorem statements | Yes |
-| [5. Review correspondence](prompts/05-review-correspondence.md) | Entry, nodes, and Lean declarations | Coverage audit and concrete binding corrections | No |
+| [5. Review correspondence](prompts/05-review-correspondence.md) | Entry, nodes, and Lean declarations | Coverage audit and concrete binding corrections | Source-error register only |
 | [6. Prove nodes](prompts/06-prove-nodes.md) | Selected nodes and agreed statements | Checked proofs and refreshed verification data | Yes |
 
 ### 1. Choose sources and scope
@@ -28,7 +31,7 @@ section, or page locations. Choose a coherent reading unit, its audience,
 prerequisites, primary area, and position in the reading order. Identify existing
 entries and formal nodes to reuse. The result is a source-to-outline map and
 proposed `based_on` citations, with unavailable sources and open questions made
-explicit. This step produces a plan; it does not create content or proofs.
+explicit. This step produces a plan; it does not create entries, nodes, or proofs.
 
 Check the mathematical rigor of the source passages used, not just their relevance
 or reputation. Inspect hypotheses, arguments, examples, nontrivial omissions, and
@@ -36,6 +39,9 @@ cited prerequisites. Report identified errors or gaps with precise source locati
 affected claims, consequences, and proposed repairs for use in step 2.
 Distinguish genuine gaps from valid compressed arguments
 and from uncertainty in the check; mark unavailable or unchecked material explicitly.
+Prioritize serious mathematical defects over missing explanations. Consult and
+update [Source errors](corpus/source-errors.md) with confirmed defects and the
+actual reviewed scope before handing off the plan.
 
 ### 2. Draft the human entry
 
@@ -46,6 +52,9 @@ unchecked arguments before drafting, and establish a checked repair or supportin
 argument before using an affected claim. Report unresolved affected work and
 continue independent work where possible. Later steps review the current entry
 and Lean declarations without requiring this assessment.
+Save new confirmed source defects and checked repairs in
+[Source errors](corpus/source-errors.md); update its coverage rows for cited
+publications even when no defect is found in the checked passages.
 
 Write original exposition in `corpus/entries/<id>/entry.html`, its metadata in
 `entry.json`, and any figures in `assets/`. Include definitions, arguments,
@@ -66,7 +75,8 @@ layout. Return findings with precise locations, consequences, and suggested
 corrections. Separate errors from optional editorial improvements and state any
 checks that could not be performed.
 
-This is a read-only audit. Address its findings in a drafting revision and pass
+This is a read-only audit of the entry, with source-error register maintenance
+as its only permitted file edit. Address entry findings in a drafting revision and pass
 relevant remaining questions to formalization. Running a writing build is not
 part of the review, and a reviewer does not set any approval state in the corpus.
 
@@ -101,7 +111,8 @@ or successful proof is not evidence of a correct binding.
 
 Return a block-by-block coverage table and findings about incorrect bindings,
 missing claims, unexplained translations, and redundant nodes. This audit is
-read-only. Apply corrections in a preparation revision; substantive later changes
+read-only for entries, nodes, and proofs; source-error register maintenance is
+its only permitted file edit. Apply corrections in a preparation revision; substantive later changes
 to statements or representations need renewed correspondence review.
 
 ### 6. Prove the selected nodes
@@ -120,7 +131,15 @@ keep attempts, budgets, and measurements outside corpus metadata.
 Finish with the build and inspect the selected nodes' saved verification flags.
 A successful compilation alone is insufficient because Lean accepts `sorry`, and
 a complete proof may use an unsupported custom axiom.
-Return proved IDs, checks, any statement changes, and concrete remaining work.
+Inspect Lean and Lake warnings as well. Fix causes in project-owned sources without
+weakening the mathematics or suppressing diagnostics through local or global linter
+settings, then rerun the full build and inspect its diagnostics. Intentionally
+unused parameters may be named with a leading underscore, preserving their
+hypotheses. Distinguish unavoidable pinned-dependency warnings
+and expected warnings from unrelated, deliberately unfinished declarations; see
+the [build-warning guidance](docs/formal.md#build-warnings).
+Return proved IDs, checks, warning cleanup and remaining diagnostics, any statement
+changes, and concrete remaining work.
 
 ## Prerequisites and scope
 
@@ -135,13 +154,16 @@ arithmetic, ordinary classical reasoning, and standard real-number facts used in
 examples or short supporting arguments. A missing corpus reference for such a fact
 is not itself a mathematical gap or a drafting blocker.
 
-The [reference backlog](docs/reference-backlog.md) contains one table of upcoming
-references from current entries to future mathematical areas. Each row records
-the future area, proposed reference coverage, consuming entry/block IDs, and the
-precise fact or context to reference. Include useful broader treatments of facts
-developed locally as well as accepted background. Group repeated uses and preserve
-stable IDs independently of reading order or area membership. Proposed titles
-are suggestions; do not invent target block IDs or link to nonexistent entries.
+The authoritative [Reference backlog and planning](corpus/reference-planning.md)
+document collects reference work in one place. Its
+[Upcoming references](corpus/reference-planning.md#upcoming-references) section
+contains exactly one four-column table of references from current entries to
+future mathematical areas. Each row records the future area, proposed reference
+coverage, current consuming entry/block IDs, and the precise fact or context to
+reference. Include useful broader treatments of facts developed locally as well
+as accepted background. Group repeated uses and preserve stable IDs independently
+of reading order or area membership. Proposed titles are suggestions; do not
+invent target block IDs or link to nonexistent entries.
 
 During every step-2 draft or revision, audit all entry blocks and update this table
 before returning the draft. Report the rows added, changed, or removed, or state
@@ -150,21 +172,21 @@ available, check their facts and assumptions, add the entry links, and remove on
 the fulfilled consuming locations; keep remaining locations in the row. A related
 title or an available Lean declaration alone does not establish human coverage.
 Step 3 must audit the table and return concrete proposed corrections or an explicit
-no-change finding. Planning and review remain read-only: put proposed changes in
-the handoff rather than editing the backlog during those steps.
+no-change finding. Planning and review do not edit reference planning: put proposed changes in
+the handoff rather than editing the document during those steps.
 
 Keep existing-target integration notes, plans for future consuming entries,
-cross-area correspondence still to prove, and deferred extensions outside the
-backlog, in the handoff or [reference planning notes](docs/reference-planning.md).
-Keep maintenance rules here and in the prompts. The backlog is outside corpus
-metadata and is neither an approval system nor a record of readiness.
+cross-area correspondence still to prove, and deferred extensions in separate
+planning sections of the same document or in the handoff. Keep maintenance rules
+here and in the prompts. The document is separate from corpus metadata and is
+neither an approval system nor a record of readiness.
 
 Entries should have no major dependencies on substantial theory missing from the
 corpus. Judge the scope and role of a prerequisite, not just whether its subject is
 familiar: using real-number order or a geometric-series estimate is different from
 assuming a substantial analysis theorem or an entire theory. Accepted background
-must still be correct, with compatible assumptions. The backlog records future
-references, not permission to defer essential justification or missing major theory.
+must still be correct, with compatible assumptions. Recording a future reference
+does not permit deferring essential justification or missing major theory.
 
 A short supporting lemma can be developed within the proposed entry when it fits
 its central subject. If a substantial prerequisite theory is missing, recommend
@@ -235,6 +257,9 @@ End each step with a handoff that another agent can use: entry ID and scope,
 changed files or findings, source locations and representation decisions, checks
 performed, and unresolved work. Keep these reports in the task discussion or pull
 request, or in an explicitly requested report file. They are not corpus metadata.
+Save confirmed external-source defects and checked coverage in
+[Source errors](corpus/source-errors.md) before returning any step that discovers
+them. Valid compressed arguments and missing explanation do not qualify.
 
 ## Validation and submission
 
@@ -265,6 +290,10 @@ pushes to `main` and includes newly merged contributors.
 Failed compilation or declaration checks write no new results; old flags
 do not establish that the edited sources are verified. Review-only steps inspect
 saved data and report missing or stale results without running the writing build.
+Inspect the full Lean build output for warnings and rerun the full command after
+fixing their causes. A successful build alone does not certify clean diagnostics;
+apply the [warning guidance](docs/formal.md#build-warnings) while preserving supported
+unfinished and unbound states.
 
 For reader or build-tooling code changes, run the relevant tests (for example,
 `uv run python app/manage.py test catalog`) and inspect affected pages. Catalog

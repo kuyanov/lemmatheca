@@ -19,14 +19,22 @@ the mathematics, connect its claims to formal nodes, review those connections,
 and complete the proofs. Human exposition can be contributed before its
 formalization is ready.
 
+Maintain confirmed mathematical defects in cited books, papers, and notes in
+[Source errors](corpus/source-errors.md). Prioritize false statements and failed
+arguments; valid compressed proofs and missing explanations are not source errors.
+Record the inspected edition, precise location, evidence, repair, and affected
+entry blocks, together with the actual scope of each source check.
+
 Entries should have no major dependencies on substantial theory missing from the
 corpus. Familiar background, including elementary arithmetic and standard facts
 about real numbers, may be used without an entry reference. Track useful future
-links in the single-table [reference backlog](docs/reference-backlog.md) and add
-them as the relevant areas develop. Keep other integration and expansion notes in
-[reference planning](docs/reference-planning.md). A missing substantial prerequisite
-must be developed, or the dependent material narrowed or deferred; the backlog does not waive this
-requirement. See the [scope guidance](CONTRIBUTING.md#prerequisites-and-scope).
+links in the single four-column [upcoming-reference table](corpus/reference-planning.md#upcoming-references)
+and add them as the relevant areas develop. The same authoritative
+[Reference backlog and planning](corpus/reference-planning.md) document has separate
+sections for integration and expansion notes. A missing substantial prerequisite
+must be developed, or the dependent material narrowed or deferred; recording a
+future reference does not waive this requirement. See the
+[scope guidance](CONTRIBUTING.md#prerequisites-and-scope).
 
 The long-term aim is broad mathematical coverage with reusable results across
 subjects. The project keeps one shared Lean library, favors existing results in
@@ -39,7 +47,7 @@ the intended mathematics.
 
 | Location | Purpose |
 | --- | --- |
-| [`corpus/`](corpus/) | Entries, figures, node records, mathematical areas, and reading order; see the [corpus guide](docs/corpus.md) |
+| [`corpus/`](corpus/) | Entries, figures, node records, mathematical areas, reading order, reference planning, and source errors; see the [corpus guide](docs/corpus.md) |
 | [`formal/`](formal/) | One Lean project containing local definitions and proofs, with pinned mathlib dependencies; see the [formalization guide](docs/formal.md) |
 | [`app/`](app/) | A Django reader, templates, CSS, JavaScript, and commands for validation and builds; see the [app guide](docs/app.md) |
 | [`prompts/`](prompts/) | Six independently runnable Markdown instructions for authors and AI agents |

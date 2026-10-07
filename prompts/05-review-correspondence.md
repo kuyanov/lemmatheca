@@ -20,6 +20,12 @@ Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
 records, and the actual Lean declarations. Inspect referenced definitions and
 saved signatures alongside the sources. Saved verification describes the last
 successful build; it is not a live freshness check or evidence of correspondence.
+Consult [Source errors](../corpus/source-errors.md) if checking external cited
+arguments. Save confirmed source defects and extensions of checked coverage using
+the [maintenance contract](../docs/corpus.md#source-errors). Prioritize false
+statements and failed deductions; missing explanation and valid compression are
+not errors. Keep corpus-only binding problems in the review handoff. Source-error
+register maintenance is this review's only permitted file edit.
 
 ## Work
 
@@ -101,3 +107,5 @@ proposed statement or description change.
 Keep this audit read-only: do not change bindings, descriptions, generated data, or
 proofs, and do not run the writing build command. Review decisions belong in the
 GitHub pull request; return findings here unless posting was explicitly requested.
+Report saved source-error IDs and coverage changes when source checks were made,
+or explicitly state that the register needs no changes for that inspected scope.

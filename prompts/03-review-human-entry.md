@@ -18,10 +18,20 @@ Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
 metadata, linked prerequisites, figures, proofs, and hidden answers. Consult cited
 passages as needed to check attribution or resolve ambiguities.
 Judge the current files on their merits rather than relying on a prior summary.
+Consult [Source errors](../corpus/source-errors.md) when checking cited arguments.
 
 ## Work
 
 Check the following:
+
+- Source checks distinguish serious mathematical defects from lack of explanation.
+  Prioritize false statements, missing necessary hypotheses, invalid constructions,
+  and failed deductions; valid compression is not an error. Save confirmed source
+  defects and checked repairs in [Source errors](../corpus/source-errors.md), and
+  update the actual reviewed scope and access limits using the
+  [maintenance contract](../docs/corpus.md#source-errors). Check whether affected
+  entry blocks already contain a repair. This register is the review's only
+  permitted file edit; entry corrections remain in the drafting handoff.
 
 - Claims have the correct hypotheses, quantifiers, domains, codomains, and
   conclusions. Test relevant empty, singleton, boundary, finite, and infinite
@@ -54,21 +64,23 @@ Check the following:
   axiom strength separately from ordinary implications and set-closure properties.
   Review these arguments under their stated axioms; Verified badges do not
   establish axiom strength.
-- **Audit the [reference backlog](../docs/reference-backlog.md) for every reviewed
+- **Audit the [upcoming-reference table](../corpus/reference-planning.md#upcoming-references) for every reviewed
   entry.** Inspect all of its blocks for useful references to future areas,
   including accepted background and facts proved locally. Check that applicable
   rows exist, use actual consuming block IDs, and state the precise fact and
   proposed future-area coverage. Flag omitted uses, stale locations, and rows
   whose suitable targets are now available.
-  Require the backlog to contain one table of upcoming future-area references.
-  Existing-target integration notes, future-entry plans, correspondences still
-  to prove, and deferred extensions belong in the handoff or
-  [reference planning notes](../docs/reference-planning.md).
+  Require **Upcoming references** to contain one four-column table of future-area
+  references. Existing-target integration notes, future-entry plans, correspondences
+  still to prove, and deferred extensions belong in the corresponding separate
+  planning sections of the same
+  [Reference backlog and planning](../corpus/reference-planning.md) document.
   Return concrete proposed additions or replacements using the table's four
   columns, and identify fulfilled locations to remove together with the exact
   available target blocks to link. If no changes are needed, say so explicitly
-  after checking the entry. Do not edit the table during this read-only review;
-  identify omitted or incorrect rows as drafting corrections in the handoff.
+  after checking the entry. Do not edit the reference document during this read-only
+  review; identify omitted or incorrect rows and misplaced planning notes as
+  drafting corrections in the handoff, naming the appropriate table or section.
 - Exposition and metadata remain valid if entries are reordered or moved into
   separate subareas. Flag references to "the next entry," "previous entries," or
   material "introduced earlier" in another entry. Require named links using stable
@@ -104,7 +116,7 @@ Return findings ordered by importance, with file/line or block references, why e
 issue matters, and a concrete correction. Separate mathematical errors from optional
 editorial improvements. State what was checked and any unavailable source or visual
 checks. Include a concise list of revisions needed before formalization.
-For each entry, include the reference-backlog audit outcome with concrete proposed
+For each entry, include the upcoming-reference audit outcome with concrete proposed
 table rows and removals, or an explicit finding that no changes are needed. Do not
 substitute a generic statement that references were checked for this outcome.
 
@@ -113,3 +125,6 @@ formal nodes, or run the writing build command. Reviews and decisions belong in
 the GitHub pull request; return the findings here unless posting a review was
 explicitly requested. There
 is no app approval or draft/final flag to set.
+Source-error register maintenance is the sole exception to read-only file work.
+Report saved defect IDs and coverage changes, or explicitly state that the
+register already covers the inspected source material and needs no changes.

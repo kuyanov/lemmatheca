@@ -1,0 +1,150 @@
+<section id="colourings-and-homogeneity" data-kind="definition" data-formal="partition-relations-subsets partition-relations-coloring partition-relations-homogeneous-in partition-relations-homogeneous partition-relations-partition-relation partition-relations-vacuous-homogeneity">
+  <h2>Colour the subsets, then look for one colour throughout</h2>
+  <p>Work in ZFC, and write \(\omega=\mathbb N=\{0,1,2,\ldots\}\). For a set \(X\) and a natural number \(n\), let</p>
+  <div class="math-display">\[
+    [X]^n=\{s\subseteq X:|s|=n\}.
+  \]</div>
+  <p>Thus \([X]^1\) consists of singletons and \([X]^2\) of unordered pairs of distinct elements. This notation does not permit repetitions. For a natural number \(r\), write \(I_{r}=\{0,\ldots,r-1\}\), with \(I_0=\varnothing\), as in <a href="finite-and-countable-sets#finite-sets">finite-set counting</a>.</p>
+  <p>A <strong>colouring</strong> is a map \(c:[X]^n\to K\), where \(K\) is a set of labels called colours. A set \(H\subseteq X\) is <strong>homogeneous in colour \(i\in K\)</strong> if</p>
+  <div class="math-display">\[
+    (\forall s\in[H]^n)\ c(s)=i.
+  \]</div>
+  <p>It is <strong>homogeneous</strong> if such a colour exists. Throughout the finite-colour results, \(K=I_{k}\) for a positive natural number \(k\). A colouring need not use every available colour. If \(|H|&lt;n\), then \([H]^n\) is empty, so \(H\) is homogeneous in every available colour.</p>
+  <p>The <strong>partition relation</strong> \(\kappa\to(\lambda)^n_k\) says that every colouring of the \(n\)-element subsets of a set of cardinality \(\kappa\) into \(k\) colours has a homogeneous subset of cardinality \(\lambda\). Here \(n\) is finite and \(k&gt;0\); the cardinals used below are finite or countably infinite. We write \(\omega\to(\omega)^n_k\) for the countably infinite case. A crossed arrow \(\nrightarrow\) denotes failure of the assertion.</p>
+</section>
+
+<section id="relabeling-colourings" data-kind="lemma" data-formal="partition-relations-pullback partition-relations-pullback-homogeneous-in partition-relations-image-cardinality">
+  <h2>Changing the names of the points preserves homogeneity</h2>
+  <p>Let \(b:X\to Y\) be a bijection and \(c:[Y]^n\to K\) a colouring. Then</p>
+  <div class="math-display">\[
+    d:[X]^n\to K,\qquad d(s)=c(b[s])
+  \]</div>
+  <p>is a colouring, and \(H\subseteq X\) is homogeneous for \(d\) in colour \(i\) exactly when \(b[H]\) is homogeneous for \(c\) in colour \(i\). The two sets have the same cardinality.</p>
+  <p class="proof-label">Proof</p>
+  <p>A bijection takes an \(n\)-element set to an \(n\)-element set. It also gives a bijection between \([H]^n\) and \([b[H]]^n\), with inverse \(t\mapsto b^{-1}[t]\). The defining equalities for homogeneity therefore correspond term by term. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, a result for colourings on \(\omega\) applies to colourings on any infinite \(S\subseteq\omega\): use its <a href="finite-and-countable-sets#infinite-subsets-of-naturals">increasing enumeration</a>. This will allow the Ramsey argument to be repeated inside an infinite subset.</p>
+</section>
+
+<section id="infinite-pigeonhole" data-kind="lemma" data-formal="partition-relations-infinite-pigeonhole infinite-set-finite-removal">
+  <h2>A finite partition of an infinite set has an infinite cell</h2>
+  <p>If \(S\) is infinite and \(f:S\to I_{k}\), where \(k&gt;0\) is finite, then some fiber \(f^{-1}(\{i\})\) is infinite. Also, deleting finitely many elements from an infinite set leaves an infinite set.</p>
+  <p class="proof-label">Proof</p>
+  <p>A union of finitely many finite sets is finite: concatenate their finite lists, removing repeated elements. If all \(k\) fibers were finite, their union \(S\) would be finite, a contradiction. If \(S\setminus F\) and \(F\) were both finite, their union would make \(S\) finite as well. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For an infinite subset of \(\omega\), deletion of \(I_{a+1}\) leaves infinitely many points greater than \(a\). This finite deletion will keep each step of the construction moving upwards.</p>
+</section>
+
+<section id="parity-colouring" data-kind="lemma" data-formal="partition-relations-parity-coloring partition-relations-parity-coloring-spec">
+  <h2>A colouring can allow one colour on an infinite set and forbid the other on a triple</h2>
+  <p>Colour a pair \(\{a,b\}\subseteq\omega\) by \(0\) when \(a,b\) have the same parity, and by \(1\) when they have different parity. The even numbers form an infinite \(0\)-homogeneous set, and so do the odd numbers. There is no \(1\)-homogeneous set of three elements.</p>
+  <p class="proof-label">Proof</p>
+  <p>Every pair of even numbers, or of odd numbers, has colour \(0\). Among any three natural numbers, two have the same parity by the <a href="finite-and-countable-sets#finite-pigeonhole">pigeonhole principle</a>, so their pair has colour \(0\). Hence those three points cannot have all their pairs coloured \(1\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Ramsey's theorem guarantees a homogeneous set in some colour. It does not promise one in each colour.</p>
+</section>
+
+<section id="infinite-ramsey" data-kind="theorem" data-formal="partition-relations-infinite-ramsey">
+  <h2>Infinite Ramsey's theorem gives an infinite homogeneous set</h2>
+  <div class="statement-box"><p>For every pair of positive natural numbers \(n,k\), every colouring \(c:[\omega]^n\to I_{k}\) has an infinite homogeneous subset of \(\omega\). In partition notation, \(\omega\to(\omega)^n_k\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Fix \(k&gt;0\), and induct on \(n\ge1\). For \(n=1\), apply <a href="#infinite-pigeonhole"></a> to the map \(a\mapsto c(\{a\})\).</p>
+  <p>Suppose the assertion holds for \(n\), and let \(c:[\omega]^{n+1}\to I_{k}\). We construct increasing points \(a_0,a_1,\ldots\), nested infinite sets \(A_0\supseteq A_1\supseteq\cdots\), and colours \(d_i\in I_{k}\) so that all points of \(A_i\) exceed \(a_i\) and</p>
+  <div class="math-display">\[
+    (\forall s\in[A_i]^n)\ c(\{a_i\}\cup s)=d_i.
+    \label{eq:ramsey-tails}
+  \]</div>
+  <p>Begin with \(a_0=0\). On the infinite set of positive natural numbers, colour each \(n\)-element subset \(s\) by \(c(\{a_0\}\cup s)\). The induction hypothesis, transferred by <a href="#relabeling-colourings"></a>, gives an infinite homogeneous set \(A_0\) and its colour \(d_0\).</p>
+  <p>Given \(A_i\), take \(a_{i+1}=\min A_i\). The set \(B=A_i\setminus I_{a_{i+1}+1}\) is infinite by <a href="#infinite-pigeonhole"></a>. Colour \([B]^n\) by \(s\mapsto c(\{a_{i+1}\}\cup s)\), and apply the induction hypothesis again. It gives an infinite \(A_{i+1}\subseteq B\) and a colour \(d_{i+1}\) satisfying \eqref{eq:ramsey-tails}. The unions in these formulas have \(n+1\) elements because the points of \(B\) exceed \(a_{i+1}\). These choices can be made recursively under the stated Choice assumption.</p>
+  <p>Apply <a href="#infinite-pigeonhole"></a> to \(i\mapsto d_i\). There is an infinite set of indices \(I\subseteq\omega\) on which \(d_i\) has one value \(d\). Put \(H=\{a_i:i\in I\}\), which is infinite since the \(a_i\) strictly increase.</p>
+  <p>Take any \((n+1)\)-element subset of \(H\), and list its points as \(a_{i_0}&lt;a_{i_1}&lt;\cdots&lt;a_{i_n}\). Every later point \(a_{i_j}\), \(j&gt;0\), lies in \(A_{i_0}\): it was chosen from \(A_{i_j-1}\subseteq A_{i_0}\). Equation \eqref{eq:ramsey-tails} gives colour \(d_{i_0}=d\) to this subset. Thus all of \([H]^{n+1}\) has colour \(d\), completing the induction. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="nested-tails-question" data-kind="question" data-formal="partition-relations-tails-intersection-empty">
+  <h2>Does the proof need a point in every infinite tail?</h2>
+  <p>Must the intersection \(\bigcap_i A_i\) in the Ramsey proof be infinite, or even nonempty?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. In fact this intersection is empty. The strictly increasing sequence \((a_i)\) is unbounded in \(\omega\), and every point of \(A_i\) exceeds \(a_i\). Any fixed natural number is therefore excluded from some \(A_i\).</p><p>The proof tests one finite subset of \(H\) at a time. Its least point \(a_{i_0}\) determines the single tail \(A_{i_0}\) that contains all its other points. No common point of all tails is required.</p></div>
+  </details>
+</section>
+
+<section id="finite-colouring-trees" data-kind="lemma" data-formal="partition-relations-finite-coloring-node partition-relations-coloring-extension partition-relations-coloring-tree partition-relations-coloring-tree-node-height partition-relations-coloring-tree-height partition-relations-coloring-tree-finite-levels finite-power-set-cardinality partition-relations-function-cardinality">
+  <h2>Length-tagged finite colourings form a tree with finite levels</h2>
+  <p>Fix positive natural numbers \(n,k\). A node is a pair \((r,c)\), where \(r\in\omega\) and \(c:[I_r]^n\to I_{k}\). Order the nodes by restriction:</p>
+  <div class="math-display">\[
+    (r,c)\le_T(s,d)
+    \quad\Longleftrightarrow\quad
+    r\le s\ \text{ and }\ c=d\mathbin{\upharpoonright}[I_r]^n.
+  \]</div>
+  <p>This is a <a href="infinite-trees#trees-and-levels">tree</a>; the node \((r,c)\) has height \(r\), and each finite level is finite.</p>
+  <p class="proof-label">Proof</p>
+  <p>Restrictions compose, so the relation is reflexive and transitive. If two nodes extend each other, their lengths agree and their colourings agree, proving antisymmetry. The strict predecessors of \((r,c)\) are exactly</p>
+  <div class="math-display">\[
+    (t,c\mathbin{\upharpoonright}[I_t]^n),\qquad t&lt;r,
+  \]</div>
+  <p>in their increasing order of lengths. They have order type \(r\), which proves the height assertion.</p>
+  <p>The power set of \(I_{r}\) is finite: each subset is specified by \(r\) yes-or-no membership choices, giving \(2^r\) possibilities. Consequently \([I_r]^n\) is finite. If it has \(q\) members, there are \(k^q\) colourings on it, since each of those \(q\) members independently receives one of \(k\) labels. This is a finite number, including \(q=0\), when there is one empty colouring. Thus the nodes at height \(r\) form a finite level. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The length is part of the node even if its colouring has empty domain. For example, when \(n=2\), the empty colouring on \(I_0\) and the empty colouring on \(I_1\) have the same graph, but \((0,\varnothing)\) and \((1,\varnothing)\) are different nodes at different heights.</p>
+</section>
+
+<section id="finite-ramsey" data-kind="theorem" data-formal="partition-relations-finite-ramsey partition-relations-ramsey-number partition-relations-ramsey-number-spec">
+  <h2>Finite Ramsey's theorem gives a finite bound for every target size</h2>
+  <div class="statement-box"><p>For positive natural numbers \(n,k,m\), there is a natural number \(N\ge m\) such that every colouring \(c:[I_N]^n\to I_{k}\) has a homogeneous subset of \(I_{N}\) with exactly \(m\) elements. Equivalently, \(N\to(m)^n_k\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>If \(m&lt;n\), take \(N=m\); the whole set \(I_{m}\) is homogeneous vacuously. Now suppose \(m\ge n\), and assume for contradiction that no finite \(N\ge m\) works.</p>
+  <p>In the tree from <a href="#finite-colouring-trees"></a>, keep just the nodes \((r,c)\) for which \(c\) has no homogeneous \(m\)-element subset of \(I_{r}\). Call them <em>bad</em> nodes. Restricting a bad colouring to a smaller initial segment leaves it bad: a homogeneous \(m\)-element subset in the restriction would also be homogeneous for the original colouring. Thus every predecessor of a bad node is still in the retained tree, and its height remains its length \(r\).</p>
+  <p>For each \(r\), take any \(N\ge\max(r,m)\). Our contrary assumption supplies a bad colouring on \(I_{N}\); its restriction gives a bad node of length \(r\). The retained tree therefore has a nonempty finite level at every natural height and has height \(\omega\). By <a href="infinite-trees#konigs-lemma">König's lemma</a>, it has a cofinal branch. Write its unique node at height \(r\) as \((r,c_r)\). Comparability gives</p>
+  <div class="math-display">\[
+    r\le s\quad\Longrightarrow\quad
+    c_r=c_s\mathbin{\upharpoonright}[I_r]^n.
+  \]</div>
+  <p>Take the union of the graphs of the \(c_r\). Agreement on overlaps makes this a function \(c:[\omega]^n\to I_{k}\). Its domain is all of \([\omega]^n\), since every finite subset of \(\omega\) is contained in some \(I_{r}\).</p>
+  <p>By <a href="#infinite-ramsey"></a>, \(c\) has an infinite homogeneous set \(H\). Choose \(m\) of its elements and call their set \(F\). Since \(F\) is finite, some \(I_{r}\) contains it. The colouring \(c_r\) agrees with \(c\) on every \(n\)-element subset of \(F\), so \(F\) is homogeneous for \(c_r\). This contradicts the badness of \((r,c_r)\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The least such \(N\) exists by the well-ordering of the natural numbers; write it as \(R(n,k,m)\). The theorem establishes finiteness without calculating this number.</p>
+</section>
+
+<section id="six-point-example" data-kind="lemma" data-formal="partition-relations-five-point-coloring partition-relations-five-point-no-triple partition-relations-six-point-ramsey-number">
+  <h2>Six points force a homogeneous triple, and five do not</h2>
+  <p>For two colours on unordered pairs, \(R(2,2,3)=6\).</p>
+  <p class="proof-label">Proof</p>
+  <p>First colour all pairs from a six-element set by \(0\) or \(1\). Fix a point \(a\). Among its five pairs with the other points, at least three have the same colour \(i\). Let those three other points be \(b,c,d\). If any pair among them has colour \(i\), that pair together with \(a\) gives a homogeneous triple. Otherwise all three pairs from \(\{b,c,d\}\) have the other colour, giving a homogeneous triple again. Hence six points suffice.</p>
+  <p>For the lower bound, on \(I_5=\{0,1,2,3,4\}\) give colour \(0\) precisely to</p>
+  <div class="math-display">\[
+    \{0,1\},\ \{1,2\},\ \{2,3\},\ \{3,4\},\ \{0,4\},
+  \]</div>
+  <p>and give colour \(1\) to all other pairs. No triple has colour \(0\) throughout: if it contains \(\{0,4\}\), its third point would have to be both \(1\) and \(3\); without that pair, three points cannot be pairwise consecutive natural numbers. For a hypothetical colour-\(1\) triple \(a&lt;b&lt;c\), the first two gaps must satisfy \(b-a\ge2\) and \(c-b\ge2\). Within \(I_5\) this forces \((a,b,c)=(0,2,4)\), but \(\{0,4\}\) has colour \(0\). Thus there is no homogeneous triple on these five points.</p>
+  <p>Restrictions give counterexamples on smaller sets as well. Together with the six-point argument this proves the claimed minimum. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="simultaneous-colourings-question" data-kind="question" data-formal="partition-relations-simultaneous-infinite-ramsey partition-relations-constant-colors-disagree">
+  <h2>Can one infinite set satisfy several finite-colour requirements?</h2>
+  <p>Suppose \(c_j:[\omega]^{n_j}\to I_{k_j}\) for \(j&lt;r\), where \(r\) is finite and every \(n_j,k_j\) is positive. Is there one infinite \(H\) homogeneous for every \(c_j\)? Must the resulting colours agree?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Yes. Start with \(H_0=\omega\). At step \(j&lt;r\), apply <a href="#infinite-ramsey"></a> inside \(H_j\), using <a href="#relabeling-colourings"></a>, and choose an infinite \(H_{j+1}\subseteq H_j\) homogeneous for \(c_j\). Homogeneity survives taking subsets, so the final \(H_r\) satisfies all \(r\) requirements. For \(r=0\), take \(H=\omega\).</p><p>The colours may differ. For example, one colouring can be constantly \(0\) and another constantly \(1\), with both using the colour set \(I_2\).</p></div>
+  </details>
+</section>
+
+<section id="all-arities-question" data-kind="question" data-formal="partition-relations-cardinal-parity-coloring partition-relations-cardinal-parity-fixed-arity partition-relations-cardinal-parity-no-infinite-constant">
+  <h2>Does one colour work for subsets of every finite size at once?</h2>
+  <p>Colour every nonempty finite subset \(s\subseteq\omega\) by \(0\) if \(|s|\) is even and by \(1\) if \(|s|\) is odd. Does the infinite Ramsey theorem give an infinite set whose nonempty finite subsets all have one colour?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. Every infinite set has both a singleton, of colour \(1\), and a two-element subset, of colour \(0\). The theorem fixes one subset size \(n\) before seeking homogeneity. In this example every \(n\)-element subset already has one colour, but that colour depends on \(n\). The simultaneous finite-colouring result likewise allows different colours for different requirements.</p></div>
+  </details>
+</section>
+
+<section id="infinitely-many-colours" data-kind="lemma" data-formal="partition-relations-minimum-coloring partition-relations-minimum-no-large-homogeneous partition-relations-minimum-no-infinite-homogeneous partition-relations-single-subset-homogeneity">
+  <h2>Infinitely many colours can prevent even a small homogeneous set</h2>
+  <p>For every positive natural number \(n\), the colouring</p>
+  <div class="math-display">\[
+    c:[\omega]^n\to\omega,\qquad c(s)=\min s
+  \]</div>
+  <p>has no homogeneous subset of size \(n+1\). Consequently it has no infinite homogeneous subset.</p>
+  <p class="proof-label">Proof</p>
+  <p>Let \(F=\{a_0&lt;a_1&lt;\cdots&lt;a_n\}\). Its two \(n\)-element subsets \(F\setminus\{a_n\}\) and \(F\setminus\{a_0\}\) have different minima, \(a_0\) and \(a_1\), so they have different colours. Every larger homogeneous set would have a homogeneous \((n+1)\)-element subset, which is impossible. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For pairs this means there is no homogeneous triple. There can still be a homogeneous pair, because a two-element set has only one unordered pair. Finiteness of the colour set is essential to the Ramsey conclusions.</p>
+</section>
+
+<section id="empty-parameter-question" data-kind="question" data-formal="partition-relations-zero-cardinality-subset partition-relations-zero-arity-homogeneous partition-relations-empty-color-domain-iff partition-relations-empty-color-not-homogeneous">
+  <h2>What happens at subset size zero or with no available colours?</h2>
+  <p>How does \(n=0\) behave? Why were the main results stated with \(k&gt;0\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>For every set \(X\), \([X]^0=\{\varnothing\}\). A colouring into a nonempty colour set assigns a single value to \(\varnothing\), and every \(H\subseteq X\) is homogeneous in that value. Thus the zero-size version is immediate. The minimum colouring in <a href="#infinitely-many-colours"></a> requires \(n&gt;0\), since the empty set has no minimum.</p><p>With \(k=0\), a colouring exists only when its domain is empty. Even then there is no colour witnessing homogeneity under our definition. Keeping \(k&gt;0\) avoids these empty-codomain cases and makes the vacuous homogeneity of sets smaller than \(n\) consistent throughout the entry.</p></div>
+  </details>
+</section>

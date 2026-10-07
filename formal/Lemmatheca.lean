@@ -66,3 +66,11 @@ import Lemmatheca.SetTheory.PressingDown
 import Lemmatheca.Entry.PressingDownAndDeltaSystems
 import Lemmatheca.SetTheory.InfiniteTrees
 import Lemmatheca.Entry.InfiniteTrees
+import Lemmatheca.SetTheory.IndependentFamilies
+import Lemmatheca.Entry.IndependentFamilies
+import Lemmatheca.SetTheory.BoundingAndDominating
+import Lemmatheca.Entry.BoundingAndDominatingFamilies
+import Lemmatheca.SetTheory.SubsetsModuloSmallSets
+import Lemmatheca.Entry.SubsetsModuloSmallSets
+import Lemmatheca.SetTheory.PartitionRelations
+import Lemmatheca.Entry.PartitionRelations

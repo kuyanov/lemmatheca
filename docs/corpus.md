@@ -15,12 +15,21 @@ corpus/
   nodes/<node-id>.json
   taxonomy.json
   area_entries.json
+  reference-planning.md     # Upcoming references and expansion planning
+  source-errors.md          # Confirmed source defects and review coverage
   statistics.json           # Generated home-page counts and change history
 ```
 
-File and directory names must match their record's `id`. Entry and node IDs start
-with a letter or digit and use letters, digits, hyphens, or underscores. Keep them
-stable when changing titles or subject categories.
+Entry and node file and directory names must match their record's `id`. Their IDs
+start with a letter or digit and use letters, digits, hyphens, or underscores. Keep
+them stable when changing titles or subject categories.
+
+[Reference backlog and planning](../corpus/reference-planning.md) records future
+links and expansion context. Its [upcoming-reference table](../corpus/reference-planning.md#upcoming-references)
+uses current consuming entry/block IDs; existing-target integration, future-entry
+plans, correspondences to establish, and deferred extensions belong in the other
+sections of the same document. This authoring document is separate from entry,
+node, and navigation metadata.
 
 `taxonomy.json` defines areas with `id`, `title`, `parent`, and `description`.
 `area_entries.json` maps primary area IDs to ordered entry-ID lists under `areas`.
@@ -79,6 +88,39 @@ history remain valid until the next statistics refresh fills it in.
 See the [statistics guide](app.md#home-page-statistics) for Git backfill and contributor counting.
 
 Block structure, human references, and formal-node mappings belong in HTML.
+
+## Source errors
+
+[Source errors](../corpus/source-errors.md) is the permanent register of confirmed
+mathematical defects in external books, papers, and notes used by the corpus.
+Prioritize false statements, missing necessary hypotheses, invalid constructions,
+and deductions that fail as written. Distinguish these from local mathematical
+slips whose arguments survive. Do not register missing explanations, legitimate
+compression, different conventions, or uncertainty as confirmed errors.
+
+Whenever inspecting a source, consult its existing records and maintain its
+coverage row: publication and edition or revision, URL, checked passages, consuming
+entries, check date, findings, and any access limits. Consolidate duplicate URLs
+for the same publication without merging different editions. Record no defect
+found only for the inspected scope; do not claim a whole-book audit.
+Keep check dates attached to their actual scope; a new partial review does not
+redate previously inspected passages.
+
+Give each confirmed defect a stable ID and precise page, section, or theorem
+location. Supply a counterexample or failed inference, a checked correction or
+explicit unresolved status, and actual consuming `entry-id#block-id` links.
+Distinguish a source still containing an error from a corpus entry already using
+a repair. Identify adjacent inspected material that the entry does not use.
+Preserve records when the upstream source is corrected, recording the new version
+and resolution; never infer an upstream correction from our repaired exposition.
+
+All six pipeline steps maintain this register when source checks reveal new
+defects or extend reviewed coverage. Steps 1, 3, and 5 may update this document
+only; their entry, node, proof, and generated-data work remains read-only.
+Save confirmed findings before the handoff rather than leaving them solely in a
+chat or pull request. Entry editorial findings and formal correspondence findings
+stay in their review handoffs. This register has no approval flags or effect on
+verification badges, and its updates require link checks, not a Lean build.
 
 ## HTML and references
 

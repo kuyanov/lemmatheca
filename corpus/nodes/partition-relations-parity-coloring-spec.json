@@ -1,0 +1,12 @@
+{
+  "id": "partition-relations-parity-coloring-spec",
+  "description": "The even and odd natural numbers are infinite sets homogeneous in colour 0 for the parity pair colouring; no three-element set is homogeneous in colour 1.",
+  "module": "Lemmatheca.Entry.PartitionRelations",
+  "declaration": "Lemmatheca.Entry.PartitionRelations.parityColoring_spec",
+  "dependencies": [
+    "finite-pigeonhole-collision"
+  ],
+  "verified": true,
+  "declaration_line": 16,
+  "signature": "Lemmatheca.Entry.PartitionRelations.parityColoring_spec :\n  ({a | a % 2 = 0}.Infinite ∧\n      Lemmatheca.SetTheory.PartitionRelations.IsHomogeneousIn Lemmatheca.Entry.PartitionRelations.parityColoring\n        {a | a % 2 = 0} 0) ∧\n    ({a | a % 2 = 1}.Infinite ∧\n        Lemmatheca.SetTheory.PartitionRelations.IsHomogeneousIn Lemmatheca.Entry.PartitionRelations.parityColoring\n          {a | a % 2 = 1} 0) ∧\n      ∀ (H : Finset ℕ),\n        H.card = 3 →\n          ¬Lemmatheca.SetTheory.PartitionRelations.IsHomogeneousIn Lemmatheca.Entry.PartitionRelations.parityColoring\n              (↑H) 1"
+}

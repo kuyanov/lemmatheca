@@ -1,0 +1,139 @@
+<section id="eventual-order" data-kind="definition" data-formal="eventual-domination eventual-natural-threshold eventual-domination-reflexive eventual-domination-transitive eventual-domination-not-antisymmetric eventual-equality-implies-domination">
+  <h2>Compare functions after discarding an initial segment</h2>
+  <p>Write \(\omega=\{0,1,2,\ldots\}\), and let \(\omega^\omega\) be the set of all functions from \(\omega\) to \(\omega\). For \(f,g\in\omega^\omega\), <a href="finite-errors-and-countable-diagonalization#eventual-domination">eventual domination</a> means</p>
+  <div class="math-display">\[
+    f\le^*g\quad\Longleftrightarrow\quad
+    \exists N\in\omega\;\forall n\ge N\;(f(n)\le g(n)).
+  \]</div>
+  <p>The threshold \(N\) may depend on \(f\) and \(g\). This is a <a href="ordered-sets#preorders">preorder</a>: it is reflexive, and two successive comparisons can be combined by taking the larger threshold. Antisymmetry fails, since changing finitely many values preserves eventual domination in both directions.</p>
+  <p>We work in <strong>ZFC</strong>, using the <a href="axiom-of-choice#three-equivalent-principles">axiom of choice</a>, and identify cardinals with their <a href="infinite-cardinal-arithmetic#initial-cardinals">initial ordinals</a>. The comparisons themselves do not require choice; choice supplies the well-orderings and selections used below.</p>
+</section>
+
+<section id="bounded-and-dominating" data-kind="definition" data-formal="bounding-bounded-family bounding-unbounded-family dominating-family bounding-unbounded-characterization bounding-empty-family dominating-families-unbounded">
+  <h2>One bound and a family of bounds solve different problems</h2>
+  <p>A family \(B\subseteq\omega^\omega\) is <strong>bounded</strong> if one function \(g\in\omega^\omega\) eventually dominates all its members. It is <strong>unbounded</strong> if no such function exists. A family \(D\subseteq\omega^\omega\) is <strong>dominating</strong> if every function is eventually dominated by some member of \(D\). Thus</p>
+  <div class="math-display">\[
+    \begin{aligned}
+    B\text{ is bounded}&amp;\quad\Longleftrightarrow\quad
+      \exists g\in\omega^\omega\;\forall f\in B\;(f\le^*g),\\
+    B\text{ is unbounded}&amp;\quad\Longleftrightarrow\quad
+      \forall g\in\omega^\omega\;\exists f\in B\;(f\not\le^*g),\\
+    D\text{ is dominating}&amp;\quad\Longleftrightarrow\quad
+      \forall f\in\omega^\omega\;\exists g\in D\;(f\le^*g).
+    \end{aligned}
+  \]</div>
+  <p>For unboundedness, \(f\not\le^*g\) means that \(f(n)&gt;g(n)\) at arbitrarily large inputs. For domination, the chosen member of \(D\) may depend on \(f\). The empty family is bounded, by any function, and is not dominating.</p>
+  <p>Every dominating family is unbounded. Indeed, if \(g\) bounded a dominating family \(D\), the function \(g^+(n)=g(n)+1\) would satisfy \(g^+\le^*h\) for some \(h\in D\). But then \(g^+\le^*h\le^*g\), contrary to \(g(n)+1&gt;g(n)\) at every input.</p>
+</section>
+
+<section id="strict-comparison-question" data-kind="question" data-formal="strict-eventual-domination bounding-strict-comparison-conventions bounding-strict-comparison-example">
+  <h2>Does using strict eventual inequality change these properties?</h2>
+  <p>Write \(f&lt;^*g\) when \(f(n)&lt;g(n)\) for all sufficiently large \(n\). Would using \(&lt;^*\) instead of \(\le^*\) change which families are bounded, unbounded, or dominating? Is \(f&lt;^*g\) equivalent to \(f\le^*g\) together with \(g\not\le^*f\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The three family properties do not change. A nonstrict bound \(g\) becomes a strict bound by replacing it with \(g^+(n)=g(n)+1\), and a strict bound is already a nonstrict bound. Consequently, unboundedness agrees too. If \(D\) is dominating for \(\le^*\), apply its definition to \(f^+(n)=f(n)+1\): some \(g\in D\) satisfies \(f^+\le^*g\), hence \(f&lt;^*g\). The converse is immediate. The same family \(D\) works.</p>
+      <p>The two relations are nevertheless different. Let \(f(n)=0\), and let \(g(n)=1\) at even inputs and \(g(n)=0\) at odd inputs. Then \(f\le^*g\), while \(g\not\le^*f\) because the even inputs are unbounded. But \(f&lt;^*g\) fails because equality occurs at every odd input. Strict eventual inequality asks for strict inequality throughout a tail, not merely infinitely often.</p>
+    </div>
+  </details>
+</section>
+
+<section id="bounding-and-dominating-numbers" data-kind="definition" data-formal="bounding-number dominating-number bounding-number-minimum dominating-number-minimum dominating-whole-function-space">
+  <h2>Measure the first sizes at which the two requirements can be met</h2>
+  <p>The <strong>bounding number</strong> \(\mathfrak b\) and the <strong>dominating number</strong> \(\mathfrak d\) are</p>
+  <div class="math-display">\[
+    \begin{aligned}
+    \mathfrak b&amp;=\min\{|B|:B\subseteq\omega^\omega\text{ is unbounded}\},\\
+    \mathfrak d&amp;=\min\{|D|:D\subseteq\omega^\omega\text{ is dominating}\}.
+    \end{aligned}
+  \]</div>
+  <p>Both minima exist. The whole set \(\omega^\omega\) is dominating by reflexivity and is unbounded because, for any proposed bound \(g\), the function \(g^+\) defeats it. The candidate sizes therefore form nonempty sets of cardinals, which have least members.</p>
+  <p>In particular, every family of size less than \(\mathfrak b\) is bounded, and every family of size less than \(\mathfrak d\) fails to dominate. There are unbounded and dominating families of the respective minimum sizes. By <a href="#strict-comparison-question"></a>, using strict eventual inequality gives the same two cardinals.</p>
+</section>
+
+<section id="function-space-size" data-kind="lemma" data-formal="continuum-binary-sequences real-cardinality function-set-cardinality bounding-naturals-cardinality bounding-countable-function-space-size">
+  <h2>The set of natural-number functions has the size of the continuum</h2>
+  <p>Put \(\mathfrak c=2^{\aleph_0}\), the <a href="infinite-cardinal-arithmetic#size-of-the-continuum">cardinality of the real line</a>. Then \(|\omega^\omega|=\mathfrak c\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Every binary-valued function is natural-valued, so \(2^{\aleph_0}\le\aleph_0^{\aleph_0}\). Conversely, \(\aleph_0\le2^{\aleph_0}\), and the <a href="infinite-cardinal-arithmetic#power-laws">power laws</a> give</p>
+  <div class="math-display">\[
+    \aleph_0^{\aleph_0}\le
+    (2^{\aleph_0})^{\aleph_0}
+    =2^{\aleph_0\cdot\aleph_0}
+    =2^{\aleph_0}.
+  \]</div>
+  <p>The final equality uses <a href="infinite-cardinal-arithmetic#infinite-square">\(\aleph_0\cdot\aleph_0=\aleph_0\)</a>. The two bounds prove the claim. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="basic-inequalities" data-kind="theorem" data-formal="bounding-number-uncountable bounding-number-le-dominating dominating-number-le-continuum">
+  <h2>The bounding and dominating numbers lie between countability and the continuum</h2>
+  <div class="statement-box"><p>In ZFC,</p><div class="math-display">\[
+    \aleph_1\le\mathfrak b\le\mathfrak d\le\mathfrak c.
+  \]</div></div>
+  <p class="proof-label">Proof</p>
+  <p>Every countable family has a <a href="finite-errors-and-countable-diagonalization#countable-eventual-bound">strict eventual bound</a>, so no unbounded family is countable. Hence \(\mathfrak b\ge\aleph_1\), the least uncountable cardinal. Every dominating family is unbounded, as proved in <a href="#bounded-and-dominating"></a>, giving \(\mathfrak b\le\mathfrak d\). Finally, \(\omega^\omega\) itself is dominating and has size \(\mathfrak c\) by <a href="#function-space-size"></a>, so \(\mathfrak d\le\mathfrak c\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="small-unions-of-bounded-families" data-kind="lemma" data-formal="bounding-small-unions">
+  <h2>Fewer than the bounding number of bounded families still have a bound</h2>
+  <p>If \((B_i)_{i\in I}\) is a family of bounded subsets of \(\omega^\omega\) and \(|I|&lt;\mathfrak b\), then \(\bigcup_{i\in I}B_i\) is bounded.</p>
+  <p class="proof-label">Proof</p>
+  <p>For each \(i\), choose a bound \(g_i\) for \(B_i\). The family \(\{g_i:i\in I\}\) has size at most \(|I|&lt;\mathfrak b\), so it has a bound \(g\). If \(f\in B_i\), transitivity gives \(f\le^*g_i\le^*g\). Thus \(g\) bounds the union. If \(I\) is empty, its union is empty and any function bounds it. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>There is no size restriction on each bounded family \(B_i\). What matters is the number of bounds that must be combined. Their eventual thresholds may depend on \(i\) and on \(f\).</p>
+</section>
+
+<section id="cofinal-cover" data-kind="lemma" data-formal="bounding-cofinal-cover">
+  <h2>Cofinality divides a large family into smaller initial pieces</h2>
+  <p>If \(\kappa\) is an infinite cardinal and \(|X|=\kappa\), then \(X\) is the union of \(\operatorname{cf}(\kappa)\) many subsets, each of size less than \(\kappa\).</p>
+  <p class="proof-label">Proof</p>
+  <p>List \(X=\{x_\alpha:\alpha&lt;\kappa\}\) without repetitions, and put \(\mu=\operatorname{cf}(\kappa)\), the least size of a <a href="cofinality#cofinal-subsets">cofinal subset</a>. Choose an <a href="cofinality#increasing-cofinal-sequences">increasing cofinal sequence</a> \((\gamma_i)_{i&lt;\mu}\) in \(\kappa\). Define</p>
+  <div class="math-display">\[
+    X_i=\{x_\alpha:\alpha&lt;\gamma_i\}.
+  \]</div>
+  <p>Since \(\gamma_i&lt;\kappa\) and \(\kappa\) is initial, \(|X_i|=|\gamma_i|&lt;\kappa\). Every \(x_\alpha\) appears in some \(X_i\): the <a href="infinite-cardinal-arithmetic#infinite-cardinals-are-limits">limit property of infinite cardinals</a> gives \(\alpha+1&lt;\kappa\), and cofinality supplies \(\gamma_i\ge\alpha+1\). Therefore \(X=\bigcup_{i&lt;\mu}X_i\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The pieces need not be disjoint. This is a cover indexed by cofinality, not a claim that their sizes have one common bound below \(\kappa\).</p>
+</section>
+
+<section id="bounding-number-regular" data-kind="theorem" data-formal="bounding-number-regular regular-cardinal-cofinality cofinality-cardinality-bound initial-ordinal-cardinality">
+  <h2>The bounding number is regular</h2>
+  <div class="statement-box"><p>In ZFC, \(\operatorname{cf}(\mathfrak b)=\mathfrak b\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Choose an unbounded family \(B\) of size \(\mathfrak b\). If \(\operatorname{cf}(\mathfrak b)&lt;\mathfrak b\), <a href="#cofinal-cover"></a> covers \(B\) by fewer than \(\mathfrak b\) pieces, each of size less than \(\mathfrak b\). Every piece is bounded by the definition of \(\mathfrak b\). Their union would be bounded by <a href="#small-unions-of-bounded-families"></a>, contrary to the choice of \(B\). Since cofinality is always at most cardinality, equality follows. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This says that \(\mathfrak b\) is a <a href="cofinality#regular-and-singular">regular cardinal</a>. Smaller bounded families cannot be combined in fewer than \(\mathfrak b\) stages to produce a minimum-sized unbounded family.</p>
+</section>
+
+<section id="dominating-number-cofinality" data-kind="theorem" data-formal="bounding-le-cofinality-dominating bounding-number-regular regular-cardinal-cofinality cofinality-cardinality-bound initial-ordinal-cardinality bounding-number-uncountable dominating-number-le-continuum">
+  <h2>The dominating number cannot have cofinality below the bounding number</h2>
+  <div class="statement-box"><p>In ZFC, \(\mathfrak b\le\operatorname{cf}(\mathfrak d)\). Combining the results gives</p><div class="math-display">\[
+    \aleph_1\le\mathfrak b=\operatorname{cf}(\mathfrak b)
+    \le\operatorname{cf}(\mathfrak d)\le\mathfrak d\le\mathfrak c.
+  \]</div></div>
+  <p class="proof-label">Proof</p>
+  <p>Choose a dominating family \(D\) of size \(\mathfrak d\). Suppose \(\mu=\operatorname{cf}(\mathfrak d)&lt;\mathfrak b\). By <a href="#cofinal-cover"></a>, write \(D=\bigcup_{i&lt;\mu}D_i\), with \(|D_i|&lt;\mathfrak d\) for every \(i\). Each \(D_i\) fails to dominate, so choose \(f_i\in\omega^\omega\) such that</p>
+  <div class="math-display">\[
+    \forall h\in D_i\quad f_i\not\le^*h.
+  \]</div>
+  <p>The family \(\{f_i:i&lt;\mu\}\) has size at most \(\mu&lt;\mathfrak b\), so some \(g\) bounds it. Since \(D\) is dominating, choose \(h\in D\) with \(g\le^*h\). This \(h\) belongs to some \(D_i\), and then \(f_i\le^*g\le^*h\), contradicting the displayed requirement. Thus \(\operatorname{cf}(\mathfrak d)\ge\mathfrak b\). The remaining comparisons follow from <a href="#basic-inequalities"></a>, <a href="#bounding-number-regular"></a>, and \(\operatorname{cf}(\mathfrak d)\le\mathfrak d\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The conclusion bounds the cofinality of \(\mathfrak d\); it does not say that \(\mathfrak d\) is regular.</p>
+</section>
+
+<section id="pointwise-boundary-question" data-kind="question" data-formal="bounding-spike-family bounding-spike-boundary-example">
+  <h2>Can an eventually bounded family be arbitrarily large at each input?</h2>
+  <p>For \(i,k\in\omega\), let \(s_{i,k}(i)=k\) and \(s_{i,k}(n)=0\) for \(n\ne i\). Consider \(S=\{s_{i,k}:i,k\in\omega\}\). Is \(S\) bounded for \(\le^*\)? Can it have a pointwise bound, satisfying \(s(n)\le g(n)\) for every \(s\in S\) and every \(n\)? Is \(S\) dominating?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The zero function eventually bounds every spike: \(s_{i,k}(n)=0\) whenever \(n\ge i+1\). But a pointwise bound is impossible. For any proposed \(g\) and any input \(i\), the member \(s_{i,g(i)+1}\) exceeds \(g\) at \(i\). Eventual boundedness allows a separate finite exceptional set for each member.</p>
+      <p>The family is not dominating: the constant function \(1\) is not eventually dominated by any spike. This also follows from the fact that a dominating family must be unbounded.</p>
+    </div>
+  </details>
+</section>
+
+<section id="continuum-hypothesis-question" data-kind="question" data-formal="bounding-numbers-under-ch">
+  <h2>What does the continuum hypothesis force these numbers to be?</h2>
+  <p>Assume the <a href="infinite-cardinal-arithmetic#continuum-hypothesis">continuum hypothesis</a>, \(\mathfrak c=\aleph_1\). Determine \(\mathfrak b\) and \(\mathfrak d\). Without this additional assumption, does the inequality \(\mathfrak b\le\mathfrak d\) alone imply equality?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Under CH, <a href="#basic-inequalities"></a> places both cardinals between \(\aleph_1\) and \(\mathfrak c=\aleph_1\), so \(\mathfrak b=\mathfrak d=\aleph_1\). An inequality alone does not assert equality. The arguments in this entry give bounds and a cofinality restriction; they do not determine which unequal values can occur.</p></div>
+  </details>
+</section>

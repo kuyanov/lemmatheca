@@ -61,7 +61,7 @@ theorem height_empty (T : Tree.{u}) [IsEmpty T] : treeHeight T = 0 := by
 
 theorem level_zero_iff (T : Tree.{u}) (t : T) :
     t ∈ level T 0 ↔ ∀ s : T, ¬ s < t := by
-  letI := T.predecessors_wellOrdered t
+  let := T.predecessors_wellOrdered t
   change Ordinal.type ((· < ·) : Set.Iio t → Set.Iio t → Prop) = 0 ↔ _
   rw [Ordinal.type_eq_zero_iff_isEmpty]
   constructor
@@ -82,15 +82,15 @@ private def tree_predecessorRelIso (T : Tree.{u}) {s t : T} (hs : s < t) :
 
 private theorem tree_height_typein (T : Tree.{u}) {s t : T} (hs : s < t) :
     nodeHeight T s = Ordinal.typein (α := Set.Iio t) (· < ·) ⟨s, hs⟩ := by
-  letI := T.predecessors_wellOrdered t
-  letI := T.predecessors_wellOrdered s
-  letI := IsWellOrder.linearOrder ((· < ·) : Set.Iio t → Set.Iio t → Prop)
+  let := T.predecessors_wellOrdered t
+  let := T.predecessors_wellOrdered s
+  let := IsWellOrder.linearOrder ((· < ·) : Set.Iio t → Set.Iio t → Prop)
   rw [nodeHeight, ← Ordinal.type_Iio_lt]
-  exact (tree_predecessorRelIso T hs).ordinal_type_eq
+  exact (tree_predecessorRelIso T hs).ordinalType_congr
 
 theorem unique_predecessor (T : Tree.{u}) (t : T) (a : Ordinal.{u})
     (ha : a < nodeHeight T t) : ∃! s : T, s < t ∧ nodeHeight T s = a := by
-  letI := T.predecessors_wellOrdered t
+  let := T.predecessors_wellOrdered t
   obtain ⟨s, hs⟩ := Ordinal.typein_surj (α := Set.Iio t) (· < ·) ha
   refine ⟨s.1, ⟨s.2, (tree_height_typein T s.2).trans hs⟩, ?_⟩
   intro r hr
@@ -101,7 +101,7 @@ theorem unique_predecessor (T : Tree.{u}) (t : T) (a : Ordinal.{u})
 
 theorem nodeHeight_strictMono (T : Tree.{u}) : StrictMono (nodeHeight T) := by
   intro s t hs
-  letI := T.predecessors_wellOrdered t
+  let := T.predecessors_wellOrdered t
   rw [tree_height_typein T hs]
   exact Ordinal.typein_lt_type (α := Set.Iio t) (· < ·) ⟨s, hs⟩
 
@@ -154,7 +154,7 @@ noncomputable def branchOrderType (T : Tree.{u}) (B : Set T) (hB : IsBranch T B)
 private theorem tree_branch_typein (T : Tree.{u}) {B : Set T} (hB : IsBranch T B)
     [IsWellOrder B (· < ·)] (t : B) :
     nodeHeight T t = Ordinal.typein (α := B) (· < ·) t := by
-  letI := IsWellOrder.linearOrder ((· < ·) : B → B → Prop)
+  let := IsWellOrder.linearOrder ((· < ·) : B → B → Prop)
   let e : ((· < ·) : Set.Iio t.1 → Set.Iio t.1 → Prop) ≃r
       ((· < ·) : Set.Iio t → Set.Iio t → Prop) :=
     { toFun := fun x => ⟨⟨x.1, hB.2 x.2.le t.2⟩, x.2⟩
@@ -171,7 +171,7 @@ private theorem tree_nodeHeight_lt_height (T : Tree.{u}) (t : T) :
 
 theorem cofinal_branch_orderType (T : Tree.{u}) {B : Set T} (hB : IsCofinalBranch T B) :
     branchOrderType T B hB.1 = treeHeight T := by
-  letI := branch_wellOrdered T hB.1
+  let := branch_wellOrdered T hB.1
   apply le_antisymm
   · apply le_of_forall_lt
     intro a ha
@@ -208,7 +208,7 @@ theorem maximal_chain_downward_closed (T : Tree.{u}) {B : Set T}
       · exact Or.inr (he ▸ hrt)
       rcases hrt.eq_or_lt with he | hrlt
       · exact Or.inl (he ▸ hst)
-      letI := T.predecessors_wellOrdered t
+      let := T.predecessors_wellOrdered t
       rcases trichotomous_of ((· < ·) : Set.Iio t → Set.Iio t → Prop)
           ⟨s, hs⟩ ⟨r, hrlt⟩ with h | h | h
       · exact Or.inl h.le
@@ -270,8 +270,8 @@ theorem konig (T : Tree.{u}) (hheight : treeHeight T = Ordinal.omega 0)
   classical
   have hheight' : treeHeight T = Ordinal.omega0 := hheight.trans Ordinal.omega_zero
   let A (n : ℕ) := level T n
-  haveI (n : ℕ) : Finite (A n) := (hfinite n).to_subtype
-  haveI (n : ℕ) : Nonempty (A n) :=
+  have (n : ℕ) : Finite (A n) := (hfinite n).to_subtype
+  have (n : ℕ) : Nonempty (A n) :=
     (tree_level_nonempty T n (hheight' ▸ Ordinal.natCast_lt_omega0 n)).to_subtype
   have ancestors (i j : ℕ) (hij : i ≤ j) (t : A j) :
       ∃ s : A i, s.1 ≤ t.1 := by
@@ -318,7 +318,7 @@ theorem no_omega_aronszajn (T : Tree.{u}) : ¬ IsAronszajnTree T ℵ₀ := by
   apply konig T (by simpa using hT.2.1)
   intro n
   exact Cardinal.lt_aleph0_iff_set_finite.mp
-    (hT.2.2 n (by simpa using Ordinal.natCast_lt_omega0 n))
+    (hT.2.2 n (by simp))
 
 /-- A function together with its initial-segment domain. -/
 def FunctionNode (θ : Ordinal.{u}) (X : Type u) := Σ a : θ.ToType, Set.Iio a → X
@@ -448,7 +448,7 @@ private theorem tree_position_type {θ : Ordinal.{u}} (a : θ.ToType) :
 theorem functionTree_nodeHeight {θ : Ordinal.{u}} {X : Type u}
     (S : Set (FunctionNode θ X)) (hS : RestrictionClosed S) (t : functionTree S hS) :
     nodeHeight (functionTree S hS) t = t.1.1.toOrd.1 := by
-  letI := (tree_function_predIso S hS t).toOrderEmbedding.isWellOrder
+  let := (tree_function_predIso S hS t).toOrderEmbedding.isWellOrder
   exact ((tree_function_predIso S hS t).toRelIsoLT.ordinalType_congr).trans
     (tree_position_type t.1.1)
 
@@ -903,7 +903,7 @@ theorem coherent_history_extension (a : OmegaOne)
       exact Filter.EventuallyEq.rfl
     · exact hcoh b c hc
   by_cases he : IsEmpty (Set.Iio a)
-  · letI := he
+  · let := he
     refine ⟨fun _ => 0, Function.injective_of_subsingleton _, ?_, ?_⟩
     · have hr : range (fun _ : Set.Iio a => (0 : ℕ)) = ∅ := by
         ext v
@@ -915,7 +915,7 @@ theorem coherent_history_extension (a : OmegaOne)
       rw [CoinfiniteRange, hr, compl_empty]
       exact infinite_univ
     · exact fun b => isEmptyElim b
-  haveI : Nonempty (Set.Iio a) := not_isEmpty_iff.mp he
+  have : Nonempty (Set.Iio a) := not_isEmpty_iff.mp he
   by_cases hm : ∃ b : Set.Iio a, ∀ c : Set.Iio a, c ≤ b
   · obtain ⟨b, hb⟩ := hm
     obtain ⟨k, hk⟩ := (hinj b).2.nonempty
@@ -926,13 +926,14 @@ theorem coherent_history_extension (a : OmegaOne)
       intro x y hxy
       by_cases hx : x.1 < b.1 <;> by_cases hy : y.1 < b.1
       · have h : (⟨x.1, hx⟩ : Set.Iio b.1) = ⟨y.1, hy⟩ :=
-          (hinj b).1 (by simpa only [f, dif_pos hx, dif_pos hy] using hxy)
+          (hinj b).1 (by simpa only [f, dite_eq_left hx, dite_eq_left hy] using hxy)
         apply Subtype.ext
         exact congrArg (fun i : Set.Iio b.1 => i.1) h
-      · have h : s b ⟨x.1, hx⟩ = k := by simpa only [f, dif_pos hx, dif_neg hy] using hxy
+      · have h : s b ⟨x.1, hx⟩ = k := by
+          simpa only [f, dite_eq_left hx, dite_eq_right hy] using hxy
         exact (hk ⟨⟨x.1, hx⟩, h⟩).elim
       · have h : s b ⟨y.1, hy⟩ = k := by
-          simpa only [f, dif_pos hy, dif_neg hx] using hxy.symm
+          simpa only [f, dite_eq_left hy, dite_eq_right hx] using hxy.symm
         exact (hk ⟨⟨y.1, hy⟩, h⟩).elim
       · exact (hxeq x hx).trans (hxeq y hy).symm
     refine ⟨f, hf, ?_, ?_⟩
@@ -941,8 +942,8 @@ theorem coherent_history_extension (a : OmegaOne)
       rintro ⟨x, rfl⟩
       by_cases hx : x.1 < b.1
       · apply hv.1
-        exact ⟨⟨x.1, hx⟩, by simp only [f, dif_pos hx]⟩
-      · exact hv.2 (by simp only [f, dif_neg hx, mem_singleton_iff])
+        exact ⟨⟨x.1, hx⟩, by simp only [f, dite_eq_left hx]⟩
+      · exact hv.2 (by simp only [f, dite_eq_right hx, mem_singleton_iff])
     · intro c
       have hcb : c.1 ≤ b.1 := hb c
       have hr : f ∘ initialSegmentEmbedding c.2.le =
@@ -950,17 +951,17 @@ theorem coherent_history_extension (a : OmegaOne)
         funext x
         change (if h : x.1 < b.1 then s b ⟨x.1, h⟩ else k) =
           s b (initialSegmentEmbedding hcb x)
-        rw [dif_pos (lt_of_lt_of_le x.2 hcb)]
+        rw [dite_eq_left (lt_of_lt_of_le x.2 hcb)]
         rfl
       rw [hr]
       exact hweak b c hcb
-  haveI : Countable (Set.Iio a) := tree_initial_countable a
-  haveI : NoMaxOrder (Set.Iio a) := by
+  have : Countable (Set.Iio a) := tree_initial_countable a
+  have : NoMaxOrder (Set.Iio a) := by
     constructor
     intro b
     have h : ∃ c : Set.Iio a, ¬ c ≤ b := by
       by_contra hn
-      push_neg at hn
+      push Not at hn
       exact hm ⟨b, hn⟩
     obtain ⟨c, hc⟩ := h
     exact ⟨c, lt_of_not_ge hc⟩
@@ -1096,7 +1097,7 @@ theorem coherent_family_exists :
       have he : s a = H a (fun b _ => s b) := (wellFounded_lt (α := OmegaOne)).fix_eq H a
       rw [he]
       dsimp only [H]
-      rw [dif_pos hv]
+      rw [dite_eq_left hv]
       have hp := (coherent_history_extension a (fun b => s b.1) hv.1 hv.2).choose_spec
       exact ⟨⟨hp.1, hp.2.1⟩, fun b hb => hp.2.2 ⟨b, hb⟩⟩
   exact ⟨s, ⟨fun a => (hs a).1, fun a b h => (hs a).2 b h⟩⟩
@@ -1216,7 +1217,7 @@ private theorem injection_no_cofinal
     exact (functionTree_nodeHeight S hS t).symm.trans he
   have : Countable OmegaOne := hf.countable
   have hc : #OmegaOne ≤ ℵ₀ := Cardinal.mk_le_aleph0
-  simpa [OmegaOne, Cardinal.mk_toType] using hc
+  simp [OmegaOne, Cardinal.mk_toType] at hc
 
 theorem injectionTree_spec :
     treeHeight injectionTree = Ordinal.omega 1 ∧
@@ -1232,7 +1233,7 @@ theorem injectionTree_spec :
     exact ⟨f, hf⟩
   have hnobranch := injection_no_cofinal injectionNodes injectionNodes_restrictionClosed
     (fun _ h => h) hheight
-  let b : OmegaOne := Ordinal.ToType.mk ⟨Ordinal.omega 0, by simpa using Ordinal.omega0_lt_omega_one⟩
+  let b : OmegaOne := Ordinal.ToType.mk ⟨Ordinal.omega 0, by simp⟩
   have hcard : #(Set.Iio b) = #ℕ := by
     rw [← Ordinal.card_type ((· < ·) : Set.Iio b → Set.Iio b → Prop)]
     change (typeLT (Set.Iio b)).card = #ℕ
@@ -1265,7 +1266,7 @@ theorem injectionTree_spec :
     exact Cardinal.aleph0_lt_continuum.not_ge (hcont ▸ hle)
   refine ⟨hheight, hnobranch, hunc, ?_⟩
   intro hκ
-  have hc := hκ.2.2 (Ordinal.omega 0) (by simpa using Ordinal.omega0_lt_omega_one)
+  have hc := hκ.2.2 (Ordinal.omega 0) (by simp)
   exact hunc (Cardinal.le_aleph0_iff_set_countable.mp (Cardinal.lt_aleph_one_iff.mp hc))
 
 def aronszajnNodes (s : (a : OmegaOne) → Set.Iio a → ℕ) :
@@ -1360,8 +1361,7 @@ theorem aronszajnTree_root_and_extensions
     funext i
     have hi := (Ordinal.ToType.mk (o := Ordinal.omega 1)).symm.strictMono i.2
     change i.1.toOrd.1 < a₀.toOrd.1 at hi
-    have hi' : i.1.toOrd.1 < (0 : Ordinal) := by simpa [a₀] using hi
-    exact False.elim (not_lt_zero hi')
+    simp [a₀] at hi
   · intro t b hab
     have he : t.1.2 =ᶠ[Filter.cofinite] s b ∘ initialSegmentEmbedding hab.le :=
       t.2.2.trans (hs.2 b t.1.1 hab).symm

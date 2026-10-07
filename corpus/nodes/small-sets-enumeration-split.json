@@ -1,0 +1,14 @@
+{
+  "id": "small-sets-enumeration-split",
+  "description": "For any increasing bijection from the naturals onto a subset A, its even and odd indexed values form disjoint infinite subsets whose union is A; the even part represents a class strictly between zero and the class of A.",
+  "module": "Lemmatheca.SetTheory.SubsetsModuloSmallSets",
+  "declaration": "Lemmatheca.SetTheory.SubsetsModuloSmallSets.enumeration_split",
+  "dependencies": [
+    "small-sets-finite-error-nonzero",
+    "small-sets-finite-error-class-order",
+    "infinite-natural-subset-enumeration"
+  ],
+  "verified": true,
+  "declaration_line": 404,
+  "signature": "Lemmatheca.SetTheory.SubsetsModuloSmallSets.enumeration_split (A : Set ℕ) (e : ℕ ≃o ↑A) :\n  have C := Set.range fun n => ↑(e (2 * n));\n  have D := Set.range fun n => ↑(e (2 * n + 1));\n  C.Infinite ∧\n    D.Infinite ∧\n      Disjoint C D ∧\n        C ∪ D = A ∧\n          ⊥ <\n              Lemmatheca.SetTheory.SubsetsModuloSmallSets.mk (Lemmatheca.SetTheory.SubsetsModuloSmallSets.finiteIdeal ℕ)\n                C ∧\n            Lemmatheca.SetTheory.SubsetsModuloSmallSets.mk (Lemmatheca.SetTheory.SubsetsModuloSmallSets.finiteIdeal ℕ)\n                C <\n              Lemmatheca.SetTheory.SubsetsModuloSmallSets.mk (Lemmatheca.SetTheory.SubsetsModuloSmallSets.finiteIdeal ℕ)\n                A"
+}

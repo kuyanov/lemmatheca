@@ -1,0 +1,10 @@
+{
+  "id": "bounding-strict-comparison-conventions",
+  "description": "Replacing eventual nonstrict inequalities by strict inequalities leaves boundedness, unboundedness, and domination unchanged. If g bounds a family, n ↦ g(n)+1 strictly bounds it.",
+  "module": "Lemmatheca.SetTheory.BoundingAndDominating",
+  "declaration": "Lemmatheca.SetTheory.BoundingAndDominating.strict_comparison_conventions",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 56,
+  "signature": "Lemmatheca.SetTheory.BoundingAndDominating.strict_comparison_conventions (B : Set (ℕ → ℕ)) :\n  (Lemmatheca.SetTheory.BoundingAndDominating.IsBounded B ↔\n      ∃ g, ∀ f ∈ B, Lemmatheca.SetTheory.FiniteErrors.EventuallyLT f g) ∧\n    (∀ (g : ℕ → ℕ),\n        (∀ f ∈ B, f ≤ᶠ[Filter.atTop] g) → ∀ f ∈ B, Lemmatheca.SetTheory.FiniteErrors.EventuallyLT f fun n => g n + 1) ∧\n      (Lemmatheca.SetTheory.BoundingAndDominating.IsUnbounded B ↔\n          ∀ (g : ℕ → ℕ), ∃ f ∈ B, ¬Lemmatheca.SetTheory.FiniteErrors.EventuallyLT f g) ∧\n        (Lemmatheca.SetTheory.BoundingAndDominating.IsDominating B ↔\n          ∀ (f : ℕ → ℕ), ∃ g ∈ B, Lemmatheca.SetTheory.FiniteErrors.EventuallyLT f g)"
+}

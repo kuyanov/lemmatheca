@@ -38,24 +38,28 @@ Apply the [reading-order criteria](../CONTRIBUTING.md#reading-order) to entry
 placement, the sequence of blocks, and the summary and abstract. Check that each
 definition is introduced before its first use or reference.
 
-**Reference-backlog maintenance is required for every draft and revision in this
-step.** Read the [reference backlog](../docs/reference-backlog.md), then inspect
+**Upcoming-reference table maintenance is required for every draft and revision in this
+step.** Read [Reference backlog and planning](../corpus/reference-planning.md), then inspect
 every block of each drafted or revised entry for useful references to future areas. Include
 accepted background and locally developed facts whose broader treatment would
 help readers; do not limit the audit to missing prerequisites.
 
-- Add or update rows in the existing single table using its four columns:
+- Add or update rows in the single table under
+  [Upcoming references](../corpus/reference-planning.md#upcoming-references) using its four columns:
   future area, proposed reference coverage, consuming `entry-id#block-id`
   locations, and the precise fact or context to reference. Group repeated uses.
   Use the actual current block IDs and proposed titles rather than nonexistent
   target links or invented future block IDs.
 - When a suitable target already exists, inspect its content and assumptions,
   add the useful entry link now, and remove the fulfilled consuming locations
-  from the backlog. Keep any locations still awaiting future coverage.
-- Keep the backlog to this one table. Put existing-target integration notes,
-  future-entry plans, correspondences still to prove, and deferred extensions
-  in the handoff or [reference planning notes](../docs/reference-planning.md).
-  Do not add audit narratives, extra tables, or maintenance rules to the backlog.
+  from the upcoming-reference table. Keep any locations still awaiting future coverage.
+- Keep **Upcoming references** to this one four-column table. Put other planning
+  material in the same document's separate sections for
+  [existing-target integration notes](../corpus/reference-planning.md#existing-target-integration-notes),
+  [cross-area correspondences still to establish](../corpus/reference-planning.md#cross-area-correspondence-to-establish),
+  [future-entry plans](../corpus/reference-planning.md#references-available-for-the-planned-expansion),
+  and [deferred extensions](../corpus/reference-planning.md#boundaries-of-the-set-theory-expansion).
+  Do not add audit narratives, extra tables, or maintenance rules to **Upcoming references**.
 - Complete the table edits before returning the draft. Listing proposed rows
   only in the response does not complete this drafting task. Report the actual
   additions, changes, and removals, or explicitly state that the audit found
@@ -63,7 +67,7 @@ help readers; do not limit the audit to missing prerequisites.
 
 Familiar background, including standard real-number facts, may be used without
 an entry reference and does not block drafting merely because a link is unavailable.
-The backlog does not permit major dependencies on substantial theory missing from
+The upcoming-reference table does not permit major dependencies on substantial theory missing from
 the corpus or excuse incorrect or unsupported reasoning.
 
 Before writing the draft, check the needed source passages for mathematical rigor.
@@ -78,6 +82,16 @@ write an unsupported argument as proved. If a necessary claim remains unsupporte
 report the affected drafting work as blocked and continue independent work where
 possible. This assessment does not require an approval flag or automatic permission
 request.
+
+**Source-error register maintenance is required for every draft and revision.**
+Consult [Source errors](../corpus/source-errors.md) before reusing cited arguments.
+Follow the [source-error contract](../docs/corpus.md#source-errors): prioritize
+false statements, missing necessary hypotheses, invalid constructions, and failed
+deductions. Valid compression and missing explanation are not confirmed errors.
+Save new confirmed defects, checked repairs, and consuming block links; update
+reviewed coverage for all inspected citations, including no-defect outcomes and
+access limits. Distinguish a repaired corpus entry from a corrected upstream source.
+Complete these edits before returning the draft; a chat-only list is insufficient.
 
 1. Read the relevant source passages and write original, precise mathematics.
    State domains, codomains, hypotheses, quantifiers, and conventions where they
@@ -149,7 +163,8 @@ request.
 
 Confirm that the future-reference audit covered every drafted or revised entry,
 that its table changes are saved, and that all consuming block IDs exist. Check
-that the backlog still contains one table of future-area references only.
+that **Upcoming references** still contains one four-column table of future-area
+references only and that other planning notes remain in the document's separate sections.
 
 After editing corpus files, run from the repository root:
 
@@ -179,8 +194,11 @@ questions for GitHub review. Describe any visual checks that could not be comple
 Include the source-rigor findings reported before drafting, their resolutions, and
 any remaining gaps or unchecked material. Separate repairs to source arguments
 from editorial changes to the entry.
+Include the saved source-error IDs and coverage changes, or an explicit finding
+that the register already covers the inspected material and needs no changes.
 Include prerequisite links, supporting lemmas developed locally, explicit scope
 changes, and recommendations for missing areas or entries.
-For each entry, include the reference-backlog audit outcome: rows added, changed,
+For each entry, include the upcoming-reference audit outcome: rows added, changed,
 or removed, or an explicit finding that no changes were needed after inspecting
-its blocks. Keep deferred material and future-entry plans separate from these rows.
+its blocks. Keep deferred material and future-entry plans separate from these rows
+in the corresponding sections of the same reference document.

@@ -1,0 +1,13 @@
+{
+  "id": "small-sets-almost-disjoint-representatives",
+  "description": "For distinct nonzero finite-error classes with pairwise zero meets, any supplied representatives form an almost disjoint family, without repetitions, whose image is exactly the original class family.",
+  "module": "Lemmatheca.SetTheory.SubsetsModuloSmallSets",
+  "declaration": "Lemmatheca.SetTheory.SubsetsModuloSmallSets.representatives_almostDisjoint",
+  "dependencies": [
+    "small-sets-finite-error-zero-meet",
+    "small-sets-finite-error-nonzero"
+  ],
+  "verified": true,
+  "declaration_line": 377,
+  "signature": "Lemmatheca.SetTheory.SubsetsModuloSmallSets.representatives_almostDisjoint\n  (Q : Set Lemmatheca.SetTheory.SubsetsModuloSmallSets.FiniteQuotient) (hQ : ∀ q ∈ Q, q ≠ ⊥)\n  (hd : Q.Pairwise fun q r => q ⊓ r = ⊥) (r : ↑Q → Set ℕ)\n  (hr :\n    ∀ (q : ↑Q),\n      Lemmatheca.SetTheory.SubsetsModuloSmallSets.mk (Lemmatheca.SetTheory.SubsetsModuloSmallSets.finiteIdeal ℕ) (r q) =\n        ↑q) :\n  Lemmatheca.SetTheory.AlmostDisjoint.IsAlmostDisjoint (Set.range r) ∧\n    Function.Injective r ∧\n      Lemmatheca.SetTheory.SubsetsModuloSmallSets.mk (Lemmatheca.SetTheory.SubsetsModuloSmallSets.finiteIdeal ℕ) ''\n          Set.range r =\n        Q"
+}

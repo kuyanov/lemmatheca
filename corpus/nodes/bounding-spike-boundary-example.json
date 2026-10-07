@@ -1,0 +1,12 @@
+{
+  "id": "bounding-spike-boundary-example",
+  "description": "The spike family has eventual bound zero, but has no pointwise bound and is not dominating. A spike at i is zero above i, a spike of value g(i)+1 defeats g at i, and no spike eventually dominates the constant one function.",
+  "module": "Lemmatheca.Entry.BoundingAndDominatingFamilies",
+  "declaration": "Lemmatheca.Entry.BoundingAndDominatingFamilies.spikeFamily_spec",
+  "dependencies": [
+    "bounding-spike-family"
+  ],
+  "verified": true,
+  "declaration_line": 28,
+  "signature": "Lemmatheca.Entry.BoundingAndDominatingFamilies.spikeFamily_spec :\n  Lemmatheca.SetTheory.BoundingAndDominating.IsBounded Lemmatheca.Entry.BoundingAndDominatingFamilies.spikeFamily ∧\n    (∀ f ∈ Lemmatheca.Entry.BoundingAndDominatingFamilies.spikeFamily, f ≤ᶠ[Filter.atTop] fun x => 0) ∧\n      (∀ (i k n : ℕ), i + 1 ≤ n → Function.update (fun x => 0) i k n = 0) ∧\n        (∀ (g : ℕ → ℕ) (i : ℕ),\n            Function.update (fun x => 0) i (g i + 1) ∈ Lemmatheca.Entry.BoundingAndDominatingFamilies.spikeFamily ∧\n              g i < Function.update (fun x => 0) i (g i + 1) i) ∧\n          (¬∃ g, ∀ f ∈ Lemmatheca.Entry.BoundingAndDominatingFamilies.spikeFamily, ∀ (n : ℕ), f n ≤ g n) ∧\n            (∀ f ∈ Lemmatheca.Entry.BoundingAndDominatingFamilies.spikeFamily, ¬(fun x => 1) ≤ᶠ[Filter.atTop] f) ∧\n              ¬Lemmatheca.SetTheory.BoundingAndDominating.IsDominating\n                  Lemmatheca.Entry.BoundingAndDominatingFamilies.spikeFamily"
+}

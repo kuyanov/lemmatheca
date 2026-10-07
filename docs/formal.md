@@ -146,6 +146,31 @@ project. They also check Choice used directly, through other declarations, or in
 a type, and metadata edits during builds. `formal/.lake/` contains ignored local
 dependencies and build output.
 
+### Build warnings
+
+Inspect the complete Lean and Lake output from the full build, including warnings.
+A successful exit and refreshed verification flags do not establish that warnings
+were resolved. Fix warning causes in project-owned Lean sources, using local proof
+or style changes that preserve the intended statements, definitions, and permitted
+axioms. Naming intentionally unused parameters with a leading underscore is
+legitimate cleanup that preserves their hypotheses. Do not weaken the mathematics,
+hide unfinished proofs, suppress diagnostics through local or global linter
+settings, or change the pinned environment to remove diagnostics.
+
+After warning fixes, rerun `uv run python app/manage.py build` from the repository
+root and inspect the full output again. Local compilation is useful during repairs,
+but the final full build checks the integrated project and refreshes generated data.
+Report the warnings fixed and identify any remaining diagnostics by source location
+and reason. Separate diagnostics originating in pinned Lean/mathlib dependencies
+from project diagnostics; if dependency warnings cannot be fixed within the pinned
+environment, report them rather than editing dependency caches or changing pins.
+
+This does not require completing unrelated, deliberately unfinished declarations.
+Their `sorry` warnings may remain outside the selected completion claim and must be
+reported accurately. Unbound nodes and Not verified results are supported states;
+do not invent bindings, change statements, or add axioms merely to quiet their
+reports. Completed selected proofs must still meet the verification rules above.
+
 ### Inspecting kernel axioms
 
 To inspect a declaration without changing corpus data, run from `formal/` after
