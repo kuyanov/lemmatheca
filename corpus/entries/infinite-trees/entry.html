@@ -1,0 +1,128 @@
+<section id="trees-and-levels" data-kind="definition" data-formal="transfinite-tree tree-node-height tree-level tree-height empty-tree-height tree-zero-level-roots tree-unique-predecessor-at-level tree-node-height-strict-monotonicity tree-lower-levels-nonempty">
+  <h2>A tree has a well-ordered history below each node</h2>
+  <p>Work in ZFC. A <strong>tree</strong> is a partially ordered set \((T,\le_T)\) such that for each \(t\in T\), its strict predecessors \(\{s:s&lt;_Tt\}\) are well-ordered by \( &lt;_T\). The <strong>height</strong> of \(t\), written \(\operatorname{ht}(t)\), is the <a href="ordinals#order-types">order type</a> of that predecessor set. The \(\alpha\)-th <strong>level</strong> is \(T_\alpha=\{t:\operatorname{ht}(t)=\alpha\}\), and the height of the tree is</p>
+  <div class="math-display">\[
+    \operatorname{ht}(T)=\sup\{\operatorname{ht}(t)+1:t\in T\}.
+  \]</div>
+  <p>The empty tree has height zero. A tree need not have a unique root: its level zero consists of all nodes with no predecessor.</p>
+  <p>For each \(\beta&lt;\operatorname{ht}(t)\), there is exactly one predecessor of \(t\) at level \(\beta\). Indeed, enumerate the predecessors in their well-order; those preceding its \(\beta\)-th member are exactly that member's own predecessors, so its height is \(\beta\). In particular, if one level is nonempty, every smaller level is nonempty. If \(s&lt;_Tt\), then \(\operatorname{ht}(s)&lt;\operatorname{ht}(t)\).</p>
+</section>
+
+<section id="branches-and-antichains" data-kind="definition" data-formal="order-chain tree-branch order-antichain tree-levels-antichain tree-branch-height-injective tree-cofinal-branch cofinal-branch-unbounded-heights cofinal-branch-order-type maximal-chain maximal-tree-chain-downward-closed cofinal-tree-branch-maximal">
+  <h2>Branches follow one history and antichains separate histories</h2>
+  <p>A <strong>chain</strong> is a subset whose members are pairwise comparable. A <strong>branch</strong> here means a downward-closed chain: whenever it contains \(t\), it contains every predecessor of \(t\). An <strong>antichain</strong> is a subset whose distinct members are incomparable. Each level is an antichain, and a branch has at most one node at each level.</p>
+  <p>A branch is <strong>cofinal</strong> if it meets every level below the height of the tree. At a limit height this is equivalent to its node heights being unbounded: the unique predecessors fill every smaller level. Its order type is then the height of the tree.</p>
+  <p>Some authors reserve “branch” for a maximal chain. A maximal chain in a tree is automatically downward closed, since any missing predecessor is comparable with every member and could be added. Our convention also permits shorter downward-closed chains. The assertion that a cofinal branch exists is the same under either convention: a chain meeting every level cannot be enlarged, because there is already one node at the level of any proposed new member.</p>
+</section>
+
+<section id="sequence-trees" data-kind="definition" data-formal="transfinite-function-tree-node function-extension-order tree-restriction-closed-family restriction-closed-function-tree full-transfinite-function-tree function-tree-predecessors function-tree-node-height full-function-tree-height full-finite-word-tree finite-word-tree-node-height full-finite-word-tree-height binary-tree-level-counts binary-sequence-prefix binary-sequence-tree-branch binary-branches-bijection binary-tree-continuum-branches binary-comb-antichain binary-comb-infinite-antichain binary-zero-path binary-zero-path-cofinal">
+  <h2>Initial segments of functions form trees</h2>
+  <p>For a nonempty set \(X\) and an ordinal \(\theta\), let \(X^{&lt;\theta}\) be the functions \(s:\alpha\to X\) with \(\alpha&lt;\theta\), ordered by extension of their graphs. The strict predecessors of \(s\) are exactly \(s\mathbin{\upharpoonright}\beta\), \(\beta&lt;\alpha\), in that order. Thus its height is its domain \(\alpha\), and this tree has height \(\theta\). A subfamily closed under restrictions is also a tree, with the same heights for its members.</p>
+  <p>The binary tree \(2^{&lt;\omega}\) consists of finite words in zero and one. Level \(n\) has \(2^n\) nodes, and their countable union is countable. Every infinite binary sequence \(x\) gives the cofinal branch \(\{x\mathbin{\upharpoonright}n:n&lt;\omega\}\), and every cofinal branch arises uniquely this way by taking its union. Consequently a countable tree can have <a href="comparing-sizes#binary-sequences">continuum many cofinal branches</a>.</p>
+  <p>The words \(0,10,110,1110,\ldots\) form an infinite antichain: no one is an initial segment of another. The words \(\varnothing,0,00,000,\ldots\) form a cofinal branch. The <a href="almost-disjoint-families#binary-prefix-family">sets of binary prefixes</a> use precisely these paths through finite words.</p>
+</section>
+
+<section id="konigs-lemma" data-kind="theorem" data-formal="konigs-lemma">
+  <h2>König's lemma gives a cofinal branch when every finite level is finite</h2>
+  <div class="statement-box"><p>If a tree \(T\) has height \(\omega\) and every level \(T_n\) is finite, then \(T\) has a cofinal branch, containing one node at every level.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>The tree is infinite, since every finite level is nonempty. Every node lies above a unique root in the finite set \(T_0\). Partitioning \(T\) by those roots, the <a href="finite-and-countable-sets#finite-pigeonhole">finite pigeonhole principle</a> gives a root \(t_0\) with infinitely many descendants, counting itself.</p>
+  <p>Suppose \(t_n\in T_n\) has infinitely many descendants. Its strict descendants are partitioned by their unique ancestors at level \(n+1\). Only finitely many such ancestors exist, because \(T_{n+1}\) is finite. One, call it \(t_{n+1}\), must itself have infinitely many descendants. It lies strictly above \(t_n\).</p>
+  <p>Recursively choose these nodes, using a fixed well-order of \(T\) to select the least eligible one at each stage. Then \(t_0&lt;_Tt_1&lt;_T\cdots\). The predecessors of \(t_n\) are exactly \(t_0,\ldots,t_{n-1}\), by uniqueness at each level. Thus \(\{t_n:n&lt;\omega\}\) is downward closed and meets every level. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>No unique-root assumption or extension condition on every node is required. At each step the proof follows a node with infinitely many descendants.</p>
+</section>
+
+<section id="finite-levels-question" data-kind="question" data-formal="decreasing-natural-tree decreasing-natural-level-witness decreasing-natural-level-witness-specification decreasing-natural-start-bound decreasing-natural-tree-specification">
+  <h2>What happens if the finite levels are merely countable?</h2>
+  <p>Does a tree of height \(\omega\) with countable levels necessarily have an infinite branch?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. Take all finite strictly decreasing sequences of natural numbers, including the empty sequence, ordered by extension. This is a rooted tree, and each level is countable as a subset of a finite power of \(\mathbb N\). Every finite level is nonempty: level \(n\) contains \((n-1,n-2,\ldots,0)\). Its height is therefore \(\omega\). An infinite branch would give an infinite strictly decreasing sequence in \(\mathbb N\), contrary to well-ordering. A sequence starting at \(m\) has length at most \(m+1\), so every path stops after finitely many steps.</p></div>
+  </details>
+</section>
+
+<section id="uncountable-trees" data-kind="definition" data-formal="kappa-tree kappa-aronszajn-tree set-finite-cardinality-below-aleph-zero cardinal-below-aleph-one countable-cardinality-bound no-omega-aronszajn-tree">
+  <h2>A \(\kappa\)-tree has small levels at height \(\kappa\)</h2>
+  <p>For an infinite cardinal \(\kappa\), a <strong>\(\kappa\)-tree</strong> has height \(\kappa\) and \(|T_\alpha|&lt;\kappa\) for every \(\alpha&lt;\kappa\). A <strong>\(\kappa\)-Aronszajn tree</strong> is a \(\kappa\)-tree with no cofinal branch. Without a cardinal qualifier, an <strong>Aronszajn tree</strong> means an \(\omega_1\)-Aronszajn tree.</p>
+  <p>An \(\omega\)-tree has finite levels, so König's lemma excludes \(\omega\)-Aronszajn trees. An \(\omega_1\)-tree has countable levels; we will construct one with no branch through all \(\omega_1\) levels. The construction uses that <a href="axiom-of-choice#first-uncountable-ordinal">every ordinal below \(\omega_1\) is countable</a>.</p>
+</section>
+
+<section id="injection-tree" data-kind="lemma" data-formal="countable-domain-injection-tree binary-sequence-block-injection binary-sequence-block-injection-specification injection-tree-specification">
+  <h2>Injections into the naturals obstruct an uncountable branch</h2>
+  <p>Let \(J\) be the tree of all injections \(t:\alpha\to\mathbb N\), \(\alpha&lt;\omega_1\), ordered by extension. It has height \(\omega_1\) and no cofinal branch, but it is not an \(\omega_1\)-tree.</p>
+  <p class="proof-label">Proof</p>
+  <p>Restrictions of injections are injections, and every countable ordinal admits an injection into \(\mathbb N\). Thus all levels below \(\omega_1\) occur. The union of a cofinal branch would be an injection from \(\omega_1\) into \(\mathbb N\): compatibility makes it a function, cofinality makes its domain all of \(\omega_1\), and any two arguments lie together in one injective node. Such an injection contradicts uncountability.</p>
+  <p>However, level \(\omega\) is uncountable. For each binary sequence \(x:\mathbb N\to\{0,1\}\), the map \(n\mapsto2n+x(n)\) is injective, and different \(x\)'s give different maps. There are uncountably many binary sequences. So \(J_\omega\) is too large for an \(\omega_1\)-tree. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>We must thin this tree without losing any level. Finite modifications will keep each chosen level countable.</p>
+</section>
+
+<section id="finite-change-classes" data-kind="lemma" data-formal="function-eventual-equality cofinite-filter cofinite-eventual-finite-exceptions function-eventual-equality-reflexive function-eventual-equality-symmetric function-eventual-equality-transitive coinfinite-function-range countable-finite-modification-class finite-modification-ranges">
+  <h2>Finite modifications on a fixed countable domain form a countable class</h2>
+  <p>For functions \(f,g:D\to\mathbb N\) with the <em>same</em> domain, write \(f=^*g\) if \(\{d\in D:f(d)\ne g(d)\}\) is finite. This is an equivalence relation, analogous to <a href="finite-errors-and-countable-diagonalization#finite-error-equivalence">equality modulo finite errors for sets</a>. If \(D\) is countable, then for each \(f\) the class \(\{g:g=^*f\}\) is countable. If \(f,g\) are injections and \(f=^*g\), their ranges differ by only finitely many values; in particular one range is coinfinite exactly when the other is.</p>
+  <p class="proof-label">Proof</p>
+  <p>Reflexivity and symmetry are immediate; the disagreement set for \(f,h\) is contained in the union of the disagreement sets for \(f,g\) and \(g,h\), proving transitivity. Each finite modification is determined by the finite graph of its changed values, a finite subset of the countable set \(D\times\mathbb N\). The <a href="finite-and-countable-sets#finite-subset-family">countability of finite subsets</a> bounds the number of modifications.</p>
+  <p>If the disagreement set is \(E\), then \(\operatorname{ran}(g)\setminus\operatorname{ran}(f)\subseteq g[E]\) and \(\operatorname{ran}(f)\setminus\operatorname{ran}(g)\subseteq f[E]\). These sets are finite. Removing or adding finitely many values cannot change whether the complement in \(\mathbb N\) is infinite. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Here <strong>coinfinite</strong> means that the complement in \(\mathbb N\) is infinite. When domains differ, we compare a function to an explicitly specified restriction, rather than writing \(=^*\) for two different domains.</p>
+</section>
+
+<section id="finite-repair-extension" data-kind="lemma" data-formal="finite-repair-extension">
+  <h2>Finitely many collisions can be repaired while avoiding a finite reserve</h2>
+  <p>Let \(A\subseteq B\), let \(f:B\to\mathbb N\) be an injection with coinfinite range, and let \(g:A\to\mathbb N\) be an injection with \(g=^*f\mathbin{\upharpoonright}A\). If \(R\subseteq\mathbb N\) is finite and disjoint from \(\operatorname{ran}(g)\), there is an injection \(h:B\to\mathbb N\) extending \(g\), with \(h=^*f\), coinfinite range, and range disjoint from \(R\).</p>
+  <p class="proof-label">Proof</p>
+  <p>On \(B\setminus A\), retain the values of \(f\) except at</p>
+  <div class="math-display">\[
+    E=\{b\in B\setminus A:f(b)\in\operatorname{ran}(g)\cup R\}.
+  \]</div>
+  <p>The set \(E\) is finite. Values of \(f\) at new arguments cannot lie in \(\operatorname{ran}(f\mathbin{\upharpoonright}A)\), by injectivity. The difference \(\operatorname{ran}(g)\setminus\operatorname{ran}(f\mathbin{\upharpoonright}A)\) is finite, because \(g\) changes only finitely many arguments. Each of those values, or of the finitely many values in \(R\), is used by \(f\) at most once.</p>
+  <p>The partial map consisting of \(g\) and the retained values is injective and avoids \(R\). Its range is contained in \(\operatorname{ran}(f)\) together with finitely many changed values of \(g\); hence its complement is infinite. Fill the finitely many holes \(E\) with distinct fresh values outside that range and outside \(R\). There are enough fresh values because excluding an additional finite set leaves an infinite supply. The resulting \(h\) is total, injective, and avoids \(R\). It differs from \(f\) only on \(E\) and the finite disagreement set on \(A\), so its range is still coinfinite by <a href="#finite-change-classes"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="coherent-injections" data-kind="lemma" data-formal="coherent-coinfinite-injections coherent-injection-family-exists">
+  <h2>Coinfinite injections can agree with all earlier stages up to finite errors</h2>
+  <p>There is a family \((s_\alpha)_{\alpha&lt;\omega_1}\) such that each \(s_\alpha:\alpha\to\mathbb N\) is injective with coinfinite range, and</p>
+  <div class="math-display">\[
+    \beta&lt;\alpha\quad\Longrightarrow\quad
+      s_\alpha\mathbin{\upharpoonright}\beta=^*s_\beta.
+    \label{eq:coherence}
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Use <a href="ordinals#transfinite-methods">transfinite recursion</a>. Put \(s_0=\varnothing\). At a successor, extend \(s_\alpha\) by assigning to \(\alpha\) a value outside its range. This preserves injectivity and coinfiniteness, and leaves all earlier restrictions unchanged.</p>
+  <p>At a nonzero limit \(\alpha&lt;\omega_1\), choose a strictly increasing cofinal sequence \((\alpha_n)_{n&lt;\omega}\) in \(\alpha\), which exists by <a href="cofinality#increasing-cofinal-sequences">countable limit cofinality</a>. We construct total injections \(h_n:\alpha_n\to\mathbb N\) and finite sets \(R_n\subseteq\mathbb N\) satisfying</p>
+  <div class="math-display">\[
+    h_n=^*s_{\alpha_n},\quad h_n\subseteq h_{n+1},\quad
+    R_n\subseteq R_{n+1},\quad |R_n|=n,\quad
+    R_n\cap\operatorname{ran}(h_n)=\varnothing.
+  \]</div>
+  <p>Start with \(h_0=s_{\alpha_0}\) and \(R_0=\varnothing\). The earlier coherence and finite-error transitivity give \(h_n=^*s_{\alpha_{n+1}}\mathbin{\upharpoonright}\alpha_n\). Apply <a href="#finite-repair-extension"></a> with \(f=s_{\alpha_{n+1}}\), \(g=h_n\), and reserve \(R_n\). This gives a total injection \(h_{n+1}:\alpha_{n+1}\to\mathbb N\) extending \(h_n\), finitely differing from \(s_{\alpha_{n+1}}\), with coinfinite range avoiding \(R_n\).</p>
+  <p>Choose a fresh number</p>
+  <div class="math-display">\[
+    r_n\in\mathbb N\setminus
+      \bigl(\operatorname{ran}(h_{n+1})\cup R_n\bigr),
+      \qquad R_{n+1}=R_n\cup\{r_n\}.
+  \]</div>
+  <p>This excludes both the current range and all previous reserved numbers, so the reserves really grow by one at every stage. Subsequent extensions continue to avoid them.</p>
+  <p>Set \(s_\alpha=\bigcup_{n&lt;\omega}h_n\). Compatibility makes this a function; cofinality of the domains makes it total on \(\alpha\); increasing injective extensions make it injective. Its range misses the infinite set \(\bigcup_nR_n\): a number reserved at one stage is avoided at all later stages, and earlier ranges are contained in later ranges. Thus its range is coinfinite.</p>
+  <p>Finally, for \(\beta&lt;\alpha\), choose \(n\) with \(\beta&lt;\alpha_n\). The restriction \(s_\alpha\mathbin{\upharpoonright}\beta=h_n\mathbin{\upharpoonright}\beta\) finitely differs from \(s_{\alpha_n}\mathbin{\upharpoonright}\beta\), which finitely differs from \(s_\beta\) by the recursion hypothesis. This proves \eqref{eq:coherence} and completes the construction. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The \(s_\alpha\) are coherent up to finite errors; they do not form a chain of exact extensions. Exact coherence at every stage would produce the forbidden injection \(\omega_1\to\mathbb N\).</p>
+</section>
+
+<section id="aronszajn-existence" data-kind="theorem" data-formal="coherent-aronszajn-tree coherent-aronszajn-tree-specification aronszajn-tree-exists">
+  <h2>There is an Aronszajn tree with countable levels and no uncountable branch</h2>
+  <div class="statement-box"><p>There exists a tree of height \(\omega_1\) with every level countable and no cofinal branch. In fact every branch is countable.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Take the coherent family from <a href="#coherent-injections"></a> and define</p>
+  <div class="math-display">\[
+    T_\alpha=\{t:\alpha\to\mathbb N:
+      t\text{ is injective and }t=^*s_\alpha\},\qquad
+    T=\bigcup_{\alpha&lt;\omega_1}T_\alpha,
+  \]</div>
+  <p>ordered by extension. If \(t\in T_\alpha\) and \(\beta&lt;\alpha\), then \(t\mathbin{\upharpoonright}\beta=^*s_\alpha\mathbin{\upharpoonright}\beta=^*s_\beta\), so its restriction lies in \(T_\beta\). Thus \(T\) is closed under restrictions and has exactly these levels. Each is nonempty because it contains \(s_\alpha\), and each is countable by <a href="#finite-change-classes"></a>. Hence \(T\) is an \(\omega_1\)-tree.</p>
+  <p>A cofinal branch in \(T\) would be a cofinal branch in the full injection tree \(J\), which <a href="#injection-tree"></a> excludes. More generally, if a branch were uncountable, its distinct node heights would form an uncountable subset of \(\omega_1\), hence would be unbounded by <a href="cofinality#omega-one-regular">regularity of \(\omega_1\)</a>. Downward closure would make that branch cofinal. Therefore every branch is countable. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="normality-question" data-kind="question" data-formal="coherent-aronszajn-tree-root-extensions">
+  <h2>Does extension to every higher level force a cofinal branch?</h2>
+  <p>Is the constructed tree rooted? Can each of its nodes be extended to every higher level? If so, why is there still no cofinal branch?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The empty function is its unique root. Given \(t\in T_\alpha\) and \(\alpha&lt;\beta&lt;\omega_1\), coherence gives \(t=^*s_\beta\mathbin{\upharpoonright}\alpha\). Apply the finite-repair extension lemma with \(R=\varnothing\). It supplies an injection \(u:\beta\to\mathbb N\) extending \(t\) with \(u=^*s_\beta\), so \(u\in T_\beta\). Thus every node has an extension at every prescribed higher level.</p><p>These separate extension assertions do not give a coherent chain through all \(\omega_1\) levels. At a limit stage, the union of the nodes chosen so far may fail to belong to the constructed level: it need not finitely agree with its selected \(s_\alpha\), and it might already use all natural-number values. The tree admits extensions of each individual node, without promising an upper bound for every increasing chain. The no-branch proof still rules out an \(\omega_1\)-long choice of mutually extending nodes. Conditions described as “normality” vary between authors; we use the explicit extension property here rather than rely on that name.</p></div>
+  </details>
+</section>

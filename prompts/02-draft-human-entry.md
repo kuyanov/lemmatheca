@@ -38,13 +38,33 @@ Apply the [reading-order criteria](../CONTRIBUTING.md#reading-order) to entry
 placement, the sequence of blocks, and the summary and abstract. Check that each
 definition is introduced before its first use or reference.
 
-Consult and maintain the [reference backlog](../docs/reference-backlog.md). Familiar
-background, including standard real-number facts, may be used without an entry
-reference and does not block drafting merely because a link is unavailable. Record
-useful future references with the consuming entry/block IDs and precise facts needed.
-When suitable target blocks become available, add the entry links and remove the
-fulfilled items. The backlog does not permit major dependencies on substantial
-theory missing from the corpus or excuse incorrect or unsupported reasoning.
+**Reference-backlog maintenance is required for every draft and revision in this
+step.** Read the [reference backlog](../docs/reference-backlog.md), then inspect
+every block of each drafted or revised entry for useful references to future areas. Include
+accepted background and locally developed facts whose broader treatment would
+help readers; do not limit the audit to missing prerequisites.
+
+- Add or update rows in the existing single table using its four columns:
+  future area, proposed reference coverage, consuming `entry-id#block-id`
+  locations, and the precise fact or context to reference. Group repeated uses.
+  Use the actual current block IDs and proposed titles rather than nonexistent
+  target links or invented future block IDs.
+- When a suitable target already exists, inspect its content and assumptions,
+  add the useful entry link now, and remove the fulfilled consuming locations
+  from the backlog. Keep any locations still awaiting future coverage.
+- Keep the backlog to this one table. Put existing-target integration notes,
+  future-entry plans, correspondences still to prove, and deferred extensions
+  in the handoff or [reference planning notes](../docs/reference-planning.md).
+  Do not add audit narratives, extra tables, or maintenance rules to the backlog.
+- Complete the table edits before returning the draft. Listing proposed rows
+  only in the response does not complete this drafting task. Report the actual
+  additions, changes, and removals, or explicitly state that the audit found
+  no changes needed.
+
+Familiar background, including standard real-number facts, may be used without
+an entry reference and does not block drafting merely because a link is unavailable.
+The backlog does not permit major dependencies on substantial theory missing from
+the corpus or excuse incorrect or unsupported reasoning.
 
 Before writing the draft, check the needed source passages for mathematical rigor.
 Use a supplied step-1 source-rigor assessment where it applies; if it is missing
@@ -127,6 +147,10 @@ request.
 
 ## Checks
 
+Confirm that the future-reference audit covered every drafted or revised entry,
+that its table changes are saved, and that all consuming block IDs exist. Check
+that the backlog still contains one table of future-area references only.
+
 After editing corpus files, run from the repository root:
 
 ```sh
@@ -157,3 +181,6 @@ any remaining gaps or unchecked material. Separate repairs to source arguments
 from editorial changes to the entry.
 Include prerequisite links, supporting lemmas developed locally, explicit scope
 changes, and recommendations for missing areas or entries.
+For each entry, include the reference-backlog audit outcome: rows added, changed,
+or removed, or an explicit finding that no changes were needed after inspecting
+its blocks. Keep deferred material and future-entry plans separate from these rows.

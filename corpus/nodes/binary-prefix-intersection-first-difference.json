@@ -1,0 +1,12 @@
+{
+  "id": "binary-prefix-intersection-first-difference",
+  "description": "If binary sequences x and y agree at every index below k and differ at k, their prefix-code sets intersect in exactly the codes of the prefixes of x of lengths at most k, and this intersection has k+1 elements.",
+  "module": "Lemmatheca.SetTheory.AlmostDisjoint",
+  "declaration": "Lemmatheca.SetTheory.AlmostDisjoint.prefixCodes_intersection",
+  "dependencies": [
+    "finite-binary-word-code-specification"
+  ],
+  "verified": true,
+  "declaration_line": 54,
+  "signature": "Lemmatheca.SetTheory.AlmostDisjoint.prefixCodes_intersection (x y : ℕ → Bool) (k : ℕ) (hpre : ∀ i < k, x i = y i)\n  (hne : x k ≠ y k) :\n  Lemmatheca.SetTheory.AlmostDisjoint.prefixCodes x ∩ Lemmatheca.SetTheory.AlmostDisjoint.prefixCodes y =\n      (fun n => Lemmatheca.SetTheory.binaryWordCode (Lemmatheca.SetTheory.AlmostDisjoint.binaryPrefix x n)) ''\n        Set.Iic k ∧\n    (Lemmatheca.SetTheory.AlmostDisjoint.prefixCodes x ∩ Lemmatheca.SetTheory.AlmostDisjoint.prefixCodes y).ncard =\n      k + 1"
+}

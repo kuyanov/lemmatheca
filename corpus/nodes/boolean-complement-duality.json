@@ -1,0 +1,15 @@
+{
+  "id": "boolean-complement-duality",
+  "description": "Element complementation takes Boolean filters to ideals and ideals to filters; the operations are inverse and preserve properness.",
+  "module": "Lemmatheca.SetTheory.BooleanAlgebras",
+  "declaration": "Lemmatheca.SetTheory.BooleanAlgebras.complement_duality",
+  "dependencies": [
+    "boolean-complement-involution",
+    "boolean-complement-order",
+    "boolean-complement-join",
+    "boolean-complement-meet"
+  ],
+  "verified": true,
+  "declaration_line": 34,
+  "signature": "Lemmatheca.SetTheory.BooleanAlgebras.complement_duality.{u} {B : Type u} [BooleanAlgebra B] (F : Order.PFilter B)\n  (I : Order.Ideal B) :\n  Order.IsIdeal (Lemmatheca.SetTheory.BooleanAlgebras.dualIdeal F) ∧\n    Order.IsPFilter (Lemmatheca.SetTheory.BooleanAlgebras.dualFilter I) ∧\n      (∀ (a : B), aᶜ ∈ Lemmatheca.SetTheory.BooleanAlgebras.dualIdeal F ↔ a ∈ F) ∧\n        (∀ (a : B), aᶜ ∈ Lemmatheca.SetTheory.BooleanAlgebras.dualFilter I ↔ a ∈ I) ∧\n          (⊤ ∉ Lemmatheca.SetTheory.BooleanAlgebras.dualIdeal F ↔\n              Lemmatheca.SetTheory.BooleanAlgebras.IsProperFilter F) ∧\n            (⊥ ∉ Lemmatheca.SetTheory.BooleanAlgebras.dualFilter I ↔ I.IsProper)"
+}

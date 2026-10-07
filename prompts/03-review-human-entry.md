@@ -46,9 +46,7 @@ Check the following:
   and citations accurately support the material.
   Familiar background, including standard real-number facts, may be used without
   an entry reference. Distinguish useful future links from mathematical gaps and
-  major dependencies on substantial missing theory. Consult the
-  [reference backlog](../docs/reference-backlog.md) and propose additions or fulfilled
-  items in the handoff; do not edit it during this read-only review.
+  major dependencies on substantial missing theory.
   Check that linked results supply the needed content with compatible assumptions,
   including across areas. Flag missing substantial prerequisite theories and
   recommend concrete entry titles, following the
@@ -56,6 +54,21 @@ Check the following:
   axiom strength separately from ordinary implications and set-closure properties.
   Review these arguments under their stated axioms; Verified badges do not
   establish axiom strength.
+- **Audit the [reference backlog](../docs/reference-backlog.md) for every reviewed
+  entry.** Inspect all of its blocks for useful references to future areas,
+  including accepted background and facts proved locally. Check that applicable
+  rows exist, use actual consuming block IDs, and state the precise fact and
+  proposed future-area coverage. Flag omitted uses, stale locations, and rows
+  whose suitable targets are now available.
+  Require the backlog to contain one table of upcoming future-area references.
+  Existing-target integration notes, future-entry plans, correspondences still
+  to prove, and deferred extensions belong in the handoff or
+  [reference planning notes](../docs/reference-planning.md).
+  Return concrete proposed additions or replacements using the table's four
+  columns, and identify fulfilled locations to remove together with the exact
+  available target blocks to link. If no changes are needed, say so explicitly
+  after checking the entry. Do not edit the table during this read-only review;
+  identify omitted or incorrect rows as drafting corrections in the handoff.
 - Exposition and metadata remain valid if entries are reordered or moved into
   separate subareas. Flag references to "the next entry," "previous entries," or
   material "introduced earlier" in another entry. Require named links using stable
@@ -91,6 +104,9 @@ Return findings ordered by importance, with file/line or block references, why e
 issue matters, and a concrete correction. Separate mathematical errors from optional
 editorial improvements. State what was checked and any unavailable source or visual
 checks. Include a concise list of revisions needed before formalization.
+For each entry, include the reference-backlog audit outcome with concrete proposed
+table rows and removals, or an explicit finding that no changes are needed. Do not
+substitute a generic statement that references were checked for this outcome.
 
 This is a read-only review. Do not rewrite the entry or generated JSON, create
 formal nodes, or run the writing build command. Reviews and decisions belong in

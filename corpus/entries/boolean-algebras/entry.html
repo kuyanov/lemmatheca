@@ -1,0 +1,127 @@
+<section id="boolean-operations" data-formal="boolean-algebra boolean-meet-distributes boolean-join-distributes boolean-meet-order boolean-join-order" data-kind="definition">
+  <h2>A Boolean algebra abstracts union, intersection, and complement</h2>
+  <p>A <strong>bounded lattice</strong> is a partially ordered set \(B\) with a least element \(0\), a greatest element \(1\), and a greatest lower bound \(a\wedge b\) and least upper bound \(a\vee b\) for every pair. These are the <a href="ordered-sets#suprema-and-infima">infimum and supremum</a> of the pair. A <strong>Boolean algebra</strong> is a bounded lattice satisfying both distributive laws,</p>
+  <div class="math-display">\[
+    \begin{aligned}
+      a\wedge(b\vee c)&amp;=(a\wedge b)\vee(a\wedge c),\\
+      a\vee(b\wedge c)&amp;=(a\vee b)\wedge(a\vee c).
+    \end{aligned}
+  \]</div>
+  <p>in which every \(a\) has a complement \(a^c\), satisfying \(a\wedge a^c=0\) and \(a\vee a^c=1\). The order is recovered from the operations: \(a\le b\) exactly when \(a\wedge b=a\), equivalently \(a\vee b=b\).</p>
+  <p>We allow the one-element algebra \(0=1\). A <strong>nontrivial</strong> Boolean algebra has \(0\ne1\). All existence arguments below take place in ZFC; the use of choice will be explicit. The goal is an algebraic representation by sets, without introducing a topology.</p>
+</section>
+
+<section id="elementary-boolean-laws" data-formal="boolean-complement-unique boolean-complement-involution boolean-bottom-complement boolean-top-complement boolean-complement-join boolean-complement-meet boolean-complement-order boolean-complement-disjoint-order lattice-disjoint-meet-zero" data-kind="lemma">
+  <h2>Complements are unique and reverse the order</h2>
+  <p>In a Boolean algebra the complement is unique. For all \(a,b\),</p>
+  <div class="math-display">\[
+    \begin{aligned}
+      (a^c)^c&amp;=a,\qquad 0^c=1,\qquad1^c=0,\\
+      (a\vee b)^c&amp;=a^c\wedge b^c,\\
+      (a\wedge b)^c&amp;=a^c\vee b^c.
+    \end{aligned}
+  \]</div>
+  <p>Also \(a\le b\) if and only if \(b^c\le a^c\), and</p>
+  <div class="math-display">\[ a\le b\quad\Longleftrightarrow\quad a\wedge b^c=0. \]</div>
+  <p class="proof-label">Proof</p>
+  <p>If \(u,v\) are complements of \(a\), distributivity gives \(u=u\wedge(a\vee v)=(u\wedge a)\vee(u\wedge v)=u\wedge v\le v\). Interchanging them gives equality. The first three identities follow from uniqueness. The element \(a^c\wedge b^c\) has meet zero with \(a\vee b\), and its join with \(a\vee b\) is \(1\), by the two distributive laws. It is therefore the complement of \(a\vee b\). Applying this identity to \(a^c,b^c\) and taking complements gives the other De Morgan law.</p>
+  <p>If \(a\le b\), then \(a\wedge b^c\le b\wedge b^c=0\). Conversely, if that meet is zero, then \(a=a\wedge(b\vee b^c)=(a\wedge b)\vee0=a\wedge b\le b\). Applying this criterion to \(b^c,a^c\) proves order reversal. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="set-algebra-examples" data-formal="power-set-boolean-algebra boolean-subalgebra boolean-subalgebra-inherited-structure finite-cofinite-algebra-family finite-cofinite-boolean-algebra finite-cofinite-omits-even two-element-boolean-power-set" data-kind="definition">
+  <h2>Algebras of sets need only be closed under finite operations</h2>
+  <p>The power set \(\mathcal P(X)\), ordered by inclusion, is a Boolean algebra: meet is intersection, join is union, complement is taken in \(X\), \(0=\varnothing\), and \(1=X\). More generally, an <strong>algebra of subsets of \(X\)</strong> is a family \(\mathcal A\subseteq\mathcal P(X)\) containing \(\varnothing,X\) and closed under binary unions, binary intersections, and complements in \(X\). With these operations it is a Boolean algebra.</p>
+  <p>For example, the finite and cofinite subsets of \(\mathbb N\) form such an algebra. Complement interchanges finite and cofinite sets. The union of two finite sets is finite; a union with a cofinite set is cofinite. Intersections follow by De Morgan's law. This algebra does not contain the even numbers, whose complement is also infinite.</p>
+  <p>In particular, a Boolean algebra is not required to have arbitrary unions or intersections. The two-element algebra \(\mathbf2=\{0,1\}\), with minimum, maximum, and exchanged complements, is the power-set algebra of a singleton.</p>
+</section>
+
+<section id="ideals-and-filters" data-formal="boolean-filter boolean-ideal boolean-ideal-proper boolean-ideal-proper-top boolean-proper-filter boolean-principal-filter boolean-principal-filter-proper boolean-principal-ideal boolean-principal-ideal-proper boolean-filter-top boolean-filter-meet boolean-ideal-bottom boolean-ideal-join" data-kind="definition">
+  <h2>Ideals collect smaller elements and filters collect larger ones</h2>
+  <p>A <strong>filter</strong> \(F\subseteq B\) contains \(1\), is upward closed, and is closed under binary meets. An <strong>ideal</strong> \(I\subseteq B\) contains \(0\), is downward closed, and is closed under binary joins. We allow the improper filter and ideal \(B\) itself. A filter is <strong>proper</strong> when \(0\notin F\); an ideal is proper when \(1\notin I\). Either is improper exactly when it equals \(B\).</p>
+  <p>For each \(a\in B\), the principal filter and ideal are</p>
+  <div class="math-display">\[ \mathord\uparrow a=\{b:a\le b\},\qquad \mathord\downarrow a=\{b:b\le a\}. \]</div>
+  <p>The first is proper exactly when \(a\ne0\); the second exactly when \(a\ne1\). These claims follow directly from the defining bound properties. In a power-set algebra, this agrees with <a href="filters-and-ultrafilters#proper-filters">filters of subsets</a>. A filter on an abstract Boolean algebra consists of its elements; these elements need not themselves be sets.</p>
+</section>
+
+<section id="complement-duality" data-formal="boolean-filter-dual-ideal boolean-ideal-dual-filter boolean-complement-duality boolean-duality-inclusion boolean-carrier-complement-counterexample" data-kind="lemma">
+  <h2>Complementation turns filters into ideals</h2>
+  <p>If \(F\) is a filter, then \(I_F=\{a\in B:a^c\in F\}\) is an ideal. Conversely \(F_I=\{a\in B:a^c\in I\}\) is a filter for every ideal \(I\). These operations are inverse to one another, preserve inclusion, and preserve properness.</p>
+  <p class="proof-label">Proof</p>
+  <p>Since \(0^c=1\in F\), the set \(I_F\) contains zero. If \(b\le a\in I_F\), order reversal gives \(a^c\le b^c\), so \(b^c\in F\). If \(a,b\in I_F\), the meet \(a^c\wedge b^c=(a\vee b)^c\) belongs to \(F\), giving \(a\vee b\in I_F\). The filter argument is dual. Involution gives \(F_{I_F}=F\) and \(I_{F_I}=I\). Finally, \(1\in I_F\) is equivalent to \(0\in F\), and the analogous statement holds for \(F_I\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This uses the complement <em>operation</em>, not the carrier complement \(B\setminus F\). For distinct \(x,y\), in \(\mathcal P(\{x,y\})\) the filter containing only \(\{x,y\}\) has carrier complement \(\{\varnothing,\{x\},\{y\}\}\), which is not an ideal: the join of \(\{x\}\) and \(\{y\}\) is missing.</p>
+</section>
+
+<section id="adjoining-an-element" data-formal="boolean-filter-adjoin boolean-filter-adjoin-specification" data-kind="lemma">
+  <h2>The smallest filter containing one more element has an explicit form</h2>
+  <p>For a filter \(F\) and \(a\in B\), put</p>
+  <div class="math-display">\[ F[a]=\{b\in B:\text{some }f\in F\text{ satisfies }f\wedge a\le b\}. \]</div>
+  <p>This is the smallest filter containing \(F\cup\{a\}\). It is proper exactly when \(f\wedge a\ne0\) for every \(f\in F\), equivalently when \(a^c\notin F\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Taking \(f=1\) gives \(a\in F[a]\). For \(b\in F\), taking \(f=b\) puts \(b\) in \(F[a]\). Upward closure is immediate. If \(f\wedge a\le b\) and \(g\wedge a\le c\), then \((f\wedge g)\wedge a\le b\wedge c\), with \(f\wedge g\in F\), proving meet closure. Any filter containing \(F,a\) contains each \(f\wedge a\) and everything above it; this proves minimality.</p>
+  <p>The formula puts zero in \(F[a]\) exactly when some \(f\in F\) has \(f\wedge a=0\). By <a href="#elementary-boolean-laws"></a>, this is equivalent to \(f\le a^c\). Upward closure then gives \(a^c\in F\); conversely this member itself has meet zero with \(a\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="boolean-ultrafilters" data-formal="boolean-ultrafilter boolean-ultrafilter-characterizations boolean-maximal-ideal boolean-ultrafilter-maximal-dual boolean-ultrafilter-dual-carrier" data-kind="definition">
+  <h2>Ultrafilters decide every complementary pair</h2>
+  <p>An <strong>ultrafilter</strong> is a proper filter maximal under inclusion among proper filters. For a proper filter \(U\), the following conditions are equivalent: \(U\) is an ultrafilter; exactly one of \(a,a^c\) belongs to \(U\) for every \(a\in B\); \(U\) is <strong>prime</strong>, meaning that \(a\vee b\in U\) implies \(a\in U\) or \(b\in U\).</p>
+  <p class="proof-label">Proof</p>
+  <p>A proper filter cannot contain both complements, whose meet is zero. If \(a\notin U\) and \(a^c\notin U\), <a href="#adjoining-an-element"></a> makes \(U[a]\) a proper strict extension. Thus maximality implies the decision condition. Conversely, a proper extension adding \(a\notin U\) also contains \(a^c\in U\), a contradiction.</p>
+  <p>If the decision condition holds and neither \(a\) nor \(b\) belongs, then \(a^c,b^c\in U\), hence \((a\vee b)^c\in U\); therefore \(a\vee b\notin U\). This proves primeness. If \(U\) is prime, apply it to \(a\vee a^c=1\in U\) to obtain the decision condition. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>A <strong>maximal ideal</strong> is a maximal proper ideal. By complement duality it corresponds to an ultrafilter. For an ultrafilter \(U\), its dual ideal \(I_U\) equals \(B\setminus U\), because \(a^c\in U\) exactly when \(a\notin U\). This equality is special to ultrafilters.</p>
+</section>
+
+<section id="ultrafilter-extension" data-formal="boolean-ultrafilter-extension boolean-maximal-ideal-extension boolean-nonzero-ultrafilter boolean-nontrivial-ultrafilter" data-kind="theorem">
+  <h2>Every proper Boolean filter extends to an ultrafilter</h2>
+  <div class="statement-box"><p>Assuming the axiom of choice, every proper filter \(F_0\) on a Boolean algebra \(B\) is contained in an ultrafilter. Every proper ideal is contained in a maximal ideal.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Order by inclusion the set of proper filters containing \(F_0\). It is nonempty and lies in \(\mathcal P(B)\). The union of a nonempty chain is a filter: two members of the union lie together in the larger of two comparable filters, where their meet belongs. Upward closure and membership of \(1\) pass to the union. Zero does not belong to the union because it belongs to none of the chain's members. Thus the union is a proper upper bound. The empty chain has \(F_0\) as an upper bound.</p>
+  <p><a href="axiom-of-choice#zorns-lemma">Zorn's lemma</a> supplies a maximal element. Any proper extension of it would still contain \(F_0\), so it is an ultrafilter on \(B\). Apply complement duality to obtain the ideal assertion. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, every nonzero \(c\in B\) belongs to an ultrafilter, by extending \(\mathord\uparrow c\). This also shows that every nontrivial Boolean algebra has an ultrafilter.</p>
+</section>
+
+<section id="separating-elements" data-formal="boolean-ultrafilter-separates-order boolean-ultrafilter-separates-elements" data-kind="theorem">
+  <h2>An ultrafilter detects a failed comparison</h2>
+  <div class="statement-box"><p>Assuming choice, if \(a\not\le b\) in a Boolean algebra, there is an ultrafilter \(U\) with \(a\in U\) and \(b\notin U\). Consequently distinct elements are distinguished by some ultrafilter.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>The element \(c=a\wedge b^c\) is nonzero by <a href="#elementary-boolean-laws"></a>. Extend its principal filter to an ultrafilter \(U\). Since \(c\le a,b^c\), both \(a\) and \(b^c\) belong to \(U\); properness excludes \(b\). If \(a\ne b\), antisymmetry ensures that \(a\not\le b\) or \(b\not\le a\), so one of these constructions separates them. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="stone-map" data-formal="boolean-stone-space boolean-stone-map boolean-homomorphism boolean-homomorphism-complement" data-kind="definition">
+  <h2>The representing set consists of all ultrafilters</h2>
+  <p>Let \(X=\operatorname{Ult}(B)\) be the set of ultrafilters on \(B\), a subset of \(\mathcal P(B)\). Define the <strong>Stone map</strong> by</p>
+  <div class="math-display">\[ s:B\longrightarrow\mathcal P(X),\qquad s(a)=\widehat a=\{U\in X:a\in U\}. \]</div>
+  <p>A <strong>Boolean homomorphism</strong> is a map preserving \(0,1\), binary meets, binary joins, and complements. A bijective Boolean homomorphism is an isomorphism; an injective one is an embedding. The Stone map records each element through all possible ultrafilter decisions about it.</p>
+</section>
+
+<section id="stone-representation" data-formal="boolean-stone-operations boolean-stone-homomorphism boolean-stone-order-embedding boolean-stone-injective boolean-stone-range boolean-stone-range-carrier boolean-stone-representation" data-kind="theorem">
+  <h2>Every Boolean algebra is isomorphic to an algebra of sets</h2>
+  <div class="statement-box"><p>Assuming choice, the Stone map is an injective Boolean homomorphism and an <a href="ordered-sets#order-maps">order embedding</a>. Explicitly,</p>
+    <div class="math-display">\[
+      \begin{aligned}
+        \widehat0&amp;=\varnothing,\qquad \widehat1=X,\\
+        \widehat{a\wedge b}&amp;=\widehat a\cap\widehat b,\\
+        \widehat{a\vee b}&amp;=\widehat a\cup\widehat b,\\
+        \widehat{a^c}&amp;=X\setminus\widehat a.
+      \end{aligned}
+    \]</div>
+    <p>and \(a\le b\) if and only if \(\widehat a\subseteq\widehat b\). Its range \(\{\widehat a:a\in B\}\) is an algebra of subsets of \(X\), and \(s\) is a Boolean isomorphism from \(B\) onto this range.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Proper filters exclude \(0\) and include \(1\). A meet belongs to a filter exactly when both factors belong: meet closure gives one direction, and upward closure gives the other. Primeness gives the join identity, including its converse by upward closure. Complement decisions give the complement identity. Thus \(s\) is a homomorphism.</p>
+  <p>If \(a\le b\), upward closure gives \(\widehat a\subseteq\widehat b\). If \(a\not\le b\), <a href="#separating-elements"></a> supplies a point of \(\widehat a\setminus\widehat b\); hence inclusion fails. This proves order reflection, and antisymmetry then proves injectivity. The displayed identities show that the range contains the bounds and is closed under the Boolean operations. Restricting the codomain to that range makes \(s\) bijective, and its inverse preserves the same operations by injectivity. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="full-power-set-question" data-formal="finite-cofinite-countably-infinite finite-cofinite-not-power-set" data-kind="question">
+  <h2>Must the representing algebra be an entire power set?</h2>
+  <p>Can every Boolean algebra be isomorphic to \(\mathcal P(Y)\) for some set \(Y\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. The finite/cofinite algebra on \(\mathbb N\) is countably infinite: the <a href="finite-and-countable-sets#finite-subset-family">finite subsets</a> form a countable family, complements give another countable family, and the singletons give infinitely many distinct members. If \(Y\) is finite, its power set is finite. If \(Y\) is infinite, choice gives a countably infinite subset of \(Y\), whose power set injects into \(\mathcal P(Y)\); <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a> makes this uncountable. Neither case gives a countably infinite power set. The representation theorem promises an isomorphism onto the Stone map's range, which may be a proper subalgebra of the full power set.</p></div>
+  </details>
+</section>
+
+<section id="trivial-algebra-question" data-formal="boolean-trivial-representation" data-kind="question">
+  <h2>What represents the one-element Boolean algebra?</h2>
+  <p>Does the representation theorem still hold when \(0=1\), even though there are no proper filters?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Yes. Every element lies between \(0\) and \(1\), so equality of those bounds makes \(B\) a singleton. A filter contains \(1=0\), so no ultrafilter exists. Thus \(X=\varnothing\) and \(\mathcal P(X)=\{\varnothing\}\). The Stone map sends the only element to \(\varnothing\), giving an isomorphism of these one-element algebras. This case needs no separating ultrafilter, because there are no distinct elements to separate.</p></div>
+  </details>
+</section>

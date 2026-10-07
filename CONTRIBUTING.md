@@ -133,12 +133,31 @@ an explanation for the reader, and a drafted entry may still have unfinished nod
 Familiar background may be used without an entry reference. This includes elementary
 arithmetic, ordinary classical reasoning, and standard real-number facts used in
 examples or short supporting arguments. A missing corpus reference for such a fact
-is not itself a mathematical gap or a drafting blocker. Record useful future links
-in [the reference backlog](docs/reference-backlog.md), with the consuming entry/block
-IDs, the precise fact used, and an existing or proposed target. As relevant areas
-develop, add links to blocks that actually establish those facts and remove the
-fulfilled backlog items. Review steps remain read-only: propose backlog updates in
-their handoff rather than editing the document during a review.
+is not itself a mathematical gap or a drafting blocker.
+
+The [reference backlog](docs/reference-backlog.md) contains one table of upcoming
+references from current entries to future mathematical areas. Each row records
+the future area, proposed reference coverage, consuming entry/block IDs, and the
+precise fact or context to reference. Include useful broader treatments of facts
+developed locally as well as accepted background. Group repeated uses and preserve
+stable IDs independently of reading order or area membership. Proposed titles
+are suggestions; do not invent target block IDs or link to nonexistent entries.
+
+During every step-2 draft or revision, audit all entry blocks and update this table
+before returning the draft. Report the rows added, changed, or removed, or state
+that the audit found no changes needed. When suitable target blocks become
+available, check their facts and assumptions, add the entry links, and remove only
+the fulfilled consuming locations; keep remaining locations in the row. A related
+title or an available Lean declaration alone does not establish human coverage.
+Step 3 must audit the table and return concrete proposed corrections or an explicit
+no-change finding. Planning and review remain read-only: put proposed changes in
+the handoff rather than editing the backlog during those steps.
+
+Keep existing-target integration notes, plans for future consuming entries,
+cross-area correspondence still to prove, and deferred extensions outside the
+backlog, in the handoff or [reference planning notes](docs/reference-planning.md).
+Keep maintenance rules here and in the prompts. The backlog is outside corpus
+metadata and is neither an approval system nor a record of readiness.
 
 Entries should have no major dependencies on substantial theory missing from the
 corpus. Judge the scope and role of a prerequisite, not just whether its subject is

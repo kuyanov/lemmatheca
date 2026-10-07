@@ -1,0 +1,89 @@
+<section id="almost-inclusion" data-kind="definition" data-formal="almost-inclusion almost-inclusion-finite-difference eventual-natural-threshold natural-cofinite-filter-tails finite-set-difference cofinite-filter-membership">
+  <h2>Containment can hold with finitely many exceptions</h2>
+  <p>Throughout, \(\mathbb N=\{0,1,2,\ldots\}\). For subsets \(A,B\subseteq\mathbb N\), write \(A\subseteq^*B\) when \(A\setminus B\) is finite, and say that \(A\) is <strong>almost contained</strong> in \(B\). Equivalently, there is \(N\in\mathbb N\) such that every \(n\in A\) with \(n\ge N\) belongs to \(B\). A finite exceptional set is bounded; conversely, a bounded subset of \(\mathbb N\) is finite.</p>
+  <p>Every finite set is almost contained in every set, including the empty set. Also \(\mathbb N\subseteq^*B\) exactly when \(B\) is cofinite. This extends the idea of ignoring finitely many points used in the <a href="filters-and-ultrafilters#cofinite-filter">cofinite filter</a>.</p>
+</section>
+
+<section id="finite-error-equivalence" data-kind="lemma" data-formal="almost-inclusion-reflexive almost-inclusion-transitive finite-error-set-equality finite-error-equality-symmetric-difference finite-error-equality-mutual-inclusion finite-error-equality-reflexive finite-error-equality-symmetric finite-error-equality-transitive almost-inclusion-not-antisymmetric">
+  <h2>Almost containment is transitive but need not distinguish sets</h2>
+  <p>The relation \(\subseteq^*\) is a <a href="ordered-sets#preorders">preorder</a>: it is reflexive and transitive. Write \(A=^*B\) when their symmetric difference \((A\setminus B)\cup(B\setminus A)\) is finite. This is equivalent to having both \(A\subseteq^*B\) and \(B\subseteq^*A\), and it is an equivalence relation.</p>
+  <p class="proof-label">Proof</p>
+  <p>Reflexivity follows from \(A\setminus A=\varnothing\). If \(A\subseteq^*B\) and \(B\subseteq^*C\), then \(A\setminus C\subseteq(A\setminus B)\cup(B\setminus C)\), so the difference is finite. The characterization of \(=^*\) follows because a union of two sets is finite exactly when both are finite. Reflexivity, symmetry, and transitivity of \(=^*\) now follow from the corresponding almost containments. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Antisymmetry fails: the even numbers and the even numbers together with \(1\) are different sets, but each is almost contained in the other.</p>
+</section>
+
+<section id="strong-finite-intersections" data-kind="definition" data-formal="strong-finite-intersection-property infinite-pseudointersection pseudointersection-forces-strong-intersections infinite-set-finite-removal">
+  <h2>An infinite approximate intersection requires infinite finite intersections</h2>
+  <p>A family \(\mathcal A\subseteq\mathcal P(\mathbb N)\) has the <strong>strong finite intersection property</strong> if the intersection of every finite subfamily is infinite. The empty intersection is \(\mathbb N\). This strengthens the <a href="filters-and-ultrafilters#finite-intersection-property">finite intersection property</a>, which asks only for nonempty intersections.</p>
+  <p>An <strong>infinite pseudointersection</strong> of \(\mathcal A\) is an infinite set \(B\subseteq\mathbb N\) such that \(B\subseteq^*A\) for every \(A\in\mathcal A\). We will shorten this to “pseudointersection”; infinitude is part of the convention.</p>
+  <p>A pseudointersection forces the strong finite intersection property. For a finite subfamily \(\mathcal E\), the set \(B\setminus\bigcap\mathcal E\) is the finite union \(\bigcup_{A\in\mathcal E}(B\setminus A)\). Removing it from infinite \(B\) leaves infinitely many points in \(\bigcap\mathcal E\). Indeed, removing a finite set from an infinite set cannot leave a finite set, since then the original set would be a union of two finite sets.</p>
+</section>
+
+<section id="countable-pseudointersection" data-kind="theorem" data-formal="countable-infinite-pseudointersection empty-family-pseudointersection infinite-universe countable-diagonal-points countable-diagonal-points-specification">
+  <h2>Countably many compatible requirements have a pseudointersection</h2>
+  <div class="statement-box"><p>Every countable family \(\mathcal A\subseteq\mathcal P(\mathbb N)\) with the strong finite intersection property has an infinite pseudointersection.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>If \(\mathcal A\) is empty, use \(B=\mathbb N\). Otherwise, take a <a href="finite-and-countable-sets#surjective-lists">list</a> \(A_0,A_1,\ldots\) containing all its members; repetitions are allowed, so this also handles finite nonempty families. Put \(F_n=\bigcap_{i\le n}A_i\). Every \(F_n\) is infinite.</p>
+  <p>Let \(b_0\) be the least member of \(F_0\). Having defined \(b_n\), let \(b_{n+1}\) be the least member of \(F_{n+1}\) greater than \(b_n\). Such a member exists because an <a href="finite-and-countable-sets#infinite-subsets-of-naturals">infinite subset of the naturals</a> is unbounded. Recursion produces a strictly increasing sequence, so \(B=\{b_n:n\in\mathbb N\}\) is infinite.</p>
+  <p>For a fixed \(i\), every \(n\ge i\) satisfies \(b_n\in F_n\subseteq A_i\). Consequently</p>
+  <div class="math-display">\[
+    B\setminus A_i\subseteq\{b_n:n&lt;i\}.
+  \]</div>
+  <p>The right side is empty when \(i=0\), and finite in every case. Thus \(B\subseteq^*A_i\) for all \(i\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The construction uses least natural numbers and <a href="natural-numbers-as-sets#recursion-on-omega">recursion</a>, so it requires no axiom of choice. At stage \(n\), it satisfies requirements through index \(n\), including the current one.</p>
+  <figure id="diagonal-requirements" class="proof-figure">
+    <div class="figure-image"><img src="assets/diagonal-requirements.svg" width="760" height="370" alt="A triangular grid: the selected point b n satisfies requirement A i whenever n is at least i. Each row has only finitely many earlier exceptions." /></div>
+    <figcaption>Each new point satisfies more requirements. In any fixed row, only finitely many selected points precede the guaranteed region.</figcaption>
+  </figure>
+</section>
+
+<section id="finite-exceptions-question" data-kind="question" data-formal="natural-tail-intersections tails-infinite-pseudointersection nonempty-finite-intersections-insufficient">
+  <h2>How much can an approximate intersection improve on an exact one?</h2>
+  <p>For the tails \(T_n=\{m:m\ge n\}\), the intersection of all \(T_n\) is empty. Do they have a pseudointersection? Could the theorem instead assume that each member is infinite and every finite intersection is merely nonempty?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The set \(\mathbb N\) itself is a pseudointersection of the tails: \(\mathbb N\setminus T_n=\{m\in\mathbb N:m&lt;n\}\) is finite. An empty exact intersection is therefore no obstruction.</p><p>The weaker hypothesis is insufficient. Let \(E\) and \(O\) be the even and odd numbers. Both \(E\cup\{1\}\) and \(O\) are infinite, but their intersection is \(\{1\}\). If \(B\) were almost contained in both, then all of \(B\) except a finite union of exceptions would lie in \(\{1\}\). This would make \(B\) finite.</p></div>
+  </details>
+</section>
+
+<section id="eventual-domination" data-kind="definition" data-formal="eventual-domination strict-eventual-domination eventual-natural-threshold eventual-domination-reflexive eventual-domination-transitive eventual-equality-implies-domination natural-cofinite-filter-tails eventual-domination-not-antisymmetric">
+  <h2>Function inequalities can also tolerate finitely many errors</h2>
+  <p>For functions \(f,g:\mathbb N\to\mathbb N\), write \(f\le^*g\) if \(f(n)\le g(n)\) for all sufficiently large \(n\). Write \(f&lt;^*g\) if \(f(n)&lt;g(n)\) for all sufficiently large \(n\). The first relation is called <strong>eventual domination</strong>; the second requires strict eventual inequality.</p>
+  <p>The threshold can depend on the pair of functions. The relation \(\le^*\) is reflexive and transitive: for transitivity, take the larger of two thresholds. Two functions that differ only at finitely many inputs can dominate one another without being equal.</p>
+</section>
+
+<section id="countable-eventual-bound" data-kind="theorem" data-formal="countable-strict-eventual-bound countable-diagonal-function-bound countable-diagonal-function-bound-specification">
+  <h2>A single function eventually exceeds every function in a countable family</h2>
+  <div class="statement-box"><p>For every countable family \(\mathcal F\subseteq\mathbb N^{\mathbb N}\), there is \(g:\mathbb N\to\mathbb N\) such that \(f&lt;^*g\) for every \(f\in\mathcal F\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>For the empty family, use \(g(n)=0\). Otherwise list its members as \(f_0,f_1,\ldots\), allowing repetitions, and define</p>
+  <div class="math-display">\[
+    g(n)=1+\max\{f_i(n):i\le n\}.
+  \]</div>
+  <p>The maximum exists because its set of indices is finite and nonempty. For fixed \(i\) and every \(n\ge i\), the maximum includes \(f_i(n)\), giving \(f_i(n)&lt;g(n)\). Thus \(f_i&lt;^*g\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>As in the pseudointersection construction, stage \(n\) attends to the first \(n+1\) requirements. The added \(1\) ensures strict inequality, even when all listed functions are zero. This construction also needs no choice.</p>
+</section>
+
+<section id="pointwise-bound-question" data-kind="question" data-formal="constant-functions-bound-example successor-function-defeats-eventual-bound">
+  <h2>Does an eventual bound give a bound at every input?</h2>
+  <p>Consider the constant functions \(f_i(n)=i\). Can one function bound them all pointwise? Is there a function eventually dominating every member of \(\mathbb N^{\mathbb N}\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>A pointwise bound is impossible: at input \(0\), its finite value \(g(0)\) would have to be at least every natural number. Yet \(g(n)=n+1\) eventually strictly exceeds each constant \(i\); a threshold is \(i\). There need not be one threshold working for the whole family simultaneously.</p><p>Nor can any \(g\) eventually dominate all functions. The function \(h(n)=g(n)+1\) fails \(h\le^*g\) at every input. The countability hypothesis in <a href="#countable-eventual-bound"></a> cannot simply be dropped.</p></div>
+  </details>
+</section>
+
+<section id="countable-ultrafilter-bases" data-kind="definition" data-formal="filter-base natural-tail-filter-base natural-cofinite-filter-tails point-filter-singleton-base countable-indexed-range">
+  <h2>A filter base describes all large sets by containment</h2>
+  <p>A <strong>base</strong> for a filter \(\mathcal U\) on \(\mathbb N\) is a family \(\mathcal B\subseteq\mathcal U\) such that every \(S\in\mathcal U\) contains some \(A\in\mathcal B\). Here containment is ordinary containment \(A\subseteq S\), not almost containment.</p>
+  <p>The tails \(T_n\) form a countable base for the cofinite filter, because every cofinite set contains a tail. For the point ultrafilter at \(k\), the one-member family \(\{\{k\}\}\) is a base. Nonprincipal ultrafilters behave differently.</p>
+</section>
+
+<section id="no-countable-ultrafilter-base" data-kind="theorem" data-formal="no-countable-nonprincipal-ultrafilter-base">
+  <h2>A nonprincipal ultrafilter cannot have a countable base</h2>
+  <p>If \(\mathcal U\) is a nonprincipal ultrafilter on \(\mathbb N\), no countable family is a base for \(\mathcal U\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(\mathcal B\) were a countable base. Each finite intersection of its members belongs to \(\mathcal U\), and hence is infinite: a <a href="filters-and-ultrafilters#principal-ultrafilters">finite member would force principality</a>. By <a href="#countable-pseudointersection"></a>, choose an infinite \(P\) almost contained in every base member. Enumerate \(P\) increasingly as \(p_0,p_1,\ldots\), and split it into two infinite sets \(C=\{p_{2n}:n\in\mathbb N\}\) and \(D=\{p_{2n+1}:n\in\mathbb N\}\).</p>
+  <p>The <a href="filters-and-ultrafilters#ultrafilter-decision">ultrafilter decision property</a> puts either \(C\) or \(\mathbb N\setminus C\) in \(\mathcal U\). In the first case, some base member \(A\) lies inside \(C\). Since \(P\subseteq^*A\), the set \(D\subseteq P\setminus A\) would be finite. In the second case, a base member \(A\subseteq\mathbb N\setminus C\) makes \(C\subseteq P\setminus A\) finite. Both contradict the split. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The proof does not assert that \(P\) belongs to \(\mathcal U\). It proves an obstruction for any supplied nonprincipal ultrafilter without choice; <a href="filters-and-ultrafilters#nonprincipal-existence">existence of such an ultrafilter</a> is a separate result proved there assuming choice.</p>
+</section>

@@ -1,0 +1,119 @@
+<section id="closed-unbounded" data-formal="regular-cardinal-cofinality regular-cardinal-order-carrier regular-cardinal-order-bridge omega-one-regular ordinal-unbounded-subset ordinal-closed-subset ordinal-closed-suprema ordinal-unbounded-cofinal club-predicate ordinal-club-equivalence" data-kind="definition">
+  <h2>Closed unbounded sets combine limits with arbitrarily high points</h2>
+  <p>Throughout this entry, work in ZFC and let \(\kappa\) be a <strong>regular uncountable cardinal</strong>, identified with its initial ordinal. Thus \(\omega&lt;\kappa\), and every set of fewer than \(\kappa\) ordinals below \(\kappa\) has supremum below \(\kappa\), by <a href="cofinality#regular-and-singular">regularity</a>. The main example is <a href="cofinality#omega-one-regular">the first uncountable ordinal \(\omega_1\)</a>.</p>
+  <p>A subset \(C\subseteq\kappa\) is <strong>unbounded</strong> if for every \(\alpha&lt;\kappa\) there is \(\beta\in C\) with \(\alpha&lt;\beta\). It is <strong>closed in \(\kappa\)</strong> if, whenever \(\delta&lt;\kappa\) is a <a href="ordinals#limit-ordinals">nonzero limit ordinal</a> and \(C\cap\delta\) is unbounded in \(\delta\), then \(\delta\in C\). A <strong>club</strong> is a closed unbounded subset of \(\kappa\).</p>
+  <p>Equivalently, closedness says that for every <em>nonempty</em> \(A\subseteq C\) whose <a href="ordinals#ordinal-suprema">supremum</a> is below \(\kappa\), that supremum belongs to \(C\). If \(A\) has a greatest element, this is automatic. Otherwise its supremum is a nonzero limit and \(A\) is unbounded below it, so the closure condition applies. Conversely, apply the supremum condition to \(A=C\cap\delta\). In particular one may use nonempty increasing sequences. The empty supremum is zero, which need not belong to a closed set.</p>
+  <p>These are order properties of subsets of an ordinal. They require no topological definitions. The <a href="normal-functions#closed-unbounded-fixed-points">closed unbounded classes of fixed points</a> use the same limit idea, but here the ambient ordinal \(\kappa\) is fixed.</p>
+</section>
+
+<section id="club-examples" data-formal="infinite-initial-ordinal-limit club-strict-tail nonzero-limit-ordinal-set club-nonzero-limits successor-ordinal-set successors-unbounded-not-closed" data-kind="lemma">
+  <h2>Tails and nonzero limit ordinals are clubs</h2>
+  <p>For \(\gamma&lt;\kappa\), the tail \(C_\gamma=\{\alpha&lt;\kappa:\gamma&lt;\alpha\}\) is club. The set \(L\) of nonzero limit ordinals below \(\kappa\) is also club.</p>
+  <p class="proof-label">Proof</p>
+  <p>Every infinite initial ordinal is a limit ordinal, so above any \(\alpha,\gamma&lt;\kappa\) there is another ordinal still below \(\kappa\). This proves that the tail is unbounded. If its intersection with a nonzero limit \(\delta\) is unbounded in \(\delta\), it has a point greater than \(\gamma\); hence \(\delta&gt;\gamma\) and \(\delta\) belongs to the tail.</p>
+  <p>The set \(L\) is closed because any nonzero limit at which closure is tested is itself in \(L\). To find a member above \(\gamma\), form a strictly increasing sequence below \(\kappa\) starting above \(\gamma\), by taking successors. Its supremum is below \(\kappa\), since \(\kappa\) is regular uncountable, and is a nonzero limit above \(\gamma\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For \(\kappa=\omega_1\), this says that nonzero countable limit ordinals form a club. An unbounded set can fail to be closed: the successor ordinals are unbounded, but their supremum below any nonzero limit is that limit, which they omit.</p>
+</section>
+
+<section id="club-intersections" data-formal="club-small-intersection club-binary-intersection club-nonempty club-universe set-empty-family-intersection" data-kind="theorem">
+  <h2>Fewer than \(\kappa\) clubs still have a club intersection</h2>
+  <div class="statement-box"><p>If \(I\) is a set of cardinality less than a regular uncountable cardinal \(\kappa\), and \(C_i\subseteq\kappa\) is club for each \(i\in I\), then \(\bigcap_{i\in I}C_i\) is club. For \(I=\varnothing\), the intersection is \(\kappa\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>An intersection of closed sets is closed: if its points approach a nonzero limit \(\delta&lt;\kappa\), they do so in each \(C_i\), putting \(\delta\) in each. The empty case gives \(\kappa\), which is club.</p>
+  <p>For nonempty \(I\), fix \(\gamma&lt;\kappa\). Start with \(x_0&gt;\gamma\). At stage \(n\), for each \(i\in I\) let \(y_{i,n}\) be the least point of \(C_i\) above \(x_n\), and put</p>
+  <div class="math-display">\[
+    x_{n+1}=\sup_{i\in I}(y_{i,n}+1),\qquad
+    \delta=\sup_{n&lt;\omega}x_n.
+  \]</div>
+  <p>Regularity ensures \(x_{n+1}&lt;\kappa\); regularity and \(\omega&lt;\kappa\) ensure \(\delta&lt;\kappa\). The \(x_n\) strictly increase. For fixed \(i\), the points \(y_{i,n}\in C_i\) satisfy \(x_n&lt;y_{i,n}&lt;x_{n+1}\), so their supremum is \(\delta\). Closedness gives \(\delta\in C_i\) for every \(i\). Since \(\delta&gt;\gamma\), the intersection is unbounded. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, two clubs cannot be disjoint. The two regularity bounds in this proof explain both the small size of the family and the uncountability of \(\kappa\).</p>
+</section>
+
+<section id="cofinality-boundary-question" data-formal="omega-parity-club-counterexample" data-kind="question">
+  <h2>What fails at the regular cardinal \(\omega\)?</h2>
+  <p>Can two clubs in \(\omega\) be disjoint, even though \(\omega\) is regular?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Yes. Below \(\omega\) there are no nonzero limit ordinals, so every subset is closed under the definition. Both the even and the odd natural numbers are unbounded in \(\omega\), and they are disjoint. An alternating sequence of points from them has supremum \(\omega\), outside the ambient ordinal. Regularity bounds finite sets here, but it does not bound a countable sequence. Thus the intersection theorem requires regular <em>uncountable</em> \(\kappa\).</p></div>
+  </details>
+</section>
+
+<section id="club-filter" data-formal="club-filter club-filter-membership club-filter-proper club-filter-complete club-filter-not-closed-example club-tails-ordinary-diagonal-intersections club-strict-tail" data-kind="definition">
+  <h2>The club filter contains every set containing a club</h2>
+  <p>The <strong>club filter</strong> on \(\kappa\) is</p>
+  <div class="math-display">\[
+    \mathcal F_{\mathrm{club}}=\{A\subseteq\kappa:\text{some club }C\text{ satisfies }C\subseteq A\}.
+  \]</div>
+  <p>It is a <a href="filters-and-ultrafilters#proper-filters">proper filter</a>. It contains \(\kappa\), is upward closed, and is closed under binary intersections by <a href="#club-intersections"></a>. No club is empty, so \(\varnothing\) does not belong. In fact it is <strong>\(\kappa\)-complete</strong>: the intersection of any family of fewer than \(\kappa\) members belongs. Choose a club inside each member and intersect those clubs using the same theorem. The empty intersection is \(\kappa\).</p>
+  <p>A member of the club filter need not itself be closed. In \(\omega_1\), the set \(\omega\cup\{\alpha:\omega&lt;\alpha&lt;\omega_1\}\) contains the club tail above \(\omega\), but omits \(\omega\), the supremum of its finite ordinals.</p>
+  <p>Completeness does not extend to intersections of \(\kappa\) members: the club tails \(C_\gamma\), \(\gamma&lt;\kappa\), have empty intersection, since an ordinal \(\alpha\) does not belong to \(C_\alpha\).</p>
+</section>
+
+<section id="stationary-sets" data-formal="stationary-predicate nonstationary-club-witness nonstationary-complement-club-filter club-is-stationary stationary-upward-closure empty-set-nonstationary" data-kind="definition">
+  <h2>A stationary set meets every club</h2>
+  <p>A subset \(S\subseteq\kappa\) is <strong>stationary</strong> if \(S\cap C\ne\varnothing\) for every club \(C\subseteq\kappa\). It is <strong>nonstationary</strong> if some club is disjoint from it. Thus</p>
+  <div class="math-display">\[
+    S\text{ is nonstationary}\quad\Longleftrightarrow\quad
+    \kappa\setminus S\in\mathcal F_{\mathrm{club}}.
+  \]</div>
+  <p>Every club is stationary, since two clubs have a club intersection. Every superset of a stationary set is stationary, since it still meets every club. The empty set is nonstationary. A stationary set need not be presented as a club: stationarity records its intersections with all clubs, rather than its own closure.</p>
+</section>
+
+<section id="stationary-properties" data-formal="stationary-unbounded stationary-restrict-club stationary-delete-bounded stationary-restrict-limits stationary-cardinality" data-kind="lemma">
+  <h2>Stationarity survives restriction to a club and deletion of a bounded set</h2>
+  <p>A stationary \(S\subseteq\kappa\) is unbounded. If \(C\) is club, then \(S\cap C\) is stationary. In particular, deleting a bounded subset of \(S\) leaves a stationary set, and restricting \(S\) to nonzero limit ordinals leaves a stationary set.</p>
+  <p class="proof-label">Proof</p>
+  <p>If \(S\) were bounded by \(\gamma&lt;\kappa\), the club tail above \(\gamma\) would miss it. For any club \(D\), the set \(C\cap D\) is club, so \(S\) meets it. This gives a point of \((S\cap C)\cap D\), establishing stationarity of \(S\cap C\). A bounded deletion contains the intersection of \(S\) with a club tail; restriction to nonzero limits is the same assertion with the club \(L\) from <a href="#club-examples"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Regularity now implies that every stationary subset of \(\kappa\) has cardinality \(\kappa\): a subset with fewer than \(\kappa\) elements would be bounded. In particular every stationary subset of \(\omega_1\) is uncountable.</p>
+</section>
+
+<section id="small-unions" data-formal="stationary-small-union nonstationary-ideal-family nonstationary-ideal-proper stationary-small-range-fiber" data-kind="lemma">
+  <h2>A small union of nonstationary sets is nonstationary</h2>
+  <p>If \(|I|&lt;\kappa\) and each \(A_i\subseteq\kappa\) is nonstationary, then \(\bigcup_{i\in I}A_i\) is nonstationary. Consequently, if a stationary set is partitioned into fewer than \(\kappa\) cells, at least one cell is stationary.</p>
+  <p class="proof-label">Proof</p>
+  <p>Choose for each \(i\) a club \(C_i\) disjoint from \(A_i\). Their intersection is club and misses the union. This includes the empty family. If every cell of the proposed partition were nonstationary, the same argument would make their stationary union nonstationary, a contradiction. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Nonstationary subsets form the <strong>nonstationary ideal</strong>, an <a href="boolean-algebras#ideals-and-filters">ideal in the power-set Boolean algebra</a> \(\mathcal P(\kappa)\): it contains the empty set, is downward closed, and is closed under unions of fewer than \(\kappa\) sets. It is proper because \(\kappa\) is stationary. The partition conclusion also says that any map from a stationary set into a set of fewer than \(\kappa\) possible values has a stationary fiber.</p>
+</section>
+
+<section id="closure-points" data-formal="ordinal-function-closure-points ordinal-function-closure-club" data-kind="lemma">
+  <h2>Closure points of an ordinal function form a club</h2>
+  <p>For any function \(f:\kappa\to\kappa\), the set</p>
+  <div class="math-display">\[
+    C_f=\{\delta&lt;\kappa:\delta\text{ is a nonzero limit ordinal and }
+      (\forall\beta&lt;\delta)\ f(\beta)&lt;\delta\}
+  \]</div>
+  <p>is club.</p>
+  <p class="proof-label">Proof</p>
+  <p>To obtain a point above \(\gamma\), start with \(x_0&gt;\gamma\) and recursively choose \(x_{n+1}&lt;\kappa\) strictly above \(x_n\) and all values \(f(\beta)\) for \(\beta\le x_n\). Such a bound exists: \(x_n+1\) has cardinality less than \(\kappa\), and regularity bounds this many values. The supremum \(\delta=\sup_nx_n\) is a nonzero limit below \(\kappa\). If \(\beta&lt;\delta\), some \(x_n\) is at least \(\beta\), giving \(f(\beta)&lt;x_{n+1}&lt;\delta\). Thus \(\delta\in C_f\).</p>
+  <p>For closure, suppose \(C_f\cap\delta\) is unbounded in a nonzero limit \(\delta&lt;\kappa\). Given \(\beta&lt;\delta\), choose \(\eta\in C_f\cap\delta\) above \(\beta\). Then \(f(\beta)&lt;\eta&lt;\delta\). This holds for all \(\beta&lt;\delta\), so \(\delta\in C_f\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="diagonal-intersection" data-formal="diagonal-intersection diagonal-intersection-minimum club-diagonal-intersection normal-order-filter club-filter-normal" data-kind="theorem">
+  <h2>A diagonal intersection of \(\kappa\) clubs remains club</h2>
+  <p>For a family \((A_\xi)_{\xi&lt;\kappa}\) of subsets of \(\kappa\), its <strong>diagonal intersection</strong> is</p>
+  <div class="math-display">\[
+    \mathop{\triangle}_{\xi&lt;\kappa}A_\xi
+      =\{\delta&lt;\kappa:(\forall\xi&lt;\delta)\ \delta\in A_\xi\}.
+  \]</div>
+  <p>At \(\delta\), only the sets with indices less than \(\delta\) are tested. In particular zero belongs to every diagonal intersection, because it has no smaller index.</p>
+  <div class="statement-box"><p>If \(\kappa\) is regular uncountable and each \(C_\xi\subseteq\kappa\) is club, then \(\mathop{\triangle}_{\xi&lt;\kappa}C_\xi\) is club.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Write \(D\) for the diagonal intersection. If \(D\cap\delta\) is unbounded in a nonzero limit \(\delta&lt;\kappa\), fix \(\xi&lt;\delta\). Points \(\eta\in D\cap\delta\) above \(\xi\) belong to \(C_\xi\), and are unbounded in \(\delta\). Closedness of \(C_\xi\) gives \(\delta\in C_\xi\). As this holds for every \(\xi&lt;\delta\), we have \(\delta\in D\).</p>
+  <p>For unboundedness, start above any \(\gamma\) with \(x_0&lt;\kappa\). Having chosen \(x_n\), choose \(x_{n+1}&gt;x_n\) in \(\bigcap_{\xi\le x_n}C_\xi\); that intersection is club by <a href="#club-intersections"></a>, since there are fewer than \(\kappa\) indices. Set \(\delta=\sup_nx_n&lt;\kappa\). For each \(\xi&lt;\delta\), there is \(n\) with \(\xi\le x_n\), so all \(x_{m+1}\), \(m\ge n\), belong to \(C_\xi\). Closedness gives \(\delta\in C_\xi\). Hence \(\delta\in D\) and \(\delta&gt;\gamma\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>A filter on \(\kappa\) is called <strong>normal</strong> when it is closed under these diagonal intersections. The club filter is normal: choose a club \(C_\xi\subseteq A_\xi\) in each member, and the diagonal intersection of the \(A_\xi\) contains the club diagonal intersection of the \(C_\xi\).</p>
+</section>
+
+<section id="intersection-question" data-formal="club-tails-ordinary-diagonal-intersections omega-parity-club-counterexample" data-kind="question">
+  <h2>Can an empty ordinary intersection have a large diagonal intersection?</h2>
+  <p>For the strict tails \(C_\xi=\{\delta&lt;\kappa:\xi&lt;\delta\}\), compute the ordinary and diagonal intersections. Why does diagonal closure still require \(\kappa&gt;\omega\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The ordinary intersection is empty: \(\delta\notin C_\delta\). The diagonal intersection is all of \(\kappa\): if \(\xi&lt;\delta\), then \(\delta\in C_\xi\), and at zero the condition is vacuous. Nevertheless, at \(\omega\) diagonal intersections of clubs can fail to be unbounded. Let \(C_0\) be the even numbers and \(C_1\) the odd numbers, and take \(C_n=\omega\) for \(n\ge2\). Each set is club in \(\omega\), but no \(m\ge2\) passes both of the first two tests. The diagonal intersection is contained in \(\{0,1\}\).</p></div>
+  </details>
+</section>
+
+<section id="unbounded-question" data-formal="successors-unbounded-not-closed successors-nonstationary stationary-universe" data-kind="question">
+  <h2>Is being unbounded enough for stationarity?</h2>
+  <p>Are the successor ordinals below \(\kappa\) stationary? Can a stationary set have a nonstationary unbounded subset?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The successors are unbounded because \(\kappa\) is a limit ordinal. They miss the club of nonzero limit ordinals, so they are nonstationary. The whole set \(\kappa\) is stationary and contains them. Thus unboundedness is weaker than stationarity, and stationarity need not pass to arbitrary unbounded subsets.</p></div>
+  </details>
+</section>

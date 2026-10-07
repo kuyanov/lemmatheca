@@ -50,8 +50,13 @@ Respect repository instructions and preserve unrelated work.
    [reading-order criteria](../CONTRIBUTING.md#reading-order).
    Consult the [reference backlog](../docs/reference-backlog.md). Familiar background,
    including standard real-number facts, may be used without a corpus reference;
-   propose useful future links in the handoff. A missing link alone is not a proof
-   gap. Do not plan major dependencies on substantial theory missing from the corpus.
+   propose useful future-area links in the handoff using the backlog's four
+   columns. The table is for current consuming blocks; keep plans for entries
+   not yet drafted, correspondences still to prove, and deferred extensions
+   separate, in the handoff or [reference planning notes](../docs/reference-planning.md).
+   Do not edit the backlog during this planning step. A missing link alone is not
+   a proof gap. Do not plan major dependencies on substantial theory missing from
+   the corpus.
    Map the needed results to current entry/block IDs and inspect their assumptions.
    Identify the axioms needed by the planned human arguments. Check arguments
    before reusing results under weaker assumptions; a Verified badge does not

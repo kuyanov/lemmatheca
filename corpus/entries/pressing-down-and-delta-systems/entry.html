@@ -1,0 +1,103 @@
+<section id="regressive-functions" data-kind="definition" data-formal="regressive-on-set regressive-domain-excludes-minimum successor-predecessor-map successor-predecessor-regressive-injective constant-minimum-regressive">
+  <h2>A regressive function sends each ordinal to a smaller one</h2>
+  <p>Work in ZFC. Let \(\kappa\) be a regular uncountable cardinal, viewed as an ordinal, and \(S\subseteq\kappa\). A function \(f:S\to\kappa\) is <strong>regressive</strong> if \(f(\alpha)&lt;\alpha\) for every \(\alpha\in S\). In particular, a domain admitting such a function cannot contain zero.</p>
+  <p>On the positive successor ordinals, the predecessor map \(f(\beta+1)=\beta\) is regressive and injective. On the nonzero ordinals, the constant function with value zero is regressive. The conclusion below depends on the domain being <a href="clubs-and-stationary-sets#stationary-sets">stationary</a>, rather than merely unbounded.</p>
+</section>
+
+<section id="fodors-lemma" data-kind="theorem" data-formal="fodor-stationary-fiber stationary-cardinality">
+  <h2>Fodor's lemma makes a regressive function constant on a stationary set</h2>
+  <div class="statement-box"><p>Let \(\kappa\) be regular uncountable, \(S\subseteq\kappa\) stationary, and \(f:S\to\kappa\) regressive. There is \(\gamma&lt;\kappa\) for which the fiber \(\{\alpha\in S:f(\alpha)=\gamma\}\) is stationary.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Suppose every fiber were nonstationary. For each \(\gamma&lt;\kappa\), choose a club \(C_\gamma\) disjoint from that fiber. The <a href="clubs-and-stationary-sets#diagonal-intersection">diagonal intersection</a> \(D=\mathop{\triangle}_{\gamma&lt;\kappa}C_\gamma\) is club, so there is \(\alpha\in S\cap D\). Regressiveness gives \(\gamma=f(\alpha)&lt;\alpha\). Membership in \(D\) then gives \(\alpha\in C_\gamma\), contradicting the choice of \(C_\gamma\). Therefore a fiber is stationary. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The result is also called the <strong>pressing-down lemma</strong>. It gives a stationary fiber, and hence a fiber of size \(\kappa\), by <a href="clubs-and-stationary-sets#stationary-properties">the size of stationary sets</a>. It does not require the whole range of \(f\) to be small.</p>
+</section>
+
+<section id="regressive-boundary-question" data-kind="question" data-formal="successors-unbounded-not-closed successors-nonstationary successor-predecessor-regressive-injective successor-predecessor-fibers-nonstationary identity-stationary-counterexample omega-regressive-counterexample omega-parity-club-counterexample omega-clubs-infinite-subsets">
+  <h2>Which hypotheses prevent injective counterexamples?</h2>
+  <p>What happens if stationarity, regressiveness, or uncountability is dropped from Fodor's lemma?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Without stationarity, take the unbounded set of successor ordinals below \(\omega_1\) and its injective predecessor map. Every fiber has at most one point and is nonstationary; the domain misses the club of nonzero limits. Without regressiveness, the identity on \(\omega_1\) has a stationary domain and singleton fibers.</p><p>At \(\omega\), every subset is closed and every infinite subset is unbounded, so the clubs are precisely the infinite subsets. The domain \(S=\omega\setminus\{0\}\) meets every club and is stationary under that definition. The map \(f(n)=n-1\) on \(S\) is regressive with singleton fibers, none of which is stationary. Thus regularity alone does not suffice.</p></div>
+  </details>
+</section>
+
+<section id="stationary-thinning" data-kind="lemma" data-formal="stationary-countable-range-fiber">
+  <h2>Countably many possible values allow stationary thinning on \(\omega_1\)</h2>
+  <p>If \(S\subseteq\omega_1\) is stationary and \(g:S\to Y\) has countable range, then some fiber of \(g\) is stationary.</p>
+  <p class="proof-label">Proof</p>
+  <p>The fibers partition \(S\) into countably many cells. Since \(\omega_1\) is regular uncountable, a <a href="clubs-and-stationary-sets#small-unions">countable union of nonstationary sets</a> is nonstationary. Thus the fibers cannot all be nonstationary. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This fact is different from Fodor's lemma: no ordinal inequality is imposed on \(g\), but its range must be countable. We will first press down to obtain a countable bound and then use this thinning argument.</p>
+</section>
+
+<section id="delta-systems" data-kind="definition" data-formal="delta-system delta-system-root-subset delta-system-petals-disjoint disjoint-petals-delta-system delta-system-finite-root disjoint-family-delta-system delta-system-small-family-vacuity rooted-pairs-delta-family rooted-pairs-delta-example">
+  <h2>A \(\Delta\)-system has a common root and disjoint petals</h2>
+  <p>A family \(\mathcal A\) of sets is a <strong>\(\Delta\)-system with root \(r\)</strong> if \(A\cap B=r\) whenever \(A,B\in\mathcal A\) are <em>distinct</em>. For a family with at least two members, the root is contained in every member, and the sets \(A\setminus r\), called the petals, are pairwise disjoint. Conversely, a family whose members all contain \(r\) and whose petals are pairwise disjoint is a \(\Delta\)-system with root \(r\).</p>
+  <p>For example, \(\{\{0,n\}:n\in\mathbb N,\ n&gt;0\}\) has root \(\{0\}\). Any pairwise disjoint family has root \(\varnothing\). For an empty or one-member family the pairwise condition is vacuous; the theorem below produces an uncountable family, so this ambiguity does not arise. For a family with at least two finite members, the root is finite.</p>
+</section>
+
+<section id="delta-system-lemma" data-kind="theorem" data-formal="uncountable-delta-system-lemma">
+  <h2>Every uncountable family of finite sets has an uncountable \(\Delta\)-system</h2>
+  <div class="statement-box"><p>For every uncountable family \(\mathcal A\) of finite sets, there are an uncountable subfamily \(\mathcal B\subseteq\mathcal A\) and a finite set \(r\) such that \(A\cap B=r\) for all distinct \(A,B\in\mathcal B\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>By choice, select a subfamily of size \(\aleph_1\) and enumerate its <em>distinct</em> members as \((A_\alpha)_{\alpha&lt;\omega_1}\). Their union has cardinality at most \(\aleph_1\): it is a union of \(\aleph_1\) finite sets, using <a href="infinite-cardinal-arithmetic#infinite-square">infinite cardinal multiplication</a>. Relabel its elements by an injection into \(\omega_1\). An injective relabeling preserves intersections and distinctness, so it is enough to work with finite sets \(A_\alpha\subseteq\omega_1\).</p>
+  <p>On the stationary club \(\omega_1\setminus\{0\}\), define</p>
+  <div class="math-display">\[
+    f(\alpha)=
+    \begin{cases}
+      \max(A_\alpha\cap\alpha),&amp; A_\alpha\cap\alpha\ne\varnothing,\\
+      0,&amp; A_\alpha\cap\alpha=\varnothing.
+    \end{cases}
+  \]</div>
+  <p>This is regressive: a nonempty finite subset of \(\alpha\) has a largest member below \(\alpha\), and \(0&lt;\alpha\) in the other case. By <a href="#fodors-lemma"></a>, there are a stationary \(S\) and \(\gamma&lt;\omega_1\) with \(f(\alpha)=\gamma\) on \(S\). Hence \(A_\alpha\cap\alpha\subseteq\gamma+1\) for each \(\alpha\in S\). The use of \(\gamma+1\) includes the possible maximum \(\gamma\).</p>
+  <p>The ordinal \(\gamma+1\) is countable, and its <a href="finite-and-countable-sets#finite-subset-family">finite subsets form a countable family</a>. Apply <a href="#stationary-thinning"></a> to the map \(\alpha\mapsto A_\alpha\cap\alpha\) on \(S\). Obtain a stationary \(S'\subseteq S\) and one finite \(r\) with \(A_\alpha\cap\alpha=r\) for every \(\alpha\in S'\).</p>
+  <p>To keep earlier sets below later indices, define</p>
+  <div class="math-display">\[
+    h(\beta)=\sup\{x+1:x\in A_\beta\}.
+  \]</div>
+  <p>The empty supremum is zero, and every value is below \(\omega_1\). By the <a href="clubs-and-stationary-sets#closure-points">closure-point lemma</a>, the nonzero limit ordinals \(\alpha\) with \(h(\beta)&lt;\alpha\) for all \(\beta&lt;\alpha\) form a club \(C\). For \(\beta&lt;\alpha\in C\), every \(x\in A_\beta\) has \(x+1\le h(\beta)&lt;\alpha\), so \(A_\beta\subseteq\alpha\).</p>
+  <p>The set \(S'\cap C\) is stationary and therefore uncountable. If \(\beta&lt;\alpha\) belong to it, then</p>
+  <div class="math-display">\[
+    A_\beta\cap A_\alpha
+      =A_\beta\cap(A_\alpha\cap\alpha)
+      =A_\beta\cap r=r,
+  \]</div>
+  <p>since \(r=A_\beta\cap\beta\subseteq A_\beta\). The distinct members indexed by \(S'\cap C\) therefore give an uncountable \(\Delta\)-system. Undoing the relabeling gives the required subfamily and root in the original family. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="countable-family-question" data-kind="question" data-formal="natural-initial-segment-family countable-delta-system-counterexample">
+  <h2>Can “uncountable” be replaced by “countably infinite”?</h2>
+  <p>Must an infinite countable family of finite sets have an infinite \(\Delta\)-system subfamily?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. Take the family \(A_n=\{0,\ldots,n-1\}\), \(n\in\mathbb N\). For indices \(i&lt;j&lt;k\), one has \(A_i\cap A_j=A_i\) and \(A_j\cap A_k=A_j\), with \(A_i\ne A_j\). Thus no three distinct members have all pairwise intersections equal, and there is no infinite \(\Delta\)-system subfamily. Uncountability is doing real work in the theorem.</p></div>
+  </details>
+</section>
+
+<section id="infinite-members-question" data-kind="question" data-formal="countable-infinite-ordinal-segment-family infinite-members-delta-system-counterexample">
+  <h2>Can the finite members be replaced by countable members?</h2>
+  <p>Does every uncountable family of countably infinite sets contain an uncountable \(\Delta\)-system?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. The family of ordinals \(A_\alpha=\alpha\), \(\omega\le\alpha&lt;\omega_1\), has \(\aleph_1\) distinct countably infinite members. For \(\alpha&lt;\beta&lt;\gamma\), the intersections \(A_\alpha\cap A_\beta=\alpha\) and \(A_\beta\cap A_\gamma=\beta\) differ. Again no three members form a \(\Delta\)-system. The finite-set theorem cannot simply be extended to all countable sets.</p></div>
+  </details>
+</section>
+
+<section id="finite-partial-maps" data-kind="definition" data-formal="finite-partial-map finite-partial-map-domain finite-binary-map-graph finite-binary-map-extension finite-binary-map-compatibility finite-binary-compatibility-overlap finite-binary-graph-union-extension">
+  <h2>Finite partial maps are compatible when their values agree on the overlap</h2>
+  <p>For a set \(X\), a <strong>finite binary partial map</strong> is a function \(p:D_p\to\{0,1\}\) whose domain \(D_p\subseteq X\) is finite. One map extends another when its graph contains the other's graph. Two maps \(p,q\) are <strong>compatible</strong> if a finite binary partial map extends both.</p>
+  <p>They are compatible exactly when \(p(x)=q(x)\) for all \(x\in D_p\cap D_q\). Necessity follows by evaluating a common extension. For sufficiency, their graph union is a function because the values agree wherever both are defined; its domain \(D_p\cup D_q\) is finite. Thus the graph union itself is a common extension.</p>
+</section>
+
+<section id="uncountable-compatible-family" data-kind="theorem" data-formal="finite-binary-fixed-domain-cardinality uncountable-compatible-binary-maps incompatible-binary-maps-countable">
+  <h2>Uncountably many finite binary partial maps have an uncountable compatible subfamily</h2>
+  <div class="statement-box"><p>For every set \(X\), any uncountable family \(\mathcal P\) of distinct finite binary partial maps on \(X\) has an uncountable subfamily of pairwise compatible maps.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>A fixed finite domain \(D\) supports only \(2^{|D|}\) binary maps. If the set of domains appearing in \(\mathcal P\) were countable, \(\mathcal P\) would be a <a href="infinite-cardinal-arithmetic#countable-unions">countable union</a> of finite sets and hence countable. Therefore the family of domains is uncountable.</p>
+  <p>Choose one representative map for each domain and apply <a href="#delta-system-lemma"></a> to the domains. This gives uncountably many representatives whose domains have a common finite root \(r\). There are only finitely many possible functions \(r\to\{0,1\}\). At least one occurs uncountably often: otherwise finitely many countable classes would have countable union. Restrict to that class. Two of its domains intersect exactly in \(r\), where both maps have the same values. They are therefore compatible by <a href="#finite-partial-maps"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Consequently, every family of pairwise incompatible finite binary partial maps is countable. This combinatorial consequence will be useful whenever compatibility is determined by finitely many assignments.</p>
+</section>
+
+<section id="common-root-question" data-kind="question" data-formal="conflicting-root-left-map conflicting-root-right-map common-root-incompatible-maps zero-singleton-map-family pairwise-compatible-no-finite-extension">
+  <h2>What do common domains and pairwise compatibility actually guarantee?</h2>
+  <p>Does a \(\Delta\)-system of domains by itself ensure compatibility? Does an uncountable pairwise compatible family have a single finite common extension?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>A common root does not control its values. For distinct \(x,a,b\), maps with domains \(\{x,a\}\) and \(\{x,b\}\) can assign \(0\) and \(1\) respectively to \(x\). Their domains form a \(\Delta\)-system with root \(\{x\}\), but the maps are incompatible. This is why the proof thins the family again to a fixed root assignment.</p><p>Pairwise compatibility does not promise a finite extension of the whole family. For each \(\xi&lt;\omega_1\), let \(p_\xi\) have domain \(\{\xi\}\) and value zero. These maps are pairwise compatible, but a common extension of all of them must have domain containing \(\omega_1\), which is not finite. Their union is a well-defined infinite function.</p></div>
+  </details>
+</section>

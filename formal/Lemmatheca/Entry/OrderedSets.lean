@@ -1,6 +1,6 @@
 import Lemmatheca.SetTheory.OrderedSets
+import Lemmatheca.SetTheory.PositiveDivisibility
 import Lemmatheca.Entry.EquivalenceRelations
-import Mathlib.Data.PNat.Prime
 import Mathlib.Tactic.IntervalCases
 
 /-!
@@ -14,22 +14,9 @@ labels a = 0, b = 1, u = 2, v = 3.
 
 namespace Lemmatheca.Entry.OrderedSets
 
+open Lemmatheca.SetTheory.PositiveDivisibility
+
 section Divisibility
-
-/-- A copy of the positive integers reserved for the divisibility order. -/
-def DvdPNat := ℕ+
-
-instance (n : ℕ) [NeZero n] : OfNat DvdPNat n := inferInstanceAs (OfNat ℕ+ n)
-instance : Dvd DvdPNat := inferInstanceAs (Dvd ℕ+)
-
-/-- Positive integers ordered by divisibility, not by their numerical size. -/
-instance pnatDivisibility : PartialOrder DvdPNat where
-  le := (· ∣ ·)
-  lt a b := a ∣ b ∧ ¬ b ∣ a
-  le_refl a := @dvd_refl ℕ+ _ a
-  le_trans a b c := @dvd_trans ℕ+ _ a b c
-  le_antisymm _ _ := PNat.dvd_antisymm
-
 
 /-- The ambient finite poset in the diagram. -/
 abbrev Divisor12 := {n : DvdPNat // n ∣ 12}
@@ -37,15 +24,6 @@ abbrev Divisor12 := {n : DvdPNat // n ∣ 12}
 /-- Labels used by the figure and the examples. -/
 def divisor (n : DvdPNat) (h : n ∣ 12 := by apply PNat.dvd_iff.mpr; decide) :
     Divisor12 := ⟨n, h⟩
-
-private theorem dvdPNat_dvd_iff (a b : DvdPNat) : a ∣ b ↔ (a : ℕ+).val ∣ (b : ℕ+).val :=
-  PNat.dvd_iff
-
-private theorem dvdPNat_le_iff (a b : DvdPNat) : a ≤ b ↔ (a : ℕ+).val ∣ (b : ℕ+).val :=
-  PNat.dvd_iff
-
-private theorem dvdPNat_eq_iff (a b : DvdPNat) : a = b ↔ (a : ℕ+).val = (b : ℕ+).val :=
-  Subtype.val_inj.symm
 
 private theorem divisor_le_iff (a b : Divisor12) :
     a ≤ b ↔ (a.val : ℕ+).val ∣ (b.val : ℕ+).val :=

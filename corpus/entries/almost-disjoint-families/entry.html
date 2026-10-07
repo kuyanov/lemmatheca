@@ -1,0 +1,110 @@
+<section id="almost-disjoint" data-kind="definition" data-formal="infinite-subset-predicate almost-disjoint-pair almost-disjoint-family finite-maximal-almost-disjoint-examples">
+  <h2>Infinite sets can overlap only finitely</h2>
+  <p>Write \([\mathbb N]^\omega\) for the family of infinite subsets of \(\mathbb N=\{0,1,2,\ldots\}\). Two infinite subsets are <strong>almost disjoint</strong> when their intersection is finite. A family \(\mathcal A\subseteq[\mathbb N]^\omega\) is almost disjoint if \(A\cap B\) is finite whenever \(A,B\in\mathcal A\) are distinct.</p>
+  <p>Both qualifications matter: every member is infinite, and only distinct members must have finite intersection. A set has infinite intersection with itself. For example, the even and odd numbers form an almost disjoint family with two members; their intersection is actually empty.</p>
+  <p>The constructions and countable-family arguments below work without the axiom of choice. We assume choice explicitly when producing maximal extensions.</p>
+</section>
+
+<section id="disjoint-families-countable" data-kind="lemma" data-formal="disjoint-nonempty-subsets-countable">
+  <h2>Actual disjointness allows only countably many nonempty subsets</h2>
+  <p>Every family of pairwise disjoint nonempty subsets of \(\mathbb N\) is countable.</p>
+  <p class="proof-label">Proof</p>
+  <p>Send each member \(A\) to its least element. Distinct members cannot have the same least element, since they are disjoint. This is an injection into \(\mathbb N\), including for the empty family. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Allowing finite intersections removes this restriction. The same natural number may then belong to many members, so least elements no longer distinguish them.</p>
+</section>
+
+<section id="binary-prefix-family" data-kind="definition" data-formal="binary-sequence-prefix binary-prefix-code-set finite-binary-word-code finite-binary-word-code-specification binary-prefix-code-set-infinite empty-prefix-code-in-all-members binary-prefix-intersection-examples">
+  <h2>A binary sequence determines infinitely many finite prefixes</h2>
+  <p>A binary sequence is a function \(x:\mathbb N\to\{0,1\}\). Its prefix \(x\mathbin{\upharpoonright}n\) is the finite word \((x(0),\ldots,x(n-1))\) of length \(n\); length zero gives the empty word. These prefixes form a <a href="infinite-trees#sequence-trees">path through the binary tree</a>. Encode a word \(w=(w_0,\ldots,w_{n-1})\) by</p>
+  <div class="math-display">\[
+    c(w)=2^n+\sum_{j&lt;n}w_j2^j.
+  \]</div>
+  <p>This is the <a href="comparing-sizes#finite-sequences-question">binary-word encoding</a>. Its value lies in \([2^n,2^{n+1})\), so it determines the length. Within that interval the binary digits determine the word. Thus \(c\) is injective across all finite binary words.</p>
+  <p>Associate to \(x\) the subset</p>
+  <div class="math-display">\[
+    A_x=\{c(x\mathbin{\upharpoonright}n):n\in\mathbb N\}.
+  \]</div>
+  <p>Different lengths give different codes, so \(A_x\) is infinite. Every \(A_x\) contains \(1\), the code of the empty word. For instance, the constantly zero sequence gives \(\{1,2,4,8,\ldots\}\).</p>
+</section>
+
+<section id="continuum-almost-disjoint-family" data-kind="theorem" data-formal="binary-prefix-family continuum-prefix-family-almost-disjoint continuum-prefix-family-cardinality binary-prefix-intersection-first-difference binary-prefix-code-map-injective cardinality-subset-comparison power-set-cardinality continuum-binary-sequences">
+  <h2>There are continuum many pairwise almost disjoint infinite subsets</h2>
+  <div class="statement-box"><p>The family \(\mathcal A=\{A_x:x\in\{0,1\}^{\mathbb N}\}\) is almost disjoint and has cardinality \(\mathfrak c=|\mathcal P(\mathbb N)|\), the cardinality of the real numbers.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Every \(A_x\) is infinite by <a href="#binary-prefix-family"></a>. For distinct sequences \(x,y\), let \(k\) be the least index where they differ. Their prefixes agree exactly at lengths \(n\le k\). At every greater length, the differing coordinate \(k\) remains present. Injectivity of the code therefore gives</p>
+  <div class="math-display">\[
+    A_x\cap A_y=\{c(x\mathbin{\upharpoonright}n):n\le k\}.
+  \]</div>
+  <p>This intersection has exactly \(k+1\) elements. In particular it is finite, and \(A_x\ne A_y\), since equality would make the intersection infinite. Thus \(x\mapsto A_x\) is a bijection from the binary sequences onto \(\mathcal A\).</p>
+  <p><a href="comparing-sizes#binary-sequences">Characteristic functions</a> identify binary sequences with subsets of \(\mathbb N\), and this cardinal is the <a href="infinite-cardinal-arithmetic#size-of-the-continuum">continuum</a>. Hence \(|\mathcal A|=\mathfrak c\). No family of subsets of \(\mathbb N\) can have a larger cardinality, since its inclusion in \(\mathcal P(\mathbb N)\) is an injection. <span class="qed" aria-label="End of proof">□</span></p>
+  <figure id="binary-prefixes" class="proof-figure">
+    <div class="figure-image"><img src="assets/binary-prefixes.svg" width="760" height="390" alt="Two paths through finite binary words share the empty word and the word zero, then separate into zero zero and zero one. Their longer prefixes remain different." /></div>
+    <figcaption>The sequences beginning 000… and 010… share only the prefixes of lengths zero and one. Their sets of prefix codes intersect in exactly two points.</figcaption>
+  </figure>
+</section>
+
+<section id="prefix-intersection-question" data-kind="question" data-formal="binary-prefix-intersection-examples">
+  <h2>Can sequences that agree again recover a common prefix?</h2>
+  <p>What is the intersection for the constantly zero and constantly one sequences? What if \(x=(0,0,0,\ldots)\) and \(y=(0,1,0,0,\ldots)\), which differ at only one coordinate?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The constant sequences differ first at index zero, so only the empty prefix is common: \(A_x\cap A_y=\{1\}\). In the second example the first differing index is one, giving the empty prefix and the word \((0)\), with codes \(1\) and \(2\). The intersection is \(\{1,2\}\). Agreement at later coordinates does not erase an earlier difference from a prefix.</p></div>
+  </details>
+</section>
+
+<section id="maximal-almost-disjoint" data-kind="definition" data-formal="maximal-almost-disjoint-family maximal-almost-disjoint-intersection-criterion">
+  <h2>Maximality means that no further infinite set can be added</h2>
+  <p>An almost disjoint family \(\mathcal A\) is <strong>maximal almost disjoint</strong> if no strictly larger almost disjoint family contains it. Equivalently, for every infinite \(B\subseteq\mathbb N\), some \(A\in\mathcal A\) has \(A\cap B\) infinite.</p>
+  <p>To check the equivalence, if every intersection with \(B\) is finite, then \(B\notin\mathcal A\) and it can be added. Conversely, any new member of a proper almost disjoint extension would have finite intersection with every original member, contradicting this condition. If \(B\) already belongs to \(\mathcal A\), it witnesses the condition with \(A=B\).</p>
+  <p>We allow finite maximal almost disjoint families. When discussing an <em>infinite</em> maximal almost disjoint family, we will say so explicitly.</p>
+</section>
+
+<section id="finite-maximal-family-question" data-kind="question" data-formal="finite-maximal-almost-disjoint-examples finite-partition-maximal-almost-disjoint">
+  <h2>Can a finite family already be maximal?</h2>
+  <p>Are \(\{\mathbb N\}\) and the two-member family of even and odd numbers maximal almost disjoint?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>Yes. Every infinite \(B\subseteq\mathbb N\) has infinite intersection with \(\mathbb N\). For the even–odd family, if both intersections were finite, their union \(B\) would be finite. More generally, any finite partition of \(\mathbb N\) into infinite pieces is a maximal almost disjoint family. Thus a claim that “no countable almost disjoint family is maximal” would be false; the correct hypothesis is countably infinite.</p></div>
+  </details>
+</section>
+
+<section id="countable-family-extension" data-kind="theorem" data-formal="countably-infinite-almost-disjoint-extension maximal-almost-disjoint-intersection-criterion">
+  <h2>A countably infinite almost disjoint family always admits another member</h2>
+  <div class="statement-box"><p>Every countably infinite almost disjoint family \(\mathcal A\subseteq[\mathbb N]^\omega\) has an infinite set \(B\) almost disjoint from every member. Consequently \(\mathcal A\) is not maximal.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>List the distinct members as \(A_0,A_1,\ldots\), without repetitions, and put</p>
+  <div class="math-display">\[
+    C_n=\mathbb N\setminus\bigcup_{i\le n}A_i.
+  \]</div>
+  <p>Each \(C_n\) is infinite. Indeed, the intersections of \(A_{n+1}\) with the finitely many sets \(A_i\), \(i\le n\), are finite. Removing their union from infinite \(A_{n+1}\) leaves an infinite subset of \(C_n\). Distinctness of the list is essential for this argument.</p>
+  <p>The sets \(C_n\) are decreasing, so every nonempty finite intersection is the member with the largest index and is infinite. The empty intersection is \(\mathbb N\). They therefore have the strong finite intersection property. The <a href="finite-errors-and-countable-diagonalization#countable-pseudointersection">countable pseudointersection theorem</a> supplies an infinite \(B\) with \(B\subseteq^*C_n\) for every \(n\).</p>
+  <p>For each \(i\), the inclusion \(A_i\subseteq\mathbb N\setminus C_i\) gives \(B\cap A_i\subseteq B\setminus C_i\), which is finite. Also \(B\ne A_i\), since otherwise that intersection would be infinite. Thus \(\mathcal A\cup\{B\}\) is a proper almost disjoint extension. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This proof uses no choice. In particular, an infinite maximal almost disjoint family, if supplied, must be uncountable.</p>
+</section>
+
+<section id="maximal-family-extension" data-kind="theorem" data-formal="maximal-almost-disjoint-extension">
+  <h2>Choice supplies a maximal extension of any almost disjoint family</h2>
+  <div class="statement-box"><p>Assuming the axiom of choice, every almost disjoint family \(\mathcal A_0\subseteq[\mathbb N]^\omega\) is contained in a maximal almost disjoint family.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Let \(\mathcal Q\) be the set of all almost disjoint families containing \(\mathcal A_0\), ordered by inclusion. It is a subset of \(\mathcal P(\mathcal P(\mathbb N))\), so it is a set, and it is nonempty because \(\mathcal A_0\in\mathcal Q\).</p>
+  <p>For a nonempty <a href="ordered-sets#chains-and-hasse-diagrams">chain</a> \(\mathcal C\subseteq\mathcal Q\), take its union \(\mathcal M=\bigcup\mathcal C\). Every member of \(\mathcal M\) is infinite. If distinct \(A,B\in\mathcal M\) lie in two families of the chain, the larger family contains both and makes their intersection finite. Thus \(\mathcal M\) is almost disjoint, contains \(\mathcal A_0\), and is an upper bound. The empty chain has \(\mathcal A_0\) as an upper bound.</p>
+  <p><a href="axiom-of-choice#zorns-lemma">Zorn’s lemma</a> gives a maximal member of \(\mathcal Q\). Any proper almost disjoint extension would still contain \(\mathcal A_0\) and belong to \(\mathcal Q\), contradicting this maximality. Hence it is maximal among all almost disjoint families. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The choice assumption enters through Zorn’s lemma. The proof establishes existence; it does not specify a unique extension.</p>
+</section>
+
+<section id="continuum-maximal-family" data-kind="lemma" data-formal="continuum-maximal-almost-disjoint-family">
+  <h2>A maximal family can have the full size of the continuum</h2>
+  <p>Assuming choice, there is a maximal almost disjoint family of cardinality \(\mathfrak c\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Extend the family from <a href="#continuum-almost-disjoint-family"></a> by <a href="#maximal-family-extension"></a>. The extension has at least \(\mathfrak c\) members because it contains that family, and at most \(\mathfrak c\) because it is a subfamily of \(\mathcal P(\mathbb N)\). <a href="comparing-sizes#cantor-schroeder-bernstein">Cantor–Schröder–Bernstein</a> gives equality. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This constructs one size of maximal family. It does not assert that all infinite maximal almost disjoint families have that size.</p>
+</section>
+
+<section id="maximal-versus-greatest-question" data-kind="question" data-formal="no-greatest-almost-disjoint-family finite-maximal-almost-disjoint-examples">
+  <h2>Must a maximal family contain every other almost disjoint family?</h2>
+  <p>Can there be a greatest almost disjoint family under inclusion?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. A greatest family would contain both the almost disjoint family \(\{\mathbb N\}\) and the one-member family consisting of the even numbers. It would then contain two distinct infinite sets with infinite intersection. The two maximal examples \(\{\mathbb N\}\) and the even–odd family also show that different maximal families need not contain each other.</p></div>
+  </details>
+</section>

@@ -22,9 +22,10 @@ formalization is ready.
 Entries should have no major dependencies on substantial theory missing from the
 corpus. Familiar background, including elementary arithmetic and standard facts
 about real numbers, may be used without an entry reference. Track useful future
-links in the [reference backlog](docs/reference-backlog.md) and add them as the
-relevant areas develop. A missing substantial prerequisite must be developed,
-or the dependent material narrowed or deferred; the backlog does not waive this
+links in the single-table [reference backlog](docs/reference-backlog.md) and add
+them as the relevant areas develop. Keep other integration and expansion notes in
+[reference planning](docs/reference-planning.md). A missing substantial prerequisite
+must be developed, or the dependent material narrowed or deferred; the backlog does not waive this
 requirement. See the [scope guidance](CONTRIBUTING.md#prerequisites-and-scope).
 
 The long-term aim is broad mathematical coverage with reusable results across

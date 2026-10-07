@@ -1,0 +1,10 @@
+{
+  "id": "countable-diagonal-points-specification",
+  "description": "For a sequence A_n with the strong finite intersection property, its least-point diagonal sequence is strictly increasing; b_n belongs to each A_i for i at most n; the range minus A_i is contained in the first i selected points; and the range is an infinite pseudointersection.",
+  "module": "Lemmatheca.SetTheory.FiniteErrors",
+  "declaration": "Lemmatheca.SetTheory.FiniteErrors.diagonalPoint_spec",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 62,
+  "signature": "Lemmatheca.SetTheory.FiniteErrors.diagonalPoint_spec (A : ℕ → Set ℕ)\n  (hA : Lemmatheca.SetTheory.FiniteErrors.HasStrongFiniteIntersectionProperty (Set.range A)) :\n  StrictMono (Lemmatheca.SetTheory.FiniteErrors.diagonalPoint A) ∧\n    (∀ (n i : ℕ), i ≤ n → Lemmatheca.SetTheory.FiniteErrors.diagonalPoint A n ∈ A i) ∧\n      (∀ (n : ℕ),\n          Lemmatheca.SetTheory.FiniteErrors.diagonalPoint A (n + 1) =\n            sInf {m | Lemmatheca.SetTheory.FiniteErrors.diagonalPoint A n < m ∧ ∀ i ≤ n + 1, m ∈ A i}) ∧\n        (∀ (i : ℕ),\n            Set.range (Lemmatheca.SetTheory.FiniteErrors.diagonalPoint A) \\ A i ⊆\n              Lemmatheca.SetTheory.FiniteErrors.diagonalPoint A '' Set.Iio i) ∧\n          Lemmatheca.SetTheory.FiniteErrors.IsPseudointersection (Set.range A)\n            (Set.range (Lemmatheca.SetTheory.FiniteErrors.diagonalPoint A))"
+}

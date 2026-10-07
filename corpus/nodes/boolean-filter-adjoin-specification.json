@@ -1,0 +1,13 @@
+{
+  "id": "boolean-filter-adjoin-specification",
+  "description": "Adjoining a gives the least Boolean filter containing F and a; it is proper exactly when every f meet a is nonzero, equivalently when a complement is absent from F.",
+  "module": "Lemmatheca.SetTheory.BooleanAlgebras",
+  "declaration": "Lemmatheca.SetTheory.BooleanAlgebras.adjoin_spec",
+  "dependencies": [
+    "boolean-complement-disjoint-order",
+    "lattice-disjoint-meet-zero"
+  ],
+  "verified": true,
+  "declaration_line": 81,
+  "signature": "Lemmatheca.SetTheory.BooleanAlgebras.adjoin_spec.{u} {B : Type u} [BooleanAlgebra B] (F : Order.PFilter B) (a : B) :\n  Order.IsPFilter (Lemmatheca.SetTheory.BooleanAlgebras.adjoin F a) ∧\n    ↑F ⊆ Lemmatheca.SetTheory.BooleanAlgebras.adjoin F a ∧\n      a ∈ Lemmatheca.SetTheory.BooleanAlgebras.adjoin F a ∧\n        (∀ (G : Order.PFilter B), F ≤ G → a ∈ G → Lemmatheca.SetTheory.BooleanAlgebras.adjoin F a ⊆ ↑G) ∧\n          (⊥ ∉ Lemmatheca.SetTheory.BooleanAlgebras.adjoin F a ↔ ∀ f ∈ F, f ⊓ a ≠ ⊥) ∧\n            (⊥ ∉ Lemmatheca.SetTheory.BooleanAlgebras.adjoin F a ↔ aᶜ ∉ F)"
+}

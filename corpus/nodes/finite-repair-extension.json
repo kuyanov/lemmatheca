@@ -1,0 +1,13 @@
+{
+  "id": "finite-repair-extension",
+  "description": "Given an inclusion embedding A into B, an injective function f from B to the naturals with coinfinite range, and an injection g from A differing finitely from the restriction of f, every finite reserve disjoint from the range of g can be avoided by an injective extension h of g to B which differs finitely from f and has coinfinite range.",
+  "module": "Lemmatheca.SetTheory.InfiniteTrees",
+  "declaration": "Lemmatheca.SetTheory.InfiniteTrees.finite_repair",
+  "dependencies": [
+    "finite-modification-ranges",
+    "infinite-set-finite-removal"
+  ],
+  "verified": true,
+  "declaration_line": 806,
+  "signature": "Lemmatheca.SetTheory.InfiniteTrees.finite_repair.{u, v} {A : Type u} {B : Type v} (ι : A ↪ B) (f : B → ℕ) (g : A → ℕ)\n  (hf : Function.Injective f) (hfc : Lemmatheca.SetTheory.InfiniteTrees.CoinfiniteRange f) (hg : Function.Injective g)\n  (heq : g =ᶠ[Filter.cofinite] f ∘ ⇑ι) (R : Set ℕ) (hR : R.Finite) (hdisj : Disjoint (Set.range g) R) :\n  ∃ h,\n    Function.Injective h ∧\n      h ∘ ⇑ι = g ∧\n        h =ᶠ[Filter.cofinite] f ∧ Lemmatheca.SetTheory.InfiniteTrees.CoinfiniteRange h ∧ Disjoint (Set.range h) R"
+}

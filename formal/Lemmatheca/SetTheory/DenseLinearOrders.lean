@@ -15,7 +15,7 @@ set_option autoImplicit false
 universe u
 namespace Lemmatheca.SetTheory.DenseLinearOrders
 
-/-- Every nonempty open interval meets the given subset. -/
+/-- For every x < y, some member of D lies strictly between x and y. -/
 def OrderDense {α : Type u} [LinearOrder α] (D : Set α) : Prop :=
   ∀ x y, x < y → ∃ d ∈ D, x < d ∧ d < y
 

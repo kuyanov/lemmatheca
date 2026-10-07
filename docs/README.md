@@ -10,7 +10,8 @@ Start with the [project overview and setup](../README.md), then follow
 | [Web app](app.md) | Architecture, routes, local reads, tests, benchmarks, deployment, and scaling |
 | [Vendor assets](vendor.md) | Bundled KaTeX provenance, license, and update procedure |
 | [Contribution workflow](../CONTRIBUTING.md) | The six authoring stages and links to their executable Markdown prompts |
-| [Reference backlog](reference-backlog.md) | Familiar background awaiting useful corpus references, with entry/block locations and future targets |
+| [Reference backlog](reference-backlog.md) | One table of upcoming references to future areas, with current entry/block locations and precise facts |
+| [Reference planning notes](reference-planning.md) | Existing-target integration, future-entry plans, correspondences to establish, and deferred extensions |
 
 Command examples use the repository root unless stated otherwise. Component
 guides live here; the root README provides onboarding and `prompts/` holds the
@@ -19,9 +20,11 @@ together when changing the corpus format or contribution workflow.
 
 Entries should have no major dependencies on substantial theory missing from the
 corpus. Familiar background facts, including standard real-number facts, may be
-used without a reference. Keep useful future links in the reference backlog and
-add them when suitable entries become available. Substantial missing prerequisites
-must instead be developed, or the dependent material narrowed or deferred; merely
+used without a reference. Audit and update the single-table reference backlog
+when drafting; audit it and propose corrections when reviewing. Add links when
+the future areas supply suitable target blocks, then remove fulfilled locations.
+Keep other planning and scope notes in reference-planning.md. Substantial missing
+prerequisites must instead be developed, or the dependent material narrowed or deferred; merely
 recording them does not make an entry ready.
 
 Formal verification uses classical Lean with Choice permitted by default. See the

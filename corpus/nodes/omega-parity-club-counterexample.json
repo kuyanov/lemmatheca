@@ -1,0 +1,10 @@
+{
+  "id": "omega-parity-club-counterexample",
+  "description": "Every subset of omega is ordinal-closed; even and odd sets are disjoint clubs, and their placement at the first two indices gives a diagonal intersection contained in {0,1} that is not club.",
+  "module": "Lemmatheca.Entry.ClubsAndStationarySets",
+  "declaration": "Lemmatheca.Entry.ClubsAndStationarySets.parity_clubs",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 7,
+  "signature": "Lemmatheca.Entry.ClubsAndStationarySets.parity_clubs :\n  IsClub {n | n % 2 = 0} ∧\n    IsClub {n | n % 2 = 1} ∧\n      {n | n % 2 = 0} ∩ {n | n % 2 = 1} = ∅ ∧\n        (∀ (C : Set ℕ), Lemmatheca.SetTheory.Clubs.IsOrdinalClosed C) ∧\n          ¬IsClub\n                (Lemmatheca.SetTheory.Clubs.diagonalIntersection fun n =>\n                  if n = 0 then {m | m % 2 = 0} else if n = 1 then {m | m % 2 = 1} else Set.univ) ∧\n            (Lemmatheca.SetTheory.Clubs.diagonalIntersection fun n =>\n                if n = 0 then {m | m % 2 = 0} else if n = 1 then {m | m % 2 = 1} else Set.univ) ⊆\n              {0, 1}"
+}
