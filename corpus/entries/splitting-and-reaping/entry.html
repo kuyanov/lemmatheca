@@ -1,0 +1,82 @@
+<section id="splitting" data-formal="set-splitting parity-splitting-example" data-kind="definition">
+  <h2>Divide an infinite set into two infinite pieces</h2>
+  <p>Work in ZFC. A set \(S\subseteq\omega\) <em>splits</em> an infinite set \(X\subseteq\omega\) if both \(X\cap S\) and \(X\setminus S\) are infinite. The even numbers split \(\omega\), but they do not split the set of even numbers. A splitter must leave infinitely many points on each side; merely meeting both sides is insufficient.</p>
+</section>
+
+<section id="unsplit-and-almost-contained" data-formal="unsplit-almost-contained splitting-complement-symmetry" data-kind="lemma">
+  <h2>Failure to split means almost choosing one side</h2>
+  <p>For infinite \(X\), a set \(S\) fails to split \(X\) exactly when
+    \[X\subseteq^*S\quad\text{or}\quad X\subseteq^*(\omega\setminus S).\]
+    Here <a href="finite-errors-and-countable-diagonalization#almost-inclusion">almost containment</a> permits finitely many exceptions. Indeed, the two alternatives say respectively that \(X\setminus S\) or \(X\cap S\) is finite. Consequently \(S\) splits \(X\) if and only if its complement does.</p>
+</section>
+
+<section id="splitting-and-reaping-families" data-formal="splitting-family reaping-family splitting-number reaping-number" data-kind="definition">
+  <h2>Split every infinite set, or resist every proposed splitter</h2>
+  <p>Write \([\omega]^\omega\) for the infinite subsets of \(\omega\). A <em>splitting family</em> is a family \(\mathcal S\subseteq[\omega]^\omega\) such that every infinite \(X\subseteq\omega\) is split by some \(S\in\mathcal S\). A <em>reaping family</em>, also called an unsplittable family, is a family \(\mathcal R\subseteq[\omega]^\omega\) for which no single \(S\subseteq\omega\) splits every member. Thus
+    \[\forall S\subseteq\omega\ \exists X\in\mathcal R:
+      X\subseteq^*S\ \text{or}\ X\subseteq^*(\omega\setminus S).\]
+    Define the <em>splitting number</em> \(\mathfrak s\) and the <em>reaping number</em> \(\mathfrak r\) as the least cardinalities of splitting and reaping families respectively.</p>
+</section>
+
+<section id="witnesses-and-minima" data-formal="splitting-reaping-witnesses infinite-set-has-splitter splitting-number-minimum reaping-number-minimum splitting-reaping-continuum-bounds" data-kind="lemma">
+  <h2>The two kinds of family exist</h2>
+  <p>The whole family \([\omega]^\omega\) is splitting: enumerate any infinite \(X\) without repetition and take its even-indexed points. It is also reaping: for any proposed \(S\), at least one of \(S\) and its complement is infinite, and that side is a member which \(S\) does not split. Since these witnesses exist, well-ordering cardinals gives attained minima \(\mathfrak s,\mathfrak r\). Both are at most \(\mathfrak c=2^{\aleph_0}\), the cardinality of \(\mathcal P(\omega)\).</p>
+</section>
+
+<section id="countable-families" data-formal="countable-splitting-and-escape" data-kind="theorem">
+  <h2>Countably many sets can be split together and can be escaped</h2>
+  <div class="statement-box"><p>Every countable family of infinite subsets of \(\omega\) has a common splitter. Every countable family of subsets of \(\omega\) leaves some infinite set unsplit by all its members.</p></div>
+  <p>For simultaneous splitting, first handle a nonempty family as a sequence \(X_0,X_1,\ldots\), allowing repetitions. At stage \(n\), choose for every \(i\le n\) two points \(x_{n,i},y_{n,i}\in X_i\), with all chosen points distinct from one another and from all points used at earlier stages. Only finitely many points are forbidden at each choice. Put \(S=\{x_{n,i}:i\le n\}\). Every \(X_i\) contains infinitely many of these points and infinitely many of the reserved \(y_{n,i}\), which never enter \(S\). The empty family is split vacuously by any set.</p>
+  <p>For escape, take a <a href="filters-and-ultrafilters#nonprincipal-existence">nonprincipal ultrafilter</a> \(U\) on \(\omega\). For each member \(S\), choose the one side of \(S,\omega\setminus S\) belonging to \(U\). These countably many chosen sides have infinite finite intersections, since \(U\) contains no finite set. Their <a href="finite-errors-and-countable-diagonalization#countable-pseudointersection">infinite pseudointersection</a> \(P\) is almost contained in a chosen side for every \(S\), so none splits \(P\). This also handles the empty family.</p>
+</section>
+
+<section id="next-points-and-intervals" data-formal="infinite-set-next-point infinite-set-next-point-specification alternating-interval-endpoints alternating-interval-union alternating-interval-partition next-point-bound-splits" data-kind="lemma">
+  <h2>A bound on next points makes an alternating splitter</h2>
+  <p>For infinite \(X\), let \(q_X(n)\) be its least point strictly greater than \(n\). Given \(g:\omega\to\omega\), define endpoints
+    \[a_0=0,\qquad a_{k+1}=\max\{a_k+1,g(a_k)+1\},\]
+    and let \(S_g\) be the union of the even-indexed intervals \([a_{2k},a_{2k+1})\). The endpoints increase strictly, so these nonempty consecutive intervals partition \(\omega\), and both \(S_g\) and its complement are infinite.</p>
+  <p>If \(q_X\le^*g\), then for every sufficiently large \(k\),
+    \[a_k&lt;q_X(a_k)\le g(a_k)&lt;a_{k+1}.\]
+    Hence \(X\) meets every sufficiently late interval. Infinitely many even intervals and infinitely many odd intervals contain points of \(X\), proving that \(S_g\) splits \(X\). The comparison is eventual because \(a_k\ge k\).</p>
+</section>
+
+<section id="splitting-below-domination" data-formal="dominating-family-gives-splitters splitting-number-le-dominating" data-kind="theorem">
+  <h2>A dominating family supplies enough splitters</h2>
+  <p>\(\mathfrak s\le\mathfrak d\). Choose a <a href="bounding-and-dominating-families#bounding-and-dominating-numbers">dominating family</a> \(D\) of size \(\mathfrak d\). For every infinite \(X\), some \(g\in D\) eventually dominates \(q_X\). The preceding construction makes \(\{S_g:g\in D\}\) a splitting family of size at most \(|D|\), yielding the inequality.</p>
+</section>
+
+<section id="bounding-below-reaping" data-formal="small-family-has-splitter bounding-number-le-reaping" data-kind="theorem">
+  <h2>A small family has one splitter</h2>
+  <p>Every family \(\mathcal R\subseteq[\omega]^\omega\) of size less than \(\mathfrak b\) has a common splitter. Indeed, \(\{q_X:X\in\mathcal R\}\) also has size less than \(\mathfrak b\), so the <a href="bounding-and-dominating-families#bounding-and-dominating-numbers">definition of the bounding number</a> supplies an eventual bound \(g\). The set \(S_g\) splits every member of \(\mathcal R\). Consequently \(\mathfrak b\le\mathfrak r\).</p>
+</section>
+
+<section id="pseudointersections-below-splitting" data-formal="small-family-has-unsplit-set pseudointersection-number-le-splitting" data-kind="theorem">
+  <h2>A small family of proposed splitters has an unsplit set</h2>
+  <p>\(\mathfrak p\le\mathfrak s\). Let \(\mathcal S\subseteq[\omega]^\omega\) have size less than the <a href="small-families-of-subsets#three-minima">pseudointersection number</a>. Fix a nonprincipal ultrafilter \(U\), and select for each \(S\in\mathcal S\) its side belonging to \(U\). The selected family has size at most \(|\mathcal S|\) and all finite intersections are infinite. By the <a href="small-families-of-subsets#minima-exist">minimality of \(\mathfrak p\)</a>, it has an infinite pseudointersection \(P\). Each proposed splitter almost contains \(P\) or almost misses it; thus \(\mathcal S\) is not splitting.</p>
+</section>
+
+<section id="reaping-below-ultrafilter-bases" data-formal="free-ultrafilter-base-reaping reaping-number-le-ultrafilter" data-kind="theorem">
+  <h2>An ultrafilter base resists every splitter</h2>
+  <p>\(\mathfrak r\le\mathfrak u\). Any base \(\mathcal B\) for a nonprincipal ultrafilter \(U\) is reaping. Given \(S\subseteq\omega\), choose its side belonging to \(U\); some \(B\in\mathcal B\) is contained in that side. Every base member is infinite, and \(S\) cannot split this \(B\). A base of minimum size therefore witnesses the stated bound.</p>
+</section>
+
+<section id="cardinal-comparisons" data-formal="pseudointersection-number-le-splitting splitting-number-le-dominating bounding-number-le-reaping reaping-number-le-ultrafilter small-family-cardinal-bounds bounding-number-uncountable dominating-number-le-continuum" data-kind="theorem">
+  <h2>The splitting and reaping numbers sit in two chains</h2>
+  <div class="statement-box"><p>
+    \[\aleph_1\le\mathfrak p\le\mathfrak s\le\mathfrak d\le\mathfrak c,
+      \qquad\aleph_1\le\mathfrak b\le\mathfrak r\le\mathfrak u\le\mathfrak c.\]
+  </p></div>
+  <p>The four new comparisons combine with the <a href="small-families-of-subsets#uncountable-minima">bounds for \(\mathfrak p,\mathfrak u\)</a> and the <a href="bounding-and-dominating-families#basic-inequalities">bounds for \(\mathfrak b,\mathfrak d\)</a>. In particular both new minima are uncountable. Their definitions exchange which object is chosen first: a splitting family supplies many choices for one arbitrary infinite set, while a reaping family prevents one arbitrary choice from working for all its members.</p>
+</section>
+
+<section id="single-set-question" data-formal="singleton-infinite-family-not-reaping infinite-set-has-splitter" data-kind="question">
+  <h2>Can one infinite set be a reaping family?</h2>
+  <p>Why is \(\{X\}\) never reaping when \(X\) is infinite?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Enumerate \(X\) without repetition and take its even-indexed points as \(S\). Its odd-indexed points remain outside \(S\), so both pieces are infinite. This defeats the singleton family's requirement.</p></div></details>
+</section>
+
+<section id="continuum-hypothesis-question" data-formal="splitting-reaping-numbers-under-ch" data-kind="question">
+  <h2>What do these bounds imply under CH?</h2>
+  <p>Assume \(\mathfrak c=\aleph_1\). What are \(\mathfrak s\) and \(\mathfrak r\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Both equal \(\aleph_1\), since each lies between \(\aleph_1\) and \(\mathfrak c\). The bounds by themselves make no claim about possible unequal values when CH fails.</p></div></details>
+</section>

@@ -97,7 +97,10 @@ Check the following:
   context, and the selected results belong to that thread. Flag isolated facts or
   transitions that suggest a relationship the mathematics does not support.
 - HTML, metadata, references, assets, and `corpus/area_entries.json` follow the
-  current contract. Inspect the rendered page, including hidden answers and narrow
+  current contract. Check that the entry's `title` is plain text, without LaTeX
+  commands or math delimiters. Flag mathematical notation that should be described
+  in words in the title and written as a formula in the entry body.
+  Inspect the rendered page, including hidden answers and narrow
   layouts where relevant. Unplanned formal mappings are allowed at this stage.
 - The entry-list summary is generated data from the build, not an editorial
   approval. Flag missing or inconsistent generated data without fabricating it.

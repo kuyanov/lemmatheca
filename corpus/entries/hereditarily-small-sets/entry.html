@@ -1,0 +1,114 @@
+<section id="hereditary-size" data-kind="definition" data-formal="hereditary-cardinality hereditary-level cardinality-below-hereditary-cardinality transitive-closure-construction-spec">
+  <h2>Count every membership descendant</h2>
+  <p>The singleton \(\{\omega_1\}\) has one member, but that member contains every countable ordinal. Cardinality alone misses this hidden size. Throughout this entry we work in ZFC and identify cardinals with initial ordinals.</p>
+  <p>Write \(\operatorname{TC}(a)\) for the <a href="foundation-and-rank#transitive-closure-construction">least transitive set containing \(a\) as a subset</a>. Define the <strong>hereditary size</strong> of \(x\) by</p>
+  <div class="math-display">\[ h(x)=\bigl|\operatorname{TC}(\{x\})\bigr|. \]</div>
+  <p>The singleton ensures that \(x\) itself is counted, together with its members, their members, and all further membership descendants. Thus \(x\in\operatorname{TC}(\{x\})\) and \(x\subseteq\operatorname{TC}(\{x\})\), so \(|x|\le h(x)\). For an infinite cardinal \(\kappa\), put</p>
+  <div class="math-display">\[ H_\kappa=\{x:h(x)&lt;\kappa\}. \label{eq:hereditary-definition} \]</div>
+  <p>This initially describes a class. We will prove that it is a set. Including \(x\) changes some finite hereditary sizes, but not whether they are below an infinite cardinal.</p>
+</section>
+
+<section id="small-transitive-carriers" data-kind="lemma" data-formal="small-transitive-carrier-ranks">
+  <h2>A small transitive carrier bounds its members' ranks</h2>
+  <p>Let \(\theta\) be an infinite <a href="cofinality#regular-and-singular">regular cardinal</a>. If \(T\) is transitive and \(|T|&lt;\theta\), then \(\operatorname{rank}(y)&lt;\theta\) for every \(y\in T\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Use <a href="foundation-and-rank#set-induction">membership induction</a>. For \(y\in T\), transitivity gives \(y\subseteq T\), so \(|y|&lt;\theta\). Every \(z\in y\) lies in \(T\) and has rank below \(\theta\) by induction. Since an infinite cardinal is a limit ordinal, \(\operatorname{rank}(z)+1&lt;\theta\). Regularity bounds this family of fewer than \(\theta\) successor ranks strictly below \(\theta\). The <a href="foundation-and-rank#membership-rank">rank equation</a></p>
+  <div class="math-display">\[ \operatorname{rank}(y)=\sup_{z\in y}\bigl(\operatorname{rank}(z)+1\bigr) \]</div>
+  <p>therefore gives the required inequality, including rank zero when \(y\) is empty. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="hereditary-rank-bound" data-kind="theorem" data-formal="hereditary-smallness-bounds-rank hereditary-level-specification">
+  <h2>Hereditary smallness gives a bounded rank and a set</h2>
+  <div class="statement-box">
+    <p>For every infinite cardinal \(\kappa\),</p>
+    <div class="math-display">\[ h(x)&lt;\kappa\quad\Longrightarrow\quad\operatorname{rank}(x)&lt;\kappa. \]</div>
+    <p>Consequently \(H_\kappa\subseteq V_\kappa\), and \(H_\kappa\) is a set. No regularity hypothesis on \(\kappa\) is needed here.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Let \(T=\operatorname{TC}(\{x\})\), with \(|T|&lt;\kappa\). If \(T\) is finite, \(x\) is <a href="cumulative-hierarchy#hereditarily-finite-sets">hereditarily finite</a>, so its rank is below \(\omega\le\kappa\).</p>
+  <p>Otherwise \(\mu=|T|\) is an infinite cardinal below \(\kappa\). Its successor cardinal \(\mu^+\) is <a href="cofinality#successors-are-regular">regular</a>, and \(\mu^+\le\kappa\). Apply <a href="#small-transitive-carriers"></a> with \(\theta=\mu^+\). Since \(x\in T\), we get \(\operatorname{rank}(x)&lt;\mu^+\le\kappa\).</p>
+  <p>The <a href="cumulative-hierarchy#rank-characterizes-stages">rank characterization of hierarchy stages</a> gives \(x\in V_\kappa\). Now Separation on \(V_\kappa\) makes \eqref{eq:hereditary-definition} a set. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="transitivity-and-exhaustion" data-kind="theorem" data-formal="hereditary-level-transitive hereditary-level-monotone hereditary-level-exhaustion">
+  <h2>The hereditary levels are transitive and exhaust all sets</h2>
+  <p>Each \(H_\kappa\) is transitive. If \(\kappa\le\lambda\) are infinite cardinals, then \(H_\kappa\subseteq H_\lambda\). Every set belongs to some \(H_\kappa\).</p>
+  <p class="proof-label">Proof</p>
+  <p>If \(y\in x\in H_\kappa\), then \(y\in T=\operatorname{TC}(\{x\})\). The transitive set \(T\) contains \(\{y\}\) as a subset. Leastness of transitive closure gives \(\operatorname{TC}(\{y\})\subseteq T\), so \(h(y)\le h(x)&lt;\kappa\).</p>
+  <p>Monotonicity follows by comparing the strict size bounds. For exhaustion, \(\operatorname{TC}(\{x\})\) is a set. Taking \(\kappa=(\max(\aleph_0,h(x)))^+\) gives an infinite cardinal with \(h(x)&lt;\kappa\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="ordinal-members" data-kind="lemma" data-formal="ordinal-singleton-transitive-closure hereditary-level-ordinal-members">
+  <h2>The ordinal members are exactly the smaller ordinals</h2>
+  <p>For every ordinal \(\alpha\),</p>
+  <div class="math-display">\[ \operatorname{TC}(\{\alpha\})=\alpha\cup\{\alpha\}=\alpha+1,\qquad \alpha\in H_\kappa\ \Longleftrightarrow\ \alpha&lt;\kappa. \]</div>
+  <p class="proof-label">Proof</p>
+  <p>The successor ordinal \(\alpha+1\) is transitive and contains \(\alpha\) as a member. Conversely, every transitive set containing \(\alpha\) contains all members of \(\alpha\), so it contains \(\alpha+1\). This proves the closure equality.</p>
+  <p>If \(\alpha&lt;\kappa\), then \(\alpha+1&lt;\kappa\), since \(\kappa\) is an infinite initial ordinal, and consequently \(|\alpha+1|&lt;\kappa\). If \(\alpha\ge\kappa\), its successor contains \(\kappa\) as a subset, so its size is at least \(\kappa\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="basic-set-closure" data-kind="lemma" data-formal="hereditary-level-basic-closure">
+  <h2>Subsets, pairs, and unions preserve hereditary smallness</h2>
+  <p>For every infinite \(\kappa\), if \(x,y\in H_\kappa\) and \(u\subseteq x\), then</p>
+  <div class="math-display">\[ u\in H_\kappa,\qquad\{x,y\}\in H_\kappa,\qquad\bigcup x\in H_\kappa. \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Put \(T_x=\operatorname{TC}(\{x\})\) and define \(T_y\) similarly. The sets \(\{u\}\cup T_x\), \(\{\{x,y\}\}\cup T_x\cup T_y\), and \(\{\bigcup x\}\cup T_x\) are transitive: their new members have all their members in the indicated transitive closures. Each contains the singleton of the set whose hereditary size we are bounding. Leastness of transitive closure therefore bounds that hereditary size by the container's cardinality.</p>
+  <p>Each container has size below \(\kappa\). This uses only a finite union of sets of size below an infinite cardinal: finite sizes remain finite, and any infinite size absorbs the finite sum. Regularity is unnecessary for a finite family. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="regular-small-families" data-kind="theorem" data-formal="hereditary-level-small-collection hereditary-level-small-family">
+  <h2>A regular bound allows small collections of small sets</h2>
+  <div class="statement-box">
+    <p>Let \(\kappa\) be an infinite regular cardinal. If \(A\subseteq H_\kappa\) and \(|A|&lt;\kappa\), then \(A\in H_\kappa\).</p>
+    <p>Equivalently, any family \((x_i)_{i\in I}\) of members of \(H_\kappa\) indexed by a set of size below \(\kappa\) has both its range and its union in \(H_\kappa\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>For each \(x\in A\), put \(T_x=\operatorname{TC}(\{x\})\). The set</p>
+  <div class="math-display">\[ B=\{A\}\cup\bigcup_{x\in A}T_x \]</div>
+  <p>is transitive. Every member of \(A\) lies in its own \(T_x\), and the union of the transitive sets \(T_x\) is transitive. By <a href="cofinality#regular-unions">closure under small unions</a>, the union has size below \(\kappa\); adjoining the one point \(A\) preserves that bound. Hence \(\operatorname{TC}(\{A\})\subseteq B\) has size below \(\kappa\).</p>
+  <p>For an indexed family, its range \(A=\{x_i:i\in I\}\) has size at most \(|I|\), so the first assertion applies. Then <a href="#basic-set-closure"></a> gives \(\bigcup_{i\in I}x_i=\bigcup A\in H_\kappa\). Empty families give the empty range and empty union. Conversely, index any such \(A\) by itself. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="hereditarily-countable" data-kind="definition" data-formal="hereditarily-countable-set hereditary-countability-first-uncountable-level hereditary-level-aleph-zero hereditary-level-ordinal-members natural-subset-hereditarily-countable countable-collection-hereditarily-countable">
+  <h2>The first uncountable bound gives hereditary countability</h2>
+  <p>At \(\kappa=\aleph_0\), the definition is hereditary finiteness, so <a href="cumulative-hierarchy#hereditarily-finite-sets">\(H_{\aleph_0}=V_\omega\)</a>. At \(\kappa=\aleph_1\), membership means that \(\operatorname{TC}(\{x\})\) is finite or countably infinite. Such a set is called <strong>hereditarily countable</strong>.</p>
+  <p>Every countable ordinal is hereditarily countable by <a href="#ordinal-members"></a>. Every \(A\subseteq\omega\) is hereditarily countable: \(\{A\}\cup\omega\) is a countable transitive container. Since \(\aleph_1\) is <a href="cofinality#omega-one-regular">regular</a>, a countable family of hereditarily countable sets is itself hereditarily countable.</p>
+</section>
+
+<section id="size-versus-hereditary-size" data-kind="question" data-formal="hereditary-countability-examples">
+  <h2>Can a finite set fail to be hereditarily countable?</h2>
+  <p>Decide whether \(\{\omega\}\), \(\{\omega_1\}\), and \(\mathcal P(\omega)\) are hereditarily countable. Which of them are countable?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Both singletons are finite. The closure \(\operatorname{TC}(\{\{\omega\}\})=\{\{\omega\},\omega\}\cup\omega\) is countable, so \(\{\omega\}\) is hereditarily countable. The closure for \(\{\omega_1\}\) contains \(\omega_1\), so its size is at least \(\aleph_1\); this finite set is not hereditarily countable.</p>
+      <p>The set \(\mathcal P(\omega)\) is uncountable by <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a>, and its hereditary size is at least its own size. It is therefore neither countable nor hereditarily countable, even though each of its members is hereditarily countable.</p>
+    </div>
+  </details>
+</section>
+
+<section id="hereditary-size-versus-rank" data-kind="theorem" data-formal="hereditary-countability-strict-rank-bound">
+  <h2>Bounded rank need not give bounded hereditary size</h2>
+  <div class="statement-box">
+    <p>Hereditary countability is strictly stronger than rank below \(\omega_1\):</p>
+    <div class="math-display">\[ H_{\aleph_1}\subsetneq V_{\omega_1}. \]</div>
+    <p>Moreover \(H_{\aleph_1}\) contains \(\omega\) but does not contain \(\mathcal P(\omega)\), so it is not closed under taking power sets.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>The inclusion is <a href="#hereditary-rank-bound"></a>. The ordinal \(\omega\) is hereditarily countable, while \(\mathcal P(\omega)\) is not. Yet the <a href="foundation-and-rank#rank-calculations">power-set rank formula</a> gives \(\operatorname{rank}(\mathcal P(\omega))=\omega+1&lt;\omega_1\), placing it in \(V_{\omega_1}\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Rank measures the height of membership. Hereditary size also measures how many sets occur across that height. Power sets can increase the second measure without increasing the first very far.</p>
+</section>
+
+<section id="singular-closure-question" data-kind="question" data-formal="singular-hereditary-closure-counterexample">
+  <h2>Why is regularity needed for small collections?</h2>
+  <p>Let \(\kappa=\aleph_\omega\) and \(A=\{\aleph_n:n&lt;\omega\}\), viewing each cardinal as an ordinal. Show that \(A\) is a countable subset of \(H_\kappa\), but \(A\notin H_\kappa\).</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Each \(\aleph_n&lt;\aleph_\omega\) belongs to \(H_\kappa\) by <a href="#ordinal-members"></a>. The sequence is strictly increasing, so its range \(A\) is countably infinite and has size below \(\kappa\).</p>
+      <p>The transitive closure \(\operatorname{TC}(\{A\})\) contains every member \(\aleph_n\) of \(A\), and hence every member of every \(\aleph_n\). It therefore contains</p>
+      <div class="math-display">\[ \bigcup_{n&lt;\omega}\aleph_n=\aleph_\omega=\kappa. \]</div>
+      <p>Its size is at least \(\kappa\), so \(A\notin H_\kappa\). The <a href="cofinality#aleph-omega">singularity of \(\aleph_\omega\)</a> permits the hereditary sizes of the individual members to approach the bound.</p>
+    </div>
+  </details>
+</section>

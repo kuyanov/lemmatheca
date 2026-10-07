@@ -142,7 +142,10 @@ Complete these edits before returning the draft; a chat-only list is insufficien
    the figure height when needed to provide that space.
 4. Write `corpus/entries/<entry-id>/entry.html` and entry.json, plus necessary assets.
    Use the author-maintained metadata fields and inspected `based_on` citations from
-   [corpus guide](../docs/corpus.md). Choose a primary area and list the ID once, in reading order,
+   [corpus guide](../docs/corpus.md). The entry's `title` must be plain text, with no
+   LaTeX commands or math delimiters. Describe mathematical notation in words in
+   the title; put formulas in the entry body.
+   Choose a primary area and list the ID once, in reading order,
    under that area in `corpus/area_entries.json`. There are no review or editorial
    status fields to add.
    Write the abstract for readers new to the topic or who have not read the entry.

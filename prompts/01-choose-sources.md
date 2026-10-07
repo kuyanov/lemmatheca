@@ -95,8 +95,10 @@ complete the source plan.
 
 ## Deliverable
 
-Return the proposed ID, scope, outline, entry links, primary area and reading-order
-placement, and a source-to-outline map with precise locations. Include proposed
+Return the proposed ID and a plain-text entry title with no LaTeX commands or math
+delimiters. Describe mathematical notation in words in the title; reserve formulas
+for the entry body. Include the scope, outline, entry links, primary area and
+reading-order placement, and a source-to-outline map with precise locations. Include proposed
 `based_on` citation objects following the [corpus guide](../docs/corpus.md).
 Include the source-rigor assessment: findings with precise locations, proposed
 repairs, and any unchecked material. State explicitly if no gaps were found in the

@@ -1,0 +1,116 @@
+<section id="local-assignments" data-kind="definition" data-formal="finite-local-assignment">
+  <h2>Finite choices on finite domains</h2>
+  <p>Let \(I\) be a set of indices, let \(X\) be a set of possible values, and let \(A_i\subseteq X\) be a nonempty finite set for every \(i\in I\). Write \([I]^{&lt;\omega}\) for the set of finite subsets of \(I\). A <strong>local assignment</strong> on \(F\in[I]^{&lt;\omega}\) is a function \(g_F:F\to X\) with \(g_F(i)\in A_i\) for every \(i\in F\).</p>
+  <p>Suppose one such assignment \(g_F\) has been supplied for each finite \(F\). They need not agree on overlapping domains. We seek a global assignment \(f:I\to X\) whose restriction to every finite set occurs in one of the supplied assignments on a larger domain. The larger domain may depend on the finite set.</p>
+  <p>We work with the axiom of choice. The argument will use <a href="filters-and-ultrafilters#ultrafilter-extension">ultrafilter extension</a> and <a href="filters-and-ultrafilters#finite-partitions">finite partition decisions</a>. No order or other structure is imposed on \(I\), \(X\), or the sets \(A_i\).</p>
+</section>
+
+<section id="finite-cones" data-kind="lemma" data-formal="finite-domain-cone finite-domain-cone-intersections finite-domain-cone-nonempty">
+  <h2>Any finitely many domain requirements can hold together</h2>
+  <p>For finite \(J\subseteq I\), put</p>
+  <div class="math-display">\[
+    C_J=\{F\in[I]^{&lt;\omega}:J\subseteq F\}.
+  \]</div>
+  <p>These subsets of \([I]^{&lt;\omega}\) have the <a href="filters-and-ultrafilters#finite-intersection-property">finite intersection property</a>, because</p>
+  <div class="math-display">\[
+    C_{J_1}\cap\cdots\cap C_{J_n}=C_{J_1\cup\cdots\cup J_n}.
+  \]</div>
+  <p>The union on the right is finite and belongs to its own cone. For no requirements, the intersection is the whole space \([I]^{&lt;\omega}\), which contains \(\varnothing\). Thus the statement also holds when \(I=\varnothing\).</p>
+</section>
+
+<section id="rado-selection" data-kind="theorem" data-formal="rado-finite-selection">
+  <h2>Rado's lemma patches the local assignments</h2>
+  <div class="statement-box">
+    <p>Let \((A_i)_{i\in I}\) be nonempty finite subsets of \(X\), and suppose a local assignment \(g_F\) is given on every finite \(F\subseteq I\). There is a function \(f:I\to X\), with \(f(i)\in A_i\), such that</p>
+    <div class="math-display">\[
+      \forall J\in[I]^{&lt;\omega}\ \exists F\in[I]^{&lt;\omega}\quad
+      J\subseteq F\quad\text{and}\quad f\mathbin{\upharpoonright}J=g_F\mathbin{\upharpoonright}J.
+    \]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>By <a href="#finite-cones"></a> and ultrafilter extension, there is an ultrafilter \(\mathcal U\) on \([I]^{&lt;\omega}\) containing every \(C_J\). Fix \(i\in I\). For each \(a\in A_i\), define</p>
+  <div class="math-display">\[
+    D_{i,a}=\{F\in[I]^{&lt;\omega}:i\in F\text{ and }g_F(i)=a\}.
+  \]</div>
+  <p>The finitely many sets \(D_{i,a}\) are pairwise disjoint and have union \(C_{\{i\}}\). Together with the complement of this cone, they partition the whole space. The complement is not in \(\mathcal U\), since the cone is in \(\mathcal U\). The finite partition rule therefore picks exactly one \(a\in A_i\) with \(D_{i,a}\in\mathcal U\). Define \(f(i)\) to be this unique value.</p>
+  <p>For finite \(J\), the set</p>
+  <div class="math-display">\[
+    C_J\cap\bigcap_{i\in J}D_{i,f(i)}
+  \]</div>
+  <p>belongs to \(\mathcal U\), hence is nonempty. Any \(F\) in it contains \(J\) and satisfies \(g_F(i)=f(i)\) for every \(i\in J\). The empty \(J\) is included: its intersection is \(C_\varnothing\), the whole nonempty space. <span class="qed" aria-label="End of proof">□</span></p>
+  <figure id="finite-patching-picture" class="proof-figure">
+    <div class="figure-image"><img src="assets/finite-patching.svg" width="720" height="280" alt="A global assignment on I and a local assignment on a larger finite set F have the same values on a chosen finite subset J. Values outside J need not agree." /></div>
+    <figcaption>A finite restriction of the global assignment matches one local assignment on a suitable larger domain. No agreement outside the chosen finite set is required.</figcaption>
+  </figure>
+  <p>The conclusion does not require \(f\) to extend every supplied \(g_F\). That would be impossible when supplied assignments disagree. It requires one suitable larger assignment for each finite test.</p>
+</section>
+
+<section id="persistent-constraints" data-kind="lemma" data-formal="finite-restriction-stable-constraints">
+  <h2>Constraints preserved by restriction have a global solution</h2>
+  <p>For each finite \(F\subseteq I\), let \(\mathcal S_F\) be a nonempty collection of local assignments on \(F\). Suppose that whenever \(F\subseteq G\) are finite and \(h\in\mathcal S_G\), the restriction \(h\mathbin{\upharpoonright}F\) belongs to \(\mathcal S_F\). Then there is a global assignment \(f\), with \(f(i)\in A_i\), whose restriction to every finite \(F\) belongs to \(\mathcal S_F\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Use choice to pick \(g_F\in\mathcal S_F\) for each finite \(F\), and apply <a href="#rado-selection"></a>. For a fixed finite \(J\), the resulting \(f\mathbin{\upharpoonright}J\) equals \(g_F\mathbin{\upharpoonright}J\) for some finite \(F\supseteq J\). Restriction stability puts this map in \(\mathcal S_J\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The nonemptiness assumption says that every finite problem has a solution. Restriction stability says that discarding some indices cannot destroy a solution. Finiteness of each \(A_i\) is what lets the ultrafilter decide one value at that index.</p>
+</section>
+
+<section id="distinct-representatives" data-kind="definition" data-formal="system-of-distinct-representatives finite-hall-condition hall-arbitrary-index-family">
+  <h2>Distinct representatives and Hall's condition</h2>
+  <p>For an indexed family \((A_i)_{i\in I}\) of subsets of \(X\), a <strong>system of distinct representatives</strong> is an <a href="sets-and-maps#kinds-of-maps">injective function</a> \(f:I\to X\) with \(f(i)\in A_i\) for every \(i\). The indexing matters: two equal sets at different indices still require different representatives.</p>
+  <p>When each \(A_i\) is finite, write \(A[J]=\bigcup_{i\in J}A_i\) for finite \(J\subseteq I\). The <strong>Hall condition</strong> is</p>
+  <div class="math-display">\[
+    |A[J]|\ge |J|\qquad\text{for every finite }J\subseteq I.
+  \]</div>
+  <p>It is necessary: an injective choice on \(J\) has \(|J|\) distinct values in \(A[J]\). The empty \(J\) gives \(0\ge0\); singleton tests require every \(A_i\) to be nonempty. If \(I=\varnothing\), the empty function is a system of distinct representatives.</p>
+</section>
+
+<section id="finite-hall" data-kind="theorem" data-formal="hall-finite-family">
+  <h2>Hall's theorem for a finite family</h2>
+  <div class="statement-box">
+    <p>For a finite index set \(I\) and finite sets \((A_i)_{i\in I}\), a system of distinct representatives exists exactly when \(|A[J]|\ge |J|\) for every \(J\subseteq I\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Necessity was checked in <a href="#distinct-representatives"></a>. For sufficiency, induct on \(|I|\). The empty family has its empty choice map. Suppose \(I\ne\varnothing\) and Hall's condition holds.</p>
+  <p>First suppose there is a nonempty proper subset \(J\subsetneq I\) with \(|A[J]|=|J|\). The family on \(J\) satisfies Hall's condition, so induction gives distinct representatives there. For \(i\in I\setminus J\), put \(B_i=A_i\setminus A[J]\). If \(K\subseteq I\setminus J\), then</p>
+  <div class="math-display">\[
+    A[J\cup K]=A[J]\mathbin{\dot\cup}\bigcup_{i\in K}B_i.
+  \]</div>
+  <p>Hall's condition for \(J\cup K\), and \(|A[J]|=|J|\), give \(\bigl|\bigcup_{i\in K}B_i\bigr|\ge |K|\). Induction gives distinct representatives from the \(B_i\). They lie outside \(A[J]\), so combining the two choices gives an injective choice on \(I\).</p>
+  <p>Otherwise every nonempty proper \(J\subsetneq I\) satisfies \(|A[J]|\ge |J|+1\). Choose \(i_0\in I\) and \(a\in A_{i_0}\), possible by the singleton test. For \(i\ne i_0\), put \(B_i=A_i\setminus\{a\}\). Each nonempty \(K\subseteq I\setminus\{i_0\}\) is proper in \(I\), so \(|A[K]|\ge |K|+1\). Removing at most one value leaves \(\bigl|\bigcup_{i\in K}B_i\bigr|\ge |K|\); the empty test also holds. Induction supplies distinct representatives for these \(B_i\). Adding \(f(i_0)=a\) completes the choice without a collision. This argument also covers \(|I|=1\), when the remaining family is empty. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="small-obstructions-question" data-kind="question" data-formal="three-two-value-hall-obstruction three-set-distinct-choice-witness">
+  <h2>Can singleton and pair tests suffice?</h2>
+  <p>Three indices have \(A_0=A_1=A_2=\{0,1\}\). Every singleton and every pair passes the Hall test. Does the family have distinct representatives? What changes if \(A_2\) is replaced by \(\{1,2\}\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The first family has only two available values for three indices, so the test for \(J=\{0,1,2\}\) fails. No injective choice exists. In the modified family, the choices \(f(0)=0\), \(f(1)=1\), and \(f(2)=2\) are distinct and belong to their respective sets. Hall's condition must inspect all finite subsets, not just subsets of a fixed small size.</p>
+    </div>
+  </details>
+</section>
+
+<section id="infinite-hall" data-kind="theorem" data-formal="hall-arbitrary-index-family">
+  <h2>Finite tests decide distinct selection for arbitrarily many indices</h2>
+  <div class="statement-box">
+    <p>Let \(I\) be any set and let every \(A_i\subseteq X\) be finite. There is a system of distinct representatives exactly when</p>
+    <div class="math-display">\[
+      \left|\bigcup_{i\in J}A_i\right|\ge |J|
+      \qquad\text{for every finite }J\subseteq I.
+    \]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Necessity is the same finite counting argument. Suppose the condition holds. Its singleton instances make each \(A_i\) nonempty. For each finite \(F\subseteq I\), all subsets of \(F\) satisfy the condition, so <a href="#finite-hall"></a> gives an injective local assignment \(g_F\). Use choice to select one for each \(F\), and apply <a href="#rado-selection"></a> to obtain \(f\).</p>
+  <p>If \(i\ne j\), apply the patching conclusion to \(J=\{i,j\}\). On this pair, \(f\) agrees with some injective \(g_F\), so \(f(i)\ne f(j)\). Thus \(f\) is injective and is the required system of distinct representatives. No countability assumption on \(I\) is needed. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="infinite-member-question" data-kind="question" data-formal="positive-integer-hall-family positive-integer-family-finite-choice positive-integer-family-no-global-choice">
+  <h2>Why must each available set be finite?</h2>
+  <p>Let \(I=\mathbb N\), put \(A_0=\{1,2,3,\ldots\}\), and put \(A_n=\{n\}\) for \(n\ge1\). Does every finite subfamily have distinct representatives? Does the entire family?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Every finite subfamily has distinct representatives. Give each positive index \(n\) its forced value \(n\). If index \(0\) is present, give it a positive integer outside the finitely many positive indices present. In particular, every finite collection of indices has at least that many available values between them.</p>
+      <p>For the entire family, every positive integer \(n\) is already the forced representative of index \(n\). Any choice \(f(0)=m\in A_0\) collides with \(f(m)=m\). Hence no global injective choice exists. A single infinite available set is enough to defeat the finite-test criterion.</p>
+    </div>
+  </details>
+</section>

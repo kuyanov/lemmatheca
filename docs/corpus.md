@@ -48,6 +48,10 @@ id, title, based_on, primary_area, additional_areas,
 reading_time, summary, abstract
 ```
 
+The entry's `title` must be plain text, with no LaTeX commands or math delimiters.
+Describe mathematical notation in words in the title; put formulas in the entry
+body.
+
 `reading_time` is an estimated positive integer number of minutes, allowing time
 for the arguments and questions. `summary` is the short listing description;
 `abstract` introduces the entry on its own page. It should stand on its own for

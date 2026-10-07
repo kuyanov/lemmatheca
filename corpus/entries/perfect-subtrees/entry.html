@@ -1,0 +1,94 @@
+<section id="sequence-trees-and-branches" data-kind="definition" data-formal="natural-sequence-prefix sequence-tree sequence-branch-set sequence-prefix-extension sequence-branch-cone sequence-subtree sequence-tree-node-countability sequence-tree-root sequence-body-monotone sequence-cone-antitone sequence-path-prefix-branch">
+  <h2>Finite prefixes determine the paths through a sequence tree</h2>
+  <p>Work in ZFC. Write \(\mathbb N^{&lt;\omega}\) for the finite sequences of natural numbers, and write \(s\preceq t\) when \(s\) is an initial segment of \(t\). A <strong>sequence tree</strong> is a set \(T\subseteq\mathbb N^{&lt;\omega}\) closed under initial segments. The empty tree is allowed. As in <a href="infinite-trees#sequence-trees">trees of finite words</a>, a nonempty sequence tree has the empty sequence as its root. Each finite power of \(\mathbb N\) is countable, so their <a href="finite-and-countable-sets#diagonal-enumeration">countable union</a> \(\mathbb N^{&lt;\omega}\), and hence \(T\), is countable.</p>
+  <p>An <strong>infinite path</strong> through \(T\) is a function \(x:\mathbb N\to\mathbb N\) whose every finite prefix belongs to \(T\). Its prefix nodes form a cofinal branch whenever such a path exists. Write</p>
+  <div class="math-display">\[
+    [T]=\{x\in\mathbb N^{\mathbb N}:\forall n\in\mathbb N,\ x\mathbin{\upharpoonright}n\in T\}.
+  \]</div>
+  <p>For a finite sequence \(s\), the <strong>branch cone</strong> above \(s\) is</p>
+  <div class="math-display">\[
+    B_s(T)=\{x\in[T]:s\preceq x\}.
+  \]</div>
+  <p>If \(s\preceq t\), then \(B_t(T)\subseteq B_s(T)\). A node can have an empty cone: being in the tree need not give an infinite extension. A <strong>subtree</strong> here is a prefix-closed subset \(S\subseteq T\), and then \([S]\subseteq[T]\).</p>
+</section>
+
+<section id="perfect-trees" data-kind="definition" data-formal="sequence-incompatibility perfect-sequence-tree perfect-extensions-grow perfect-binary-sequence-tree-example zero-sequence-tree-example">
+  <h2>Perfect trees keep splitting above every node</h2>
+  <p>Two finite sequences are <strong>incompatible</strong> when neither is an initial segment of the other. A sequence tree \(P\) is <strong>perfect</strong> if for every \(s\in P\) there are incompatible \(u,v\in P\) with \(s\preceq u\) and \(s\preceq v\). These extensions are necessarily strictly longer than \(s\).</p>
+  <p>The empty tree is perfect under this convention, so existence results will explicitly require a nonempty perfect subtree. The full binary tree \(\{0,1\}^{&lt;\omega}\subseteq\mathbb N^{&lt;\omega}\) is perfect. The tree consisting only of all-zero words has a single infinite path and is not perfect. Splitting is required somewhere above a node; it need not occur at the immediately following level.</p>
+</section>
+
+<section id="binary-splitting" data-kind="lemma" data-formal="binary-splitting-system binary-system-prefix-closure binary-system-existence binary-system-closure-specification binary-system-path-specification perfect-cone-binary-injection">
+  <h2>Binary choices produce continuum many paths in every perfect cone</h2>
+  <p>Let \(P\) be a perfect sequence tree and \(r\in P\). There are nodes \(u_\sigma\in P\), indexed by finite binary words \(\sigma\), such that \(u_\varnothing=r\), each \(u_{\sigma i}\) strictly extends \(u_\sigma\), and the two children \(u_{\sigma0},u_{\sigma1}\) are incompatible. Taking all prefixes of the selected nodes gives a nonempty perfect subtree \(S\subseteq P\). There is an injection from \(\{0,1\}^{\mathbb N}\) into \(B_r(P)\), and therefore every perfect cone has at least continuum many paths.</p>
+  <p class="proof-label">Proof</p>
+  <p>Choose the two children recursively, using perfectness at each selected node. A fixed well-order of the countable set of finite sequences makes every choice definite. All selected children are strictly longer than their parent: an extension equal to the parent would be comparable with the other child.</p>
+  <p>Define the downward closure</p>
+  <div class="math-display">\[
+    S=\{t:\exists\sigma\in\{0,1\}^{&lt;\omega},\ t\preceq u_\sigma\}.
+  \]</div>
+  <p>Prefix closure of \(P\) gives \(S\subseteq P\). If \(t\in S\), choose \(u_\sigma\) extending it; the incompatible nodes \(u_{\sigma0},u_{\sigma1}\) then extend \(t\) inside \(S\). Thus \(S\) is perfect. Taking this downward closure matters: the selected nodes alone may skip lengths and fail to be a subtree.</p>
+  <p>For an infinite binary sequence \(z\), put</p>
+  <div class="math-display">\[
+    F(z)=\bigcup_{n\in\mathbb N}u_{z\mathbin{\upharpoonright}n}.
+  \]</div>
+  <p>The nodes are nested and their lengths strictly increase, so the union is a function with domain \(\mathbb N\). Each finite prefix belongs to \(S\), and the union extends \(r\). If \(z\ne w\), their first differing binary choice leads to incompatible selected nodes; hence \(F(z)\ne F(w)\). This proves injectivity. <a href="comparing-sizes#binary-sequences">Binary sequences have cardinality \(\mathfrak c\)</a>. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="countable-cones" data-kind="lemma" data-formal="perfect-sequence-kernel sequence-countable-cone-exceptions sequence-kernel-subtree sequence-exceptions-countable sequence-kernel-remainder">
+  <h2>All branches with a countable cone form a countable set</h2>
+  <p>For a sequence tree \(T\), define</p>
+  <div class="math-display">\[
+    K(T)=\{s\in T:B_s(T)\text{ is uncountable}\},\qquad
+    E(T)=\bigcup_{s\in T\setminus K(T)}B_s(T).
+  \]</div>
+  <p>Then \(K(T)\) is a subtree of \(T\), \(E(T)\) is countable, and</p>
+  <div class="math-display">\[
+    [T]\setminus[K(T)]=E(T).
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>If \(s\in K(T)\) and \(t\preceq s\), prefix closure puts \(t\) in \(T\), while \(B_s(T)\subseteq B_t(T)\) makes the latter cone uncountable. Thus \(t\in K(T)\). Every cone in the displayed union defining \(E(T)\) is countable, and there are only countably many nodes indexing it. Hence \(E(T)\) is countable.</p>
+  <p>A path through \(T\) fails to be a path through \(K(T)\) exactly when one of its prefixes lies in \(T\setminus K(T)\). That is exactly the condition of belonging to \(E(T)\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="perfect-kernel" data-kind="theorem" data-formal="sequence-kernel-perfect sequence-kernel-largest sequence-exceptions-countable sequence-kernel-remainder sequence-kernel-nonempty sequence-kernel-empty sequence-kernel-of-perfect-tree">
+  <h2>The uncountable cones give the largest perfect subtree</h2>
+  <div class="statement-box"><p>For every sequence tree \(T\), its subtree \(K(T)\) is perfect, every perfect subtree of \(T\) is contained in \(K(T)\), and \([T]\setminus[K(T)]\) is countable. Moreover, \(K(T)\ne\varnothing\) if and only if \([T]\) is uncountable.</p></div>
+  <p>We call \(K(T)\) the <strong>perfect kernel</strong> of \(T\). “Largest” refers to inclusion of trees, not just to the number of their paths.</p>
+  <p class="proof-label">Proof</p>
+  <p>The subtree and countable-remainder assertions follow from <a href="#countable-cones"></a>. Suppose \(s\in K(T)\). The set \(B_s(T)\) is uncountable, whereas \(E(T)\) is countable, so \(B_s(T)\setminus E(T)\) is uncountable. Choose two distinct paths \(x,y\) there. Every prefix of either path lies in \(K(T)\), by the description of \(E(T)\). At a sufficiently large common length, past their first disagreement and past \(|s|\), their prefixes are incompatible extensions of \(s\) in \(K(T)\). Thus \(K(T)\) is perfect.</p>
+  <p>Now let \(Q\subseteq T\) be any perfect subtree and \(s\in Q\). By <a href="#binary-splitting"></a>, \(B_s(Q)\) has at least \(\mathfrak c\) paths. Since \(B_s(Q)\subseteq B_s(T)\), the latter is uncountable and \(s\in K(T)\). Therefore \(Q\subseteq K(T)\).</p>
+  <p>If \([T]\) is uncountable, its cone at the empty sequence is all of \([T]\), so the root belongs to \(K(T)\). Conversely, any node in \(K(T)\) has an uncountable cone inside \([T]\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>If \([T]\) is countable, the perfect kernel is empty, even when \(T\) itself has infinitely many nodes. If \(T\) is already perfect, the largest-subtree assertion gives \(K(T)=T\).</p>
+</section>
+
+<section id="branch-cardinality" data-kind="theorem" data-formal="sequence-body-continuum-bound sequence-body-cardinality-dichotomy sequence-perfect-subtree-characterization">
+  <h2>A sequence tree has countably many paths or continuum many</h2>
+  <div class="statement-box"><p>For a sequence tree \(T\subseteq\mathbb N^{&lt;\omega}\), either \([T]\) is countable or \(|[T]|=\mathfrak c\). The second case occurs exactly when \(T\) has a nonempty perfect subtree.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>If \([T]\) is uncountable, <a href="#perfect-kernel"></a> supplies a nonempty perfect subtree, and <a href="#binary-splitting"></a> supplies an injection \(\{0,1\}^{\mathbb N}\to[T]\). The same lower bound holds whenever a nonempty perfect subtree exists.</p>
+  <p>For the upper bound, a natural-number sequence \(x\) is determined by its graph \(\{(n,x(n)):n\in\mathbb N\}\). This is a subset of the countable set \(\mathbb N\times\mathbb N\). A bijection of that product with \(\mathbb N\) therefore gives an injection \(\mathbb N^{\mathbb N}\to\mathcal P(\mathbb N)\). Since \([T]\subseteq\mathbb N^{\mathbb N}\), we have \(|[T]|\le\mathfrak c\). The lower and upper bounds, with <a href="comparing-sizes#cantor-schroeder-bernstein">Cantor–Schroeder–Bernstein</a>, give \(|[T]|=\mathfrak c\). This cardinal is uncountable, so the two cases are exclusive. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>No finite-branching condition is needed. The conclusion concerns a countable tree's complete path set; it does not constrain the sizes of arbitrary subfamilies of its paths.</p>
+</section>
+
+<section id="countable-paths-question" data-kind="question" data-formal="single-one-sequence-tree single-one-sequence-path single-one-tree-paths single-one-tree-countability single-one-tree-zero-path-splitting">
+  <h2>Can an infinite tree have exactly countably infinitely many paths?</h2>
+  <p>Let \(T\subseteq\{0,1\}^{&lt;\omega}\) consist of the finite binary words containing at most one occurrence of \(1\). Determine \([T]\) and its perfect kernel.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>A path contains at most one \(1\), since two occurrences would already appear together in a finite prefix. Conversely, every sequence with at most one \(1\) has all prefixes in \(T\). Thus the paths are the all-zero sequence and, for each \(n\in\mathbb N\), the sequence having its sole \(1\) at coordinate \(n\).</p>
+      <p>These are distinct and form a countably infinite set. Every cone is countable, so \(K(T)=\varnothing\). The tree has nodes at every finite level and infinitely many splitting nodes along its all-zero path, but after choosing a \(1\) a path can never split again. It therefore has no nonempty perfect subtree.</p>
+    </div>
+  </details>
+</section>
+
+<section id="prefix-closure-question" data-kind="question" data-formal="sequence-family-prefix-tree eventually-zero-binary-path-family eventually-zero-binary-path-countability eventually-zero-prefix-tree perfect-binary-sequence-tree-example eventually-zero-prefix-tree-added-paths">
+  <h2>Does taking all finite prefixes preserve a chosen family of paths?</h2>
+  <p>Let \(A\subseteq\{0,1\}^{\mathbb N}\) be the eventually-zero sequences, and let \(T_A=\{x\mathbin{\upharpoonright}n:x\in A,\ n\in\mathbb N\}\). Is \([T_A]=A\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. Every finite binary word extends to an eventually-zero sequence by appending zeros. Hence \(T_A=\{0,1\}^{&lt;\omega}\), whose path set is all of \(\{0,1\}^{\mathbb N}\). For example, the all-one sequence belongs to \([T_A]\) but not to \(A\).</p>
+      <p>The family \(A\) is <a href="comparing-sizes#finite-sequences-question">countable</a>, whereas \([T_A]\) has cardinality \(\mathfrak c\). The path-set theorem applies to all sequences whose prefixes lie in a tree. A chosen family of paths may omit other sequences that satisfy exactly the same finite-prefix condition.</p>
+    </div>
+  </details>
+</section>

@@ -1,0 +1,12 @@
+{
+  "id": "finite-restriction-stable-constraints",
+  "description": "If every index has a finite available value set, each finite domain has a nonempty collection of solutions, and restriction from any larger finite domain preserves solutions, there is a global assignment whose restriction to every finite domain is a solution.",
+  "module": "Lemmatheca.SetTheory.RadoHall",
+  "declaration": "Lemmatheca.SetTheory.RadoHall.finite_constraint_solution",
+  "dependencies": [
+    "rado-finite-selection"
+  ],
+  "verified": true,
+  "declaration_line": 28,
+  "signature": "Lemmatheca.SetTheory.RadoHall.finite_constraint_solution.{u, v} {ι : Type u} {β : ι → Type v} [∀ (i : ι), Finite (β i)]\n  (S : (s : Finset ι) → Set ((i : ↥s) → β ↑i)) (hS : ∀ (s : Finset ι), (S s).Nonempty)\n  (hrestrict : ∀ (s t : Finset ι) (hst : s ⊆ t), ∀ g ∈ S t, (fun i => g (Set.inclusion hst i)) ∈ S s) :\n  ∃ f, ∀ (s : Finset ι), (fun i => f ↑i) ∈ S s"
+}

@@ -1,0 +1,34 @@
+<section id="matrix-on-omega-one" data-kind="definition" data-formal="ulam-matrix ulam-matrix-cell ulam-matrix-exists ulam-matrix-identities">
+  <h2>Countable initial segments give a matrix on omega one</h2>
+<p>Work in ZFC. A <a href="clubs-and-stationary-sets#stationary-sets">stationary set</a> in a regular uncountable cardinal meets every closed unbounded set. Such sets need not contain a club. We will split one stationary set into many disjoint stationary pieces.</p><p>For each \(\beta&lt;\omega_1\), choose an injection \(e_\beta:\beta\to\omega\), possible because \(\beta\) is countable. For \(n&lt;\omega\) and \(\alpha&lt;\omega_1\), define</p><div class="math-display">\[A^n_\alpha=\{\beta&lt;\omega_1:\alpha&lt;\beta\text{ and }e_\beta(\alpha)=n\}.\]</div><p>The indices play different roles: for a fixed \(\alpha\), varying \(n\) partitions the tail above \(\alpha\); for a fixed \(n\), varying \(\alpha\) gives disjoint cells because each \(e_\beta\) is injective. This is an <strong>Ulam matrix</strong>.</p>
+</section>
+
+<section id="omega-one-splitting" data-kind="theorem" data-formal="ulam-disjoint-stationary-sets">
+  <h2>Every stationary subset of omega one has omega one disjoint stationary pieces</h2>
+<div class="statement-box"><p>If \(S\subseteq\omega_1\) is stationary, there are pairwise disjoint stationary sets \(S_\xi\subseteq S\), for \(\xi&lt;\omega_1\).</p></div><p class="proof-label">Proof</p><p>For each \(\alpha\), the sets \(S\cap A^n_\alpha\), \(n&lt;\omega\), cover the stationary tail \(S\setminus(\alpha+1)\). At least one is stationary: otherwise their countable union would be nonstationary by <a href="clubs-and-stationary-sets#small-unions">completeness of the nonstationary ideal</a>. Choose one such index \(n(\alpha)\).</p><p>Some fiber \(H=\{\alpha:n(\alpha)=n_*\}\) is uncountable, since \(\omega_1\) is not a countable union of countable sets. List \(H\) without repetition as \((\alpha_\xi)_{\xi&lt;\omega_1}\). Set \(S_\xi=S\cap A^{n_*}_{\alpha_\xi}\). These sets are stationary by the choice of the indices and disjoint by row injectivity.</p><p><span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="successor-matrix" data-kind="definition" data-formal="ulam-matrix ulam-matrix-cell ulam-matrix-exists">
+  <h2>The same matrix works on every infinite successor cardinal</h2>
+<p>Let \(\kappa\) be an infinite cardinal and \(\lambda=\kappa^+\), both identified with their initial ordinals. The cardinal \(\lambda\) is <a href="cofinality#successors-are-regular">regular</a>. Every \(\beta&lt;\lambda\) has cardinality at most \(\kappa\), so choose an injection \(e_\beta:\beta\to\kappa\). Put</p><div class="math-display">\[A^i_\alpha=\{\beta&lt;\lambda:\alpha&lt;\beta\text{ and }e_\beta(\alpha)=i\}\quad(i&lt;\kappa,\ \alpha&lt;\lambda).\]</div><p>The choice of all these injections uses Choice; the construction is indexed by the set \(\lambda\).</p>
+</section>
+
+<section id="matrix-identities" data-kind="lemma" data-formal="ulam-matrix-identities">
+  <h2>Rows and columns are disjoint, and columns cover tails</h2>
+<p>For the matrix just defined:</p><div class="math-display">\[\begin{aligned}i\ne j&\implies A^i_\alpha\cap A^j_\alpha=\varnothing,\\\alpha\ne\gamma&\implies A^i_\alpha\cap A^i_\gamma=\varnothing,\\\bigcup_{i&lt;\kappa}A^i_\alpha&=\lambda\setminus(\alpha+1).\end{aligned}\]</div><p class="proof-label">Proof</p><p>A function gives only one value to \(\alpha\), proving the first identity. If \(\beta\) belonged to the two cells in the second identity, injectivity of \(e_\beta\) would force \(\alpha=\gamma\). Every \(\beta&gt;\alpha\) assigns some value below \(\kappa\) to \(\alpha\), giving the last identity.</p><p><span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="ulam-splitting" data-kind="theorem" data-formal="ulam-stationary-cell ulam-disjoint-stationary-sets ulam-stationary-partition">
+  <h2>Ulam splitting at successor cardinals</h2>
+<div class="statement-box"><p>For every infinite cardinal \(\kappa\), every stationary \(S\subseteq\kappa^+\) is the union of \(\kappa^+\) pairwise disjoint stationary sets.</p></div><p class="proof-label">Proof</p><p>Put \(\lambda=\kappa^+\). Each column decomposes \(S\setminus(\alpha+1)\) into \(\kappa&lt;\lambda\) cells. This tail is stationary, so one cell \(S\cap A^{i(\alpha)}_\alpha\) is stationary by <a href="clubs-and-stationary-sets#small-unions">the small-union property</a>.</p><p>There is an \(i_*&lt;\kappa\) whose fiber \(H=\{\alpha&lt;\lambda:i(\alpha)=i_*\}\) has size \(\lambda\). Otherwise every fiber has size at most \(\kappa\), and their union has size at most \(\kappa\cdot\kappa=\kappa\), contradicting its size \(\lambda\). This uses <a href="infinite-cardinal-arithmetic#infinite-square">infinite cardinal multiplication</a>.</p><p>Choose a bijection \(\xi\mapsto\alpha_\xi\) from \(\lambda\) onto \(H\), and put \(P_\xi=S\cap A^{i_*}_{\alpha_\xi}\). The matrix identities give disjoint stationary subsets. To make a partition of <em>all</em> of \(S\), put \(R=S\setminus\bigcup_{\xi&lt;\lambda}P_\xi\), replace \(P_0\) by \(P_0\cup R\), and keep all other cells. The enlarged cell is stationary because it contains a stationary set; the cells are disjoint and now cover \(S\).</p><p><span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="stationary-versus-club-question" data-kind="question" data-formal="disjoint-stationary-set-contains-no-club">
+  <h2>Could every piece be a club?</h2>
+<p>Can two of the disjoint stationary pieces both contain clubs?</p><details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Two clubs in the regular uncountable cardinal \(\lambda\) have club intersection, hence meet. If disjoint pieces each contained a club, those two clubs would be disjoint. In particular, none of the pieces of the partition can contain a club: it would have to meet every other stationary piece.</p></div></details>
+</section>
+
+<section id="number-of-pieces-question" data-kind="question" data-formal="disjoint-nonempty-family-cardinality">
+  <h2>Why is the number of pieces optimal?</h2>
+<p>Could \(S\subseteq\kappa^+\) have more than \(\kappa^+\) nonempty disjoint pieces?</p><details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Choose one point from each nonempty piece. Disjointness makes this choice map injective into \(S\subseteq\kappa^+\). The Ulam partition has the largest possible number of nonempty pieces. This upper-bound argument works for any ambient set. The Ulam construction above uses that the ambient cardinal is a successor; it does not establish splitting at every regular uncountable cardinal.</p></div></details>
+</section>

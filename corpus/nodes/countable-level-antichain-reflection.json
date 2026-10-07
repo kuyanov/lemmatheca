@@ -1,0 +1,12 @@
+{
+  "id": "countable-level-antichain-reflection",
+  "description": "For every maximal antichain A in a tree of height omega_1 with countable levels, there are chosen comparable witnesses a(t) in A whose reflection bounds are countable. At every nonzero limit cut delta closed under these bounds, the witnesses of nodes below delta stay below delta, and A restricted to those nodes is a maximal antichain. The nonzero limit cuts on which witnesses stay below the cut form a club.",
+  "module": "Lemmatheca.SetTheory.DiamondSuslin",
+  "declaration": "Lemmatheca.SetTheory.DiamondSuslin.antichain_reflection",
+  "dependencies": [
+    "antichain-reflection-bound"
+  ],
+  "verified": true,
+  "declaration_line": 358,
+  "signature": "Lemmatheca.SetTheory.DiamondSuslin.antichain_reflection (T : Lemmatheca.SetTheory.InfiniteTrees.Tree)\n  (hheight : Lemmatheca.SetTheory.InfiniteTrees.treeHeight T = (Cardinal.aleph 1).ord)\n  (hc : ∀ (α : Ordinal.{0}), (Lemmatheca.SetTheory.InfiniteTrees.level T α).Countable) (A : Set T.carrier)\n  (hA : IsMaxAntichain (fun x1 x2 => x1 ≤ x2) A) :\n  ∃ a,\n    (∀ (t : T.carrier), a t ∈ A ∧ (a t ≤ t ∨ t ≤ a t)) ∧\n      (∀ (β : Lemmatheca.SetTheory.DiamondSuslin.OmegaOne),\n          Lemmatheca.SetTheory.DiamondSuslin.ReflectionBound T a β < (Cardinal.aleph 1).ord) ∧\n        (∀ (δ : Lemmatheca.SetTheory.DiamondSuslin.OmegaOne),\n            Order.IsSuccLimit δ →\n              (∀ β < δ, Lemmatheca.SetTheory.DiamondSuslin.ReflectionBound T a β < ↑(Ordinal.ToType.toOrd δ)) →\n                (∀ (t : T.carrier),\n                    Lemmatheca.SetTheory.InfiniteTrees.nodeHeight T t < ↑(Ordinal.ToType.toOrd δ) →\n                      Lemmatheca.SetTheory.InfiniteTrees.nodeHeight T (a t) < ↑(Ordinal.ToType.toOrd δ)) ∧\n                  IsMaxAntichain (fun x1 x2 => x1 ≤ x2) {t | ↑t ∈ A}) ∧\n          IsClub\n            {δ |\n              Order.IsSuccLimit δ ∧\n                ∀ (t : T.carrier),\n                  Lemmatheca.SetTheory.InfiniteTrees.nodeHeight T t < ↑(Ordinal.ToType.toOrd δ) →\n                    Lemmatheca.SetTheory.InfiniteTrees.nodeHeight T (a t) < ↑(Ordinal.ToType.toOrd δ)}"
+}
