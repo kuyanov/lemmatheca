@@ -149,14 +149,18 @@ Complete these edits before returning the draft; a chat-only list is insufficien
    under that area in `corpus/area_entries.json`. There are no review or editorial
    status fields to add.
    Write the abstract for readers new to the topic or who have not read the entry.
-   Use simple language, explain essential unfamiliar terms, and emphasize the main
-   results and what they mean. Make it understandable on its own; avoid a section
-   itinerary, proof techniques, and notation that requires the entry's definitions.
-   Keep necessary conditions, expressing them in plain language where possible.
-   Develop one connected paragraph around the entry's central idea. Let each
-   sentence build on the previous one, linking the motivating idea to the main
-   conclusions. Choose results that support this thread rather than listing every
-   topic; transitions should express a real relationship between ideas.
+   Consult the cited sources' explanations and motivating examples to find a
+   natural starting point, then check it against the entry's scope and assumptions.
+   Write original prose beginning with a concrete problem, example, or familiar
+   fact that gives readers a reason to follow the rigorous arguments. Use simple
+   language and familiar mathematical vocabulary, briefly explaining essential new
+   terms; avoid vague substitutes for standard terms and notation that requires the
+   entry's definitions. Develop one connected paragraph around the central idea,
+   with each sentence building on the previous one. Select a few main results,
+   preserve their necessary conditions, and explain their significance and real
+   relationships. Avoid proof-technique inventories and section itineraries. Read
+   the finished paragraph as an introduction and check that its objects, comparisons,
+   and conclusions make sense without the entry.
 5. Leave data-formal absent for new blocks. An empty mapping means nothing needs
    formalizing, not that work is unfinished. Preserve existing mappings on an
    edited entry unless the changed mathematics requires revisiting them. Do not

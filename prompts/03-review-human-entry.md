@@ -96,6 +96,11 @@ Check the following:
   Check that it develops a connected idea: each sentence builds on the preceding
   context, and the selected results belong to that thread. Flag isolated facts or
   transitions that suggest a relationship the mathematics does not support.
+  Compare its motivation and explanations with the cited sources. It should give a
+  concrete reason to read the rigorous arguments, in original prose. Flag technically
+  accurate sentences whose objects or comparisons are unclear, unexplained terms,
+  and vague substitutes for familiar mathematical vocabulary. Check it as an
+  introduction, rather than only as a summary of theorem statements.
 - HTML, metadata, references, assets, and `corpus/area_entries.json` follow the
   current contract. Check that the entry's `title` is plain text, without LaTeX
   commands or math delimiters. Flag mathematical notation that should be described

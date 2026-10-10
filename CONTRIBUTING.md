@@ -223,6 +223,10 @@ Choose and review the reading order using these criteria:
 - Make each summary and abstract understandable before reading the entry, using
   preceding material and familiar background. Briefly explain any new terms;
   neither should require definitions introduced only in the entry or later.
+  Ground an abstract's motivation in the cited sources' explanations and examples,
+  write original prose, and check it against the entry's scope. Give a concrete
+  reason to follow the rigorous arguments, using familiar vocabulary and a few
+  connected central results.
 
 Prerequisite order takes priority when these preferences conflict. Recheck it when
 adding, expanding, reordering, or moving entries into subareas. Keep entry prose
