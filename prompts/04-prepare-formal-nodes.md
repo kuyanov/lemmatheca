@@ -85,9 +85,24 @@ publication itself is demonstrably wrong. Report any saved register changes.
    Group related mathematics in coherent modules, remove empty example modules,
    and add imports to `formal/Lemmatheca.lean`. Keep environment pins fixed.
 6. Create `corpus/nodes/<node-id>.json` using the current contract in [formalization guide](../docs/formal.md).
-   Write a concise plain-text mathematical description with needed assumptions and
-   quantifiers. Optional LaTeX must be escaped for JSON. Bind declaration to its full
-   Lean name and module to its defining module, including Lean core modules where
+   Write a concise readable description with needed assumptions and quantifiers.
+   Put mathematical notation, including variables, subscripts, function
+   applications, quantifiers, relations, operations, fractions, decimals, tuples,
+   intervals, and set braces, inside `\(...\)` or
+   `\[...\]`; escape every LaTeX backslash for JSON. Raw Unicode or ASCII formulas
+   outside these delimiters display as text. Dollar signs, Markdown backticks,
+   and HTML are not substitutes for the supported delimiters. Follow the
+   [node-description contract](../docs/formal.md#formal-nodes).
+   Use actual LaTeX symbols and operators, such as `\omega_1`, `\mathfrak{b}`,
+   and `\operatorname{cf}`; wrapping an ASCII spelling alone can render a product
+   of letters. Keep ordinary prose, including the article “A,” outside formulas.
+   Determine contextually whether each `a` or `A` is a variable or an article;
+   do not exclude a mathematical variable from formatting because of its spelling.
+   Use consistent symbols for specific named ordinals and cardinals. Write
+   `\aleph_a` or `\beth_a` as a complete formula, avoiding hybrids such as
+   “aleph `\(a\)`.” General topic names can remain prose.
+   Bind declaration to its full Lean name and module to its defining module,
+   including Lean core modules where
    appropriate. An unbound planned node may have both fields null. New nodes start
    with `verified: false`.
    Do not add review fields, a separate source-module field,
@@ -121,11 +136,21 @@ results. Inspect the resulting signatures and defining source locations. A gener
 target can point to a differently named source origin; judge its actual signature.
 Run relevant catalog tests only if reader or build-tooling code changes, or when
 investigating an integration failure.
+Check every new or edited node description for notation outside math delimiters
+and unmatched or nested delimiters. Inspect its rendered node page, including formula
+subscripts and quantifiers, and resolve KaTeX errors or literal LaTeX fragments.
+Check the intended glyphs and operators as well as successful parsing.
+Read the complete descriptions, including any untouched records within the
+requested audit scope. Check ambiguous `a` variables and ASCII applications,
+fractions, tuples, intervals, and braces explicitly; a symbol scan alone cannot
+establish that all notation is formatted. Report what was actually checked.
+Valid JSON and a successful Lean build do not establish correct formula rendering.
 
 ## Deliverable
 
 Return the coverage map, new/rebound/retired node IDs and targets, reasons for local
 declarations, representation notes, proof-planning hints, and checks performed.
+Include the node-description formatting and rendering checks.
 Include generated JSON changes and list questions for correspondence review on
 GitHub. Do not claim that passing Lean checks establish correspondence or record
 any approval in the corpus.

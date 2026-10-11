@@ -106,6 +106,14 @@ results do not require artificial bindings or proofs merely to quiet build outpu
 Run `uv run python app/manage.py validate_corpus` if node records, bindings, or
 entry structure also changed. Run relevant catalog tests only if reader or
 build-tooling code changes, or when investigating an integration failure.
+If a node description is added or edited, follow the
+[node-description contract](../docs/formal.md#formal-nodes): enclose notation in
+JSON-escaped `\(...\)` or `\[...\]`, check for raw formulas and unmatched or nested
+delimiters, and inspect the rendered node page for KaTeX errors or literal LaTeX.
+Lean verification does not check formula formatting.
+Check the full description for ambiguous variables such as `a`, ASCII operator
+applications, fractions, tuples, intervals, and hybrid word-plus-index notation;
+successful parsing or a raw-symbol scan alone does not establish correct presentation.
 
 Failed compilation or declaration checks leave previous results intact. Treat that
 as a failed refresh, not proof of the current source state. Fix failures in scope

@@ -97,6 +97,10 @@ entry modules; examples import the theory they illustrate.
 
 Create node records and link them from blocks with `data-formal`. Several nodes
 can cover one block, and one node can serve many entries.
+Write readable descriptions and enclose their mathematical notation in the
+JSON-escaped math delimiters specified in the
+[node-description contract](docs/formal.md#formal-nodes). Inspect rendered node
+pages for formulas left as text, malformed delimiters, and KaTeX errors.
 An empty mapping means there is nothing to formalize; it must not hide unfinished
 work. Record representation choices and specializations for the next reviewer.
 Build to check that bindings exist and generate signatures, source lines, and
@@ -109,6 +113,8 @@ Check hypotheses, quantifiers, types, conclusions, witnesses, edge cases, and an
 representation changes. Inspect definitions and elaborated signatures, including
 which relation or typeclass instance Lean selected. A plausible declaration name
 or successful proof is not evidence of a correct binding.
+Also inspect node-description rendering; variables, subscripts, and formulas must
+use supported math delimiters rather than appear as raw notation in prose.
 
 Return a block-by-block coverage table and findings about incorrect bindings,
 missing claims, unexplained translations, and redundant nodes. This audit is

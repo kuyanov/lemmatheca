@@ -240,6 +240,10 @@ is empty. Wholly unplanned entries display Not started; partly unplanned entries
 display Partial. These are formalization summaries, not GitHub review decisions.
 Node pages display Verified or Not verified, the mathematical description, Lean
 declaration, dependencies, and source.
+In node descriptions, enclose mathematical notation in `\(...\)` or `\[...\]`
+and escape LaTeX backslashes for JSON. Check the rendered node page as well as
+the entry; raw symbols and ASCII formulas outside these delimiters display as
+ordinary text. See the [node-description contract](formal.md#formal-nodes).
 
 The [Lean guide](formal.md#formal-nodes) defines node records, descriptions,
 bindings, and the distinction between proof-planning hints and actual Lean dependencies. Formal verification permits `propext`,

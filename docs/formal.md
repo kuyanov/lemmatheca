@@ -16,7 +16,7 @@ reference them. A new binding can be written as:
 ```json
 {
   "id": "set-subset-transitive",
-  "description": "If A is a subset of B and B is a subset of C, then A is a subset of C.",
+  "description": "If \\(A\\subseteq B\\) and \\(B\\subseteq C\\), then \\(A\\subseteq C\\).",
   "module": "Mathlib.Data.Set.Basic",
   "declaration": "Set.Subset.trans",
   "dependencies": ["set-subset"],
@@ -25,11 +25,41 @@ reference them. A new binding can be written as:
 ```
 
 Use stable mathematical IDs and reuse existing nodes where possible. `description`
-is plain text stating the result with its hypotheses, domains, and quantifiers,
-or describing the object being defined. It should make sense without opening an
-entry. Mathematical notation is supported; escape LaTeX backslashes in JSON, for
-example `"For every set \\(A\\), \\(A\\cup\\varnothing=A\\)."`. Avoid HTML, proofs,
-and implementation commentary in descriptions.
+is readable mathematical prose stating the result with its hypotheses, domains,
+and quantifiers, or describing the object being defined. It should make sense without opening an
+entry. Write ordinary prose normally, and put mathematical notation in
+`\(...\)` for inline formulas or `\[...\]` for display formulas. This includes
+variables, subscripts, function applications, quantifiers, and expressions using
+relation or operation symbols. Raw Unicode symbols or ASCII expressions such as
+`z0<z1` remain ordinary text in the reader; dollar signs and Markdown backticks
+are not supported math delimiters. Escape every LaTeX backslash in JSON, for
+example `"For every set \\(A\\), \\(A\\cup\\varnothing=A\\)."` or
+`"The natural-number order satisfies \\(\\forall z_0\\,\\exists z_1\\;(z_0<z_1)\\)."`.
+Use LaTeX commands for the intended symbols and operators, such as `\omega_1`,
+`\mathfrak{b}`, and `\operatorname{cf}`. Check that an ASCII spelling inside a
+formula has not become a product of letters. Keep ordinary words, including the
+indefinite articles “a” and “A,” outside math delimiters. Decide from each
+occurrence's mathematical context whether `a` is an article or a variable; a
+blanket exclusion of that letter misses valid notation.
+Use consistent notation for specific named ordinals and cardinals, such as
+`\omega`, `\omega_1`, `\aleph_0`, `\beth_a`, and `\varepsilon_0`. Write indexed
+families as complete formulas, such as `\aleph_a`, rather than mixing a worded
+family name with a separately typeset index. General topic names such as
+“aleph sequence” or “epsilon number” can remain prose.
+Avoid HTML, proofs, and implementation commentary in descriptions.
+
+Check every new or edited description for notation outside math delimiters and
+unmatched or nested delimiters, then inspect its rendered node page. Confirm that the
+formulas render, subscripts and quantifiers display correctly, and there are no
+KaTeX errors or literal LaTeX fragments. Valid JSON and a successful Lean build
+do not check formula rendering. Formatting-only description changes require
+corpus validation and a rendering check; unchanged bindings and proofs do not
+need a Lean rebuild.
+Review the complete descriptions as well as running symbol scans. Include ASCII
+operator applications, fractions, decimals, tuples, intervals, set braces, and
+variables that resemble English articles. For a corpus-wide audit, inspect
+untouched records too; a scan for Unicode symbols or single-letter tokens alone
+does not cover these cases. State the actual coverage and limitations of checks.
 
 `declaration` is the full Lean name. `module` is the module that defines it, used
 for both importing and browsing its source. A node can bind directly to a local, mathlib, or Lean core declaration.

@@ -33,8 +33,23 @@ register maintenance is this review's only permitted file edit.
    specialization or representation bridges, and gaps. Include examples, hidden
    answers, witnesses, prose claims, and relevant boundary cases. Explain empty
    mappings and distinguish them from unplanned blocks.
-2. Compare each description with both its declaration and the human text. Check
-   hypotheses, quantifiers, logical directions, conclusions, and domains. Check
+2. Compare each description with both its declaration and the human text. Inspect
+   its rendered node page as well: mathematical notation must use `\(...\)` or
+   `\[...\]` with JSON-escaped LaTeX. Flag raw variables, subscripts, function
+   applications, quantifiers, relations, operations, fractions, decimals, tuples,
+   intervals, or set braces left outside math delimiters, unmatched or nested
+   delimiters, literal LaTeX, and KaTeX errors. Keep ordinary English words
+   outside formulas; check for articles accidentally marked as variables
+   and ASCII spellings rendered as products of letters instead of the intended
+   Greek symbols or named operators. Follow the
+   [node-description contract](../docs/formal.md#formal-nodes); valid JSON and
+   Lean verification do not check this presentation.
+   Inspect each ambiguous `a` in context, including records left untouched by a
+   formatting pass. Check complete notation for indexed families (`\aleph_a`,
+   `\beth_a`) and consistent symbols for specific named ordinals and cardinals.
+   Read the descriptions in full rather than relying only on Unicode or token
+   scans, and state the actual scope and limitations of the audit.
+   Check hypotheses, quantifiers, logical directions, conclusions, and domains. Check
    existence as well as uniqueness, both laws for the same inverse, the surrounding
    set for complements, and codomains for surjectivity and composition. Inspect
    conventions involving total operations, subtypes, and cardinalities. A more
@@ -100,7 +115,8 @@ read-only audit.
 
 Return findings with concrete file/block/node references, their consequences, and
 suggested changes, followed by the coverage table and checks performed. Distinguish
-incorrect bindings, missing coverage, unstated representation bridges, and optional
+node-description formatting defects, incorrect bindings, missing coverage,
+unstated representation bridges, and optional
 simplifications. Explain any correspondence that needs renewed discussion after a
 proposed statement or description change.
 
