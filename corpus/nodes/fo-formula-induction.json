@@ -1,0 +1,10 @@
+{
+  "id": "fo-formula-induction",
+  "description": "Structural induction on formulas ranges over every context size: atomic cases, implication from its two children, and a universal binder from its body with one more placeholder.",
+  "module": "Mathlib.ModelTheory.Syntax",
+  "declaration": "FirstOrder.Language.BoundedFormula.rec",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 309,
+  "signature": "FirstOrder.Language.BoundedFormula.rec.{u_1, u, v, u'} {L : FirstOrder.Language} {α : Type u'}\n  {motive : (a : ℕ) → L.BoundedFormula α a → Sort u_1}\n  (falsum : {n : ℕ} → motive n FirstOrder.Language.BoundedFormula.falsum)\n  (equal : {n : ℕ} → (t₁ t₂ : L.Term (α ⊕ Fin n)) → motive n (FirstOrder.Language.BoundedFormula.equal t₁ t₂))\n  (rel :\n    {n l : ℕ} →\n      (R : L.Relations l) → (ts : Fin l → L.Term (α ⊕ Fin n)) → motive n (FirstOrder.Language.BoundedFormula.rel R ts))\n  (imp : {n : ℕ} → (f₁ f₂ : L.BoundedFormula α n) → motive n f₁ → motive n f₂ → motive n (f₁.imp f₂))\n  (all : {n : ℕ} → (f : L.BoundedFormula α (n + 1)) → motive (n + 1) f → motive n f.all) {a✝ : ℕ}\n  (t : L.BoundedFormula α a✝) : motive a✝ t"
+}

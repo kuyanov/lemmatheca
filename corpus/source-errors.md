@@ -1,10 +1,13 @@
 # Source errors
 
-Last checked: **2026-10-08**. Scope: the publications cited by the current **42
+Last checked: **2026-10-11**. Scope: the publications cited by the current **46
 entries**, using their `based_on` locations and the named results those citations
-identify, together with explicitly scoped supporting, adjacent, and entry-planning passages.
-The [coverage](#coverage) records **37 distinct publications**: all 31 directly
-cited publications, one checked supporting publication, and five planning sources.
+identify, together with explicitly scoped supporting, adjacent, entry-planning, and
+mathematical-logic area-planning passages.
+The [coverage](#coverage) records **61 distinct publications**: all 35 directly
+cited publications, one checked supporting publication, and 25 planning sources.
+Some planning rows cover only metadata, contents, or statements; their outcomes
+explicitly distinguish those readings from mathematical proof checks.
 Duplicate URLs and
 chapter extracts of the same edition are grouped.
 
@@ -707,6 +710,179 @@ prove the branch-cardinality result directly in sequence space. Lemma 1.12's
 cardinality conclusion remains true. This is planning-only material, unused by
 current entries; [Perfect subtrees](entries/perfect-subtrees/entry.html#binary-splitting) uses the sequence-space proof.
 
+### AVIGAD-LC-01
+
+**Upward Löwenheim–Skolem omits the infinite starting-model hypothesis.**
+[Avigad, *Logic and Computation*](https://www.andrew.cmu.edu/user/avigad/Teaching/landc_notes.pdf),
+January 2002, §7.4, Theorem 7.4.2, p. 91 (PDF p. 97).
+Type: missing necessary hypothesis.
+
+A one-element structure satisfies `∀x∀y x=y`, so every elementary extension
+also has one element. It cannot have an elementary extension of any infinite
+cardinality, although the displayed size bounds allow one.
+
+**Repair and corpus disposition:** require the starting structure to be infinite,
+with the stated language/model lower size bounds. Use its elementary diagram,
+compactness, and downward Löwenheim–Skolem to obtain the desired cardinality.
+Planning only; the affected proposed entry is `models-and-independence` in the
+[logic roadmap](reference-planning.md#mathematical-logic-sources-and-development-plan).
+This is not a finding about Avigad's different 2022 book.
+
+### AVIGAD-LC-02
+
+**The preservation proof uses a positive diagram where an embedding needs negated atoms.**
+[Avigad, *Logic and Computation*](https://www.andrew.cmu.edu/user/avigad/Teaching/landc_notes.pdf),
+January 2002, §7.6, proof of Theorem 7.6.1, p. 96 (PDF p. 102).
+Type: invalid model-construction step.
+
+The diagram is redefined using only positive atomic facts, then its consistency
+with a theory is treated as sufficient for a substructure embedding. In a
+language with a unary predicate `P`, take a singleton structure where `P` is
+false and a theory requiring `∀x P(x)`. The positive diagram is consistent with
+that theory, but the singleton cannot embed as a substructure of a model of it:
+an embedding must reflect `P`, too. This counterexample identifies the failed
+diagram-to-embedding step; it does not refute the preservation theorem.
+
+**Repair and corpus disposition:** include all true atomic and negated atomic
+sentences with names for the structure's elements, as the notes correctly do
+in §7.4, p. 92. That signed atomic diagram gives an embedding. A merely positive
+diagram does not. Planning only; preservation is a later model-theory extension,
+not a theorem currently used by an entry.
+
+### DOETS-01
+
+**The Łoś–Vaught test allows finite models that defeat completeness.**
+[Doets, *Basic Model Theory*](https://web.stanford.edu/group/cslipublications/cslipublications/Online/doets-basic-model-theory.pdf),
+CSLI / FoLLI, 1996, §3.44, p. 44 (PDF p. 52).
+Type: missing necessary hypothesis.
+
+The stated assumptions require an infinite model and categoricity in an
+infinite cardinal, rather than excluding finite models. The empty theory in
+the equality-only language has one isomorphism type at every infinite cardinal,
+but its one-element and two-element models disagree on `∀x∀y x=y`.
+It is therefore incomplete.
+
+**Repair and corpus disposition:** require no finite models. Downward and upward
+Löwenheim–Skolem then bring any two disagreeing models to the categorical
+cardinality, a contradiction. This is adjacent planning material, not currently
+adopted. The selected witness-closure and countable back-and-forth arguments
+are different passages.
+
+### SCHLICHT-01
+
+**Dense-order quantifier elimination discards conditions on the parameters.**
+[Schlicht, *Lecture Notes: Introduction to Mathematical Logic*](https://philippschlicht.github.io/teaching/files/mathematicallogic2021.pdf),
+Bonn summer 2021, PDF dated 2022-02-01, §5.1, proof of Lemma 5.1.6,
+pp. 65–66 (same PDF pages). Type: false elimination formulas.
+
+After splitting a conjunction into a parameter-only part `φ₀` and constraints
+on the eliminated variable, the proof returns truth for one-sided bounds.
+But `∃y (x₁<x₂ ∧ x₃<y)` is equivalent to `x₁<x₂`, rather than truth.
+The two-sided conclusion also needs to retain every comparison between a
+lower-bound and an upper-bound parameter; choosing one compatible ordering
+does not eliminate these conditions for other assignments.
+
+**Repair and corpus disposition:** retain `φ₀`; for two-sided bounds conjoin it
+with all lower/upper comparisons. Finite maxima/minima, density, and no endpoints
+prove the resulting equivalence. Handle equalities separately as in the usual
+substitution case. The quantifier-elimination theorem is correct after this
+repair. Planning only; this is a possible later logic branch, not an adopted
+corpus proof.
+
+### AVIGAD-CI-01
+
+**The minimization formula checks the parameter instead of the proposed least witness.**
+[Avigad, *Computability and Incompleteness*](https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf),
+version 2007-01-09, §4.3, p. 98 (PDF p. 102), immediately before Lemma 4.3.9.
+Type: invalid representability formula.
+
+The least-zero condition bounds the earlier candidates by `w<z`, where `z`
+is a side parameter, instead of `w<y`, where `y` is the proposed output.
+Take `g(0,z)=1` and `g(x,z)=0` for `x>0`. Its least zero is 1, but with
+`z=0` the displayed condition also accepts `y=2`: the earlier-candidate test
+is empty. The claimed unique output is lost.
+
+**Repair and corpus disposition:** replace that bound by `w<y` and retain the
+convergence checks for earlier computations. Zach's *Incompleteness and
+Computability*, §4.7, pp. 92–96, supplies the corrected construction and numeral
+order reasoning in Q. Planning only; apply the repair in the proposed
+`arithmetic-representability` entry, which has no drafted blocks yet.
+
+### AVIGAD-CI-02
+
+**The undecidability corollary omits consistency of the extension.**
+[Avigad, *Computability and Incompleteness*](https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf),
+version 2007-01-09, Corollary 4.4.14, p. 107 (PDF p. 111).
+Type: missing necessary hypothesis.
+
+It prohibits every decidable extension of ZFC. An inconsistent extension proves
+every sentence, so its deductive closure is decidable. The notes explicitly allow
+inconsistent theories nearby; the qualifier cannot be inferred as a general
+convention.
+
+**Repair and corpus disposition:** prohibit **consistent** decidable extensions
+of ZFC. The following Corollary 4.4.15 includes this qualification. Planning only;
+the first-incompleteness/undecidability development must state consistency and
+effective-axiom hypotheses explicitly.
+
+### MARKER-01
+
+**The compactness construction's single-generator family need not be a filter.**
+[Marker, *Model Theory for Algebra and Algebraic Geometry*, Orsay sections 1–3](https://homepages.math.uic.edu/~marker/orsay/orsay1.pdf),
+Spring 2010, §3, alternate compactness proof, p. 23 (same PDF page).
+Type: invalid ultrafilter-extension prerequisite.
+
+For a theory `Γ`, the proof uses finite subsets as indices and defines its
+family by supersets of individual sets `X_φ={Δ: Δ⊨φ}`, for `φ∈Γ`.
+With `Γ={P(c),Q(c)}`, both `X_P` and `X_Q` belong to the family, while their
+intersection contains neither generator. The family is not closed under
+intersection. The proof silently treats `P(c)∧Q(c)` as another member of `Γ`.
+For empty `Γ`, the displayed family is empty as well.
+
+**Repair and corpus disposition:** generate a filter using all finite
+intersections, including the empty intersection, or use the upward cones of
+finite subsets of `Γ`. Finite satisfiability gives properness, after which
+ultrafilter extension and Łoś apply. Marks §13, pp. 57–58, uses the finite-cone
+route. Planning only; apply the repair in the proposed `ultraproducts` entry.
+
+### MARKS-21
+
+**The hereditary-size model claim includes a structure that fails Infinity.**
+[Marks, *Set Theory*](https://math.berkeley.edu/~marks/notes/set_theory_notes_4.pdf#page=80),
+revision 2026-01-31, Exercise 18.17, p. 80 (same PDF page).
+Type: missing necessary hypothesis.
+
+The exercise claims that `H_κ` satisfies ZFC minus Power Set for every regular
+cardinal `κ`. The regular cardinal `ω` gives `H_ω`, the hereditarily finite sets.
+No member is inductive: an inductive set contains every finite ordinal and is
+infinite. Thus this structure fails Infinity.
+
+**Repair and corpus disposition:** require `κ` regular **uncountable**;
+alternatively omit Infinity as well for `κ=ω`. The uncountable case still needs
+the normal per-axiom proof review when drafted. This is adjacent planning
+material; the current hereditary-size entry makes no model-of-ZFC assertion.
+
+### MARKS-22
+
+**The forcing-filter definition reverses closure and omits internal directedness.**
+[Marks, *Set Theory*](https://math.berkeley.edu/~marks/notes/set_theory_notes_4.pdf#page=98),
+revision 2026-01-31, Definition 24.5, p. 98, compared with Lemma 24.6 on p. 99
+(same PDF pages). Type: invalid definition for the subsequent construction.
+
+The order makes smaller conditions stronger, but the definition closes a filter
+under every stronger extension. A subset containing the top empty binary word
+would then contain the incompatible words `0` and `1`. The generic construction
+on p. 99 instead takes weaker conditions above a descending sequence.
+Changing the closure direction alone also leaves pairwise compatibility too
+weak: in the poset `c≤a,b≤1`, the upward-closed subset `{1,a,b}` is pairwise
+compatible but contains no common stronger condition for `a,b`.
+
+**Repair and corpus disposition:** require a nonempty subset closed toward
+weaker conditions and directed toward common stronger conditions **inside the
+subset**. The descending-sequence construction satisfies this corrected
+definition. This is adjacent forcing-planning material; the forcing theorem
+and preservation arguments have not been audited or adopted.
+
 ## Local mathematical slips
 
 These are lower priority: a displayed formula or index is wrong, but a local
@@ -843,6 +1019,65 @@ following proof. This is a local notation slip; that stronger theorem's proof
 was not audited. The corpus adopts only the different
 [Sierpiński two-color theorem](entries/uncountable-pair-colourings/entry.html#sierpinski-colouring).
 
+### MARKER-02
+
+**Adjoining one set to a proper filter is prematurely called an ultrafilter.**
+[Marker, Orsay sections 1–3](https://homepages.math.uic.edu/~marker/orsay/orsay1.pdf),
+Spring 2010, Lemma 3.4, p. 20 (same PDF page).
+Adjoin `A=ω` to the cofinite filter on `ω`. The construction leaves that filter
+unchanged; it decides neither the even nor the odd naturals. Replace the
+conclusion by **proper filter**, which is what the proof establishes. The
+subsequent maximality argument then supplies an ultrafilter. Planning only;
+the underlying proper-filter construction remains valid.
+
+### MARKER-03
+
+**The conjunction case in Łoś's proof repeats one conjunct.**
+[Marker, Orsay sections 1–3](https://homepages.math.uic.edu/~marker/orsay/orsay1.pdf),
+Spring 2010, Theorem 3.11 proof, p. 22 (same PDF page).
+The two displayed factor truth sets both use `ψ`, though the induction step
+is for `θ∧ψ`. Replace one occurrence by `θ`. The next line and the filter
+intersection argument give the intended proof. Planning only; this is a
+typesetting slip, not a counterexample to Łoś's theorem.
+
+### ZACH-IC-01
+
+**The decidability proof's displayed test recognizes the complement.**
+[Zach / Open Logic, *Incompleteness and Computability*](https://ic.openlogicproject.org/ic-screen.pdf),
+cover Fall 2025, remix `6b09d98` (2026-07-11), Text `9620cc7` (2026-07-12),
+Theorem 6.13 proof, p. 144 (PDF p. 161).
+It names `A=dom(φ_d)` and its complement `dom(φ_e)`, but the displayed test
+for membership in `A` uses the computation predicate for `e`. Replace that
+index by `d`, and keep the same `d,e` names in the following paragraph instead
+of the unexplained switch to `e,f`. For `A=∅`, the displayed `e` test reports
+membership everywhere. The simultaneous-search method and the theorem are
+correct with the indices aligned. Planning only; repair before using this
+proof in `universal-computation`.
+
+### SMITH-01
+
+**The modular-inverse lemma permits modulus one.**
+[Smith, *An Introduction to Gödel's Theorems*](https://logicmatters.net/igt/pdfs/GodelBookLM.pdf),
+second edition, Logic Matters corrected reprint August 2020, p. 116, footnote 4
+(PDF p. 130). The lemma assumes coprime `x,y` and concludes that some `b<y`
+gives remainder 1 for `bx` modulo `y`. With `x=y=1`, the only candidate is
+`b=0`, whose remainder is 0. Require **modulus greater than one**. In the
+following general CRT proof, ignore a modulus-one constraint, whose prescribed
+remainder must be zero. The beta construction uses moduli at least two and is
+unaffected. Coprime cancellation needed by the proof should be explained locally;
+its omission is not a separate false claim. Planning only.
+
+### AVIGAD-CC-01
+
+**The Bézout example has a sign and a bound-variable slip.**
+[Avigad, *Classical and constructive logic*](https://www.andrew.cmu.edu/user/avigad/Teaching/classical.pdf),
+2000-09-19, revised 2001-11-02, §2, Theorem 2.3 proof, p. 6 (same PDF page).
+The residual expansion should be `a(1−qx)−b(qy)`, rather than adding the last
+term. The preceding set of integer combinations should bind `v∈Z`, instead
+of the stray `y∈Z`. Both repairs preserve the least-positive-combination proof;
+the theorem is unaffected. Adjacent planning material read from the PDF's
+extracted page text, unused by current entries.
+
 ## Coverage
 
 Check dates apply to the listed passages, not to an entire publication.
@@ -855,8 +1090,8 @@ count as source errors.
 | Publication and inspected version | Checked passages | Cited by current entries | Outcome | Checked on |
 | --- | --- | --- | --- | --- |
 | [Button / Open Logic, *Set Theory: An Open Introduction*](https://st.openlogicproject.org/settheory-screen.pdf). Fall 2021; revision `2138a50` (2026-07-11), generated from Open Logic Text `9620cc7` (2026-07-12). Printed p. + 13 = PDF p. | 14–50; 52–65; Problems 5.3–5.4 on 70; 73–88; 95–99; 120–130; 132–136; 142–144; 149–159; Definition 10.29 on 146. Includes the definitions and supplied proofs. | [Axiomatic set theory](entries/axiomatic-set-theory/entry.html); [Comparing sizes](entries/comparing-sizes/entry.html); [Constructing number systems](entries/constructing-number-systems/entry.html); [The cumulative hierarchy](entries/cumulative-hierarchy/entry.html); [Equivalence relations, partitions, and quotients](entries/equivalence-relations/entry.html); [Finite and countable sets](entries/finite-and-countable-sets/entry.html); [Foundation](entries/foundation-and-rank/entry.html); [Natural numbers as sets](entries/natural-numbers-as-sets/entry.html); [Ordered sets](entries/ordered-sets/entry.html); [Sets and maps](entries/sets-and-maps/entry.html); [Well-ordered sets](entries/well-ordered-sets/entry.html) | [BUTTON-01](#button-01), [02](#button-02), [03](#button-03), [05](#button-05), [06](#button-06), [07](#button-07); local [08](#button-08). Definitions 6.7–6.9 omit nontriviality, but no false deduction about the constructed fields was found; this convention qualification is excluded from the error register. | 2026-10-07 |
-| [Andrew Marks, *Set Theory*](https://math.berkeley.edu/~marks/notes/set_theory_notes_4.pdf). Updated 2026-01-31; 106-page PDF. Printed p. = PDF p. | 4; 10–13; 15–41; 43–53; 61–65; 68–69; adjacent 14, 42, 54, and the named Mostowski theorem on 32; 73–74, Definition 17.7, Proposition 17.8, Theorem 17.9 and supporting Lemma 17.10. The tree proof is supplemented with explicit coding and normality details; Suslin-line equivalence is not adopted. Statements, definitions, and supplied proofs in these passages. | [The axiom of choice](entries/axiom-of-choice/entry.html); [Axiomatic set theory](entries/axiomatic-set-theory/entry.html); [Clubs and stationary sets](entries/clubs-and-stationary-sets/entry.html); [Cofinality](entries/cofinality/entry.html); [The continuum function](entries/continuum-function/entry.html); [The cumulative hierarchy](entries/cumulative-hierarchy/entry.html); [Filters and ultrafilters](entries/filters-and-ultrafilters/entry.html); [Foundation](entries/foundation-and-rank/entry.html); [Infinite cardinal arithmetic](entries/infinite-cardinal-arithmetic/entry.html); [Infinite sums and products](entries/infinite-sums-and-products/entry.html); [Infinite trees](entries/infinite-trees/entry.html); [Diamond and Suslin trees](entries/diamond-and-suslin-trees/entry.html); [The Mostowski collapse](entries/mostowski-collapse/entry.html); [Natural numbers as sets](entries/natural-numbers-as-sets/entry.html); [Normal functions](entries/normal-functions/entry.html); [Ordinal arithmetic](entries/ordinal-arithmetic/entry.html); [Ordinal powers](entries/ordinal-powers/entry.html); [Ordinals](entries/ordinals/entry.html); [Pressing down](entries/pressing-down-and-delta-systems/entry.html); [Weaker forms of choice](entries/weaker-forms-of-choice/entry.html); [Well-ordered sets](entries/well-ordered-sets/entry.html) | [MARKS-01](#marks-01)–[18](#marks-18); local [19](#marks-19)–[20](#marks-20). Named results were checked on their actual pages even where corpus page ranges were inaccurate. The enormous Goodstein terminal index and historical independence attributions were not independently verified. | 2026-10-07 |
-| [Peter Philip, *Axiomatic Set Theory*](https://www.math.lmu.de/~philip/publications/lectureNotes/philipPeter_AxiomaticSetTheory.pdf). Title-page revision 2025-12-30 (course originally summer 2024). Printed p. = PDF p. | 33–34; 58–60; 89–92; 100–101; 111–112; 117–121; 137–138; 147–149; 165–168; contextual definitions on 32, 35–36, 99, 116. Planning check: Appendix C, 162–164, Proposition C.2 and its proof, Lemma C.3, and Theorem C.5 implications; the converse was independently checked without Lemma C.4. C.4 is not certified. | [The axiom of choice](entries/axiom-of-choice/entry.html); [The continuum function](entries/continuum-function/entry.html); [The cumulative hierarchy](entries/cumulative-hierarchy/entry.html); [Equivalence relations, partitions, and quotients](entries/equivalence-relations/entry.html); [Normal functions](entries/normal-functions/entry.html); [Weaker forms of choice](entries/weaker-forms-of-choice/entry.html) | [PHILIP-01](#philip-01)–[04](#philip-04); local [05](#philip-05). The cited normal-function, beth, Hartogs, Choice-equivalence, Foundation, and relation-composition arguments are otherwise valid in the checked scope. No new serious defect found in the checked Tarski-converse passages. | 2026-10-07; planning 2026-10-08 |
+| [Andrew Marks, *Set Theory*](https://math.berkeley.edu/~marks/notes/set_theory_notes_4.pdf). Updated 2026-01-31; 106-page PDF. Printed p. = PDF p. | 4; 10–13; 15–41; 43–53; 61–65; 68–69; adjacent 14, 42, 54, and the named Mostowski theorem on 32; 73–74, Definition 17.7, Proposition 17.8, Theorem 17.9 and supporting Lemma 17.10. The tree proof is supplemented with explicit coding and normality details; Suslin-line equivalence is not adopted. Statements, definitions, and supplied proofs in these passages. Logic-area planning: §13, 57–58, Łoś/finite-cone compactness; §18, 75–80, membership models, relativization and absoluteness; §19, 82–84, reflection/finite fragments; §20, 86, definability opening; §23, 94–95, well-foundedness from a complete ultrafilter; §24, 97–99, forcing definitions/generic construction; 105, finite-fragment consistency discussion. Selected formula-induction and witness arguments checked; full constructibility and forcing proofs not audited. | [The axiom of choice](entries/axiom-of-choice/entry.html); [Axiomatic set theory](entries/axiomatic-set-theory/entry.html); [Clubs and stationary sets](entries/clubs-and-stationary-sets/entry.html); [Cofinality](entries/cofinality/entry.html); [The continuum function](entries/continuum-function/entry.html); [The cumulative hierarchy](entries/cumulative-hierarchy/entry.html); [Filters and ultrafilters](entries/filters-and-ultrafilters/entry.html); [Foundation](entries/foundation-and-rank/entry.html); [Infinite cardinal arithmetic](entries/infinite-cardinal-arithmetic/entry.html); [Infinite sums and products](entries/infinite-sums-and-products/entry.html); [Infinite trees](entries/infinite-trees/entry.html); [Diamond and Suslin trees](entries/diamond-and-suslin-trees/entry.html); [The Mostowski collapse](entries/mostowski-collapse/entry.html); [Natural numbers as sets](entries/natural-numbers-as-sets/entry.html); [Normal functions](entries/normal-functions/entry.html); [Ordinal arithmetic](entries/ordinal-arithmetic/entry.html); [Ordinal powers](entries/ordinal-powers/entry.html); [Ordinals](entries/ordinals/entry.html); [Pressing down](entries/pressing-down-and-delta-systems/entry.html); [Weaker forms of choice](entries/weaker-forms-of-choice/entry.html); [Well-ordered sets](entries/well-ordered-sets/entry.html) | [MARKS-01](#marks-01)–[18](#marks-18); local [19](#marks-19)–[20](#marks-20). Named results were checked on their actual pages even where corpus page ranges were inaccurate. The enormous Goodstein terminal index and historical independence attributions were not independently verified. Logic-planning defects [MARKS-21](#marks-21) and [22](#marks-22); these passages are not consumed by current entries. | 2026-10-07; logic planning 2026-10-11 |
+| [Peter Philip, *Axiomatic Set Theory*](https://www.math.lmu.de/~philip/publications/lectureNotes/philipPeter_AxiomaticSetTheory.pdf). Title-page revision 2025-12-30 (course originally summer 2024). Printed p. = PDF p. | 33–34; 58–60; 89–92; 100–101; 111–112; 117–121; 137–138; 147–149; 165–168; contextual definitions on 32, 35–36, 99, 116. Planning check: Appendix C, 162–164, Proposition C.2 and its proof, Lemma C.3, and Theorem C.5 implications; the converse was independently checked without Lemma C.4. C.4 is not certified. Logic-area planning: §§2.2–2.3, 15–19, finite membership structures and comprehension/independence examples; selected Extensionality and Empty Set examples checked directly. | [The axiom of choice](entries/axiom-of-choice/entry.html); [The continuum function](entries/continuum-function/entry.html); [The cumulative hierarchy](entries/cumulative-hierarchy/entry.html); [Equivalence relations, partitions, and quotients](entries/equivalence-relations/entry.html); [Normal functions](entries/normal-functions/entry.html); [Weaker forms of choice](entries/weaker-forms-of-choice/entry.html) | [PHILIP-01](#philip-01)–[04](#philip-04); local [05](#philip-05). The cited normal-function, beth, Hartogs, Choice-equivalence, Foundation, and relation-composition arguments are otherwise valid in the checked scope. No new serious defect found in the checked Tarski-converse passages. No new serious defect found in those toy-model examples. | 2026-10-07; planning 2026-10-08; logic planning 2026-10-11 |
 | [Richard Hammack, *Book of Proof*](https://richardhammack.github.io/BookOfProof/Main.pdf). Third edition, revision 3.4; copyright 2018, PDF generated 2025-02-05. Printed p. + 12 = PDF p. | 233; 269–287: finite pigeonhole, enumerations, countability, cardinal comparison, Cantor, and the full supplied Cantor–Bernstein proof. | [Comparing sizes](entries/comparing-sizes/entry.html); [Finite and countable sets](entries/finite-and-countable-sets/entry.html) | No serious mathematical defect found. Canonical decimals and repetition-free enumerations are valid conventions, rather than proof errors. | 2026-10-07 |
 | [Martin Bays, *B1.2 Set Theory*](https://people.maths.ox.ac.uk/bays/teaching/b1set/B1.2.pdf). HT26 Oxford; PDF generated 2026-03-13. Printed p. = PDF p. | 38–39: initial cardinals and aleph recursion; 42: Definition 9.12 and cardinal arithmetic; 43: Theorem 10.2(ii), with adjacent Definition 10.1 on 42–43. | [Cofinality](entries/cofinality/entry.html); [Finite and countable sets](entries/finite-and-countable-sets/entry.html); [Infinite cardinal arithmetic](entries/infinite-cardinal-arithmetic/entry.html) | [BAYS-01](#bays-01)–[02](#bays-02). The initial-cardinal, aleph, and CH passages are valid under the source’s explicit Choice assumption. | 2026-10-07 |
 | [Jonathan Pila, *B1.2 Set Theory*](https://www.maths.ox.ac.uk/system/files/attachments/SetTheoryHT18.pdf). HT2018; PDF metadata 2018-01-03. Printed p. = PDF p. | §14, 36–39: ordinal arithmetic and order interpretations, specifically Lemma 14.9 and Theorem 14.11, and the displayed finite Goodstein illustration. | [Ordinal arithmetic](entries/ordinal-arithmetic/entry.html) | [PILA-01](#pila-01), in the supporting order-sum proof. Lemma 14.9 and Theorem 14.11 are valid. | 2026-10-07 |
@@ -865,7 +1100,7 @@ count as source errors.
 | [Mariusz Wodzicki, *Notes on Ordered Sets*](https://math.berkeley.edu/~wodzicki/H104/OrderedSets.pdf). 2009-09-22. Printed p. = PDF p. | 1–7, §§1.1–1.2: Definitions 1.1–1.6, Exercises 1–7, identities (1)–(40), order duality, bounds, and closure identities. | [Ordered sets](entries/ordered-sets/entry.html) | No serious mathematical defect found. Empty-set and empty-poset qualifications are correctly handled. | 2026-10-07 |
 | [Patrick Cousot, *Lattice theory — Part I*](https://web.mit.edu/16.399/www/lecture_09-lattice1/Cousot_MIT_2005_Course_09_4-1.pdf). MIT 16.399, 2005-03-17. Four slides per PDF page; slide s is on PDF page ⌈s/4⌉. | Slides 6–28, 34–36, 41–42: orders, preorder quotients, restrictions, duality, chains, antichains, extrema, and Hasse diagrams. Later lattice/ACC material is outside this audit. | [Ordered sets](entries/ordered-sets/entry.html) | No serious defect in the main constructions; local symbol slips [COUSOT-01](#cousot-01). | 2026-10-07 |
 | [Alfred Tarski, *A lattice-theoretical fixpoint theorem and its applications*](https://people.csail.mit.edu/carroll/probSem/Documents/Tarski.pdf). *Pacific Journal of Mathematics* 5(2), 1955; received 1953-06-29. Printed 285 = PDF 1. | 285–287: definitions and the complete proof of Theorem 1. | [Ordered sets](entries/ordered-sets/entry.html) | No serious mathematical defect found. The invariant interval and the fixed-point lattice’s bounds are justified. | 2026-10-07 |
-| [William A. R. Weiss, *An Introduction to Set Theory*](https://www.math.toronto.edu/~weiss/Set_Theory.pdf). 2014-11-21. Both `/weiss/` and `/~weiss/` citations identify this edition; printed p. = PDF p. in the checked ranges. | 63–64: Mostowski Theorems 19–20 and Exercise 14; 79–82: dense linear orders and adjacent almost-disjoint construction; 89: Theorem 33 and Exercise 29. Planning check: 101–102, Theorems 41–42 and Exercise 34 on hereditary cardinality and inaccessible closure; 149, measurable-cardinal definition; 151, Theorem 59 and its complete direct proof that a measurable cardinal is strongly inaccessible. | [Dense linear orders](entries/dense-linear-orders/entry.html); [The Mostowski collapse](entries/mostowski-collapse/entry.html); [Partition relations](entries/partition-relations/entry.html); [Hereditarily small sets](entries/hereditarily-small-sets/entry.html#hereditary-rank-bound) | [WEISS-01](#weiss-01), in the adjacent almost-disjoint construction; local [02](#weiss-02), in the Ramsey tree indexing. The Mostowski and dense-order arguments are valid. No new serious defect found in these planning passages; model-theoretic claims are outside this check. | 2026-10-07; planning 2026-10-08 |
+| [William A. R. Weiss, *An Introduction to Set Theory*](https://www.math.toronto.edu/~weiss/Set_Theory.pdf). 2014-11-21. Both `/weiss/` and `/~weiss/` citations identify this edition; printed p. = PDF p. in the checked ranges. | 63–64: Mostowski Theorems 19–20 and Exercise 14; 79–82: dense linear orders and adjacent almost-disjoint construction; 89: Theorem 33 and Exercise 29. Planning check: 101–102, Theorems 41–42 and Exercise 34 on hereditary cardinality and inaccessible closure; 149, measurable-cardinal definition; 151, Theorem 59 and its complete direct proof that a measurable cardinal is strongly inaccessible. Logic-area planning: chapter 11, 103–110, isomorphism/transitive models/bounded absoluteness; 113–116, relativized Replacement/Hκ; 117–120, reflection. Selected formula inductions and reflection witness closure inspected; not all internal-rank arguments audited. | [Dense linear orders](entries/dense-linear-orders/entry.html); [The Mostowski collapse](entries/mostowski-collapse/entry.html); [Partition relations](entries/partition-relations/entry.html); [Hereditarily small sets](entries/hereditarily-small-sets/entry.html#hereditary-rank-bound) | [WEISS-01](#weiss-01), in the adjacent almost-disjoint construction; local [02](#weiss-02), in the Ramsey tree indexing. The Mostowski and dense-order arguments are valid. No new serious defect found in these planning passages; model-theoretic claims are outside this check. No new serious defect confirmed in the selected logic-planning arguments. | 2026-10-07; planning 2026-10-08; logic planning 2026-10-11 |
 | [Michael Makkai, *Set Theory*, §§13–14 extracts](https://www.math.mcgill.ca/makkai/SetTheory/SETSEC14.pdf). Undated lecture-note extracts. §13: printed 133 = PDF 1; §14: Printed 146 = PDF 1. | 146–161, §§14.1–14.3: all sixteen pages of the extract, including Boolean operations, ideals/filters, prime filters, and Stone representation. Planning check: [§13, Inaccessible cardinals](https://www.math.mcgill.ca/makkai/SetTheory/SETSEC13.pdf), 133–137, Lemma (2), Corollary (7), and Proposition (8)(v), including the small-domain rank-bound argument. The MK model equivalence and later converse were not audited. | [Boolean algebras](entries/boolean-algebras/entry.html) | No serious defect in the prime-filter or representation arguments; local power-set display [MAKKAI-01](#makkai-01). [MAKKAI-02](#makkai-02) affects the supporting union proof; its conclusion has a checked finite-case repair. The inaccessible rank-closure argument remains valid. | 2026-10-07; planning 2026-10-08 |
 | [Moshe Kamensky, *Set Theory*](https://mkamensky.github.io/teaching/2012f/set-theory/notes.pdf). Course URL `2012f`; embedded revision dated 2011-12-07. Printed p. = PDF p. | 4 and 6, §1.3: Definitions 1.3.1–1.3.2, Example 1.3.4, and Theorem 1.3.9 with its supporting finite-change construction. | [Infinite trees](entries/infinite-trees/entry.html) | [KAMENSKY-01](#kamensky-01). The finite-collision repair instruction itself is valid compression. | 2026-10-07 |
 | [Thomas Jech, *Set Theory: The Third Millennium Edition, revised and expanded*](https://fa.ewi.tudelft.nl/~hart/37/onderwijs/set_theory/Jech/05-AC_and_cardinal_arithmetic.pdf). 2003 edition in corpus metadata, three chapter extracts; Chapter 9 omits an imprint. Chapter 5: printed 47 = PDF 1; Chapter 7: printed 73 = PDF 1; Chapter 9: printed 107 = PDF 1. | [Chapter 5](https://fa.ewi.tudelft.nl/~hart/37/onderwijs/set_theory/Jech/05-AC_and_cardinal_arithmetic.pdf), 57: Lemma 5.19 and Theorem 5.20. [Chapter 7](https://fa.ewi.tudelft.nl/~hart/set_theory/Jech/07-filters_ultrafilters_and_Boolean_algebras.pdf), 75–76: Theorem 7.6 and Lemma 7.7, independent families and the ultrafilter count. Planning check: [Chapter 9](https://fa.ewi.tudelft.nl/~hart/set_theory/Jech/09-combinatorial_set_theory.pdf), 111–113, Theorem 9.6 pair-pattern argument and Theorem 9.7 regular/singular Dushnik–Miller proofs. Higher-arity induction and later results were not audited. | [The continuum function](entries/continuum-function/entry.html); [Independent families](entries/independent-families/entry.html) | No serious mathematical defect found. Cardinal-exponentiation reduction, cofinal coding, and finite-trace construction are valid under the stated assumptions. The pair argument and singular-cardinal thinning were checked; ordered blocks or symmetric neighbor sets must be explicit in an adaptation. | 2026-10-07; planning 2026-10-08 |
@@ -891,6 +1126,30 @@ count as source errors.
 | [Kenneth K. Hickin and J. M. Plotkin, *A patching lemma*](https://doi.org/10.1305/ndjfl/1093887438). Notre Dame Journal of Formal Logic 17(1), January 1976, 158–160; received 1974-03-02. | Planning: 158, patching statement, ultrafilter proof and n=1 Rado specialization, checked from complete page text exposed by search for the [scanned PDF](https://scispace.com/pdf/a-patching-lemma-4do9ffsepy.pdf). | [Finite constraints and distinct representatives](entries/finite-constraints-and-distinct-representatives/entry.html#rado-selection). | No serious defect found in the exposed page's finite-partition argument. Full PDF fetches failed; 159–160 were not inspected. This is not a whole-paper review. | 2026-10-07–08 |
 | [Andrej Bauer and Peter LeFanu Lumsdaine, *On the Bourbaki-Witt Principle in Toposes*](https://math.andrej.com/wp-content/uploads/2012/01/bw.pdf). Author manuscript dated 2012-01-04; 19 pages. | Planning: 1, classical iteration description; 2–3, chain-completeness and progressive/monotone definitions; 4, Theorem 3.1 Knaster–Tarski proof checked. | Planning only; no current consuming entry. | No serious defect found in the checked fixed-point argument. Introductory iteration is not a complete stabilization proof; constructive comparisons and topos results were not audited. | 2026-10-07–08 |
 | [Maryanthe Malliaris and Saharon Shelah, *Cofinality spectrum theorems in model theory, set theory, and general topology*](https://shelah.logic.at/papers/998/). Author publication record Sh:998 for Journal of the American Mathematical Society 29(1), 2016, 237–297. | Planning: publication metadata and abstract's p=t result checked against older tower discussions. | Planning only; no current consuming entry. | Result statement confirmed; the model-theoretic proof was not audited and is outside the proposed elementary tower entry. | 2026-10-08 |
+| [Richard Zach / Open Logic Project, *Sets, Logic, Computation*](https://slc.openlogicproject.org/archives/f25/slc-screen.pdf). Archived Fall 2025, remix `38828e6`, Text `0c1e9e3`, both 2025-07-01; 437 pages. Printed p. + 21 = PDF p. | Logic planning: countable-language convention §6.2, 89–90; substitution §6.9, 108–110; semantic substitution §7.6, 128–130; rules §§11.1–11.4, 194–200; soundness §11.11, 216–221; completeness §§12.2–12.9, 230–249, including equality quotient; §12.11, 251–252, Löwenheim–Skolem discussion. Opening-entry check: §§6.2–6.3, 89–95, language, formula constructors and structural induction; §§6.8–6.9, 107–110, free variables and capture-safe substitution; §§7.2, 7.4–7.6, 114–116, 117–130, structures, assignments, satisfaction, agreement and substitution; §7.7 opening definitions, 130; §§11.1–11.4, 11.7, 11.11, 194–200, 209–211, 216–221, all propositional deduction rules, finite derivations, weakening and soundness. Adjacent 95–99 read for context; string parsing is not adopted. | [Propositional logic](entries/propositional-logic/entry.html#formulas); [Propositional proofs](entries/propositional-proofs/entry.html#deduction-rules); [First-order languages](entries/first-order-languages/entry.html#scoped-formulas); [First-order structures](entries/first-order-structures/entry.html#satisfaction). | No serious defect found in these selected arguments. Routine exercise cases and previous-lemma dependencies still require explicit treatment; not a whole-book audit. Opening entries supply the compressed induction and exercise cases explicitly and use disjoint free/bound-variable slots to avoid capture. No defect found in these adopted passages. | 2026-10-11; opening-entry checks 2026-10-11 |
+| [Magnus, Button, Trueman and Zach, *forall x: Calgary*](https://forallx.openlogicproject.org/forallxyyc.pdf). Cover Fall 2025; served revision `c5cb415`, 2026-09-27; 437 pages. Printed p. + 10 = PDF p. | Logic planning: validity 2–10; truth tables 80–82; natural-deduction introduction 113–114; soundness chapter 48, 390–397. Opening propositional-entry check: §§6.1–6.3, 49–55; chapters 9–10, 69–73; §§11.1–11.3 and adjacent exercises, 77–84; §§12.1–12.6 and adjacent exercises, 85–92. Used portions are 49–54, 69–71, 77–81, 85–90 and 92. | [Propositional logic](entries/propositional-logic/entry.html#formulas). | No serious defect found in this limited scope. Several soundness rule cases are exercises; the chosen corpus calculus still needs its own full proof. No defect found in the adopted passages; locality, simultaneous substitution, and the finite-row test are proved explicitly. | 2026-10-11; opening-entry checks 2026-10-11 |
+| [Kees Doets, *Basic Model Theory*](https://web.stanford.edu/group/cslipublications/cslipublications/Online/doets-basic-model-theory.pdf). CSLI / FoLLI, 1996; 141 pages. Printed p. + 8 = PDF p. | Logic planning: §2.2, 13–17, Tarski–Vaught, witness closure, downward Löwenheim–Skolem and elementary chains; §3.44, 44, Łoś–Vaught statement; §3.4, 44–45, countable back-and-forth; appendix A.1, 94–95, A.2, 100, A.3.2, 103–106, Henkin construction. | Planning only; no current consuming entry. | [DOETS-01](#doets-01) affects the adjacent Łoś–Vaught statement. Selected witness-closure and Henkin constructions inspected; no whole-book certification. Extracted fonts are damaged, so original notation needs checking when adopted. | 2026-10-11 |
+| [Jeremy Avigad, *Logic and Computation*](https://www.andrew.cmu.edu/user/avigad/Teaching/landc_notes.pdf). January 2002 lecture notes; 120 pages. Printed p. + 6 = PDF p. | Logic planning: contents/chapter boundaries; §4.9 finite propositional completeness strategy; §7.4, 90–93, diagrams and Löwenheim–Skolem; §7.6, 96, preservation argument. §8.3, 101–106, second-order material located, not fully proof-audited. Opening proof-entry check: §4.9, 50–51, row-simulation strategy; adjacent §4.2, 38–39, derivation presentation. | [Propositional proofs](entries/propositional-proofs/entry.html#signed-valuations). | [AVIGAD-LC-01](#avigad-lc-01), [02](#avigad-lc-02). Propositional signed-valuation cases are not all supplied. The notes are a different publication from the 2022 book. The entry supplies every signed-valuation connective case and finite case-elimination, including empty support. No serious defect found in the adopted propositional scope. | 2026-10-11; opening-entry checks 2026-10-11 |
+| [Philipp Schlicht, *Lecture Notes: Introduction to Mathematical Logic*](https://philippschlicht.github.io/teaching/files/mathematicallogic2021.pdf). Bonn summer 2021, PDF dated 2022-02-01. Printed p. = PDF p. | Logic planning: front matter, §5.1 definitions 5.1.1–5.1.5 and complete proof of Lemma 5.1.6, 65–66, direct dense-order quantifier elimination. | Planning only; no current consuming entry. | [SCHLICHT-01](#schlicht-01). Corrected elimination retains parameter conditions and lower/upper comparisons. Other model-theory and algebra chapters were not audited. | 2026-10-11 |
+| [Marcus Tressl, *Introduction to Model Theory*](https://personalpages.manchester.ac.uk/staff/marcus.tressl/papers/ModelTheory.pdf). Author PDF dated 2026-10-03. | Logic planning: front matter/contents; Tarski–Vaught and downward Löwenheim–Skolem §§2.3.1–2.3.2, 27–28; later dense-order/quantifier-elimination locations. | Planning only; no current consuming entry. | Supplementary scope inspection; no full chapter audit or no-defect certification of later arguments. | 2026-10-11 |
+| [David Marker, *Model Theory for Algebra and Algebraic Geometry*, Orsay sections 1–3](https://homepages.math.uic.edu/~marker/orsay/orsay1.pdf). Spring 2010, 25 pages. Printed p. = PDF p. | Logic planning: §1, 1–7, syntax/structures/satisfaction/isomorphism; §3, 20–24, generated filters, quotient operations, Łoś, compactness, and diagonal ultrapower embedding; adjacent 19–20 maximality. Opening semantics-entry check: Definition 1.3, 2, isomorphisms; Theorem 1.10, 6–7, term transport and formula invariance, including both quantifier directions; theories paragraph, 7. | [First-order structures](entries/first-order-structures/entry.html#isomorphism-invariance). | [MARKER-01](#marker-01); local [02](#marker-02), [03](#marker-03). Selected quotient and Łoś induction usable with corrections and explicit witness choice. Algebraic applications were not audited. No defect found in this adopted scope; the existing findings concern later material unused here. | 2026-10-11; opening-entry checks 2026-10-11 |
+| [William Weiss and Cherie D'Mello, *Fundamentals of Model Theory*](https://www.math.toronto.edu/weiss/model_theory.pdf). ©2015, 64 pages. Printed p. + 2 = PDF p. | Logic planning: introduction 1; elementary-chain proof 16–18; Lemma 5, 19, Tarski–Vaught; Theorem 5, 20, downward Löwenheim–Skolem with a prescribed subset. | Planning only; no current consuming entry. | No serious defect found in these selected witness-closure and induction arguments. Later chapters were not audited. | 2026-10-11 |
+| [David Marker, *Model Theory II: Quantifier Elimination*](https://homepages.math.uic.edu/~marker/MSRI-2.pdf). MSRI slides dated 2020-10-14. | Logic planning: slides 1–13, introductory quantifier-elimination statements and algebraic orientation. | Planning only; no current consuming entry. | Orientation/statement inspection only; not a completed proof audit or a prerequisite for the opening logic batches. | 2026-10-11 |
+| [Arnold W. Miller, *Introduction to Mathematical Logic: A Problem Solving Course*](https://people.math.wisc.edu/~miller/old/m771-98/logintro.pdf). Title Fall 1995; 75 pages; the hosting folder is not the edition date. | Logic planning: front matter and propositional material 4–5; syntax/models 25–28; Tarski–Vaught/witness-closure Löwenheim–Skolem 40–43; later coding/Tarski/incompleteness statements 68–70. | Planning only; no current consuming entry. | Selected definitions and witness-closure arguments inspected. Later statements and exercises are dependency pointers, not certified proofs. This is a problem-solving text, not the selected detailed proof spine. | 2026-10-11 |
+| [Arnold W. Miller, model-theory homework collection](https://people.math.wisc.edu/~awmille1/old/m776-09/home.pdf). Spring 2009, dated 2009-05-07. | Logic planning: opening theorem/problem statements only. | Planning only; no current consuming entry. | Statement inspection only; no solution/proof audit. | 2026-10-11 |
+| [David W. Kueker, *Notes on Mathematical Logic*](https://math.umd.edu/~dkueker/712.pdf). Undated author PDF, retrieved 2026-10-11. | Logic planning: selected Henkin-model discussion 49–51; elementary substructures/back-and-forth §§4.2–4.3, 66–71. | Planning only; no current consuming entry. | Alternative-source scope inspection; not a whole-chapter proof certification. No edition date inferred. | 2026-10-11 |
+| [Avigad, Hua, Lewis and van Doorn, *Logic and Proof*](https://leanprover-community.github.io/logic_and_proof/semantics_of_propositional_logic.html). HTML labelled version 3.18.4, ©2017, retrieved 2026-10-11. | Logic planning: §§6.1–6.3, valuations, truth tables and the finite completeness strategy. | Planning only; no current consuming entry. | Explanatory reading only. The text expressly does not give a fully rigorous metalogical completeness treatment; no full proof certification. | 2026-10-11 |
+| [Jeremy Avigad, *Computability and Incompleteness*](https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf). Version 2007-01-09; 128 pages. Printed p. + 4 = PDF p. | Logic planning: §§2.1–2.4, machine examples, primitive recursion and coding; §2.7, universal/halting argument; §§4.3–4.5, Q representation, undecidability and diagonal lemma; §4.7, conditional second incompleteness. Model equivalence §2.6 and c.e./Rice chapters located but not fully audited. | Planning only; no current consuming entry. | [AVIGAD-CI-01](#avigad-ci-01), [02](#avigad-ci-02). Concrete derivability conditions are accepted rather than fully proved in the inspected argument; this is an explicit coverage limit. CRT is invoked without its proof. | 2026-10-11 |
+| [Peter Smith, *An Introduction to Gödel's Theorems*](https://logicmatters.net/igt/pdfs/GodelBookLM.pdf). Second edition, Logic Matters corrected reprint August 2020. Printed p. + 14 = PDF p. | Logic planning: PA/schema 90–94; recursion/coding 107–112; beta/CRT 113–116; representation distinctions 119–121; Rosser 185–189; Goodstein sketch 220–224; derivability-condition discussion 258–261; author corrections list. Other chapter locations were checked from contents. | Planning only; no current consuming entry. | Local boundary case [SMITH-01](#smith-01). No further serious defect confirmed in these selected passages. CRT needs an explicit coprime-cancellation lemma for self-contained use. Formalized Σ₁ completeness is sketched, not fully audited; Goodstein unprovability is not proved by its introduction. | 2026-10-11 |
+| [Richard Zach / Open Logic Project, *Incompleteness and Computability*](https://ic.openlogicproject.org/ic-screen.pdf). Cover Fall 2025; remix `6b09d98`, 2026-07-11, Text `9620cc7`, 2026-07-12; 329 pages. Printed p. + 17 = PDF p. | Logic planning: selected beta/simulation 81–86; minimization representation 92–96; conditional second incompleteness 117–120; halting/c.e. equivalences 136–144. Full two-page [fixed-point](https://builds.openlogicproject.org/content/incompleteness/incompleteness-provability/fixed-point-lemma.pdf) and [truth](https://builds.openlogicproject.org/content/incompleteness/incompleteness-provability/tarski-thm.pdf) modules at Text `9620cc7`; other chapter locations checked from contents. | Planning only; no current consuming entry. | Local index error [ZACH-IC-01](#zach-ic-01). Fixed-point proof depends on representation of substitution; that prerequisite was identified. Concrete derivability conditions and imported CRT proof are not fully supplied. The text shares Avigad material, so agreement is not independent corroboration. | 2026-10-11 |
+| [Laurie Kirby and Jeff Paris, *Accessible Independence Results for Peano Arithmetic*](https://www.cs.tau.ac.il/~nachumd/term/Kirbyparis.pdf). BLMS 14(4), 1982, 285–293; DOI 10.1112/blms/14.4.285. | Later logic planning: all nine pages read as extracted text; Theorem 1 statement on 285; ordinal-descent argument 287–289; dependency structure of the unprovability argument 289–291. | Planning only; no current consuming entry. | Imported interval/indicator, growth and nonstandard-model results were not audited. Ordinal-heavy notation needs original-page checking. Not a complete audit or a self-contained unprovability source. | 2026-10-11 |
+| [Jeremy Avigad, *Ordinal analysis without proofs*](https://www.andrew.cmu.edu/user/avigad/Papers/ordinals.pdf). Author preprint, 37 pages, copyright 2000; publication 2002, 1–36. | Later logic planning: introduction and early weak-arithmetic discussion. | Planning only; no current consuming entry. | Orientation only; later ordinal-analysis proofs were not audited. Preprint pagination is not publication pagination. | 2026-10-11 |
+| [Jeremy Avigad, *Proof Theory*](https://arxiv.org/pdf/1711.01994v2). arXiv v2, 2017-12-16; 13 pages. | Later logic planning: §2, 2–4, natural-deduction/sequent rules and cut-elimination/Herbrand statements. | Planning only; no current consuming entry. | Survey/statement scope. The full cut-elimination proof is not supplied or certified by this reading. | 2026-10-11 |
+| [Jeremy Avigad, *Classical and constructive logic*](https://www.andrew.cmu.edu/user/avigad/Teaching/classical.pdf). 2000-09-19, revised 2001-11-02; 23 pages. | Later logic planning: introductory §§1–2, 1–7, classical/constructive examples and selected elementary number-theory arguments, read from extracted PDF text. | Planning only; no current consuming entry. | Local [AVIGAD-CC-01](#avigad-cc-01). No audit of later translations or constructive analysis; the introductory discussion is not a proof source for those claims. | 2026-10-11 |
+| [Jeremy Avigad, *Mathematical Logic and Computation*](https://assets.cambridge.org/97811084/78755/frontmatter/9781108478755_frontmatter.pdf). Cambridge University Press, 2022; DOI 10.1017/9781108778756. | Bibliographic reserve: publisher front matter/contents and chapter locations only. | Planning only; no current consuming entry. | No mathematical proof audit; full chapter proofs unavailable in this pass. Findings about the 2002/2007 notes are not attributed to this book. | 2026-10-11 |
+| [Boolos, Burgess and Jeffrey, *Computability and Logic*](https://assets.cambridge.org/97805217/01464/frontmatter/9780521701464_frontmatter.pdf). Fifth edition, Cambridge University Press, 2007; DOI 10.1017/CBO9780511804076. | Bibliographic reserve: publisher metadata/front matter only. | Planning only; no current consuming entry. | No mathematical proof audit; no complete accessible primary text was inspected. | 2026-10-11 |
+| [Christopher C. Leary and Lars Kristiansen, *A Friendly Introduction to Mathematical Logic*](https://textbooks.aimath.org/textbooks/approved-textbooks/leary-kristiansen/). Second edition, 2015. | Bibliographic reserve: AIM edition/catalog and chapter descriptions only. | Planning only; no current consuming entry. | No mathematical proof audit. Publisher download timed out; inaccessible chapter proofs were not read. | 2026-10-11 |
+| [David Marker, *An Invitation to Mathematical Logic*](https://homepages.math.uic.edu/~marker/ml-web.pdf). Author-hosted 12-page preface/contents preview, retrieved 2026-10-11; edition date not established from this preview. | Bibliographic reserve: title, preface, chapter overview and contents only. | Planning only; no current consuming entry. | No chapter proof audit; the available preview does not contain the book's completeness or incompleteness proofs. | 2026-10-11 |
 
 ## Maintenance
 

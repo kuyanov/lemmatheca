@@ -65,8 +65,9 @@ saved register changes and distinguish the corpus repair from upstream correctio
    measurements in separate logs, not corpus metadata. Do not invent measurements.
 6. Check proofs with Lean. Do not bypass failures by adding unsupported axioms, sorry, admit,
    or unchecked shortcuts. Use the single formal/ project and keep module organization
-   compact. Put reusable lemmas in the general theory layer, currently
-   `Lemmatheca.SetTheory`, even if they have only one current caller. `Entry/` is
+   compact. Put reusable lemmas in the general theory layer for their area,
+   such as `Lemmatheca.SetTheory` or `Lemmatheca.MathematicalLogic`, even if they
+   have only one current caller. `Entry/` is
    reserved for particular illustrative examples and counterexamples with no
    wider use, and their example-specific helpers. General theory must not import
    entry modules. Update imports and module bindings when a permitted source move
@@ -116,6 +117,14 @@ verified; the build still checks all other nodes. A successful build is not by
 itself a completion claim. Compare any changed proof with the human text; repair
 a clear mathematical error in the text when authorized, explain the correction,
 and identify any renewed correspondence review needed.
+
+For an authorized whole-pipeline entry addition or expansion, also confirm that
+the drafting revision integrated useful links from existing consuming entries
+across areas and removed fulfilled work from every section of
+`corpus/reference-planning.md`. Resolve remaining integration as a step-2 revision
+within that whole-pipeline task before the final handoff; keep unfinished scope
+and its needed sources and prerequisites. For an isolated proof task, report any
+such omissions without expanding its scope or editing unrelated exposition.
 
 ## Deliverable
 

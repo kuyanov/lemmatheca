@@ -1,0 +1,213 @@
+<section id="formulas" data-kind="definition"
+  data-formal="prop-formula prop-verum prop-biconditional">
+  <h2>Formulas record how statements are combined</h2>
+  <p>Suppose that if it rains, the path is wet, and that it rains. The path must then be wet.
+    The same argument works with any two statements in place of “it rains” and “the path is wet.”
+    Propositional logic studies this dependence on the way statements are combined.</p>
+  <p>Fix a set \(P\) of <strong>atoms</strong>, or propositional letters, such as \(p,q,r\).
+    A <strong>formula</strong> is a finite construction made by these rules:</p>
+  <ul>
+    <li>Each atom \(p\in P\) is a formula, and the falsity symbol \(\bot\) is a formula.</li>
+    <li>If \(A\) is a formula, then \(\neg A\) is a formula.</li>
+    <li>If \(A,B\) are formulas, then \((A\land B)\), \((A\lor B)\), and \((A\to B)\) are formulas.</li>
+    <li>There are no other formulas.</li>
+  </ul>
+  <p>The construction is part of the formula: its outermost operation and its immediate constituent
+    formulas are specified. Parentheses display that structure. We may omit an outermost pair, but
+    retain parentheses that distinguish, for example, \((p\to q)\to r\) from \(p\to(q\to r)\).
+    The expressions \(\top:=\neg\bot\) and \(A\leftrightarrow B:=(A\to B)\land(B\to A)\)
+    are abbreviations.</p>
+  <p>A formula is an object we study; a statement about all formulas is part of the ordinary mathematics
+    used to study it. We use classical reasoning in that surrounding mathematics. The familiar
+    <a href="sets-and-maps#maps">language of sets and functions</a> will describe assignments to atoms.</p>
+</section>
+
+<section id="structural-induction" data-kind="lemma"
+  data-formal="prop-formula-induction prop-height">
+  <h2>Structural induction follows the construction</h2>
+  <p>To prove a property of every formula, it suffices to prove it for every atom and for \(\bot\),
+    prove it for \(\neg A\) whenever it holds for \(A\), and prove it for each of
+    \(A\land B,A\lor B,A\to B\) whenever it holds for both \(A\) and \(B\).
+    This is <strong>structural induction</strong>.</p>
+  <p class="proof-label">Proof</p>
+  <p>Give atoms and \(\bot\) height zero. Give \(\neg A\) height \(1+h(A)\), and give a binary
+    construction from \(A,B\) height \(1+\max(h(A),h(B))\). Each immediate constituent has smaller
+    height. Strong induction on height now proves the property: the height-zero cases are the base
+    formulas, and the construction rule proves every remaining case from its constituents.
+    Strong induction follows from <a href="natural-numbers-as-sets#induction-on-omega">ordinary induction</a>
+    applied to the assertion that the property holds at every height below a given bound.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The same structure supports recursive definitions: assign values to the base formulas and specify
+    how to combine the already assigned values of the immediate constituents.</p>
+</section>
+
+<section id="valuations" data-kind="definition"
+  data-formal="prop-valuation prop-evaluation prop-evaluation-unique prop-verum-tautology">
+  <h2>A valuation gives truth values to atoms</h2>
+  <p>A <strong>valuation</strong> is a function \(v:P\to\{0,1\}\), where \(1\) means true and \(0\)
+    means false. Its evaluation of a formula, written \(\llbracket A\rrbracket_v\), is defined recursively.
+    An atom has value \(v(p)\), and \(\bot\) has value \(0\). Negation exchanges \(0\) and \(1\).
+    The three binary operations use the following table.</p>
+  <table id="connective-table">
+    <caption>Truth values of the binary connectives</caption>
+    <thead><tr><th scope="col">\(a\)</th><th scope="col">\(b\)</th><th scope="col">\(a\land b\)</th><th scope="col">\(a\lor b\)</th><th scope="col">\(a\to b\)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+      <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+    </tbody>
+  </table>
+  <p>For a compound formula, \(a,b\) are the values of its constituents. Thus “or” is inclusive,
+    and \(A\to B\) is false precisely when \(A\) is true and \(B\) is false. This operation is
+    <strong>material implication</strong>; it does not express a causal connection.</p>
+  <p>The clauses give an evaluation for each finite construction. They give only one: structural
+    induction shows that any two evaluations obeying the clauses agree on the bases and then on
+    each compound formula. In particular \(\top\) has value \(1\) under every valuation.</p>
+</section>
+
+<section id="semantic-notions" data-kind="definition"
+  data-formal="prop-tautology prop-contradiction prop-semantic-equivalence prop-satisfies prop-context-satisfaction prop-satisfiable prop-entails prop-countervaluation prop-not-entails-countervaluation prop-empty-consequence prop-unsatisfiable-consequence prop-single-premise-conditional">
+  <h2>Truth, satisfiability, and consequence</h2>
+  <p>A formula \(A\) is a <strong>tautology</strong> if \(\llbracket A\rrbracket_v=1\) for every
+    valuation, and a <strong>contradiction</strong> if its value is always \(0\).
+    Formulas \(A,B\) are <strong>semantically equivalent</strong> if their values agree under every
+    valuation. This compares truth values rather than the constructions themselves.</p>
+  <p>Throughout this entry, \(\Gamma\) is a finite set of formulas. It is <strong>satisfiable</strong>
+    if some valuation makes every member true. We write \(v\models A\) when \(\llbracket A\rrbracket_v=1\),
+    and \(v\models\Gamma\) when \(v\models B\) for every \(B\in\Gamma\). The <strong>semantic
+    consequence</strong> relation is</p>
+  <div class="math-display">\[ \Gamma\models A\quad\Longleftrightarrow\quad
+    \text{every valuation }v\text{ with }v\models\Gamma\text{ also satisfies }v\models A. \]</div>
+  <p>A valuation making all premises true and the conclusion false is a <strong>countervaluation</strong>.
+    Its existence means \(\Gamma\not\models A\). Consequence from the empty set means that \(A\)
+    is a tautology. If \(\Gamma\) is unsatisfiable, it entails every formula, because there is no
+    valuation satisfying its premises.</p>
+  <p>The symbol \(\models\) describes a relation between formulas; \(\to\) constructs a formula.
+    The truth table gives \(\{A\}\models B\) exactly when \(A\to B\) is a tautology: both conditions
+    exclude a valuation making \(A\) true and \(B\) false.</p>
+</section>
+
+<section id="locality" data-kind="lemma"
+  data-formal="prop-atom-support prop-context-atoms prop-eval-locality prop-countervaluation-locality">
+  <h2>Only the occurring atoms matter</h2>
+  <p>Let \(\operatorname{At}(A)\) be the set of atoms occurring in \(A\). Recursively,
+    \(\operatorname{At}(p)=\{p\}\), \(\operatorname{At}(\bot)=\varnothing\), negation preserves
+    the atom set, and a binary construction takes the union of the two constituent atom sets.
+    These sets are finite, by structural induction.</p>
+  <p>If valuations \(v,w\) agree on \(\operatorname{At}(A)\), then</p>
+  <div class="math-display">\[ \llbracket A\rrbracket_v=\llbracket A\rrbracket_w. \]</div>
+  <p class="proof-label">Proof</p>
+  <p>At an atom this is the agreement hypothesis; at \(\bot\) both values are zero. For a negation,
+    the induction hypothesis gives equal constituent values, so their negations agree. For a binary
+    construction, agreement on the union gives agreement on both constituent atom sets. Their values
+    agree by induction, and applying the same binary truth operation gives equal results.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For a finite set of premises, put
+    \(\operatorname{At}(\Gamma):=\bigcup_{B\in\Gamma}\operatorname{At}(B)\).
+    This is finite as well. Atoms absent from all premises and the conclusion cannot affect whether
+    a valuation is a countervaluation.</p>
+</section>
+
+<section id="substitution" data-kind="definition"
+  data-formal="prop-substitution prop-context-substitution prop-swap-substitution prop-sequential-substitution">
+  <h2>Substitution replaces atoms by formulas</h2>
+  <p>Let \(Q\) be another atom set. A <strong>substitution</strong> assigns a formula over \(Q\)
+    to each atom of \(P\), giving a function \(\sigma:P\to\operatorname{Form}(Q)\).
+    Here \(\operatorname{Form}(Q)\) denotes the formulas over \(Q\). Extend it recursively by</p>
+  <div class="math-display">\[ \begin{aligned}
+    \sigma(\bot)&amp;=\bot,&amp;\qquad \sigma(\neg A)&amp;=\neg\sigma(A),\\
+    \sigma(A\mathbin{*}B)&amp;=\sigma(A)\mathbin{*}\sigma(B)
+      &amp;&amp;(*\in\{\land,\lor,\to\}).
+  \end{aligned} \]</div>
+  <p>This is simultaneous replacement. The inserted formulas are not substituted into again during
+    the same operation. For distinct atoms \(p,q\), exchanging them sends \(p\to q\) to \(q\to p\).
+    Replacing \(p\) by \(q\) first and then replacing every \(q\) by \(p\) would instead give \(p\to p\).
+    For premises, write \(\sigma[\Gamma]:=\{\sigma(B):B\in\Gamma\}\).</p>
+</section>
+
+<section id="substitution-principle" data-kind="theorem"
+  data-formal="prop-substitution-evaluation prop-substitution-tautology prop-substitution-consequence">
+  <h2>Substitution preserves valid reasoning</h2>
+  <div class="statement-box">
+    <p>For every substitution \(\sigma:P\to\operatorname{Form}(Q)\), valuation \(v:Q\to\{0,1\}\),
+      and formula \(A\) over \(P\), define \(u(p):=\llbracket\sigma(p)\rrbracket_v\). Then</p>
+    <div class="math-display">\[ \llbracket\sigma(A)\rrbracket_v=\llbracket A\rrbracket_u. \]</div>
+    <p>Consequently a substitution instance of a tautology is a tautology, and for finite \(\Gamma\),
+      \(\Gamma\models A\) implies \(\sigma[\Gamma]\models\sigma(A)\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Use structural induction for the displayed identity. At an atom it is the definition of \(u\);
+    at \(\bot\) both sides are zero. A negation applies the same operation to the equal values given
+    by induction. For each of the three binary constructors, substitution keeps its outer operation,
+    and induction gives equal values for both constituents, so the results agree.</p>
+  <p>If \(A\) is a tautology, its value under this induced \(u\) is \(1\). For consequence, take any
+    \(v\models\sigma[\Gamma]\). The identity gives \(u\models\Gamma\), hence \(u\models A\),
+    and then \(v\models\sigma(A)\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="truth-tables" data-kind="definition"
+  data-formal="prop-truth-table-rows prop-row-extension partition-relations-function-cardinality prop-modus-ponens-consequence prop-modus-ponens-tautology prop-affirming-consequent-countervaluation">
+  <h2>A truth table lists the finite possibilities</h2>
+  <p>Choose a <a href="finite-and-countable-sets#finite-sets">finite list of distinct atoms</a>
+    containing every atom in the formulas being tested. A <strong>row</strong> assigns either \(0\)
+    or \(1\) to each listed atom. Extend it to a valuation by giving every unlisted atom value \(0\),
+    and evaluate the formulas recursively.</p>
+  <p>There are \(2^n\) rows for \(n\) listed atoms. The empty list has one assignment, and appending
+    one new atom gives two extensions of each old row. Induction therefore doubles the count at
+    each step. Repeated occurrences of an atom do not add rows.</p>
+  <p>For distinct atoms \(p,q\), the following table includes every assignment to them.</p>
+  <table id="rain-table">
+    <caption>The rain argument</caption>
+    <thead><tr><th scope="col">\(p\)</th><th scope="col">\(q\)</th><th scope="col">\(p\to q\)</th><th scope="col">\((p\land(p\to q))\to q\)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+      <tr><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+    </tbody>
+  </table>
+  <p>The last column is always \(1\), and every row satisfying both \(p\) and \(p\to q\) satisfies
+    \(q\). Thus \(\{p,p\to q\}\models q\), which is the rain argument. The third row also shows
+    that \(\{p\to q,q\}\not\models p\): a wet path need not establish rain.</p>
+</section>
+
+<section id="consequence-test" data-kind="theorem"
+  data-formal="prop-table-support prop-table-consequence prop-finite-table-consequence prop-counter-row-witnesses prop-truth-table-check-consequence prop-truth-table-check-satisfiable prop-truth-table-check-tautology prop-truth-table-check-equivalent prop-truth-table-rows partition-relations-function-cardinality prop-verum-tautology prop-evaluation">
+  <h2>Finite truth tables decide finite consequence</h2>
+  <div class="statement-box">
+    <p>Let \(\Gamma\) be a finite set of formulas, let \(A\) be a formula, and list all atoms in
+      \(S:=\operatorname{At}(\Gamma)\cup\operatorname{At}(A)\) once. Then \(\Gamma\models A\)
+      exactly when no row of the resulting truth table makes every member of \(\Gamma\) true and
+      \(A\) false. A row violating this condition supplies a countervaluation by extending it with
+      value \(0\) outside \(S\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Every extended row is a valuation, so a violating row refutes consequence. Conversely, restrict
+    an arbitrary valuation to \(S\) and take its row. By <a href="#locality"></a>, the extended row
+    agrees with the original valuation on every premise and on \(A\). If all rows pass the test,
+    every valuation satisfying the premises satisfies \(A\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>With atom names that can be compared for equality, this gives a terminating procedure: collect
+    and remove duplicate atoms, list the finitely many rows, evaluate each finite formula, and check
+    the condition. The same rows test satisfiability by looking for a row where all premises are true,
+    tautology by checking every row, and equivalence by comparing two formula columns.</p>
+  <p>Empty premises impose no conditions. If \(S=\varnothing\), the table has one row rather than
+    no rows: it correctly gives \(\top\) value \(1\) and \(\bot\) value \(0\).</p>
+</section>
+
+<section id="counterexamples" data-kind="question"
+  data-formal="prop-affirming-consequent-countervaluation prop-affirming-consequent-neg-countervaluation">
+  <h2>A failed consequence need not entail the negation</h2>
+  <p>For distinct atoms \(p,q\), let \(\Gamma=\{p\to q,q\}\). Does \(\Gamma\models p\)?
+    If that fails, must \(\Gamma\models\neg p\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Neither consequence holds. A valuation with \(v(p)=0,v(q)=1\) satisfies both premises and
+        refutes \(p\). A valuation with \(v(p)=1,v(q)=1\) satisfies both premises and refutes
+        \(\neg p\). Give any remaining atoms value \(0\).</p>
+      <p>To refute a consequence we need one countervaluation. This leaves room for another valuation
+        satisfying the premises and the proposed conclusion.</p>
+    </div>
+  </details>
+</section>

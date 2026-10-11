@@ -57,6 +57,11 @@ Respect repository instructions and preserve unrelated work.
    Choose placement and plan the summary and abstract using the
    [reading-order criteria](../CONTRIBUTING.md#reading-order).
    Consult the [upcoming-reference table](../corpus/reference-planning.md#upcoming-references).
+   Search existing entries across areas for consuming blocks that could link to
+   the proposed coverage. Include these incoming-reference locations and exact
+   intended facts in the handoff for step 2. Identify which planning tasks would
+   be fulfilled, partially fulfilled, or remain pending; completed work must be
+   removed from every planning section rather than retained as history.
    Familiar background,
    including standard real-number facts, may be used without a corpus reference;
    propose useful future-area links in the handoff using the table's four
@@ -108,4 +113,7 @@ Include the saved source-error IDs and coverage updates, or explicitly state
 that the register already covers the inspected passages and needs no changes.
 Include the prerequisite map, a recommendation on what can be added now, and any
 areas or entries needed before the deferred material, with reasons.
+Include the existing consuming blocks to update when the new coverage is drafted
+and the planned tasks to remove or narrow. This remains a handoff; do not edit
+existing entries or reference planning in step 1.
 Do not create entries, nodes, proofs, or generated summaries at this stage.

@@ -30,6 +30,12 @@ uses current consuming entry/block IDs; existing-target integration, future-entr
 plans, correspondences to establish, and deferred extensions belong in the other
 sections of the same document. This authoring document is separate from entry,
 node, and navigation metadata.
+Keep every section limited to outstanding reference or development work. When new
+coverage becomes available, inspect existing consuming entries across areas, add
+useful links, and remove fulfilled tasks, completed roadmap rows and outlines,
+and completion notes. Retain only the unfulfilled part of a mixed task. Existing
+coverage and source details may remain as prerequisites or supporting context for
+a concrete future task; completed source-review records belong in `source-errors.md`.
 
 `taxonomy.json` defines areas with `id`, `title`, `parent`, and `description`.
 `area_entries.json` maps primary area IDs to ordered entry-ID lists under `areas`.

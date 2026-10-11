@@ -1,0 +1,98 @@
+<section id="signatures" data-kind="definition" data-formal="fo-language fo-constant-symbols fo-binary-relation-language">
+  <h2>Symbols and their arities</h2>
+  <p>A <strong>first-order signature</strong>, or language, specifies a set \(F_k\) of function symbols and a set \(R_k\) of relation symbols for each natural number \(k\). The number \(k\) is the symbol's <strong>arity</strong>: the number of arguments it takes. A constant is a function symbol of arity zero. The symbol \(=\) is logical equality, rather than a relation symbol whose meaning can be chosen.</p>
+  <p>For example, the order language has one binary relation symbol \(&lt;\) and no function symbols. The membership language similarly has one binary relation symbol \(\in\). These are different symbols even though both take two arguments. A signature specifies symbols, not what they mean: interpreting \(&lt;\) as an actual order is a further choice.</p>
+  <p>We allow any sets of symbols, including empty sets and nullary relations. No countability assumption is needed here. A nullary relation will express a truth value without taking an object as an argument. Familiar <a href="sets-and-maps#maps">maps</a> and <a href="sets-and-maps#pairs-and-relations">relations</a> will supply interpretations.</p>
+</section>
+
+<section id="terms" data-kind="definition" data-formal="fo-term fo-term-free-variables fo-double-unary-support">
+  <h2>Terms are finite expressions for objects</h2>
+  <p>Fix free-variable names \(x_0,x_1,\ldots\). A <strong>term</strong> is a finite tree formed by these rules: every variable is a term; if \(f\in F_k\) and \(t_0,\ldots,t_{k-1}\) are terms, then \(f(t_0,\ldots,t_{k-1})\) is a term. For \(k=0\), this gives the constant term \(f\). Nothing else is a term.</p>
+  <p>Thus a unary symbol \(s\) gives the term \(s(s(x_0))\). Its variable set is \(\{x_0\}\). The tree records both occurrences of \(s\); it does not simplify them or assign them a meaning. Terms with no variables are called <strong>closed</strong>.</p>
+  <p>In a formula's quantified body, terms may also use the placeholders specified in <a href="#scoped-formulas"></a>. Parentheses and argument order display the tree. We take the tree as the expression itself, so each expression comes with its unique construction; we are not relying on a separate theorem about parsing strings.</p>
+</section>
+
+<section id="scoped-formulas" data-kind="definition" data-formal="fo-scoped-formula fo-complete-formula fo-negation fo-conjunction fo-disjunction fo-existential fo-truth fo-biconditional fo-every-successor-sentence">
+  <h2>Formulas and quantifier scope</h2>
+  <p>Free variables and quantified occurrences serve different roles. We use \(x_i\) for variables whose values are supplied from outside, and a disjoint family \(z_j\) for quantified placeholders. A <strong>context of size \(n\)</strong> makes \(z_0,\ldots,z_{n-1}\) available. Within that context, terms may use those placeholders and the free variables \(x_i\).</p>
+  <p>The formulas at context size \(n\) are finite trees built as follows:</p>
+  <ul>
+    <li>\(\bot\), an equality \(t=u\), and \(R(t_0,\ldots,t_{k-1})\) for \(R\in R_k\) are formulas, using terms available in that context.</li>
+    <li>If \(\varphi,\psi\) are formulas at size \(n\), then \((\varphi\to\psi)\) is one too.</li>
+    <li>If \(\varphi\) is a formula at size \(n+1\), then \(\forall z_n\,\varphi\) is a formula at size \(n\). This quantifier binds the newest placeholder \(z_n\).</li>
+  </ul>
+  <p>A <strong>complete formula</strong> is at size zero: it has no placeholder still waiting for its surrounding quantifier. For example, \(\forall z_0\exists z_1\,R(z_0,z_1)\) is complete. Its innermost body has context size two. The body of a quantifier is its <strong>scope</strong>. Placeholder names are never free-variable names, and a nested binder uses a new placeholder; this convention prevents shadowing and accidental capture.</p>
+  <p>We take falsity, implication and universal quantification as primitive, with the following fixed abbreviations:</p>
+  <div class="math-display">\[
+    \neg\varphi:=\varphi\to\bot,\qquad
+    \varphi\land\psi:=\neg(\varphi\to\neg\psi),\qquad
+    \varphi\lor\psi:=\neg\varphi\to\psi,
+  \]</div>
+  <div class="math-display">\[
+    \exists z_n\,\varphi:=\neg\forall z_n\neg\varphi,\qquad
+    \top:=\neg\bot,\qquad
+    \varphi\leftrightarrow\psi:=(\varphi\to\psi)\land(\psi\to\varphi).
+  \]</div>
+  <p>These have the usual classical meanings of the <a href="propositional-logic#valuations">propositional connectives</a>. Using abbreviations means that an induction need only handle the primitive constructors. The smaller primitive alphabet changes how expressions are written, not the connective truth conditions.</p>
+</section>
+
+<section id="structural-induction" data-kind="theorem" data-formal="fo-term-induction fo-formula-induction">
+  <h2>Induction follows the construction</h2>
+  <div class="statement-box">
+    <p>To prove a property of every term, prove it for variables and show that it holds for \(f(t_0,\ldots,t_{k-1})\) whenever it holds for all the argument terms.</p>
+    <p>For formulas, use properties \(P_n\) at every context size \(n\). Prove \(P_n\) for falsity, equalities and relation applications; prove \(P_n(\varphi\to\psi)\) from \(P_n(\varphi)\) and \(P_n(\psi)\); and prove \(P_n(\forall z_n\varphi)\) from \(P_{n+1}(\varphi)\). Then \(P_n\) holds for every formula at every size \(n\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Give each finite tree height zero at a leaf and height one plus the maximum height of its children otherwise. For a function with no arguments, take the maximum of the empty family to be zero. Every child of a non-leaf has smaller height. Strong induction on the height therefore applies the appropriate constructor rule after the property has been proved for every child. In the quantifier case the child has a larger context size but a smaller height; the induction hypothesis must range over all context sizes. This proves both principles. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This is the same finite-tree method as <a href="propositional-logic#structural-induction">structural induction for propositional formulas</a>. It also justifies recursive definitions: a constructor's value is determined after its children have been evaluated.</p>
+</section>
+
+<section id="free-variables" data-kind="definition" data-formal="fo-scoped-term-free-variables fo-free-variables fo-sentence fo-sentence-from-empty-support fo-parameter-successor-support fo-every-successor-support">
+  <h2>Free variables and sentences</h2>
+  <p>Write \(\operatorname{FV}(t)\) for the finite set of free-variable names in a term. A free variable \(x_i\) contributes \(\{x_i\}\), a placeholder \(z_j\) contributes nothing, and a function application contributes the union of its argument sets. For terms outside any scope, these are simply all the variables of the term.</p>
+  <p>For formulas, define the finite free-variable set recursively:</p>
+  <div class="math-display">\[
+  \begin{aligned}
+    \operatorname{FV}(\bot)&amp;=\varnothing,\\
+    \operatorname{FV}(t=u)&amp;=\operatorname{FV}(t)\cup\operatorname{FV}(u),\\
+    \operatorname{FV}(R(t_0,\ldots,t_{k-1}))&amp;=\bigcup_{i&lt;k}\operatorname{FV}(t_i),\\
+    \operatorname{FV}(\varphi\to\psi)&amp;=\operatorname{FV}(\varphi)\cup\operatorname{FV}(\psi),\\
+    \operatorname{FV}(\forall z_n\varphi)&amp;=\operatorname{FV}(\varphi).
+  \end{aligned}
+  \]</div>
+  <p>The last line keeps the same set because \(z_n\) was a placeholder, not a free variable. For example, \(\exists z_0\,R(x_0,z_0)\) has free-variable set \(\{x_0\}\), whereas \(\forall z_0\exists z_1\,R(z_0,z_1)\) has none. A complete formula with no free variables is a <strong>sentence</strong>. Its quantifiers may bind many occurrences even though its free-variable set is empty.</p>
+</section>
+
+<section id="substitution" data-kind="definition" data-formal="fo-term-substitution fo-scoped-term-substitution fo-formula-substitution fo-double-unary-substitution">
+  <h2>Substitution preserves the distinction between variables</h2>
+  <p>A <strong>simultaneous substitution</strong> \(\sigma\) assigns to each free variable \(x_i\) a term \(\sigma(x_i)\) containing only free variables. On terms, replace \(x_i\) by \(\sigma(x_i)\), leave every placeholder \(z_j\) alone, and apply the operation to each argument of a function symbol. On formulas, apply it to the terms in equality and relation applications and recursively to the children of implication and quantification. Write the result as \(t[\sigma]\) or \(\varphi[\sigma]\).</p>
+  <p>The replacement terms have no placeholders. Consequently their variable occurrences remain free even inside a quantified body: the quantifier only binds its own \(z_n\). Substitution preserves each formula's context size and gives a complete formula when applied to a complete formula.</p>
+  <p>For a single replacement \([t/x_i]\), choose \(\sigma(x_i)=t\) and \(\sigma(x_j)=x_j\) for \(j\ne i\). For example, substituting \(s(x_1)\) for \(x_0\) in \(s(s(x_0))\) gives \(s(s(s(x_1)))\). Substitution is simultaneous: variables inside a replacement term are not replaced again in the same operation.</p>
+</section>
+
+<section id="substitution-support" data-kind="theorem" data-formal="fo-term-substitution-support fo-scoped-term-substitution-support fo-formula-substitution-support fo-parameter-successor-substituted-support">
+  <h2>Which free variables remain after substitution?</h2>
+  <div class="statement-box">
+    <p>For every term or scoped formula \(A\) and every simultaneous free-variable substitution \(\sigma\),</p>
+    <div class="math-display">\[
+      \operatorname{FV}(A[\sigma])
+      =\bigcup_{x_i\in\operatorname{FV}(A)}\operatorname{FV}(\sigma(x_i)).
+    \]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>First induct on terms. A free variable gives exactly the support of its replacement. A placeholder has empty support on both sides. A function application takes unions over its arguments; regrouping those unions gives the displayed expression. This includes constants, whose union is empty.</p>
+  <p>Now induct on scoped formulas. Falsity has empty support. Equality and relation application use the term result and regroup unions. Implication takes the union of the results for its two children. A universal binder changes neither the body's free-variable set nor the replacement terms, so the body result applies unchanged. These exhaust the primitive constructors. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, substituting into a sentence cannot introduce a free variable. For \(\varphi=\exists z_0 R(x_0,z_0)\), replacing \(x_0\) by \(x_1\) gives exactly free-variable set \(\{x_1\}\).</p>
+</section>
+
+<section id="capture-question" data-kind="question" data-formal="fo-parameter-successor-formula fo-parameter-successor-substitution fo-parameter-successor-substituted-support fo-captured-self-formula fo-captured-self-support">
+  <h2>Why not replace matching letters?</h2>
+  <p>In ordinary named-variable notation, consider \(\exists y\,(x&lt;y)\). Replacing the free letter \(x\) by \(y\) character by character gives \(\exists y\,(y&lt;y)\). What went wrong, and what does our convention produce instead?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The inserted \(y\) became governed by the existing quantifier, so a free occurrence became bound. This is <strong>variable capture</strong>. Our original formula is written \(\exists z_0\,(x_0&lt;z_0)\); replacing \(x_0\) by \(x_1\) gives \(\exists z_0\,(x_1&lt;z_0)\). Its inserted variable stays free. Replacing the placeholder as well would instead give \(\exists z_0\,(z_0&lt;z_0)\), a different tree with empty free-variable set.</p>
+      <p>In notation that uses one pool of names, substitution must either require the replacement to be <em>free for</em> the variable—none of its variables become bound—or first rename conflicting bound occurrences consistently. We chose disjoint free names and scoped placeholders so this side condition is built into the allowed replacements. We have not defined character-by-character substitution on arbitrary named strings.</p>
+    </div>
+  </details>
+</section>

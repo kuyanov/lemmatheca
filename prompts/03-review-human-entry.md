@@ -70,6 +70,16 @@ Check the following:
   rows exist, use actual consuming block IDs, and state the precise fact and
   proposed future-area coverage. Flag omitted uses, stale locations, and rows
   whose suitable targets are now available.
+  For new or expanded coverage, also inspect existing consuming entries across
+  areas: identify useful incoming links that have not been added, checking exact
+  target statements and assumptions. Distinguish optional explanations of locally
+  supplied background from required prerequisites; reciprocal explanatory links
+  must not make the arguments circular.
+  Audit every planning section for completed tasks, roadmap rows, drafting
+  outlines, and completion narratives. Propose their removal rather than their
+  relocation; retain only unfinished scope and the context needed for a concrete
+  future task. Do not treat related introductory coverage as fulfilling a stronger
+  planned theorem or specialized application.
   Require **Upcoming references** to contain one four-column table of future-area
   references. Existing-target integration notes, future-entry plans, correspondences
   still to prove, and deferred extensions belong in the corresponding separate
@@ -127,6 +137,9 @@ checks. Include a concise list of revisions needed before formalization.
 For each entry, include the upcoming-reference audit outcome with concrete proposed
 table rows and removals, or an explicit finding that no changes are needed. Do not
 substitute a generic statement that references were checked for this outcome.
+Include missing incoming links from existing consumers and completed work to
+remove from other planning sections, with exact locations, or an explicit
+no-change finding after checking them.
 
 This is a read-only review. Do not rewrite the entry or generated JSON, create
 formal nodes, or run the writing build command. Reviews and decisions belong in

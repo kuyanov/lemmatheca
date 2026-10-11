@@ -86,3 +86,9 @@ import Lemmatheca.SetTheory.SplittingReaping
 import Lemmatheca.Entry.SplittingReaping
 import Lemmatheca.SetTheory.PerfectSubtrees
 import Lemmatheca.Entry.PerfectSubtrees
+import Lemmatheca.MathematicalLogic.Propositional
+import Lemmatheca.MathematicalLogic.Deduction
+import Lemmatheca.MathematicalLogic.FirstOrderSyntax
+import Lemmatheca.MathematicalLogic.FirstOrderSemantics
+import Lemmatheca.Entry.FirstOrderLanguages
+import Lemmatheca.Entry.FirstOrderStructures

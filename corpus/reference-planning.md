@@ -1,35 +1,24 @@
 # Reference backlog and planning
 
-This document collects upcoming references and their planning context for the
+This document collects pending references and their planning context for the
 corpus. The [upcoming references](#upcoming-references) section contains one
 four-column table of links from current entry blocks to future mathematical
 areas. Existing-target integration, cross-area correspondences to establish,
 references for planned entries, and deferred extensions have their own sections
-below.
+below. The [mathematical-logic source collection and development plan](#mathematical-logic-sources-and-development-plan)
+sets out the next area's proposed reading order.
 
 These notes do not authorize new entries or establish that their prerequisites
 are complete. Maintenance rules and the distinction between accepted background
 and substantial missing theory belong in the
 [prerequisite and scope policy](../CONTRIBUTING.md#prerequisites-and-scope).
-Proposed titles in this document are suggestions for coverage, not existing
-entries.
-
-The background audits cover the first 24 set-theory entries and the subsequent
-**Finite errors and countable diagonalization**, **Almost disjoint families**,
-**Boolean algebras**, **Clubs and stationary sets**, **Pressing down and
-delta-systems**, **Infinite trees**, **Subsets modulo small sets**,
-**Independent families**, **Bounding and dominating families**, and **Partition
-relations**, **Small families of subsets**, **Splitting stationary sets**,
-**Uncountable pair colourings**, **Diamond and Suslin trees**, **Hereditarily small sets**,
-**Finite constraints and infinite choices**, **Splitting and reaping**, and
-**Perfect subtrees**. Their current
-core arguments are supplied locally or by existing links.
+Titles without links to corpus entries are suggestions for future coverage.
 
 ## Upcoming references
 
 | Future area | Proposed reference coverage | Consuming entry/block IDs | Fact or context to reference |
 | --- | --- | --- | --- |
-| Mathematical logic | **First-order logic: languages, formulas, structures, and truth** | `sets-and-maps#statements-and-conventions`; `axiomatic-set-theory#membership-language`; `axiomatic-set-theory#separation`; `axiomatic-set-theory#replacement`; `axiomatic-set-theory#sets-and-classes`; `ordinals#transfinite-methods`; `cumulative-hierarchy#set-valued-ordinal-recursion`; `mostowski-collapse#well-founded-set-valued-recursion` | Connectives, quantifiers, equality, excluded middle, and contradiction; fixed-parameter formulas and free-variable side conditions; axiom schemas as collections of formula instances. Definable classes and set-valued class recursion use formulas in the first-order set language rather than quantification over arbitrary class objects; uniquely specified outputs determine recursive set-function graphs. |
+| Mathematical logic | **Axiom schemas, definable classes, and set-valued class recursion** | `axiomatic-set-theory#separation`; `axiomatic-set-theory#replacement`; `axiomatic-set-theory#sets-and-classes`; `ordinals#transfinite-methods`; `cumulative-hierarchy#set-valued-ordinal-recursion`; `mostowski-collapse#well-founded-set-valued-recursion` | Specialize fixed-parameter formulas and their free-variable side conditions to axiom schemas and definable set classes. Definable classes and set-valued class recursion use formulas in the first-order set language rather than quantification over arbitrary class objects; uniquely specified outputs determine recursive set-function graphs. |
 | Mathematical logic | **Axioms and derivability: implication and equivalence over a theory** | `axiom-of-choice#choice-implies-well-ordering`; `axiom-of-choice#well-ordering-implies-zorn`; `axiom-of-choice#zorn-implies-choice`; `axiom-of-choice#three-equivalent-principles`; `axiom-of-choice#sections-of-surjections`; `axiom-of-choice#cardinal-comparability`; `axiom-of-choice#hausdorff-maximal-principle`; `axiom-of-choice#tukeys-lemma`; `weaker-forms-of-choice#starting-point-version`; `weaker-forms-of-choice#ac-implies-dc`; `weaker-forms-of-choice#dc-implies-countable-choice`; `foundation-and-rank#set-induction`; `foundation-and-rank#induction-implies-foundation`; `cumulative-hierarchy#hierarchy-implies-foundation`; `bounding-and-dominating-families#continuum-hypothesis-question`; `small-families-of-subsets#continuum-hypothesis-question`; `diamond-and-suslin-trees#diamond-sequences`; `diamond-and-suslin-trees#diamond-implies-ch`; `diamond-and-suslin-trees#diamond-tree-construction`; `diamond-and-suslin-trees#construction-boundary-question`; `splitting-and-reaping#continuum-hypothesis-question` | Principle implications and equivalences over stated background axioms, including the choice principles over ZF, and the distinction between derivability and truth in a stronger foundation. Membership induction has one instance for each formula with fixed set parameters; its equivalence with Foundation uses the remaining ZF axioms. Hierarchy exhaustion, ordinal ranks, and Foundation are compared over ZF without Foundation. The current entries supply their mathematical arguments locally. Distinguish the proved conditional consequences of CH for bounding, dominating, splitting and reaping numbers from realization or independence of their possible values. Diamond’s conditional consequences, CH and a Suslin tree, are distinct from claims that diamond is derivable, consistent or independent. |
 | Mathematical logic | **Arithmetic theories: induction schemas and natural-number systems** | `natural-numbers-as-sets#induction-on-omega`; `natural-numbers-as-sets#unique-natural-number-system` | Induction for every subset differs from first-order induction restricted to formulas with fixed parameters. The every-subset Peano characterization yields a unique natural-number-system isomorphism; it does not assert categoricity of first-order Peano arithmetic. |
 | Mathematical logic | **Back-and-forth: countable structures and partial isomorphisms** | `dense-linear-orders#finite-order-extension`; `dense-linear-orders#cantor-back-and-forth` | Alternating enumerations of two countable carriers and extending finite partial isomorphisms in both directions yields an isomorphism. The current dense-order argument supplies its extension hypotheses and proof locally; a broader logic treatment can explain the general method. |
@@ -46,12 +35,13 @@ core arguments are supplied locally or by existing links.
 | Graph theory | **Graphs and paths: connectedness, cycles, and trees**; **Rooted trees: levels, branches, and König's lemma** | `infinite-trees#sequence-trees`; `infinite-trees#konigs-lemma`; `almost-disjoint-families#binary-prefix-family` | Finite words ordered by prefix have one predecessor at every shorter length; infinite binary sequences correspond exactly to cofinal branches; a height-omega tree with finite levels has a cofinal branch. The rooted-graph treatment concerns finite-word trees and infinite rays, while general transfinite order trees can have several roots and limit-height nodes without immediate predecessors. |
 | Graph theory | **Directed graphs: paths, reachability, cycles, and Hasse diagrams** | `equivalence-relations#relation-composition`; `equivalence-relations#relation-closures`; `ordered-sets#chains-and-hasse-diagrams`; `foundation-and-rank#no-membership-cycles`; `mostowski-collapse#well-founded-and-extensional`; `mostowski-collapse#finite-collapse-example` | Relations are directed edges: positive-length paths give transitive closure, paths allowing length zero give reflexive-transitive closure, and paths allowing either edge orientation give the equivalence closure and connected-component partition. The cover graph of a finite poset recovers strict comparison by upward paths; covers alone do not recover arbitrary infinite or dense orders. Acyclicity of a finite relation implies well-foundedness, but an acyclic infinite relation need not be well-founded. Foundation excludes every positive finite membership cycle. The three-point path illustrates that an acyclic extensional relation need not be transitive. |
 | Topology | **Order topology: intervals and limits on ordinals** | `clubs-and-stationary-sets#closed-unbounded`; `clubs-and-stationary-sets#closure-points` | Closure under ordinal limits below a fixed ordinal, its supremum characterization, and the closure properties of ordinal-function closure points. The order-topology treatment should cover closedness at limits and the endpoint conventions on that ordinal. |
-| Finite combinatorics | **Finite subsets and finite colourings: counting and bounds** | `partition-relations#finite-colouring-trees` | An r-element set has exactly 2^r subsets; its fixed-size subsets form a finite set. There are k^q maps from a q-element domain to k colours. The entry supplies the finite counting needed for its length-tagged colouring tree. |
+| Finite combinatorics | **Finite subsets and finite colourings: counting and bounds** | `partition-relations#finite-colouring-trees`; `propositional-logic#truth-tables` | An r-element set has exactly 2^r subsets; its fixed-size subsets form a finite set. There are k^q maps from a q-element domain to k colours. The partition entry supplies the finite counting needed for its length-tagged colouring tree. A list of n distinct propositional atoms has exactly 2^n assignments to two truth values, including one empty assignment; the propositional entry proves this by doubling. |
 | Graph theory | **Edge colourings and Ramsey numbers: monochromatic complete subgraphs** | `partition-relations#colourings-and-homogeneity`; `partition-relations#parity-colouring`; `partition-relations#six-point-example` | Unordered pairs are graph edges, and a pair-homogeneous set is a monochromatic complete subgraph. The six-point/two-colour triangle theorem and the five-cycle counterexample use these notions explicitly. |
 | Graph theory | **Edge colourings: homogeneous sets, cliques, and independent sets** | `uncountable-pair-colourings#asymmetric-partition-relation`; `uncountable-pair-colourings#large-neighbourhood-dichotomy`; `uncountable-pair-colourings#dushnik-miller-regular` | A two-colouring of unordered pairs describes a graph by choosing one colour for edges; homogeneous sets correspond to cliques and independent sets. The entry supplies its neighbourhood recursion directly and requires no graph theory. |
 | Topology | **Sequence spaces: cylinders, closed sets, and perfect kernels** | `perfect-subtrees#sequence-trees-and-branches`; `perfect-subtrees#perfect-trees`; `perfect-subtrees#perfect-kernel`; `perfect-subtrees#branch-cardinality`; `perfect-subtrees#prefix-closure-question`; `perfect-subtrees#countable-cones`; `perfect-subtrees#binary-splitting` | Finite-prefix cones become basic open cylinders, and tree bodies are closed. The largest perfect subtree and countable remainder supply the closed-set perfect kernel; passing from a family of paths to its prefix tree can add paths. All required combinatorics is proved locally. |
 | Finite combinatorics | **Systems of distinct representatives: Hall's theorem and selection constraints** | `finite-constraints-and-distinct-representatives#distinct-representatives`; `finite-constraints-and-distinct-representatives#finite-hall`; `finite-constraints-and-distinct-representatives#small-obstructions-question`; `finite-constraints-and-distinct-representatives#infinite-hall` | Injective selection maps, the finite Hall counting criterion, tight-subfamily induction, and its finite-valued infinite extension are developed locally; connect them to broader finite selection theory. |
 | Topology | **Compactness: finite discrete products and the finite intersection property** | `finite-constraints-and-distinct-representatives#rado-selection`; `finite-constraints-and-distinct-representatives#persistent-constraints` | The local-to-global conclusion is a compactness property of products of finite discrete spaces. Current proofs use ultrafilters directly and do not assume topology. |
+| Constructive logic | **Intuitionistic natural deduction and classical contradiction** | `propositional-proofs#deduction-rules`; `propositional-proofs#classical-cases`; `propositional-proofs#soundness` | The entry includes classical contradiction and derives excluded middle from it. A future treatment should explain the intuitionistic rule system and compare its soundness with classical two-valued semantics. No constructive-logic result is required by the current proofs. |
 
 ## Existing-target integration notes
 
@@ -62,20 +52,11 @@ a foundation for the fuller future-area treatment.
 
 | Consuming entry/block IDs | Existing coverage | Integration note |
 | --- | --- | --- |
-| `sets-and-maps#statements-and-conventions`; `axiomatic-set-theory#membership-language`; classical reasoning throughout the corpus | The current notation blocks supply introductory logical context. | Deeper first-order logic remains a future-area reference. Basic classical proof reasoning is acceptable background. |
-| `finite-and-countable-sets#finite-sets`; elementary natural-number arguments and examples in `sets-and-maps`, `equivalence-relations`, and `ordered-sets` | [Induction on omega](entries/natural-numbers-as-sets/entry.html#induction-on-omega), [natural order](entries/natural-numbers-as-sets/entry.html#natural-order), and the arithmetic-law blocks in that entry | These establish arithmetic, induction, and least elements of nonempty subsets of the naturals. Links should clarify the background without making elementary examples depend on the set-theoretic construction. |
-| `equivalence-relations#relation-properties`; `equivalence-relations#equivalence-classes`; `ordered-sets#orders-from-inclusion-and-divisibility`; `finite-and-countable-sets#integer-enumeration`; `finite-and-countable-sets#rational-enumeration` | [Integers as an ordered ring](entries/constructing-number-systems/entry.html#integers-ordered-ring) and [rationals as an ordered field](entries/constructing-number-systems/entry.html#rational-field) | These cover the arithmetic structure and positive-denominator fractions. The future number-theory row concerns parity, divisibility, and congruence rather than duplicating this construction. |
-| `sets-and-maps#maps`; `sets-and-maps#composition`; `sets-and-maps#kinds-of-maps`; `ordered-sets#suprema-and-infima`; `ordered-sets#preorders`; `comparing-sizes#real-interval-sizes` | [The complete ordered field](entries/constructing-number-systems/entry.html#unique-complete-ordered-field) | This supplies the underlying structure. The future analysis treatment can give direct references for routine arithmetic, order, absolute value, intervals, and real formulas. The constructed irrational square root of two alone does not cover general square-root existence. |
-| `infinite-cardinal-arithmetic#size-of-the-continuum` | [Rational approximation of cuts](entries/constructing-number-systems/entry.html#cut-approximations) and [completeness and rational density in an ordered field](entries/constructing-number-systems/entry.html#unique-complete-ordered-field) | These support the rational-separation argument. A future analysis entry can give a direct integer-part formulation. |
-| `infinite-cardinal-arithmetic#size-of-the-continuum` | [Cut completeness](entries/constructing-number-systems/entry.html#cut-completeness) | This is a foundation for bounded monotone convergence and the ternary-series argument. The limited standard facts may remain background; a short local partial-sum/supremum argument is another possible improvement. |
-| `boolean-algebras#boolean-operations`; `boolean-algebras#elementary-boolean-laws`; `boolean-algebras#adjoining-an-element` | [Infima and suprema](entries/ordered-sets/entry.html#suprema-and-infima) and [power-set bounds](entries/ordered-sets/entry.html#power-set-bounds) | These supply the order background. The Boolean entry defines its lattice structure and proves the complement laws it needs; the future lattice entry should give the general laws and examples. |
-
-
-The quotient construction is now covered by [the quotient Boolean algebra](entries/subsets-modulo-small-sets/entry.html#quotient-boolean-algebra), [finite-error equality and order](entries/subsets-modulo-small-sets/entry.html#finite-error-quotient), [almost disjointness as zero meet](entries/subsets-modulo-small-sets/entry.html#almost-disjoint-zero-meet), and [nonzero countable lower bounds](entries/subsets-modulo-small-sets/entry.html#countable-lower-bounds). The new quotient entry links backward to the elementary results it extends. Preserve that direction when integrating references: earlier entries should keep their local explanations rather than acquire forward links.
-
-Applications of the continuum result in `infinite-cardinal-arithmetic`,
-`ordinal-powers`, and `infinite-sums-and-products` can continue to reference the
-set-theory result itself. They need not each acquire duplicate analysis links.
+| `finite-and-countable-sets#finite-sets` | [Induction on omega](entries/natural-numbers-as-sets/entry.html#induction-on-omega) and [natural order](entries/natural-numbers-as-sets/entry.html#natural-order) | Add an optional background pointer for induction and least natural numbers, keeping the elementary finite-set explanation independent of the later set-theoretic construction. |
+| `equivalence-relations#relation-properties`; `equivalence-relations#equivalence-classes`; `ordered-sets#orders-from-inclusion-and-divisibility`; `finite-and-countable-sets#integer-enumeration`; `finite-and-countable-sets#rational-enumeration` | [Integers as an ordered ring](entries/constructing-number-systems/entry.html#integers-ordered-ring) and [rationals as an ordered field](entries/constructing-number-systems/entry.html#rational-field) | Add optional pointers where the arithmetic structures or positive-denominator fractions help readers; do not turn their later construction into a prerequisite for elementary examples. Parity, divisibility, and congruence still await the number-theory treatment. |
+| `sets-and-maps#maps`; `sets-and-maps#composition`; `sets-and-maps#kinds-of-maps`; `ordered-sets#suprema-and-infima`; `ordered-sets#preorders`; `comparing-sizes#real-interval-sizes` | [The complete ordered field](entries/constructing-number-systems/entry.html#unique-complete-ordered-field) | Add optional pointers identifying the underlying real-number structure. Keep routine real facts as background; a future analysis entry still needs general square-root existence, absolute value, intervals, and real formulas. |
+| `infinite-cardinal-arithmetic#size-of-the-continuum` | [Rational approximation of cuts](entries/constructing-number-systems/entry.html#cut-approximations) and [completeness and rational density in an ordered field](entries/constructing-number-systems/entry.html#unique-complete-ordered-field) | Link the rational-separation argument to the proved density and approximation results. A direct integer-part formulation still awaits analysis. |
+| `infinite-cardinal-arithmetic#size-of-the-continuum` | [Cut completeness](entries/constructing-number-systems/entry.html#cut-completeness) | If replacing the background convergence fact by a local argument, prove that the ternary partial sums increase to their supremum and link to cut completeness. A general bounded-monotone-convergence theorem remains planned for analysis. |
 
 ## Cross-area correspondence to establish
 
@@ -97,28 +78,259 @@ prerequisite coverage for each planned entry.
 
 | Planned consuming entries | Existing coverage and exact fact | Remaining scope to develop |
 | --- | --- | --- |
-| **Martin's axiom** | [Branches and antichains](entries/infinite-trees/entry.html#branches-and-antichains) fix the tree notions; [Aronszajn existence](entries/infinite-trees/entry.html#aronszajn-existence) gives a tree with countable levels and no uncountable branch; [diagonal club intersection](entries/clubs-and-stationary-sets/entry.html#diagonal-intersection) and [Fodor's lemma](entries/pressing-down-and-delta-systems/entry.html#fodors-lemma) supply the ordinal combinatorics. | Diamond and the Suslin-tree construction are now supplied by [Diamond and Suslin trees](entries/diamond-and-suslin-trees/entry.html#diamond-tree-construction). Develop the forcing framework for the Martin's axiom application. An Aronszajn tree need not be Suslin. |
-| **Sets of reals: Cantor space, Baire space, and perfect sets**; **Borel sets**; **Analytic sets** | [Sequence trees](entries/infinite-trees/entry.html#sequence-trees) identify binary sequences with cofinal branches; [binary-prefix coding](entries/almost-disjoint-families/entry.html#binary-prefix-family) gives an explicit encoding of finite binary words. | Supply the product topology, cylinders, closed-set/tree correspondence, and the relevant countable constructions before the Borel and analytic results. [Perfect subtrees](entries/perfect-subtrees/entry.html#perfect-kernel) now supply the largest perfect kernel and countable branch remainder, and [the branch-cardinality theorem](entries/perfect-subtrees/entry.html#branch-cardinality) supplies the countable-or-continuum dichotomy. These combinatorial results still require the topological correspondence before use for closed, Borel, or analytic sets. |
+| **Martin's axiom** | [Branches and antichains](entries/infinite-trees/entry.html#branches-and-antichains) fix the tree notions; [Aronszajn existence](entries/infinite-trees/entry.html#aronszajn-existence) gives a tree with countable levels and no uncountable branch; [diagonal club intersection](entries/clubs-and-stationary-sets/entry.html#diagonal-intersection) and [Fodor's lemma](entries/pressing-down-and-delta-systems/entry.html#fodors-lemma) supply the ordinal combinatorics. [The diamond construction](entries/diamond-and-suslin-trees/entry.html#diamond-tree-construction) supplies a Suslin tree under its stated assumption. | Develop the forcing framework and prove the Martin's axiom application. An Aronszajn tree need not be Suslin. |
+| **Sets of reals: Cantor space, Baire space, and perfect sets**; **Borel sets**; **Analytic sets** | [Sequence trees](entries/infinite-trees/entry.html#sequence-trees) identify binary sequences with cofinal branches; [binary-prefix coding](entries/almost-disjoint-families/entry.html#binary-prefix-family) encodes finite binary words. [The perfect kernel](entries/perfect-subtrees/entry.html#perfect-kernel) has a countable branch remainder, and [branch cardinality](entries/perfect-subtrees/entry.html#branch-cardinality) gives the countable-or-continuum dichotomy. | Supply the product topology, cylinders, closed-set/tree correspondence, and the relevant countable constructions before applying these combinatorial results to closed sets or developing Borel and analytic sets. |
 | **Forcing extensions**; **Preserving cardinals**; **Cohen reals**; **Iterated forcing**; **Martin's axiom** | [Finite partial maps](entries/pressing-down-and-delta-systems/entry.html#finite-partial-maps) prove that two binary maps have a common extension exactly when they agree on their overlap. The [uncountable compatible-family theorem](entries/pressing-down-and-delta-systems/entry.html#uncountable-compatible-family), using the [delta-system lemma](entries/pressing-down-and-delta-systems/entry.html#delta-system-lemma), gives an uncountable pairwise compatible subfamily. | Define the forcing order, incompatibility, the Knaster property, and ccc, then prove the appropriate preservation or iteration theorems. Distinguish incomparability from incompatibility. A Boolean-algebra presentation additionally needs its own treatment of Boolean completions; [Boolean filters](entries/boolean-algebras/entry.html#ideals-and-filters) alone do not provide it. |
-| **Ultraproducts**; **Measurable cardinals** | [Ultrafilter extension](entries/filters-and-ultrafilters/entry.html#ultrafilter-extension) supplies ordinary ultrafilters under choice; [Boolean ultrafilters](entries/boolean-algebras/entry.html#boolean-ultrafilters) explain complement decisions in the algebraic setting. | First-order syntax and satisfaction are needed for Łoś's theorem. Measurability additionally requires a nonprincipal complete ultrafilter and a well-founded ultrapower argument. Neither ordinary ultrafilter extension nor the completeness of the club filter establishes a measure. |
+| **Ultraproducts**; **Measurable cardinals** | [Ultrafilter extension](entries/filters-and-ultrafilters/entry.html#ultrafilter-extension) supplies ordinary ultrafilters under choice; [Boolean ultrafilters](entries/boolean-algebras/entry.html#boolean-ultrafilters) explain complement decisions in the algebraic setting. [First-order syntax](entries/first-order-languages/entry.html#scoped-formulas) and [satisfaction](entries/first-order-structures/entry.html#satisfaction) supply the language and truth definitions. | Prove Łoś's theorem for the ultraproduct construction. Measurability additionally requires a nonprincipal complete ultrafilter and a well-founded ultrapower argument. Neither ordinary ultrafilter extension nor the completeness of the club filter establishes a measure. |
 
 ## Boundaries of the set-theory expansion
 
-The current corpus develops dense-order characterizations, normal functions and
-Goodstein termination, and elementary continuum-function calculations from its
-existing set-theoretic prerequisites. The recent entries likewise stop at
-algebraic Stone representation, countable diagonal arguments and elementary
-cardinal characteristics, successor-cardinal stationary splitting, regular-cardinal
-pair colourings, and the construction of a Suslin tree assuming diamond. The
-following extensions need further development and are deferred:
+The following extensions need further development and are deferred:
 
 | Related entry/block IDs | Deferred material | Supporting development needed |
 | --- | --- | --- |
-| `continuum-function#continuum-restrictions`; `continuum-function#strong-limits-and-sch` | Easton's realization theorem for continuum functions on regular cardinals; consistency or independence results about GCH and SCH | Begin mathematical logic with **First-order logic: formulas, structures, and satisfaction** and **Models of set theory: relativization and absoluteness**, then set theory with **Forcing: partial orders, generic filters, and extensions**. A precise Easton statement must specify its model and cardinal-preservation framework; necessary inequalities alone are not a realization theorem. |
+| `continuum-function#continuum-restrictions`; `continuum-function#strong-limits-and-sch` | Easton's realization theorem for continuum functions on regular cardinals; consistency or independence results about GCH and SCH | Develop **Models and theories: consistency, extensions, and independence**, **Models of set theory: relativization and absoluteness**, and **Forcing: partial orders, generic filters, and extensions**. A precise Easton statement must specify its model and cardinal-preservation framework; necessary inequalities alone are not a realization theorem. |
 | `normal-functions#goodstein-termination` | Unprovability of Goodstein's theorem in Peano arithmetic | **Formal arithmetic: axioms, syntax, and provability**, followed by **Ordinal analysis: induction strength and arithmetic proofs**. The present entry proves termination using ordinals; it makes no assertion about formal provability in arithmetic. |
 | `boolean-algebras#stone-map`; `boolean-algebras#stone-representation` | Topological Stone representation: the ultrafilters form a compact Hausdorff zero-dimensional space, and the represented algebra is exactly its clopen algebra | Begin with **Topological spaces: open sets, continuity, and compactness**, then **Stone spaces: Boolean algebras and compact zero-dimensional spaces**. Prove that the sets represented by Boolean elements form a clopen basis, establish compactness, and use it to show that every clopen set is a finite union of basis sets. The current theorem represents an algebra as a subalgebra of a power set without topology. |
-| `finite-errors-and-countable-diagonalization#countable-pseudointersection`; `finite-errors-and-countable-diagonalization#no-countable-ultrafilter-base`; `almost-disjoint-families#countable-family-extension`; `almost-disjoint-families#continuum-maximal-family`; `bounding-and-dominating-families#bounding-and-dominating-numbers`; `bounding-and-dominating-families#dominating-number-cofinality` | Further cardinal characteristics defined by pseudointersections, towers, ultrafilter bases, and infinite maximal almost disjoint families; additional comparisons and possible different values | Bounding and domination, their elementary bounds, regularity of b, and b ≤ cf(d) are now covered in **Bounding and dominating families**. The minima p, u and a, with p ≤ b ≤ a and p ≤ u, are now covered by [Small families of subsets](entries/small-families-of-subsets/entry.html#three-minima). [Splitting and reaping](entries/splitting-and-reaping/entry.html#cardinal-comparisons) now supplies the two minima and p ≤ s ≤ d and b ≤ r ≤ u. The tower and independence numbers, and their further comparisons, remain deferred. The definition of a explicitly excludes finite maximal families. Independence or realization of particular values requires models and forcing; the present bounds do not establish it. |
+| `finite-errors-and-countable-diagonalization#countable-pseudointersection`; `independent-families#independent-families`; `small-families-of-subsets#three-minima`; `bounding-and-dominating-families#bounding-and-dominating-numbers`; `splitting-and-reaping#cardinal-comparisons` | Tower and independence numbers, further cardinal-characteristic comparisons, and realization or independence of possible values | Define the tower and independence minima with their exact maximality and almost-inclusion conventions, then prove their bounds and comparisons. Realization and independence results require models and forcing; the existing elementary inequalities do not establish them. |
 | `pressing-down-and-delta-systems#delta-system-lemma`; `pressing-down-and-delta-systems#delta-systems` | Quantitative finite sunflower bounds and their combinatorial applications | A future finite-combinatorics entry, **Sunflowers: common cores and finite family bounds**, should state and prove the size estimates with their parameters. The present uncountable delta-system lemma concerns uncountable families of finite sets, not a numerical bound for a finite family. |
 | `infinite-trees#branches-and-antichains`; `infinite-trees#aronszajn-existence` | Tree forcing, specialization, and the effect of forcing axioms on Suslin or Aronszajn trees | Develop **Forcing extensions: conditions, generic filters, and names**, **Preserving cardinals: chain conditions and closure in forcing**, and the relevant tree-forcing constructions. State the order and hypotheses for each construction; the current existence proof supplies no generic extension or preservation theorem. |
+| `splitting-stationary-sets#ulam-splitting` | Splitting stationary sets at arbitrary regular uncountable cardinals | Supply a proof beyond successor-cardinal Ulam matrices, with the regularity and stationarity hypotheses stated explicitly. |
+| `uncountable-pair-colourings#dushnik-miller-regular` | Dushnik–Miller's theorem at singular cardinals | Develop the singular-cardinal argument rather than extending the existing regular-cardinal proof without justification. |
+| `diamond-and-suslin-trees#diamond-sequences`; `diamond-and-suslin-trees#construction-boundary-question` | Diamond in the constructible universe; consistency or independence of diamond | Develop the model framework and constructibility proofs. The existing entry assumes diamond and proves its consequences. |
 
-Ulam splitting at infinite successor cardinals is now covered by [Ulam matrices](entries/splitting-stationary-sets/entry.html#ulam-splitting). Splitting at arbitrary regular uncountable cardinals and the singular-cardinal Dushnik–Miller theorem remain extensions requiring their own proofs. The diamond entry assumes the prediction principle; its truth in the constructible universe and its consistency or independence await the logic and model framework.
+## Mathematical logic: sources and development plan
+
+Collected and planned **2026-10-11**. Area ID: `mathematical-logic`,
+under `logic-and-foundations`. The sixteen proposed entries below each need a
+step-1 handoff and the subsequent pipeline stages. The existing
+[propositional semantics](entries/propositional-logic/entry.html),
+[propositional proof calculus](entries/propositional-proofs/entry.html),
+[first-order syntax](entries/first-order-languages/entry.html), and
+[first-order semantics](entries/first-order-structures/entry.html) provide their
+starting definitions and conventions.
+
+Extend the existing classical natural-deduction calculus to first-order logic,
+including equality and the fresh-constant conditions on quantifier rules. Keep
+the language being studied separate from the mathematics used to study it. Use
+sets, maps, finite lists, and induction as background; orders and arithmetic
+provide examples without requiring an algebra or topology area.
+
+For first-order proofs, use the sentence-based variant in *Sets, Logic,
+Computation*: universal elimination and existential introduction instantiate
+closed terms, and free parameters are represented by fresh constants. Semantics
+still treats arbitrary formulas and assignments. Do not combine this calculus
+silently with a different system's rules for eigenvariables in open formulas.
+
+The initial completeness construction is for **countable languages**. Its
+enumeration and witness construction must be proved at that scope. General
+compactness follows in the ultraproduct entry, and larger elementary extensions
+in the models-and-independence entry;
+do not silently generalize a countable Henkin construction. Record uses of
+choice, including witness selection and ultrafilter extension, separately from
+the axioms of the object theory. Completeness concerns first-order proof and
+semantics; it does not say that a mathematical theory decides every sentence.
+
+### Source collection
+
+Use **Sets, Logic, Computation** for a consistent first-order proof system,
+**Doets** and **Weiss–D'Mello** for elementary model theory, and **Smith**,
+**Avigad's 2007 notes**, and
+**Incompleteness and Computability** for the arithmetic branch. The latter Open
+Logic text incorporates Avigad material, so their agreement is not an independent
+cross-check. Exact inspected versions and limitations are also recorded in
+[Source errors](source-errors.md#coverage). Page numbers here are printed pages.
+
+| Key | Source, inspected version, and primary access | Passages and planned use |
+| --- | --- | --- |
+| F2 | Zach / Open Logic Project, [*Sets, Logic, Computation* — archived Fall 2025 PDF](https://slc.openlogicproject.org/archives/f25/slc-screen.pdf), remix `38828e6` and Open Logic Text `0c1e9e3`, both 2025-07-01. [Project](https://slc.openlogicproject.org/). | Chapter 11, 194–224, natural deduction/equality/soundness; §§12.2–12.9, 230–249, Henkin construction/compactness; §12.11, 251–252, countable Löwenheim–Skolem. The soundness and model-construction proofs were inspected; routine exercise cases still need expansion. Match the calculus to the syntax and semantics conventions in §§6.2–6.9, 89–110, and §§7.2–7.7, 114–132. |
+| M1 | Doets, [*Basic Model Theory*](https://web.stanford.edu/group/cslipublications/cslipublications/Online/doets-basic-model-theory.pdf), CSLI / FoLLI, 1996. [Publisher record](https://web.stanford.edu/group/cslipublications/cslipublications/site/1575860481.shtml). | §2.2, 13–17: Tarski–Vaught, witness closure, downward Löwenheim–Skolem and elementary chains; §3.4, 44–45: countable back-and-forth; appendix A.3.2, 103–106: a general-language Henkin construction if developed later. Correct the adjacent Łoś–Vaught hypothesis before any use. |
+| M2 | Marker, [*Model Theory for Algebra and Algebraic Geometry*, Orsay sections 1–3](https://homepages.math.uic.edu/~marker/orsay/orsay1.pdf), Spring 2010, 25 pages. | §3, 20–24, ultraproduct quotient, Łoś and compactness, diagonal embedding. Use relation/order examples without importing algebraic applications. Repair its compactness filter construction and local slips. |
+| M3 | Weiss and D'Mello, [*Fundamentals of Model Theory*](https://www.math.toronto.edu/weiss/model_theory.pdf), ©2015, 64 PDF pages. | Elementary-chain proof, 16–18; Lemma 5, 19, Tarski–Vaught; Theorem 5, 20, downward Löwenheim–Skolem with a prescribed subset. These selected witness/induction proofs provide an independent cross-check. |
+| C1 | Avigad, [*Computability and Incompleteness*](https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf), version 2007-01-09, 128 PDF pages. | §§2.3–2.7, 20–46: recursion, coding, normal form, universality, halting; §4.3, 90–100: Robinson arithmetic and representability; §§4.4–4.7, 100–115: undecidability, diagonal lemma, first and conditional second incompleteness. Machine equivalence and all derivability-condition details were not fully audited. |
+| C2 | Smith, [*An Introduction to Gödel's Theorems*](https://logicmatters.net/igt/pdfs/GodelBookLM.pdf), second edition, Logic Matters corrected reprint, August 2020. [Author page](https://logicmatters.net/igt/), [corrections](https://logicmatters.net/igt/pdfs/CorrectionsLM.pdf). | Chapters 9–17: induction, Q, PA and representation; 19–20: syntax/proof coding; 24–27: diagonal lemma, Rosser, enumerable theories and truth; 31 and 33–35: second incompleteness/derivability conditions; 38–43: partial recursion and machines. Actual selected readings include 90–94, 107–112, 113–116, 119–121, 185–189 and 258–261; other locations were verified from the contents. Page 116 supplies a compact CRT/beta proof with a boundary-case correction. |
+| C3 | Zach / Open Logic Project, [*Incompleteness and Computability*](https://ic.openlogicproject.org/ic-screen.pdf), cover Fall 2025; remix `6b09d98`, 2026-07-11, generated from Open Logic Text `9620cc7`, 2026-07-12. [Project](https://ic.openlogicproject.org/). | Chapter 2, 20–58: recursive functions/coding; chapter 3, 59–75: syntax/derivations; chapter 4, 76–106: Q/representation; chapter 5, 107–128: incompleteness; chapter 6, 129–151: universality/halting/enumerability. Selected beta, minimization, conditional second-incompleteness and halting proofs were inspected. The [fixed-point](https://builds.openlogicproject.org/content/incompleteness/incompleteness-provability/fixed-point-lemma.pdf) and [truth](https://builds.openlogicproject.org/content/incompleteness/incompleteness-provability/tarski-thm.pdf) modules were also checked at Text revision `9620cc7`. |
+
+The first-order and computation source-to-entry map is:
+
+| Proposed entries | Sources and specific support |
+| --- | --- |
+| `first-order-proofs` | F2 chapter 11, including equality §§11.12–11.13; check every quantifier side condition against its syntax and semantics conventions. |
+| `henkin-completeness`, `logical-compactness`, `elementary-submodels` | F2 §§12.2–12.9; M1 §2.2 and M3 Lemma 5/Theorem 5 for the full witness-closure cardinal bound. |
+| `back-and-forth`, `ultraproducts` | M1 Theorem 3.48; M2 §3 and Marks §13, 57–58, for Łoś and the corrected finite-cone compactness proof. |
+| `arithmetic-theories`, `models-and-independence` | C2 chapters 9–13; F2 compactness; Avigad's [*Logic and Computation*](https://www.andrew.cmu.edu/user/avigad/Teaching/landc_notes.pdf), January 2002, §7.4 with the infinite-model correction for upward extensions; Marks §18 for internal/external membership models. |
+| `computable-functions`, `coding-formal-proofs`, `universal-computation` | C1 §§2.3–2.7; C3 §§2.2–2.12, 2.15–2.18, chapter 3 and §§6.2–6.12; C2 chapters 14, 19–20, 38 and 41–43. Match codes to the calculus actually chosen. |
+| `arithmetic-representability`, `diagonal-lemma`, `first-incompleteness` | C2 chapters 10–11, 15–17, 24–27 and 39; C1 §§4.3–4.5 with recorded corrections; C3 chapter 4 and §§5.2–5.4. |
+| `second-incompleteness`, `second-order-logic` | C2 chapters 31, 33–35 and C1/C3 conditional arguments; Avigad 2002 §8.3, 101–106, locates second-order semantics. **Full concrete derivability-condition proofs and the second-order non-effective-completeness reduction remain to inspect.** |
+
+For the set-theory interface, retain these already-used publications but extend
+their checked scope: [Marks, *Set Theory*](https://math.berkeley.edu/~marks/notes/set_theory_notes_4.pdf),
+2026-01-31, §§18–19, 75–84, on membership models, absoluteness and reflection;
+[Weiss, *An Introduction to Set Theory*](https://www.math.toronto.edu/~weiss/Set_Theory.pdf),
+2014-11-21, chapter 11, 103–120, for an independent model/absoluteness/reflection
+treatment; and [Philip, *Axiomatic Set Theory*](https://www.math.lmu.de/~philip/publications/lectureNotes/philipPeter_AxiomaticSetTheory.pdf),
+2025-12-30, §§2.2–2.3, 15–19, for small membership-model examples. The early
+constructibility, measure and forcing passages inspected for boundary planning
+are not full proof audits of those later theories.
+
+Additional accessible alternatives were inspected narrowly:
+[Tressl's *Introduction to Model Theory*](https://personalpages.manchester.ac.uk/staff/marcus.tressl/papers/ModelTheory.pdf),
+2026-10-03, §§2.3.1–2.3.2, 27–28;
+[Kueker's *Notes on Mathematical Logic*](https://math.umd.edu/~dkueker/712.pdf),
+undated, 49–51 and §§4.2–4.3, 66–71;
+[Miller's *Introduction to Mathematical Logic*](https://people.math.wisc.edu/~miller/old/m771-98/logintro.pdf),
+Fall 1995, selected syntax and witness-closure passages, and his
+[2009 model-theory problem collection](https://people.math.wisc.edu/~awmille1/old/m776-09/home.pdf),
+opening statements only. These supplement the main spine; they are not prerequisites.
+
+For later branches, [Schlicht's *Introduction to Mathematical Logic*](https://philippschlicht.github.io/teaching/files/mathematicallogic2021.pdf),
+Bonn summer 2021, PDF dated 2022-02-01, §5.1, 65–66, gives direct dense-order
+quantifier elimination after repairing dropped parameter conditions.
+[Marker's *Model Theory II: Quantifier Elimination*](https://homepages.math.uic.edu/~marker/MSRI-2.pdf),
+2020-10-14, slides 1–13, is an orientation for later algebraic applications.
+[Avigad's *Proof Theory*](https://arxiv.org/abs/1711.01994v2),
+2017-12-16, §2, surveys cut elimination and Herbrand; it states rather than
+supplies the full cut-elimination proof.
+His [*Classical and constructive logic*](https://www.andrew.cmu.edu/user/avigad/Teaching/classical.pdf),
+2000-09-19, revised 2001-11-02, §§1–2, provides introductory comparisons,
+not yet a checked source for the later translation theorems.
+
+For Goodstein unprovability, collect [Kirby and Paris, *Accessible Independence
+Results for Peano Arithmetic*](https://www.cs.tau.ac.il/~nachumd/term/Kirbyparis.pdf),
+1982, 285–293 ([publication](https://doi.org/10.1112/blms/14.4.285)), and
+[Avigad, *Ordinal analysis without proofs*](https://www.andrew.cmu.edu/user/avigad/Papers/ordinals.pdf),
+published 2002, 1–36; the author preprint has 37 pages and copyright 2000.
+Kirby–Paris uses imported model/growth results; Avigad's later analysis proofs
+were not audited. Neither is a self-contained immediate sequel to compactness.
+
+Bibliographic reserves with **uninspected chapter proofs** are Avigad's
+[*Mathematical Logic and Computation*](https://assets.cambridge.org/97811084/78755/frontmatter/9781108478755_frontmatter.pdf),
+Cambridge 2022; Boolos–Burgess–Jeffrey's
+[*Computability and Logic*](https://assets.cambridge.org/97805217/01464/frontmatter/9780521701464_frontmatter.pdf),
+fifth edition, Cambridge 2007; and Leary–Kristiansen's
+[*A Friendly Introduction to Mathematical Logic*](https://textbooks.aimath.org/textbooks/approved-textbooks/leary-kristiansen/),
+second edition, 2015, whose publisher download failed in this pass. Marker's
+[`ml-web.pdf`](https://homepages.math.uic.edu/~marker/ml-web.pdf) supplied only a
+12-page preface/contents preview. Do not cite these unavailable proofs as read.
+Write original exposition; the Open Logic texts' CC BY 4.0 licenses do not
+extend to unrelated publisher PDFs or differently licensed cover artwork.
+
+### Proposed reading order
+
+The four batches are scheduling units for the remaining entries. Prerequisites are the named entries,
+not the position of an entry in a batch. Optional applications should not turn
+these units into chapters containing several unrelated major theorems.
+
+| Batch / order | Proposed plain-text title and ID | Main result and scope | Prerequisites within the new area |
+| --- | --- | --- | --- |
+| 1 / 1 | **First-order proofs and theories: derivability and soundness** — `first-order-proofs` | Extend the chosen calculus to quantifiers and equality; prove soundness with explicit side conditions. Explain syntactic consistency, implication and equivalence over a stated theory, and axiom schemas. | `propositional-proofs`, `first-order-languages`, `first-order-structures`. |
+| 1 / 2 | **Completeness: Henkin witnesses and countable models** — `henkin-completeness` | Extend a consistent theory in a countable language with witnesses, complete it, and construct a term model modulo provable equality. Derive completeness, including the finite-support conclusion for derivations. | `first-order-proofs`; existing equivalence classes and countable encodings. |
+| 1 / 3 | **Compactness: finite satisfiability and infinite models** — `logical-compactness` | Countable-language compactness from completeness; infinite models from arbitrarily large finite models, and the failure of a first-order theory to characterize precisely the finite structures. | `henkin-completeness`. |
+| 1 / 4 | **Elementary submodels: Tarski–Vaught and Löwenheim–Skolem** — `elementary-submodels` | Elementary embeddings, the witness criterion, and downward Löwenheim–Skolem by closure under selected witnesses. Give the countable case first, then the general size bound using existing cardinal arithmetic and choice. Arbitrary-language upward extensions belong to `models-and-independence`. | `first-order-structures`, `logical-compactness`; existing countability and infinite cardinal arithmetic. |
+| 2 / 5 | **Back-and-forth: partial isomorphisms and countable structures** — `back-and-forth` | State and prove the extension criterion for countable back-and-forth systems; apply it to dense linear orders without endpoints and distinguish isomorphism from elementary equivalence. Quantifier elimination is an extension, not an assumed prerequisite. | `first-order-structures`, `elementary-submodels`; existing dense linear orders. |
+| 2 / 6 | **Ultraproducts: ultrafilters, Łoś's theorem, and transfer** — `ultraproducts` | Quotient a product of nonempty structures, prove Łoś's theorem including the existential witness step, and obtain arbitrary-language compactness. Include the elementary diagonal embedding into an ultrapower; well-founded ultrapowers are deferred. | `first-order-structures`, `elementary-submodels`; existing filters, ultrafilter extension, quotients, and cardinal arithmetic. |
+| 2 / 7 | **Arithmetic theories: induction schemas and nonstandard models** — `arithmetic-theories` | Robinson arithmetic and Peano arithmetic, formula induction with parameters, and a nonstandard model from compactness. Contrast formula induction with induction for every subset of a natural-number system. | `first-order-proofs`, `logical-compactness`; existing natural-number arithmetic and uniqueness theorem. |
+| 2 / 8 | **Models and theories: consistency, extensions, and independence** — `models-and-independence` | Elementary diagrams and upward Löwenheim–Skolem for infinite structures; model witnesses to nonderivability; precise relative-consistency and independence statements. Set-theory examples explain internal and external viewpoints without asserting the existence of a model of ZFC. | `henkin-completeness`, `elementary-submodels`, `ultraproducts`, `arithmetic-theories`; existing axiomatic set theory. |
+| 3 / 9 | **Computable functions: primitive recursion and unbounded search** — `computable-functions` | Define a precise model of partial computation; prove primitive-recursive arithmetic/comparison, bounded search and bounded quantification, then closure under unbounded minimization with explicit divergence conventions. The Church–Turing thesis is not a mathematical equivalence theorem. | Existing natural-number recursion and arithmetic; finite syntax from `first-order-languages`. |
+| 3 / 10 | **Coding finite sequences and formal proofs** — `coding-formal-proofs` | Primitive-recursive encoding and decoding of finite lists, syntax, substitution, and derivations in the fixed finite arithmetic language. More general signatures need effective symbol/arity recognition. Start with primitively recursively recognizable axiom sets; extend certificates for enumerable axioms after `universal-computation`. | `first-order-proofs`, `arithmetic-theories`, `computable-functions`. |
+| 3 / 11 | **Universal computation: enumeration, halting, and undecidability** — `universal-computation` | Code programs and finite computation histories, prove a normal-form/universal-function theorem, and derive halting undecidability. Show that a set is decidable exactly when it and its complement are computably enumerable; apply computation witnesses to proof certificates for enumerable axiom sets. | `computable-functions`, `coding-formal-proofs`. |
+| 3 / 12 | **Representability in arithmetic: expressing computations** — `arithmetic-representability` | Prove numeralwise functional representability in Robinson arithmetic at inputs where a partial computable function is defined; prove both positive and negative numeral instances for recursive relations. Separate standard truth, pointwise provability, and provable totality. | `arithmetic-theories`, `coding-formal-proofs`, `universal-computation`. |
+| 4 / 13 | **Self-reference: the diagonal lemma and undefinability of truth** — `diagonal-lemma` | Construct fixed points using the proved substitution-code function; prove that arithmetic truth is not arithmetically definable. Distinguish a truth predicate from a predicate for formal proofs. | `arithmetic-representability`, `coding-formal-proofs`. |
+| 4 / 14 | **First incompleteness: undecidable sentences and Rosser's theorem** — `first-incompleteness` | Incompleteness for consistent, computably axiomatized theories extending the chosen weak arithmetic; give Rosser's improvement and state the stronger hypotheses needed for the original Gödel sentence argument. | `diagonal-lemma`, `arithmetic-representability`, `models-and-independence`. |
+| 4 / 15 | **Second incompleteness: provability and consistency statements** — `second-incompleteness` | Begin with PA and its standard proof predicate: prove the derivability conditions, then show that consistent PA cannot prove the corresponding consistency sentence. Treat extensions only after checking their own proof predicates and conditions. Do not transfer the claim to arbitrary predicates called “provability.” | `first-incompleteness`, `coding-formal-proofs`, `arithmetic-representability`. |
+| 4 / 16 | **Second-order logic: full semantics, Henkin semantics, and categoricity** — `second-order-logic` | Quantification over subsets and relations, categoricity of full second-order Peano arithmetic, and the difference from first-order PA. Explain how Henkin semantics changes the models; any failure of an effective complete calculus needs its own reduction proof. | `arithmetic-theories`, `henkin-completeness`, `first-incompleteness`. |
+
+### Source checks still required before drafting
+
+The limited reviews found usable arguments and confirmed defects recorded in
+[Source errors](source-errors.md). Apply those repairs before adopting the
+affected constructions. No unavailable proof, contents-only reading, survey
+statement, or omitted exercise has been certified as a completed argument.
+
+For computation, mere countability of formulas does not establish effective
+coding. Use the finite arithmetic language first. An explicit pairing and list
+code with bounded decoders avoids making prime factorization an external
+prerequisite. Prove the chosen decoding bounds. Arithmetic representability
+additionally needs a finite simultaneous-remainder/beta lemma: Smith's page 116
+provides a compact route, but division, coprime cancellation and the needed
+coprime-modulus argument must be proved locally. Avigad and Zach's appeals to
+CRT do not supply those missing reader prerequisites.
+
+The inspected second-incompleteness sources prove a conditional abstract
+argument, then omit or sketch parts of the concrete PA derivability conditions.
+Smith 258–261 likewise sketches formalized Σ₁ completeness. Obtain and audit a full proof for the chosen
+coding, or develop it explicitly, before drafting `second-incompleteness` as a theorem about
+PA. A theorem conditional on the conditions would have to be labelled with
+that smaller scope. This is a source-coverage limit, not a source error.
+Second-order semantics and its non-effective-completeness reduction also need
+a full per-entry proof audit; the chapter location collected above is not one.
+
+### Coverage of the current reference backlog
+
+The mathematical-logic tasks in [Upcoming references](#upcoming-references)
+need the following specialized coverage beyond the existing syntax, semantics,
+and finite propositional proof results.
+
+| Pending coverage | Planned entries that supply it | Integration boundary |
+| --- | --- | --- |
+| Axiom schemas, definable classes, and set-valued class recursion — 6 blocks | `first-order-proofs`, followed by the planned set-theory treatment of relativization and absoluteness. | Specialize free-variable and fixed-parameter conventions to the set language. Definable classes are not arbitrary second-order objects; class recursion needs its set-function construction and uniqueness argument. |
+| Implication and equivalence over a theory — 21 blocks | `first-order-proofs`; `henkin-completeness` and `models-and-independence` supply the model/consistency framework. | The current choice-equivalence and conditional CH/diamond arguments remain valid locally. A logic reference does not itself prove consistency, independence, or realization of values of cardinal characteristics. |
+| Induction schemas versus induction for all subsets — 2 blocks | `arithmetic-theories`; `second-order-logic` gives the fuller comparison. | Preserve the existing every-subset natural-number-system theorem. Do not identify it with first-order categoricity of PA. |
+| Countable back-and-forth — 2 blocks | `back-and-forth`. | State both extension directions and the countability hypothesis; the existing dense-order proof remains its own checked application. |
+
+### Later branches and the set-theory interface
+
+After the elementary model-theory batch, the next set-theory development can be
+**Models of set theory: relativization and absoluteness**, followed by
+**Reflection: finite fragments and rank initial segments**. Use the existing
+rank hierarchy, Mostowski collapse, and hereditary-size bounds, but check each
+model's axioms explicitly. Consistency of ZFC gives a model through completeness
+in the metatheory; it does not by itself supply a well-founded or transitive
+model. A countable model's internally uncountable sets need not be externally
+uncountable. Reflection applies to a specified finite family of formulas, not
+one set model simultaneously reflecting every formula.
+
+Constructibility, condensation, forcing, preservation, Cohen reals, symmetric
+models, and large cardinals remain **set-theory entries**. Ultraproducts prepare
+for ultrapowers, but measurability still needs a complete measure and a separate
+well-foundedness argument. The current diamond entry assumes diamond; a model
+framework alone does not establish diamond in the constructible universe or
+its consistency.
+
+Further logic branches should be planned separately: quantifier elimination,
+types and saturation, Fraïssé constructions, computable reductions and degrees,
+Rice's theorem and the recursion theorem, sequent calculi and cut elimination,
+intuitionistic logic and negative translations, and modal logic. Ordinal
+analysis and Goodstein unprovability require their own arithmetic-strength
+proofs after the arithmetic and incompleteness entries. A proof of Goodstein
+termination by ordinal descent is not such an unprovability proof.
+
+### Formalization preparation
+
+Inspected the pinned Lean **4.34.0** / mathlib revision
+`5ed2965256430c3649e86755f9576b54eca72435`. Mathlib's `ModelTheory` has first-order
+syntax and semantics, elementary substructures, partial equivalences,
+ultraproducts, and semantic compactness. Checked candidate declarations include
+`FirstOrder.Language.Theory.isSatisfiable_iff_isFinitelySatisfiable`,
+`FirstOrder.Language.Ultraproduct.sentence_realize`, and
+`FirstOrder.Language.exists_elementarySubstructure_card_eq`, with their actual
+definitions and hypotheses. The compactness proof uses ultraproducts; it does
+not formalize the proposed natural-deduction calculus or its Henkin completeness
+proof. No encoded proof calculus was found in the inspected model-theory files.
+
+Extend the existing first-order syntax and semantics bindings to the chosen
+proof calculus. Preserve the [free-name and indexed-bound-variable
+convention](entries/first-order-languages/entry.html#scoped-formulas), and check
+how fresh constants, closed-term instantiation, and equality rules correspond to
+that representation. In `BoundedFormula α n`, `n` counts in-scope bound variables;
+“bounded” does **not** mean bounded quantification in the set-theoretic or
+arithmetic hierarchy.
+
+`Computability` has primitive and partial recursion, program codes, universal
+evaluation, and `ComputablePred.halting_problem`; the relevant definitions and
+signatures were inspected. Arithmetic proof coding, representability, and
+incompleteness still need a dedicated formal design and correspondence audit.
+An ordinary Lean proof of a statement about natural numbers is not automatically
+a proof of its derivability in PA or ZFC. The later proof calculus and arithmetic
+claims need their own bindings and verification; inspected library declarations
+do not establish that coverage.

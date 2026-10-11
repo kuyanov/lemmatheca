@@ -80,7 +80,8 @@ cycles.
 Put local modules under `formal/Lemmatheca/` and import them from
 `formal/Lemmatheca.lean`.
 Put reusable definitions, theorem statements, proofs, and construction lemmas in
-the general theory layer, currently `Lemmatheca.SetTheory`. This applies even when
+the general theory layer for its area, such as `Lemmatheca.SetTheory` or
+`Lemmatheca.MathematicalLogic`. This applies even when
 a declaration first appears in one entry or has only one current caller. Standard
 constructions on particular carriers, such as rational enumeration or Dedekind
 cuts, are still general theory.

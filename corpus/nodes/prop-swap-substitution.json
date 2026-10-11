@@ -1,0 +1,10 @@
+{
+  "id": "prop-swap-substitution",
+  "description": "For distinct atoms a and b, simultaneously exchanging a and b sends the implication from a to b to the implication from b to a.",
+  "module": "Lemmatheca.MathematicalLogic.Propositional",
+  "declaration": "Lemmatheca.MathematicalLogic.subst_swap_imp",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 366,
+  "signature": "Lemmatheca.MathematicalLogic.subst_swap_imp.{u} {α : Type u} [DecidableEq α] (a b : α) (hab : a ≠ b) :\n  Lemmatheca.MathematicalLogic.subst\n      (fun c =>\n        if c = a then Lemmatheca.MathematicalLogic.PropFormula.atom b\n        else\n          if c = b then Lemmatheca.MathematicalLogic.PropFormula.atom a\n          else Lemmatheca.MathematicalLogic.PropFormula.atom c)\n      ((Lemmatheca.MathematicalLogic.PropFormula.atom a).impl (Lemmatheca.MathematicalLogic.PropFormula.atom b)) =\n    (Lemmatheca.MathematicalLogic.PropFormula.atom b).impl (Lemmatheca.MathematicalLogic.PropFormula.atom a)"
+}

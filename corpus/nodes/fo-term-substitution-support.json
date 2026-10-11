@@ -1,0 +1,12 @@
+{
+  "id": "fo-term-substitution-support",
+  "description": "The variables of a substituted term are exactly the union of the replacement terms' variable sets over the variables of the original term.",
+  "module": "Lemmatheca.MathematicalLogic.FirstOrderSyntax",
+  "declaration": "Lemmatheca.MathematicalLogic.FirstOrderSyntax.term_varFinset_subst",
+  "dependencies": [
+    "fo-term-substitution"
+  ],
+  "verified": true,
+  "declaration_line": 18,
+  "signature": "Lemmatheca.MathematicalLogic.FirstOrderSyntax.term_varFinset_subst.{u, v, u', v'} {L : FirstOrder.Language}\n  {α : Type u'} {β : Type v'} [DecidableEq α] [DecidableEq β] (t : L.Term α) (σ : α → L.Term β) :\n  (t.subst σ).varFinset = t.varFinset.biUnion fun a => (σ a).varFinset"
+}

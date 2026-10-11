@@ -26,8 +26,12 @@ audit it and propose corrections when reviewing. Preserve precise current
 consuming entry/block IDs. Add links when the future areas supply suitable target
 blocks, then remove only fulfilled locations. Keep other integration, expansion,
 correspondence, and scope notes in separate sections of the same authoritative
-document or in the handoff. Substantial missing prerequisites must be developed,
-or the dependent material narrowed or deferred; merely recording them does not
+document or in the handoff. Adding coverage also requires checking existing
+consuming entries across areas and adding their useful links. Every planning
+section tracks outstanding work only: remove fulfilled tasks, completed roadmap
+rows and outlines, and completion narratives while preserving unfinished scope
+and its needed prerequisites and sources. Substantial missing prerequisites must
+be developed, or the dependent material narrowed or deferred; merely recording them does not
 make an entry ready.
 
 Source checks maintain [Source errors](../corpus/source-errors.md), with serious

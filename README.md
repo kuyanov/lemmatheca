@@ -31,9 +31,12 @@ about real numbers, may be used without an entry reference. Track useful future
 links in the single four-column [upcoming-reference table](corpus/reference-planning.md#upcoming-references)
 and add them as the relevant areas develop. The same authoritative
 [Reference backlog and planning](corpus/reference-planning.md) document has separate
-sections for integration and expansion notes. A missing substantial prerequisite
-must be developed, or the dependent material narrowed or deferred; recording a
-future reference does not waive this requirement. See the
+sections for integration and expansion notes.
+When an entry supplies planned coverage, add useful links from existing consuming
+entries across areas and remove fulfilled tasks from all planning sections. Keep
+only outstanding work and the context needed to carry it out.
+A missing substantial prerequisite must be developed, or the dependent material
+narrowed or deferred; recording a future reference does not waive this requirement. See the
 [scope guidance](CONTRIBUTING.md#prerequisites-and-scope).
 
 The long-term aim is broad mathematical coverage with reusable results across

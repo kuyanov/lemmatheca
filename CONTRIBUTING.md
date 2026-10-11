@@ -88,8 +88,9 @@ implement the required definitions and write theorem statements with `by sorry`
 (the explicit Lean placeholder for an unfinished proof). Preserve existing proofs;
 proving new theorems belongs to step 6.
 
-Put reusable mathematics in the general theory layer, currently
-`formal/Lemmatheca/SetTheory/`, even when it originates in a single entry.
+Put reusable mathematics in the general theory layer for its area, such as
+`formal/Lemmatheca/SetTheory/` or `formal/Lemmatheca/MathematicalLogic/`, even when
+it originates in a single entry.
 Reserve `Entry/` for particular illustrative examples and counterexamples with
 no wider use, and their example-specific helpers. General theory must not import
 entry modules; examples import the theory they illustrate.
@@ -171,6 +172,12 @@ that the audit found no changes needed. When suitable target blocks become
 available, check their facts and assumptions, add the entry links, and remove only
 the fulfilled consuming locations; keep remaining locations in the row. A related
 title or an available Lean declaration alone does not establish human coverage.
+Adding or expanding an entry also requires checking existing entries for consumers
+of its new coverage, including in other areas. Add useful links at those consuming
+blocks as part of the drafting revision; do not audit only the new entry's outgoing
+references. Preserve locally explained background when adding an optional pointer,
+and distinguish it from a required prerequisite so the reading order remains sound.
+Check the target's actual statement and assumptions before linking it.
 Step 3 must audit the table and return concrete proposed corrections or an explicit
 no-change finding. Planning and review do not edit reference planning: put proposed changes in
 the handoff rather than editing the document during those steps.
@@ -180,6 +187,12 @@ cross-area correspondence still to prove, and deferred extensions in separate
 planning sections of the same document or in the handoff. Keep maintenance rules
 here and in the prompts. The document is separate from corpus metadata and is
 neither an approval system nor a record of readiness.
+Every planning section tracks outstanding work only. Remove fulfilled integration
+tasks, completed roadmap rows and drafting outlines, and completion narratives;
+do not move them into another planning section. For partial coverage, retain only
+the unfulfilled facts and consuming locations. Existing entries may still appear
+as prerequisites of a specific future task, and source research may remain when
+needed by planned work. Source-review history belongs in `corpus/source-errors.md`.
 
 Entries should have no major dependencies on substantial theory missing from the
 corpus. Judge the scope and role of a prerequisite, not just whether its subject is

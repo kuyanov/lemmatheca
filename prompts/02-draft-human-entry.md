@@ -53,6 +53,19 @@ help readers; do not limit the audit to missing prerequisites.
 - When a suitable target already exists, inspect its content and assumptions,
   add the useful entry link now, and remove the fulfilled consuming locations
   from the upcoming-reference table. Keep any locations still awaiting future coverage.
+- When adding or expanding an entry, search existing entries across areas and
+  the planning document for consumers of its new coverage. Inspect those blocks,
+  add useful `entry-id#block-id` links to the exact new target blocks, and check
+  the linked facts and assumptions. This incoming-reference integration is part
+  of drafting the new coverage, not a task to leave for a later revision. Keep
+  locally explained background when adding optional pointers, and do not turn
+  reciprocal explanatory links into circular required prerequisites.
+- Keep every section of reference planning limited to outstanding work. Remove
+  fulfilled integration tasks, completed roadmap rows and drafting outlines, and
+  completion narratives; do not move them into another planning section. Narrow
+  partially fulfilled tasks to their remaining facts and consuming locations.
+  Existing entries and source research may remain when needed by a concrete
+  planned task. Keep source-review history in `corpus/source-errors.md`.
 - Keep **Upcoming references** to this one four-column table. Put other planning
   material in the same document's separate sections for
   [existing-target integration notes](../corpus/reference-planning.md#existing-target-integration-notes),
@@ -172,6 +185,8 @@ Confirm that the future-reference audit covered every drafted or revised entry,
 that its table changes are saved, and that all consuming block IDs exist. Check
 that **Upcoming references** still contains one four-column table of future-area
 references only and that other planning notes remain in the document's separate sections.
+Check that existing consuming entries were inspected for the new coverage, their
+useful links are saved, and completed work is absent from all planning sections.
 
 After editing corpus files, run from the repository root:
 
@@ -209,3 +224,6 @@ For each entry, include the upcoming-reference audit outcome: rows added, change
 or removed, or an explicit finding that no changes were needed after inspecting
 its blocks. Keep deferred material and future-entry plans separate from these rows
 in the corresponding sections of the same reference document.
+Report incoming links actually added to existing consumers and completed tasks
+removed or narrowed in each planning section; a list of proposed links alone
+does not complete that integration.

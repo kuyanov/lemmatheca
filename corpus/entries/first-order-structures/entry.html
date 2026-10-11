@@ -1,0 +1,119 @@
+<section id="structures" data-kind="definition" data-formal="fo-structure fo-nonempty-carrier fo-binary-relation-interpretation fo-constant-symbols">
+  <h2>Interpreting a language</h2>
+  <p>Fix a <a href="first-order-languages#signatures">first-order language</a> \(L\). An <strong>\(L\)-structure</strong> \(M\) consists of a nonempty set \(|M|\), its <strong>domain</strong>, together with an interpretation \(f^M:|M|^k\to|M|\) for each function symbol \(f\in F_k\), and an interpretation \(R^M\subseteq|M|^k\) for each relation symbol \(R\in R_k\). Equality is interpreted as equality of domain elements.</p>
+  <p>A zero-argument function chooses one element, so a constant \(c\) has a value \(c^M\in|M|\). A zero-argument relation chooses whether the unique empty tuple belongs to it, hence a truth value. The functions are total on their indicated domains.</p>
+  <p>For a language with one binary relation symbol \(&lt;\), both \(\{0,1\}\) with its usual strict order and \(\mathbb N\) with its usual strict order are structures. An arbitrary binary relation would also be an interpretation; the signature itself imposes no order axioms. This separates a symbol from its meaning.</p>
+</section>
+
+<section id="term-values" data-kind="definition" data-formal="fo-term-value fo-constant-value fo-double-unary-value">
+  <h2>Assignments and values of terms</h2>
+  <p>An <strong>assignment</strong> \(a\) gives each free variable \(x_i\) an element \(a(x_i)\in|M|\). In a <a href="first-order-languages#scoped-formulas">context of size \(n\)</a>, also specify a tuple \(b=(b_0,\ldots,b_{n-1})\) of values for its placeholders. Define a term's value \(\llbracket t\rrbracket^M_{a,b}\) recursively:</p>
+  <div class="math-display">\[
+    \llbracket x_i\rrbracket^M_{a,b}=a(x_i),\qquad
+    \llbracket z_j\rrbracket^M_{a,b}=b_j,\qquad
+    \llbracket f(t_0,\ldots,t_{k-1})\rrbracket^M_{a,b}
+       =f^M(\llbracket t_0\rrbracket^M_{a,b},\ldots,\llbracket t_{k-1}\rrbracket^M_{a,b}).
+  \]</div>
+  <p>For a constant this reads \(\llbracket c\rrbracket^M_{a,b}=c^M\). With no placeholders in scope, omit \(b\). For a unary symbol \(s\), evaluating \(s(s(x_0))\) gives \(s^M(s^M(a(x_0)))\). The symbol need not mean successor.</p>
+</section>
+
+<section id="satisfaction" data-kind="definition" data-formal="fo-satisfaction fo-complete-satisfaction fo-satisfaction-negation fo-satisfaction-conjunction fo-satisfaction-disjunction fo-satisfaction-existential fo-satisfaction-biconditional">
+  <h2>When a formula is satisfied</h2>
+  <p>Write \(M,a,b\models\varphi\) when the scoped formula \(\varphi\) is <strong>satisfied</strong> at those values. Define this by recursion on its finite tree:</p>
+  <ul>
+    <li>\(M,a,b\not\models\bot\).</li>
+    <li>\(M,a,b\models t=u\) precisely when \(\llbracket t\rrbracket^M_{a,b}=\llbracket u\rrbracket^M_{a,b}\).</li>
+    <li>\(M,a,b\models R(t_0,\ldots,t_{k-1})\) precisely when the tuple of term values belongs to \(R^M\).</li>
+    <li>\(M,a,b\models\varphi\to\psi\) precisely when satisfaction of \(\varphi\) implies satisfaction of \(\psi\).</li>
+    <li>\(M,a,b\models\forall z_n\varphi\) precisely when \(M,a,(b_0,\ldots,b_{n-1},m)\models\varphi\) for every \(m\in|M|\).</li>
+  </ul>
+  <p>The <a href="first-order-languages#scoped-formulas">defined connectives</a> consequently satisfy their usual classical clauses: negation reverses truth, conjunction requires both children, disjunction requires at least one, and \(\exists z_n\varphi\) holds precisely when some \(m\in|M|\) makes the body true with the extended tuple. These follow by expanding the abbreviations; for existence, use \(\neg\forall m\neg P(m)\) iff \(\exists m P(m)\).</p>
+  <p>For a complete formula the tuple is empty, and we write \(M,a\models\varphi\). Quantifiers range over domain elements, not names for them. There is no requirement that every element have a constant symbol naming it.</p>
+</section>
+
+<section id="free-variable-agreement" data-kind="theorem" data-formal="fo-term-assignment-agreement fo-scoped-term-assignment-agreement fo-formula-assignment-agreement fo-empty-support-assignment-independence fo-sentence-truth fo-sentence-conversion-truth fo-sentence-all-assignments fo-sentence-some-assignment">
+  <h2>Only occurring free variables affect truth</h2>
+  <div class="statement-box">
+    <p>Fix the same structure and the same placeholder tuple. If assignments \(a,a'\) agree on \(\operatorname{FV}(t)\), then \(\llbracket t\rrbracket^M_{a,b}=\llbracket t\rrbracket^M_{a',b}\). If they agree on \(\operatorname{FV}(\varphi)\), then</p>
+    <div class="math-display">\[M,a,b\models\varphi\quad\Longleftrightarrow\quad M,a',b\models\varphi.\]</div>
+    <p>In particular, satisfaction of a sentence is independent of the assignment.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Induct on terms. For a free variable use the assumed agreement; a placeholder has the same tuple value; a function receives equal argument values by induction. Constants have no arguments.</p>
+  <p>Then induct on scoped formulas, allowing arbitrary assignments and tuples at every context size. Falsity is unchanged. Equality and relation application use the term result. For implication, agreement on the union of the children's free-variable sets gives the same truth values for both children. For \(\forall z_n\varphi\), the body's free-variable set equals that of the quantified formula. For each domain element \(m\), the two extended tuples are identical, so induction gives agreement on the body. Universal quantification of these equivalences proves the claim. Empty free-variable sets impose no condition, giving the sentence conclusion. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For a sentence \(\theta\), we therefore write \(M\models\theta\), and say that \(\theta\) is <strong>true in \(M\)</strong>. Equivalently it is satisfied under every assignment, or under one assignment. An assignment exists because the domain is nonempty.</p>
+</section>
+
+<section id="semantic-substitution" data-kind="theorem" data-formal="fo-term-semantic-substitution fo-scoped-term-semantic-substitution fo-formula-semantic-substitution fo-single-substitution-assignment">
+  <h2>Substitution agrees with assigning a term's value</h2>
+  <p>Let \(\sigma\) be a <a href="first-order-languages#substitution">simultaneous substitution</a> by terms containing only free variables. Given an assignment \(a\), define \(a_\sigma(x_i)=\llbracket\sigma(x_i)\rrbracket^M_a\).</p>
+  <div class="statement-box">
+    <p>For every scoped term \(t\), formula \(\varphi\), and placeholder tuple \(b\),</p>
+    <div class="math-display">\[
+      \llbracket t[\sigma]\rrbracket^M_{a,b}=\llbracket t\rrbracket^M_{a_\sigma,b},\qquad
+      M,a,b\models\varphi[\sigma]\ \Longleftrightarrow\ M,a_\sigma,b\models\varphi.
+    \]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>For terms, induction gives the chosen replacement value at a free variable, the unchanged tuple value at a placeholder, and equal inputs to each interpreted function. Next induct on formulas. Equality and relation application use those term equalities; falsity and implication follow from their truth clauses. At a universal quantifier, compare the bodies at each extended tuple \((b,m)\). The assignment \(a_\sigma\) is the same for every \(m\), because replacement terms contain no placeholders. The induction equivalence can therefore be quantified over \(m\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For a single substitution \([t/x_i]\), \(a_\sigma\) is just \(a\) with its value at \(x_i\) changed to \(\llbracket t\rrbracket^M_a\). This is why a substitution that captured a free variable would give the wrong semantic rule.</p>
+</section>
+
+<section id="two-orders" data-kind="question" data-formal="fo-parameter-successor-formula fo-every-successor-sentence fo-natural-successor-truth fo-natural-successor-witness fo-natural-no-largest fo-two-element-successor-truth fo-two-element-successor-witness fo-two-element-largest fo-natural-captured-formula-false fo-two-element-captured-formula-false">
+  <h2>The same formula in two structures</h2>
+  <p>In the language with one binary relation \(&lt;\), put \(\varphi(x_0)=\exists z_0\,(x_0&lt;z_0)\). What are its truth values in \(M=\{0,1\}\) and \(N=\mathbb N\), each with the usual strict order? What happens to \(\theta=\forall z_0\exists z_1\,(z_0&lt;z_1)\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>In \(M\), \(\varphi\) is true when \(a(x_0)=0\), using witness \(1\), and false when \(a(x_0)=1\), since neither domain element is larger. Thus \(M\not\models\theta\).</p>
+      <p>In \(N\), \(a(x_0)+1\) is always a witness, so \(\varphi\) holds for every assignment and \(N\models\theta\). By contrast, \(\exists z_0\,(z_0&lt;z_0)\) is false in both structures: no element is strictly smaller than itself. This confirms why the <a href="first-order-languages#capture-question">captured expression</a> differs from the intended substitution.</p>
+    </div>
+  </details>
+</section>
+
+<section id="isomorphisms" data-kind="definition" data-formal="fo-isomorphism">
+  <h2>Bijections preserving the interpreted symbols</h2>
+  <p>An <strong>isomorphism</strong> \(h:M\to N\) of \(L\)-structures is a <a href="sets-and-maps#kinds-of-maps">bijection</a> of their domains such that, for every symbol and tuple,</p>
+  <div class="math-display">\[
+    h(f^M(m_0,\ldots,m_{k-1}))=f^N(h(m_0),\ldots,h(m_{k-1})),
+  \]</div>
+  <div class="math-display">\[
+    (m_0,\ldots,m_{k-1})\in R^M
+       \quad\Longleftrightarrow\quad
+    (h(m_0),\ldots,h(m_{k-1}))\in R^N.
+  \]</div>
+  <p>For constants the first condition says \(h(c^M)=c^N\). Relations must be preserved in both directions. Compose \(h\) with an assignment or apply it to each entry of a tuple to transport their values to \(N\).</p>
+</section>
+
+<section id="isomorphism-invariance" data-kind="theorem" data-formal="fo-term-isomorphism-invariance fo-formula-isomorphism-invariance fo-sentence-isomorphism-invariance">
+  <h2>Isomorphisms preserve satisfaction</h2>
+  <div class="statement-box">
+    <p>If \(h:M\to N\) is an isomorphism, then every term and scoped formula satisfy</p>
+    <div class="math-display">\[
+      h(\llbracket t\rrbracket^M_{a,b})=\llbracket t\rrbracket^N_{h\circ a,h(b)},\qquad
+      M,a,b\models\varphi\ \Longleftrightarrow\ N,h\circ a,h(b)\models\varphi.
+    \]</div>
+    <p>Consequently \(M\models\theta\) iff \(N\models\theta\) for every sentence \(\theta\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>The term identity follows by induction: variables transport by definition, and the function step is exactly preservation of the interpreted function. For formulas, equality uses that identity and injectivity of \(h\); relation application uses the defining equivalence for relations. Falsity and implication preserve the resulting truth values.</p>
+  <p>For a universal quantifier, truth in \(M\) gives truth of the body at every \(m\in|M|\). Induction gives truth in \(N\) at \(h(m)\); surjectivity says these exhaust \(|N|\). Conversely, truth at all elements of \(N\) includes every \(h(m)\), so induction gives truth at all \(m\). The sentence conclusion follows from assignment independence. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="theories-and-models" data-kind="definition" data-formal="fo-theory fo-theory-model fo-nonempty-theory-model fo-nonempty-carrier fo-singleton-domain-sentence fo-singleton-domain-truth fo-contradictory-theory-no-model fo-model-isomorphism-invariance">
+  <h2>Theories specify collections of requirements</h2>
+  <p>An <strong>\(L\)-theory</strong> \(T\) is a set of \(L\)-sentences. A structure \(M\) is a <strong>model</strong> of \(T\), written \(M\models T\), if \(M\models\theta\) for every \(\theta\in T\). The theory is <strong>satisfiable</strong> if it has a model. These are semantic definitions; no proof rules are involved.</p>
+  <p>For example, the sentence \(\forall z_0\forall z_1\,(z_0=z_1)\) holds exactly in structures whose domains have one element. The universal clause says all pairs of domain elements are equal; nonemptiness supplies the single element. The theory consisting of this sentence and its negation has no model, since a sentence and its negation cannot both be true.</p>
+  <p>An isomorphism preserves being a model of any fixed theory: apply <a href="#isomorphism-invariance"></a> to each sentence of the theory. A <strong>schema</strong> can specify such a set by giving one sentence for each permitted formula; this is a way of listing requirements in the surrounding mathematics, not an object-language quantifier over formulas.</p>
+</section>
+
+<section id="empty-domain-question" data-kind="question" data-formal="fo-existential-self-equality fo-universal-self-equality fo-existential-self-equality-truth fo-universal-self-equality-truth fo-empty-existential-false fo-empty-universal-true">
+  <h2>Why require a nonempty domain?</h2>
+  <p>What truth value does \(\exists z_0\,(z_0=z_0)\) have under our convention? What would its existential clause say if we admitted an empty domain?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>It is true in every structure we admit: choose any domain element, which equals itself. With an empty domain it would be false, since no witness exists. Its universal counterpart \(\forall z_0\,(z_0=z_0)\) would remain true, because every element of the empty domain satisfies the equality vacuously. Thus permitting empty domains changes the truth of some sentences, even in a language with no nonlogical symbols.</p>
+    </div>
+  </details>
+</section>

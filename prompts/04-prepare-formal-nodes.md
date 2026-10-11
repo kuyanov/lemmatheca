@@ -74,8 +74,9 @@ publication itself is demonstrably wrong. Report any saved register changes.
    entries instead of duplicating them.
 5. Implement missing definition bodies and declare missing theorem statements with
    `by sorry`. Do not replace existing proofs or prove new theorem bodies in this
-   step. Put reusable mathematics under the general theory layer, currently
-   `formal/Lemmatheca/SetTheory/`, even if introduced by or used in only one entry.
+   step. Put reusable mathematics under the general theory layer for its area,
+   such as `formal/Lemmatheca/SetTheory/` or
+   `formal/Lemmatheca/MathematicalLogic/`, even if introduced by or used in only one entry.
    This includes general definitions, theorem statements, edge cases, and
    construction lemmas; a standard construction on a particular carrier is still
    reusable mathematics. Reserve `Entry/` and `Lemmatheca.Entry.<EntryName>` for

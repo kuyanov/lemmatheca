@@ -1,9 +1,9 @@
 <section id="membership-language" data-kind="definition" data-formal="zf-set-members zf-subset-criterion">
   <h2>One relation describes a universe of sets</h2>
-  <p>The <a href="sets-and-maps#sets-and-elements">language of sets and maps</a> lets us work with numbers, maps, and collections without choosing their internal construction. We now ask which assumptions justify those constructions. In <strong>ZF</strong>, or Zermelo–Fraenkel set theory, every object over which we quantify is a set. The basic relation is membership, \(x\in y\); equality belongs to the underlying logic. Numbers and maps will be represented by sets rather than added as separate kinds of object.</p>
-  <p>We use classical first-order logic. A <strong>formula</strong> is a finite expression made from membership, equality, logical connectives, and quantifiers over sets. A formula may have fixed set parameters. For example, \(\varphi(x,B)\) might mean \(x\in B\). Subset notation abbreviates</p>
+  <p>The <a href="sets-and-maps#sets-and-elements">language of sets and maps</a> lets us work with numbers, maps, and collections without choosing their internal construction. We now ask which assumptions justify those constructions. In <strong>ZF</strong>, or Zermelo–Fraenkel set theory, every object over which we quantify is a set. The basic relation is <a href="first-order-languages#signatures">membership</a>, \(x\in y\); equality belongs to the underlying logic. Numbers and maps will be represented by sets rather than added as separate kinds of object.</p>
+  <p>We use classical first-order logic. A <a href="first-order-languages#scoped-formulas"><strong>formula</strong></a> is a finite expression made from membership, equality, logical connectives, and quantifiers over sets. A formula may have fixed set parameters. For example, \(\varphi(x,B)\) might mean \(x\in B\). Subset notation abbreviates</p>
   <div class="math-display">\[ A\subseteq B\quad\Longleftrightarrow\quad\forall x\,(x\in A\Rightarrow x\in B). \]</div>
-  <p>An <strong>axiom</strong> is an assumption of the theory. A theorem must follow from the axioms and logic. The axioms below specify set constructions and restrictions on membership; listing them does not itself prove that the theory is consistent.</p>
+  <p>An <strong>axiom</strong> is an assumption of the <a href="first-order-structures#theories-and-models">theory</a>. A theorem must follow from the axioms and logic. The axioms below specify set constructions and restrictions on membership; listing them does not itself prove that the theory is consistent.</p>
 </section>
 
 <section id="extensionality-and-empty-set" data-kind="definition" data-formal="zf-extensionality zf-empty-has-no-members zf-empty-uniqueness">
@@ -18,7 +18,7 @@
   <h2>Separate a definable part of an existing set</h2>
   <p>For each formula \(\varphi(x,p_1,\ldots,p_k)\), the <strong>Separation schema</strong> asserts that for every set \(A\) and every choice of set parameters there is a set \(B\) satisfying</p>
   <div class="math-display">\[ \forall x\,\bigl[x\in B\Longleftrightarrow x\in A\ \text{and}\ \varphi(x,p_1,\ldots,p_k)\bigr]. \]</div>
-  <p>Write \(B=\{x\in A:\varphi(x,p_1,\ldots,p_k)\}\). The variable for \(B\) is not free in \(\varphi\). A <strong>schema</strong> provides an axiom for each formula, rather than one axiom quantifying over formulas. The bounding set \(A\) is essential.</p>
+  <p>Write \(B=\{x\in A:\varphi(x,p_1,\ldots,p_k)\}\). The variable for \(B\) is <a href="first-order-languages#free-variables">not free</a> in \(\varphi\). A <strong>schema</strong> provides an axiom for each formula, rather than one axiom quantifying over formulas. The bounding set \(A\) is essential.</p>
   <p>For instance, \(A\cap C\) and \(A\setminus C\) exist by separating elements that belong, or do not belong, to the parameter \(C\). Separation gives definable subsets; it does not assert that every subset can be defined by a formula.</p>
 </section>
 
@@ -83,7 +83,7 @@
   <h2>Replacement collects uniquely specified outputs</h2>
   <p>For each formula \(\psi(x,y,p_1,\ldots,p_k)\), the <strong>Replacement schema</strong> says: if for every \(x\in A\) there is exactly one set \(y\) satisfying \(\psi\), then a set \(B\) exists with</p>
   <div class="math-display">\[ y\in B\quad\Longleftrightarrow\quad\exists x\in A\,\psi(x,y,p_1,\ldots,p_k). \]</div>
-  <p>The parameters are fixed, and the variable for \(B\) is not free in \(\psi\). The formula is a <strong>definable rule</strong>; its full collection of input-output pairs may be a proper class. Replacement says its values on a set-sized domain form a set. Applying Replacement also to \(x\mapsto\langle x,y\rangle\) constructs the restricted graph.</p>
+  <p>The parameters are fixed, and the variable for \(B\) is <a href="first-order-languages#free-variables">not free</a> in \(\psi\). The formula is a <strong>definable rule</strong>; its full collection of input-output pairs may be a proper class. Replacement says its values on a set-sized domain form a set. Applying Replacement also to \(x\mapsto\langle x,y\rangle\) constructs the restricted graph.</p>
   <p>For example, Power Set supplies a unique \(\mathcal P(x)\) for each \(x\in A\). Replacement therefore constructs the family \(\{\mathcal P(x):x\in A\}\) without first requiring a common bound on the outputs. If a common bound is available, Separation may provide another construction.</p>
   <p>Existence and uniqueness are hypotheses to prove. Replacement does not select among several possible outputs. Nor does it collect the outputs of a proper-class domain into a set.</p>
 </section>
