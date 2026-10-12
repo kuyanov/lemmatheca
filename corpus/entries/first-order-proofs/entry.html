@@ -1,0 +1,86 @@
+<section id="derivations-and-theories" data-formal="fod-finite-derivation fod-derivability" data-kind="definition">
+  <h2>Proofs from a theory</h2>
+  <p>Fix a <a href="first-order-languages#signatures">first-order language</a> with equality. A <a href="first-order-structures#theories-and-models">theory</a> \(T\) is a set of sentences in this language; it need not be finite. We write \(T\vdash A\) when a finite natural-deduction proof ends in the sentence \(A\), and every assumption left open belongs to \(T\). The proof may introduce temporary assumptions and discharge them, as in <a href="propositional-proofs#proofs-and-discharge">propositional natural deduction</a>. The notation \(\vdash A\) means that no assumptions remain open.</p>
+  <p>We retain all the <a href="propositional-proofs#deduction-rules">classical propositional rules</a>, now applied to first-order sentences. The rules below add quantifiers and equality. A proof may use extra constant symbols as temporary names for objects. There is always a fresh name available: enlarge the language by an unlimited supply of auxiliary constants. These are ordinary constants within a proof, and the rules specify where their use can end. Conclusions and axioms of \(T\) stay in the original language.</p>
+  <p>In a rule, \(A(x)\) denotes a formula whose only possible free variable is \(x\), with any other named objects represented by constants. The expression \(A(t)\) means its <a href="first-order-languages#substitution">capture-free instance</a> at the closed term \(t\). A closed term contains no free variables. The labels \(I\) and \(E\) stand for <strong>introduction</strong> and <strong>elimination</strong>: they introduce a quantifier into the conclusion or remove one from a premise.</p>
+</section>
+
+<section id="quantifier-instances" data-formal="fod-term-instance fod-universal-elimination fod-existential-introduction fod-retained-constant-witness" data-kind="definition">
+  <h2>Using a universal claim and supplying an existential witness</h2>
+  <div class="math-display">\[\frac{\forall x\,A(x)}{A(t)}\;\forall E
+  \qquad\frac{A(t)}{\exists x\,A(x)}\;\exists I.\]</div>
+  <p>Here \(t\) is any closed term in the language of the proof. Universal elimination uses the claim at the object named by \(t\). Existential introduction supplies that object as a witness. The term may already occur elsewhere in \(A(x)\): from \(R(c,c)\), for example, we may infer \(\exists x\,R(c,x)\). The retained occurrence of \(c\) is part of the formula, not a variable to be bound.</p>
+</section>
+
+<section id="fresh-parameters" data-formal="fod-universal-introduction fod-existential-elimination" data-kind="definition">
+  <h2>Arbitrary objects and temporary witnesses</h2>
+  <div class="math-display">\[\frac{A(c)}{\forall x\,A(x)}\;\forall I
+  \qquad\frac{\exists x\,A(x)\qquad\begin{array}{c}[A(c)]^1\\ \vdots\\ B\end{array}}{B}\;\exists E,1.\]</div>
+  <p>For universal introduction, the constant \(c\) must occur neither in \(A(x)\) nor in any undischarged assumption of the proof of \(A(c)\). The reasoning then treats the object named by \(c\) as arbitrary. The condition permits assumptions about other constants and permits discharged assumptions involving \(c\).</p>
+  <p>For existential elimination, \(c\) must occur neither in \(A(x)\), nor in \(B\), nor in the remaining undischarged assumptions of either premise proof. The displayed occurrences of the temporary assumption \(A(c)\) are discharged. The witness can help establish \(B\), but its name cannot survive in the conclusion or be constrained by an assumption left open. Such a name is also called an <strong>eigenparameter</strong>.</p>
+  <p>The superscript \(1\) labels the discharged assumption; the dots stand for a finite subproof. As in propositional deduction, discharge may remove selected occurrences, including none. When two premise proofs use different open assumptions, combine their contexts by taking their union, subject to the stated freshness conditions.</p>
+</section>
+
+<section id="equality-rules" data-formal="fod-equality-reflexivity fod-equality-substitution fod-equality-symmetry fod-equality-transitivity" data-kind="definition">
+  <h2>Replacing equals by equals</h2>
+  <div class="math-display">\[\frac{}{t=t}\;{=}I
+  \qquad\frac{s=t\qquad A(s)}{A(t)}\;{=}E.\]</div>
+  <p>The terms \(s,t\) are closed, and substitution in \(A(x)\) is capture-free. Equality introduction has no premises. Equality elimination says that a formula remains true when its named object is replaced by an equal object. The reverse direction follows from these same rules: apply elimination to \(s=t\) and \(s=s\), with \(A(x)\) the formula \(x=s\), to obtain \(t=s\).</p>
+  <p>Transitivity also has a short proof. Given \(s=t\) and \(t=u\), apply equality elimination to the formula \(s=x\), using the second equality to replace \(t\) by \(u\) in the first. Thus \(s=t,t=u\vdash s=u\). No special rule for each predicate or function symbol is needed: equality elimination applies to every formula. Replacing finitely many terms by equal terms means applying this rule successively, once for each replacement; the other terms are held fixed at each step.</p>
+</section>
+
+<section id="witness-proof" data-formal="fod-witness-implication" data-kind="lemma">
+  <h2>Passing a witness through an implication</h2>
+  <p>For unary predicate symbols \(P,Q\),</p>
+  <div class="math-display">\[\forall x\,(P(x)\to Q(x)),\quad\exists x\,P(x)
+    \quad\vdash\quad\exists x\,Q(x).\]</div>
+  <p class="proof-label">Proof</p>
+  <p>Choose an auxiliary constant \(c\) absent from both premises and the desired conclusion. Temporarily assume \(P(c)\). Universal elimination on the first premise gives \(P(c)\to Q(c)\); implication elimination gives \(Q(c)\); existential introduction gives \(\exists x\,Q(x)\). Now apply existential elimination to the second premise, discharging \(P(c)\). The conclusion has no occurrence of \(c\), and neither original premise contains it, so all freshness conditions hold. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="proof-operations" data-formal="fod-weakening fod-cut fod-deduction fod-uniform-substitution fod-temporary-parameters" data-kind="lemma">
+  <h2>Combining proofs and discharging a premise</h2>
+  <p>If \(T\subseteq U\) and \(T\vdash A\), then \(U\vdash A\). If \(T\vdash A\) and \(U\cup\{A\}\vdash B\), then \(T\cup U\vdash B\). Finally,</p>
+  <div class="math-display">\[T\cup\{A\}\vdash B\quad\Longleftrightarrow\quad T\vdash A\to B.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>The first assertion merely allows more open assumptions; the original finite proof and its actual open leaves are unchanged. For the second, rename the finitely many auxiliary eigenparameters in the two proofs to avoid clashes. In the proof of \(B\), discharge the open occurrences of \(A\) by implication introduction to get \(A\to B\). Combine this proof with the proof of \(A\), and apply implication elimination. The resulting open leaves belong to \(T\cup U\). For the displayed equivalence, implication introduction gives the forward direction. In the other direction, use \(A\) as an assumption and apply implication elimination. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The renaming changes only the auxiliary names, not the original axioms or conclusion. Temporary auxiliary names may occur internally in a finite proof even when the original language has no constant symbols. If its remaining open assumptions and final conclusion are sentences of the original language, the proof establishes that original-language conclusion; none of the added names may escape into those assumptions or the conclusion. Uniformly substituting terms for auxiliary names is another proof operation: first rename the local eigenparameters away from both the names being replaced and the terms being inserted, then replace the remaining names throughout. Each resulting quantifier rule keeps its freshness condition. A use of one of these derived rules abbreviates the corresponding finite proof-tree transformation.</p>
+</section>
+
+<section id="soundness" data-formal="fod-finite-proof-soundness fod-soundness" data-kind="theorem">
+  <h2>A proof is valid in every model of its assumptions</h2>
+  <div class="statement-box"><p>For every theory \(T\) and sentence \(A\),
+    \[T\vdash A\quad\Longrightarrow\quad T\models A.\]
+    Thus every structure with a nonempty domain satisfying all sentences of \(T\) also satisfies \(A\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Fix a finite derivation. Induct on its construction, proving at each step that every structure satisfying its undischarged assumptions satisfies its conclusion. An assumption is one of those assumptions. The <a href="propositional-proofs#soundness">propositional rule argument</a> applies with the truth of a sentence in a structure in place of its truth under a valuation: conjunction combines or selects true conjuncts, disjunction elimination selects a true branch, and implication introduction considers whether its temporary antecedent is true. Negation introduction and classical contradiction use the impossibility of satisfying \(\bot\); explosion has no structure satisfying its premise. Discharged assumptions are added only inside the corresponding induction hypothesis.</p>
+  <p>For universal elimination, a true universal formula holds at the value of the closed term \(t\); the <a href="first-order-structures#semantic-substitution">substitution lemma</a> identifies that assertion with \(A(t)\). For existential introduction, the value of \(t\) is the required witness.</p>
+  <p>For universal introduction, let \(M\) satisfy the remaining assumptions, and choose any \(m\) in its domain. Change only the interpretation of the fresh constant \(c\) to \(m\). No remaining assumption mentions \(c\), so all remain true. The induction hypothesis makes \(A(c)\) true in the changed structure. Since \(A(x)\) does not mention \(c\), the substitution lemma says that \(A(x)\) holds at \(m\) in the original structure. The object \(m\) was arbitrary, giving \(\forall x\,A(x)\).</p>
+  <p>For existential elimination, the induction hypothesis gives a witness \(m\) for \(\exists x\,A(x)\). Interpret its fresh name \(c\) as \(m\). The remaining assumptions still hold, and the added assumption \(A(c)\) now holds. The induction hypothesis for the witness branch gives \(B\) in this expansion. Because \(B\) does not contain \(c\), it also holds in the original structure.</p>
+  <p>Equality introduction is sound because each term has the same value as itself. In equality elimination, \(s=t\) says that the two terms have the same value; the substitution lemma therefore gives the same truth value to \(A(s)\) and \(A(t)\). All rules preserve truth, completing the induction. Extra constants used in a proof can be interpreted in any nonempty domain, and its original-language assumptions and conclusion keep their original truth values. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="consistency-and-finite-support" data-formal="fod-consistency fod-finite-support fod-finite-consistency fod-model-implies-consistency fod-empty-theory-consistent" data-kind="theorem">
+  <h2>Consistency is a property of finite proofs</h2>
+  <p>A theory \(T\) is <strong>syntactically consistent</strong> if \(T\nvdash\bot\). This is a condition on proofs, whereas <a href="first-order-structures#theories-and-models">satisfiability</a> is the existence of a model. Soundness implies that every satisfiable theory is consistent: a model of \(T\) cannot satisfy \(\bot\).</p>
+  <div class="statement-box"><p>If \(T\vdash A\), some finite subset \(T_0\subseteq T\) already satisfies \(T_0\vdash A\). Consequently, \(T\) is consistent if and only if every finite subset of \(T\) is consistent.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>A derivation is a finite tree, so it has only finitely many open assumption leaves. Let \(T_0\) be the set of sentences on those leaves. The same tree proves \(A\) from \(T_0\). If \(T\) is inconsistent, apply this observation to its proof of \(\bot\) to obtain an inconsistent finite subset. Conversely, a proof of \(\bot\) from a finite subset is also a proof from \(T\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This is a finiteness fact about derivations. It does not yet show that every consistent theory has a model. For example, the empty theory is consistent by soundness: a one-element structure, interpreting every function by its unique possible value and every relation as empty, is a model of its empty set of axioms.</p>
+</section>
+
+<section id="theory-relative-claims" data-formal="fod-theory-implication fod-theory-equivalence fod-schema fod-equivalence-models fod-inconsistent-equivalence" data-kind="definition">
+  <h2>Implication, equivalence, and schemas over a theory</h2>
+  <p>For sentences \(A,B\), saying that <strong>\(A\) implies \(B\) over \(T\)</strong> means \(T\cup\{A\}\vdash B\), equivalently \(T\vdash A\to B\) by <a href="#proof-operations"></a>. Saying they are <strong>equivalent over \(T\)</strong> means that both implications have proofs. Soundness then ensures that every model of \(T\) makes \(A,B\) true or false together.</p>
+  <p>The background theory matters. An implication proved using axioms from \(T\) need not be a theorem with no assumptions. If \(T\) is inconsistent, explosion makes every sentence derivable, so every pair becomes equivalent over \(T\). A claimed implication alone says nothing about whether \(T\) has a model or whether either sentence is derivable from \(T\) without the extra hypothesis.</p>
+  <p>An <strong>axiom schema</strong> specifies a family of sentences, one for each allowed formula. Each instance is an ordinary axiom. For example, the <a href="axiomatic-set-theory#separation">Separation schema</a> in set theory supplies one sentence for each membership formula, universally quantifying its set parameters. This is a family of first-order axioms, not a single first-order axiom quantifying over formulas. A proof from a theory containing the schema still uses only finitely many instances.</p>
+</section>
+
+<section id="freshness-question" data-formal="fod-witness-countermodel fod-witness-not-universal fod-witness-not-named" data-kind="question">
+  <h2>Why can a witness not become an arbitrary object?</h2>
+  <p>From \(\exists x\,P(x)\), may we assume \(P(c)\), infer \(\forall x\,P(x)\), and discharge the witness assumption? May we instead conclude \(P(c)\) itself?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Both proposals violate freshness. Universal introduction is forbidden while the assumption \(P(c)\) remains open, since that assumption contains \(c\). Existential elimination is forbidden when its conclusion contains the witness name \(c\).</p>
+    <p>A two-element model exposes both invalid inferences. Let the domain be \(\{0,1\}\), let \(P\) hold exactly at \(1\), and interpret \(c\) as \(0\). Then \(\exists x\,P(x)\) is true, while \(\forall x\,P(x)\) and \(P(c)\) are false. By <a href="#soundness"></a>, neither conclusion is derivable from that premise. Naming a witness permits reasoning inside its temporary branch; it does not select the value of a previously fixed constant or establish a statement about every object.</p>
+  </div></details>
+</section>

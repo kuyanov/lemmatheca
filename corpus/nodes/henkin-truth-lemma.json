@@ -1,0 +1,14 @@
+{
+  "id": "henkin-truth-lemma",
+  "description": "For a complete consistent Henkin set \\(S\\), a scoped formula evaluated at classes of closed-term representatives holds if and only if its closed instance belongs to \\(S\\). In particular, \\(M_S\\models\\theta\\) if and only if \\(\\theta\\in S\\) for every sentence \\(\\theta\\).",
+  "module": "Lemmatheca.MathematicalLogic.HenkinCompleteness",
+  "declaration": "Lemmatheca.MathematicalLogic.HenkinCompleteness.truth_lemma",
+  "dependencies": [
+    "henkin-universal-membership",
+    "henkin-term-evaluation",
+    "henkin-implication-membership"
+  ],
+  "verified": true,
+  "declaration_line": 179,
+  "signature": "Lemmatheca.MathematicalLogic.HenkinCompleteness.truth_lemma.{u, v} {L : FirstOrder.Language} {S : Set (L.Formula ℕ)}\n  (hS : Lemmatheca.MathematicalLogic.FirstOrderProofs.Consistent S)\n  (hC : Lemmatheca.MathematicalLogic.HenkinCompleteness.Complete S)\n  (hH : Lemmatheca.MathematicalLogic.HenkinCompleteness.Henkin S) {n : ℕ} (φ : L.BoundedFormula ℕ n)\n  (ts : Fin n → L.Term ℕ) :\n  (φ.Realize (Lemmatheca.MathematicalLogic.HenkinCompleteness.nameValue S hS hC) fun i => ⟦ts i⟧) ↔\n    Lemmatheca.MathematicalLogic.HenkinCompleteness.closeSlots φ ts ∈ S"
+}

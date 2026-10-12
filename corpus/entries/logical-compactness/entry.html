@@ -1,0 +1,65 @@
+<section id="finite-satisfiability" data-formal="compact-finite-satisfiability compact-finite-size-fragments compact-infinite-theory-characterization" data-kind="definition">
+  <h2>Testing finitely many requirements at a time</h2>
+  <p>Fix a <a href="henkin-completeness#countable-languages">countable first-order language</a> with equality: its function and relation symbols together form a finite or countable set. All structures have nonempty domains. We use classical set theory with choice in the surrounding mathematics. A <a href="first-order-structures#theories-and-models">theory</a> \(T\) is <strong>finitely satisfiable</strong> if every finite subset \(T_0\subseteq T\) has a model. Different subsets may have different models. Ordinary satisfiability asks for one structure satisfying every member of \(T\) at once.</p>
+  <p>For example, require at least \(n\) distinct elements for each positive integer \(n\). Every finite collection of these requirements holds in a sufficiently large finite set, but no finite set satisfies all of them. An infinite domain can satisfy them all. The question is whether other first-order requirements can pass every finite test and still have no model.</p>
+</section>
+
+<section id="compactness" data-formal="compactness-theorem" data-kind="theorem">
+  <h2>Finite satisfiability gives a model of the whole theory</h2>
+  <div class="statement-box"><p>A theory in a countable first-order language is satisfiable if and only if it is finitely satisfiable.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>A model of \(T\) is a model of every subset. Conversely, suppose every finite subset of \(T\) is satisfiable. By <a href="first-order-proofs#soundness">soundness</a>, each such subset is syntactically consistent. If \(T\) had a proof of \(\bot\), <a href="first-order-proofs#consistency-and-finite-support">finite support</a> would place that proof inside one finite subset, a contradiction. Hence \(T\) is consistent. The <a href="henkin-completeness#countable-model-existence">countable model theorem</a> supplies a model of \(T\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This is the <strong>compactness theorem</strong>. It asserts existence of a common model, not that the models chosen for separate finite tests already agree or can simply be united.</p>
+</section>
+
+<section id="finite-consequence" data-formal="compact-finite-consequence" data-kind="theorem">
+  <h2>A semantic consequence already follows from finitely many axioms</h2>
+  <p>For a theory \(T\) and a sentence \(A\),</p>
+  <div class="math-display">\[T\models A\quad\Longleftrightarrow\quad
+    T_0\models A\text{ for some finite }T_0\subseteq T.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>If \(T\models A\), <a href="henkin-completeness#deductive-completeness">completeness</a> gives \(T\vdash A\). A finite subset \(T_0\) supplies all the open assumptions of that proof. Soundness gives \(T_0\models A\). In the other direction, every model of \(T\) is a model of \(T_0\), so it satisfies \(A\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The finite subset may depend on the conclusion. Compactness does not say that every infinite theory has a single finite subset with exactly the same consequences.</p>
+</section>
+
+<section id="size-sentences" data-formal="elem-at-least-n-sentence elem-at-least-n-truth compact-infinite-theory compact-infinite-theory-characterization" data-kind="definition">
+  <h2>Sentences can impose any fixed lower bound on size</h2>
+  <p>For a positive integer \(n\), let \(\delta_n\) be the sentence</p>
+  <div class="math-display">\[\exists x_0\cdots\exists x_{n-1}
+    \bigwedge_{i&lt;j&lt;n}\neg(x_i=x_j).\]</div>
+  <p>The conjunction has finitely many clauses. When \(n=1\), it is an empty conjunction, meaning truth, so the sentence simply asks for an element. Thus \(M\models\delta_n\) exactly when its domain has at least \(n\) elements: a satisfying tuple is an injection of \(\{0,\ldots,n-1\}\) into the domain, and such an injection supplies a tuple. For convenience, \(\delta_0\) is truth.</p>
+  <p>The theory \(\Delta=\{\delta_n:n\in\mathbb N\}\) therefore holds exactly in infinite domains. A finite domain of size \(m\) fails \(\delta_{m+1}\). In an infinite set, repeatedly choose an element outside the finitely many already chosen; those elements cannot exhaust the set. This gives \(n\) distinct elements for every finite \(n\).</p>
+</section>
+
+<section id="infinite-models" data-formal="compact-infinite-model-from-sizes" data-kind="theorem">
+  <h2>Arbitrarily large finite models give an infinite model</h2>
+  <div class="statement-box"><p>If a theory \(T\) in a countable language has finite models of arbitrarily large size, then it has an infinite model.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Add the size sentences: put \(U=T\cup\Delta\). Given a finite subset \(F\subseteq U\), select for each member either its membership in \(T\) or an index witnessing its membership in \(\Delta\). Only finitely many indices are selected. Let \(N\) be their maximum together with \(1\), which also handles an empty set of indices. Choose a finite model of all of \(T\) with at least \(N\) elements. It satisfies every size sentence selected for \(F\), hence all of \(F\). Compactness gives a model of \(U\). This is a model of \(T\) satisfying all \(\delta_n\), so its domain is infinite. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The same proof only needs models of size at least \(n\) for every finite \(n\); these models need not themselves be finite.</p>
+</section>
+
+<section id="finitude-not-axiomatizable" data-formal="compact-finitude-not-axiomatizable compact-constant-structure compact-exact-size-sentence compact-finite-model-exact-size" data-kind="theorem">
+  <h2>No first-order theory describes exactly the finite structures</h2>
+  <div class="statement-box"><p>In a fixed countable language, there is no theory whose models are all and only the structures with finite nonempty domains.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(T\) did this. There is a structure of every positive finite size: choose an element of the domain, interpret each function as the constant function with that value, and interpret each relation as empty. By the proposed characterization, every such finite structure satisfies \(T\). Therefore \(T\) has arbitrarily large finite models. By <a href="#infinite-models"></a>, it also has an infinite model, contradicting the characterization. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Infinitude is axiomatized by the whole set \(\Delta\). A fixed finite size is also expressible, using \(\delta_n\land\neg\delta_{n+1}\). The obstruction concerns the collection of all finite sizes without a common finite bound.</p>
+</section>
+
+<section id="unnamed-elements" data-formal="compact-unnamed-element compact-successor-natural-structure compact-successor-numeral compact-successor-closed-terms compact-natural-theory-unnamed-model" data-kind="theorem">
+  <h2>An infinite model can be replaced by one with an unnamed element</h2>
+  <p>If a theory \(T\) in a countable language has an infinite model, then it has a model with an element that is not the value of any closed term of that language.</p>
+  <p class="proof-label">Proof</p>
+  <p>Add one new constant \(c\), and consider the theory consisting of \(T\) and the sentences \(c\ne t\) for every original-language closed term \(t\). The expanded language is still countable. Fix an infinite model \(M\) of \(T\). A finite subset of the expanded theory mentions only finitely many such terms. Their values form a finite subset of \(|M|\), so choose an element outside it and interpret \(c\) by that element. This expansion satisfies the finite subset. Compactness gives a model of the whole expanded theory. Forgetting \(c\) gives a model of \(T\); its former value remains a domain element, distinct from every original closed-term value. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>If the original language has no closed terms, the conclusion is immediate: every element is unnamed. Otherwise, having names for every object in one model does not force every model of the same theory to have that property. For example, in the language with a constant \(0\) and a unary symbol \(s\), the natural-number structure has one closed term \(s^n(0)\) for each natural number. Apply the theorem to all sentences true in that structure: another model agrees on those sentences but has an element not denoted by any of these terms.</p>
+</section>
+
+<section id="finite-model-boundary" data-formal="fo-singleton-domain-sentence fo-singleton-domain-truth compact-exact-size-sentence compact-finite-model-exact-size compact-finite-size-fragments compact-infinite-theory-characterization" data-kind="question">
+  <h2>Does compactness forbid a theory with only finite models?</h2>
+  <p>Can a consistent theory have only finite models? Does every finite subset of an infinite theory having a finite model imply that the whole theory has a finite model?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>A theory can have only finite models. For example, \(\{\forall x\forall y\,(x=y)\}\) has exactly one-element domains under our nonempty-domain convention, as shown in <a href="first-order-structures#theories-and-models">the singleton example</a>. More generally, the sentence \(\delta_n\land\neg\delta_{n+1}\) forces exactly \(n\) elements when \(n\ge1\).</p>
+    <p>The theory \(\Delta\) answers the second question negatively. Each finite subset has a finite model, but its full set of size requirements has only infinite models. Compactness guarantees a model, not a finite model.</p>
+  </div></details>
+</section>

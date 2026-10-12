@@ -92,3 +92,11 @@ import Lemmatheca.MathematicalLogic.FirstOrderSyntax
 import Lemmatheca.MathematicalLogic.FirstOrderSemantics
 import Lemmatheca.Entry.FirstOrderLanguages
 import Lemmatheca.Entry.FirstOrderStructures
+import Lemmatheca.MathematicalLogic.FirstOrderProofs
+import Lemmatheca.Entry.FirstOrderProofs
+import Lemmatheca.MathematicalLogic.HenkinCompleteness
+import Lemmatheca.Entry.HenkinCompleteness
+import Lemmatheca.MathematicalLogic.Compactness
+import Lemmatheca.Entry.LogicalCompactness
+import Lemmatheca.MathematicalLogic.ElementarySubmodels
+import Lemmatheca.Entry.ElementarySubmodels

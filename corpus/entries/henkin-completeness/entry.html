@@ -1,0 +1,174 @@
+<section id="countable-languages" data-formal="henkin-countable-language henkin-closed-terms-countable henkin-scoped-formulas-countable" data-kind="definition">
+  <h2>Consistency asks for a model</h2>
+  <p>Throughout this entry, structures have nonempty domains, equality means actual equality, and derivations use the classical <a href="first-order-proofs#derivations-and-theories">first-order calculus</a>. Write \(T\vdash\varphi\) for derivability and \(T\models\varphi\) for truth in every model of the theory \(T\). A theory is <strong>consistent</strong> when \(T\nvdash\bot\). Soundness shows that a theory with a model is consistent. We shall prove the converse.</p>
+  <p>A language is <strong>countable</strong> if its function and relation symbols, with their arities recorded, form a finite or countably infinite set. We assume this from now on. Terms and formulas are finite trees in those symbols and the countable stock of free-variable names. Encoding trees by finite strings over a countable alphabet shows that closed terms, sentences, and formulas with at most one specified free variable form countable sets. One can code a finite string by its finite graph in a countable product, using <a href="finite-and-countable-sets#finite-products">finite products of countable sets</a> and <a href="finite-and-countable-sets#finite-subset-family">finite subsets of a countable set</a>.</p>
+  <p>The <a href="first-order-languages#scoped-formulas">free-variable and placeholder convention</a> remains in force. In expressions such as \(\exists x\,\varphi(x)\), \(x\) labels the single placeholder bound by that quantifier. The notation \(\varphi(t)\) means its capture-safe instance at the closed term \(t\). It is a sentence. A body may ignore the displayed placeholder.</p>
+</section>
+
+<section id="complete-consistent-theories" data-formal="henkin-complete-theory henkin-deductive-closure henkin-no-falsity henkin-negation-membership henkin-conjunction-membership henkin-disjunction-membership henkin-implication-membership" data-kind="lemma">
+  <h2>Deciding every sentence fixes the connective rules</h2>
+  <p>In a fixed language, call a set \(S\) of sentences <strong>complete</strong> if, for every sentence \(\theta\), either \(\theta\in S\) or \(\neg\theta\in S\). This describes the set of sentences, rather than the completeness of a proof system. Suppose \(S\) is both complete and consistent. Then exactly one of \(\theta\) and \(\neg\theta\) belongs to \(S\), and</p>
+  <div class="math-display">\[
+  \begin{aligned}
+    S\vdash\theta&\quad\Longleftrightarrow\quad\theta\in S,\qquad \bot\notin S,\\
+    \neg\theta\in S&\quad\Longleftrightarrow\quad\theta\notin S,\\
+    (\theta\land\eta)\in S&\quad\Longleftrightarrow\quad\theta\in S\text{ and }\eta\in S,\\
+    (\theta\lor\eta)\in S&\quad\Longleftrightarrow\quad\theta\in S\text{ or }\eta\in S,\\
+    (\theta\to\eta)\in S&\quad\Longleftrightarrow\quad\theta\notin S\text{ or }\eta\in S.
+  \end{aligned}
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Membership implies derivability by the assumption rule. If \(S\vdash\theta\) but \(\theta\notin S\), completeness puts \(\neg\theta\) in \(S\), yielding a contradiction. This proves deductive closure. Consistency excludes \(\bot\) and any pair \(\theta,\neg\theta\); completeness then gives the negation law.</p>
+  <p>Conjunction introduction and elimination give its equivalence. Disjunction introduction gives one direction of its equivalence. If neither disjunct belongs to \(S\), both negations do; a disjunction would then give a contradiction by cases. For implication, \(\theta\to\eta\in S\) and \(\theta\in S\) imply \(\eta\in S\). Conversely, if \(\eta\in S\), assume \(\theta\) and repeat \(\eta\); if \(\theta\notin S\), assume \(\theta\) and use \(\neg\theta\in S\) to obtain \(\eta\) by falsity elimination. Discharging the assumption proves the implication in both cases. These are the usual derived rules for our fixed connective abbreviations. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="fresh-constants" data-formal="henkin-conservative-expansion" data-kind="lemma">
+  <h2>New names do not change old derivability</h2>
+  <p>Let \(L^+\) be obtained from \(L\) by adjoining distinct new constants \(d_0,d_1,\ldots\). If \(T\) and \(\theta\) use only \(L\), then \(T\vdash_{L^+}\theta\) implies \(T\vdash_L\theta\). In particular, a consistent \(L\)-theory remains consistent in \(L^+\).</p>
+  <p class="proof-label">Proof</p>
+  <p>A derivation is finite, so only finitely many new constants occur in it. Rename these, and any further temporary constants used in the proof, to distinct fresh auxiliary constants permitted by the calculus over \(L\). This leaves every assumption from \(T\) and the final sentence \(\theta\) unchanged. It commutes with term formation, connectives, and capture-safe instantiation; every line remains a sentence and every instantiating term remains closed.</p>
+  <p>Each rule remains valid. The renaming is injective, so a constant absent from a body's symbols or from undischarged assumptions stays absent after renaming. Thus both quantifier freshness conditions are preserved. Equality replacement remains an instance of the same rule. The transformed tree is an \(L\)-derivation with permitted temporary names, the original assumptions, and the original conclusion. No assertion that a new constant names a genuinely new element was used. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="one-witness" data-formal="henkin-fresh-witness-consistency henkin-nonfresh-witness-counterexample" data-kind="lemma">
+  <h2>One fresh witness axiom preserves consistency</h2>
+  <p>Let \(T\) be consistent, let \(\varphi(x)\) have at most the displayed variable free, and let \(c\) be a constant occurring neither in any sentence of \(T\) nor in \(\varphi(x)\). Then</p>
+  <div class="math-display">\[
+    T\cup\{\exists x\,\varphi(x)\to\varphi(c)\}
+    \quad\text{is consistent.}
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Put \(H=\exists x\,\varphi(x)\to\varphi(c)\). If adding \(H\) produced a contradiction, implication introduction would give \(T\vdash\neg H\). Classical propositional rules then give both \(T\vdash\exists x\,\varphi(x)\) and \(T\vdash\neg\varphi(c)\): the negation of an implication entails its antecedent and the negation of its consequent.</p>
+  <p>The constant \(c\) occurs neither in \(T\) nor in the body \(\neg\varphi(x)\). The actual universal-introduction rule therefore applies to the derivation of \(\neg\varphi(c)\) and gives \(T\vdash\forall x\,\neg\varphi(x)\), contradicting the derived existential sentence. Thus adding \(H\) preserves consistency. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Freshness is essential. If \(T=\{\exists x\,P(x),\neg P(c)\}\), adding \(\exists x\,P(x)\to P(c)\) makes the set inconsistent. The original set has a two-element model in which \(c\) names the element outside \(P\).</p>
+</section>
+
+<section id="henkin-extension" data-formal="henkin-witness-set henkin-consistent-extension" data-kind="theorem">
+  <h2>Give every existential statement a possible witness</h2>
+  <p>A set \(H\) of sentences is a <strong>Henkin set</strong> if, for every body \(\varphi(x)\) with at most its displayed variable free, some constant \(c\) satisfies</p>
+  <div class="math-display">\[
+    (\exists x\,\varphi(x)\to\varphi(c))\in H.
+  \]</div>
+  <p>Every consistent theory \(T\) in a countable language has a consistent Henkin extension in the countable expanded language \(L^+\) of <a href="#fresh-constants"></a>.</p>
+  <p class="proof-label">Proof</p>
+  <p>Enumerate <em>all</em> one-placeholder bodies of \(L^+\) as \(\varphi_0(x),\varphi_1(x),\ldots\). This includes bodies containing the added constants; enumerating only bodies of \(L\) would leave new existential statements untreated. Let \(T_0=T\). At stage \(n\), choose the first \(d_i\) absent from \(\varphi_n\) and from the finitely many witness axioms already added, and call it \(c_n\). Such a constant exists because each of those finitely many expressions contains finitely many symbols. No new constant occurs in the original \(T\). Set</p>
+  <div class="math-display">\[
+    W_n:=\exists x\,\varphi_n(x)\to\varphi_n(c_n),\qquad
+    T_{n+1}:=T_n\cup\{W_n\},\qquad H:=\bigcup_{n&lt;\omega}T_n.
+  \]</div>
+  <p>Conservative expansion makes \(T_0\) consistent, and <a href="#one-witness"></a> proves by induction that every \(T_n\) is consistent. If \(H\) derived a contradiction, that finite derivation would use finitely many assumptions. Each is in some \(T_n\), so all are in one stage, taking the maximum of their finitely many stage numbers. This contradicts that stage's consistency. With no assumptions, any stage suffices. Finally, every listed body has its witness axiom in \(H\), so \(H\) is Henkin. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="lindenbaum-extension" data-formal="henkin-lindenbaum-extension" data-kind="theorem">
+  <h2>Decide every sentence without introducing a contradiction</h2>
+  <p>Every consistent set of sentences in a countable language is contained in a complete consistent set of sentences in the same language. A Henkin set retains its witness axioms under this extension.</p>
+  <p class="proof-label">Proof</p>
+  <p>Let \(H\) be the consistent set to be extended; for the model construction it is the Henkin set just obtained. Enumerate all sentences of its language as \(\theta_0,\theta_1,\ldots\). Starting at \(S_0=H\), define</p>
+  <div class="math-display">\[
+    S_{n+1}:=
+    \begin{cases}
+      S_n\cup\{\theta_n\},&\text{if this set is consistent},\\
+      S_n\cup\{\neg\theta_n\},&\text{otherwise},
+    \end{cases}
+    \qquad S:=\bigcup_{n&lt;\omega}S_n.
+  \]</div>
+  <p>If adding \(\theta_n\) is inconsistent, a derivation of \(\bot\) with that extra assumption yields \(S_n\vdash\neg\theta_n\). Adding that already derivable sentence cannot introduce a contradiction: replace every use of the added assumption by its derivation from \(S_n\). Hence every stage is consistent. The same finite-support argument as in <a href="#henkin-extension"></a> proves consistency of the union. Every sentence or its negation is added at its listed stage, so the union is complete. It contains \(H\) and therefore retains all its witness axioms. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This existence argument uses classical decisions about consistency. It does not supply an algorithm for deciding whether a stage remains consistent.</p>
+</section>
+
+<section id="quantifier-membership" data-formal="henkin-existential-membership henkin-universal-membership" data-kind="lemma">
+  <h2>Quantifiers are decided by closed instances</h2>
+  <p>Let \(S\) be complete, consistent, and Henkin. For every one-placeholder body \(\varphi(x)\),</p>
+  <div class="math-display">\[
+  \begin{aligned}
+    \exists x\,\varphi(x)\in S
+      &\quad\Longleftrightarrow\quad\varphi(t)\in S\text{ for some closed term }t,\\
+    \forall x\,\varphi(x)\in S
+      &\quad\Longleftrightarrow\quad\varphi(t)\in S\text{ for every closed term }t.
+  \end{aligned}
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>If the existential sentence belongs to \(S\), a witness axiom and implication elimination put \(\varphi(c)\) in \(S\). Conversely, any instance gives the existential by introduction. Deductive closure turns each derivability claim into membership.</p>
+  <p>Universal elimination gives every closed instance of a universal sentence. For the reverse direction, suppose \(\forall x\,\varphi(x)\notin S\). Completeness and the classical equivalence \(\neg\forall x\,\varphi(x)\leftrightarrow\exists x\,\neg\varphi(x)\) put the latter existential in \(S\). A witness gives \(\neg\varphi(c)\in S\), so consistency excludes \(\varphi(c)\). Thus not every closed instance belongs to \(S\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The reverse universal implication relies on the witness axioms. In an arbitrary structure, closed terms need not name every element of its domain.</p>
+</section>
+
+<section id="term-quotient" data-formal="henkin-term-equivalence henkin-term-equivalence-laws henkin-function-congruence henkin-relation-congruence henkin-term-model henkin-quotient-interpretation henkin-term-model-nonempty quotient-projection-equality" data-kind="definition">
+  <h2>Elements are terms modulo provable equality</h2>
+  <p>Let \(\operatorname{CT}(L^+)\) be the set of closed terms. For a complete consistent Henkin set \(S\), define</p>
+  <div class="math-display">\[
+    t\sim u\quad\Longleftrightarrow\quad(t=u)\in S
+      \quad\Longleftrightarrow\quad S\vdash t=u.
+  \]</div>
+  <p>Reflexivity follows from equality introduction. Equality replacement gives symmetry by replacing one occurrence of \(t\) in \(t=t\) using \(t=u\), and gives transitivity by replacing \(u\) in \(t=u\) using \(u=v\). Hence \(\sim\) is an equivalence relation. Write \([t]\) for the <a href="equivalence-relations#equivalence-classes">class of a term</a>, and form the domain</p>
+  <div class="math-display">\[
+    M_S:=\operatorname{CT}(L^+)/{\sim}.
+  \]</div>
+  <p>It is nonempty because \([d_0]\) is an element. Give symbols their interpretations by</p>
+  <div class="math-display">\[
+  \begin{aligned}
+    c^{M_S}&:=[c],\\
+    f^{M_S}([t_0],\ldots,[t_{k-1}])&:=[f(t_0,\ldots,t_{k-1})],\\
+    R^{M_S}([t_0],\ldots,[t_{k-1}])
+      &\quad\Longleftrightarrow\quad R(t_0,\ldots,t_{k-1})\in S.
+  \end{aligned}
+  \]</div>
+  <p>These are independent of the representatives. If \(t_i\sim u_i\) for every \(i&lt;k\), equality replacement one coordinate at a time proves \(f(\bar t)=f(\bar u)\) and both implications between \(R(\bar t)\) and \(R(\bar u)\). Deductive closure puts these conclusions in \(S\). Function values therefore have the same class, and relation membership is unchanged. For arity zero there are no coordinates to replace. This is precisely the requirement for <a href="equivalence-relations#rules-on-representatives">defining rules on representatives</a>.</p>
+  <p>Equality in \(M_S\) is actual equality of classes. In particular, \([t]=[u]\) iff \(t\sim u\); it is not a separately chosen relation interpretation.</p>
+</section>
+
+<section id="truth-lemma" data-formal="henkin-term-evaluation henkin-truth-lemma" data-kind="theorem">
+  <h2>The term model makes membership into truth</h2>
+  <p>For every sentence \(\theta\) of \(L^+\),</p>
+  <div class="math-display">\[
+    M_S\models\theta\quad\Longleftrightarrow\quad\theta\in S.
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>First induct on terms: if its variables and placeholders are assigned classes \([t_i]\), a term has value equal to the class of the closed term obtained by substituting those \(t_i\). The variable case is the supplied assignment, and a function application is exactly the defining function clause of <a href="#term-quotient"></a>. In particular, a closed term \(t\) has value \([t]\).</p>
+  <p>For formulas, strengthen the claim to every context size and every assignment of closed-term representatives to its free variables and available placeholders: a scoped formula holds under the corresponding class assignment iff its closed instance belongs to \(S\). Only finitely many free variables occur, so representatives for them can be chosen; the finitely many placeholders also have representatives. This is the form of <a href="first-order-languages#structural-induction">structural induction</a> that handles quantified bodies.</p>
+  <ul>
+    <li>Falsity is false, and \(\bot\notin S\).</li>
+    <li>A closed-instance equality \(t=u\) holds iff \([t]=[u]\), iff \((t=u)\in S\).</li>
+    <li>A relation application follows from the defining relation clause and the term evaluation result.</li>
+    <li>An implication holds iff its antecedent is false or its consequent is true. The induction hypotheses and <a href="#complete-consistent-theories"></a> identify this with membership of the closed-instance implication.</li>
+    <li>A universal formula holds iff its body holds when the new placeholder has any value in \(M_S\). Every such value is \([t]\) for some closed term \(t\). By the strengthened induction hypothesis, this means that every closed instance of its body belongs to \(S\). By <a href="#quantifier-membership"></a>, that is exactly membership of the universal sentence.</li>
+  </ul>
+  <p>These exhaust the primitive constructors. The usual existential and connective cases follow from their fixed abbreviations. Applying the result to a sentence, which has no free variables or unfilled placeholders, gives the claimed equivalence. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="countable-model-existence" data-formal="henkin-term-model-countable henkin-countable-model-existence" data-kind="theorem">
+  <h2>A consistent countable-language theory has a countable model</h2>
+  <div class="statement-box">
+    <p>Every consistent theory in a countable first-order language has a nonempty model with at most countably many elements.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Start with \(T\), form its consistent Henkin extension, and extend that to a complete consistent Henkin set \(S\). The truth lemma gives \(M_S\models S\), hence \(M_S\models T\). To obtain an \(L\)-structure, forget the interpretations of the added constants. This <strong>reduct</strong> leaves the original terms and formulas with exactly the same values and truth conditions, as induction on their construction shows. It therefore still satisfies \(T\).</p>
+  <p>The expanded language is countable, and its closed terms form a countable set. Its quotient has at most countably many elements: from a natural-number coding of terms, assign to each class the least code of a member. Distinct classes have distinct least codes. The class \([d_0]\) ensures the domain is nonempty. Thus the model is finite or countably infinite. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The statement gives a small model, rather than asserting that every model is small. It also does not assert that the constructed model is infinite.</p>
+</section>
+
+<section id="deductive-completeness" data-formal="henkin-deductive-completeness henkin-consequence-finite-support" data-kind="theorem">
+  <h2>Semantic consequence has a finite proof</h2>
+  <div class="statement-box">
+    <p>For a theory \(T\) and sentence \(\theta\) in a countable language,</p>
+    <div class="math-display">\[
+      T\models\theta\quad\Longleftrightarrow\quad T\vdash\theta.
+    \]</div>
+    <p>When this holds, some finite \(T_0\subseteq T\) satisfies both \(T_0\vdash\theta\) and \(T_0\models\theta\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Soundness gives the derivability-to-consequence direction. For the other, suppose \(T\nvdash\theta\). Then \(T\cup\{\neg\theta\}\) is consistent: otherwise the contradiction, with the extra assumption \(\neg\theta\) discharged, gives \(T\vdash\neg\neg\theta\), and classical double-negation elimination gives \(T\vdash\theta\). Countable model existence now gives a model of \(T\) in which \(\theta\) is false. Thus \(T\not\models\theta\).</p>
+  <p>Finally, a derivation uses only finitely many assumptions from \(T\). Their set \(T_0\) proves \(\theta\), and soundness gives \(T_0\models\theta\). This includes an assumption-free derivation, for which \(T_0=\varnothing\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="quotient-question" data-formal="henkin-names-syntactically-distinct henkin-singleton-term-model fo-singleton-domain-sentence fo-singleton-domain-truth" data-kind="question">
+  <h2>Why identify terms, and can the quotient be finite?</h2>
+  <p>Suppose a theory contains the sentence \(c=d\) for distinct constant symbols. Why can we not interpret its elements as closed terms with their literal syntactic equality? What happens when the theory also contains \(\forall x\forall y\,x=y\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The terms \(c\) and \(d\) are different trees. Interpreting each term as itself would therefore make \(c=d\) false. The quotient identifies them because their equality belongs to \(S\).</p>
+      <p>If \(\forall x\forall y\,x=y\) belongs to the theory, universal elimination proves equality of any two closed terms. All terms then have the same class, so the quotient has exactly one element. These axioms are consistent: a one-element structure, with both constants interpreted by its sole element, is a model. There remain infinitely many distinct syntactic constant terms \(d_i\) in the expanded language, but their classes need not be distinct.</p>
+    </div>
+  </details>
+</section>

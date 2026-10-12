@@ -1,0 +1,87 @@
+<section id="substructures" data-formal="elem-substructure fo-nonempty-carrier elem-induced-interpretations elem-positive-natural-substructure elem-natural-one-predecessor elem-positive-one-no-predecessor elem-positive-naturals-not-elementary" data-kind="definition">
+  <h2>Keeping the interpreted operations and relations</h2>
+  <p>Fix a <a href="first-order-structures#structures">nonempty first-order structure</a> \(M\) in a language \(L\). A <strong>substructure</strong> \(A\subseteq M\) has a nonempty domain \(|A|\subseteq|M|\), contains the value of every constant, and is closed under every interpreted function. Functions and relations in \(A\) are the restrictions of those in \(M\). Thus, for a \(k\)-ary relation symbol \(R\),</p>
+  <div class="math-display">\[R^A=R^M\cap|A|^k.\]</div>
+  <p>For a function symbol \(f\), closure says that \(f^M(a_0,\ldots,a_{k-1})\in|A|\) whenever all the arguments belong to \(|A|\), and its value in \(A\) is the same element. A zero-argument function is a constant, so this condition includes constants.</p>
+  <p>In a language with just the strict-order relation \(&lt;\), the positive natural numbers form a substructure of \((\mathbb N,&lt;)\). However, the formula \(\exists y\,(y&lt;x)\) is true at \(x=1\) in \(\mathbb N\), using the witness \(0\), and false in the positive-natural substructure. Restricting the domain can remove witnesses.</p>
+</section>
+
+<section id="quantifier-free-agreement" data-formal="elem-quantifier-free fo-term-isomorphism-invariance elem-quantifier-free-agreement" data-kind="lemma">
+  <h2>What a substructure already preserves</h2>
+  <p>If \(A\subseteq M\), terms evaluated at elements of \(A\) have the same values in both structures. Every <strong>quantifier-free formula</strong>, meaning a formula built without quantifiers, also has the same truth value at such parameters.</p>
+  <p class="proof-label">Proof</p>
+  <p>Induct on terms. A variable has the specified value in \(A\), and a function applied to equal argument values has the same value by restriction. Closure ensures that this value stays in \(A\). Equality and relation formulas therefore agree. The clauses for the logical connectives then preserve agreement by induction. No quantifier clause is needed. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The example in <a href="#substructures"></a> shows why the conclusion cannot simply be extended to all formulas.</p>
+</section>
+
+<section id="elementary-substructures" data-formal="elem-elementary-substructure elem-elementary-submodel elem-elementary-equivalence elem-elementary-sentences elem-elementary-theories" data-kind="definition">
+  <h2>Agreement for every formula with parameters</h2>
+  <p>A substructure \(A\subseteq M\) is an <strong>elementary substructure</strong>, written \(A\preccurlyeq M\), if for every formula \(\varphi(x_0,\ldots,x_{n-1})\) and every tuple \(\bar a\in|A|^n\),</p>
+  <div class="math-display">\[A\models\varphi[\bar a]\quad\Longleftrightarrow\quad M\models\varphi[\bar a].\]</div>
+  <p>The brackets specify the values of all free variables occurring in the formula, using the <a href="first-order-structures#satisfaction">satisfaction convention</a>. Bound variables still range over the domain of the structure in which the formula is evaluated. We also call \(A\) an <strong>elementary submodel</strong> of \(M\), and \(M\) an <strong>elementary extension</strong> of \(A\).</p>
+  <p>Taking \(n=0\) gives agreement on every sentence. Hence \(A\) and \(M\) satisfy exactly the same theories. Structures agreeing on all sentences are called <strong>elementarily equivalent</strong>; elementarity of an inclusion requires the stronger agreement with parameters. If \(A\preccurlyeq M\), then \(A\) and \(M\) need not have the same cardinality.</p>
+</section>
+
+<section id="elementary-embeddings" data-formal="elem-embedding elem-embedding-injective elem-embedding-functions elem-embedding-relations elem-embedding-elementary-image elem-embedding-image-isomorphism elem-isomorphism-elementary elem-elementary-inclusion elem-embedding-identity elem-embedding-composition elem-embedding-sentences" data-kind="definition">
+  <h2>Transporting parameters by an elementary embedding</h2>
+  <p>A map \(h:|A|\to|M|\) is an <strong>elementary embedding</strong> if, for every formula and parameter tuple,</p>
+  <div class="math-display">\[A\models\varphi[\bar a]\quad\Longleftrightarrow\quad M\models\varphi[h(\bar a)].\]</div>
+  <p>Here \(h(\bar a)\) means apply \(h\) to each coordinate. This condition implies injectivity: apply it to \(x_0=x_1\). It also preserves and reflects relations, by applying it to relation formulas. Applying it to \(y=f(x_0,\ldots,x_{k-1})\), with \(y\) assigned the function value in \(A\), gives</p>
+  <div class="math-display">\[h(f^A(\bar a))=f^M(h(\bar a)).\]</div>
+  <p>Thus the image is a substructure, and \(h\) is an isomorphism onto it. The image is elementary, using <a href="first-order-structures#isomorphism-invariance">isomorphism invariance</a>. Conversely, an isomorphism onto an elementary substructure gives an elementary embedding. In particular, the inclusion of an elementary substructure is elementary, and every isomorphism is elementary.</p>
+  <p>The identity is elementary. A composite of elementary embeddings is elementary by composing their formula equivalences. Taking sentences also shows that an elementary embedding makes its source and target elementarily equivalent.</p>
+</section>
+
+<section id="tarski-vaught" data-formal="elem-tarski-vaught-sufficient elem-tarski-vaught-necessary" data-kind="theorem">
+  <h2>The Tarski–Vaught witness criterion</h2>
+  <div class="statement-box">
+    <p>A nonempty substructure \(A\subseteq M\) is elementary if and only if the following holds: whenever \(\bar a\) is a finite tuple from \(A\) and</p>
+    <div class="math-display">\[M\models\exists y\,\psi[\bar a,y],\]</div>
+    <p>there is \(b\in|A|\) such that \(M\models\psi[\bar a,b]\). The formula \(\psi\) may contain further quantifiers. All truth assertions in this witness condition concern the ambient structure \(M\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>If \(A\preccurlyeq M\), the existential formula is true in \(A\). Choose its witness \(b\in|A|\), then use elementarity once more on the body to obtain \(M\models\psi[\bar a,b]\).</p>
+  <p>Conversely, assume the witness condition. Induct on formulas to prove agreement in the two structures. The atomic cases and logical connectives are as in <a href="#quantifier-free-agreement"></a>. For an existential formula, a witness in \(A\) satisfies the body in \(M\) by induction, so truth in \(A\) implies truth in \(M\). In the other direction, the witness condition supplies \(b\in|A|\) satisfying the body in \(M\), and induction makes the body true in \(A\). This proves existential agreement. The universal case follows from \(\forall y\,\chi\) being equivalent to \(\neg\exists y\,\neg\chi\), or by the same argument applied to a counterexample. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="selected-witnesses" data-formal="elem-selected-witness elem-selected-witness-satisfies elem-selected-witness-fallback elem-witness-function-closure" data-kind="definition">
+  <h2>Choosing functions that supply witnesses</h2>
+  <p>We work in the surrounding mathematics with the axiom of choice. Choose \(m_*\in|M|\). For every formula \(\psi(\bar x,y)\), choose a function \(w_\psi:|M|^n\to|M|\) such that</p>
+  <div class="math-display">\[M\models\exists y\,\psi[\bar a,y]\quad\Longrightarrow\quad M\models\psi[\bar a,w_\psi(\bar a)].\]</div>
+  <p>If no witness exists for a tuple, set the value to \(m_*\). These <strong>selected witness functions</strong>, often called Skolem functions for \(M\), need not be definable by formulas of \(L\). They are chosen functions used in our construction, rather than an assertion about which axioms \(M\) satisfies.</p>
+  <p>If a nonempty subset is closed under these functions, it contains all constants and is closed under the original functions as well. For a constant use the formula \(y=c\), whose unique witness is \(c^M\). For an interpreted function use \(y=f(\bar x)\), whose unique witness at \(\bar a\) is \(f^M(\bar a)\).</p>
+</section>
+
+<section id="witness-closure" data-formal="elem-witness-stages elem-witness-hull elem-witness-hull-contains elem-witness-hull-nonempty elem-finite-tuple-stage elem-witness-hull-closed elem-witness-hull-elementary" data-kind="lemma">
+  <h2>Closing a prescribed set under witnesses</h2>
+  <p>Given \(X\subseteq|M|\), put \(X_0=X\cup\{m_*\}\), and recursively define</p>
+  <div class="math-display">\[X_{r+1}=X_r\cup\{w_\psi(\bar a):\psi(\bar x,y)\text{ is an }L\text{-formula and }\bar a\in X_r^n\}.\]</div>
+  <p>Then \(A=\bigcup_{r&lt;\omega}X_r\) is the domain of an elementary substructure of \(M\) containing \(X\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The seed makes \(A\) nonempty. Every finite tuple from \(A\) lies in one stage: take the largest of the finitely many indices at which its coordinates enter. The empty tuple is available at every stage. Its selected witness therefore belongs to the next stage, so \(A\) is closed under every witness function. By <a href="#selected-witnesses"></a> it is a substructure. For any existential formula true in \(M\) with parameters in \(A\), its selected witness lies in \(A\). Now apply <a href="#tarski-vaught"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="countable-submodels" data-formal="elem-countable-submodel elem-real-order-countable-seed elem-real-order-countable-submodel" data-kind="theorem">
+  <h2>A countable language gives countable elementary submodels</h2>
+  <div class="statement-box"><p>If \(L\) has at most countably many nonlogical symbols, \(M\) is a nonempty \(L\)-structure, and \(X\subseteq|M|\) is countable, then some countable elementary substructure \(A\preccurlyeq M\) contains \(X\). Here countable includes finite.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Use <a href="#witness-closure"></a>. The variables, logical symbols and nonlogical symbols form a countable alphabet. Its finite strings form a countable set: each fixed-length set is countable by <a href="finite-and-countable-sets#finite-products">finite products</a>, and take a <a href="infinite-cardinal-arithmetic#countable-unions">countable union</a> over lengths. Formulas, with their finite lists of parameter variables, form a subset of this set.</p>
+  <p>Inductively, if \(X_r\) is countable, its finite tuples form a countable set by the same argument. The requests consisting of a formula and a tuple are countable, and their selected witnesses form a countable image. Thus \(X_{r+1}\) is countable. Finally \(A\) is a countable union of countable sets. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For example, apply this to the real-number strict-order structure and the prescribed set \(X=\mathbb Q\cup\{\pi\}\). There is a countable elementary substructure whose domain contains those numbers. The theorem does not identify that domain with \(X\): additional witnesses may have to be included.</p>
+</section>
+
+<section id="downward-size-bound" data-formal="elem-downward-size-bound elem-downward-exact-size" data-kind="theorem">
+  <h2>The general downward Löwenheim–Skolem bound</h2>
+  <div class="statement-box"><p>Let \(|L|\) denote the cardinality of the set of nonlogical symbols. For every nonempty \(L\)-structure \(M\) and \(X\subseteq|M|\), there is \(A\preccurlyeq M\) containing \(X\) with</p><div class="math-display">\[|A|\le\lambda:=\max(\aleph_0,|L|,|X|).\]</div><p>More precisely, if \(\lambda\le\kappa\le|M|\), there is such an \(A\) with \(|A|=\kappa\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>The witness-closure construction still works. Since \(\lambda\) is infinite, an alphabet of size at most \(\lambda\) has at most \(\lambda\) finite strings: for each positive finite length use <a href="infinite-cardinal-arithmetic#finite-powers">finite powers of an infinite cardinal</a>, then use \(\lambda\cdot\aleph_0=\lambda\). The empty string contributes one element. Thus there are at most \(\lambda\) formulas and parameter-variable lists.</p>
+  <p>If \(|X_r|\le\lambda\), there are at most \(\lambda\) finite tuples from \(X_r\). Consequently there are at most \(\lambda\cdot\lambda=\lambda\) witness requests, and at most \(\lambda\) chosen values. The same bound holds at the next stage and at the countable union of all stages. This proves the upper bound.</p>
+  <p>For the exact-size assertion, choose \(Y\subseteq|M|\) of size \(\kappa\), possible because \(\kappa\le|M|\). Start the construction from \(X\cup Y\). Its size is at most \(\kappa\), so the upper-bound argument gives \(|A|\le\kappa\), while \(Y\subseteq A\) gives \(\kappa\le|A|\). Hence \(|A|=\kappa\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="finite-submodel-question" data-formal="elem-at-least-n-sentence elem-at-least-n-truth elem-infinite-equivalence" data-kind="question">
+  <h2>Could the elementary submodel of an infinite structure be finite?</h2>
+  <p>The countable theorem allows finite domains in its conclusion. If \(M\) is infinite, could its elementary substructure \(A\) be finite?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. For each positive integer \(n\), the sentence</p><div class="math-display">\[\exists x_0\cdots\exists x_{n-1}\;\bigwedge_{i&lt;j&lt;n}x_i\ne x_j\]</div><p>says that there are at least \(n\) distinct elements. The conjunction is true when it is empty. An infinite \(M\) satisfies every such sentence, so an elementary \(A\) does too. If \(|A|=k\), the sentence for \(n=k+1\) fails by the finite pigeonhole principle, a contradiction. Therefore a countable elementary substructure of an infinite structure is countably infinite.</p></div></details>
+</section>
+
