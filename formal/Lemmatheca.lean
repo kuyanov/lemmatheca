@@ -90,8 +90,11 @@ import Lemmatheca.MathematicalLogic.Propositional
 import Lemmatheca.MathematicalLogic.Deduction
 import Lemmatheca.MathematicalLogic.FirstOrderSyntax
 import Lemmatheca.MathematicalLogic.FirstOrderSemantics
+import Lemmatheca.MathematicalLogic.BasicStructures
 import Lemmatheca.Entry.FirstOrderLanguages
 import Lemmatheca.Entry.FirstOrderStructures
+import Lemmatheca.MathematicalLogic.FirstOrderProofSyntax
+import Lemmatheca.MathematicalLogic.FirstOrderProofCore
 import Lemmatheca.MathematicalLogic.FirstOrderProofs
 import Lemmatheca.Entry.FirstOrderProofs
 import Lemmatheca.MathematicalLogic.HenkinCompleteness
@@ -100,3 +103,11 @@ import Lemmatheca.MathematicalLogic.Compactness
 import Lemmatheca.Entry.LogicalCompactness
 import Lemmatheca.MathematicalLogic.ElementarySubmodels
 import Lemmatheca.Entry.ElementarySubmodels
+import Lemmatheca.MathematicalLogic.Definability
+import Lemmatheca.Entry.DefinabilityAndAutomorphisms
+import Lemmatheca.MathematicalLogic.PropositionalNormalForms
+import Lemmatheca.Entry.PropositionalNormalForms
+import Lemmatheca.MathematicalLogic.PropositionalCompactness
+import Lemmatheca.Entry.PropositionalCompactness
+import Lemmatheca.MathematicalLogic.FirstOrderNormalForms
+import Lemmatheca.Entry.FirstOrderNormalForms

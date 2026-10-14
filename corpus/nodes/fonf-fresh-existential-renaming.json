@@ -1,0 +1,13 @@
+{
+  "id": "fonf-fresh-existential-renaming",
+  "description": "If distinct free names \\(u,v\\) are used for the body \\(\\theta\\) and \\(v\\notin\\operatorname{FV}(\\theta)\\), abstracting \\(u\\) and existentially quantifying is equivalent to capture-safe replacement of \\(u\\) by \\(v\\) followed by abstraction and existential quantification of \\(v\\).",
+  "module": "Lemmatheca.MathematicalLogic.FirstOrderNormalForms",
+  "declaration": "Lemmatheca.MathematicalLogic.FirstOrderNormalForms.fresh_ex_renaming",
+  "dependencies": [
+    "fo-formula-semantic-substitution",
+    "fo-formula-assignment-agreement"
+  ],
+  "verified": true,
+  "declaration_line": 97,
+  "signature": "Lemmatheca.MathematicalLogic.FirstOrderNormalForms.fresh_ex_renaming.{u, v, u'} {L : FirstOrder.Language} {α : Type u'}\n  [DecidableEq α] (φ : L.Formula α) (x y : α) (hne : x ≠ y)\n  (hy : y ∉ FirstOrder.Language.BoundedFormula.freeVarFinset φ) :\n  ∅.Iff (Lemmatheca.MathematicalLogic.FirstOrderNormalForms.bindVar φ x).ex\n    (Lemmatheca.MathematicalLogic.FirstOrderNormalForms.bindVar\n        (Lemmatheca.MathematicalLogic.FirstOrderNormalForms.renameVar φ x y) y).ex"
+}

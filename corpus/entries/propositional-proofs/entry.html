@@ -5,7 +5,7 @@
   <p>Here is a proof using conjunction elimination and implication introduction:</p>
   <div class="math-display">\[\frac{\dfrac{[A\land B]^1}{A}\;\land E_1}{(A\land B)\to A}\;\to I,1.\]</div>
   <p>The bracketed formula is a temporary assumption. The conjunction-elimination step extracts \(A\); implication introduction then <strong>discharges</strong> the assumption marked \(1\). The final conclusion therefore has no open assumptions. Discharge means that the conclusion no longer depends on the marked assumption, because that dependence has been incorporated into an implication.</p>
-  <p>We use the finite <a href="propositional-logic#formulas">propositional formulas</a> built from atoms, \(\bot\), negation, conjunction, disjunction, and implication. A <strong>derivation</strong> is a finite tree built from assumptions and the rules in <a href="#deduction-rules"></a>. A finite set \(\Gamma\) is a <strong>context</strong> of allowed open assumptions. Write \(\Gamma\vdash A\) when a derivation concludes \(A\) and every assumption leaf is either discharged or belongs to \(\Gamma\). Write \(\vdash A\) for \(\varnothing\vdash A\). The context need not contain an assumption that the proof actually uses.</p>
+  <p>We use the finite <a href="propositional-logic#formulas">propositional formulas</a> built from atoms, \(\bot\), negation, conjunction, disjunction, and implication. A <strong>derivation</strong> is a finite tree built from assumptions and the rules in <a href="#deduction-rules"></a>. A finite set \(\Gamma\) is a <strong>context</strong> of allowed open assumptions. Write \(\Gamma\vdash A\) when a derivation concludes \(A\) and every assumption leaf is either discharged or belongs to \(\Gamma\). Write \(\vdash A\) for \(\varnothing\vdash A\). The proof need not use every assumption in the context.</p>
 </section>
 
 <section id="deduction-rules" data-formal="nd-derivability nd-explosion" data-kind="definition">
@@ -64,6 +64,7 @@
   <p>For \(B\land C\), if both conjuncts are true, combine their derivations. Otherwise at least one is false. Assume the conjunction, extract that conjunct, and contradict its negation supplied by induction; discharge the conjunction to derive \(\neg(B\land C)\).</p>
   <p>For \(B\lor C\), a true disjunct supplies the disjunction. If both are false, induction supplies \(\neg B\) and \(\neg C\). Assume \(B\lor C\), then use disjunction elimination: the \(B\)-branch contradicts \(\neg B\), and the \(C\)-branch contradicts \(\neg C\). Both conclude \(\bot\), so negation introduction gives \(\neg(B\lor C)\).</p>
   <p>For \(B\to C\), if \(C\) is true, derive it and introduce the implication, allowing the temporary \(B\) to be unused. If \(B\) is false, induction supplies \(\neg B\); assuming \(B\) gives a contradiction, explosion gives \(C\), and implication introduction discharges \(B\). These cover every true implication. In the false case, \(B\) is true and \(C\) false. Assume \(B\to C\), use the derived \(B\) to obtain \(C\), and contradict the derived \(\neg C\). Negation introduction then gives \(\neg(B\to C)\). Any derivation used inside an enlarged branch is justified by weakening. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The conjunction selecting one assignment is developed separately in <a href="propositional-normal-forms#row-formulas">truth-row formulas</a>.</p>
 </section>
 
 <section id="finite-case-elimination" data-formal="nd-finite-case-elimination" data-kind="lemma">
@@ -81,12 +82,14 @@
   <p>Soundness gives one direction. For the other, assume \(\Gamma\models C\). Let \(S\) contain all atoms occurring in \(C\) or in a member of \(\Gamma\); this set is finite because the context and every formula are finite. Fix a valuation \(v\).</p>
   <p>If all premises in \(\Gamma\) are true under \(v\), then \(C\) is true, and <a href="#signed-valuations"></a> gives \(L(S,v)\vdash C\). Weaken to \(\Gamma\cup L(S,v)\). If some premise \(B\in\Gamma\) is false, the same lemma gives \(L(S,v)\vdash\neg B\). In the enlarged context \(B\) is also an assumption, so negation elimination gives \(\bot\), and explosion gives \(C\). Thus every valuation supplies \(\Gamma\cup L(S,v)\vdash C\). <a href="#finite-case-elimination"></a> removes the signed assumptions and yields \(\Gamma\vdash C\). The empty-context case is the tautology assertion. <span class="qed" aria-label="End of proof">□</span></p>
   <p>The argument uses a finite truth table. It establishes completeness for finite premises; no assertion about infinite-premise compactness or first-order completeness is needed.</p>
+  <p>For arbitrary premise sets, <a href="propositional-compactness#strong-completeness">strong completeness</a> adds a compactness argument to this finite theorem.</p>
 </section>
 
 <section id="consistency" data-formal="nd-consistency prop-satisfiable nd-consistency-satisfiability" data-kind="definition">
   <h2>Consistency and satisfiability meet after completeness</h2>
   <p>A finite context \(\Gamma\) is <strong>consistent</strong> if \(\Gamma\nvdash\bot\). It is <strong>satisfiable</strong> if some valuation makes every member true. These definitions describe different objects: consistency concerns the absence of a derivation, while satisfiability concerns the existence of a valuation.</p>
   <p>For finite contexts they are equivalent. A satisfying valuation rules out a derivation of \(\bot\) by soundness. Conversely, if no valuation satisfies \(\Gamma\), then every valuation satisfying it would make \(\bot\) true, vacuously; thus \(\Gamma\models\bot\). Completeness gives \(\Gamma\vdash\bot\), so \(\Gamma\) is inconsistent. Taking the contrapositive proves the other direction.</p>
+  <p>The <a href="propositional-compactness#consistency-satisfiability">corresponding equivalence for infinite theories</a> uses the same finite derivations.</p>
 </section>
 
 <section id="empty-and-inconsistent-premises" data-formal="nd-empty-context-consistent nd-contradictory-context nd-explosion nd-soundness" data-kind="question">

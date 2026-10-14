@@ -1,4 +1,4 @@
-import Lemmatheca.MathematicalLogic.FirstOrderSemantics
+import Lemmatheca.MathematicalLogic.BasicStructures
 import Lemmatheca.Entry.FirstOrderLanguages
 import Lean.Elab.Tactic.Omega
 
@@ -9,15 +9,11 @@ namespace Lemmatheca.Entry.FirstOrderStructures
 open FirstOrder FirstOrder.Language
 open Lemmatheca.MathematicalLogic.FirstOrderSyntax
 open Lemmatheca.MathematicalLogic.FirstOrderSemantics
+open Lemmatheca.MathematicalLogic.BasicStructures
 open Lemmatheca.Entry.FirstOrderLanguages
 
-instance natStrictStructure : binaryRelLanguage.Structure ℕ :=
-  binaryRelStructure ℕ (· < ·)
-
-instance twoStrictStructure : binaryRelLanguage.Structure (Fin 2) :=
+local instance twoStrictStructure : binaryRelLanguage.Structure (Fin 2) :=
   binaryRelStructure (Fin 2) (· < ·)
-
-def strictRel : binaryRelLanguage.Relations 2 := .rel
 
 theorem nat_parameterHasSuccessor (a : ℕ → ℕ) :
     (parameterHasSuccessor strictRel).Realize a := by
@@ -85,8 +81,6 @@ theorem doubleUnary_realize {L : Language} {M : Type*} [L.Structure M]
     (s.apply₁ (s.apply₁ (.var 0 : L.Term ℕ))).realize a =
       Structure.funMap s ![Structure.funMap s ![a 0] ] := by
   simp
-
-instance emptyStructure : Language.empty.Structure Empty where
 
 theorem empty_existsSelfEqual_false : ¬ Empty ⊨ existsSelfEqual Language.empty := by
   rw [existsSelfEqual_realize]

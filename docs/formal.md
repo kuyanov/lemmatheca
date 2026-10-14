@@ -99,6 +99,16 @@ the GitHub review, and check domains, quantifiers, conventions, and assumptions.
 Several nodes may collectively cover a block, and one node may serve several blocks.
 See the [mapping contract](corpus.md#block-to-node-mapping).
 
+For a proof calculus, compare the primitive rules of the human and formal systems.
+An operation made a constructor of the formal proof type has not thereby been
+proved admissible in the human system. Derived-rule and conservative-expansion
+claims require syntactic transformations into proofs using the stated basic rules.
+If an extended proof representation is used, supply this translation before
+claiming completeness for the basic calculus. Soundness of the extension alone
+does not provide it. Do not use the completeness theorem being constructed to
+justify a syntactic step in its own proof. Distinguish substitution of free names
+from instantiation of quantified placeholders, and define both operations when used.
+
 `dependencies` contains direct proof-planning hints. It is not a reading order,
 a list of every concept in a statement, or an extracted Lean dependency graph.
 Keep useful prerequisites without cycles or their transitive closure.

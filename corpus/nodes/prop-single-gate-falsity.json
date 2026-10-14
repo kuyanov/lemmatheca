@@ -1,0 +1,10 @@
+{
+  "id": "prop-single-gate-falsity",
+  "description": "Given one input, \\(T=p\\uparrow(p\\uparrow p)\\) is always true and \\(T\\uparrow T\\) is always false, while \\(F=p\\downarrow(p\\downarrow p)\\) is always false and \\(F\\downarrow F\\) is always true; these witnesses use no constants.",
+  "module": "Lemmatheca.MathematicalLogic.PropositionalNormalForms",
+  "declaration": "Lemmatheca.MathematicalLogic.gate_constant_witnesses",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 384,
+  "signature": "Lemmatheca.MathematicalLogic.gate_constant_witnesses.{u} {α : Type u} (a : α)\n  (v : Lemmatheca.MathematicalLogic.Valuation α) :\n  have p := Lemmatheca.MathematicalLogic.SingleGateFormula.atom a;\n  have T := p.gate (Lemmatheca.MathematicalLogic.gateNeg p);\n  Lemmatheca.MathematicalLogic.gateEval Lemmatheca.MathematicalLogic.GateKind.nand v T = true ∧\n    Lemmatheca.MathematicalLogic.gateEval Lemmatheca.MathematicalLogic.GateKind.nand v (T.gate T) = false ∧\n      Lemmatheca.MathematicalLogic.gateEval Lemmatheca.MathematicalLogic.GateKind.nor v T = false ∧\n        Lemmatheca.MathematicalLogic.gateEval Lemmatheca.MathematicalLogic.GateKind.nor v (T.gate T) = true"
+}

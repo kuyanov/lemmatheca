@@ -70,6 +70,13 @@
   <p>For a single replacement \([t/x_i]\), choose \(\sigma(x_i)=t\) and \(\sigma(x_j)=x_j\) for \(j\ne i\). For example, substituting \(s(x_1)\) for \(x_0\) in \(s(s(x_0))\) gives \(s(s(s(x_1)))\). Substitution is simultaneous: variables inside a replacement term are not replaced again in the same operation.</p>
 </section>
 
+<section id="bound-slot-instantiation" data-kind="definition" data-formal="fod-term-instance">
+  <h2>Opening a quantified body with a term</h2>
+  <p>Let \(A\) be a scoped formula at context size one, with available placeholder \(z_0\), and let \(t\) be a term containing no placeholders. The <strong>instance</strong> \(A(t)\) is the complete formula obtained by replacing every occurrence of that available \(z_0\) by \(t\). Leave the original free variables alone. Recurse through terms and connectives; inside nested quantified bodies, shift every remaining placeholder \(z_{j+1}\), together with its binder, down to \(z_j\). Removing the outer slot reduces every context size by one. Insert \(t\) as it stands, without making further replacements inside it.</p>
+  <p>For example, opening the body \(R(c,z_0)\) at \(t\) gives \(R(c,t)\): the retained constant \(c\) is unchanged. Opening the one-slot body \(\forall z_1\,R(z_0,z_1)\) gives \(\forall z_0\,R(t,z_0)\). Since \(t\) has no placeholders, none of its free variables can be captured by an inner quantifier. If \(A\) has no free variables and \(t\) is closed, then \(A(t)\) is a sentence.</p>
+  <p>This operation removes a placeholder slot; the <a href="#substitution">free-variable substitution</a> defined above preserves all such slots. When writing \(\forall x\,A(x)\) or \(\exists x\,A(x)\), we may use \(x\) as a readable label for the bound slot \(z_0\). In that notation \(A(x)\) denotes the one-slot body, and \(A(t)\) denotes its instance just defined.</p>
+</section>
+
 <section id="substitution-support" data-kind="theorem" data-formal="fo-term-substitution-support fo-scoped-term-substitution-support fo-formula-substitution-support fo-parameter-successor-substituted-support">
   <h2>Which free variables remain after substitution?</h2>
   <div class="statement-box">
@@ -95,4 +102,5 @@
       <p>In notation that uses one pool of names, substitution must either require the replacement to be <em>free for</em> the variable—none of its variables become bound—or first rename conflicting bound occurrences consistently. We chose disjoint free names and scoped placeholders so this side condition is built into the allowed replacements. We have not defined character-by-character substitution on arbitrary named strings.</p>
     </div>
   </details>
+  <p>The conditions for changing a bound variable are proved in <a href="first-order-normal-forms#fresh-renaming">fresh renaming</a>.</p>
 </section>

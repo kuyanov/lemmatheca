@@ -1,0 +1,88 @@
+<section id="infinite-theories" data-formal="prop-theory-model prop-theory-satisfiable prop-theory-finitely-satisfiable prop-theory-entails prop-positive-theory prop-positive-theory-all-true prop-atom-support prop-eval-locality" data-kind="definition">
+  <h2>Infinitely many premises still ask for one valuation</h2>
+  <p>Suppose there is an atom \(p_n\) for each natural number \(n\), and we require every \(p_n\) to be true. Any finite selection of these requirements can be met. Here the entire collection can be met too: give every atom value true. Compactness says that this passage from finite tests to one simultaneous solution works for every collection of ordinary propositional formulas.</p>
+  <p>Let \(P\) be any set of atoms. Use the <a href="propositional-logic#formulas">finite propositional formulas</a> formed from atoms, \(\bot\), negation, conjunction, disjunction and implication. A <strong>theory</strong> \(\Gamma\) is a set of these formulas, with no finiteness assumption. A <a href="propositional-logic#valuations">valuation</a> \(v:P\to\{0,1\}\) satisfies \(\Gamma\) when it makes every member true. The theory is <strong>satisfiable</strong> when such a valuation exists, and <strong>finitely satisfiable</strong> when each finite subset is satisfiable.</p>
+  <p>Write \(\Gamma\models C\) when every valuation satisfying \(\Gamma\) also makes \(C\) true. These definitions extend the <a href="propositional-logic#semantic-notions">finite-context notions</a>. Each formula still has only finitely many atoms. Write \(\operatorname{At}(A)\) for this finite support; its truth value <a href="propositional-logic#locality">depends only on those atoms</a>. We work in ordinary classical mathematics with the axiom of choice.</p>
+</section>
+
+<section id="finite-atom-stock" data-formal="prop-finite-atom-stock-compactness prop-truth-table-rows partition-relations-function-cardinality prop-row-extension prop-verum prop-verum-tautology" data-kind="lemma">
+  <h2>Finitely many atoms give finitely many possible solutions</h2>
+  <p>Let \(F\subseteq P\) be finite, and let \(\Delta\) be a finitely satisfiable set of formulas whose atoms all lie in \(F\). Then some assignment \(r:F\to\{0,1\}\) makes every formula in \(\Delta\) true.</p>
+  <p class="proof-label">Proof</p>
+  <p>There are exactly \(2^{|F|}\) assignments on \(F\). Suppose none satisfies \(\Delta\). For each assignment \(r\), select a formula \(A_r\in\Delta\) that it makes false. The set of selected formulas is finite. Finite satisfiability gives a valuation satisfying all of them. Its restriction to \(F\) is one of the assignments, say \(r_0\). By locality it makes \(A_{r_0}\) true, contrary to its selection. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The lemma includes \(F=\varnothing\). There is one empty assignment, and atomless formulas still exist: \(\bot\) is false and \(\top:=\neg\bot\) is true. An assignment on \(F\) can always be extended to \(P\), for example by giving all other atoms value zero. Locality makes its truth values on the formulas under consideration independent of the chosen extension.</p>
+</section>
+
+<section id="countable-atoms" data-formal="prop-countable-compactness prop-compactness prop-compactness-surviving-prefix prop-compactness-prefix-level-nonempty prop-compactness-prefix-level-bound prop-compactness-prefix-restriction prop-compactness-prefix-branch prop-compactness-prefix-branch-model" data-kind="theorem">
+  <h2>A binary tree proves compactness for countably many atoms</h2>
+  <p>If the atoms occurring in \(\Gamma\) form an at most countable set and \(\Gamma\) is finitely satisfiable, then \(\Gamma\) is satisfiable.</p>
+  <p class="proof-label">Proof</p>
+  <p>If the set of occurring atoms is finite, apply <a href="#finite-atom-stock"></a> and extend the resulting assignment to all of \(P\). Otherwise list the occurring atoms as \(p_0,p_1,\ldots\), without repetitions. Put \(F_n=\{p_0,\ldots,p_{n-1}\}\). At level \(n\), keep exactly the binary strings \(s\) of length \(n\) which satisfy every formula of \(\Gamma\) whose support is contained in \(F_n\). Here \(s(i)\) assigns the value of \(p_i\).</p>
+  <p>Every level is nonempty. Indeed, the formulas supported on \(F_n\) form a finitely satisfiable subtheory, so <a href="#finite-atom-stock"></a> supplies a satisfying assignment on \(F_n\). Every level is finite, since it has at most \(2^n\) strings. Restrictions of retained strings are retained: a formula supported on \(F_m\), for \(m\le n\), is also supported on \(F_n\), and changing values outside its support cannot change its truth value.</p>
+  <p>Thus the retained strings form a <a href="infinite-trees#sequence-trees">tree under extension</a>, closed under initial segments and with a nonempty finite level at every natural number. By <a href="infinite-trees#konigs-lemma">König's lemma</a>, it has a branch through all these levels. Take the union of the strings on this branch to assign values to every occurring atom, and assign zero to any remaining atoms of \(P\).</p>
+  <p>For \(A\in\Gamma\), its finite support lies in some \(F_n\). The branch's level-\(n\) string makes \(A\) true. Locality shows that the full valuation does too. Hence the valuation satisfies every member of \(\Gamma\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Equivalently, one may cut off a binary string as soon as it falsifies a formula whose atoms have all been assigned. A branch which survives every finite stage cannot falsify any formula, because each formula is completely determined at a finite stage.</p>
+</section>
+
+<section id="arbitrary-atoms" data-formal="prop-compactness prop-compactness-allowed-rows prop-compactness-allowed-rows-nonempty prop-compactness-allowed-rows-restrict prop-empty-theory-satisfiable" data-kind="theorem">
+  <h2>Finite tests suffice for an arbitrary set of atoms</h2>
+  <div class="statement-box"><p><strong>Propositional compactness.</strong> For any atom set \(P\) and any theory \(\Gamma\) of finite propositional formulas, \(\Gamma\) is satisfiable if and only if every finite subset of \(\Gamma\) is satisfiable.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>A satisfying valuation satisfies every subset. Conversely, suppose \(\Gamma\) is finitely satisfiable. For each finite \(F\subseteq P\), let \(\mathcal S_F\) consist of the assignments \(r:F\to\{0,1\}\) satisfying every \(A\in\Gamma\) with \(\operatorname{At}(A)\subseteq F\). The relevant subtheory is finitely satisfiable, so <a href="#finite-atom-stock"></a> proves \(\mathcal S_F\ne\varnothing\), even if there are infinitely many formulas supported on \(F\).</p>
+  <p>These allowed assignments are preserved by restriction. If \(F\subseteq G\) and \(r\in\mathcal S_G\), then every formula supported on \(F\) is already among those satisfied by \(r\); its truth value is unchanged on restriction. Thus \(r\mathbin{\upharpoonright}F\in\mathcal S_F\).</p>
+  <p>Apply the <a href="finite-constraints-and-distinct-representatives#persistent-constraints">theorem for finite-valued constraints preserved by restriction</a>, with two available values at each atom. It gives a valuation \(v:P\to\{0,1\}\) such that \(v\mathbin{\upharpoonright}F\in\mathcal S_F\) for every finite \(F\). For \(A\in\Gamma\), take \(F=\operatorname{At}(A)\). The restriction satisfies \(A\), so locality makes \(v\) satisfy \(A\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This proof uses choice through the cited finite-constraint theorem. It assumes no countability of \(P\) or \(\Gamma\). It also covers the empty atom set and the empty theory.</p>
+</section>
+
+<section id="finite-obstructions" data-formal="prop-finite-unsatisfiable-obstruction" data-kind="theorem">
+  <h2>Every contradiction appears in finitely many premises</h2>
+  <p>A theory \(\Gamma\) is unsatisfiable if and only if some finite \(\Delta\subseteq\Gamma\) is unsatisfiable.</p>
+  <p class="proof-label">Proof</p>
+  <p>If every finite subset were satisfiable, <a href="#arbitrary-atoms"></a> would make \(\Gamma\) satisfiable. Conversely, a valuation satisfying \(\Gamma\) would satisfy any finite subset, so an unsatisfiable subset rules out such a valuation. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="finite-semantic-support" data-formal="prop-finite-semantic-support prop-theory-consequence-negation" data-kind="theorem">
+  <h2>A consequence needs only finitely many premises</h2>
+  <p>For every theory \(\Gamma\) and formula \(C\),</p>
+  <div class="math-display">\[\Gamma\models C\quad\Longleftrightarrow\quad\exists\text{ finite }\Delta\subseteq\Gamma\text{ such that }\Delta\models C.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>First note that \(\Gamma\models C\) exactly when \(\Gamma\cup\{\neg C\}\) is unsatisfiable: a valuation satisfying this enlarged set would satisfy all premises and falsify the conclusion. Suppose \(\Gamma\models C\). By <a href="#finite-obstructions"></a>, a finite set \(\Theta\subseteq\Gamma\cup\{\neg C\}\) is unsatisfiable. Put \(\Delta=\Theta\cap\Gamma\). If a valuation satisfied \(\Delta\) and falsified \(C\), it would satisfy \(\neg C\) and hence every member of \(\Theta\), a contradiction. Thus \(\Delta\models C\).</p>
+  <p>For the converse, a valuation satisfying \(\Gamma\) satisfies \(\Delta\), so it makes \(C\) true whenever \(\Delta\models C\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="finite-proofs" data-formal="prop-theory-derivability prop-theory-consistency prop-theory-finite-context-agreement" data-kind="definition">
+  <h2>A proof from an infinite theory is still finite</h2>
+  <p>Use exactly the <a href="propositional-proofs#deduction-rules">classical natural-deduction rules</a>, including classical contradiction. For an arbitrary theory \(\Gamma\), write \(\Gamma\vdash C\) when some finite \(\Delta\subseteq\Gamma\) has a derivation of \(C\) in that calculus.</p>
+  <p>This agrees with allowing a finite derivation tree whose open assumptions belong to \(\Gamma\). Such a tree has only finitely many leaves, so its open assumptions form a finite set \(\Delta\subseteq\Gamma\). Conversely, a derivation from a finite subset uses only assumptions allowed by \(\Gamma\). For a finite \(\Gamma\), the definition agrees with the existing finite-context relation: one direction chooses \(\Delta=\Gamma\), and the other uses <a href="propositional-proofs#weakening">weakening</a>.</p>
+  <p>Call \(\Gamma\) <strong>consistent</strong> if \(\Gamma\nvdash\bot\). This concerns proofs, whereas satisfiability concerns valuations.</p>
+</section>
+
+<section id="strong-completeness" data-formal="prop-strong-completeness" data-kind="theorem">
+  <h2>Truth and finite proofs agree for every theory</h2>
+  <div class="statement-box"><p><strong>Strong completeness.</strong> For every atom set \(P\), theory \(\Gamma\) and formula \(C\), \(\Gamma\models C\) if and only if \(\Gamma\vdash C\), using the specified classical natural-deduction calculus.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>If \(\Gamma\models C\), <a href="#finite-semantic-support"></a> supplies a finite \(\Delta\subseteq\Gamma\) with \(\Delta\models C\). The <a href="propositional-proofs#completeness">finite-premise completeness theorem</a> gives a derivation from \(\Delta\), which is a proof from \(\Gamma\) by definition.</p>
+  <p>Conversely, a proof from \(\Gamma\) is a derivation from some finite \(\Delta\subseteq\Gamma\). By <a href="propositional-proofs#soundness">soundness</a>, every valuation satisfying \(\Delta\) makes \(C\) true. A valuation satisfying \(\Gamma\) satisfies \(\Delta\), so \(\Gamma\models C\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The proof combines two distinct facts: formulas and derivations are finite, and compactness extracts finitely many premises from an arbitrary semantic consequence.</p>
+</section>
+
+<section id="consistency-satisfiability" data-formal="prop-theory-consistency-satisfiability" data-kind="theorem">
+  <h2>Consistency means a simultaneous truth assignment exists</h2>
+  <p>An arbitrary theory \(\Gamma\) is consistent if and only if it is satisfiable.</p>
+  <p class="proof-label">Proof</p>
+  <p>A satisfying valuation rules out a derivation of \(\bot\) by soundness. If \(\Gamma\) were unsatisfiable, it would entail \(\bot\) vacuously; <a href="#strong-completeness"></a> would then give \(\Gamma\vdash\bot\). Taking the contrapositive proves that consistency implies satisfiability. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="no-uniform-finite-theory" data-formal="prop-positive-theory-no-finite-equivalent prop-singleton-positive-consequence" data-kind="question">
+  <h2>Does one finite subset replace the whole theory?</h2>
+  <p>Let \(p_0,p_1,\ldots\) be distinct atoms and put \(\Gamma=\{p_n:n\in\mathbb N\}\). Does compactness give a finite \(\Delta\subseteq\Gamma\) with exactly the same satisfying valuations as \(\Gamma\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. For any finite \(\Delta\), choose \(p_k\notin\Delta\). Give \(p_k\) value zero and every other atom value one. This valuation satisfies \(\Delta\) and fails \(\Gamma\). The finite subset in <a href="#finite-semantic-support"></a> may depend on the conclusion: for the consequence \(p_k\), the singleton \(\{p_k\}\) suffices. Compactness does not promise one finite subset for all conclusions.</p></div></details>
+</section>
+
+<section id="infinitary-conjunction-question" data-formal="prop-infinitary-conjunction-requirements prop-infinitary-conjunction-finite-witness prop-infinitary-conjunction-unsatisfiable" data-kind="question">
+  <h2>Why does each formula need to be finite?</h2>
+  <p>Suppose we add an expression \(\bigwedge_{n\in\mathbb N}p_n\), defined to be true exactly when every \(p_n\) is true. For distinct atoms \(p_n\), consider</p>
+  <div class="math-display">\[\Gamma=\{p_n:n\in\mathbb N\}\cup\left\{\neg\bigwedge_{n\in\mathbb N}p_n\right\}.\]</div>
+  <p>Is this enlarged-language theory finitely satisfiable? Is it satisfiable?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Every finite subset is satisfiable. Choose an index \(k\) whose positive requirement \(p_k\) is absent, make \(p_k\) false, and make all other atoms true. The listed positive requirements hold, and the infinite conjunction is false, so its negation is true too. But the entire theory requires every \(p_n\) true and also requires their infinite conjunction false. It is therefore unsatisfiable. This expression is outside our finite propositional syntax; its truth depends on infinitely many atoms, so the finite-support step in the compactness proof cannot apply.</p></div></details>
+</section>

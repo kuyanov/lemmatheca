@@ -1,0 +1,243 @@
+<section id="finite-truth-functions" data-formal="prop-finite-truth-function prop-truth-function-representation prop-normal-row-count prop-eval-locality" data-kind="definition">
+  <h2>A truth table can prescribe a formula</h2>
+  <p>Suppose two switches should turn a lamp on exactly when their settings differ. A truth table
+    specifies the desired output, but does some formula have that table? More generally, can every
+    table with finitely many inputs be described using the familiar propositional connectives?</p>
+  <p>We use the <a href="propositional-logic#formulas">propositional formulas</a> over an atom set
+    \(P\), with the falsity constant \(\bot\), and write \(\top:=\neg\bot\).
+    A valuation \(v:P\to\{0,1\}\) evaluates a formula \(A\) to
+    \(\llbracket A\rrbracket_v\), using the
+    <a href="propositional-logic#valuations">usual truth tables</a>.</p>
+  <p>Fix distinct atoms \(p_1,\ldots,p_n\), where \(n\) may be zero.
+    A <strong>truth function</strong> of these inputs is any map
+    \(f:\{0,1\}^n\to\{0,1\}\). Here a row \(r=(r_1,\ldots,r_n)\) gives the inputs their
+    truth values. There are \(2^n\) rows. When \(n=0\), there is one row, the empty tuple,
+    so there are two truth functions: the constant false and the constant true function.</p>
+  <p>A formula <strong>represents</strong> \(f\) if it uses no atoms outside this list and
+    \(\llbracket A\rrbracket_v=f(v(p_1),\ldots,v(p_n))\) for every valuation \(v\).
+    By <a href="propositional-logic#locality">locality</a>, a formula's value depends only on
+    its finitely many occurring atoms. Representing finite truth functions will therefore also
+    give equivalent formulas for every formula already in our language.</p>
+</section>
+
+<section id="normal-form-definitions" data-formal="prop-literal prop-finite-conjunction prop-finite-disjunction prop-literal-term prop-literal-clause prop-disjunctive-normal-form prop-conjunctive-normal-form prop-constant-normal-forms prop-xor-normal-forms" data-kind="definition">
+  <h2>Two ways to arrange literals</h2>
+  <p>A <strong>literal</strong> is an atom \(p\) or its negation \(\neg p\).
+    A <strong>term</strong> is a conjunction of a finite list of literals; a
+    <strong>clause</strong> is a disjunction of a finite list of literals.
+    The empty conjunction means \(\top\), and the empty disjunction means \(\bot\).</p>
+  <p>A formula in <strong>disjunctive normal form</strong>, or <strong>DNF</strong>, is a
+    disjunction of a finite list of terms. A formula in <strong>conjunctive normal form</strong>,
+    or <strong>CNF</strong>, is a conjunction of a finite list of clauses. The outer list may also
+    be empty, with the same conventions. For example,</p>
+  <div class="math-display">\[ (p\land\neg q)\lor(\neg p\land q)
+    \quad\text{is DNF},\qquad
+    (p\lor q)\land(\neg p\lor\neg q)\quad\text{is CNF}. \]</div>
+  <p>Finite conjunctions and disjunctions abbreviate ordinary binary formulas, with a fixed
+    parenthesization. A one-element list abbreviates its member. Empty folds introduce the
+    constants just specified. Consequently these definitions include constant normal forms:
+    \(\bot\) is an empty DNF, and \(\top\) is a DNF with one empty term; dually,
+    \(\top\) is an empty CNF, and \(\bot\) is a CNF with one empty clause.</p>
+  <p>No negation applies to a compound formula inside a literal. This describes the arrangement of
+    a formula, rather than requiring that its terms or clauses be shortest or free of repetitions.</p>
+</section>
+
+<section id="row-formulas" data-formal="prop-row-selecting-term prop-row-excluding-clause" data-kind="lemma">
+  <h2>A term selects one row, and a clause excludes it</h2>
+  <p>For a row \(r=(r_1,\ldots,r_n)\), define literals</p>
+  <div class="math-display">\[ L_{r,i}:=
+    \begin{cases}p_i&amp;r_i=1,\\ \neg p_i&amp;r_i=0,\end{cases}
+    \qquad
+    K_{r,i}:=
+    \begin{cases}\neg p_i&amp;r_i=1,\\ p_i&amp;r_i=0.\end{cases} \]</div>
+  <p>Put \(M_r:=\bigwedge_{i=1}^n L_{r,i}\) and
+    \(C_r:=\bigvee_{i=1}^n K_{r,i}\). If a valuation has input row \(s\), then</p>
+  <div class="math-display">\[ \llbracket M_r\rrbracket_v=1\iff s=r,
+    \qquad \llbracket C_r\rrbracket_v=0\iff s=r. \]</div>
+  <p class="proof-label">Proof</p>
+  <p>The literal \(L_{r,i}\) is true exactly when \(s_i=r_i\), while \(K_{r,i}\) is false
+    exactly when \(s_i=r_i\). A finite conjunction is true exactly when all its members are true;
+    a finite disjunction is false exactly when all its members are false. These facts follow by
+    induction on the list length from the binary truth tables. Thus both displayed conditions
+    say that every coordinate matches. When there are no coordinates, the only rows are equal,
+    \(M_r=\top\), and \(C_r=\bot\), so the assertions still hold.
+    <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="normal-form-theorem" data-formal="prop-canonical-dnf prop-canonical-cnf prop-formula-normal-forms prop-canonical-normal-form-bounds" data-kind="theorem">
+  <h2>Every finite truth function has both normal forms</h2>
+  <div class="statement-box">
+    <p>For distinct atoms \(p_1,\ldots,p_n\) and any truth function
+      \(f:\{0,1\}^n\to\{0,1\}\), the formulas</p>
+    <div class="math-display">\[ D_f:=\bigvee_{\substack{r\in\{0,1\}^n\\ f(r)=1}}M_r,
+      \qquad N_f:=\bigwedge_{\substack{r\in\{0,1\}^n\\ f(r)=0}}C_r \]</div>
+    <p>represent \(f\), in DNF and CNF respectively. They use only the listed atoms.
+      In particular, every propositional formula has a semantically equivalent DNF and CNF
+      using no new atoms. The empty-fold conventions cover \(n=0\) as well.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Fix a valuation and let \(s\) be its input row. By <a href="#row-formulas"></a>, a term
+    \(M_r\) is true exactly when \(r=s\). Therefore \(D_f\) is true exactly when the row
+    \(s\) is among the rows with \(f(r)=1\), which means \(f(s)=1\).</p>
+  <p>A clause \(C_r\) is false exactly when \(r=s\). Thus \(N_f\) is false exactly when
+    \(s\) is among the rows with \(f(r)=0\), which means \(f(s)=0\). This proves equality
+    of its value with \(f(s)\) as well. Each literal uses a listed atom, so neither construction
+    introduces any other atom.</p>
+  <p>For a formula \(A\), list its distinct occurring atoms and let \(f\) be its truth-table
+    output. The <a href="propositional-logic#locality">locality lemma</a> makes this output
+    independent of values assigned outside the list. Applying the construction gives formulas
+    with the same value as \(A\) under every valuation.
+    <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Order the rows in any fixed way when expanding the displayed finite folds into formulas.
+    There are at most \(2^n\) terms in \(D_f\) and at most \(2^n\) clauses in \(N_f\),
+    each with \(n\) literals. This proves existence by an explicit construction; it does not
+    promise a short formula.</p>
+</section>
+
+<section id="xor-example" data-formal="prop-xor-normal-forms" data-kind="lemma">
+  <h2>Two switches with different settings</h2>
+  <p>For the lamp that lights exactly when \(p,q\) differ, the true rows give the DNF and the
+    false rows give the CNF:</p>
+  <table id="xor-table">
+    <caption>Building formulas for different input values</caption>
+    <thead><tr><th scope="col">\(p\)</th><th scope="col">\(q\)</th>
+      <th scope="col">Desired output</th><th scope="col">Selected term or excluded-row clause</th></tr></thead>
+    <tbody>
+      <tr><td>\(0\)</td><td>\(0\)</td><td>\(0\)</td><td>\(p\lor q\)</td></tr>
+      <tr><td>\(0\)</td><td>\(1\)</td><td>\(1\)</td><td>\(\neg p\land q\)</td></tr>
+      <tr><td>\(1\)</td><td>\(0\)</td><td>\(1\)</td><td>\(p\land\neg q\)</td></tr>
+      <tr><td>\(1\)</td><td>\(1\)</td><td>\(0\)</td><td>\(\neg p\lor\neg q\)</td></tr>
+    </tbody>
+  </table>
+  <div class="math-display">\[ D_f=(\neg p\land q)\lor(p\land\neg q),\qquad
+    N_f=(p\lor q)\land(\neg p\lor\neg q). \]</div>
+  <p>The two terms require different settings. The first clause excludes both switches off, and
+    the second excludes both switches on. These are two formulas for the same truth function,
+    usually called <strong>exclusive or</strong>.</p>
+</section>
+
+<section id="nonunique-normal-forms" data-formal="prop-normal-forms-not-unique" data-kind="question">
+  <h2>Does normal form mean a unique formula?</h2>
+  <p>Take \(f(p,q)=p\). What DNF does the true-row construction produce? Is that the only DNF
+    representing \(f\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The true rows are \((1,0)\) and \((1,1)\), giving
+        \((p\land\neg q)\lor(p\land q)\). The formula \(p\) is also DNF, with one term
+        containing one literal. If \(p\) is false, both terms in the longer formula are false.
+        If \(p\) is true, exactly one of \(q,\neg q\) is true, so the disjunction is true.
+        Thus both formulas represent \(f\).</p>
+      <p>The row construction is fixed once the input list, row order, and parenthesization are
+        fixed. Normal forms in general are not unique, and a listed input need not occur in a
+        simpler equivalent formula.</p>
+    </div>
+  </details>
+</section>
+
+<section id="constant-rows" data-formal="prop-canonical-constant-tables prop-zero-input-normal-forms prop-atomless-constant" data-kind="question">
+  <h2>What happens with no inputs or no selected rows?</h2>
+  <p>Find \(D_f,N_f\) when \(f\) is always false or always true. What changes when there are
+    no input atoms?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>If \(f\) is always false, \(D_f\) is the empty disjunction \(\bot\).
+        The CNF contains every row's clause: at any input row its matching clause is false,
+        so the whole conjunction is false. If \(f\) is always true, \(N_f\) is the empty
+        conjunction \(\top\). Its DNF contains every row's term, and the matching term is true.</p>
+      <p>With no inputs there is exactly one row \(r=()\), whose term is \(\top\) and whose
+        clause is \(\bot\). The false truth function therefore has both normal forms
+        \(\bot\); the true truth function has both normal forms \(\top\). Every atomless
+        formula is equivalent to one of these constants, because every valuation agrees on its
+        empty atom set.</p>
+    </div>
+  </details>
+</section>
+
+<section id="complete-connectives" data-formal="prop-functional-completeness prop-basis-translation prop-standard-complete-bases" data-kind="theorem">
+  <h2>Small sets of connectives still express every table</h2>
+  <p>A choice of connectives and constants is <strong>functionally complete</strong> if every
+    truth function on every finite list of inputs has a representing formula using only those
+    inputs and the allowed symbols. We include \(\bot\) as an allowed constant in each of the
+    bases below. Saying which constants are available matters, particularly for zero inputs.</p>
+  <div class="statement-box">
+    <p>Each of the following bases is functionally complete:</p>
+    <div class="math-display">\[ \{\neg,\lor,\bot\},\qquad
+      \{\neg,\land,\bot\},\qquad
+      \{\neg,\to,\bot\},\qquad
+      \{\to,\bot\}. \]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>The normal-form theorem first gives a formula using \(\neg,\land,\lor,\bot\).
+    For the first basis, replace every conjunction recursively using</p>
+  <div class="math-display">\[ A\land B\equiv\neg(\neg A\lor\neg B). \]</div>
+  <p>For the second basis, replace every disjunction using
+    \(A\lor B\equiv\neg(\neg A\land\neg B)\). For the third, use</p>
+  <div class="math-display">\[ A\lor B\equiv(\neg A\to B),\qquad
+    A\land B\equiv\neg(A\to\neg B). \]</div>
+  <p>Each identity follows by considering the two constituent truth values. Recursively translate
+    the constituents before applying the indicated identity. Structural induction then shows
+    that the translated formula uses only the chosen symbols and has the original value under
+    every valuation. Atoms and \(\bot\) are unchanged, and the binary cases use the displayed
+    identities on the already translated values.</p>
+  <p>Finally, in a formula using only \(\neg,\to,\bot\), replace each negation recursively by
+    \(\neg A\equiv(A\to\bot)\). The truth table for implication gives this identity, and
+    the same induction proves correctness. The constant true function is represented by
+    \(\bot\to\bot\), so this last basis also covers zero inputs.
+    <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="nand-nor" data-formal="prop-nand-nor prop-single-gate-identities prop-single-gate-translation prop-single-gate-falsity prop-single-gate-truth-constant prop-single-gate-completeness prop-single-gate-constant-free-completeness prop-no-atomless-gate-formula" data-kind="question">
+  <h2>Can one binary connective suffice?</h2>
+  <p>Define \(A\uparrow B:=\neg(A\land B)\), called <strong>NAND</strong>, and
+    \(A\downarrow B:=\neg(A\lor B)\), called <strong>NOR</strong>.
+    Show that either connective, together with the allowed constant \(\bot\), can represent
+    every finite truth function. Can the constant be omitted when at least one input is available?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The following identities express negation and disjunction using NAND:</p>
+      <div class="math-display">\[ \neg A\equiv A\uparrow A,\qquad
+        A\lor B\equiv(A\uparrow A)\uparrow(B\uparrow B). \]</div>
+      <p>For NOR, express negation and conjunction:</p>
+      <div class="math-display">\[ \neg A\equiv A\downarrow A,\qquad
+        A\land B\equiv(A\downarrow A)\downarrow(B\downarrow B). \]</div>
+      <p>Checking constituent truth values proves these identities. Recursive replacement in the
+        complete bases from <a href="#complete-connectives"></a> gives the two claimed
+        representations. Constants are preserved during replacement; in particular
+        \(\bot\uparrow\bot\) and \(\bot\downarrow\bot\) both represent truth.</p>
+      <p>If an input \(p\) is available, put
+        \(T:=p\uparrow(p\uparrow p)\). It is always true, so \(T\uparrow T\) supplies
+        falsity using NAND alone. For NOR, put \(F:=p\downarrow(p\downarrow p)\).
+        It is always false, so \(F\downarrow F\) supplies truth. These follow by evaluating
+        \(p=0\) and \(p=1\). Replace any constant in the previous constructions by these
+        formulas. They use an allowed input but introduce no new one.</p>
+      <p>With zero inputs and no constants, there are no formulas from which to start a binary
+        construction. The constant-free claim is therefore restricted to at least one input.</p>
+    </div>
+  </details>
+</section>
+
+<section id="monotone-connectives" data-formal="prop-monotone-truth-function prop-positive-formula-monotone prop-positive-basis-incomplete" data-kind="question">
+  <h2>Why do conjunction and disjunction need negation?</h2>
+  <p>Even allowing both constants, can formulas built only from \(\land,\lor\) represent
+    negation of one input?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. Order truth values by \(0\le 1\). Call a truth function
+        <strong>monotone</strong> if increasing some inputs from \(0\) to \(1\), without
+        decreasing any, cannot change its output from \(1\) to \(0\).</p>
+      <p>An input projection and either constant are monotone. If the values of two constituent
+        formulas can only increase, their conjunction can only increase: a true conjunction
+        has two true constituents, which remain true. Their disjunction can only increase:
+        at least one true constituent remains true. Structural induction proves that every
+        formula using only these operations and constants is monotone.</p>
+      <p>Negation is not monotone, since increasing its input from \(0\) to \(1\) decreases
+        its output from \(1\) to \(0\). Hence this basis is not functionally complete.
+        A restriction preserved by every allowed construction can prove that a desired truth
+        function cannot be expressed.</p>
+    </div>
+  </details>
+</section>

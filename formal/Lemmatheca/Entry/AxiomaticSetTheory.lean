@@ -16,7 +16,7 @@ theorem foundation_two_minima :
     let two : ZFSet.{u} := {z, one}
     let A : ZFSet.{u} := {one, {two}}
     one ∈ A ∧ ({two} : ZFSet.{u}) ∈ A ∧ one ≠ ∅ ∧ ({two} : ZFSet.{u}) ≠ ∅ ∧
-      one ∩ A = ∅ ∧ ({two} : ZFSet.{u}) ∩ A = ∅ := by
+      one ≠ ({two} : ZFSet.{u}) ∧ one ∩ A = ∅ ∧ ({two} : ZFSet.{u}) ∩ A = ∅ := by
   dsimp
   have hs (x : ZFSet.{u}) : ({x} : ZFSet.{u}) ≠ ∅ := by
     intro h
@@ -33,7 +33,13 @@ theorem foundation_two_minima :
     have hm : ({∅,{∅}} : ZFSet.{u}) ∈ ({{∅,{∅}}} : ZFSet.{u}) := by simp
     rw [← h] at hm
     exact ZFSet.mem_irrefl _ hm
-  refine ⟨by simp, by simp, hs ∅, hs _, ?_, ?_⟩
+  have hdistinct : ({∅} : ZFSet.{u}) ≠ ({{∅, {∅}}} : ZFSet.{u}) := by
+    intro h
+    have he := ZFSet.singleton_injective h
+    have hm : (∅ : ZFSet.{u}) ∈ ({∅, {∅}} : ZFSet.{u}) := by simp
+    rw [← he] at hm
+    exact ZFSet.notMem_empty _ hm
+  refine ⟨by simp, by simp, hs ∅, hs _, hdistinct, ?_, ?_⟩
   · apply ZFSet.ext
     intro x
     simp only [ZFSet.mem_inter, ZFSet.mem_pair, ZFSet.mem_singleton, ZFSet.notMem_empty]

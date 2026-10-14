@@ -57,6 +57,14 @@ register maintenance is this review's only permitted file edit.
    the human claim; record that specialization explicitly. For custom types,
    inspect elaborated expressions to check which order or other instance Lean
    actually selected, especially in comparisons involving concrete literals.
+   For proof calculi, compare primitive constructors with the human rule list.
+   A derived-rule claim needs an actual syntactic admissibility transformation,
+   not a constructor granting the rule. If the proof representation includes
+   extra rules, inspect its conservative translation into the stated basic system.
+   Soundness of the enlarged system does not establish completeness of the basic
+   one. Check that a completeness proof uses syntactic derivations where theory
+   membership is required, rather than semantic equivalences justified only by
+   the completeness result under construction.
    Choice is permitted by default. Check whether claims about weaker axiom systems
    or independence are actually encoded; a Verified badge does not establish them.
    Ordinary conclusions may be bound under default Choice even when the human proof

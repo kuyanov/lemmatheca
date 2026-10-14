@@ -47,6 +47,11 @@ publication itself is demonstrably wrong. Report any saved register changes.
    rather than adapting it silently to a convenient library declaration. Inspect
    elaborated comparisons and instances for custom types and concrete literals;
    a type annotation alone may not select the intended relation.
+   For proof calculi, compare the primitive rules explicitly. A formal constructor
+   for a rule called derived in the entry needs an admissibility proof or a
+   syntactic translation into the basic calculus; the constructor itself does not
+   certify that claim. Check free substitution and bound-placeholder instantiation
+   separately, including the treatment of fresh auxiliary names.
    Choice is permitted by default. For axiom-strength claims, identify the required
    logical encoding and missing prerequisites using the
    [assumption guidance](../CONTRIBUTING.md#prerequisites-and-scope). Report limits

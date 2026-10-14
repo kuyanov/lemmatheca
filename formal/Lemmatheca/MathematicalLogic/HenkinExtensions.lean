@@ -9,15 +9,15 @@ variable {L : Language.{u, v}} {α : Type w} {n : ℕ}
 noncomputable section
 local instance : DecidableEq (L.Formula α) := Classical.decEq _
 
-variable {S T : Set (L.Formula ℕ)}
+variable {S T : Set (L.Formula α)}
 
-private theorem consistent_insert_of_derives {A : L.Formula ℕ}
+private theorem consistent_insert_of_derives {A : L.Formula α}
     (hT : Consistent T) (hA : Derives T A) : Consistent (insert A T) := by
   intro hbot
   apply hT
   simpa only [Set.union_self] using derives_cut hA hbot
 
-private theorem consistent_insert_choice (hT : Consistent T) (A : L.Formula ℕ) :
+private theorem consistent_insert_choice (hT : Consistent T) (A : L.Formula α) :
     Consistent (insert A T) ∨ Consistent (insert A.not T) := by
   classical
   by_cases hA : Consistent (insert A T)
@@ -29,32 +29,32 @@ private theorem consistent_insert_choice (hT : Consistent T) (A : L.Formula ℕ)
 
 /-- All assumptions of a finite proof inside an increasing union occur together
 at a single finite stage. The supremum is zero for an empty assumption set. -/
-private theorem finite_subset_stage (D : ℕ → Set (L.Formula ℕ)) (hD : Monotone D)
-    (Γ : Finset (L.Formula ℕ)) (hΓ : (↑Γ : Set (L.Formula ℕ)) ⊆ ⋃ n, D n) :
-    ∃ n, (↑Γ : Set (L.Formula ℕ)) ⊆ D n := by
+private theorem finite_subset_stage (D : ℕ → Set (L.Formula α)) (hD : Monotone D)
+    (Γ : Finset (L.Formula α)) (hΓ : (↑Γ : Set (L.Formula α)) ⊆ ⋃ n, D n) :
+    ∃ n, (↑Γ : Set (L.Formula α)) ⊆ D n := by
   classical
   choose r hr using fun A : Γ => Set.mem_iUnion.mp (hΓ A.property)
   refine ⟨Finset.univ.sup r, fun A hA => ?_⟩
   exact hD (Finset.le_sup (Finset.mem_univ (⟨A, hA⟩ : Γ))) (hr ⟨A, hA⟩)
 
-private theorem consistent_union (D : ℕ → Set (L.Formula ℕ)) (hD : Monotone D)
+private theorem consistent_union (D : ℕ → Set (L.Formula α)) (hD : Monotone D)
     (hcon : ∀ n, Consistent (D n)) : Consistent (⋃ n, D n) := by
   rintro ⟨Γ, hΓ, hp⟩
   obtain ⟨n, hn⟩ := finite_subset_stage D hD Γ hΓ
   exact hcon n ⟨Γ, hn, hp⟩
 
-private def decisionStep (T : Set (L.Formula ℕ)) (A : L.Formula ℕ) : Set (L.Formula ℕ) :=
+private def decisionStep (T : Set (L.Formula α)) (A : L.Formula α) : Set (L.Formula α) :=
   by
     classical
     exact if Consistent (insert A T) then insert A T else insert A.not T
 
-private theorem decisionStep_contains (T : Set (L.Formula ℕ)) (A : L.Formula ℕ) :
+private theorem decisionStep_contains (T : Set (L.Formula α)) (A : L.Formula α) :
     T ⊆ decisionStep T A := by
   classical
   simp only [decisionStep]
   split <;> exact Set.subset_insert _ _
 
-private theorem decisionStep_consistent (hT : Consistent T) (A : L.Formula ℕ) :
+private theorem decisionStep_consistent (hT : Consistent T) (A : L.Formula α) :
     Consistent (decisionStep T A) := by
   classical
   simp only [decisionStep]
@@ -62,17 +62,17 @@ private theorem decisionStep_consistent (hT : Consistent T) (A : L.Formula ℕ) 
   · assumption
   · exact (consistent_insert_choice hT A).resolve_left ‹¬ Consistent (insert A T)›
 
-private def decisionStages (T : Set (L.Formula ℕ)) (e : ℕ → L.Formula ℕ)
-    (n : ℕ) : Set (L.Formula ℕ) :=
+private def decisionStages (T : Set (L.Formula α)) (e : ℕ → L.Formula α)
+    (n : ℕ) : Set (L.Formula α) :=
   Nat.rec T (fun n U => decisionStep U (e n)) n
 
-private theorem decisionStages_mono (T : Set (L.Formula ℕ)) (e : ℕ → L.Formula ℕ) :
+private theorem decisionStages_mono (T : Set (L.Formula α)) (e : ℕ → L.Formula α) :
     Monotone (decisionStages T e) := by
   apply monotone_nat_of_le_succ
   intro n
   exact decisionStep_contains (decisionStages T e n) (e n)
 
-private theorem decisionStages_consistent (hT : Consistent T) (e : ℕ → L.Formula ℕ)
+private theorem decisionStages_consistent (hT : Consistent T) (e : ℕ → L.Formula α)
     (n : ℕ) : Consistent (decisionStages T e n) := by
   induction n with
   | zero => exact hT
@@ -203,9 +203,9 @@ theorem consistent_henkin_extension [Countable L.Symbols] {T : L.Theory}
     rw [hn]
     exact Finset.mem_insert_self _ _
 
-theorem lindenbaum_extension [Countable L.Symbols] (hT : Consistent T) :
-    ∃ S : Set (L.Formula ℕ), T ⊆ S ∧ Consistent S ∧ Complete S := by
-  obtain ⟨e, he⟩ := exists_surjective_nat (L.Formula ℕ)
+theorem lindenbaum_extension [Countable L.Symbols] [Countable α] (hT : Consistent T) :
+    ∃ S : Set (L.Formula α), T ⊆ S ∧ Consistent S ∧ Complete S := by
+  obtain ⟨e, he⟩ := exists_surjective_nat (L.Formula α)
   refine ⟨⋃ n, decisionStages T e n, ?_,
     consistent_union _ (decisionStages_mono T e) (decisionStages_consistent hT e), ?_⟩
   · intro A hA

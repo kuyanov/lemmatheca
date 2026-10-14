@@ -1,6 +1,5 @@
 import Lemmatheca.MathematicalLogic.ElementarySubmodels
-import Lemmatheca.MathematicalLogic.FirstOrderSemantics
-import Lemmatheca.Entry.FirstOrderStructures
+import Lemmatheca.MathematicalLogic.BasicStructures
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 /-! The positive-natural counterexample and a prescribed real-order submodel. -/
@@ -11,7 +10,7 @@ open FirstOrder FirstOrder.Language
 open Lemmatheca.MathematicalLogic.FirstOrderSyntax
 open Lemmatheca.MathematicalLogic.FirstOrderSemantics
 open Lemmatheca.MathematicalLogic.ElementarySubmodels
-open Lemmatheca.Entry.FirstOrderStructures
+open Lemmatheca.MathematicalLogic.BasicStructures
 
 def positiveNaturals : binaryRelLanguage.Substructure ℕ where
   carrier := {n | 0 < n}
@@ -40,32 +39,32 @@ theorem positiveNaturals_not_elementary : ¬ positiveNaturals.IsElementary := by
   have hφ := h hasPredecessor (fun _ => (⟨1, Nat.zero_lt_one⟩ : positiveNaturals))
   exact positive_one_noPredecessor (hφ.mp natural_one_hasPredecessor)
 
-instance realStrictStructure : binaryRelLanguage.Structure ℝ :=
-  binaryRelStructure ℝ (· < ·)
+def integerPiSeed : Set ℝ := Set.range (fun z : ℤ => (z : ℝ)) ∪ {Real.pi}
 
-private instance binaryRelSymbols_countable : Countable binaryRelLanguage.Symbols := by
-  apply Function.Injective.countable (f := fun _ : binaryRelLanguage.Symbols => ())
-  intro x y _
-  cases x with
-  | inl x => exact Empty.elim x.2
-  | inr x =>
-    rcases x with ⟨n, r⟩
-    cases r
-    cases y with
-    | inl y => exact Empty.elim y.2
-    | inr y =>
-      rcases y with ⟨n, r⟩
-      cases r
-      rfl
+theorem integerPiSeed_countable : integerPiSeed.Countable := by
+  exact (Set.countable_range (fun z : ℤ => (z : ℝ))).union (Set.countable_singleton Real.pi)
 
-def rationalPiSeed : Set ℝ := Set.range (fun q : ℚ => (q : ℝ)) ∪ {Real.pi}
-
-theorem rationalPiSeed_countable : rationalPiSeed.Countable := by
-  exact (Set.countable_range (fun q : ℚ => (q : ℝ))).union (Set.countable_singleton Real.pi)
+/-- The prescribed seed contains the two endpoints but no witness between them. -/
+theorem integerPiSeed_gap :
+    (0 : ℝ) ∈ integerPiSeed ∧ (1 : ℝ) ∈ integerPiSeed ∧
+      (∃ y : ℝ, 0 < y ∧ y < 1) ∧
+      ¬ ∃ y ∈ integerPiSeed, 0 < y ∧ y < 1 := by
+  refine ⟨Or.inl ⟨0, by simp⟩, Or.inl ⟨1, by simp⟩,
+    ⟨1 / 2, by norm_num, by norm_num⟩, ?_⟩
+  rintro ⟨y, hy, hpos, hlt⟩
+  rcases hy with ⟨z, rfl⟩ | hpi
+  · change (0 : ℝ) < (z : ℝ) at hpos
+    change (z : ℝ) < 1 at hlt
+    have hz : (0 : ℤ) < z := by exact_mod_cast hpos
+    have hzone : z < (1 : ℤ) := by exact_mod_cast hlt
+    omega
+  · have hyeq : y = Real.pi := Set.mem_singleton_iff.mp hpi
+    rw [hyeq] at hlt
+    exact (not_lt_of_ge Real.two_le_pi) (hlt.trans (by norm_num))
 
 theorem real_order_countable_submodel :
     ∃ S : binaryRelLanguage.ElementarySubstructure ℝ,
-      rationalPiSeed ⊆ S ∧ Countable S := by
-  exact exists_countable_elementarySubstructure rationalPiSeed rationalPiSeed_countable
+      integerPiSeed ⊆ S ∧ Countable S := by
+  exact exists_countable_elementarySubstructure integerPiSeed integerPiSeed_countable
 
 end Lemmatheca.Entry.ElementarySubmodels

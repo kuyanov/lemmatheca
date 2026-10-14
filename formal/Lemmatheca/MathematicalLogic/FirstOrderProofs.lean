@@ -1,73 +1,273 @@
-import Lemmatheca.MathematicalLogic.FirstOrderSemantics
+import Lemmatheca.MathematicalLogic.FirstOrderProofCore
 
-/-! Finite classical natural deduction with explicitly fresh auxiliary parameters.
-The parameter type grows by one at an eigenparameter rule. Structural constructors
-abbreviate finite proof-tree transformations, never semantic entailment. -/
-
+/-! Finite classical natural deduction. `CoreProof` has only the logical and
+equality rules. `Proof` permits an auxiliary reserve of names, as in the entry;
+all structural operations below are syntactic proof-tree transformations. -/
 namespace Lemmatheca.MathematicalLogic.FirstOrderProofs
 open FirstOrder FirstOrder.Language
 universe u v w
 variable {L : Language.{u, v}} {α β : Type w}
 noncomputable section
-local instance : DecidableEq α := Classical.decEq _
-local instance : DecidableEq (L.Formula α) := Classical.decEq _
+local instance {δ : Type w} : DecidableEq (L.Formula δ) := Classical.decEq _
+local instance {δ : Type w} : DecidableEq δ := Classical.decEq _
 
-/-- Open the distinguished bound slot at one term. -/
-def instantiate (φ : L.BoundedFormula α 1) (t : L.Term α) : L.Formula α :=
-  φ.toFormula.subst (Sum.elim Term.var (fun _ => t))
+/-- A finite proof in the displayed calculus may use an additional reserve of
+names. Original assumptions and conclusion are embedded unchanged. -/
+def Proof (L : Language.{u, v}) {α : Type w} (Γ : Finset (L.Formula α))
+    (A : L.Formula α) : Prop :=
+  CoreProof L (Γ.image (Formula.relabel (Sum.inl : α → α ⊕ ℕ)))
+    (A.relabel Sum.inl)
 
-/-- Simultaneously fill finitely many distinguished slots with terms. -/
-def instantiateSlots {n : ℕ} (φ : L.BoundedFormula α n) (ts : Fin n → L.Term α) :
-    L.Formula α := φ.toFormula.subst (Sum.elim Term.var ts)
+theorem CoreProof.rename {Γ : Finset (L.Formula α)} {A : L.Formula α}
+    (f : α → β) (h : CoreProof L Γ A) :
+    CoreProof L (Γ.image (Formula.relabel f)) (A.relabel f) := by
+  simpa only [formula_subst_vars] using h.substitute (fun x => .var (f x))
 
-/-- Add a new parameter name disjoint from the old names. -/
-def liftContext (Γ : Finset (L.Formula α)) : Finset (L.Formula (α ⊕ Fin 1)) :=
-  Γ.image (Formula.relabel Sum.inl)
+namespace Proof
+variable {Γ Δ : Finset (L.Formula α)} {A B C : L.Formula α}
 
-/-- Finite natural deduction, including the stated admissible tree operations. -/
-inductive Proof (L : Language.{u, v}) : {α : Type w} → Finset (L.Formula α) → L.Formula α → Prop
-  | assumption {α Γ A} : A ∈ Γ → Proof L (α := α) Γ A
-  | conjIntro {α Γ A B} : Proof L (α := α) Γ A → Proof L Γ B → Proof L Γ (A ⊓ B)
-  | conjElimLeft {α Γ A B} : Proof L (α := α) Γ (A ⊓ B) → Proof L Γ A
-  | conjElimRight {α Γ A B} : Proof L (α := α) Γ (A ⊓ B) → Proof L Γ B
-  | disjIntroLeft {α Γ A B} : Proof L (α := α) Γ A → Proof L Γ (A ⊔ B)
-  | disjIntroRight {α Γ A B} : Proof L (α := α) Γ B → Proof L Γ (A ⊔ B)
-  | disjElim {α Γ A B C} : Proof L (α := α) Γ (A ⊔ B) →
-      Proof L (insert A Γ) C → Proof L (insert B Γ) C → Proof L Γ C
-  | impIntro {α Γ A B} : Proof L (α := α) (insert A Γ) B → Proof L Γ (A.imp B)
-  | impElim {α Γ A B} : Proof L (α := α) Γ (A.imp B) → Proof L Γ A → Proof L Γ B
-  | negIntro {α Γ A} : Proof L (α := α) (insert A Γ) ⊥ → Proof L Γ A.not
-  | negElim {α Γ A} : Proof L (α := α) Γ A → Proof L Γ A.not → Proof L Γ ⊥
-  | falsumElim {α Γ A} : Proof L (α := α) Γ ⊥ → Proof L Γ A
-  | classicalContradiction {α Γ A} : Proof L (α := α) (insert A.not Γ) ⊥ → Proof L Γ A
-  | allElim {α Γ} {φ : L.BoundedFormula α 1} (t : L.Term α) : Proof L (α := α) Γ φ.all →
-      Proof L Γ (instantiate φ t)
-  | exIntro {α Γ} {φ : L.BoundedFormula α 1} (t : L.Term α) : Proof L (α := α) Γ (instantiate φ t) → Proof L Γ φ.ex
-  | allIntro {α Γ} {φ : L.BoundedFormula α 1} : Proof L (α := α ⊕ Fin 1) (liftContext Γ) φ.toFormula →
-      Proof L (α := α) Γ φ.all
-  | allIntroParameter {α Γ} {φ : L.BoundedFormula α 1} (c : α)
-      (hcφ : c ∉ φ.freeVarFinset) (hcΓ : ∀ A ∈ Γ, c ∉ A.freeVarFinset) :
-      Proof L (α := α) Γ (instantiate φ (.var c)) → Proof L Γ φ.all
-  | exElim {α Γ C} {φ : L.BoundedFormula α 1} : Proof L (α := α) Γ φ.ex →
-      Proof L (insert φ.toFormula (liftContext Γ)) (C.relabel Sum.inl) → Proof L Γ C
-  | equalIntro {α Γ} (t : L.Term α) : Proof L (α := α) Γ (t.equal t)
-  | equalElim {α Γ} (φ : L.BoundedFormula α 1) (s t : L.Term α) :
-      Proof L Γ (s.equal t) → Proof L Γ (instantiate φ s) → Proof L Γ (instantiate φ t)
-  | weakening {α Γ Δ A} : Proof L (α := α) Γ A → Γ ⊆ Δ → Proof L Δ A
-  | cut {α Γ Δ A B} : Proof L (α := α) Γ A → Proof L (insert A Δ) B → Proof L (Γ ∪ Δ) B
-  | substitute {α β Γ A} (σ : α → L.Term β) : Proof L (α := α) Γ A →
-      Proof L (Γ.image (fun φ => φ.subst σ)) (A.subst σ)
-  | parameterClose {α β Γ A} :
-      Proof L (α := β ⊕ α) (Γ.image (Formula.relabel Sum.inr)) (A.relabel Sum.inr) →
-      Proof L (α := α) Γ A
-  | rename {α β Γ A} (f : α → β) : Proof L (α := α) Γ A →
-      Proof L (Γ.image (Formula.relabel f)) (Formula.relabel f A)
-  | parameterCloseMap {α β Γ A} (f : α → β) (hf : Function.Injective f) :
-      Proof L (α := β) (Γ.image (Formula.relabel f)) (Formula.relabel f A) →
-      Proof L (α := α) Γ A
-  | equalSlots {α Γ n} (φ : L.BoundedFormula α n) (ts us : Fin n → L.Term α) :
-      (∀ i, Proof L Γ ((ts i).equal (us i))) →
-      Proof L Γ (instantiateSlots φ ts) → Proof L Γ (instantiateSlots φ us)
+theorem assumption (hA : A ∈ Γ) : Proof L Γ A :=
+  CoreProof.assumption (Finset.mem_image.mpr ⟨A, hA, rfl⟩)
+theorem conjIntro (hA : Proof L Γ A) (hB : Proof L Γ B) : Proof L Γ (A ⊓ B) :=
+  CoreProof.conjIntro hA hB
+theorem conjElimLeft (h : Proof L Γ (A ⊓ B)) : Proof L Γ A := CoreProof.conjElimLeft h
+theorem conjElimRight (h : Proof L Γ (A ⊓ B)) : Proof L Γ B := CoreProof.conjElimRight h
+theorem disjIntroLeft (h : Proof L Γ A) : Proof L Γ (A ⊔ B) := CoreProof.disjIntroLeft h
+theorem disjIntroRight (h : Proof L Γ B) : Proof L Γ (A ⊔ B) := CoreProof.disjIntroRight h
+theorem disjElim (h : Proof L Γ (A ⊔ B)) (hA : Proof L (insert A Γ) C)
+    (hB : Proof L (insert B Γ) C) : Proof L Γ C := by
+  exact CoreProof.disjElim (A := A.relabel Sum.inl) (B := B.relabel Sum.inl) h
+    (by simpa only [Proof, Finset.image_insert] using hA)
+    (by simpa only [Proof, Finset.image_insert] using hB)
+theorem impIntro (h : Proof L (insert A Γ) B) : Proof L Γ (A.imp B) :=
+  CoreProof.impIntro (A := A.relabel Sum.inl) (B := B.relabel Sum.inl) (by simpa only [Proof, Finset.image_insert] using h)
+theorem impElim (h : Proof L Γ (A.imp B)) (hA : Proof L Γ A) : Proof L Γ B :=
+  CoreProof.impElim h hA
+theorem negIntro (h : Proof L (insert A Γ) ⊥) : Proof L Γ A.not :=
+  CoreProof.negIntro (A := A.relabel Sum.inl) (by
+    simpa only [Proof, Finset.image_insert, Formula.relabel, BoundedFormula.relabel_bot] using h)
+theorem negElim (h : Proof L Γ A) (hn : Proof L Γ A.not) : Proof L Γ ⊥ :=
+  CoreProof.negElim h hn
+theorem falsumElim (h : Proof L Γ ⊥) : Proof L Γ A := CoreProof.falsumElim h
+theorem classicalContradiction (h : Proof L (insert A.not Γ) ⊥) : Proof L Γ A :=
+  CoreProof.classicalContradiction (A := A.relabel Sum.inl) (by
+    simpa only [Proof, Finset.image_insert, Formula.relabel, BoundedFormula.relabel_not,
+      BoundedFormula.relabel_bot] using h)
+theorem equalIntro (t : L.Term α) : Proof L Γ (t.equal t) := by
+  unfold Proof
+  rw [← formula_subst_vars, formula_subst_equal, term_subst_vars]
+  exact CoreProof.equalIntro (t.relabel Sum.inl)
+
+theorem allElim {φ : L.BoundedFormula α 1} (t : L.Term α)
+    (h : Proof L Γ φ.all) : Proof L Γ (instantiate φ t) := by
+  unfold Proof at h ⊢
+  rw [← formula_subst_vars, instantiate_subst, term_subst_vars]
+  exact CoreProof.allElim (φ := φ.subst (fun x => .var (.inl x))) (t.relabel Sum.inl)
+    (by simpa only [← formula_subst_vars, formula_subst_all] using h)
+
+theorem exIntro {φ : L.BoundedFormula α 1} (t : L.Term α)
+    (h : Proof L Γ (instantiate φ t)) : Proof L Γ φ.ex := by
+  unfold Proof at h ⊢
+  rw [← formula_subst_vars, formula_subst_ex]
+  apply CoreProof.exIntro (t.relabel Sum.inl)
+  simpa only [← formula_subst_vars, instantiate_subst, term_subst_vars] using h
+
+/-- Fresh eigenparameters are transported across the reserve of auxiliary names. -/
+theorem allIntro {φ : L.BoundedFormula α 1}
+    (h : Proof L (α := α ⊕ Fin 1) (liftContext Γ) φ.toFormula) : Proof L Γ φ.all := by
+  let f : (α ⊕ Fin 1) ⊕ ℕ → (α ⊕ ℕ) ⊕ Fin 1 :=
+    Sum.elim (Sum.map Sum.inl id) (fun i => .inl (.inr i))
+  have hp := CoreProof.rename f h
+  unfold Proof
+  rw [← formula_subst_vars, formula_subst_all]
+  apply CoreProof.allIntro
+  have hv : liftSubst (fun x : α => (Term.var (.inl x) : L.Term (α ⊕ ℕ))) 1 =
+      fun z => .var (f (.inl z)) := by
+    funext z
+    cases z <;> rfl
+  simpa only [Proof, liftContext, Finset.image_image, formula_relabel_relabel,
+    toFormula_subst, hv, formula_subst_vars, Function.comp_def, f,
+    Sum.elim_inl, Sum.map_inl] using hp
+
+theorem exElim {φ : L.BoundedFormula α 1}
+    (hEx : Proof L Γ φ.ex)
+    (hB : Proof L (insert φ.toFormula (liftContext Γ)) (C.relabel Sum.inl)) :
+    Proof L Γ C := by
+  let f : (α ⊕ Fin 1) ⊕ ℕ → (α ⊕ ℕ) ⊕ Fin 1 :=
+    Sum.elim (Sum.map Sum.inl id) (fun i => .inl (.inr i))
+  have hp := CoreProof.rename f hB
+  unfold Proof at hEx ⊢
+  apply CoreProof.exElim (φ := φ.subst (fun x => .var (.inl x)))
+    (by simpa only [← formula_subst_vars, formula_subst_ex] using hEx)
+  have hv : liftSubst (fun x : α => (Term.var (.inl x) : L.Term (α ⊕ ℕ))) 1 =
+      fun z => .var (f (.inl z)) := by
+    funext z
+    cases z <;> rfl
+  simpa only [Proof, liftContext, Finset.image_insert, Finset.image_image,
+    formula_relabel_relabel, toFormula_subst, hv, formula_subst_vars,
+    Function.comp_def, f, Sum.elim_inl, Sum.map_inl] using hp
+
+theorem equalElim (φ : L.BoundedFormula α 1) (s t : L.Term α)
+    (he : Proof L Γ (s.equal t)) (hp : Proof L Γ (instantiate φ s)) :
+    Proof L Γ (instantiate φ t) := by
+  unfold Proof at he hp ⊢
+  rw [← formula_subst_vars, instantiate_subst, term_subst_vars]
+  apply CoreProof.equalElim (φ.subst (fun x => .var (.inl x))) (s.relabel Sum.inl) (t.relabel Sum.inl)
+  · simpa only [← formula_subst_vars, formula_subst_equal, term_subst_vars] using he
+  · simpa only [← formula_subst_vars, instantiate_subst, term_subst_vars] using hp
+
+theorem weakening (h : Proof L Γ A) (hsub : Γ ⊆ Δ) : Proof L Δ A :=
+  CoreProof.weakening h (Finset.image_subset_image hsub)
+
+theorem cut (hA : Proof L Γ A) (hB : Proof L (insert A Δ) B) :
+    Proof L (Γ ∪ Δ) B :=
+  impElim (weakening (impIntro hB) Finset.subset_union_right)
+    (weakening hA Finset.subset_union_left)
+
+theorem substitute (σ : α → L.Term β) (h : Proof L Γ A) :
+    Proof L (Γ.image (fun φ => φ.subst σ)) (A.subst σ) := by
+  let τ : α ⊕ ℕ → L.Term (β ⊕ ℕ) :=
+    Sum.elim (fun x => (σ x).relabel Sum.inl) (fun i => .var (.inr i))
+  have hp := CoreProof.substitute h τ
+  simpa only [Proof, Finset.image_image, Function.comp_def, formula_relabel_subst,
+    formula_subst_relabel, τ, Sum.elim_inl] using hp
+
+theorem rename (f : α → β) (h : Proof L Γ A) :
+    Proof L (Γ.image (Formula.relabel f)) (A.relabel f) := by
+  simpa only [formula_subst_vars] using substitute (fun x => .var (f x)) h
+
+/-- The named-eigenparameter version of universal introduction follows by
+renaming that fresh name to the protected slot. -/
+theorem allIntroParameter {φ : L.BoundedFormula α 1} (c : α)
+    (hcφ : c ∉ φ.freeVarFinset) (hcΓ : ∀ B ∈ Γ, c ∉ B.freeVarFinset)
+    (h : Proof L Γ (instantiate φ (.var c))) : Proof L Γ φ.all := by
+  let σ : α → L.Term (α ⊕ Fin 1) := fun x =>
+    if x = c then .var (.inr 0) else .var (.inl x)
+  have hφ : φ.subst σ = φ.subst (fun x => .var (.inl x)) := by
+    apply formula_subst_agree
+    intro x hx
+    have hxc : x ≠ c := fun he => hcφ (he ▸ hx)
+    simp only [σ, ite_eq_right hxc]
+  have hΓ : Γ.image (fun B => B.subst σ) = liftContext Γ := by
+    apply Finset.image_congr
+    intro B hB
+    rw [← formula_subst_vars]
+    apply formula_subst_agree
+    intro x hx
+    have hxc : x ≠ c := fun he => hcΓ B hB (he ▸ hx)
+    simp only [σ, ite_eq_right hxc]
+  have hσc : σ c = .var (.inr 0) := by simp [σ]
+  have hp := substitute σ h
+  rw [hΓ] at hp
+  simp only [instantiate_subst, hφ, Term.subst, hσc, instantiate_lifted] at hp
+  exact allIntro hp
+
+/-- The existential witness may likewise use an already available name which
+is absent from the remaining assumptions, quantified body and conclusion. -/
+theorem exElimParameter {φ : L.BoundedFormula α 1} (c : α)
+    (hcφ : c ∉ φ.freeVarFinset) (hcΓ : ∀ B ∈ Γ, c ∉ B.freeVarFinset)
+    (hcC : c ∉ C.freeVarFinset) (hEx : Proof L Γ φ.ex)
+    (hB : Proof L (insert (instantiate φ (.var c)) Γ) C) : Proof L Γ C := by
+  let σ : α → L.Term (α ⊕ Fin 1) := fun x =>
+    if x = c then .var (.inr 0) else .var (.inl x)
+  have hφ : φ.subst σ = φ.subst (fun x => .var (.inl x)) := by
+    apply formula_subst_agree
+    intro x hx
+    have hxc : x ≠ c := fun he => hcφ (he ▸ hx)
+    simp only [σ, ite_eq_right hxc]
+  have hΓ : Γ.image (fun B => B.subst σ) = liftContext Γ := by
+    apply Finset.image_congr
+    intro B hB
+    rw [← formula_subst_vars]
+    apply formula_subst_agree
+    intro x hx
+    have hxc : x ≠ c := fun he => hcΓ B hB (he ▸ hx)
+    simp only [σ, ite_eq_right hxc]
+  have hC : C.subst σ = C.relabel Sum.inl := by
+    rw [← formula_subst_vars]
+    apply formula_subst_agree
+    intro x hx
+    have hxc : x ≠ c := fun he => hcC (he ▸ hx)
+    simp only [σ, ite_eq_right hxc]
+  apply exElim hEx
+  have hσc : σ c = .var (.inr 0) := by simp [σ]
+  have hp := substitute σ hB
+  simpa only [Finset.image_insert, hΓ, instantiate_subst, hφ, Term.subst,
+    hσc, instantiate_lifted, hC] using hp
+
+/-- Reflect an injective change of original names by replacing any names outside
+its range with an auxiliary name. This is substitution in the core calculus. -/
+theorem parameterCloseMap (f : α → β) (hf : Function.Injective f)
+    (h : Proof L (Γ.image (Formula.relabel f)) (A.relabel f)) : Proof L Γ A := by
+  classical
+  let r : β → L.Term (α ⊕ ℕ) := fun y =>
+    if hy : ∃ x, f x = y then .var (.inl (Classical.choose hy)) else .var (.inr 0)
+  have hr (x : α) : r (f x) = .var (.inl x) := by
+    simp only [r, dite_eq_left (show ∃ z, f z = f x from ⟨x, rfl⟩)]
+    rw [hf (Classical.choose_spec (show ∃ z, f z = f x from ⟨x, rfl⟩))]
+  let τ : β ⊕ ℕ → L.Term (α ⊕ ℕ) := Sum.elim r (fun i => .var (.inr i))
+  have hp := CoreProof.substitute h τ
+  simpa only [Proof, Finset.image_image, Function.comp_def, formula_relabel_subst,
+    τ, Sum.elim_inl, hr, formula_subst_vars] using hp
+
+theorem parameterClose
+    (h : Proof L (α := β ⊕ α) (Γ.image (Formula.relabel Sum.inr)) (A.relabel Sum.inr)) :
+    Proof L Γ A := parameterCloseMap Sum.inr Sum.inr_injective h
+
+/-- Replace one selected member of a finite tuple, keeping all other terms
+fixed. The unary body captures only the selected coordinate. -/
+theorem replaceSlot {n : ℕ} (φ : L.BoundedFormula α n)
+    (ts : Fin n → L.Term α) (i : Fin n) (t : L.Term α)
+    (he : Proof L Γ ((ts i).equal t)) (hp : Proof L Γ (instantiateSlots φ ts)) :
+    Proof L Γ (instantiateSlots φ (Function.update ts i t)) := by
+  let σ : α ⊕ Fin n → L.Term (α ⊕ Fin 1) :=
+    Sum.elim (fun x => .var (.inl x))
+      (fun j => if j = i then .var (.inr 0) else (ts j).relabel Sum.inl)
+  let ψ : L.BoundedFormula α 1 := BoundedFormula.relabel id (φ.toFormula.subst σ)
+  have hinst (u : L.Term α) :
+      instantiate ψ u = instantiateSlots φ (Function.update ts i u) := by
+    change instantiate (BoundedFormula.relabel id (φ.toFormula.subst σ)) u = _
+    rw [instantiate_capture, formula_subst_subst]
+    unfold instantiateSlots
+    congr 1
+    funext x
+    cases x with
+    | inl x => rfl
+    | inr j =>
+        by_cases hj : j = i
+        · subst j
+          simp [σ, Term.subst]
+        · simp [σ, hj, term_subst_relabel]
+  rw [← hinst]
+  apply equalElim ψ (ts i) t he
+  have hsame : Function.update ts i (ts i) = ts := Function.update_eq_self i ts
+  simpa only [hinst, hsame] using hp
+
+/-- Simultaneous equality replacement is a finite iteration of the displayed
+single-object equality-elimination rule. -/
+theorem equalSlots {n : ℕ} (φ : L.BoundedFormula α n)
+    (ts us : Fin n → L.Term α) (he : ∀ i, Proof L Γ ((ts i).equal (us i)))
+    (hp : Proof L Γ (instantiateSlots φ ts)) : Proof L Γ (instantiateSlots φ us) := by
+  have hfin (s : Finset (Fin n)) :
+      Proof L Γ (instantiateSlots φ (fun i => if i ∈ s then us i else ts i)) := by
+    induction s using Finset.induction_on with
+    | empty => simpa using hp
+    | @insert i s hi ih =>
+        let vs : Fin n → L.Term α := fun j => if j ∈ s then us j else ts j
+        have hvi : vs i = ts i := by simp [vs, hi]
+        have hnext := replaceSlot φ vs i (us i)
+          (by simpa only [hvi] using he i) ih
+        have hupdate : Function.update vs i (us i) =
+            fun j => if j ∈ insert i s then us j else ts j := by
+          funext j
+          by_cases hji : j = i
+          · subst j
+            simp
+          · simp [vs, hji]
+        simpa only [hupdate] using hnext
+  simpa only [Finset.mem_univ, ite_true] using hfin Finset.univ
+
+end Proof
 
 /-- An arbitrary theory derives a formula using a finite collection of its axioms. -/
 def Derives (T : Set (L.Formula α)) (A : L.Formula α) : Prop :=
@@ -82,177 +282,15 @@ def EquivalentOver (T : Set (L.Formula α)) (A B : L.Formula α) : Prop :=
 /-- A schema supplies one sentence for each item of indexing data. -/
 def schemaTheory {ι : Type*} (s : ι → L.Sentence) : L.Theory := Set.range s
 
-theorem instantiate_realize {M : Type*} [L.Structure M]
-    (φ : L.BoundedFormula α 1) (t : L.Term α) (a : α → M) :
-    (instantiate φ t).Realize a ↔ φ.Realize a (fun _ => t.realize a) := by
-  rw [instantiate, Formula.Realize, BoundedFormula.realize_subst,
-    ← Formula.Realize, BoundedFormula.realize_toFormula]
-  simp only [Function.comp_def, Sum.elim_inl, Sum.elim_inr, Term.realize_var]
-
-theorem instantiateSlots_realize {M : Type*} [L.Structure M] {n : ℕ}
-    (φ : L.BoundedFormula α n) (ts : Fin n → L.Term α) (a : α → M) :
-    (instantiateSlots φ ts).Realize a ↔ φ.Realize a (fun i => (ts i).realize a) := by
-  rw [instantiateSlots, Formula.Realize, BoundedFormula.realize_subst,
-    ← Formula.Realize, BoundedFormula.realize_toFormula]
-  simp only [Function.comp_def, Sum.elim_inl, Sum.elim_inr, Term.realize_var]
-
-private theorem snoc_zero {M : Type*} (m : M) :
-    Fin.snoc (default : Fin 0 → M) m = (fun _ : Fin 1 => m) := by
-  funext i
-  have hi : i = 0 := Fin.eq_zero i
-  subst i
-  rfl
-
 theorem Proof.sound {M : Type*} [L.Structure M] [Nonempty M] {Γ : Finset (L.Formula α)}
     {A : L.Formula α} (h : Proof L Γ A) (a : α → M)
     (hΓ : ∀ B ∈ Γ, B.Realize a) : A.Realize a := by
-  classical
-  induction h with
-  | assumption hA => exact hΓ _ hA
-  | conjIntro _ _ ihA ihB => exact Formula.realize_inf.mpr ⟨ihA a hΓ, ihB a hΓ⟩
-  | conjElimLeft _ ih => exact (Formula.realize_inf.mp (ih a hΓ)).1
-  | conjElimRight _ ih => exact (Formula.realize_inf.mp (ih a hΓ)).2
-  | disjIntroLeft _ ih => exact Formula.realize_sup.mpr (Or.inl (ih a hΓ))
-  | disjIntroRight _ ih => exact Formula.realize_sup.mpr (Or.inr (ih a hΓ))
-  | disjElim _ _ _ ihAB ihA ihB =>
-      rcases Formula.realize_sup.mp (ihAB a hΓ) with hA | hB
-      · apply ihA a
-        intro C hC
-        rcases Finset.mem_insert.mp hC with rfl | hC
-        · exact hA
-        · exact hΓ C hC
-      · apply ihB a
-        intro C hC
-        rcases Finset.mem_insert.mp hC with rfl | hC
-        · exact hB
-        · exact hΓ C hC
-  | impIntro _ ih =>
-      intro hA
-      apply ih a
-      intro C hC
-      rcases Finset.mem_insert.mp hC with rfl | hC
-      · exact hA
-      · exact hΓ C hC
-  | impElim _ _ ihAB ihA => exact ihAB a hΓ (ihA a hΓ)
-  | negIntro _ ih =>
-      intro hA
-      apply ih a
-      intro C hC
-      rcases Finset.mem_insert.mp hC with rfl | hC
-      · exact hA
-      · exact hΓ C hC
-  | negElim _ _ ihA ihnA => exact ihnA a hΓ (ihA a hΓ)
-  | falsumElim _ ih => exact (ih a hΓ).elim
-  | classicalContradiction _ ih =>
-      apply Classical.byContradiction
-      intro hnA
-      apply ih a
-      intro C hC
-      rcases Finset.mem_insert.mp hC with rfl | hC
-      · exact hnA
-      · exact hΓ C hC
-  | @allElim α Γ φ t _ ih =>
-      apply (instantiate_realize φ t a).mpr
-      simpa only [snoc_zero] using
-        ih a hΓ (t.realize a)
-  | @exIntro α Γ φ t _ ih =>
-      have hφ := (instantiate_realize φ t a).mp (ih a hΓ)
-      apply BoundedFormula.realize_ex.mpr
-      exact ⟨t.realize a, by simpa only [snoc_zero] using hφ⟩
-  | @allIntro α Γ φ _ ih =>
-      intro m
-      have hp := ih (Sum.elim a (fun _ => m)) (by
-        intro C hC
-        rcases Finset.mem_image.mp hC with ⟨B, hB, rfl⟩
-        simpa using hΓ B hB)
-      simpa only [Sum.elim_comp_inl, Sum.elim_comp_inr, snoc_zero] using
-        (BoundedFormula.realize_toFormula φ _).mp hp
-  | @allIntroParameter α Γ φ c hcφ hcΓ _ ih =>
-      intro m
-      let a' := Function.update a c m
-      have hp := ih a' (by
-        intro B hB
-        apply (Lemmatheca.MathematicalLogic.FirstOrderSemantics.formula_realize_agree
-          B a a' default ?_).mp (hΓ B hB)
-        intro x hx
-        have hxc : x ≠ c := by
-          intro h
-          exact hcΓ B hB (h ▸ hx)
-        simp [a', hxc])
-      have hφ := (instantiate_realize φ (.var c) a').mp hp
-      have hm : (.var c : L.Term α).realize a' = m := by simp [a']
-      rw [hm] at hφ
-      have hOld := (Lemmatheca.MathematicalLogic.FirstOrderSemantics.formula_realize_agree
-        φ a' a (fun _ => m) ?_).mp hφ
-      · simpa only [snoc_zero] using hOld
-      · intro x hx
-        have hxc : x ≠ c := by
-          intro h
-          exact hcφ (h ▸ hx)
-        simp [a', hxc]
-  | @exElim α Γ C φ _ _ ihEx ihB =>
-      rcases BoundedFormula.realize_ex.mp (ihEx a hΓ) with ⟨m, hm⟩
-      have hp := ihB (Sum.elim a (fun _ => m)) (by
-        intro D hD
-        rcases Finset.mem_insert.mp hD with rfl | hD
-        · apply (BoundedFormula.realize_toFormula φ _).mpr
-          simpa only [Sum.elim_comp_inl, Sum.elim_comp_inr, snoc_zero] using hm
-        · rcases Finset.mem_image.mp hD with ⟨B, hB, rfl⟩
-          simpa using hΓ B hB)
-      simpa using hp
-  | equalIntro t => rfl
-  | equalElim φ s t _ _ ihEq ihφ =>
-      apply (instantiate_realize φ t a).mpr
-      have hs := (instantiate_realize φ s a).mp (ihφ a hΓ)
-      have he : s.realize a = t.realize a := by
-        simpa [Term.equal, Formula.Realize, BoundedFormula.Realize,
-          Term.realize_relabel] using ihEq a hΓ
-      simpa [he] using hs
-  | weakening _ hsub ih => exact ih a (fun B hB => hΓ B (hsub hB))
-  | cut _ _ ihA ihB =>
-      apply ihB a
-      intro C hC
-      rcases Finset.mem_insert.mp hC with rfl | hC
-      · exact ihA a (fun B hB => hΓ B (Finset.mem_union_left _ hB))
-      · exact hΓ C (Finset.mem_union_right _ hC)
-  | substitute σ _ ih =>
-      apply (BoundedFormula.realize_subst).mpr
-      apply ih (fun x => (σ x).realize a)
-      intro B hB
-      apply (BoundedFormula.realize_subst).mp
-      exact hΓ _ (Finset.mem_image.mpr ⟨B, hB, rfl⟩)
-  | parameterClose _ ih =>
-      let m : M := Classical.choice inferInstance
-      have hp := ih (Sum.elim (fun _ => m) a) (by
-        intro C hC
-        rcases Finset.mem_image.mp hC with ⟨B, hB, rfl⟩
-        simpa using hΓ B hB)
-      simpa using hp
-  | rename f _ ih =>
-      apply Formula.realize_relabel.mpr
-      apply ih (a ∘ f)
-      intro B hB
-      exact Formula.realize_relabel.mp (hΓ _ (Finset.mem_image.mpr ⟨B, hB, rfl⟩))
-  | parameterCloseMap f hf _ ih =>
-      let b := fun y => if hy : ∃ x, f x = y then a (Classical.choose hy)
-        else Classical.choice (inferInstance : Nonempty M)
-      have hb : b ∘ f = a := by
-        funext x
-        dsimp [b]
-        have hx : ∃ z, f z = f x := ⟨x, rfl⟩
-        rw [dite_eq_left hx]
-        rw [hf (Classical.choose_spec hx)]
-      have hp := ih b (by
-        intro C hC
-        rcases Finset.mem_image.mp hC with ⟨B, hB, rfl⟩
-        simpa only [Formula.realize_relabel, hb] using hΓ B hB)
-      simpa only [Formula.realize_relabel, hb] using hp
-  | equalSlots φ ts us _ _ ihEq ihφ =>
-      apply (instantiateSlots_realize φ us a).mpr
-      have hp := (instantiateSlots_realize φ ts a).mp (ihφ a hΓ)
-      have he : (fun i => (ts i).realize a) = (fun i => (us i).realize a) :=
-        funext (fun i => Formula.realize_equal.mp (ihEq i a hΓ))
-      simpa only [he] using hp
+  let m : M := Classical.choice inferInstance
+  have hp := CoreProof.sound h (Sum.elim a (fun _ => m)) (by
+    intro C hC
+    obtain ⟨B, hB, rfl⟩ := Finset.mem_image.mp hC
+    simpa using hΓ B hB)
+  simpa using hp
 
 theorem derives_sound {M : Type*} [L.Structure M] [Nonempty M] {T : Set (L.Formula α)}
     {A : L.Formula α} (h : Derives T A) (a : α → M)

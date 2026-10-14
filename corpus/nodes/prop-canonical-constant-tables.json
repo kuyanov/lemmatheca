@@ -1,0 +1,13 @@
+{
+  "id": "prop-canonical-constant-tables",
+  "description": "For the always false table, canonical DNF is \\(\\bot\\) and canonical CNF is equivalent to \\(\\bot\\); for the always true table, canonical CNF is \\(\\top\\) and canonical DNF is equivalent to \\(\\top\\).",
+  "module": "Lemmatheca.MathematicalLogic.PropositionalNormalForms",
+  "declaration": "Lemmatheca.MathematicalLogic.canonical_false_true",
+  "dependencies": [
+    "prop-canonical-dnf",
+    "prop-canonical-cnf"
+  ],
+  "verified": true,
+  "declaration_line": 227,
+  "signature": "Lemmatheca.MathematicalLogic.canonical_false_true.{u} {α : Type u} [DecidableEq α] {n : ℕ} (p : Fin n → α) :\n  Lemmatheca.MathematicalLogic.dnfFormula (Lemmatheca.MathematicalLogic.canonicalDnf p fun x => false) =\n      Lemmatheca.MathematicalLogic.PropFormula.falsum ∧\n    Lemmatheca.MathematicalLogic.cnfFormula (Lemmatheca.MathematicalLogic.canonicalCnf p fun x => true) =\n        Lemmatheca.MathematicalLogic.verum ∧\n      Lemmatheca.MathematicalLogic.SemEquivalent\n          (Lemmatheca.MathematicalLogic.cnfFormula (Lemmatheca.MathematicalLogic.canonicalCnf p fun x => false))\n          Lemmatheca.MathematicalLogic.PropFormula.falsum ∧\n        Lemmatheca.MathematicalLogic.SemEquivalent\n          (Lemmatheca.MathematicalLogic.dnfFormula (Lemmatheca.MathematicalLogic.canonicalDnf p fun x => true))\n          Lemmatheca.MathematicalLogic.verum"
+}

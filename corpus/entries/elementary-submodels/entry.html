@@ -41,14 +41,14 @@
   </div>
   <p class="proof-label">Proof</p>
   <p>If \(A\preccurlyeq M\), the existential formula is true in \(A\). Choose its witness \(b\in|A|\), then use elementarity once more on the body to obtain \(M\models\psi[\bar a,b]\).</p>
-  <p>Conversely, assume the witness condition. Induct on formulas to prove agreement in the two structures. The atomic cases and logical connectives are as in <a href="#quantifier-free-agreement"></a>. For an existential formula, a witness in \(A\) satisfies the body in \(M\) by induction, so truth in \(A\) implies truth in \(M\). In the other direction, the witness condition supplies \(b\in|A|\) satisfying the body in \(M\), and induction makes the body true in \(A\). This proves existential agreement. The universal case follows from \(\forall y\,\chi\) being equivalent to \(\neg\exists y\,\neg\chi\), or by the same argument applied to a counterexample. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Conversely, assume the witness condition. Induct on formulas to prove agreement in the two structures. The atomic cases and logical connectives are as in <a href="#quantifier-free-agreement"></a>. For an existential formula, a witness in \(A\) satisfies the body in \(M\) by induction, so truth in \(A\) implies truth in \(M\). In the other direction, the witness condition supplies \(b\in|A|\) satisfying the body in \(M\), and induction makes the body true in \(A\). This proves existential agreement. The universal case follows from the <a href="first-order-normal-forms#negation-identities">quantifier-duality equivalence</a> between \(\forall y\,\chi\) and \(\neg\exists y\,\neg\chi\), or by the same argument applied to a counterexample. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
 <section id="selected-witnesses" data-formal="elem-selected-witness elem-selected-witness-satisfies elem-selected-witness-fallback elem-witness-function-closure" data-kind="definition">
   <h2>Choosing functions that supply witnesses</h2>
   <p>We work in the surrounding mathematics with the axiom of choice. Choose \(m_*\in|M|\). For every formula \(\psi(\bar x,y)\), choose a function \(w_\psi:|M|^n\to|M|\) such that</p>
   <div class="math-display">\[M\models\exists y\,\psi[\bar a,y]\quad\Longrightarrow\quad M\models\psi[\bar a,w_\psi(\bar a)].\]</div>
-  <p>If no witness exists for a tuple, set the value to \(m_*\). These <strong>selected witness functions</strong>, often called Skolem functions for \(M\), need not be definable by formulas of \(L\). They are chosen functions used in our construction, rather than an assertion about which axioms \(M\) satisfies.</p>
+  <p>If no witness exists for a tuple, set the value to \(m_*\). These <strong>selected witness functions</strong>, often called Skolem functions for \(M\), need not have <a href="definability-and-automorphisms#definable-functions">graphs definable</a> by formulas of \(L\). They are chosen functions used in our construction, rather than an assertion about which axioms \(M\) satisfies.</p>
   <p>If a nonempty subset is closed under these functions, it contains all constants and is closed under the original functions as well. For a constant use the formula \(y=c\), whose unique witness is \(c^M\). For an interpreted function use \(y=f(\bar x)\), whose unique witness at \(\bar a\) is \(f^M(\bar a)\).</p>
 </section>
 
@@ -61,13 +61,13 @@
   <p>The seed makes \(A\) nonempty. Every finite tuple from \(A\) lies in one stage: take the largest of the finitely many indices at which its coordinates enter. The empty tuple is available at every stage. Its selected witness therefore belongs to the next stage, so \(A\) is closed under every witness function. By <a href="#selected-witnesses"></a> it is a substructure. For any existential formula true in \(M\) with parameters in \(A\), its selected witness lies in \(A\). Now apply <a href="#tarski-vaught"></a>. <span class="qed" aria-label="End of proof">□</span></p>
 </section>
 
-<section id="countable-submodels" data-formal="elem-countable-submodel elem-real-order-countable-seed elem-real-order-countable-submodel" data-kind="theorem">
+<section id="countable-submodels" data-formal="elem-countable-submodel elem-real-order-countable-seed elem-real-order-seed-gap elem-real-order-countable-submodel" data-kind="theorem">
   <h2>A countable language gives countable elementary submodels</h2>
   <div class="statement-box"><p>If \(L\) has at most countably many nonlogical symbols, \(M\) is a nonempty \(L\)-structure, and \(X\subseteq|M|\) is countable, then some countable elementary substructure \(A\preccurlyeq M\) contains \(X\). Here countable includes finite.</p></div>
   <p class="proof-label">Proof</p>
   <p>Use <a href="#witness-closure"></a>. The variables, logical symbols and nonlogical symbols form a countable alphabet. Its finite strings form a countable set: each fixed-length set is countable by <a href="finite-and-countable-sets#finite-products">finite products</a>, and take a <a href="infinite-cardinal-arithmetic#countable-unions">countable union</a> over lengths. Formulas, with their finite lists of parameter variables, form a subset of this set.</p>
   <p>Inductively, if \(X_r\) is countable, its finite tuples form a countable set by the same argument. The requests consisting of a formula and a tuple are countable, and their selected witnesses form a countable image. Thus \(X_{r+1}\) is countable. Finally \(A\) is a countable union of countable sets. <span class="qed" aria-label="End of proof">□</span></p>
-  <p>For example, apply this to the real-number strict-order structure and the prescribed set \(X=\mathbb Q\cup\{\pi\}\). There is a countable elementary substructure whose domain contains those numbers. The theorem does not identify that domain with \(X\): additional witnesses may have to be included.</p>
+  <p>For example, apply this to the real-number strict-order structure and the prescribed set \(X=\mathbb Z\cup\{\pi\}\). There is a countable elementary substructure whose domain contains those numbers. It must contain additional elements: \(0,1\in X\), and \(\mathbb R\models\exists y\,(0&lt;y\land y&lt;1)\), but no member of \(X\) lies strictly between \(0\) and \(1\). Thus \(X\) itself fails the <a href="#tarski-vaught">witness criterion</a>.</p>
 </section>
 
 <section id="downward-size-bound" data-formal="elem-downward-size-bound elem-downward-exact-size" data-kind="theorem">

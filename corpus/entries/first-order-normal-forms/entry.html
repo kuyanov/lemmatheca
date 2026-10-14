@@ -1,0 +1,147 @@
+<section id="equivalence-and-names" data-formal="fonf-equivalence" data-kind="definition">
+  <h2>Rewriting a formula without changing its truth</h2>
+  <p>Work in a <a href="first-order-languages#signatures">first-order language</a> \(L\), with the classical <a href="first-order-structures#satisfaction">truth clauses</a> and nonempty structure domains. For formulas at the same context size, write \(\varphi\equiv\psi\) when they have the same truth value in every \(L\)-structure under every assignment to their free variables and every tuple of values for their in-scope placeholders. This means equivalence in all structures, rather than accidental agreement in one model.</p>
+  <p>We retain the <a href="first-order-languages#scoped-formulas">scoped syntax</a>: free names \(x_0,x_1,\ldots\) are distinct from the placeholders \(z_0,z_1,\ldots\) governed by quantifiers. To make transformations readable, we also display binders as \(\forall u\), \(\exists v\), and so on. Each bound occurrence belongs to its displayed binder. On returning to scoped notation, replace it by that binder's placeholder, whose index records its depth. For example, \(\forall u\exists v\,R(u,v,x_0)\) stands for \(\forall z_0\exists z_1\,R(z_0,z_1,x_0)\). The name \(x_0\) remains free.</p>
+  <p>The displayed binder letters are labels, not extra free variables or new language symbols. When a binder moves outward, its placeholder indices and those of nested binders must be adjusted to keep each occurrence attached to the same binder. This is different from replacing letters indiscriminately.</p>
+</section>
+
+<section id="normal-form-definitions" data-formal="fonf-atomic fonf-literal fonf-quantifier-free fonf-negation-normal-form fonf-prenex fonf-prenex-definition-example fonf-prenex-conversion-shapes" data-kind="definition">
+  <h2>Two useful shapes</h2>
+  <p>An <strong>atomic formula</strong> is an equality \(t=s\) or a relation application \(R(t_0,\ldots,t_{k-1})\). A <strong>literal</strong> is an atomic formula or its negation. A formula is <strong>quantifier-free</strong> if it is built from atomic formulas and \(\bot\) by Boolean connectives, with no quantifier.</p>
+  <p>A formula is in <strong>negation normal form</strong> if it is built from literals, \(\bot\), and \(\top\) using only \(\land,\lor,\forall,\exists\). Thus negations occur only immediately before atomic formulas. This is a shape of the displayed expression: the <a href="first-order-languages#scoped-formulas">fixed connective abbreviations</a> can still be expanded into the primitive syntax.</p>
+  <p>A formula is in <strong>prenex normal form</strong> if it has the shape</p>
+  <div class="math-display">\[
+    Q_1u_1\cdots Q_ku_k\,\theta,
+    \qquad Q_i\in\{\forall,\exists\},
+  \]</div>
+  <p>where \(\theta\) is quantifier-free. The initial quantifiers form the <strong>prefix</strong>, and \(\theta\) is the <strong>matrix</strong>. An empty prefix is allowed. A prenex matrix need not be in negation normal form, although the construction below can give one that is.</p>
+  <p>For example, \(\forall u\exists v\,(\neg R(u,v)\lor u=v)\) is both prenex and in negation normal form. The formula \((\forall u\,R(u,u))\to\exists v\,R(v,x_0)\) is neither: its quantifiers occur below an implication.</p>
+</section>
+
+<section id="fresh-renaming" data-formal="fonf-fresh-universal-renaming fonf-fresh-existential-renaming fonf-fresh-renaming-support fonf-fresh-labels fonf-capture-counterexample fonf-capture-support" data-kind="lemma">
+  <h2>A new bound name must be fresh</h2>
+  <p>In notation that uses one pool of variable names, suppose \(v\) does not occur anywhere in the body \(\theta\), and \(v\ne u\). Replacing the occurrences of \(u\) governed by the displayed binder gives</p>
+  <div class="math-display">\[
+    Q u\,\theta\equiv Q v\,\theta[v/u],
+    \qquad Q\in\{\forall,\exists\}.
+  \]</div>
+  <p>Here \(\theta[v/u]\) replaces the occurrences free relative to the body; an inner quantifier binding \(u\) keeps its own occurrences. Requiring \(v\) absent from the whole body is a convenient sufficient condition: it prevents both binding an already free \(v\) and having an inserted \(v\) captured by an inner binder. The free-variable set of the whole quantified formula is unchanged.</p>
+  <p class="proof-label">Proof</p>
+  <p>Give \(u\) the value \(m\) in the old body and \(v\) the value \(m\) in the new body. Corresponding governed occurrences then have the same value. All other free occurrences keep their values; changing \(v\) has no effect on the old body because it did not occur there. The <a href="first-order-structures#semantic-substitution">substitution rule</a> and <a href="first-order-structures#free-variable-agreement">free-variable agreement</a> therefore give the same body truth for every \(m\). Quantifying over those values proves both cases. In scoped syntax this renaming changes only the printed label, leaving its placeholder and free-name set unchanged. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Freshness cannot be dropped. In a two-element domain, \(\forall u\,(u=x_0)\) is false at every assignment, whereas the incorrectly renamed display \(\forall x_0\,(x_0=x_0)\) is true. The old free occurrence of \(x_0\) became bound. Our disjoint-name convention rules out this capture.</p>
+  <p>A formula is finite, so only finitely many names occur in it. An infinite stock of names lets us choose a different fresh label for every binder, avoiding all free names and all other chosen labels.</p>
+</section>
+
+<section id="negation-identities" data-formal="fonf-double-negation fonf-de-morgan-conjunction fonf-de-morgan-disjunction fonf-implication-disjunction fonf-not-universal fonf-not-existential fonf-negation-identities-support fo-satisfaction-negation fo-truth fonf-equivalence-negation fonf-equivalence-implication fonf-equivalence-universal fonf-equivalence-existential" data-kind="lemma">
+  <h2>Negation reverses connectives and quantifiers</h2>
+  <p>The classical truth clauses give the following equivalences:</p>
+  <div class="math-display">\[
+  \begin{aligned}
+    \neg\neg\varphi&amp;\equiv\varphi,&amp;
+    \neg(\varphi\land\psi)&amp;\equiv\neg\varphi\lor\neg\psi,\\
+    \neg(\varphi\lor\psi)&amp;\equiv\neg\varphi\land\neg\psi,&amp;
+    \varphi\to\psi&amp;\equiv\neg\varphi\lor\psi,\\
+    \neg\forall u\,\theta&amp;\equiv\exists u\,\neg\theta,&amp;
+    \neg\exists u\,\theta&amp;\equiv\forall u\,\neg\theta.
+  \end{aligned}
+  \]</div>
+  <p>Also \(\neg\bot\equiv\top\) and \(\neg\top\equiv\bot\). Each identity preserves exactly the occurring free names.</p>
+  <p class="proof-label">Proof</p>
+  <p>Fix a structure and assignment. The connective identities are the corresponding Boolean truth identities. To fail \(\forall u\,\theta\) is to have some domain element at which the body fails; this is precisely \(\exists u\,\neg\theta\). To fail \(\exists u\,\theta\) is to have the body fail at every element; this is precisely \(\forall u\,\neg\theta\). These are classical equivalences. The two sides have the same free names because negation leaves free support unchanged, a binary connective takes the union of its children's supports, and a scoped binder does not change the free names of its body. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>An equivalence can be used inside a larger formula: corresponding children have the same truth values, and a quantifier compares the body at every possible value. Induction on the surrounding expression proves this replacement rule.</p>
+</section>
+
+<section id="negation-normal-form" data-formal="fonf-nnf-construction fonf-nnf-shape fonf-nnf-truth fonf-nnf-support fonf-negated-universal-example fonf-negated-universal-example-shape" data-kind="theorem">
+  <h2>Every formula has a negation normal form</h2>
+  <div class="statement-box">
+    <p>Every first-order formula \(\varphi\) has a formula \(N\) in negation normal form such that \(\varphi\equiv N\) and \(\operatorname{FV}(\varphi)=\operatorname{FV}(N)\). The construction works at every context size, retaining the surrounding placeholders.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Use <a href="first-order-languages#structural-induction">structural induction</a> on the primitive syntax, simultaneously constructing \(N^+(\varphi)\equiv\varphi\) and \(N^-(\varphi)\equiv\neg\varphi\). Both will have precisely \(\operatorname{FV}(\varphi)\). For an atomic formula \(A\), take \(N^+(A)=A\) and \(N^-(A)=\neg A\). Take \(N^+(\bot)=\bot\) and \(N^-(\bot)=\top\).</p>
+  <p>For implication and universal quantification, define</p>
+  <div class="math-display">\[
+  \begin{aligned}
+    N^+(\varphi\to\psi)&amp;=N^-(\varphi)\lor N^+(\psi),\\
+    N^-(\varphi\to\psi)&amp;=N^+(\varphi)\land N^-(\psi),\\
+    N^+(\forall z_n\,\theta)&amp;=\forall z_n\,N^+(\theta),\\
+    N^-(\forall z_n\,\theta)&amp;=\exists z_n\,N^-(\theta).
+  \end{aligned}
+  \]</div>
+  <p>The inductive hypotheses and <a href="#negation-identities"></a> prove the two equivalences at each step. Every output uses only the permitted normal-form constructors. Free support is unchanged in the atomic and falsity cases, is the same union in either implication case, and is retained by either scoped quantifier. The quantifier step applies the induction hypothesis at context size \(n+1\); it does not turn a surrounding placeholder into a free variable. Taking \(N=N^+(\varphi)\) proves the result. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For instance, \(\neg\forall u\,(P(u)\to\exists v\,R(u,v))\) is equivalent to \(\exists u\,(P(u)\land\forall v\,\neg R(u,v))\). The counterexample to a universal implication consists of an object satisfying its antecedent for which no object satisfies its consequent.</p>
+</section>
+
+<section id="moving-quantifiers" data-formal="fonf-moving-quantifiers fonf-empty-compatible-scope fonf-context-extension-support" data-kind="lemma">
+  <h2>Moving a quantifier past an independent formula</h2>
+  <p>Let \(u\) have no free occurrence in the named display \(\chi\). In nonempty domains, for \(\circ\in\{\land,\lor\}\) and \(Q\in\{\forall,\exists\}\),</p>
+  <div class="math-display">\[
+    (Q u\,\theta)\circ\chi\equiv Q u\,(\theta\circ\chi),
+    \qquad
+    \chi\circ(Q u\,\theta)\equiv Q u\,(\chi\circ\theta).
+  \]</div>
+  <p>Keep each occurrence attached to its original binder. In scoped notation, enlarging the context of \(\chi\) inserts a new placeholder that \(\chi\) ignores. Its existing placeholders must be shifted as needed; its free names remain unchanged.</p>
+  <p class="proof-label">Proof</p>
+  <p>Fix an assignment. Since \(u\) is absent from the free variables of \(\chi\), <a href="first-order-structures#free-variable-agreement">assignment agreement</a> makes the truth value of \(\chi\) independent of the value selected for \(u\). Call that fixed truth value \(C\), and write \(B(m)\) for the body's truth when \(u\) is given \(m\).</p>
+  <p>For conjunction with \(\exists\), a witness to \(B(m)\land C\) is exactly a witness to \(B(m)\) together with \(C\). For disjunction with \(\forall\), if \(C\) is false both sides require every \(B(m)\), and if \(C\) is true both sides are true. These two identities hold even over an empty domain.</p>
+  <p>For conjunction with \(\forall\), if \(C\) is true both sides require every \(B(m)\); if \(C\) is false the left side is false and the right side is false because the domain has an element. For disjunction with \(\exists\), if \(C\) is false both sides require some \(B(m)\); if \(C\) is true the left side is true and any domain element witnesses the right side. This proves the two identities requiring nonemptiness. Commutativity gives the versions with \(\chi\) on the left. The scope side condition also keeps the free-variable set unchanged. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="prenex-normal-form" data-formal="fonf-prenex-nnf-existence fonf-prenex-nonunique" data-kind="theorem">
+  <h2>Every formula has a prenex normal form</h2>
+  <div class="statement-box">
+    <p>For every first-order formula \(\varphi\), there is a prenex formula \(\psi\) in the same language such that \(\varphi\equiv\psi\) over all nonempty structures and \(\operatorname{FV}(\varphi)=\operatorname{FV}(\psi)\). The matrix may be chosen in negation normal form.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>First replace \(\varphi\) by the negation normal form from <a href="#negation-normal-form"></a>. Rename its finitely many binders to distinct labels, none occurring free, using <a href="#fresh-renaming"></a>. This affects neither truth nor free support. Induct on that normal-form expression.</p>
+  <p>Literals, \(\bot\), and \(\top\) already have an empty prefix. If the expression is \(Q u\,\theta\), apply induction to the body while keeping the surrounding placeholder for \(u\) available. Put \(Q u\) before the resulting prefix. Equivalent bodies have equivalent quantified formulas, and the free names are unchanged.</p>
+  <p>For a binary connective, write the children's inductively obtained forms as \(A\,\theta\) and \(B\,\eta\), where \(A\) and \(B\) are finite prefixes and both matrices are quantifier-free and in negation normal form. Their binder labels can be kept distinct from one another and from all free names. Every label in \(A\) is therefore absent from the other child, so <a href="#moving-quantifiers"></a> moves those quantifiers outward in their existing order. Then every label in \(B\) is absent from \(\theta\), so move that prefix outward too:</p>
+  <div class="math-display">\[
+    (A\,\theta)\circ(B\,\eta)
+      \equiv A\,B\,(\theta\circ\eta),
+      \qquad \circ\in\{\land,\lor\}.
+  \]</div>
+  <p>The new matrix still has the required shape. Each movement preserves free support under its side condition, and every replacement of a child does so by induction. These cases exhaust the negation-normal grammar. The resulting formula has the original free-variable set and no new function or relation symbols. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>A prenex form need not be unique: for example, one may pull the left child's prefix out first or the right child's prefix out first. Each conversion must follow justified identities. The theorem moves quantifiers; it neither removes them nor introduces symbols for choosing their witnesses. Quantifier elimination and Skolemization are separate constructions.</p>
+</section>
+
+<section id="worked-conversion" data-formal="fonf-prenex-conversion-example fonf-prenex-conversion-shapes fonf-prenex-conversion-support" data-kind="question">
+  <h2>An implication with two quantified children</h2>
+  <p>For a binary relation symbol \(R\), put \((\forall u\,R(u,u))\to\exists v\,R(v,x_0)\) into prenex normal form, retaining \(x_0\) as a free parameter.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Replace the implication and move its negation inward, then use distinct fresh binder labels:</p>
+      <div class="math-display">\[
+      \begin{aligned}
+        (\forall u\,R(u,u))\to\exists v\,R(v,x_0)
+          &amp;\equiv (\exists u\,\neg R(u,u))\lor(\exists v\,R(v,x_0))\\
+          &amp;\equiv\exists u\exists v\,(\neg R(u,u)\lor R(v,x_0)).
+      \end{aligned}
+      \]</div>
+      <p>The \(u\)-binder has no occurrence in the right child, and the \(v\)-binder has none in the left matrix, so both movements satisfy <a href="#moving-quantifiers"></a>. The matrix is quantifier-free and in negation normal form. Both original and final free-variable sets are exactly \(\{x_0\}\). In scoped notation the final formula is \(\exists z_0\exists z_1\,(\neg R(z_0,z_0)\lor R(z_1,x_0))\).</p>
+    </div>
+  </details>
+</section>
+
+<section id="empty-domain-boundary" data-formal="fonf-empty-scope-counterexamples" data-kind="question">
+  <h2>Which scope identities need an element?</h2>
+  <p>If empty domains were admitted in a language with no constants, what happens to the scope identities \((\forall u\,\top)\land\bot\equiv\forall u\,(\top\land\bot)\) and \((\exists u\,\bot)\lor\top\equiv\exists u\,(\bot\lor\top)\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Over the empty domain, every universal sentence is vacuously true and every existential sentence is false. In the first proposed equivalence the left side is false and the right side true. In the second, the left side is true and the right side false. Thus the freshness condition alone does not justify all scope movements. Our convention of <a href="first-order-structures#empty-domain-question">nonempty domains</a> supplies the element used in their proofs.</p>
+    </div>
+  </details>
+</section>
+
+<section id="quantifier-order" data-formal="fonf-each-has-equal fonf-common-equal-singleton fonf-quantifier-order-counterexample" data-kind="question">
+  <h2>A prefix records the order of choices</h2>
+  <p>Are \(\forall u\exists v\,(u=v)\) and \(\exists v\forall u\,(u=v)\) equivalent?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. The first is true in every nonempty structure: for each \(u\), choose \(v=u\). The second is true precisely when the domain has one element: its witness \(v\) must equal every \(u\), and conversely the only element is a witness in a singleton domain. A two-element domain therefore satisfies the first sentence and falsifies the second.</p>
+      <p>In the first prefix the choice of \(v\) may depend on \(u\). In the second it must be made before \(u\) is selected. The prenex theorem preserves the dependencies justified by the scope identities; it does not permit arbitrary permutations of a prefix.</p>
+    </div>
+  </details>
+</section>

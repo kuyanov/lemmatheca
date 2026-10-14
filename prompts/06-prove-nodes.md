@@ -44,6 +44,11 @@ saved register changes and distinguish the corpus repair from upstream correctio
    have statements or unregistered helpers for routine steps. If a target or
    representation must change, explain why and identify the correspondence review
    it needs. Do not silently rebind nodes or edit exposition to fit an easier proof.
+   For a proof calculus, preserve its intended primitive rules. Prove derived
+   operations by syntactic proof transformations; do not add the desired operation
+   as a constructor and treat this as admissibility. An extended proof type needs
+   a conservative translation into the basic calculus. Avoid semantic-completeness
+   arguments that would make the proof of completeness circular.
 3. Use dependencies as proof-planning hints, working through useful prerequisites
    first. They are not reading order or a complete extracted dependency graph.
    An unfinished hint does not automatically make this node unverified, but actual

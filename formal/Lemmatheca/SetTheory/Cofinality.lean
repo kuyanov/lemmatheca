@@ -10,6 +10,11 @@ open Ordinal Order Set Function
 open scoped Ordinal
 universe u v w
 
+/-- Every nonzero limit ordinal has infinite cofinality. -/
+theorem limit_cofinality_infinite {a : Ordinal.{u}} (ha : IsSuccLimit a) :
+    Cardinal.aleph0 ≤ a.cof :=
+  Ordinal.aleph0_le_cof_iff.mpr (Ordinal.one_lt_cof_iff.mpr ha)
+
 theorem cofinal_iff_sup (a : Ordinal.{u}) (ha : IsSuccLimit a) (s : Set a.ToType) :
     IsCofinal s ↔ (⨆ x : s, x.val.toOrd.val) = a := by
   classical

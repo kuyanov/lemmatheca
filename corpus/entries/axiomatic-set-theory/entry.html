@@ -37,6 +37,7 @@
   <p>A <strong>definable class</strong> is the collection described by a formula with fixed set parameters. Class notation \(C=\{x:\varphi(x)\}\) abbreviates that condition: \(x\in C\) means \(\varphi(x)\). It does not add an object to the universe. The class is a <strong>proper class</strong> if no set has exactly those members.</p>
   <p>The class \(V=\{x:x=x\}\) of all sets is proper by <a href="#no-universal-set"></a>. A set is also described by a class condition, such as \(x\in A\), but a proper class cannot be a member of a set.</p>
   <p>In ZF we quantify over sets, not over arbitrary classes. Statements using class notation must expand into formulas about sets. We will use only definable classes here; theories that take classes as additional objects require their own axioms.</p>
+  <p>For the meaning of <a href="definability-and-automorphisms#definable-sets">a formula defining a subset with parameters in a fixed structure</a>, see the general logic treatment. The class notation here remains an abbreviation for a condition, including when no set collects its solutions.</p>
 </section>
 
 <section id="pairing-and-union" data-kind="definition" data-formal="zf-pair-members zf-singleton-members zf-union-members zf-binary-union-members">
@@ -88,7 +89,7 @@
   <p>Existence and uniqueness are hypotheses to prove. Replacement does not select among several possible outputs. Nor does it collect the outputs of a proper-class domain into a set.</p>
 </section>
 
-<section id="infinity" data-kind="definition" data-formal="zf-inductive-set zf-omega zf-omega-contains-zero zf-omega-successor-closed">
+<section id="infinity" data-kind="definition" data-formal="zf-inductive-set zf-omega zf-omega-contains-zero zf-omega-successor-closed omega-least-inductive omega-unique-least-inductive">
   <h2>Infinity supplies one set containing all finite stages</h2>
   <p>Write \(S(x)=x\cup\{x\}\). A set \(I\) is <strong>inductive</strong> if \(\varnothing\in I\) and \(x\in I\) implies \(S(x)\in I\). The <strong>Infinity axiom</strong> asserts that an inductive set exists.</p>
   <p>The other construction axioms build \(0=\varnothing\), \(1=S(0)\), \(2=S(1)\), and every subsequent finite stage. Infinity goes further: it places all these stages inside one set. Define \(\omega\) to be the <strong>least inductive set</strong>, meaning an inductive set contained in every inductive set.</p>
@@ -98,7 +99,7 @@
 <section id="foundation" data-kind="definition" data-formal="zf-foundation-minimal-member zf-foundation-two-nonempty-minima">
   <h2>Foundation requires a membership-minimal member</h2>
   <p>The <strong>Foundation axiom</strong>, also called Regularity, says that every nonempty set \(A\) has a member \(a\) such that \(a\cap A=\varnothing\). Equivalently, no member of \(A\) belongs to \(a\).</p>
-  <p>This does not say that \(a\) is empty or unique. For example, let \(0=\varnothing\), \(1=\{0\}\), \(2=\{0,1\}\), and \(A=\{1,\{2\}\}\). Both members have empty intersection with \(A\), although neither is empty.</p>
+  <p>This does not say that \(a\) is empty or unique. For example, let \(0=\varnothing\), \(1=\{0\}\), \(2=\{0,1\}\), and \(A=\{1,\{2\}\}\). The two members are distinct: equality \(1=\{2\}\) would imply \(0=2\), although \(0\) is empty and \(2\) is not. Both have empty intersection with \(A\), although neither is empty.</p>
   <p>Foundation controls membership, whereas the axioms above mostly construct sets.</p>
 </section>
 

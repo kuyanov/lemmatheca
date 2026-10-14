@@ -1,0 +1,10 @@
+{
+  "id": "fonf-negation-identities-support",
+  "description": "Double-negation, De Morgan, implication-as-disjunction and quantifier-duality rewrites, together with negation of falsity or truth, preserve exactly the free-variable sets.",
+  "module": "Lemmatheca.MathematicalLogic.FirstOrderNormalForms",
+  "declaration": "Lemmatheca.MathematicalLogic.FirstOrderNormalForms.negation_identities_support",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 159,
+  "signature": "Lemmatheca.MathematicalLogic.FirstOrderNormalForms.negation_identities_support.{u, v, u'} {L : FirstOrder.Language}\n  {α : Type u'} {n : ℕ} [DecidableEq α] (φ ψ : L.BoundedFormula α n) (θ : L.BoundedFormula α (n + 1)) :\n  φ.not.not.freeVarFinset = φ.freeVarFinset ∧\n    (φ ⊓ ψ).not.freeVarFinset = (φ.not ⊔ ψ.not).freeVarFinset ∧\n      (φ ⊔ ψ).not.freeVarFinset = (φ.not ⊓ ψ.not).freeVarFinset ∧\n        (φ.imp ψ).freeVarFinset = (φ.not ⊔ ψ).freeVarFinset ∧\n          θ.all.not.freeVarFinset = θ.not.ex.freeVarFinset ∧\n            θ.ex.not.freeVarFinset = θ.not.all.freeVarFinset ∧\n              ⊥.not.freeVarFinset = ⊤.freeVarFinset ∧ ⊤.not.freeVarFinset = ⊥.freeVarFinset"
+}
