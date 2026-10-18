@@ -19,6 +19,10 @@ the mathematics, connect its claims to formal nodes, review those connections,
 and complete the proofs. Human exposition can be contributed before its
 formalization is ready.
 
+Follow the [stage responsibilities](CONTRIBUTING.md#stage-responsibilities) and
+[change-based checks](CONTRIBUTING.md#validation-and-submission) to carry completed
+work forward through the pipeline.
+
 Maintain confirmed mathematical defects in cited books, papers, and notes in
 [Source errors](corpus/source-errors.md). Prioritize false statements and failed
 arguments; valid compressed proofs and missing explanations are not source errors.
@@ -136,7 +140,8 @@ uv run python app/manage.py runserver
 Open <http://127.0.0.1:8000/>. Browse an area to open an entry, then use its
 formalization badges to inspect nodes and their Lean sources. Verification badges
 reflect the last successful build; requests do not run Lean. After changing
-content mappings, node bindings, or proofs, rerun `build` and
+content mappings, node bindings, or proofs, refresh `build` results at delivery
+under the [shared check rules](CONTRIBUTING.md#validation-and-submission) and
 include the generated JSON changes.
 Stop the development server with Ctrl+C.
 

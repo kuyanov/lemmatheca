@@ -47,6 +47,9 @@ families as complete formulas, such as `\aleph_a`, rather than mixing a worded
 family name with a separately typeset index. General topic names such as
 “aleph sequence” or “epsilon number” can remain prose.
 Avoid HTML, proofs, and implementation commentary in descriptions.
+For display formulas, follow the [corpus layout guidance](corpus.md#mathematics-figures-and-assets):
+prefer natural horizontal statements on desktop and allow scrolling within the
+formula on mobile. Do not stack the sides of an equivalence merely to fit a phone.
 
 Check every new or edited description for notation outside math delimiters and
 unmatched or nested delimiters, then inspect its rendered node page. Confirm that the
@@ -99,6 +102,13 @@ the GitHub review, and check domains, quantifiers, conventions, and assumptions.
 Several nodes may collectively cover a block, and one node may serve several blocks.
 See the [mapping contract](corpus.md#block-to-node-mapping).
 
+Compare hypotheses, universes, subtypes, domains, codomains, and conclusions,
+including existence versus uniqueness and boundary cases. Check library
+conventions such as total division and natural-valued cardinality on infinite
+sets. Inspect elaborated relations and typeclass instances, particularly for
+custom types and literals; a type annotation alone may not select the intended
+relation. When stating inverse laws, ensure both laws concern the same map.
+
 Check which inputs each constructed witness may depend on. If one construction
 must work for every background theory, choose it before quantifying over that
 theory: `∀ σ, ∃ τ, ∀ T, ...`, rather than `∀ σ T, ∃ τ, ...`. Inspect the
@@ -107,10 +117,9 @@ claim concerns a specified map, the exposed conclusion must identify that map;
 returning an embedding type alone does not state that its underlying function is
 the supplied function. Retain an explicit identity or a predicate on that function.
 
-When a proof uses a separate formula syntax, prove its connection to the shared
-syntax before binding claims about the shared language or theory. The translations
-must preserve satisfaction, variable scope, and any required syntactic property
-such as being quantifier-free. Bind the resulting theorem for the actual theory;
+When a proof uses a separate formula syntax, connect it to the shared syntax.
+The translations must preserve satisfaction, variable scope, and any required
+syntactic property such as being quantifier-free. Bind the resulting theorem for the actual theory;
 binding a definition beside a theorem for an unrelated local syntax does not
 establish that the theory satisfies the definition. Check dependent completeness,
 elementarity, and definability claims in that same representation.
@@ -119,11 +128,19 @@ For a proof calculus, compare the primitive rules of the human and formal system
 An operation made a constructor of the formal proof type has not thereby been
 proved admissible in the human system. Derived-rule and conservative-expansion
 claims require syntactic transformations into proofs using the stated basic rules.
-If an extended proof representation is used, supply this translation before
-claiming completeness for the basic calculus. Soundness of the extension alone
-does not provide it. Do not use the completeness theorem being constructed to
-justify a syntactic step in its own proof. Distinguish substitution of free names
-from instantiation of quantified placeholders, and define both operations when used.
+If an extended proof representation is used, include this translation in the
+formalization of completeness for the basic calculus. Soundness of the extension
+alone does not provide it. Do not use the completeness theorem being constructed
+to justify a syntactic step in its own proof. Distinguish substitution of free names
+from instantiation of quantified placeholders, and define both operations when used,
+including the treatment of fresh auxiliary names.
+
+Step 4 implements translation definitions and states the necessary bridge,
+preservation, and admissibility theorems, allowing unfinished proofs. Step 5 checks
+that these definitions and statements would establish the intended correspondence.
+Step 6 proves them before claiming completed formal coverage. A correct unproved
+bridge is proof work; a missing bridge target is a correspondence gap. See the
+[stage responsibilities](../CONTRIBUTING.md#stage-responsibilities).
 
 `dependencies` contains direct proof-planning hints. It is not a reading order,
 a list of every concept in a statement, or an extracted Lean dependency graph.
@@ -151,12 +168,18 @@ Use the existing Lean project; do not introduce separate per-entry Lake projects
 
 ## Build and verification
 
-After editing Lean declarations or proofs, node bindings,
-or entry block mappings, refresh verification from the repository root:
+After editing Lean declarations or proofs, node bindings, or entry block mappings,
+refresh verification from the repository root at delivery:
 
 ```sh
 uv run python app/manage.py build
 ```
+
+Follow the [shared check and batching rules](../CONTRIBUTING.md#validation-and-submission).
+A multi-stage batch may defer this writing build until its final mutating stage;
+step 4 still compiles targets and inspects their actual signatures before step 5.
+Saved results describe the last successful build and do not certify edits made
+while a refresh is deferred. Standalone handoffs include the required refresh.
 
 Run `uv run python app/manage.py validate_corpus` when node metadata, bindings,
 or entry structure changes. Run relevant catalog tests for reader or build-tooling
@@ -190,8 +213,8 @@ build neither reads nor writes `corpus/statistics.json`.
 Commit changed Lean sources, bindings, and all generated node and entry JSON
 alongside the change. Verification describes
 the last successful build: the server
-never runs Lean or performs source-freshness checks on a page request. Rerun the
-build after editing proofs, bindings, or entry block mappings. To compile locally
+never runs Lean or performs source-freshness checks on a page request. Refresh the
+build results at delivery after the relevant edits. To compile locally
 while working, `lake build` from `formal/` is useful, but it does not refresh corpus
 JSON; finish with the Django build command.
 

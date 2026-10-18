@@ -1,12 +1,7 @@
 <section id="boolean-operations" data-formal="boolean-algebra boolean-meet-distributes boolean-join-distributes boolean-meet-order boolean-join-order" data-kind="definition">
   <h2>A Boolean algebra abstracts union, intersection, and complement</h2>
   <p>A <strong>bounded lattice</strong> is a partially ordered set \(B\) with a least element \(0\), a greatest element \(1\), and a greatest lower bound \(a\wedge b\) and least upper bound \(a\vee b\) for every pair. These are the <a href="ordered-sets#suprema-and-infima">infimum and supremum</a> of the pair. A <strong>Boolean algebra</strong> is a bounded lattice satisfying both distributive laws,</p>
-  <div class="math-display">\[
-    \begin{aligned}
-      a\wedge(b\vee c)&amp;=(a\wedge b)\vee(a\wedge c),\\
-      a\vee(b\wedge c)&amp;=(a\vee b)\wedge(a\vee c).
-    \end{aligned}
-  \]</div>
+  <div class="math-display">\[a\wedge(b\vee c)=(a\wedge b)\vee(a\wedge c),\qquad a\vee(b\wedge c)=(a\vee b)\wedge(a\vee c).\]</div>
   <p>in which every \(a\) has a complement \(a^c\), satisfying \(a\wedge a^c=0\) and \(a\vee a^c=1\). The order is recovered from the operations: \(a\le b\) exactly when \(a\wedge b=a\), equivalently \(a\vee b=b\).</p>
   <p>We allow the one-element algebra \(0=1\). A <strong>nontrivial</strong> Boolean algebra has \(0\ne1\). All existence arguments below take place in ZFC; the use of choice will be explicit. The goal is an algebraic representation by sets, without introducing a topology.</p>
 </section>
@@ -14,15 +9,7 @@
 <section id="elementary-boolean-laws" data-formal="boolean-complement-unique boolean-complement-involution boolean-bottom-complement boolean-top-complement boolean-complement-join boolean-complement-meet boolean-complement-order boolean-complement-disjoint-order lattice-disjoint-meet-zero" data-kind="lemma">
   <h2>Complements are unique and reverse the order</h2>
   <p>In a Boolean algebra the complement is unique. For all \(a,b\),</p>
-  <div class="math-display">\[
-    \begin{aligned}
-      0^c&amp;=1,\\
-      1^c&amp;=0,\\
-      (a^c)^c&amp;=a,\\
-      (a\vee b)^c&amp;=a^c\wedge b^c,\\
-      (a\wedge b)^c&amp;=a^c\vee b^c.
-    \end{aligned}
-  \]</div>
+  <div class="math-display">\[0^c=1,\qquad 1^c=0,\qquad (a^c)^c=a,\qquad (a\vee b)^c=a^c\wedge b^c,\qquad (a\wedge b)^c=a^c\vee b^c.\]</div>
   <p>Also \(a\le b\) if and only if \(b^c\le a^c\), and</p>
   <div class="math-display">\[ a\le b\quad\Longleftrightarrow\quad a\wedge b^c=0. \]</div>
   <p class="proof-label">Proof</p>
@@ -98,15 +85,7 @@
 <section id="stone-representation" data-formal="boolean-stone-operations boolean-stone-homomorphism boolean-stone-order-embedding boolean-stone-injective boolean-stone-range boolean-stone-range-carrier boolean-stone-representation" data-kind="theorem">
   <h2>Every Boolean algebra is isomorphic to an algebra of sets</h2>
   <div class="statement-box"><p>Assuming choice, the Stone map is an injective Boolean homomorphism and an <a href="ordered-sets#order-maps">order embedding</a>. Explicitly,</p>
-    <div class="math-display">\[
-      \begin{aligned}
-        \widehat0&amp;=\varnothing,\\
-        \widehat1&amp;=X,\\
-        \widehat{a\wedge b}&amp;=\widehat a\cap\widehat b,\\
-        \widehat{a\vee b}&amp;=\widehat a\cup\widehat b,\\
-        \widehat{a^c}&amp;=X\setminus\widehat a.
-      \end{aligned}
-    \]</div>
+    <div class="math-display">\[\widehat0=\varnothing,\qquad \widehat1=X,\qquad \widehat{a\wedge b}=\widehat a\cap\widehat b,\qquad \widehat{a\vee b}=\widehat a\cup\widehat b,\qquad \widehat{a^c}=X\setminus\widehat a.\]</div>
     <p>and \(a\le b\) if and only if \(\widehat a\subseteq\widehat b\). Its range \(\{\widehat a:a\in B\}\) is an algebra of subsets of \(X\), and \(s\) is a Boolean isomorphism from \(B\) onto this range.</p></div>
   <p class="proof-label">Proof</p>
   <p>Proper filters exclude \(0\) and include \(1\). A meet belongs to a filter exactly when both factors belong: meet closure gives one direction, and upward closure gives the other. Primeness gives the join identity, including its converse by upward closure. Complement decisions give the complement identity. Thus \(s\) is a homomorphism.</p>

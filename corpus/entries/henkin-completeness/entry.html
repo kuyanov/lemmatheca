@@ -8,15 +8,11 @@
 <section id="complete-consistent-theories" data-formal="henkin-complete-theory henkin-deductive-closure henkin-no-falsity henkin-negation-membership henkin-conjunction-membership henkin-disjunction-membership henkin-implication-membership" data-kind="lemma">
   <h2>Deciding every sentence fixes the connective rules</h2>
   <p>In a fixed language, call a set \(S\) of sentences <strong>complete</strong> if, for every sentence \(\theta\), either \(\theta\in S\) or \(\neg\theta\in S\). This describes the set of sentences, rather than the completeness of a proof system. Suppose \(S\) is both complete and consistent. Then exactly one of \(\theta\) and \(\neg\theta\) belongs to \(S\), and</p>
-  <div class="math-display">\[
-  \begin{aligned}
-    S\vdash\theta&\quad\Longleftrightarrow\quad\theta\in S,\qquad \bot\notin S,\\
-    \neg\theta\in S&\quad\Longleftrightarrow\quad\theta\notin S,\\
-    (\theta\land\eta)\in S&\quad\Longleftrightarrow\quad\theta\in S\text{ and }\eta\in S,\\
-    (\theta\lor\eta)\in S&\quad\Longleftrightarrow\quad\theta\in S\text{ or }\eta\in S,\\
-    (\theta\to\eta)\in S&\quad\Longleftrightarrow\quad\theta\notin S\text{ or }\eta\in S.
-  \end{aligned}
-  \]</div>
+  <div class="math-display">\[\begin{gathered}
+S\vdash\theta\quad\Longleftrightarrow\quad\theta\in S,\qquad \bot\notin S,\qquad \neg\theta\in S\quad\Longleftrightarrow\quad\theta\notin S,\\
+(\theta\land\eta)\in S\quad\Longleftrightarrow\quad\theta\in S\text{ and }\eta\in S,\qquad (\theta\lor\eta)\in S\quad\Longleftrightarrow\quad\theta\in S\text{ or }\eta\in S,\\
+(\theta\to\eta)\in S\quad\Longleftrightarrow\quad\theta\notin S\text{ or }\eta\in S.
+\end{gathered}\]</div>
   <p class="proof-label">Proof</p>
   <p>Membership implies derivability by the assumption rule. If \(S\vdash\theta\) but \(\theta\notin S\), completeness puts \(\neg\theta\) in \(S\), yielding a contradiction. This proves deductive closure. Consistency excludes \(\bot\) and any pair \(\theta,\neg\theta\); completeness then gives the negation law.</p>
   <p>Conjunction introduction and elimination give its equivalence. Disjunction introduction gives one direction of its equivalence. If neither disjunct belongs to \(S\), both negations do; a disjunction would then give a contradiction by cases. For implication, \(\theta\to\eta\in S\) and \(\theta\in S\) imply \(\eta\in S\). Conversely, if \(\eta\in S\), assume \(\theta\) and repeat \(\eta\); if \(\theta\notin S\), assume \(\theta\) and use \(\neg\theta\in S\) to obtain \(\eta\) by falsity elimination. Discharging the assumption proves the implication in both cases. These are the usual derived rules for our fixed connective abbreviations. <span class="qed" aria-label="End of proof">□</span></p>
@@ -106,14 +102,10 @@
     M_S:=\operatorname{CT}(L^+)/{\sim}.
   \]</div>
   <p>It is nonempty because \([d_0]\) is an element. Give symbols their interpretations by</p>
-  <div class="math-display">\[
-  \begin{aligned}
-    c^{M_S}&:=[c],\\
-    f^{M_S}([t_0],\ldots,[t_{k-1}])&:=[f(t_0,\ldots,t_{k-1})],\\
-    R^{M_S}([t_0],\ldots,[t_{k-1}])
-      &\quad\Longleftrightarrow\quad R(t_0,\ldots,t_{k-1})\in S.
-  \end{aligned}
-  \]</div>
+  <div class="math-display">\[\begin{gathered}
+c^{M_S}:=[c],\qquad f^{M_S}([t_0],\ldots,[t_{k-1}]):=[f(t_0,\ldots,t_{k-1})],\\
+R^{M_S}([t_0],\ldots,[t_{k-1}])\quad\Longleftrightarrow\quad R(t_0,\ldots,t_{k-1})\in S.
+\end{gathered}\]</div>
   <p>These are independent of the representatives. If \(t_i\sim u_i\) for every \(i&lt;k\), equality replacement one coordinate at a time proves \(f(\bar t)=f(\bar u)\) and both implications between \(R(\bar t)\) and \(R(\bar u)\). Deductive closure puts these conclusions in \(S\). Function values therefore have the same class, and relation membership is unchanged. For arity zero there are no coordinates to replace. This is precisely the requirement for <a href="equivalence-relations#rules-on-representatives">defining rules on representatives</a>.</p>
   <p>Equality in \(M_S\) is actual equality of classes. In particular, \([t]=[u]\) iff \(t\sim u\); it is not a separately chosen relation interpretation.</p>
 </section>

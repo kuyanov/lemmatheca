@@ -1,0 +1,13 @@
+{
+  "id": "diag-literal-embedding-criterion",
+  "description": "A specified map \\(f:M\\to N\\) is the underlying map of a structure embedding if and only if it preserves the truth of every literal at every finite parameter tuple.",
+  "module": "Lemmatheca.MathematicalLogic.Diagrams",
+  "declaration": "Lemmatheca.MathematicalLogic.Diagrams.embedding_iff_preserves_literals",
+  "dependencies": [
+    "diag-embedding",
+    "fonf-literal"
+  ],
+  "verified": true,
+  "declaration_line": 232,
+  "signature": "Lemmatheca.MathematicalLogic.Diagrams.embedding_iff_preserves_literals.{u, v, w, w'} {L : FirstOrder.Language}\n  {M : Type w} {N : Type w'} [L.Structure M] [L.Structure N] (f : M → N) :\n  (∃ e, ⇑e = f) ↔\n    ∀ (n : ℕ) (φ : L.Formula (Fin n)),\n      Lemmatheca.MathematicalLogic.FirstOrderNormalForms.IsLiteral φ →\n        ∀ (a : Fin n → M), φ.Realize a → φ.Realize (f ∘ a)"
+}

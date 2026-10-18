@@ -1,119 +1,54 @@
 # Step 1: Choose sources and scope
 
-Follow the [single-step execution instructions](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
-Complete this step using the supplied inputs and current repository files;
-return its deliverable without starting the next stage.
-
-Choose the sources and scope for a new Lemmatheca entry.
+Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
+Own source selection and mathematical scope; return a plan, not an entry or formal bindings.
 
 ## Inputs
 
-- Topic (required): the mathematics the entry should develop.
-- Intended entry ID (optional): otherwise propose a stable descriptive ID.
-- Reader, prerequisites, scope, and exclusions (optional): infer a coherent unit
-  from nearby entries when unspecified and state the proposed boundaries.
-- Sources or selection criteria (optional): inspect supplied books, notes, papers,
-  or URLs; otherwise find suitable sources and explain the choice.
+- Topic.
+- Optional intended audience, entry ID, scope, source preferences, and existing
+  planning material. Infer a coherent level from nearby entries when unspecified.
 
 ## Context
 
-Read the [project overview](../README.md), [corpus guide](../docs/corpus.md),
-[formalization guide](../docs/formal.md), and [contribution workflow](../CONTRIBUTING.md).
-Inspect nearby entries, `corpus/taxonomy.json`, and `corpus/area_entries.json`.
-Respect repository instructions and preserve unrelated work.
+Inspect nearby entries, `corpus/area_entries.json`, and the relevant parts of
+[reference planning](../corpus/reference-planning.md). Use the
+[scope](../CONTRIBUTING.md#prerequisites-and-scope),
+[reading-order](../CONTRIBUTING.md#reading-order), and
+[citation](../docs/corpus.md#entry-metadata) contracts.
 
 ## Work
 
-1. Inspect the actual sources. Identify the chapters, sections, or pages supporting
-   the proposed definitions, results, examples, and proofs. Verify bibliographic
-   details. Distinguish inspected sources from inaccessible suggestions; never
-   invent citations or claim to have read unavailable material.
-   Check the mathematical rigor of the passages being used, including definitions,
-   hypotheses, proof steps, examples, and cited prerequisites. Trace nontrivial
-   omissions and appeals to other results; a source's reputation alone does not
-   establish correctness. Distinguish a valid compressed argument from a genuine
-   gap, and distinguish source defects from uncertainty in your own checking.
-   Report every identified error or gap with its source location, affected claim,
-   consequence, and a proposed repair or supplementary source. Mark unavailable
-   or unchecked arguments explicitly. Return this assessment for use in step 2,
-   before drafting the entry.
-   Prioritize false statements, missing necessary hypotheses, and failed arguments;
-   do not classify a valid compressed proof or missing explanation as an error.
-   Consult and maintain [Source errors](../corpus/source-errors.md) using the
-   [source-error contract](../docs/corpus.md#source-errors). Save confirmed defects,
-   checked repairs, and the actual reviewed scope before the handoff. Add or update
-   coverage for inspected publications even when no defect is found. Identify
-   inaccessible passages without claiming they were checked. This register is
-   the only corpus file this planning step may edit.
-2. Propose a coherent reading unit with clear prerequisites and boundaries. Link
-   existing entries where useful rather than repeating whole explanations, while
-   keeping enough context to understand the new entry. Do not expand its scope
-   merely to match available Lean lemmas.
-   Treat reading-order placement and area membership as provisional: entries may
-   be reordered or moved into separate subareas. Identify prerequisites by stable
-   entry and block IDs, independently of adjacency or a shared area. Plan named
-   links rather than references to "the previous entry" or "the next entries."
-   Apply the [prerequisite and scope guidance](../CONTRIBUTING.md#prerequisites-and-scope).
-   Choose placement and plan the summary and abstract using the
-   [reading-order criteria](../CONTRIBUTING.md#reading-order).
-   Consult the [upcoming-reference table](../corpus/reference-planning.md#upcoming-references).
-   Search existing entries across areas for consuming blocks that could link to
-   the proposed coverage. Include these incoming-reference locations and exact
-   intended facts in the handoff for step 2. Identify which planning tasks would
-   be fulfilled, partially fulfilled, or remain pending; completed work must be
-   removed from every planning section rather than retained as history.
-   Familiar background,
-   including standard real-number facts, may be used without a corpus reference;
-   propose useful future-area links in the handoff using the table's four
-   columns. The table is for current consuming blocks. Keep proposed existing-target
-   integration notes, plans for entries not yet drafted, correspondences still to
-   prove, and deferred extensions separate from those rows, identifying the
-   corresponding planning sections in the same
-   [Reference backlog and planning](../corpus/reference-planning.md) document.
-   Do not edit that document during this planning step. A missing link alone is not
-   a proof gap. Do not plan major dependencies on substantial theory missing from
-   the corpus.
-   Map the needed results to current entry/block IDs and inspect their assumptions.
-   Identify the axioms needed by the planned human arguments. Check arguments
-   before reusing results under weaker assumptions; a Verified badge does not
-   establish axiom strength.
-   Separate ready human prerequisites, formal readiness, short lemmas to develop
-   locally, and missing substantial theories. For a missing theory, recommend the
-   area and concrete entry titles to start, identify the affected claims, and
-   propose a useful scope that can be added now. Do not treat available mathlib
-   coverage as a substitute for reader prerequisites.
-3. Inspect `corpus/nodes/` and the pinned Lean/mathlib sources for likely reusable
-   bindings. Read signatures and relevant definitions, not just names. Flag
-   representation differences and missing results without starting formalization.
-4. Plan original exposition and record precise source credit. Identify any figure
-   reuse requirements; do not copy substantial passages or figures without a basis
-   for doing so. Keep technical formalization details out of the planned human prose.
+1. Select and inspect the source passages supporting the proposed definitions,
+   results, examples, and proofs. Record exact editions, locations, and access
+   limits. Assess hypotheses, deductions, and substantial imported prerequisites;
+   establish a repair or alternative argument for any affected claim. Reuse
+   applicable existing source assessments rather than repeating unchanged checks.
+   Maintain the [source register](../docs/corpus.md#source-errors) for material
+   actually inspected; distinguish confirmed mathematical defects from valid
+   compression, missing explanation, and uncertainty.
+2. Choose a coherent reading unit. Map its prerequisites to existing entry/block
+   IDs and check their assumptions, including axiom strength where relevant.
+   Separate short supporting lemmas from substantial missing theories; narrow or
+   defer unsupported scope explicitly. Available Lean declarations do not supply
+   missing human exposition.
+3. Propose a stable ID, plain-text title, primary area, reading-order placement,
+   and outline. Map the outline to precise sources and proposed `based_on`
+   citations. Identify motivating examples and any figure-reuse requirements.
+4. Note relevant outstanding reference-planning tasks and known consuming blocks
+   for the drafting handoff. Full incoming-reference discovery and integration
+   belong to step 2. Leave reference planning and existing entries unchanged.
 
 ## Checks
 
-Verify the proposed entry ID and reading-order placement against the current
-corpus, and check each citation against an inspected source. Planning changes no
-entry, node, proof, or generated files. Check source-error register links after
-updating it; no validator, build, or catalog test run is required. If Lean
-sources are unavailable, record which reuse candidates could not be checked and
-complete the source plan.
+Check source provenance, mathematical support, and prerequisite coverage as part
+of the work above. If the source register changed, verify its links. No corpus
+validation, rendering, Lean/library search, or build is required for this plan.
+Formal reuse and signature inspection belong to step 4.
 
 ## Deliverable
 
-Return the proposed ID and a plain-text entry title with no LaTeX commands or math
-delimiters. Describe mathematical notation in words in the title; reserve formulas
-for the entry body. Include the scope, outline, entry links, primary area and
-reading-order placement, and a source-to-outline map with precise locations. Include proposed
-`based_on` citation objects following the [corpus guide](../docs/corpus.md).
-Include the source-rigor assessment: findings with precise locations, proposed
-repairs, and any unchecked material. State explicitly if no gaps were found in the
-inspected passages, without claiming more than was checked. List checks performed
-and unresolved questions for the drafting step.
-Include the saved source-error IDs and coverage updates, or explicitly state
-that the register already covers the inspected passages and needs no changes.
-Include the prerequisite map, a recommendation on what can be added now, and any
-areas or entries needed before the deferred material, with reasons.
-Include the existing consuming blocks to update when the new coverage is drafted
-and the planned tasks to remove or narrow. This remains a handoff; do not edit
-existing entries or reference planning in step 1.
-Do not create entries, nodes, proofs, or generated summaries at this stage.
+Return the scope and outline, source-to-outline map and citation objects,
+prerequisites and placement, checked repairs and unchecked passages, relevant
+integration candidates, and unresolved drafting questions. Report source-register
+changes when made. Do not create entries, nodes, proofs, or generated data.

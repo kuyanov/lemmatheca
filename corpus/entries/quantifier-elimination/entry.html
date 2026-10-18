@@ -57,35 +57,17 @@
 <section id="dense-orders" data-formal="qe-dense-order-axioms qe-dense-order-model-characterization qe-dense-order-models qe-negated-order-atoms qe-integer-between-disagrees" data-kind="definition">
   <h2>Dense linear orders without endpoints</h2>
   <p>Now use the language \(L_&lt;=\{&lt;\}\), with one binary relation and no function or constant symbols. Let \(T_{\mathrm{dlo}}\) assert that \( &lt; \) is a <a href="ordered-sets#strict-orders">strict linear order</a>, is dense, and has no endpoints. In detail, the relation is irreflexive and transitive, distinct elements are comparable, and</p>
-  <div class="math-display">\[
-  \begin{aligned}
-    &amp;\forall u\forall v\;(u&lt;v\to\exists x\,(u&lt;x\land x&lt;v)),\\
-    &amp;\forall u\exists x\;(x&lt;u),\qquad
-       \forall u\exists x\;(u&lt;x).
-  \end{aligned}
-  \]</div>
+  <div class="math-display">\[\forall u\forall v\;(u&lt;v\to\exists x\,(u&lt;x\land x&lt;v)),\qquad \forall u\exists x\;(x&lt;u),\qquad \forall u\exists x\;(u&lt;x).\]</div>
   <p>The rational and real numbers with their usual orders are models; the integers fail density. The <a href="dense-linear-orders#density-and-completeness">set-theoretic dense-order treatment</a> studies the same order properties from a set-theoretic viewpoint. Here we study every first-order formula in the order language.</p>
   <p>Linearity lets us remove negated atomic formulas:</p>
-  <div class="math-display">\[
-    \begin{aligned}
-      u\ne v &amp;\equiv_{T_{\mathrm{dlo}}} (u&lt;v\lor v&lt;u),\\
-      \neg(u&lt;v) &amp;\equiv_{T_{\mathrm{dlo}}} (u=v\lor v&lt;u).
-    \end{aligned}
-  \]</div>
+  <div class="math-display">\[u\ne v \equiv_{T_{\mathrm{dlo}}} (u&lt;v\lor v&lt;u),\qquad \neg(u&lt;v) \equiv_{T_{\mathrm{dlo}}} (u=v\lor v&lt;u).\]</div>
   <p>Consequently, after distributing finite Boolean combinations, it is enough to eliminate \(\exists x\) from conjunctions of positive equalities and strict inequalities.</p>
 </section>
 
 <section id="finite-bounds" data-formal="qe-finite-bounds qe-dense-order-clause" data-kind="lemma">
   <h2>When finitely many lower and upper bounds have a witness</h2>
   <p>In a nonempty dense linear order without endpoints, let \(L,U\) be finite sets of elements and let \(C\) be a condition independent of \(x\). Then</p>
-  <div class="math-display">\[
-    \begin{gathered}
-      \exists x\Bigl(C\land\bigwedge_{\ell\in L}\ell&lt;x
-        \land\bigwedge_{u\in U}x&lt;u\Bigr)\\
-      \Longleftrightarrow\\
-      C\land\bigwedge_{\ell\in L,\,u\in U}\ell&lt;u.
-    \end{gathered}
-  \]</div>
+  <div class="math-display">\[\exists x\Bigl(C\land\bigwedge_{\ell\in L}\ell&lt;x\land\bigwedge_{u\in U}x&lt;u\Bigr)\quad\Longleftrightarrow\quad C\land\bigwedge_{\ell\in L,\,u\in U}\ell&lt;u.\]</div>
   <p class="proof-label">Proof</p>
   <p>A witness gives every comparison on the right by transitivity. Conversely, retain \(C\). If both bound sets are nonempty, let \(\ell_*\) be the greatest member of \(L\), and \(u_*\) the least member of \(U\). These are extrema of finite sets, not suprema of arbitrary sets. The comparisons give \(\ell_*&lt;u_*\); density supplies a witness between them. If only \(L\) is nonempty, choose an element above its greatest member using the absence of a greatest element. If only \(U\) is nonempty, choose an element below its least member. If both are empty, choose any domain element. In the last three cases the empty comparison conjunction on the right is \(\top\). <span class="qed" aria-label="End of proof">□</span></p>
   <p>The condition \(C\) remains in every case. Removing the quantifier does not erase requirements imposed on the parameters.</p>
@@ -141,12 +123,6 @@
   <p>Every inclusion of one infinite equality structure into another is <a href="elementary-submodels#elementary-substructures">elementary</a>. The same holds for an inclusion of dense linear orders without endpoints when the smaller domain has the order induced from the larger one. More generally, any injection between infinite equality structures, and any order embedding between such dense orders, is elementary.</p>
   <p class="proof-label">Proof</p>
   <p>Let \(f:M\to N\) be the injection or order embedding in question. It preserves and reflects equality; in the order case it also preserves and reflects strict order. It therefore preserves the truth of every quantifier-free formula by induction on Boolean connectives. Given \(\varphi(\bar y)\), choose a quantifier-free equivalent \(\psi(\bar y)\) modulo the common theory. For a tuple \(\bar a\) from \(M\),</p>
-  <div class="math-display">\[
-    \begin{aligned}
-      M\models\varphi(\bar a) &amp;\iff M\models\psi(\bar a)\\
-      &amp;\iff N\models\psi(f\bar a)\\
-      &amp;\iff N\models\varphi(f\bar a).
-    \end{aligned}
-  \]</div>
+  <div class="math-display">\[M\models\varphi(\bar a)\iff M\models\psi(\bar a)\iff N\models\psi(f\bar a)\iff N\models\varphi(f\bar a).\]</div>
   <p>This is exactly the definition of an <a href="elementary-submodels#elementary-embeddings">elementary embedding</a>. In the inclusion case it says that \(M\) is an elementary substructure of \(N\). Both structures must be models of the stated theory; an arbitrary ordered subset can lose density or endpoints and need not be elementary. <span class="qed" aria-label="End of proof">□</span></p>
 </section>

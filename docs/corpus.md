@@ -30,10 +30,14 @@ uses current consuming entry/block IDs; existing-target integration, future-entr
 plans, correspondences to establish, and deferred extensions belong in the other
 sections of the same document. This authoring document is separate from entry,
 node, and navigation metadata.
-Keep every section limited to outstanding reference or development work. When new
-coverage becomes available, inspect existing consuming entries across areas, add
-useful links, and remove fulfilled tasks, completed roadmap rows and outlines,
-and completion notes. Retain only the unfulfilled part of a mixed task. Existing
+Keep every section limited to outstanding reference or development work. For new
+or changed mathematical coverage, step 2 owns
+[reference integration](../CONTRIBUTING.md#reference-integration): inspect existing
+consuming entries across areas, add useful links, and remove related fulfilled
+tasks, completed roadmap rows and outlines, and completion notes. Step 3 reviews
+the entry's references and relevant integration changes without repeating the
+broad discovery search; steps 4–6 do not own this audit. Wording and layout edits
+check affected links only. Retain only the unfulfilled part of a mixed task. Existing
 coverage and source details may remain as prerequisites or supporting context for
 a concrete future task; completed source-review records belong in `source-errors.md`.
 
@@ -86,8 +90,10 @@ Citation authors identify the cited work, not the entry's contributor.
 The build generates an additional `formalization` object containing the counts,
 status, percentage when applicable, label, and description for the entry-list badge.
 Do not edit it by hand. Area pages read only this metadata, without parsing entry
-HTML or loading nodes. Rerun `uv run python app/manage.py build` after changing HTML,
-bindings, or proofs and commit the refreshed entry and node JSON. Failed checks or
+HTML or loading nodes. Refresh this data at delivery after adding entries or
+changing block inventory, mappings, node bindings, or Lean declarations/proofs,
+following the [shared build rules](../CONTRIBUTING.md#validation-and-submission).
+Include the refreshed entry and node JSON with the change. Failed checks or
 invalid entry summaries leave the previous generated data intact.
 
 The [statistics workflow](../.github/workflows/statistics.yml) writes
@@ -131,7 +137,9 @@ a repair. Identify adjacent inspected material that the entry does not use.
 Preserve records when the upstream source is corrected, recording the new version
 and resolution; never infer an upstream correction from our repaired exposition.
 
-All six pipeline steps maintain this register when source checks reveal new
+Reuse applicable source assessments; moving to another pipeline stage does not
+require inspecting unchanged source passages again or duplicating their coverage
+records. All six steps maintain this register when actual source checks reveal new
 defects or extend reviewed coverage. Steps 1, 3, and 5 may update this document
 only; their entry, node, proof, and generated-data work remains read-only.
 Save confirmed findings before the handoff rather than leaving them solely in a
@@ -193,6 +201,28 @@ For collapsible answers, use:
 Use `\(...\)` for inline mathematics and `\[...\]` for display mathematics.
 Escape HTML characters such as `<` and `&` as `&lt;` and `&amp;`, including LaTeX
 alignment separators. KaTeX is bundled with the app.
+Enclose each display formula in a `div` or `p` with class `math-display`, including
+unlabelled formulas, statement boxes, and question answers. This provides the
+formula's scrolling container. Keep surrounding prose in separate paragraphs.
+
+Lay out display formulas for comfortable desktop reading. Keep a single equation,
+implication, or equivalence on one horizontal line when it reads naturally; in
+particular, write `P(...) \Longleftrightarrow Q(...)` together rather than stacking
+the two sides with the relation on a line of its own. Do not insert line breaks
+solely to make a formula fit a phone screen. Horizontal scrolling within a
+`math-display` is acceptable on narrow screens, including inside statement boxes;
+check that the entire formula is reachable without making the whole page scroll
+sideways. Use multiple lines where the mathematics benefits from them, such as
+aligned derivation steps, separate identities, cases, matrices, and proof trees.
+Short chains of equalities or equivalences should also stay horizontal when they
+read comfortably on desktop; having several steps alone does not justify wrapping.
+The same applies to lists of identities: combine short items into compact rows
+rather than giving every identity its own line. When auditing line breaks,
+enumerate every explicit break, including those in aligned lists and derivations.
+Keep structural breaks in cases, matrices, proof trees, and multiline subscripts;
+justify other retained breaks by readability at the normal desktop column width.
+Break an exceptionally long desktop display at meaningful mathematical boundaries
+when that improves readability. Preserve readable font sizes and spacing.
 
 The renderer numbers labelled equations and resolves entry-local `\eqref` references:
 
@@ -210,6 +240,14 @@ Figures and tables each receive numbering in source order. Give each a stable ID
 and exactly one direct `figcaption` or `caption`, written without a number. Images
 need useful alternative text. Wide tables receive a keyboard-focusable scrolling
 container automatically; use appropriate table headings and `scope` attributes.
+
+Match diagrams to nearby figures and `app/static/css/site.css`: prefer SVG,
+serif mathematical labels, muted green accents, thin lines, and subdued fills.
+Use `class="proof-figure"` on a figure and `class="figure-image"` on its image
+wrapper, with the caption directly inside the figure. Give images intrinsic width
+and height. Check typography at normal desktop zoom: labels should be proportionate
+to the surrounding text, with clear space around legends and notes. Use original
+figures or establish the basis for reuse and credit their sources.
 
 Store images and supplements in the entry's `assets/` directory and reference them
 as `assets/filename.svg` or `assets/supplement.pdf`. Paths must remain inside that
@@ -283,12 +321,15 @@ module. This option needs installed sources but still does not invoke Lean.
 Use `--corpus <directory>` to check a separate corpus.
 
 After adding an entry or changing its block inventory, formal mappings, node
-bindings, or Lean declarations and proofs, refresh generated data:
+bindings, or Lean declarations and proofs, refresh generated data at delivery:
 
 ```sh
 uv run python app/manage.py build
 ```
 
+Use the [shared check and batching rules](../CONTRIBUTING.md#validation-and-submission)
+for standalone handoffs and multi-stage tasks; do not repeat a successful build
+without subsequent relevant changes or unresolved diagnostics.
 The build checks declarations, parses entries, and refreshes node data and entry-list
 summaries. Prose or figure edits that preserve the block inventory and mappings
 need corpus validation and a rendering check, without a proof rebuild. Run relevant

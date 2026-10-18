@@ -3,8 +3,8 @@ import Lemmatheca.MathematicalLogic.FirstOrderSemantics
 /-! Syntactic identities used by finite proof-tree transformations. -/
 namespace Lemmatheca.MathematicalLogic.FirstOrderProofs
 open FirstOrder FirstOrder.Language
-universe u v w
-variable {L : Language.{u, v}} {α β γ : Type w}
+universe u v w w' w'' w'''
+variable {L : Language.{u, v}} {α : Type w} {β : Type w'} {γ : Type w''}
 noncomputable section
 local instance {δ : Type w} : DecidableEq (L.Formula δ) := Classical.decEq _
 local instance {δ : Type w} : DecidableEq δ := Classical.decEq _
@@ -118,7 +118,7 @@ theorem formula_subst_vars_aux {n : ℕ} (φ : L.BoundedFormula α n) (f : α �
 
 /-- Renaming names into free or protected slots commutes with substitution when
 all term images agree. -/
-theorem relabel_subst_comm {m n : ℕ} {δ : Type w}
+theorem relabel_subst_comm {m n : ℕ} {δ : Type w'''}
     (φ : L.BoundedFormula α n) (f : α → β ⊕ Fin m)
     (g : γ → δ ⊕ Fin m) (σ : α → L.Term γ) (τ : β → L.Term δ)
     (h : ∀ x, (σ x).relabel g = (Term.var (f x)).subst (liftSubst τ m)) :

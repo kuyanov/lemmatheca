@@ -51,16 +51,11 @@
   <h2>Free variables and sentences</h2>
   <p>Write \(\operatorname{FV}(t)\) for the finite set of free-variable names in a term. A free variable \(x_i\) contributes \(\{x_i\}\), a placeholder \(z_j\) contributes nothing, and a function application contributes the union of its argument sets. For terms outside any scope, these are simply all the variables of the term.</p>
   <p>For formulas, define the finite free-variable set recursively:</p>
-  <div class="math-display">\[
-  \begin{aligned}
-    \operatorname{FV}(\bot)&amp;=\varnothing,\\
-    \operatorname{FV}(t=u)&amp;=\operatorname{FV}(t)\cup\operatorname{FV}(u),\\
-    \operatorname{FV}(R(t_0,\ldots,t_{k-1}))&amp;=\bigcup_{i&lt;k}\operatorname{FV}(t_i),\\
-    \operatorname{FV}(\varphi\to\psi)&amp;=\operatorname{FV}(\varphi)\cup\operatorname{FV}(\psi),\\
-    \operatorname{FV}(\forall z_n\varphi)&amp;=\operatorname{FV}(\varphi).
-  \end{aligned}
-  \]</div>
-  <p>The last line keeps the same set because \(z_n\) was a placeholder, not a free variable. For example, \(\exists z_0\,R(x_0,z_0)\) has free-variable set \(\{x_0\}\), whereas \(\forall z_0\exists z_1\,R(z_0,z_1)\) has none. A complete formula with no free variables is a <strong>sentence</strong>. Its quantifiers may bind many occurrences even though its free-variable set is empty.</p>
+  <div class="math-display">\[\begin{gathered}
+\operatorname{FV}(\bot)=\varnothing,\qquad \operatorname{FV}(t=u)=\operatorname{FV}(t)\cup\operatorname{FV}(u),\qquad \operatorname{FV}(R(t_0,\ldots,t_{k-1}))=\bigcup_{i&lt;k}\operatorname{FV}(t_i),\\
+\operatorname{FV}(\varphi\to\psi)=\operatorname{FV}(\varphi)\cup\operatorname{FV}(\psi),\qquad \operatorname{FV}(\forall z_n\varphi)=\operatorname{FV}(\varphi).
+\end{gathered}\]</div>
+  <p>The quantifier clause keeps the same set because \(z_n\) was a placeholder, not a free variable. For example, \(\exists z_0\,R(x_0,z_0)\) has free-variable set \(\{x_0\}\), whereas \(\forall z_0\exists z_1\,R(z_0,z_1)\) has none. A complete formula with no free variables is a <strong>sentence</strong>. Its quantifiers may bind many occurrences even though its free-variable set is empty.</p>
 </section>
 
 <section id="substitution" data-kind="definition" data-formal="fo-term-substitution fo-scoped-term-substitution fo-formula-substitution fo-double-unary-substitution">

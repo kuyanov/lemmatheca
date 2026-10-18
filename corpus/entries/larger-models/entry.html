@@ -1,0 +1,82 @@
+<section id="sizes-and-language" data-formal="model-language-cardinality model-formula-cardinality-bound elem-embedding-elementary-image elem-embedding-image-isomorphism" data-kind="definition">
+  <h2>How large can a model be?</h2>
+  <p>All structures here are nonempty, and all languages and domains are sets. We use the axiom of choice in the surrounding mathematics. Write \(|L|\) for the cardinality of the set of nonlogical symbols of a language \(L\), counting function and relation symbols of all finite arities. Put</p>
+  <div class="math-display">\[\lambda_L=\max(\aleph_0,|L|).\]</div>
+  <p>There are at most \(\lambda_L\) formulas: formulas are finite strings over an alphabet of size at most \(\lambda_L\). The <a href="elementary-submodels#downward-size-bound">downward Löwenheim–Skolem bound</a> therefore supplies small elementary substructures containing prescribed parameters. We now ask for large ones. An <a href="elementary-submodels#elementary-embeddings">elementary embedding</a> preserves the truth of every formula with parameters. Its image is an elementary substructure, so after replacing the target by an isomorphic copy we can treat the map as an inclusion.</p>
+  <p>The compactness arguments below use <a href="ultraproducts#compactness">semantic compactness for arbitrary set-sized languages</a>. The enlarged language may be uncountable even when \(L\) is countable.</p>
+</section>
+
+<section id="distinct-names" data-formal="model-distinct-constants-theory model-distinct-names-satisfiable" data-kind="lemma">
+  <h2>Forcing many distinct elements with constants</h2>
+  <p>Let \(M\) be an infinite \(L\)-structure, and let \(I\) be any set. Add a name \(c_a\) for each \(a\in M\), and fresh constants \(d_i\), \(i\in I\), disjoint from those names and from \(L\). In this language form</p>
+  <div class="math-display">\[\Sigma=\operatorname{ElDiag}(M)\;\cup\;\{d_i\ne d_j:i,j\in I,\ i\ne j\}.\]</div>
+  <p>Here <a href="diagrams-and-extensions#elementary-diagram">the elementary diagram</a> records every sentence true in the expansion of \(M\) naming each of its elements. Each finite subset of \(\Sigma\) has a model.</p>
+  <p class="proof-label">Proof</p>
+  <p>Only finitely many constants \(d_i\) occur in a given finite subset. Interpret them as distinct elements of \(M\), possible because \(M\) is infinite. Interpret every \(c_a\) as \(a\), and assign arbitrary values to the remaining \(d_i\). The full elementary diagram is then true, as are the finitely many requested inequalities. This proves finite satisfiability. The \(d_i\) need not avoid all the old elements: distinctness among them is what forces the lower size bound. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="arbitrarily-large-extensions" data-formal="model-arbitrarily-large-elementary-extension model-proper-elementary-extension" data-kind="theorem">
+  <h2>Every infinite structure has arbitrarily large elementary extensions</h2>
+  <div class="statement-box"><p>For every infinite \(L\)-structure \(M\) and every cardinal \(\kappa\), there is an elementary embedding \(e:M\to N\) into a structure with \(|N|\ge\kappa\). Equivalently, after taking an isomorphic copy, there is an elementary extension \(M\preccurlyeq N\) of at least that size.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Choose a set \(I\) of cardinality \(\kappa\). By <a href="#distinct-names"></a> and compactness, \(\Sigma\) has a model \(N'\). Let \(N\) be its reduct to \(L\). Since \(N'\) models the elementary diagram, <a href="diagrams-and-extensions#elementary-diagram-lemma">the diagram lemma</a> makes the specific map \(e(a)=c_a^{N'}\) an elementary embedding. The map \(i\mapsto d_i^{N'}\) is injective, so \(|N|\ge\kappa\). The <a href="diagrams-and-extensions#renaming-the-copy">copy construction</a> turns \(e\) into a literal elementary inclusion if desired. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, take \(\kappa=|M|^+\) to obtain a proper extension. Infinitude is essential; <a href="diagrams-and-extensions#finite-obstruction">a finite structure has no proper elementary extension</a>.</p>
+</section>
+
+<section id="exact-size-extensions" data-formal="model-exact-size-elementary-extension model-restrict-elementary-range" data-kind="theorem">
+  <h2>Choosing the exact size of an elementary extension</h2>
+  <div class="statement-box"><p>Let \(M\) be an infinite \(L\)-structure. If</p><div class="math-display">\[\kappa\ge\max(\aleph_0,|L|,|M|),\]</div><p>then there is an elementary embedding \(M\to N\) with \(|N|=\kappa\). Thus \(M\) has, up to the same copy convention, an elementary extension of exactly that size.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>First use <a href="#arbitrarily-large-extensions"></a> to find \(e:M\to P\) with \(|P|\ge\kappa\). Choose \(Y\subseteq P\) of cardinality \(\kappa\). The set \(X=e[M]\cup Y\) has cardinality \(\kappa\), by <a href="infinite-cardinal-arithmetic#infinite-sums-and-products">addition of infinite cardinals</a>. Apply the downward bound inside \(P\) to get \(N\preccurlyeq P\) containing \(X\) with \(|N|\le\kappa\). Because \(Y\subseteq N\), equality holds.</p>
+  <p>The map \(e\) now takes values in \(N\), and remains elementary: for every formula \(\varphi\) and tuple \(\bar a\) from \(M\),</p>
+  <div class="math-display">\[M\models\varphi[\bar a]\iff P\models\varphi[e(\bar a)] \iff N\models\varphi[e(\bar a)].\]</div>
+  <p>Both equivalences use the specified parameters, so their composite certifies the same map into \(N\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="model-cardinalities" data-formal="model-exact-cardinality model-equivalent-exact-cardinality" data-kind="theorem">
+  <h2>An infinite model gives every sufficiently large infinite size</h2>
+  <div class="statement-box"><p>If an \(L\)-theory \(T\) has an infinite model, then for every cardinal \(\kappa\ge\lambda_L\), it has a model of cardinality exactly \(\kappa\). Moreover, any infinite \(L\)-structure \(M\) has an elementarily equivalent structure of each such size.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Fix an infinite model \(M\) of \(T\). If \(\kappa\ge|M|\), use <a href="#exact-size-extensions"></a>. If \(\kappa\le|M|\), the <a href="elementary-submodels#downward-size-bound">exact-size downward theorem</a>, with no prescribed parameters, gives \(N\preccurlyeq M\) of size \(\kappa\). In either case an elementary embedding relates the structures, and therefore they agree on sentences. Thus \(N\equiv M\) and \(N\models T\). Applying this to \(\operatorname{Th}(M)\), or just retaining the sentence agreement, proves the final assertion. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For a countable language the threshold is \(\aleph_0\). The theorem concerns all infinite cardinalities; it makes no promise about finite models.</p>
+</section>
+
+<section id="extension-versus-equivalence" data-formal="model-no-embedding-smaller elem-downward-exact-size model-many-constants-singleton model-many-constants-countable model-distinct-names-exact-size model-named-cardinality-bound model-constant-language-cardinality" data-kind="question">
+  <h2>Can a smaller model still contain the original structure?</h2>
+  <p>If \(L\) is countable and \(M\) is uncountable, the theorem gives a countable \(N\equiv M\). Can we require \(M\preccurlyeq N\)? Does the theorem require every infinite model of \(T\) to have size at least \(|L|\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>A countable \(N\) cannot contain uncountable \(M\), even by an embedding, since every embedding is injective. One can instead take \(N\preccurlyeq M\). The \(|M|\) bound in <a href="#exact-size-extensions"></a> belongs to extensions of a prescribed structure, whereas <a href="#model-cardinalities"></a> asks for another model of its theory.</p>
+    <p>The language bound is a sufficient threshold, not a lower bound on every model. An arbitrarily large language can interpret all its constants by one element. The same assignment on a countably infinite domain gives an infinite model too. Conversely, for any infinite cardinal \(\mu\), a language with constants \(c_i\), \(i&lt;\mu\), and axioms \(c_i\ne c_j\) for distinct indices has no model of size less than \(\mu\); interpreting the constants by distinct elements in \(\mu\) gives a model of size \(\mu\). Thus the dependence on language size cannot in general be removed.</p>
+  </div></details>
+</section>
+
+<section id="size-and-sentences" data-formal="model-nonisomorphic-different-sizes model-equivalent-exact-cardinality elem-elementary-sentences" data-kind="lemma">
+  <h2>Different cardinalities do not give different sentences</h2>
+  <p>An isomorphism is a bijection, so structures of different cardinalities cannot be isomorphic. But the structures in <a href="#model-cardinalities"></a> can all be chosen elementarily equivalent to the same \(M\). Thus even a complete theory with an infinite model has nonisomorphic models of different sizes. This does not contradict <a href="back-and-forth#countable-isomorphism">countable categoricity results</a>, which compare only countable models.</p>
+  <p>In particular, if \(M\preccurlyeq N\), no \(L\)-sentence becomes true or false on passing from \(M\) to \(N\). Producing these two models therefore supplies no sentence on which they disagree.</p>
+</section>
+
+<section id="countermodels" data-formal="model-nonderivability-countermodel" data-kind="theorem">
+  <h2>What a model proves about nonderivability</h2>
+  <p>For this block and the remaining blocks, let \(L\) be countable, and let \(T\) be a theory of \(L\)-sentences. Write \(T\vdash\theta\) for derivability in the <a href="first-order-proofs#derivations-and-theories">first-order proof calculus</a>. Then</p>
+  <div class="math-display">\[T\nvdash\theta\quad\Longleftrightarrow\quad T\cup\{\neg\theta\}\text{ has a model}.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>A model of \(T\cup\{\neg\theta\}\) is a counterexample to \(T\models\theta\), so <a href="first-order-proofs#soundness">soundness</a> forbids a proof of \(\theta\). Conversely, if \(T\nvdash\theta\), <a href="henkin-completeness#deductive-completeness">completeness</a> implies \(T\not\models\theta\). There is therefore a model of \(T\) in which \(\theta\) is false, exactly a model of \(T\cup\{\neg\theta\}\). The countable-language hypothesis matches the proof-calculus completeness theorem being used. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="independence-witnesses" data-formal="model-independent-sentence model-independence-two-models model-equality-independence fo-singleton-domain-truth qe-equality-theory-complete" data-kind="definition">
+  <h2>Independence requires witnesses on both sides</h2>
+  <p>A sentence \(\theta\) is <strong>independent of \(T\)</strong> if neither \(T\vdash\theta\) nor \(T\vdash\neg\theta\). By <a href="#countermodels"></a> and double negation, this is equivalent to both theories</p>
+  <div class="math-display">\[T\cup\{\theta\},\qquad T\cup\{\neg\theta\}\]</div>
+  <p>having models. The models may have the same cardinality or different cardinalities; the requirement is their opposite answers to \(\theta\).</p>
+  <p>For example, let \(T\) be the empty theory in the equality-only language and let \(\theta=\forall x\forall y\,(x=y)\). A one-element structure satisfies \(\theta\), and a two-element structure satisfies \(\neg\theta\). These witnesses show independence. This is stronger evidence than merely having two nonisomorphic models: two infinite equality-only structures of different sizes agree on every sentence, by <a href="quantifier-elimination#complete-examples">completeness of the theory of infinite sets</a>.</p>
+</section>
+
+<section id="relative-consistency" data-formal="fod-consistency model-consistency-satisfiability model-relative-consistency" data-kind="lemma">
+  <h2>Conditional model constructions give relative consistency</h2>
+  <p>Write \(\operatorname{Con}(T)\) for the external assertion that \(T\) has no proof of contradiction. Suppose \(T\) and \(S\) are theories in countable languages, possibly different ones, and we have proved: from any model of \(T\), there exists a model of \(S\). Then, in the surrounding mathematics,</p>
+  <div class="math-display">\[\operatorname{Con}(T)\quad\Longrightarrow\quad\operatorname{Con}(S).\]</div>
+  <p class="proof-label">Proof</p>
+  <p>Assume \(T\) is consistent. The <a href="henkin-completeness#countable-model-existence">model existence theorem</a> supplies a model of \(T\). Apply the given construction to obtain a model of \(S\). Soundness makes \(S\) consistent. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The hypothesis is the mathematical work in an application; this lemma does not supply the required construction. Here \(\operatorname{Con}(T)\) is an assertion about finite proofs in the metatheory. We have not encoded it as an arithmetic sentence or proved that this argument is formalizable in either object theory. Nor does a model obtained by completeness come with any additional well-foundedness or transitivity property.</p>
+</section>

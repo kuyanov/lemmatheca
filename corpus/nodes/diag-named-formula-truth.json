@@ -1,0 +1,13 @@
+{
+  "id": "diag-named-formula-truth",
+  "description": "For any \\(L(M)\\)-expansion \\(N^*\\), \\(N^*\\models\\varphi(c_{\\bar a})\\) if and only if its \\(L\\)-reduct satisfies \\(\\varphi[h_{N^*}(\\bar a)]\\), where \\(h_{N^*}(a)=c_a^{N^*}\\).",
+  "module": "Lemmatheca.MathematicalLogic.Diagrams",
+  "declaration": "Lemmatheca.MathematicalLogic.Diagrams.realize_namedFormula",
+  "dependencies": [
+    "diag-canonical-map",
+    "diag-named-formula"
+  ],
+  "verified": true,
+  "declaration_line": 150,
+  "signature": "Lemmatheca.MathematicalLogic.Diagrams.realize_namedFormula.{u, v, w, w'} {L : FirstOrder.Language} {M : Type w}\n  {N : Type w'} [L.Structure N] [(L.withConstants M).Structure N] [(L.lhomWithConstants M).IsExpansionOn N] {n : ℕ}\n  (φ : L.Formula (Fin n)) (a : Fin n → M) :\n  N ⊨ Lemmatheca.MathematicalLogic.Diagrams.namedFormula φ a ↔\n    φ.Realize (Lemmatheca.MathematicalLogic.Diagrams.canonicalMap L M N ∘ a)"
+}

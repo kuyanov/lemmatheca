@@ -35,16 +35,10 @@
 <section id="negation-identities" data-formal="fonf-double-negation fonf-de-morgan-conjunction fonf-de-morgan-disjunction fonf-implication-disjunction fonf-not-universal fonf-not-existential fonf-negation-identities-support fo-satisfaction-negation fo-truth fonf-equivalence-negation fonf-equivalence-implication fonf-equivalence-universal fonf-equivalence-existential" data-kind="lemma">
   <h2>Negation reverses connectives and quantifiers</h2>
   <p>The classical truth clauses give the following equivalences:</p>
-  <div class="math-display">\[
-  \begin{aligned}
-    \neg\neg\varphi&amp;\equiv\varphi,&amp;
-    \neg(\varphi\land\psi)&amp;\equiv\neg\varphi\lor\neg\psi,\\
-    \neg(\varphi\lor\psi)&amp;\equiv\neg\varphi\land\neg\psi,&amp;
-    \varphi\to\psi&amp;\equiv\neg\varphi\lor\psi,\\
-    \neg\forall u\,\theta&amp;\equiv\exists u\,\neg\theta,&amp;
-    \neg\exists u\,\theta&amp;\equiv\forall u\,\neg\theta.
-  \end{aligned}
-  \]</div>
+  <div class="math-display">\[\begin{gathered}
+\neg\neg\varphi\equiv\varphi,\qquad \neg(\varphi\land\psi)\equiv\neg\varphi\lor\neg\psi,\qquad \neg(\varphi\lor\psi)\equiv\neg\varphi\land\neg\psi,\\
+\varphi\to\psi\equiv\neg\varphi\lor\psi,\qquad \neg\forall u\,\theta\equiv\exists u\,\neg\theta,\qquad \neg\exists u\,\theta\equiv\forall u\,\neg\theta.
+\end{gathered}\]</div>
   <p>Also \(\neg\bot\equiv\top\) and \(\neg\top\equiv\bot\). Each identity preserves exactly the occurring free names.</p>
   <p class="proof-label">Proof</p>
   <p>Fix a structure and assignment. The connective identities are the corresponding Boolean truth identities. To fail \(\forall u\,\theta\) is to have some domain element at which the body fails; this is precisely \(\exists u\,\neg\theta\). To fail \(\exists u\,\theta\) is to have the body fail at every element; this is precisely \(\forall u\,\neg\theta\). These are classical equivalences. The two sides have the same free names because negation leaves free support unchanged, a binary connective takes the union of its children's supports, and a scoped binder does not change the free names of its body. <span class="qed" aria-label="End of proof">□</span></p>
@@ -59,14 +53,10 @@
   <p class="proof-label">Proof</p>
   <p>Use <a href="first-order-languages#structural-induction">structural induction</a> on the primitive syntax, simultaneously constructing \(N^+(\varphi)\equiv\varphi\) and \(N^-(\varphi)\equiv\neg\varphi\). Both will have precisely \(\operatorname{FV}(\varphi)\). For an atomic formula \(A\), take \(N^+(A)=A\) and \(N^-(A)=\neg A\). Take \(N^+(\bot)=\bot\) and \(N^-(\bot)=\top\).</p>
   <p>For implication and universal quantification, define</p>
-  <div class="math-display">\[
-  \begin{aligned}
-    N^+(\varphi\to\psi)&amp;=N^-(\varphi)\lor N^+(\psi),\\
-    N^-(\varphi\to\psi)&amp;=N^+(\varphi)\land N^-(\psi),\\
-    N^+(\forall z_n\,\theta)&amp;=\forall z_n\,N^+(\theta),\\
-    N^-(\forall z_n\,\theta)&amp;=\exists z_n\,N^-(\theta).
-  \end{aligned}
-  \]</div>
+  <div class="math-display">\[\begin{gathered}
+N^+(\varphi\to\psi)=N^-(\varphi)\lor N^+(\psi),\qquad N^-(\varphi\to\psi)=N^+(\varphi)\land N^-(\psi),\\
+N^+(\forall z_n\,\theta)=\forall z_n\,N^+(\theta),\qquad N^-(\forall z_n\,\theta)=\exists z_n\,N^-(\theta).
+\end{gathered}\]</div>
   <p>The inductive hypotheses and <a href="#negation-identities"></a> prove the two equivalences at each step. Every output uses only the permitted normal-form constructors. Free support is unchanged in the atomic and falsity cases, is the same union in either implication case, and is retained by either scoped quantifier. The quantifier step applies the induction hypothesis at context size \(n+1\); it does not turn a surrounding placeholder into a free variable. Taking \(N=N^+(\varphi)\) proves the result. <span class="qed" aria-label="End of proof">□</span></p>
   <p>For instance, \(\neg\forall u\,(P(u)\to\exists v\,R(u,v))\) is equivalent to \(\exists u\,(P(u)\land\forall v\,\neg R(u,v))\). The counterexample to a universal implication consists of an object satisfying its antecedent for which no object satisfies its consequent.</p>
 </section>

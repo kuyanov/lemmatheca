@@ -119,3 +119,7 @@ import Lemmatheca.MathematicalLogic.QuantifierElimination
 import Lemmatheca.MathematicalLogic.QuantifierEliminationCells
 import Lemmatheca.MathematicalLogic.QuantifierEliminationShared
 import Lemmatheca.Entry.QuantifierElimination
+import Lemmatheca.Entry.LargerModels
+import Lemmatheca.Entry.ElementaryChains
+import Lemmatheca.Entry.DiagramsAndExtensions
+import Lemmatheca.Entry.Ultraproducts

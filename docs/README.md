@@ -16,21 +16,23 @@ Start with the [project overview and setup](../README.md), then follow
 Command examples use the repository root unless stated otherwise. Component
 guides live here; the root README provides onboarding and `prompts/` holds the
 instructions for individual authoring stages. Update these contracts and prompts
-together when changing the corpus format or contribution workflow.
+together when changing the corpus format or contribution workflow. Follow the
+[stage responsibilities](../CONTRIBUTING.md#stage-responsibilities) and
+[change-based checks](../CONTRIBUTING.md#validation-and-submission) rather than
+repeating all audits in every stage.
 
 Entries should have no major dependencies on substantial theory missing from the
 corpus. Familiar background facts, including standard real-number facts, may be
-used without a reference. Audit and update the single four-column
-[upcoming-reference table](../corpus/reference-planning.md#upcoming-references) when drafting;
-audit it and propose corrections when reviewing. Preserve precise current
-consuming entry/block IDs. Add links when the future areas supply suitable target
-blocks, then remove only fulfilled locations. Keep other integration, expansion,
-correspondence, and scope notes in separate sections of the same authoritative
-document or in the handoff. Adding coverage also requires checking existing
-consuming entries across areas and adding their useful links. Every planning
-section tracks outstanding work only: remove fulfilled tasks, completed roadmap
-rows and outlines, and completion narratives while preserving unfinished scope
-and its needed prerequisites and sources. Substantial missing prerequisites must
+used without a reference. For new or changed mathematical coverage, step 2 owns
+[reference integration](../CONTRIBUTING.md#reference-integration), including the
+single four-column [upcoming-reference table](../corpus/reference-planning.md#upcoming-references)
+and useful incoming links from existing consuming entries. Step 3 checks relevant
+integration changes and proposes corrections. Wording and layout revisions check
+affected links only. Preserve precise current consuming entry/block IDs and remove
+only fulfilled locations. Keep other integration, expansion, correspondence, and
+scope notes in separate sections of the same authoritative document or in the
+handoff. Affected planning sections track outstanding work only; preserve unfinished
+scope and its needed prerequisites and sources. Substantial missing prerequisites must
 be developed, or the dependent material narrowed or deferred; merely recording them does not
 make an entry ready.
 

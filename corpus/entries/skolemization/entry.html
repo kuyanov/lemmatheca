@@ -19,11 +19,7 @@
 <section id="one-witness-function" data-formal="skolem-tuple-witness skolem-constant-witness skolem-one-witness-formula" data-kind="lemma">
   <h2>Choosing a witness for every tuple</h2>
   <p>Let \(A\) be a formula at context size \(k+1\), with no free-variable names, and display its available slots as \(\bar x=(x_1,\ldots,x_k)\) and \(y\). These are labels for placeholders governed by the surrounding quantifiers; \(A\) may have further quantifiers of its own. Let \(f\) be a fresh \(k\)-ary function symbol. By \(A(\bar x,f(\bar x))\) mean the <a href="#scoped-term-instances">simultaneous scoped instance</a> that retains the first \(k\) slots and replaces the last by \(f\) applied to those slots. For a fixed \(L\)-structure \(M\),</p>
-  <div class="math-display">\[\begin{gathered}
-    M\models\forall\bar x\,\exists y\,A(\bar x,y)\\
-    \Longleftrightarrow\\
-    \exists M_f\;\bigl(M_f\models\forall\bar x\,A(\bar x,f(\bar x))\bigr).
-  \end{gathered}\]</div>
+  <div class="math-display">\[M\models\forall\bar x\,\exists y\,A(\bar x,y)\quad\Longleftrightarrow\quad\exists M_f\;\bigl(M_f\models\forall\bar x\,A(\bar x,f(\bar x))\bigr).\]</div>
   <p>Here \(M_f\) ranges over expansions of \(M\) to \(L\cup\{f\}\).</p>
   <p class="proof-label">Proof</p>
   <p>For each tuple \(\bar a\in M^k\), choose \(b_{\bar a}\) with \(M,(\bar a,b_{\bar a})\models A\). Interpret \(f(\bar a)=b_{\bar a}\). These simultaneous choices use the <a href="axiom-of-choice#choice-functions">axiom of choice</a>. The truth equivalence in <a href="#scoped-term-instances"></a>, together with expansion invariance, proves the required truth of \(A(\bar x,f(\bar x))\) for each tuple. Conversely, that same equivalence in any satisfying expansion supplies \(f(\bar a)\) as a witness for each tuple; then pass to the reduct. <span class="qed" aria-label="End of proof">□</span></p>
@@ -59,11 +55,7 @@
 <section id="expansion-theorem" data-formal="skolem-model-expansion skolem-model-reduct" data-kind="theorem">
   <h2>A model supplies all the witness functions</h2>
   <div class="statement-box"><p>For every prenex \(L\)-sentence \(\sigma\) and every nonempty \(L\)-structure \(M\),</p>
-  <div class="math-display">\[\begin{gathered}
-    M\models\sigma\\
-    \Longleftrightarrow\\
-    \exists M^*\;\bigl(M^*\models\operatorname{Sk}(\sigma)\bigr).
-  \end{gathered}\]</div>
+  <div class="math-display">\[M\models\sigma\quad\Longleftrightarrow\quad\exists M^*\;\bigl(M^*\models\operatorname{Sk}(\sigma)\bigr).\]</div>
   <p>Here \(M^*\) denotes an \(L_\sigma\)-expansion of \(M\).</p>
   <p>Moreover, every \(L_\sigma\)-structure satisfying \(\operatorname{Sk}(\sigma)\) has an \(L\)-reduct satisfying \(\sigma\).</p></div>
   <p class="proof-label">Proof</p>
@@ -74,11 +66,7 @@
 <section id="equisatisfiability" data-formal="skolem-background-equisatisfiability skolem-every-sentence-universal" data-kind="theorem">
   <h2>Preserving whether a model exists</h2>
   <div class="statement-box"><p>A prenex sentence \(\sigma\) and \(\operatorname{Sk}(\sigma)\) are <strong>equisatisfiable</strong>: one has a nonempty model if and only if the other does. More generally, for any set \(T\) of \(L\)-sentences,</p>
-  <div class="math-display">\[\begin{gathered}
-    T\cup\{\sigma\}\text{ has a model}\\
-    \Longleftrightarrow\\
-    T\cup\{\operatorname{Sk}(\sigma)\}\text{ has a model},
-  \end{gathered}\]</div>
+  <div class="math-display">\[T\cup\{\sigma\}\text{ has a model}\quad\Longleftrightarrow\quad T\cup\{\operatorname{Sk}(\sigma)\}\text{ has a model},\]</div>
   <p>where the sentences of \(T\) on the right are read in the expanded language.</p></div>
   <p class="proof-label">Proof</p>
   <p>Expand a model of \(T\cup\{\sigma\}\) using <a href="#expansion-theorem"></a>. The original sentences of \(T\) retain their truth. Conversely, take the reduct of a model of \(T\cup\{\operatorname{Sk}(\sigma)\}\). The same theorem gives \(\sigma\), while reduct invariance gives every member of \(T\). Taking \(T=\varnothing\) gives the first assertion. <span class="qed" aria-label="End of proof">□</span></p>

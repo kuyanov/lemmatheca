@@ -1,0 +1,123 @@
+<section id="large-equality" data-formal="ultra-large-equality ultra-domain ultra-nonempty-domain proper-filter-nonempty-space" data-kind="definition">
+  <h2>Identify choices that agree on a large set</h2>
+  <p>Fix a set-sized <a href="first-order-languages#signatures">first-order language</a> \(L\), a set \(I\), an <a href="filters-and-ultrafilters#ultrafilter-decision">ultrafilter</a> \(\mathcal U\) on \(I\), and a nonempty \(L\)-structure \(M_i\) for each \(i\in I\). The domains may be different. Work with the axiom of choice in the background. A set of indices is called <strong>large</strong> when it belongs to \(\mathcal U\). Since the ultrafilter is proper, \(I\ne\varnothing\).</p>
+  <p>The product \(P=\prod_{i\in I}|M_i|\) consists of functions \(f\) choosing an element \(f(i)\in|M_i|\) at each index. Choice makes this product nonempty. Define</p>
+  <div class="math-display">\[
+    f\sim_{\mathcal U}g
+    \quad\Longleftrightarrow\quad
+    \{i\in I:f(i)=g(i)\}\in\mathcal U.
+  \]</div>
+  <p>This is an <a href="equivalence-relations#relation-properties">equivalence relation</a>. Reflexivity uses that \(I\) is large, and symmetry follows from symmetry of equality. For transitivity, the intersection of the large equality sets for \(f,g\) and \(g,h\) is contained in the equality set for \(f,h\). Filter closure makes that last set large. Write \([f]\) for the class of \(f\). These classes will be the elements of the new structure.</p>
+</section>
+
+<section id="quotient-structure" data-formal="ultra-compatible-interpretations ultra-structure ultra-function-evaluation ultra-relation-evaluation" data-kind="definition">
+  <h2>Interpret symbols one coordinate at a time</h2>
+  <p>The <strong>ultraproduct</strong> \(M=\prod_{\mathcal U}M_i\) has domain \(P/{\sim_{\mathcal U}}\). For an \(r\)-ary function symbol \(F\) and an \(r\)-ary relation symbol \(R\), put</p>
+  <div class="math-display">\[F^M([f_0],\ldots,[f_{r-1}])=\bigl[i\mapsto F^{M_i}(f_0(i),\ldots,f_{r-1}(i))\bigr],\]</div>
+  <div class="math-display">\[R^M([f_0],\ldots,[f_{r-1}])\quad\Longleftrightarrow\quad\{i:R^{M_i}(f_0(i),\ldots,f_{r-1}(i))\}\in\mathcal U.\]</div>
+  <p>For arity zero, the first rule interprets a constant by the sequence of its interpretations, \(c^M=[i\mapsto c^{M_i}]\). The second interprets a nullary relation, a truth-valued symbol, by the set of indices where it is true.</p>
+  <p>These rules are <a href="equivalence-relations#rules-on-representatives">independent of representatives</a>. If \(f_j\sim_{\mathcal U}g_j\) for every \(j&lt;r\), intersect their finitely many equality sets to obtain a large set \(E\). On \(E\), the two input tuples coincide. Their function outputs therefore coincide on \(E\), so their classes are equal. The two relation truth sets agree on \(E\); intersecting either with \(E\) and using upward closure shows that one is large exactly when the other is. For \(r=0\), the intersection is \(I\), so the argument also includes nullary symbols.</p>
+</section>
+
+<section id="term-evaluation" data-formal="ultra-term-evaluation" data-kind="lemma">
+  <h2>Term values are represented by their coordinate values</h2>
+  <p>Use the <a href="first-order-languages#scoped-formulas">scoped notation</a> for free variables and available bound placeholders. Let \(a\) assign a member of \(P\) to each free variable, and let \(b=(b_0,\ldots,b_{n-1})\) be a tuple from \(P\) for the available placeholders. Define the coordinate assignment and tuple by \(a_i(x)=a(x)(i)\) and \(b_i=(b_0(i),\ldots,b_{n-1}(i))\). Write \([a]\) and \([b]\) for the assignment and tuple of their equivalence classes.</p>
+  <p>For every term \(t\) in this context,</p>
+  <div class="math-display">\[
+    \llbracket t\rrbracket^M_{[a],[b]}
+    =\bigl[i\mapsto\llbracket t\rrbracket^{M_i}_{a_i,b_i}\bigr].
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>Induct on the term. A free variable has the assigned class, and an available placeholder has its assigned tuple entry. A function application follows by applying the induction hypotheses to its arguments and using the definition of the function in the ultraproduct. This includes a constant, whose argument tuple is empty. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="los-theorem" data-formal="ultra-los-scoped ultra-los-sentences" data-kind="theorem">
+  <h2>Łoś's theorem transfers every first-order formula</h2>
+  <div class="statement-box"><p>Let \(\mathcal U\) be an ultrafilter on \(I\), let \((M_i)_{i\in I}\) be a family of nonempty structures in the same set-sized first-order language \(L\), and put \(M=\prod_{\mathcal U}M_i\).</p>
+  <p>For every scoped \(L\)-formula \(\varphi\), every assignment \(a\) of representative functions to its free variables, and every representative tuple \(b\) for its available placeholders,</p>
+  <div class="math-display">\[M\models\varphi\bigl([a],[b]\bigr)\quad\Longleftrightarrow\quad\{i:M_i\models\varphi(a_i,b_i)\}\in\mathcal U.\]</div>
+  <p>In particular, for every sentence \(\theta\),</p>
+  <div class="math-display">\[
+    \prod_{\mathcal U}M_i\models\theta
+    \quad\Longleftrightarrow\quad
+    \{i:M_i\models\theta\}\in\mathcal U.
+  \]</div></div>
+  <p class="proof-label">Proof</p>
+  <p>Induct on formulas, allowing every context size and every assignment and tuple. For atomic equalities, <a href="#term-evaluation"></a> reduces the claim to the definition of \(\sim_{\mathcal U}\). For relation applications, use the same term lemma and the quotient relation's definition. Falsity corresponds to the empty set, which is not large.</p>
+  <p>For a conjunction, its truth set is the intersection of its two truth sets. An intersection is large exactly when both sets are large. For negation, its truth set is the complement of the original truth set. The <a href="filters-and-ultrafilters#ultrafilter-decision">ultrafilter complement rule</a> says that this complement is large exactly when the original is not. These steps also give implication, since \(\psi\to\chi\) is equivalent to \(\neg(\psi\land\neg\chi)\).</p>
+  <p>Consider an existential formula whose body \(\psi\) has one additional placeholder \(z_n\). If the ultraproduct has a witness \([g]\), induction says that</p>
+  <div class="math-display">\[
+    \{i:M_i\models\psi(a_i,(b_i,g(i)))\}\in\mathcal U.
+  \]</div>
+  <p>This set is contained in \(A=\{i:M_i\models\exists z_n\,\psi(a_i,b_i)\}\), so \(A\) is large.</p>
+  <p>Conversely, suppose \(A\) is large. For each \(i\in A\), choose a witness \(g(i)\in|M_i|\) to the body. For \(i\notin A\), choose any domain element. More explicitly, choose one default element of every nonempty domain first, then use it at indices outside \(A\). Choice supplies both families. The resulting \(g\) belongs to \(P\), and the body's truth set with this witness contains \(A\), so is large. Induction makes \([g]\) a witness in the ultraproduct. The original free-variable assignment stays fixed; the witness is appended to the bound tuple. Finally, \(\forall z_n\,\psi\) is equivalent to \(\neg\exists z_n\neg\psi\), giving the universal step and completing the induction. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Every assignment of classes can be represented in this way by choosing representatives. In particular the theorem allows parameters from the ultraproduct, rather than just sentences with no parameters.</p>
+</section>
+
+<section id="why-ultrafilters-question" data-formal="cofinite-filter-parity-example ultrafilter-complement-decision" data-kind="question">
+  <h2>Why does the cofinite filter not supply the negation step?</h2>
+  <p>Could we replace the ultrafilter complement rule in the proof by the rules of an arbitrary proper filter?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. In the <a href="filters-and-ultrafilters#cofinite-filter">cofinite filter</a> on \(\mathbb N\), neither the even numbers nor their complement, the odd numbers, is large. Thus “the original truth set is not large” does not imply “its complement is large.” A proper filter supplies finite intersections, but not the complement decision required in the negation step.</p>
+  </div></details>
+</section>
+
+<section id="finite-cones" data-formal="ultra-finite-cone ultra-finite-cone-intersection ultra-finite-cone-ultrafilter" data-kind="lemma">
+  <h2>Make every finite list of axioms large</h2>
+  <p>Let \(T\) be a set of \(L\)-sentences, and let \(I=[T]^{&lt;\omega}\) be its set of finite subsets, including the empty subset. For each finite \(S\subseteq T\), put</p>
+  <div class="math-display">\[
+    C_S=\{\Delta\in I:S\subseteq\Delta\}.
+  \]</div>
+  <p>These cones have the finite intersection property: \(C_\varnothing=I\), \(C_S\cap C_R=C_{S\cup R}\), and \(S\in C_S\). Hence their <a href="filters-and-ultrafilters#generated-filter">generated filter</a> is proper, and <a href="filters-and-ultrafilters#ultrafilter-extension">ultrafilter extension</a> supplies an ultrafilter \(\mathcal U\) containing every cone. In particular, \(\{\Delta:\theta\in\Delta\}=C_{\{\theta\}}\) is large for every \(\theta\in T\).</p>
+  <p>Suppose each finite \(\Delta\subseteq T\) has a nonempty model. We will choose one model \(M_\Delta\models\Delta\) for each index. This uses ordinary choice from sets, rather than a choice from a proper class of models. To see why, let \(\kappa=\max(\aleph_0,|L|)\). The <a href="elementary-submodels#downward-size-bound">downward Löwenheim–Skolem bound</a> gives a model of each \(\Delta\) of size at most \(\kappa\). Transport it by an isomorphism so that its domain is a nonempty subset of \(\kappa\). All \(L\)-structures on these subsets form a set: their functions and relations are sets of tuples of elements of \(\kappa\), indexed by the set of symbols. For each \(\Delta\), the suitable codes are therefore a nonempty subset of this one set. Choice now supplies the required set-indexed family.</p>
+</section>
+
+<section id="compactness" data-formal="compactness-theorem" data-kind="theorem">
+  <h2>Compactness holds for every set-sized first-order language</h2>
+  <div class="statement-box"><p>Let \(L\) be any set-sized first-order language, and \(T\) a set of \(L\)-sentences. Then \(T\) has a nonempty model if and only if every finite subset of \(T\) has a nonempty model.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>A model of \(T\) satisfies each finite subset. Conversely, choose the models \(M_\Delta\) and the ultrafilter containing the finite cones as in <a href="#finite-cones"></a>. Form their ultraproduct \(M=\prod_{\mathcal U}M_\Delta\). For each \(\theta\in T\),</p>
+  <div class="math-display">\[
+    C_{\{\theta\}}
+    \subseteq\{\Delta:M_\Delta\models\theta\}.
+  \]</div>
+  <p>The left-hand side is large, so the right-hand side is large. By <a href="#los-theorem"></a>, \(M\models\theta\). This holds for every axiom, hence \(M\models T\). The ultraproduct is nonempty because the product of its nonempty domains is nonempty. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The proof also covers \(T=\varnothing\): then \(I=\{\varnothing\}\), and its empty cone is the whole nonempty index set. No countability assumption is used. This extends the <a href="logical-compactness#compactness">countable-language compactness theorem</a> as a semantic assertion about existence of models. It makes no additional claim here about a proof calculus for uncountable languages.</p>
+</section>
+
+<section id="diagonal-embedding" data-formal="ultra-diagonal ultra-diagonal-map elem-embedding-sentences elem-embedding-elementary-image" data-kind="theorem">
+  <h2>A structure embeds elementarily into its ultrapower</h2>
+  <p>When all factors are the same structure \(A\), the ultraproduct is called the <strong>ultrapower</strong> \(A^I/\mathcal U\). For \(a\in|A|\), let \(c_a(i)=a\) for every \(i\in I\). The <strong>diagonal map</strong> is</p>
+  <div class="math-display">\[
+    d:|A|\longrightarrow A^I/\mathcal U,
+    \qquad d(a)=[c_a].
+  \]</div>
+  <p>This specified map is an <a href="elementary-submodels#elementary-embeddings">elementary embedding</a>: for every formula and every finite tuple \(\bar a\) from \(A\),</p>
+  <div class="math-display">\[
+    A\models\varphi(\bar a)
+    \quad\Longleftrightarrow\quad
+    A^I/\mathcal U\models\varphi(d(\bar a)).
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>For constant representative functions, every factor evaluates the formula with the same parameters \(\bar a\). Its truth set is \(I\) when the formula is true in \(A\), and empty otherwise. Exactly the first of these sets is large. Łoś's theorem gives the displayed equivalence. The map is injective: if \(a\ne b\), the equality set of \(c_a,c_b\) is empty, so their classes differ. Atomic instances also show preservation of functions and relations. Thus the assertion concerns the particular map \(a\mapsto[c_a]\), not merely the existence of some elementary embedding. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, \(A\) and its ultrapower satisfy exactly the same sentences. Identifying \(A\) with the image of \(d\) makes that image an elementary substructure. The image can be proper, as the following example shows.</p>
+</section>
+
+<section id="nonstandard-natural" data-formal="ultra-natural-order ultra-natural-identity-element ultra-natural-above-and-outside" data-kind="lemma">
+  <h2>One new element lies above every standard natural number</h2>
+  <p>Take the structure \((\mathbb N,&lt;)\), let \(I=\mathbb N\), and let \(\mathcal U\) be a <a href="filters-and-ultrafilters#nonprincipal-existence">nonprincipal ultrafilter</a> on \(\mathbb N\). Put \(h(n)=n\) and \(H=[h]\) in the ultrapower. For every \(k\in\mathbb N\),</p>
+  <div class="math-display">\[
+    \{n:c_k(n)&lt;h(n)\}=\{n:k&lt;n\}
+  \]</div>
+  <p>is cofinite, hence large. The quotient relation therefore gives \(d(k)&lt;H\) for every \(k\). In particular \(H\) is outside the diagonal image: if \(H=d(k)\), this would give \(d(k)&lt;d(k)\), impossible since the ultrapower satisfies the strict-order axioms by Łoś.</p>
+  <p>There is no conflict with the fact that every element of \(\mathbb N\) is a natural number. The statement “this element exceeds every member of the diagonal image” compares the ultrapower with an externally specified subset. It is not a first-order formula of the original order language naming all standard natural numbers at once. The ultrapower still agrees with \((\mathbb N,&lt;)\) on every sentence of that language.</p>
+</section>
+
+<section id="principal-finite-question" data-formal="ultra-principal-evaluation ultra-principal-diagonal-inverse ultra-finite-diagonal-isomorphism" data-kind="question">
+  <h2>Must the diagonal image always be proper?</h2>
+  <p>What happens when the ultrafilter concentrates on one index, or when the original structure is finite?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>If \(\mathcal U\) is the <a href="filters-and-ultrafilters#principal-ultrafilters">point ultrafilter</a> at \(i_0\), then \([f]\mapsto f(i_0)\) is an isomorphism \(\prod_{\mathcal U}M_i\cong M_{i_0}\). Indeed, equality of classes is exactly equality at \(i_0\); every element of \(M_{i_0}\) can be extended to a product member using chosen defaults at the other indices; and the definitions of functions and relations reduce to their interpretations at \(i_0\). For an ultrapower this evaluation map is inverse to the diagonal map.</p>
+    <p>If \(A\) is nonempty and finite, every function \(f:I\to|A|\) has a finite partition of \(I\) into its fibers. The ultrafilter <a href="filters-and-ultrafilters#finite-partitions">selects one fiber</a>, so \(f\sim_{\mathcal U}c_a\) for its value \(a\). Thus every class is diagonal and \(d\) is an isomorphism, even if \(\mathcal U\) is nonprincipal. Properness in the natural-number example uses both its infinite domain and the particular nonprincipal ultrafilter on \(\mathbb N\); it is not an automatic assertion about all ultrapowers.</p>
+  </div></details>
+</section>

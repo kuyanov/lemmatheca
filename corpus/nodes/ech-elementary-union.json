@@ -1,0 +1,13 @@
+{
+  "id": "ech-elementary-union",
+  "description": "Let \\(M_n\\) be nonempty first-order structures with compatible elementary embeddings between stages. Suppose coherent injections \\(j_n:M_n\\to U\\) jointly cover an unstructured set \\(U\\). Then \\(U\\) admits a structure for which every specified map \\(j_n\\) is elementary, with no countability restriction on the language or stage domains.",
+  "module": "Lemmatheca.MathematicalLogic.ElementaryChains",
+  "declaration": "Lemmatheca.MathematicalLogic.ElementaryChains.exists_elementary_union_structure",
+  "dependencies": [
+    "ech-raw-union-structure",
+    "elem-embedding"
+  ],
+  "verified": true,
+  "declaration_line": 176,
+  "signature": "Lemmatheca.MathematicalLogic.ElementaryChains.exists_elementary_union_structure.{u, v, w, w'} {L : FirstOrder.Language}\n  (G : ℕ → Type w) [(n : ℕ) → L.Structure (G n)] [∀ (n : ℕ), Nonempty (G n)]\n  (f : (i j : ℕ) → i ≤ j → L.ElementaryEmbedding (G i) (G j)) [DirectedSystem G fun i j h => ⇑(f i j h)] {U : Type w'}\n  (j : (n : ℕ) → G n ↪ U) (hcompat : ∀ (a b : ℕ) (h : a ≤ b) (x : G a), (j b) ((f a b h) x) = (j a) x)\n  (hcover : ∀ (x : U), ∃ n a, (j n) a = x) : ∃ S, ∀ (n : ℕ), ∃ e, ⇑e = ⇑(j n)"
+}
