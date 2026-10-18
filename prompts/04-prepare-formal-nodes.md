@@ -43,8 +43,11 @@ publication itself is demonstrably wrong. Report any saved register changes.
 3. Explain representation changes and specializations. Check hypotheses, universes,
    subtypes, domains, codomains, and conventions such as total division or finite
    cardinality functions on infinite sets. Distinguish existence from uniqueness;
-   ensure both inverse laws refer to the same map. Preserve the intended mathematics
-   rather than adapting it silently to a convenient library declaration. Inspect
+   ensure both inverse laws refer to the same map. Check witness dependencies:
+   choose a transformation before quantifying over all
+   backgrounds it must handle, and explicitly identify a constructed embedding's
+   underlying map when the human claim names that map. Preserve the intended
+   mathematics rather than adapting it silently to a convenient library declaration. Inspect
    elaborated comparisons and instances for custom types and concrete literals;
    a type annotation alone may not select the intended relation.
    For proof calculi, compare the primitive rules explicitly. A formal constructor
@@ -77,7 +80,11 @@ publication itself is demonstrably wrong. Report any saved register changes.
    Keep necessary Lean helpers; useful registered prerequisites may remain in
    dependency hints without direct block links. Reuse existing nodes across
    entries instead of duplicating them.
-5. Implement missing definition bodies and declare missing theorem statements with
+5. When using a separate formula representation, provide translations preserving
+   satisfaction, scope, and relevant syntactic properties. State the final theorem
+   for the shared-language theory and bound definition; a local-syntax result alone
+   does not cover it. Check subsequent consequences against the same theory.
+   Implement missing definition bodies and declare missing theorem statements with
    `by sorry`. Do not replace existing proofs or prove new theorem bodies in this
    step. Put reusable mathematics under the general theory layer for its area,
    such as `formal/Lemmatheca/SetTheory/` or

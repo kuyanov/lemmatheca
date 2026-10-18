@@ -1,0 +1,152 @@
+<section id="equivalence-modulo-a-theory" data-formal="fonf-equivalence qe-quantifier-elimination qe-dense-order-clause" data-kind="definition">
+  <h2>Removing quantifiers with the help of axioms</h2>
+  <p>Fix a language \(L\) and a <a href="first-order-structures#theories-and-models">theory</a> \(T\). All structures have nonempty domains. For formulas with a common finite list of available free variables, write \(\varphi\equiv_T\psi\) when every model of \(T\), at every assignment to that list, gives the two formulas the same truth value. In scoped notation the same requirement applies to any surrounding placeholders. This is equivalence modulo \(T\), rather than <a href="first-order-normal-forms#equivalence-and-names">equivalence in every structure</a>.</p>
+  <p>The theory \(T\) has <strong>quantifier elimination</strong> if every formula \(\varphi(\bar y)\) is equivalent modulo \(T\) to a <a href="first-order-normal-forms#normal-form-definitions">quantifier-free</a> formula \(\psi(\bar y)\). No new free variable or nonlogical symbol is introduced; some free variables may disappear. We allow the quantifier-free constants \(\top\) and \(\bot\), including when the variable list is empty. Quantifier elimination removes quantifiers, whereas prenex normal form only moves them.</p>
+  <p>For example, in a dense linear order, \(\exists x\,(y&lt;x\land x&lt;z)\) is equivalent to \(y&lt;z\). The assertion can fail in a discrete order, so the theory matters.</p>
+</section>
+
+<section id="one-quantifier" data-formal="qe-literal-conjunction-criterion qe-existential-disjunction qe-atomic-pattern qe-atomic-pattern-truth" data-kind="lemma">
+  <h2>It is enough to eliminate one existential quantifier</h2>
+  <p>Suppose that, for every finite conjunction of literals \(\theta(x,\bar y)\), the formula \(\exists x\,\theta(x,\bar y)\) has a quantifier-free equivalent modulo \(T\), using only the variables \(\bar y\). Then \(T\) has quantifier elimination. An empty conjunction means \(\top\), and an empty disjunction means \(\bot\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Induct on formulas. Atomic formulas and \(\bot\) need no change. Boolean connectives combine the quantifier-free equivalents supplied by induction. Replace a universal quantifier by \(\neg\exists x\neg\). At an existential step, first replace the body by its quantifier-free equivalent. Regard its finitely many atomic formulas as propositional atoms and use <a href="propositional-normal-forms#normal-form-theorem">disjunctive normal form</a> to write it as a finite disjunction of conjunctions of literals. Then</p>
+  <div class="math-display">\[
+    \exists x\,\bigvee_{i&lt;k}\theta_i(x,\bar y)
+      \equiv_T \bigvee_{i&lt;k}\exists x\,\theta_i(x,\bar y).
+  \]</div>
+  <p>A witness for the left side satisfies one disjunct, and a witness for any disjunct satisfies the left side. Apply the hypothesis to each conjunction. Each step uses only the remaining free variables. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In the two languages treated below—equality alone, and equality with one binary order relation—there are no function or constant symbols, so every term is a variable. For a fixed finite list of variables there are therefore only finitely many equality atoms, or equality and order atoms. A useful alternative is to record every atom's truth or falsity in a <strong>complete atomic pattern</strong>, a conjunction containing one literal for each atom. A quantifier-free formula can be written as a disjunction of such patterns. Discard inconsistent patterns before using a witness argument: an arbitrary list of truth values need not respect equality or order.</p>
+</section>
+
+<section id="infinite-equality" data-formal="compact-infinite-theory compact-infinite-theory-characterization elem-at-least-n-sentence elem-at-least-n-truth" data-kind="definition">
+  <h2>Infinite sets with equality alone</h2>
+  <p>Let \(L_=\) have no nonlogical symbols: equality is part of the logic. Let \(T_\infty\) contain the <a href="logical-compactness#size-sentences">sentences asserting at least each finite number of distinct elements</a>. For each positive integer \(n\), this sentence is:</p>
+  <div class="math-display">\[
+    \exists x_0\cdots\exists x_{n-1}
+       \bigwedge_{i&lt;j&lt;n} x_i\ne x_j.
+  \]</div>
+  <p>Its models are exactly the infinite sets, with equality as their only available relation. Indeed, an infinite set contains each finite number of distinct elements; a finite set of size \(m\) fails the axiom for \(m+1\). The natural numbers supply a model.</p>
+</section>
+
+<section id="equality-elimination" data-formal="qe-equality-elimination qe-equality-witness-substitution qe-equality-finite-exclusions" data-kind="theorem">
+  <h2>Equality quantifiers reduce to finite equality patterns</h2>
+  <div class="statement-box">
+    <p>The theory \(T_\infty\) of infinite sets in the equality language has quantifier elimination.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>By <a href="#one-quantifier"></a>, consider \(\exists x\,\theta(x,\bar y)\), where \(\theta\) is a conjunction of equalities and inequalities. Delete \(x=x\); if \(x\ne x\) occurs, the answer is \(\bot\). Reverse equalities or inequalities when needed to put \(x\) on the left.</p>
+  <p>If a conjunct is \(x=y_i\), substitute \(y_i\) for \(x\) in every other conjunct. The resulting conjunction is the required equivalent: any witness must equal \(y_i\), and \(y_i\) itself is a witness whenever that conjunction holds. This also detects contradictory requirements, such as \(x=y_i\) together with \(x\ne y_i\).</p>
+  <p>If there is no equality fixing \(x\), write the remaining conjunction as</p>
+  <div class="math-display">\[
+    C(\bar y)\land\bigwedge_{i\in F}x\ne y_i,
+  \]</div>
+  <p>where \(C\) contains every conjunct independent of \(x\), and \(F\) is finite. An infinite domain has an element outside the finite set of values \(\{y_i:i\in F\}\). Thus the existential formula is equivalent to \(C(\bar y)\). This includes \(F=\varnothing\), using nonemptiness. Every case gives a quantifier-free formula in the original remaining variables. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="equality-examples" data-formal="qe-equality-examples qe-finite-equality-obstruction" data-kind="question">
+  <h2>Being different from finitely many named elements</h2>
+  <p>Over \(T_\infty\), eliminate the quantifiers in \(\exists x\,(x\ne y\land x\ne z)\) and \(\exists x\,(x=y\land x\ne z)\). Why can the first answer fail in a finite set?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The first formula is equivalent to \(\top\), since two parameter values exclude at most two elements. The second is equivalent to \(y\ne z\): its witness must be \(y\). In a two-element set, assigning the two distinct elements to \(y,z\) leaves no possible witness to the first formula.</p>
+    </div>
+  </details>
+</section>
+
+<section id="dense-orders" data-formal="qe-dense-order-axioms qe-dense-order-model-characterization qe-dense-order-models qe-negated-order-atoms qe-integer-between-disagrees" data-kind="definition">
+  <h2>Dense linear orders without endpoints</h2>
+  <p>Now use the language \(L_&lt;=\{&lt;\}\), with one binary relation and no function or constant symbols. Let \(T_{\mathrm{dlo}}\) assert that \( &lt; \) is a <a href="ordered-sets#strict-orders">strict linear order</a>, is dense, and has no endpoints. In detail, the relation is irreflexive and transitive, distinct elements are comparable, and</p>
+  <div class="math-display">\[
+  \begin{aligned}
+    &amp;\forall u\forall v\;(u&lt;v\to\exists x\,(u&lt;x\land x&lt;v)),\\
+    &amp;\forall u\exists x\;(x&lt;u),\qquad
+       \forall u\exists x\;(u&lt;x).
+  \end{aligned}
+  \]</div>
+  <p>The rational and real numbers with their usual orders are models; the integers fail density. The <a href="dense-linear-orders#density-and-completeness">set-theoretic dense-order treatment</a> studies the same order properties from a set-theoretic viewpoint. Here we study every first-order formula in the order language.</p>
+  <p>Linearity lets us remove negated atomic formulas:</p>
+  <div class="math-display">\[
+    \begin{aligned}
+      u\ne v &amp;\equiv_{T_{\mathrm{dlo}}} (u&lt;v\lor v&lt;u),\\
+      \neg(u&lt;v) &amp;\equiv_{T_{\mathrm{dlo}}} (u=v\lor v&lt;u).
+    \end{aligned}
+  \]</div>
+  <p>Consequently, after distributing finite Boolean combinations, it is enough to eliminate \(\exists x\) from conjunctions of positive equalities and strict inequalities.</p>
+</section>
+
+<section id="finite-bounds" data-formal="qe-finite-bounds qe-dense-order-clause" data-kind="lemma">
+  <h2>When finitely many lower and upper bounds have a witness</h2>
+  <p>In a nonempty dense linear order without endpoints, let \(L,U\) be finite sets of elements and let \(C\) be a condition independent of \(x\). Then</p>
+  <div class="math-display">\[
+    \begin{gathered}
+      \exists x\Bigl(C\land\bigwedge_{\ell\in L}\ell&lt;x
+        \land\bigwedge_{u\in U}x&lt;u\Bigr)\\
+      \Longleftrightarrow\\
+      C\land\bigwedge_{\ell\in L,\,u\in U}\ell&lt;u.
+    \end{gathered}
+  \]</div>
+  <p class="proof-label">Proof</p>
+  <p>A witness gives every comparison on the right by transitivity. Conversely, retain \(C\). If both bound sets are nonempty, let \(\ell_*\) be the greatest member of \(L\), and \(u_*\) the least member of \(U\). These are extrema of finite sets, not suprema of arbitrary sets. The comparisons give \(\ell_*&lt;u_*\); density supplies a witness between them. If only \(L\) is nonempty, choose an element above its greatest member using the absence of a greatest element. If only \(U\) is nonempty, choose an element below its least member. If both are empty, choose any domain element. In the last three cases the empty comparison conjunction on the right is \(\top\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The condition \(C\) remains in every case. Removing the quantifier does not erase requirements imposed on the parameters.</p>
+</section>
+
+<section id="dlo-elimination" data-formal="qe-dense-order-elimination qe-dense-order-clause qe-equality-witness-substitution" data-kind="theorem">
+  <h2>Dense-order quantifiers reduce to comparisons</h2>
+  <div class="statement-box">
+    <p>The theory \(T_{\mathrm{dlo}}\) of dense linear orders without endpoints has quantifier elimination in the language with equality and strict order.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Use <a href="#one-quantifier"></a> and the positive-conjunction reduction in <a href="#dense-orders"></a>. In a conjunction under \(\exists x\), a conjunct \(x&lt;x\) makes the answer \(\bot\), while \(x=x\) can be deleted. Collect all conjuncts independent of \(x\) into \(C(\bar y)\).</p>
+  <p>If an equality \(x=y_i\) remains, substitute \(y_i\) for \(x\) throughout the conjunction. As in the equality argument, this gives a necessary and sufficient quantifier-free condition, including all comparisons and any additional equalities. If no equality fixes \(x\), every remaining atom involving \(x\) has the form \(y_i&lt;x\) or \(x&lt;y_j\). Apply <a href="#finite-bounds"></a>: the result is \(C(\bar y)\) conjoined with every comparison \(y_i&lt;y_j\) from a lower-bound variable to an upper-bound variable. The four bound cases cover all possibilities. Induction then eliminates every quantifier. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="order-examples" data-formal="qe-order-examples qe-integer-pairs-pattern qe-integer-between-disagrees qe-integer-between-not-quantifier-free qe-quantifier-free-pattern-agreement" data-kind="question">
+  <h2>A bound, a forced witness, and a missing interval</h2>
+  <p>Eliminate \(\exists x\,(a&lt;x\land x&lt;b\land c&lt;d)\) and \(\exists x\,(a&lt;x\land x&lt;b\land x=c)\) modulo \(T_{\mathrm{dlo}}\). Why does the theory of all linear orders fail quantifier elimination?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The answers are \((a&lt;b)\land(c&lt;d)\) and \((a&lt;c)\land(c&lt;b)\), respectively. The first retains the condition independent of \(x\); the second substitutes the forced witness.</p>
+      <p>In \((\mathbb Z,&lt;)\), the pairs \((0,1)\) and \((0,2)\) satisfy exactly the same atomic equality and order formulas in two variables. Every quantifier-free formula therefore has the same truth value on the two pairs, by induction on Boolean connectives. However, \(\exists x\,(y&lt;x\land x&lt;z)\) is false at \((0,1)\) and true at \((0,2)\), with witness \(1\). It has no quantifier-free equivalent even in this one structure, hence none valid over all linear orders.</p>
+    </div>
+  </details>
+</section>
+
+<section id="unary-definable-sets" data-formal="qe-equality-unary-finite-cofinite definable-finite-subset definable-complement qe-dense-order-unary-finite-union qe-dense-order-definable-classification qe-order-cells-definable qe-equality-parameterfree-unary qe-dense-order-parameterfree-unary" data-kind="theorem">
+  <h2>What one-variable formulas can define</h2>
+  <div class="statement-box">
+    <p>With parameters allowed, the <a href="definability-and-automorphisms#definable-sets">definable subsets</a> of an infinite equality structure are exactly the finite and cofinite subsets. The definable subsets of a dense linear order without endpoints are exactly the finite unions of singletons and open intervals, allowing rays and the whole domain. Interval endpoints and isolated points may be chosen among the finitely many parameters used.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>First replace a defining formula by its quantifier-free equivalent. In the equality language, an atomic formula involving the variable \(x\) is either constant in truth or an equality \(x=a_i\) to a parameter. Outside the finite set of parameter values every such equality is false, so every Boolean combination has a single truth value there. The defined set is contained in that finite set, or contains its complement. Conversely, a finite set is defined by a finite disjunction of parameter equalities; negate that formula for its complement.</p>
+  <p>For the order language, arrange the distinct parameter values as \(a_1&lt;\cdots&lt;a_k\). They divide the domain into singleton cells \(\{a_i\}\) and the open cells</p>
+  <div class="math-display">\[
+    (-\infty,a_1),\ (a_1,a_2),\ldots,\ (a_{k-1},a_k),\ (a_k,+\infty).
+  \]</div>
+  <p>The infinity signs mean unbounded rays, not extra elements. On each cell every atomic comparison with a parameter has a fixed truth value; so does every Boolean combination. The defined set is a union of some of these finitely many cells. If there are no parameters, there is just the whole-domain cell. Conversely, each listed cell has a quantifier-free definition: \(x=a_i\), \(a_i&lt;x&lt;a_{i+1}\), \(x&lt;a_1\), or \(a_k&lt;x\). The whole-domain cell is defined by \(\top\), and the empty set by \(\bot\); finite disjunctions define their unions. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, in either language the only parameter-free unary definable subsets are the empty set and the whole domain. The richer possibilities above come from supplying parameters.</p>
+</section>
+
+<section id="complete-examples" data-formal="qe-equality-theory-complete qe-dense-order-theory-complete qe-equality-sentence-agreement qe-dense-order-sentence-agreement" data-kind="theorem">
+  <h2>Both theories decide every sentence</h2>
+  <p>The theories \(T_\infty\) and \(T_{\mathrm{dlo}}\) are <a href="theories-and-axiomatization#complete-theories">complete</a>: each is satisfiable, and each sentence is true in all its models or false in all its models.</p>
+  <p class="proof-label">Proof</p>
+  <p>The natural numbers model \(T_\infty\), and the rationals model \(T_{\mathrm{dlo}}\). Eliminate the quantifiers from a sentence. Neither language has constants or function symbols, so a closed term does not exist. There is therefore no closed atomic equality or order formula. A quantifier-free sentence is built from \(\top,\bot\) by Boolean operations, and has a truth value independent of the structure. Its equivalent sentence has that same value in every model of the relevant theory. This proves completeness, or equivalently <a href="theories-and-axiomatization#complete-models">agreement of all models on sentences</a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The completeness argument uses the absence of closed atomic sentences in these particular languages, as well as quantifier elimination.</p>
+</section>
+
+<section id="elementary-inclusions" data-formal="qe-equality-injection-elementary qe-dense-order-embedding-elementary" data-kind="theorem">
+  <h2>Inclusions between models preserve every formula</h2>
+  <p>Every inclusion of one infinite equality structure into another is <a href="elementary-submodels#elementary-substructures">elementary</a>. The same holds for an inclusion of dense linear orders without endpoints when the smaller domain has the order induced from the larger one. More generally, any injection between infinite equality structures, and any order embedding between such dense orders, is elementary.</p>
+  <p class="proof-label">Proof</p>
+  <p>Let \(f:M\to N\) be the injection or order embedding in question. It preserves and reflects equality; in the order case it also preserves and reflects strict order. It therefore preserves the truth of every quantifier-free formula by induction on Boolean connectives. Given \(\varphi(\bar y)\), choose a quantifier-free equivalent \(\psi(\bar y)\) modulo the common theory. For a tuple \(\bar a\) from \(M\),</p>
+  <div class="math-display">\[
+    \begin{aligned}
+      M\models\varphi(\bar a) &amp;\iff M\models\psi(\bar a)\\
+      &amp;\iff N\models\psi(f\bar a)\\
+      &amp;\iff N\models\varphi(f\bar a).
+    \end{aligned}
+  \]</div>
+  <p>This is exactly the definition of an <a href="elementary-submodels#elementary-embeddings">elementary embedding</a>. In the inclusion case it says that \(M\) is an elementary substructure of \(N\). Both structures must be models of the stated theory; an arbitrary ordered subset can lose density or endpoints and need not be elementary. <span class="qed" aria-label="End of proof">□</span></p>
+</section>

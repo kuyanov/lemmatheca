@@ -52,11 +52,23 @@ register maintenance is this review's only permitted file edit.
    Check hypotheses, quantifiers, logical directions, conclusions, and domains. Check
    existence as well as uniqueness, both laws for the same inverse, the surrounding
    set for complements, and codomains for surjectivity and composition. Inspect
-   conventions involving total operations, subtypes, and cardinalities. A more
+   the order of quantifiers governing constructed witnesses: a transformation
+   chosen once and valid for every background must precede that background's
+   universal quantifier. A uniform proof of a weaker statement does not repair its
+   signature. For a supplied map, require a checked identity with the constructed
+   map, or a property stated directly of the supplied map. Check that descriptions
+   and dependency hints were refreshed when a statement or proof changed.
+   Inspect conventions involving total operations, subtypes, and cardinalities. A more
    general library result is a valid binding only when the specialization covers
    the human claim; record that specialization explicitly. For custom types,
    inspect elaborated expressions to check which order or other instance Lean
    actually selected, especially in comparisons involving concrete literals.
+   If a proof introduces a separate formula syntax, inspect actual translations
+   preserving satisfaction, scope, and required properties such as being
+   quantifier-free. Require a theorem applying the bound definition to the actual
+   shared-language theory. A correct local-syntax theorem beside an unused shared
+   definition leaves a coverage gap. Check that completeness, elementarity, and
+   definability consequences concern that same theory and syntax.
    For proof calculi, compare primitive constructors with the human rule list.
    A derived-rule claim needs an actual syntactic admissibility transformation,
    not a constructor granting the rule. If the proof representation includes

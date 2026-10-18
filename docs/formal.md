@@ -99,6 +99,22 @@ the GitHub review, and check domains, quantifiers, conventions, and assumptions.
 Several nodes may collectively cover a block, and one node may serve several blocks.
 See the [mapping contract](corpus.md#block-to-node-mapping).
 
+Check which inputs each constructed witness may depend on. If one construction
+must work for every background theory, choose it before quantifying over that
+theory: `∀ σ, ∃ τ, ∀ T, ...`, rather than `∀ σ T, ∃ τ, ...`. Inspect the
+statement itself, even when its proof happens to make a uniform choice. When the
+claim concerns a specified map, the exposed conclusion must identify that map;
+returning an embedding type alone does not state that its underlying function is
+the supplied function. Retain an explicit identity or a predicate on that function.
+
+When a proof uses a separate formula syntax, prove its connection to the shared
+syntax before binding claims about the shared language or theory. The translations
+must preserve satisfaction, variable scope, and any required syntactic property
+such as being quantifier-free. Bind the resulting theorem for the actual theory;
+binding a definition beside a theorem for an unrelated local syntax does not
+establish that the theory satisfies the definition. Check dependent completeness,
+elementarity, and definability claims in that same representation.
+
 For a proof calculus, compare the primitive rules of the human and formal systems.
 An operation made a constructor of the formal proof type has not thereby been
 proved admissible in the human system. Derived-rule and conservative-expansion

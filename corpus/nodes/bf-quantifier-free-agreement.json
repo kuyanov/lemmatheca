@@ -1,0 +1,12 @@
+{
+  "id": "bf-quantifier-free-agreement",
+  "description": "A finite partial isomorphism preserves and reflects every quantifier-free formula on finite tuples from its domain.",
+  "module": "Lemmatheca.MathematicalLogic.BackAndForth",
+  "declaration": "Lemmatheca.MathematicalLogic.BackAndForth.FinitePartialIso.quantifierFree",
+  "dependencies": [
+    "bf-finite-partial-isomorphism"
+  ],
+  "verified": true,
+  "declaration_line": 47,
+  "signature": "Lemmatheca.MathematicalLogic.BackAndForth.FinitePartialIso.quantifierFree.{u, v, w, w'} {L : FirstOrder.Language}\n  {M : Type w} {N : Type w'} [L.Structure M] [L.Structure N]\n  (p : Lemmatheca.MathematicalLogic.BackAndForth.FinitePartialIso L M N) {n : ℕ} (φ : L.Formula (Fin n))\n  (hφ : FirstOrder.Language.BoundedFormula.IsQF φ) (a : Fin n → ↑p.dom) :\n  φ.Realize (p.toFun ∘ a) ↔ φ.Realize (Subtype.val ∘ a)"
+}

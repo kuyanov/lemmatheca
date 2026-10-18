@@ -111,3 +111,11 @@ import Lemmatheca.MathematicalLogic.PropositionalCompactness
 import Lemmatheca.Entry.PropositionalCompactness
 import Lemmatheca.MathematicalLogic.FirstOrderNormalForms
 import Lemmatheca.Entry.FirstOrderNormalForms
+import Lemmatheca.MathematicalLogic.Theories
+import Lemmatheca.MathematicalLogic.BackAndForth
+import Lemmatheca.MathematicalLogic.BackAndForthStrictTheory
+import Lemmatheca.Entry.Skolemization
+import Lemmatheca.MathematicalLogic.QuantifierElimination
+import Lemmatheca.MathematicalLogic.QuantifierEliminationCells
+import Lemmatheca.MathematicalLogic.QuantifierEliminationShared
+import Lemmatheca.Entry.QuantifierElimination

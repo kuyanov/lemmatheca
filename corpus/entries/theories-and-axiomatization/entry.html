@@ -1,0 +1,75 @@
+<section id="axioms-and-consequences" data-formal="theory-consequence-closure theory-closure-derivability theory-closure-contains-axioms theory-closure-same-models theory-closure-idempotent theory-deductively-closed theory-equivalent-axioms theory-equivalence-closure" data-kind="definition">
+  <h2>Axioms and everything they imply</h2>
+  <p>Fix a countable <a href="first-order-languages#signatures">first-order language</a> \(L\), with equality and nonempty structures. A <a href="first-order-structures#theories-and-models">theory</a> \(T\) is a set of sentences; these are its chosen axioms. Its <strong>deductive closure</strong> is</p>
+  <div class="math-display">\[\operatorname{Cn}(T)=\{\theta:T\vdash\theta\}.\]</div>
+  <p>By <a href="henkin-completeness#deductive-completeness">soundness and completeness</a>, this is also \(\{\theta:T\models\theta\}\). Thus the closure contains exactly the sentences true in every model of the axioms. The particular list of axioms and the full collection of its consequences are different objects.</p>
+  <p>We have \(T\subseteq\operatorname{Cn}(T)\), and \(T\) and \(\operatorname{Cn}(T)\) have the same models. Indeed, assumptions are derivable, and soundness makes every consequence true in a model of \(T\). Conversely a model of the closure satisfies its subset \(T\). Consequently \(\operatorname{Cn}(\operatorname{Cn}(T))=\operatorname{Cn}(T)\). A theory equal to its closure is <strong>deductively closed</strong>.</p>
+  <p>Two axiom sets \(T,U\) are <strong>equivalent</strong> if they have the same models. This is equivalent to \(\operatorname{Cn}(T)=\operatorname{Cn}(U)\): the same models give the same consequences, while equality of closures gives the same models by the preceding argument.</p>
+</section>
+
+<section id="complete-theories" data-formal="theory-complete theory-complete-proof-characterization henkin-deductive-closure" data-kind="definition">
+  <h2>When the axioms decide every sentence</h2>
+  <p>A theory \(T\) is <strong>complete</strong> if it is satisfiable and, for each sentence \(\theta\), either \(T\models\theta\) or \(T\models\neg\theta\). Satisfiability prevents both alternatives from holding. By <a href="first-order-proofs#soundness">soundness</a> and <a href="henkin-completeness#deductive-completeness">completeness of the proof calculus</a>, we may equivalently ask that \(T\) be syntactically consistent and prove one of \(\theta,\neg\theta\) for every sentence.</p>
+  <p>These are two meanings of completeness. A <strong>complete proof calculus</strong> derives every semantic consequence of any axiom set in its scope. A <strong>complete theory</strong> decides every sentence of its own language. The former does not say that every theory is complete.</p>
+  <p>The <a href="henkin-completeness#complete-consistent-theories">complete consistent sentence sets</a> used in the Henkin construction contain either \(\theta\) or \(\neg\theta\) literally. Such a set is deductively closed: if it proves \(\theta\) but does not contain it, it contains \(\neg\theta\), contradicting consistency. For an arbitrary axiom set, deciding by consequence does not require that its chosen list literally contain every consequence.</p>
+</section>
+
+<section id="theory-of-a-structure" data-formal="theory-of-structure theory-of-structure-complete theory-of-structure-closed theory-model-subset elem-elementary-equivalence fo-sentence-isomorphism-invariance" data-kind="theorem">
+  <h2>All the sentences true in one structure</h2>
+  <p>The <strong>theory of a structure</strong> \(M\) is</p>
+  <div class="math-display">\[\operatorname{Th}(M)=\{\theta:\theta\text{ is an }L\text{-sentence and }M\models\theta\}.\]</div>
+  <p>This theory is satisfiable, complete, and deductively closed. A structure \(M\) is a model of \(T\) exactly when \(T\subseteq\operatorname{Th}(M)\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The structure \(M\) itself satisfies every member of \(\operatorname{Th}(M)\). Each sentence is either true or false in \(M\), so exactly one of it and its negation belongs to the theory. If \(\operatorname{Th}(M)\models\theta\), its model \(M\) satisfies \(\theta\), putting the sentence back in the theory. This proves closure. The final assertion is the definition of satisfying every axiom. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Structures \(M,N\) are <strong>elementarily equivalent</strong>, written \(M\equiv N\), if they satisfy the same sentences, or equivalently if \(\operatorname{Th}(M)=\operatorname{Th}(N)\). An <a href="first-order-structures#isomorphism-invariance">isomorphism</a> implies this agreement; the converse can fail.</p>
+</section>
+
+<section id="complete-models" data-formal="theory-complete-models theory-closure-complete-model" data-kind="theorem">
+  <h2>Completeness means that the models agree on sentences</h2>
+  <div class="statement-box"><p>A satisfiable theory \(T\) is complete if and only if all its models are elementarily equivalent. When \(T\) is complete and \(M\models T\),</p>
+  <div class="math-display">\[\operatorname{Cn}(T)=\operatorname{Th}(M).\]</div></div>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(T\) is complete. For any sentence \(\theta\), either all models of \(T\) satisfy \(\theta\), or all satisfy its negation. Thus any two models agree on every sentence. Moreover, every consequence is true in \(M\). If \(M\models\theta\), the alternative \(T\models\neg\theta\) is impossible, so \(T\models\theta\). This gives the displayed equality.</p>
+  <p>Conversely, fix one model \(M\) of \(T\), and assume all models of \(T\) are elementarily equivalent. If \(M\models\theta\), every model satisfies \(\theta\), giving \(T\models\theta\). Otherwise every model satisfies \(\neg\theta\), giving the other alternative. Hence \(T\) is complete. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The satisfiability hypothesis matters. An inconsistent axiom set has no models, so agreement among all its models is vacuous, but it is not a complete theory under our definition.</p>
+</section>
+
+<section id="axiomatizable-classes" data-formal="theory-model-class theory-axiomatizable theory-finitely-axiomatizable theory-finite-single-sentence compact-exact-size-sentence compact-infinite-theory-characterization" data-kind="definition">
+  <h2>Describing a class of structures by sentences</h2>
+  <p>A class \(\mathcal C\) of nonempty \(L\)-structures is <strong>axiomatizable</strong> if \(\mathcal C=\operatorname{Mod}(T)\) for some theory \(T\), where \(\operatorname{Mod}(T)\) denotes all its models. It is <strong>finitely axiomatizable</strong> if a finite set of sentences suffices.</p>
+  <p>A finite axiom set is equivalent to one sentence: take the conjunction of its members. The conjunction of an empty axiom set is \(\top\), which describes all nonempty \(L\)-structures. Thus finite axiomatizability is also describability by a single sentence. This notion concerns the class of models; it does not require that some originally supplied infinite list itself be finite.</p>
+  <p>For instance, <a href="logical-compactness#size-sentences">size sentences</a> \(\delta_n\) express the existence of at least \(n\) distinct elements. For \(n\ge1\), the sentence \(\delta_n\land\neg\delta_{n+1}\) describes domains of size exactly \(n\). The whole theory \(\Delta=\{\delta_n:n\in\mathbb N\}\) describes infinite domains.</p>
+</section>
+
+<section id="finite-axiomatizability" data-formal="theory-finite-complement" data-kind="theorem">
+  <h2>A class and its complement can both have axioms only in the finite case</h2>
+  <div class="statement-box"><p>A class \(\mathcal C\) of nonempty structures in a fixed countable language is finitely axiomatizable if and only if both \(\mathcal C\) and its complement are axiomatizable. The complement is taken among all nonempty structures in that same language.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>If \(\mathcal C=\operatorname{Mod}(\theta)\), its complement is \(\operatorname{Mod}(\neg\theta)\), so both classes are axiomatizable.</p>
+  <p>For the converse, let \(\mathcal C=\operatorname{Mod}(T)\) and let its complement be \(\operatorname{Mod}(U)\). No structure can satisfy \(T\cup U\). By <a href="logical-compactness#compactness">compactness</a>, there are finite subsets \(T_0\subseteq T\), \(U_0\subseteq U\) such that \(T_0\cup U_0\) has no model. Every member of \(\mathcal C\) satisfies \(T_0\). If a model of \(T_0\) were outside \(\mathcal C\), it would satisfy all of \(U\), hence \(U_0\), a contradiction. Therefore \(\mathcal C=\operatorname{Mod}(T_0)\), giving a finite axiomatization. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="infinitude-not-finitely-axiomatizable" data-formal="theory-infinitude-not-finite compact-infinite-theory-characterization" data-kind="theorem">
+  <h2>Infinitude needs infinitely many first-order requirements</h2>
+  <p>In any fixed countable language, the class of infinite structures is axiomatizable but not finitely axiomatizable.</p>
+  <p class="proof-label">Proof</p>
+  <p>The size theory \(\Delta\) axiomatizes infinitude. If there were any finite axiomatization of this class, <a href="#finite-axiomatizability"></a> would make its complement, the class of finite nonempty structures, axiomatizable. This contradicts <a href="logical-compactness#finitude-not-axiomatizable">the compactness obstruction to axiomatizing finitude</a>. The argument excludes every possible finite axiomatization, not just finite subsets of the particular list \(\Delta\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="complete-versus-finite-question" data-formal="theory-empty-equality-incomplete theory-complete fo-singleton-domain-truth" data-kind="question">
+  <h2>Does a finite axiom list decide every sentence?</h2>
+  <p>Can a finitely axiomatizable class come from an incomplete theory? Does an inconsistent theory count as complete because it proves every sentence?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The empty theory in the equality-only language is a finite axiom set, but is incomplete. Its one-element model satisfies \(\forall x\forall y\,(x=y)\), while its two-element model does not. Thus its models disagree on a sentence. Finite axiomatizability asks how many sentences describe a class; completeness asks whether all models of the axioms agree on every sentence.</p>
+    <p>An inconsistent theory is excluded by the satisfiability requirement in <a href="#complete-theories"></a>. Equivalently, syntactic completeness of a theory requires consistency as well as deciding sentences. The contradictory consequences of an inconsistent axiom set do not satisfy that requirement.</p>
+  </div></details>
+</section>
+
+<section id="same-theory-different-size" data-formal="theory-countable-same-theory real-uncountability bf-countable-uncountable-not-isomorphic" data-kind="question">
+  <h2>Can elementarily equivalent structures have different sizes?</h2>
+  <p>Can a countable structure and an uncountable structure satisfy exactly the same first-order sentences?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Yes. Take any uncountable structure \(M\) in a countable language, for example the real numbers with their strict order. Its theory \(\operatorname{Th}(M)\) is consistent because \(M\) is a model. The <a href="henkin-completeness#countable-model-existence">countable model theorem</a> supplies a countable model \(N\) of that theory. Since \(\operatorname{Th}(M)\) is complete, \(M\equiv N\). The structures cannot be isomorphic because their domains have different cardinalities.</p>
+    <p>Sentence agreement therefore does not determine the size of an infinite model. This uses a countable signature; naming uncountably many distinct objects would fall outside the countable model theorem's hypotheses.</p>
+  </div></details>
+</section>

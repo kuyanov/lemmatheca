@@ -207,6 +207,9 @@ and figures. Always verify font sizes and spacing in the desktop layout, then
 check relevant narrow layouts. Check that figure panels and captions match the
 site, labels do not overlap or clip, notes have enough separation from nearby
 labels, and diagrams fit the reading column.
+At phone width (390 px), inspect individual display formulas for internal horizontal
+scrolling, especially inside statement boxes; a page can fit while a formula still
+overflows. Split long displays into readable aligned lines where needed.
 Restart the development server if adding a new assets directory.
 
 ## Deliverable

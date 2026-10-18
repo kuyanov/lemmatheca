@@ -1,0 +1,113 @@
+<section id="expansions-and-reducts" data-formal="skolem-expansion skolem-reduct skolem-reduct-invariance" data-kind="definition">
+  <h2>Keeping a structure and adding interpretations</h2>
+  <p>Work with <a href="first-order-languages#signatures">first-order languages</a>, equality, and nonempty domains. If a language \(L'\) contains \(L\), an <strong>expansion</strong> of an \(L\)-structure \(M\) to \(L'\) keeps the same domain and every interpretation already specified by \(L\), and supplies interpretations for the added symbols. Conversely the <strong>reduct</strong> \(N\mathbin{\upharpoonright}L\) of an \(L'\)-structure forgets the added interpretations.</p>
+  <p>An \(L\)-formula has the same truth value in an expansion and its reduct, under the same assignment. For terms, induction on their construction shows that their values agree: no new symbol occurs. The atomic truth clauses then agree, and induction through connectives and quantifiers proves the assertion for formulas. Quantifiers range over the same domain.</p>
+</section>
+
+<section id="scoped-term-instances" data-formal="skolem-scoped-instances skolem-scoped-instance-truth" data-kind="lemma">
+  <h2>Replacing scoped slots by terms in retained slots</h2>
+  <p>The <a href="first-order-languages#substitution">free-variable substitution</a> previously defined leaves placeholders alone. We now need a different operation: its replacement terms may refer to surrounding universal variables that remain quantified.</p>
+  <p>Let \(A\) be a formula at context size \(n\), with no free-variable names, and let \(t_0,\ldots,t_{n-1}\) be terms at context size \(k\), also with no free-variable names. Define \(A[t_0,\ldots,t_{n-1}]\) at context size \(k\) by replacing every available slot \(z_i\), for \(i&lt;n\), by \(t_i\). Perform all replacements simultaneously: do not replace slots inside an inserted term a second time.</p>
+  <p>Inside \(j\) nested quantifiers of \(A\), retain each internal slot's binder but renumber its old slot \(z_{n+\ell}\) as \(z_{k+\ell}\), for \(\ell&lt;j\). The inserted terms use only \(z_0,\ldots,z_{k-1}\); these refer to the retained surrounding slots, and internal quantifiers occupy higher slots. Thus the operation preserves which quantifier governs each occurrence. Apply it recursively to terms and Boolean connectives and use this renumbering under quantifiers.</p>
+  <p>For any structure \(M\) and retained tuple \(b\in M^k\), put \(c_i=\llbracket t_i\rrbracket^M_b\) and \(c=(c_0,\ldots,c_{n-1})\). With the empty free-variable assignment omitted,</p>
+  <div class="math-display">\[M,b\models A[t_0,\ldots,t_{n-1}]\quad\Longleftrightarrow\quad M,c\models A.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>Prove the stronger statement inside any number \(j\) of internal binders, assigning those binders the same tuple \(d\) on both sides. The original tuple is \((c,d)\), and the new tuple is \((b,d)\). At an available slot, the replacement has exactly the assigned value \(c_i\). At an internal slot, renumbering retains its value from \(d\). Induction on terms gives equal argument values to each interpreted function, and therefore equal term values.</p>
+  <p>Induct next on formulas. Atomic formulas use the term result; falsity and implication use their truth clauses. At a quantifier, append the same arbitrary element to \(d\) on each side. The induction hypothesis applies at depth \(j+1\), and quantifying over that element proves the required equivalence. Taking \(j=0\) gives the display. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="one-witness-function" data-formal="skolem-tuple-witness skolem-constant-witness skolem-one-witness-formula" data-kind="lemma">
+  <h2>Choosing a witness for every tuple</h2>
+  <p>Let \(A\) be a formula at context size \(k+1\), with no free-variable names, and display its available slots as \(\bar x=(x_1,\ldots,x_k)\) and \(y\). These are labels for placeholders governed by the surrounding quantifiers; \(A\) may have further quantifiers of its own. Let \(f\) be a fresh \(k\)-ary function symbol. By \(A(\bar x,f(\bar x))\) mean the <a href="#scoped-term-instances">simultaneous scoped instance</a> that retains the first \(k\) slots and replaces the last by \(f\) applied to those slots. For a fixed \(L\)-structure \(M\),</p>
+  <div class="math-display">\[\begin{gathered}
+    M\models\forall\bar x\,\exists y\,A(\bar x,y)\\
+    \Longleftrightarrow\\
+    \exists M_f\;\bigl(M_f\models\forall\bar x\,A(\bar x,f(\bar x))\bigr).
+  \end{gathered}\]</div>
+  <p>Here \(M_f\) ranges over expansions of \(M\) to \(L\cup\{f\}\).</p>
+  <p class="proof-label">Proof</p>
+  <p>For each tuple \(\bar a\in M^k\), choose \(b_{\bar a}\) with \(M,(\bar a,b_{\bar a})\models A\). Interpret \(f(\bar a)=b_{\bar a}\). These simultaneous choices use the <a href="axiom-of-choice#choice-functions">axiom of choice</a>. The truth equivalence in <a href="#scoped-term-instances"></a>, together with expansion invariance, proves the required truth of \(A(\bar x,f(\bar x))\) for each tuple. Conversely, that same equivalence in any satisfying expansion supplies \(f(\bar a)\) as a witness for each tuple; then pass to the reduct. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Here \(M^0\) has one member, the empty tuple. Thus \(k=0\) gives a constant symbol: \(\exists y\,A(y)\) has a suitable expansion satisfying \(A(c)\) exactly when it is true in the original structure. The chosen functions are extra interpretations; the assertion imposes no requirement that their graphs be described by formulas of \(L\).</p>
+</section>
+
+<section id="skolem-construction" data-formal="skolem-prenex-syntax skolem-fresh-symbols skolem-witness-interpretations skolem-expanded-language skolem-form" data-kind="definition">
+  <h2>Replacing existential variables in a prefix</h2>
+  <p>Take a <a href="first-order-normal-forms#prenex-normal-form">prenex sentence</a></p>
+  <div class="math-display">\[\sigma=Q_1v_1\cdots Q_nv_n\,B(v_1,\ldots,v_n),\]</div>
+  <p>where \(B\) is quantifier-free and the bound-variable labels \(v_1,\ldots,v_n\) are distinct. These are display labels for the scoped placeholders, as in <a href="first-order-normal-forms#equivalence-and-names">the normal-form convention</a>. There are no free variables. For every existential position \(i\), list exactly the universal variables preceding it, in prefix order, as \(\bar u_i\). Add a distinct fresh function symbol \(f_i\) with arity \(|\bar u_i|\).</p>
+  <p>Let \(L_\sigma\) be \(L\) together with exactly these new function symbols, keeping all old symbols and adding no relations. Delete each existential quantifier and replace every occurrence of its variable \(v_i\) in the matrix by \(f_i(\bar u_i)\). Retain the universal quantifiers in their original order. Formally this is the <a href="#scoped-term-instances">simultaneous scoped instance</a> of the original matrix: each universal slot becomes its slot in the shorter retained prefix, and each existential slot becomes its witness term in those retained slots. The resulting \(L_\sigma\)-sentence, written \(\operatorname{Sk}(\sigma)\), is a <strong>Skolem form</strong> of \(\sigma\).</p>
+  <p>This convention gives each new function all earlier universal variables as arguments. It does not claim that every argument is needed in a particular example: an interpretation may ignore some arguments. Earlier existential variables are absent from the argument list because their own choices have already become functions of earlier universal variables. Fresh symbols keep these choices distinct from existing interpretations. The construction makes no change when the prefix has no existential quantifier.</p>
+</section>
+
+<section id="dependency-example" data-formal="skolem-five-variable-dependencies" data-kind="question">
+  <h2>Which choices may depend on which variables?</h2>
+  <p>Find a Skolem form of \(\exists a\,\forall x\,\exists b\,\forall z\,\exists c\,R(a,x,b,z,c)\), where \(R\) is a five-place relation symbol.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The first choice precedes every universal variable, so use a constant \(d\). The second choice may depend on \(x\), so use a unary symbol \(f\). The final choice may depend on \(x,z\), so use a binary symbol \(g\). The result is</p>
+    <div class="math-display">\[\forall x\,\forall z\,R(d,x,f(x),z,g(x,z)).\]</div>
+    <p>The second choice cannot depend on \(z\), which is chosen later. Although the final witness may have been selected after seeing the value of \(b\), that value is already determined by \(x\) through \(f(x)\), so an additional argument for \(b\) is unnecessary.</p>
+  </div></details>
+</section>
+
+<section id="universal-form" data-formal="skolem-universal-sentence skolem-universal-form skolem-fresh-symbols" data-kind="lemma">
+  <h2>The result has only universal quantifiers</h2>
+  <p>A <strong>universal sentence</strong> has a quantifier-free matrix preceded by a finite prefix of universal quantifiers; the prefix may be empty. The construction terminates and produces such a sentence. There is one new function symbol for every existential occurrence, with the arity specified in <a href="#skolem-construction"></a>.</p>
+  <p class="proof-label">Proof</p>
+  <p>There are finitely many existential occurrences. Each replacement removes one of them and introduces only terms, without introducing a quantifier. Substituting terms into a quantifier-free formula preserves its quantifier-free construction: atomic equalities and relations remain atomic, and Boolean connectives remain Boolean connectives. The retained universal quantifiers therefore form the entire final prefix. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="expansion-theorem" data-formal="skolem-model-expansion skolem-model-reduct" data-kind="theorem">
+  <h2>A model supplies all the witness functions</h2>
+  <div class="statement-box"><p>For every prenex \(L\)-sentence \(\sigma\) and every nonempty \(L\)-structure \(M\),</p>
+  <div class="math-display">\[\begin{gathered}
+    M\models\sigma\\
+    \Longleftrightarrow\\
+    \exists M^*\;\bigl(M^*\models\operatorname{Sk}(\sigma)\bigr).
+  \end{gathered}\]</div>
+  <p>Here \(M^*\) denotes an \(L_\sigma\)-expansion of \(M\).</p>
+  <p>Moreover, every \(L_\sigma\)-structure satisfying \(\operatorname{Sk}(\sigma)\) has an \(L\)-reduct satisfying \(\sigma\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>For the forward direction, process the existential quantifiers from left to right. At each stage the sentence has the form \(\forall\bar u\,\exists y\,C(\bar u,y)\), where \(C\) is the remaining suffix after previous substitutions and may still contain quantifiers. For every tuple \(\bar a\), choose a witness satisfying the whole suffix \(C(\bar a,y)\), rather than just some part of its matrix. Apply <a href="#one-witness-function"></a> in the language already expanded by earlier steps. The new function receives precisely \(\bar u\), the universal choices preceding this existential. Later expansions preserve every sentence already obtained. Finitely many steps give \(M^*\models\operatorname{Sk}(\sigma)\).</p>
+  <p>For the reverse direction, start with any model of the Skolem form and undo the substitutions in the opposite order. At each step, a true instance \(C(\bar a,f(\bar a))\) gives \(\exists y\,C(\bar a,y)\), for every preceding tuple. Forget the function removed at that step; truth of the sentence now expressed in the smaller language is preserved under reduct. Repeating gives a reduct satisfying \(\sigma\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="equisatisfiability" data-formal="skolem-background-equisatisfiability skolem-every-sentence-universal" data-kind="theorem">
+  <h2>Preserving whether a model exists</h2>
+  <div class="statement-box"><p>A prenex sentence \(\sigma\) and \(\operatorname{Sk}(\sigma)\) are <strong>equisatisfiable</strong>: one has a nonempty model if and only if the other does. More generally, for any set \(T\) of \(L\)-sentences,</p>
+  <div class="math-display">\[\begin{gathered}
+    T\cup\{\sigma\}\text{ has a model}\\
+    \Longleftrightarrow\\
+    T\cup\{\operatorname{Sk}(\sigma)\}\text{ has a model},
+  \end{gathered}\]</div>
+  <p>where the sentences of \(T\) on the right are read in the expanded language.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Expand a model of \(T\cup\{\sigma\}\) using <a href="#expansion-theorem"></a>. The original sentences of \(T\) retain their truth. Conversely, take the reduct of a model of \(T\cup\{\operatorname{Sk}(\sigma)\}\). The same theorem gives \(\sigma\), while reduct invariance gives every member of \(T\). Taking \(T=\varnothing\) gives the first assertion. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Consequently, for each first-order sentence \(\sigma\), we can choose one language of fresh function symbols and one universal sentence \(\tau\) that work for every background set \(T\) of old-language sentences: \(T\cup\{\sigma\}\) has a model if and only if \(T\cup\{\tau\}\) does in the expanded language. The language and \(\tau\) are chosen from \(\sigma\) alone, before \(T\) is specified. First choose an <a href="first-order-normal-forms#prenex-normal-form">equivalent prenex sentence</a> and construct its Skolem form. That prenex equivalence preserves the original models even after requiring any \(T\), and then the displayed equivalence applies. This is a semantic model construction; it does not use a completeness theorem for a proof calculus.</p>
+</section>
+
+<section id="not-equivalence" data-formal="skolem-arbitrary-expansion-counterexample skolem-model-reduct" data-kind="question">
+  <h2>Does every interpretation of the new symbol work?</h2>
+  <p>For \(\sigma=\forall x\,\exists y\,(x=y)\), the construction gives \(\forall x\,(x=f(x))\). Must these sentences agree in every structure for the expanded language?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. On the two-element domain \(\{0,1\}\), the original sentence holds: choose \(y=x\). Interpret \(f\) as the constant function with value \(0\). Then \(x=f(x)\) fails at \(x=1\), so the Skolem sentence fails in this expansion. Interpreting \(f\) as the identity would give a suitable expansion.</p>
+    <p>The new sentence implies the original in every expansion. The converse says that a <em>suitable</em> expansion exists, rather than that all expansions work. Thus, when both sentences are viewed in the expanded language, Skolemization generally preserves satisfiability without preserving equivalence.</p>
+  </div></details>
+</section>
+
+<section id="quantifier-order" data-formal="skolem-quantifier-order-counterexample skolem-arbitrary-expansion-counterexample fonf-common-equal-singleton" data-kind="question">
+  <h2>A constant witness and a witness that can vary</h2>
+  <p>Compare Skolemization of \(\forall x\,\exists y\,(x=y)\) and \(\exists y\,\forall x\,(x=y)\). Why cannot the same replacement be used for both?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The first becomes \(\forall x\,(x=f(x))\) and has a suitable expansion on every nonempty domain, using the identity. The second becomes \(\forall x\,(x=c)\), because its existential witness precedes every universal choice. The latter sentence has a suitable expansion exactly when the domain has one element. On a two-element domain the first original sentence is true and the second is false, as in the <a href="first-order-normal-forms#quantifier-order">quantifier-order example</a>.</p>
+    <p>Replacing the initial existential by \(f(x)\) would allow it to depend on a later choice and would incorrectly turn the second sentence into a condition satisfied on every domain.</p>
+  </div></details>
+</section>
+
+<section id="freshness-question" data-formal="skolem-freshness-counterexample skolem-old-symbol-conflict" data-kind="question">
+  <h2>Why the function symbol must be fresh</h2>
+  <p>Suppose the old language already contains a unary symbol \(h\). May we replace \(\forall x\exists y\,(x=y)\) by \(\forall x\,(x=h(x))\), keeping all other axioms?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Take an old structure with two elements in which \(h\) is constant. The original sentence holds, but the proposed replacement fails. An expansion must preserve the old interpretation of \(h\), so no permitted new interpretation repairs this replacement. A fresh symbol provides a new choice without changing the given structure.</p>
+    <p>For a satisfiability counterexample with background axioms, take \(T=\{\exists x\,(x\ne h(x))\}\). It has the preceding two-element model, which also satisfies the original sentence. But adjoining \(\forall x\,(x=h(x))\) makes the axioms contradictory.</p>
+  </div></details>
+</section>

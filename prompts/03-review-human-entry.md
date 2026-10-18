@@ -116,7 +116,10 @@ Check the following:
   commands or math delimiters. Flag mathematical notation that should be described
   in words in the title and written as a formula in the entry body.
   Inspect the rendered page, including hidden answers and narrow
-  layouts where relevant. Unplanned formal mappings are allowed at this stage.
+  layouts where relevant. At phone width (390 px), check individual display formulas
+  for internal horizontal scrolling, including formulas inside statement boxes;
+  absence of page-wide overflow is insufficient. Prefer splitting long displays
+  into readable aligned lines. Unplanned formal mappings are allowed at this stage.
 - The entry-list summary is generated data from the build, not an editorial
   approval. Flag missing or inconsistent generated data without fabricating it.
 

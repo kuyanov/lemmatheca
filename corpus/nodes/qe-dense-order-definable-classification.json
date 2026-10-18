@@ -1,0 +1,10 @@
+{
+  "id": "qe-dense-order-definable-classification",
+  "description": "In a dense linear order without endpoints, a subset is definable over \\(A\\) if and only if it is a finite union of points and open intervals, allowing rays and the whole domain, whose points and finite endpoints lie in \\(A\\).",
+  "module": "Lemmatheca.MathematicalLogic.QuantifierEliminationShared",
+  "declaration": "Lemmatheca.MathematicalLogic.QuantifierElimination.Shared.strictDlo_definable_iff_finite_union",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 616,
+  "signature": "Lemmatheca.MathematicalLogic.QuantifierElimination.Shared.strictDlo_definable_iff_finite_union.{u} {M : Type u}\n  [LinearOrder M] [DenselyOrdered M] [NoMinOrder M] [NoMaxOrder M] [Nonempty M] (A s : Set M) :\n  have this := Lemmatheca.MathematicalLogic.FirstOrderSemantics.binaryRelStructure M fun a b => a < b;\n  A.Definable₁ Lemmatheca.MathematicalLogic.FirstOrderSyntax.binaryRelLanguage s ↔\n    ∃ t,\n      (∀ c ∈ t, Lemmatheca.MathematicalLogic.QuantifierElimination.Cell.Supported A c) ∧\n        s = {x | ∃ c ∈ t, x ∈ c.realize}"
+}

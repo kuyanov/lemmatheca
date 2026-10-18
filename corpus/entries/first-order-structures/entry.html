@@ -59,6 +59,21 @@
   <p>For a single substitution \([t/x_i]\), \(a_\sigma\) is just \(a\) with its value at \(x_i\) changed to \(\llbracket t\rrbracket^M_a\). This is why a substitution that captured a free variable would give the wrong semantic rule.</p>
 </section>
 
+<section id="semantic-instantiation" data-kind="lemma" data-formal="fo-bound-slot-semantic-instantiation">
+  <h2>Opening a bound slot assigns the term's value</h2>
+  <p>Let \(A\) be a scoped formula with one available placeholder, let \(t\) contain no placeholders, and let \(A(t)\) be its <a href="first-order-languages#bound-slot-instantiation">capture-safe instance</a>. For every structure \(M\) and free-variable assignment \(a\),</p>
+  <div class="math-display">\[
+    M,a\models A(t)\quad\Longleftrightarrow\quad
+    M,a,(\llbracket t\rrbracket^M_a)\models A.
+  \]</div>
+  <p>Thus opening the slot has the same effect on truth as assigning that slot the term's value. The original free-variable assignment stays fixed.</p>
+  <p class="proof-label">Proof</p>
+  <p>Put \(m=\llbracket t\rrbracket^M_a\). To handle nested binders, prove a stronger assertion at every depth \(r\): replacing the outer slot \(z_0\) by \(t\) and shifting each remaining \(z_{j+1}\) to \(z_j\) preserves term values and formula truth when the original tuple \((m,b_0,\ldots,b_{r-1})\) is replaced by \((b_0,\ldots,b_{r-1})\). The assignment \(a\) remains unchanged, and the assertion ranges over every tuple of retained values.</p>
+  <p>First induct on terms. A free variable keeps its assigned value. The removed placeholder \(z_0\) has value \(m\), which is also the value of its replacement \(t\); this value is independent of the tuple because \(t\) has no placeholders. Each shifted placeholder keeps the same retained value. Function application then receives the same argument values on both sides.</p>
+  <p>Now induct on scoped formulas. Equality and relation application use the term result; falsity and implication use their truth clauses. At a universal quantifier, append the same arbitrary element \(u\) to both tuples. The induction hypothesis at depth \(r+1\) compares the two bodies, with original tuple \((m,b_0,\ldots,b_{r-1},u)\) and resulting tuple \((b_0,\ldots,b_{r-1},u)\). Quantifying over \(u\) gives the required equivalence. Taking \(r=0\) proves the displayed statement. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>In particular, if \(s\) and \(t\) have the same value under \(a\), then \(A(s)\) and \(A(t)\) have the same truth value: both are evaluated by assigning that common value to the slot.</p>
+</section>
+
 <section id="two-orders" data-kind="question" data-formal="fo-parameter-successor-formula fo-every-successor-sentence fo-natural-successor-truth fo-natural-successor-witness fo-natural-no-largest fo-two-element-successor-truth fo-two-element-successor-witness fo-two-element-largest fo-natural-captured-formula-false fo-two-element-captured-formula-false">
   <h2>The same formula in two structures</h2>
   <p>In the language with one binary relation \(&lt;\), put \(\varphi(x_0)=\exists z_0\,(x_0&lt;z_0)\). What are its truth values in \(M=\{0,1\}\) and \(N=\mathbb N\), each with the usual strict order? What happens to \(\theta=\forall z_0\exists z_1\,(z_0&lt;z_1)\)?</p>
@@ -102,7 +117,7 @@
 
 <section id="theories-and-models" data-kind="definition" data-formal="fo-theory fo-theory-model fo-nonempty-theory-model fo-nonempty-carrier fo-singleton-domain-sentence fo-singleton-domain-truth fo-contradictory-theory-no-model fo-model-isomorphism-invariance">
   <h2>Theories specify collections of requirements</h2>
-  <p>An <strong>\(L\)-theory</strong> \(T\) is a set of \(L\)-sentences. A structure \(M\) is a <strong>model</strong> of \(T\), written \(M\models T\), if \(M\models\theta\) for every \(\theta\in T\). The theory is <strong>satisfiable</strong> if it has a model. These are semantic definitions. <a href="first-order-proofs#consistency-and-finite-support">Syntactic consistency</a> concerns the absence of a proof of falsity; <a href="henkin-completeness#countable-model-existence">the countable model theorem</a> establishes the connection with satisfiability for countable languages.</p>
+  <p>An <strong>\(L\)-theory</strong> \(T\) is a set of \(L\)-sentences. A structure \(M\) is a <strong>model</strong> of \(T\), written \(M\models T\), if \(M\models\theta\) for every \(\theta\in T\). The theory is <strong>satisfiable</strong> if it has a model. These are semantic definitions.</p>
   <p>For example, the sentence \(\forall z_0\forall z_1\,(z_0=z_1)\) holds exactly in structures whose domains have one element. The universal clause says all pairs of domain elements are equal; nonemptiness supplies the single element. The theory consisting of this sentence and its negation has no model, since a sentence and its negation cannot both be true.</p>
   <p>An isomorphism preserves being a model of any fixed theory: apply <a href="#isomorphism-invariance"></a> to each sentence of the theory. A <strong>schema</strong> can specify such a set by giving one sentence for each permitted formula; this is a way of listing requirements in the surrounding mathematics, not an object-language quantifier over formulas.</p>
 </section>

@@ -1,0 +1,10 @@
+{
+  "id": "qe-integer-between-not-quantifier-free",
+  "description": "The formula \\(\\exists x\\;(y<x\\land x<z)\\) has no equivalent quantifier-free formula in the strict-order structure on the integers.",
+  "module": "Lemmatheca.Entry.QuantifierElimination",
+  "declaration": "Lemmatheca.Entry.QuantifierElimination.integer_between_no_shared_quantifier_free_equivalent",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 106,
+  "signature": "Lemmatheca.Entry.QuantifierElimination.integer_between_no_shared_quantifier_free_equivalent :\n  have this := Lemmatheca.MathematicalLogic.FirstOrderSemantics.binaryRelStructure ℤ fun a b => a < b;\n  ¬∃ ψ,\n      ψ.IsQF ∧\n        ∀ (a : Fin 2 → ℤ),\n          Lemmatheca.Entry.QuantifierElimination.sharedBetweenFormula.Realize Empty.elim a ↔ ψ.Realize Empty.elim a"
+}

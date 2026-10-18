@@ -1,0 +1,14 @@
+{
+  "id": "skolem-one-witness-formula",
+  "description": "For any first-order formula \\(A\\) with \\(k+1\\) available scoped slots, no free-variable names, and possibly further quantifiers, an old-language structure satisfies \\(\\forall\\bar x\\,\\exists y\\,A(\\bar x,y)\\) if and only if some same-domain expansion by one fresh \\(k\\)-ary function symbol satisfies the scoped instance \\(\\forall\\bar x\\,A(\\bar x,f(\\bar x))\\).",
+  "module": "Lemmatheca.MathematicalLogic.Skolemization",
+  "declaration": "Lemmatheca.MathematicalLogic.Skolemization.one_witness_formula",
+  "dependencies": [
+    "skolem-scoped-instance-truth",
+    "skolem-tuple-witness",
+    "skolem-reduct-invariance"
+  ],
+  "verified": true,
+  "declaration_line": 409,
+  "signature": "Lemmatheca.MathematicalLogic.Skolemization.one_witness_formula.{u, v, w} {L : FirstOrder.Language} {M : Type w}\n  [L.Structure M] {k : ℕ} (φ : L.BoundedFormula Empty (k + 1)) :\n  M ⊨ φ.ex.alls ↔\n    ∃ W,\n      have this := W;\n      M ⊨ (Lemmatheca.MathematicalLogic.Skolemization.oneWitnessBody φ).alls"
+}
