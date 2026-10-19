@@ -188,6 +188,23 @@ installed Lean sources available to the server. Entry source HTML and JSON are
 read as content, not published as static files; only entry `assets/` directories
 are registered for static serving.
 
+For the Ubuntu deployment where Nginx serves `/var/www/lemmatheca/static/` and
+systemd runs `lemmatheca.service`, run the root-level
+[`update_static.sh`](../update_static.sh) after each pull:
+
+```sh
+git pull
+./update_static.sh
+```
+
+Run it as your normal deployment user. It uses the existing `.venv/bin/python`
+to collect current assets, mirrors them into the Nginx static directory with
+readable permissions, removes obsolete assets, and restarts the application so
+Python, templates, and registered entry asset directories are refreshed. It asks
+for sudo access to publish files and manage the service. Install `rsync` first
+if needed (`sudo apt install rsync`). Runtime dependency updates are a separate
+deployment step when requirements change.
+
 ## Scaling
 
 Validation takes O(B + R) time, where B is the input byte count and R is the number
