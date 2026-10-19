@@ -20,8 +20,8 @@ for dependency in rsync sudo systemctl; do
     command -v "$dependency" >/dev/null || fail "Required command missing: $dependency"
 done
 
-# Check privileges and the configured service before changing any files.
-sudo -v
+# Check the service using its command-specific sudo policy. A separate `sudo -v`
+# can require a password even when individual commands allow passwordless sudo.
 sudo systemctl cat "$service" >/dev/null
 
 printf 'Collecting static files...\n'
