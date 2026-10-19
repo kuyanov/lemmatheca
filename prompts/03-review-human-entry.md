@@ -16,6 +16,12 @@ hidden answers within the requested scope. Use the [corpus contract](../docs/cor
 [reading-order criteria](../CONTRIBUTING.md#reading-order). Judge the actual entry
 independently; a drafting self-check is not this review.
 
+Use the [authoring API](../docs/app.md#authoring-api) under the
+[shared usage rules](../CONTRIBUTING.md#using-the-authoring-api) to retrieve the
+requested entry context, including answers, and relevant references. Use area
+listings to inspect placement within the reading order. Keep retrieval within
+the requested human-review scope.
+
 ## Work
 
 1. Check claims and proofs: hypotheses, quantifiers, domains, conclusions,

@@ -64,13 +64,14 @@ class StatisticsHistoryTests(SimpleTestCase):
         self.nodes = {"proof": {"verified": False}}
         self.save_records()
         write_json(self.corpus / "taxonomy.json", {"areas": [{"id": "area"}]})
-        self.git("init", "--quiet", "--initial-branch=main")
 
     def git(self, *args, **kwargs):
         return subprocess.run(["git", "-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null", *args],
                               cwd=self.root, check=True, capture_output=True, text=True, **kwargs).stdout
 
     def commit(self, day, name="Alice"):
+        if not (self.root / ".git").exists():
+            self.git("init", "--quiet", "--initial-branch=main")
         self.git("add", "--all")
         at = f"2026-01-{day:02d}T12:00:00+00:00"
         self.git("-c", f"user.name={name}", "-c", f"user.email={name.lower()}@example.test",
@@ -89,6 +90,17 @@ class StatisticsHistoryTests(SimpleTestCase):
     def refresh(self):
         with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root):
             return call_command("update_statistics", stdout=StringIO())
+
+    def published_snapshot(self):
+        # Refresh tests start from published data; Git replay has its own tests.
+        snapshot = {"entries": 1, "verified_entries": 0, "nodes": 1,
+                    "verified_nodes": 0, "areas": 1, "contributors": 1}
+        snapshot["history"] = {
+            key: [{"at": "2026-01-01T12:00:00+00:00", "count": 1,
+                   **({"verified": 0} if key in {"entries", "nodes"} else {})}]
+            for key in ("entries", "nodes", "areas", "contributors")}
+        write_json(self.corpus / "statistics.json", snapshot)
+        return snapshot
 
     def test_git_replays_changes_deletions_and_renames_without_rendering(self):
         first = self.commit(1)
@@ -142,8 +154,6 @@ class StatisticsHistoryTests(SimpleTestCase):
 
     def test_merge_counts_corpus_once_and_includes_branch_authors(self):
         self.commit(1)
-        self.refresh()
-        self.commit(1, "github-actions[bot]")
         self.git("checkout", "--quiet", "-b", "contribution")
         self.nodes["new"] = {"verified": False}
         self.save_records()
@@ -165,11 +175,7 @@ class StatisticsHistoryTests(SimpleTestCase):
             read_json(self.corpus / "statistics.json")["contributors"], 2)
 
     def test_refresh_appends_only_changed_counts_and_preserves_history(self):
-        self.commit(1)
-        with patch("catalog.statistics.timestamp", return_value="2026-02-01T12:00:00+00:00"):
-            first = prepare_statistics(
-                self.corpus, self.root)
-        write_json(self.corpus / "statistics.json", first)
+        first = self.published_snapshot()
         validate_statistics(first)
         with patch("catalog.statistics.history_from_git", side_effect=AssertionError("Already imported")), \
                 patch("catalog.statistics.timestamp", return_value="2026-02-02T12:00:00+00:00"):
@@ -186,8 +192,7 @@ class StatisticsHistoryTests(SimpleTestCase):
         validate_statistics(changed)
 
     def test_refresh_reads_saved_counts_without_lean_or_html(self):
-        self.commit(1)
-        self.refresh()
+        self.published_snapshot()
         self.entries["alpha"]["formalization"]["status"] = "complete"
         self.entries["draft"] = {}
         self.nodes["proof"]["verified"] = True
@@ -224,11 +229,11 @@ class StatisticsHistoryTests(SimpleTestCase):
             self.corpus, self.root)["contributors"]], [1, 2])
 
     def test_refresh_errors_preserve_the_published_snapshot(self):
-        self.commit(1)
-        self.refresh()
+        self.published_snapshot()
         path = self.corpus / "statistics.json"
         before = path.read_bytes()
-        with patch("catalog.statistics.git", side_effect=subprocess.CalledProcessError(1, "git")):
+        with patch("catalog.statistics.contributor_count",
+                   side_effect=subprocess.CalledProcessError(1, "git")):
             with self.assertRaises(CommandError):
                 self.refresh()
         self.assertEqual(path.read_bytes(), before)
@@ -238,8 +243,7 @@ class StatisticsHistoryTests(SimpleTestCase):
         self.assertEqual(path.read_bytes(), before)
 
     def test_refresh_validates_history_before_writing(self):
-        self.commit(1)
-        self.refresh()
+        self.published_snapshot()
         path = self.corpus / "statistics.json"
         snapshot = read_json(path)
         snapshot["history"]["nodes"][0]["verified"] = 2
@@ -250,10 +254,9 @@ class StatisticsHistoryTests(SimpleTestCase):
         self.assertEqual(path.read_bytes(), before)
 
     def test_refresh_keeps_manually_trimmed_history(self):
-        self.commit(1)
+        self.published_snapshot()
         self.nodes["proof"]["verified"] = True
         self.save_records()
-        self.commit(2)
         previous = prepare_statistics(
             self.corpus, self.root)
         previous["history"]["nodes"].pop(0)
@@ -263,18 +266,14 @@ class StatisticsHistoryTests(SimpleTestCase):
                 self.corpus, self.root), previous)
 
     def test_shallow_clone_preserves_recorded_history(self):
+        previous = self.published_snapshot()
         self.commit(1)
-        previous = prepare_statistics(
-            self.corpus, self.root)
-        write_json(self.corpus / "statistics.json", previous)
         (self.root / ".git/shallow").write_text(self.git("rev-parse", "HEAD"))
         self.assertEqual(prepare_statistics(
             self.corpus, self.root), previous)
 
     def test_same_second_changes_and_backwards_clocks_keep_valid_history(self):
-        self.commit(1)
-        snapshot = prepare_statistics(
-            self.corpus, self.root)
+        snapshot = self.published_snapshot()
         at = "2026-02-01T12:00:00+00:00"
         snapshot.update(nodes=2, verified_nodes=2)
         append_counts(snapshot["history"], snapshot, at)
@@ -289,9 +288,7 @@ class StatisticsHistoryTests(SimpleTestCase):
         validate_statistics(snapshot)
 
     def test_history_validation_rejects_invalid_points_and_inconsistent_totals(self):
-        self.commit(1)
-        snapshot = prepare_statistics(
-            self.corpus, self.root)
+        snapshot = self.published_snapshot()
         validate_statistics(snapshot)
         for point in ({"at": "bad", "count": 1, "verified": 0},
                       {"at": "2026-01-01T00:00:00", "count": 1, "verified": 0},

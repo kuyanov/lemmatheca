@@ -1,4 +1,4 @@
-"""Offline corpus checks: one record/tree at a time, compact reference indexes only."""
+"""Offline corpus checks, with an optional collector for a derived corpus index."""
 
 from contextlib import contextmanager
 from datetime import datetime, timedelta
@@ -35,7 +35,7 @@ def checking(path):
         raise CorpusError(f"{path}: {error}") from error
 
 
-def json_object(path):
+def json_object(path, *, collector=None):
     def pairs(items):
         result = {}
         for key, value in items:
@@ -46,9 +46,17 @@ def json_object(path):
     def constant(value):
         raise CorpusError(f"Invalid JSON constant: {value}")
 
-    with path.open(encoding="utf-8") as stream:
-        result = json.load(stream, object_pairs_hook=pairs,
-                           parse_constant=constant)
+    if collector is None:
+        with path.open(encoding="utf-8") as stream:
+            result = json.load(stream, object_pairs_hook=pairs,
+                               parse_constant=constant)
+    else:
+        # Hash exactly the bytes being parsed, including original line endings.
+        # Exporting an index must not open every input for a second hashing pass.
+        content = path.read_bytes()
+        result = json.loads(content.decode("utf-8"), object_pairs_hook=pairs,
+                            parse_constant=constant)
+        collector.add_file(path, content)
     require(isinstance(result, dict), "Expected a JSON object")
     return result
 
@@ -375,20 +383,22 @@ def validate_statistics(snapshot):
                         f"History for {key} must end at the current verified count")
 
 
-def validate_corpus(corpus, *, source_root=None):
-    """O(input bytes + reference edges) time; never retain whole entry/node records.
+def validate_corpus(corpus, *, source_root=None, collector=None):
+    """O(input bytes + reference edges) time, without writing files or invoking Lean.
 
-    Indexes contain area parents, entry block IDs, cross-entry links and node hint
-    edges. Generated proof data need not be present or current. Optional source
-    checks use the installed files only; neither mode invokes Lean or the build.
+    By default retain only area parents, entry block IDs, cross-entry links and
+    node hint edges, rather than whole entry/node records. An optional collector
+    receives the same validated records and HTML trees for an index export.
+    Generated proof data need not be present or current. Optional source checks
+    use the installed files only; neither mode invokes Lean or the build.
     """
     statistics = corpus / "statistics.json"
     if statistics.exists():
         with checking(statistics):
-            validate_statistics(json_object(statistics))
+            validate_statistics(json_object(statistics, collector=collector))
     taxonomy = corpus / "taxonomy.json"
     with checking(taxonomy):
-        document = json_object(taxonomy)
+        document = json_object(taxonomy, collector=collector)
         fields(document, ("areas",))
         require(isinstance(document["areas"], list), "areas must be a list")
         areas = {}
@@ -403,11 +413,13 @@ def validate_corpus(corpus, *, source_root=None):
             areas[area["id"]] = [] if area["parent"] is None else [area["parent"]]
         acyclic(areas, "Area hierarchy")
         areas = set(areas)
+        if collector is not None:
+            collector.add_taxonomy(document)
     del document
 
     index = corpus / "area_entries.json"
     with checking(index):
-        document = json_object(index)
+        document = json_object(index, collector=collector)
         fields(document, ("areas",))
         require(isinstance(document["areas"], dict), "areas must be an object")
         listed = {}
@@ -418,6 +430,8 @@ def validate_corpus(corpus, *, source_root=None):
                 require(entry_id not in listed,
                         f"Entry listed more than once: {entry_id}")
                 listed[entry_id] = area
+        if collector is not None:
+            collector.add_reading_order(document)
     del document
 
     graph, modules = {}, set()
@@ -428,7 +442,7 @@ def validate_corpus(corpus, *, source_root=None):
             continue
         with checking(path):
             identifier(path.stem)
-            record = json_object(path)
+            record = json_object(path, collector=collector)
             graph[path.stem] = node_metadata(record, path.stem)
             module = record.get("module")
             if source_root is not None and module and module not in modules:
@@ -439,6 +453,8 @@ def validate_corpus(corpus, *, source_root=None):
                 with source.open(encoding="utf-8") as stream:
                     for _ in stream:
                         pass
+            if collector is not None:
+                collector.add_node(record)
     with checking(nodes_dir):
         acyclic(graph, "Node dependencies")
     node_ids = set(graph)
@@ -453,14 +469,19 @@ def validate_corpus(corpus, *, source_root=None):
         metadata = directory / "entry.json"
         with checking(metadata):
             identifier(directory.name)
-            record = json_object(metadata)
+            record = json_object(metadata, collector=collector)
             entry_metadata(record, directory.name, areas)
             require(listed.get(directory.name) == record["primary_area"],
                     "Entry must be listed once under its primary area in area_entries.json")
         source = directory / "entry.html"
         with checking(source):
-            root, blocks, references, formal_ids, assets = checked_source(
-                source.read_text(encoding="utf-8"))
+            if collector is None:
+                content = source.read_text(encoding="utf-8")
+            else:
+                raw = source.read_bytes()
+                content = raw.decode("utf-8")
+                collector.add_file(source, raw)
+            root, blocks, references, formal_ids, assets = checked_source(content)
             missing = formal_ids - node_ids
             require(not missing, f"Unknown formal nodes: {', '.join(missing)}")
             for asset in assets:
@@ -468,6 +489,8 @@ def validate_corpus(corpus, *, source_root=None):
             blocks_by_entry[directory.name] = blocks
             links.extend((source, target, anchor)
                          for target, anchor in references)
+            if collector is not None:
+                collector.add_entry(record, root)
             del root
     with checking(index):
         missing = listed.keys() - blocks_by_entry.keys()

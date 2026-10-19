@@ -1,10 +1,9 @@
+from contextlib import contextmanager
 from pathlib import Path
-import shutil
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlsplit
 
-from django.conf import settings
 from django.core.management import get_commands
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
@@ -13,11 +12,79 @@ from catalog.content import add_progress, load_entry, next_entry
 from catalog.entry_files import read_area_entries, read_entry_metadata
 from catalog.files import read_json, write_json
 from catalog.node_files import read_node
+from catalog.progress import entry_progress
 
 from .html import HTML
 
 
 class ReaderTests(SimpleTestCase):
+    @contextmanager
+    def small_corpus(self):
+        """Exercise reader behavior without copying the whole research corpus."""
+        with TemporaryDirectory() as directory:
+            repository = Path(directory)
+            corpus = repository / "corpus"
+            (corpus / "nodes").mkdir(parents=True)
+            write_json(corpus / "taxonomy.json", {"areas": [
+                {"id": "logic-and-foundations", "title": "Logic and foundations", "parent": None},
+                {"id": "set-theory", "title": "Set theory", "parent": "logic-and-foundations"},
+            ]})
+            write_json(corpus / "area_entries.json", {"areas": {
+                "set-theory": ["sets-and-maps", "equivalence-relations", "ordered-sets"],
+            }})
+            nodes = {}
+            for identifier, module, declaration, line, dependencies in [
+                ("set", "Mathlib.Data.Set.Defs", "Set", 2, []),
+                ("nat-membership-and-inclusion-example", "Lemmatheca.ReaderFixture",
+                 "ReaderFixture.example", 2, ["set"]),
+                ("set-subset-transitive", "Mathlib.Data.Set.Basic", "Set.Subset.trans", 3, ["set"]),
+            ]:
+                nodes[identifier] = {
+                    "id": identifier, "description": identifier, "verified": True,
+                    "module": module, "declaration": declaration, "declaration_line": line,
+                    "signature": declaration + " : True", "dependencies": dependencies,
+                }
+                write_json(corpus / "nodes" / f"{identifier}.json", nodes[identifier])
+            sources = {
+                "sets-and-maps": [
+                    ("pairs-and-relations", "definition", ["set"],
+                     '<p>A set.</p><table><caption>Membership examples</caption>'
+                     '<tr><th>Element</th><th>Member</th></tr><tr><td>1</td><td>Yes</td></tr></table>'),
+                    ("image-intersection-question", "question", ["set-subset-transitive"],
+                     '<p>Find a witness.</p><details class="question-answer">'
+                     '<summary>Show answer</summary><p>Here is a witness.</p></details>'),
+                ],
+                "equivalence-relations": [("equivalence", "definition", [], '<p>Equality.</p>')],
+                "ordered-sets": [("partial-and-total-orders", "definition", ["set-subset-transitive"],
+                                  '<p>Use <a href="sets-and-maps#pairs-and-relations"></a>.</p>')],
+            }
+            for identifier, blocks in sources.items():
+                entry = corpus / "entries" / identifier
+                entry.mkdir(parents=True)
+                write_json(entry / "entry.json", {
+                    "id": identifier, "title": identifier.replace("-", " ").title(),
+                    "primary_area": "set-theory", "additional_areas": [], "based_on": [],
+                    "summary": "A short entry.", "abstract": "A short entry.", "reading_time": 5,
+                    "formalization": entry_progress([{"formal_ids": ids} for _, _, ids, _ in blocks], nodes),
+                })
+                (entry / "entry.html").write_text("".join(
+                    f'<section id="{block}" data-kind="{kind}" data-formal="{" ".join(ids)}">'
+                    f'<h2>{block.replace("-", " ")}</h2>{body}</section>'
+                    for block, kind, ids, body in blocks), encoding="utf-8")
+            formal = repository / "formal"
+            formal.mkdir()
+            write_json(formal / "lake-manifest.json", {"packages": [{"name": "mathlib"}]})
+            for relative, source in [
+                ("Lemmatheca/ReaderFixture.lean", "namespace ReaderFixture\ntheorem example : True := by trivial\n"),
+                (".lake/packages/mathlib/Mathlib/Data/Set/Defs.lean", "-- Fixture module\ndef Set := True\n"),
+                (".lake/packages/mathlib/Mathlib/Data/Set/Basic.lean", "-- Fixture module\nnamespace Set\ntheorem Subset.trans : True := by trivial\n"),
+            ]:
+                path = formal / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(source, encoding="utf-8")
+            with override_settings(CORPUS_DIR=corpus, REPOSITORY_DIR=repository):
+                yield corpus
+
     def page(self, response):
         self.assertEqual(response.status_code, 200)
         return HTML.from_response(response)
@@ -106,60 +173,63 @@ class ReaderTests(SimpleTestCase):
                 f"/nodes/{identifier}/").status_code, 200)
 
     def test_missing_records_and_read_only_views(self):
-        for url in ["/entries/missing/", "/nodes/missing/", "/api/nodes/missing/",
-                    "/areas/set-theory/", "/areas/missing/",
-                    "/node/set/", "/api/node/", "/api/node/set/"]:
-            self.assertEqual(self.client.get(url).status_code, 404)
-        for url in ["/", "/areas/logic-and-foundations/", "/entries/sets-and-maps/",
-                    "/nodes/set/", "/api/nodes/", "/api/nodes/set/"]:
-            self.assertEqual(self.client.head(url).status_code, 200)
-            self.assertEqual(self.client.post(url).status_code, 405)
+        with self.small_corpus():
+            for url in ["/entries/missing/", "/nodes/missing/", "/api/nodes/missing/",
+                        "/areas/set-theory/", "/areas/missing/",
+                        "/node/set/", "/api/node/", "/api/node/set/"]:
+                self.assertEqual(self.client.get(url).status_code, 404)
+            for url in ["/", "/areas/logic-and-foundations/", "/entries/sets-and-maps/",
+                        "/nodes/set/", "/api/nodes/", "/api/nodes/set/"]:
+                self.assertEqual(self.client.head(url).status_code, 200)
+                self.assertEqual(self.client.post(url).status_code, 405)
 
     def test_contextual_navigation_and_question_return(self):
-        response = self.client.get(
-            "/entries/sets-and-maps/?from=ordered-sets&at=partial-and-total-orders")
-        self.assertEqual(
-            response.context["return_url"], "/entries/ordered-sets/#partial-and-total-orders")
-        self.assertIn(response.context["return_url"],
-                      self.page(response).hrefs)
-        self.assertEqual(
-            response.context["next_entry"]["id"], "equivalence-relations")
-        response = self.client.get(
-            "/entries/sets-and-maps/?from=sets-and-maps&at=image-intersection-question")
-        self.assertEqual(response.context["return_url"],
-                         "/entries/sets-and-maps/?answer=image-intersection-question#image-intersection-question")
-        self.assertIn(response.context["return_url"],
-                      self.page(response).hrefs)
-        answer = self.client.get(
-            "/entries/sets-and-maps/?answer=image-intersection-question")
-        answer_page = self.page(answer)
-        answers = [element for element in answer_page.find_all("details")
-                   if any(parent.attrs.get("id") == "image-intersection-question"
-                          for parent in element.ancestors()) and "open" in element.attrs]
-        self.assertEqual(len(answers), 1)
-        self.assertTrue(any(answers[0] in element.ancestors() and element.text
-                            for element in answer_page.find_all("summary")))
-        ordinary = self.client.get("/entries/sets-and-maps/")
-        question_details = [element for element in self.page(ordinary).find_all("details")
-                            if any(parent.attrs.get("id") == "image-intersection-question"
-                                   for parent in element.ancestors())]
-        self.assertTrue(question_details)
-        self.assertFalse(
-            any("open" in element.attrs for element in question_details))
-        self.assertEqual(
-            ordinary.context["return_url"], "/areas/logic-and-foundations/set-theory/")
+        with self.small_corpus():
+            response = self.client.get(
+                "/entries/sets-and-maps/?from=ordered-sets&at=partial-and-total-orders")
+            self.assertEqual(
+                response.context["return_url"], "/entries/ordered-sets/#partial-and-total-orders")
+            self.assertIn(response.context["return_url"],
+                          self.page(response).hrefs)
+            self.assertEqual(
+                response.context["next_entry"]["id"], "equivalence-relations")
+            response = self.client.get(
+                "/entries/sets-and-maps/?from=sets-and-maps&at=image-intersection-question")
+            self.assertEqual(response.context["return_url"],
+                             "/entries/sets-and-maps/?answer=image-intersection-question#image-intersection-question")
+            self.assertIn(response.context["return_url"],
+                          self.page(response).hrefs)
+            answer = self.client.get(
+                "/entries/sets-and-maps/?answer=image-intersection-question")
+            answer_page = self.page(answer)
+            answers = [element for element in answer_page.find_all("details")
+                       if any(parent.attrs.get("id") == "image-intersection-question"
+                              for parent in element.ancestors()) and "open" in element.attrs]
+            self.assertEqual(len(answers), 1)
+            self.assertTrue(any(answers[0] in element.ancestors() and element.text
+                                for element in answer_page.find_all("summary")))
+            ordinary = self.client.get("/entries/sets-and-maps/")
+            question_details = [element for element in self.page(ordinary).find_all("details")
+                                if any(parent.attrs.get("id") == "image-intersection-question"
+                                       for parent in element.ancestors())]
+            self.assertTrue(question_details)
+            self.assertFalse(
+                any("open" in element.attrs for element in question_details))
+            self.assertEqual(
+                ordinary.context["return_url"], "/areas/logic-and-foundations/set-theory/")
 
     def test_tables_have_captions_and_keyboard_accessible_scrolling(self):
-        page = self.page(self.client.get("/entries/sets-and-maps/"))
-        tables = page.find_all("table")
-        self.assertTrue(tables)
-        for table in tables:
-            self.assertTrue(any(table in caption.ancestors() and caption.text
-                                for caption in page.find_all("caption")))
-            self.assertTrue(any(parent.attrs.get("tabindex") == "0"
-                                and parent.attrs.get("role") == "region"
-                                and (parent.attrs.get("aria-label") or parent.attrs.get("aria-labelledby"))
-                                for parent in table.ancestors()))
+        with self.small_corpus():
+            page = self.page(self.client.get("/entries/sets-and-maps/"))
+            tables = page.find_all("table")
+            self.assertTrue(tables)
+            for table in tables:
+                self.assertTrue(any(table in caption.ancestors() and caption.text
+                                    for caption in page.find_all("caption")))
+                self.assertTrue(any(parent.attrs.get("tabindex") == "0"
+                                    and parent.attrs.get("role") == "region"
+                                    and (parent.attrs.get("aria-label") or parent.attrs.get("aria-labelledby"))
+                                    for parent in table.ancestors()))
 
     def test_saved_entry_summaries_match_current_block_bindings_and_node_results(self):
         for identifier in ("sets-and-maps", "equivalence-relations", "ordered-sets"):
@@ -167,89 +237,83 @@ class ReaderTests(SimpleTestCase):
                 saved = read_entry_metadata(identifier)["formalization"]
                 self.assertEqual(saved, add_progress(
                     load_entry(identifier))["formalization"])
-                response = self.client.get(
-                    reverse("catalog:entry", args=[identifier]))
-                page = self.page(response)
-                self.assertEqual(
-                    response.context["entry"]["formalization"], saved)
-                self.assertIn(saved["label"], page.root.text)
 
     def test_node_declarations_and_source_links_do_not_run_lean(self):
-        identifier = "nat-membership-and-inclusion-example"
-        node = read_node(identifier)
-        for target in (identifier, "set-subset-transitive"):
-            record = read_node(target)
-            with patch("subprocess.run", side_effect=AssertionError("Page requests must not run Lean")):
-                response = self.client.get(
-                    reverse("catalog:node", args=[target]))
-            page = self.page(response)
-            section = self.assert_labelled_section(page, "declaration-title")
-            signatures = [element for element in page.find_all("pre", within=section)
-                          if not any(parent.tag == "details" for parent in element.ancestors())]
-            self.assertEqual(len(signatures), 1)
-            self.assertIn(record["declaration"], signatures[0].text)
-            self.assertEqual(
-                response.context["node"]["verified"], record["verified"])
-            self.assert_source_link(response, record)
-        api = self.client.get(f"/api/nodes/{identifier}/").json()
-        self.assertEqual(api["url"], f"/nodes/{identifier}/")
-        self.assertEqual(api["url"], reverse(
-            "catalog:node", args=[identifier]))
-        self.assertEqual(reverse("catalog:node_detail", args=[
-                         identifier]), f"/api/nodes/{identifier}/")
-        self.assertEqual(reverse("catalog:node_list"), "/api/nodes/")
-        self.assertIn(api, self.client.get(
-            reverse("catalog:node_list")).json()["nodes"])
-        self.assertEqual(api["verified"], node["verified"])
-        self.assertNotIn("status", api)
-        self.assertNotIn("source_module", api)
-        self.assertEqual(api["module"], node["module"])
+        with self.small_corpus():
+            identifier = "nat-membership-and-inclusion-example"
+            node = read_node(identifier)
+            for target in (identifier, "set-subset-transitive"):
+                record = read_node(target)
+                with patch("subprocess.run", side_effect=AssertionError("Page requests must not run Lean")):
+                    response = self.client.get(
+                        reverse("catalog:node", args=[target]))
+                page = self.page(response)
+                section = self.assert_labelled_section(page, "declaration-title")
+                signatures = [element for element in page.find_all("pre", within=section)
+                              if not any(parent.tag == "details" for parent in element.ancestors())]
+                self.assertEqual(len(signatures), 1)
+                self.assertIn(record["declaration"], signatures[0].text)
+                self.assertEqual(
+                    response.context["node"]["verified"], record["verified"])
+                self.assert_source_link(response, record)
+            api = self.client.get(f"/api/nodes/{identifier}/").json()
+            self.assertEqual(api["url"], f"/nodes/{identifier}/")
+            self.assertEqual(api["url"], reverse(
+                "catalog:node", args=[identifier]))
+            self.assertEqual(reverse("catalog:node_detail", args=[
+                             identifier]), f"/api/nodes/{identifier}/")
+            self.assertEqual(reverse("catalog:node_list"), "/api/nodes/")
+            self.assertIn(api, self.client.get(
+                reverse("catalog:node_list")).json()["nodes"])
+            self.assertEqual(api["verified"], node["verified"])
+            self.assertNotIn("status", api)
+            self.assertNotIn("source_module", api)
+            self.assertEqual(api["module"], node["module"])
 
     def test_verification_flag_controls_pages_and_entry_progress(self):
-        with TemporaryDirectory() as directory:
-            corpus = Path(directory) / "corpus"
-            shutil.copytree(settings.CORPUS_DIR, corpus)
+        with self.small_corpus() as corpus:
             path = corpus / "nodes/set.json"
             node = read_json(path)
-            with override_settings(CORPUS_DIR=corpus):
-                write_json(path, {**node, "verified": True})
-                verified_page = self.page(self.client.get("/nodes/set/"))
-                before = add_progress(load_entry(
-                    "sets-and-maps"))["formalization"]
-                write_json(path, {**node, "verified": False})
-                response = self.client.get("/nodes/set/")
-                self.assert_source_link(response, node)
-                self.assertFalse(response.context["node"]["verified"])
-                self.assertNotEqual(verified_page.root.text,
-                                    self.page(response).root.text)
-                self.assertFalse(self.client.get(
-                    "/api/nodes/set/").json()["verified"])
-                after = add_progress(load_entry(
-                    "sets-and-maps"))["formalization"]
-                self.assertEqual(after["complete"], before["complete"] - 1)
-                self.assertEqual(after["total"], before["total"])
-                entry = self.client.get("/entries/sets-and-maps/")
-                self.assertEqual(entry.status_code, 200)
-                self.assertEqual(
-                    entry.context["entry"]["formalization"], after)
-                self.assertTrue(any(record["id"] == "set" and not record["verified"]
-                                    for block in entry.context["entry"]["blocks"]
-                                    for record in block["formal_nodes"]))
-                write_json(
-                    path, {"id": "set", "description": "A set.", "verified": False})
-                response = self.client.get("/nodes/set/")
-                self.assertEqual(response.status_code, 200)
-                self.assertFalse(response.context["node"]["verified"])
-                self.assertIsNone(response.context["node"].get("declaration"))
-                self.assertIsNone(response.context["node"]["source"])
+            write_json(path, {**node, "verified": True})
+            verified_page = self.page(self.client.get("/nodes/set/"))
+            before = add_progress(load_entry(
+                "sets-and-maps"))["formalization"]
+            write_json(path, {**node, "verified": False})
+            response = self.client.get("/nodes/set/")
+            self.assert_source_link(response, node)
+            self.assertFalse(response.context["node"]["verified"])
+            self.assertNotEqual(verified_page.root.text,
+                                self.page(response).root.text)
+            self.assertFalse(self.client.get(
+                "/api/nodes/set/").json()["verified"])
+            after = add_progress(load_entry(
+                "sets-and-maps"))["formalization"]
+            self.assertEqual(after["complete"], before["complete"] - 1)
+            self.assertEqual(after["total"], before["total"])
+            entry = self.client.get("/entries/sets-and-maps/")
+            self.assertEqual(entry.status_code, 200)
+            self.assertEqual(
+                entry.context["entry"]["formalization"], after)
+            self.assertIn(after["label"], self.page(entry).root.text)
+            self.assertTrue(any(record["id"] == "set" and not record["verified"]
+                                for block in entry.context["entry"]["blocks"]
+                                for record in block["formal_nodes"]))
+            write_json(
+                path, {"id": "set", "description": "A set.", "verified": False})
+            response = self.client.get("/nodes/set/")
+            self.assertEqual(response.status_code, 200)
+            self.assertFalse(response.context["node"]["verified"])
+            self.assertIsNone(response.context["node"].get("declaration"))
+            self.assertIsNone(response.context["node"]["source"])
 
     def test_corpus_has_only_verification_status_and_no_review_command(self):
         self.assertNotIn("review", get_commands())
         self.assertIs(type(read_node("set")["verified"]), bool)
 
     def test_reader_does_not_repeat_offline_content_or_asset_checks(self):
-        with patch("catalog.validation.checked_source", side_effect=AssertionError("Offline check")), \
-                patch("catalog.entry_files.is_local_asset", side_effect=AssertionError("Asset stat")):
-            response = self.client.get("/entries/sets-and-maps/")
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.context["entry"]["id"], "sets-and-maps")
+        with self.small_corpus():
+            with patch("catalog.validation.checked_source", side_effect=AssertionError("Offline check")), \
+                    patch("catalog.entry_files.is_local_asset", side_effect=AssertionError("Asset stat")):
+                response = self.client.get("/entries/sets-and-maps/")
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.context["entry"]["id"], "sets-and-maps")

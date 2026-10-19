@@ -208,7 +208,15 @@ Metadata edits made while Lean runs are preserved. A changed binding discards it
 stale proof result. Invalid dependency references prevent publication of all
 prepared results. Individual JSON files are replaced atomically. Home-page statistics and count
 history are updated separately by automation after pushes to `main`; the proof
-build neither reads nor writes `corpus/statistics.json`.
+result phase neither reads nor writes `corpus/statistics.json`. The command's
+final index validation checks that file when present but never modifies it.
+
+After publishing node results and entry summaries, the command refreshes the
+configured [corpus index](app.md#corpus-index). An index-export failure does not
+roll back the saved proof metadata; the complete build is not one transaction.
+After fixing an export failure, regenerate the index with
+`uv run python app/manage.py validate_corpus --write-index` without repeating Lean.
+The index is an ignored cache, not another generated corpus file to commit.
 
 Commit changed Lean sources, bindings, and all generated node and entry JSON
 alongside the change. Verification describes
@@ -220,11 +228,12 @@ JSON; finish with the Django build command.
 
 The [CI workflow](../.github/workflows/ci.yml) validates the corpus, installs the
 pinned environment, checks source availability, runs the tests and build, then checks that committed node results and entry
-summaries match regenerated files. The tests exercise successful, unfinished,
-unsupported-axiom, missing-declaration, and failed builds in an isolated Lean
-project. They also check Choice used directly, through other declarations, or in
-a type, and metadata edits during builds. `formal/.lake/` contains ignored local
-dependencies and build output.
+summaries match regenerated files. One direct Lean invocation tests the current
+checker against complete and unfinished declarations, transitive axioms, missing
+declarations, and Choice used directly, through other declarations, or in a type.
+Python tests use subprocess fixtures for build failures, metadata edits,
+publication and rollback; CI also runs the full project build. `formal/.lake/`
+contains ignored local dependencies and build output.
 
 ### Build warnings
 

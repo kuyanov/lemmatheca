@@ -4,6 +4,11 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 REPOSITORY_DIR = BASE_DIR.parent
 CORPUS_DIR = REPOSITORY_DIR / "corpus"
+CORPUS_INDEX_PATH = os.environ.get("DJANGO_CORPUS_INDEX_PATH") or None
+CORPUS_TEXT_CACHE_BYTES = int(os.environ.get("DJANGO_CORPUS_TEXT_CACHE_BYTES", 8 * 1024 * 1024))
+CORPUS_TEXT_CACHE_ENTRIES = int(os.environ.get("DJANGO_CORPUS_TEXT_CACHE_ENTRIES", 128))
+if CORPUS_TEXT_CACHE_BYTES < 0 or CORPUS_TEXT_CACHE_ENTRIES < 0:
+    raise ValueError("Corpus text cache limits must be nonnegative.")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY", "local-reader-development-key")

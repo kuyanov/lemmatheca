@@ -24,9 +24,16 @@ report mathematical ambiguities affecting the targets.
    answers, and explicit witnesses. Make a collective block-to-claims-to-nodes map.
    Cover definitions stated in prose too. Routine proof steps and implementation
    helpers need not each have a block binding.
-2. Search existing nodes and library declarations. Inspect actual signatures and
-   relevant definition bodies; prefer suitable direct bindings over duplicate
-   wrappers. Explain specializations and representation differences using the
+2. Use the [authoring API](../CONTRIBUTING.md#using-the-authoring-api) to collect
+   reusable nodes from the entry's area: node search with `area`,
+   `fields=id,description`, and no `q`. Search alternative phrases with repeated
+   `q`, or use exact `module`/`declaration` filters. Widen to other areas or global
+   search when useful; use `usage=unmapped` without an area to find nodes without
+   block mappings.
+   Load shortlisted node records and their consumers. Inspect actual signatures,
+   relevant definition bodies, and library declarations in the pinned Lean sources;
+   prefer suitable direct bindings over duplicate wrappers. Explain specializations
+   and representation differences using the
    [binding and proof-planning contract](../docs/formal.md#bindings-and-proof-planning).
 3. Implement missing definition bodies and state missing theorems with `by sorry`.
    Include the necessary translation, preservation, and admissibility statements

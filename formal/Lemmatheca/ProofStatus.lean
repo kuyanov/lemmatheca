@@ -1,4 +1,8 @@
-import Lean
+import Lean.Elab.ElabRules
+import Lean.Elab.Declaration
+import Lean.PrettyPrinter
+import Lean.Util.CollectAxioms
+import Lean.DeclarationRange
 
 open Lean Elab Command in
 elab "#node_status " declaration:str : command => do

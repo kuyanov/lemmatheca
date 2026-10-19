@@ -24,6 +24,7 @@ Titles without links to corpus entries are suggestions for future coverage.
 | Number theory | **Divisibility and remainders: division, parity, and congruence** | `equivalence-relations#relation-properties`; `equivalence-relations#equivalence-classes`; `ordered-sets#orders-from-inclusion-and-divisibility`; `finite-and-countable-sets#integer-enumeration`; `equivalence-relations#rules-on-representatives`; `equivalence-relations#maps-between-quotients`; `equivalence-relations#adding-classes`; `finite-and-countable-sets#empty-and-repeated-lists`; `finite-and-countable-sets#positive-and-even-naturals`; `finite-and-countable-sets#finite-unions`; `comparing-sizes#proper-subset-question`; `comparing-sizes#bernstein-example`; `ordered-sets#chains-and-hasse-diagrams`; `ordered-sets#which-identifications-work`; `well-ordered-sets#well-founded-induction`; `constructing-number-systems#irrational-cut-question`; `filters-and-ultrafilters#ultrafilter-decision`; `filters-and-ultrafilters#partition-choice-question`; `subsets-modulo-small-sets#finite-error-quotient`; `subsets-modulo-small-sets#representative-intersection-question`; `subsets-modulo-small-sets#atomless-finite-error-quotient`; `independent-families#finite-pattern-example`; `bounding-and-dominating-families#strict-comparison-question`; `partition-relations#parity-colouring`; `partition-relations#all-arities-question`; `small-families-of-subsets#bases-have-no-pseudointersection`; `splitting-and-reaping#splitting`; `splitting-and-reaping#witnesses-and-minima`; `splitting-and-reaping#next-points-and-intervals`; `splitting-and-reaping#single-set-question`; `ultraproducts#why-ultrafilters-question`; `primitive-recursion#division-and-remainders`; `partial-recursive-functions#inverse-doubling` | Unique quotient and remainder, parity classes, even/odd decomposition, and congruence as divisibility of a difference; addition respects congruence for every positive modulus. Division gives periodic listings and repeated listings, while parity separates tagged lists and gives alternating-sign integer codes. Include the modulo-three pattern in the size-comparison example. Positive-integer divisibility is an order, its proper divisors have smaller natural value, and finite covers give divisor comparisons. Both natural-number parity classes are infinite and complementary; an odd square is odd, supporting the least-denominator irrationality argument. Residue classes modulo four are infinite and give the four independent Boolean cells; alternating even and odd indices split an infinite enumeration. Parity of points and finite cardinalities gives colouring examples, and both parity classes are unbounded. |
 | Number theory | **Positional integer expansions: digits, finite sums, and hereditary representations** | `finite-and-countable-sets#finite-subset-family`; `comparing-sizes#finite-sequences-question`; `normal-functions#hereditary-base-representations`; `normal-functions#base-change-and-descent`; `normal-functions#goodstein-growth-question` | Finite base-b digit expansions are unique and obtained by quotient and remainder. In a sum of distinct powers of two, the largest differing exponent dominates all smaller exponents; a leading length marker separates binary words of different lengths. Recursively expanding the exponents gives canonical finite hereditary representations, and replacing the base throughout the expression defines base substitution. |
 | Number theory | **Greatest common divisors and least common multiples: divisibility universal properties** | `ordered-sets#suprema-and-infima` | The greatest common divisor is the greatest common lower bound and the least common multiple is the least common upper bound in positive-integer divisibility. Reference their universal properties as well as numerical algorithms. |
+| Number theory | **Coprimality and simultaneous congruences: Bézout and the Chinese remainder theorem** | `arithmetic-representability#coprime-cancellation`; `arithmetic-representability#simultaneous-remainders`; `arithmetic-representability#beta-coding` | The entry supplies the finite arguments it needs locally: Bézout identities, coprime cancellation, and simultaneous remainders. A fuller number-theory treatment can explain the Euclidean algorithm and the general congruence-solving viewpoint. |
 | Real analysis | **Real numbers: order, completeness, and approximation** | `sets-and-maps#maps`; `sets-and-maps#composition`; `sets-and-maps#kinds-of-maps`; `ordered-sets#suprema-and-infima`; `ordered-sets#preorders`; `comparing-sizes#real-interval-sizes`; `sets-and-maps#formula-question`; `uncountable-pair-colourings#no-long-monotone-real-sequence`; `uncountable-pair-colourings#sierpinski-colouring` | Elementary real arithmetic, order, absolute value, interval notation, and affine or rational formulas. Every nonnegative real has a unique nonnegative square root; negative reals have no real square root. Rational density and countability separate adjacent terms of a strictly monotone real sequence, ruling out a sequence indexed by omega1; comparing ordinal order with distinct real values then gives Sierpiński’s colouring. |
 | Real analysis | **Positional expansions: digits, representation, and uniqueness** | `comparing-sizes#uncountable-reals` | Every real in the open unit interval has a unique decimal expansion that is not eventually all nines; digit strings used in the diagonal argument represent reals. Cover terminating-expansion ambiguity and the canonical convention. |
 | Real analysis | **Real sequences and series: convergence, completeness, and geometric sums** | `infinite-cardinal-arithmetic#size-of-the-continuum` | Bounded monotone sequences converge; ternary partial sums define a real; geometric tail estimates separate codes. |
@@ -100,7 +101,7 @@ The following extensions need further development and are deferred:
 
 ## Mathematical logic: sources and development plan
 
-Area ID: `mathematical-logic`, under `logic-and-foundations`. The six
+Area ID: `mathematical-logic`, under `logic-and-foundations`. The five
 proposed entries below need a step-1 handoff and the subsequent pipeline stages.
 Their existing foundations are [propositional semantics](entries/propositional-logic/entry.html),
 [propositional normal forms](entries/propositional-normal-forms/entry.html),
@@ -128,8 +129,9 @@ Their existing foundations are [propositional semantics](entries/propositional-l
 [partial recursive functions](entries/partial-recursive-functions/entry.html),
 [arithmetic machines](entries/machines-and-computation-histories/entry.html),
 [universal computation](entries/universal-computation/entry.html),
-[formal-proof coding](entries/coding-formal-proofs/entry.html), and
-[effective theories](entries/effective-theories/entry.html).
+[formal-proof coding](entries/coding-formal-proofs/entry.html),
+[effective theories](entries/effective-theories/entry.html), and
+[arithmetic representability](entries/arithmetic-representability/entry.html).
 
 Keep the language being studied separate from the mathematics used to study it.
 Use sets, maps, finite lists, and induction as background; orders and arithmetic
@@ -184,7 +186,7 @@ The source-to-entry map is:
 
 | Proposed entries | Sources and specific support |
 | --- | --- |
-| `arithmetic-representability`, `diagonal-lemma`, `first-incompleteness` | C2 chapters 10–11, 15–17, 24–27 and 39; C1 §§4.3–4.5 with recorded corrections; C3 chapter 4 and §§5.2–5.4. |
+| `diagonal-lemma`, `first-incompleteness` | C2 chapters 10–11, 15–17, 24–27 and 39; C1 §§4.3–4.5 with recorded corrections; C3 chapter 4 and §§5.2–5.4. |
 | `second-incompleteness`, `second-order-logic` | C2 chapters 31, 33–35 and C1/C3 conditional arguments; Avigad 2002 §8.3, 101–106, locates second-order semantics. Full PA derivability-condition proofs and any second-order no-effective-complete-calculus reduction remain to inspect. |
 | Optional resolution / expressive-limit branches | Madhusudan–Viswanathan, [*Logic in Computer Science*](https://courses.grainger.illinois.edu/CS474/fa2021/DraftNotes.pdf), 2021-10-11, §2.2, 27–34, is a collected resolution source whose complete proof still needs a stage-1 audit. Schlicht, [*An Introduction to Model Theory*](https://philippschlicht.github.io/teaching/files/modeltheory2017.pdf), course 2017, PDF dated 2021-07-13, 7, supplies a connectedness example; expand its finite-path witness. Its adjacent upward-extension proof has a recorded diagram defect. |
 
@@ -239,7 +241,6 @@ prerequisites are listed below.
 
 | Batch / order | Proposed plain-text title and ID | Main result and scope | Prerequisites within the area |
 | --- | --- | --- | --- |
-| 3 / 9 | **Representability in arithmetic: expressing computations** — `arithmetic-representability` | Numeralwise representation in Robinson arithmetic; bounded and existential arithmetic formulas; distinguish representation, truth and provable totality. Prove the finite simultaneous-remainder lemma locally. | `arithmetic-theories`, `coding-formal-proofs`, `universal-computation`. |
 | 3 / 10 | **Self-reference: the diagonal lemma and undefinability of truth** — `diagonal-lemma` | Fixed points from substitution codes and Tarski's theorem for arithmetic truth. | `arithmetic-representability`, `coding-formal-proofs`. |
 | 3 / 11 | **First incompleteness: Gödel sentences and Rosser's theorem** — `first-incompleteness` | Incompleteness and essential undecidability, with the distinct consistency hypotheses in the Gödel and Rosser arguments explicit. | `diagonal-lemma`, `arithmetic-representability`; `larger-models` supplies external consistency terminology. |
 | 4 / 12 | **Formalized provability: reasoning about proofs inside arithmetic** — `formalized-provability` | A specified proof predicate, formalized proof transformations and proved derivability conditions. | `coding-formal-proofs`, `arithmetic-representability`, `first-incompleteness`. |
@@ -252,15 +253,6 @@ The limited reviews found usable arguments and confirmed defects recorded in
 [Source errors](source-errors.md). Apply those repairs before adopting the
 affected constructions. No unavailable proof, contents-only reading, survey
 statement, or omitted exercise has been certified as a completed argument.
-
-For arithmetic representability, use the existing [effective formula and proof
-codes](entries/coding-formal-proofs/entry.html#tagged-syntax), [pairing and finite-list
-code](entries/coding-finite-sequences/entry.html#list-code), and proved decoding
-bounds rather than introducing an unexplained alternative encoding or requiring
-prime factorization. The next entry needs a finite simultaneous-remainder/beta lemma: Smith's page 116
-provides a compact route, but division, coprime cancellation and the needed
-coprime-modulus argument must be proved locally. Avigad and Zach's appeals to
-CRT do not supply those missing reader prerequisites.
 
 The inspected second-incompleteness sources prove a conditional abstract
 argument, then omit or sketch parts of the concrete PA derivability conditions.
@@ -329,8 +321,8 @@ the set-theoretic or arithmetic hierarchy.
 
 `Computability` has primitive and partial recursion, program codes, universal
 evaluation, and `ComputablePred.halting_problem`; the relevant definitions and
-signatures were inspected. Representing these proof codes inside arithmetic,
-representability, and incompleteness still need their own formal design and
+signatures were inspected. Applying arithmetic representation to these proof
+codes and proving incompleteness still need their own formal design and
 correspondence audit.
 An ordinary Lean proof of a statement about natural numbers is not automatically
 a proof of its derivability in PA or ZFC. These later claims need their own

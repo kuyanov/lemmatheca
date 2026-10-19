@@ -86,8 +86,23 @@ uv run python app/manage.py validate_corpus
 ```
 
 uv creates a local `.venv/`; `uv run` uses it without manual activation.
-`validate_corpus` checks content structure and references without Lean, a prior
-build, or any file writes, so it is also useful while drafting an entry.
+By default, `validate_corpus` checks content structure and references without Lean,
+a prior build, or any file writes, so it is also useful while drafting an entry.
+Add `--write-index` to export a disposable authoring index to
+`artifacts/corpus-index.json`, or give a custom output path:
+
+```sh
+uv run python app/manage.py validate_corpus --write-index
+uv run python app/manage.py validate_corpus --write-index /tmp/corpus-index.json
+```
+
+The index supports read-only APIs for entry listing and context, block/node search,
+references, coverage, and node consumers. Entry text and metadata stay in their
+original files; parsed text uses a bounded memory cache. Refresh the index after
+structural edits; generation does not check Lean
+freshness. See the [API guide](docs/app.md#authoring-api) and
+[index lifecycle](docs/app.md#corpus-index) for details. Set
+`DJANGO_CORPUS_INDEX_PATH` to use another cache location by default.
 
 ### Lean environment
 
@@ -123,7 +138,8 @@ take time. Keep [lean-toolchain](formal/lean-toolchain),
 unchanged during ordinary authoring; `lake update` is for dependency upgrades.
 
 The Django `build` command compiles Lean and refreshes node verification,
-declaration signatures, source lines, and entry summaries. Home-page statistics
+declaration signatures, source lines, and entry summaries, then exports the index
+to the configured cache location (default `artifacts/corpus-index.json`). Home-page statistics
 are updated automatically after pushes to `main`, including newly merged contributors;
 contribution branches do not need to regenerate `corpus/statistics.json`.
 **Verified** means the declaration and its dependencies contain no unfinished proofs (`sorry`) and use only the default axioms: `propext`, `Classical.choice`, and

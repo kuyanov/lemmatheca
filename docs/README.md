@@ -7,7 +7,7 @@ Start with the [project overview and setup](../README.md), then follow
 | --- | --- |
 | [Corpus](corpus.md) | Entry metadata, HTML, references, assets, block-to-node mappings, taxonomy, and validation |
 | [Formalization](formal.md) | Node records, Lean bindings, proof planning, verification, and generated results |
-| [Web app](app.md) | Architecture, routes, local reads, tests, benchmarks, deployment, and scaling |
+| [Web app](app.md) | Architecture, reader and authoring APIs, derived index and bounded text cache, tests, deployment, and scaling |
 | [Vendor assets](vendor.md) | Bundled KaTeX provenance, license, and update procedure |
 | [Contribution workflow](../CONTRIBUTING.md) | The six authoring stages and links to their executable Markdown prompts |
 | [Source errors](../corpus/source-errors.md) | Confirmed mathematical defects in cited publications, checked repairs, affected entry blocks, and source-review coverage |

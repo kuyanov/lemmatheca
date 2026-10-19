@@ -1,6 +1,7 @@
-"""Proof result persistence and the build command against an isolated Lean project."""
+"""Build publication orchestration and one real Lean kernel-checker batch."""
 
 from io import StringIO
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -11,6 +12,7 @@ from django.conf import settings
 from django.core.management import call_command, CommandError
 from django.test import SimpleTestCase, override_settings
 
+from catalog.corpus_index import write_index
 from catalog.files import read_json, write_json
 from catalog.proofs import build
 
@@ -173,148 +175,225 @@ class ProofResultsTests(SimpleTestCase):
                          self.metadata.read_bytes()))
 
 
-class LeanBuildTests(SimpleTestCase):
-    def test_complete_sorry_indirect_axiom_missing_and_failed_build(self):
+class BuildPublicationTests(SimpleTestCase):
+    def test_proof_refresh_reversal_and_failures_preserve_published_snapshot(self):
+        # External-process fixtures isolate publication behavior. The actual
+        # checker is exercised separately in one Lean batch below.
         with TemporaryDirectory() as directory:
             root = Path(directory)
             corpus, formal = root / "corpus", root / "formal"
             (corpus / "nodes").mkdir(parents=True)
-            (formal / "Lemmatheca").mkdir(parents=True)
-            shutil.copyfile(settings.REPOSITORY_DIR /
-                            "formal/lean-toolchain", formal / "lean-toolchain")
-            shutil.copyfile(settings.REPOSITORY_DIR / "formal/Lemmatheca/ProofStatus.lean",
-                            formal / "Lemmatheca/ProofStatus.lean")
-            (formal / "lakefile.toml").write_text(
-                'name = "proof_test"\n[[lean_lib]]\nname = "Lemmatheca"\n')
-            source = '''import Lemmatheca.ProofStatus
--- The word sorry in a comment is not an unfinished proof.
-theorem complete : True := by trivial
-theorem unfinished : True := by sorry
-theorem indirect : True := unfinished
-def unfinishedDefinition : Nat := sorry
-axiom assumption : False
-theorem unsupported : False := assumption
-'''
-            (formal / "Lemmatheca.lean").write_text("import Lemmatheca.Examples\n")
-            module = formal / "Lemmatheca/Examples.lean"
-            module.write_text(source)
+            formal.mkdir()
             names = ["complete", "unfinished", "indirect",
                      "unfinishedDefinition", "unsupported", "unbound"]
             for name in names:
                 write_json(corpus / "nodes" / f"{name}.json", {
                     "id": name, "module": "Lemmatheca" if name != "unbound" else None,
                     "declaration": name if name != "unbound" else None, "verified": False,
+                    "description": f"The {name} example.", "dependencies": [],
                 })
+            write_json(corpus / "taxonomy.json", {"areas": [{
+                "id": "area", "title": "Area", "parent": None,
+                "description": "An example area.",
+            }]})
+            write_json(corpus / "area_entries.json", {
+                "areas": {"area": ["example"]}})
             entry_file = corpus / "entries/example/entry.json"
             entry_file.parent.mkdir(parents=True)
-            write_json(entry_file, {"id": "example", "title": "Example"})
+            write_json(entry_file, {
+                "id": "example", "title": "Example", "primary_area": "area",
+                "additional_areas": [], "based_on": [], "reading_time": 5,
+                "summary": "Example proofs.", "abstract": "Examples of proof status.",
+            })
             (entry_file.parent / "entry.html").write_text(
                 '<section id="fact" data-kind="lemma" data-formal="complete unfinished indirect unbound">'
                 '<h2>Example</h2><p>Proofs.</p></section>')
 
-            def run_build():
-                with override_settings(CORPUS_DIR=corpus, REPOSITORY_DIR=root):
-                    return call_command("build", stdout=StringIO())
-
             def node(name):
                 return read_json(corpus / "nodes" / f"{name}.json")
 
-            self.assertEqual(
-                run_build(), "Updated 6 nodes: 1 verified, 5 not verified.")
+            def run_build(verified, *, fail_at=None):
+                declarations = {node(name)["declaration"] for name in names
+                                if node(name)["declaration"]}
+
+                def run(command, **kwargs):
+                    self.assertEqual(kwargs["cwd"], formal)
+                    self.assertTrue(kwargs["check"])
+                    if command[:2] == ["lake", "build"]:
+                        if fail_at == "compile":
+                            raise subprocess.CalledProcessError(1, command)
+                        return subprocess.CompletedProcess(command, 0)
+                    self.assertEqual(command[:3], ["lake", "env", "lean"])
+                    inspection = (formal / command[-1]).read_text()
+                    self.assertIn("import Lemmatheca.ProofStatus", inspection)
+                    for declaration in declarations:
+                        self.assertEqual(inspection.count(
+                            "#node_status " + json.dumps(declaration)), 1)
+                    if fail_at == "inspect":
+                        raise subprocess.CalledProcessError(1, command)
+                    output = "\n".join("NODE_STATUS " + json.dumps({
+                        "declaration": declaration, "verified": declaration in verified,
+                        "signature": f"{declaration} : True", "module": "Lemmatheca.Examples",
+                        "declaration_line": 3,
+                    }) for declaration in declarations)
+                    return subprocess.CompletedProcess(command, 0, output)
+
+                with override_settings(CORPUS_DIR=corpus, REPOSITORY_DIR=root), \
+                        patch("catalog.proofs.subprocess.run", side_effect=run) as external:
+                    result = call_command("build", stdout=StringIO())
+                    self.assertEqual(external.call_count, 2)
+                    return result
+
+            index_path = root / "artifacts/corpus-index.json"
+
+            def assert_index(verified, label):
+                index = read_json(index_path)
+                self.assertEqual(index["entries"]["example"], {
+                    "blocks": ["fact"], "reading_position": 1,
+                })
+                current = write_index(corpus, root / "expected-index.json")
+                self.assertEqual(index["revision"], current["revision"])
+                self.assertEqual(read_json(entry_file)["formalization"]["label"], label)
+                for name in names:
+                    self.assertEqual(node(name)["verified"], name in verified)
+
+            self.assertEqual(run_build({"complete"}),
+                             "Updated 6 nodes: 1 verified, 5 not verified.")
+            assert_index({"complete"}, "25%")
             self.assertFalse((corpus / "statistics.json").exists())
-            self.assertEqual(read_json(entry_file)[
-                             "formalization"]["label"], "25%")
-            self.assertTrue(node("complete")["verified"])
             self.assertIn("complete", node("complete")["signature"])
             self.assertEqual(node("complete")["module"], "Lemmatheca.Examples")
             self.assertEqual(node("complete")["declaration_line"], 3)
-            for name in ["unfinished", "indirect", "unfinishedDefinition"]:
-                self.assertFalse(node(name)["verified"])
-            self.assertFalse(node("unsupported")["verified"])
-            self.assertFalse(node("unbound")["verified"])
             for name in names:
                 self.assertFalse(
                     {"proven", "sorry", "approved", "source_module"} & node(name).keys())
 
-            module.write_text(source.replace("by sorry", "by trivial", 1))
-            self.assertEqual(
-                run_build(), "Updated 6 nodes: 3 verified, 3 not verified.")
-            self.assertEqual(read_json(entry_file)[
-                             "formalization"]["label"], "75%")
-            self.assertTrue(node("indirect")["verified"])
+            repaired = {"complete", "unfinished", "indirect"}
+            self.assertEqual(run_build(repaired),
+                             "Updated 6 nodes: 3 verified, 3 not verified.")
+            assert_index(repaired, "75%")
+            self.assertEqual(run_build({"complete"}),
+                             "Updated 6 nodes: 1 verified, 5 not verified.")
+            assert_index({"complete"}, "25%")
 
-            # A proof can become unfinished again without failing the build.
-            module.write_text(source)
-            self.assertEqual(
-                run_build(), "Updated 6 nodes: 1 verified, 5 not verified.")
-            self.assertFalse(node("unfinished")["verified"])
-            self.assertFalse(node("indirect")["verified"])
-            self.assertEqual(read_json(entry_file)[
-                             "formalization"]["label"], "25%")
-
-            # A missing declaration is an error, not a vacuously sorry-free proof.
             record = node("complete")
             record["declaration"] = "doesNotExist"
             write_json(corpus / "nodes/complete.json", record)
             previous = {
                 name: (corpus / "nodes" / f"{name}.json").read_bytes() for name in names}
-            entry_before = entry_file.read_bytes()
-            with self.assertRaises(CommandError):
-                run_build()
-            self.assertEqual(entry_file.read_bytes(), entry_before)
-            self.assertFalse((corpus / "statistics.json").exists())
-            for name in names:
-                self.assertEqual(
-                    (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])
-
-            module.write_text(source + "\nthis is not Lean\n")
-            with self.assertRaises(CommandError):
-                run_build()
-            self.assertEqual(entry_file.read_bytes(), entry_before)
-            self.assertFalse((corpus / "statistics.json").exists())
-            for name in names:
-                self.assertEqual(
-                    (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])
+            entry_before, index_before = entry_file.read_bytes(), index_path.read_bytes()
+            for fail_at in ("inspect", "compile"):
+                with self.subTest(fail_at=fail_at), self.assertRaises(CommandError):
+                    run_build(set(), fail_at=fail_at)
+                self.assertEqual(entry_file.read_bytes(), entry_before)
+                self.assertEqual(index_path.read_bytes(), index_before)
+                self.assertFalse((corpus / "statistics.json").exists())
+                for name in names:
+                    self.assertEqual(
+                        (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])
 
 
-class DefaultProofAxiomTests(SimpleTestCase):
-    def test_choice_is_supported_directly_indirectly_and_in_types(self):
-        with TemporaryDirectory() as directory:
-            formal = Path(directory)
-            (formal / "Lemmatheca").mkdir()
-            shutil.copyfile(settings.REPOSITORY_DIR / "formal/lean-toolchain",
-                            formal / "lean-toolchain")
-            shutil.copyfile(settings.REPOSITORY_DIR / "formal/Lemmatheca/ProofStatus.lean",
-                            formal / "Lemmatheca/ProofStatus.lean")
-            (formal / "lakefile.toml").write_text(
-                'name = "axiom_test"\n[[lean_lib]]\nname = "Lemmatheca"\n')
-            (formal / "Lemmatheca/Examples.lean").write_text('''import Lemmatheca.ProofStatus
-theorem complete : True := by trivial
-noncomputable def selector {α : Sort u} (h : Nonempty α) : α := Classical.choice h
-noncomputable def indirectSelector {α : Sort u} (h : Nonempty α) : α := selector h
-theorem unfinished : True := by sorry
+class BuildCommandIndexTests(SimpleTestCase):
+    def setUp(self):
+        temporary = TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.corpus = self.root / "corpus"
+        self.corpus.mkdir()
+
+    def test_index_is_refreshed_after_proof_metadata_is_saved(self):
+        events = []
+        output = StringIO()
+
+        def save_proofs(corpus, formal):
+            self.assertEqual((corpus, formal),
+                             (self.corpus, self.root / "formal"))
+            write_json(corpus / "result.json", {"verified": True})
+            events.append("proofs")
+            return 1, 2
+
+        def save_index(corpus, destination):
+            self.assertEqual(destination,
+                             self.root / "artifacts/corpus-index.json")
+            self.assertEqual(read_json(corpus / "result.json"), {"verified": True})
+            events.append("index")
+
+        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root), \
+                patch("catalog.management.commands.build.build", side_effect=save_proofs), \
+                patch("catalog.management.commands.build.write_index", side_effect=save_index):
+            result = call_command("build", stdout=output)
+        self.assertEqual(events, ["proofs", "index"])
+        self.assertEqual(result, "Updated 2 nodes: 1 verified, 1 not verified.")
+        self.assertIn("Corpus index written:", output.getvalue())
+
+    def test_failed_proof_build_never_starts_index_generation(self):
+        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root), \
+                patch("catalog.management.commands.build.build", side_effect=ValueError("Lean inspection failed")), \
+                patch("catalog.management.commands.build.write_index") as write:
+            with self.assertRaisesRegex(CommandError, "Lean inspection failed"):
+                call_command("build", stdout=StringIO())
+            write.assert_not_called()
+
+    def test_index_failure_reports_error_and_preserves_previous_cache(self):
+        index = self.root / "artifacts/corpus-index.json"
+        index.parent.mkdir()
+        write_json(index, {"previous": "index"})
+        previous = index.read_bytes()
+        output = StringIO()
+        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root), \
+                patch("catalog.management.commands.build.build", return_value=(1, 1)):
+            with self.assertRaisesRegex(CommandError, "taxonomy.json"):
+                call_command("build", stdout=output)
+        self.assertEqual(index.read_bytes(), previous)
+        self.assertNotIn("Updated", output.getvalue())
+
+
+class ProofStatusLeanTests(SimpleTestCase):
+    def test_real_checker_batches_transitive_axioms_and_rejects_missing_declarations(self):
+        # Inline the current checker, rather than reusing a potentially stale
+        # olean. One direct Lean invocation needs no Lake project or C build.
+        checker = (settings.REPOSITORY_DIR / "formal/Lemmatheca/ProofStatus.lean").read_text()
+        examples = """
+-- The word sorry in a comment is not an unfinished proof.
+theorem complete : True := True.intro
+theorem unfinished : True := sorry
+theorem indirect : True := unfinished
+def unfinishedDefinition : Nat := sorry
 axiom assumption : False
 theorem unsupported : False := assumption
+noncomputable def selector {α : Sort u} (h : Nonempty α) : α := Classical.choice h
+noncomputable def indirectSelector {α : Sort u} (h : Nonempty α) : α := selector h
 noncomputable def chosenType : Type := Classical.choice (show Nonempty Type from ⟨Nat⟩)
-theorem typeOnly (x : chosenType) : x = x := rfl
-''')
-            (formal / "Lemmatheca.lean").write_text("import Lemmatheca.Examples\n")
-            corpus = formal / "corpus"
-            (corpus / "nodes").mkdir(parents=True)
-            cases = [("complete", "complete", True),
-                     ("selector", "selector", True),
-                     ("indirect", "indirectSelector", True),
-                     ("type-only", "typeOnly", True),
-                     ("unfinished", "unfinished", False),
-                     ("unsupported", "unsupported", False),
-                     ("nat", "Nat.succ_ne_zero", True),
-                     ("propext", "propext", True),
-                     ("quotient", "Quot.sound", True)]
-            for identifier, declaration, verified in cases:
-                write_json(corpus / "nodes" / f"{identifier}.json", {
-                    "id": identifier, "module": "Lemmatheca.Examples",
-                    "declaration": declaration, "verified": False})
-            self.assertEqual(build(corpus, formal), (7, 9))
-            for identifier, _, verified in cases:
-                node = read_json(corpus / "nodes" / f"{identifier}.json")
-                self.assertEqual(node["verified"], verified)
+theorem typeOnly (x : chosenType) : x = x := Eq.refl _
+"""
+        cases = {"complete": True, "unfinished": False, "indirect": False,
+                 "unfinishedDefinition": False, "unsupported": False,
+                 "selector": True, "indirectSelector": True, "typeOnly": True,
+                 "Nat.succ_ne_zero": True, "propext": True, "Quot.sound": True}
+        with TemporaryDirectory() as directory:
+            formal = Path(directory)
+            shutil.copyfile(settings.REPOSITORY_DIR / "formal/lean-toolchain",
+                            formal / "lean-toolchain")
+            source = checker + examples
+            commands = "\n".join("#node_status " + json.dumps(name) for name in cases)
+            (formal / "Check.lean").write_text(
+                source + commands + '\n#node_status "doesNotExist"\n', encoding="utf-8")
+            result = subprocess.run(["lean", "Check.lean"], cwd=formal, text=True,
+                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("doesNotExist", result.stdout)
+        self.assertIn("error", result.stdout)
+        records = [json.loads(line.removeprefix("NODE_STATUS "))
+                   for line in result.stdout.splitlines() if line.startswith("NODE_STATUS ")]
+        self.assertEqual([record["declaration"] for record in records], list(cases))
+        by_name = {record["declaration"]: record for record in records}
+        for name, expected in cases.items():
+            with self.subTest(declaration=name):
+                record = by_name[name]
+                self.assertEqual(record["verified"], expected)
+                self.assertIn(name, record["signature"])
+                self.assertGreater(record["declaration_line"], 0)
+        self.assertEqual(by_name["Nat.succ_ne_zero"]["module"], "Init.Data.Nat.Basic")
+        complete_line = next(number for number, line in enumerate(source.splitlines(), 1)
+                             if line.startswith("theorem complete :"))
+        self.assertEqual(by_name["complete"]["declaration_line"], complete_line)

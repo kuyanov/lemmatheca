@@ -1,4 +1,4 @@
-"""The corpus JSON files are the application's only persistent storage."""
+"""Canonical corpus JSON storage; derived indexes are disposable caches."""
 
 import json
 from pathlib import Path

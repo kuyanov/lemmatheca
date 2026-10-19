@@ -305,8 +305,8 @@ From the repository root, at any stage of authoring:
 uv run python app/manage.py validate_corpus
 ```
 
-The validator checks the complete corpus without rendering HTML, running Lean, or
-writing files. It reports the first failure with its file path. It validates
+By default, the validator checks the complete corpus without rendering HTML,
+running Lean, or writing files. It reports the first failure with its file path. It validates
 metadata types and IDs, citations, HTML structure, anchors and equations, local
 assets, cross-entry block links, formal bindings, node dependency references and
 cycles, area parents and
@@ -321,7 +321,13 @@ catch typos. Lean bindings are checked for shape; declaration existence and proo
 verification belong to `build`. For deployment, `validate_corpus --check-sources`
 also checks that each bound module's local source is readable UTF-8, once per
 module. This option needs installed sources but still does not invoke Lean.
-Use `--corpus <directory>` to check a separate corpus.
+
+Add `--write-index` to publish the disposable structural index used by the
+[authoring API](app.md#authoring-api), without invoking Lean. The index does not
+copy entry prose or node metadata; API queries read those from the corpus, with
+a bounded cache for parsed entry text. See the [index lifecycle](app.md#corpus-index)
+for output paths, refresh rules, and memory limits. Ordinary reader pages and
+direct-file reviews do not require this index.
 
 After adding an entry or changing its block inventory, formal mappings, node
 bindings, or Lean declarations and proofs, refresh generated data at delivery:
@@ -333,8 +339,8 @@ uv run python app/manage.py build
 Use the [shared check and batching rules](../CONTRIBUTING.md#validation-and-submission)
 for standalone handoffs and multi-stage tasks; do not repeat a successful build
 without subsequent relevant changes or unresolved diagnostics.
-The build checks declarations, parses entries, and refreshes node data and entry-list
-summaries. Prose or figure edits that preserve the block inventory and mappings
+The build checks declarations, parses entries, refreshes node data and entry-list
+summaries, then regenerates the configured index. Prose or figure edits that preserve the block inventory and mappings
 need corpus validation and a rendering check, without a proof rebuild. Run relevant
 catalog tests when reader or build-tooling code changes, or to investigate a
 rendering or integration failure. Inspect edited pages for mathematical layout,

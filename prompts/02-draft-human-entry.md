@@ -17,6 +17,12 @@ Inspect the affected entries and reading-order index. Recover missing inputs usi
 only the targeted checks in the shared execution rules; do not repeat an applicable
 source audit or the full planning stage.
 
+Use the [authoring API](../docs/app.md#authoring-api) under the
+[shared usage rules](../CONTRIBUTING.md#using-the-authoring-api) for entry context,
+area listings and existing incoming/outgoing references. Search blocks for
+unlinked consumers when coverage changes; backlinks alone cannot find them.
+Save drafting and integration edits to the corpus files.
+
 ## Work
 
 1. Write original definitions, statements, proofs, examples, and question answers

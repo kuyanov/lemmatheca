@@ -15,8 +15,12 @@ Read the human claims, node descriptions, actual Lean declarations, and relevant
 representation definitions. Use the [mapping contract](../docs/corpus.md#block-to-node-mapping)
 and [binding contract](../docs/formal.md#bindings-and-proof-planning).
 Inspect current types and definitions rather than trusting names, saved signatures,
-or verification flags. Intended `sorry` theorem bodies are unfinished proof work;
-they are not by themselves a correspondence defect.
+or verification flags. Use the
+[authoring API](../CONTRIBUTING.md#using-the-authoring-api) entry context with
+`include=blocks,nodes,coverage` to organize the requested claims and mappings.
+For a block-specific review, select those known IDs with `block_ids`.
+Intended `sorry` theorem bodies are unfinished proof work; they are not by
+themselves a correspondence defect.
 
 ## Work
 
@@ -36,8 +40,10 @@ they are not by themselves a correspondence defect.
    prepared statements belongs to step 6.
 4. Identify redundant bindings, duplicate targets, inappropriate module placement,
    and misleading dependency hints within the reviewed scope. Retain distinct
-   claims and specified witnesses; do not repeat the preparation-stage library
-   search or reorganize unrelated code.
+   claims and specified witnesses. Use node consumers to inspect reuse and affected
+   blocks, and exact declaration searches for suspected duplicate bindings.
+   Do not repeat the preparation-stage global reuse search or reorganize unrelated
+   code.
 
 ## Checks
 

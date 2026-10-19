@@ -1,0 +1,12 @@
+{
+  "id": "repr-composition-strong-representation",
+  "description": "The specified existential composition graph strongly represents a composite function whenever the constituent graphs strongly represent their functions in \\(Q\\).",
+  "module": "Lemmatheca.MathematicalLogic.ArithmeticRepresentabilityClosure",
+  "declaration": "Lemmatheca.MathematicalLogic.ArithmeticRepresentability.composition_stronglyRepresents",
+  "dependencies": [
+    "arith-robinson-theory"
+  ],
+  "verified": true,
+  "declaration_line": 74,
+  "signature": "Lemmatheca.MathematicalLogic.ArithmeticRepresentability.composition_stronglyRepresents {m n : ℕ} (f : (Fin m → ℕ) → ℕ)\n  (g : Fin m → (Fin n → ℕ) → ℕ) (φ : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin m ⊕ Unit))\n  (ψ : Fin m → Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin n ⊕ Unit))\n  (hf : Lemmatheca.MathematicalLogic.ArithmeticRepresentability.StronglyRepresents f φ)\n  (hg : ∀ (i : Fin m), Lemmatheca.MathematicalLogic.ArithmeticRepresentability.StronglyRepresents (g i) (ψ i)) :\n  Lemmatheca.MathematicalLogic.ArithmeticRepresentability.StronglyRepresents (fun x => f fun i => g i x)\n    (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.compositionGraph φ ψ)"
+}

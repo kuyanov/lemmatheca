@@ -17,7 +17,14 @@ proof-planning hints, and actual Lean sources. Use the
 [formalization guide](../docs/formal.md) for library organization, permitted axioms,
 and build warnings. Saved verification flags describe the last successful build;
 check actual unfinished dependencies where needed. Reuse applicable earlier
-handoffs; do not repeat the full human or correspondence review.
+handoffs; do not repeat the full human or correspondence review. Use the
+[authoring API](../CONTRIBUTING.md#using-the-authoring-api) entry context with
+`include=nodes,coverage` to select mapped targets; treat saved `verified=false`
+only as a candidate filter. Use `block_ids` when the proof scope is known blocks.
+Use selected node records, consumers, and dependency
+hints to scope the work, with targeted node searches for reusable helpers. Inspect
+actual dependencies and kernel axioms in Lean locally. Do not collect the whole
+area's node inventory for each proof task.
 
 ## Work
 

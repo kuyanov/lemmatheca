@@ -178,6 +178,9 @@ links resolve relative to their document. Supply earlier reports as text, local
 paths, or accessible GitHub references where useful. Reports are inputs, not a
 mandatory approval record or persistent corpus metadata.
 
+Use the [API retrieval workflow](#using-the-authoring-api) for the queries named
+in each stage's prompt. Keep retrieval within that stage's responsibility.
+
 If a handoff is absent or no longer applies, recover only the information needed
 for the current stage. For example, check uncovered source passages before using
 them in a draft; identify ambiguous human claims when preparing targets; report
@@ -198,6 +201,49 @@ requested. Whenever a stage actually inspects additional source material or find
 a confirmed defect, maintain [Source errors](docs/corpus.md#source-errors) for that
 scope before the handoff. Reusing an applicable assessment does not require another
 source audit or duplicate coverage record.
+
+### Using the authoring API
+
+Use the [authoring API](docs/app.md#authoring-api) for supported discovery and
+retrieval when a supplied reader URL or an already running local reader is
+available. Follow the stage-specific guidance in the prompt. If the server or
+index is unavailable, use the canonical corpus files and continue; read-only
+stages do not require server setup or index generation.
+Use returned text and metadata directly for reading; open canonical inputs for
+edits, omitted markup or assets, and stale or ambiguous results.
+
+- Narrow retrieval with area and exact binding filters. Use `fields` on entry
+  listing and node search to collect compact records, then fetch shortlisted
+  nodes and their consumers as needed. An empty node query collects the selected
+  pool; repeated node `q` parameters search alternative formulations in one pass.
+  Block search accepts one `q`, so issue separate searches for its alternatives.
+- When block IDs are known, use entry context with `block_ids=id-a,id-b` and only
+  the needed `include` components. This filters blocks, mapped nodes, coverage
+  and references before pagination; `include=nodes,coverage` need not return
+  prose. Metadata and navigation remain entry-wide. Share retrieved responses
+  across agents and reuse them while the relevant files and index are unchanged.
+- Follow `limit`/`offset` until every requested result is read. Entry context
+  paginates blocks, nodes and references independently; check each component's
+  count. Read hidden answers when their claims are in scope: context includes
+  them by default, while block search needs `include_answers=true`.
+- Node area membership comes from consuming entries, including additional and
+  descendant areas. Shared nodes can appear in several areas. Unmapped nodes
+  have no inferred area; `usage=unmapped` needs a search without an area filter.
+- Treat indexed mappings, consumers and references as snapshot relationships.
+  `revision` can pin a multi-request retrieval to one index, but does not certify
+  current files or proofs. On `index_outdated`, use current files or refresh the
+  index when the requested mutating stage permits it. A successful response can
+  still miss new relationships from unvisited sources; check exact target claims
+  and assumptions before using a proposed match or reference.
+- Inspect current Lean types, definition bodies, instances and axioms locally
+  under the formal contract. API signatures and verification flags are saved
+  results. Source publications, the source register and reference planning also
+  need their existing direct-file or source workflows; no API for those or for
+  live Lean inspection is implemented.
+
+Use the API to retrieve evidence; mathematical review, rendering, file edits and
+required checks remain the responsibility of their existing stages. Do not add
+another corpus-wide audit just because a query is available.
 
 ## Validation and submission
 
@@ -230,15 +276,25 @@ compilation run for the same unchanged sources.
 The build owns verification, signatures, declaration lines, defining modules and
 entry `formalization` summaries. Include its generated JSON changes with the
 sources; do not calculate them manually. Leave `corpus/statistics.json` to the
-[statistics workflow](.github/workflows/statistics.yml). Failed builds preserve
-previous results, so old flags cannot establish that edited sources are verified.
+[statistics workflow](.github/workflows/statistics.yml). Failures before result
+publication preserve previous proof results, so old flags cannot establish that
+edited sources are verified. The final index export can fail after proof metadata
+has been refreshed; the complete build is not a single transaction.
 Review-only stages inspect current declarations rather than running this writing
 command. Apply the [warning contract](docs/formal.md#build-warnings) and distinguish
 unfinished preparation targets from completed selected proofs.
 
 Validation needs neither Lean nor a prior build; `--check-sources` also checks
 local source availability when the pinned sources are installed. It checks shape,
-not freshness of generated results. See [formal verification](docs/formal.md#build-and-verification)
+not freshness of generated results. Validation is read-only by default. To export
+a disposable authoring index, add `--write-index` (default output:
+`artifacts/corpus-index.json`) or `--write-index /path/to/index.json`. The build
+refreshes the configured index after publishing generated proof results. Corpus
+files remain authoritative; refresh the index after relationship changes when
+using the authoring API, and leave it uncommitted. Text-only edits are read from
+current files and do not require index regeneration.
+Index generation is not required for read-only reviews. See the
+[index lifecycle](docs/app.md#corpus-index) and [formal verification](docs/formal.md#build-and-verification)
 for kernel checks and build behavior, and [the app guide](docs/app.md) for serving
 and tests. [CI](.github/workflows/ci.yml) runs the integrated checks and verifies
 that committed generated data matches regenerated results.
