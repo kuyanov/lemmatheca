@@ -113,6 +113,23 @@
   <p>There is no conflict with the fact that every element of \(\mathbb N\) is a natural number. The statement “this element exceeds every member of the diagonal image” compares the ultrapower with an externally specified subset. It is not a first-order formula of the original order language naming all standard natural numbers at once. The ultrapower still agrees with \((\mathbb N,&lt;)\) on every sentence of that language.</p>
 </section>
 
+<section id="arithmetic-ultrapower" data-formal="ultra-arith-operations ultra-arith-sentence-transfer ultra-arith-true-arithmetic ultra-arith-peano ultra-arith-diagonal-numerals ultra-arith-identity-nonstandard ultra-arith-standard-copy-proper ultra-arith-standard-copy-undefinable arith-nonstandard-not-isomorphic ultra-diagonal ultra-diagonal-map ultra-compatible-interpretations elem-embedding-elementary-image" data-kind="lemma">
+  <h2>The same sequences give a nonstandard model of arithmetic</h2>
+  <p>Use the <a href="arithmetic-theories#arithmetic-language">arithmetic structure</a> \(\mathbb N_{\mathrm A}=(\mathbb N,0,S,+,\cdot)\) as every factor, with \(S(n)=n+1\). Let \(\mathcal U\) again be a nonprincipal ultrafilter on \(\mathbb N\), and write \(M=\mathbb N_{\mathrm A}^{\mathbb N}/\mathcal U\). Its underlying quotient consists of the same sequence classes as in <a href="#nonstandard-natural"></a>, but it now interprets all four arithmetic operations:</p>
+  <div class="math-display">\[0^M=[n\mapsto0],\qquad S^M([f])=[n\mapsto f(n)+1],\]</div>
+  <div class="math-display">\[[f]+^M[g]=[n\mapsto f(n)+g(n)],\qquad [f]\cdot^M[g]=[n\mapsto f(n)g(n)].\]</div>
+  <p>The coordinate definitions are independent of representatives by <a href="#quotient-structure">the construction of the ultraproduct structure</a>. This gives an explicit nonstandard model satisfying <a href="arithmetic-theories#true-arithmetic">every arithmetic sentence true in the natural numbers</a>, and hence every axiom of Peano arithmetic, including every first-order induction instance with parameters.</p>
+  <p class="proof-label">Proof</p>
+  <p>For an arithmetic sentence \(\sigma\), every factor has the same truth value. Its truth set is therefore all of \(\mathbb N\) or the empty set. <a href="#los-theorem">Łoś's theorem</a> gives</p>
+  <div class="math-display">\[M\models\sigma\quad\Longleftrightarrow\quad\mathbb N_{\mathrm A}\models\sigma.\]</div>
+  <p>In particular \(M\models\operatorname{Th}(\mathbb N_{\mathrm A})\). The ordinary natural numbers satisfy <a href="arithmetic-theories#peano-arithmetic">PA</a>, so each PA axiom transfers. A universally closed induction instance allows any values of its parameter variables in \(M\), including nonstandard values: transfer is not restricted to standard parameters.</p>
+  <p>The <a href="#diagonal-embedding">diagonal map</a> \(d(n)=[i\mapsto n]\) is an elementary embedding in the full arithmetic language. It sends \(0\) to \(0^M\) and commutes with successor, addition and multiplication. Induction on the external natural number \(n\) consequently gives</p>
+  <div class="math-display">\[d(n)=\overline n^{\,M},\]</div>
+  <p>where \(\overline n^{\,M}\) is the interpretation of the numeral obtained by applying successor \(n\) times to zero. Thus the diagonal image is exactly the <a href="arithmetic-theories#standard-copy">standard copy</a> of the natural numbers inside \(M\).</p>
+  <p>It is a proper copy. The identity sequence still gives \(H=[i\mapsto i]\). Equality \(H=d(n)\) would say that the singleton \(\{i:i=n\}\) is large. A nonprincipal ultrafilter contains no finite set, so this is impossible for every standard \(n\). Hence \(H\) is not the interpretation of any numeral, proving that this particular arithmetic structure is nonstandard.</p>
+  <p>Finally, <a href="arithmetic-theories#external-standard-copy">the standard copy in any nonstandard PA model is not definable with parameters</a>. Indeed, if an arithmetic formula with a fixed finite parameter tuple defined this proper subset, it would hold at zero and be closed under successor. Its own PA induction instance would then force it to hold everywhere, a contradiction. The externally described standard copy is therefore a proper elementary substructure without being a definable subset. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
 <section id="principal-finite-question" data-formal="ultra-principal-evaluation ultra-principal-diagonal-inverse ultra-finite-diagonal-isomorphism" data-kind="question">
   <h2>Must the diagonal image always be proper?</h2>
   <p>What happens when the ultrafilter concentrates on one index, or when the original structure is finite?</p>

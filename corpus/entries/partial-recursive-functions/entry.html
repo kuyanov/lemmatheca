@@ -1,0 +1,120 @@
+<section id="partial-functions" data-formal="partrec-partial-function partrec-graph partrec-domain partrec-total partrec-graph-representation partrec-graph-functional partrec-domain-output" data-kind="definition">
+  <h2>An input may have no output</h2>
+  <p>A <strong>partial function</strong> \(f:A\rightharpoonup B\) is a relation \(G_f\subseteq A\times B\) with at most one output for each input: if \((a,b),(a,c)\in G_f\), then \(b=c\). Its <strong>domain of definition</strong> is</p>
+  <div class="math-display">\[\operatorname{dom}(f)=\{a\in A:\exists b\in B\;(a,b)\in G_f\}.\]</div>
+  <p>Write \(f(a)\downarrow=b\) for \((a,b)\in G_f\), \(f(a)\downarrow\) when some output exists, and \(f(a)\uparrow\) otherwise. A partial function is <strong>total</strong> if its domain of definition is all of \(A\); it is then a <a href="sets-and-maps#maps">function in the usual sense</a>. In particular, \(f(a)\uparrow\) does not mean \(f(a)=0\): zero is a legitimate output, whereas an undefined input has none.</p>
+  <p>We use partial functions \(\mathbb N^n\rightharpoonup\mathbb N\), where \(n\) is their <strong>arity</strong>. The empty tuple is the unique element of \(\mathbb N^0\), so a zero-argument partial function is either a specified number or undefined. A partial function, by itself, need not come with a computation. The closure rules below select the partial functions called partial recursive.</p>
+</section>
+
+<section id="partial-equality" data-formal="partrec-partial-equality" data-kind="definition">
+  <h2>Equality when either side may be undefined</h2>
+  <p>For possibly undefined expressions \(E,F\), write \(E\simeq F\) if both are undefined, or both are defined with the same value. This is <strong>partial equality</strong>. Equivalently, for every \(a\in\mathbb N\), \(E\downarrow=a\) if and only if \(F\downarrow=a\). It is an equivalence relation, because equality of the sets of possible outputs is reflexive, symmetric and transitive.</p>
+  <p>An expression \(h(g_0(\bar x),\ldots,g_{m-1}(\bar x))\) is evaluated <strong>strictly</strong>: every inner value must exist before the outer function is applied. Undefined expressions are not additional elements of \(\mathbb N\).</p>
+</section>
+
+<section id="strict-composition" data-formal="partrec-strict-composition partrec-strict-composition-output partrec-zero-arity-composition partrec-total-composition partrec-composition-associative partrec-composition-right-identity partrec-composition-left-identity" data-kind="definition">
+  <h2>Composition needs all its intermediate values</h2>
+  <p>Given \(g_i:\mathbb N^n\rightharpoonup\mathbb N\) for \(i&lt;m\) and \(h:\mathbb N^m\rightharpoonup\mathbb N\), their <strong>strict composition</strong> \(f\) is defined by</p>
+  <div class="math-display">\[f(\bar x)\downarrow=b\quad\Longleftrightarrow\quad\exists\bar a\in\mathbb N^m\;\bigl[(\forall i&lt;m\;g_i(\bar x)\downarrow=a_i)\ \land\ h(\bar a)\downarrow=b\bigr].\]</div>
+  <p>The outputs \(a_i\), and then \(b\), are unique when they exist, so this is a partial function. If \(m=0\), there are no intermediate values to check: the empty tuple is supplied to \(h\). For total functions this agrees with <a href="sets-and-maps#composition">ordinary composition</a>.</p>
+  <p>For unary partial functions, strict composition is associative and the total identity function is an identity. Indeed, either bracketing of \(h\circ g\circ f\) has output \(c\) at \(x\) exactly when some \(a,b\) satisfy \(f(x)\downarrow=a\), \(g(a)\downarrow=b\) and \(h(b)\downarrow=c\). The identity conditions follow from the same description.</p>
+</section>
+
+<section id="ignored-input-question" data-formal="partrec-constant-strict-domain" data-kind="question">
+  <h2>Can a constant function ignore an undefined input?</h2>
+  <p>Let \(z:\mathbb N\to\mathbb N\) be the constant zero function, and suppose \(g(x)\uparrow\). What is \((z\circ g)(x)\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>It is undefined. Strict composition first needs a natural number \(g(x)\) to pass to \(z\). The fact that \(z(a)=0\) for every natural number \(a\) supplies no value for \(g(x)\). Consequently \(z\circ g\) has domain \(\operatorname{dom}(g)\), even though \(z\) itself is total.</p>
+  </div></details>
+</section>
+
+<section id="partial-primitive-recursion" data-formal="partrec-partial-recursion partrec-recursion-equations" data-kind="definition">
+  <h2>Recursion can stop producing values</h2>
+  <p>Let \(g:\mathbb N^k\rightharpoonup\mathbb N\) and \(h:\mathbb N^{k+2}\rightharpoonup\mathbb N\). Their <strong>partial primitive recursion</strong> is the partial function \(r:\mathbb N^{k+1}\rightharpoonup\mathbb N\) satisfying</p>
+  <div class="math-display">\[r(\bar x,0)\simeq g(\bar x),\qquad r(\bar x,n+1)\simeq h(\bar x,n,r(\bar x,n)),\]</div>
+  <p>with strict evaluation on the right. Thus a missing initial value prevents every later value, and a missing step prevents the next value and all subsequent values. The order of arguments agrees with <a href="primitive-recursion#primitive-recursion">primitive recursion for total functions</a>: the parameters come first, followed by the recursion index and the previous output.</p>
+</section>
+
+<section id="recursion-domain" data-formal="partrec-recursion-chain partrec-recursion-unique partrec-recursion-initial-domain partrec-recursion-total" data-kind="lemma">
+  <h2>A value exists exactly when its finite chain exists</h2>
+  <p>Partial primitive recursion exists and is unique. More explicitly, \(r(\bar x,n)\downarrow=b\) if and only if there are natural numbers \(a_0,\ldots,a_n\) such that</p>
+  <div class="math-display">\[g(\bar x)\downarrow=a_0,\qquad a_n=b,\qquad h(\bar x,i,a_i)\downarrow=a_{i+1}\quad(i&lt;n).\]</div>
+  <p>In particular, \(r(\bar x,n)\downarrow\) implies \(r(\bar x,i)\downarrow\) for every \(i\le n\). If \(g\) and \(h\) are total, then \(r\) is total.</p>
+  <p class="proof-label">Proof</p>
+  <p>Define the graph by the displayed finite-chain condition. Any two chains at the same input have the same initial value, since \(g\) is a partial function. Induction then makes their next values equal, using functionality of \(h\). Their final values are therefore equal, so the graph is a partial function.</p>
+  <p>A chain at index zero consists just of the initial value. A chain at index \(n+1\) consists of a chain at index \(n\), followed by one defined application of \(h\). These are precisely the two recursion equations. Conversely, induction on \(n\) shows that any partial function satisfying the equations has this graph, proving uniqueness. Truncating a chain proves the assertion about earlier indices. When \(g,h\) are total, induction extends a chain by one step at every index. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="sequential-minimization" data-formal="partrec-minimization partrec-minimization-output" data-kind="definition">
+  <h2>Search candidates in order</h2>
+  <p>For \(f:\mathbb N^{k+1}\rightharpoonup\mathbb N\), its <strong>sequential minimization</strong> \(\mu f:\mathbb N^k\rightharpoonup\mathbb N\) is specified by</p>
+  <div class="math-display">\[(\mu f)(\bar x)\downarrow=n\quad\Longleftrightarrow\quad f(\bar x,n)\downarrow=0\ \land\ \forall i&lt;n\;\exists a&gt;0\;(f(\bar x,i)\downarrow=a).\]</div>
+  <p>This defines a partial function: if two different outputs \(n&lt;m\) satisfied the condition, the smaller index would require \(f(\bar x,n)=0\), while the larger would require that same defined value to be positive.</p>
+  <p>The rule describes testing \(0,1,2,\ldots\) in that order, stopping at the first output zero. A positive output advances to the next candidate. An undefined test blocks the search. We also write \(\mu n\,[f(\bar x,n)=0]\), retaining the same requirement that all earlier tests have defined, nonzero values.</p>
+</section>
+
+<section id="partial-recursive-functions" data-formal="partrec-recursive-class partrec-total-recursive" data-kind="definition">
+  <h2>The closure rules for partial recursive functions</h2>
+  <p>The <strong>partial recursive functions</strong> are the smallest class of partial functions of finite arity on \(\mathbb N\) containing the total zero functions, successor and projections, and closed under strict composition, partial primitive recursion and sequential minimization. Equivalently, a function belongs to the class if it has a finite construction using these initial functions and rules. A <strong>total recursive function</strong>, or simply a <strong>recursive function</strong>, is a partial recursive function that is total.</p>
+  <p>The initial functions and their arities are those in <a href="primitive-recursion#primitive-recursive-functions">the primitive-recursive definition</a>. The word “partial” permits undefined inputs; it does not assert that some input must be undefined. The adjective “recursive” concerns membership in this closure class, not merely the presence of a recurrence equation in a function's description.</p>
+</section>
+
+<section id="primitive-recursive-inclusion" data-formal="partrec-primitive-inclusion" data-kind="lemma">
+  <h2>Primitive-recursive functions remain total</h2>
+  <p>Every primitive-recursive function, viewed as a partial function with its full domain, is total recursive.</p>
+  <p class="proof-label">Proof</p>
+  <p>Induct on its <a href="primitive-recursion#primitive-recursive-functions">finite primitive-recursive construction</a>. The initial functions occur in both definitions and are total. Strict composition of total functions is defined at every input and has the ordinary composite value. The <a href="#recursion-domain">finite-chain criterion</a> shows that partial primitive recursion on total functions remains total and satisfies the ordinary recursion equations. Uniqueness of recursion makes its values the intended ones. Each construction step therefore preserves both partial recursiveness and agreement with the original total function. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="search-correctness" data-formal="partrec-predicate-search partrec-predicate-search-output partrec-predicate-search-domain partrec-primitive-predicate-search partrec-recursive-predicate-search partrec-witnessed-search-total" data-kind="theorem">
+  <h2>Searching a total predicate finds its least witness</h2>
+  <div class="statement-box">
+    <p>Let \(P(\bar x,n)\) be a <a href="primitive-recursion#primitive-recursive-relations">primitive-recursive relation</a>, with characteristic function \(\chi_P\) equal to \(1\) when \(P\) holds and \(0\) otherwise. Define</p>
+    <div class="math-display">\[s(\bar x)=\mu n\,[\,1\mathbin{\dot-}\chi_P(\bar x,n)=0\,],\]</div>
+    <p>where \(\mathbin{\dot-}\) is truncated subtraction. Then \(s\) is partial recursive, and</p>
+    <div class="math-display">\[s(\bar x)\downarrow=n\quad\Longleftrightarrow\quad P(\bar x,n)\ \land\ \forall i&lt;n\;\neg P(\bar x,i).\]</div>
+    <p>Consequently \(s(\bar x)\downarrow\) if and only if \(\exists n\,P(\bar x,n)\). If every \(\bar x\) has a witness, then \(s\) is total recursive.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>The test \(1\mathbin{\dot-}\chi_P\) is primitive recursive by <a href="primitive-recursion#truncated-subtraction">truncated subtraction</a> and composition, and is therefore total recursive by <a href="#primitive-recursive-inclusion"></a>. Its value is zero exactly at witnesses and one at all other candidates. Sequential minimization makes \(s\) partial recursive, and its defining condition gives the displayed equivalence.</p>
+  <p>If a witness exists, the <a href="natural-numbers-as-sets#natural-order">well-order of the natural numbers</a> gives a least one; all earlier tests return one, so the search returns it. If the search has an output, that output is a witness. Finally, the assumption that every input has some witness is exactly the assertion that the resulting partial function is total. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The same proof works if \(\chi_P\) is total recursive rather than primitive recursive: composing total recursive functions and applying minimization uses only the closure rules already stated.</p>
+</section>
+
+<section id="inverse-doubling" data-formal="partrec-inverse-double partrec-inverse-double-recursive partrec-inverse-double-output partrec-inverse-double-examples" data-kind="lemma">
+  <h2>An inverse that is defined exactly at even inputs</h2>
+  <p>The partial function</p>
+  <div class="math-display">\[d(x)=\mu y\,[\,((2y)\mathbin{\dot-}x)+(x\mathbin{\dot-}(2y))=0\,]\]</div>
+  <p>is partial recursive, and \(d(x)\downarrow=y\) if and only if \(x=2y\). Thus its domain is precisely the even natural numbers, and \(d(0)\downarrow=0\), \(d(6)\downarrow=3\), while \(d(3)\uparrow\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The displayed test uses <a href="primitive-recursion#arithmetic-examples">addition and multiplication</a> and <a href="primitive-recursion#truncated-subtraction">truncated subtraction</a>, so it is primitive recursive and total. The sum of the two truncated differences is zero exactly when both differences are zero, that is, when \(2y=x\). For fixed \(x\), there is at most one such \(y\), by cancellation of multiplication by the positive number two. If one exists, every earlier candidate has a defined positive test value, and minimization returns it. If none exists, the search has no output. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="blocked-search" data-formal="partrec-blocked-example partrec-blocked-example-recursive partrec-blocked-example-output partrec-blocked-example-search partrec-blocked-zero-search" data-kind="question">
+  <h2>Does a later zero guarantee that search succeeds?</h2>
+  <p>Suppose a unary partial recursive function \(q\) has \(q(0)\uparrow\) and \(q(1)\downarrow=0\). Must \(\mu k\,[q(k)=0]\) return \(1\)? Can such a \(q\) actually be constructed from our rules?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No: the test at zero is undefined, so sequential minimization never reaches the test at one. More formally, any proposed output \(n=0\) would require \(q(0)\downarrow=0\). Any proposed output \(n&gt;0\) would require \(q(0)\) to be defined and positive. Both are impossible, so the search is undefined.</p>
+    <p>For an explicit example, let \(P(k,t)\) be the primitive-recursive relation \(k=1\), independent of \(t\), and put</p>
+    <div class="math-display">\[q(k)=\mu t\,[\,1\mathbin{\dot-}\chi_P(k,t)=0\,].\]</div>
+    <p><a href="#search-correctness"></a> gives a partial recursive function with \(q(1)\downarrow=0\) and \(q(k)\uparrow\) for every \(k\ne1\). This supplies the promised example without assuming a separate computation model.</p>
+    <p>A total test has no such blocked candidate. That hypothesis is what allows <a href="#search-correctness"></a> to replace the full sequential condition by the existence of a witness.</p>
+  </div></details>
+</section>
+
+<section id="bounded-versus-unbounded" data-formal="partrec-bounded-search partrec-bounded-search-primitive partrec-bounded-unbounded-agreement partrec-bounded-failure partrec-bound-misses-later partrec-false-search" data-kind="theorem">
+  <h2>A bound changes failure into a defined answer</h2>
+  <p>Let \(P(\bar x,n)\) be primitive recursive and \(b(\bar x)\) a primitive-recursive bound. The <a href="primitive-recursion#bounded-search">bounded search</a></p>
+  <div class="math-display">\[s_b(\bar x)=\min\bigl(\{n&lt;b(\bar x):P(\bar x,n)\}\cup\{b(\bar x)\}\bigr)\]</div>
+  <p>is a total primitive-recursive function. In contrast, let \(s\) be the unbounded search from <a href="#search-correctness"></a>. If a witness below \(b(\bar x)\) exists, then \(s(\bar x)\downarrow=s_b(\bar x)&lt;b(\bar x)\). If no witness below the bound exists, then \(s_b(\bar x)=b(\bar x)\), while \(s(\bar x)\) may be defined later or may be undefined.</p>
+  <p class="proof-label">Proof</p>
+  <p>Bounded minimization is primitive recursive, and composition with the primitive-recursive bound preserves that property. When a witness below the bound exists, the least unrestricted witness lies there too, so the two minima coincide. Otherwise the bounded search returns its sentinel \(b(\bar x)\). There is no corresponding termination conclusion for the unrestricted search. For the relation \(n=c\) and a constant bound \(b\le c\), unrestricted search returns \(c\), while bounded search returns \(b\). For the always-false relation, unrestricted search is undefined and bounded search again returns \(b\). These examples also cover \(b=0\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="least-output-question" data-formal="partrec-least-input-example" data-kind="question">
+  <h2>The least candidate need not give the least value</h2>
+  <p>For the total primitive-recursive test \(f(n)=3\mathbin{\dot-}n\), what is \(\mu n\,[f(n)=0]\)? Does minimization return the smallest value taken by \(f\), or the smallest input with value zero?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>It returns the input \(3\). The values at candidates \(0,1,2\) are respectively \(3,2,1\), and the value at candidate \(3\) is zero. Minimization returns that candidate index, which differs from the test value zero. All later test values are also zero, but they do not change the first successful candidate.</p>
+  </div></details>
+</section>

@@ -1,0 +1,147 @@
+<section id="finite-data" data-formal="seq-finite-sequence" data-kind="definition">
+  <h2>Finite data represented by a number</h2>
+  <p>A finite sequence may have any natural-number entries, including zero. We write \(s=[a_0,\ldots,a_{k-1}]\), its length as \(|s|=k\), the empty sequence as \([]\), and the sequence obtained by putting \(a\) at the front of \(s\) as \(a::s\). Concatenation \(s\mathbin{\smallfrown}t\) preserves the order of both lists. A numerical code should remember the length: \([2]\), \([2,0]\), and \([2,0,0]\) must have different codes.</p>
+  <p>Countability alone supplies too little. We want explicit operations on the numbers: read an entry, determine the length, and join two sequences. These operations will be <a href="primitive-recursion#primitive-recursive-functions">primitive recursive</a>. Every search and iteration below has an explicit finite bound. Our particular code uses pairs rather than primes, so it requires no factorization theorem.</p>
+</section>
+
+<section id="square-pairing" data-formal="seq-square-pairing seq-pairing-examples" data-kind="definition">
+  <h2>Pairing by successive squares</h2>
+  <p>Define a pairing function on natural numbers by</p>
+  <div class="math-display">\[p(a,b)=\begin{cases}b^2+a,&amp;a&lt;b,\\a^2+a+b,&amp;b\le a.\end{cases}\]</div>
+  <p>Pairs with \(\max(a,b)=q\) occupy one square shell. The pairs \((a,q)\), \(a&lt;q\), receive the numbers from \(q^2\) to \(q^2+q-1\). The remaining pairs \((q,b)\), \(b\le q\), receive the numbers from \(q^2+q\) to \((q+1)^2-1\). These adjacent intervals neither overlap nor leave a gap. For \(q=0\), the first interval is empty and \(p(0,0)=0\).</p>
+  <p>For example, \(p(0,1)=1\), \(p(1,0)=2\), \(p(1,1)=3\), \(p(0,2)=4\), and \(p(2,1)=7\). The order of the coordinates matters.</p>
+</section>
+
+<section id="unpairing" data-formal="seq-unpairing seq-unpair-pair seq-pair-unpair" data-kind="theorem">
+  <h2>Decoding a pair</h2>
+  <p>Given \(n\), let \(q\) be the largest natural number with \(q^2\le n\), and put \(r=n-q^2\). Then \(0\le r\le 2q\). Define</p>
+  <div class="math-display">\[(u(n),v(n))=\begin{cases}(r,q),&amp;r&lt;q,\\(q,r-q),&amp;q\le r.\end{cases}\]</div>
+  <div class="statement-box"><p>The pairing function is a bijection from \(\mathbb N^2\) to \(\mathbb N\), with inverse \((u,v)\):</p><div class="math-display">\[u(p(a,b))=a,\qquad v(p(a,b))=b,\qquad p(u(n),v(n))=n.\]</div></div>
+  <p class="proof-label">Proof</p>
+  <p>The largest \(q\) exists: \(0\) is a candidate, and any candidate satisfies \(q\le n\): this is immediate at \(q=0\), and for \(q\ge1\) we have \(q\le q^2\le n\). Thus one may search \(0,\ldots,n\). Maximality gives \(q^2\le n&lt;(q+1)^2\), whence \(r&lt;2q+1\). If \(r&lt;q\), the first branch of pairing sends \((r,q)\) to \(q^2+r=n\). If \(q\le r\), then \(r-q\le q\), and the second branch sends \((q,r-q)\) to the same number. Conversely, the two shell intervals in <a href="#square-pairing"></a> determine the shell and its branch uniquely, so the decoded coordinates of \(p(a,b)\) are \(a,b\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="pairing-bounds" data-formal="seq-pair-lower-bound seq-pair-upper-bound seq-unpair-bound" data-kind="lemma">
+  <h2>The decoded coordinates have numerical bounds</h2>
+  <p>For all natural numbers \(a,b,n\),</p>
+  <div class="math-display">\[a+b\le p(a,b)&lt;(\max(a,b)+1)^2,\qquad u(n)+v(n)\le n.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>The upper bound is the upper endpoint of the shell. If \(a&lt;b\), then \(b\ge1\), so \(b^2\ge b\) and \(p(a,b)=b^2+a\ge a+b\). If \(b\le a\), the formula \(a^2+a+b\) gives the lower bound directly. Apply that lower bound to \((u(n),v(n))\) and use \(p(u(n),v(n))=n\). In particular, both decoded coordinates are at most \(n\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="primitive-recursive-pairing" data-formal="seq-pair-primitive-recursive seq-unpair-primitive-recursive seq-sqrt-primitive-recursive seq-sqrt-count" data-kind="theorem">
+  <h2>Pairing and unpairing use bounded arithmetic</h2>
+  <p>The functions \(p,u,v\) are primitive recursive.</p>
+  <p class="proof-label">Proof</p>
+  <p>Pairing uses arithmetic and a <a href="primitive-recursion#definitions-by-cases">primitive-recursive choice of cases</a>. To compute \(q=\lfloor\sqrt n\rfloor\), count the positive squares at most \(n\):</p>
+  <div class="math-display">\[q(n)=\sum_{j&lt;n}\chi\bigl((j+1)^2\le n\bigr).\]</div>
+  <p>Here \(\chi\) is \(1\) when its condition holds and \(0\) otherwise. Exactly \(j=0,\ldots,q-1\) contribute. This includes \(n=0\), when the sum is empty. By <a href="primitive-recursion#bounded-sums-products">bounded summation</a>, \(q\) is primitive recursive. The displayed decoding formulas then use only truncated subtraction and cases. No unbounded search is hidden in taking the square root. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="list-code" data-formal="seq-list-code seq-code-cons seq-code-bijective seq-head-lt-code seq-tail-lt-code seq-coding-examples" data-kind="definition">
+  <h2>A code that records every entry and the length</h2>
+  <p>Define the code \(C\) of a sequence recursively:</p>
+  <div class="math-display">\[C([])=0,\qquad C(a::s)=1+p(a,C(s)).\]</div>
+  <p>Thus \(C([0])=1\), \(C([2])=7\), \(C([2,0])=8\), and \(C([2,0,0])=9\). The extra \(1\) distinguishes every nonempty sequence from the empty one. Injectivity of pairing then distinguishes the first entries and the remaining sequences; induction proves that equal codes represent equal sequences.</p>
+  <p>More generally, a code of a nonempty sequence exceeds its first entry and its tail code:</p>
+  <div class="math-display">\[a&lt;C(a::s),\qquad C(s)&lt;C(a::s).\]</div>
+  <p>Both inequalities follow from <a href="#pairing-bounds"></a>. This strict decrease is what permits decoding a whole sequence.</p>
+</section>
+
+<section id="whole-sequence-decoding" data-formal="seq-decode-zero seq-decode-succ seq-decode-code seq-code-decode seq-code-bijective" data-kind="theorem">
+  <h2>Every natural number decodes to exactly one sequence</h2>
+  <p>Define \(D(0)=[]\). For \(c&gt;0\), decode \(c-1\) as a pair \((a,t)\) and set \(D(c)=a::D(t)\). This recursion is well founded because \(t\le c-1&lt;c\).</p>
+  <div class="statement-box"><p>Encoding and decoding are inverse in both directions:</p><div class="math-display">\[D(C(s))=s,\qquad C(D(c))=c.\]</div><p>Consequently, \(C\) is a bijection between finite sequences of natural numbers and natural numbers. Every number is a valid code.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>For the first identity, induct on the length of \(s\). At a nonempty sequence, unpairing \(p(a,C(s))\) recovers exactly \(a,C(s)\), and the induction hypothesis decodes the tail. For the other direction, use strong induction on \(c\). The case \(0\) is immediate. If \((a,t)=(u(c-1),v(c-1))\), then \(t&lt;c\), and</p>
+  <div class="math-display">\[C(D(c))=C(a::D(t))=1+p(a,C(D(t)))=1+p(a,t)=c.\]</div>
+  <p>The same inverse laws prove uniqueness. There is no separate class of malformed list codes in this convention. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="head-tail-and-iteration" data-formal="seq-head seq-tail seq-tails seq-head-code seq-tail-code seq-head-primitive-recursive seq-tail-primitive-recursive seq-tails-primitive-recursive" data-kind="definition">
+  <h2>Reading a code one entry at a time</h2>
+  <p>Put \(H(0)=T(0)=0\), and for \(c&gt;0\) put \(H(c)=u(c-1)\) and \(T(c)=v(c-1)\). These are the head and tail operations, with a default head of zero for the empty sequence. Define their repeated tail operation by</p>
+  <div class="math-display">\[T^0(c)=c,\qquad T^{i+1}(c)=T(T^i(c)).\]</div>
+  <p>The superscript denotes iteration, not exponentiation. Because \(T(0)=0\), repeated tails remain zero after the list has ended. Since \(H,T\) are primitive recursive, the function \((c,i)\mapsto T^i(c)\) is primitive recursive by <a href="primitive-recursion#primitive-recursion">primitive recursion with a parameter</a>.</p>
+</section>
+
+<section id="decoding-bounds" data-formal="seq-length-bound seq-entry-bound seq-tail-strict-decrease seq-tails-stop" data-kind="lemma">
+  <h2>A code bounds its length and every decoding loop</h2>
+  <p>For every list \(s\), its length is at most \(C(s)\), and each of its entries is strictly less than \(C(s)\). In particular, \(T^c(c)=0\).</p>
+  <p class="proof-label">Proof</p>
+  <p>The length estimate follows by list induction. It is true for the empty list, and</p>
+  <div class="math-display">\[|a::s|=1+|s|\le1+C(s)\le1+p(a,C(s))=C(a::s).\]</div>
+  <p>The first entry is bounded by <a href="#list-code"></a>. An entry in the tail is smaller than the tail code by induction, which is itself smaller than the full code. To handle the empty tail, there simply are no tail entries to bound. Each tail operation removes one entry until the sequence is empty; since \(|D(c)|\le c\), at most \(c\) removals are needed. Further removals preserve zero. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="length-and-projection" data-formal="seq-length seq-entry seq-length-sum seq-entry-head seq-entry-correct seq-entry-out-of-range seq-length-primitive-recursive seq-entry-primitive-recursive" data-kind="theorem">
+  <h2>Length and indexed access are primitive recursive</h2>
+  <p>Let \(\operatorname{sg}(x)\) be \(0\) at zero and \(1\) at positive inputs. It is primitive recursive: if \(z\) is the earlier zero test, then \(\operatorname{sg}(x)=1\mathbin{\dot-}z(x)\). Define</p>
+  <div class="math-display">\[L(c)=\sum_{j&lt;c}\operatorname{sg}(T^j(c)),\qquad E(c,i)=H(T^i(c)).\]</div>
+  <p>Then \(L(C(s))=|s|\). If \(i&lt;|s|\), \(E(C(s),i)\) is the \(i\)-th entry of \(s\), counting from zero; if \(i\ge|s|\), it is \(0\). Both \(L\) and \(E\) are primitive recursive.</p>
+  <p class="proof-label">Proof</p>
+  <p>For \(j&lt;|s|\), the \(j\)-fold tail is a nonempty list and its code is positive. For \(j\ge|s|\), its code is zero. The bound \(|s|\le C(s)\) therefore makes the sum count exactly the entries. The head of the \(i\)-fold tail gives the indexed entry, including the default after the end. Bounded summation and composition prove primitive recursiveness. Notice that an entry equal to zero is distinguished from an absent entry by its index and \(L(c)\), not by \(E(c,i)\) alone. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="bounded-list-folds" data-formal="seq-fold seq-fold-primitive-recursive seq-fold-parameters seq-fold-sum seq-fold-product" data-kind="theorem">
+  <h2>Processing a whole coded list</h2>
+  <p>Let \(h(z,a)\) be primitive recursive. Starting with an accumulator \(z\), process the entries of \(D(c)\) from left to right by replacing the accumulator by \(h(z,a)\) at entry \(a\). The final accumulator, as a function of \((c,z)\), is primitive recursive.</p>
+  <p class="proof-label">Proof</p>
+  <p>Encode a state by the pair of the unprocessed tail code \(t\) and accumulator \(z\). If \(t=0\), leave the state fixed; otherwise make the transition</p>
+  <div class="math-display">\[(t,z)\longmapsto(T(t),h(z,H(t))).\]</div>
+  <p>This is a primitive-recursive transition on numerical pair codes. Iterate it exactly \(c\) times from \((c,z)\). An induction on the number of steps shows that each nonempty step consumes the next entry and updates the accumulator once. Empty steps leave it unchanged. The decoding bound ensures that all entries have been processed by step \(c\). Projection of the final pair gives the asserted function. Parameters of \(h\) may be carried along unchanged through this same recursion. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For example, \(h(z,a)=z+a\) with initial accumulator \(0\) computes the sum of the entries; \(h(z,a)=za\) with initial accumulator \(1\) computes their product. Thus the empty sequence has sum \(0\) and product \(1\).</p>
+</section>
+
+<section id="concatenation" data-formal="seq-constructor-primitive-recursive seq-reverse-primitive-recursive seq-append-primitive-recursive seq-append-correct" data-kind="theorem">
+  <h2>Constructing, reversing, and concatenating sequences</h2>
+  <p>The numerical constructor \(K(a,c)=1+p(a,c)\), reversal \(V(c)=C(\operatorname{rev}(D(c)))\), and concatenation</p>
+  <div class="math-display">\[A(c,d)=C(D(c)\mathbin{\smallfrown}D(d))\]</div>
+  <p>are primitive recursive. They satisfy \(A(C(s),C(t))=C(s\mathbin{\smallfrown}t)\), including either empty-list case.</p>
+  <p class="proof-label">Proof</p>
+  <p>The constructor is already primitive recursive. In <a href="#bounded-list-folds"></a>, use \(h(z,a)=K(a,z)\). Starting at \(0\), the successive accumulators code \([]\), \([a_0]\), \([a_1,a_0]\), and so on. The result is \(V(c)\). Now process the reversed list \(D(V(c))\) with the same update, but start the accumulator at \(d\). The entries are prepended in reverse order, so the final list is \(D(c)\mathbin{\smallfrown}D(d)\). Formally, after processing a prefix \(r\), the accumulator represents \(\operatorname{rev}(r)\mathbin{\smallfrown}D(d)\); induction on that prefix proves the invariant. Apply primitive-recursive fold closure and composition. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="encoding-bound" data-formal="seq-encoding-bound seq-bound-primitive-recursive" data-kind="theorem">
+  <h2>A bound in terms of the length and largest entry</h2>
+  <p>Define \(B(m,0)=0\) and \(B(m,n+1)=(m+B(m,n)+1)^2\). This is a primitive-recursive function. If \(|s|\le n\) and every entry of \(s\) is at most \(m\), then</p>
+  <div class="math-display">\[C(s)\le B(m,n).\]</div>
+  <p class="proof-label">Proof</p>
+  <p>First take \(n=|s|\) and induct on the list. The empty case is \(0\le0\). For \(a::s\), the shell bound and induction hypothesis give</p>
+  <div class="math-display">\[C(a::s)=1+p(a,C(s))\le(\max(a,C(s))+1)^2\le(m+B(m,|s|)+1)^2.\]</div>
+  <p>This is \(B(m,|a::s|)\). Also \(B(m,n)\le B(m,n+1)\): the square of a natural number is at least that number, and \(m+B(m,n)+1\ge B(m,n)\). Thus the bound increases with \(n\), proving the assertion for \(|s|\le n\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Consequently, a bounded search for such a list may search \(c&lt;B(m,n)+1\). The final \(+1\) matters: \(C([0])=B(0,1)=1\). With a primitive-recursive condition on entries, <a href="primitive-recursion#bounded-quantifiers">bounded quantifiers</a> check the candidate length and entries. This is a numerical search bound, not an assertion that the search is efficient.</p>
+</section>
+
+<section id="simultaneous-recursion" data-formal="seq-simultaneous-recursion seq-simultaneous-parameters seq-fibonacci-state seq-fibonacci-primitive-recursive" data-kind="theorem">
+  <h2>Several recursive values can be updated together</h2>
+  <p>Suppose two values start at \(x_0=a\), \(y_0=b\), and are updated by primitive-recursive functions \(F,G\):</p>
+  <div class="math-display">\[x_{n+1}=F(n,x_n,y_n),\qquad y_{n+1}=G(n,x_n,y_n).\]</div>
+  <p>Then \(n\mapsto x_n\) and \(n\mapsto y_n\) are primitive recursive; primitive-recursive initial values and further parameters are allowed.</p>
+  <p class="proof-label">Proof</p>
+  <p>Use one numerical state \(z_n=p(x_n,y_n)\), with initial state \(p(a,b)\). Its update is</p>
+  <div class="math-display">\[z_{n+1}=p(F(n,u(z_n),v(z_n)),G(n,u(z_n),v(z_n))).\]</div>
+  <p>This is ordinary primitive recursion. Induction and the inverse laws identify its projections with the required two sequences. A fixed finite number of values is handled by nested pairs. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For instance, the update \((x,y)\mapsto(y,x+y)\) from \((0,1)\) gives consecutive Fibonacci numbers. Its first projection is therefore primitive recursive. No recursion on two unknown functions has been added to the original definition.</p>
+</section>
+
+<section id="history-recursion" data-formal="seq-history-code seq-history-identity seq-history-equation seq-history-unique seq-history-code-primitive-recursive seq-history-value-primitive-recursive seq-history-code-parameters seq-history-value-parameters" data-kind="theorem">
+  <h2>A recursive step may inspect all earlier values</h2>
+  <p>Let \(h(n,c)\) be primitive recursive. There is a unique sequence satisfying</p>
+  <div class="math-display">\[a_n=h(n,C([a_0,\ldots,a_{n-1}])).\]</div>
+  <p>The empty history is used at \(n=0\). Both \(n\mapsto a_n\) and the code of its history are primitive recursive.</p>
+  <p class="proof-label">Proof</p>
+  <p>Define the history code by ordinary primitive recursion:</p>
+  <div class="math-display">\[c_0=0,\qquad c_{n+1}=A(c_n,K(h(n,c_n),0)).\]</div>
+  <p>The second argument of \(A\) codes the singleton list \([h(n,c_n)]\). Concatenation is primitive recursive, so \(c_n\) is primitive recursive. Inductively, \(c_n=C([a_0,\ldots,a_{n-1}])\) for \(a_n=h(n,c_n)\), which proves existence and primitive recursiveness. If a second sequence obeys the equations, induction identifies its first \(n\) values with these values and then identifies the \(n\)-th value; this proves uniqueness. Additional parameters can be kept throughout. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This is called course-of-values recursion. It does not say that an arbitrary rule on finite histories is primitive recursive: the rule \(h\), acting on the numerical history code, must itself be primitive recursive.</p>
+</section>
+
+<section id="coding-questions" data-formal="seq-coding-examples seq-entry-out-of-range seq-unmarked-collision seq-tail-examples" data-kind="question">
+  <h2>Can an out-of-range zero be confused with an actual zero?</h2>
+  <p>Decode the number \(8\), and compare \(E(8,1)\) with \(E(8,2)\). Does the default zero make the code ambiguous? What changes if the \(+1\) is omitted from the constructor?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Since \((u(7),v(7))=(2,1)\) and \((u(0),v(0))=(0,0)\), we get \(D(8)=[2,0]\), with tail codes \(8,1,0\). Thus \(L(8)=2\), and both \(E(8,1)\) and \(E(8,2)\) equal zero. The first is an actual entry; the second is the default. The length distinguishes them.</p>
+    <p>Without the constructor's \(+1\), both the empty list and \([0]\) would have code zero, since \(p(0,0)=0\). Unique decoding would fail. This explains why an end marker is mathematical data rather than dispensable notation.</p>
+  </div></details>
+</section>

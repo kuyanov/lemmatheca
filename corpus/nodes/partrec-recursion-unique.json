@@ -1,0 +1,12 @@
+{
+  "id": "partrec-recursion-unique",
+  "description": "For fixed partial initial and step functions, exactly one partial function satisfies their strict primitive-recursion equations.",
+  "module": "Lemmatheca.MathematicalLogic.PartialRecursiveFunctions",
+  "declaration": "Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.recursion_unique",
+  "dependencies": [
+    "partrec-recursion-equations"
+  ],
+  "verified": true,
+  "declaration_line": 216,
+  "signature": "Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.recursion_unique {k : ℕ}\n  (g : Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.PFunction k)\n  (h : Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.PFunction (k + 2))\n  (r : Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.PFunction (k + 1))\n  (hz :\n    ∀ (x : Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.Args k),\n      r (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc x 0) = g x)\n  (hs :\n    ∀ (x : Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.Args k) (n : ℕ),\n      r (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc x (n + 1)) =\n        (r (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc x n)).bind fun a =>\n          h\n            (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc\n              (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc x n) a)) :\n  r = Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.partialRec g h"
+}

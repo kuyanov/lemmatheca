@@ -1,0 +1,146 @@
+<section id="primitive-recursion" data-formal="prim-recursion prim-last-coordinate-recursion prim-recursion-equations" data-kind="definition">
+  <h2>A starting value and a rule for the next value</h2>
+  <p>Repeated addition computes multiplication; repeated multiplication computes powers. Both follow the same pattern. Fix a natural number \(k\ge0\), a function \(g:\mathbb N^k\to\mathbb N\), and a function \(h:\mathbb N^{k+2}\to\mathbb N\). A function \(F:\mathbb N^{k+1}\to\mathbb N\) is defined from \(g,h\) by <strong>primitive recursion</strong> when</p>
+  <div class="math-display">\[F(\bar x,0)=g(\bar x),\qquad F(\bar x,n+1)=h(\bar x,n,F(\bar x,n)).\]</div>
+  <p>The tuple \(\bar x=(x_0,\ldots,x_{k-1})\) remains fixed throughout the recursion. The step may inspect the parameters, the current index, and the immediately preceding value. The recursion variable is the last argument. When \(k=0\), there are no parameters: \(\mathbb N^0\) has one empty tuple, so \(g\) simply specifies a natural-number constant.</p>
+  <p>Here and throughout this entry, \(\mathbb N=\{0,1,2,\ldots\}\). We reason about its ordinary arithmetic in the surrounding mathematics. We are not claiming that a particular first-order arithmetic theory proves every assertion made here.</p>
+</section>
+
+<section id="recursion-existence" data-formal="prim-recursion-unique" data-kind="lemma">
+  <h2>The recursion determines exactly one total function</h2>
+  <p>For every pair of total functions \(g,h\) of the indicated arities, there exists exactly one total function \(F\) satisfying <a href="#primitive-recursion"></a>.</p>
+  <p class="proof-label">Proof</p>
+  <p>Fix \(\bar x\). Apply <a href="natural-numbers-as-sets#recursion-on-omega">natural-number recursion</a> with starting value \(g(\bar x)\) and index-dependent step \(u\mapsto h(\bar x,n,u)\). This supplies \(F(\bar x,n)\) for every \(n\). Doing this for every parameter tuple defines the required function. For uniqueness, if \(F,G\) satisfy the equations, their values agree at zero. Agreement at \(n\) gives agreement at \(n+1\) by the common step function. <a href="natural-numbers-as-sets#induction-on-omega">Induction</a> gives agreement for all \(n\) and every \(\bar x\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Totality of the starting and step functions matters: each step must produce a natural number. The recursion prescribes how many steps to perform, rather than asking us to continue until a possibly unattainable condition is met.</p>
+</section>
+
+<section id="primitive-recursive-functions" data-formal="prim-class prim-constants prim-successor prim-projections prim-composition prim-last-recursion-closure prim-arity-equivalence prim-recursion-closure" data-kind="definition">
+  <h2>The functions built from the initial functions</h2>
+  <p>The <strong>initial functions</strong> are the constant-zero functions \(Z_k:\mathbb N^k\to\mathbb N\), for every \(k\ge0\); successor \(S(n)=n+1\); and the projections</p>
+  <div class="math-display">\[P_i^k(x_0,\ldots,x_{k-1})=x_i\qquad(i&lt;k).\]</div>
+  <p>There are no zero-argument projections. Given \(f:\mathbb N^m\to\mathbb N\) and \(g_0,\ldots,g_{m-1}:\mathbb N^k\to\mathbb N\), their <strong>composition</strong> is</p>
+  <div class="math-display">\[\bar x\longmapsto f(g_0(\bar x),\ldots,g_{m-1}(\bar x)).\]</div>
+  <p>The <strong>primitive-recursive functions</strong> are the smallest collection of numerical functions of finite arities containing the initial functions and closed under composition and primitive recursion. Equivalently, a function belongs to this collection exactly when it has a finite construction from these rules. Two constructions may give the same function: membership concerns the resulting values, not a chosen expression for them.</p>
+  <p>Every such function is total. This follows by induction on a construction: the initial functions are total; a composition of total functions is total; and <a href="#recursion-existence"></a> supplies totality at a recursion step. Every natural-number constant is primitive recursive, by applying successor finitely often to zero.</p>
+  <p>Projections allow inputs to be reordered, repeated or ignored. For example, if \(f\) has three inputs, then \(f(y,x,y)\) is obtained by composing \(f\) with \(P_1^2,P_0^2,P_1^2\). Thus a change in argument order does not change whether a function is primitive recursive. If \(m=0\), the composition has no inner functions and is simply the chosen constant on \(\mathbb N^k\).</p>
+</section>
+
+<section id="arithmetic-examples" data-formal="prim-addition prim-multiplication prim-powers prim-factorial prim-power-zero prim-power-successor prim-factorial-zero factorial-recursion addition-zero-right natural-add-successor natural-multiply-zero natural-multiply-successor prim-power-trace" data-kind="lemma">
+  <h2>Addition, multiplication, powers and factorials have finite constructions</h2>
+  <p>Addition, multiplication, exponentiation and factorial are primitive recursive. Their defining equations are</p>
+  <div class="math-display">\[x+0=x,\qquad x+(n+1)=S(x+n),\]</div>
+  <div class="math-display">\[x\cdot0=0,\qquad x\cdot(n+1)=x\cdot n+x,\]</div>
+  <div class="math-display">\[x^0=1,\qquad x^{n+1}=x^n\cdot x,\qquad 0!=1,\qquad(n+1)!=(n+1)n!.\]</div>
+  <p>In particular \(0^0=1\), as specified by the recursion.</p>
+  <p class="proof-label">Proof</p>
+  <p>For addition, the starting function is \(P_0^1(x)=x\), and the step is \(h(x,n,u)=S(u)\), a composition of successor and a projection. These are exactly the <a href="natural-numbers-as-sets#addition-and-multiplication">usual addition equations</a>, so uniqueness identifies the constructed function with addition.</p>
+  <p>For multiplication use the zero starting function and \(h(x,n,u)=u+x\), already available by composition with addition. For exponentiation use the constant-one starting function and \(h(x,n,u)=u\cdot x\). For factorial there are no parameters: the initial value is \(1\), and the step is \(h(n,u)=(n+1)u\). Each step uses only functions constructed earlier. The recursion equations and uniqueness identify all four functions. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For instance, computing \(3^4\) successively produces \(1,3,9,27,81\). A recursive definition may be inefficient and still establish primitive recursiveness; no efficiency bound is part of the definition.</p>
+</section>
+
+<section id="truncated-subtraction" data-formal="prim-predecessor prim-truncated-subtraction prim-distance prim-distance-recursive prim-distance-zero prim-subtraction-zero" data-kind="lemma">
+  <h2>Subtraction stays within the natural numbers</h2>
+  <p>The predecessor function, truncated subtraction and absolute difference are primitive recursive. Define them by</p>
+  <div class="math-display">\[\operatorname{pred}(0)=0,\qquad\operatorname{pred}(n+1)=n,\qquad x\mathbin{\dot-}0=x,\qquad x\mathbin{\dot-}(n+1)=\operatorname{pred}(x\mathbin{\dot-}n),\]</div>
+  <div class="math-display">\[\delta(x,y)=(x\mathbin{\dot-}y)+(y\mathbin{\dot-}x).\]</div>
+  <p>Here \(x\mathbin{\dot-}y=\max(x-y,0)\), where the difference inside the maximum may be read in the integers, and \(\delta(x,y)\) is the ordinary nonnegative distance between \(x,y\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Predecessor uses zero as its initial value and the projection \(h(n,u)=n\) as its step. Truncated subtraction starts at \(x\) and applies predecessor to its previous value. Its stated value follows by induction on the second argument: while the value is positive it decreases by one, and after reaching zero it stays zero. Finally \(\delta\) is a composition of truncated subtraction and addition. If \(x\le y\), its first summand is zero and its second is \(y-x\); the opposite order gives \(x-y\). In particular \(\delta(x,y)=0\) exactly when \(x=y\), and \(x\mathbin{\dot-}y=0\) exactly when \(x\le y\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="bounded-sums-products" data-formal="prim-bounded-sum prim-bounded-product prim-sum-closure prim-product-closure prim-sum-equations prim-product-equations prim-composition" data-kind="theorem">
+  <h2>Finite sums and products preserve primitive recursiveness</h2>
+  <p>If \(f(\bar x,i)\) is primitive recursive, so are</p>
+  <div class="math-display">\[A(\bar x,b)=\sum_{i&lt;b}f(\bar x,i),\qquad B(\bar x,b)=\prod_{i&lt;b}f(\bar x,i).\]</div>
+  <p>The empty sum is \(0\); the empty product is \(1\). A primitive-recursive bound \(b=t(\bar x)\) may replace the separate argument \(b\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Use the recursions</p>
+  <div class="math-display">\[A(\bar x,0)=0,\quad A(\bar x,b+1)=A(\bar x,b)+f(\bar x,b),\]</div>
+  <div class="math-display">\[B(\bar x,0)=1,\quad B(\bar x,b+1)=B(\bar x,b)f(\bar x,b).\]</div>
+  <p>The starting functions are constants, and the steps are compositions of already primitive-recursive functions. Induction verifies the finite-sum and finite-product formulas. Substituting \(t(\bar x)\) into the last input is composition. This proves the variable-bound claim as well. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="primitive-recursive-relations" data-formal="prim-characteristic prim-characteristic-spec prim-relation prim-relation-equivalence" data-kind="definition">
+  <h2>Relations are represented by zero-one tests</h2>
+  <p>The <strong>characteristic function</strong> of a relation \(R\subseteq\mathbb N^k\) is</p>
+  <div class="math-display">\[\chi_R(\bar x)=\begin{cases}1&amp;\text{if }R(\bar x),\\0&amp;\text{otherwise.}\end{cases}\]</div>
+  <p>Call \(R\) <strong>primitive recursive</strong> when \(\chi_R\) is primitive recursive. We consistently use \(1\) for true and \(0\) for false. A general numerical function need not have only these two values; a characteristic function does.</p>
+</section>
+
+<section id="boolean-closure" data-formal="prim-zero-test prim-zero-test-recursive prim-zero-test-equations prim-equality prim-less-equal prim-less-than prim-negation-closure prim-conjunction-closure prim-disjunction-closure prim-implication-closure prim-boolean-formulas prim-relation-substitution prim-function-graph" data-kind="lemma">
+  <h2>Equality, order and Boolean combinations are primitive recursive</h2>
+  <p>The relations \(x=0\), \(x=y\), \(x\le y\) and \(x&lt;y\) are primitive recursive. Primitive-recursive relations are closed under negation, conjunction, disjunction and implication, and under substitution of primitive-recursive functions for their inputs.</p>
+  <p class="proof-label">Proof</p>
+  <p>The zero test \(z\) is primitive recursive by</p>
+  <div class="math-display">\[z(0)=1,\qquad z(n+1)=0.\]</div>
+  <p>Using <a href="#truncated-subtraction"></a>, the equality test is \(z(\delta(x,y))\), the test for \(x\le y\) is \(z(x\mathbin{\dot-}y)\), and the test for \(x&lt;y\) is the test for \(x+1\le y\). For zero-one inputs \(a,b\), the functions</p>
+  <div class="math-display">\[\neg a:\ 1\mathbin{\dot-}a,\qquad a\wedge b:\ ab,\qquad a\vee b:\ 1\mathbin{\dot-}\bigl((1\mathbin{\dot-}a)(1\mathbin{\dot-}b)\bigr)\]</div>
+  <p>have exactly the indicated truth tables. Composition therefore gives the characteristic functions of the Boolean combinations. Implication is \(\neg R\vee Q\). Substitution is directly the composition rule. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>For example, the graph of a primitive-recursive function \(f\) is a primitive-recursive relation: test \(f(\bar x)=y\) by composing the equality test with \(f\) and a projection.</p>
+</section>
+
+<section id="definitions-by-cases" data-formal="prim-cases-closure prim-cases-formula" data-kind="lemma">
+  <h2>A primitive-recursive test can choose between two values</h2>
+  <p>If \(R\) is a primitive-recursive relation and \(f,g\) are primitive-recursive functions of the same inputs, then the function equal to \(f(\bar x)\) when \(R(\bar x)\) holds and to \(g(\bar x)\) otherwise is primitive recursive.</p>
+  <p class="proof-label">Proof</p>
+  <p>The required function is</p>
+  <div class="math-display">\[\chi_R(\bar x)f(\bar x)+(1\mathbin{\dot-}\chi_R(\bar x))g(\bar x).\]</div>
+  <p>When the test is \(1\), the second coefficient is zero; when it is \(0\), the first coefficient is zero and the second is one. The displayed expression is a composition of primitive-recursive functions. Repeating this construction gives finitely many cases, with earlier cases taking precedence if their conditions overlap. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="bounded-quantifiers" data-formal="prim-bounded-forall prim-bounded-exists prim-bounded-quantifier-tests prim-composition" data-kind="theorem">
+  <h2>Quantifiers over a specified finite range preserve the class</h2>
+  <div class="statement-box">
+    <p>If \(R(\bar x,i)\) is primitive recursive, so are the relations</p>
+    <div class="math-display">\[\forall i&lt;b\ R(\bar x,i),\qquad\exists i&lt;b\ R(\bar x,i).\]</div>
+    <p>The bound may itself be a primitive-recursive function of the other inputs. At \(b=0\), the universal relation is true and the existential relation is false.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>A finite product of zero-one numbers is \(1\) exactly when every factor is \(1\). A finite sum of them is nonzero exactly when at least one summand is \(1\). Consequently the two characteristic functions are</p>
+  <div class="math-display">\[\chi_{\forall i&lt;b\,R}(\bar x,b)=\prod_{i&lt;b}\chi_R(\bar x,i),\qquad\chi_{\exists i&lt;b\,R}(\bar x,b)=1\mathbin{\dot-}z\!\left(\sum_{i&lt;b}\chi_R(\bar x,i)\right).\]</div>
+  <p>They are primitive recursive by <a href="#bounded-sums-products"></a> and <a href="#boolean-closure"></a>. The empty product \(1\) and empty sum \(0\) give the asserted values at zero. A variable bound is substituted by composition. A bound \(i\le b\) is the same as \(i&lt;b+1\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This result applies to repeated bounded quantifiers as well: eliminate them from the inside out. It does not cover a quantifier over all natural numbers.</p>
+</section>
+
+<section id="bounded-search" data-formal="prim-bounded-search prim-bounded-search-closure prim-bounded-search-spec prim-bounded-search-output prim-composition" data-kind="theorem">
+  <h2>Bounded search returns the first witness or the bound</h2>
+  <div class="statement-box">
+    <p>Let \(R(\bar x,i)\) be primitive recursive. The function</p>
+    <div class="math-display">\[m_R(\bar x,b)=\begin{cases}\min\{i&lt;b:R(\bar x,i)\}&amp;\text{if a witness exists},\\b&amp;\text{if no witness exists}\end{cases}\]</div>
+    <p>is primitive recursive. It always lies between \(0\) and \(b\). A value smaller than \(b\) is the least witness; a value equal to \(b\) means there was no witness in the specified range.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Maintain the first witness found so far, using the current bound itself when none has been found. Define</p>
+  <div class="math-display">\[L(\bar x,0)=0,\qquad L(\bar x,n+1)=\begin{cases}L(\bar x,n)&amp;\text{if }L(\bar x,n)&lt;n,\\n&amp;\text{if }L(\bar x,n)\ge n\text{ and }R(\bar x,n),\\n+1&amp;\text{otherwise.}\end{cases}\]</div>
+  <p>This is primitive recursion: replace the old value \(L(\bar x,n)\) in the cases by a separate input \(u\). The resulting step function is primitive recursive by the order tests and <a href="#definitions-by-cases"></a>.</p>
+  <p>Induct on \(n\). Initially there is no index below zero, so the value \(0\) is the required sentinel. Suppose the claim holds at \(n\). If a witness already exists below \(n\), the previous value is its least index, is smaller than \(n\), and remains least below \(n+1\). If no witness exists below \(n\), the previous value is \(n\). The new index \(n\) is then the least witness if it satisfies \(R\); otherwise there are still no witnesses, and the correct sentinel is \(n+1\). Thus \(L=m_R\), with the stated specification. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>We call this operation <strong>bounded minimization</strong>. A primitive-recursive bound \(b=t(\bar x)\) is again allowed by composition. The sentinel convention keeps an unsuccessful search distinct from a successful search whose witness is \(0\).</p>
+</section>
+
+<section id="division-and-remainders" data-formal="prim-quotient prim-remainder prim-quotient-recursive prim-remainder-recursive prim-quotient-division prim-remainder-modulo prim-division-spec prim-division-unique prim-division-zero" data-kind="theorem">
+  <h2>Division with remainder is a bounded computation</h2>
+  <p>There are primitive-recursive functions \(q(x,d),r(x,d)\) such that, for every \(d&gt;0\),</p>
+  <div class="math-display">\[x=dq(x,d)+r(x,d),\qquad 0\le r(x,d)&lt;d.\]</div>
+  <p>These conditions determine \(q,r\) uniquely when \(d&gt;0\). For total functions on all inputs, set \(q(x,0)=0\) and \(r(x,0)=x\); the strict remainder bound is claimed only for positive divisors.</p>
+  <p class="proof-label">Construction and proof</p>
+  <p>For \(d&gt;0\), search for the first \(j&lt;x+1\) such that \(x&lt;(j+1)d\), and set \(q(x,d)\) equal to that index. The test and the bound are primitive recursive. There is a witness: \(j=x\) works because \(d\ge1\) gives \((x+1)d\ge x+1&gt;x\). Thus <a href="#bounded-search"></a> returns a genuine witness \(q\le x\), satisfying \(x&lt;(q+1)d\).</p>
+  <p>If \(q=0\), then \(qd=0\le x\). If \(q&gt;0\), its predecessor is an earlier search index, so minimality says the test fails there: \(x\not&lt;qd\), hence \(qd\le x\). Define \(r(x,d)=x\mathbin{\dot-}dq(x,d)\). Since \(dq\le x\), <a href="natural-numbers-as-sets#order-and-addition">natural-number subtraction as an additive difference</a> gives \(x=dq+r\). The inequality \(x&lt;dq+d\) gives \(r&lt;d\) by cancellation. Composition and <a href="#definitions-by-cases"></a> include the specified zero-divisor case.</p>
+  <p>For uniqueness, suppose \(dq+r=dq'+r'\) with both remainders smaller than \(d\). If \(q&lt;q'\), then \(dq+r&lt;d(q+1)\le dq'\le dq'+r'\), a contradiction. The opposite inequality is equally impossible. Hence \(q=q'\), and additive cancellation gives \(r=r'\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="bounded-square-question" data-formal="prim-square-root-search prim-square-root-recursive prim-square-test-recursive prim-square-root-spec prim-square-root-zero" data-kind="question">
+  <h2>Recognizing squares and finding their roots</h2>
+  <p>Give a primitive-recursive test for whether a natural number \(x\) is a square. Define a primitive-recursive function which returns its nonnegative square root when one exists, and returns \(x+1\) otherwise. Check the input \(x=0\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Use the relation \(R(x,i)\) given by \(i^2=x\). It is primitive recursive by multiplication and the equality test. A root always satisfies \(i\le x\): this is immediate for \(i=0\), and for \(i\ge1\) we have \(i\le i^2=x\). Thus \(\exists i&lt;x+1\ R(x,i)\) tests whether \(x\) is a square, and the required root function is \(m_R(x,x+1)\). For \(x=0\), the search includes \(i=0\), so the output is \(0\), not the sentinel \(1\).</p>
+    <p>A root is unique in \(\mathbb N\). If \(i&lt;j\), then \(i^2&lt;j^2\): for \(i=0\) this follows from \(j&gt;0\); otherwise \(i^2&lt;ij&lt;j^2\). Therefore the least root returned by the search is the only root.</p>
+  </div></details>
+</section>
+
+<section id="empty-bound-question" data-formal="prim-empty-bound-search" data-kind="question">
+  <h2>What does a search with bound zero report?</h2>
+  <p>Suppose \(R(\bar x,0)\) holds. What are \(m_R(\bar x,0)\) and \(m_R(\bar x,1)\)? Does an output of \(0\) always certify a witness?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Both values are \(0\), with different meanings. At bound \(0\) the range is empty, so \(0\) is the sentinel and no witness was tested. At bound \(1\), the index \(0\) is tested and is a witness. The successful-search condition is \(m_R(\bar x,b)&lt;b\); the numerical output alone does not distinguish these situations. This is why the bound is part of the search specification.</p>
+  </div></details>
+</section>

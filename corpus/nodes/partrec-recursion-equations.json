@@ -1,0 +1,12 @@
+{
+  "id": "partrec-recursion-equations",
+  "description": "Partial primitive recursion satisfies \\(r(\\bar x,0)\\simeq g(\\bar x)\\) and \\(r(\\bar x,n+1)\\simeq h(\\bar x,n,r(\\bar x,n))\\), with strict evaluation.",
+  "module": "Lemmatheca.MathematicalLogic.PartialRecursiveFunctions",
+  "declaration": "Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.recursion_equations",
+  "dependencies": [
+    "partrec-partial-recursion"
+  ],
+  "verified": true,
+  "declaration_line": 179,
+  "signature": "Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.recursion_equations {k : ℕ}\n  (g : Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.PFunction k)\n  (h : Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.PFunction (k + 2))\n  (x : Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.Args k) (n : ℕ) :\n  Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.partialRec g h\n        (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc x 0) =\n      g x ∧\n    Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.partialRec g h\n        (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc x (n + 1)) =\n      (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.partialRec g h\n            (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc x n)).bind\n        fun a =>\n        h\n          (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc\n            (Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.snoc x n) a)"
+}

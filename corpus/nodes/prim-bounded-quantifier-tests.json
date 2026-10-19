@@ -1,0 +1,14 @@
+{
+  "id": "prim-bounded-quantifier-tests",
+  "description": "The characteristic functions of bounded universal and existential quantification are respectively \\(\\prod_{i<b}\\chi_R(\\bar x,i)\\) and \\(1\\mathbin{\\dot-}z(\\sum_{i<b}\\chi_R(\\bar x,i))\\), including empty bounds.",
+  "module": "Lemmatheca.MathematicalLogic.PrimitiveRecursion",
+  "declaration": "Lemmatheca.MathematicalLogic.PrimitiveRecursion.bounded_quantifier_characteristics",
+  "dependencies": [
+    "prim-characteristic-spec",
+    "prim-sum-equations",
+    "prim-product-equations"
+  ],
+  "verified": true,
+  "declaration_line": 227,
+  "signature": "Lemmatheca.MathematicalLogic.PrimitiveRecursion.bounded_quantifier_characteristics.{u_1} {α : Type u_1}\n  (R : α → ℕ → Prop) (x : α) (b : ℕ) :\n  Lemmatheca.MathematicalLogic.PrimitiveRecursion.characteristic (fun x => ∀ i < b, R x i) x =\n      Lemmatheca.MathematicalLogic.PrimitiveRecursion.boundedProduct\n        (fun x i => Lemmatheca.MathematicalLogic.PrimitiveRecursion.characteristic (R x) i) x b ∧\n    Lemmatheca.MathematicalLogic.PrimitiveRecursion.characteristic (fun x => ∃ i < b, R x i) x =\n      1 -\n        Lemmatheca.MathematicalLogic.PrimitiveRecursion.zeroTest\n          (Lemmatheca.MathematicalLogic.PrimitiveRecursion.boundedSum\n            (fun x i => Lemmatheca.MathematicalLogic.PrimitiveRecursion.characteristic (R x) i) x b)"
+}

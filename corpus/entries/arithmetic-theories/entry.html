@@ -1,0 +1,136 @@
+<section id="arithmetic-language" data-formal="arith-language arith-standard-structure arith-numeral arith-numeral-value arith-standard-numeral-value" data-kind="definition">
+  <h2>The language names zero, successor, addition and multiplication</h2>
+  <p>The familiar natural numbers come with operations, not just an order. We now ask how much their first-order axioms determine. Work in the <a href="first-order-languages#signatures">language</a> \(L_A\) with one constant \(0\), one unary function symbol \(S\), two binary function symbols \(+\) and \(\cdot\), and equality. There are no other relation symbols. An \(L_A\)-structure \(M\) has a nonempty domain, a distinguished element \(0^M\), and interpretations of these three operations. Writing a familiar symbol does not yet require its interpretation to be the familiar operation.</p>
+  <p>The <strong>standard arithmetic structure</strong> \(\mathbb N_A\) interprets these symbols on \(\mathbb N\) as zero, successor, addition and multiplication. For each external natural number \(n\), the <strong>numeral</strong> \(\overline n\) is the closed term defined by \(\overline0=0\) and \(\overline{n+1}=S\overline n\). Thus \(\overline3=S(S(S0))\). Write \(n_M\) for its value in \(M\). The index \(n\) belongs to the surrounding mathematics; \(\overline n\) is an expression in the language.</p>
+  <p>Use the <a href="first-order-proofs#soundness">existing classical first-order proof system</a> when writing \(T\vdash\theta\). Our theories are sets of sentences, and \(M\models T\) means that every axiom is true in \(M\). All constructions take place in ordinary classical set theory with choice. We do not add an order symbol: none of the arguments below needs one.</p>
+</section>
+
+<section id="robinson-axioms" data-formal="arith-robinson-theory arith-robinson-model-characterization arith-standard-model-Q" data-kind="definition">
+  <h2>Robinson arithmetic gives seven basic axioms</h2>
+  <p><strong>Robinson arithmetic</strong>, written \(Q\), consists of the universal closures of the following seven formulas. Universal closure binds every displayed free variable at the front.</p>
+  <ol>
+    <li>\(Sx\ne0\).</li>
+    <li>\(Sx=Sy\to x=y\).</li>
+    <li>\(x\ne0\to\exists y\,x=Sy\).</li>
+    <li>\(x+0=x\).</li>
+    <li>\(x+Sy=S(x+y)\).</li>
+    <li>\(x\cdot0=0\).</li>
+    <li>\(x\cdot Sy=x\cdot y+x\).</li>
+  </ol>
+  <p>The first three axioms say that zero is not a successor, successor is injective, and every other element has a predecessor. The last four are recursion equations in the <em>second</em> argument. In particular, \(x+0=x\) is an axiom, while \(0+x=x\) is not on the list. No induction schema has been included.</p>
+  <p>The standard structure satisfies every axiom. For the predecessor axiom, an ordinary natural number other than zero has the form \(n+1\). The other six are ordinary arithmetic identities or successor properties. Thus \(\mathbb N_A\models Q\).</p>
+</section>
+
+<section id="numeral-computation" data-formal="arith-numeral-addition arith-numeral-multiplication arith-closed-term-evaluation" data-kind="lemma">
+  <h2>Every model computes correctly on numerals</h2>
+  <p>If \(M\models Q\), then for all external natural numbers \(m,n\),</p>
+  <div class="math-display">\[m_M+n_M=(m+n)_M,\qquad m_M\cdot n_M=(mn)_M.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>Fix \(m\) and induct on the ordinary natural number \(n\), outside the structure. For addition, the case \(n=0\) is axiom 4. If the equality holds at \(n\), axiom 5 gives</p>
+  <div class="math-display">\[m_M+(n+1)_M=m_M+S^M(n_M)=S^M(m_M+n_M)=S^M((m+n)_M)=(m+n+1)_M.\]</div>
+  <p>For multiplication, axiom 6 is the base case. Axiom 7 and the addition result give</p>
+  <div class="math-display">\[m_M\cdot(n+1)_M=m_M\cdot n_M+m_M=(mn)_M+m_M=(mn+m)_M.\]</div>
+  <p>This proves both identities. A structural induction on closed terms now shows that each such term has the same numeral value in every model of \(Q\): use zero for the base case, and the successor, addition and multiplication identities at the constructors. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The induction here is a proof <em>about</em> all models of \(Q\). It is not an application of an induction axiom <em>inside</em> \(Q\). It ranges over the external natural number indexing a finite numeral or finite term.</p>
+</section>
+
+<section id="standard-copy" data-formal="arith-numerals-distinct arith-standard-embedding arith-Q-models-infinite arith-standard-copy arith-standard-copy-successor arith-standard-copy-operations" data-kind="theorem">
+  <h2>Every model contains its canonical copy of the natural numbers</h2>
+  <p>For \(M\models Q\), the map \(j_M:\mathbb N\to|M|\) given by \(j_M(n)=n_M\) is injective and preserves zero, successor, addition and multiplication. Consequently every model of \(Q\) is infinite.</p>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(m&lt;n\) and \(m_M=n_M\). Cancel \(m\) successors using axiom 2. This gives \(0^M=(n-m)_M\). Since \(n-m&gt;0\), the right side is a successor, contradicting axiom 1. Thus unequal external natural numbers have unequal numeral values. Zero and successor are preserved by the definition of numerals; the two remaining operations are preserved by <a href="#numeral-computation"></a>. An injection from \(\mathbb N\) proves infinitude. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Call its image \(\operatorname{Std}(M)=\{n_M:n\in\mathbb N\}\) the <strong>standard copy</strong>. It contains zero and is closed under successor, addition and multiplication. The displayed description is external: we have not given a first-order formula defining this subset inside \(M\).</p>
+</section>
+
+<section id="weak-model" data-formal="arith-infinity-structure arith-infinity-model-Q arith-infinity-successor-fixed arith-Q-no-fixed-point-unprovable" data-kind="theorem">
+  <h2>The basic axioms allow a successor fixed point</h2>
+  <div class="statement-box"><p>There is a model of \(Q\) containing an element \(a\) with \(Sa=a\). In particular, \(Q\nvdash\forall x\,Sx\ne x\), although \(S^{{\mathbb N}_A}n\ne n\) for every standard natural number \(n\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Adjoin one new element \(\infty\) to \(\mathbb N\). Keep zero and all operations on finite elements as usual. Set \(S\infty=\infty\), and let any sum with \(\infty\) equal \(\infty\). For multiplication, a zero factor gives zero; if neither factor is zero and at least one is \(\infty\), the product is \(\infty\). This specifies a total operation on every pair, including \(0\cdot\infty=\infty\cdot0=0\).</p>
+  <p>Successor never takes value zero. It is injective: two finite successors are equal only when their predecessors are equal, and the only predecessor of \(\infty\) under this operation is \(\infty\). Every nonzero finite number has its usual predecessor, and \(\infty\) is its own predecessor. Thus axioms 1–3 hold.</p>
+  <p>Axiom 4 holds for finite inputs and for \(\infty+0=\infty\). For axiom 5, finite inputs satisfy the ordinary identity; if either input is \(\infty\), both sides are \(\infty\). Axiom 6 holds by the zero-factor rule.</p>
+  <p>For axiom 7, first take \(x=0\): both sides are zero for every \(y\), including \(\infty\). If \(x\ne0\) and \(y=\infty\), both sides are \(\infty\). If \(x\) and \(y\) are finite, use ordinary arithmetic. The remaining case is \(x=\infty\) and finite \(y\). For \(y=0\), the identity reads \(\infty=0+\infty\); for \(y&gt;0\), it reads \(\infty=\infty+\infty\). These are both true. All seven axioms therefore hold, while \(S\infty=\infty\). Soundness rules out a \(Q\)-proof of the displayed universal sentence. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This countermodel explains one task for induction: the recursion equations and successor axioms alone do not eliminate every unintended element. A nonstandard model of Peano arithmetic will be subtler; it cannot have this fixed point.</p>
+</section>
+
+<section id="induction-schema" data-formal="arith-induction-axiom arith-induction-schema arith-induction-meaning" data-kind="definition">
+  <h2>An induction axiom applies to a formula with fixed parameters</h2>
+  <p>Let \(\varphi(x,y_1,\ldots,y_k)\) be an \(L_A\)-formula whose free variables are among the indicated distinct variables. The variable \(x\) is the induction variable. Its <strong>induction axiom</strong> is the sentence</p>
+  <div class="math-display">\[\forall y_1\cdots\forall y_k\,\bigl[(\varphi(0,\bar y)\land\forall x\,(\varphi(x,\bar y)\to\varphi(Sx,\bar y)))\to\forall x\,\varphi(x,\bar y)\bigr].\]</div>
+  <p>Here \(\bar y\) denotes the finite tuple \((y_1,\ldots,y_k)\). All substitutions are capture-safe, as in <a href="first-order-languages#substitution">first-order substitution</a>. The parameter values stay fixed through the base case, the step and the conclusion. The outer universal quantifiers allow every choice of those fixed values. When \(k=0\), there are no parameter quantifiers.</p>
+  <p>The <strong>full induction schema</strong> is the set of these sentences as \(\varphi\) and its finite parameter list vary. It is a family of first-order axioms, not a quantifier over formulas inside the language. Equivalently, in a model satisfying this schema, every subset defined by a formula with finitely many parameters satisfies induction: if it contains zero and is closed under successor, it is the whole domain.</p>
+</section>
+
+<section id="peano-arithmetic" data-formal="arith-peano-theory arith-PA-induction arith-PA-models-Q arith-predecessor-from-induction arith-standard-model-PA arith-Q-consistent arith-PA-consistent" data-kind="definition">
+  <h2>Peano arithmetic adds every induction instance</h2>
+  <p><strong>First-order Peano arithmetic</strong>, written \(\mathrm{PA}\), is \(Q\) together with the full induction schema. We retain all seven \(Q\)-axioms for a uniform presentation, even though axiom 3 becomes redundant.</p>
+  <p>To see that redundancy, apply induction to \(\varphi(x)\equiv(x=0\lor\exists y\,x=Sy)\). The base case holds because \(0=0\). For any \(x\), the successor \(Sx\) satisfies the second disjunct, witnessed by \(x\), so the induction step holds regardless of its premise. The conclusion says that every element is either zero or a successor, giving axiom 3.</p>
+  <p>The standard structure \(\mathbb N_A\) satisfies \(\mathrm{PA}\). We already checked \(Q\). For an induction axiom and any fixed standard parameter tuple \(\bar a\), let \(A=\{n\in\mathbb N:\mathbb N_A\models\varphi(n,\bar a)\}\). If the antecedent is true, \(0\in A\) and \(n\in A\) implies \(n+1\in A\). Ordinary <a href="natural-numbers-as-sets#induction-on-omega">induction on the natural numbers</a> gives \(A=\mathbb N\), exactly the conclusion. If the antecedent is false, the implication is true automatically. This proves every instance for every parameter tuple.</p>
+  <p>In particular, \(Q\) and \(\mathrm{PA}\) are consistent in the external sense: their standard model and <a href="first-order-proofs#soundness">soundness</a> exclude a derivation of contradiction. This uses our surrounding mathematics; it is not a claim that either theory proves a sentence expressing its own consistency.</p>
+</section>
+
+<section id="induction-examples" data-formal="arith-PA-zero-left arith-PA-no-fixed-point" data-kind="lemma">
+  <h2>Induction recovers familiar identities and excludes fixed points</h2>
+  <p>Peano arithmetic proves \(\forall x\,(0+x=x)\) and \(\forall x\,(Sx\ne x)\).</p>
+  <p class="proof-label">Proof</p>
+  <p>For the first result use \(\varphi(x)\equiv0+x=x\). The base case is axiom 4 at zero. If \(0+x=x\), then axiom 5 gives \(0+Sx=S(0+x)=Sx\). This is the induction step, so the corresponding induction axiom gives the universal conclusion.</p>
+  <p>For the second, use \(\psi(x)\equiv Sx\ne x\). Axiom 1 gives \(S0\ne0\). If \(Sx\ne x\) but \(S(Sx)=Sx\), axiom 2 gives \(Sx=x\), a contradiction. Thus \(\psi(x)\to\psi(Sx)\), and induction finishes. The structure of <a href="#weak-model"></a> fails this induction instance. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="parameters-example" data-formal="arith-PA-successor-addition arith-PA-addition-commutative" data-kind="lemma">
+  <h2>Parameters let induction prove addition commutative</h2>
+  <p>Peano arithmetic proves \(\forall x\forall y\,(x+y=y+x)\).</p>
+  <p class="proof-label">Proof</p>
+  <p>First prove \(\forall x\forall y\,(Sx+y=S(x+y))\). Fix \(x\) as a parameter and induct on \(y\). At zero both sides are \(Sx\), by axiom 4. If the identity holds for \(y\), then axiom 5 twice gives</p>
+  <div class="math-display">\[Sx+Sy=S(Sx+y)=S(S(x+y))=S(x+Sy).\]</div>
+  <p>The induction axiom universally closes the parameter \(x\), so the identity holds for all \(x,y\).</p>
+  <p>Now fix \(x\) and induct on \(y\) in \(x+y=y+x\). At zero, \(x+0=x=0+x\) by axiom 4 and <a href="#induction-examples"></a>. For the step, the induction hypothesis and the identity just proved yield</p>
+  <div class="math-display">\[x+Sy=S(x+y)=S(y+x)=Sy+x.\]</div>
+  <p>Universal closure over the fixed parameter supplies the result for every \(x\). At no stage was \(x\) allowed to change between the base case and the induction step. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="finite-fragments" data-formal="arith-nonstandard-theory arith-nonstandard-finite-fragments" data-kind="lemma">
+  <h2>A new constant can avoid any finite list of numerals</h2>
+  <p>Add a fresh constant symbol \(c\) to \(L_A\). Regard the \(\mathrm{PA}\)-axioms as sentences in this expanded language, and form</p>
+  <div class="math-display">\[T^*=\mathrm{PA}\cup\{c\ne\overline n:n\in\mathbb N\}.\]</div>
+  <p>Every finite subset \(\Delta\subseteq T^*\) has a model.</p>
+  <p class="proof-label">Proof</p>
+  <p>Only finitely many constraints \(c\ne\overline n\) occur in \(\Delta\). Let \(F\subseteq\mathbb N\) be their finite set of indices. Choose \(r\notin F\), for instance one larger than every member of \(F\); if \(F\) is empty, take \(r=0\). Expand \(\mathbb N_A\) by interpreting \(c\) as \(r\). It satisfies every \(\mathrm{PA}\)-axiom, and every listed constraint since \(r\ne n\) for \(n\in F\). Thus it satisfies \(\Delta\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Different finite subsets can use different values of \(c\). No natural number avoids <em>all</em> numerals in the standard structure. This is precisely the gap that compactness bridges by allowing a different model.</p>
+</section>
+
+<section id="nonstandard-model" data-formal="arith-nonstandard-compactness arith-nonstandard-PA-model arith-nonstandard-not-isomorphic" data-kind="theorem">
+  <h2>Peano arithmetic has a nonstandard model</h2>
+  <div class="statement-box"><p>There is a model \(M\models\mathrm{PA}\) with an element outside \(\operatorname{Std}(M)\). Consequently \(M\) is not isomorphic to \(\mathbb N_A\): first-order Peano arithmetic is not categorical.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>The expanded language is finite, hence countable. By <a href="#finite-fragments"></a> and <a href="logical-compactness#compactness">compactness</a>, \(T^*\) has a model \(M^*\). Forget the extra constant to obtain its \(L_A\)-reduct \(M\). Since all \(\mathrm{PA}\)-axioms use only \(L_A\), the reduct still satisfies \(\mathrm{PA}\). The element \(a=c^{M^*}\) differs from \(n_M\) for every external \(n\), so \(a\notin\operatorname{Std}(M)\).</p>
+  <p>An isomorphism \(f:\mathbb N_A\to M\) would preserve zero and successor. External induction would then give \(f(n)=n_M\) for every \(n\in\mathbb N\). Its image would be exactly \(\operatorname{Std}(M)\), contradicting surjectivity because it misses \(a\). Thus no such isomorphism exists. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>A <strong>nonstandard model of arithmetic</strong> is a model of \(\mathrm{PA}\) not isomorphic to \(\mathbb N_A\). Unlike the easy \(Q\)-countermodel, this model satisfies every induction instance and has no successor fixed point.</p>
+</section>
+
+<section id="true-arithmetic" data-formal="arith-true-arithmetic arith-PA-in-true-arithmetic arith-nonstandard-true-arithmetic arith-true-arithmetic-agreement arith-nonstandard-not-isomorphic theory-of-structure-complete" data-kind="theorem">
+  <h2>Even all true arithmetic sentences have a nonstandard model</h2>
+  <p>Let \(\operatorname{Th}(\mathbb N_A)\) be the <a href="theories-and-axiomatization#theory-of-a-structure">theory of the standard structure</a>: all \(L_A\)-sentences true in \(\mathbb N_A\). This theory is called <strong>true arithmetic</strong>. It contains \(\mathrm{PA}\) and has a nonstandard model satisfying exactly the same sentences as \(\mathbb N_A\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Replace \(\mathrm{PA}\) in <a href="#finite-fragments"></a> by \(\operatorname{Th}(\mathbb N_A)\). The finite satisfiability argument is unchanged: every standard arithmetic sentence remains true when we merely interpret a fresh constant. Compactness supplies a model with one element unequal to every numeral. Its arithmetic reduct satisfies true arithmetic and is not isomorphic to \(\mathbb N_A\), by the same argument as <a href="#nonstandard-model"></a>.</p>
+  <p>For any sentence \(\theta\), either \(\theta\) or \(\neg\theta\) is true in \(\mathbb N_A\) and belongs to its theory. A model of that theory therefore agrees with \(\mathbb N_A\) on every sentence, as claimed. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This separates noncategoricity from incompleteness. True arithmetic is a satisfiable <a href="theories-and-axiomatization#complete-theories">complete theory</a>, yet has nonisomorphic models. We have made no claim here that its axioms can be effectively listed, nor proved that \(\mathrm{PA}\) is incomplete.</p>
+</section>
+
+<section id="external-standard-copy" data-formal="arith-defines-with-parameters arith-standard-copy-undefinable" data-kind="theorem">
+  <h2>The standard copy cannot be defined inside a nonstandard model</h2>
+  <div class="statement-box"><p>If \(M\models\mathrm{PA}\) and \(\operatorname{Std}(M)\ne|M|\), then no \(L_A\)-formula, even with finitely many parameters from \(M\), defines \(\operatorname{Std}(M)\) in \(M\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(\varphi(x,\bar b)\) defines this subset, so \(M\models\varphi(a,\bar b)\) exactly when \(a\in\operatorname{Std}(M)\). The subset contains \(0^M\). It is closed under successor because \(S^M(n_M)=(n+1)_M\). Hence \(M\) satisfies both \(\varphi(0,\bar b)\) and \(\forall x\,(\varphi(x,\bar b)\to\varphi(Sx,\bar b))\).</p>
+  <p>The induction axiom for \(\varphi(x,\bar y)\), instantiated at the fixed tuple \(\bar b\), gives \(M\models\forall x\,\varphi(x,\bar b)\). By the assumed definition this says \(\operatorname{Std}(M)=|M|\), a contradiction. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The obstruction includes parameters naming nonstandard elements. Induction applies to every formula with such fixed parameters, but the standard copy is an external subset that none of those formulas defines.</p>
+</section>
+
+<section id="schema-versus-all-subsets" data-formal="arith-all-subsets-induction arith-full-induction-standard-copy arith-standard-copy-undefinable fo-scoped-formula" data-kind="question">
+  <h2>Why does induction not force every element to be a numeral?</h2>
+  <p>The standard copy contains zero and is successor-closed. Why cannot induction immediately show that it is the whole domain? Does the nonstandard-model theorem contradict the <a href="natural-numbers-as-sets#unique-natural-number-system">uniqueness of a natural-number system</a>?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>First-order induction in \(\mathrm{PA}\) applies to subsets defined by a formula with parameters. By <a href="#external-standard-copy"></a>, the proper standard copy is not one of them. The expression \(a=0\lor a=S0\lor a=S(S0)\lor\cdots\) suggests what we want, but it is an infinite disjunction, not a first-order formula. Similarly, the separate constraints \(c\ne\overline n\) form an infinite set of finite sentences, not one infinite sentence.</p>
+    <p>The uniqueness theorem for natural-number systems assumes induction for <em>every subset</em> of the domain. Applied to the standard copy, that stronger assumption would force surjectivity of \(n\mapsto n_M\). Its hypotheses fail in a nonstandard model of \(\mathrm{PA}\), so there is no contradiction. An external induction on \(n\) proves that every numeral has a property; it does not show that every model element is a numeral. Keeping these two quantifier ranges distinct is essential.</p>
+  </div></details>
+</section>

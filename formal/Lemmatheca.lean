@@ -123,3 +123,11 @@ import Lemmatheca.Entry.LargerModels
 import Lemmatheca.Entry.ElementaryChains
 import Lemmatheca.Entry.DiagramsAndExtensions
 import Lemmatheca.Entry.Ultraproducts
+import Lemmatheca.MathematicalLogic.ArithmeticTheories
+import Lemmatheca.MathematicalLogic.PrimitiveRecursion
+import Lemmatheca.MathematicalLogic.FiniteSequenceCoding
+import Lemmatheca.MathematicalLogic.PartialRecursiveFunctions
+import Lemmatheca.Entry.ArithmeticTheories
+import Lemmatheca.Entry.PrimitiveRecursion
+import Lemmatheca.Entry.FiniteSequenceCoding
+import Lemmatheca.Entry.PartialRecursiveFunctions

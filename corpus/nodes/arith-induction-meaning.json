@@ -1,0 +1,12 @@
+{
+  "id": "arith-induction-meaning",
+  "description": "An arithmetic structure satisfies the induction axiom of \\(\\varphi(x,\\bar y)\\) exactly when every fixed parameter tuple satisfies its base-and-step implication.",
+  "module": "Lemmatheca.MathematicalLogic.ArithmeticTheories",
+  "declaration": "Lemmatheca.MathematicalLogic.ArithmeticTheories.realize_induction_axiom",
+  "dependencies": [
+    "arith-induction-axiom"
+  ],
+  "verified": true,
+  "declaration_line": 270,
+  "signature": "Lemmatheca.MathematicalLogic.ArithmeticTheories.realize_induction_axiom.{u} (M : Type u)\n  [Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Structure M] {k : ℕ}\n  (φ : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin k ⊕ Unit)) :\n  M ⊨ Lemmatheca.MathematicalLogic.ArithmeticTheories.inductionAxiom φ ↔\n    ∀ (a : Fin k → M),\n      (φ.Realize (Sum.elim a fun x => Lemmatheca.MathematicalLogic.ArithmeticTheories.zeroValue M) ∧\n          ∀ (b : M),\n            φ.Realize (Sum.elim a fun x => b) →\n              φ.Realize (Sum.elim a fun x => Lemmatheca.MathematicalLogic.ArithmeticTheories.succValue M b)) →\n        ∀ (b : M), φ.Realize (Sum.elim a fun x => b)"
+}
