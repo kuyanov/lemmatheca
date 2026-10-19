@@ -205,8 +205,11 @@ Enclose each display formula in a `div` or `p` with class `math-display`, includ
 unlabelled formulas, statement boxes, and question answers. This provides the
 formula's scrolling container. Keep surrounding prose in separate paragraphs.
 
-Lay out display formulas for comfortable desktop reading. Keep a single equation,
-implication, or equivalence on one horizontal line when it reads naturally; in
+Lay out display formulas to fit the normal desktop content column without
+horizontal scrolling. Split independent claims into separate displays when a
+combined row would overflow; do not shrink the font to make it fit.
+Keep a single equation, implication, or equivalence on one horizontal line when
+it reads naturally; in
 particular, write `P(...) \Longleftrightarrow Q(...)` together rather than stacking
 the two sides with the relation on a line of its own. Do not insert line breaks
 solely to make a formula fit a phone screen. Horizontal scrolling within a
@@ -221,8 +224,8 @@ rather than giving every identity its own line. When auditing line breaks,
 enumerate every explicit break, including those in aligned lists and derivations.
 Keep structural breaks in cases, matrices, proof trees, and multiline subscripts;
 justify other retained breaks by readability at the normal desktop column width.
-Break an exceptionally long desktop display at meaningful mathematical boundaries
-when that improves readability. Preserve readable font sizes and spacing.
+Break an exceptionally long single statement at meaningful mathematical boundaries
+when needed to fit the desktop column. Preserve readable font sizes and spacing.
 
 The renderer numbers labelled equations and resolves entry-local `\eqref` references:
 

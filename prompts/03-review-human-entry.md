@@ -30,9 +30,13 @@ independently; a drafting self-check is not this review.
 3. Review readability, the standalone abstract, title, emphasis, figures, and
    rendered mathematics against the corpus contract. Main-result boxes must
    contain their hypotheses and conclusions. Inspect desktop and relevant narrow
-   layouts, including hidden answers. For a line-break audit, enumerate every
-   explicit break; keep short formulas and identity lists compact, and allow
-   formula scrolling on mobile.
+   layouts, including hidden answers. Flag any display requiring horizontal
+   scrolling at the normal desktop content width. Split an overflowing row of
+   independent claims into separate displays; keep each equation, implication, or equivalence horizontal
+   when it fits, and break a genuinely long single statement only at meaningful
+   mathematical boundaries. For a line-break audit, enumerate every explicit
+   break and keep short formulas and identity lists compact. Formula scrolling
+   on mobile is acceptable and does not justify extra line breaks.
 4. Check reading order and the entry's references. Review the relevant integration
    changes from step 2 and report missing, stale, or incorrect links/planning
    items. Do not repeat a corpus-wide consumer search or unrelated planning

@@ -1,0 +1,10 @@
+{
+  "id": "univ-encoding-equations",
+  "description": "The four initial program codes are \\(0,1,2,3\\). For subprograms with codes \\(a,b\\), pairing, composition and primitive recursion have codes \\(4\\langle a,b\\rangle+4\\), \\(4\\langle a,b\\rangle+6\\) and \\(4\\langle a,b\\rangle+5\\); search has code \\(4a+7\\).",
+  "module": "Lemmatheca.MathematicalLogic.UniversalComputation",
+  "declaration": "Lemmatheca.MathematicalLogic.UniversalComputation.encoding_equations",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 43,
+  "signature": "Lemmatheca.MathematicalLogic.UniversalComputation.encoding_equations (c d : Nat.Partrec.Code) :\n  Encodable.encode Nat.Partrec.Code.zero = 0 ∧\n    Encodable.encode Nat.Partrec.Code.succ = 1 ∧\n      Encodable.encode Nat.Partrec.Code.left = 2 ∧\n        Encodable.encode Nat.Partrec.Code.right = 3 ∧\n          Encodable.encode (c.pair d) = 4 * Nat.pair (Encodable.encode c) (Encodable.encode d) + 4 ∧\n            Encodable.encode (c.comp d) = 4 * Nat.pair (Encodable.encode c) (Encodable.encode d) + 6 ∧\n              Encodable.encode (c.prec d) = 4 * Nat.pair (Encodable.encode c) (Encodable.encode d) + 5 ∧\n                Encodable.encode c.rfind' = 4 * Encodable.encode c + 7"
+}

@@ -100,7 +100,7 @@ The following extensions need further development and are deferred:
 
 ## Mathematical logic: sources and development plan
 
-Area ID: `mathematical-logic`, under `logic-and-foundations`. The nine
+Area ID: `mathematical-logic`, under `logic-and-foundations`. The six
 proposed entries below need a step-1 handoff and the subsequent pipeline stages.
 Their existing foundations are [propositional semantics](entries/propositional-logic/entry.html),
 [propositional normal forms](entries/propositional-normal-forms/entry.html),
@@ -116,17 +116,24 @@ Their existing foundations are [propositional semantics](entries/propositional-l
 [theories and axiomatization](entries/theories-and-axiomatization/entry.html),
 [definability](entries/definability-and-automorphisms/entry.html),
 [elementary submodels](entries/elementary-submodels/entry.html),
-[quantifier elimination](entries/quantifier-elimination/entry.html), and
+[quantifier elimination](entries/quantifier-elimination/entry.html),
 [back-and-forth](entries/back-and-forth/entry.html),
 [elementary chains](entries/elementary-chains/entry.html),
 [diagrams](entries/diagrams-and-extensions/entry.html),
-[ultraproducts](entries/ultraproducts/entry.html), and
-[model sizes and model witnesses](entries/larger-models/entry.html).
+[ultraproducts](entries/ultraproducts/entry.html),
+[model sizes and model witnesses](entries/larger-models/entry.html),
+[arithmetic theories](entries/arithmetic-theories/entry.html),
+[primitive recursion](entries/primitive-recursion/entry.html),
+[finite-sequence coding](entries/coding-finite-sequences/entry.html),
+[partial recursive functions](entries/partial-recursive-functions/entry.html),
+[arithmetic machines](entries/machines-and-computation-histories/entry.html),
+[universal computation](entries/universal-computation/entry.html),
+[formal-proof coding](entries/coding-formal-proofs/entry.html), and
+[effective theories](entries/effective-theories/entry.html).
 
 Keep the language being studied separate from the mathematics used to study it.
 Use sets, maps, finite lists, and induction as background; orders and arithmetic
-provide examples without requiring an algebra or topology area. Future proof
-coding must use the existing sentence-based natural-deduction calculus: closed
+provide examples without requiring an algebra or topology area. Further arithmetic formalization must retain the existing sentence-based natural-deduction calculus: closed
 term instances and explicitly fresh auxiliary constants. Semantics still treats
 arbitrary formulas and assignments; another calculus needs its own translation.
 
@@ -152,7 +159,8 @@ The following independent branches remain optional additions:
   compactness applications. Relation/path examples must include their own
   definitions and finite witnesses instead of presupposing a graph-theory area.
 
-Computability may proceed in parallel with the model-theory branch.
+The remaining arithmetic and second-order branches do not depend on developing
+these optional model-theory topics first.
 
 ### Source collection
 
@@ -168,7 +176,7 @@ completed step-1 handoff or a whole-book audit.
 | --- | --- | --- |
 | F1 | Zach / Open Logic Project, [*Sets, Logic, Computation* — archived Fall 2025 PDF](https://slc.openlogicproject.org/archives/f25/slc-screen.pdf), remix `38828e6` and Open Logic Text `0c1e9e3`, both 2025-07-01. [Project](https://slc.openlogicproject.org/). | §12.9, 246–249, compactness applications for the arithmetic/model branch. Match proof coding to the existing calculus and its actual quantifier and equality side conditions, using chapter 11 as needed. |
 | M3 | Alex Kruckman, [*Math 509 Lecture Notes*](https://akruckman.faculty.wesleyan.edu/files/2025/12/Lecture-Notes.pdf), Fall 2025, updated 2025-12-18, 92 pages. | Theorem 5.21 and Corollaries 5.22–5.23, 48–49, preservation converses. Recheck the selected fragment specializations in full; the later direct-limit preservation argument on 49–51 is outside the immediate converse scope. |
-| C1 | Avigad, [*Computability and Incompleteness*](https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf), version 2007-01-09, 128 PDF pages. | §§2.3–2.7, 20–46: recursion, coding, normal form, universality, halting; §4.3, 90–100: Robinson arithmetic and representability; §§4.4–4.7, 100–115: undecidability, diagonal lemma, first and conditional second incompleteness. Machine equivalence and all derivability-condition details were not fully audited. |
+| C1 | Avigad, [*Computability and Incompleteness*](https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf), version 2007-01-09, 128 PDF pages. | §§2.3–2.7, 20–46: recursion, coding, normal form, universality, halting; §4.3, 90–100: Robinson arithmetic and representability; §§4.4–4.7, 100–115: undecidability, diagonal lemma, first and conditional second incompleteness. Concrete PA derivability-condition details still require a full audit. |
 | C2 | Smith, [*An Introduction to Gödel's Theorems*](https://logicmatters.net/igt/pdfs/GodelBookLM.pdf), second edition, Logic Matters corrected reprint, August 2020. [Author page](https://logicmatters.net/igt/), [corrections](https://logicmatters.net/igt/pdfs/CorrectionsLM.pdf). | Chapters 9–17: induction, Q, PA and representation; 19–20: syntax/proof coding; 24–27: diagonal lemma, Rosser, enumerable theories and truth; 31 and 33–35: second incompleteness/derivability conditions; 38–43: partial recursion and machines. Actual selected readings include 90–94, 107–112, 113–116, 119–121, 185–189 and 258–261; other locations were verified from the contents. Page 116 supplies a compact CRT/beta proof with a boundary-case correction. |
 | C3 | Zach / Open Logic Project, [*Incompleteness and Computability*](https://ic.openlogicproject.org/ic-screen.pdf), cover Fall 2025; remix `6b09d98`, 2026-07-11, generated from Open Logic Text `9620cc7`, 2026-07-12. [Project](https://ic.openlogicproject.org/). | Chapter 2, 20–58: recursive functions/coding; chapter 3, 59–75: syntax/derivations; chapter 4, 76–106: Q/representation; chapter 5, 107–128: incompleteness; chapter 6, 129–151: universality/halting/enumerability. Selected beta, minimization, conditional second-incompleteness and halting proofs were inspected. The [fixed-point](https://builds.openlogicproject.org/content/incompleteness/incompleteness-provability/fixed-point-lemma.pdf) and [truth](https://builds.openlogicproject.org/content/incompleteness/incompleteness-provability/tarski-thm.pdf) modules were also checked at Text revision `9620cc7`. |
 
@@ -176,7 +184,6 @@ The source-to-entry map is:
 
 | Proposed entries | Sources and specific support |
 | --- | --- |
-| `machines-and-computation-histories`, `universal-computation`, `coding-formal-proofs`, `effective-theories` | C1 §§2.1–2.2, 2.6–2.7; C3 chapter 3 and §§6.2–6.12; C2 chapters 19–20, 38 and 41–43. Use the existing primitive recursion and bounded sequence decoders; match proof codes to the actual calculus. Machine equivalence and effective theory algorithms still need full passage/proof audits. |
 | `arithmetic-representability`, `diagonal-lemma`, `first-incompleteness` | C2 chapters 10–11, 15–17, 24–27 and 39; C1 §§4.3–4.5 with recorded corrections; C3 chapter 4 and §§5.2–5.4. |
 | `second-incompleteness`, `second-order-logic` | C2 chapters 31, 33–35 and C1/C3 conditional arguments; Avigad 2002 §8.3, 101–106, locates second-order semantics. Full PA derivability-condition proofs and any second-order no-effective-complete-calculus reduction remain to inspect. |
 | Optional resolution / expressive-limit branches | Madhusudan–Viswanathan, [*Logic in Computer Science*](https://courses.grainger.illinois.edu/CS474/fa2021/DraftNotes.pdf), 2021-10-11, §2.2, 27–34, is a collected resolution source whose complete proof still needs a stage-1 audit. Schlicht, [*An Introduction to Model Theory*](https://philippschlicht.github.io/teaching/files/modeltheory2017.pdf), course 2017, PDF dated 2021-07-13, 7, supplies a connectedness example; expand its finite-path witness. Its adjacent upward-extension proof has a recorded diagram defect. |
@@ -226,15 +233,12 @@ extend to unrelated publisher PDFs or differently licensed cover artwork.
 
 ### Proposed reading order
 
-These batches are scheduling units, not additional prerequisites. The computation
-branch can begin independently of further model-theory developments.
+These remaining batches are scheduling units, not additional prerequisites.
+They use the existing computation and proof-coding entries; their specific
+prerequisites are listed below.
 
 | Batch / order | Proposed plain-text title and ID | Main result and scope | Prerequisites within the area |
 | --- | --- | --- | --- |
-| 2 / 5 | **Machines and computation histories** — `machines-and-computation-histories` | One explicit machine model, configurations, finite execution certificates, and equivalence with partial recursive functions. Prove both simulations. | `primitive-recursion`, `coding-finite-sequences`, `partial-recursive-functions`. |
-| 2 / 6 | **Universal computation and the halting problem** — `universal-computation` | Program enumeration, universal evaluation, diagonalization, enumerable sets, dovetailing, and decidability when a set and its complement are enumerable. | The machine model, primitive recursion, sequence coding and partial recursion. |
-| 2 / 7 | **Coding formulas and formal proofs** — `coding-formal-proofs` | Encode the actual finite arithmetic syntax, substitution, natural-deduction rules and freshness conditions; include finite certificates for enumerable axiom sets. | `first-order-proofs`, `arithmetic-theories`, `coding-finite-sequences`, `universal-computation`. |
-| 2 / 8 | **Effective theories: proof search and decision procedures** — `effective-theories` | Enumerable theorem sets; a consistent complete enumerable theory is decidable; explicit effective quantifier elimination for equality and dense orders. | `coding-formal-proofs`, `universal-computation`, `quantifier-elimination`. |
 | 3 / 9 | **Representability in arithmetic: expressing computations** — `arithmetic-representability` | Numeralwise representation in Robinson arithmetic; bounded and existential arithmetic formulas; distinguish representation, truth and provable totality. Prove the finite simultaneous-remainder lemma locally. | `arithmetic-theories`, `coding-formal-proofs`, `universal-computation`. |
 | 3 / 10 | **Self-reference: the diagonal lemma and undefinability of truth** — `diagonal-lemma` | Fixed points from substitution codes and Tarski's theorem for arithmetic truth. | `arithmetic-representability`, `coding-formal-proofs`. |
 | 3 / 11 | **First incompleteness: Gödel sentences and Rosser's theorem** — `first-incompleteness` | Incompleteness and essential undecidability, with the distinct consistency hypotheses in the Gödel and Rosser arguments explicit. | `diagonal-lemma`, `arithmetic-representability`; `larger-models` supplies external consistency terminology. |
@@ -249,11 +253,11 @@ The limited reviews found usable arguments and confirmed defects recorded in
 affected constructions. No unavailable proof, contents-only reading, survey
 statement, or omitted exercise has been certified as a completed argument.
 
-For computation, mere countability of formulas does not establish effective
-coding. Use the finite arithmetic language first. Use the existing [pairing and finite-list code](entries/coding-finite-sequences/entry.html#list-code)
-and its proved decoding bounds rather than introducing an unexplained alternative
-encoding or requiring prime factorization. Arithmetic representability
-additionally needs a finite simultaneous-remainder/beta lemma: Smith's page 116
+For arithmetic representability, use the existing [effective formula and proof
+codes](entries/coding-formal-proofs/entry.html#tagged-syntax), [pairing and finite-list
+code](entries/coding-finite-sequences/entry.html#list-code), and proved decoding
+bounds rather than introducing an unexplained alternative encoding or requiring
+prime factorization. The next entry needs a finite simultaneous-remainder/beta lemma: Smith's page 116
 provides a compact route, but division, coprime cancellation and the needed
 coprime-modulus argument must be proved locally. Avigad and Zach's appeals to
 CRT do not supply those missing reader prerequisites.
@@ -312,7 +316,7 @@ The environment remains pinned by `formal/lean-toolchain` and
 `formal/lake-manifest.json`. Reuse the existing shared formula syntax and
 sentence-based natural-deduction calculus when preparing the remaining entries.
 
-For future coding, preserve the [free-name and indexed-bound-variable
+For subsequent arithmetic proofs, preserve the [free-name and indexed-bound-variable
 convention](entries/first-order-languages/entry.html#scoped-formulas) and the
 finite `Proof`/`Derives` definitions in `MathematicalLogic/FirstOrderProofs.lean`.
 
@@ -325,8 +329,9 @@ the set-theoretic or arithmetic hierarchy.
 
 `Computability` has primitive and partial recursion, program codes, universal
 evaluation, and `ComputablePred.halting_problem`; the relevant definitions and
-signatures were inspected. Arithmetic proof coding, representability, and
-incompleteness still need a dedicated formal design and correspondence audit.
+signatures were inspected. Representing these proof codes inside arithmetic,
+representability, and incompleteness still need their own formal design and
+correspondence audit.
 An ordinary Lean proof of a statement about natural numbers is not automatically
 a proof of its derivability in PA or ZFC. These later claims need their own
 bindings and verification; inspected library declarations do not establish that

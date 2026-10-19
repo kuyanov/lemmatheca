@@ -46,7 +46,12 @@ source audit or the full planning stage.
 - Inspect the affected rendered pages, including hidden answers and any changed
   formulas or figures, at normal desktop size and relevant narrow widths. Apply
   the [display-layout contract](../docs/corpus.md#mathematics-figures-and-assets);
-  horizontal formula scrolling on mobile is acceptable.
+  display formulas must fit the normal desktop content width without horizontal
+  scrolling. Separate independent claims when their combined row would overflow.
+  Keep each equation,
+  implication, or equivalence horizontal when it fits; break a genuinely long
+  single statement only at meaningful mathematical boundaries. Horizontal formula
+  scrolling on mobile is acceptable and does not justify extra line breaks.
 - Refresh generated summaries only when required by the shared check matrix.
   A later independent mathematical and presentation audit belongs to step 3.
 

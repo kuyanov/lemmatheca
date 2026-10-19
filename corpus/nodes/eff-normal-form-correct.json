@@ -1,0 +1,10 @@
+{
+  "id": "eff-normal-form-correct",
+  "description": "For a quantifier-free relational formula \\(\\varphi\\), the computed positive disjunctive normal form is equivalent to \\(\\varphi\\), and the negative normal form is equivalent to \\(\\neg\\varphi\\), at every assignment.",
+  "module": "Lemmatheca.MathematicalLogic.EffectiveQuantifierElimination",
+  "declaration": "Lemmatheca.MathematicalLogic.EffectiveQuantifierElimination.normalForm_correct",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 375,
+  "signature": "Lemmatheca.MathematicalLogic.EffectiveQuantifierElimination.normalForm_correct.{u} {o : Bool} {n : ℕ} {M : Type u}\n  (r : M → M → Prop) (φ : Lemmatheca.MathematicalLogic.EffectiveQuantifierElimination.RelFormula o n)\n  (hφ : Lemmatheca.MathematicalLogic.QuantifierElimination.Formula.IsQF φ) (b : Bool) (x : Fin n → M) :\n  Lemmatheca.MathematicalLogic.QuantifierElimination.Formula.Realize r\n      (Lemmatheca.MathematicalLogic.EffectiveQuantifierElimination.dnfFormula\n        (Lemmatheca.MathematicalLogic.EffectiveQuantifierElimination.normalForm φ b))\n      x ↔\n    if b = true then Lemmatheca.MathematicalLogic.QuantifierElimination.Formula.Realize r φ x\n    else ¬Lemmatheca.MathematicalLogic.QuantifierElimination.Formula.Realize r φ x"
+}

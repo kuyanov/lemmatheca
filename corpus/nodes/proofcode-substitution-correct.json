@@ -1,0 +1,10 @@
+{
+  "id": "proofcode-substitution-correct",
+  "description": "Coded substitution agrees with the existing capture-safe free-variable substitution on the shared formula syntax.",
+  "module": "Lemmatheca.MathematicalLogic.CodingFormalProofsOperations",
+  "declaration": "Lemmatheca.MathematicalLogic.CodingFormalProofs.substitution_correct",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 292,
+  "signature": "Lemmatheca.MathematicalLogic.CodingFormalProofs.substitution_correct.{u, v} {L : FirstOrder.Language}\n  (S : Lemmatheca.MathematicalLogic.CodingFormalProofs.EffectiveSignature L) {n : ℕ} (a : L.BoundedFormula ℕ n) (i : ℕ)\n  (t : L.Term ℕ) :\n  Lemmatheca.MathematicalLogic.CodingFormalProofs.substitute S n\n      (Lemmatheca.MathematicalLogic.CodingFormalProofs.formulaCode S\n        Lemmatheca.MathematicalLogic.CodingFormalProofs.freeName a)\n      i\n      (Lemmatheca.MathematicalLogic.CodingFormalProofs.termCode S\n        Lemmatheca.MathematicalLogic.CodingFormalProofs.freeName t) =\n    Lemmatheca.MathematicalLogic.CodingFormalProofs.formulaCode S\n      Lemmatheca.MathematicalLogic.CodingFormalProofs.freeName\n      (a.subst fun j => if j = i then t else FirstOrder.Language.var j)"
+}

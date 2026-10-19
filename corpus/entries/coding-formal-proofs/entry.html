@@ -1,0 +1,139 @@
+<section id="effective-symbols" data-formal="proofcode-effective-signature proofcode-arithmetic-signature" data-kind="definition">
+  <h2>Give symbols numerical names before coding expressions</h2>
+  <p>A proof is a finite object, so it can be recorded by a natural number. The useful claim is stronger than countability: a calculation should recover its formulas, check every inference and reject an incorrect proof. We shall code the <a href="first-order-languages#scoped-formulas">existing scoped syntax</a> and the <a href="first-order-proofs#derivations-and-theories">existing sentence natural-deduction calculus</a>, rather than introduce a different proof system.</p>
+  <p>An <strong>effective signature</strong> supplies numerical names for its function and relation symbols, with primitive-recursive tests \(F(a,k)\) and \(R(a,k)\) for “\(a\) names a symbol of arity \(k\).” The names are unique. We also require primitive-recursive symbol constructors and destructors when we use them. Finite signatures satisfy these conditions by finite case distinctions. The arithmetic language has function names \(0,1,2,3\) for zero, successor, addition and multiplication, of arities \(0,1,2,2\), and no relation symbols. Equality is logical syntax. The equality-only language has no symbols; the order language has one binary relation. These are our concrete examples.</p>
+  <p>For proofs, add auxiliary constants \(c_0,c_1,\ldots\). Give each auxiliary constant its own tagged leaf. It has arity zero, so this is an effective extension of the signature. A free name \(x_i\), a scoped placeholder \(z_j\), and a constant \(c_i\) remain three different objects. Only the last may serve as an <a href="first-order-proofs#fresh-parameters">eigenparameter</a>.</p>
+</section>
+
+<section id="tagged-syntax" data-formal="proofcode-node proofcode-term-code proofcode-formula-code proofcode-sentence-code proofcode-auxiliary-name" data-kind="definition">
+  <h2>A tag records how an expression was built</h2>
+  <p>Use the <a href="coding-finite-sequences#square-pairing">square pairing</a> \(\langle a,b\rangle\) and the <a href="coding-finite-sequences#list-code">finite-list code</a> already constructed. Write \([a_0,\ldots,a_{r-1}]^\#\) for that list code and set</p>
+  <div class="math-display">\[N(t;a_0,\ldots,a_{r-1})=1+\langle t,[a_0,\ldots,a_{r-1}]^\#\rangle.\]</div>
+  <p>The outer tag and the exact list length must both match. Define expression codes by the following table; brackets \(\ulcorner E\urcorner\) mean the code of the displayed expression.</p>
+  <table><caption>Codes for the primitive expression constructors</caption><thead><tr><th>Expression</th><th>Code</th></tr></thead><tbody>
+    <tr><td>Free name \(x_i\)</td><td>\(N(0;i)\)</td></tr>
+    <tr><td>Auxiliary constant \(c_j\)</td><td>\(N(8;j)\)</td></tr>
+    <tr><td>Placeholder \(z_j\)</td><td>\(N(1;j)\)</td></tr>
+    <tr><td>Function application \(f_a(t_0,\ldots,t_{k-1})\)</td><td>\(N(2;a,\ulcorner t_0\urcorner,\ldots,\ulcorner t_{k-1}\urcorner)\)</td></tr>
+    <tr><td>Falsity \(\bot\)</td><td>\(N(3;)\)</td></tr>
+    <tr><td>Equality \(s=t\)</td><td>\(N(4;\ulcorner s\urcorner,\ulcorner t\urcorner)\)</td></tr>
+    <tr><td>Relation application \(R_a(t_0,\ldots,t_{k-1})\)</td><td>\(N(5;a,\ulcorner t_0\urcorner,\ldots,\ulcorner t_{k-1}\urcorner)\)</td></tr>
+    <tr><td>Implication \(A\to B\)</td><td>\(N(6;\ulcorner A\urcorner,\ulcorner B\urcorner)\)</td></tr>
+    <tr><td>Universal quantification \(\forall z_n A\)</td><td>\(N(7;\ulcorner A\urcorner)\)</td></tr>
+  </tbody></table>
+  <p>Expand negation, conjunction, disjunction, existential quantification and biconditional using their <a href="first-order-languages#scoped-formulas">fixed abbreviations</a> before encoding. No simplification is performed. For example, the codes of \(0+0\) and \(0\) differ even though arithmetic proves them equal. The number \(\ulcorner A\urcorner\) is an external name for a formula; its arithmetic numeral \(\overline{\ulcorner A\urcorner}\) is a term. A numerical code does not acquire the meaning of the formula merely by being written inside arithmetic.</p>
+</section>
+
+<section id="decoding-bounds" data-formal="proofcode-node-tag proofcode-node-args proofcode-child-bound proofcode-node-primitive proofcode-tag-primitive proofcode-args-primitive proofcode-arg-primitive" data-kind="lemma">
+  <h2>Every child has a smaller code</h2>
+  <p>Every entry in a nonempty coded list is smaller than the list code. Hence each expression child of \(N(t;\bar a)\) has code strictly less than its parent. The tag, argument list, its length and each argument are primitive-recursive functions of the parent code; use harmless default values at zero.</p>
+  <p class="proof-label">Proof</p>
+  <p>A nonempty list is \(1+\langle a,q\rangle\), so its head and tail are smaller than it by the <a href="coding-finite-sequences#pairing-bounds">proved pairing bounds</a>. Iterating the tail proves the claim for every entry. The outer successor and pairing give the corresponding parent bound. Predecessor, the two unpairing functions, length and indexed access are primitive recursive by the earlier coding results. Their compositions give every decoder just listed. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="syntax-recognition" data-formal="proofcode-term-recognition proofcode-formula-recognition proofcode-sentence-recognition proofcode-closed-term-recognition proofcode-named-form-recognition proofcode-term-recognition-primitive proofcode-formula-recognition-primitive proofcode-sentence-recognition-primitive proofcode-closed-term-recognition-primitive proofcode-named-form-recognition-primitive" data-kind="theorem">
+  <h2>Recognizing a term or formula is primitive recursive</h2>
+  <p>Let \(\operatorname{Term}(n,e)\) mean that \(e\) codes a term allowed at context size \(n\), and let \(\operatorname{Form}(n,e)\) mean that it codes a formula at that size. A free-name leaf \(N(0;i)\) and an auxiliary-constant leaf \(N(8;j)\) are always allowed. A placeholder leaf is allowed exactly when its index is less than \(n\). A function or relation application must have the specified arity and correctly formed term arguments. Equality requires two terms. Implication requires two formulas at size \(n\). A universal node requires one formula at size \(n+1\). The falsity node has no arguments. Reject every other tag, wrong-length argument list and the number zero.</p>
+  <p>These tests are primitive recursive, uniformly in \(n,e\). So are the following restricted tests. A <strong>closed term</strong> has no free-name leaf and no placeholder, but may contain auxiliary constants. An <strong>extended sentence</strong> is a formula at context size zero with no original free-name leaf; it may contain auxiliary constants and is used inside derivations. An <strong>original-language sentence</strong> is an extended sentence with no auxiliary-constant leaf. Write \(\operatorname{Sent}(e)\) for this last test. More generally, \(\operatorname{NamedForm}(n,e)\) tests formulas at size \(n\) with no original free names.</p>
+  <p class="proof-label">Proof</p>
+  <p>Compute a table for all codes up to \(e\), taking the appropriate finite case at each code. Children always have smaller codes. The only changing parameter is context size: along a path in a code at most \(e\) universal nodes can be crossed, so it is enough to compute the table at sizes \(0,\ldots,n+e\). To avoid referring to a later context-size entry, fill this finite table in increasing code order, for all these sizes, with the universal clause at the top boundary set arbitrarily; no value reachable from the requested \((n,e)\) uses that boundary. All loops have primitive-recursive bounds, and their updates use only decoding, symbol tests and earlier table entries. <a href="coding-finite-sequences#history-recursion">Recursion on finite histories</a> makes this a primitive-recursive computation. Tracking the presence of original free names and auxiliary constants gives the restricted predicates. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="coding-is-faithful" data-formal="proofcode-term-injective proofcode-formula-injective proofcode-sentence-injective proofcode-sentence-recognition-exact proofcode-mixed-recognition proofcode-mixed-injective proofcode-named-injective proofcode-mixed-term-recognition proofcode-closed-term-recognition-exact proofcode-named-form-recognition-exact" data-kind="theorem">
+  <h2>Decoding recovers the original syntax</h2>
+  <p>For every scoped term or formula, encoding and then decoding at its context size returns that same expression. Conversely, every code accepted by the corresponding recognition test decodes to exactly one expression with that code. In particular, coding is injective.</p>
+  <p class="proof-label">Proof</p>
+  <p>For the first direction use <a href="first-order-languages#structural-induction">structural induction</a>. Unpairing recovers the tag and list exactly; list decoding recovers the symbol name and ordered children. The induction hypotheses recover each child, including the body at size \(n+1\) under a quantifier. For the converse use strong induction on the accepted code. Its successful case selects a unique constructor. The symbol name and arity fix its argument type, and each accepted child has a smaller code, so the induction hypotheses reconstruct its children uniquely. The two constructions are inverse. If two expressions have one code, decoding that code recovers both, so they are equal. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This is a coding of the earlier syntax itself. Scoped indices retain their meaning, and formulas that happen to be logically equivalent need not have equal codes.</p>
+</section>
+
+<section id="coded-substitution" data-formal="proofcode-substitution proofcode-substitution-primitive proofcode-substitution-correct proofcode-mixed-substitution-correct proofcode-numeral-primitive proofcode-numeral-correct" data-kind="theorem">
+  <h2>Substitution and numerals can be computed on codes</h2>
+  <p>There are primitive-recursive functions \(\operatorname{num}(m)\) and \(\operatorname{sub}(n,e,i,t)\) such that</p>
+  <div class="math-display">\[\operatorname{num}(m)=\ulcorner\overline m\urcorner,\qquad \operatorname{sub}(n,\ulcorner A\urcorner,i,\ulcorner t\urcorner)=\ulcorner A[t/x_i]\urcorner.\]</div>
+  <p>In the substitution assertion, \(A\) is a scoped formula at context size \(n\) and \(t\) has no placeholders. Invalid inputs return zero. The operation leaves all placeholders alone and inserts each replacement unchanged. It is the <a href="first-order-languages#substitution">existing free-name substitution</a>.</p>
+  <p class="proof-label">Proof</p>
+  <p>Start \(\operatorname{num}(0)\) with the zero-term code, and attach one successor node at each recursion step. For substitution, process the finite syntax tree from children to parent. At the free-name leaf \(x_i\) return \(t\); at other free names, auxiliary constants and every placeholder return the original leaf. At an application or logical constructor rebuild the node from its computed children. The number of nodes visited is bounded by the original code. Although the output code can be much larger than the input, a bounded traversal with a coded table of earlier outputs is still primitive recursive: the <em>loop count</em> is bounded, not the values it produces. Induction on the expression proves that this calculation is exactly substitution. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="coded-instantiation" data-formal="proofcode-instantiation proofcode-instantiation-primitive proofcode-instantiation-correct proofcode-constant-replacement-primitive proofcode-constant-replacement-correct" data-kind="theorem">
+  <h2>Opening a bound slot and replacing constants are also effective</h2>
+  <p>The code of the <a href="first-order-languages#bound-slot-instantiation">instance</a> \(A(t)\) is primitive recursive in the codes of the one-slot body \(A\) and closed term \(t\), allowing auxiliary constants but no original free names in either. So is uniform replacement of one auxiliary constant by a closed term. Both operations return zero on invalid inputs.</p>
+  <p class="proof-label">Proof</p>
+  <p>For opening the outer slot, replace a placeholder leaf \(z_0\) by \(t\), and replace every \(z_{j+1}\) by \(z_j\). Rebuild all constructors, including those below further quantifiers; these quantifiers now bind the shifted indices. An auxiliary constant remains unchanged. The inserted term has no placeholders, so it cannot be captured. Constant replacement instead changes exactly the matching auxiliary-constant leaf and leaves every variable index alone. Both are bounded tree traversals of the same kind as <a href="#coded-substitution">free-name substitution</a>. Structural induction proves agreement with the stated operations. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="freshness-tests" data-formal="proofcode-aux-occurrence proofcode-aux-occurrence-primitive proofcode-aux-occurrence-correct proofcode-fresh-name proofcode-fresh-name-primitive proofcode-fresh-name-absent" data-kind="lemma">
+  <h2>Freshness is a finite test</h2>
+  <p>The tests “\(c_j\) occurs in \(A\)” and “\(c_j\) occurs in some member of the finite context \(\Gamma\)” are primitive recursive on codes. So is a function choosing an auxiliary constant absent from a given finite list of expressions.</p>
+  <p class="proof-label">Proof</p>
+  <p>During the syntax traversal, record whether a leaf has the auxiliary-constant tag and index \(j\). Take the disjunction over children and over the coded finite context. For a fresh index, record the largest auxiliary index in the list and add one; take zero when no auxiliary constant occurs. Maximum is computed by a bounded list fold. The result exceeds every index in the list, and all these operations are primitive recursive. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Checking that a constant is absent only from the conclusion is insufficient. The rules also inspect the one-slot body and all assumptions left open, exactly as in <a href="first-order-proofs#fresh-parameters">the freshness conditions</a>.</p>
+</section>
+
+<section id="finite-proof-records" data-formal="proofcode-proof-context proofcode-proof-conclusion" data-kind="definition">
+  <h2>A proof record includes the information needed to check its rule</h2>
+  <p>Record a finite derivation tree by nodes containing a rule tag, a finite context of undischarged assumptions, the concluding extended sentence, the child proof records and the rule's extra data. Extra data include the closed witness term for a quantifier instance, the one-slot body for equality substitution, the fresh constant for an eigenparameter rule and the assumption being discharged. Store the code of each piece in a tagged finite list. Each child proof is a smaller code, by the same successor-pair construction as for syntax.</p>
+  <p>Contexts are finite lists interpreted as sets; repetitions and order have no effect on derivability. A node may allow a larger context than the union of the actual remaining open assumptions. This is precisely <a href="first-order-proofs#proof-operations">weakening</a>. It is checked by bounded membership tests between the displayed finite lists. Discharging \(A\) checks a child under \(\Gamma\cup\{A\}\). It permits zero or more uses of \(A\), as the original rule does. A use that is to remain open is included separately in the parent context.</p>
+  <p>Use primitive propositional rules, the four quantifier rules and the two equality rules. Any derived proof operation is first expanded into its finite proof-tree construction. We shall not accept a rule tag meaning merely “a valid consequence.”</p>
+</section>
+
+<section id="local-rule-checker" data-formal="proofcode-local-checker proofcode-local-checker-primitive" data-kind="theorem">
+  <h2>Every primitive inference has a primitive-recursive check</h2>
+  <p>Whether a node is a correct application of its displayed rule is primitive recursive. It checks extended-sentence and closed-term validity, the exact conclusions of its children, the context conditions and the following rule-specific data.</p>
+  <ul>
+    <li>An assumption must belong to its finite context. Implication introduction checks a child concluding \(B\) under \(\Gamma\cup\{A\}\) and concludes \(A\to B\). Implication elimination checks \(A\to B\) and \(A\). The other classical propositional rules use their stated finite patterns and discharged assumptions.</li>
+    <li>Universal elimination checks \(\forall z_0 A\) and concludes \(A(t)\) for its displayed closed term. Existential introduction checks \(A(t)\) and concludes \(\exists z_0 A\).</li>
+    <li>Universal introduction checks \(A(c_j)\), concluding \(\forall z_0 A\), and checks that \(c_j\) is absent from \(A\) and the parent context. Existential elimination checks \(\exists z_0 A\) and a proof of \(B\) under the parent context together with \(A(c_j)\); it checks absence of \(c_j\) from \(A\), \(B\) and the parent context.</li>
+    <li>Equality introduction concludes \(t=t\) for a closed term. Equality elimination checks \(s=t\) and \(A(s)\), and concludes \(A(t)\), using its displayed one-slot body.</li>
+  </ul>
+  <p class="proof-label">Proof</p>
+  <p>There are only finitely many rule tags. Each case uses equality of numbers, finite context membership, syntax recognition, an already constructed substitution or freshness test, and fixed formula constructors. These are all primitive recursive and are closed under finite Boolean combinations. Rule data are supplied in the record, so we never search without a bound for a witness term or a possible formula body. This last point matters: the conclusion need not contain the term used to derive it. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="global-proof-checker" data-formal="proofcode-derivation-checker proofcode-derivation-checker-primitive proofcode-checked-sequent" data-kind="theorem">
+  <h2>Checking a whole finite proof needs only bounded work</h2>
+  <p>There is a primitive-recursive predicate \(\operatorname{Der}(d,\gamma,a)\) saying that \(d\) is a correctly formed derivation record with context code \(\gamma\) and conclusion code \(a\). Every child is checked, not just the last inference.</p>
+  <p class="proof-label">Proof</p>
+  <p>Traverse all proof subcodes in increasing code order. Accept a node only if its local rule test passes and all its child nodes have already been accepted with the required contexts and conclusions. Child codes are strictly smaller. Decode the record's finite context and reject malformed entries and entries that are not extended sentences. A finite table up to \(d\) records the result; its construction is primitive recursive by bounded history recursion. Its root entry, together with equality of the displayed context and conclusion, is the required predicate. Induction on the record proves that acceptance has exactly the stated meaning. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="enumerated-axioms" data-formal="proofcode-enumerated-theory eff-enumerable-axiom-certificates" data-kind="definition">
+  <h2>An enumerable axiom can carry a finite certificate</h2>
+  <p>Suppose a theory \(T\) is supplied by a primitive-recursive relation \(E(a,s)\) with</p>
+  <div class="math-display">\[A\in T\quad\Longleftrightarrow\quad\exists s\;E(\ulcorner A\urcorner,s).\]</div>
+  <p>Here \(A\) ranges over sentences of the original language. The number \(s\) certifies that \(A\) is an axiom. This includes a primitive-recursive axiom test, by ignoring \(s\), and <a href="universal-computation#finite-certificates">an enumeration</a>, by using a finite successful computation record as certificate. It does not assume that membership in \(T\) is decidable. An unsuccessful wait for an axiom gives no evidence that it will never appear.</p>
+</section>
+
+<section id="certified-proofs" data-formal="proofcode-certified-proof" data-kind="definition">
+  <h2>Certify the open assumptions as well as the inferences</h2>
+  <p>A <strong>certified \(T\)-proof</strong> consists of a derivation record \(d\), its finite root context \(\Gamma=(A_0,\ldots,A_{r-1})\), and witnesses \((s_0,\ldots,s_{r-1})\) with \(E(\ulcorner A_i\urcorner,s_i)\) for every \(i&lt;r\). Its conclusion must be a sentence in the original language, and every root assumption must also belong to that language. Auxiliary constants may occur in its internal extended sentences and closed terms, subject to the checked freshness conditions.</p>
+  <p>Let \(\operatorname{Prf}_E(p,a)\) mean that \(p\) is such a certified proof concluding with code \(a\). Reject malformed records, incorrect inferences, mismatched certificate-list lengths, auxiliary constants in the root context or conclusion, and unsuccessful axiom certificates.</p>
+</section>
+
+<section id="proof-certificate-theorem" data-formal="proofcode-certified-checker proofcode-certificate-derivability" data-kind="theorem">
+  <h2>Derivability is existence of a checkable certificate</h2>
+  <div class="statement-box"><p>For an effective signature and a theory supplied by a primitive-recursive axiom-certificate relation \(E\), the predicate \(\operatorname{Prf}_E\) is primitive recursive. For every original-language sentence \(A\),</p>
+    <div class="math-display">\[T\vdash A\quad\Longleftrightarrow\quad\exists p\;\operatorname{Prf}_E(p,\ulcorner A\urcorner).\]</div>
+    <p>The derivability on the left is the corpus's existing first-order natural deduction.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>The checker first applies \(\operatorname{Der}\), then performs bounded tests on the two finite lists at the root. Each axiom test is an application of the supplied primitive-recursive relation \(E\). Original-language membership is another finite syntax traversal. Hence the complete check is primitive recursive.</p>
+  <p>If a certificate passes, decode its derivation and induct on its nodes. Each accepted local tag is exactly its corresponding natural-deduction rule, with the checked closedness and freshness conditions; checked context inclusions justify weakening. Its root assumptions are axioms by their certificates. Thus the decoded finite proof establishes \(T\vdash A\).</p>
+  <p>Conversely, take a finite proof of \(A\) from \(T\), expanding its derived proof operations into primitive rules. Its finitely many auxiliary names can be renamed to distinct names from our countable supply, avoiding the finitely many names already in use. At each node list its actual remaining open assumptions and the finite additional contexts used by discharged subproofs. Encoding the formulas, closed witnesses, one-slot bodies and rule choices gives an accepted derivation record. The finite root context consists of axioms of \(T\). Choose one witness \(s_i\) for each of those finitely many axioms and attach their list. The resulting certified code passes \(\operatorname{Prf}_E\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>This theorem concerns calculations on ordinary natural numbers. It has not yet produced a formula of \(Q\) expressing the checker, nor proved that arithmetic can establish its correctness for all codes.</p>
+</section>
+
+<section id="check-every-line" data-formal="proofcode-circular-checker proofcode-identity-record proofcode-circular-false fod-empty-theory-consistent" data-kind="question">
+  <h2>Why must premises come from smaller proofs?</h2>
+  <p>Suppose a proposed linear proof checker allows modus ponens to use the line currently being checked. What goes wrong even if every implication on an earlier line was proved correctly?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>First prove \(A\to A\), which is a logical theorem. On the next line put any sentence \(A\). The defective checker can use the earlier \(A\to A\) and the current \(A\) itself as its two premises. It therefore accepts \(A\), even when \(A=\bot\). A genuine proof is well-founded: premise lines have strictly earlier indices, or premise trees are strictly smaller child trees. The fact that each individual rule is sound does not make a circular purported proof sound.</p>
+  </div></details>
+</section>
+
+<section id="proof-transformations" data-formal="proofcode-node-primitive proofcode-modus-ponens-record proofcode-implication-record proofcode-modus-ponens-accepted proofcode-implication-accepted proofcode-modus-ponens-primitive proofcode-implication-primitive" data-kind="lemma">
+  <h2>Finite proof constructions can be carried out on codes</h2>
+  <p>The following two constructions on accepted proof records are primitive recursive on their codes, whenever their displayed context conditions hold. Joining proofs of \(A\to B\) and \(A\) gives a proof of \(B\); adding implication introduction gives a proof of \(A\to B\) from a proof of \(B\) under the extra assumption \(A\). For these two operations the existing auxiliary names may be retained: neither operation introduces an eigenparameter or changes the internal freshness conditions of either child.</p>
+  <p class="proof-label">Proof</p>
+  <p>Each construction forms a fixed tagged list from its supplied data and copies or combines finite contexts. All these list operations are primitive recursive. The implication-elimination and implication-introduction checker clauses prove that the respective new root is accepted, while the earlier roots already certify its children. The established operations here attach an inference to unchanged child records; the result does not decide whether an arbitrary sentence has a proof. <span class="qed" aria-label="End of proof">□</span></p>
+</section>

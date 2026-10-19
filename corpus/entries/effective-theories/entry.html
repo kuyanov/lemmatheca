@@ -1,0 +1,127 @@
+<section id="effective-presentations" data-formal="eff-code-enumerable eff-proof-presentation eff-provability" data-kind="definition">
+  <h2>Giving axioms to a program</h2>
+  <p>Fix a finite first-order language with a specified numerical code for its symbols, terms and formulas, and the classical <a href="first-order-proofs#derivations-and-theories">natural-deduction calculus</a>. Auxiliary constants are indexed by natural numbers. Use the <a href="coding-formal-proofs#tagged-syntax">effective syntax coding</a>, including its tests for well-formed expressions and sentences. A <strong>computably enumerable axiom set</strong> is a set \(A\) of sentences whose codes form a <a href="universal-computation#decidable-and-enumerable">computably enumerable set</a>. Its deductive closure is</p>
+  <div class="math-display">\[\operatorname{Cn}(A)=\{\sigma:A\vdash\sigma\}.\]</div>
+  <p>We call \(A\) an <strong>effective axiomatization</strong> of this closure. Here “enumerable” always means computably enumerable, rather than merely countable. The program may have stages with no output and may repeat axioms. A decidable axiom set is enumerable, but deciding whether a sentence is an axiom is stronger than eventually recognizing that it is one.</p>
+  <p>We use the finite arithmetic language for the proof-coding construction. The same construction applies to the empty language and the language with one binary relation: only the finite symbol tables and their arities change. No arbitrary set of relation names is supplied to a program without an effective presentation.</p>
+</section>
+
+<section id="certified-search" data-formal="eff-certified-presentation proofcode-certificate-derivability eff-enumerable-axiom-certificates eff-empty-signature eff-order-signature eff-proof-presentation eff-provability" data-kind="lemma">
+  <h2>Certificates make every individual check finite</h2>
+  <p>For an enumerable axiom set \(A\), choose a primitive-recursive relation \(R(a,s)\) satisfying</p>
+  <div class="math-display">\[\sigma\in A\quad\Longleftrightarrow\quad\exists s\,R(\ulcorner\sigma\urcorner,s).\]</div>
+  <p>Such a relation is supplied by the <a href="universal-computation#finite-certificates">finite-certificate description of enumeration</a>. The code \(s\) can record a successful finite run of the axiom-enumerating program. In a proposed proof, accompany every use of a nonlogical axiom with its own successful certificate. Keep the usual rule labels, instantiating terms, discharged assumptions and fresh auxiliary names.</p>
+  <p>The <a href="coding-formal-proofs#certified-proofs">certified proof checker</a> gives a primitive-recursive predicate \(\operatorname{Check}_A(p,n)\): it accepts precisely when \(p\) codes a certified closed derivation whose conclusion has code \(n\). In particular,</p>
+  <div class="math-display">\[A\vdash\sigma\quad\Longleftrightarrow\quad\exists p\,\operatorname{Check}_A(p,\ulcorner\sigma\urcorner).\]</div>
+  <p class="proof-label">Proof</p>
+  <p>An accepted code decodes to a finite derivation. Every axiom certificate verifies membership in \(A\), and every other node passes the actual logical rule and freshness tests, so forgetting the certificates gives a derivation from \(A\). Conversely, a derivation has only finitely many open axiom leaves. Each of their sentences is enumerated eventually, so choose a successful certificate for each leaf. These finitely many choices give an accepted certified proof code. There is no attempt to reject an axiom merely because it has not appeared yet. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="theorem-enumeration" data-formal="eff-actual-theorems-enumerable eff-enumeration eff-enumeration-primitive eff-enumeration-exact eff-theorem-enumerable" data-kind="theorem">
+  <h2>Every provable sentence eventually appears</h2>
+  <div class="statement-box"><p>If \(A\) is a computably enumerable axiom set, then the codes of sentences provable from \(A\) form a computably enumerable set.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>At stage \(t\), decode \(t\) as a pair \(\langle p,n\rangle\) using the <a href="coding-finite-sequences#square-pairing">fixed pairing code</a>. Check whether \(n\) is a sentence code and \(\operatorname{Check}_A(p,n)\) holds. If so, output \(n\); otherwise output nothing at this stage. Every stage is finite. Every output is the conclusion of a proof, and every provable sentence has a certified proof code, hence appears at the stage coding that pair. Repeated outputs do no harm. This also works when there are no outputs; it never assumes that a next theorem must exist. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Equivalently, a sentence \(\sigma\) can be recognized by testing \(p=0,1,2,\ldots\) until \(\operatorname{Check}_A(p,\ulcorner\sigma\urcorner)\) succeeds. All individual tests terminate, and the search terminates exactly when \(A\vdash\sigma\).</p>
+</section>
+
+<section id="consequence-search" data-formal="eff-semantic-consequences-enumerable eff-equality-validity-search eff-order-validity-search henkin-deductive-completeness" data-kind="theorem">
+  <h2>Semantic consequences can also be searched for</h2>
+  <p>Under the same effective presentation, the sentences true in every model of \(A\) form a computably enumerable set. In particular, the valid sentences of each of our finite languages are enumerable.</p>
+  <p class="proof-label">Proof</p>
+  <p>The <a href="henkin-completeness#deductive-completeness">soundness and completeness theorem</a> identifies \(A\models\sigma\) with \(A\vdash\sigma\). Apply <a href="#theorem-enumeration"></a>. For logical validity take \(A=\varnothing\). This use of completeness turns a semantic specification into a proof search; it does not supply a stopping rule when the sentence is not a consequence. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="completeness-and-consistency" data-formal="eff-completeness eff-consistency fod-consistency theory-complete" data-kind="definition">
+  <h2>The hypotheses that make two searches sufficient</h2>
+  <p>The axiom set \(A\) is <strong>consistent</strong> when \(A\nvdash\bot\), and <strong>negation-complete</strong> when every sentence \(\sigma\) satisfies \(A\vdash\sigma\) or \(A\vdash\neg\sigma\). For a consistent axiom set these alternatives are mutually exclusive: two such proofs give \(\bot\) by implication elimination, since \(\neg\sigma\) abbreviates \(\sigma\to\bot\). Thus exactly one alternative holds when both hypotheses hold.</p>
+  <p>By <a href="henkin-completeness#deductive-completeness">completeness</a>, consistency is equivalent to having a model, and negation-completeness then agrees with the corpus’s <a href="theories-and-axiomatization#complete-theories">definition of a complete theory</a>. We keep the two conditions visible because they do different jobs in the algorithm.</p>
+</section>
+
+<section id="complete-decision" data-formal="eff-actual-complete-decidable eff-stage-test eff-stage-primitive eff-stage-specification eff-two-sided-search eff-search-recursive eff-search-total eff-search-correct eff-decision eff-decision-computable eff-decision-specification eff-complete-effective-decidable" data-kind="theorem">
+  <h2>A complete effective theory has a decision procedure</h2>
+  <div class="statement-box"><p>Let \(A\) be a consistent, negation-complete, computably enumerable axiom set in a fixed effective finite language. There is a total computable function that returns \(1\) on the codes of sentences provable from \(A\), and \(0\) on every other natural number.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>First test whether the input \(n\) is a sentence code. If not, return \(0\). Otherwise it codes a sentence \(\sigma\). Construct the code \(\operatorname{neg}(n)=\ulcorner\neg\sigma\urcorner\), an effective syntactic operation. For stages \(s=0,1,2,\ldots\), compute the two bounded tests</p>
+  <div class="math-display">\[B_+(s,n)\iff\exists p\le s\,\operatorname{Check}_A(p,n),\qquad B_-(s,n)\iff\exists p\le s\,\operatorname{Check}_A(p,\operatorname{neg}(n)).\]</div>
+  <p>Stop at the first stage for which either test succeeds. Return \(1\) if the positive test succeeds, and \(0\) otherwise. Each stage does finitely many terminating checks. Negation-completeness gives a certified proof on one side, so the search reaches such a stage. Consistency prevents both tests from succeeding and prevents a negative answer when a positive proof exists. Conversely, a positive answer exhibits a proof. Thus the output has precisely the asserted meaning on all inputs. The initial sentence test is a terminating conditional: invalid inputs return immediately. On the sentence branch, negation-completeness guarantees that the search succeeds. Bounded checks, unbounded search on that branch, and extraction of the final Boolean value are computable by the <a href="partial-recursive-functions#search-correctness">total-search construction</a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The program does not test whether the axiom set is consistent or complete. Those are mathematical hypotheses proving that this particular program terminates and answers correctly. They are not additional subroutines.</p>
+</section>
+
+<section id="stalled-search" data-formal="eff-search-stalls eff-empty-theory-search-stalls eff-empty-theory-undecided theory-empty-equality-incomplete" data-kind="question">
+  <h2>Why is one search not enough?</h2>
+  <p>What happens if we search for a proof of \(\sigma\) alone? What can happen to the two-sided procedure if negation-completeness is omitted? Give an example with a finite axiom set.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>A one-sided search runs forever when no proof of \(\sigma\) exists. In the empty equality theory, let \(\sigma=\exists x\exists y\,(x\ne y)\). A one-element structure falsifies \(\sigma\), while a two-element structure satisfies it. Soundness therefore rules out proofs of both \(\sigma\) and \(\neg\sigma\) from the empty theory. The two-sided procedure runs forever on this sentence. The axiom set is finite, decidable and consistent; the missing hypothesis is negation-completeness.</p>
+    <p>If consistency is omitted, two proof searches may both succeed. The rule “answer no upon finding a negative proof” is then no longer justified, since a negative proof no longer excludes a positive one. An inconsistent classical theory itself has the trivial theoremhood procedure that accepts every sentence code, but the preceding justification of the two-sided procedure does not apply.</p>
+  </div></details>
+</section>
+
+<section id="effective-elimination" data-formal="qe-quantifier-elimination eff-algorithm" data-kind="definition">
+  <h2>From quantifier elimination to an algorithm</h2>
+  <p>A theory has <a href="quantifier-elimination#equivalence-modulo-a-theory">quantifier elimination</a> when each formula has some equivalent quantifier-free formula modulo the theory, using only its original available variables. <strong>Effective quantifier elimination</strong> additionally supplies a terminating program that produces such a formula from the input formula. Choosing an equivalent formula by an arbitrary existence argument does not by itself produce a program.</p>
+  <p>We now give finite instructions for the two existing examples: \(T_\infty\), the theory of infinite sets in the empty language, and \(T_{\mathrm{dlo}}\), dense linear orders without endpoints in the language with one strict order relation. Formulas use the <a href="first-order-languages#scoped-formulas">shared scoped syntax</a>; \(\land,\lor,\neg,\exists,\top\) retain their fixed abbreviations in \(\bot,\to,\forall\). Labels such as \(x,y_i\) below denote available slots or free names, not newly added constants.</p>
+</section>
+
+<section id="finite-boolean-algorithms" data-formal="eff-normal-form eff-normal-form-correct" data-kind="lemma">
+  <h2>Finite lists implement the Boolean part</h2>
+  <p>A quantifier-free formula can be effectively converted to a finite disjunction of finite conjunctions of literals. Represent a disjunction by a list of clauses and a clause by a list of literals. The empty clause is \(\top\); the empty clause list is \(\bot\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Push negations toward atoms using the truth-table identities, replacing implication by \(\neg P\lor Q\) and cancelling double negations. Atoms and negated atoms become one-literal clauses. For disjunction concatenate the two lists of clauses. For conjunction take every pair of clauses and concatenate that pair. The identity \((\bigvee_i C_i)\land(\bigvee_j D_j)\equiv\bigvee_{i,j}(C_i\land D_j)\) proves the conjunction step, including either empty list. The constant \(\top\) contributes the singleton list containing the empty clause; \(\bot\) contributes the empty list. Induction on the finite input formula proves termination and truth preservation, as in the <a href="propositional-normal-forms#normal-form-theorem">normal-form theorem</a>. These are list operations, not searches for Boolean equivalence. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="equality-algorithm" data-formal="eff-equality-clause eff-equality-clause-correct" data-kind="lemma">
+  <h2>An explicit equality-elimination routine</h2>
+  <p>Given a conjunction of equality literals \(C(x,\bar y)\), the following routine removes \(\exists x\). There are no function or constant symbols, so every term is a variable. Syntactic variable comparisons are finite numerical tests.</p>
+  <ol>
+    <li>Delete \(x=x\). If \(x\ne x\) occurs, return \(\bot\).</li>
+    <li>Reverse equalities and inequalities when needed to put the distinguished \(x\) on the left. If a literal \(x=y_i\) occurs with \(y_i\ne x\) syntactically, choose the first such literal and replace every occurrence of \(x\) by \(y_i\) in the whole clause. Return this substituted clause, with the now-unused distinguished slot removed.</li>
+    <li>Otherwise delete all literals \(x\ne y_i\), and return the conjunction of the remaining literals, with the unused distinguished slot removed.</li>
+  </ol>
+  <p class="proof-label">Proof</p>
+  <p>In the second case any witness must equal the selected parameter value, and that value supplies a witness exactly when the substituted clause holds. In the third case \(x\) is constrained only to avoid finitely many parameter values, so infinitude provides a witness. When there are no excluded values, nonemptiness suffices. The independent literals remain in the output even if they contradict one another. The <a href="quantifier-elimination#equality-elimination">equality-elimination proof</a> justifies each branch. A finite scan and finite capture-safe substitution implement the routine. The implementation may retain harmless tautologies and contradictions such as \(y_i=y_i\) or \(\neg\top\) instead of simplifying them; these outputs have the same meaning as the cases described above. There is no quantifier below which to substitute, since the clause consists of literals. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="order-algorithm" data-formal="eff-positive-clause-correct eff-order-clause eff-order-clause-correct" data-kind="lemma">
+  <h2>An explicit dense-order elimination routine</h2>
+  <p>For \(T_{\mathrm{dlo}}\), first replace \(u\ne v\) by \((u&lt;v)\lor(v&lt;u)\), and \(\neg(u&lt;v)\) by \((u=v)\lor(v&lt;u)\). These identities use linearity. Distribute the finite choices as in <a href="#finite-boolean-algorithms"></a>, obtaining conjunctions of positive equalities and strict inequalities.</p>
+  <p>In each clause delete \(x=x\), and return \(\bot\) if \(x&lt;x\) occurs. If an equality fixes \(x\) to another variable, substitute that variable throughout, as in <a href="#equality-algorithm"></a>. Otherwise keep the conjunction \(C(\bar y)\) of all atoms not involving \(x\), and collect the remaining atoms into the two finite lists \(y_i&lt;x\) and \(x&lt;y_j\). Return</p>
+  <div class="math-display">\[C(\bar y)\land\bigwedge_{i\in L,\,j\in U} y_i&lt;y_j.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>The <a href="quantifier-elimination#finite-bounds">finite-bounds lemma</a> says precisely that these pairwise comparisons are necessary and sufficient for a witness. If both lists are nonempty, density gives a point between their greatest lower and least upper values. If exactly one list is nonempty, the appropriate absence of an endpoint supplies the witness. If both are empty, use nonemptiness; the comparison conjunction is then empty and equals \(\top\). Computing all pairs of finite lists requires no comparison between unknown domain elements: the output consists of the corresponding symbolic atoms. As in the equality routine, inconsistent parameter requirements and harmless \(\top\) conjuncts may be left in the output. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="elimination-termination" data-formal="eff-algorithm eff-elimination-quantifier-free eff-equality-algorithm-correct eff-order-algorithm-correct eff-relational-syntax-code eff-relational-syntax-code-agreement eff-relational-sentence-code-agreement eff-relational-code-roundtrip eff-relational-code-exact eff-coded-elimination eff-coded-elimination-primitive eff-coded-elimination-specification" data-kind="theorem">
+  <h2>Both elimination procedures terminate and preserve meaning</h2>
+  <div class="statement-box"><p>There are total algorithms \(E_=\) and \(E_&lt;\) on the shared formula syntax. Their outputs are quantifier-free formulas using only the input’s available variables, and</p><div class="math-display">\[\varphi\equiv_{T_\infty}E_=(\varphi),\qquad\varphi\equiv_{T_{\mathrm{dlo}}}E_&lt;(\varphi).\]</div></div>
+  <p class="proof-label">Proof</p>
+  <p>Recurse on the input’s formula tree. Leave atoms and \(\bot\) unchanged. Combine the recursive outputs for Boolean connectives. For \(\exists x\,\varphi\), first recursively eliminate quantifiers from \(\varphi\). Apply the finite Boolean conversion, apply the appropriate one-clause routine to every clause, and disjoin the results. A universal formula is processed as \(\neg\exists x\neg\varphi\), reusing the already computed output for its body rather than making a recursive call on a larger rewritten formula.</p>
+  <p>Every recursive call is on a proper subformula of the original input. Every subsequent list manipulation is finite. Thus induction on the input tree proves termination. The same induction proves correctness: Boolean operations preserve equivalence, existential quantification distributes over a finite disjunction, and the two clause routines preserve the existential meaning. The removed slot is the newest, final slot; every earlier bound-slot index stays unchanged. No step introduces a new free name, constant or function symbol. The procedures are therefore effective refinements of the <a href="quantifier-elimination#one-quantifier">one-quantifier criterion</a>, rather than choices of unspecified equivalents. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="sentence-decision" data-formal="eff-sentence-decision eff-equality-sentence-decision eff-order-sentence-decision eff-coded-decision eff-coded-decision-primitive eff-coded-decision-invalid eff-equality-coded-decision eff-order-coded-decision henkin-deductive-completeness" data-kind="theorem">
+  <h2>Equality and dense-order sentences are decidable</h2>
+  <div class="statement-box"><p>The theories \(T_\infty\) and \(T_{\mathrm{dlo}}\) have decidable sets of consequences. For each theory there is a total algorithm that rejects malformed or nonsentence codes, and on a sentence code returns \(1\) exactly when every model of the theory satisfies that sentence.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Test the input code and eliminate quantifiers if it is a sentence. In either language there are no constants or function symbols, and therefore no closed terms. A quantifier-free sentence has no atomic subformula: an atom would need at least one closed term. Its only ingredients are \(\top,\bot\) and Boolean connectives. Evaluate these by their finite truth tables, returning \(1\) for true and \(0\) for false.</p>
+  <p>Correctness of elimination shows that every model of the relevant theory gives the original sentence this same truth value. Each theory has a model—the natural numbers for equality and the rationals for strict order—so a false result really excludes consequence. Soundness and completeness make the same algorithms decisions of formal theoremhood. No bound on the time needed for a proof search is used. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="effective-examples" data-formal="eff-algorithm-examples" data-kind="question">
+  <h2>Following a decision procedure by hand</h2>
+  <p>Decide the following sentences by eliminating their quantifiers. Use \(T_\infty\) for the first and \(T_{\mathrm{dlo}}\) for the other two:</p>
+  <div class="math-display">\[\forall y\exists x\,(x\ne y),\qquad \forall y\forall z\,(y&lt;z\to\exists x\,(y&lt;x\land x&lt;z)),\qquad \exists x\forall y\,(x&lt;y).\]</div>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>In the equality theory, \(\exists x\,(x\ne y)\) reduces to \(\top\), so its universal closure also reduces to \(\top\). In the second sentence, the existential reduces to \(y&lt;z\). The resulting implication \((y&lt;z)\to(y&lt;z)\) is always true, so the answer is again \(1\).</p>
+    <p>In the third sentence, rewrite the inner universal as \(\neg\exists y\,\neg(x&lt;y)\). Linearity replaces the negated atom by \((x=y)\lor(y&lt;x)\). The first disjunct has witness \(y=x\), and the second has a witness by the absence of a least element. Thus the inner existential reduces to \(\top\), the universal to \(\bot\), and the original sentence to \(\bot\). Its answer is \(0\). In particular, no element is strictly below every element, including itself.</p>
+  </div></details>
+</section>
+
+<section id="parameter-inputs" data-formal="qe-order-examples qe-dense-order-clause" data-kind="question">
+  <h2>What information is needed for parameters?</h2>
+  <p>Does the dense-order decision procedure give a numerical yes-or-no answer to \(\exists x\,(a&lt;x\land x&lt;b)\) when \(a,b\) are unspecified parameters? What if they are explicitly given rational numbers?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>With unspecified parameters, elimination returns the formula \(a&lt;b\). Its truth depends on their order, so a single Boolean answer would discard needed information. For explicit rational parameters, compare the two fractions by cross multiplication after making their denominators positive. This finite arithmetic test decides \(a&lt;b\), hence decides the original formula in the rational order.</p>
+    <p>More generally, once comparisons and equalities among a finite parameter tuple are supplied, every quantifier-free formula at that tuple can be evaluated by Boolean operations. A decision procedure for sentences needs no such external tuple; all its variables have been bound and eliminated.</p>
+  </div></details>
+</section>
