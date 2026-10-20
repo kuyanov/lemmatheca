@@ -34,9 +34,11 @@ def area(request, path):
     if current is None or area_path(current, taxonomy) != path:
         raise Http404("This area is not in the library.")
     area_entries = read_area_entries()
+    breadcrumbs = [area_link(item, taxonomy) for item in ancestors(current, taxonomy)]
     return render(request, "catalog/area.html", {
         "area": current,
-        "breadcrumbs": [area_link(item, taxonomy) for item in ancestors(current, taxonomy)],
+        "breadcrumbs": breadcrumbs,
+        "parent_area": breadcrumbs[-2] if len(breadcrumbs) > 1 else None,
         "areas": area_list(current["id"], taxonomy, area_entries),
         "entries": [load_entry_metadata(identifier)
                     for identifier in area_entries.get(current["id"], [])],
