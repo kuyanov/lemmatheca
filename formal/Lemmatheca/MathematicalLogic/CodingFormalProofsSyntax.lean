@@ -651,7 +651,7 @@ private theorem termCode_restrictVarLeft {α β γ : Type*} [DecidableEq α]
     intro x
     exact hf _
 
-private theorem formulaCode_restrictFreeVar {α β : Type*} [DecidableEq α]
+theorem formulaCode_restrictFreeVar {α β : Type*} [DecidableEq α]
     (name : α → ℕ) (name' : β → ℕ) {n : ℕ} (a : L.BoundedFormula α n) :
     ∀ (f : a.freeVarFinset → β), (∀ x, name' (f x) = name x.val) →
       formulaCode S name' (a.restrictFreeVar f) = formulaCode S name a := by

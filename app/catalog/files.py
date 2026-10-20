@@ -18,7 +18,8 @@ def read_record(path, identifier):
 
 
 def write_json(path, record):
-    with NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent, delete=False) as file:
+    with NamedTemporaryFile(mode="w", encoding="utf-8", newline="\n",
+                            dir=path.parent, delete=False) as file:
         temporary = Path(file.name)
         try:
             json.dump(record, file, indent=2, ensure_ascii=False)

@@ -1,0 +1,133 @@
+<section id="preserved-properties" data-formal="pres-substructure-preserved pres-extension-preserved pres-substructure-inclusion-bridge pres-extension-inclusion-bridge diag-embedding elem-embedding-image-isomorphism" data-kind="definition">
+  <h2>Which properties survive a change of domain?</h2>
+  <p>A substructure can lose witnesses, while an extension can acquire new ones. The <a href="elementary-chains#preservation">preservation rules</a> consequently send universal truth down to substructures and existential truth up to extensions. We now ask for converses: if a first-order property always survives in one of these directions, must it have the corresponding quantifier shape?</p>
+  <p>Fix an arbitrary set-sized first-order language \(L\) with equality. All structures and all substructures considered here are nonempty. We work in classical set theory with choice. An <strong>extension</strong> means an ordinary <a href="elementary-submodels#substructures">substructure inclusion</a> \(M\subseteq N\), not necessarily an elementary inclusion.</p>
+  <p>A theory \(T\) is <strong>preserved under substructures</strong> if every nonempty substructure of every model of \(T\) is again a model of \(T\). A formula \(\varphi(\bar x)\) is <strong>preserved under extensions between models of \(T\)</strong> if, whenever \(M\subseteq N\) and both structures model \(T\),</p>
+  <div class="math-display">\[M\models\varphi[\bar a]\quad\Longrightarrow\quad N\models\varphi[\bar a]\]</div>
+  <p>for every tuple \(\bar a\) from \(M\). The empty theory imposes no restriction on either structure.</p>
+  <p>Equivalently, use <a href="diagrams-and-extensions#embeddings">embeddings</a> \(f:M\hookrightarrow N\) and replace the conclusion by \(N\models\varphi[f(\bar a)]\). Indeed, an embedding is an isomorphism onto its image, which is a substructure; <a href="first-order-structures#isomorphism-invariance">isomorphism invariance</a> gives the equivalence. We will use this form when diagrams produce embedded copies.</p>
+</section>
+
+<section id="quantifier-shapes" data-formal="skolem-universal-sentence ech-existential-formula pres-universal-axiomatization fonf-equivalence pres-existential-finite-conjunction pres-existential-finite-disjunction" data-kind="definition">
+  <h2>Universal and existential descriptions</h2>
+  <p>Recall that a <strong>universal formula</strong> has the form \(\forall\bar y\,\theta(\bar x,\bar y)\), and an <strong>existential formula</strong> has the form \(\exists\bar y\,\theta(\bar x,\bar y)\), where \(\theta\) is quantifier-free. The quantified tuple can be empty. In particular, \(\top\) and \(\bot\) belong to both classes. A <strong>universal axiomatization</strong> of \(T\) is a set \(U\) of universal sentences with exactly the same nonempty models as \(T\).</p>
+  <p>Two formulas are <strong>equivalent modulo \(T\)</strong> if they have the same truth value at every tuple in every model of \(T\). We write this as</p>
+  <div class="math-display">\[T\models\forall\bar x\,(\varphi(\bar x)\leftrightarrow\psi(\bar x)).\]</div>
+  <p>This asks for a new description of the same property. It does not assert that the original written formula already has the desired shape.</p>
+  <p>Existential formulas are closed under finite conjunction and finite disjunction, up to logical equivalence. Rename their bound variables to disjoint fresh tuples. For example,</p>
+  <div class="math-display">\[(\exists\bar u\,\alpha)\land(\exists\bar v\,\beta)\Longleftrightarrow \exists\bar u\,\exists\bar v\,(\alpha\land\beta).\]</div>
+  <p>The analogous disjunction identity is valid over nonempty domains: a witness tuple for the true disjunct can be supplemented by arbitrary values for the other tuple. The matrices stay quantifier-free. Iterating gives the finite cases, with empty conjunction \(\top\) and empty disjunction \(\bot\). These are instances of the <a href="first-order-normal-forms#moving-quantifiers">quantifier-moving identities</a>.</p>
+</section>
+
+<section id="easy-directions" data-formal="pres-universal-preservation-converse pres-existential-equivalent-preserved" data-kind="lemma">
+  <h2>The quantifier shapes give the preservation directions</h2>
+  <p>If \(T\) has a universal axiomatization, then it is preserved under nonempty substructures. If \(\varphi\) is equivalent modulo \(T\) to an existential formula, then \(\varphi\) is preserved under extensions between models of \(T\).</p>
+  <p class="proof-label">Proof</p>
+  <p>For the first assertion, let \(M\models T\), let \(A\subseteq M\) be nonempty, and choose a universal axiomatization \(U\). Every sentence of \(U\) passes from \(M\) to \(A\) by <a href="elementary-chains#preservation">universal preservation</a>. Thus \(A\models U\), hence \(A\models T\).</p>
+  <p>For the second, write \(\psi\) for the equivalent existential formula. If \(M\subseteq N\) are models of \(T\) and \(M\models\varphi[\bar a]\), equivalence gives \(M\models\psi[\bar a]\). Its witnesses remain in \(N\), and its quantifier-free matrix has the same truth value there. Hence \(N\models\psi[\bar a]\), and equivalence in \(N\) gives \(N\models\varphi[\bar a]\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="universal-consequences" data-formal="pres-universal-part pres-model-universal-part" data-kind="definition">
+  <h2>Collect all universal consequences</h2>
+  <p>Define the <strong>universal part</strong> of \(T\) by</p>
+  <div class="math-display">\[T_{\forall}=\{\sigma:\sigma\text{ is a universal }L\text{-sentence and }T\models\sigma\}.\]</div>
+  <p>Every model of \(T\) satisfies \(T_{\forall}\). The difficult direction is whether those universal consequences already describe all models of \(T\). The signed diagram gives a useful intermediate conclusion.</p>
+</section>
+
+<section id="universal-diagram-test" data-formal="pres-universal-diagram-test" data-kind="lemma">
+  <h2>Universal consequences describe structures that embed into models</h2>
+  <p>For a nonempty \(L\)-structure \(M\), the following are equivalent: \(M\models T_{\forall}\); and there are a model \(N\models T\) and an embedding \(M\hookrightarrow N\).</p>
+  <p class="proof-label">Proof</p>
+  <p>An embedding identifies \(M\) with a substructure of \(N\). Universal consequences of \(T\) hold in \(N\), pass down to that image, and then hold in \(M\) by isomorphism invariance.</p>
+  <p>Conversely, suppose \(M\models T_{\forall}\). In the language \(L(M)\), consider</p>
+  <div class="math-display">\[T\cup\operatorname{Diag}(M).\]</div>
+  <p>Here \(T\) is carried into the expanded language, and \(\operatorname{Diag}(M)\) is the <a href="diagrams-and-extensions#signed-diagram">signed atomic diagram</a>, containing true atomic sentences and true negated atomic sentences. Suppose the displayed theory were unsatisfiable. By <a href="ultraproducts#compactness">compactness for arbitrary languages</a>, already \(T\) together with finitely many diagram sentences would be unsatisfiable. Conjoin those sentences into a quantifier-free sentence \(\delta(c_{a_0},\ldots,c_{a_{r-1}})\), listing all the finitely many names it uses. Replace the distinct names by distinct variables to obtain \(\delta(\bar y)\).</p>
+  <p>No model of \(T\) can satisfy \(\delta\) at any tuple: that tuple could interpret the fresh names and give a model of the supposedly unsatisfiable finite fragment. Therefore</p>
+  <div class="math-display">\[T\models\forall\bar y\,\neg\delta(\bar y).\]</div>
+  <p>This is a universal consequence of \(T\). But \(M\models\delta[\bar a]\), since each chosen diagram sentence is true in the canonical expansion of \(M\). This contradicts \(M\models T_{\forall}\). Empty conjunctions and empty name lists cause no exception: their matrices are still quantifier-free.</p>
+  <p>Thus the expanded theory has a nonempty model \(N^*\). Its reduct models \(T\), and the <a href="diagrams-and-extensions#signed-diagram-lemma">signed diagram lemma</a> supplies the embedding, sending \(a\) to \(c_a^{N^*}\). <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The expanded language can be uncountable even when \(L\) is countable, because it names every element of \(M\). This is why the arbitrary-language version of compactness is used.</p>
+</section>
+
+<section id="universal-axiomatization" data-formal="pres-universal-preservation-converse pres-universal-part-equivalent" data-kind="theorem">
+  <h2>Substructure preservation is exactly universal axiomatizability</h2>
+  <div class="statement-box"><p>A first-order theory \(T\) is preserved under nonempty substructures if and only if it has a universal axiomatization. When this holds, its universal part \(T_{\forall}\) is such an axiomatization.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>The reverse implication was proved in <a href="#easy-directions"></a>. For the forward implication, every \(T\)-model satisfies \(T_{\forall}\). If \(M\models T_{\forall}\), <a href="#universal-diagram-test"></a> embeds \(M\) into some \(N\models T\). Its image is a nonempty substructure, so preservation makes the image a model of \(T\). Isomorphism invariance makes \(M\) a model of \(T\) as well. Thus \(T\) and \(T_{\forall}\) have the same models. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The theorem concerns classes already given by first-order theories. Closure under substructures alone does not make an arbitrary class axiomatizable.</p>
+</section>
+
+<section id="universal-examples" data-formal="pres-at-most-sentence pres-at-most-universal pres-at-most-truth fo-singleton-domain-sentence fo-singleton-domain-truth pres-singleton-sentence-universal pres-exact-size-not-universal compact-finitude-not-axiomatizable" data-kind="question">
+  <h2>Which size conditions have universal axioms?</h2>
+  <p>In the language of equality alone, which of these classes has a universal axiomatization: structures with at most \(n\) elements, structures with exactly \(n\) elements, and all finite nonempty structures? Assume \(n\ge1\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The first class is described by the single universal sentence</p>
+    <div class="math-display">\[\forall x_0\cdots\forall x_n\;\bigvee_{i&lt;j\le n}x_i=x_j.\]</div>
+    <p>It says that no \(n+1\) elements are all distinct. One may instead list all pairs \(i\ne j\): each unordered pair is then listed twice, and symmetry of equality and repetition of a disjunct do not change the truth value. Exactly one element is described by \(\forall x\,\forall y\;(x=y)\), using our nonempty-domain convention. For \(n&gt;1\), the exactly-\(n\) class is not closed under nonempty substructures: any singleton subset of an \(n\)-element equality structure is a substructure outside the class. The theorem rules out a universal axiomatization, although <a href="theories-and-axiomatization#axiomatizable-classes">a first-order sentence does axiomatize exactly \(n\) elements</a>.</p>
+    <p>The class of all finite nonempty equality structures is closed under nonempty substructures. It nevertheless has no first-order axiomatization. If \(T\) axiomatized it, add the <a href="logical-compactness#size-sentences">sentences requiring at least \(k\) elements</a>, one for each \(k\). Each finite fragment holds in a sufficiently large finite model of \(T\). Compactness would give an infinite model of \(T\), a contradiction. This explains the first-order hypothesis in the theorem.</p>
+  </div></details>
+</section>
+
+<section id="existential-information" data-formal="pres-existential-information" data-kind="definition">
+  <h2>Record the existential facts about a tuple</h2>
+  <p>For a structure \(M\) and a finite tuple \(\bar a\) with variable list \(\bar x\), let</p>
+  <div class="math-display">\[E(M,\bar a)=\{\psi(\bar x):\psi\text{ is existential and }M\models\psi[\bar a]\}.\]</div>
+  <p>This set records all assertions about \(\bar a\) supported by finitely many witnesses and a quantifier-free matrix. Variables in \(\bar x\) may be unused. In particular, it records all true literals about the tuple, since a literal is existential with an empty quantifier block.</p>
+  <p>The inclusion \(E(N,\bar b)\subseteq E(M,\bar a)\) will allow us to place an embedded copy of \(N\) beside an elementary copy of \(M\), identifying their indicated tuples.</p>
+</section>
+
+<section id="compatible-diagrams" data-formal="pres-compatible-diagrams" data-kind="lemma">
+  <h2>Compatible tuple information lets two diagrams coexist</h2>
+  <p>Let \(M,N\) be nonempty \(L\)-structures and \(\bar a,\bar b\) tuples of the same finite length. If \(E(N,\bar b)\subseteq E(M,\bar a)\), then there are a structure \(C\), an elementary embedding \(j:M\to C\), and an embedding \(f:N\hookrightarrow C\) such that \(f(b_i)=j(a_i)\) for every coordinate \(i\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Use disjoint families of fresh names \(c_m\) for \(M\) and \(d_n\) for \(N\), even if the original domains overlap. Form the theory</p>
+  <div class="math-display">\[\operatorname{ElDiag}(M)\cup\operatorname{Diag}(N)\cup\{d_{b_i}=c_{a_i}:i&lt;|\bar a|\}.\]</div>
+  <p>To check finite satisfiability, retain any finitely many sentences of the elementary diagram and signed diagram, and, if necessary, include all the finitely many displayed tuple equations. Conjoin the selected signed diagram sentences into a quantifier-free formula \(\delta\). Replace the \(N\)-names belonging to the tuple \(\bar b\) by their corresponding variables \(\bar x\), and all other names that occur by distinct variables \(\bar y\).</p>
+  <p>If a value occurs more than once in \(\bar b\), use one chosen coordinate for its name and conjoin the equalities between all coordinates with that same value. The resulting existential formula \(\exists\bar y\,\delta'(\bar x,\bar y)\) is true in \(N\) at \(\bar b\). By the assumed inclusion it is true in \(M\) at \(\bar a\). Choose its witnesses in \(M\).</p>
+  <p>Expand \(M\) by interpreting each \(c_m\) as \(m\), every tuple name \(d_{b_i}\) as \(a_i\), and the other finitely many mentioned \(d\)-names by those witnesses. The coordinate equalities make the tuple-name interpretations well-defined. Interpret any remaining names arbitrarily, using nonemptiness. Every selected elementary-diagram sentence is true in the canonical \(M\)-expansion; the witnesses satisfy the selected signed-diagram sentences and the tuple equations. Thus every finite fragment is satisfiable.</p>
+  <p>Arbitrary-language compactness gives a model of the whole theory. Let \(C\) be its \(L\)-reduct, and set \(j(m)=c_m^C\) and \(f(n)=d_n^C\), reading the constants in that expanded model. The <a href="diagrams-and-extensions#elementary-diagram-lemma">elementary diagram lemma</a> makes \(j\) elementary, and the <a href="diagrams-and-extensions#signed-diagram-lemma">signed diagram lemma</a> makes \(f\) an embedding. The added equations give the stated identities at the tuples. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="existential-consequences" data-formal="pres-existential-consequences pres-existential-consequences-entail" data-kind="lemma">
+  <h2>Existential consequences suffice for an extension-preserved formula</h2>
+  <p>Suppose \(\varphi(\bar x)\) is preserved under extensions between models of \(T\). Let \(\Gamma(\bar x)\) be all its existential consequences modulo \(T\):</p>
+  <div class="math-display">\[\Gamma=\{\psi:\psi\text{ is existential and }T\models\forall\bar x\,(\varphi\to\psi)\}.\]</div>
+  <p>If \(M\models T\) and \(M\models\psi[\bar a]\) for every \(\psi\in\Gamma\), then \(M\models\varphi[\bar a]\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Adjoin a fresh tuple of constants \(\bar c\), and consider</p>
+  <div class="math-display">\[T\cup\{\varphi(\bar c)\}\cup\{\neg\psi(\bar c):\psi\text{ existential},\ M\not\models\psi[\bar a]\}.\]</div>
+  <p>This theory is satisfiable. Otherwise compactness would give finitely many excluded formulas \(\psi_1,\ldots,\psi_r\) such that</p>
+  <div class="math-display">\[T\models\forall\bar x\,(\varphi\to\psi_1\lor\cdots\lor\psi_r).\]</div>
+  <p>The disjunction is equivalent to an existential formula, including \(\bot\) when \(r=0\). That formula belongs to \(\Gamma\), so it is true at \(\bar a\) in \(M\). But each disjunct was selected because it is false there, a contradiction.</p>
+  <p>Choose a model \(N^*\) of the displayed theory. Write \(N\) for its \(L\)-reduct and put \(\bar b=\bar c^{N^*}\). Then \(N\models T\) and \(N\models\varphi[\bar b]\). Moreover \(E(N,\bar b)\subseteq E(M,\bar a)\): an existential formula false at \(\bar a\) was explicitly forbidden at \(\bar b\).</p>
+  <p>Apply <a href="#compatible-diagrams"></a> to obtain \(j:M\to C\) elementary and \(f:N\hookrightarrow C\) with \(f(\bar b)=j(\bar a)\). Elementarity makes \(C\) a model of \(T\), since \(M\models T\). Preservation along the embedding \(f\) gives \(C\models\varphi[j(\bar a)]\). Elementarity of \(j\) now reflects this truth to \(M\models\varphi[\bar a]\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="existential-preservation" data-formal="pres-existential-preservation-converse pres-downward-preserved pres-downward-inclusion-bridge pres-universal-formula-converse pres-existential-negation pres-universal-negation" data-kind="theorem">
+  <h2>Extension preservation is exactly existential definability</h2>
+  <div class="statement-box"><p>A first-order formula \(\varphi(\bar x)\) is preserved under extensions between models of \(T\) if and only if there is an existential formula \(\psi(\bar x)\) equivalent to \(\varphi\) modulo \(T\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>The reverse implication is <a href="#easy-directions"></a>. For the forward implication, let \(\Gamma\) be the existential consequences in <a href="#existential-consequences"></a>. That lemma says that \(T\) together with all formulas in \(\Gamma\) implies \(\varphi\), at every tuple. Treating the free variables as fresh constants, compactness gives finitely many \(\psi_1,\ldots,\psi_r\in\Gamma\) such that</p>
+  <div class="math-display">\[T\models\forall\bar x\,((\psi_1\land\cdots\land\psi_r)\to\varphi).\]</div>
+  <p>Conversely, \(\varphi\) implies every \(\psi_i\) modulo \(T\) by their definition. Their conjunction, written in existential form by <a href="#quantifier-shapes"></a>, is therefore the required \(\psi\). If none is needed, use \(\top\). An inconsistent \(T\) also causes no exception, because every equivalence modulo it is vacuous. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Taking \(T=\varnothing\) gives equivalence in all nonempty structures. Negating gives the dual formula theorem: \(\varphi\) passes down to substructures between models of \(T\) exactly when it is equivalent modulo \(T\) to a universal formula. Indeed, downward preservation of \(\varphi\) is upward preservation of \(\neg\varphi\), and the negation of an existential formula is universal after quantifier duality.</p>
+</section>
+
+<section id="relative-theory-question" data-formal="pres-order-above-formula pres-order-above-truth pres-order-above-not-universal" data-kind="question">
+  <h2>Why must both structures satisfy the background theory?</h2>
+  <p>Let \(T\) be the theory of strict linear orders without a greatest element. Is the formula \(\exists y\,(x&lt;y)\) equivalent modulo \(T\) to a universal formula? Does that equivalence hold in every strict linear order?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Modulo \(T\), the formula is equivalent to \(\top\), which is quantifier-free and hence universal. Every element of every \(T\)-model has a larger element. In particular, it passes down between substructures that both model \(T\).</p>
+    <p>The singleton strict order is a substructure of the two-element order \(0&lt;1\). At its sole element \(0\), the formula is false in the singleton and true in the two-element order. A universal formula could not behave this way under passage down to that singleton. Therefore no equivalence to a universal formula holds throughout the class of all strict linear orders. Neither finite order is a model of \(T\); the relative theorem did not promise preservation for them.</p>
+  </div></details>
+</section>
+
+<section id="finite-witness-question" data-formal="pres-existential-equality-finite-model pres-infinitude-not-existential pres-infinitude-not-sentence pres-size-sentence-existential compact-infinite-theory-characterization" data-kind="question">
+  <h2>Can one existential sentence say that the domain is infinite?</h2>
+  <p>In the language of equality alone, infinitude is preserved under extensions. Could one existential sentence define it?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Suppose \(\exists\bar y\,\theta(\bar y)\) were true in an infinite equality structure. Choose a witness tuple. Its entries lie in a finite nonempty subset: if the tuple is empty, choose any one element instead. Every nonempty subset is a substructure in this language. Quantifier-free agreement makes \(\theta\) true at the same tuple in that finite substructure, so the existential sentence holds there too.</p>
+    <p>There is no conflict with <a href="#existential-preservation"></a>: its input is a single first-order formula, and infinitude has no such defining sentence. If a sentence defined infinitude, its negation would axiomatize all finite nonempty structures, contradicting the <a href="#universal-examples">compactness argument above</a>. It does have an infinite existential axiomatization, namely the sentences requiring at least \(k\) distinct elements for each \(k\). The theorem does not turn an arbitrary collection of conditions into one formula.</p>
+    <p>The witness argument uses the absence of function symbols. In a language with functions, closing even one witness under the functions can produce an infinite substructure.</p>
+  </div></details>
+</section>

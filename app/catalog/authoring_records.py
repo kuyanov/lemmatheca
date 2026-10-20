@@ -207,7 +207,7 @@ class AuthoringRecords:
                         identifier(key)
             return catalog
         except (OSError, ValueError, TypeError, KeyError) as error:
-            raise AuthoringRecordError(f"Invalid or missing {directory} catalog; run index_authoring_records.") from error
+            raise AuthoringRecordError(f"Invalid or missing {directory} catalog; run build --no-lean.") from error
 
     def listing(self, kind, filters, *, limit=20, offset=0):
         catalog = self.catalog(planning=kind == "records")

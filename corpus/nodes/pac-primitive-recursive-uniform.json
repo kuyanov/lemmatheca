@@ -1,0 +1,13 @@
+{
+  "id": "pac-primitive-recursive-uniform",
+  "description": "Every function in the existing finite-arity primitive-recursive class has a presentation and a literal \\(\\Sigma_1\\) graph that uniformly represents its evaluation in PA.",
+  "module": "Lemmatheca.MathematicalLogic.PAComputations",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.primitive_recursive_uniform",
+  "dependencies": [
+    "pac-presentation-bridge",
+    "pac-uniform-sigma-one"
+  ],
+  "verified": true,
+  "declaration_line": 1075,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.primitive_recursive_uniform {n : ℕ}\n  (f : Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args n → ℕ) (hf : Nat.Primrec' f) :\n  ∃ p,\n    (p.eval = fun x => f (List.Vector.ofFn x)) ∧\n      Lemmatheca.MathematicalLogic.PAComputations.SigmaOne p.sigmaGraph ∧\n        Lemmatheca.MathematicalLogic.PAComputations.UniformlyRepresents p.eval p.sigmaGraph"
+}

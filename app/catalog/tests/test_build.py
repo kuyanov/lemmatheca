@@ -1,4 +1,4 @@
-"""Build publication orchestration and one real Lean kernel-checker batch."""
+"""The single build command prepares a coherent snapshot before publishing it."""
 
 from io import StringIO
 import json
@@ -9,361 +9,570 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from django.conf import settings
-from django.core.management import call_command, CommandError
+from django.core.management import call_command, CommandError, get_commands
 from django.test import SimpleTestCase, override_settings
 
-from catalog.corpus_index import write_index
 from catalog.files import read_json, write_json
-from catalog.proofs import build
+from catalog.proofs import prepare_proof_results
 
 
-class ProofResultsTests(SimpleTestCase):
+class ProofPreparationTests(SimpleTestCase):
     def setUp(self):
         temporary = TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
         (self.root / "nodes").mkdir()
         self.path = self.root / "nodes/example.json"
-        write_json(self.path, {"id": "example", "module": "Lemmatheca", "declaration": "example",
-                               "verified": True, "signature": "example : True", "declaration_line": 5})
-        directory = self.root / "entries/example"
-        directory.mkdir(parents=True)
-        self.metadata = directory / "entry.json"
-        self.source = directory / "entry.html"
-        write_json(self.metadata, {"id": "example", "title": "Example", "reading_time": 5,
-                                   "formalization": {"label": "Previous summary"}})
-        self.source.write_text(
-            '<section id="fact" data-kind="lemma" data-formal="example">'
-            '<h2>Example</h2><p>True.</p></section>')
-        self.statistics = self.root / "statistics.json"
-        write_json(self.statistics, {
-            "entries": 1, "verified_entries": 1, "nodes": 1,
-            "verified_nodes": 1, "contributors": 2,
+        write_json(self.path, {
+            "id": "example", "module": "Lemmatheca", "declaration": "example",
+            "verified": True, "signature": "example : True", "declaration_line": 5,
         })
 
-    def test_build_or_check_error_and_interruption_write_nothing(self):
-        previous = self.path.read_bytes()
-        modified = self.path.stat().st_mtime_ns
-        entry_before = self.metadata.read_bytes()
-        entry_modified = self.metadata.stat().st_mtime_ns
-        statistics_before = self.statistics.read_bytes()
+    def test_preparation_returns_results_without_publishing_and_ignores_unrelated_files(self):
+        before = self.path.read_bytes(), self.path.stat().st_mtime_ns
+        (self.root / "statistics.json").write_text("not a statistics snapshot")
+        output = 'NODE_STATUS {"declaration":"example","verified":false,"module":"Lemmatheca.Origin"}'
+        with patch("catalog.proofs.subprocess.run",
+                   return_value=subprocess.CompletedProcess([], 0, output)):
+            prepared = prepare_proof_results(self.root, self.root)
+        self.assertFalse(prepared["example"]["verified"])
+        self.assertEqual(prepared["example"]["module"], "Lemmatheca.Origin")
+        self.assertNotIn("signature", prepared["example"])
+        self.assertNotIn("declaration_line", prepared["example"])
+        self.assertEqual(before, (self.path.read_bytes(), self.path.stat().st_mtime_ns))
+        self.assertEqual((self.root / "statistics.json").read_text(), "not a statistics snapshot")
+
+    def test_compile_inspection_and_interruption_failures_preserve_saved_results(self):
+        before = self.path.read_bytes(), self.path.stat().st_mtime_ns
         for error in (subprocess.CalledProcessError(1, "lake"), KeyboardInterrupt()):
             for first_result in ([], [subprocess.CompletedProcess([], 0)]):
-                with self.subTest(error=type(error), check=bool(first_result)):
-                    with patch("catalog.proofs.subprocess.run", side_effect=[*first_result, error]), \
-                            patch("catalog.proofs.save_results") as save:
-                        with self.assertRaises(type(error)):
-                            build(self.root, self.root)
-                        save.assert_not_called()
-                    self.assertEqual(self.path.read_bytes(), previous)
-                    self.assertEqual(self.path.stat().st_mtime_ns, modified)
-                    self.assertEqual(self.metadata.read_bytes(), entry_before)
-                    self.assertEqual(
-                        self.metadata.stat().st_mtime_ns, entry_modified)
-                    self.assertEqual(
-                        self.statistics.read_bytes(), statistics_before)
+                with self.subTest(error=type(error), inspecting=bool(first_result)), \
+                        patch("catalog.proofs.subprocess.run", side_effect=[*first_result, error]):
+                    with self.assertRaises(type(error)):
+                        prepare_proof_results(self.root, self.root)
+                    self.assertEqual(before, (self.path.read_bytes(), self.path.stat().st_mtime_ns))
 
-    def test_build_accepts_the_same_unicode_module_names_as_validation(self):
+    def test_missing_malformed_unknown_and_duplicate_results_are_rejected(self):
+        before = self.path.read_bytes()
+        outputs = ("", 'NODE_STATUS {"declaration":"example","verified":"true"}',
+                   'NODE_STATUS []', 'NODE_STATUS {"verified":true}',
+                   'NODE_STATUS {"declaration":[],"verified":true}',
+                   'NODE_STATUS {"declaration":"example","verified":true,"typo":"value"}',
+                   'NODE_STATUS {', 'NODE_STATUS {"declaration":"other","verified":true}',
+                   'NODE_STATUS {"declaration":"example","verified":true}\n' * 2)
+        for output in outputs:
+            with self.subTest(output=output), patch("catalog.proofs.subprocess.run",
+                    return_value=subprocess.CompletedProcess([], 0, output)):
+                with self.assertRaises(ValueError):
+                    prepare_proof_results(self.root, self.root)
+                self.assertEqual(before, self.path.read_bytes())
+
+    def test_unicode_modules_are_checked_and_concurrent_authored_metadata_is_preserved(self):
         module = "Lemmatheca.Δ"
         write_json(self.path, {**read_json(self.path), "module": module})
 
         def run(command, **kwargs):
             if command[:2] == ["lake", "build"]:
                 self.assertIn(module, command)
+                write_json(self.path, {**read_json(self.path), "description": "Edited during compilation."})
                 return subprocess.CompletedProcess(command, 0)
-            source = (self.root / command[-1]).read_text()
-            self.assertIn(f"import {module}\n", source)
+            self.assertIn(f"import {module}\n", (self.root / command[-1]).read_text())
             output = 'NODE_STATUS ' + json.dumps({
                 "declaration": "example", "verified": True, "module": module,
             })
-            return subprocess.CompletedProcess(command, 0, stdout=output)
+            return subprocess.CompletedProcess(command, 0, output)
 
         with patch("catalog.proofs.subprocess.run", side_effect=run):
-            self.assertEqual(build(self.root, self.root), (1, 1))
+            result = prepare_proof_results(self.root, self.root)
+        self.assertTrue(result["example"]["verified"])
+        self.assertEqual(result["example"]["description"], "Edited during compilation.")
+        # Preparation does not persist the generated removal of old fields.
+        self.assertIn("signature", read_json(self.path))
 
-    def test_missing_or_malformed_result_writes_nothing(self):
-        previous = self.path.read_bytes()
-        entry_before = self.metadata.read_bytes()
-        for output in ("", 'NODE_STATUS {"declaration":"example","verified":"true"}',
-                       'NODE_STATUS []', 'NODE_STATUS {"verified":true}',
-                       'NODE_STATUS {"declaration":[],"verified":true}',
-                       'NODE_STATUS {"declaration":"example","verified":true,"typo":"value"}',
-                       'NODE_STATUS {', 'NODE_STATUS {"declaration":"other","verified":true}',
-                       'NODE_STATUS {"declaration":"example","verified":true}\n' * 2):
-            with self.subTest(output=output):
-                with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)), \
-                        patch("catalog.proofs.save_results") as save:
-                    with self.assertRaises(ValueError):
-                        build(self.root, self.root)
-                    save.assert_not_called()
-                self.assertEqual(self.path.read_bytes(), previous)
-                self.assertEqual(self.metadata.read_bytes(), entry_before)
-
-    def test_build_does_not_read_or_write_statistics(self):
-        self.statistics.write_text(
-            "A malformed snapshot must not affect a proof build.")
-        before = self.statistics.read_bytes()
-        output = 'NODE_STATUS {"declaration":"example","verified":false}'
-        with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
-            self.assertEqual(build(self.root, self.root), (0, 1))
-        self.assertEqual(self.statistics.read_bytes(), before)
-
-    def test_summaries_use_new_proof_results_and_preserve_metadata(self):
-        statistics_before = self.statistics.read_bytes()
-        for verified, label in [(False, "0%"), (True, "100%")]:
-            with self.subTest(verified=verified):
-                output = 'NODE_STATUS {"declaration":"example","verified":' + \
-                    str(verified).lower() + '}'
-                with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
-                    build(self.root, self.root)
-                entry = read_json(self.metadata)
-                self.assertEqual(entry["formalization"]["label"], label)
-                self.assertEqual(entry["formalization"]
-                                 ["complete"], int(verified))
-                self.assertEqual(entry["formalization"]["total"], 1)
-                self.assertEqual(entry["title"], "Example")
-                self.assertEqual(entry["reading_time"], 5)
-                self.assertNotIn("source", entry)
-                self.assertNotIn("directory", entry)
-                self.assertEqual(self.statistics.read_bytes(),
-                                 statistics_before)
-
-    def test_invalid_entry_source_or_binding_prevents_all_writes(self):
-        node_before, entry_before = self.path.read_bytes(), self.metadata.read_bytes()
-        valid_source = self.source.read_text()
-        for source in (valid_source.replace('data-formal="example"', 'data-formal="missing"'),
-                       valid_source.replace("</section>", "")):
-            with self.subTest(source=source):
-                self.source.write_text(source)
-                output = 'NODE_STATUS {"declaration":"example","verified":false}'
-                with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)), \
-                        patch("catalog.proofs.save_results") as save_nodes, \
-                        patch("catalog.proofs.save_entries") as save_entries:
-                    with self.assertRaises(ValueError):
-                        build(self.root, self.root)
-                    save_nodes.assert_not_called()
-                    save_entries.assert_not_called()
-                self.assertEqual(self.path.read_bytes(), node_before)
-                self.assertEqual(self.metadata.read_bytes(), entry_before)
-
-    def test_metadata_changes_during_build_are_preserved(self):
+    def test_changed_binding_discards_the_old_lean_result_without_saving(self):
         def run(command, **kwargs):
-            node = read_json(self.path)
-            node["description"] = "Updated description."
-            write_json(self.path, node)
-            entry = read_json(self.metadata)
-            entry["reading_time"] = 10
-            write_json(self.metadata, entry)
+            write_json(self.path, {**read_json(self.path), "declaration": "other"})
             return subprocess.CompletedProcess(command, 0,
-                                               'NODE_STATUS {"declaration":"example","verified":false,"module":"Lemmatheca.Examples"}\n')
+                'NODE_STATUS {"declaration":"example","verified":true}')
+
         with patch("catalog.proofs.subprocess.run", side_effect=run):
-            self.assertEqual(build(self.root, self.root), (0, 1))
-        self.assertEqual(read_json(self.path), {"id": "example", "module": "Lemmatheca.Examples", "declaration": "example",
-                                                "description": "Updated description.", "verified": False})
-        self.assertEqual(read_json(self.metadata)["reading_time"], 10)
-        self.assertEqual(read_json(self.metadata)[
-                         "formalization"]["label"], "0%")
-
-    def test_binding_changes_during_build_discard_stale_result(self):
-        def run(command, **kwargs):
-            node = read_json(self.path)
-            node["declaration"] = "other"
-            write_json(self.path, node)
-            return subprocess.CompletedProcess(command, 0,
-                                               'NODE_STATUS {"declaration":"example","verified":true}\n')
-        with patch("catalog.proofs.subprocess.run", side_effect=run):
-            self.assertEqual(build(self.root, self.root), (0, 1))
-        node = read_json(self.path)
-        self.assertEqual(node["declaration"], "other")
-        self.assertFalse(node["verified"])
-        self.assertNotIn("signature", node)
-        self.assertEqual(read_json(self.metadata)[
-                         "formalization"]["label"], "0%")
-
-    def test_missing_hint_dependency_still_prevents_all_writes(self):
-        node = read_json(self.path)
-        node["dependencies"] = ["missing"]
-        write_json(self.path, node)
-        before = self.path.read_bytes(), self.metadata.read_bytes()
-        output = 'NODE_STATUS {"declaration":"example","verified":true}'
-        with patch("catalog.proofs.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output)):
-            with self.assertRaisesRegex(ValueError, "example: missing dependency missing"):
-                build(self.root, self.root)
-        self.assertEqual(before, (self.path.read_bytes(),
-                         self.metadata.read_bytes()))
+            result = prepare_proof_results(self.root, self.root)
+        self.assertEqual(result["example"]["declaration"], "other")
+        self.assertFalse(result["example"]["verified"])
+        self.assertNotIn("signature", result["example"])
+        self.assertTrue(read_json(self.path)["verified"])
 
 
-class BuildPublicationTests(SimpleTestCase):
-    def test_proof_refresh_reversal_and_failures_preserve_published_snapshot(self):
-        # External-process fixtures isolate publication behavior. The actual
-        # checker is exercised separately in one Lean batch below.
-        with TemporaryDirectory() as directory:
-            root = Path(directory)
-            corpus, formal = root / "corpus", root / "formal"
-            (corpus / "nodes").mkdir(parents=True)
-            formal.mkdir()
-            names = ["complete", "unfinished", "indirect",
-                     "unfinishedDefinition", "unsupported", "unbound"]
-            for name in names:
-                write_json(corpus / "nodes" / f"{name}.json", {
-                    "id": name, "module": "Lemmatheca" if name != "unbound" else None,
-                    "declaration": name if name != "unbound" else None, "verified": False,
-                    "description": f"The {name} example.", "dependencies": [],
-                })
-            write_json(corpus / "taxonomy.json", {"areas": [{
-                "id": "area", "title": "Area", "parent": None,
-                "description": "An example area.",
-            }]})
-            write_json(corpus / "area_entries.json", {
-                "areas": {"area": ["example"]}})
-            entry_file = corpus / "entries/example/entry.json"
-            entry_file.parent.mkdir(parents=True)
-            write_json(entry_file, {
-                "id": "example", "title": "Example", "primary_area": "area",
-                "additional_areas": [], "based_on": [], "reading_time": 5,
-                "summary": "Example proofs.", "abstract": "Examples of proof status.",
-            })
-            (entry_file.parent / "entry.html").write_text(
-                '<section id="fact" data-kind="lemma" data-formal="complete unfinished indirect unbound">'
-                '<h2>Example</h2><p>Proofs.</p></section>')
-
-            def node(name):
-                return read_json(corpus / "nodes" / f"{name}.json")
-
-            def run_build(verified, *, fail_at=None):
-                declarations = {node(name)["declaration"] for name in names
-                                if node(name)["declaration"]}
-
-                def run(command, **kwargs):
-                    self.assertEqual(kwargs["cwd"], formal)
-                    self.assertTrue(kwargs["check"])
-                    if command[:2] == ["lake", "build"]:
-                        if fail_at == "compile":
-                            raise subprocess.CalledProcessError(1, command)
-                        return subprocess.CompletedProcess(command, 0)
-                    self.assertEqual(command[:3], ["lake", "env", "lean"])
-                    inspection = (formal / command[-1]).read_text()
-                    self.assertIn("import Lemmatheca.ProofStatus", inspection)
-                    for declaration in declarations:
-                        self.assertEqual(inspection.count(
-                            "#node_status " + json.dumps(declaration)), 1)
-                    if fail_at == "inspect":
-                        raise subprocess.CalledProcessError(1, command)
-                    output = "\n".join("NODE_STATUS " + json.dumps({
-                        "declaration": declaration, "verified": declaration in verified,
-                        "signature": f"{declaration} : True", "module": "Lemmatheca.Examples",
-                        "declaration_line": 3,
-                    }) for declaration in declarations)
-                    return subprocess.CompletedProcess(command, 0, output)
-
-                with override_settings(CORPUS_DIR=corpus, REPOSITORY_DIR=root), \
-                        patch("catalog.proofs.subprocess.run", side_effect=run) as external:
-                    result = call_command("build", stdout=StringIO())
-                    self.assertEqual(external.call_count, 2)
-                    return result
-
-            index_path = root / "artifacts/corpus-index.json"
-
-            def assert_index(verified, label):
-                index = read_json(index_path)
-                self.assertEqual(index["entries"]["example"], {
-                    "blocks": ["fact"], "reading_position": 1,
-                })
-                current = write_index(corpus, root / "expected-index.json")
-                self.assertEqual(index["revision"], current["revision"])
-                self.assertEqual(read_json(entry_file)["formalization"]["label"], label)
-                for name in names:
-                    self.assertEqual(node(name)["verified"], name in verified)
-
-            self.assertEqual(run_build({"complete"}),
-                             "Updated 6 nodes: 1 verified, 5 not verified.")
-            assert_index({"complete"}, "25%")
-            self.assertFalse((corpus / "statistics.json").exists())
-            self.assertIn("complete", node("complete")["signature"])
-            self.assertEqual(node("complete")["module"], "Lemmatheca.Examples")
-            self.assertEqual(node("complete")["declaration_line"], 3)
-            for name in names:
-                self.assertFalse(
-                    {"proven", "sorry", "approved", "source_module"} & node(name).keys())
-
-            repaired = {"complete", "unfinished", "indirect"}
-            self.assertEqual(run_build(repaired),
-                             "Updated 6 nodes: 3 verified, 3 not verified.")
-            assert_index(repaired, "75%")
-            self.assertEqual(run_build({"complete"}),
-                             "Updated 6 nodes: 1 verified, 5 not verified.")
-            assert_index({"complete"}, "25%")
-
-            record = node("complete")
-            record["declaration"] = "doesNotExist"
-            write_json(corpus / "nodes/complete.json", record)
-            previous = {
-                name: (corpus / "nodes" / f"{name}.json").read_bytes() for name in names}
-            entry_before, index_before = entry_file.read_bytes(), index_path.read_bytes()
-            for fail_at in ("inspect", "compile"):
-                with self.subTest(fail_at=fail_at), self.assertRaises(CommandError):
-                    run_build(set(), fail_at=fail_at)
-                self.assertEqual(entry_file.read_bytes(), entry_before)
-                self.assertEqual(index_path.read_bytes(), index_before)
-                self.assertFalse((corpus / "statistics.json").exists())
-                for name in names:
-                    self.assertEqual(
-                        (corpus / "nodes" / f"{name}.json").read_bytes(), previous[name])
-
-
-class BuildCommandIndexTests(SimpleTestCase):
+class BuildCommandTests(SimpleTestCase):
     def setUp(self):
         temporary = TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
-        self.root = Path(temporary.name)
-        self.corpus = self.root / "corpus"
-        self.corpus.mkdir()
+        self.root = Path(temporary.name).resolve()
+        self.corpus, self.formal = self.root / "corpus", self.root / "formal"
+        (self.corpus / "nodes").mkdir(parents=True)
+        self.formal.mkdir()
+        write_json(self.corpus / "taxonomy.json", {"areas": [{
+            "id": "area", "title": "Area", "parent": None, "description": "An area.",
+        }]})
+        write_json(self.corpus / "area_entries.json", {"areas": {"area": ["example"]}})
+        self.node = self.corpus / "nodes/proof.json"
+        self.planned = self.corpus / "nodes/planned.json"
+        write_json(self.node, {
+            "id": "proof", "description": "A bound proof.", "dependencies": [],
+            "module": "Lemmatheca.Example", "declaration": "Example.fact",
+            "verified": True, "signature": "Example.fact : True", "declaration_line": 3,
+        })
+        write_json(self.planned, {
+            "id": "planned", "description": "A planned proof.", "dependencies": [],
+            "module": None, "declaration": None,
+        })
+        self.entry = self.corpus / "entries/example/entry.json"
+        self.entry.parent.mkdir(parents=True)
+        write_json(self.entry, {
+            "id": "example", "title": "Example", "primary_area": "area", "additional_areas": [],
+            "based_on": [], "reading_time": 5, "summary": "A summary.", "abstract": "An abstract.",
+        })
+        self.html = self.entry.with_name("entry.html")
+        self.html.write_text('<section id="fact" data-kind="lemma" data-formal="proof planned">'
+                             '<h2>A fact</h2><p>A fact.</p></section>')
+        self.source = self.corpus / "source-errors/sources/book.json"
+        self.finding = self.corpus / "source-errors/findings/BOOK-01.json"
+        self.plan = self.corpus / "reference-planning/records/future.json"
+        for path in (self.source, self.finding, self.plan):
+            path.parent.mkdir(parents=True)
+        write_json(self.source, {
+            "id": "book", "publication": "A book, edition 1.", "urls": ["https://example.com/book"],
+            "entry_refs": ["example#fact"], "finding_ids": ["BOOK-01"],
+            "reviews": [{"checked_passages": "Chapter 1.", "consumers": "Example.",
+                         "outcome": "Repaired.", "checked_on": "2026-10-20"}],
+        })
+        write_json(self.finding, {
+            "id": "BOOK-01", "title": "An incorrect bound", "source_ids": ["book"],
+            "severity": "serious", "details": "A repair.", "entry_refs": ["example#fact"],
+            "related_findings": [],
+        })
+        write_json(self.plan, {
+            "id": "future", "kind": "planned-entry", "title": "Future entry", "areas": ["area"],
+            "entry_refs": ["example#fact"], "urls": [], "details": "Pending scope.",
+            "planned_entry_ids": ["future-entry"],
+        })
+        for directory in ("source-errors", "reference-planning"):
+            write_json(self.corpus / directory / "policy.json", {"scope": "Scoped records."})
+        self.index = self.corpus / "index.json"
+        self.catalogs = [self.corpus / "source-errors/index.json",
+                         self.corpus / "reference-planning/index.json"]
+        override = override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root,
+                                     CORPUS_INDEX_PATH=None)
+        override.enable()
+        self.addCleanup(override.disable)
 
-    def test_index_is_refreshed_after_proof_metadata_is_saved(self):
-        events = []
+    def snapshot(self):
+        return {path.relative_to(self.root): (path.read_bytes(), path.stat().st_mtime_ns)
+                for path in self.root.rglob("*") if path.is_file()}
+
+    def command(self, *args):
         output = StringIO()
+        call_command("build", *args, stdout=output)
+        return output.getvalue()
 
-        def save_proofs(corpus, formal):
-            self.assertEqual((corpus, formal),
-                             (self.corpus, self.root / "formal"))
-            write_json(corpus / "result.json", {"verified": True})
-            events.append("proofs")
-            return 1, 2
+    def lean(self, verified=True, *, fail_at=None):
+        def run(command, **kwargs):
+            self.assertEqual(kwargs["cwd"], self.formal)
+            self.assertTrue(kwargs["check"])
+            compiling = command[:2] == ["lake", "build"]
+            if fail_at == ("compile" if compiling else "inspect"):
+                raise subprocess.CalledProcessError(1, command, output="Lean failed")
+            if compiling:
+                return subprocess.CompletedProcess(command, 0)
+            self.assertEqual(command[:3], ["lake", "env", "lean"])
+            self.assertIn('#node_status "Example.fact"', (self.formal / command[-1]).read_text())
+            output = "NODE_STATUS " + json.dumps({
+                "declaration": "Example.fact", "verified": verified,
+                "module": "Lemmatheca.Example", "signature": "Example.fact : True",
+                "declaration_line": 3,
+            })
+            return subprocess.CompletedProcess(command, 0, output)
+        return patch("catalog.proofs.subprocess.run", side_effect=run)
 
-        def save_index(corpus, destination):
-            self.assertEqual(destination,
-                             self.root / "artifacts/corpus-index.json")
-            self.assertEqual(read_json(corpus / "result.json"), {"verified": True})
-            events.append("index")
+    def test_no_lean_refresh_preserves_proofs_defaults_missing_status_and_builds_all_outputs(self):
+        proof_before = read_json(self.node)
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            output = self.command("--no-lean")
+        self.assertIn("Corpus valid: 1 entries, 2 nodes, 1 areas.", output)
+        self.assertIn("1 of 2 nodes verified.", output)
+        self.assertNotIn("counts", read_json(self.index))
+        self.assertEqual(read_json(self.node), proof_before)
+        self.assertFalse(read_json(self.planned)["verified"])
+        summary = read_json(self.entry)["formalization"]
+        self.assertEqual((summary["complete"], summary["total"], summary["label"]), (1, 2, "50%"))
+        self.assertEqual(read_json(self.entry)["title"], "Example")
+        self.assertEqual(read_json(self.index)["node_consumers"]["proof"], ["example#fact"])
+        self.assertEqual(read_json(self.catalogs[0])["by_entry"]["example"], ["book"])
+        self.assertIn("future", read_json(self.catalogs[1])["records"])
+        self.assertFalse((self.corpus / "statistics.json").exists())
 
-        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root), \
-                patch("catalog.management.commands.build.build", side_effect=save_proofs), \
-                patch("catalog.management.commands.build.write_index", side_effect=save_index):
-            result = call_command("build", stdout=output)
-        self.assertEqual(events, ["proofs", "index"])
-        self.assertEqual(result, "Updated 2 nodes: 1 verified, 1 not verified.")
-        self.assertIn("Corpus index written:", output.getvalue())
+    def test_read_only_no_lean_check_accepts_missing_generated_outputs_and_lean_installation(self):
+        record = read_json(self.node)
+        record.pop("verified")
+        write_json(self.node, record)
+        self.formal.rmdir()
+        before = self.snapshot()
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")), \
+                patch("catalog.node_files.read_nodes", side_effect=AssertionError("No whole node catalog")), \
+                patch("catalog.sources.render_block", side_effect=AssertionError("No rendering")):
+            self.command("--no-lean", "--check")
+        self.assertEqual(self.snapshot(), before)
+        self.assertFalse(self.index.exists())
+        self.assertTrue(all(not path.exists() for path in self.catalogs))
+        self.assertNotIn("formalization", read_json(self.entry))
+        self.assertNotIn("verified", read_json(self.node))
 
-    def test_failed_proof_build_never_starts_index_generation(self):
-        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root), \
-                patch("catalog.management.commands.build.build", side_effect=ValueError("Lean inspection failed")), \
-                patch("catalog.management.commands.build.write_index") as write:
-            with self.assertRaisesRegex(CommandError, "Lean inspection failed"):
-                call_command("build", stdout=StringIO())
-            write.assert_not_called()
+    def test_no_lean_check_ignores_stale_derived_catalogs_but_still_checks_authored_refs(self):
+        for path in self.catalogs:
+            path.write_text("obsolete generated cache")
+        self.index.write_text("obsolete index")
+        before = self.snapshot()
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean", "--check")
+        self.assertEqual(self.snapshot(), before)
+        write_json(self.source, {**read_json(self.source), "entry_refs": ["example#missing"]})
+        invalid_before = self.snapshot()
+        with self.assertRaisesRegex(CommandError, "Unknown referenced block"), self.lean() as external:
+            self.command()
+        external.assert_not_called()
+        self.assertEqual(self.snapshot(), invalid_before)
 
-    def test_index_failure_reports_error_and_preserves_previous_cache(self):
-        index = self.root / "artifacts/corpus-index.json"
-        index.parent.mkdir()
-        write_json(index, {"previous": "index"})
-        previous = index.read_bytes()
-        output = StringIO()
-        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root), \
-                patch("catalog.management.commands.build.build", return_value=(1, 1)):
-            with self.assertRaisesRegex(CommandError, "taxonomy.json"):
-                call_command("build", stdout=output)
-        self.assertEqual(index.read_bytes(), previous)
-        self.assertNotIn("Updated", output.getvalue())
+    def test_removed_binding_is_structurally_checkable_and_no_lean_refresh_clears_old_results(self):
+        with self.lean():
+            self.command()
+        stale = {**read_json(self.node), "module": None, "declaration": None}
+        write_json(self.node, stale)
+        before = self.snapshot()
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean", "--check")
+            self.assertEqual(self.snapshot(), before)
+            self.command("--no-lean")
+        current = read_json(self.node)
+        self.assertFalse(current["verified"])
+        self.assertNotIn("signature", current)
+        self.assertNotIn("declaration_line", current)
+        self.assertEqual(read_json(self.entry)["formalization"]["label"], "0%")
+
+    def test_reserved_index_is_not_an_input_and_authored_edits_change_revision(self):
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean")
+            first = read_json(self.index)
+            self.command("--no-lean")
+            self.assertEqual(read_json(self.index)["revision"], first["revision"])
+            self.index.write_text("not even JSON")
+            self.command("--no-lean")
+            self.assertEqual(read_json(self.index)["revision"], first["revision"])
+            write_json(self.node, {**read_json(self.node), "description": "Updated authored description."})
+            self.command("--no-lean")
+        current = read_json(self.index)
+        self.assertNotEqual(current["revision"], first["revision"])
+        self.assertNotIn("counts", current)
+        self.assertEqual({key: value for key, value in current.items() if key != "revision"},
+                         {key: value for key, value in first.items() if key != "revision"})
+        self.assertTrue(read_json(self.node)["verified"])
+
+    def test_index_override_and_configured_external_destination(self):
+        configured, explicit = self.root / "cache/configured.json", self.root / "cache/explicit.json"
+        with override_settings(CORPUS_INDEX_PATH=configured), \
+                patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean", "--index", str(explicit))
+            self.assertTrue(explicit.exists())
+            self.assertFalse(configured.exists())
+            self.command("--no-lean")
+        self.assertTrue(configured.exists())
+        self.assertFalse(self.index.exists())
+        self.assertEqual(read_json(explicit)["revision"], read_json(configured)["revision"])
+
+    def test_symlink_corpus_build_matches_physical_root_and_checks_remain_read_only(self):
+        alias = self.root / "corpus-alias"
+        alias.symlink_to(self.corpus, target_is_directory=True)
+        before = self.snapshot()
+        with override_settings(CORPUS_DIR=alias, CORPUS_INDEX_PATH=alias / "index.json"), \
+                patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean")
+        from_alias = read_json(self.index)
+        after = self.snapshot()
+        self.assertEqual(set(after) - set(before), {
+            path.relative_to(self.root) for path in (self.index, *self.catalogs)
+        })
+        self.assertEqual({path for path in before if before[path] != after[path]}, {
+            self.entry.relative_to(self.root), self.planned.relative_to(self.root),
+        })
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean")
+        self.assertEqual(read_json(self.index), from_alias)
+        before_checks = self.snapshot()
+        with override_settings(CORPUS_DIR=alias, CORPUS_INDEX_PATH=alias / "index.json"):
+            with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+                self.command("--no-lean", "--check")
+            self.assertEqual(self.snapshot(), before_checks)
+            with self.lean() as external:
+                self.command("--check")
+            self.assertEqual(external.call_count, 2)
+        self.assertEqual(self.snapshot(), before_checks)
+
+    def test_index_collision_and_symlink_cannot_overwrite_authored_inputs(self):
+        alias = self.root / "corpus-alias"
+        alias.symlink_to(self.corpus, target_is_directory=True)
+        destinations = (self.node, self.entry, self.catalogs[0], self.corpus / "cache.json",
+                        alias / "entries/example/entry.json")
+        before = self.snapshot()
+        for destination in destinations:
+            with self.subTest(destination=destination), self.lean() as external:
+                with self.assertRaises(CommandError):
+                    self.command("--index", str(destination))
+                external.assert_not_called()
+                self.assertEqual(self.snapshot(), before)
+
+    def test_source_file_checks_are_opt_in_and_do_not_need_a_lean_process(self):
+        before = self.snapshot()
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean", "--check")
+            with self.assertRaisesRegex(CommandError, "Missing Lean source"):
+                self.command("--no-lean", "--check", "--check-sources")
+        self.assertEqual(self.snapshot(), before)
+        source = self.formal / "Lemmatheca/Example.lean"
+        source.parent.mkdir()
+        source.write_text("theorem Example.fact : True := True.intro\n")
+        before = self.snapshot()
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean", "--check", "--check-sources")
+        self.assertEqual(self.snapshot(), before)
+
+    def test_full_refresh_and_lean_failure_preserve_the_last_published_snapshot(self):
+        with self.lean(False) as external:
+            self.command()
+        self.assertEqual(external.call_count, 2)
+        self.assertFalse(read_json(self.node)["verified"])
+        self.assertEqual(read_json(self.entry)["formalization"]["label"], "0%")
+        with self.lean(True):
+            self.command()
+        self.assertTrue(read_json(self.node)["verified"])
+        self.assertEqual(read_json(self.entry)["formalization"]["label"], "50%")
+        before = self.snapshot()
+        for fail_at in ("compile", "inspect"):
+            with self.subTest(fail_at=fail_at), self.lean(fail_at=fail_at):
+                with self.assertRaisesRegex(CommandError, "Lean failed"):
+                    self.command()
+                self.assertEqual(self.snapshot(), before)
+
+    def test_invalid_authored_links_and_dependencies_fail_before_lean(self):
+        changes = ((self.html, lambda: self.html.write_text(
+            self.html.read_text().replace("A fact.</p>", '<a href="example#missing">Bad</a></p>'))),
+            (self.node, lambda: write_json(self.node, {**read_json(self.node), "dependencies": ["missing"]})))
+        for path, change in changes:
+            original = path.read_bytes()
+            try:
+                change()
+                before = self.snapshot()
+                with self.lean() as external, self.assertRaises(CommandError):
+                    self.command()
+                external.assert_not_called()
+                self.assertEqual(self.snapshot(), before)
+            finally:
+                path.write_bytes(original)
+
+    def test_invalid_prepared_node_prevents_every_metadata_and_catalog_write(self):
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean")
+        from catalog.node_files import read_nodes
+        prepared = read_nodes(self.corpus)
+        prepared["proof"] = {**prepared["proof"], "verified": False, "signature": 17}
+        before = self.snapshot()
+        with patch("catalog.build.prepare_proof_results", return_value=prepared), \
+                self.assertRaises(CommandError):
+            self.command()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_index_preparation_failure_leaves_the_published_metadata_unchanged(self):
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean")
+        before = self.snapshot()
+        with self.lean(False), \
+                patch("catalog.build.CorpusIndex.finish", side_effect=ValueError("Cannot prepare index")), \
+                self.assertRaisesRegex(CommandError, "Cannot prepare index"):
+            self.command()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_authored_metadata_edits_during_lean_survive_proof_and_summary_refresh(self):
+        with self.lean(False) as external:
+            inspect = external.side_effect
+
+            def edit_during_compile(command, **kwargs):
+                result = inspect(command, **kwargs)
+                if command[:2] == ["lake", "build"]:
+                    write_json(self.node, {**read_json(self.node), "description": "Concurrent edit."})
+                    write_json(self.entry, {**read_json(self.entry), "reading_time": 15})
+                return result
+
+            external.side_effect = edit_during_compile
+            self.command()
+        self.assertEqual(read_json(self.node)["description"], "Concurrent edit.")
+        self.assertFalse(read_json(self.node)["verified"])
+        self.assertEqual(read_json(self.entry)["reading_time"], 15)
+        self.assertEqual(read_json(self.entry)["formalization"]["label"], "0%")
+
+    def test_references_edited_during_lean_are_rechecked_before_publication(self):
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean")
+        valid_html = self.html.read_text()
+        expected = None
+        with self.lean(False) as external:
+            inspect = external.side_effect
+
+            def edit_during_compile(command, **kwargs):
+                nonlocal expected
+                result = inspect(command, **kwargs)
+                if command[:2] == ["lake", "build"]:
+                    self.html.write_text(valid_html.replace("A fact.</p>",
+                        '<a href="example#missing">Edited reference</a></p>'))
+                    expected = self.snapshot()
+                return result
+
+            external.side_effect = edit_during_compile
+            with self.assertRaisesRegex(CommandError, "mathematical block"):
+                self.command()
+        self.assertIsNotNone(expected)
+        self.assertEqual(self.snapshot(), expected)
+
+    def test_full_check_detects_stale_proof_fields_summaries_and_catalogs_without_saving(self):
+        with self.lean():
+            self.command()
+        for path, field, value in (
+                (self.node, "verified", False), (self.node, "signature", "Old signature"),
+                (self.node, "declaration_line", 99), (self.node, "module", "Lemmatheca.Old"),
+                (self.entry, "formalization", {**read_json(self.entry)["formalization"], "label": "Old label"}),
+                (self.catalogs[0], "by_entry", {})):
+            with self.subTest(path=path, field=field):
+                original = path.read_bytes()
+                write_json(path, {**read_json(path), field: value})
+                before = self.snapshot()
+                with self.lean(), self.assertRaisesRegex(CommandError, "[Ss]tale|[Oo]utdated|[Dd]iffer"):
+                    self.command("--check")
+                self.assertEqual(self.snapshot(), before)
+                path.write_bytes(original)
+
+    def test_full_check_accepts_current_saved_index_and_writes_nothing(self):
+        with self.lean():
+            self.command()
+        # Snapshot equality is semantic; formatting alone need not trigger a rebuild.
+        self.index.write_text(json.dumps(read_json(self.index), sort_keys=True))
+        before = self.snapshot()
+        with self.lean() as external:
+            output = self.command("--check")
+        self.assertIn("Corpus valid: 1 entries, 2 nodes, 1 areas.", output)
+        self.assertEqual(external.call_count, 2)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_full_check_rejects_missing_malformed_and_modified_saved_index_without_writes(self):
+        with self.lean():
+            self.command()
+        original = self.index.read_bytes()
+        current = read_json(self.index)
+        cases = (
+            ("missing", None), ("malformed", "not JSON"), ("not an object", "[]"),
+            ("changed revision", json.dumps({**current, "revision": "0" * 64})),
+            ("changed relationships", json.dumps({**current, "node_consumers": {}})),
+            ("unexpected counts", json.dumps({**current, "counts": {"nodes": 2}})),
+        )
+        for order in (True, 1.0):
+            wrong_type = {**current, "blocks": {**current["blocks"], "example#fact": {
+                **current["blocks"]["example#fact"], "order": order,
+            }}}
+            cases += ((f"block order has type {type(order).__name__}", json.dumps(wrong_type)),)
+        for name, contents in cases:
+            with self.subTest(index=name):
+                if contents is None:
+                    self.index.unlink()
+                else:
+                    self.index.write_text(contents)
+                before = self.snapshot()
+                try:
+                    with self.lean(), self.assertRaisesRegex(CommandError, r"index\.json"):
+                        self.command("--check")
+                    self.assertEqual(self.snapshot(), before)
+                finally:
+                    self.index.write_bytes(original)
+
+    def test_full_check_accepts_valid_statistics_changes_but_rejects_invalid_statistics(self):
+        with self.lean():
+            self.command()
+        index_before = self.index.read_bytes()
+        statistics = self.corpus / "statistics.json"
+        snapshot = {"entries": 1, "verified_entries": 0, "nodes": 2,
+                    "verified_nodes": 1, "contributors": 3}
+        for data in (snapshot, {**snapshot, "verified_nodes": 2, "contributors": 4}):
+            with self.subTest(statistics=data):
+                write_json(statistics, data)
+                before = self.snapshot()
+                with self.lean():
+                    self.command("--check")
+                self.assertEqual(self.snapshot(), before)
+                self.assertEqual(self.index.read_bytes(), index_before)
+        write_json(statistics, {**snapshot, "nodes": "two"})
+        before = self.snapshot()
+        with self.lean() as external, self.assertRaisesRegex(CommandError, r"statistics\.json"):
+            self.command("--check")
+        external.assert_not_called()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_full_check_detects_index_revision_staleness_after_authored_prose_changes(self):
+        with self.lean():
+            self.command()
+        current = read_json(self.index)
+        self.html.write_text(self.html.read_text().replace("A fact.</p>", "A revised fact.</p>"))
+        before = self.snapshot()
+        with self.lean(), self.assertRaisesRegex(CommandError, r"index\.json"):
+            self.command("--check")
+        self.assertEqual(self.snapshot(), before)
+        self.assertEqual(read_json(self.index), current)
+
+    def test_full_check_checks_the_selected_index_without_falling_back_to_default(self):
+        with self.lean():
+            self.command()
+        selected, explicit = self.root / "selected.json", self.root / "explicit.json"
+        current = read_json(self.index)
+        before = self.snapshot()
+        with self.lean(), self.assertRaisesRegex(CommandError, r"selected\.json"):
+            self.command("--check", "--index", str(selected))
+        self.assertEqual(self.snapshot(), before)
+        write_json(selected, current)
+        # A broken default cannot invalidate a current, explicitly selected index.
+        self.index.write_text("obsolete default")
+        before = self.snapshot()
+        with self.lean():
+            self.command("--check", "--index", str(selected))
+        self.assertEqual(self.snapshot(), before)
+        with override_settings(CORPUS_INDEX_PATH=selected):
+            with self.lean():
+                self.command("--check")
+            self.assertEqual(self.snapshot(), before)
+            # An explicit override wins over a current configured destination.
+            with self.lean(), self.assertRaisesRegex(CommandError, r"explicit\.json"):
+                self.command("--check", "--index", str(explicit))
+            self.assertEqual(self.snapshot(), before)
+
+    def test_no_lean_check_does_not_require_a_current_selected_index(self):
+        selected = self.root / "selected.json"
+        for contents in (None, "not JSON", '{"revision":"obsolete"}'):
+            with self.subTest(contents=contents):
+                if contents is not None:
+                    selected.write_text(contents)
+                before = self.snapshot()
+                with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+                    self.command("--no-lean", "--check", "--index", str(selected))
+                self.assertEqual(self.snapshot(), before)
+
+    def test_legacy_commands_are_removed(self):
+        get_commands.cache_clear()
+        commands = get_commands()
+        self.assertNotIn("validate_corpus", commands)
+        self.assertNotIn("index_authoring_records", commands)
 
 
 class ProofStatusLeanTests(SimpleTestCase):

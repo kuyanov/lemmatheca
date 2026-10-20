@@ -1,0 +1,13 @@
+{
+  "id": "pres-order-above-not-universal",
+  "description": "Throughout all strict linear orders, no universal formula is equivalent to \\(\\exists y\\,(x<y)\\).",
+  "module": "Lemmatheca.Entry.PreservationConverses",
+  "declaration": "Lemmatheca.Entry.PreservationConverses.above_not_universal",
+  "dependencies": [
+    "pres-order-above-formula",
+    "ech-universal-preservation"
+  ],
+  "verified": true,
+  "declaration_line": 27,
+  "signature": "Lemmatheca.Entry.PreservationConverses.above_not_universal :\n  ¬∃ ψ,\n      FirstOrder.Language.BoundedFormula.IsUniversal ψ ∧\n        ∀ (M : Type) (r : M → M → Prop),\n          IsStrictTotalOrder M r →\n            have this := Lemmatheca.MathematicalLogic.FirstOrderSemantics.binaryRelStructure M r;\n            ∀ (a : Fin 1 → M), ψ.Realize a ↔ Lemmatheca.Entry.PreservationConverses.above.Realize a"
+}

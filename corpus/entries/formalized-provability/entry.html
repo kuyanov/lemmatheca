@@ -63,8 +63,8 @@
   <h2>The internal implication needed to reason with arbitrary proofs</h2>
   <p>The <em>second derivability condition</em> for a fixed predicate is the following requirement, for every pair of arithmetic sentences \(A,B\):</p>
   <div class="math-display">\[(\mathrm{D2})\qquad T\vdash\Box_T(A\to B)\to(\Box_T A\to\Box_T B).\]</div>
-  <p>Each displayed instance is a single arithmetic sentence with quantifiers over possible proof codes inside the box abbreviations. Proving it requires arithmetic to carry out the proof-combination argument for its own arbitrary proof codes. Correctness of \(M\) on ordinary natural numbers, together with a separate \(Q\)-proof for each concrete accepted output, does not provide this internal implication.</p>
-  <p>We define D2 here without claiming it for the chosen numeralwise representative. An internal proof would require, among other things, suitable arithmetic formulas for \(M\), their correctness and totality at arbitrary internal inputs, and a proof inside \(T\) that they preserve the specified checker.</p>
+  <p>Each displayed instance is a single arithmetic sentence with quantifiers over possible proof codes inside the box abbreviations. The direct proof-combination argument establishes it by verifying the operation on arbitrary internal proof codes. Correctness of \(M\) on ordinary natural numbers, together with a separate \(Q\)-proof for each concrete accepted output, does not by itself supply that verification. If \(T\) is inconsistent, it proves the displayed sentence simply by explosion.</p>
+  <p>Numeralwise representation alone does not establish D2 for this arbitrary representing formula. For a separately constructed PA predicate, <a href="pa-proof-checkers#sigma-one-proof-predicate">the formula follows the actual checker's construction</a>, and <a href="arithmetic-proof-predicates#second-derivability-condition">internal preservation of implication elimination proves D2</a>. That argument verifies the particular programs and formulas at arbitrary internal inputs; agreement on ordinary numerical inputs alone is insufficient.</p>
 </section>
 
 <section id="third-derivability-condition" data-kind="definition" data-formal="prov-derivability-three">
@@ -72,7 +72,7 @@
   <p>The <em>third derivability condition</em> is the requirement, for every sentence \(A\),</p>
   <div class="math-display">\[(\mathrm{D3})\qquad T\vdash\Box_T A\to\Box_T\Box_T A.\]</div>
   <p>D1 can start with a particular external proof of \(A\), verify that certificate, and build a proof of \(\Box_T A\). D3 asks arithmetic to prove an implication from the assertion that a proof exists, including witnesses that might be nonstandard in a model of \(T\). Applying D1 to each externally known proof does not discharge that quantifier.</p>
-  <p>As with D2, the condition is a schema of arithmetic derivability statements for the specified predicate. It is defined here, while its internal proof for a suitable concrete predicate remains additional work. No assertion that the chosen representing formula has a particular arithmetic complexity is being used.</p>
+  <p>As with D2, the condition is a schema of arithmetic derivability statements for the specified predicate. The arbitrary numeralwise representative fixed here has no assumed internal proof-construction properties or particular arithmetic complexity. The separately constructed PA predicate satisfies <a href="arithmetic-proof-predicates#third-derivability-condition">D3 by formalized completeness</a>. This does not transfer D3 to the present representative without a proved internal comparison.</p>
 </section>
 
 <section id="standard-derivability" data-kind="theorem" data-formal="prov-modus-ponens-standard prov-introspection-standard">
@@ -82,7 +82,7 @@
   <div class="math-display">\[\mathbb N_A\models\Box_T A\to\Box_T\Box_T A.\]</div>
   <p class="proof-label">Proof</p>
   <p>For the first sentence, standard correctness turns its two hypotheses into actual derivations of \(A\to B\) and \(A\). Implication elimination gives a derivation of \(B\), and standard correctness yields its box. For the second, standard correctness turns the hypothesis into \(T\vdash A\); D1 gives \(T\vdash\Box_T A\); standard correctness, now applied to the sentence \(\Box_T A\), gives the required outer box. □</p>
-  <p>Truth in \(\mathbb N_A\) is weaker than the required \(T\)-derivability of these sentences. First incompleteness already explains why a true arithmetic sentence need not have a proof in a given effective theory. Thus these semantic observations do not complete D2 or D3.</p>
+  <p>Truth in \(\mathbb N_A\) is weaker than the required \(T\)-derivability of these sentences. First incompleteness already explains why a true arithmetic sentence need not have a proof in a given effective theory. These semantic observations therefore establish only the displayed standard-model claims for the arbitrary representative.</p>
 </section>
 
 <section id="standard-reflection" data-kind="lemma" data-formal="prov-standard-reflection-soundness">
@@ -128,5 +128,5 @@
   </div>
   <p class="proof-label">Proof</p>
   <p>Standard correctness, applied to \(\bot\), says that \(\mathbb N_A\models\Box_T\bot\) exactly when \(T\vdash\bot\). Negate the equivalence. □</p>
-  <p>This establishes what the consistency sentence means in the standard model. It does not establish whether \(T\) proves that sentence. The present entry supplies D1 and the concrete numerical proof operations; it defines and distinguishes the stronger D2 and D3 requirements without treating their still-needed internal proofs as assumptions already discharged.</p>
+  <p>This establishes what the consistency sentence means in the standard model. It does not establish whether \(T\) proves that sentence. D1 and the concrete numerical proof operations hold under the hypotheses given here. The separately constructed PA predicate has <a href="arithmetic-proof-predicates#consistency-sentence">its own consistency sentence</a>. A proved <a href="arithmetic-proof-predicates#predicate-comparison">internal comparison</a> is needed before consistency sentences formed from different representatives can be interchanged in a derivation.</p>
 </section>

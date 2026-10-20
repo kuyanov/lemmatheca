@@ -35,7 +35,7 @@ def _read_index(path, signature):
         raise ValueError("Unsupported corpus index schema")
     if not isinstance(document.get("revision"), str) or not re.fullmatch(r"[0-9a-f]{64}", document["revision"]):
         raise ValueError("Invalid corpus index revision")
-    for field in ("counts", "entries", "blocks", "anchors", "nodes_by_declaration",
+    for field in ("entries", "blocks", "anchors", "nodes_by_declaration",
                   "module_nodes", "node_consumers", "hint_dependents", "outgoing", "incoming"):
         if not isinstance(document.get(field), dict):
             raise ValueError(f"Invalid corpus index field: {field}")
@@ -72,7 +72,7 @@ def get_index():
                 continue
     except (OSError, ValueError) as error:
         raise IndexUnavailable(
-            "Corpus index unavailable. Run python app/manage.py validate_corpus --write-index."
+            "Corpus index unavailable. Run python app/manage.py build --no-lean."
         ) from error
     raise IndexUnavailable("Corpus index changed during loading; retry the request.")
 

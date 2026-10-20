@@ -1,0 +1,12 @@
+{
+  "id": "ap-existential-introduction-preservation",
+  "description": "In every PA model, an accepted certificate for the actual instance \\(B(t)\\) gives an accepted certificate for \\(\\exists z\\,B(z)\\) by the specified existential-introduction constructor, provided the body, witness term and conclusion pass their syntax tests.",
+  "module": "Lemmatheca.MathematicalLogic.PAProofNaturalDeduction",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.certified_exIntro",
+  "dependencies": [
+    "ap-pa-checker-correct"
+  ],
+  "verified": true,
+  "declaration_line": 189,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.certified_exIntro.{u} {M : Type u}\n  [Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Structure M]\n  [M ⊨ Lemmatheca.MathematicalLogic.ArithmeticTheories.PA] (E : Lemmatheca.MathematicalLogic.PAComputations.Program 2)\n  (p b t : M)\n  (hp :\n    Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.Certified E p\n      (Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.instantiate.value ![b, t]))\n  (hb :\n    Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.namedForm.value\n        ![Lemmatheca.MathematicalLogic.ArithmeticTheories.numeralValue M 1, b] =\n      Lemmatheca.MathematicalLogic.ArithmeticTheories.numeralValue M 1)\n  (ht :\n    Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.namedTerm.value ![t] =\n      Lemmatheca.MathematicalLogic.ArithmeticTheories.numeralValue M 1)\n  (hout :\n    Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.isSentence.value\n        ![Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.exValue b] =\n      Lemmatheca.MathematicalLogic.ArithmeticTheories.numeralValue M 1) :\n  Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.Certified E\n    (Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.existentialIntroductionCertificate.value\n      ![p, b, t])\n    (Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.exValue b)"
+}

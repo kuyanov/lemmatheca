@@ -1,0 +1,10 @@
+{
+  "id": "pac-history-successor-derives",
+  "description": "PA derives that the specified history program appends its next step output to the actual preceding history.",
+  "module": "Lemmatheca.MathematicalLogic.PAInternalProgramEquations",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.history_successor_derives",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 119,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.history_successor_derives {n : ℕ}\n  (h : Lemmatheca.MathematicalLogic.PAComputations.Program (n + 2)) :\n  Lemmatheca.MathematicalLogic.PAComputations.PAEquivalent\n    ((Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.history h).comp\n        (Fin.snoc (fun i => Lemmatheca.MathematicalLogic.PAComputations.Program.proj i.castSucc)\n          (Lemmatheca.MathematicalLogic.PAComputations.Program.succ.comp\n            ![Lemmatheca.MathematicalLogic.PAComputations.Program.proj (Fin.last n)]))).graph\n    (Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.listAppend.comp\n        ![Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.history h,\n          Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.listCons.comp\n            ![h.comp\n                (Fin.snoc (fun i => Lemmatheca.MathematicalLogic.PAComputations.Program.proj i)\n                  (Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.history h)),\n              Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.constant 0]]).graph"
+}

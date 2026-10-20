@@ -48,7 +48,7 @@ Save drafting and integration edits to the corpus files.
    checks affected links only; it does not trigger another corpus-wide search.
    Select planning records by entry ID, area, or kind through the
    [registry lookup workflow](../docs/corpus.md#navigating-source-and-planning-records).
-   Edit only affected records and rebuild the compact catalogs after changes.
+   Edit only affected records; the no-Lean build refreshes their catalogs.
 4. Leave `data-formal` absent on new blocks. Preserve existing mappings unless
    the mathematics changes; identify affected mappings for step 4. Do not create
    nodes or Lean declarations, and do not use an empty mapping to hide unfinished
@@ -56,8 +56,14 @@ Save drafting and integration edits to the corpus files.
 
 ## Checks
 
-- Run corpus validation once after the drafting batch, using the
-  [change-based checks](../CONTRIBUTING.md#validation-and-submission).
+- Finish corpus edits with the writing `build --no-lean` and commit changed
+  generated JSON, including `corpus/index.json`. This applies
+  even to prose-only or whitespace-only edits; `build --no-lean --check` does not
+  refresh the index. Follow the
+  [change-based checks](../CONTRIBUTING.md#validation-and-submission):
+  statistics-only updates are exempt. For an ongoing multi-stage batch, defer
+  the writing build to its final mutating stage and carry that requirement in
+  the handoff; a required full `build` satisfies it without a separate no-Lean build.
 - Inspect the affected rendered pages, including hidden answers and any changed
   formulas or figures, at normal desktop size and relevant narrow widths. Apply
   the [display-layout contract](../docs/corpus.md#mathematics-figures-and-assets);
@@ -67,12 +73,13 @@ Save drafting and integration edits to the corpus files.
   implication, or equivalence horizontal when it fits; break a genuinely long
   single statement only at meaningful mathematical boundaries. Horizontal formula
   scrolling on mobile is acceptable and does not justify extra line breaks.
-- Refresh generated summaries only when required by the shared check matrix.
-  A later independent mathematical and presentation audit belongs to step 3.
+- A later independent mathematical and presentation audit belongs to step 3.
 
 ## Deliverable
 
 Return changed files, material departures from the plan, relevant integration
 changes actually saved, checks performed and unavailable checks, and questions
 for human review. Include source-register changes only if new inspection required
-maintenance. Do not perform formal preparation or the independent review here.
+maintenance. Include refreshed generated data, or identify the pending writing
+build at the end of an ongoing batch. Do not perform formal preparation or the
+independent review here.

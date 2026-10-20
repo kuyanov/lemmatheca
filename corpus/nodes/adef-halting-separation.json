@@ -1,0 +1,14 @@
+{
+  "id": "adef-halting-separation",
+  "description": "The diagonal halting set is \\(\\Sigma_1\\)-definable and is not \\(\\Pi_1\\)-definable; its complement is \\(\\Pi_1\\)-definable and is not \\(\\Sigma_1\\)-definable.",
+  "module": "Lemmatheca.MathematicalLogic.ArithmeticDefinability",
+  "declaration": "Lemmatheca.MathematicalLogic.ArithmeticDefinability.halting_separation",
+  "dependencies": [
+    "adef-unary-enumerable-sigma-one",
+    "adef-decidable-delta-one",
+    "univ-diagonal-halting-undecidable"
+  ],
+  "verified": true,
+  "declaration_line": 452,
+  "signature": "Lemmatheca.MathematicalLogic.ArithmeticDefinability.halting_separation :\n  have K := fun v => v 0 ∈ Lemmatheca.MathematicalLogic.UniversalComputation.haltingDiagonal;\n  Lemmatheca.MathematicalLogic.ArithmeticDefinability.SigmaOneDefinable K ∧\n    ¬Lemmatheca.MathematicalLogic.ArithmeticDefinability.PiOneDefinable K ∧\n      (Lemmatheca.MathematicalLogic.ArithmeticDefinability.PiOneDefinable fun v => ¬K v) ∧\n        ¬Lemmatheca.MathematicalLogic.ArithmeticDefinability.SigmaOneDefinable fun v => ¬K v"
+}

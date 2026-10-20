@@ -55,9 +55,11 @@ Check every new or edited description for notation outside math delimiters and
 unmatched or nested delimiters, then inspect its rendered node page. Confirm that the
 formulas render, subscripts and quantifiers display correctly, and there are no
 KaTeX errors or literal LaTeX fragments. Valid JSON and a successful Lean build
-do not check formula rendering. Formatting-only description changes require
-corpus validation and a rendering check; unchanged bindings and proofs do not
-need a Lean rebuild.
+do not check formula rendering. Formatting-only description changes require the
+writing `build --no-lean` and a rendering check; commit changed generated files,
+including `corpus/index.json`. Follow the
+[batching rules](../CONTRIBUTING.md#validation-and-submission); unchanged bindings
+and proofs do not need a Lean rebuild.
 Review the complete descriptions as well as running symbol scans. Include ASCII
 operator applications, fractions, decimals, tuples, intervals, set braces, and
 variables that resemble English articles. For a corpus-wide audit, inspect
@@ -87,7 +89,8 @@ Bind faithful principle definitions and constructions with supplied data separat
 
 The build writes `verified`, the pretty-printed `signature`, and `declaration_line`,
 and refreshes `module` from Lean's defining-module information. Do not fabricate
-these results or source locations. Generated declarations may point to a source
+these results or source locations. Verification fields may be absent before a
+build; a missing `verified` value is treated as false. Generated declarations may point to a source
 origin with a different name; compare the exported signature with the actual target.
 The reader uses local project, Lake dependency, and Elan toolchain sources for its
 source browser and line links.
@@ -168,72 +171,32 @@ Use the existing Lean project; do not introduce separate per-entry Lake projects
 
 ## Build and verification
 
-After editing Lean declarations or proofs, node bindings, or entry block mappings,
-refresh verification from the repository root at delivery:
+See the [build guide](build.md) for stages, outputs and flags, and the
+[contribution rules](../CONTRIBUTING.md#validation-and-submission) for batching checks.
+The default `uv run python app/manage.py build` validates canonical inputs, builds
+`Lemmatheca` and bound non-core modules, then checks each declaration with
+`formal/Lemmatheca/ProofStatus.lean`. Core modules come from the pinned toolchain.
+The checker inspects transitive kernel axioms, including dependencies in types
+and definitions. Only `propext`, `Classical.choice`, and `Quot.sound` are permitted.
+Direct or inherited `sorryAx` or custom axioms produce `verified: false`.
+Definitions follow the same rule; a comment containing “sorry” has no effect.
 
-```sh
-uv run python app/manage.py build
-```
+A successful build can include unfinished or unsupported proofs: their nodes
+remain Not verified while other nodes are checked. Missing declarations, invalid
+bindings and compilation failures fail the command. Inspect the actual results
+and full diagnostics before claiming proof completion.
 
-Follow the [shared check and batching rules](../CONTRIBUTING.md#validation-and-submission).
-A multi-stage batch may defer this writing build until its final mutating stage;
-step 4 still compiles targets and inspects their actual signatures before step 5.
-Saved results describe the last successful build and do not certify edits made
-while a refresh is deferred. Standalone handoffs include the required refresh.
+Include changed generated node/entry JSON, catalogs and `corpus/index.json` with
+the sources. `build --no-lean` reuses saved proof results; it does
+not certify changed declarations or bindings. Reader requests never run Lean or
+establish source freshness.
 
-Run `uv run python app/manage.py validate_corpus` when node metadata, bindings,
-or entry structure changes. Run relevant catalog tests for reader or build-tooling
-changes, or when investigating an integration failure; routine proof edits do not
-require them.
-
-The build reads the node registry, builds `Lemmatheca` and the bound non-core
-modules, and checks each registered declaration with `formal/Lemmatheca/ProofStatus.lean`.
-Core modules are supplied by the toolchain. The checker collects each declaration's
-transitive kernel axioms, including dependencies in its type and definition.
-Only `propext`, `Classical.choice`, and `Quot.sound` are permitted. Direct or inherited
-`sorryAx`, or unsupported custom axioms, give `verified: false`. Definitions use the
-same rule; a comment containing the word `sorry` does not affect the result.
-
-A successful build may contain unfinished or unsupported proofs. It records those
-nodes as Not verified and continues checking all other nodes; declarations that
-pass the check become Verified. Unbound nodes are Not verified. A missing
-declaration, invalid binding, or compilation error fails the build instead of
-producing a new verification result.
-
-After checking Lean, the build parses entry HTML and computes entry-list summaries
-from the new results. It validates all summaries before saving node records and the
-`formalization` object in each `corpus/entries/<id>/entry.json`. Failed Lean checks
-or invalid summaries write neither set of results; prior saved data stays intact.
-Metadata edits made while Lean runs are preserved. A changed binding discards its
-stale proof result. Invalid dependency references prevent publication of all
-prepared results. Individual JSON files are replaced atomically. Home-page statistics and count
-history are updated separately by automation after pushes to `main`; the proof
-result phase neither reads nor writes `corpus/statistics.json`. The command's
-final index validation checks that file when present but never modifies it.
-
-After publishing node results and entry summaries, the command refreshes the
-configured [corpus index](app.md#corpus-index). An index-export failure does not
-roll back the saved proof metadata; the complete build is not one transaction.
-After fixing an export failure, regenerate the index with
-`uv run python app/manage.py validate_corpus --write-index` without repeating Lean.
-The index is an ignored cache, not another generated corpus file to commit.
-
-Commit changed Lean sources, bindings, and all generated node and entry JSON
-alongside the change. Verification describes
-the last successful build: the server
-never runs Lean or performs source-freshness checks on a page request. Refresh the
-build results at delivery after the relevant edits. To compile locally
-while working, `lake build` from `formal/` is useful, but it does not refresh corpus
-JSON; finish with the Django build command.
-
-The [CI workflow](../.github/workflows/ci.yml) validates the corpus, installs the
-pinned environment, checks source availability, runs the tests and build, then checks that committed node results and entry
-summaries match regenerated files. One direct Lean invocation tests the current
-checker against complete and unfinished declarations, transitive axioms, missing
-declarations, and Choice used directly, through other declarations, or in a type.
-Python tests use subprocess fixtures for build failures, metadata edits,
-publication and rollback; CI also runs the full project build. `formal/.lake/`
-contains ignored local dependencies and build output.
+Focused `lake env lean` or `lake build` checks are useful while editing, but do not
+refresh corpus metadata. Finish formal changes with the full integrated build.
+Step 4 still elaborates prepared targets before independent correspondence review,
+even when the writing build is deferred to the end of a multi-stage batch.
+The [CI workflow](../.github/workflows/ci.yml) runs an early structural check,
+tests and the combined `build --check --check-sources` verification.
 
 ### Build warnings
 

@@ -89,12 +89,41 @@ theorem numeral_value_nat (n : ℕ) : numeralValue ℕ n = n := by
 
 /-- Universal closure over a displayed finite free-variable list. -/
 def close {k : ℕ} (φ : language.Formula (Fin k)) : language.Sentence :=
-  (φ.relabel Sum.inr).iAlls (Fin k)
+  (BoundedFormula.relabel (fun i => (Sum.inr i : Empty ⊕ Fin k)) φ).alls
 
 theorem realize_close {k : ℕ} (φ : language.Formula (Fin k)) :
     M ⊨ close φ ↔ ∀ a : Fin k → M, φ.Realize a := by
-  simp only [close, Sentence.Realize, Formula.realize_iAlls, Formula.realize_relabel,
-    Function.comp_def, Sum.elim_inr]
+  simp only [close, Sentence.Realize, BoundedFormula.realize_alls,
+    BoundedFormula.realize_relabel, Function.comp_def, Sum.elim_inr,
+    Fin.castAdd_zero, Nat.add_zero, Fin.cast_eq_self]
+  apply forall_congr'
+  intro a
+  unfold Formula.Realize
+  rw [Subsingleton.elim (fun x : Fin 0 => a (Fin.natAdd k x)) default]
+
+/-- Bind the displayed induction variable using the canonical single bound slot. -/
+def allUnit {α : Type*} (φ : language.Formula (α ⊕ Unit)) : language.Formula α :=
+  (BoundedFormula.relabel (Sum.elim Sum.inl (fun _ => Sum.inr (0 : Fin 1))) φ).all
+
+theorem realize_allUnit {α : Type*} (φ : language.Formula (α ⊕ Unit)) (a : α → M) :
+    (allUnit φ).Realize a ↔ ∀ b : M, φ.Realize (Sum.elim a (fun _ => b)) := by
+  simp only [allUnit, Formula.Realize, BoundedFormula.realize_all,
+    BoundedFormula.realize_relabel]
+  apply forall_congr'
+  intro b
+  have hv : Sum.elim a ((Fin.snoc default b) ∘ Fin.castAdd 0) ∘
+      Sum.elim Sum.inl (fun _ : Unit => Sum.inr (0 : Fin 1)) =
+      Sum.elim a (fun _ : Unit => b) := by
+    funext x
+    cases x with
+    | inl x => rfl
+    | inr x =>
+      change @Fin.snoc 0 (fun _ => M) default b (Fin.last 0) = b
+      exact Fin.snoc_last _ _
+  rw [hv]
+  rw [Subsingleton.elim
+    ((@Fin.snoc 0 (fun _ => M) default b) ∘ (Fin.natAdd 1 : Fin 0 → Fin 1))
+    (default : Fin 0 → M)]
 
 private def x : language.Term (Fin 1) := .var 0
 private def x₂ : language.Term (Fin 2) := .var 0
@@ -259,8 +288,8 @@ theorem standard_copy_operations [M ⊨ Q] :
 /-- Parameters stay free until the complete induction implication is closed. -/
 def inductionAxiom {k : ℕ} (φ : language.Formula (Fin k ⊕ Unit)) : language.Sentence :=
   close (((φ.subst (Sum.elim Term.var (fun _ => zeroTerm))) ⊓
-    ((φ.imp (φ.subst (Sum.elim (fun i => .var (.inl i))
-      (fun _ => succTerm (.var (.inr ())))))).iAlls Unit)).imp (φ.iAlls Unit))
+    (allUnit (φ.imp (φ.subst (Sum.elim (fun i => .var (.inl i))
+      (fun _ => succTerm (.var (.inr ())))))))).imp (allUnit φ))
 
 def inductionTheory : language.Theory :=
   {θ | ∃ k : ℕ, ∃ φ : language.Formula (Fin k ⊕ Unit), θ = inductionAxiom φ}
@@ -274,16 +303,7 @@ theorem realize_induction_axiom {k : ℕ} (φ : language.Formula (Fin k ⊕ Unit
           φ.Realize (Sum.elim a (fun _ => succValue M b))) →
       ∀ b : M, φ.Realize (Sum.elim a (fun _ => b)) := by
   simp only [inductionAxiom, realize_close, Formula.realize_imp, Formula.realize_inf,
-    Formula.realize_iAlls]
-  have hunit (P : (Unit → M) → Prop) : (∀ i, P i) ↔ ∀ b : M, P (fun _ => b) := by
-    constructor
-    · intro h b
-      exact h (fun _ => b)
-    · intro h i
-      have hi : i = fun _ => i () := funext fun u => by cases u; rfl
-      rw [hi]
-      exact h (i ())
-  simp only [hunit]
+    realize_allUnit]
   have hzero (a : Fin k → M) :
       Formula.Realize (φ.subst (Sum.elim Term.var (fun _ => zeroTerm))) a ↔
       φ.Realize (Sum.elim a (fun _ => zeroValue M)) := by

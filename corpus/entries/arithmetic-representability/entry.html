@@ -7,7 +7,7 @@
   <p>A formula \(A(\bar x)\) represents a relation \(R\subseteq\mathbb N^k\) if \(R(\bar a)\) implies \(Q\vdash A(\overline{\bar a})\), and \(\neg R(\bar a)\) implies \(Q\vdash\neg A(\overline{\bar a})\). All displayed substitutions and quantifiers use the existing capture-safe syntax. Variables introduced as witnesses are chosen fresh; no additional function symbols are being added to \(L_A\).</p>
 </section>
 
-<section id="finite-numeral-cuts" data-kind="lemma" data-formal="repr-order-formula repr-strict-order-formula repr-finite-numeral-bound repr-numeral-cut">
+<section id="finite-numeral-cuts" data-kind="lemma" data-formal="repr-order-formula repr-strict-order-formula repr-finite-numeral-bound repr-finite-numeral-bound-derives repr-strict-finite-numeral-bound repr-strict-finite-numeral-bound-derives repr-numeral-cut repr-numeral-cut-derives">
   <h2>A fixed numeral has only its expected predecessors</h2>
   <p>Introduce arithmetic abbreviations with the following specific orientation:</p>
   <div class="math-display">\[x\le y\;:\!\Longleftrightarrow\;\exists z\,(z+x=y),\qquad x\lt y\;:\!\Longleftrightarrow\;\exists z\,(z+Sx=y).\]</div>
@@ -16,10 +16,10 @@
   <p>It also proves that every \(x\) either equals one of \(\overline0,\ldots,\overline n\), or satisfies \(\overline n\lt x\).</p>
   <p class="proof-label">Proof</p>
   <p>The proof is an external induction on the fixed numeral. If \(z+x=0\) and \(x\ne0\), the predecessor axiom writes \(x=Su\); then \(z+Su=S(z+u)\ne0\), a contradiction. Hence the initial cut consists only of zero. For a successor bound, either \(x=0\), or \(x=Su\). In the latter case, \(z+Su=S\overline n\) is equivalent, by the addition axiom and successor injectivity, to \(z+u=\overline n\). Apply the preceding cut. Conversely each listed numeral has the required numeral difference as a witness, using <a href="arithmetic-theories#numeral-computation">numeral computation</a>. The strict cut is the same argument with \(Sx\); in particular the cut below zero is empty.</p>
-  <p>Finally apply the predecessor axiom successively \(n+1\) times to an arbitrary \(x\). Either a zero appears, giving one of the listed numerals, or \(x=S^{n+1}u\). The addition equations give \(u+S\overline n=S^{n+1}u=x\), the witness for \(\overline n\lt x\). These are finite proof constructions for each \(n\); no induction schema has been used inside \(Q\). □</p>
+  <p>Finally apply the predecessor axiom successively \(n+1\) times to an arbitrary \(x\). Either a zero appears, giving one of the listed numerals, or \(x=S^{n+1}u\). The addition equations give \(u+S\overline n=S^{n+1}u=x\), the witness for \(\overline n\lt x\). These are finite proof constructions for each \(n\); no induction schema has been used inside \(Q\). Equivalently, the argument establishes the displayed closed sentences in every model of \(Q\), and <a href="henkin-completeness#deductive-completeness">completeness</a> gives their \(Q\)-derivations. □</p>
 </section>
 
-<section id="bounded-formulas" data-kind="definition" data-formal="repr-bounded-universal repr-bounded-existential repr-delta-zero">
+<section id="bounded-formulas" data-kind="definition" data-formal="repr-bounded-universal repr-bounded-existential repr-strict-bounded-universal repr-strict-bounded-existential repr-delta-zero">
   <h2>Quantifiers with arithmetic bounds</h2>
   <p>A bounded quantifier is an abbreviation</p>
   <div class="math-display">\[\exists u\le t\,A\;:=\;\exists u\,(u\le t\land A),\qquad \forall u\le t\,A\;:=\;\forall u\,(u\le t\to A),\]</div>
@@ -122,7 +122,7 @@
   <p>Induction on a <a href="primitive-recursion#primitive-recursive-functions">primitive-recursive construction</a>, using <a href="#initial-and-composition"></a>, now shows that every primitive-recursive function is represented. The argument uses external finite induction, not an induction axiom of \(Q\).</p>
 </section>
 
-<section id="computable-representation" data-kind="theorem" data-formal="repr-computable-representability">
+<section id="computable-representation" data-kind="theorem" data-formal="repr-total-recursive-finite-arity-bridge repr-computable-representability">
   <h2>Every total computable function has a representing formula</h2>
   <div class="statement-box">
     <p>For every total recursive function \(f:\mathbb N^k\to\mathbb N\), there is one arithmetic formula \(F(\bar x,y)\) such that, for every \(\bar a\in\mathbb N^k\),</p>
@@ -137,7 +137,7 @@
   <p>The theorem supplies an arithmetic representing formula. The universal guards used for histories and least witnesses have not been shown to preserve the restricted \(\Sigma_1\) syntax defined above, and that extra syntactic assertion is not part of this theorem.</p>
 </section>
 
-<section id="representation-and-computation" data-kind="theorem" data-formal="repr-computable-representability repr-computable-of-representation repr-numeral-instance-code-primitive">
+<section id="representation-and-computation" data-kind="theorem" data-formal="repr-total-recursive-finite-arity-bridge repr-computable-representability repr-computable-of-representation repr-numeral-instance-code-primitive">
   <h2>A representing formula also gives an algorithm</h2>
   <p>A total numerical function is recursive if and only if it is represented in \(Q\) in the sense of <a href="#numeralwise-representation"></a>.</p>
   <p class="proof-label">Proof</p>

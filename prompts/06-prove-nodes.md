@@ -15,8 +15,9 @@ Own proof completion for the selected formal targets, preserving their mathemati
 Inspect the selected statements, definition bodies, relevant human arguments,
 proof-planning hints, and actual Lean sources. Use the
 [formalization guide](../docs/formal.md) for library organization, permitted axioms,
-and build warnings. Saved verification flags describe the last successful build;
-check actual unfinished dependencies where needed. Reuse applicable earlier
+and build warnings. Saved verification flags may be reused from an earlier Lean
+run; they do not certify current sources or bindings. Check actual unfinished
+dependencies where needed. Reuse applicable earlier
 handoffs; do not repeat the full human or correspondence review. Use the
 [authoring API](../CONTRIBUTING.md#using-the-authoring-api) entry context with
 `include=nodes,coverage` to select mapped targets; treat saved `verified=false`
@@ -53,15 +54,17 @@ area's node inventory for each proof task.
 
 ## Checks
 
-- Use focused compilation as needed while editing. At completion, run the writing
-  build required by the [shared check matrix](../CONTRIBUTING.md#validation-and-submission).
-  Inspect the full output and the selected nodes' refreshed verification results.
+- Use focused compilation as needed while editing. At completion, run full
+  `build` with Lean under the
+  [shared check matrix](../CONTRIBUTING.md#validation-and-submission).
+  Inspect the full output and the selected nodes' refreshed verification results,
+  and commit changed generated JSON, including `corpus/index.json`.
 - Confirm completed targets have no direct/inherited unfinished proofs or
   unsupported axioms. Use focused kernel-axiom reports to diagnose failures.
   A successful build alone is not a completion claim.
-- Run other checks only for corresponding changes: corpus validation for changed
-  node records/mappings/entry structure, rendering for edited prose/descriptions,
-  and catalog tests for reader/build-tooling changes or an integration failure.
+- The full build includes structural validation. Run other checks only for
+  corresponding changes: rendering for edited prose/descriptions and catalog
+  tests for reader/build-tooling changes or an integration failure.
   Proof-only work requires no reference-planning or presentation audit.
 
 ## Deliverable

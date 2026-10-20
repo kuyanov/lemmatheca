@@ -24,8 +24,8 @@ done
 # can require a password even when individual commands allow passwordless sudo.
 sudo systemctl cat "$service" >/dev/null
 
-printf 'Refreshing corpus index...\n'
-"$python" "$repo_dir/app/manage.py" validate_corpus --write-index
+printf 'Validating corpus...\n'
+"$python" "$repo_dir/app/manage.py" build --no-lean --check
 
 printf 'Collecting static files...\n'
 "$python" "$repo_dir/app/manage.py" collectstatic --clear --noinput

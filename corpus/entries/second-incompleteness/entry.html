@@ -1,0 +1,112 @@
+<section id="fixed-predicate-and-conditions" data-formal="lob-box lob-derivability-conditions" data-kind="definition">
+<h2>Keep the arithmetic formula fixed throughout the argument</h2>
+<p>Let \(T\) be a theory in the <a href="arithmetic-theories#arithmetic-language">arithmetic language</a>, containing Robinson arithmetic \(Q\). Choose a unary arithmetic formula \(P(x)\), and write</p>
+<div class="math-display">\[\Box A:=P(\overline{\ulcorner A\urcorner})\]</div>
+<p>for each arithmetic sentence \(A\). The code and numeral use the <a href="coding-formal-proofs#tagged-syntax">existing syntax coding</a>. Thus \(\Box A\) is an ordinary arithmetic sentence. To form \(\Box\Box A\), first form that complete sentence, then substitute the numeral for its code into the same \(P\).</p>
+<p>Assume the following <a href="formalized-provability#second-derivability-condition">derivability conditions</a>, for all sentences \(A,B\):</p>
+<div class="math-display">\[(\mathrm{D1})\qquad T\vdash A\quad\Longrightarrow\quad T\vdash\Box A,\]</div>
+<div class="math-display">\[(\mathrm{D2})\qquad T\vdash\Box(A\to B)\to(\Box A\to\Box B),\]</div>
+<div class="math-display">\[(\mathrm{D3})\qquad T\vdash\Box A\to\Box\Box A.\]</div>
+<p>D1 is a rule about external derivations. D2 and D3 assert that particular arithmetic implications have derivations. The argument below assumes these properties; it does not infer them merely from the standard meaning of \(P\). The <a href="arithmetic-proof-predicates#third-derivability-condition">specified PA predicate satisfies all three</a>, providing our eventual application. No consistency assumption is needed until the nonprovability conclusions.</p>
+</section>
+
+<section id="boxed-consequences" data-formal="lob-boxed-implication" data-kind="lemma">
+<h2>A proved implication gives an implication between boxes</h2>
+<p>If \(T\vdash A\to B\), then \(T\vdash\Box A\to\Box B\).</p>
+<p class="proof-label">Proof</p>
+<p>Apply D1 to the actual theorem \(A\to B\), obtaining \(T\vdash\Box(A\to B)\). Use this theorem as the antecedent of the D2 instance for \(A,B\), and apply implication elimination. <span class="qed" aria-label="End of proof">□</span></p>
+<p>The premise here is an existing derivation from \(T\). We have not added \(A\) as an extra axiom, and we have not assumed that D1 may be applied to a temporary assumption. That distinction will matter in the main proof.</p>
+</section>
+
+<section id="lob-fixed-point" data-formal="lob-fixed-point lob-fixed-point-equivalence" data-kind="lemma">
+<h2>Choose a sentence about what its own provability would imply</h2>
+<p>For each sentence \(A\), the <a href="diagonal-lemma#diagonal-lemma">fixed-point construction</a> applied to \(P(x)\to A\) gives a particular sentence \(L_A\) with</p>
+<div class="math-display">\[T\vdash L_A\leftrightarrow(\Box L_A\to A).\]</div>
+<p class="proof-label">Proof</p>
+<p>Regard the closed sentence \(A\) as a formula with an unused free variable \(x\). The diagonal lemma supplies its specified fixed point for this unary formula, with the equivalence already provable in \(Q\). Since \(Q\subseteq T\), the same derivation works in \(T\). <span class="qed" aria-label="End of proof">□</span></p>
+<p>The sentence depends on the chosen formula \(P\) and the target \(A\), but not on a decision about whether \(A\) is true or provable. It is a finite arithmetic sentence constructed by substitution. Its defining equivalence is not a new inference rule.</p>
+</section>
+
+<section id="boxed-fixed-point" data-formal="lob-boxed-fixed-point" data-kind="lemma">
+<h2>Two uses of D2 and one use of D3 control the fixed point</h2>
+<p>For the chosen \(L_A\),</p>
+<div class="math-display">\[T\vdash\Box L_A\to\Box A.\]</div>
+<p class="proof-label">Proof</p>
+<p>The forward half of the fixed-point equivalence is \(T\vdash L_A\to(\Box L_A\to A)\). The <a href="#boxed-consequences">boxed-consequence lemma</a> therefore gives</p>
+<div class="math-display">\[T\vdash\Box L_A\to\Box(\Box L_A\to A).\]</div>
+<p>The D2 instance with antecedent \(\Box L_A\) and consequent \(A\) is</p>
+<div class="math-display">\[T\vdash\Box(\Box L_A\to A)\to(\Box\Box L_A\to\Box A).\]</div>
+<p>To combine these theorems, work temporarily under the assumption \(\Box L_A\). The first theorem gives \(\Box(\Box L_A\to A)\), and D3 gives \(\Box\Box L_A\). Two implication eliminations in the second theorem give \(\Box A\). Discharge the temporary assumption. This proves the required implication inside \(T\). <span class="qed" aria-label="End of proof">□</span></p>
+<p>We applied D1 only to the already proved forward half of the fixed-point equivalence. Under the temporary assumption we used D2 and D3 as arithmetic theorems. There was no step from an assumed \(\Box L_A\) to its box by D1.</p>
+</section>
+
+<section id="lob-theorem" data-formal="lob-theorem lob-reflection-iff" data-kind="theorem">
+<h2>A provable reflection implication already yields its conclusion</h2>
+<div class="statement-box">
+<p><strong>Löb's theorem.</strong> Let \(T\supseteq Q\), and let the fixed formula \(P\) satisfy D1–D3. For every arithmetic sentence \(A\),</p>
+<div class="math-display">\[T\vdash\Box A\to A\quad\Longrightarrow\quad T\vdash A.\]</div>
+<p>In fact, \(T\vdash\Box A\to A\) if and only if \(T\vdash A\).</p>
+</div>
+<p class="proof-label">Proof</p>
+<p>Suppose \(T\vdash\Box A\to A\). The <a href="#boxed-fixed-point">preceding lemma</a> gives \(T\vdash\Box L_A\to\Box A\). Compose these two proved implications:</p>
+<div class="math-display">\[T\vdash\Box L_A\to A.\]</div>
+<p>The reverse half of the fixed-point equivalence says that this very implication entails \(L_A\). Apply implication elimination to obtain an actual theorem \(T\vdash L_A\). Now D1 applies, giving \(T\vdash\Box L_A\). Combining that theorem with the displayed implication yields \(T\vdash A\).</p>
+<p>Conversely, if \(T\vdash A\), the same proof can be used under an additional assumption \(\Box A\). Discharging that unused assumption gives \(T\vdash\Box A\to A\). <span class="qed" aria-label="End of proof">□</span></p>
+<p>Löb's theorem does not say that the existence of a proof of \(\Box A\) alone gives a proof of \(A\). Its hypothesis is a proof of the entire implication \(\Box A\to A\). Nor does the proof require that \(T\) be consistent or that all its theorems be true: the derivability conditions and the fixed-point equivalence are sufficient.</p>
+</section>
+
+<section id="consistency-as-reflection" data-formal="lob-consistency" data-kind="definition">
+<h2>The consistency sentence is the reflection instance for falsum</h2>
+<p>For this fixed \(P\), define</p>
+<div class="math-display">\[\operatorname{Con}_{P}(T):=\neg\Box\bot.\]</div>
+<p>Negation in our <a href="first-order-proofs#derivations-and-theories">shared calculus</a> abbreviates implication into falsum, so this is precisely the sentence \(\Box\bot\to\bot\). A proof of this consistency sentence is therefore a proof of the reflection implication to which Löb's theorem applies with \(A=\bot\).</p>
+<p>For a completely arbitrary \(P\), the notation alone does not guarantee that this sentence expresses consistency in the standard model. That interpretation additionally requires the correct connection between \(P\) and actual theoremhood. The PA application below uses the predicate for which <a href="arithmetic-proof-predicates#consistency-sentence">that connection was established</a>.</p>
+</section>
+
+<section id="conditional-second-incompleteness" data-formal="lob-second-incompleteness" data-kind="theorem">
+<h2>Consistency prevents a proof of this consistency sentence</h2>
+<p>Let \(T\supseteq Q\) be consistent, and let the fixed \(P\) satisfy D1–D3. Then</p>
+<div class="math-display">\[T\nvdash\operatorname{Con}_{P}(T).\]</div>
+<p class="proof-label">Proof</p>
+<p>A derivation of \(\operatorname{Con}_{P}(T)\) is a derivation of \(\Box\bot\to\bot\). <a href="#lob-theorem">Löb's theorem</a> would then give \(T\vdash\bot\), contradicting consistency. <span class="qed" aria-label="End of proof">□</span></p>
+<p>Only ordinary consistency is assumed here. The <a href="first-incompleteness#omega-consistency">omega-consistency hypothesis</a> from the original unrefutability argument is unnecessary. The work in this theorem lies in having proved D2 and D3 for the particular predicate, rather than only its numeralwise correctness.</p>
+</section>
+
+<section id="pa-second-incompleteness" data-formal="lob-pa-conditions lob-pa-second-incompleteness ap-consistency" data-kind="theorem">
+<h2>The fixed PA checker gives Gödel's second incompleteness theorem</h2>
+<div class="statement-box">
+<p>Use exactly the <a href="pa-proof-checkers#sigma-one-proof-predicate">specified PA proof formula</a> and the sentence</p>
+<div class="math-display">\[\operatorname{Con}(\mathrm{PA})=\neg\operatorname{Pr}(\overline{\ulcorner\bot\urcorner}).\]</div>
+<p>If PA is consistent, then</p>
+<div class="math-display">\[\mathrm{PA}\nvdash\operatorname{Con}(\mathrm{PA}).\]</div>
+</div>
+<p class="proof-label">Proof</p>
+<p>Set \(T=\mathrm{PA}\) and \(P=\operatorname{Pr}\) from the fixed checker. PA contains \(Q\). The <a href="arithmetic-proof-predicates#third-derivability-condition">three internally established derivability conditions</a> meet the hypotheses of <a href="#conditional-second-incompleteness"></a>. Its consistency sentence is literally the one displayed here; no replacement by another numeralwise representative occurs. <span class="qed" aria-label="End of proof">□</span></p>
+<p>This conclusion concerns that specified arithmetical sentence. Agreement of another proposed consistency formula with it on the standard natural numbers is insufficient for substitution in this argument. A proved <a href="arithmetic-proof-predicates#predicate-comparison">internal equivalence</a> permits the corresponding change; standard agreement alone does not.</p>
+</section>
+
+<section id="adding-negated-consistency" data-formal="lob-negated-consistency-extension lob-extension-not-standard henkin-countable-model-existence" data-kind="theorem">
+<h2>A consistent extension may assert that PA has a proof of contradiction</h2>
+<p>If PA is consistent, the theory \(\mathrm{PA}+\neg\operatorname{Con}(\mathrm{PA})\) is consistent as well. The added axiom refers to the original PA checker, not to a newly chosen checker for the extension.</p>
+<p class="proof-label">Proof</p>
+<p>If the extension derived falsum, the <a href="first-order-proofs#proof-operations">deduction theorem</a> would give</p>
+<div class="math-display">\[\mathrm{PA}\vdash\neg\operatorname{Con}(\mathrm{PA})\to\bot.\]</div>
+<p>Classical double-negation elimination would yield \(\mathrm{PA}\vdash\operatorname{Con}(\mathrm{PA})\), contradicting <a href="#pa-second-incompleteness"></a>. Thus no such derivation exists. By <a href="henkin-completeness#countable-model-existence">model existence</a>, this consistent extension has a model. <span class="qed" aria-label="End of proof">□</span></p>
+<p>Under the same consistency hypothesis, the added axiom is false in \(\mathbb N_A\), since <a href="arithmetic-proof-predicates#consistency-sentence">standard correctness</a> makes \(\operatorname{Con}(\mathrm{PA})\) true there. Thus the extension has models but not the standard arithmetic model. This is one concrete way to see the difference between consistency and truth in the intended model.</p>
+</section>
+
+<section id="henkin-sentence" data-formal="diag-extension-fixed-point lob-henkin-sentence" data-kind="question">
+<h2>What if a sentence says that it is provable?</h2>
+<p>Let \(H\) be the specified fixed point of \(P(x)\), so \(T\vdash H\leftrightarrow\Box H\). Under the hypotheses of Löb's theorem, must \(T\) prove \(H\)?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+<p>Yes. The equivalence gives \(T\vdash\Box H\to H\), so Löb's theorem gives \(T\vdash H\). The construction of a sentence asserting its provability therefore behaves differently from a sentence asserting its unprovability. This is Henkin's question, answered by Löb's theorem. There is no new rule allowing a sentence to justify itself: the proof uses the already proved fixed-point equivalence and all the derivability hypotheses.</p>
+</div></details>
+</section>
+
+<section id="external-proof-of-consistency" data-formal="arith-PA-consistent ap-consistency-standard lob-pa-second-incompleteness" data-kind="question">
+<h2>Does an external consistency argument contradict the theorem?</h2>
+<p>The standard natural-number structure satisfies the PA axioms. Soundness therefore proves PA's consistency in our surrounding mathematics. Why does that not contradict second incompleteness?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+<p>The external argument uses the natural-number structure and the satisfaction and soundness theorems in the metatheory. Second incompleteness concerns a finite derivation from PA's own axioms of one specific sentence of its arithmetic language. Those are different claims. The external model argument establishes consistency and hence truth of \(\operatorname{Con}(\mathrm{PA})\) in \(\mathbb N_A\); the theorem then shows that this true sentence has no PA derivation. It does not prohibit a proof in stronger surrounding mathematics.</p>
+</div></details>
+</section>

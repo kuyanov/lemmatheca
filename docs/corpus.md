@@ -15,6 +15,7 @@ corpus/
   nodes/<node-id>.json
   taxonomy.json
   area_entries.json
+  index.json                # Generated, committed authoring index
   reference-planning/
     index.json             # Compact navigation by entry, area, kind, and URL
     records/<id>.json       # One focused pending reference or development record
@@ -104,8 +105,9 @@ following the [shared build rules](../CONTRIBUTING.md#validation-and-submission)
 Include the refreshed entry and node JSON with the change. Failed checks or
 invalid entry summaries leave the previous generated data intact.
 
-The [statistics workflow](../.github/workflows/statistics.yml) writes
-`corpus/statistics.json` after pushes to `main`, using saved metadata and Git
+Corpus-wide aggregate totals and history are stored solely in
+`corpus/statistics.json`. The [statistics workflow](../.github/workflows/statistics.yml)
+writes it after pushes to `main`, using saved metadata and Git
 authors. Contribution branches should leave this file unchanged; the proof build
 does not update it. Its schema is validated when present, without requiring
 freshness during authoring.
@@ -149,7 +151,8 @@ Reuse applicable source assessments; moving to another pipeline stage does not
 require inspecting unchanged source passages again or duplicating their coverage
 records. All six steps maintain this register when actual source checks reveal new
 defects or extend reviewed coverage. Steps 1, 3, and 5 may update these records
-only; their entry, node, proof, and generated-data work remains read-only.
+and refresh the derived data required by that source-register maintenance using
+`build --no-lean`; authored entry/node fields and Lean sources remain read-only.
 Save confirmed findings before the handoff rather than leaving them solely in a
 chat or pull request. Entry editorial findings and formal correspondence findings
 stay in their review handoffs. This register has no approval flags or effect on
@@ -206,17 +209,12 @@ entries or blocks; `planned_entry_ids` names future entries without inventing
 anchors. Area tags may identify future areas not yet in the taxonomy. Markdown
 links in record strings resolve relative to `corpus/`, independent of file depth.
 
-After record changes, regenerate the catalogs and validate:
-
-```sh
-uv run python app/manage.py index_authoring_records
-uv run python app/manage.py validate_corpus
-```
-
-Catalog generation writes only changed catalogs. Validation checks shapes, IDs,
-source/finding relationships, existing entry/block references and exact catalog
-contents. Catalogs are committed navigation files; the entry/node index under
-`artifacts/` remains a separate disposable cache. Neither command invokes Lean.
+After record changes, run `uv run python app/manage.py build --no-lean`.
+It validates the records and their relationships and refreshes the committed
+catalogs with the other derived data. For read-only review,
+`build --no-lean --check` tolerates absent or stale catalogs. See the
+[shared build modes](../CONTRIBUTING.md#validation-and-submission).
+The generated, committed `corpus/index.json` is a separate authoring index.
 Do not maintain a second Markdown copy of these registries.
 
 ## HTML and references
@@ -253,6 +251,17 @@ Introduce proofs with the shared italic label, on its own paragraph:
 
 Use this markup consistently; do not use bold or inline `Proof.` labels.
 The reader's stylesheet supplies the italic styling.
+
+Give substantive constructions enough space to reconstruct their arguments.
+For an internal algorithm, state its defining recurrence, the induction predicate
+with its parameters, the invariant, and the required syntax or freshness
+conditions. Work through a representative case and explain how the common
+argument handles the remaining cases. Uniform totality or numerical correctness
+alone does not justify additional algebraic or proof-preservation identities.
+When formalization exposes an essential intermediate argument absent from the
+prose, add that argument and its relevant lemmas. Split an entry at mathematical
+boundaries if explaining its constructions would exceed its reading-time scope.
+Routine Lean reindexing and repeated field calculations need no separate prose.
 
 Use `href="#block-id"` for a local block and `href="entry-id#block-id"` for another
 entry. Cross-entry references must target mathematical blocks. The renderer resolves
@@ -381,50 +390,24 @@ Review the human mathematics and
 the description-to-declaration correspondence separately on GitHub; a passing Lean
 check does not establish that the intended statement was formalized.
 
-From the repository root, at any stage of authoring:
+Use the [shared build modes and check matrix](../CONTRIBUTING.md#validation-and-submission)
+from the repository root. `build --no-lean --check` validates canonical inputs
+without writing, running Lean, or requiring up-to-date derived data. It checks
+metadata, citations, HTML structure, anchors and equations, assets, block links,
+bindings, dependency and area cycles, reading order, and source/planning records.
+Entry references may be cyclic; node hints and area parents may not. Unknown
+metadata fields and excessively nested HTML are rejected. Missing mappings,
+unbound nodes, and absent generated summaries/signatures remain valid. Structural
+checks do not establish declaration existence or current proof validity. Installed Lean
+source availability is checked only with `--check-sources`.
 
-```sh
-uv run python app/manage.py validate_corpus
-```
-
-By default, the validator checks the complete corpus without rendering HTML,
-running Lean, or writing files. It reports the first failure with its file path. It validates
-metadata types and IDs, citations, HTML structure, anchors and equations, local
-assets, cross-entry block links, formal bindings, node dependency references and
-cycles, area parents and
-cycles, and the primary-area reading index. Entry links
-may be cyclic; node dependency hints and area parents may not. Deeply nested HTML
-is rejected before it can exhaust the reader's recursive renderer.
-
-Missing `data-formal`, unbound nodes, and absent generated summaries/signatures are
-valid. Existing generated data is checked for shape, not freshness, so this command
-does not force a build during drafting. Unknown metadata fields are rejected to
-catch typos. Lean bindings are checked for shape; declaration existence and proof
-verification belong to `build`. For deployment, `validate_corpus --check-sources`
-also checks that each bound module's local source is readable UTF-8, once per
-module. This option needs installed sources but still does not invoke Lean.
-
-Add `--write-index` to publish the disposable structural index used by the
-[authoring API](app.md#authoring-api), without invoking Lean. The index does not
-copy entry prose or node metadata; API queries read those from the corpus, with
-a bounded cache for parsed entry text. See the [index lifecycle](app.md#corpus-index)
-for output paths, refresh rules, and memory limits. Ordinary reader pages and
-direct-file reviews do not require this index.
-
-After adding an entry or changing its block inventory, formal mappings, node
-bindings, or Lean declarations and proofs, refresh generated data at delivery:
-
-```sh
-uv run python app/manage.py build
-```
-
-Use the [shared check and batching rules](../CONTRIBUTING.md#validation-and-submission)
-for standalone handoffs and multi-stage tasks; do not repeat a successful build
-without subsequent relevant changes or unresolved diagnostics.
-The build checks declarations, parses entries, refreshes node data and entry-list
-summaries, then regenerates the configured index. Prose or figure edits that preserve the block inventory and mappings
-need corpus validation and a rendering check, without a proof rebuild. Run relevant
-catalog tests when reader or build-tooling code changes, or to investigate a
-rendering or integration failure. Inspect edited pages for mathematical layout,
-working links, questions, and figures. CI checks that generated JSON matches the
-committed files. See the [app guide](app.md) for serving and deployment.
+Finish authored corpus edits other than statistics-only updates with the writing
+`build --no-lean`, and commit changed generated data, including `corpus/index.json`.
+This includes prose-only and whitespace-only changes. Use the full `build` for
+changes to bindings, Lean declarations or proofs; one final writing build per
+batch satisfies the [shared rules](../CONTRIBUTING.md#validation-and-submission).
+Inspect edited pages for mathematical
+layout, links, hidden answers and figures. Corpus checks do not render pages or
+establish that a formal statement matches its exposition. See the
+[formal guide](formal.md#build-and-verification) for verification and the
+[app guide](app.md) for serving and deployment.

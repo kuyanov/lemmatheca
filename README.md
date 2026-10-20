@@ -1,5 +1,8 @@
 # Lemmatheca
 
+See the [build guide](docs/build.md) for corpus builds, validation, flags, and
+generated files.
+
 Lemmatheca aims to bring mathematics together in a connected library of readable
 explanations and computer-checked results. An **entry** develops a topic through
 definitions, theorems, proofs, examples, and questions. A **node** records one
@@ -11,45 +14,6 @@ The website lets readers browse mathematical areas, follow references between
 entries, and inspect the formal statements and proofs behind an entry's blocks.
 The content lives in HTML and JSON files, so writing, reviewing, and changing it
 uses the same Git workflow as the application code.
-
-## Plan
-
-Grow the library topic by topic: choose sources, write clear exposition, review
-the mathematics, connect its claims to formal nodes, review those connections,
-and complete the proofs. Human exposition can be contributed before its
-formalization is ready.
-
-Follow the [stage responsibilities](CONTRIBUTING.md#stage-responsibilities) and
-[change-based checks](CONTRIBUTING.md#validation-and-submission) to carry completed
-work forward through the pipeline.
-
-Maintain confirmed mathematical defects in cited books, papers, and notes in
-[Source errors](corpus/source-errors/index.json). Prioritize false statements and failed
-arguments; valid compressed proofs and missing explanations are not source errors.
-Record the inspected edition, precise location, evidence, repair, and affected
-entry blocks, together with the actual scope of each source check.
-
-Entries should have no major dependencies on substantial theory missing from the
-corpus. Familiar background, including elementary arithmetic and standard facts
-about real numbers, may be used without an entry reference. Track useful future
-links in the `upcoming-reference` collection of
-[reference planning](corpus/reference-planning/index.json), and add them as the
-relevant areas develop. Separate record kinds hold integration and expansion notes.
-Use the [targeted lookup workflow](docs/corpus.md#navigating-source-and-planning-records)
-to read the relevant JSON records rather than the entire collection.
-When an entry supplies planned coverage, add useful links from existing consuming
-entries across areas and remove fulfilled tasks from all planning records. Keep
-only outstanding work and the context needed to carry it out.
-A missing substantial prerequisite must be developed, or the dependent material
-narrowed or deferred; recording a future reference does not waive this requirement. See the
-[scope guidance](CONTRIBUTING.md#prerequisites-and-scope).
-
-The long-term aim is broad mathematical coverage with reusable results across
-subjects. The project keeps one shared Lean library, favors existing results in
-mathlib (Lean's community mathematics library), and keeps the reader simple as the
-corpus grows. Human review takes place on GitHub; Lean verification is a separate
-check. A correct formal proof still needs review to establish that it expresses
-the intended mathematics.
 
 ## Main components
 
@@ -83,27 +47,12 @@ Python and the locked project dependencies:
 ```sh
 uv python install 3.12
 uv sync --locked --python 3.12
-uv run python app/manage.py validate_corpus
+uv run python app/manage.py build --no-lean
 ```
 
 uv creates a local `.venv/`; `uv run` uses it without manual activation.
-By default, `validate_corpus` checks content structure and references without Lean,
-a prior build, or any file writes, so it is also useful while drafting an entry.
-Add `--write-index` to export a disposable authoring index to
-`artifacts/corpus-index.json`, or give a custom output path:
-
-```sh
-uv run python app/manage.py validate_corpus --write-index
-uv run python app/manage.py validate_corpus --write-index /tmp/corpus-index.json
-```
-
-The index supports read-only APIs for entry listing and context, block/node search,
-references, coverage, and node consumers. Entry text and metadata stay in their
-original files; parsed text uses a bounded memory cache. Refresh the index after
-structural edits; generation does not check Lean
-freshness. See the [API guide](docs/app.md#authoring-api) and
-[index lifecycle](docs/app.md#corpus-index) for details. Set
-`DJANGO_CORPUS_INDEX_PATH` to use another cache location by default.
+This setup works without Lean. Choose other build and check modes from the
+[build guide](docs/build.md#flags-and-combinations).
 
 ### Lean environment
 
@@ -126,8 +75,7 @@ cd formal
 lake --version
 lake exe cache get
 cd ..
-uv run python app/manage.py build
-uv run python app/manage.py validate_corpus --check-sources
+uv run python app/manage.py build --check-sources
 uv run python app/manage.py test catalog
 ```
 
@@ -138,16 +86,6 @@ take time. Keep [lean-toolchain](formal/lean-toolchain),
 [lakefile.toml](formal/lakefile.toml), and [lake-manifest.json](formal/lake-manifest.json)
 unchanged during ordinary authoring; `lake update` is for dependency upgrades.
 
-The Django `build` command compiles Lean and refreshes node verification,
-declaration signatures, source lines, and entry summaries, then exports the index
-to the configured cache location (default `artifacts/corpus-index.json`). Home-page statistics
-are updated automatically after pushes to `main`, including newly merged contributors;
-contribution branches do not need to regenerate `corpus/statistics.json`.
-**Verified** means the declaration and its dependencies contain no unfinished proofs (`sorry`) and use only the default axioms: `propext`, `Classical.choice`, and
-`Quot.sound`. Unfinished or unsupported proofs are marked **Not verified** without
-preventing the build from checking the remaining nodes. See the
-[verification rules](docs/formal.md#build-and-verification).
-
 ### Run the reader
 
 ```sh
@@ -155,19 +93,16 @@ uv run python app/manage.py runserver
 ```
 
 Open <http://127.0.0.1:8000/>. Browse an area to open an entry, then use its
-formalization badges to inspect nodes and their Lean sources. Verification badges
-reflect the last successful build; requests do not run Lean. After changing
-content mappings, node bindings, or proofs, refresh `build` results at delivery
-under the [shared check rules](CONTRIBUTING.md#validation-and-submission) and
-include the generated JSON changes.
-Stop the development server with Ctrl+C.
+formalization badges to inspect nodes and their Lean sources. Stop the
+development server with Ctrl+C.
 
 For production settings, the read-only API, and performance details, see the
 [app guide](docs/app.md).
 
 ## Contributing
 
-Start with [CONTRIBUTING.md](CONTRIBUTING.md). It describes the complete six-step
-pipeline, what each step produces, how to run an individual step with an AI agent,
-and which checks to run before submitting changes. The [documentation index](docs/README.md)
-links to the content contracts, proof rules, and app maintenance guide.
+Follow [CONTRIBUTING.md](CONTRIBUTING.md) for the six-step authoring pipeline,
+scope rules, source reviews, and required checks. Entries can be contributed
+before their formalization is complete; human review and Lean verification are
+separate responsibilities. The [documentation index](docs/README.md) links to
+the content contracts, proof rules, registries, and app maintenance guide.

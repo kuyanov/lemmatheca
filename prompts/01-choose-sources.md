@@ -55,9 +55,9 @@ do not read either complete registry. Consult the selected publications directly
 ## Checks
 
 Check source provenance, mathematical support, and prerequisite coverage as part
-of the work above. If source records changed, rebuild their catalogs and validate
-records and links under the [registry contract](../docs/corpus.md#navigating-source-and-planning-records).
-No other corpus validation, rendering, Lean/library search, or build is required for this plan.
+of the work above. If source records changed, run `build --no-lean` under the
+[shared build rules](../CONTRIBUTING.md#validation-and-submission).
+No other validation, rendering, Lean/library search, or build is required for this plan.
 Formal reuse and signature inspection belong to step 4.
 
 ## Deliverable
@@ -65,4 +65,5 @@ Formal reuse and signature inspection belong to step 4.
 Return the scope and outline, source-to-outline map and citation objects,
 prerequisites and placement, checked repairs and unchecked passages, relevant
 integration candidates, and unresolved drafting questions. Report source-register
-changes when made. Do not create entries, nodes, proofs, or build-generated proof metadata.
+changes when made. Do not create entries, nodes or proofs. Refresh derived data
+only when required by source-register maintenance; do not run Lean in this stage.

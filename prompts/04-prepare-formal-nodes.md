@@ -60,9 +60,14 @@ context with `include=blocks,coverage`; select `block_ids` for a narrower task.
   A required full build can supply the compilation check; use focused compilation
   when that build is deferred. Unfinished theorem proofs are expected at this
   stage; missing declarations or invalid definitions are not.
-- Run corpus validation after the preparation batch. Apply the
-  [shared build rules](../CONTRIBUTING.md#validation-and-submission) to refresh
-  generated data for a standalone handoff or at the end of an ongoing batch.
+- Finish every corpus edit, including description-only, formatting, or mapping
+  changes, with a writing build and commit changed generated JSON, including
+  `corpus/index.json`. Use `build --no-lean`, or full `build` when
+  required by the [shared build rules](../CONTRIBUTING.md#validation-and-submission).
+  The read-only `build --no-lean --check` does not refresh the index and cannot
+  replace this step. Statistics-only updates are exempt. For an ongoing batch,
+  defer the writing build to its final mutating stage and record the requirement
+  in the handoff; do not add a no-Lean build if a full build will satisfy it.
 - Read and render new or edited node descriptions to check notation, intended
   symbols, delimiters, and KaTeX output. Do not redo the human-entry layout audit.
 

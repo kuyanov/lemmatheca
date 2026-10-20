@@ -1,0 +1,12 @@
+{
+  "id": "pac-same-recursion-comparison",
+  "description": "If PA derives the same base and successor recursion equations for arbitrary arithmetic graphs \\(F,G\\), with the same base and step graphs, PA derives the universal equivalence of \\(F,G\\).",
+  "module": "Lemmatheca.MathematicalLogic.PARecursionComparison",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.same_recursion_derives",
+  "dependencies": [
+    "pac-definable-induction"
+  ],
+  "verified": true,
+  "declaration_line": 97,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.same_recursion_derives {n : ℕ}\n  (F G : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin (n + 1) ⊕ Unit))\n  (B : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin n ⊕ Unit))\n  (H : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin (n + 2) ⊕ Unit))\n  (hF0 :\n    Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n      (Lemmatheca.MathematicalLogic.PAComputations.allClose\n        (Lemmatheca.MathematicalLogic.PAComputations.recursionZeroFormula F B)))\n  (hG0 :\n    Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n      (Lemmatheca.MathematicalLogic.PAComputations.allClose\n        (Lemmatheca.MathematicalLogic.PAComputations.recursionZeroFormula G B)))\n  (hFS :\n    Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n      (Lemmatheca.MathematicalLogic.PAComputations.allClose\n        (Lemmatheca.MathematicalLogic.PAComputations.recursionSuccessorFormula F H)))\n  (hGS :\n    Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n      (Lemmatheca.MathematicalLogic.PAComputations.allClose\n        (Lemmatheca.MathematicalLogic.PAComputations.recursionSuccessorFormula G H))) :\n  Lemmatheca.MathematicalLogic.PAComputations.PAEquivalent F G"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "res-entailment-refutation",
+  "description": "If a finite clause representation is equivalent to the conjunction of finite premises \\(\\Gamma\\) with \\(\\neg B\\), then \\(\\Gamma\\models B\\) if and only if that clause set has a resolution refutation.",
+  "module": "Lemmatheca.MathematicalLogic.Resolution",
+  "declaration": "Lemmatheca.MathematicalLogic.Resolution.entailment_refutation",
+  "dependencies": [
+    "res-list-cnf-bridge",
+    "res-refutation-iff"
+  ],
+  "verified": true,
+  "declaration_line": 464,
+  "signature": "Lemmatheca.MathematicalLogic.Resolution.entailment_refutation.{u} {α : Type u} [DecidableEq α]\n  (Γ : Finset (Lemmatheca.MathematicalLogic.PropFormula α)) (B : Lemmatheca.MathematicalLogic.PropFormula α)\n  (L : List (List (Lemmatheca.MathematicalLogic.PropLiteral α)))\n  (h :\n    Lemmatheca.MathematicalLogic.SemEquivalent ((Lemmatheca.MathematicalLogic.finiteConj Γ.toList).conj B.neg)\n      (Lemmatheca.MathematicalLogic.cnfFormula L)) :\n  Lemmatheca.MathematicalLogic.Entails Γ B ↔\n    Lemmatheca.MathematicalLogic.Resolution.Derives (Lemmatheca.MathematicalLogic.Resolution.ofCnf L) ∅"
+}

@@ -2,6 +2,7 @@
 
 from collections import Counter
 from contextlib import contextmanager
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -23,7 +24,7 @@ class IndexedAPITests(SimpleTestCase):
         self.addCleanup(temporary.cleanup)
         self.repository = Path(temporary.name)
         self.corpus = self.repository / "corpus"
-        self.cache = self.repository / "artifacts/corpus-index.json"
+        self.cache = self.corpus / "index.json"
         (self.corpus / "nodes").mkdir(parents=True)
         write_json(self.corpus / "taxonomy.json", {"areas": [
             {"id": "root", "title": "Root", "parent": None, "description": "Root."},
@@ -765,7 +766,8 @@ class IndexedAPITests(SimpleTestCase):
         self.assert_error("/api/coverage/", {"entry_ids": "alpha"}, 409, "index_outdated")
 
     def test_missing_corrupt_and_incompatible_index_are_service_errors(self):
-        for contents in [None, "not JSON", "{}", '{"schema_version": 2}', '{"schema_version": 3}']:
+        legacy = {**read_json(self.cache), "schema_version": 4}
+        for contents in [None, "not JSON", "{}", json.dumps(legacy)]:
             with self.subTest(contents=contents):
                 if contents is None:
                     self.cache.unlink(missing_ok=True)

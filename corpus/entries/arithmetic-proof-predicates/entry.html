@@ -1,0 +1,88 @@
+<section id="existential-prefix-assembly" data-formal="ap-existential-prefix-certificate ap-existential-append" data-kind="lemma">
+  <h2>Append witnesses in the target formula’s actual order</h2>
+<p>Retain the <a href="pa-proof-checkers#sigma-one-proof-predicate">fixed PA checker formula</a> and the <a href="pa-proof-checkers#numeral-substitution">parameterized box notation</a>. The <a href="bounded-arithmetic-proofs#bounded-proof-builders">signed bounded builders</a> now supply the matrix proofs needed for existential arithmetic statements.</p>
+<p>Let \(A(\vec x)=\exists y_0\cdots\exists y_{k-1}\,D(\vec x,\vec y)\), with \(D\) bounded. Suppose a certificate for the closed matrix instance \(D(\overline{\vec x},\overline{\vec y})\) is accepted. We construct a certificate for \(A(\overline{\vec x})\) by a fixed finite recursion on its existential prefix.</p>
+<p>Store the witness values in the order in which the target's quantified slots are opened. For a target \(T=\exists z\,F\), read its literal body code, read the first witness value \(w\), and compute the actual instantiated code \(F(\overline w)\). Recursively build the certificate for this inner target using the remaining witness list. Finally attach existential introduction with witness term \(\overline w\) to recover the original target \(T\).</p>
+<div class="math-display">\[X_0(T,\vec w,p)=p.\]</div>
+<div class="math-display">\[X_{j+1}(\exists zF,w::\vec w,p)=\operatorname{ExIntro}(X_j(F(\overline w),\vec w,p),F,\overline w).\]</div>
+<p class="proof-label">Proof</p>
+<p>The recursion invariant retains the literal target, the current witness list and the fully instantiated matrix code. At length zero, the target equals that matrix. At a successor, the current target is the existential closure of its recognized body; its first numeral instance and remaining witnesses satisfy the invariant for the shorter prefix. The recursive certificate is therefore accepted for precisely the instance compared by the existential-introduction rule. The checked constructor accepts the outer result, and the root axiom certificates are retained unchanged.</p>
+<p>This induction is external on the fixed finite number \(k\); the witness <em>values</em> may be arbitrary internal elements. The syntax identities prove that the chosen witness order is the one actually used by the quantified formula, so no assumption about an unspecified enumeration of variables is needed. □</p>
+</section>
+
+<section id="formalized-completeness" data-formal="ap-existential-append ap-formalized-completeness ap-closed-completeness ap-zero-parameter-box ap-quoted-proof-conversion" data-kind="theorem">
+  <h2>Arithmetic proves its completeness for existential bounded statements</h2>
+  <div class="statement-box">
+    <p>For every fixed \(\Sigma_1\) formula \(A(\vec x)=\exists\vec y\,D(\vec x,\vec y)\), with \(D\) bounded, PA proves</p>
+    <div class="math-display">\[\forall\vec x\,\bigl[A(\vec x)\to\Box A(\dot{\vec x})\bigr].\]</div>
+    <p>In particular, for every \(\Sigma_1\) sentence \(A\), \(\mathrm{PA}\vdash A\to\Box A\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>First suppose that the bounded matrix uses inclusive quantifiers only. From <a href="bounded-arithmetic-proofs#bounded-proof-builders"></a>, PA proves that \(D(\vec x,\vec y)\) implies acceptance of the positive builder for the sentence \(D(\overline{\vec x},\overline{\vec y})\). Append one existential-introduction step for each witness coordinate, using its numeral as the witness term. The <a href="#existential-prefix-assembly">prefix-construction lemma</a> verifies these appended steps and the exact resulting code \(\operatorname{sub}_A(\vec x)\). Thus PA proves</p>
+  <div class="math-display">\[D(\vec x,\vec y)\ \longrightarrow\ \exists p\,\operatorname{Prf}(p,\operatorname{sub}_A(\vec x)).\]</div>
+  <p>Existentially eliminate \(\vec y\) in this PA derivation. The conclusion has no free occurrence of those witness variables, giving the displayed implication. Universal introduction over \(\vec x\) completes its closure. For a matrix with strict bounds, normalize it to an inclusive-bound \(D^*\), and put \(A^*(\vec x)=\exists\vec y\,D^*(\vec x,\vec y)\). PA proves \(A\leftrightarrow A^*\), and the inclusive case gives \(A^*\to\Box A^*(\dot{\vec x})\). The fixed implication \(A^*\to A\), specialized at the internal numeral terms and applied by the actual modus-ponens constructor, changes that proof into a proof with the original code \(\operatorname{sub}_A(\vec x)\). This gives the required general implication. If the witness list is empty, use the corresponding signed bounded builder.</p>
+  <p>For a sentence, the empty parameter tuple yields the graph-based box. The <a href="pa-proof-checkers#zero-parameter-box">empty-parameter equivalence</a> gives the ordinary \(\Box A\) in its place, proving the sentence corollary. No syntactic equality between those two formulas is needed. □</p>
+  <p>This differs from <a href="arithmetic-representability#existential-completeness">external existential completeness</a>, whose hypothesis is that a sentence is true in \(\mathbb N_A\). Here the antecedent is a formula inside a PA derivation, and its witnesses may be arbitrary internal elements.</p>
+</section>
+
+<section id="first-derivability-condition" data-formal="ap-derivability-one" data-kind="theorem">
+  <h2>An actual theorem has a proof of its provability</h2>
+  <p>For every arithmetic sentence \(A\),</p>
+  <div class="math-display">\[\mathrm{PA}\vdash A\quad\Longrightarrow\quad\mathrm{PA}\vdash\Box A.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>An actual derivation gives an accepted certificate with ordinary code \(p\). Numeralwise correctness of the canonical graph gives a PA proof of \(\operatorname{Prf}(\overline p,\overline{\ulcorner A\urcorner})\). Existential introduction gives \(\Box A\). This is the same <a href="formalized-provability#first-derivability-condition">first derivability argument</a>, now for the specified canonical predicate. □</p>
+</section>
+
+<section id="second-derivability-condition" data-formal="ap-derivability-two" data-kind="theorem">
+  <h2>Provability is closed under implication elimination internally</h2>
+  <p>For every pair of arithmetic sentences \(A,B\),</p>
+  <div class="math-display">\[\mathrm{PA}\vdash\Box(A\to B)\to(\Box A\to\Box B).\]</div>
+  <p class="proof-label">Proof</p>
+  <p>Inside PA, introduce proof-code witnesses \(p,q\) for the two antecedents. Their conclusion codes are fixed sentence codes, whose syntax tests have numerical proofs. The uniform implication of <a href="pa-proof-checkers#uniform-proof-assembly"></a> gives \(\operatorname{Prf}(M(p,q,\overline{\ulcorner B\urcorner}),\overline{\ulcorner B\urcorner})\). Existential introduction gives \(\Box B\). Eliminate the two proof-code witnesses and discharge the assumptions. The totality of \(M\)'s graph justifies the function abbreviation throughout. □</p>
+</section>
+
+<section id="third-derivability-condition" data-formal="ap-box-sigma-one ap-derivability-one ap-derivability-two ap-derivability-three" data-kind="theorem">
+  <h2>Provability implies provability of provability</h2>
+  <div class="statement-box">
+    <p>For the fixed PA predicate and every pair of arithmetic sentences \(A,B\), all three derivability conditions hold:</p>
+    <div class="math-display">\[\mathrm{PA}\vdash A\quad\Longrightarrow\quad\mathrm{PA}\vdash\Box A.\]</div>
+    <div class="math-display">\[\mathrm{PA}\vdash\Box(A\to B)\to(\Box A\to\Box B).\]</div>
+    <div class="math-display">\[\mathrm{PA}\vdash\Box A\to\Box\Box A.\]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>The sentence \(\Box A\) is \(\Sigma_1\), regardless of the complexity of \(A\), because it is the existential closure of the fixed checker graph with one numeral substituted. Apply <a href="#formalized-completeness"></a> to this particular sentence. Its conclusion is exactly \(\Box A\to\Box(\Box A)\), where the outer box uses the code of the complete inner provability sentence. The first two conditions were proved above. □</p>
+  <p>The proof uses formalized completeness on the provability sentence, not on \(A\). It therefore applies even when \(A\) has quantifiers of much greater complexity.</p>
+</section>
+
+<section id="predicate-comparison" data-formal="ap-predicate-comparison ap-comparison-instance ap-comparison-consistency" data-kind="lemma">
+  <h2>Changing the representing formula requires an internal comparison</h2>
+  <p>Let \(P(x),R(x)\) be any unary arithmetic formulas proposed as provability predicates. Suppose \(\mathrm{PA}\vdash\forall x(P(x)\leftrightarrow R(x))\). Then, for every sentence \(A\), PA proves the equivalence of their two provability instances and also the equivalence of their two consistency sentences.</p>
+  <p class="proof-label">Proof</p>
+  <p>Instantiate the universal equivalence at \(\overline{\ulcorner A\urcorner}\). For consistency, instantiate it at \(\overline{\ulcorner\bot\urcorner}\) and negate both sides. □</p>
+  <p>Standard-model agreement alone supplies neither PA proof. No such internal equivalence with the earlier arbitrary numeralwise representative is asserted here. Our concrete derivability conditions concern the newly specified canonical checker formula.</p>
+</section>
+
+<section id="consistency-sentence" data-formal="ap-consistency ap-consistency-standard" data-kind="definition">
+  <h2>The consistency sentence now has a fixed arithmetic formula</h2>
+  <p>For the fixed \(\operatorname{Pr}\), define</p>
+  <div class="math-display">\[\operatorname{Con}(\mathrm{PA}):=\neg\operatorname{Pr}(\overline{\ulcorner\bot\urcorner}).\]</div>
+  <p>Standard correctness shows that this sentence is true in \(\mathbb N_A\) exactly when the actual PA calculus has no finite proof of \(\bot\). The internal derivability conditions just established concern this same predicate. Thus the proof checker, its representing formula, and its consistency sentence are fixed together; none is replaced by a merely standard-equivalent expression during an internal argument.</p>
+</section>
+
+<section id="closed-versus-parameterized" data-formal="ap-parameterized-box ap-formalized-completeness" data-kind="question">
+  <h2>Why did the proof need formulas with free variables?</h2>
+  <p>Why not prove only \(\mathrm{PA}\vdash A\to\Box A\) for closed bounded sentences and then add existential witnesses?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>From \(\exists y\,D(y)\), existential elimination introduces an arbitrary parameter \(y\), not a particular ordinary natural number. The required intermediate conclusion is about the code of \(D(\overline y)\), formed by an internal numeral-substitution operation. The parameterized signed-builder lemma supplies one PA proof valid at that arbitrary value. A list of external proofs for \(D(\overline0),D(\overline1),\ldots\) does not supply it.</p></div>
+  </details>
+</section>
+
+<section id="reflection-is-different" data-formal="ap-consistency" data-kind="question">
+  <h2>Does formalized completeness give reflection?</h2>
+  <p>Does the theorem imply that PA proves \(\Box A\to A\) for every \(\Sigma_1\) sentence \(A\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. The proved direction is \(A\to\Box A\). Reversing it asserts that every internally claimed proof of \(A\) has a true conclusion, a reflection principle. With \(A=\bot\), that reversed implication is precisely \(\operatorname{Con}(\mathrm{PA})\). A theorem in one direction gives no inference in the other.</p></div>
+  </details>
+</section>

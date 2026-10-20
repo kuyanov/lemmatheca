@@ -41,21 +41,22 @@ def _records(directory):
     return records
 
 
-def _links(value, corpus, blocks, entry_refs=None):
+def _links(value, corpus, blocks, entry_refs=None, generated_links=()):
     """Record prose uses corpus-root-relative links, regardless of file depth."""
     if isinstance(value, dict):
         for item in value.values():
-            _links(item, corpus, blocks, entry_refs)
+            _links(item, corpus, blocks, entry_refs, generated_links)
     elif isinstance(value, list):
         for item in value:
-            _links(item, corpus, blocks, entry_refs)
+            _links(item, corpus, blocks, entry_refs, generated_links)
     elif isinstance(value, str):
         for href in re.findall(r"\[[^\]]*\]\(([^\s()]+)\)", value):
             target = urlsplit(href)
             if target.scheme or target.netloc:
                 continue
             path = corpus / target.path
-            require(bool(target.path) and path.is_file(), f"Missing record link: {href}")
+            require(bool(target.path) and (path.is_file() or target.path in generated_links),
+                    f"Missing record link: {href}")
             if target.path.startswith("entries/"):
                 entry = target.path.split("/")[1]
                 reference = entry + (f"#{target.fragment}" if target.fragment else "")
@@ -64,14 +65,36 @@ def _links(value, corpus, blocks, entry_refs=None):
                     require(reference in entry_refs, f"entry_refs does not index link: {reference}")
 
 
-def validate_authoring_records(corpus, blocks):
+def validate_authoring_records(corpus, blocks, *, indexes=None, allow_stale_catalogs=False):
     """Read each record once; catalogs must describe exactly those records.
 
     Small test corpora and core-only installations may omit these registries.
-    Once a registry directory exists, all of its records and navigation are checked.
+    Once a registry directory exists, all of its records are checked. Navigation
+    may be proposed in memory or omitted during a build's read-only preflight.
     These independent catalogs are not inputs to the entry/node derived index.
     """
     from .authoring_records import source_catalog, planning_catalog
+
+    indexes = {} if indexes is None else indexes
+    require(isinstance(indexes, dict), "Authoring index overrides must be an object")
+    catalog_paths = {
+        f"{name}/index.json" for name in ("source-errors", "reference-planning")
+        if (corpus / name).exists()
+    }
+    require(not (indexes.keys() - catalog_paths), "Unknown authoring index override")
+    generated_links = catalog_paths if allow_stale_catalogs else indexes.keys()
+
+    def catalog(path, expected, label):
+        relative = path.relative_to(corpus).as_posix()
+        if relative in indexes:
+            # Catalogs may not exist yet; their proposed documents are compared
+            # directly with the complete catalog derived from authored records.
+            actual = indexes[relative]
+        elif allow_stale_catalogs:
+            return
+        else:
+            actual = json_object(path)
+        require(actual == expected, f"{label} catalog is stale; run build --no-lean")
 
     source_root = corpus / "source-errors"
     if source_root.exists():
@@ -83,7 +106,7 @@ def validate_authoring_records(corpus, blocks):
                 text(source["publication"], "Publication and inspected version")
                 _urls(source["urls"])
                 _references(source["entry_refs"], blocks)
-                _links(source, corpus, blocks, source["entry_refs"])
+                _links(source, corpus, blocks, source["entry_refs"], generated_links)
                 identifiers(source["finding_ids"], "finding_ids")
                 require(isinstance(source["reviews"], list) and bool(source["reviews"]),
                         "A source must have at least one scoped review")
@@ -102,7 +125,7 @@ def validate_authoring_records(corpus, blocks):
                 text(finding["title"], "Finding title")
                 text(finding["details"], "Finding evidence and repair")
                 _references(finding["entry_refs"], blocks)
-                _links(finding, corpus, blocks, finding["entry_refs"])
+                _links(finding, corpus, blocks, finding["entry_refs"], generated_links)
                 identifiers(finding["related_findings"], "related_findings")
                 for related in finding["related_findings"]:
                     require(related in findings, f"Unknown related finding: {related}")
@@ -117,10 +140,10 @@ def validate_authoring_records(corpus, blocks):
                             f"Finding {finding_id} does not belong to {source_id}")
         path = source_root / "index.json"
         with checking(path):
-            require(json_object(path) == source_catalog(sources, findings),
-                    "Source catalog is stale; run index_authoring_records")
+            catalog(path, source_catalog(sources, findings), "Source")
         with checking(source_root / "policy.json"):
-            _links(json_object(source_root / "policy.json"), corpus, blocks)
+            _links(json_object(source_root / "policy.json"), corpus, blocks,
+                   generated_links=generated_links)
 
     plan_root = corpus / "reference-planning"
     if plan_root.exists():
@@ -133,13 +156,13 @@ def validate_authoring_records(corpus, blocks):
                 text(record["title"], "Planning title")
                 identifiers(record["areas"], "areas")
                 _references(record["entry_refs"], blocks)
-                _links(record, corpus, blocks, record["entry_refs"])
+                _links(record, corpus, blocks, record["entry_refs"], generated_links)
                 _urls(record["urls"])
                 if "planned_entry_ids" in record:
                     identifiers(record["planned_entry_ids"], "planned_entry_ids")
         path = plan_root / "index.json"
         with checking(path):
-            require(json_object(path) == planning_catalog(records),
-                    "Planning catalog is stale; run index_authoring_records")
+            catalog(path, planning_catalog(records), "Planning")
         with checking(plan_root / "policy.json"):
-            _links(json_object(plan_root / "policy.json"), corpus, blocks)
+            _links(json_object(plan_root / "policy.json"), corpus, blocks,
+                   generated_links=generated_links)

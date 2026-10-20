@@ -19,11 +19,11 @@ from .files import write_json
 from .sources import Element
 
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 
 
 def default_index_path(repository):
-    return Path(repository) / "artifacts" / "corpus-index.json"
+    return Path(repository) / "corpus" / "index.json"
 
 
 def configured_index_path():
@@ -41,7 +41,6 @@ class CorpusIndex:
         # Per-file digests are temporary inputs to the overall revision, not
         # part of the exported index.
         self._file_hashes = {}
-        self.area_count = 0
         self.reading_positions = {}
         self.entries = {}
         self.blocks = {}
@@ -51,10 +50,11 @@ class CorpusIndex:
 
     def add_file(self, path, raw_bytes):
         relative = Path(path).absolute().relative_to(self.corpus).as_posix()
+        # Statistics are refreshed independently after merges. Neither generated
+        # snapshot contributes to the structural index's revision.
+        if relative in {"index.json", "statistics.json"}:
+            return
         self._file_hashes[relative] = sha256(raw_bytes).hexdigest()
-
-    def add_taxonomy(self, document):
-        self.area_count = len(document["areas"])
 
     def add_reading_order(self, document):
         self.reading_positions = {
@@ -139,14 +139,12 @@ class CorpusIndex:
                 hint_dependents[dependency].append(node_id)
         node_consumers, outgoing, incoming = defaultdict(list), defaultdict(list), defaultdict(list)
         references = []
-        bindings = 0
         for entry_id, entry in entries.items():
             for block_id in entry["blocks"]:
                 key = f"{entry_id}#{block_id}"
                 block = self.blocks[key]
                 for node_id in block["formal_ids"] or []:
                     node_consumers[node_id].append(key)
-                    bindings += 1
                 for edge in self._references.get(key, []):
                     edge_id = len(references)
                     references.append(edge)
@@ -155,9 +153,6 @@ class CorpusIndex:
         return {
             "schema_version": SCHEMA_VERSION,
             "revision": sha256(revision_input).hexdigest(),
-            "counts": {"areas": self.area_count, "entries": len(entries),
-                       "blocks": len(self.blocks), "nodes": len(self.nodes),
-                       "references": len(references), "bindings": bindings},
             "entries": entries, "blocks": dict(sorted(self.blocks.items())),
             "anchors": dict(sorted(self.anchors.items())),
             "nodes_by_declaration": dict(sorted(nodes_by_declaration.items())),
@@ -169,13 +164,21 @@ class CorpusIndex:
         }
 
 
+def validate_index_destination(corpus, destination):
+    """Allow the reserved corpus cache or a destination outside the corpus."""
+    corpus, destination = Path(corpus).resolve(), Path(destination).resolve()
+    if destination.is_relative_to(corpus) and destination != corpus / "index.json":
+        raise ValueError(
+            "An index inside the corpus must use the reserved path corpus/index.json")
+    return destination
+
+
 def write_index(corpus, destination, *, source_root=None):
-    """Validate once and atomically replace a cache outside the source corpus."""
+    """Validate once and atomically replace the derived structural index."""
     from .validation import validate_corpus
 
-    corpus, destination = Path(corpus).resolve(), Path(destination).resolve()
-    if destination.is_relative_to(corpus):
-        raise ValueError("The index destination must be outside the corpus")
+    corpus = Path(corpus).resolve()
+    destination = validate_index_destination(corpus, destination)
     collector = CorpusIndex(corpus)
     validate_corpus(corpus, source_root=source_root, collector=collector)
     document = collector.finish()

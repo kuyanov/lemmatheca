@@ -1,0 +1,13 @@
+{
+  "id": "pac-recursion-total-unique",
+  "description": "If PA proves totality and uniqueness for the base and step arithmetic graphs, PA proves totality and uniqueness for their specified beta-coded primitive-recursion graph.",
+  "module": "Lemmatheca.MathematicalLogic.PAComputations",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.recursion_total_unique",
+  "dependencies": [
+    "pac-beta-extension",
+    "pac-beta-total-unique"
+  ],
+  "verified": true,
+  "declaration_line": 726,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.recursion_total_unique {n : ℕ}\n  (base : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin n ⊕ Unit))\n  (step : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin (n + 2) ⊕ Unit))\n  (hbase :\n    Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n      (Lemmatheca.MathematicalLogic.PAComputations.totalUnique base))\n  (hstep :\n    Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n      (Lemmatheca.MathematicalLogic.PAComputations.totalUnique step)) :\n  Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n    (Lemmatheca.MathematicalLogic.PAComputations.totalUnique\n      (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.recursionGraph\n        Lemmatheca.MathematicalLogic.ArithmeticRepresentability.betaGraph base step))"
+}

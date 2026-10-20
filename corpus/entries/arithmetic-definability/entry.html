@@ -1,0 +1,125 @@
+<section id="standard-definability" data-formal="adef-standard-definition adef-numerical-parameters" data-kind="definition">
+  <h2>A formula can describe a set without deciding it</h2>
+  <p>Fix the <a href="arithmetic-theories#arithmetic-language">standard arithmetic structure</a> \(\mathbb N_A=(\mathbb N,0,S,+,\cdot)\). An arithmetic formula \(A(x)\) <em>defines</em> a set \(X\subseteq\mathbb N\) in this structure if, for every \(n\in\mathbb N\),</p>
+  <div class="math-display">\[n\in X\quad\Longleftrightarrow\quad\mathbb N_A\models A(n).\]</div>
+  <p>The same convention defines relations with any fixed finite number of arguments. Numerical constants can be written as numerals, so allowing finitely many fixed natural-number parameters does not change which sets are definable. The formula uses only arithmetic symbols; names for programs, lists or computable functions must be replaced by arithmetic formulas describing them.</p>
+  <p>This asks about truth in one specified structure. <a href="arithmetic-representability#numeralwise-representation">Representing a relation in Robinson arithmetic</a> asks for proofs of its positive and negative numeral instances. Those are different requirements. We will identify exactly the sets whose membership has an arithmetic description consisting of an unbounded search followed by a finite check.</p>
+</section>
+
+<section id="bounded-truth" data-formal="adef-bounded-truth prim-arity-equivalence" data-kind="lemma">
+  <h2>A bounded formula has a terminating truth test</h2>
+  <p>For every fixed <a href="arithmetic-representability#bounded-formulas">bounded arithmetic formula</a> \(D(\bar x)\), its truth relation \(\mathbb N_A\models D(\bar x)\) is primitive recursive. Both strict and inclusive bounds are allowed, and their bounding terms do not contain the variable being quantified.</p>
+  <p class="proof-label">Proof</p>
+  <p>Evaluate terms by their finite construction from zero, successor, addition and multiplication. Their values are primitive-recursive functions of the input tuple. Equality and the order abbreviations can then be checked by primitive-recursive comparisons. Boolean connectives combine these tests by Boolean operations.</p>
+  <p>For \(\forall u\lt t(\bar x)\,E(\bar x,u)\), first evaluate the bound \(b=t(\bar x)\). Run the test for \(E\) at each of \(0,\ldots,b-1\), keeping a Boolean conjunction. Existential quantification keeps a disjunction instead. These are precisely the <a href="primitive-recursion#bounded-quantifiers">bounded quantifier operations</a>. Inclusive bounds use the loop of length \(b+1\). At a strict zero bound, the conjunction is true and the disjunction false. Induction on the fixed formula completes the construction. □</p>
+  <p>The algorithm is specific to the given formula. This lemma supplies a terminating test for each bounded relation, without asserting a single primitive-recursive interpreter for arbitrary formula codes.</p>
+</section>
+
+<section id="existential-and-universal-forms" data-formal="pac-sigma-one-syntax adef-pi-one-prefix adef-sigma-one-definability adef-pi-one-definability adef-delta-one-definability" data-kind="definition">
+  <h2>Count the unbounded quantifier blocks</h2>
+  <p>A \(\Sigma_1\) formula has the form \(\exists u_0\cdots\exists u_{r-1}D(\bar x,\bar u)\), where \(D\) is bounded. A \(\Pi_1\) formula has the corresponding form \(\forall u_0\cdots\forall u_{r-1}D(\bar x,\bar u)\). Empty prefixes are allowed. The bounded quantifiers inside \(D\) are not counted as unbounded blocks.</p>
+  <p>A relation is <em>\(\Sigma_1\)-definable</em> if some formula of the first form defines it in \(\mathbb N_A\); define <em>\(\Pi_1\)-definable</em> similarly. A relation is <em>\(\Delta_1\)-definable</em> if it is both \(\Sigma_1\)-definable and \(\Pi_1\)-definable. The two witnessing formulas may be different: their standard interpretations, rather than their strings of symbols, must agree.</p>
+  <p>Superscripted notation \(\Sigma^0_1,\Pi^0_1,\Delta^0_1\) is also common. The superscript distinguishes this hierarchy of arithmetic definitions from hierarchies in which sets or functions are themselves quantified over.</p>
+</section>
+
+<section id="searching-witnesses" data-formal="adef-enumerable-sigma-one" data-kind="lemma">
+  <h2>An existential bounded description can be recognized</h2>
+  <p>Every \(\Sigma_1\)-definable set is <a href="universal-computation#decidable-and-enumerable">computably enumerable</a>.</p>
+  <p class="proof-label">Proof</p>
+  <p>For \(A(x)=\exists\bar u\,D(x,\bar u)\), enumerate the finite tuples \(\bar u\) using the existing <a href="coding-finite-sequences#list-code">effective finite-sequence coding</a>. Reject codes of the wrong length, and apply <a href="#bounded-truth">the bounded truth test</a> to each decoded tuple. Accept \(x\) as soon as a successful tuple appears. Every genuine witness tuple has a code, so the search accepts exactly the members of the set. An empty witness tuple also has a code, covering a prefix of length zero.</p>
+  <p>This is a partial recursive search for a finite certificate. It need not terminate on inputs outside the set, which is permitted in the <a href="universal-computation#finite-certificates">certificate characterization of enumerability</a>. □</p>
+</section>
+
+<section id="finite-witness-collection" data-formal="pac-collection-matrix-equivalence pac-collection-matrix-bounded repr-beta-finite-coding" data-kind="lemma">
+  <h2>Collect the witnesses needed by a finite history</h2>
+  <p>Let \(\delta(\bar x,i,u)\) be bounded. Write \(B(c,d,i,u)\) for the <a href="arithmetic-representability#beta-graph">bounded remainder-decoding formula</a>. In the standard natural numbers,</p>
+  <div class="math-display">\[\forall i\lt n\;\exists u\,\delta(\bar x,i,u)\]</div>
+  <p>is equivalent to</p>
+  <div class="math-display">\[\exists c,d\;\forall i\lt n\;\exists u\le c\;\bigl(B(c,d,i,u)\land\delta(\bar x,i,u)\bigr).\]</div>
+  <p>The formula after \(\exists c,d\) is bounded. Thus a bounded universal quantifier over existential bounded assertions can still be expressed with one existential block followed by a bounded matrix. The same holds for a fixed finite tuple of witnesses at each index.</p>
+  <p class="proof-label">Proof</p>
+  <p>Choose one witness for each of the finitely many indices \(i\lt n\). The <a href="arithmetic-representability#beta-coding">finite sequence coding lemma</a> supplies \(c,d\) whose remainders are exactly those witnesses. A remainder of \(c\) is at most \(c\), so the displayed bounded existential quantifier can recover it. Conversely the right-hand formula directly supplies a witness for each index. When \(n=0\), both universal assertions are empty, and any \(c,d\) suffice.</p>
+  <p>For several witness coordinates, use one pair of codes per coordinate. This is still a fixed finite collection of outer existential variables. The only remaining quantifiers run below \(n\), below one of the codes, or below terms in the bounded decoder. No sequence length or code is being added as a new arithmetic function symbol. □</p>
+</section>
+
+<section id="finite-history-graphs" data-formal="adef-primitive-function-graph adef-primitive-relation adef-sigma-substitution" data-kind="theorem">
+  <h2>Primitive-recursive graphs have existential bounded formulas</h2>
+  <p>Every primitive-recursive function \(f:\mathbb N^k\to\mathbb N\) has a \(\Sigma_1\) graph formula \(G_f(\bar x,y)\) such that</p>
+  <div class="math-display">\[\mathbb N_A\models G_f(\bar a,b)\quad\Longleftrightarrow\quad f(\bar a)=b.\]</div>
+  <p>Consequently every primitive-recursive relation is \(\Sigma_1\)-definable.</p>
+  <p class="proof-label">Proof</p>
+  <p>Induct on the <a href="primitive-recursion#primitive-recursive-functions">primitive-recursive construction</a>. Zero, successor and projections have bounded equality graphs. For a composition, existentially name the intermediate outputs, conjoin their graph formulas with the outer graph formula, and move their existential prefixes to the front after choosing distinct witness variables. Conjunction introduces no new unbounded universal quantifier.</p>
+  <p>For primitive recursion, suppose \(h(\bar x,0)=f(\bar x)\) and \(h(\bar x,i+1)=g(\bar x,i,h(\bar x,i))\). Existentially choose \(c,d\) coding the history of length \(n+1\). Require that its first entry satisfies \(G_f\), that for every \(i\lt n\) the adjacent entries satisfy \(G_g\), and that its last entry equals \(y\). Entries are recovered by the bounded formula \(B\), with recovered values bounded by \(c\).</p>
+  <p>The ingredient graph formulas may themselves have existential witnesses. At the initial and final conditions these simply join the outer prefix. In the step condition they vary with \(i\); <a href="#finite-witness-collection">collect those finite witness lists</a> into further remainder codes. What remains after the outer existential block is bounded. A true computation supplies the history and all witnesses. Conversely induction through the decoded finite history, using the defining equations of \(h\), forces its \(i\)-th value to be \(h(\bar x,i)\). Its last value is therefore exactly the proposed output.</p>
+  <p>Finally apply the graph construction to the primitive-recursive characteristic function of a relation and substitute the numeral \(1\) for its output. Term substitution preserves boundedness and the existential-prefix form. This proves the relation claim. □</p>
+  <p>This argument concerns finite sequences of ordinary natural numbers. It does not require a theorem about the existence of coded histories inside arbitrary models of arithmetic.</p>
+</section>
+
+<section id="enumerable-sigma-one" data-formal="adef-enumerable-sigma-one adef-unary-enumerable-sigma-one adef-finite-certificate adef-tuple-recoding adef-sigma-projection" data-kind="theorem">
+  <h2>Enumerable membership is exactly existential bounded definability</h2>
+  <div class="statement-box">
+    <p>For every \(X\subseteq\mathbb N\),</p>
+    <div class="math-display">\[X\text{ is computably enumerable}\quad\Longleftrightarrow\quad X\text{ is }\Sigma_1\text{-definable in }\mathbb N_A.\]</div>
+    <p>The same equivalence holds for relations of any fixed finite arity.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>The reverse implication is <a href="#searching-witnesses">witness search</a>. For the forward implication, the <a href="universal-computation#finite-certificates">primitive-recursive certificate theorem</a> gives a primitive-recursive relation \(R(x,t)\) such that \(x\in X\) exactly when \(\exists t\,R(x,t)\). By <a href="#finite-history-graphs">the graph construction</a>, write \(R(x,t)\) as \(\exists\bar w\,D(x,t,\bar w)\) with bounded \(D\). Then \(\exists t\,\exists\bar w\,D(x,t,\bar w)\) defines \(X\) and is already in the required form.</p>
+  <p>For several free inputs, use their effective tuple code when applying the certificate theorem, and then the primitive-recursive certificate relation on that tuple. The resulting arithmetic formula retains the individual input variables. □</p>
+</section>
+
+<section id="partial-graphs" data-formal="mach-unary-recursive-bridge adef-partial-graph-enumerable adef-partial-graph-sigma-one adef-partial-domain adef-sigma-projection univ-evaluation-output-certificate" data-kind="theorem">
+  <h2>Partial computations are described by their successful outputs</h2>
+  <p>For a partial function \(f:\mathbb N\rightharpoonup\mathbb N\), the following are equivalent: \(f\) is partial recursive; its graph is computably enumerable; its graph is \(\Sigma_1\)-definable. If it is partial recursive, its domain is also \(\Sigma_1\)-definable.</p>
+  <p class="proof-label">Proof</p>
+  <p>Choose an index \(e\) for \(f\) in the existing <a href="universal-computation#universal-evaluation">universal evaluator</a>. The primitive-recursive bounded evaluator gives</p>
+  <div class="math-display">\[f(x)\mathbin\downarrow=y\quad\Longleftrightarrow\quad\exists k\;b(k,e,x)=y+1.\]</div>
+  <p>The extra one distinguishes a successful output of zero from failure to finish within the allowance. The right-hand side is a primitive-recursive certificate relation with an existential witness, so the graph is enumerable. <a href="#enumerable-sigma-one">The main theorem</a> makes it \(\Sigma_1\)-definable.</p>
+  <p>Conversely, if the graph is enumerable, on input \(x\) search its finite certificates over all pairs consisting of a proposed output \(y\) and a certificate. Return the first certified output. If \(f(x)\) is defined, its certificate eventually appears. If it is undefined, none appears. Since this is the graph of a partial function, all certified outputs at a fixed input agree. This constructs a partial recursive function with exactly the given graph.</p>
+  <p>If \(G(x,y)\) is an existential bounded graph formula, then \(\exists y\,G(x,y)\) is again existential bounded and defines the domain. No totality is asserted. In particular, \(\neg\exists y\,G(x,y)\) expresses divergence, rather than assigning an artificial output. □</p>
+</section>
+
+<section id="complements-and-decision" data-formal="adef-pi-complement adef-coenumerable-pi-one adef-decidable-delta-one" data-kind="theorem">
+  <h2>Universal definitions and two-sided decisions</h2>
+  <div class="statement-box">
+    <p>A set is co-computably enumerable, meaning that its complement is enumerable, exactly when it is \(\Pi_1\)-definable. Moreover,</p>
+    <div class="math-display">\[X\text{ is decidable}\quad\Longleftrightarrow\quad X\text{ is }\Delta_1\text{-definable in }\mathbb N_A.\]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Negating \(\exists\bar u\,D(x,\bar u)\) gives the equivalent \(\forall\bar u\,\neg D(x,\bar u)\). The negated matrix is still bounded. The same argument in reverse converts the complement of a \(\Pi_1\)-defined set into a \(\Sigma_1\)-defined set. Apply <a href="#enumerable-sigma-one">the main equivalence</a> to the complement.</p>
+  <p>A decidable set and its complement are both enumerable, so it has both kinds of definition. Conversely, a \(\Sigma_1\) definition provides a search accepting members, and the negation of a \(\Pi_1\) definition provides a search accepting nonmembers. Run the two searches in parallel. Exactly one must succeed, and its side supplies the answer. This is the existing <a href="universal-computation#two-sided-recognition">two-sided recognition theorem</a>. □</p>
+</section>
+
+<section id="halting-and-divergence" data-formal="adef-halting-separation" data-kind="lemma">
+  <h2>A short arithmetic description need not decide membership</h2>
+  <p>Let \(K=\{e:\varphi_e(e)\mathbin\downarrow\}\), using the <a href="universal-computation#halting-sets">diagonal halting set</a>. It is enumerable and undecidable, so it is \(\Sigma_1\)-definable. Its complement is \(\Pi_1\)-definable.</p>
+  <p>Moreover, \(K\) is not \(\Pi_1\)-definable and its complement is not \(\Sigma_1\)-definable.</p>
+  <p class="proof-label">Proof</p>
+  <p>The set \(K\) cannot also be \(\Pi_1\)-definable: then it would be \(\Delta_1\)-definable, and <a href="#complements-and-decision">the decision theorem</a> would make it decidable. Similarly its complement cannot be \(\Sigma_1\)-definable. Thus the two kinds of description already differ at the first level.</p>
+  <p>A \(\Pi_1\) sentence is true when all its bounded tests succeed. A failed test provides a finite counterexample; truth need not have a finite certificate that can be found by a terminating search.</p>
+</section>
+
+<section id="which-kind-of-equivalence" data-formal="adef-delta-one-definability" data-kind="question">
+  <h2>Does a pair of definitions give a provable equivalence?</h2>
+  <p>Suppose a \(\Sigma_1\) formula \(A(x)\) and a \(\Pi_1\) formula \(B(x)\) define the same set. Does our definition of \(\Delta_1\)-definability require \(Q\vdash\forall x(A(x)\leftrightarrow B(x))\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+    <p>No. It requires agreement for every ordinary natural number in \(\mathbb N_A\). Provability of their universal equivalence in \(Q\), or in PA, is a separate stronger requirement on those particular formulas. The decision proof uses their standard agreement to ensure that one of the two searches eventually succeeds; it does not claim that arithmetic proves this termination assertion. Likewise \(\Delta_1\) is a class of relations with two definitions, rather than a demand that one literal formula have both prefix shapes.</p>
+    </div>
+  </details>
+</section>
+
+<section id="further-alternations" data-formal="adef-alternating-prefix adef-prefix-definability" data-kind="definition">
+  <h2>More alternations of unbounded quantifiers</h2>
+  <p>The same notation continues. At level zero, both prefix classes consist of bounded formulas. A \(\Sigma_{r+1}\) prefix is a finite existential block followed by a \(\Pi_r\) prefix; a \(\Pi_{r+1}\) prefix starts with a finite universal block followed by a \(\Sigma_r\) prefix. Thus a \(\Sigma_2\) formula has the pattern \(\exists\bar u\,\forall\bar v\,D\), and a \(\Pi_2\) formula has the pattern \(\forall\bar u\,\exists\bar v\,D\), with bounded \(D\).</p>
+  <p>A relation belongs to the corresponding definability class when some formula with that prefix pattern defines it in \(\mathbb N_A\). Blocks may be empty. These patterns specify forms of definition; seeing an alternation in one displayed formula does not prove that its relation lacks a simpler definition. No assertion about strictness at later levels is needed here.</p>
+</section>
+
+<section id="totality-pattern" data-formal="adef-universal-graph adef-totality-pi-two" data-kind="lemma">
+  <h2>Totality asks for a witness separately at every input</h2>
+  <p>The graph of the universal partial function \((e,x)\mapsto\varphi_e(x)\) is \(\Sigma_1\)-definable. Write a graph definition as \(\exists\bar w\,D(e,x,y,\bar w)\), where \(D\) is bounded. Then the indices of total programs have the \(\Pi_2\) definition</p>
+  <div class="math-display">\[\forall x\;\exists y,\bar w\;D(e,x,y,\bar w).\]</div>
+  <p class="proof-label">Proof</p>
+  <p>For each fixed input \(x\), an output \(y\) and graph witnesses exist exactly when \(\varphi_e(x)\) is defined. Quantifying this condition over all inputs is precisely totality. Combining \(y\) with the finite graph-witness tuple leaves one existential block after the universal input block, with bounded matrix. □</p>
+  <p>The witnesses may depend on \(x\). The definition asks for an output and a successful finite computation at each input, not for one bound on the running times of all inputs. This illustrates what an additional unbounded quantifier block says. We have not classified its optimal complexity or proved a general hierarchy theorem.</p>
+</section>

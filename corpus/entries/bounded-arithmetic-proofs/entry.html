@@ -1,0 +1,167 @@
+<section id="numerical-equations" data-formal="ap-numerical-equations" data-kind="lemma">
+  <h2>Separate evaluating a term from proving its value</h2>
+<p>Fix an arithmetic term \(t(\vec x)\). Evaluation computes a number \(t(\vec n)\); the function \(v_t\) constructed here returns a <em>proof code</em> whose conclusion is</p>
+<div class="math-display">\[t(\overline{\vec n})=\overline{t(\vec n)}.\]</div>
+<p>The displayed equation contains numeral terms. In the correctness assertion, however, \(\vec n\) are variables used by the code-building functions. PA proves one universally closed assertion that the actual checker accepts \(v_t(\vec n)\) with the computed conclusion code.</p>
+<p class="proof-label">Proof</p>
+<p>Induct outside arithmetic on the fixed term \(t\). A variable becomes its input numeral, and zero remains zero, so reflexivity gives both cases. For \(Su\), retain the certificate normalizing \(u\), apply successor congruence, and use that the numeral constructor satisfies \(\operatorname{num}(n+1)=\operatorname{succ}(\operatorname{num}(n))\).</p>
+<p>For \(u+w\), first normalize both subterms. Congruence gives a proof of \(u(\overline{\vec n})+w(\overline{\vec n})=\overline m+\overline n\), where \(m=u(\vec n)\) and \(n=w(\vec n)\). Append the addition certificate below and equality transitivity. Multiplication is the same construction with its own numerical certificate. The finite structural recursion on \(t\), composition and the numerical recursions produce primitive-recursive programs.</p>
+<p>The correctness proof in any PA model uses the induction hypotheses for the subterms and the checked congruence and transitivity constructors. The numerical recursions require PA induction on their numeric input, which is supplied in the next two lemmas. Hence the assertion holds in every PA model, and <a href="pa-proof-checkers#internal-proof-method">completeness gives the stated PA derivation</a>. □</p>
+</section>
+
+<section id="addition-certificates" data-formal="ap-addition-certificates" data-kind="lemma">
+  <h2>The addition builder follows the recursive equations</h2>
+<p>The specified primitive-recursive addition builder returns an accepted certificate for \(\overline m+\overline n=\overline{m+n}\) at arbitrary internal inputs in every PA model.</p>
+<p class="proof-label">Proof</p>
+<p>Let \(A(m,n)\) be a certificate for \(\overline m+\overline n=\overline{m+n}\). Its recursion has a fixed base constructor and a fixed step constructor:</p>
+<div class="math-display">\[A(m,0)=\operatorname{AddBase}(m).\]</div>
+<div class="math-display">\[A(m,n+1)=\operatorname{AddStep}(m,n,A(m,n)).\]</div>
+<p>Here \(\operatorname{AddBase}\) specializes the fixed PA proof of \(\forall x\,(x+0=x)\). The step specializes \(x+Sy=S(x+y)\), applies successor congruence to the previous equation, and composes the two equalities. Its resulting conclusion is exactly</p>
+<div class="math-display">\[\overline m+S\overline n=S(\overline m+\overline n)=S\overline{m+n}=\overline{m+(n+1)}.\]</div>
+<p>In any PA model, induct on \(n\) with invariant: the checker accepts \(A(m,n)\) with the code of the displayed numerical addition equation. The base uses the certificate for the fixed axiom and universal elimination. At the successor, the specialization, congruence and transitivity preservation lemmas verify the exact new record. The conclusion-code identity uses the arithmetic equation \(m+(n+1)=S(m+n)\) and the internal numeral recursion.</p>
+<p>Every component of the invariant is arithmetically defined; \(m\) is an allowed parameter. Thus this is PA induction at arbitrary internal \(n\), not an external traversal through ordinary natural numbers. □</p>
+<p>For example, the certificate for \(\overline2+\overline2=\overline4\) retains the base proof \(\overline2+0=\overline2\), extends it to \(\overline2+\overline1=\overline3\), and extends it once more. The program builds these proof records; it does not simply evaluate the two sides and mark the equation accepted.</p>
+</section>
+
+<section id="multiplication-certificates" data-formal="ap-multiplication-certificates" data-kind="lemma">
+  <h2>Multiplication reuses the addition builder</h2>
+<p>The specified primitive-recursive multiplication builder returns an accepted certificate for \(\overline m\cdot\overline n=\overline{mn}\) at arbitrary internal inputs in every PA model.</p>
+<p class="proof-label">Proof</p>
+<p>Define \(P(m,n)\) to produce a certificate for \(\overline m\cdot\overline n=\overline{mn}\). Start by specializing \(x\cdot0=0\). At the successor, specialize \(x\cdot Sy=x\cdot y+x\), retain \(P(m,n)\), use congruence for addition, and append \(A(mn,m)\). The equality chain is</p>
+<div class="math-display">\[\overline m\cdot S\overline n=\overline m\cdot\overline n+\overline m=\overline{mn}+\overline m=\overline{mn+m}.\]</div>
+<p>The recursion \(P(m,0)=\operatorname{MulBase}(m)\), \(P(m,n+1)=\operatorname{MulStep}(m,n,P(m,n))\) is primitive recursive. In each PA model the induction invariant is acceptance with the exact multiplication-equation code. The base is checked axiom specialization. The step uses the preceding record, the verified addition builder, congruence and transitivity. PA's recursive multiplication equation identifies the final numeral with \(\overline{m(n+1)}\). Definable induction proves the invariant for all internal inputs. □</p>
+</section>
+
+<section id="numeral-comparisons" data-formal="ap-numeral-comparison-builders" data-kind="lemma">
+  <h2>Build certificates on both sides of a comparison</h2>
+<p>There are specified primitive-recursive builders for \(\overline m=\overline n\), its negation, \(\overline m\le\overline n\), and its negation. PA proves the correctness implication for each builder on its corresponding branch. All four implications retain the actual code-building and checker graphs.</p>
+<p class="proof-label">Proof</p>
+<p>For \(m=n\), the two numeral codes coincide, and reflexivity gives the equality certificate. For \(m\le n\), compute \(d=n-m\) by truncated subtraction. PA proves \(d+m=n\). The addition certificate proves \(\overline d+\overline m=\overline n\); existential introduction with witness \(\overline d\) proves \(\overline m\le\overline n\), using the definition \(m\le n\iff\exists d\,(d+m=n)\).</p>
+<p>When \(m>n\), compute \(e=\operatorname{pred}(m-n)\). PA proves \(m=S(n+e)\). A fixed PA theorem states \(\forall x\,\forall y\,\neg(S(x+y)\le x)\). Specialize it at \(\overline n,\overline e\), normalize \(S(\overline n+\overline e)\) to \(\overline m\), and use equality substitution. This yields a certificate for \(\neg(\overline m\le\overline n)\). The arithmetic identities used for this branch hold at arbitrary internal values; the proof is not a search through the digits of an ordinary numeral.</p>
+<p>Finally, if \(m\ne n\), totality of order says that either \(m\nleq n\) or \(n\nleq m\). Use the negative order builder in the rejected direction. A fixed PA proof says that equality would imply that order relation, so implication elimination gives \(\overline m\ne\overline n\). The actual program selects the direction by the Boolean order test. Its internal correctness follows by the two cases, the numerical normalization lemmas and the checked proof constructors. Completeness gives a PA proof of each universally quantified correctness implication. □</p>
+</section>
+
+<section id="bounded-truth-tests" data-formal="ap-bounded-truth ap-bounded-truth-boolean ap-bounded-loop-invariant" data-kind="lemma">
+  <h2>Accumulate a bounded truth test by a Boolean loop</h2>
+<p>Fix a bounded formula \(D(\vec x)\). We construct a primitive-recursive test \(d_D\), taking values in \(\{0,1\}\), such that PA proves \(d_D(\vec x)=1\leftrightarrow D(\vec x)\). Equality uses the numerical equality test, and \(s\le t\) is tested by \(s\mathbin{\dot-}t=0\), with truncated subtraction. Falsum has value zero. Implication uses Boolean implication: its output is zero exactly when its antecedent test is one and its consequent test is zero.</p>
+<p>For a Boolean test \(q(\vec x,i)\), define a loop over the strict initial segment:</p>
+<div class="math-display">\[L_q(\vec x,0)=1,\qquad L_q(\vec x,j+1)=L_q(\vec x,j)\,q(\vec x,j).\]</div>
+<p>The test of \(\forall i\le n\,B(\vec x,i)\) is \(L_{d_B}(\vec x,n+1)\). The test of \(\exists i\le n\,B(\vec x,i)\) is \(1-L_{1-d_B}(\vec x,n+1)\). First evaluate a term bound \(t(\vec x)\), then use its value for \(n\).</p>
+<p class="proof-label">Proof</p>
+<p>Within any PA model prove simultaneously by definable induction that \(L_q(\vec x,j)\) is Boolean and</p>
+<div class="math-display">\[L_q(\vec x,j)=1\quad\Longleftrightarrow\quad\forall i&lt;j\;q(\vec x,i)=1.\]</div>
+<p>The zero case has no smaller inputs. At the successor, a product of two Boolean values equals one exactly when both equal one. Split \(i&lt;j+1\) into \(i&lt;j\) or \(i=j\) to prove both directions of the invariant. The existential test is the Boolean negation of the universal test of the negated matrix. An external structural induction on the fixed formula combines these loops with the atomic and connective cases. Every resulting internal equivalence holds in every PA model, so completeness gives the stated PA proofs. □</p>
+</section>
+
+<section id="strict-bounds" data-formal="ap-inclusive-bounded-normal-form ap-strict-bounded-normalization ap-quoted-proof-conversion ap-bounded-positive ap-bounded-negative" data-kind="lemma">
+  <h2>Strict bounds are reduced without changing the quoted conclusion</h2>
+  <p>The bounded formula convention also permits \(\forall z&lt;t\,B\) and \(\exists z&lt;t\,B\). The core loops use inclusive bounds. Normalize a strict bounded quantifier by</p>
+  <div class="math-display">\[\forall z&lt;t\,B\quad\longleftrightarrow\quad\forall z\le t\,(z\ne t\to B),\]</div>
+  <div class="math-display">\[\exists z&lt;t\,B\quad\longleftrightarrow\quad\exists z\le t\,(z\ne t\land B).\]</div>
+  <p>The term \(t\) does not contain the quantified variable. These identities hold also when \(t=0\): the universal guard has no satisfying value and the existential guard is never true. Recursive normalization replaces inner strict bounds as well, producing a formula \(D^*\) in the inclusive bounded grammar. PA proves \(D\leftrightarrow D^*\), by the elementary order equivalence \(z&lt;t\leftrightarrow(z\le t\land z\ne t)\) and induction on the fixed formula.</p>
+  <p>Use the truth test for \(D^*\), and compose its correctness with that equivalence. For proofs, code equality is more demanding. A certificate for \(D^*(\overline{\vec x})\) is not yet a certificate for the literal original sentence \(D(\overline{\vec x})\). Fix a PA proof of \(\forall\vec x\,(D^*(\vec x)\to D(\vec x))\). The <a href="pa-proof-checkers#specialize-fixed-proofs">native specialization program</a> specializes it at the internally constructed numeral terms. Combine that specialized implication with the normalized certificate by the checked modus-ponens program. The negative builder uses the fixed implication \(\neg D^*\to\neg D\) in the same way.</p>
+  <p>The original formula and its conversion proof are fixed outside arithmetic. The specialization and modus-ponens operations have internally proved correctness at arbitrary input values. Their output therefore has the original numeral-substitution code, including its literal strict-bound syntax. The signed-builder conclusion below applies to both bounded-quantifier conventions.</p>
+</section>
+
+<section id="bounded-witness-search" data-formal="ap-bounded-witness-invariant" data-kind="lemma">
+  <h2>A bounded search retains the latest witness</h2>
+<p>A failed universal test or a successful existential test needs a particular internal witness. The following primitive-recursive loop is sufficient for a Boolean test \(q\):</p>
+<div class="math-display">\[W_q(\vec x,0)=0.\]</div>
+<div class="math-display">\[W_q(\vec x,j+1)=\begin{cases}j,&amp;q(\vec x,j)=1,\\ W_q(\vec x,j),&amp;q(\vec x,j)=0.\end{cases}\]</div>
+<p>Put \(w_q(\vec x,n)=W_q(\vec x,n+1)\). If some \(i\le n\) has \(q(\vec x,i)=1\), then \(w_q(\vec x,n)\le n\) and \(q(\vec x,w_q(\vec x,n))=1\). No property is required when the bounded search has no witness.</p>
+<p class="proof-label">Proof</p>
+<p>Use the invariant: if a witness exists below \(j\), the retained value is below \(j\) and satisfies \(q\). The zero case has false antecedent. At \(j+1\), if \(q(\vec x,j)=1\), the update chooses \(j\) and the conclusion follows directly. Otherwise every witness below \(j+1\) is strictly below \(j\), so the previous retained witness works. The invariant is arithmetically definable with \(\vec x\) as parameters; PA induction proves it for all internal \(j\). Substituting \(j=n+1\) gives the assertion. □</p>
+<p>The loop retains the <em>latest</em> successful index. Leastness is unnecessary: all subsequent proof constructors need only a witness together with its verified bound.</p>
+</section>
+
+<section id="bounded-proof-builders" data-formal="ap-bounded-positive ap-bounded-negative" data-kind="theorem">
+  <h2>A bounded formula has a truth test and two proof builders</h2>
+<div class="statement-box">
+<p>For every fixed <a href="arithmetic-representability#bounded-formulas">bounded formula</a> \(D(\vec x)\), there are primitive-recursive functions \(c_D^+,c_D^-\) such that PA proves both universally closed implications</p>
+<div class="math-display">\[D(\vec x)\to\operatorname{Prf}(c_D^+(\vec x),\operatorname{sub}_D(\vec x)),\]</div>
+<div class="math-display">\[\neg D(\vec x)\to\operatorname{Prf}(c_D^-(\vec x),\operatorname{sub}_{\neg D}(\vec x)).\]</div>
+</div>
+<p>Here \(\operatorname{sub}_D(\vec n)=\ulcorner D(\overline{\vec n})\urcorner\) is the actual simultaneous numeral-substitution program from <a href="pa-proof-checkers#numeral-substitution">the numeral-substitution construction</a>. Each displayed function application abbreviates its graph formula. Thus the assertions specify both the proof record and its exact conclusion code. On a branch whose antecedent is false, the builder is permitted to return an arbitrary code.</p>
+<p>The formula \(D\) is fixed outside arithmetic; its input values remain variables inside the PA derivation. We construct the signed builders by external structural induction on \(D\), using the truth tests to select each internal branch. The remaining lemmas supply its connective and quantifier steps, including the induction on variable bounds. Their assembly proves this theorem in <a href="#bounded-quantifier-assembly"></a>.</p>
+</section>
+
+<section id="logical-proof-branches" data-formal="ap-falsum-builders ap-equality-atom-builders ap-order-atom-builders ap-logical-positive-consequent ap-logical-positive-negative ap-logical-negative-implication" data-kind="lemma">
+  <h2>Boolean branches become literal proof records</h2>
+<p>The signed proof-builder construction covers falsum and arithmetic equality and order atoms, and is closed under implication.</p>
+<p class="proof-label">Proof</p>
+<p>For falsum, the positive implication has false antecedent, while a fixed proof of \(\neg\bot\) supplies the negative builder. An equality or order atom first normalizes its terms by <a href="#numerical-equations"></a>, uses the appropriate numerical comparison certificate, and transports the conclusion back along the normalization equalities.</p>
+<p>For \(B\to F\), test \(F\) first. If it is true, retain its positive proof, add the temporary assumption \(B\), and discharge it by implication introduction. If \(F\) is false and \(B\to F\) is true, \(B\) is false: retain its negative proof, assume \(B\), derive falsum, obtain \(F\) by falsum elimination, and discharge \(B\). This explains both truth branches of the actual selector.</p>
+<p>When \(B\to F\) is false, \(B\) is true and \(F\) is false. Retain \(c_B^+\) and \(c_F^-\); under the temporary assumption \(B\to F\), implication elimination produces \(F\), contradicting its negative proof. Discharging that temporary assumption proves \(\neg(B\to F)\).</p>
+<p>Each construction is a fixed composition of native rule constructors. The <a href="pa-proof-checkers#proof-record-invariants">checker preservation lemmas</a> verify its children, contexts and conclusion. The signed induction hypotheses supply acceptance on exactly the branch selected by the internally correct truth test. Conjunction, disjunction and negation can be read as the fixed logical abbreviations of the shared formula syntax; they require no additional primitive proof rule.</p>
+</section>
+
+<section id="initial-segment-certificates" data-formal="ap-initial-segment" data-kind="lemma">
+  <h2>Prove that an element below a numeral is one of its predecessors</h2>
+<p>Define finite-case formulas by \(E_0(z):=(z=0)\) and \(E_{j+1}(z):=E_j(z)\lor z=\overline{j+1}\). A primitive-recursive builder returns a certificate for</p>
+<div class="math-display">\[\forall z\,(z\le\overline j\to E_j(z)).\]</div>
+<p class="proof-label">Proof</p>
+<p>The base is a fixed PA proof of \(z\le0\to z=0\). For the successor, specialize the fixed PA theorem \(z\le Su\to(z\le u\lor z=Su)\) at \(u=\overline j\). Under \(z\le\overline{j+1}\), the first case uses the previous certificate and the left disjunction introduction; the second uses the right introduction. Discharge the bound assumption and universally introduce \(z\).</p>
+<p>The proof-code recursion builds the nested disjunction and the corresponding proof at the same time. Its invariant says that the output is accepted with the code of precisely this universally quantified finite-case formula. The base and successor records are checked using the literal syntax recursions and the fixed <a href="pa-proof-checkers#auxiliary-constant-freshness">fresh auxiliary constant</a>. Definable induction proves that invariant in every PA model. Completeness gives a PA proof of the uniform certificate-correctness assertion. □</p>
+<p>For an internal nonstandard value of \(j\), the formula code is an internal iterated-disjunction code. We do not pretend that it is an ordinary finite formula written externally. The assertion about its code and checker acceptance is nevertheless an ordinary fixed arithmetic formula.</p>
+</section>
+
+<section id="positive-bounded-universal" data-formal="ap-bounded-universal-loop ap-positive-universal-branch" data-kind="lemma">
+  <h2>A true bounded universal uses a recursive certificate loop</h2>
+<p>Given signed builders for a fixed bounded body, a primitive-recursive certificate loop proves its numeral-bound universal on the branch where every tested instance is true.</p>
+<p class="proof-label">Proof</p>
+<p>Suppose the signed builders for \(B(\vec x,z)\) have already been constructed. Temporarily use a numeral bound \(\overline n\). Let \(u_B(\vec x,j)\) be the code of \(\forall z\le\overline j\,B(\overline{\vec x},z)\), computed by the numeral and quantified-formula constructors. Let \(U_B(\vec x,j)\) be the certificate assembled for \(\forall z\le\overline j\,B(\overline{\vec x},z)\). Its recursion is</p>
+<div class="math-display">\[U_B(\vec x,0)=\operatorname{Base}(c_B^+(\vec x,0)),\]</div>
+<div class="math-display">\[U_B(\vec x,j+1)=\operatorname{Step}(j,U_B(\vec x,j),c_B^+(\vec x,j+1)).\]</div>
+<p>The base uses the finite-case proof for zero. With fresh \(c_0\), assume \(c_0\le0\), derive \(c_0=0\), and transport the positive proof of \(B(\overline{\vec x},0)\) by equality substitution. Discharge the assumption and universally introduce the open variable.</p>
+<p>At the successor, the fixed decomposition \(c_0\le\overline{j+1}\to(c_0\le\overline j\lor c_0=\overline{j+1})\) gives two cases. Instantiate the preceding bounded universal in the first; transport the endpoint proof in the second. Disjunction elimination, implication introduction and universal introduction close the proof.</p>
+<p>Inside any PA model use the invariant</p>
+<div class="math-display">\[\bigl(\forall i\le j\;d_B(\vec x,i)=1\bigr)\to\operatorname{Acc}(U_B(\vec x,j),u_B(\vec x,j)).\]</div>
+<p>The notation in the conclusion denotes the code-building operation just described, with its numeral-bound code computed from \(j\). The base uses the signed hypothesis at zero. For the step, the antecedent restricts to all \(i\le j\), giving the previous accepted record, and supplies the endpoint test. The positive body hypothesis and the checked step constructor finish the step. All syntax, freshness and context conditions were verified before applying induction. This is definable PA induction with \(\vec x\) as parameters. □</p>
+</section>
+
+<section id="negative-bounded-universal" data-formal="ap-negative-universal-branch ap-counterexample-certificate" data-kind="lemma">
+  <h2>A false bounded universal has a checked counterexample proof</h2>
+<p>Given signed builders for a fixed bounded body, a primitive-recursive counterexample procedure returns an accepted proof of the negated numeral-bound universal on its false branch.</p>
+<p class="proof-label">Proof</p>
+<p>If \(\forall z\le n\,B(\vec x,z)\) is false, apply <a href="#bounded-witness-search"></a> to the Boolean test \(1-d_B\). It supplies \(i\le n\) with \(\neg B(\vec x,i)\), together with internally proved properties of the selected index.</p>
+<p>Use the numerical comparison builder to prove \(\overline i\le\overline n\), and use \(c_B^-(\vec x,i)\) to prove \(\neg B(\overline{\vec x},\overline i)\). Temporarily assume \(\forall z\le\overline n\,B(\overline{\vec x},z)\). Universal elimination at the closed term \(\overline i\), followed by implication elimination with the bound proof, gives \(B(\overline{\vec x},\overline i)\). The negative body proof gives falsum. Discharge the assumed universal to obtain its negation.</p>
+<p>The native constructor retains those two certified inputs and appends exactly these rule records. Its local checker tests use the actual instantiation result at \(\overline i\), so the conclusion is the literal negation of the prescribed universal code. The search invariant, signed body hypothesis and checker preservation prove acceptance for every internal input on the false-universal branch.</p>
+</section>
+
+<section id="positive-bounded-existential" data-formal="ap-positive-existential-branch ap-existential-instance-certificate" data-kind="lemma">
+  <h2>A true bounded existential retains its chosen witness</h2>
+<p>Given signed builders for a fixed bounded body, a primitive-recursive witness procedure returns an accepted proof of the numeral-bound existential on its true branch.</p>
+<p class="proof-label">Proof</p>
+<p>For a true \(\exists z\le n\,B(\vec x,z)\), search with \(d_B\). Its selected index \(i\) satisfies \(i\le n\) and \(B(\vec x,i)\). The comparison builder and the positive body builder provide certificates for</p>
+<div class="math-display">\[\overline i\le\overline n,\qquad B(\overline{\vec x},\overline i).\]</div>
+<p>Conjunction introduction yields the instance of \(z\le\overline n\land B(\overline{\vec x},z)\) at \(\overline i\). Existential introduction with that closed numeral term gives the desired bounded existential. This is one fixed proof constructor applied to the selected witness and its two certificates.</p>
+<p>The correctness proof uses the witness-search invariant to justify both branch hypotheses. The coded instantiation identity identifies the conjunction code with the literal matrix instance required by existential introduction. Hence the actual checker accepts the resulting certificate with the exact target code.</p>
+</section>
+
+<section id="negative-bounded-existential" data-formal="ap-negative-existential-branch ap-negative-existential-converter" data-kind="lemma">
+  <h2>A false bounded existential uses all negative instances</h2>
+<p>Given signed builders for a fixed bounded body, a primitive-recursive procedure returns an accepted proof of the negated numeral-bound existential on its false branch.</p>
+<p class="proof-label">Proof</p>
+<p>If \(\exists z\le n\,B(\vec x,z)\) is false, every \(i\le n\) has \(\neg B(\vec x,i)\). Apply the positive-universal loop to the matrix \(\neg B\), using \(c_B^-\) as its positive-instance builder. This gives an accepted certificate for \(\forall z\le\overline n\,\neg B(\overline{\vec x},z)\).</p>
+<p>To turn it into the required negative existential certificate, temporarily assume the existential. Existential elimination supplies the fresh auxiliary constant \(c_0\) and the assumption \(c_0\le\overline n\land B(\overline{\vec x},c_0)\). Extract both conjuncts. Instantiate the retained universal at \(c_0\), apply its bound implication, and obtain \(\neg B(\overline{\vec x},c_0)\). This contradicts the other conjunct.</p>
+<p>Existential elimination discharges the witness assumption; negation introduction discharges the original existential assumption. The retained PA context and the final falsum conclusion contain no auxiliary constants. The <a href="pa-proof-checkers#auxiliary-constant-freshness">freshness lemma</a> therefore verifies the exact existential-elimination test. The resulting certificate proves the negation of the original existential code, rather than a merely equivalent reformulation.</p>
+</section>
+
+<section id="term-bound-transport" data-formal="ap-bound-transport" data-kind="lemma">
+  <h2>Restore the original bound term in the conclusion code</h2>
+<p>For either quantifier and either sign, the specified bound-transport procedure converts an accepted numeral-bound proof into an accepted proof with the original closed term as its bound.</p>
+<p class="proof-label">Proof</p>
+<p>The four preceding constructions use the numeral \(\overline n\), where \(n=t(\vec x)\). Their target, however, must have the original closed term \(t(\overline{\vec x})\) as its bound. Equal values alone do not make these two formula codes identical.</p>
+<p>The term-normalization builder produces a certificate for \(t(\overline{\vec x})=\overline n\). Append equality symmetry, giving the direction needed to transport a proof from the numeral-bound formula to the term-bound formula. Use equality substitution with the one-slot formula</p>
+<div class="math-display">\[H(u):=\forall z\,(z\le u\to B(\overline{\vec x},z)),\]</div>
+<p>or its negation, or the corresponding existential matrix. Instantiating \(H\) at \(\overline n\) gives the previously accepted conclusion; instantiating it at \(t(\overline{\vec x})\) gives the required conclusion. This applies uniformly to all four signs and quantifiers.</p>
+<p>There are two distinct slots under the quantifier: the bound variable \(z\) and the placeholder \(u\) for equality substitution. When the formula is moved under this additional slot, its existing quantified indices are shifted. The literal rewrite identities identify both instances after this shift and after removing the substitution slot. The terms used here are closed original-language terms, so no auxiliary name or additional free variable is introduced. The checked equality-substitution constructor now proves acceptance with precisely the original term-bound code. □</p>
+</section>
+
+<section id="bounded-quantifier-assembly" data-formal="ap-inclusive-signed-builders ap-bounded-positive ap-bounded-negative" data-kind="theorem">
+  <h2>Assemble the signed construction by structural induction</h2>
+<p>The signed-builder theorem holds for the full bounded grammar, including literal strict bounded quantifiers.</p>
+<p class="proof-label">Proof</p>
+<p>First induct outside arithmetic on a fixed formula in the inclusive-bound grammar. Falsum, equality, order and implication are covered by <a href="#numerical-equations"></a>, <a href="#numeral-comparisons"></a> and <a href="#logical-proof-branches"></a>. The truth-test construction chooses the correct internal branch. The four quantified branches use the supplied signed body builders, the internal bounded search or certificate loop, and <a href="#term-bound-transport"></a>. Their native preservation lemmas establish the exact checker assertion, with all syntax and freshness requirements discharged.</p>
+<p>At each structural step the new programs are primitive recursive. Their correctness holds in every PA model, using only arithmetically definable induction for variable-length loops. For a formula \(D\) containing strict bounds, first use <a href="#strict-bounds"></a> to obtain its inclusive-bound normal form \(D^*\) and a PA proof of their equivalence. Apply the construction just completed to \(D^*\). Specialize the fixed PA implications \(D^*\to D\) and \(\neg D^*\to\neg D\) at the internally constructed numeral terms, then use the actual quoted-proof conversion. The two output programs are therefore accepted with the literal codes of \(D\) and \(\neg D\), rather than merely those of their normal forms. Applying <a href="pa-proof-checkers#internal-proof-method">deductive completeness</a> to the two universally closed correctness formulas proves <a href="#bounded-proof-builders"></a>. The formula's structural induction is external and finite; each numeric induction inside a model is an actual instance of PA induction. These two roles of induction are kept separate. □</p>
+</section>

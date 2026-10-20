@@ -1,0 +1,13 @@
+{
+  "id": "ap-bounded-truth",
+  "description": "For every fixed bounded formula \\(D(\\vec x)\\), PA proves that its specified primitive-recursive truth test has value \\(1\\) exactly when \\(D(\\vec x)\\) holds.",
+  "module": "Lemmatheca.MathematicalLogic.PAExtendedBoundedProofs",
+  "declaration": "Lemmatheca.MathematicalLogic.ArithmeticProofPredicates.bounded_truth_internal_full",
+  "dependencies": [
+    "ap-bounded-loop-invariant",
+    "ap-strict-bounded-normalization"
+  ],
+  "verified": true,
+  "declaration_line": 82,
+  "signature": "Lemmatheca.MathematicalLogic.ArithmeticProofPredicates.bounded_truth_internal_full {r : ℕ}\n  (D : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin r))\n  (hD : Lemmatheca.MathematicalLogic.ArithmeticRepresentability.BoundedArithmetic D) :\n  Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n    (Lemmatheca.MathematicalLogic.ArithmeticTheories.close\n      ((Lemmatheca.MathematicalLogic.ArithmeticProofPredicates.testAt\n            (Lemmatheca.MathematicalLogic.ArithmeticProofPredicates.boundedTruth D hD) FirstOrder.Language.var).iff\n        D))"
+}

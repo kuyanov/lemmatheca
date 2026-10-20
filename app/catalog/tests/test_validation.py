@@ -1,13 +1,11 @@
 """Corpus validation stays offline, read-only and linear in records and references."""
 
 from collections import Counter
-from io import StringIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from django.core.management import call_command, CommandError
-from django.test import SimpleTestCase, override_settings
+from django.test import SimpleTestCase
 
 from catalog.files import read_json, write_json
 from catalog.validation import CorpusError, acyclic, validate_corpus
@@ -70,32 +68,16 @@ class CorpusValidationTests(SimpleTestCase):
                 write_json(path, {**snapshot, **change})
                 self.assert_invalid(message)
 
-    def test_command_is_offline_read_only_and_allows_unbuilt_work(self):
-        self.html(self.source, '<a href="beta#fact"></a>', formal='proof')
-        before = {path: path.read_bytes()
-                  for path in self.corpus.rglob('*') if path.is_file()}
-        output = StringIO()
-        with override_settings(CORPUS_DIR=self.corpus), \
-                patch('subprocess.run', side_effect=AssertionError('No Lean')), \
-                patch('catalog.sources.render_block', side_effect=AssertionError('No rendering')), \
-                patch('django.template.loader.render_to_string', side_effect=AssertionError('No templates')), \
-                patch('catalog.management.commands.validate_corpus.write_index') as export, \
-                patch('catalog.node_files.read_nodes', side_effect=AssertionError('No whole catalog')):
-            call_command('validate_corpus', stdout=output)
-            export.assert_not_called()
-        self.assertIn(
-            'Corpus valid: 2 entries, 1 nodes, 2 areas.', output.getvalue())
-        self.assertEqual(before, {path: path.read_bytes()
-                         for path in self.corpus.rglob('*') if path.is_file()})
-        # A binding can be planned before its module or declaration has been built.
+
+    def test_planned_bindings_need_installed_sources_only_when_requested(self):
         node = read_json(self.node)
-        write_json(
-            self.node, {**node, 'module': 'Lemmatheca.Planned', 'declaration': 'planned'})
+        write_json(self.node, {**node, 'module': 'Lemmatheca.Planned', 'declaration': 'planned'})
         validate_corpus(self.corpus)
         with self.assertRaisesRegex(CorpusError, 'Missing Lean source'):
             validate_corpus(self.corpus, source_root=self.root)
-        (self.root / 'formal/Lemmatheca').mkdir(parents=True)
-        (self.root / 'formal/Lemmatheca/Planned.lean').write_text('theorem planned : True := by sorry\n')
+        source = self.root / 'formal/Lemmatheca/Planned.lean'
+        source.parent.mkdir(parents=True)
+        source.write_text('theorem planned : True := by sorry\n')
         validate_corpus(self.corpus, source_root=self.root)
 
     def test_authoring_records_check_links_relationships_and_catalog_freshness(self):
@@ -142,72 +124,6 @@ class CorpusValidationTests(SimpleTestCase):
                 finally:
                     write_json(path, original)
 
-    def test_command_reports_file_and_failure_without_traceback(self):
-        self.source.write_text('<section>')
-        with override_settings(CORPUS_DIR=self.corpus), \
-                self.assertRaisesRegex(CommandError, r'entries/alpha/entry.html: Unclosed'):
-            call_command('validate_corpus', stdout=StringIO())
-
-    def test_write_index_flag_uses_repository_default_and_preserves_corpus(self):
-        self.html(self.source, '<a href="beta#fact"></a>', formal='proof')
-        before = {path.relative_to(self.corpus): path.read_bytes()
-                  for path in self.corpus.rglob('*') if path.is_file()}
-        output = StringIO()
-        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root,
-                               CORPUS_INDEX_PATH=None), \
-                patch('subprocess.run', side_effect=AssertionError('No Lean')), \
-                patch('catalog.sources.render_block', side_effect=AssertionError('No rendering')):
-            call_command('validate_corpus', '--write-index', stdout=output)
-        destination = self.root / 'artifacts/corpus-index.json'
-        index = read_json(destination)
-        self.assertEqual(index['counts']['entries'], 2)
-        self.assertEqual(index['counts']['nodes'], 1)
-        self.assertEqual(index['blocks']['alpha#fact']['formal_ids'], ['proof'])
-        self.assertIn(str(destination), output.getvalue())
-        self.assertIn(index['revision'], output.getvalue())
-        self.assertIn('Corpus valid: 2 entries, 1 nodes, 2 areas.', output.getvalue())
-        self.assertEqual(before, {path.relative_to(self.corpus): path.read_bytes()
-                                 for path in self.corpus.rglob('*') if path.is_file()})
-
-    def test_custom_index_path_and_source_checks_compose_and_report_failures(self):
-        destination = self.root / 'cache/custom.json'
-        node = read_json(self.node)
-        write_json(self.node, {**node, 'module': 'Lemmatheca.Planned', 'declaration': 'planned'})
-        # Source inspection is opt-in, just as for validation without an export.
-        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root):
-            call_command('validate_corpus', '--write-index', str(destination), stdout=StringIO())
-            previous = destination.read_bytes()
-            with self.assertRaisesRegex(CommandError, 'Missing Lean source'):
-                call_command('validate_corpus', '--check-sources', '--write-index', str(destination),
-                             stdout=StringIO())
-            self.assertEqual(previous, destination.read_bytes())
-            source = self.root / 'formal/Lemmatheca/Planned.lean'
-            source.parent.mkdir(parents=True)
-            source.write_text('theorem planned : True := by sorry\n', encoding='utf-8')
-            with patch('subprocess.run', side_effect=AssertionError('No Lean')):
-                call_command('validate_corpus', '--check-sources', '--write-index', str(destination),
-                             stdout=StringIO())
-        self.assertEqual(read_json(destination)['nodes_by_declaration']['planned'], ['proof'])
-
-    def test_configured_index_path_is_shared_by_validation_and_build(self):
-        destination = self.root / 'custom/index.json'
-        with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root,
-                               CORPUS_INDEX_PATH=destination):
-            call_command('validate_corpus', '--write-index', stdout=StringIO())
-            previous = read_json(destination)['revision']
-            node = read_json(self.node)
-            write_json(self.node, {**node, 'description': 'Updated metadata.'})
-            with patch('catalog.management.commands.build.build', return_value=(0, 1)):
-                call_command('build', stdout=StringIO())
-        self.assertNotEqual(previous, read_json(destination)['revision'])
-        self.assertFalse((self.root / 'artifacts/corpus-index.json').exists())
-
-    def test_export_cannot_overwrite_corpus_files(self):
-        previous = self.metadata.read_bytes()
-        with override_settings(CORPUS_DIR=self.corpus), \
-                self.assertRaisesRegex(CommandError, 'outside'):
-            call_command('validate_corpus', '--write-index', str(self.metadata), stdout=StringIO())
-        self.assertEqual(previous, self.metadata.read_bytes())
 
     def test_metadata_types_ids_and_citations(self):
         original = read_json(self.metadata)

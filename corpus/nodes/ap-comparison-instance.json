@@ -1,0 +1,12 @@
+{
+  "id": "ap-comparison-instance",
+  "description": "For arbitrary unary arithmetic formulas \\(P,R\\), if PA proves \\(\\forall x(P(x)\\leftrightarrow R(x))\\), it proves their equivalence after substituting the numeral for the code of any arithmetic sentence.",
+  "module": "Lemmatheca.MathematicalLogic.PAProofPredicateBridges",
+  "declaration": "Lemmatheca.MathematicalLogic.ArithmeticProofPredicates.unary_comparison_instance",
+  "dependencies": [
+    "ap-predicate-comparison"
+  ],
+  "verified": true,
+  "declaration_line": 56,
+  "signature": "Lemmatheca.MathematicalLogic.ArithmeticProofPredicates.unary_comparison_instance\n  (P R : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula Unit)\n  (h : Lemmatheca.MathematicalLogic.PAComputations.PAEquivalent P R)\n  (A : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Sentence) :\n  Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n    (FirstOrder.Language.Formula.iff\n      (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.numeralInstance P fun x =>\n        Lemmatheca.MathematicalLogic.CodingFormalProofs.sentenceCode\n          Lemmatheca.MathematicalLogic.CodingFormalProofs.arithmeticSignature A)\n      (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.numeralInstance R fun x =>\n        Lemmatheca.MathematicalLogic.CodingFormalProofs.sentenceCode\n          Lemmatheca.MathematicalLogic.CodingFormalProofs.arithmeticSignature A))"
+}

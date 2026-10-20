@@ -41,7 +41,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             uv sync --locked
-            uv run --locked python app/manage.py validate_corpus
+            uv run --locked python app/manage.py build --no-lean --check
             uv run --locked python app/manage.py update_statistics
             git add -- corpus/statistics.json
             if git diff --cached --quiet; then

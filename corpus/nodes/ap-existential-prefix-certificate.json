@@ -1,0 +1,12 @@
+{
+  "id": "ap-existential-prefix-certificate",
+  "description": "In every PA model, the specified fixed-length existential-prefix constructor converts an accepted proof of its fully instantiated matrix into an accepted proof of its literal target, whenever the recognized target and ordered witness list satisfy the stated instantiation-chain invariant.",
+  "module": "Lemmatheca.MathematicalLogic.PAExistentialProofPrograms",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.certified_existentialPrefix",
+  "dependencies": [
+    "ap-existential-introduction-preservation"
+  ],
+  "verified": true,
+  "declaration_line": 50,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.certified_existentialPrefix.{u} {M : Type u}\n  [Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Structure M]\n  [M ⊨ Lemmatheca.MathematicalLogic.ArithmeticTheories.PA] (E : Lemmatheca.MathematicalLogic.PAComputations.Program 2)\n  (k : ℕ) (target witnesses matrix p : M)\n  (hchain :\n    Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.ExistentialChain k target witnesses\n      matrix)\n  (hp : Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.Certified E p matrix) :\n  Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.Certified E\n    ((Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.existentialPrefix k).value\n      ![target, witnesses, p])\n    target"
+}

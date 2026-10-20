@@ -17,15 +17,16 @@ work forward rather than repeating it. Content contracts live in
 | Step | Owns | Required checks |
 | --- | --- | --- |
 | [1. Choose sources](prompts/01-choose-sources.md) | Sources, mathematical support, scope, prerequisites, outline and placement | Source passages and relevant existing prerequisite coverage |
-| [2. Draft](prompts/02-draft-human-entry.md) | Human entry, metadata, assets, reading order, reference integration | Validate the changed corpus and inspect affected rendered pages |
+| [2. Draft](prompts/02-draft-human-entry.md) | Human entry, metadata, assets, reading order, reference integration | Finish with a writing corpus build and inspect affected rendered pages |
 | [3. Review the entry](prompts/03-review-human-entry.md) | Independent human mathematics and presentation review | Read the requested arguments and answers; inspect presentation and relevant references |
-| [4. Prepare formal nodes](prompts/04-prepare-formal-nodes.md) | Definitions, target statements, node descriptions and mappings | Compile/elaborate targets, validate records, render new/edited descriptions |
+| [4. Prepare formal nodes](prompts/04-prepare-formal-nodes.md) | Definitions, target statements, node descriptions and mappings | Compile/elaborate targets, finish with a writing corpus build, render new/edited descriptions |
 | [5. Review correspondence](prompts/05-review-correspondence.md) | Independent claim-to-declaration coverage and fidelity review | Inspect current types, definition bodies, representations and witnesses |
 | [6. Prove](prompts/06-prove-nodes.md) | Proof bodies and necessary proof helpers | Compile proofs, run the integrated verification build, inspect axioms and warnings |
 
-Steps 1, 3 and 5 leave entries, nodes, proofs and generated results unchanged;
-[source-register maintenance](docs/corpus.md#source-errors) is their only file-edit
-exception. Step 4 implements definitions and states missing theorems, including
+Steps 1, 3 and 5 leave authored entry content, node bindings and proofs unchanged.
+Their only writing exception is [source-register maintenance](docs/corpus.md#source-errors)
+and the derived refresh it requires through `build --no-lean`.
+Step 4 implements definitions and states missing theorems, including
 representation bridges, with unfinished proofs. Step 5 reviews those statements;
 step 6 proves them. An intentional `sorry` at preparation is not by itself a
 correspondence defect.
@@ -106,7 +107,8 @@ the unfulfilled facts and consuming locations. Existing entries may still appear
 as prerequisites of a specific future task, and source research may remain when
 needed by planned work. Source-review history belongs in `corpus/source-errors/`.
 Use the [targeted lookup workflow](docs/corpus.md#navigating-source-and-planning-records),
-edit only affected records, and rebuild their compact catalogs after changes.
+edit only affected records, and refresh derived data under the
+[shared build rules](#validation-and-submission).
 
 ### Missing prerequisites and assumptions
 
@@ -255,57 +257,44 @@ another corpus-wide audit just because a query is available.
 
 ## Validation and submission
 
-Choose checks by what changed, not by how many pipeline prompts were invoked.
-Run batch checks once after the relevant edits, rather than once per entry.
+`uv run python app/manage.py build` is the single corpus validation and generation
+command. The [build guide](docs/build.md) explains its stages, outputs, flags,
+and command combinations. `--no-lean` reuses saved proof results; `--check`
+prevents publication. Together they provide a structural check without Lean or
+requiring current generated data.
 
-| Change or task | Required check |
+| Change or task | Required checks |
 | --- | --- |
-| Source-register or planning edits | Rebuild catalogs with `index_authoring_records`, then validate the records and links; no Lean build |
-| Corpus HTML, metadata, assets, nodes, mappings, or reading-order edits | `uv run python app/manage.py validate_corpus` |
-| Prose, formulas, figures, or node-description edits | Inspect affected rendered content under the corpus/formal contracts |
-| Formal definitions or target statements | Compile affected modules and inspect elaborated signatures |
-| New entries, changed block inventory, bindings, declarations or proofs | Refresh generated data with `uv run python app/manage.py build` at delivery |
-| Proof completion | Inspect the full build output, selected verification results, transitive axioms and warnings |
-| Read-only reviews | No routine writing build or test run; focused validation/Lean checks only to resolve a concrete concern |
-| Reader or build-tooling changes | Run relevant catalog tests and inspect affected pages |
-| Documentation-only changes | Check links, instructions and command examples; no corpus or proof build |
+| Any authored change under `corpus/`, except `statistics.json` | Finish with the writing `build --no-lean` (or full `build` when required below); commit changed generated files, including `corpus/index.json` |
+| Prose, formulas, figures, or node descriptions | Apply the writing-build and index-commit rule above, including prose-only or whitespace-only edits; inspect affected rendered content under the corpus/formal contracts |
+| Formal definitions or targets | Compile affected modules and inspect their actual signatures |
+| Bindings, declarations or proofs | Finish with `build` and inspect proof results, transitive axioms and warnings |
+| Read-only review | Focused checks only to resolve a concrete concern; no routine writing build |
+| Reader or build tooling | Relevant catalog tests and affected page checks |
+| Documentation only | Check links, instructions and command examples; no corpus or proof build |
 
-A standalone drafting/preparation handoff refreshes generated data when the table
-requires it. During an explicitly requested multi-stage batch with further formal
-edits still to come, defer the writing build until the final mutating stage. Step 4
-still compiles the prepared targets and exposes their actual signatures before
-step 5. While a refresh is deferred, saved verification is not evidence about the
-current edits; identify the pending refresh in the handoff. Finish the batch with
-fresh node data and entry summaries. Do not repeat a successful build without
-subsequent relevant changes or unresolved diagnostics. A full build also satisfies
-the compilation check for the modules it builds; do not require a separate
-compilation run for the same unchanged sources.
+Run batch checks once after the relevant edits. A full build also satisfies
+structural validation and compilation for the modules it builds. During a
+multi-stage batch, defer the writing build until the final mutating stage; step 4
+still elaborates targets before correspondence review. Do not repeat a successful
+build without subsequent relevant changes or unresolved diagnostics.
 
-The build owns verification, signatures, declaration lines, defining modules and
-entry `formalization` summaries. Include its generated JSON changes with the
-sources; do not calculate them manually. Leave `corpus/statistics.json` to the
-[statistics workflow](.github/workflows/statistics.yml). Failures before result
-publication preserve previous proof results, so old flags cannot establish that
-edited sources are verified. The final index export can fail after proof metadata
-has been refreshed; the complete build is not a single transaction.
-Review-only stages inspect current declarations rather than running this writing
-command. Apply the [warning contract](docs/formal.md#build-warnings) and distinguish
-unfinished preparation targets from completed selected proofs.
+`build --no-lean --check` is a read-only structural check, not a substitute for
+the final writing build. The index revision hashes raw entry HTML, entry metadata,
+and node-file bytes, so even a whitespace-only edit to those files changes it.
+Registry records and assets are not hashed into the main index, so edits confined
+to them may leave its regenerated contents byte-identical. Registry-only edits
+still need catalog regeneration. Commit generated files that actually changed.
 
-Validation needs neither Lean nor a prior build; `--check-sources` also checks
-local source availability when the pinned sources are installed. It checks shape,
-not freshness of generated results. Validation is read-only by default. To export
-a disposable authoring index, add `--write-index` (default output:
-`artifacts/corpus-index.json`) or `--write-index /path/to/index.json`. The build
-refreshes the configured index after publishing generated proof results. Corpus
-files remain authoritative; refresh the index after relationship changes when
-using the authoring API, and leave it uncommitted. Text-only edits are read from
-current files and do not require index regeneration.
-Index generation is not required for read-only reviews. See the
-[index lifecycle](docs/app.md#corpus-index) and [formal verification](docs/formal.md#build-and-verification)
-for kernel checks and build behavior, and [the app guide](docs/app.md) for serving
-and tests. [CI](.github/workflows/ci.yml) runs the integrated checks and verifies
-that committed generated data matches regenerated results.
+Saved results are not evidence that edited sources or bindings are verified.
+`--no-lean` reuses them; it makes no new proof-checking claim. Include generated
+node/entry JSON, authoring catalogs, and `corpus/index.json` with their inputs.
+Full `build --check` requires the selected index to exist and match regeneration,
+including its revision. See the [formal verification rules](docs/formal.md#build-and-verification)
+for proof-completion requirements and the [build guide](docs/build.md#failures-and-scope)
+for publication guarantees and tasks maintained separately.
+Statistics-only updates belong to the statistics workflow and do not require an
+index rebuild.
 
 Describe the contribution's scope, source credit, review findings addressed,
 checks performed, and any remaining gaps in the pull request. Keep stable entry,

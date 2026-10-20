@@ -1,0 +1,10 @@
+{
+  "id": "pac-least-witness",
+  "description": "In every PA-model, each nonempty set defined by a fixed arithmetic formula with finitely many parameters has a least element in the arithmetic order.",
+  "module": "Lemmatheca.MathematicalLogic.PAChineseRemainder",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.least_witness_model",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 11,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.least_witness_model.{u} {k : ℕ} {M : Type u}\n  [Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Structure M]\n  [M ⊨ Lemmatheca.MathematicalLogic.ArithmeticTheories.PA]\n  (φ : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin k ⊕ Unit)) (x : Fin k → M)\n  (h : ∃ y, φ.Realize (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend x y)) :\n  ∃ y,\n    φ.Realize (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend x y) ∧\n      ∀ (z : M),\n        Lemmatheca.MathematicalLogic.ArithmeticRepresentability.leValue M\n            (Lemmatheca.MathematicalLogic.ArithmeticTheories.succValue M z) y →\n          ¬φ.Realize (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend x z)"
+}

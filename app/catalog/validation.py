@@ -16,6 +16,7 @@ from .statistics import COUNTS, METRICS
 ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]*\Z")
 ANCHOR = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]*\Z")
 MAX_HTML_DEPTH = 128
+_MISSING = object()
 
 
 class CorpusError(ValueError):
@@ -35,7 +36,7 @@ def checking(path):
         raise CorpusError(f"{path}: {error}") from error
 
 
-def json_object(path, *, collector=None):
+def json_object(path, *, collector=None, record=_MISSING):
     def pairs(items):
         result = {}
         for key, value in items:
@@ -46,7 +47,27 @@ def json_object(path, *, collector=None):
     def constant(value):
         raise CorpusError(f"Invalid JSON constant: {value}")
 
-    if collector is None:
+    if record is not _MISSING:
+        # Keep authored-file errors visible even when replacing generated fields.
+        original_bytes = path.read_bytes()
+        original = json.loads(original_bytes.decode("utf-8"), object_pairs_hook=pairs,
+                              parse_constant=constant)
+        require(isinstance(original, dict), "Expected a JSON object")
+        # Changed records are hashed as write_json will serialize them. Unchanged
+        # records retain their original bytes because the build does not rewrite
+        # them merely to normalize whitespace.
+        try:
+            content = (json.dumps(record, indent=2, ensure_ascii=False,
+                                  allow_nan=False) + "\n").encode("utf-8")
+        except TypeError as error:
+            raise CorpusError(f"Invalid JSON record: {error}") from error
+        result = json.loads(content.decode("utf-8"), object_pairs_hook=pairs,
+                            parse_constant=constant)
+        if result == original:
+            content = original_bytes
+        if collector is not None:
+            collector.add_file(path, content)
+    elif collector is None:
         with path.open(encoding="utf-8") as stream:
             result = json.load(stream, object_pairs_hook=pairs,
                                parse_constant=constant)
@@ -312,12 +333,12 @@ def entry_metadata(record, expected, areas):
         text(summary["description"], "formalization description")
 
 
-def node_metadata(record, expected):
-    fields(record, ("id", "description", "verified"),
-           ("module", "declaration", "dependencies", "signature", "declaration_line"))
+def node_metadata(record, expected, *, allow_stale_results=False):
+    fields(record, ("id", "description"),
+           ("verified", "module", "declaration", "dependencies", "signature", "declaration_line"))
     require(record["id"] == expected, "ID does not match filename")
     text(record["description"], "description")
-    require(type(record["verified"]) is bool, "verified must be a boolean")
+    require(type(record.get("verified", False)) is bool, "verified must be a boolean")
     dependencies = record.get("dependencies", [])
     identifiers(dependencies, "dependency")
     module, declaration = record.get("module"), record.get("declaration")
@@ -327,8 +348,8 @@ def node_metadata(record, expected):
         require(isinstance(module, str) and LEAN_MODULE.fullmatch(
             module), "Invalid Lean module")
         text(declaration, "declaration")
-    else:
-        require(not record["verified"], "An unbound node cannot be verified")
+    elif not allow_stale_results:
+        require(not record.get("verified", False), "An unbound node cannot be verified")
     if "signature" in record:
         text(record["signature"], "signature")
     if "declaration_line" in record:
@@ -383,7 +404,9 @@ def validate_statistics(snapshot):
                         f"History for {key} must end at the current verified count")
 
 
-def validate_corpus(corpus, *, source_root=None, collector=None):
+def validate_corpus(corpus, *, source_root=None, collector=None, nodes=None,
+                    entries=None, authoring_indexes=None, allow_stale_catalogs=False,
+                    allow_stale_results=False):
     """O(input bytes + reference edges) time, without writing files or invoking Lean.
 
     By default retain only area parents, entry block IDs, cross-entry links and
@@ -392,7 +415,20 @@ def validate_corpus(corpus, *, source_root=None, collector=None):
     Source/planning registries have independent catalogs and validation.
     Generated proof data need not be present or current. Optional source checks
     use the installed files only; neither mode invokes Lean or the build.
+
+    Node/entry overrides are staged complete records keyed by existing IDs.
+    Authoring index overrides use corpus-relative catalog paths. These outputs
+    can be checked before publication; a collector hashes their proposed bytes.
+    Ignoring catalog freshness still checks all authored registry records.
+    A preflight may also accept saved verification on a newly unbound node;
+    the build clears that stale result before validating proposed outputs.
     """
+    nodes = {} if nodes is None else nodes
+    entries = {} if entries is None else entries
+    for overrides, name in ((nodes, "node"), (entries, "entry")):
+        require(isinstance(overrides, dict), f"{name} overrides must be an object")
+        for key in overrides:
+            identifier(key, f"{name} override ID")
     statistics = corpus / "statistics.json"
     if statistics.exists():
         with checking(statistics):
@@ -414,8 +450,6 @@ def validate_corpus(corpus, *, source_root=None, collector=None):
             areas[area["id"]] = [] if area["parent"] is None else [area["parent"]]
         acyclic(areas, "Area hierarchy")
         areas = set(areas)
-        if collector is not None:
-            collector.add_taxonomy(document)
     del document
 
     index = corpus / "area_entries.json"
@@ -443,8 +477,10 @@ def validate_corpus(corpus, *, source_root=None, collector=None):
             continue
         with checking(path):
             identifier(path.stem)
-            record = json_object(path, collector=collector)
-            graph[path.stem] = node_metadata(record, path.stem)
+            record = json_object(path, collector=collector,
+                                 record=nodes.get(path.stem, _MISSING))
+            graph[path.stem] = node_metadata(
+                record, path.stem, allow_stale_results=allow_stale_results)
             module = record.get("module")
             if source_root is not None and module and module not in modules:
                 modules.add(module)
@@ -459,6 +495,8 @@ def validate_corpus(corpus, *, source_root=None, collector=None):
     with checking(nodes_dir):
         acyclic(graph, "Node dependencies")
     node_ids = set(graph)
+    require(not (nodes.keys() - node_ids),
+            f"Overrides reference missing nodes: {', '.join(sorted(nodes.keys() - node_ids))}")
     del graph
 
     blocks_by_entry, links = {}, []
@@ -470,7 +508,8 @@ def validate_corpus(corpus, *, source_root=None, collector=None):
         metadata = directory / "entry.json"
         with checking(metadata):
             identifier(directory.name)
-            record = json_object(metadata, collector=collector)
+            record = json_object(metadata, collector=collector,
+                                 record=entries.get(directory.name, _MISSING))
             entry_metadata(record, directory.name, areas)
             require(listed.get(directory.name) == record["primary_area"],
                     "Entry must be listed once under its primary area in area_entries.json")
@@ -496,6 +535,9 @@ def validate_corpus(corpus, *, source_root=None, collector=None):
     with checking(index):
         missing = listed.keys() - blocks_by_entry.keys()
         require(not missing, f"Missing entries: {', '.join(missing)}")
+    require(not (entries.keys() - blocks_by_entry.keys()),
+            "Overrides reference missing entries: "
+            + ", ".join(sorted(entries.keys() - blocks_by_entry.keys())))
     for source, target, anchor in links:
         with checking(source):
             require(target in blocks_by_entry,
@@ -503,5 +545,7 @@ def validate_corpus(corpus, *, source_root=None, collector=None):
             require(anchor in blocks_by_entry[target],
                     f"Reference must name a mathematical block: {target}#{anchor}")
     from .authoring_validation import validate_authoring_records
-    validate_authoring_records(corpus, blocks_by_entry)
+    validate_authoring_records(corpus, blocks_by_entry,
+                               indexes=authoring_indexes,
+                               allow_stale_catalogs=allow_stale_catalogs)
     return len(blocks_by_entry), len(node_ids), len(areas)

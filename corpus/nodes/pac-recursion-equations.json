@@ -1,0 +1,13 @@
+{
+  "id": "pac-recursion-equations",
+  "description": "In every PA-model, the finite-history recursion graph of arbitrary arithmetic base and step formulas satisfies the stated zero and successor equations.",
+  "module": "Lemmatheca.MathematicalLogic.PAComputations",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.recursion_equations_model",
+  "dependencies": [
+    "pac-beta-total-unique",
+    "pac-beta-extension"
+  ],
+  "verified": true,
+  "declaration_line": 966,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.recursion_equations_model.{u} {n : ℕ}\n  (base : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin n ⊕ Unit))\n  (step : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin (n + 2) ⊕ Unit)) {M : Type u}\n  [Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Structure M]\n  [M ⊨ Lemmatheca.MathematicalLogic.ArithmeticTheories.PA] (x : Fin n → M) (k y : M) :\n  ((Lemmatheca.MathematicalLogic.ArithmeticRepresentability.recursionGraph\n            Lemmatheca.MathematicalLogic.ArithmeticRepresentability.betaGraph base step).Realize\n        (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend\n          (Fin.snoc x (Lemmatheca.MathematicalLogic.ArithmeticTheories.zeroValue M)) y) ↔\n      base.Realize (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend x y)) ∧\n    ((Lemmatheca.MathematicalLogic.ArithmeticRepresentability.recursionGraph\n            Lemmatheca.MathematicalLogic.ArithmeticRepresentability.betaGraph base step).Realize\n        (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend\n          (Fin.snoc x (Lemmatheca.MathematicalLogic.ArithmeticTheories.succValue M k)) y) ↔\n      ∃ a,\n        (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.recursionGraph\n                Lemmatheca.MathematicalLogic.ArithmeticRepresentability.betaGraph base step).Realize\n            (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend (Fin.snoc x k) a) ∧\n          step.Realize (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend (Fin.snoc (Fin.snoc x k) a) y))"
+}

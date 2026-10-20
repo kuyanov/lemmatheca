@@ -1,0 +1,13 @@
+{
+  "id": "res-saturation-bound",
+  "description": "If each saturation step adds a missing resolvent and all initial atoms lie in a finite set \\(S\\), the number of steps is at most the number of clauses formed from the two literals on each atom of \\(S\\).",
+  "module": "Lemmatheca.MathematicalLogic.Resolution",
+  "declaration": "Lemmatheca.MathematicalLogic.Resolution.saturation_bound",
+  "dependencies": [
+    "res-derivation-support",
+    "res-resolvent"
+  ],
+  "verified": true,
+  "declaration_line": 267,
+  "signature": "Lemmatheca.MathematicalLogic.Resolution.saturation_bound.{u} {α : Type u} [DecidableEq α] (S : Finset α)\n  (states : ℕ → Lemmatheca.MathematicalLogic.Resolution.ClauseSet α) (k : ℕ)\n  (h0 : Lemmatheca.MathematicalLogic.Resolution.Supported S (states 0))\n  (hs : ∀ i < k, Lemmatheca.MathematicalLogic.Resolution.Step (states i) (states (i + 1))) :\n  k ≤ (Lemmatheca.MathematicalLogic.Resolution.availableClauses S).card"
+}

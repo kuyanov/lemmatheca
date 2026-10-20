@@ -2,7 +2,8 @@
 
 Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
 Independently compare the human mathematics with its formal targets and coverage.
-Entries, nodes, Lean sources, and generated proof results remain read-only.
+Authored entry content, node bindings and Lean sources remain read-only;
+source-register maintenance follows the shared exception.
 
 ## Inputs
 
@@ -52,9 +53,11 @@ themselves a correspondence defect.
 
 Use focused, read-only Lean checks only for unresolved signatures, instances, or
 representation questions. Investigate description rendering only when notation is
-ambiguous or a concrete presentation defect is suspected. Run corpus validation
-only for a structural/binding-reference concern. No writing build, proof completion,
-source re-audit, reference-planning sweep, or general presentation review is required.
+ambiguous or a concrete presentation defect is suspected. Use `build --no-lean --check`
+only for a structural/binding-reference concern. No routine writing build is
+required; source-register edits still need the refresh described below. No proof
+completion, source re-audit, reference-planning sweep, or general presentation
+review is required.
 
 ## Deliverable
 
@@ -64,5 +67,5 @@ Separate incorrect targets, missing coverage, unproved work, representation gaps
 and optional simplifications. Route corrections to step 4; report any human error
 for steps 2/3. Record new external-source findings only if source consultation
 actually required it. Do not change bindings or proofs or set approval fields.
-If source records changed, rebuild their catalogs and validate those records and
-links under the [registry contract](../docs/corpus.md#navigating-source-and-planning-records).
+Source-record edits follow the [shared build rules](../CONTRIBUTING.md#validation-and-submission)
+for catalog regeneration and record validation.

@@ -1,7 +1,8 @@
 # Step 3: Review the human entry
 
 Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
-Independently review human mathematics and presentation. Entry files remain read-only.
+Independently review human mathematics and presentation. Authored entry content
+remains read-only; source-register maintenance follows the shared exception.
 
 ## Inputs
 
@@ -55,11 +56,11 @@ human-review scope.
 
 ## Checks
 
-The independent reading and rendering review above is this step's check. Run
-corpus validation only to investigate a specific structural/reference concern or
-validate source-record edits. Rebuild the catalogs when source records change.
-No writing build, catalog tests, Lean proof checks, or formal-binding audit is
-required. Maintain source-register links only if that register was changed.
+The independent reading and rendering review above is this step's check. Use
+`build --no-lean --check` only to investigate a concrete structural/reference
+concern. Source-record edits follow the [shared build rules](../CONTRIBUTING.md#validation-and-submission)
+for catalog regeneration. No routine writing build, catalog tests, Lean proof
+checks, or formal-binding audit is required.
 
 ## Deliverable
 

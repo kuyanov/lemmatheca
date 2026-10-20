@@ -1,12 +1,10 @@
 """Authoring-register navigation reads only narrowed records, without Lean/index."""
 
 from contextlib import contextmanager
-from io import StringIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from django.core.management import call_command
 from django.test import SimpleTestCase, override_settings
 
 from catalog.authoring_records import (
@@ -78,16 +76,14 @@ class AuthoringRecordTests(SimpleTestCase):
         with patch.object(Path, "open", tracked), patch("subprocess.run", side_effect=AssertionError("No subprocess")):
             yield opened
 
-    def test_catalogs_are_reproducible_and_command_replaces_stale_catalogs(self):
+    def test_catalogs_are_reproducible_and_writer_replaces_stale_catalogs(self):
         self.assertEqual(source_catalog(self.sources, self.findings), build_source_index(self.corpus))
         self.assertEqual(planning_catalog(self.plans), build_planning_index(self.corpus))
         sources = read_json(self.corpus / "source-errors/index.json")
         self.assertEqual(sources["by_entry"]["proofs"], ["alpha"])
         self.assertEqual(sources["by_url"]["https://example.com/alpha"], ["alpha"])
         (self.corpus / "source-errors/index.json").write_text("broken")
-        output = StringIO()
-        call_command("index_authoring_records", stdout=output)
-        self.assertIn("2 sources, 2 findings, and 2 planning records", output.getvalue())
+        write_authoring_indexes(self.corpus)
         self.assertEqual(read_json(self.corpus / "source-errors/index.json"), sources)
 
     def test_rebuild_leaves_unchanged_catalogs_untouched(self):

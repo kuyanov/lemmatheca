@@ -1,0 +1,13 @@
+{
+  "id": "ap-negative-universal-branch",
+  "description": "In a PA model in the fixed ambient universe, given a fixed bounded body with correct signed builders, the specified counterexample-search program returns an accepted proof of the negated numeral-bound universal whenever that universal is false.",
+  "module": "Lemmatheca.MathematicalLogic.PASignedUniversalProofs",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.SignedProofs.universalNegativeNormalized_correct",
+  "dependencies": [
+    "ap-bounded-witness-invariant",
+    "ap-counterexample-certificate"
+  ],
+  "verified": true,
+  "declaration_line": 63,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.SignedProofs.universalNegativeNormalized_correct\n  {M : Type} [Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Structure M]\n  [M ⊨ Lemmatheca.MathematicalLogic.ArithmeticTheories.PA] {α : Type} [Fintype α] {r : ℕ}\n  (name : α → Lemmatheca.MathematicalLogic.PAComputations.Program r)\n  (t : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Term α)\n  (D : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (α ⊕ Unit))\n  (hD : Lemmatheca.MathematicalLogic.ArithmeticRepresentability.DeltaZero D)\n  (child :\n    Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.SignedProofs.SignedPrograms D\n      (Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.BoundedTruthPrograms.extendName name))\n  (x : Fin r → M)\n  (hnot : ¬(Lemmatheca.MathematicalLogic.ArithmeticRepresentability.boundedAll t D).Realize fun a => (name a).value x) :\n  Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.Certified\n    Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.axiomVerifier\n    ((Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.SignedProofs.universalNegativeNormalized\n          name t D hD child).value\n      x)\n    (Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.BoundTermTransport.quantifiedValue true\n      true\n      ((Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.BoundedSyntaxPrograms.slotFormula 0\n            name D).value\n        x)\n      (Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.NumericalProofs.numeralSyntax\n        ((Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.NumericalProofs.namedTermValue name\n              t).value\n          x)))"
+}

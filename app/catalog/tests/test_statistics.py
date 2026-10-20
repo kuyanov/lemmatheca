@@ -199,7 +199,7 @@ class StatisticsHistoryTests(SimpleTestCase):
         self.save_records()
         records = {path: path.read_bytes() for path in self.corpus.glob("**/*.json")
                    if path.name != "statistics.json"}
-        with patch("catalog.proofs.build", side_effect=AssertionError("No Lean build")), \
+        with patch("catalog.proofs.prepare_proof_results", side_effect=AssertionError("No Lean build")), \
                 patch("catalog.sources.parse_source", side_effect=AssertionError("No HTML parsing")):
             self.refresh()
         snapshot = read_json(self.corpus / "statistics.json")

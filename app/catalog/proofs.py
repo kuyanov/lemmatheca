@@ -1,17 +1,14 @@
-"""Build Lean and prepare proof results and entry summaries before saving them."""
+"""Run Lean and prepare node verification results without publishing them."""
 
 import json
 import subprocess
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-from .entry_files import entry_ids, read_entry, save_entries
-from .node_files import LEAN_MODULE, TOOLCHAIN_MODULES, prepare_results, read_nodes, save_results
-from .progress import entry_progress
-from .sources import parse_source
+from .node_files import LEAN_MODULE, TOOLCHAIN_MODULES, prepare_results, read_nodes
 
 
-def build(corpus, formal):
+def prepare_proof_results(corpus, formal):
     nodes = read_nodes(corpus)
     results = {}
     bound = [node for node in nodes.values() if node.get("declaration")]
@@ -53,25 +50,4 @@ def build(corpus, formal):
     if results.keys() != declarations:
         raise ValueError(
             "Lean did not report every registered declaration.")
-    updated = prepare_results(corpus, nodes, results)
-    for identifier, node in updated.items():
-        for dependency in node.get("dependencies", []):
-            if dependency not in updated:
-                raise ValueError(
-                    f"{identifier}: missing dependency {dependency}")
-    entries = {}
-    for identifier in entry_ids(corpus):
-        entry = read_entry(identifier, corpus)
-        blocks, *_ = parse_source(entry.pop("source"), validate=True)
-        entry.pop("directory")
-        for block in blocks:
-            for node_id in block["formal_ids"] or []:
-                if node_id not in updated:
-                    raise ValueError(
-                        f"{identifier}: unknown formal node: {node_id}")
-        entry["formalization"] = entry_progress(blocks, updated)
-        entries[identifier] = entry
-    # Prepare every proof result and entry summary before writing.
-    verified = save_results(corpus, updated)
-    save_entries(corpus, entries)
-    return verified, len(nodes)
+    return prepare_results(corpus, nodes, results)

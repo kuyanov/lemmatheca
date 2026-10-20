@@ -59,7 +59,7 @@ def _target_url(target):
 
 
 def _outdated(message):
-    return QueryError(message + "; rebuild with validate_corpus --write-index",
+    return QueryError(message + "; rebuild with build --no-lean",
                       status=409, code="index_outdated")
 
 

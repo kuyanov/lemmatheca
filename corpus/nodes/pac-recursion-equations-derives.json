@@ -1,0 +1,12 @@
+{
+  "id": "pac-recursion-equations-derives",
+  "description": "PA derives both the zero and successor equations of the finite-history recursion graph for arbitrary arithmetic base and step formulas.",
+  "module": "Lemmatheca.MathematicalLogic.PARecursionSentences",
+  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.recursion_equations_derives",
+  "dependencies": [
+    "pac-recursion-equations"
+  ],
+  "verified": true,
+  "declaration_line": 72,
+  "signature": "Lemmatheca.MathematicalLogic.PAComputations.recursion_equations_derives {n : ℕ}\n  (base : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin n ⊕ Unit))\n  (step : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin (n + 2) ⊕ Unit)) :\n  Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n      (Lemmatheca.MathematicalLogic.PAComputations.allClose\n        (Lemmatheca.MathematicalLogic.PAComputations.recursionZeroFormula\n          (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.recursionGraph\n            Lemmatheca.MathematicalLogic.ArithmeticRepresentability.betaGraph base step)\n          base)) ∧\n    Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n      (Lemmatheca.MathematicalLogic.PAComputations.allClose\n        (Lemmatheca.MathematicalLogic.PAComputations.recursionSuccessorFormula\n          (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.recursionGraph\n            Lemmatheca.MathematicalLogic.ArithmeticRepresentability.betaGraph base step)\n          step))"
+}

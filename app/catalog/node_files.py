@@ -23,7 +23,10 @@ def node_ids(corpus=None):
 
 def read_node(identifier, corpus=None):
     corpus = corpus or settings.CORPUS_DIR
-    return read_record(corpus / "nodes" / f"{identifier}.json", identifier)
+    record = read_record(corpus / "nodes" / f"{identifier}.json", identifier)
+    if isinstance(record, dict):
+        record.setdefault("verified", False)
+    return record
 
 
 def source_for_module(module):

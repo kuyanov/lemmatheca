@@ -89,13 +89,9 @@ class CorpusIndexTests(SimpleTestCase):
             result = write_index(self.corpus, self.destination)
         self.assertEqual(reads, Counter({path: 1 for path in before}))
         self.assertEqual(read_json(self.destination), result)
-        self.assertEqual(before, {path: path.read_bytes()
-                                 for path in self.corpus.rglob("*") if path.is_file()})
-        self.assertEqual(result["schema_version"], 4)
-        self.assertEqual(result["counts"], {
-            "areas": 1, "entries": 2, "blocks": 4, "nodes": 2,
-            "references": 3, "bindings": 3,
-        })
+        self.assertEqual(before, {path: path.read_bytes() for path in before})
+        self.assertEqual(result["schema_version"], 5)
+        self.assertNotIn("counts", result)
         self.assertEqual(result["entries"]["alpha"]["reading_position"], 2)
         self.assertEqual(result["entries"]["beta"]["reading_position"], 1)
         self.assertEqual(result["entries"]["alpha"]["blocks"],
@@ -187,7 +183,6 @@ class CorpusIndexTests(SimpleTestCase):
     def test_deterministic_across_collection_order_and_locations(self):
         def collect(reverse=False):
             collector = CorpusIndex(self.corpus)
-            collector.add_taxonomy(read_json(self.corpus / "taxonomy.json"))
             collector.add_reading_order(read_json(self.corpus / "area_entries.json"))
             for path in sorted(self.corpus.rglob("*"), reverse=reverse):
                 if not path.is_file():
@@ -224,6 +219,16 @@ class CorpusIndexTests(SimpleTestCase):
                 write_index(self.corpus, self.destination)
         self.assertEqual(self.destination.read_bytes(), previous)
         self.assertEqual(set(self.destination.parent.iterdir()), previous_artifacts)
+
+    def test_statistics_updates_do_not_change_the_index_document_or_revision(self):
+        expected = write_index(self.corpus, self.destination)
+        statistics = self.corpus / "statistics.json"
+        snapshot = {"entries": 2, "verified_entries": 1, "nodes": 2,
+                    "verified_nodes": 1, "contributors": 3}
+        for data in (snapshot, {**snapshot, "verified_nodes": 2, "contributors": 4}):
+            with self.subTest(statistics=data):
+                write_json(statistics, data)
+                self.assertEqual(write_index(self.corpus, self.destination), expected)
 
     def test_revision_hashes_exact_bytes_including_crlf(self):
         paths = [self.alpha, self.alpha.parent / "entry.json"]
@@ -279,13 +284,13 @@ class CorpusIndexTests(SimpleTestCase):
                               if key != "revision"}, original_derived_data)
             previous_revision = result["revision"]
 
-    def test_rejects_destinations_in_corpus_before_validation(self):
-        for path in [self.corpus / "index.json", self.alpha.parent / "../index.json"]:
+    def test_rejects_other_destinations_in_corpus_before_validation(self):
+        for path in [self.corpus / "cache.json", self.alpha.parent / "../index.json"]:
             with self.subTest(path=path), \
                     patch("catalog.validation.validate_corpus", side_effect=AssertionError("No scan")):
-                with self.assertRaisesRegex(ValueError, "outside the corpus"):
+                with self.assertRaisesRegex(ValueError, "outside|index.json"):
                     write_index(self.corpus, path)
         alias = self.repository / "alias"
         alias.symlink_to(self.corpus, target_is_directory=True)
-        with self.assertRaisesRegex(ValueError, "outside the corpus"):
-            write_index(self.corpus, alias / "index.json")
+        with self.assertRaisesRegex(ValueError, "outside|index.json"):
+            write_index(self.corpus, alias / "nodes/proof.json")

@@ -11,17 +11,14 @@ Run from the repository root using the Python version range in
 
 ```sh
 uv sync --locked
-uv run python app/manage.py validate_corpus
-uv run python app/manage.py build
-uv run python app/manage.py test catalog
+uv run python app/manage.py build --no-lean
 uv run python app/manage.py runserver
 ```
 
-The build assumes the pinned Lean environment is installed. It updates node
-verification, precomputes entry-list badges, and refreshes the derived corpus
-index. Run it after adding an entry or changing its block inventory, formal
-mappings, node bindings, or Lean code, and include the generated JSON in the change.
-See the [corpus guide](corpus.md) and [Lean guide](formal.md).
+This setup reuses saved verification without Lean. Use the full build after
+changing proofs or bindings; see the [shared build modes and checks](../CONTRIBUTING.md#validation-and-submission).
+The [corpus guide](corpus.md) and [Lean guide](formal.md) describe the content and
+verification contracts.
 
 Open <http://127.0.0.1:8000/>. Restart the server when adding an entry's
 asset directory, since Django registers those directories at startup. Python edits
@@ -46,11 +43,12 @@ to `app/`:
 | `catalog/content.py` | Reader data, navigation, and block badges |
 | `catalog/sources.py`, `catalog/equations.py` | Trusted HTML parsing, references, equation labels, and rendering |
 | `catalog/progress.py` | Shared entry/block verification summaries |
-| `catalog/proofs.py` | Lean build, declaration checks, and entry-summary generation |
+| `catalog/build.py` | Build orchestration, entry summaries, generated-data comparison and publication |
+| `catalog/proofs.py` | Lean build, declaration checks, and proof-result preparation |
 | `catalog/statistics.py` | Saved-metadata totals, count history, and Git backfill; direct snapshot read for the home page |
 | `catalog/validation.py` | Offline metadata, HTML, reference, and hierarchy validation |
 | `catalog/corpus_index.py` | Optional derived index collection and publication |
-| `catalog/management/commands/` | `validate_corpus`, Lean `build`, `index_authoring_records`, and `update_statistics` commands |
+| `catalog/management/commands/` | Unified `build` and separate `update_statistics` commands |
 | `catalog/tests/` | Reader, locality, summary, and Lean-build checks |
 
 `app/config/` contains settings, URL inclusion, middleware, and the WSGI entry point.
@@ -256,10 +254,11 @@ candidate records but returns summaries. Catalogs contain no review or plan
 prose. An unfiltered listing without `q` opens only its requested page. Unknown
 or repeated parameters and malformed values return 400; missing records return
 404; unavailable catalogs return 503. These endpoints have no `revision`,
-`fields`, or entry-context `include` parameters. Use
-`index_authoring_records` after edits; `validate_corpus` checks catalog contents
-and record relationships. See the [record contract](corpus.md#navigating-source-and-planning-records)
-for paths, maintenance, and direct-file fallback.
+`fields`, or entry-context `include` parameters. Refresh the catalogs with
+`build --no-lean` after edits. The build validates authored record relationships;
+full `build --check` also checks that committed catalogs match regeneration. See
+the [record contract](corpus.md#navigating-source-and-planning-records) for paths,
+maintenance, and direct-file fallback.
 
 ### Home-page statistics
 
@@ -277,9 +276,10 @@ snapshot before replacing the file atomically and leaves unchanged files untouch
 For maintenance, run the same command locally or manually dispatch the workflow on
 `main`; contributors normally leave statistics generation to automation.
 
-Runs are serialized and commit only the statistics file. If `main` advances before
-the push, the workflow fetches it and recomputes, retrying up to three times without
-force-pushing. The workflow uses `GITHUB_TOKEN` with `contents: write`; repository
+Runs are serialized and commit only the statistics file, without rebuilding the
+structural index. If `main` advances before the push, the workflow fetches it and
+recomputes, retrying up to three times without force-pushing. The workflow uses
+`GITHUB_TOKEN` with `contents: write`; repository
 rules must permit this automatic commit to `main`.
 
 `history` contains four series: `entries`, `nodes`, `areas`, and `contributors`.
@@ -313,35 +313,39 @@ access. Before the first snapshot, unavailable statistics display a dash.
 
 ## Checks
 
-Run `uv run python app/manage.py validate_corpus` while editing. It is independent
-of the build, writes no files by default, and permits missing or stale generated
-results. The optional `--check-sources` checks installed source files without
-invoking Lean.
+See the [build guide](build.md) for stages and flags, and the
+[contribution check matrix](../CONTRIBUTING.md#validation-and-submission) for required checks.
+`build --no-lean --check` checks canonical inputs without writes or a Lean
+installation and tolerates missing or stale derived data. Add `--check-sources`
+when installed source-file availability matters.
 
 ### Corpus index
 
-Validation can collect an authoring index during the same corpus scan:
+Both writing build modes regenerate the authoring index together with
+entry summaries and authoring catalogs. For example, to refresh derived data
+without Lean at a one-off destination:
 
 ```sh
-uv run python app/manage.py validate_corpus --write-index
-uv run python app/manage.py validate_corpus --write-index /tmp/corpus-index.json
-uv run python app/manage.py validate_corpus --check-sources --write-index
+uv run python app/manage.py build --no-lean --index /tmp/corpus-index.json
 ```
 
-The command validates the configured corpus. The bare flag writes to
-`CORPUS_INDEX_PATH`, which defaults to `artifacts/corpus-index.json` under the
-repository root. Set `DJANGO_CORPUS_INDEX_PATH` to override this location
-for commands and the API. An explicit `--write-index PATH` selects
-a different destination outside the corpus directory; cache output cannot
-overwrite corpus inputs. `--check-sources` composes with index generation and
-still does not invoke Lean.
+`CORPUS_INDEX_PATH` defaults to the reserved `corpus/index.json`. Set
+`DJANGO_CORPUS_INDEX_PATH` to change the path used by both the reader and build
+by default. `--index PATH` selects the output or checked path for only that build
+invocation. Other paths inside `corpus/` are rejected to protect canonical inputs.
+The reserved index is generated and committed, but excluded from corpus input
+discovery. Check modes write no index. Full `build --check` requires the selected
+index to exist, parse as JSON, and equal regeneration, including its revision;
+`build --no-lean --check` permits an absent or stale index.
 
 The index keeps block structure and node mappings, backlinks, node consumers,
 declaration/module lookups, entry block IDs and inverse reading positions. It
 stores no entry headings, statements, answers or link labels, and avoids copying
-entry/node metadata, taxonomy and reading-order records. Internal references are
-stored once with their source-link positions; sparse outgoing/incoming maps
-contain their edge IDs. Non-block anchors map to their owning blocks.
+entry/node metadata, taxonomy and reading-order records. It has no `counts` field;
+aggregate totals and history are stored only in `corpus/statistics.json`.
+Internal references are stored once with their source-link positions; sparse
+outgoing/incoming maps contain their edge IDs. Non-block anchors map to their
+owning blocks.
 
 The main schema fields are:
 
@@ -367,13 +371,15 @@ without text or verification filters reads only the requested page's node record
 after selecting candidate IDs.
 
 The revision covers the exact indexed input files, including node metadata and
-uncommitted edits. It identifies that snapshot, not the current Lean proof state
-or whether the working tree has since changed. Per-file hashes are used only
+uncommitted edits, but excludes `statistics.json`. Statistics-only updates leave
+the index and its full-check freshness unchanged. The revision identifies that
+snapshot, not the current Lean proof state or whether the working tree has since
+changed. Per-file hashes are used only
 during generation and are not exported; identifying changed files requires
 another scan.
 
-Corpus HTML and JSON remain the Git-tracked source of truth. The index is a
-disposable, ignored artifact required only by the authoring API. Each process
+Authored corpus HTML and JSON remain the source of truth. The index is a
+generated, committed snapshot required only by the authoring API. Each process
 caches its parsed index and checks the file's stat information to detect atomic
 replacement; it does not rescan the corpus or cache live metadata between
 requests. Refresh the index explicitly after edits; there is no corpus freshness
@@ -396,24 +402,23 @@ budget can require reparsing on later requests. Coverage validates HTML for its
 selected entries through the same bounded cache. Node searches do not parse
 entry HTML.
 
-Validation publishes the index through atomic replacement only after all input
-checks succeed, so invalid input leaves an existing cache untouched. The Lean
-`build` command refreshes the configured index after publishing node results and
-entry summaries. Index-only generation does not check Lean freshness. A build can
-fail during index export after proof metadata has already been refreshed; the
-entire build is not one transaction.
+The [build guide](build.md#failures-and-scope) describes publication guarantees.
+No-Lean regeneration reuses saved proof results and does not establish proof freshness.
 
 ### Tests
 
-The [CI workflow](../.github/workflows/ci.yml) validates the corpus before installing
-Lean, checks installed sources, runs the tests and `app/manage.py build`, and rejects
-changes to committed node data or entry summaries. Tests run the current proof
-checker and its axiom cases in one invocation of the pinned Lean toolchain.
-Build/publication tests use subprocess fixtures to exercise persistence and
-failures without repeatedly compiling temporary Lake projects. Reader behavior
-uses small representative corpus fixtures. Locality tests
-prevent area and detail views from loading unrelated content. Whole-corpus
-validation runs through `validate_corpus`, separately from fixture-based tests.
+With the pinned Lean environment installed, run all catalog tests with
+`uv run python app/manage.py test catalog`.
+
+The [CI workflow](../.github/workflows/ci.yml) runs structural
+`build --no-lean --check` before installing Lean, runs the tests, and finishes
+with `build --check --check-sources`.
+The final check compares committed proof metadata, summaries, authoring catalogs
+and the selected index, including its revision, without modifying them. Kernel-checker
+tests cover complete and unfinished declarations, transitive axioms and missing
+declarations. Build/publication tests use subprocess fixtures; reader tests use
+small representative corpora and check locality. Whole-corpus structural checking
+is separate from those fixtures.
 
 Reader tests check response data, navigation targets, source anchors, disclosure
 behavior, and accessibility. Keep assertions independent of CSS classes, exact
@@ -444,15 +449,20 @@ file reads and template rendering but excluding HTTP transport and static assets
 
 ## Deployment
 
-Validate the deployed corpus with `validate_corpus --check-sources --write-index`
-before serving it. Entry/node authoring queries require the generated index.
+Deploy a clean revision whose CI full `build --check` passed. Before serving it,
+run `uv run python app/manage.py build --no-lean --check` for read-only structural
+validation. This leaves the committed corpus data unchanged and does not check
+generated-data freshness; deployment relies on CI for that check.
+Add `--check-sources` if installed Lean source-file availability should be checked.
+Entry/node authoring queries use the committed generated index.
 Source/planning queries use their independent committed catalogs; ordinary reader
 pages and direct node APIs also work without the entry/node index.
 For deployment, set `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, and explicit
 `DJANGO_ALLOWED_HOSTS`. Serve `config.wsgi:application` from `app/` with a production
 WSGI server and run `uv run python app/manage.py collectstatic` to collect assets.
-Serve the collected `staticfiles/` directory at `/static/`. Keep the corpus and
-installed Lean sources available to the server. Entry source HTML and JSON are
+Serve the collected `staticfiles/` directory at `/static/` and keep the corpus
+available to the server. Install the pinned Lean sources to provide declaration
+source browsing; the deployment check itself does not require Lean. Entry HTML and JSON are
 read as content, not published as static files; only entry `assets/` directories
 are registered for static serving.
 
@@ -465,9 +475,9 @@ git pull
 ./update_static.sh
 ```
 
-Run it as your normal deployment user. It validates the corpus and refreshes the
-index without Lean using the existing `.venv/bin/python`, then collects current
-assets and mirrors them into the Nginx static directory with readable permissions.
+Run it as your normal deployment user. It runs the read-only
+`build --no-lean --check` using the existing `.venv/bin/python`, then collects
+current assets and mirrors them into the Nginx static directory with readable permissions.
 It removes obsolete assets and restarts the application so Python, templates, and
 registered entry asset directories are refreshed. It asks
 for sudo access to publish files and manage the service. Install `rsync` first
@@ -493,7 +503,7 @@ Index generation retains structural relationships and temporary revision inputs
 during that pass, rather than all entry prose or HTML trees.
 Collection, hashing, and output are linear in input bytes and indexed
 relationships; sorting K indexed keys for deterministic serialization adds
-O(K log K) work. There is no second full corpus scan to collect the index.
+O(K log K) work. The validator collects index relationships during its input scan.
 
 This removes validation from response time and keeps corpus checks suitable for a
 growing collection. It does not make every other pipeline stage independent of
@@ -512,7 +522,7 @@ corpus size:
   Python-version CI matrix remain more expensive than corpus validation.
 
 The next steps at larger scale are dedicated text-search indexes, pagination for the
-legacy full-node API and area listings, and staged build output published as one snapshot.
+legacy full-node API and area listings, and publishing staged build output as one snapshot.
 Reader tests use representative pages; exhaustive corpus checks do not render the
 whole collection. Keep the corpus immutable while validating and publishing it,
 since validation checks the files it reads, and a saved index is a snapshot rather

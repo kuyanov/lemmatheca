@@ -48,10 +48,10 @@ def _endpoint(*parameters, repeatable=()):
                 return _error("index_unavailable", str(error), 503)
             except (KeyError, IndexError, TypeError, AttributeError):
                 return _error("index_unavailable",
-                              "Invalid corpus index. Run python app/manage.py validate_corpus --write-index.", 503)
+                              "Invalid corpus index. Run python app/manage.py build --no-lean.", 503)
             except (OSError, ValueError):
                 return _error("index_outdated",
-                              "Corpus records could not be read. Run python app/manage.py validate_corpus --write-index.", 409)
+                              "Corpus records could not be read. Run python app/manage.py build --no-lean.", 409)
         return handle
     return decorate
 
