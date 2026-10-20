@@ -41,7 +41,10 @@ themselves a correspondence defect.
 4. Identify redundant bindings, duplicate targets, inappropriate module placement,
    and misleading dependency hints within the reviewed scope. Retain distinct
    claims and specified witnesses. Use node consumers to inspect reuse and affected
-   blocks, and exact declaration searches for suspected duplicate bindings.
+   blocks. For suspected duplicate bindings, search with exact `declaration` and
+   `fields=id,description,module,declaration`, without an area filter so bindings
+   used elsewhere remain visible. Use exact `module` when the check is confined
+   to that module.
    Do not repeat the preparation-stage global reuse search or reorganize unrelated
    code.
 

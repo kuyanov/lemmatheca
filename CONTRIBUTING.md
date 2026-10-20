@@ -214,8 +214,11 @@ edits, omitted markup or assets, and stale or ambiguous results.
 
 - Narrow retrieval with area and exact binding filters. Use `fields` on entry
   listing and node search to collect compact records, then fetch shortlisted
-  nodes and their consumers as needed. An empty node query collects the selected
-  pool; repeated node `q` parameters search alternative formulations in one pass.
+  nodes and their consumers as needed. Start node reuse searches with nonempty
+  `q` queries for the entry's key concepts and related terms; repeated node `q`
+  parameters search alternative formulations in one pass. An empty node query
+  lists the selected pool; use a broad inventory only when targeted searches are
+  insufficient.
   Block search accepts one `q`, so issue separate searches for its alternatives.
 - When block IDs are known, use entry context with `block_ids=id-a,id-b` and only
   the needed `include` components. This filters blocks, mapped nodes, coverage
@@ -224,8 +227,9 @@ edits, omitted markup or assets, and stale or ambiguous results.
   across agents and reuse them while the relevant files and index are unchanged.
 - Follow `limit`/`offset` until every requested result is read. Entry context
   paginates blocks, nodes and references independently; check each component's
-  count. Read hidden answers when their claims are in scope: context includes
-  them by default, while block search needs `include_answers=true`.
+  count. When all selected matches are needed, a larger `limit` (up to 100) can
+  reduce pagination calls. Read hidden answers when their claims are in scope:
+  context includes them by default, while block search needs `include_answers=true`.
 - Node area membership comes from consuming entries, including additional and
   descendant areas. Shared nodes can appear in several areas. Unmapped nodes
   have no inferred area; `usage=unmapped` needs a search without an area filter.

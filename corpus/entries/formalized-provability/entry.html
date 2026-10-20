@@ -1,0 +1,132 @@
+<section id="chosen-proof-predicate" data-kind="definition" data-formal="prov-proof-representation prov-certificate-representation prov-formula prov-sentence">
+  <h2>Fix the proof predicate before making claims about it</h2>
+  <p>Let \(T\supseteq Q\) be a theory in the <a href="arithmetic-theories#arithmetic-language">arithmetic language</a> with computably enumerable axiom codes. Retain a specific primitive-recursive axiom-certificate relation \(E(a,s)\) presenting exactly \(T\), the corresponding <a href="coding-formal-proofs#certified-proofs">certified proof checker</a> \(P_T(p,a)\), and a <a href="first-incompleteness#proof-predicate">chosen numeralwise representative</a> \(\operatorname{Proof}_T(p,x)\) in \(Q\). Set</p>
+  <div class="math-display">\[\operatorname{Prov}_T(x):=\exists p\,\operatorname{Proof}_T(p,x).\]</div>
+  <p>For an arithmetic sentence \(A\), abbreviate its provability sentence by</p>
+  <div class="math-display">\[\Box_T A:=\operatorname{Prov}_T(\overline{\ulcorner A\urcorner}).\]</div>
+  <p>The box is notation in our exposition, not a new symbol in the arithmetic language. In particular, \(\Box_T\Box_T A\) means to form the arithmetic sentence \(\Box_T A\), compute that sentence's code, and substitute its numeral into the same provability formula. Both the proof coding and the chosen representing formula matter.</p>
+</section>
+
+<section id="standard-provability" data-kind="theorem" data-formal="prov-standard-correctness">
+  <h2>What the predicate means in the standard natural numbers</h2>
+  <p>For every arithmetic sentence \(A\),</p>
+  <div class="math-display">\[\mathbb N_A\models\Box_T A\quad\Longleftrightarrow\quad T\vdash A.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>In \(\mathbb N_A\), numeralwise positive and negative representation makes \(\operatorname{Proof}_T(m,a)\) equivalent to the checker's acceptance at every pair of natural numbers. Existential quantification over \(m\) therefore means that an actual certified proof exists. The <a href="coding-formal-proofs#proof-certificate-theorem">certificate/derivation equivalence</a> identifies that existence with \(T\vdash A\). □</p>
+  <p>This is a metatheoretic equivalence. It does not say \(T\vdash\Box_T A\leftrightarrow A\), and it does not assert that \(T\)'s theorems are all true.</p>
+</section>
+
+<section id="first-derivability-condition" data-kind="theorem" data-formal="prov-provability-in-Q prov-derivability-one">
+  <h2>An actual proof gives a proof of provability</h2>
+  <div class="statement-box">
+    <p>For every sentence \(A\), the chosen predicate satisfies the first derivability condition:</p>
+    <div class="math-display">\[(\mathrm{D1})\qquad T\vdash A\quad\Longrightarrow\quad T\vdash\Box_T A.\]</div>
+    <p>More precisely, \(T\vdash A\) already implies \(Q\vdash\Box_T A\).</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Take an actual accepted certified proof with code \(m\). The particular numerical fact \(P_T(m,\ulcorner A\urcorner)\) has a proof in \(Q\) through the chosen representing formula:</p>
+  <div class="math-display">\[Q\vdash\operatorname{Proof}_T(\overline m,\overline{\ulcorner A\urcorner}).\]</div>
+  <p>Existential introduction gives \(Q\vdash\Box_T A\). Since \(Q\subseteq T\), weakening gives \(T\vdash\Box_T A\). Neither step requires \(T\) to be consistent or sound. □</p>
+  <p>D1 is a rule about the existence of finite derivations. The expression \(T\vdash A\) is outside the arithmetic formula, so D1 is not itself one universally quantified sentence of arithmetic.</p>
+</section>
+
+<section id="combining-certificates" data-kind="lemma" data-formal="prov-modus-ponens-certificate prov-modus-ponens-primitive prov-modus-ponens-correct">
+  <h2>Combine certified proofs by a primitive-recursive operation</h2>
+  <p>Suppose \(p\) certifies a proof of \(A\to B\), and \(q\) certifies a proof of \(A\). There is a primitive-recursive numerical operation \(M(p,q,b)\), with \(b=\ulcorner B\urcorner\), which constructs a certified proof of \(B\):</p>
+  <div class="math-display">\[P_T(p,\ulcorner A\to B\urcorner)\land P_T(q,\ulcorner A\urcorner)\ \Longrightarrow\ P_T(M(p,q,\ulcorner B\urcorner),\ulcorner B\urcorner).\]</div>
+  <p class="proof-label">Proof</p>
+  <p>A certified record contains its derivation, root context, and one axiom certificate for every context entry. Concatenate the two root contexts and their certificate lists. Attach an implication-elimination root to the unchanged child derivations, using this combined context. Each child's former root context is included in it, so the checker's context conditions hold. The combined list still certifies every axiom assumption, and the new conclusion is \(B\). No eigenparameter is introduced by implication elimination.</p>
+  <p>Extracting components, concatenating finite lists, and making the fixed new root are primitive recursive. This constructs \(M\) on all numerical inputs; the displayed correctness implication is required on accepted input certificates. Malformed inputs do not need to produce an accepted proof. □</p>
+  <p>This strengthens the <a href="coding-formal-proofs#proof-transformations">existing operation on derivation records</a> by carrying along the actual certificates for axioms in the combined context.</p>
+</section>
+
+<section id="numerical-verification" data-kind="theorem" data-formal="prov-proof-instance prov-proof-positive prov-proof-negative prov-modus-ponens-numeralwise">
+  <h2>Every concrete successful combination can be verified in Q</h2>
+  <p>For fixed ordinary natural numbers \(p,q\) that certify the displayed premises, let \(m=M(p,q,\ulcorner B\urcorner)\). Then</p>
+  <div class="math-display">\[Q\vdash\operatorname{Proof}_T(\overline m,\overline{\ulcorner B\urcorner}).\]</div>
+  <p class="proof-label">Proof</p>
+  <p>The preceding construction proves the external fact \(P_T(m,\ulcorner B\urcorner)\). Positive numeralwise representation supplies exactly its displayed \(Q\)-proof. An unsuccessful proposed output certificate instead has its negated numerical instance provable in \(Q\), by negative representation. □</p>
+  <p>Here each calculation has fixed numerical inputs. This statement does not quantify over proof codes inside \(Q\), and it does not say that one \(Q\)-proof certifies all successful combinations simultaneously. This is the same distinction as <a href="arithmetic-representability#numeralwise-versus-uniform">numeralwise versus uniform totality</a>.</p>
+</section>
+
+<section id="effective-introspection" data-kind="theorem" data-formal="prov-code prov-code-primitive prov-computable-introspection">
+  <h2>A terminating procedure can turn an accepted proof into a proof of provability</h2>
+  <p>For the fixed axiom-certificate relation \(E\), there is a total recursive function \(I(p,n)\) such that</p>
+  <div class="math-display">\[P_T(p,n)\ \Longrightarrow\ P_T\bigl(I(p,n),\ulcorner\operatorname{Prov}_T(\overline n)\urcorner\bigr).\]</div>
+  <p>Its inputs are arbitrary natural numbers. The code of the sentence \(\operatorname{Prov}_T(\overline n)\) is itself primitive recursive in \(n\).</p>
+  <p class="proof-label">Proof</p>
+  <p>First run the primitive-recursive check \(P_T(p,n)\). If it fails, return a fixed number immediately; no correctness assertion is required on this branch. If it succeeds, D1's numerical-witness argument supplies a \(Q\)-proof of \(\operatorname{Prov}_T(\overline n)\), hence a \(T\)-proof. Search through all certified \(T\)-proofs until one proves this sentence. The certificate/derivation equivalence guarantees success on the accepted branch. The target sentence code is computed by the existing numeral-substitution operation. Thus the test and subsequent search define a total recursive function with the claimed property. □</p>
+  <p>This proof gives termination, without a primitive-recursive bound on the proof search. It is an external procedure on ordinary proof codes; it does not yet give an arithmetic proof that the procedure works at every internal input.</p>
+</section>
+
+<section id="second-derivability-condition" data-kind="definition" data-formal="prov-derivability-two">
+  <h2>The internal implication needed to reason with arbitrary proofs</h2>
+  <p>The <em>second derivability condition</em> for a fixed predicate is the following requirement, for every pair of arithmetic sentences \(A,B\):</p>
+  <div class="math-display">\[(\mathrm{D2})\qquad T\vdash\Box_T(A\to B)\to(\Box_T A\to\Box_T B).\]</div>
+  <p>Each displayed instance is a single arithmetic sentence with quantifiers over possible proof codes inside the box abbreviations. Proving it requires arithmetic to carry out the proof-combination argument for its own arbitrary proof codes. Correctness of \(M\) on ordinary natural numbers, together with a separate \(Q\)-proof for each concrete accepted output, does not provide this internal implication.</p>
+  <p>We define D2 here without claiming it for the chosen numeralwise representative. An internal proof would require, among other things, suitable arithmetic formulas for \(M\), their correctness and totality at arbitrary internal inputs, and a proof inside \(T\) that they preserve the specified checker.</p>
+</section>
+
+<section id="third-derivability-condition" data-kind="definition" data-formal="prov-derivability-three">
+  <h2>The internal assertion that provability is itself provable</h2>
+  <p>The <em>third derivability condition</em> is the requirement, for every sentence \(A\),</p>
+  <div class="math-display">\[(\mathrm{D3})\qquad T\vdash\Box_T A\to\Box_T\Box_T A.\]</div>
+  <p>D1 can start with a particular external proof of \(A\), verify that certificate, and build a proof of \(\Box_T A\). D3 asks arithmetic to prove an implication from the assertion that a proof exists, including witnesses that might be nonstandard in a model of \(T\). Applying D1 to each externally known proof does not discharge that quantifier.</p>
+  <p>As with D2, the condition is a schema of arithmetic derivability statements for the specified predicate. It is defined here, while its internal proof for a suitable concrete predicate remains additional work. No assertion that the chosen representing formula has a particular arithmetic complexity is being used.</p>
+</section>
+
+<section id="standard-derivability" data-kind="theorem" data-formal="prov-modus-ponens-standard prov-introspection-standard">
+  <h2>The second and third conditions are true in the standard model</h2>
+  <p>For the chosen predicate and every pair of sentences \(A,B\),</p>
+  <div class="math-display">\[\mathbb N_A\models\Box_T(A\to B)\to(\Box_T A\to\Box_T B),\]</div>
+  <div class="math-display">\[\mathbb N_A\models\Box_T A\to\Box_T\Box_T A.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>For the first sentence, standard correctness turns its two hypotheses into actual derivations of \(A\to B\) and \(A\). Implication elimination gives a derivation of \(B\), and standard correctness yields its box. For the second, standard correctness turns the hypothesis into \(T\vdash A\); D1 gives \(T\vdash\Box_T A\); standard correctness, now applied to the sentence \(\Box_T A\), gives the required outer box. □</p>
+  <p>Truth in \(\mathbb N_A\) is weaker than the required \(T\)-derivability of these sentences. First incompleteness already explains why a true arithmetic sentence need not have a proof in a given effective theory. Thus these semantic observations do not complete D2 or D3.</p>
+</section>
+
+<section id="standard-reflection" data-kind="lemma" data-formal="prov-standard-reflection-soundness">
+  <h2>Reflection is a claim about soundness</h2>
+  <p>The following two external conditions are equivalent:</p>
+  <div class="math-display">\[\mathbb N_A\models\Box_T A\to A\text{ for every sentence }A;\]</div>
+  <div class="math-display">\[T\vdash A\ \Longrightarrow\ \mathbb N_A\models A\text{ for every sentence }A.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>In the standard model, the antecedent \(\Box_T A\) holds exactly when \(T\vdash A\), by <a href="#standard-provability"></a>. Substituting that equivalence gives precisely the second condition, which says that \(T\) is sound in \(\mathbb N_A\). □</p>
+  <p>This condition differs from external consistency: consistency rules out a proof of a contradiction, whereas standard soundness requires every theorem to be true. Even standard soundness would establish these reflection implications as true sentences; it would not supply their proofs inside \(T\).</p>
+</section>
+
+<section id="godel-reflection" data-kind="theorem" data-formal="prov-godel-reflection-unprovable">
+  <h2>A consistent theory cannot prove every reflection instance</h2>
+  <p>Assume in addition that \(T\) is consistent. For its specified <a href="first-incompleteness#godel-sentence">Gödel sentence</a> \(G_T\),</p>
+  <div class="math-display">\[T\nvdash\Box_T G_T\to G_T.\]</div>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(T\) proved this implication. Its fixed-point equivalence gives \(T\vdash G_T\leftrightarrow\neg\Box_T G_T\). If \(\Box_T G_T\) were assumed inside a derivation, the proposed reflection implication would give \(G_T\), and the fixed-point equivalence would give \(\neg\Box_T G_T\). Discharging the assumption yields \(T\vdash\neg\Box_T G_T\). The other direction of the equivalence then gives \(T\vdash G_T\), contradicting <a href="first-incompleteness#godel-unprovable">its unprovability under consistency</a>. □</p>
+  <p>This argument uses the fixed-point equivalence and consistency, without assuming D2 or D3. It identifies a particular reflection sentence that cannot be a theorem; it does not say that all reflection instances fail.</p>
+</section>
+
+<section id="iterated-provability" data-kind="lemma" data-formal="prov-derivability-one">
+  <h2>What follows by applying D1 to an actual theorem</h2>
+  <p>If \(T\vdash A\), then \(T\vdash\Box_T A\) and \(T\vdash\Box_T\Box_T A\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Apply D1 first to \(A\), then to the actual arithmetic theorem \(\Box_T A\) obtained on that first application. This proves both conclusions without using D3. □</p>
+  <p>The hypothesis is still the existence of an external derivation of \(A\). It has not become the arithmetic antecedent \(\Box_T A\) inside a proof of an implication.</p>
+</section>
+
+<section id="consistency-sentence" data-kind="definition" data-formal="prov-consistency-sentence">
+  <h2>Write the consistency sentence for this particular predicate</h2>
+  <p>Define</p>
+  <div class="math-display">\[\operatorname{Con}_T:=\neg\Box_T\bot=\neg\operatorname{Prov}_T(\overline{\ulcorner\bot\urcorner}).\]</div>
+  <p>Here \(\bot\) is the actual contradiction formula of the shared calculus; its code is fixed. The right-hand side is a sentence of the original arithmetic language. The equality displayed above defines notation; it is not an equality between arithmetic terms.</p>
+  <p>External consistency means that no actual finite derivation of \(\bot\) from \(T\) exists. The formula \(\operatorname{Con}_T\) expresses that assertion through this specified proof checker and representing formula. Changing those choices requires a new comparison rather than assuming that the resulting consistency sentences are interchangeable inside arithmetic.</p>
+</section>
+
+<section id="consistency-standard" data-kind="theorem" data-formal="prov-consistency-standard">
+  <h2>The consistency sentence has its intended standard meaning</h2>
+  <div class="statement-box">
+    <p>For the chosen predicate,</p>
+    <div class="math-display">\[\mathbb N_A\models\operatorname{Con}_T\quad\Longleftrightarrow\quad T\text{ is consistent}.\]</div>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Standard correctness, applied to \(\bot\), says that \(\mathbb N_A\models\Box_T\bot\) exactly when \(T\vdash\bot\). Negate the equivalence. □</p>
+  <p>This establishes what the consistency sentence means in the standard model. It does not establish whether \(T\) proves that sentence. The present entry supplies D1 and the concrete numerical proof operations; it defines and distinguishes the stronger D2 and D3 requirements without treating their still-needed internal proofs as assumptions already discharged.</p>
+</section>

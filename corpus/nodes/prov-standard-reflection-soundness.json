@@ -1,0 +1,12 @@
+{
+  "id": "prov-standard-reflection-soundness",
+  "description": "The standard natural numbers satisfy \\(\\Box_T A\\to A\\) for every arithmetic sentence \\(A\\) if and only if every actual \\(T\\)-theorem is true in the standard natural numbers.",
+  "module": "Lemmatheca.MathematicalLogic.FormalizedProvability",
+  "declaration": "Lemmatheca.MathematicalLogic.FormalizedProvability.standard_reflection_iff_sound",
+  "dependencies": [
+    "prov-standard-correctness"
+  ],
+  "verified": true,
+  "declaration_line": 58,
+  "signature": "Lemmatheca.MathematicalLogic.FormalizedProvability.standard_reflection_iff_sound\n  {T : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Theory}\n  (P : Lemmatheca.MathematicalLogic.FormalizedProvability.ProofRepresentation T) :\n  (∀ (σ : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Sentence),\n      ℕ ⊨\n        FirstOrder.Language.Formula.imp (Lemmatheca.MathematicalLogic.FormalizedProvability.provabilitySentence P σ)\n          σ) ↔\n    ∀ (σ : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Sentence),\n      Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives T σ → ℕ ⊨ σ"
+}

@@ -13,14 +13,20 @@ Own the human exposition and its integration into the corpus.
 
 Use the applicable step-1 handoff and the [corpus contract](../docs/corpus.md),
 including metadata, abstracts, HTML, main-result boxes, and formula/figure layout.
+Use its shared italic proof-label markup for every proof.
 Inspect the affected entries and reading-order index. Recover missing inputs using
 only the targeted checks in the shared execution rules; do not repeat an applicable
 source audit or the full planning stage.
 
 Use the [authoring API](../docs/app.md#authoring-api) under the
 [shared usage rules](../CONTRIBUTING.md#using-the-authoring-api) for entry context,
-area listings and existing incoming/outgoing references. Search blocks for
-unlinked consumers when coverage changes; backlinks alone cannot find them.
+area listings and existing incoming/outgoing references. For known prerequisite
+or consumer blocks, use `block_ids` and `include=blocks,references`. If references
+alone are needed, query the precise entry or block `target` with the needed
+`direction=incoming`, `outgoing`, or `both`. Reuse links already in retrieved
+context. Search blocks with concept-specific `q` and `include_answers=true` for
+unlinked consumers when coverage changes; backlinks alone cannot find them, and
+relevant consumers may lie outside the entry's area.
 Save drafting and integration edits to the corpus files.
 
 ## Work

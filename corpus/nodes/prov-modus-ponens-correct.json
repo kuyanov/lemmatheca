@@ -1,0 +1,13 @@
+{
+  "id": "prov-modus-ponens-correct",
+  "description": "For every axiom-certificate relation \\(E\\), if \\(p,q\\) certify sentences with codes \\(a\\to b\\) and \\(a\\), respectively, and \\(b\\) is a sentence code, then the specified record \\(M(p,q,b)\\) is an accepted certificate for \\(b\\).",
+  "module": "Lemmatheca.MathematicalLogic.FormalizedProvabilityTransformations",
+  "declaration": "Lemmatheca.MathematicalLogic.CodingFormalProofs.modusPonensCertificate_accepted",
+  "dependencies": [
+    "prov-modus-ponens-certificate",
+    "proofcode-modus-ponens-accepted"
+  ],
+  "verified": true,
+  "declaration_line": 20,
+  "signature": "Lemmatheca.MathematicalLogic.CodingFormalProofs.modusPonensCertificate_accepted.{u, v} {L : FirstOrder.Language}\n  (S : Lemmatheca.MathematicalLogic.CodingFormalProofs.EffectiveSignature L) (E : ℕ → ℕ → Bool) (p q a b : ℕ)\n  (hp :\n    Lemmatheca.MathematicalLogic.CodingFormalProofs.certificateCheck S E p\n        (Lemmatheca.MathematicalLogic.CodingFormalProofs.impCode a b) =\n      true)\n  (hq : Lemmatheca.MathematicalLogic.CodingFormalProofs.certificateCheck S E q a = true)\n  (hb : Lemmatheca.MathematicalLogic.CodingFormalProofs.isSentence S b = true) :\n  Lemmatheca.MathematicalLogic.CodingFormalProofs.certificateCheck S E\n      (Lemmatheca.MathematicalLogic.CodingFormalProofs.modusPonensCertificate p q b) b =\n    true"
+}

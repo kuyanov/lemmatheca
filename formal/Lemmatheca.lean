@@ -159,3 +159,6 @@ import Lemmatheca.Entry.CodingFormalProofs
 import Lemmatheca.MathematicalLogic.ArithmeticRepresentabilityEquivalence
 import Lemmatheca.MathematicalLogic.ArithmeticRepresentabilityConsequences
 import Lemmatheca.Entry.ArithmeticRepresentability
+import Lemmatheca.MathematicalLogic.DiagonalTruthComputability
+import Lemmatheca.Entry.DiagonalLemma
+import Lemmatheca.MathematicalLogic.FormalizedProvabilityReflection

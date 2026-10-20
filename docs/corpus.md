@@ -172,6 +172,16 @@ Select the central conclusions rather than boxing every theorem or lemma. Includ
 the result's hypotheses and conclusion inside the box; keep definitions, supporting
 lemmas, routine facts, examples, questions, proof steps, and proofs outside it.
 
+Introduce proofs with the shared italic label, on its own paragraph:
+
+```html
+<p class="proof-label">Proof</p>
+<p>The argument begins here.</p>
+```
+
+Use this markup consistently; do not use bold or inline `Proof.` labels.
+The reader's stylesheet supplies the italic styling.
+
 Use `href="#block-id"` for a local block and `href="entry-id#block-id"` for another
 entry. Cross-entry references must target mathematical blocks. The renderer resolves
 IDs to URLs and loads referenced entries on demand. Do not use area paths, `../`,

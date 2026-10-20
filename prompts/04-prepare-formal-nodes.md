@@ -17,6 +17,8 @@ Read the current human entry and relevant findings. Use the
 fidelity, node descriptions, module placement, and verification. Inspect existing
 nodes and the pinned Lean sources. Do not repeat human review or source selection;
 report mathematical ambiguities affecting the targets.
+When retrieving the entry's claim inventory and existing mappings, use entry
+context with `include=blocks,coverage`; select `block_ids` for a narrower task.
 
 ## Work
 
@@ -24,12 +26,16 @@ report mathematical ambiguities affecting the targets.
    answers, and explicit witnesses. Make a collective block-to-claims-to-nodes map.
    Cover definitions stated in prose too. Routine proof steps and implementation
    helpers need not each have a block binding.
-2. Use the [authoring API](../CONTRIBUTING.md#using-the-authoring-api) to collect
-   reusable nodes from the entry's area: node search with `area`,
-   `fields=id,description`, and no `q`. Search alternative phrases with repeated
-   `q`, or use exact `module`/`declaration` filters. Widen to other areas or global
-   search when useful; use `usage=unmapped` without an area to find nodes without
-   block mappings.
+2. Use the [authoring API](../CONTRIBUTING.md#using-the-authoring-api) to find
+   reusable nodes with `area`, `fields=id,description`, and nonempty `q` queries
+   drawn from the entry's key concepts, definitions, claims, and related
+   prerequisite terms. Include synonyms and alternative names or notation through
+   repeated `q` parameters: terms within one query must all match; separate queries
+   are alternatives. Use exact `module`/`declaration` filters when bindings are
+   known. Refine or broaden the searches as needed, including other areas or
+   global search; use `usage=unmapped` without an area to find nodes without block
+   mappings. Reserve an unfiltered area inventory for cases where targeted searches
+   are insufficient, rather than collecting the whole area by default.
    Load shortlisted node records and their consumers. Inspect actual signatures,
    relevant definition bodies, and library declarations in the pinned Lean sources;
    prefer suitable direct bindings over duplicate wrappers. Explain specializations

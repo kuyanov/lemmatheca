@@ -1,0 +1,122 @@
+<section id="effective-arithmetic" data-kind="definition" data-formal="fod-consistency theory-complete-proof-characterization eff-code-enumerable inc-proof-representation-exists inc-proof-representation inc-proof-representation-check">
+  <h2>Theories that have checkable proof certificates</h2>
+  <p>Work in the <a href="arithmetic-theories#arithmetic-language">arithmetic language</a> with the corpus's <a href="first-order-proofs#derivations-and-theories">first-order derivations</a>. Let \(T\supseteq Q\), where \(Q\) is <a href="arithmetic-theories#robinson-axioms">Robinson arithmetic</a>. A theory is <em>consistent</em> when \(T\nvdash\bot\), and <em>negation-complete</em> when, for every sentence \(A\), either \(T\vdash A\) or \(T\vdash\neg A\). A consistent negation-complete theory is <a href="effective-theories#completeness-and-consistency">complete</a> in the corpus's sense. Thus an undecided sentence witnesses incompleteness.</p>
+  <p>For the Gödel and Rosser constructions, assume that the codes of the axioms of \(T\) are computably enumerable. The axioms need not have a terminating membership test. An axiom used in a proof can instead carry a finite certificate showing where it appears in an enumeration. By <a href="coding-formal-proofs#proof-certificate-theorem">the proof-certificate theorem</a>, choose a primitive-recursive relation \(P_T(p,a)\) such that</p>
+  <div class="math-display">\[T\vdash A\quad\Longleftrightarrow\quad\exists p\in\mathbb N\;P_T(p,\ulcorner A\urcorner).\]</div>
+  <p>Here \(p\) codes a complete certified proof, and \(a\) is its conclusion code. All codes and computations in this equivalence are ordinary natural numbers in the metatheory.</p>
+</section>
+
+<section id="proof-predicate" data-kind="definition" data-formal="prov-proof-representation prov-proof-positive prov-proof-negative prov-proof-numerals prov-formula prov-standard-correctness">
+  <h2>Express proof checking by an arithmetic formula</h2>
+  <p>Choose a formula \(\operatorname{Proof}_T(p,x)\) that <a href="arithmetic-representability#recursive-relations">numeralwise represents</a> the recursive relation \(P_T\) in \(Q\). For every pair of external natural numbers \(m,n\),</p>
+  <div class="math-display">\[P_T(m,n)\ \Longrightarrow\ Q\vdash\operatorname{Proof}_T(\overline m,\overline n),\]</div>
+  <div class="math-display">\[\neg P_T(m,n)\ \Longrightarrow\ Q\vdash\neg\operatorname{Proof}_T(\overline m,\overline n).\]</div>
+  <p>Thus every model of \(Q\) agrees with the checker at each fixed pair of numeral inputs: a true check has a proof, and a false check has a proved negation. This applies to numeral inputs in nonstandard models as well.</p>
+  <p>Define the unary formula</p>
+  <div class="math-display">\[\operatorname{Prov}_T(x):=\exists p\,\operatorname{Proof}_T(p,x).\]</div>
+  <p>Since \(\mathbb N_A\models Q\), soundness makes the chosen proof formula correct at every numerical pair in the standard model. Consequently</p>
+  <div class="math-display">\[\mathbb N_A\models\operatorname{Prov}_T(\overline{\ulcorner A\urcorner})\quad\Longleftrightarrow\quad T\vdash A.\]</div>
+  <p>This equivalence does not assert correctness for arbitrary elements of a nonstandard model. In particular, we have not proved in \(T\) that every object it regards as a proof is a genuine finite proof.</p>
+</section>
+
+<section id="godel-sentence" data-kind="definition" data-formal="inc-godel-sentence inc-godel-equivalence">
+  <h2>A sentence saying that it has no proof</h2>
+  <p>Apply the <a href="diagonal-lemma#diagonal-lemma">specified fixed-point construction</a> to \(B(x):=\neg\operatorname{Prov}_T(x)\). Write \(G_T\) for the resulting sentence and \(g=\ulcorner G_T\urcorner\). The construction gives</p>
+  <div class="math-display">\[Q\vdash G_T\leftrightarrow\neg\operatorname{Prov}_T(\overline g).\]</div>
+  <p>The same equivalence is provable in \(T\), by weakening. The sentence is built from the fixed coding and chosen formula \(\operatorname{Proof}_T\). The phrase “says that it has no proof” refers to this provable equivalence; it does not insert a new self-referential symbol into the language.</p>
+</section>
+
+<section id="godel-unprovable" data-kind="theorem" data-formal="inc-godel-unprovable">
+  <h2>Consistency rules out a proof of the Gödel sentence</h2>
+  <p>If \(T\) is consistent, then \(T\nvdash G_T\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Suppose \(T\vdash G_T\). Take an actual certified proof with code \(m\). Then \(P_T(m,g)\), so \(Q\vdash\operatorname{Proof}_T(\overline m,\overline g)\). Existential introduction yields \(T\vdash\operatorname{Prov}_T(\overline g)\). But the fixed-point equivalence and the assumed proof of \(G_T\) yield \(T\vdash\neg\operatorname{Prov}_T(\overline g)\). This contradicts consistency. □</p>
+</section>
+
+<section id="omega-consistency" data-kind="definition" data-formal="inc-omega-consistency inc-omega-consistency-consistency inc-standard-omega-consistency">
+  <h2>The stronger hypothesis in Gödel's original argument</h2>
+  <p>A theory \(T\) is <em>omega-consistent</em> if there is no unary arithmetic formula \(A(x)\) for which both</p>
+  <div class="math-display">\[T\vdash\exists x\,A(x)\qquad\text{and}\qquad T\vdash\neg A(\overline n)\text{ for every }n\in\mathbb N.\]</div>
+  <p>The quantification over \(n\) is external. These could be different finite proofs for different numerals; it does not mean that \(T\) proves one universally quantified negation. Omega-consistency implies consistency: an inconsistent theory proves the displayed existential sentence and all its negated instances, for example with \(A(x)\) the formula \(x=x\).</p>
+  <p>If every theorem of \(T\) is true in \(\mathbb N_A\), then \(T\) is omega-consistent. A true existential sentence has some natural-number witness, and its corresponding instance cannot also have a true negation. We will use omega-consistency only in the next argument.</p>
+</section>
+
+<section id="godel-unrefutable" data-kind="theorem" data-formal="inc-godel-unrefutable">
+  <h2>Omega-consistency also rules out a refutation</h2>
+  <p>If \(T\) is omega-consistent, then \(T\nvdash\neg G_T\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Omega-consistency implies consistency, so <a href="#godel-unprovable"></a> shows that no natural number codes a \(T\)-proof of \(G_T\). Thus \(Q\vdash\neg\operatorname{Proof}_T(\overline n,\overline g)\) for each \(n\in\mathbb N\). On the other hand, \(T\vdash\neg G_T\), together with the fixed-point equivalence and classical logic, would give</p>
+  <div class="math-display">\[T\vdash\exists p\,\operatorname{Proof}_T(p,\overline g).\]</div>
+  <p>These statements violate omega-consistency, applied to the unary formula \(\operatorname{Proof}_T(p,\overline g)\). □</p>
+  <p>We have used full omega-consistency. A reduction to an arithmetic complexity class would require a representative in that class; numeralwise representation alone does not provide that extra conclusion.</p>
+</section>
+
+<section id="godel-true" data-kind="theorem" data-formal="inc-godel-true">
+  <h2>The chosen Gödel sentence is true when the theory is consistent</h2>
+  <p>If \(T\) is consistent, then \(\mathbb N_A\models G_T\).</p>
+  <p class="proof-label">Proof</p>
+  <p>No actual \(T\)-proof of \(G_T\) exists by <a href="#godel-unprovable"></a>. The <a href="#proof-predicate">standard-model correctness of the proof predicate</a> gives \(\mathbb N_A\models\neg\operatorname{Prov}_T(\overline g)\). The fixed-point equivalence was proved already in \(Q\), and \(\mathbb N_A\models Q\), so it holds in the standard model and yields \(\mathbb N_A\models G_T\). □</p>
+  <p>No soundness assumption about \(T\) is used here. Truth of the chosen sentence follows from the correctness of its particular fixed-point equivalence in the standard model. It does not imply that every true sentence is provable in \(T\).</p>
+</section>
+
+<section id="rosser-sentence" data-kind="definition" data-formal="inc-negative-proof-formula inc-negative-proof-representation inc-rosser-predicate inc-rosser-sentence inc-rosser-equivalence">
+  <h2>Compare proofs of opposite conclusions</h2>
+  <p>Let \(\operatorname{neg}(a)\) be the existing primitive-recursive <a href="coding-formal-proofs#tagged-syntax">negation-code operation</a>. The relation \(P_T(q,\operatorname{neg}(a))\) is primitive recursive. Choose a separate arithmetic formula \(\operatorname{Ref}_T(q,x)\) that positively and negatively represents this relation in \(Q\). Thus at each pair of numerals it expresses that \(q\) certifies a proof of the negation of the sentence coded by \(x\).</p>
+  <p>Form the unary formula</p>
+  <div class="math-display">\[\forall p\,\bigl(\operatorname{Proof}_T(p,x)\to\exists q\le p\,\operatorname{Ref}_T(q,x)\bigr).\]</div>
+  <p>The relation \(q\le p\) uses the existing <a href="arithmetic-representability#bounded-formulas">arithmetic bounded-quantifier convention</a>. We have used a numerical composition when choosing \(\operatorname{Ref}_T\); no new negation-code function symbol has been added to arithmetic. We do not assert that the two independently chosen representatives \(\operatorname{Ref}_T(q,\overline a)\) and \(\operatorname{Proof}_T(q,\overline{\operatorname{neg}(a)})\) agree at nonstandard values of \(q\).</p>
+  <p>Apply the fixed-point construction to this formula. The resulting <em>Rosser sentence</em> \(R_T\), with \(r=\ulcorner R_T\urcorner\), satisfies</p>
+  <div class="math-display">\[Q\vdash R_T\leftrightarrow\forall p\,\bigl(\operatorname{Proof}_T(p,\overline r)\to\exists q\le p\,\operatorname{Ref}_T(q,\overline r)\bigr).\]</div>
+  <p>It says that every proof of itself has a no-larger proof of its negation. The comparison is between natural-number codes, rather than the lengths or discovery times of proofs.</p>
+</section>
+
+<section id="rosser-unprovable" data-kind="theorem" data-formal="inc-rosser-unprovable">
+  <h2>A proof of the Rosser sentence would force a no-larger refutation</h2>
+  <p>If \(T\) is consistent, then \(T\nvdash R_T\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Suppose a proof of \(R_T\) has code \(m\). Consistency implies that no natural number codes a proof of \(\neg R_T\). In particular, for every \(j\le m\),</p>
+  <div class="math-display">\[Q\vdash\neg\operatorname{Ref}_T(\overline j,\overline r).\]</div>
+  <p>The <a href="arithmetic-representability#finite-numeral-cuts">finite numeral-bound theorem</a> says that in every model of \(Q\), every element at most \(\overline m\) is one of \(\overline0,\ldots,\overline m\). Combining this finite list of refutations therefore gives \(Q\vdash\neg\exists q\le\overline m\,\operatorname{Ref}_T(q,\overline r)\), by completeness. But the accepted proof code \(m\) gives \(Q\vdash\operatorname{Proof}_T(\overline m,\overline r)\). The fixed-point equivalence and \(T\vdash R_T\) demand exactly the excluded bounded existential. Contradiction. □</p>
+</section>
+
+<section id="rosser-unrefutable" data-kind="theorem" data-formal="inc-rosser-unrefutable">
+  <h2>A refutation would make the Rosser sentence provable</h2>
+  <p>If \(T\) is consistent, then \(T\nvdash\neg R_T\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Suppose a proof of \(\neg R_T\) has code \(m\). The preceding theorem shows that no natural number codes a proof of \(R_T\). We claim that \(Q\) proves the right-hand side of the Rosser equivalence. Work in an arbitrary model of \(Q\), and consider an arbitrary element \(p\).</p>
+  <p>The <a href="arithmetic-representability#finite-numeral-cuts">numeral-cut theorem</a> separates two cases. If \(p&lt;\overline m\), then \(p=\overline j\) for some standard \(j&lt;m\). Every such \(j\) fails the proof check for \(R_T\), and its negated proof instance is a theorem of \(Q\). The implication is therefore true. In the other case, \(\overline m\le p\). Take \(q=\overline m\): the actual refutation with code \(m\) makes \(\operatorname{Ref}_T(\overline m,\overline r)\) a theorem of \(Q\), and this \(q\) satisfies the required bound.</p>
+  <p>Thus every model of \(Q\) satisfies the universal implication. By first-order completeness \(Q\) proves it. The Rosser equivalence then gives \(Q\vdash R_T\), hence \(T\vdash R_T\), contradicting consistency and the assumed refutation. □</p>
+  <p>Only finitely many numeral instances are combined at each use of a fixed proof code. No omega-consistency or global linear-order law for arbitrary elements of a model of \(Q\) was assumed.</p>
+</section>
+
+<section id="first-incompleteness" data-kind="theorem" data-formal="inc-first-incompleteness inc-not-complete inc-Q-incomplete">
+  <h2>Every consistent, effectively axiomatized extension of Q is incomplete</h2>
+  <div class="statement-box">
+    <p>Let \(T\supseteq Q\) be a consistent theory in the arithmetic language whose axiom codes are computably enumerable. Its specified Rosser sentence \(R_T\) is undecided:</p>
+    <div class="math-display">\[T\nvdash R_T\qquad\text{and}\qquad T\nvdash\neg R_T.\]</div>
+    <p>In particular \(T\) is not complete.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>The two nonproofs are <a href="#rosser-unprovable"></a> and <a href="#rosser-unrefutable"></a>. Either alternative required by completeness fails for the particular sentence \(R_T\). Robinson arithmetic itself is an example: its seven axioms have a finite enumeration, and its standard natural-number model proves its consistency by soundness in our metatheory. □</p>
+</section>
+
+<section id="essential-undecidability" data-kind="theorem" data-formal="inc-theorem-codes inc-essential-undecidability arith-Q-consistent arith-PA-consistent">
+  <h2>No consistent extension of Q has a recursive theorem test</h2>
+  <div class="statement-box">
+    <p>Let \(T\supseteq Q\) be consistent. Even without an effective axiom enumeration, the set</p>
+    <div class="math-display">\[\operatorname{Thm}(T):=\{\ulcorner A\urcorner:T\vdash A\}\]</div>
+    <p>has no total recursive membership test. This property of \(Q\) is called <em>essential undecidability</em>.</p>
+  </div>
+  <p class="proof-label">Proof</p>
+  <p>Suppose a recursive test decides this set. By numeralwise representation of recursive relations, choose a unary formula \(H(x)\) such that \(Q\) proves \(H(\overline n)\) at each accepted number and proves its negation at each rejected number. Apply the diagonal lemma to \(\neg H(x)\), obtaining \(L\) with \(Q\vdash L\leftrightarrow\neg H(\overline{\ulcorner L\urcorner})\).</p>
+  <p>If \(T\vdash L\), the test accepts its code, so \(Q\vdash H(\overline{\ulcorner L\urcorner})\). This contradicts the equivalence and consistency. If \(T\nvdash L\), the test rejects its code, so \(Q\vdash\neg H(\overline{\ulcorner L\urcorner})\). The equivalence yields \(Q\vdash L\), hence \(T\vdash L\), again a contradiction. □</p>
+  <p>In particular the theorem sets of \(Q\) and \(\mathrm{PA}\) are undecidable: both extend \(Q\) and have the standard natural-number model. This assertion concerns the corpus's specified recursive functions and derivations.</p>
+</section>
+
+<section id="true-arithmetic" data-kind="theorem" data-formal="inc-true-arithmetic-not-enumerable arith-true-arithmetic theory-of-structure-complete">
+  <h2>All arithmetic truth cannot be an enumerable axiom set</h2>
+  <p>The <a href="arithmetic-theories#true-arithmetic">theory of all true arithmetic sentences</a> is consistent and complete, but its axiom codes are not computably enumerable.</p>
+  <p class="proof-label">Proof</p>
+  <p>The standard model satisfies every one of its axioms, so the theory is consistent. For any sentence, either it or its negation is true in that model and therefore is an axiom; hence the theory is complete. It also contains \(Q\). If its axiom codes were computably enumerable, <a href="#first-incompleteness"></a> would make it incomplete, a contradiction. □</p>
+  <p>Thus completeness by itself is possible. What the first incompleteness theorem excludes is the combination of consistency, an effective axiom enumeration, and enough arithmetic.</p>
+</section>

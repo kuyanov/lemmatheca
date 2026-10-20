@@ -19,9 +19,12 @@ Inspect nearby entries, `corpus/area_entries.json`, and the relevant parts of
 
 Use the [authoring API](../docs/app.md#authoring-api) under the
 [shared usage rules](../CONTRIBUTING.md#using-the-authoring-api) to list entries
-by area and search blocks for human prerequisites and placement. Retrieve context
-for shortlisted entries. Consult publications, the source register and reference
-planning directly.
+with `area` and `fields=id,title,reading_position` for placement. Add `summary`
+when titles do not establish scope. Search blocks with topic-specific `q` and
+`include_answers=true` for human prerequisites, starting in the relevant area and
+widening when needed. Retrieve shortlisted prerequisite blocks with `block_ids`
+and `include=blocks,references`; add `navigation` when assessing placement.
+Consult publications, the source register and reference planning directly.
 
 ## Work
 

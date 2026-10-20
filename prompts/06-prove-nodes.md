@@ -21,6 +21,9 @@ handoffs; do not repeat the full human or correspondence review. Use the
 [authoring API](../CONTRIBUTING.md#using-the-authoring-api) entry context with
 `include=nodes,coverage` to select mapped targets; treat saved `verified=false`
 only as a candidate filter. Use `block_ids` when the proof scope is known blocks.
+For a multi-entry batch, `/api/coverage/?entry_ids=id-a,id-b` can select targets
+using compact mappings and saved bindings first; then retrieve only the selected
+node records and supporting blocks rather than every entry's full node context.
 Use selected node records, consumers, and dependency
 hints to scope the work, with targeted node searches for reusable helpers. Inspect
 actual dependencies and kernel axioms in Lean locally. Do not collect the whole

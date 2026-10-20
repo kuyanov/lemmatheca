@@ -18,9 +18,11 @@ independently; a drafting self-check is not this review.
 
 Use the [authoring API](../docs/app.md#authoring-api) under the
 [shared usage rules](../CONTRIBUTING.md#using-the-authoring-api) to retrieve the
-requested entry context, including answers, and relevant references. Use area
-listings to inspect placement within the reading order. Keep retrieval within
-the requested human-review scope.
+requested entry context with `include=blocks,references,navigation` and
+`include_answers=true`. Use `block_ids` for an explicitly narrower review; a full
+entry review must cover every block. Use compact area listings to inspect
+placement within the reading order. Keep retrieval within the requested
+human-review scope.
 
 ## Work
 

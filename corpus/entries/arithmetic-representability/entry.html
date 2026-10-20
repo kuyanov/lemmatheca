@@ -14,7 +14,8 @@
   <p>They have their usual meanings in \(\mathbb N_A\). We use these formulas, rather than assuming that arbitrary models of \(Q\) are ordered semirings. For each external \(n\), \(Q\) proves</p>
   <div class="math-display">\[x\le\overline n\;\leftrightarrow\;\bigvee_{i\le n}x=\overline i,\qquad x\lt\overline n\;\leftrightarrow\;\bigvee_{i\lt n}x=\overline i.\]</div>
   <p>It also proves that every \(x\) either equals one of \(\overline0,\ldots,\overline n\), or satisfies \(\overline n\lt x\).</p>
-  <p><strong>Proof.</strong> The proof is an external induction on the fixed numeral. If \(z+x=0\) and \(x\ne0\), the predecessor axiom writes \(x=Su\); then \(z+Su=S(z+u)\ne0\), a contradiction. Hence the initial cut consists only of zero. For a successor bound, either \(x=0\), or \(x=Su\). In the latter case, \(z+Su=S\overline n\) is equivalent, by the addition axiom and successor injectivity, to \(z+u=\overline n\). Apply the preceding cut. Conversely each listed numeral has the required numeral difference as a witness, using <a href="arithmetic-theories#numeral-computation">numeral computation</a>. The strict cut is the same argument with \(Sx\); in particular the cut below zero is empty.</p>
+  <p class="proof-label">Proof</p>
+  <p>The proof is an external induction on the fixed numeral. If \(z+x=0\) and \(x\ne0\), the predecessor axiom writes \(x=Su\); then \(z+Su=S(z+u)\ne0\), a contradiction. Hence the initial cut consists only of zero. For a successor bound, either \(x=0\), or \(x=Su\). In the latter case, \(z+Su=S\overline n\) is equivalent, by the addition axiom and successor injectivity, to \(z+u=\overline n\). Apply the preceding cut. Conversely each listed numeral has the required numeral difference as a witness, using <a href="arithmetic-theories#numeral-computation">numeral computation</a>. The strict cut is the same argument with \(Sx\); in particular the cut below zero is empty.</p>
   <p>Finally apply the predecessor axiom successively \(n+1\) times to an arbitrary \(x\). Either a zero appears, giving one of the listed numerals, or \(x=S^{n+1}u\). The addition equations give \(u+S\overline n=S^{n+1}u=x\), the witness for \(\overline n\lt x\). These are finite proof constructions for each \(n\); no induction schema has been used inside \(Q\). □</p>
 </section>
 
@@ -33,28 +34,32 @@
     <div class="math-display">\[\mathbb N_A\models D(\bar a)\ \Longrightarrow\ Q\vdash D(\overline{\bar a}),\]</div>
     <div class="math-display">\[\mathbb N_A\not\models D(\bar a)\ \Longrightarrow\ Q\vdash\neg D(\overline{\bar a}).\]</div>
   </div>
-  <p><strong>Proof.</strong> Induct externally on the formula, strengthening the claim to all numeral assignments to its free variables. A closed arithmetic term is provably equal to its standard numeral: follow its finite construction, using the addition and multiplication equations. Distinct numerals are provably unequal by successor injectivity and \(Sx\ne0\). This settles equalities and, by <a href="#finite-numeral-cuts"></a>, the order abbreviations. The classical Boolean rules combine the proofs or refutations at the next constructor.</p>
+  <p class="proof-label">Proof</p>
+  <p>Induct externally on the formula, strengthening the claim to all numeral assignments to its free variables. A closed arithmetic term is provably equal to its standard numeral: follow its finite construction, using the addition and multiplication equations. Distinct numerals are provably unequal by successor injectivity and \(Sx\ne0\). This settles equalities and, by <a href="#finite-numeral-cuts"></a>, the order abbreviations. The classical Boolean rules combine the proofs or refutations at the next constructor.</p>
   <p>At a bounded quantifier, the bounding term under the given numeral assignment is provably some \(\overline b\). The cut lemma replaces a universal quantifier over that bound by the finite conjunction of its numeral instances, and an existential quantifier by their finite disjunction. The induction hypothesis decides each instance. Empty strict bounds give the empty conjunction \(\top\) and empty disjunction \(\bot\). This constructs a proof in either case. Equivalently every model of \(Q\) agrees with \(\mathbb N_A\) on these instances, and <a href="henkin-completeness#deductive-completeness">completeness</a> converts that agreement into a derivation. □</p>
 </section>
 
 <section id="existential-completeness" data-kind="theorem" data-formal="repr-existential-completeness">
   <h2>A true existential bounded assertion has a proof</h2>
   <p>Every true \(\Sigma_1\) sentence, in the convention of <a href="#bounded-formulas"></a>, is provable in \(Q\). The same holds after replacing all free inputs by numerals.</p>
-  <p><strong>Proof.</strong> Choose its finite tuple of standard witnesses. The remaining bounded sentence is true, so <a href="#bounded-completeness"></a> supplies its \(Q\)-proof. Introduce the existential quantifiers with those witness numerals. Conversely every \(Q\)-theorem is true in \(\mathbb N_A\), by <a href="first-order-proofs#soundness">soundness</a> and the <a href="arithmetic-theories#robinson-axioms">standard model of the axioms</a>. □</p>
+  <p class="proof-label">Proof</p>
+  <p>Choose its finite tuple of standard witnesses. The remaining bounded sentence is true, so <a href="#bounded-completeness"></a> supplies its \(Q\)-proof. Introduce the existential quantifiers with those witness numerals. Conversely every \(Q\)-theorem is true in \(\mathbb N_A\), by <a href="first-order-proofs#soundness">soundness</a> and the <a href="arithmetic-theories#robinson-axioms">standard model of the axioms</a>. □</p>
   <p>This proves the true instances, not refutations of all false existential sentences. An unbounded existential quantifier cannot be replaced by one finite list of possible witnesses.</p>
 </section>
 
 <section id="coprime-cancellation" data-kind="lemma" data-formal="repr-coprime-bezout repr-coprime-product repr-coprime-cancellation">
   <h2>Coprime moduli allow cancellation</h2>
   <p>The next three blocks concern ordinary natural numbers and integers, not arbitrary models of \(Q\). Positive integers \(m,n\) are <em>coprime</em> if their only positive common divisor is \(1\). If they are coprime, there are integers \(r,s\) with \(rm+sn=1\). Consequently \(m\mid nt\) implies \(m\mid t\).</p>
-  <p><strong>Proof.</strong> Among the positive integers of the form \(am+bn\), with \(a,b\in\mathbb Z\), choose the least, \(d\). This set is nonempty since it contains \(m\). Divide \(m\) by \(d\), using <a href="primitive-recursion#division-and-remainders">division with remainder</a>. A positive remainder would be a smaller positive integer combination of \(m,n\); thus the remainder is zero. The same argument gives \(d\mid n\). Coprimality forces \(d=1\), giving the displayed identity. Multiply it by \(t\). Both \(rmt\) and \(snt\) are divisible by \(m\), proving cancellation. □</p>
+  <p class="proof-label">Proof</p>
+  <p>Among the positive integers of the form \(am+bn\), with \(a,b\in\mathbb Z\), choose the least, \(d\). This set is nonempty since it contains \(m\). Divide \(m\) by \(d\), using <a href="primitive-recursion#division-and-remainders">division with remainder</a>. A positive remainder would be a smaller positive integer combination of \(m,n\); thus the remainder is zero. The same argument gives \(d\mid n\). Coprimality forces \(d=1\), giving the displayed identity. Multiply it by \(t\). Both \(rmt\) and \(snt\) are divisible by \(m\), proving cancellation. □</p>
   <p>Coprimality is preserved on taking a product of moduli that are each coprime to a fixed modulus: multiply their Bézout identities, and collect every term containing that fixed modulus. We will use this finite-product consequence.</p>
 </section>
 
 <section id="simultaneous-remainders" data-kind="lemma" data-formal="repr-simultaneous-remainders">
   <h2>Choose finitely many remainders simultaneously</h2>
   <p>Let \(m_0,\ldots,m_{k-1}\) be pairwise coprime positive moduli and let \(a_i\lt m_i\). There is a natural number \(c\) with \(c\equiv a_i\pmod {m_i}\) for every \(i\lt k\).</p>
-  <p><strong>Proof.</strong> For two coprime moduli \(m,n\), take \(rm+sn=1\). The integer \(brm+asn\) is congruent to \(a\) modulo \(m\) and to \(b\) modulo \(n\). Replacing it by its nonnegative remainder modulo \(mn\) gives a natural-number solution. For completeness, division of a possibly negative integer by a positive modulus reduces to natural-number division: if \(u=qM+r\), \(0\le r\lt M\), then \(-u=(-q)M\) when \(r=0\), and \(-u=(-q-1)M+(M-r)\) otherwise.</p>
+  <p class="proof-label">Proof</p>
+  <p>For two coprime moduli \(m,n\), take \(rm+sn=1\). The integer \(brm+asn\) is congruent to \(a\) modulo \(m\) and to \(b\) modulo \(n\). Replacing it by its nonnegative remainder modulo \(mn\) gives a natural-number solution. For completeness, division of a possibly negative integer by a positive modulus reduces to natural-number division: if \(u=qM+r\), \(0\le r\lt M\), then \(-u=(-q)M\) when \(r=0\), and \(-u=(-q-1)M+(M-r)\) otherwise.</p>
   <p>Induct on the finite list of moduli. Combine a solution for its initial part, modulo the product of those moduli, with the final congruence. That product is coprime to the new modulus by the last observation in <a href="#coprime-cancellation"></a>. For an empty list, \(c=0\) suffices. □</p>
 </section>
 
@@ -63,7 +68,8 @@
   <p>Define the total numerical function</p>
   <div class="math-display">\[\beta(c,d,i):=c\bmod\bigl((i+1)d+1\bigr).\]</div>
   <p>For every finite sequence \(a_0,\ldots,a_{k-1}\), there are natural numbers \(c,d\) such that \(\beta(c,d,i)=a_i\) for every \(i\lt k\).</p>
-  <p><strong>Proof.</strong> Choose \(N=\max(1,k)\), let \(A\) be the maximum of zero and the sequence entries, and put \(d=N!(A+1)\). Then \(d\gt0\), every \(a_i\lt d\), and each integer from \(1\) to \(N\) divides \(d\). Set \(m_i=1+(i+1)d\). These moduli exceed both \(1\) and the corresponding \(a_i\).</p>
+  <p class="proof-label">Proof</p>
+  <p>Choose \(N=\max(1,k)\), let \(A\) be the maximum of zero and the sequence entries, and put \(d=N!(A+1)\). Then \(d\gt0\), every \(a_i\lt d\), and each integer from \(1\) to \(N\) divides \(d\). Set \(m_i=1+(i+1)d\). These moduli exceed both \(1\) and the corresponding \(a_i\).</p>
   <p>If a positive integer \(r\) divides both \(m_i\) and \(m_j\), where \(i\lt j\), then it divides \((j-i)d\). It is coprime to \(d\), since a common divisor of \(r,d\) would divide \(m_i-(i+1)d=1\). Cancellation gives \(r\mid j-i\). But \(j-i\mid d\), so \(r\mid d\) and hence \(r=1\). Thus the moduli are pairwise coprime. Apply <a href="#simultaneous-remainders"></a>. The prescribed residues are the actual remainders because \(a_i\lt m_i\). The empty sequence imposes no conditions; the same choice with \(A=0,N=1\) is harmless. □</p>
   <p>This is an additional arithmetic coding, used to describe finite histories by formulas. It does not replace the existing <a href="coding-finite-sequences#list-code">effective list code</a> or the <a href="coding-formal-proofs#tagged-syntax">syntax and proof codes</a>. We have proved existence of suitable standard numerical codes, not a sequence-coding theorem inside every model of \(Q\).</p>
 </section>
@@ -73,13 +79,15 @@
   <p>In the formula below, \(m\) abbreviates the arithmetic term \(S((Si)\cdot d)\), whose standard value is \((i+1)d+1\). Define</p>
   <div class="math-display">\[B(c,d,i,z)\;:\!\Longleftrightarrow\;z\lt m\ \land\ \exists q\le c\;(c=mq+z).\]</div>
   <p>This is a \(\Delta_0\) formula and strongly represents the total function \(\beta\) in \(Q\).</p>
-  <p><strong>Proof.</strong> In the standard natural numbers, \(m\ge1\); division supplies the quotient and the unique remainder, with quotient at most \(c\). Thus the formula defines the stated decoder. Fix numerical inputs \(c,d,i\). In any model of \(Q\), the bound on \(z\) restricts it to the finitely many standard numerals below the standard value of \(m\). The quotient bound similarly restricts \(q\) to standard numerals at most \(c\). The finite cut lemma and numeral computation therefore establish, uniformly in the remaining output variable \(z\), that \(B(\overline c,\overline d,\overline i,z)\) holds exactly at the standard remainder. By completeness this is the required universal \(Q\)-proof. This also covers \(d=0\), when the modulus is \(1\) and the output is zero. □</p>
+  <p class="proof-label">Proof</p>
+  <p>In the standard natural numbers, \(m\ge1\); division supplies the quotient and the unique remainder, with quotient at most \(c\). Thus the formula defines the stated decoder. Fix numerical inputs \(c,d,i\). In any model of \(Q\), the bound on \(z\) restricts it to the finitely many standard numerals below the standard value of \(m\). The quotient bound similarly restricts \(q\) to standard numerals at most \(c\). The finite cut lemma and numeral computation therefore establish, uniformly in the remaining output variable \(z\), that \(B(\overline c,\overline d,\overline i,z)\) holds exactly at the standard remainder. By completeness this is the required universal \(Q\)-proof. This also covers \(d=0\), when the modulus is \(1\) and the output is zero. □</p>
 </section>
 
 <section id="initial-and-composition" data-kind="lemma" data-formal="repr-term-strong-representation repr-composition-strong-representation">
   <h2>Initial functions and composition are represented</h2>
   <p>Zero, successor and projections are represented by \(y=0\), \(y=Sx\), and \(y=x_j\). Representable total functions are closed under finite-arity composition.</p>
-  <p><strong>Proof.</strong> Numeral computation gives the initial cases. If \(G_j\) represents \(g_j\), and \(F\) represents \(f\), use</p>
+  <p class="proof-label">Proof</p>
+  <p>Numeral computation gives the initial cases. If \(G_j\) represents \(g_j\), and \(F\) represents \(f\), use</p>
   <div class="math-display">\[\exists z_0\cdots\exists z_{r-1}\;\bigl(\bigwedge_{j\lt r}G_j(\bar x,z_j)\land F(z_0,\ldots,z_{r-1},y)\bigr).\]</div>
   <p>Fix numerical inputs. Each \(G_j\) forces \(z_j\) to the standard numeral for \(g_j(\bar x)\), and the representing property of \(F\) forces the indicated final answer. The same clauses supply witnesses for existence. This works in every model of \(Q\), hence gives the universal output identity by completeness. Empty tuples give constants and require no witnesses. □</p>
   <p>We may consequently use represented auxiliary functions as formula abbreviations: replace their values by fresh variables and adjoining graph formulas. This is a syntactic substitution construction, not an expansion of the arithmetic language.</p>
@@ -90,7 +98,8 @@
   <p>Suppose the total function \(f(\bar x,t)\) is represented by \(F(\bar x,t,z)\), and for every standard \(\bar x\) some \(t\) satisfies \(f(\bar x,t)=0\). Then the total function \(g(\bar x)=\min\{t:f(\bar x,t)=0\}\) is represented by</p>
   <div class="math-display">\[G(\bar x,y):=F(\bar x,y,0)\land\forall w\lt y\;\neg F(\bar x,w,0).\]</div>
   <p>This use of minimization is called <em>regular</em>: every search has a witness, and its tested function is total.</p>
-  <p><strong>Proof.</strong> Fix standard inputs and let \(b=g(\bar a)\). The representing proofs for the finitely many tests at \(0,\ldots,b\), together with the finite cut below \(\overline b\), prove \(G(\overline{\bar a},\overline b)\). For any possible output \(y\), the cut dichotomy puts it among the numerals at most \(b\), or gives \(\overline b\lt y\). Earlier numeral candidates fail their zero test. A candidate beyond \(b\) fails the bounded universal clause, since its earlier candidates include \(\overline b\), whose zero test has a proof. Thus exactly \(y=\overline b\) is possible in every model of \(Q\). Apply completeness. □</p>
+  <p class="proof-label">Proof</p>
+  <p>Fix standard inputs and let \(b=g(\bar a)\). The representing proofs for the finitely many tests at \(0,\ldots,b\), together with the finite cut below \(\overline b\), prove \(G(\overline{\bar a},\overline b)\). For any possible output \(y\), the cut dichotomy puts it among the numerals at most \(b\), or gives \(\overline b\lt y\). Earlier numeral candidates fail their zero test. A candidate beyond \(b\) fails the bounded universal clause, since its earlier candidates include \(\overline b\), whose zero test has a proof. Thus exactly \(y=\overline b\) is possible in every model of \(Q\). Apply completeness. □</p>
   <p>The bound is \(w\lt y\), the candidate being minimized. We do not use this argument to skip an undefined earlier computation in <a href="partial-recursive-functions#sequential-minimization">partial sequential search</a>.</p>
 </section>
 
@@ -99,7 +108,8 @@
   <p>Suppose \(G\) and \(H\) represent total functions \(g(\bar x)\) and \(h(\bar x,i,a)\). The function \(r\) specified by</p>
   <div class="math-display">\[r(\bar x,0)=g(\bar x),\qquad r(\bar x,i+1)=h(\bar x,i,r(\bar x,i))\]</div>
   <p>is represented in \(Q\).</p>
-  <p><strong>Proof.</strong> Describe a history up to \(n\) by two existentially quantified code variables \(c,d\). Require the following four conditions:</p>
+  <p class="proof-label">Proof</p>
+  <p>Describe a history up to \(n\) by two existentially quantified code variables \(c,d\). Require the following four conditions:</p>
   <ol>
     <li>For every \(i\le n\), some \(a\) satisfies \(B(c,d,i,a)\).</li>
     <li>Every \(a\) satisfying \(B(c,d,0,a)\) satisfies \(G(\bar x,a)\).</li>
@@ -118,7 +128,8 @@
     <p>For every total recursive function \(f:\mathbb N^k\to\mathbb N\), there is one arithmetic formula \(F(\bar x,y)\) such that, for every \(\bar a\in\mathbb N^k\),</p>
     <div class="math-display">\[Q\vdash\forall y\,\bigl(F(\overline{\bar a},y)\leftrightarrow y=\overline{f(\bar a)}\bigr).\]</div>
   </div>
-  <p><strong>Proof.</strong> Primitive-recursive functions are represented by <a href="#primitive-recursion-representation"></a>, and regular minimization preserves representation by <a href="#regular-minimization"></a>. To connect this with the corpus's <a href="partial-recursive-functions#partial-recursive-functions">definition of total recursive functions</a>, use its <a href="machines-and-computation-histories#bounded-evaluation-correctness">primitive-recursive bounded evaluation</a>. For a fixed program and input, a positive finite computation has a primitive-recursively checkable certificate; the output is primitive-recursively read from that certificate. Package the certificate and output by the existing effective pairing. Thus there are primitive-recursive functions \(T,U\) such that \(T(\bar x,w)=0\) exactly when \(w\) certifies a terminating run on \(\bar x\), and \(U(w)\) is its output.</p>
+  <p class="proof-label">Proof</p>
+  <p>Primitive-recursive functions are represented by <a href="#primitive-recursion-representation"></a>, and regular minimization preserves representation by <a href="#regular-minimization"></a>. To connect this with the corpus's <a href="partial-recursive-functions#partial-recursive-functions">definition of total recursive functions</a>, use its <a href="machines-and-computation-histories#bounded-evaluation-correctness">primitive-recursive bounded evaluation</a>. For a fixed program and input, a positive finite computation has a primitive-recursively checkable certificate; the output is primitive-recursively read from that certificate. Package the certificate and output by the existing effective pairing. Thus there are primitive-recursive functions \(T,U\) such that \(T(\bar x,w)=0\) exactly when \(w\) certifies a terminating run on \(\bar x\), and \(U(w)\) is its output.</p>
   <p>The existing <a href="machines-and-computation-histories#normal-form">normal-form theorem</a> is stated for one numerical input. For a fixed finite input arity, use the existing <a href="machines-and-computation-histories#machine-equivalence">finite-tuple packing and its coordinate decoders</a>. The unary function obtained by decoding an input before running \(f\) is total recursive; apply the unary theorem and compose its certificate test with the tuple encoder. This gives the stated \(T(\bar x,w)\). Zero input arity gives a constant function.</p>
   <p>Because the program computes a total function, every input has such a certificate. Consequently</p>
   <div class="math-display">\[f(\bar x)=U\bigl(\min\{w:T(\bar x,w)=0\}\bigr).\]</div>
@@ -129,14 +140,16 @@
 <section id="representation-and-computation" data-kind="theorem" data-formal="repr-computable-representability repr-computable-of-representation repr-numeral-instance-code-primitive">
   <h2>A representing formula also gives an algorithm</h2>
   <p>A total numerical function is recursive if and only if it is represented in \(Q\) in the sense of <a href="#numeralwise-representation"></a>.</p>
-  <p><strong>Proof.</strong> The forward direction is <a href="#computable-representation"></a>. Conversely fix a representing formula \(F\) and numerical input \(\bar a\). Search through pairs \((b,p)\), where \(p\) is a proof certificate for \(F(\overline{\bar a},\overline b)\). This is an effective search: numerals and substitutions are effectively coded, the axioms of \(Q\) form a fixed finite set, and <a href="coding-formal-proofs#proof-certificate-theorem">proof certificates recognize the actual calculus</a>. Some proof exists at \(b=f(\bar a)\), so the search terminates.</p>
+  <p class="proof-label">Proof</p>
+  <p>The forward direction is <a href="#computable-representation"></a>. Conversely fix a representing formula \(F\) and numerical input \(\bar a\). Search through pairs \((b,p)\), where \(p\) is a proof certificate for \(F(\overline{\bar a},\overline b)\). This is an effective search: numerals and substitutions are effectively coded, the axioms of \(Q\) form a fixed finite set, and <a href="coding-formal-proofs#proof-certificate-theorem">proof certificates recognize the actual calculus</a>. Some proof exists at \(b=f(\bar a)\), so the search terminates.</p>
   <p>It cannot return a wrong answer. The representing universal theorem proves that any such output equals \(\overline{f(\bar a)}\). Soundness in \(\mathbb N_A\), or consistency together with distinct numeral proofs, excludes a different numeral. Thus proof search computes exactly \(f\). Use the existing <a href="effective-theories#theorem-enumeration">enumeration of theorems</a> or, equivalently, search the primitive-recursive certificate predicate over paired candidates. □</p>
 </section>
 
 <section id="recursive-relations" data-kind="theorem" data-formal="repr-recursive-relation-characterization">
   <h2>Decidable relations have positive and negative numeral proofs</h2>
   <p>A relation on \(\mathbb N^k\) is recursive exactly when it has a numeralwise representing formula in \(Q\).</p>
-  <p><strong>Proof.</strong> For a recursive relation \(R\), represent its total characteristic function \(\chi_R\), using the convention that true has value \(1\). If \(F\) is its representing formula, put \(A(\bar x)=F(\bar x,\overline1)\). A true instance gives a proof of \(A\). A false instance gives the output identity with zero; since \(Q\) proves \(\overline1\ne\overline0\), it gives a proof of \(\neg A\).</p>
+  <p class="proof-label">Proof</p>
+  <p>For a recursive relation \(R\), represent its total characteristic function \(\chi_R\), using the convention that true has value \(1\). If \(F\) is its representing formula, put \(A(\bar x)=F(\bar x,\overline1)\). A true instance gives a proof of \(A\). A false instance gives the output identity with zero; since \(Q\) proves \(\overline1\ne\overline0\), it gives a proof of \(\neg A\).</p>
   <p>Conversely search in parallel for a \(Q\)-proof of \(A(\overline{\bar a})\) and one of its negation. The representing property ensures one exists; consistency of \(Q\), witnessed by its standard model, ensures they cannot both exist. The successful side decides \(R(\bar a)\), as in <a href="universal-computation#two-sided-recognition">two-sided recognition</a>. □</p>
 </section>
 

@@ -101,7 +101,7 @@ The following extensions need further development and are deferred:
 
 ## Mathematical logic: sources and development plan
 
-Area ID: `mathematical-logic`, under `logic-and-foundations`. The five
+Area ID: `mathematical-logic`, under `logic-and-foundations`. The two
 proposed entries below need a step-1 handoff and the subsequent pipeline stages.
 Their existing foundations are [propositional semantics](entries/propositional-logic/entry.html),
 [propositional normal forms](entries/propositional-normal-forms/entry.html),
@@ -130,8 +130,11 @@ Their existing foundations are [propositional semantics](entries/propositional-l
 [arithmetic machines](entries/machines-and-computation-histories/entry.html),
 [universal computation](entries/universal-computation/entry.html),
 [formal-proof coding](entries/coding-formal-proofs/entry.html),
-[effective theories](entries/effective-theories/entry.html), and
-[arithmetic representability](entries/arithmetic-representability/entry.html).
+[effective theories](entries/effective-theories/entry.html),
+[arithmetic representability](entries/arithmetic-representability/entry.html),
+[self-reference and undefinability of truth](entries/diagonal-lemma/entry.html),
+[first incompleteness](entries/first-incompleteness/entry.html), and
+[formalized provability](entries/formalized-provability/entry.html).
 
 Keep the language being studied separate from the mathematics used to study it.
 Use sets, maps, finite lists, and induction as background; orders and arithmetic
@@ -186,8 +189,7 @@ The source-to-entry map is:
 
 | Proposed entries | Sources and specific support |
 | --- | --- |
-| `diagonal-lemma`, `first-incompleteness` | C2 chapters 10–11, 15–17, 24–27 and 39; C1 §§4.3–4.5 with recorded corrections; C3 chapter 4 and §§5.2–5.4. |
-| `second-incompleteness`, `second-order-logic` | C2 chapters 31, 33–35 and C1/C3 conditional arguments; Avigad 2002 §8.3, 101–106, locates second-order semantics. Full PA derivability-condition proofs and any second-order no-effective-complete-calculus reduction remain to inspect. |
+| `second-incompleteness`, `second-order-logic` | C2 chapters 31, 33–35 and C1/C3 conditional arguments; Avigad 2002 §8.3, 101–106, locates second-order semantics. Full internal derivability-condition proofs for the chosen arithmetic proof predicate and any second-order no-effective-complete-calculus reduction remain to inspect. |
 | Optional resolution / expressive-limit branches | Madhusudan–Viswanathan, [*Logic in Computer Science*](https://courses.grainger.illinois.edu/CS474/fa2021/DraftNotes.pdf), 2021-10-11, §2.2, 27–34, is a collected resolution source whose complete proof still needs a stage-1 audit. Schlicht, [*An Introduction to Model Theory*](https://philippschlicht.github.io/teaching/files/modeltheory2017.pdf), course 2017, PDF dated 2021-07-13, 7, supplies a connectedness example; expand its finite-path witness. Its adjacent upward-extension proof has a recorded diagram defect. |
 
 For the set-theory interface, retain these already-used publications but extend
@@ -241,10 +243,7 @@ prerequisites are listed below.
 
 | Batch / order | Proposed plain-text title and ID | Main result and scope | Prerequisites within the area |
 | --- | --- | --- | --- |
-| 3 / 10 | **Self-reference: the diagonal lemma and undefinability of truth** — `diagonal-lemma` | Fixed points from substitution codes and Tarski's theorem for arithmetic truth. | `arithmetic-representability`, `coding-formal-proofs`. |
-| 3 / 11 | **First incompleteness: Gödel sentences and Rosser's theorem** — `first-incompleteness` | Incompleteness and essential undecidability, with the distinct consistency hypotheses in the Gödel and Rosser arguments explicit. | `diagonal-lemma`, `arithmetic-representability`; `larger-models` supplies external consistency terminology. |
-| 4 / 12 | **Formalized provability: reasoning about proofs inside arithmetic** — `formalized-provability` | A specified proof predicate, formalized proof transformations and proved derivability conditions. | `coding-formal-proofs`, `arithmetic-representability`, `first-incompleteness`. |
-| 4 / 13 | **Second incompleteness: why arithmetic cannot prove its own consistency** — `second-incompleteness` | The specified consistency sentence, second incompleteness and Löb's theorem; check other proof predicates separately. | `formalized-provability`, `first-incompleteness`. |
+| 4 / 13 | **Second incompleteness: why arithmetic cannot prove its own consistency** — `second-incompleteness` | Establish internal D2 and D3 for a specified concrete proof predicate over PA, then prove second incompleteness and Löb's theorem for its consistency sentence. A different representative requires a proved comparison; standard-model correctness alone is insufficient. | `formalized-provability`, `first-incompleteness`; develop the uniform internal coding proofs identified below. |
 | Separate branch | **Second-order logic: full semantics, Henkin semantics, and categoricity** — `second-order-logic` | Relation/subset quantification, full Peano categoricity and restricted Henkin domains. Any no-effective-complete-calculus claim waits for its own reduction. | `arithmetic-theories`, first-order semantics and `henkin-completeness`; `first-incompleteness` for the optional effective-calculus reduction. |
 
 ### Source checks still required before drafting
@@ -256,10 +255,26 @@ statement, or omitted exercise has been certified as a completed argument.
 
 The inspected second-incompleteness sources prove a conditional abstract
 argument, then omit or sketch parts of the concrete PA derivability conditions.
-Smith 258–261 likewise sketches formalized Σ₁ completeness. Obtain and audit a full proof for the chosen
-coding, or develop it explicitly, before drafting `second-incompleteness` as a theorem about
-PA. A theorem conditional on the conditions would have to be labelled with
-that smaller scope. This is a source-coverage limit, not a source error.
+Smith 258–261 likewise sketches formalized Σ₁ completeness. The existing
+`formalized-provability` entry establishes D1, actual primitive-recursive certified
+proof composition, and the standard meaning of its predicate and consistency
+sentence. Its D2 and D3 blocks define additional internal proof requirements;
+they do not establish those requirements in PA. In particular, each D2 instance
+still quantifies internally over proof codes even when its sentence codes are
+fixed externally.
+
+Before drafting `second-incompleteness` as a theorem about PA, obtain and audit a
+full proof for the chosen coding or develop it explicitly: select a representative
+with the required arithmetic complexity, establish internally correct computation
+and proof transformations, and prove the necessary formalized completeness
+facts. Also provide the effective code enumeration/certificate presentation of
+the actual PA induction schema, rather than assuming an arbitrary enumerable
+theory presentation is already that schema. The current arbitrary numeralwise representative is not certified to
+satisfy those internal conditions. If using another predicate, identify it and
+prove the needed relation to the stated consistency sentence. A theorem
+conditional on derivability conditions must be labelled with that smaller scope.
+These are outstanding development tasks and source-coverage limits, not source
+errors.
 Second-order semantics and its non-effective-completeness reduction also need
 a full per-entry proof audit; the chapter location collected above is not one.
 

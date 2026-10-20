@@ -1,0 +1,13 @@
+{
+  "id": "prov-modus-ponens-numeralwise",
+  "description": "For every fixed numerical tuple \\((p,q,a,b)\\) with \\(b\\) a sentence code, \\(Q\\) proves the implication from the numeralwise proof assertions for \\(p\\) at \\(a\\to b\\) and \\(q\\) at \\(a\\) to the proof assertion for \\(M(p,q,b)\\) at \\(b\\), for the chosen representative of the certified checker.",
+  "module": "Lemmatheca.MathematicalLogic.FormalizedProvability",
+  "declaration": "Lemmatheca.MathematicalLogic.FormalizedProvability.modusPonens_numeralwise",
+  "dependencies": [
+    "prov-modus-ponens-correct",
+    "prov-proof-numerals"
+  ],
+  "verified": true,
+  "declaration_line": 65,
+  "signature": "Lemmatheca.MathematicalLogic.FormalizedProvability.modusPonens_numeralwise (E : ℕ → ℕ → Bool) (hE : Primrec₂ E)\n  (p q a b : ℕ)\n  (hb :\n    Lemmatheca.MathematicalLogic.CodingFormalProofs.isSentence\n        Lemmatheca.MathematicalLogic.CodingFormalProofs.arithmeticSignature b =\n      true) :\n  Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.Q\n    (FirstOrder.Language.Formula.imp\n      (Lemmatheca.MathematicalLogic.FormalizedProvability.proofInstance\n        (Lemmatheca.MathematicalLogic.FormalizedProvability.certificateRepresentation E hE) p\n        (Lemmatheca.MathematicalLogic.CodingFormalProofs.impCode a b))\n      (FirstOrder.Language.Formula.imp\n        (Lemmatheca.MathematicalLogic.FormalizedProvability.proofInstance\n          (Lemmatheca.MathematicalLogic.FormalizedProvability.certificateRepresentation E hE) q a)\n        (Lemmatheca.MathematicalLogic.FormalizedProvability.proofInstance\n          (Lemmatheca.MathematicalLogic.FormalizedProvability.certificateRepresentation E hE)\n          (Lemmatheca.MathematicalLogic.CodingFormalProofs.modusPonensCertificate p q b) b)))"
+}
