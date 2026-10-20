@@ -7,25 +7,122 @@ first. The contracts for [corpus content](docs/corpus.md),
 
 ## The six-step entry pipeline
 
-Each stage has an executable prompt in `prompts/`. A task may request one stage
-or a sequence. Use current artifacts and applicable handoffs; carry completed
-work forward rather than repeating it. Content contracts live in
+For entry additions, the default is root-led area planning followed by delegated
+entry pipelines. Step 1 belongs to the root agent; each proposed entry has an
+agent responsible for completing steps 2–6. The root checks coverage and reading
+order automatically, before delegation and before delivery. Explicit planning-only
+or single-stage requests keep their requested scope.
+
+Each stage has an executable prompt in `prompts/`. Use current artifacts and
+handoffs rather than repeating completed stages. Content contracts live in
 [docs/corpus.md](docs/corpus.md) and [docs/formal.md](docs/formal.md).
+
+## Running an area pipeline
+
+1. **Root plans the area.** Execute [step 1](prompts/01-choose-sources.md) at the
+   root, rather than delegating the planning step. Compare existing coverage with
+   sources, look for uncovered elementary material and missing prerequisites, and
+   choose coherent entry scopes and a dependency-respecting reading order. Honor
+   the requested batch size and scope; distinguish entries proposed for execution
+   now from a deferred roadmap. Do not count existing coverage as new work.
+2. **Delegate each entry.** Spawn an entry agent for every entry in the execution
+   plan. Give it the area plan, sources and inspected passages, prerequisite
+   entries, intended placement, owned files, shared-edit boundaries, and prompts
+   02–06. It drives those stages in order without asking for approval between
+   them. Parallelize independent entries; schedule dependent work after the
+   prerequisite text, block IDs, definitions and formal interfaces actually exist.
+3. **Request and assign independent reviews.** The entry owner requests step 3,
+   step 5 and any focused rereview from the root. The root alone assigns or spawns
+   the reviewer: itself, another entry owner, or a fresh agent, provided that
+   reviewer did not author the reviewed text or targets. Reviewers return findings
+   to the entry owner and root; they do not recruit replacements. Leave capacity
+   for reviews rather than filling every slot with waiting workers. The entry
+   owner applies findings through steps 2 or 4, then requests the necessary
+   rereview. A source or target change revisits only the affected stages below.
+4. **Coordinate shared edits.** Entry agents own their assigned entry files,
+   assets, new nodes and Lean modules. The root serializes changes to reading
+   order, taxonomy when authorized, shared Lean modules/imports, source/planning
+   records, and existing consuming entries. Workers perform the relevant
+   stage-specific work and send concrete shared-file edits to the root; exclusive
+   ownership can be assigned when safe. Before assigning step 3, the root applies
+   the entry's integration edits and reports the actual changed files/blocks.
+   Complete any index checkpoint needed for the review's API queries before
+   assigning it. Reviewers inspect that applied state, not a proposed patch; a
+   later integration change receives focused rereview before delivery.
+5. **Root maintains usable index snapshots.** Refresh at coherent handoffs when
+   new entries, mappings or shared integration must be discoverable, especially
+   before dependent agents query earlier additions. Entry owners request a refresh
+   from the root rather than running a writing build. The checkpoint procedure
+   below allows intermediate `build --no-lean` refreshes while reserving proof
+   verification for the final full build.
+6. **Root checks the integrated coverage and order.** Compare the actual entries
+   with the area plan and inspected sources. Check for missing definitions,
+   hypotheses, intermediate results, representation bridges and simpler material
+   that should come first, as well as duplicate coverage. Check entry and block
+   order, backward prerequisite links, and cross-area assumptions. Apply the
+   [exposition and formalization rule](docs/corpus.md#exposition-and-formalization):
+   a large excess of formal code over human text may expose compressed arguments
+   that need fuller treatment across several entries. Resolve
+   in-scope gaps by revising, adding, combining or reordering entries through the
+   affected stages. If an essential prerequisite lies outside the authorized
+   scope, narrow or defer dependent material and report it. Do not silently assume
+   missing theory or require a separate user request for this audit.
+7. **Root closes the batch.** Finish reviews, corrections and shared integration,
+   then freeze agent edits. Workers use focused compilation, source inspection and
+   rendering checks; the root alone runs the final full writing `build` and
+   inspects verification results, axioms and warnings for the batch. Fix failures,
+   repeat affected reviews if needed, and rebuild after the resulting edits.
+   Include changed generated node/entry JSON, catalogs and `corpus/index.json`.
+   Worker proof completion is provisional until this integrated check passes.
+
+The final handoff reports added entries, their reading order, coverage gaps
+resolved or deferred, review outcomes, integrated checks, and remaining work.
+These area-wide checks complement the independent entry reviews; they do not
+repeat every proof review or unrelated source audit. Explicit planning-only
+requests stop after the area plan and do not launch drafting agents.
+
+### Index checkpoints
+
+Before a checkpoint, the root asks every agent with corpus write ownership,
+including reviewers assigned source-record edits, to pause writes at a coherent
+state and waits for acknowledgment. Validation covers every live entry,
+including unlisted drafts: each needs complete metadata and HTML, reading-order
+placement, existing nodes for its mappings, valid links and required assets.
+Registry references must also resolve. Stage structurally incomplete drafts
+outside `corpus/`; pausing an incomplete live draft does not make it valid. Do
+not create placeholder mathematics to make validation pass. Read-only work can
+continue.
+
+The root applies ready shared edits, runs `build --no-lean`, then announces the
+published index revision, available entry/block IDs and when writes may resume.
+Workers can query that snapshot for earlier additions; between checkpoints they
+use current files/handoffs or request another refresh if the API index is stale.
+Coalesce ready updates instead of rebuilding after every edit. The build refreshes
+node/entry derived fields and registry catalogs as well as the index, so no corpus
+writer may overlap it. A failed build may leave partially refreshed generated
+files; resolve the failure and rebuild successfully before announcing a checkpoint.
+
+These snapshots reuse saved proof results. They do not complete step 6, certify
+new bindings or proofs, or replace the root's final full build. Include changed
+generated files in the final contribution, including the latest index.
 
 ## Stage responsibilities
 
 | Step | Owns | Required checks |
 | --- | --- | --- |
-| [1. Choose sources](prompts/01-choose-sources.md) | Sources, mathematical support, scope, prerequisites, outline and placement | Source passages and relevant existing prerequisite coverage |
+| [1. Plan the area and choose sources](prompts/01-choose-sources.md) | Root-owned coverage/source plan, gaps, entry scopes, prerequisites, reading order and assignments | Source support, existing coverage and prerequisite dependencies |
 | [2. Draft](prompts/02-draft-human-entry.md) | Human entry, metadata, assets, reading order, reference integration | Finish with a writing corpus build and inspect affected rendered pages |
 | [3. Review the entry](prompts/03-review-human-entry.md) | Independent human mathematics and presentation review | Read the requested arguments and answers; inspect presentation and relevant references |
 | [4. Prepare formal nodes](prompts/04-prepare-formal-nodes.md) | Definitions, target statements, node descriptions and mappings | Compile/elaborate targets, finish with a writing corpus build, render new/edited descriptions |
 | [5. Review correspondence](prompts/05-review-correspondence.md) | Independent claim-to-declaration coverage and fidelity review | Inspect current types, definition bodies, representations and witnesses |
 | [6. Prove](prompts/06-prove-nodes.md) | Proof bodies and necessary proof helpers | Compile proofs, run the integrated verification build, inspect axioms and warnings |
 
-Steps 1, 3 and 5 leave authored entry content, node bindings and proofs unchanged.
-Their only writing exception is [source-register maintenance](docs/corpus.md#source-errors)
-and the derived refresh it requires through `build --no-lean`.
+The planning and review work in steps 1, 3 and 5 leaves authored entry content,
+node bindings and proofs unchanged. Its only writing exception is
+[source-register maintenance](docs/corpus.md#source-errors) and the derived refresh
+it requires through `build --no-lean`. In an area batch, the root coordinates that
+refresh at a coherent checkpoint or the final build. Root coordination of the
+later entry stages follows the area-pipeline protocol above.
 Step 4 implements definitions and states missing theorems, including
 representation bridges, with unfinished proofs. Step 5 reviews those statements;
 step 6 proves them. An intentional `sorry` at preparation is not by itself a
@@ -164,6 +261,10 @@ adding, expanding, reordering, or moving entries into subareas. Keep entry prose
 independent of its position: refer to named topics and stable links rather than
 "the previous entry" or "the next entry."
 
+For an area pipeline, the root owns this check at planning and after integration.
+Entry agents report newly discovered dependencies and coverage gaps to the root
+instead of independently changing the global reading order.
+
 ## Running one step with an AI agent
 
 Give the agent the prompt path and the inputs listed in that file. For example:
@@ -193,8 +294,9 @@ work. Ask only when essential information cannot be recovered.
 
 Complete the requested stages with reasonable local decisions. Preserve unrelated
 changes and environment pins, and report unavailable checks honestly. Do not
-advance automatically from review to rewriting/proving, or post, approve, or merge
-on GitHub without instructions.
+advance beyond an explicitly isolated review request, or post, approve, or merge
+on GitHub without instructions. In an authorized area pipeline, its entry owner
+continues through steps 2–6 under the orchestration rules above.
 
 End with a concise handoff: scope, changed artifacts or findings, material
 representation decisions, checks and unresolved work. Do not repeat unchanged
@@ -273,11 +375,14 @@ requiring current generated data.
 | Reader or build tooling | Relevant catalog tests and affected page checks |
 | Documentation only | Check links, instructions and command examples; no corpus or proof build |
 
-Run batch checks once after the relevant edits. A full build also satisfies
-structural validation and compilation for the modules it builds. During a
-multi-stage batch, defer the writing build until the final mutating stage; step 4
-still elaborates targets before correspondence review. Do not repeat a successful
-build without subsequent relevant changes or unresolved diagnostics.
+Run required checks after the relevant edits. A full build also satisfies
+structural validation and compilation for the modules it builds. Normally defer
+publication to the final mutating stage; step 4 still elaborates targets before
+correspondence review. An area pipeline also uses root-owned
+[index checkpoints](#index-checkpoints) when agents need newly added material.
+Workers never publish generated data; the root pauses writers for each checkpoint
+and runs the final full build after all edits and reviews finish. Do not repeat a
+successful build without relevant changes or unresolved diagnostics.
 
 `build --no-lean --check` is a read-only structural check, not a substitute for
 the final writing build. The index revision hashes raw entry HTML, entry metadata,
@@ -297,7 +402,8 @@ Statistics-only updates belong to the statistics workflow and do not require an
 index rebuild.
 
 Describe the contribution's scope, source credit, review findings addressed,
-checks performed, and any remaining gaps in the pull request. Keep stable entry,
+checks performed, and any remaining gaps in the final handoff or requested pull
+request. Keep stable entry,
 block, and node IDs, reuse existing mathematical coverage, and avoid manually
 editing generated results. Exposition quality, correspondence, and Lean proof
 verification remain separate responsibilities.

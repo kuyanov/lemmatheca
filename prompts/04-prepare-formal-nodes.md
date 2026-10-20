@@ -4,6 +4,10 @@ Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-
 Own formal definitions, target statements, node records, and block mappings.
 Do not prove new theorems.
 
+In the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), prepare only
+the assigned entry's targets and owned files. Send shared imports, reused-node
+changes or scope conflicts to root unless exclusive file ownership was assigned.
+
 ## Inputs
 
 - Entry ID or entry selection.
@@ -19,6 +23,9 @@ nodes and the pinned Lean sources. Do not repeat human review or source selectio
 report mathematical ambiguities affecting the targets.
 When retrieving the entry's claim inventory and existing mappings, use entry
 context with `include=blocks,coverage`; select `block_ids` for a narrower task.
+In an area batch, request a root checkpoint if dependent API work needs a current
+snapshot; use canonical files until root announces the revision, without running
+a writing build yourself.
 
 ## Work
 
@@ -47,6 +54,9 @@ context with `include=blocks,coverage`; select `block_ids` for a narrower task.
    actual shared-language theory/definition and the specified witnesses or maps.
    Bridge proofs belong to step 6, not this preparation stage. Preserve existing
    proofs and follow the general-theory versus illustrative-example module split.
+   Report substantive constructions or intermediate arguments that preparation
+   exposes but the prose leaves unexplained, under the
+   [exposition and formalization rule](../docs/corpus.md#exposition-and-formalization).
 4. Create or update node records and `data-formal` mappings. Write descriptions
    under the [node contract](../docs/formal.md#formal-nodes), set direct
    proof-planning hints, and keep genuinely unplanned coverage distinguishable
@@ -60,14 +70,16 @@ context with `include=blocks,coverage`; select `block_ids` for a narrower task.
   A required full build can supply the compilation check; use focused compilation
   when that build is deferred. Unfinished theorem proofs are expected at this
   stage; missing declarations or invalid definitions are not.
-- Finish every corpus edit, including description-only, formatting, or mapping
-  changes, with a writing build and commit changed generated JSON, including
-  `corpus/index.json`. Use `build --no-lean`, or full `build` when
+- For a standalone task, finish every corpus edit, including description-only,
+  formatting, or mapping changes, with a writing build and commit changed
+  generated JSON, including `corpus/index.json`. Use `build --no-lean`, or full `build` when
   required by the [shared build rules](../CONTRIBUTING.md#validation-and-submission).
   The read-only `build --no-lean --check` does not refresh the index and cannot
   replace this step. Statistics-only updates are exempt. For an ongoing batch,
   defer the writing build to its final mutating stage and record the requirement
   in the handoff; do not add a no-Lean build if a full build will satisfy it.
+  In an area batch, root owns coordinated index checkpoints and the final full
+  build; workers use focused compilation and do not publish generated data.
 - Read and render new or edited node descriptions to check notation, intended
   symbols, delimiters, and KaTeX output. Do not redo the human-entry layout audit.
 
@@ -76,5 +88,8 @@ context with `include=blocks,coverage`; select `block_ids` for a narrower task.
 Return the coverage map, new/reused/rebound/retired nodes, prepared targets and
 unproved bridges, representation decisions, checks, and unresolved correspondence
 questions. Include generated-data changes when refreshed, or identify a deferred
-refresh within an ongoing batch. Passing compilation is not correspondence review
-or proof completion; those belong to steps 5 and 6.
+root refresh and required shared-file edits within an area batch. Passing
+compilation is not correspondence review or proof completion. In an area batch,
+the entry driver requests step-5 review from root, applies target corrections
+through step 4, and requests focused rereview from root before continuing to step 6.
+Root alone assigns or spawns those reviewers.

@@ -3,6 +3,11 @@
 Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
 Own proof completion for the selected formal targets, preserving their mathematics.
 
+In the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), finish the
+assigned entry after its independent reviews. Keep shared-file changes with root
+unless exclusive ownership was assigned; report scope or prerequisite gaps rather
+than replanning the area.
+
 ## Inputs
 
 - Entry ID or explicit node selection. Without a narrower selection, work on the
@@ -42,6 +47,10 @@ area's node inventory for each proof task.
    and distinguish translation from calling an existing target or stronger theorem.
    In measured mode, follow the supplied retrieval/attempt rules and keep logs
    outside corpus metadata; do not invent measurements.
+   If proof development produces much more formal code than human text, apply the
+   [exposition and formalization rule](../docs/corpus.md#exposition-and-formalization).
+   Report substantive arguments needing fuller explanation or a split to steps
+   2/3 and root; proof completion alone does not close that exposition gap.
 3. If a statement, definition, binding, or representation must change, identify
    the affected step-4 revision and step-5 review using the
    [change rules](../CONTRIBUTING.md#stage-responsibilities). Do not alter exposition
@@ -54,11 +63,16 @@ area's node inventory for each proof task.
 
 ## Checks
 
-- Use focused compilation as needed while editing. At completion, run full
+- Use focused compilation as needed while editing. For a standalone task, run full
   `build` with Lean under the
   [shared check matrix](../CONTRIBUTING.md#validation-and-submission).
   Inspect the full output and the selected nodes' refreshed verification results,
   and commit changed generated JSON, including `corpus/index.json`.
+  In an area batch, report focused compilation and axiom evidence, then freeze
+  owned files for root's final integration audit and full build. Root may also
+  run coordinated no-Lean index checkpoints during the batch; these do not verify
+  current proofs. Do not run writing builds or claim refreshed Lean verification
+  before root's final full build.
 - Confirm completed targets have no direct/inherited unfinished proofs or
   unsupported axioms. Use focused kernel-axiom reports to diagnose failures.
   A successful build alone is not a completion claim.
@@ -74,3 +88,5 @@ deviations from the human argument, and concrete remaining selected work.
 Distinguish project warnings from dependency or unrelated unfinished-proof warnings.
 Report necessary target changes and their review scope; do not claim whole-entry
 coverage merely because the selected proofs are verified.
+For an area batch, include independent-review dispositions, required shared-file
+edits, and the pending root build instead of refreshed generated files.

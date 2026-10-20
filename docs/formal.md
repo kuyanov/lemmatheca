@@ -101,7 +101,7 @@ Inspect existing nodes and the pinned library before introducing declarations.
 Prefer direct bindings to existing definitions or theorems, including suitable
 specializations and equivalent formulations. Avoid wrappers whose only purpose is
 to rename, reverse, or bundle existing results. Explain representation changes in
-the GitHub review, and check domains, quantifiers, conventions, and assumptions.
+the review handoff, and check domains, quantifiers, conventions, and assumptions.
 Several nodes may collectively cover a block, and one node may serve several blocks.
 See the [mapping contract](corpus.md#block-to-node-mapping).
 
@@ -195,6 +195,11 @@ Focused `lake env lean` or `lake build` checks are useful while editing, but do 
 refresh corpus metadata. Finish formal changes with the full integrated build.
 Step 4 still elaborates prepared targets before independent correspondence review,
 even when the writing build is deferred to the end of a multi-stage batch.
+In an [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), entry agents use
+focused checks and report proofs ready for integration; the root completes step 6
+with the final full build after their edits are frozen. Root-owned intermediate
+index checkpoints may expose new nodes to other agents, but reuse saved proof
+results and are not fresh Lean verification.
 The [CI workflow](../.github/workflows/ci.yml) runs an early structural check,
 tests and the combined `build --check --check-sources` verification.
 
@@ -245,9 +250,11 @@ can introduce `Classical.choice` independently of a human selection argument.
 
 ## Review and proving
 
-Reviews of human exposition and formal correspondence take place on GitHub. Verification checks the Lean declaration; it does not prove that the description or entry says the same
-thing. Review the mathematical text, block coverage, and description-to-declaration
-correspondence separately.
+Reviews of human exposition and formal correspondence are independent stages,
+reported in the task discussion or a pull request. Verification checks the Lean
+declaration; it does not prove that the description or entry says the same thing.
+Review the mathematical text, block coverage, and description-to-declaration
+correspondence separately. Post reviews to GitHub only when requested.
 
 Use the [contribution workflow](../CONTRIBUTING.md). Preserve the intended
 statement and definitions while replacing unfinished proofs. Use unregistered

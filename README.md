@@ -22,7 +22,7 @@ uses the same Git workflow as the application code.
 | [`corpus/`](corpus/) | Entries, figures, node records, mathematical areas, reading order, reference planning, and source errors; see the [corpus guide](docs/corpus.md) |
 | [`formal/`](formal/) | One Lean project containing local definitions and proofs, with pinned mathlib dependencies; see the [formalization guide](docs/formal.md) |
 | [`app/`](app/) | A Django reader, templates, CSS, JavaScript, and commands for validation and builds; see the [app guide](docs/app.md) |
-| [`prompts/`](prompts/) | Six independently runnable Markdown instructions for authors and AI agents |
+| [`prompts/`](prompts/) | Root area planning and five entry stages; see the [area pipeline](CONTRIBUTING.md#running-an-area-pipeline) |
 | [`docs/`](docs/README.md) | Detailed documentation and maintenance guides |
 
 ## Setup
@@ -101,7 +101,9 @@ For production settings, the read-only API, and performance details, see the
 
 ## Contributing
 
-Follow [CONTRIBUTING.md](CONTRIBUTING.md) for the six-step authoring pipeline,
+Follow the [area pipeline](CONTRIBUTING.md#running-an-area-pipeline): the root plans
+the area and delegates steps 2–6 per entry, then checks coverage, reading order and
+the integrated build. [CONTRIBUTING.md](CONTRIBUTING.md) also covers focused stages,
 scope rules, source reviews, and required checks. Entries can be contributed
 before their formalization is complete; human review and Lean verification are
 separate responsibilities. The [documentation index](docs/README.md) links to

@@ -4,10 +4,19 @@ Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-
 Independently review human mathematics and presentation. Authored entry content
 remains read-only; source-register maintenance follows the shared exception.
 
+In the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), the entry
+driver requests review and root alone assigns or spawns the reviewer: root, a new
+agent or another entry owner. The reviewer must not have authored the reviewed
+text. Reviewers return findings to the driver and root; they do not spawn or
+reassign reviewers.
+
 ## Inputs
 
 - Entry ID or entry selection.
 - Optional narrower review scope, drafting handoff, and relevant source material.
+- For an area batch, root's identification of the exact shared integration
+  files/blocks applied and stable for review, and the current index revision
+  after any needed checkpoint.
 
 ## Context
 
@@ -36,20 +45,24 @@ human-review scope.
    repeat source discovery or re-audit unchanged publications by default.
    Record any newly confirmed source defect or inspected scope under the
    [source-error contract](../docs/corpus.md#source-errors).
-3. Review readability, the standalone abstract, title, emphasis, figures, and
-   rendered mathematics against the corpus contract. Main-result boxes must
-   contain their hypotheses and conclusions. Inspect desktop and relevant narrow
+3. Review readability, the standalone abstract, title, emphasis, figures,
+   reading-time estimate, and rendered mathematics against the corpus contract.
+   Estimate time from the actual arguments and questions; do not lower the
+   metadata to fit a target. Main-result boxes must contain their hypotheses and
+   conclusions. Inspect desktop and relevant narrow
    layouts, including hidden answers. Flag any display requiring horizontal
    scrolling at the normal desktop content width. Split an overflowing row of
-   independent claims into separate displays; keep each equation, implication, or equivalence horizontal
-   when it fits, and break a genuinely long single statement only at meaningful
+   independent claims into separate displays; keep each equation, implication,
+   or equivalence horizontal when it fits, and break a genuinely long single statement only at meaningful
    mathematical boundaries. For a line-break audit, enumerate every explicit
    break and keep short formulas and identity lists compact. Formula scrolling
    on mobile is acceptable and does not justify extra line breaks.
-4. Check reading order and the entry's references. Review the relevant integration
-   changes from step 2 and report missing, stale, or incorrect links/planning
-   items. Do not repeat a corpus-wide consumer search or unrelated planning
-   cleanup. Retrieve only planning records associated with the reviewed entries
+4. Check reading order and the entry's references. In an area batch, check the
+   assigned placement and report global conflicts to root; do not replan the area.
+   Review the relevant applied integration changes from step 2, identified by root
+   in an area batch, and report missing, stale, or incorrect links/planning items.
+   Do not treat proposed edits as applied or reviewed. Do not repeat a corpus-wide
+   consumer search or unrelated planning cleanup. Retrieve only planning records associated with the reviewed entries
    and source records for publications actually investigated, using the
    [registry lookups](../docs/corpus.md#navigating-source-and-planning-records).
    Return proposed corrections; do not edit reference planning.
@@ -59,8 +72,10 @@ human-review scope.
 The independent reading and rendering review above is this step's check. Use
 `build --no-lean --check` only to investigate a concrete structural/reference
 concern. Source-record edits follow the [shared build rules](../CONTRIBUTING.md#validation-and-submission)
-for catalog regeneration. No routine writing build, catalog tests, Lean proof
-checks, or formal-binding audit is required.
+for catalog regeneration; in an area batch, send shared-record changes to root
+unless exclusive file ownership was assigned, and leave publication to root.
+No routine writing build, catalog tests, Lean proof checks, or formal-binding
+audit is required.
 
 ## Deliverable
 
@@ -69,3 +84,6 @@ corrections; separate errors from optional improvements. State reviewed scope,
 unavailable checks, and revisions needed before formal preparation. Include
 relevant integration findings and source-register changes when applicable.
 Do not rewrite entries, metadata, mappings, or proofs, or set approval fields.
+The area entry driver applies corrections through step 2 and requests focused
+step-3 rereview from root before continuing; root assigns it, and this reviewer
+does not perform those edits.

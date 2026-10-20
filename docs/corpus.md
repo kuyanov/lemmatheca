@@ -1,8 +1,8 @@
 # Mathematical corpus
 
 Entries, nodes, and navigation are repository files. The Django app reads them
-directly. Human review happens in GitHub pull requests, without approval fields
-or an editorial status in the corpus.
+directly. Independent reviews are reported in the task discussion or a pull
+request, without approval fields or an editorial status in the corpus.
 
 ## Layout and navigation
 
@@ -48,6 +48,11 @@ broad discovery search; steps 4–6 do not own this audit. Wording and layout ed
 check affected links only. Retain only the unfulfilled part of a mixed task. Existing
 coverage and source details may remain as prerequisites or supporting context for
 a concrete future task; completed source-review records belong in `source-errors/sources/`.
+In an [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), the entry agent
+owns the step-2 integration assessment. The root applies shared edits to consuming
+entries, reading order and registries and identifies the applied files/blocks
+before assigning step 3. Later changes need focused rereview; proposed edits alone
+do not establish that integration was reviewed.
 
 `taxonomy.json` defines areas with `id`, `title`, `parent`, and `description`.
 `area_entries.json` maps primary area IDs to ordered entry-ID lists under `areas`.
@@ -72,7 +77,14 @@ Describe mathematical notation in words in the title; put formulas in the entry
 body.
 
 `reading_time` is an estimated positive integer number of minutes, allowing time
-for the arguments and questions. `summary` is the short listing description;
+for the arguments and questions. Unless the user specifies otherwise, normally
+target about 30–40 minutes. A cohesive topic may use up to about 50 minutes when
+splitting would hurt the exposition; 50 is an allowance, not a default. Split or
+narrow material that needs substantially more space rather than rushing its
+arguments or understating the estimate. Existing entries are not subject to a
+new hard length limit.
+
+`summary` is the short listing description;
 `abstract` introduces the entry on its own page. It should stand on its own for
 readers new to the topic or who have not read the entry. Consult the cited sources'
 explanations and motivating examples, then check the abstract against the entry's
@@ -153,6 +165,9 @@ records. All six steps maintain this register when actual source checks reveal n
 defects or extend reviewed coverage. Steps 1, 3, and 5 may update these records
 and refresh the derived data required by that source-register maintenance using
 `build --no-lean`; authored entry/node fields and Lean sources remain read-only.
+In a coordinated batch, send shared record changes to the root for application
+and catalog refresh at a checkpoint or final build rather than running a
+competing writing build.
 Save confirmed findings before the handoff rather than leaving them solely in a
 chat or pull request. Entry editorial findings and formal correspondence findings
 stay in their review handoffs. This register has no approval flags or effect on
@@ -217,6 +232,31 @@ catalogs with the other derived data. For read-only review,
 The generated, committed `corpus/index.json` is a separate authoring index.
 Do not maintain a second Markdown copy of these registries.
 
+## Exposition and formalization
+
+If an added entry has much more formal code than human text, treat that as a
+warning that its argument may be too compressed. Check that the text explains
+the substantive mathematics in the formalization, locally or through links to
+earlier entries: its constructions, intermediate results, invariants and proof
+arguments. When the disparity reveals compressed or missing arguments, split the
+material into several coherent entries and develop those arguments more
+thoroughly. Update prerequisites, reading order and references, and review the
+affected exposition and mappings through the pipeline. Code volume is a
+diagnostic, not a fixed numerical threshold; padding prose or removing necessary
+formal code does not repair an exposition gap.
+
+Give substantive constructions enough space to reconstruct their arguments.
+For an internal algorithm, state its defining recurrence, the induction predicate
+with its parameters, the invariant, and the required syntax or freshness
+conditions. Work through a representative case and explain how the common
+argument handles the remaining cases. Uniform totality or numerical correctness
+alone does not justify additional algebraic or proof-preservation identities.
+When formalization exposes an essential intermediate argument absent from the
+prose, add that argument and its relevant lemmas. Split an entry at mathematical
+boundaries if explaining its constructions would exceed its reading-time scope.
+Routine Lean reindexing, bookkeeping and repeated field calculations need no
+separate prose; the mathematical reasoning they implement must still be clear.
+
 ## HTML and references
 
 Use trusted HTML fragments with explicitly closed elements. Every top-level block
@@ -251,17 +291,6 @@ Introduce proofs with the shared italic label, on its own paragraph:
 
 Use this markup consistently; do not use bold or inline `Proof.` labels.
 The reader's stylesheet supplies the italic styling.
-
-Give substantive constructions enough space to reconstruct their arguments.
-For an internal algorithm, state its defining recurrence, the induction predicate
-with its parameters, the invariant, and the required syntax or freshness
-conditions. Work through a representative case and explain how the common
-argument handles the remaining cases. Uniform totality or numerical correctness
-alone does not justify additional algebraic or proof-preservation identities.
-When formalization exposes an essential intermediate argument absent from the
-prose, add that argument and its relevant lemmas. Split an entry at mathematical
-boundaries if explaining its constructions would exceed its reading-time scope.
-Routine Lean reindexing and repeated field calculations need no separate prose.
 
 Use `href="#block-id"` for a local block and `href="entry-id#block-id"` for another
 entry. Cross-entry references must target mathematical blocks. The renderer resolves
@@ -386,9 +415,9 @@ separate assessment; the Verified badge does not certify their axiom strength.
 ## Authoring and checks
 
 Use the [contribution workflow](../CONTRIBUTING.md) and its per-step prompts.
-Review the human mathematics and
-the description-to-declaration correspondence separately on GitHub; a passing Lean
-check does not establish that the intended statement was formalized.
+Review the human mathematics and description-to-declaration correspondence
+separately, following the independent-review rules. A passing Lean check does not
+establish that the intended statement was formalized.
 
 Use the [shared build modes and check matrix](../CONTRIBUTING.md#validation-and-submission)
 from the repository root. `build --no-lean --check` validates canonical inputs
@@ -404,8 +433,11 @@ source availability is checked only with `--check-sources`.
 Finish authored corpus edits other than statistics-only updates with the writing
 `build --no-lean`, and commit changed generated data, including `corpus/index.json`.
 This includes prose-only and whitespace-only changes. Use the full `build` for
-changes to bindings, Lean declarations or proofs; one final writing build per
-batch satisfies the [shared rules](../CONTRIBUTING.md#validation-and-submission).
+changes to bindings, Lean declarations or proofs under the
+[shared rules](../CONTRIBUTING.md#validation-and-submission). In an area pipeline,
+the root also performs [index checkpoints](../CONTRIBUTING.md#index-checkpoints)
+with corpus writes paused so agents can discover earlier additions. These no-Lean
+refreshes do not replace the final full build after worker edits are frozen.
 Inspect edited pages for mathematical
 layout, links, hidden answers and figures. Corpus checks do not render pages or
 establish that a formal statement matches its exposition. See the

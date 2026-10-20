@@ -11,7 +11,7 @@ The [project overview](../README.md) covers setup, and
 | [Formalization](formal.md) | Node records, Lean bindings, proof planning, verification, and generated results |
 | [Web app](app.md) | Reader and authoring APIs, derived index, bounded text cache, tests, deployment, and scaling |
 | [Vendor assets](vendor.md) | Bundled KaTeX provenance, license, and update procedure |
-| [Prompts](../prompts/) | Independently runnable instructions for the six pipeline stages |
+| [Prompts](../prompts/) | Root-owned area planning and delegated entry stages; see the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline) |
 | [Source errors](../corpus/source-errors/index.json) | Publication reviews and findings, indexed by entry and publication URL |
 | [Reference planning](../corpus/reference-planning/index.json) | Pending references and development records, indexed by entry, area, kind, and URL |
 

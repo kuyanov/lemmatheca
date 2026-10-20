@@ -384,6 +384,9 @@ caches its parsed index and checks the file's stat information to detect atomic
 replacement; it does not rescan the corpus or cache live metadata between
 requests. Refresh the index explicitly after edits; there is no corpus freshness
 watcher. Read-only reviews using direct corpus files do not need to generate it.
+During an area pipeline, the root maintains this snapshot through coordinated
+[index checkpoints](../CONTRIBUTING.md#index-checkpoints); entry agents request
+refreshes rather than running concurrent writing builds.
 
 Parsed entry text has a separate LRU cache. By default each worker retains at
 most **8 MiB of accounted Python-object memory** and **128 entries**, including

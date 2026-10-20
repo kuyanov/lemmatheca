@@ -1,69 +1,107 @@
-# Step 1: Choose sources and scope
+# Step 1: Plan the area and choose sources
 
-Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
-Own source selection and mathematical scope; return a plan, not an entry or formal bindings.
+The root agent executes this step itself. Follow the
+[area-pipeline protocol](../CONTRIBUTING.md#running-an-area-pipeline) and
+[shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
+Own the area-wide source plan, coverage assessment, entry scopes, prerequisites,
+reading order and delegation. Do not draft entries during the planning phase.
 
 ## Inputs
 
-- Topic.
-- Optional intended audience, entry ID, scope, source preferences, and existing
-  planning material. Infer a coherent level from nearby entries when unspecified.
+- Specified area and the requested development scope.
+- Optional batch size, proposed entries, source preferences, reading-time target,
+  existing plan or review findings.
+- Whether the request is planning-only or authorizes the entry-addition pipeline.
+  Follow the user's scope; do not infer entry creation from a planning-only request.
 
 ## Context
 
-Inspect nearby entries, `corpus/area_entries.json`, and relevant
-[planning records](../corpus/reference-planning/index.json). Use the
+Inspect the area's existing entries, reading order, nearby prerequisite coverage,
+and relevant [planning records](../corpus/reference-planning/index.json). Use the
 [scope](../CONTRIBUTING.md#prerequisites-and-scope),
 [reading-order](../CONTRIBUTING.md#reading-order), and
-[citation](../docs/corpus.md#entry-metadata) contracts.
+[citation](../docs/corpus.md#entry-metadata) contracts. Reuse applicable source
+assessments and handoffs instead of repeating unchanged audits.
 
 Use the [authoring API](../docs/app.md#authoring-api) under the
 [shared usage rules](../CONTRIBUTING.md#using-the-authoring-api) to list entries
-with `area` and `fields=id,title,reading_position` for placement. Add `summary`
-when titles do not establish scope. Search blocks with topic-specific `q` and
-`include_answers=true` for human prerequisites, starting in the relevant area and
-widening when needed. Retrieve shortlisted prerequisite blocks with `block_ids`
-and `include=blocks,references`; add `navigation` when assessing placement.
-Look up source records by publication URL or consuming entry, then read their
-relevant findings, prioritizing `severity=serious`. Query planning by the proposed
-entry ID or area and relevant kind. Use the
-[registry lookup workflow](../docs/corpus.md#navigating-source-and-planning-records);
-do not read either complete registry. Consult the selected publications directly.
+with `area` and `fields=id,title,reading_position`. Add summaries when titles do
+not establish scope. Search blocks with concept-specific `q` and
+`include_answers=true` to distinguish existing coverage from gaps; inspect
+shortlisted blocks with `block_ids` and `include=blocks,references`. Check relevant
+cross-area prerequisites too. Look up source records by publication URL and
+planning records by area, entry or kind, using the
+[registry workflow](../docs/corpus.md#navigating-source-and-planning-records).
+Inspect the selected publications directly; do not read whole registries.
 
 ## Work
 
-1. Select and inspect the source passages supporting the proposed definitions,
-   results, examples, and proofs. Record exact editions, locations, and access
-   limits. Assess hypotheses, deductions, and substantial imported prerequisites;
-   establish a repair or alternative argument for any affected claim. Reuse
-   applicable existing source assessments rather than repeating unchanged checks.
-   Maintain the [source register](../docs/corpus.md#source-errors) for material
-   actually inspected; distinguish confirmed mathematical defects from valid
-   compression, missing explanation, and uncertainty.
-2. Choose a coherent reading unit. Map its prerequisites to existing entry/block
-   IDs and check their assumptions, including axiom strength where relevant.
-   Separate short supporting lemmas from substantial missing theories; narrow or
-   defer unsupported scope explicitly. Available Lean declarations do not supply
-   missing human exposition.
-3. Propose a stable ID, plain-text title, primary area, reading-order placement,
-   and outline. Map the outline to precise sources and proposed `based_on`
-   citations. Identify motivating examples and any figure-reuse requirements.
-4. Note relevant outstanding reference-planning tasks and known consuming blocks
-   for the drafting handoff. Full incoming-reference discovery and integration
-   belong to step 2. Leave reference planning and existing entries unchanged.
+1. Inventory the area's current human coverage and pending plans. Identify
+   missing definitions, intermediate results and accessible elementary material
+   in the sources that should precede more advanced topics. Distinguish an actual
+   exposition gap from missing formal proofs or an optional further direction.
+2. Select source passages for the proposed definitions, results, examples and
+   proofs. Record editions, precise locations and access limits. Assess
+   hypotheses, mathematical support and known source defects; establish repairs
+   or alternatives where needed. Maintain the
+   [source register](../docs/corpus.md#source-errors) for material actually
+   inspected. Do not treat compressed valid proofs as source errors.
+3. Choose coherent entries within the requested scope and size. Follow the
+   [reading-time target](../docs/corpus.md#entry-metadata): normally about 30–40
+   minutes, with up to about 50 for a cohesive topic when useful. Treat 50 as an
+   allowance, not the default. Combine closely related material where it fits,
+   without padding the entry count or compressing explanations to meet a number.
+   Allow room to explain the substantive constructions and intermediate arguments
+   the formalization will need; follow the
+   [exposition and formalization rule](../docs/corpus.md#exposition-and-formalization)
+   when choosing or revising entry boundaries.
+   Include necessary in-scope prerequisite entries, or narrow/defer material
+   needing substantial theory outside the authorized scope. State which proposals
+   are for execution now and which belong to the later roadmap.
+4. Build the prerequisite dependencies and reading order. Place elementary
+   material before its uses and group related entries where dependencies permit.
+   Name existing prerequisites by stable entry/block IDs and proposed prerequisites
+   by entry ID and required result, without inventing unwritten block anchors.
+   Check for cycles, forward prerequisites, redundant coverage, and assumptions
+   imported from other areas.
+5. Give each proposed entry a stable ID, plain-text title, scope and main results,
+   outline, source-to-outline map and citation objects, reading-time estimate,
+   prerequisites, and intended placement. Note known consuming blocks and related
+   pending references; full entry-level integration discovery belongs to step 2.
+   Define owned files and shared work that the root will coordinate.
+6. For an authorized entry-addition pipeline, spawn an entry agent for each entry
+   in the execution plan with prompts 02–06 and its complete handoff. Schedule
+   independent entries in parallel and dependency-bound work when its inputs
+   exist. Entry owners request reviews for steps 3 and 5; the root alone assigns
+   reviewers under the independence rule. Plan index checkpoints before dependent
+   agents need to discover earlier additions. Follow the central protocol for
+   applying integration edits before review, shared ownership, final gap/order
+   checks, and integrated verification.
 
 ## Checks
 
-Check source provenance, mathematical support, and prerequisite coverage as part
-of the work above. If source records changed, run `build --no-lean` under the
-[shared build rules](../CONTRIBUTING.md#validation-and-submission).
-No other validation, rendering, Lean/library search, or build is required for this plan.
-Formal reuse and signature inspection belong to step 4.
+Source support, prerequisite completeness, coverage gaps and reading order are
+[root responsibilities](../CONTRIBUTING.md#running-an-area-pipeline). Do not
+hand off the planning decision or repeat formal node-reuse searches, which belong
+to step 4.
 
-## Deliverable
+Planning alone leaves entries, taxonomy, reading order and reference planning
+unchanged. If source-register records changed in a planning-only task, finish with
+`build --no-lean` under the
+[shared build rules](../CONTRIBUTING.md#validation-and-submission). For a full
+pipeline, combine that refresh with a root-owned index checkpoint or the final
+batch build. No routine rendering, Lean build or catalog tests are required for
+the planning phase.
 
-Return the scope and outline, source-to-outline map and citation objects,
-prerequisites and placement, checked repairs and unchecked passages, relevant
-integration candidates, and unresolved drafting questions. Report source-register
-changes when made. Do not create entries, nodes or proofs. Refresh derived data
-only when required by source-register maintenance; do not run Lean in this stage.
+## Deliverable and continuation
+
+Provide the area coverage/gap assessment, ordered entry plan and source maps,
+prerequisite dependencies, inspected-source limits, execution/deferred scopes,
+and per-entry assignments. For a planning-only request, stop here.
+
+For an authorized pipeline, continue through delegation and root integration
+without a new permission request between stages. Before delivery, the root checks
+the actual added coverage and reading order, resolves in-scope gaps through the
+affected stages, and completes the final build. Report deferred prerequisites and
+unavailable checks honestly; do not present a roadmap or unverified worker handoff
+as completed entries.

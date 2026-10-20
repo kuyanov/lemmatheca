@@ -111,8 +111,13 @@ caching behavior.
 
 Corpus finalization includes prose-only and whitespace-only edits: their raw
 bytes affect the index revision. Commit changed generated files, including
-`corpus/index.json`. For a multi-stage batch, one writing build at its final
-mutating stage is sufficient; a read-only check does not replace it.
+`corpus/index.json`. Normally publish at the final mutating stage of a batch;
+a read-only check does not replace the writing build. In a
+[coordinated area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), the root
+alone publishes generated data and also runs `build --no-lean` at coherent
+[index checkpoints](../CONTRIBUTING.md#index-checkpoints) with all corpus writes
+paused. These make earlier additions discoverable to agents without rerunning
+Lean; the final full build remains required for proof verification.
 
 If a full check reports stale generated data, run `build`, inspect the changed
 results and Lean diagnostics, and include the generated JSON changes with their
