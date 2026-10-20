@@ -196,3 +196,8 @@ import Lemmatheca.MathematicalLogic.ComputableReductions
 import Lemmatheca.MathematicalLogic.PASecondIncompleteness
 import Lemmatheca.MathematicalLogic.ExpressiveLimits
 import Lemmatheca.MathematicalLogic.ArithmeticDefinability
+import Lemmatheca.MathematicalLogic.ManySortedLogic
+import Lemmatheca.Entry.ManySortedLogic
+import Lemmatheca.MathematicalLogic.SecondOrderLogic
+import Lemmatheca.MathematicalLogic.SecondOrderArithmetic
+import Lemmatheca.MathematicalLogic.HenkinSemantics

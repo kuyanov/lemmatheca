@@ -1,0 +1,12 @@
+{
+  "id": "sol-induction-truth",
+  "description": "The second-order induction sentence is true under full semantics exactly when every subset containing the interpreted zero and closed under the interpreted successor is the entire domain.",
+  "module": "Lemmatheca.MathematicalLogic.SecondOrderLogic",
+  "declaration": "Lemmatheca.MathematicalLogic.SecondOrderLogic.fullRealize_inductionSentence",
+  "dependencies": [
+    "sol-induction-sentence"
+  ],
+  "verified": true,
+  "declaration_line": 325,
+  "signature": "Lemmatheca.MathematicalLogic.SecondOrderLogic.fullRealize_inductionSentence.{u, v, w} {L : FirstOrder.Language}\n  {M : Type w} [L.Structure M] (z : L.Functions 0) (s : L.Functions 1) (a : ℕ → M)\n  (r : Lemmatheca.MathematicalLogic.SecondOrderLogic.RelationAssignment M) :\n  Lemmatheca.MathematicalLogic.SecondOrderLogic.fullRealize a r\n      (Lemmatheca.MathematicalLogic.SecondOrderLogic.inductionSentence z s) ↔\n    ∀ (P : M → Prop),\n      P (FirstOrder.Language.Structure.funMap z Fin.elim0) →\n        (∀ (x : M), P x → P (FirstOrder.Language.Structure.funMap s fun x_1 => x)) → ∀ (x : M), P x"
+}

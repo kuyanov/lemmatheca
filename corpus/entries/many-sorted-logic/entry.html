@@ -1,0 +1,83 @@
+<section id="sorted-signatures" data-formal="ms-signature ms-family-model" data-kind="definition">
+  <h2>Variables with different kinds of values</h2>
+  <p>A relation may connect objects of different kinds: a membership relation connects an element with a set of elements. In ordinary <a href="first-order-languages#signatures">first-order syntax</a>, every variable has the same range. A <strong>many-sorted relational signature</strong> instead specifies a nonempty set \(S\) of <strong>sorts</strong>, a set \(R_k\) of relation symbols of each finite arity \(k\), and, for each \(R\in R_k\), a list of argument sorts \(\sigma_R(0),\ldots,\sigma_R(k-1)\). There are no function or constant symbols in this entry. Equality is allowed only between variables of the same sort.</p>
+  <p>For example, take sorts \(E\) and \(C\), and a binary symbol \(B\) with profile \((E,C)\). The expression \(B(x,X)\) is allowed when \(x\) has sort \(E\) and \(X\) has sort \(C\); \(B(X,x)\) is not. A sort is part of the syntax, not a property inferred from an interpretation.</p>
+  <p>A structure supplies a nonempty carrier \(D_s\) for each sort \(s\), and a relation \(R^M\subseteq\prod_{i&lt;k}D_{\sigma_R(i)}\). A zero-argument relation is simply a truth value. No carrier is required to be a collection of all subsets of another carrier: that would be an extra semantic condition.</p>
+</section>
+
+<section id="sorted-formulas" data-formal="ms-sorted-formula ms-satisfaction ms-native-satisfaction" data-kind="definition">
+  <h2>Contexts record the sorts of available variables</h2>
+  <p>A context \(\gamma=(s_0,\ldots,s_{n-1})\) gives available variables \(z_0,\ldots,z_{n-1}\) their sorts. The index convention agrees with the <a href="first-order-languages#scoped-formulas">existing scoped syntax</a>: a quantifier appends its new placeholder at the end. In a context, the primitive formulas are \(\bot\), \(z_i=z_j\) when \(s_i=s_j\), \(R(z_{i_0},\ldots,z_{i_{k-1}})\) when \(s_{i_j}=\sigma_R(j)\), implication, and sorted universal quantification.</p>
+  <p>If \(A\) is a formula in the extended context \((\gamma,s)\), then \(\forall z_n:s\,A\) is a formula in \(\gamma\). Negation, conjunction, disjunction and existence use the <a href="first-order-languages#scoped-formulas">same classical abbreviations</a> as before. In particular, \(\exists z_n:s\,A\) abbreviates \(\neg\forall z_n:s\,\neg A\). A sentence has empty context. For formulas with parameters, put those parameters in a finite initial context and keep their values fixed.</p>
+  <p>An assignment in context \(\gamma\) is a tuple \(a_i\in D_{s_i}\). Equality and relations have their stated meanings, implication has its ordinary truth clause, and</p>
+  <div class="math-display">\[M,a\models\forall z_n:s\,A\quad\Longleftrightarrow\quad \text{for every }d\in D_s,\ M,(a,d)\models A.\]</div>
+  <p>This definition also determines the existential clause: some \(d\in D_s\) must satisfy the body. Each carrier's nonemptiness is part of the convention, just as nonemptiness is part of an ordinary first-order structure.</p>
+</section>
+
+<section id="ambient-models" data-formal="fo-structure ms-nonempty-sorts ms-sorted-assignment ms-model-extraction" data-kind="definition">
+  <h2>Putting the carriers into a common set</h2>
+  <p>It is useful to represent all carriers inside one ambient nonempty set \(U\). Give each sort a nonempty subset \(P_s\subseteq U\), and each symbol \(R\in R_k\) an arbitrary relation on \(U^k\). Only its values on tuples with the required sorts matter. An assignment in context \(\gamma\) satisfies \(a_i\in P_{s_i}\), and a sorted quantifier ranges over \(P_s\).</p>
+  <p>Such a presentation determines a genuine sorted structure with carrier \(D_s=P_s\). If two subsets overlap, the corresponding carriers are still different typed copies; there is no cross-sort equality in the syntax. Elements of \(U\) lying outside every \(P_s\) are harmless. We impose neither pairwise disjointness nor a requirement that the sort predicates cover \(U\). In particular, an infinite family of sorts does not require an infinite disjunction in a first-order axiom.</p>
+</section>
+
+<section id="tagged-carriers" data-formal="ms-tagged-model ms-tagged-carrier-bijection ms-tagged-nonempty ms-tagged-satisfaction" data-kind="lemma">
+  <h2>Separate carriers have an ambient presentation</h2>
+  <p>Every structure with nonempty carriers \(D_s\), for a nonempty set \(S\) of sorts, has an ambient presentation whose sort carriers are in bijection with the original carriers, preserving their relations.</p>
+  <p class="proof-label">Proof</p>
+  <p>Take the <a href="sets-and-maps#pairs-and-relations">disjoint union</a> \(U=\{(s,d):s\in S,\ d\in D_s\}\), and put \(P_s=\{(s,d):d\in D_s\}\). The map \(d\mapsto(s,d)\) is a bijection from \(D_s\) to \(P_s\): the tag fixes the sort, and equality of tagged pairs fixes the value. The union is nonempty because there is a sort and each carrier is nonempty.</p>
+  <p>Declare \(R^U((s_0,d_0),\ldots,(s_{k-1},d_{k-1}))\) true exactly when \(s_i=\sigma_R(i)\) for every \(i\) and the corresponding tuple belongs to \(R^M\). Thus relation truth on well-sorted tuples is preserved in both directions; on other tuples choose false. For arity zero there are no tags to check. By induction on a formula, tagging all assignment values preserves satisfaction. Equality uses injectivity of the tag map at a fixed sort; relations use the defining clause; implication uses the two induction equivalences. At a quantifier, the bijection \(D_s\to P_s\) identifies exactly the possible extensions of the assignment. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>The ambient and separate-carrier presentations therefore describe the same possible sorted models. The ambient presentation will make the first-order translation especially transparent.</p>
+</section>
+
+<section id="erased-language" data-formal="ms-erased-language ms-sort-existence-axiom ms-sort-existence-truth" data-kind="definition">
+  <h2>One unary predicate for each sort</h2>
+  <p>Form an ordinary relational first-order language \(L^\flat\). It has a unary relation symbol \(P_s\) for every sort, and a relation symbol \(R^\flat\) of the same arity for every original relation \(R\). The new symbols are distinct, even if an old relation is unary. The language has no functions. An ambient presentation is exactly an \(L^\flat\)-structure in which each sort predicate is nonempty.</p>
+  <p>For each \(s\in S\), let the <strong>sort-existence axiom</strong> be</p>
+  <div class="math-display">\[\eta_s=\exists z_0\,P_s(z_0).\]</div>
+  <p>No typing axioms for \(R^\flat\) are needed: translated formulas apply it only to well-sorted values. Adding axioms making it false on ill-sorted tuples would be harmless but unnecessary. Because the signature is relational, no function-closure axioms arise. For a sorted function one would need a graph relation together with existence and uniqueness axioms; that extension is outside the present result.</p>
+</section>
+
+<section id="guarded-translation" data-formal="ms-guarded-translation ms-existential-guard" data-kind="definition">
+  <h2>Replacing a sorted quantifier by a guard</h2>
+  <p>Erase a formula \(A\) in context \(\gamma\) to an ordinary scoped formula \(A^\flat\) with the same \(n\) placeholders. Keep equality, replace each relation symbol by its erased copy, and commute with falsity and implication. At a universal quantifier use</p>
+  <div class="math-display">\[(\forall z_n:s\,A)^\flat=\forall z_n\,(P_s(z_n)\to A^\flat).\]</div>
+  <p>This is a translation into the <a href="first-order-languages#scoped-formulas">corpus's actual first-order syntax</a>, not a separate one-sorted formula system. Appending the same placeholder on each side prevents capture. Type checks are discarded only after the sorted formula has been constructed.</p>
+  <p>Expanding existential quantification gives the equivalent form</p>
+  <div class="math-display">\[(\exists z_n:s\,A)^\flat\ \equiv\ \exists z_n\,(P_s(z_n)\land A^\flat).\]</div>
+  <p>The displayed existential form is a classical equivalence, not a claim that the two formula trees are literally identical. A guard belongs in an implication for a universal quantifier and in a conjunction for an existential quantifier.</p>
+</section>
+
+<section id="translation-correctness" data-formal="ms-translation-correct ms-model-extraction ms-extracted-carriers-nonempty ms-extracted-satisfaction" data-kind="theorem">
+  <h2>Translation preserves satisfaction</h2>
+  <div class="statement-box"><p>Let \(M\) be an ambient sorted structure, and regard its predicates and relations as the ordinary structure \(M^\flat\). For every sorted formula \(A\) and every well-sorted assignment \(a\) in its context,</p>
+  <div class="math-display">\[M,a\models A\quad\Longleftrightarrow\quad M^\flat,a\models A^\flat.\]</div>
+  <p>Conversely, any nonempty ordinary \(L^\flat\)-structure satisfying all \(\eta_s\) gives nonempty sorted carriers \(P_s\), with this same satisfaction equivalence.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Induct on \(A\), keeping its context and the assignment arbitrary. Falsity is false in both interpretations. Equality compares the same two values. Relation application tests the same tuple in the same interpretation. For implication, replace the truth of each child by its induction equivalent.</p>
+  <p>For \(\forall z_n:s\,B\), sorted satisfaction requires \(B\) at every extension \((a,d)\) with \(d\in P_s\). Ordinary satisfaction of its translation requires, for every \(d\in U\), that \(d\in P_s\) imply truth of \(B^\flat\) at \((a,d)\). When the guard holds, the extended assignment is well-sorted, so induction applies. When it fails, the implication is true without imposing any condition. These requirements are identical.</p>
+  <p>For the reverse model direction take \(D_s=\{d\in U:P_s(d)\}\). The axiom \(\eta_s\) makes this set nonempty. Restrict each relation to the product of its prescribed carriers. An assignment into these carriers is precisely an ambient well-sorted assignment, so the induction just given applies. <span class="qed" aria-label="End of proof">□</span></p>
+  <p>Both directions matter: translating a sorted model alone would not show that an ordinary model obtained by compactness can be turned back into a sorted model.</p>
+</section>
+
+<section id="guard-question" data-formal="ms-wrong-existential-guard ms-empty-sort-universal" data-kind="question">
+  <h2>Why implication cannot replace conjunction</h2>
+  <p>Suppose \(P_s=\{0\}\subseteq\{0,1\}\), and \(A(z)\) is false at every element. Compare \(\exists z:s\,A(z)\) with \(\exists z\,(P_s(z)\to A(z))\). What goes wrong if a sort-existence axiom is omitted?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+  <p>The sorted existence claim is false. The proposed ordinary formula is true, witnessed by \(1\), because its guard is false. The correct conjunction admits only witnesses in the sort. If \(P_s=\varnothing\), every guarded universal statement about that sort is vacuously true, although the required nonempty sorted carrier does not exist. In particular \(\forall z:s\,\bot\) is false in every allowed sorted model, but its translation is true when \(P_s\) is empty. The axiom \(\eta_s\) excludes this defect.</p>
+  </div></details>
+</section>
+
+<section id="theory-translation" data-formal="ms-erased-theory ms-satisfiability ms-theory-model-correspondence ms-satisfiability-transfer" data-kind="theorem">
+  <h2>Sorted theories and their ordinary models</h2>
+  <p>For a set \(T\) of sorted sentences define \(T^\flat=\{A^\flat:A\in T\}\cup\{\eta_s:s\in S\}\). Then \(T\) has a sorted model if and only if \(T^\flat\) has an ordinary nonempty first-order model.</p>
+  <p class="proof-label">Proof</p>
+  <p>From a sorted model, use its tagged ambient presentation. Every sort predicate is nonempty, and satisfaction preservation gives every translated sentence. Conversely, an ordinary model of \(T^\flat\) gives the nonempty carriers and restricted relations in the reverse part of <a href="#translation-correctness"></a>. For each \(A\in T\), its translation holds, hence so does \(A\). The same construction works for all members of \(T\), so it yields one model of the whole theory. <span class="qed" aria-label="End of proof">□</span></p>
+</section>
+
+<section id="sorted-compactness" data-formal="ms-compactness" data-kind="theorem">
+  <h2>Compactness survives the extra sorts</h2>
+  <div class="statement-box"><p>Suppose the sorts and relation symbols together form a finite or countable set. A sorted relational theory has a model if and only if every finite subset has a model. Every sort is required to be nonempty in each of these models.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>Restriction of a model gives one direction. For the converse, consider any finite subset \(F\subseteq T^\flat\). For each member of \(F\) that is a translated sentence, choose one original sentence that translates to it. Only finitely many originals are needed; call their set \(T_0\subseteq T\). By hypothesis \(T_0\) has a sorted model. Its ordinary presentation satisfies the translations of \(T_0\), and all sort-existence axioms, so it satisfies \(F\). This handles finite sets containing any mixture of translated axioms and sort-existence axioms.</p>
+  <p>Thus \(T^\flat\) is finitely satisfiable. Its first-order language is countable, so <a href="logical-compactness#compactness">first-order compactness</a> supplies a model. The reverse model construction gives a sorted model of \(T\). Notice that a model of \(T_0\) already has nonempty carriers for every sort, including sorts not mentioned by \(T_0\). <span class="qed" aria-label="End of proof">□</span></p>
+</section>

@@ -1,0 +1,3 @@
+import Lemmatheca.MathematicalLogic.HenkinSemanticsCore
+import Lemmatheca.MathematicalLogic.HenkinSemanticsTransfer
+import Lemmatheca.MathematicalLogic.HenkinSemanticsArithmetic

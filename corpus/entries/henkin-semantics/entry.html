@@ -1,0 +1,98 @@
+<section id="restricted-relation-domains" data-formal="hs-general-model hs-satisfaction" data-kind="definition">
+  <h2>Choosing which relations can be quantified</h2>
+  <p>Under <a href="second-order-logic#full-semantics">full semantics</a>, a relation variable of arity \(n\) ranges over every subset of \(M^n\). Now keep a nonempty individual domain \(M\), but choose a nonempty family \(\mathcal D_n\subseteq\mathcal P(M^n)\) for each finite arity. A <strong>general structure</strong> consists of the original first-order structure together with these families. A relation assignment must choose its \(n\)-ary values from \(\mathcal D_n\).</p>
+  <p>Use exactly the formulas and named binders already defined for second-order logic. All clauses of satisfaction stay the same except the range of a relation quantifier:</p>
+  <div class="math-display">\[M,\mathcal D,a,r\models\forall X^n\,\varphi\quad\Longleftrightarrow\quad\forall R\in\mathcal D_n\;M,\mathcal D,a,r[X^n:=R]\models\varphi.\]</div>
+  <p>A general structure need not contain relations defined by its own formulas. That is an additional closure requirement, not a consequence of calling its members relations. Full structures are the special case \(\mathcal D_n=\mathcal P(M^n)\). The term <em>Henkin semantics</em> is used with different closure conventions; we specify the comprehension axioms when requiring them.</p>
+</section>
+
+<section id="comprehension" data-formal="hs-comprehension-instance hs-comprehension-closure hs-comprehension-semantics hs-sentence-closure hs-closure-is-sentence hs-comprehension-theory hs-comprehension-theory-models hs-full-comprehension-property hs-models-closure" data-kind="definition">
+  <h2>Comprehension names a definable relation</h2>
+  <p>Let \(\varphi(x_1,\ldots,x_n,\bar y,\bar Y)\) be any formula, and choose an \(n\)-ary relation variable \(X\) not free in it. The corresponding <strong>comprehension axiom</strong> is the universal closure over the displayed parameters of</p>
+  <div class="math-display">\[\exists X^n\,\forall x_1\cdots\forall x_n\;\bigl(X(x_1,\ldots,x_n)\leftrightarrow\varphi(x_1,\ldots,x_n,\bar y,\bar Y)\bigr).\]</div>
+  <p>A formula has only finitely many free individual and relation names. Its universal closure binds those remaining names, first binding the individual parameters and then wrapping the result in quantifiers for the relation parameters; the result is a sentence in the same syntax. For each choice of individual parameters and available relation parameters, the axiom requires the relation defined by \(\varphi\) to belong to \(\mathcal D_n\). The freshness condition matters: \(X\) must not occur free in its own proposed definition. Bound occurrences may first be renamed to keep the display unambiguous. For \(n=0\), no individual quantifiers are needed and comprehension chooses a truth value.</p>
+  <p>A <strong>comprehension scheme</strong> is a specified set of these axioms. <em>Full comprehension</em> permits every second-order formula, including formulas with relation quantifiers. <em>First-order comprehension</em> permits first-order formulas with individual parameters. These are distinct schemes; neither phrase means that every external subset must be available.</p>
+</section>
+
+<section id="full-comprehension" data-formal="hs-full-comprehension hs-full-comprehension-closure hs-full-models-comprehension-theory sol-assignment-agreement" data-kind="theorem">
+  <h2>Full structures satisfy every comprehension axiom</h2>
+  <p>Every full structure satisfies full comprehension, with arbitrary individual and relation parameters.</p>
+  <p class="proof-label">Proof</p>
+  <p>Fix the parameter assignments. Define \(R\subseteq M^n\) by putting a tuple \(\bar b\) into \(R\) exactly when the right-hand formula is true with \(\bar x:=\bar b\). Fullness puts this particular relation into the quantifier's range. Choose it as the value of \(X\). Since \(X\) is not free in \(\varphi\), changing its value does not change the right-hand side, by <a href="second-order-logic#agreement">agreement on free variables</a>. The required equivalence therefore holds on every tuple. As the parameters were arbitrary, its universal closure holds.</p>
+  <p>This argument does not require a formula defining \(R\) externally in the original first-order language. The relation is chosen using satisfaction of the full second-order formula.</p>
+</section>
+
+<section id="missing-comprehension" data-formal="hs-empty-family-counterexample" data-kind="question">
+  <h2>A general structure can omit the whole domain</h2>
+  <p>Let the individual domain be nonempty and let \(\mathcal D_1=\{\varnothing\}\). Does this general structure satisfy the instance of comprehension for \(x=x\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. That instance requires an available unary relation containing every individual. Its only available relation is empty, so any individual witnesses failure of the equivalence. Nonempty families of relations alone do not imply even this elementary comprehension instance. Choosing nonempty families at every other arity does not repair the unary failure.</p></div></details>
+</section>
+
+<section id="application-language" data-formal="hs-application-language hs-application-symbols hs-admissible-ambient" data-kind="definition">
+  <h2>Treating a relation as another kind of object</h2>
+  <p>Introduce an individual sort \(I\), and a relation sort \(R_n\) for each arity \(n\). Add an application predicate \(E_n\) with one \(R_n\)-argument and \(n\) individual arguments. Its intended meaning is</p>
+  <div class="math-display">\[E_n(A,x_1,\ldots,x_n)\quad\Longleftrightarrow\quad (x_1,\ldots,x_n)\in A.\]</div>
+  <p>Keep the original language's function and fixed relation symbols on the individual sort. A general structure gives this sorted structure directly: the individual carrier is \(M\), the \(n\)-ary relation carrier is \(\mathcal D_n\), and application is membership. Relation quantification has become ordinary quantification over another carrier. This is the same idea as <a href="many-sorted-logic#ambient-models">many-sorted ambient presentations</a>, now including the original functions on the individual carrier.</p>
+  <p>To use the existing one-sorted first-order calculus, take a common ambient domain \(U\), with unary predicates \(I\) and \(R_n\) distinguishing the sorts. Require each of these predicates to be nonempty. Require every original \(k\)-ary function to send individual tuples to individuals; this includes constants as the case \(k=0\). Original relations need no closure axiom: their values on nonindividual tuples are never used. Pairwise disjointness and coverage of \(U\) are unnecessary.</p>
+</section>
+
+<section id="translation" data-formal="hs-first-order-translation hs-translation hs-background-theory hs-background-models hs-theory-translation" data-kind="definition">
+  <h2>The exact first-order translation</h2>
+  <p>Write \(\varphi^\flat\) for the translated formula. Use separate ordinary variable names for individual names and for relation names of each arity. Translate terms without changing their function symbols. Translate a first-order starting formula recursively: retain its equality, fixed relation symbols and connectives, and guard <em>every</em> individual quantifier inside it. The remaining clauses are:</p>
+  <div class="math-display">\[(X^n(\bar t))^\flat=E_n(X^n,\bar t),\qquad(\varphi\to\psi)^\flat=\varphi^\flat\to\psi^\flat.\]</div>
+  <div class="math-display">\[(\forall x\,\varphi)^\flat=\forall x\,(I(x)\to\varphi^\flat),\qquad(\forall X^n\,\varphi)^\flat=\forall X^n\,(R_n(X^n)\to\varphi^\flat).\]</div>
+  <p>Falsity remains falsity. Existential quantifiers consequently use conjunction with their sort guard, as in <a href="many-sorted-logic#guarded-translation">guarded translation</a>. Bind the same named variable in the translated body, preserving its scope; binding a name means replacing its free occurrences by the newest protected first-order placeholder. Existing protected placeholders inside first-order starting formulas keep their scopes.</p>
+  <p>Let \(B_L\) be the ordinary first-order theory of sort nonemptiness and original-function closure just described. For a set \(T\) of second-order sentences, put \(T^\flat=B_L\cup\{\sigma^\flat:\sigma\in T\}\). If a comprehension scheme \(C\) is intended, translate its sentences too: use \((T\cup C)^\flat\). Comprehension is not silently included in \(B_L\).</p>
+</section>
+
+<section id="duplicate-relation-objects" data-formal="hs-presentation hs-translation-correctness hs-extensionality hs-extensionality-injective" data-kind="lemma">
+  <h2>Duplicate names do not change second-order truth</h2>
+  <p>Suppose a relation sort has objects \(A\) with application predicates on the individual carrier. Send each object to the relation it actually determines. Replacing that carrier by the image family of relations preserves truth of every translated second-order formula.</p>
+  <p class="proof-label">Proof</p>
+  <p>An atomic application has the same truth value by the definition of the image relation. Individual equality, original symbols, falsity and implication do not change. For a relation quantifier, every old object determines an image relation and every image relation has an old representative. Thus a universal statement over objects holds exactly when the corresponding statement holds over their image relations; the induction hypothesis applies to each updated assignment. Individual quantification uses the unchanged individual carrier. This is an induction on the actual second-order syntax, including the existing first-order starting formulas.</p>
+  <p>Two relation objects may determine the same relation. Our <a href="second-order-logic#relation-equality">relation equality abbreviation</a> identifies them extensionally already. If ordinary equality between relation objects is allowed independently, impose the additional extensionality axioms</p>
+  <div class="math-display">\[\forall A,B\in R_n\;\bigl((\forall\bar x\in I^n\;(E_n(A,\bar x)\leftrightarrow E_n(B,\bar x)))\to A=B\bigr).\]</div>
+  <p>Then the image map is injective as well as surjective. Our translated second-order formulas use no primitive equality of relation objects, so this extra axiom is unnecessary for the correspondence below.</p>
+</section>
+
+<section id="model-correspondence" data-formal="hs-tagged-structure hs-forward-model hs-decoded-structure hs-decoded-domains hs-decoded-presentation hs-decoded-nonempty hs-model-correspondence" data-kind="theorem">
+  <h2>General models are exactly the translated first-order models</h2>
+  <div class="statement-box"><p>A second-order theory \(T\) has a general model with nonempty relation families if and only if its first-order translation \(T^\flat\) has a nonempty model. The translation preserves satisfaction under corresponding assignments, and the equivalence remains true after adding any specified comprehension scheme.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>In the forward direction take the disjoint union of \(M\) and all the families \(\mathcal D_n\), tagging each component by its sort. Interpret each guard by its tagged component. On individual tuples, interpret original functions and relations as in \(M\); extend functions arbitrarily on other tuples, using a fixed individual value. Interpret application by membership on well-sorted arguments and arbitrarily elsewhere. Every sort is nonempty, and original functions satisfy closure.</p>
+  <p>Induct on terms to show that their values are the tagged original values. Induct on formulas to prove satisfaction preservation. For an original first-order formula, its internal quantifiers are guarded by \(I\); the individual tag bijection supplies exactly their original witnesses. Application uses membership. Connectives use their induction equivalences. For a relation quantifier, the \(R_n\)-guard ranges exactly over the tagged members of \(\mathcal D_n\), so the two universal conditions agree.</p>
+  <p>Conversely, let \(U\models T^\flat\). Take \(M=I^U\) as a subtype of \(U\); nonemptiness gives an individual, and the closure axioms restrict each original function to this subtype. Restrict original relations to individual tuples. For each object \(A\in R_n^U\), define a relation on \(M^n\) by \(E_n^U(A,\bar x)\), and let \(\mathcal D_n\) be the image of this map. Nonemptiness of \(R_n^U\) makes the image family nonempty.</p>
+  <p>Term evaluation in \(M\), followed by inclusion into \(U\), equals evaluation in \(U\), by induction on terms and function closure. The formula induction now reverses the forward argument. Its relation-quantifier step uses the surjection onto the image, as in <a href="#duplicate-relation-objects"></a>; it does not assume distinct objects have distinct extensions. Every translated member of \(T\) therefore gives a true original sentence in this one general model. The argument applies to comprehension sentences exactly as to any others.</p>
+</section>
+
+<section id="translated-calculus" data-formal="hs-translated-derivability hs-application-countable" data-kind="definition">
+  <h2>A precise proof calculus by translation</h2>
+  <p>Assume the original first-order language has at most countably many symbols. The application language is then countable too. For second-order sentences define</p>
+  <div class="math-display">\[T\vdash_{\mathrm H}\sigma\quad\Longleftrightarrow\quad T^\flat\vdash_{\mathrm{FO}}\sigma^\flat.\]</div>
+  <p>The calculus on the right is the existing <a href="first-order-proofs#derivations-and-theories">first-order proof calculus</a>, not a newly postulated second-order rule system. For models satisfying a scheme \(C\), use \((T\cup C)^\flat\) as the premises. In particular, the definition permits a proof to use finitely many translated comprehension axioms when the scheme is included.</p>
+</section>
+
+<section id="henkin-completeness" data-formal="hs-consequence-translation hs-completeness" data-kind="theorem">
+  <h2>Completeness for the specified general semantics</h2>
+  <div class="statement-box"><p>For a countable original language, \(T\vdash_{\mathrm H}\sigma\) if and only if every general model of \(T\) satisfies \(\sigma\). The same statement holds with a fixed comprehension scheme among the premises.</p></div>
+  <p class="proof-label">Proof</p>
+  <p>If there is a first-order proof from \(T^\flat\), <a href="first-order-proofs#soundness">soundness</a> makes its conclusion true in each forward encoding of a general model. Satisfaction preservation gives \(\sigma\). Conversely, suppose every general model of \(T\) satisfies \(\sigma\). Decode any ordinary model of \(T^\flat\); the model correspondence gives a general model of \(T\), hence truth of \(\sigma\), hence truth of its translation in the original ordinary model. The translation is therefore a first-order consequence of \(T^\flat\). <a href="henkin-completeness#deductive-completeness">First-order completeness</a> gives its proof. Adding a scheme merely replaces \(T\) by \(T\cup C\).</p>
+  <p>This theorem certifies exactly the translated calculus in the definition. A completeness claim for a native second-order calculus with its own substitution and comprehension rules would additionally require proof transformations connecting those rules to this calculus.</p>
+</section>
+
+<section id="henkin-compactness" data-formal="hs-compactness hs-compactness-with-scheme" data-kind="theorem">
+  <h2>Compactness returns when relation domains may be restricted</h2>
+  <div class="statement-box"><p>For a countable original language, a second-order theory has a general model if and only if every finite subset has a general model. If every finite subset has a model satisfying a fixed comprehension scheme \(C\), then the whole theory has a general model satisfying \(C\).</p></div>
+  <p class="proof-label">Proof</p>
+  <p>The forward implication is restriction. For the converse, let \(F\) be a finite subset of \(T^\flat\). Choose an original sentence of \(T\) for each translated member of \(F\); this gives a finite \(T_0\subseteq T\). A general model of \(T_0\), encoded forward, satisfies those translations and every background axiom in \(B_L\). Thus it satisfies \(F\). First-order compactness supplies a model of \(T^\flat\), and the reverse construction gives a general model of \(T\).</p>
+  <p>For the scheme version, work with \((T\cup C)^\flat\). A finite set of its sentences comes from finitely many members of \(T\) and \(C\), together with background axioms. By hypothesis the selected finite part of \(T\) has a general model satisfying <em>all</em> of \(C\), so the same finite-satisfiability argument applies. No finite bound on the size of \(C\) is needed.</p>
+</section>
+
+<section id="comprehension-is-not-fullness" data-formal="hs-nonstandard-comprehension-model hs-numeral-relation hs-numeral-relation-unavailable arith-PA-induction arith-standard-copy-undefinable" data-kind="theorem">
+  <h2>Comprehension does not restore categoricity</h2>
+  <p>Full comprehension is compatible with a general model of second-order Peano arithmetic containing an element different from every numeral. Thus full comprehension does not force the relation families to contain every external subset.</p>
+  <p class="proof-label">Proof</p>
+  <p>Add a constant \(c\) to the arithmetic language. Include the finite second-order Peano axioms, every comprehension axiom, and each sentence \(c\ne\bar n\), for \(n\in\mathbb N\). Every finite subset has a full model: use the ordinary natural numbers, all relations on them, and interpret \(c\) by a number larger than the finitely many numerals excluded there. Full comprehension holds by <a href="#full-comprehension"></a>. General-model compactness gives a model of the whole theory.</p>
+  <p>Its element \(c\) is not a numeral. Externally, the subset consisting of the values of all numerals contains zero and is closed under successor, but omits \(c\). It cannot be an available unary relation, because the second-order induction axiom would then force it to be the whole individual domain. This is exactly where the <a href="second-order-arithmetic#categoricity">full-semantics categoricity proof</a> used a subset that general semantics can omit.</p>
+  <p>The distinction is already visible in the <a href="arithmetic-theories#induction-schema">first-order induction scheme</a>: PA gives induction for every first-order definable subset with individual parameters. Nevertheless, in a nonstandard PA model the external subset of standard numeral values is <a href="arithmetic-theories#external-standard-copy">not definable even with parameters</a>. These earlier results explain how all the definable induction instances can hold while one external inductive subset is missing; they make no claim that a family of first-order definitions satisfies full second-order comprehension.</p>
+</section>
