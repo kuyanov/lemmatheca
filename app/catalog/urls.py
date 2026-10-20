@@ -18,4 +18,13 @@ urlpatterns = [
     path("api/references/", api.references, name="references"),
     path("api/coverage/", api.coverage, name="coverage"),
     path("api/nodes/<str:node_id>/consumers/", api.node_consumers, name="node_consumers"),
+    path("api/source-errors/sources/", api.source_reviews, name="source_reviews"),
+    path("api/source-errors/sources/<str:record_id>/", api.source_review_detail,
+         name="source_review_detail"),
+    path("api/source-errors/findings/", api.source_findings, name="source_findings"),
+    path("api/source-errors/findings/<str:record_id>/", api.source_finding_detail,
+         name="source_finding_detail"),
+    path("api/reference-planning/", api.reference_plans, name="reference_plans"),
+    path("api/reference-planning/<str:record_id>/", api.reference_plan_detail,
+         name="reference_plan_detail"),
 ]

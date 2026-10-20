@@ -1,0 +1,13 @@
+{
+  "id": "SCHLICHT-01",
+  "source_ids": [
+    "schlicht-mathematical-logic"
+  ],
+  "severity": "serious",
+  "title": "Dense-order quantifier elimination discards conditions on the parameters.",
+  "details": "[Schlicht, *Lecture Notes: Introduction to Mathematical Logic*](https://philippschlicht.github.io/teaching/files/mathematicallogic2021.pdf),\nBonn summer 2021, PDF dated 2022-02-01, §5.1, proof of Lemma 5.1.6,\npp. 65–66 (same PDF pages). Type: false elimination formulas.\n\nAfter splitting a conjunction into a parameter-only part `φ₀` and constraints\non the eliminated variable, the proof returns truth for one-sided bounds.\nBut `∃y (x₁<x₂ ∧ x₃<y)` is equivalent to `x₁<x₂`, rather than truth.\nThe two-sided conclusion also needs to retain every comparison between a\nlower-bound and an upper-bound parameter; choosing one compatible ordering\ndoes not eliminate these conditions for other assignments.\n\n**Repair and corpus disposition:** retain `φ₀`; for two-sided bounds conjoin it\nwith all lower/upper comparisons. Finite maxima/minima, density, and no endpoints\nprove the resulting equivalence. Handle equalities separately as in the usual\nsubstitution case. The quantifier-elimination theorem is correct after this\nrepair. The repaired argument is now used in\n[the direct dense-order elimination](entries/quantifier-elimination/entry.html#dlo-elimination);\nthe original source remains unchanged.",
+  "entry_refs": [
+    "quantifier-elimination#dlo-elimination"
+  ],
+  "related_findings": []
+}

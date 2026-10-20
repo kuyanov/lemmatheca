@@ -15,8 +15,15 @@ corpus/
   nodes/<node-id>.json
   taxonomy.json
   area_entries.json
-  reference-planning.md     # Upcoming references and expansion planning
-  source-errors.md          # Confirmed source defects and review coverage
+  reference-planning/
+    index.json             # Compact navigation by entry, area, kind, and URL
+    records/<id>.json       # One focused pending reference or development record
+    policy.json            # Shared planning scope and interpretation
+  source-errors/
+    index.json             # Compact navigation by entry and publication URL
+    sources/<id>.json       # One publication/version and its scoped reviews
+    findings/<id>.json      # One serious defect or local slip, with stable ID
+    policy.json            # Register scope, classification, and maintenance
   statistics.json           # Generated home-page counts and change history
 ```
 
@@ -24,13 +31,13 @@ Entry and node file and directory names must match their record's `id`. Their ID
 start with a letter or digit and use letters, digits, hyphens, or underscores. Keep
 them stable when changing titles or subject categories.
 
-[Reference backlog and planning](../corpus/reference-planning.md) records future
-links and expansion context. Its [upcoming-reference table](../corpus/reference-planning.md#upcoming-references)
-uses current consuming entry/block IDs; existing-target integration, future-entry
-plans, correspondences to establish, and deferred extensions belong in the other
-sections of the same document. This authoring document is separate from entry,
-node, and navigation metadata.
-Keep every section limited to outstanding reference or development work. For new
+[Reference planning](../corpus/reference-planning/index.json) records future
+links and expansion context. The `upcoming-reference` kind is one logical
+collection using current consuming entry/block IDs. Separate kinds hold
+existing-target integration, future-entry plans, correspondences to establish,
+source plans, and deferred extensions. These authoring records are separate from
+entry and node metadata.
+Keep every record limited to outstanding reference or development work. For new
 or changed mathematical coverage, step 2 owns
 [reference integration](../CONTRIBUTING.md#reference-integration): inspect existing
 consuming entries across areas, add useful links, and remove related fulfilled
@@ -39,7 +46,7 @@ the entry's references and relevant integration changes without repeating the
 broad discovery search; steps 4–6 do not own this audit. Wording and layout edits
 check affected links only. Retain only the unfulfilled part of a mixed task. Existing
 coverage and source details may remain as prerequisites or supporting context for
-a concrete future task; completed source-review records belong in `source-errors.md`.
+a concrete future task; completed source-review records belong in `source-errors/sources/`.
 
 `taxonomy.json` defines areas with `id`, `title`, `parent`, and `description`.
 `area_entries.json` maps primary area IDs to ordered entry-ID lists under `areas`.
@@ -47,7 +54,8 @@ Add each entry once to its primary area's list. This index controls listings,
 navigation counts and the next-entry link. The validator rejects missing,
 duplicated, unlisted, or incorrectly assigned entries.
 Every parent must exist, and the area hierarchy must be acyclic.
-`additional_areas` is metadata; current listings use the primary-area index.
+Reader area listings use the primary-area index. Authoring API area filters also
+match `additional_areas`.
 
 ## Entry metadata
 
@@ -114,7 +122,7 @@ Block structure, human references, and formal-node mappings belong in HTML.
 
 ## Source errors
 
-[Source errors](../corpus/source-errors.md) is the permanent register of confirmed
+[Source errors](../corpus/source-errors/index.json) is the permanent register of confirmed
 mathematical defects in external books, papers, and notes used by the corpus.
 Prioritize false statements, missing necessary hypotheses, invalid constructions,
 and deductions that fail as written. Distinguish these from local mathematical
@@ -122,7 +130,7 @@ slips whose arguments survive. Do not register missing explanations, legitimate
 compression, different conventions, or uncertainty as confirmed errors.
 
 Whenever inspecting a source, consult its existing records and maintain its
-coverage row: publication and edition or revision, URL, checked passages, consuming
+source record: publication and edition or revision, URLs, checked passages, consuming
 entries, check date, findings, and any access limits. Consolidate duplicate URLs
 for the same publication without merging different editions. Record no defect
 found only for the inspected scope; do not claim a whole-book audit.
@@ -140,12 +148,76 @@ and resolution; never infer an upstream correction from our repaired exposition.
 Reuse applicable source assessments; moving to another pipeline stage does not
 require inspecting unchanged source passages again or duplicating their coverage
 records. All six steps maintain this register when actual source checks reveal new
-defects or extend reviewed coverage. Steps 1, 3, and 5 may update this document
+defects or extend reviewed coverage. Steps 1, 3, and 5 may update these records
 only; their entry, node, proof, and generated-data work remains read-only.
 Save confirmed findings before the handoff rather than leaving them solely in a
 chat or pull request. Entry editorial findings and formal correspondence findings
 stay in their review handoffs. This register has no approval flags or effect on
-verification badges, and its updates require link checks, not a Lean build.
+verification badges, and its updates require catalog refresh and record/link checks,
+not a Lean build.
+
+## Navigating source and planning records
+
+Read relevant records rather than loading either collection in full. Each has a
+stable ID and predictable path. Compact `index.json` catalogs contain IDs and
+lookup relationships, without copying review or planning prose. Source catalogs
+provide `by_url`, `by_entry`, and finding-to-source relationships. Planning catalogs
+provide `by_entry`, `by_area`, `by_kind`, and `by_url`; `by_entry` includes planned
+entry IDs as well as current consumers.
+
+With the reader running, use the
+[source and planning API](app.md#source-and-planning-api):
+
+```sh
+curl 'http://127.0.0.1:8000/api/source-errors/sources/?entry_id=first-incompleteness'
+curl 'http://127.0.0.1:8000/api/source-errors/findings/?source_id=avigad-computability-incompleteness&severity=serious'
+curl 'http://127.0.0.1:8000/api/source-errors/findings/AVIGAD-CI-02/'
+curl 'http://127.0.0.1:8000/api/reference-planning/?entry_id=second-incompleteness'
+curl 'http://127.0.0.1:8000/api/reference-planning/?area=mathematical-logic&kind=upcoming-reference'
+```
+
+Lists return compact summaries; fetch selected IDs for full reviews, evidence,
+repairs or plans. Publication lookup ignores URL fragments such as `#page=167`;
+aliases and different inspected editions remain explicitly identified. Prioritize
+`serious` findings; inspect `local` slips only when relevant.
+
+Without the API, filter the compact catalog and open the selected files:
+
+```python
+import json
+from pathlib import Path
+
+root = Path("corpus/reference-planning")
+catalog = json.loads((root / "index.json").read_text())
+for record_id in catalog["by_entry"].get("second-incompleteness", []):
+    print(root / "records" / f"{record_id}.json")
+```
+
+Source records hold `publication`, `urls`, `reviews`, `entry_refs`, and
+`finding_ids`. Reviews preserve checked passages, consumer context, outcomes,
+dates and access limits. Historical reviews with several scoped dates retain
+those qualifications; migration does not create a new whole-publication audit.
+Findings hold `source_ids`, `severity`, `title`, `details`, `entry_refs`, and
+`related_findings`; details retain the mathematical evidence and repair.
+
+Planning records share `id`, `kind`, `title`, `areas`, `entry_refs`, and `urls`,
+plus focused fields for their task or source plan. `entry_refs` names existing
+entries or blocks; `planned_entry_ids` names future entries without inventing
+anchors. Area tags may identify future areas not yet in the taxonomy. Markdown
+links in record strings resolve relative to `corpus/`, independent of file depth.
+
+After record changes, regenerate the catalogs and validate:
+
+```sh
+uv run python app/manage.py index_authoring_records
+uv run python app/manage.py validate_corpus
+```
+
+Catalog generation writes only changed catalogs. Validation checks shapes, IDs,
+source/finding relationships, existing entry/block references and exact catalog
+contents. Catalogs are committed navigation files; the entry/node index under
+`artifacts/` remains a separate disposable cache. Neither command invokes Lean.
+Do not maintain a second Markdown copy of these registries.
 
 ## HTML and references
 

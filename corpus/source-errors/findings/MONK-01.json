@@ -1,0 +1,13 @@
+{
+  "id": "MONK-01",
+  "source_ids": [
+    "monk-set-theory"
+  ],
+  "severity": "local",
+  "title": "The currying witness evaluates a function outside its domain.",
+  "details": "[Monk, *Lectures on Set Theory*](https://euclid.colorado.edu/~monkd/setth.pdf),\n2019-03-11, p. 135, proof of Proposition 12.43(viii).\nType: invalid witness; the exponentiation identity itself is correct.\n\nThe proposed map takes `x:μ→(λ→κ)` to a function on `λ×μ`, but assigns\nthe pair `(α,β)` the value `x(α)(β)` for `α∈λ, β∈μ`. With `λ=2, μ=1`,\nevaluation at `(1,0)` requests `x(1)`, outside the outer domain. The proposed\ninverse likewise has the factors reversed.\n\n**Repair and corpus disposition:** assign `(α,β)↦x(β)(α)` and define the\ninverse by `x(β)(α)=z(α,β)`. The two inverse identities then hold pointwise.\nThis is adjacent material on a cited page; the entry uses Monk's valid\ncardinal-exponentiation reduction and cofinal coding, not this witness.\nThe corpus's [power laws](entries/infinite-cardinal-arithmetic/entry.html#power-laws)\nuse the correct correspondence.",
+  "entry_refs": [
+    "infinite-cardinal-arithmetic#power-laws"
+  ],
+  "related_findings": []
+}

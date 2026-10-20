@@ -1,0 +1,11 @@
+{
+  "id": "AVIGAD-LC-02",
+  "source_ids": [
+    "avigad-logic-computation"
+  ],
+  "severity": "serious",
+  "title": "The preservation proof uses a positive diagram where an embedding needs negated atoms.",
+  "details": "[Avigad, *Logic and Computation*](https://www.andrew.cmu.edu/user/avigad/Teaching/landc_notes.pdf),\nJanuary 2002, §7.6, proof of Theorem 7.6.1, p. 96 (PDF p. 102).\nType: invalid model-construction step.\n\nThe diagram is redefined using only positive atomic facts, then its consistency\nwith a theory is treated as sufficient for a substructure embedding. In a\nlanguage with a unary predicate `P`, take a singleton structure where `P` is\nfalse and a theory requiring `∀x P(x)`. The positive diagram is consistent with\nthat theory, but the singleton cannot embed as a substructure of a model of it:\nan embedding must reflect `P`, too. This counterexample identifies the failed\ndiagram-to-embedding step; it does not refute the preservation theorem.\n\n**Repair and corpus disposition:** include all true atomic and negated atomic\nsentences with names for the structure's elements, as the notes correctly do\nin §7.4, p. 92. That signed atomic diagram gives an embedding. A merely positive\ndiagram does not. Planning only; preservation is a later model-theory extension,\nnot a theorem currently used by an entry.",
+  "entry_refs": [],
+  "related_findings": []
+}

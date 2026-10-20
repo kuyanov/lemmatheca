@@ -1,0 +1,13 @@
+{
+  "id": "ZAPLETAL-01",
+  "source_ids": [
+    "zapletal-logic"
+  ],
+  "severity": "local",
+  "title": "Deleting witness literals does not project an inconsistent equality or order pattern.",
+  "details": "[Zapletal, *Undergraduate logic sequence: the notes*](https://people.clas.ufl.edu/zapletal/files/notesset3.pdf),\n2014-11-21, §6.3, proofs of Theorems 6.3.2 and 6.3.4, pp. 75–77\n(PDF pages 79–81). Type: invalid elimination step.\n\nThe stated complete-conjunction convention does not require consistency. The\nproof claims that existential projection is obtained by erasing all literals\nmentioning the witness. Complete an equality pattern containing\n`x₀=x₁`, `x₁=y`, and `x₀≠y` by supplying all remaining pair decisions. The whole\npattern has no realization, although its retained `x₀=x₁` pattern is consistent.\nThus erasing the witness literals changes an impossible existential condition\ninto a satisfiable parameter condition. The dense-order proof inherits this\nissue. Also, an atomic formula on a larger variable list need not itself be a\ncomplete pattern; it must be expressed as a disjunction of such patterns.\n\n**Repair and corpus disposition:** discard inconsistent full patterns before\nprojecting, or eliminate equality by substitution and order bounds by retaining\nall parameter conditions and every lower/upper comparison.\n[Quantifier elimination](entries/quantifier-elimination/entry.html#equality-elimination)\nand its dense-order argument use these repairs; the formal finite-pattern proof\nranges only over patterns realized by tuples. The motivational claim before\nTheorem 6.3.4 that there are only three quantifier-free possibilities also omits\nBoolean combinations; same-pattern tuples with different between-point behavior\nsupply the correct non-elimination argument. Later algebraic applications are\noutside the adopted scope.",
+  "entry_refs": [
+    "quantifier-elimination#equality-elimination"
+  ],
+  "related_findings": []
+}

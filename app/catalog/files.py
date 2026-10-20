@@ -1,4 +1,4 @@
-"""Canonical corpus JSON storage; derived indexes are disposable caches."""
+"""Shared corpus JSON reads and atomic replacement of records and catalogs."""
 
 import json
 from pathlib import Path
@@ -30,12 +30,3 @@ def write_json(path, record):
         temporary.replace(path)
     finally:
         temporary.unlink(missing_ok=True)
-
-
-def records(corpus, kind):
-    pattern = "nodes/*.json" if kind == "node" else "entries/*/entry.json"
-    result = {}
-    for path in sorted(corpus.glob(pattern)):
-        expected = path.stem if kind == "node" else path.parent.name
-        result[expected] = read_record(path, expected)
-    return result

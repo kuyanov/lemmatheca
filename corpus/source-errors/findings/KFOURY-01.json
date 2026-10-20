@@ -1,0 +1,13 @@
+{
+  "id": "KFOURY-01",
+  "source_ids": [
+    "kfoury-compactness-completeness"
+  ],
+  "severity": "local",
+  "title": "The Herbrand-model theorem fails with built-in equality, and its proof overstates universal transfer.",
+  "details": "[Kfoury, *Compactness and Completeness of Propositional Logic and First-Order Logic*](https://www.cs.bu.edu/faculty/kfoury/UNI-Teaching/CS512/AK_Documents_Past_Semesters/compactness.pdf),\nrevision 2017-03-15, §4, Herbrand-structure definition and Lemma 24,\npp. 9–10. Type: false theorem and failed inference.\n\nThe statement asserts a free-term Herbrand model for the Skolem form of any\nsatisfiable first-order sentence, including built-in equality. But\n`∃x∃y (x=y)` has Skolem form `a=b`: it has a singleton model, yet the prescribed\nHerbrand structure interprets the distinct constant terms `a,b` as distinct\nobjects. The proof explicitly treats equality as identity of expressions, so\nits atomic equivalence with an arbitrary model already fails.\n\nEven without equality, the claimed equivalence between checking every domain\nelement and checking only ground-term values is false for arbitrary models.\nTake a constant `c`, unary predicate `P`, and a two-element structure where\n`c=0` and `P={0}`. Every ground-term value satisfies `P`, while `∀x P(x)` fails.\n\n**Repair and corpus disposition:** in the equality-free universal case, use\none-way preservation into the term-generated structure. With equality, supply\na congruence quotient and prove its truth lemma rather than imposing syntactic\nidentity on terms. No corpus entry uses Lemma 24 or the subsequent Herbrand\nreduction. [Skolemization](entries/skolemization/entry.html#skolem-construction)\nuses only the separate correct algorithm, Lemma 21 and Example 23 on pp. 7–8.",
+  "entry_refs": [
+    "skolemization#skolem-construction"
+  ],
+  "related_findings": []
+}

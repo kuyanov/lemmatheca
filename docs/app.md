@@ -36,6 +36,8 @@ to `app/`:
 | --- | --- |
 | `catalog/urls.py`, `catalog/views.py` | Entry, area, node, and API requests |
 | `catalog/api.py`, `catalog/queries.py` | Read-only authoring API validation and queries |
+| `catalog/authoring_records.py` | Targeted source/planning record reads, independent catalogs, and catalog rebuilding |
+| `catalog/authoring_validation.py` | Offline source/planning schema, relationship, link, and catalog checks |
 | `catalog/index_reader.py` | Schema-checked, per-process index loading and replacement detection |
 | `catalog/entry_text.py` | On-demand HTML text extraction and a bounded, per-process LRU cache |
 | `catalog/entry_files.py` | Direct entry and metadata reads, navigation files, local assets, summary writes |
@@ -48,7 +50,7 @@ to `app/`:
 | `catalog/statistics.py` | Saved-metadata totals, count history, and Git backfill; direct snapshot read for the home page |
 | `catalog/validation.py` | Offline metadata, HTML, reference, and hierarchy validation |
 | `catalog/corpus_index.py` | Optional derived index collection and publication |
-| `catalog/management/commands/` | Independent `validate_corpus`, Lean `build`, and `update_statistics` commands |
+| `catalog/management/commands/` | `validate_corpus`, Lean `build`, `index_authoring_records`, and `update_statistics` commands |
 | `catalog/tests/` | Reader, locality, summary, and Lean-build checks |
 
 `app/config/` contains settings, URL inclusion, middleware, and the WSGI entry point.
@@ -91,12 +93,16 @@ entries it parses against the index, as described below.
 | `/api/references/` | Incoming/outgoing entry or anchor references |
 | `/api/coverage/` | Block mappings and saved verification coverage |
 | `/api/nodes/<id>/consumers/` | Consuming blocks and authored dependency hints |
+| `/api/source-errors/sources/` and `/<id>/` | Filtered publication summaries and one scoped review record |
+| `/api/source-errors/findings/` and `/<id>/` | Filtered finding summaries and one finding's evidence and repair |
+| `/api/reference-planning/` and `/<id>/` | Filtered pending development summaries and one planning record |
 
 Reader and API routes accept GET and HEAD. The API adds reader URLs and source paths to the saved node fields. Verification comes from the saved `verified` flag.
 
 ### Authoring API
 
-The seven authoring endpoints use the [derived corpus index](#corpus-index).
+The entry, node-search, reference, coverage and consumer authoring endpoints use
+the [derived corpus index](#corpus-index).
 Requests never rebuild it, write files, or invoke Lean. Ordinary HTML pages and
 the existing `/api/nodes/` and `/api/nodes/<id>/` endpoints retain their direct
 file reads and work without the index.
@@ -222,6 +228,38 @@ browser. The server is expected to
 have project, dependency, and pinned toolchain sources installed; there is no
 upstream-source fallback. Login is a presentation placeholder; the contribution
 dialog links to the GitHub repository and explains how to get involved.
+
+### Source and planning API
+
+These endpoints read the structured source register and reference plans through
+their own compact committed catalogs. They work without the entry/node index and
+never invoke Lean or rebuild catalogs during requests.
+
+| Endpoint | Filters |
+| --- | --- |
+| `/api/source-errors/sources/` | `entry_id`, publication `url`, `q` |
+| `/api/source-errors/findings/` | `source_id`, `entry_id`, `severity=serious` or `local`, `q` |
+| `/api/reference-planning/` | `entry_id`, `area`, `kind`, `url`, `q` |
+
+Append `<id>/` to a collection URL for a full record. Exact ID requests read one
+file and do not need a catalog. List responses contain compact summaries and use
+`limit` (default 20, maximum 100) and `offset`. Filters combine by intersection;
+whitespace-separated `q` terms all match case-insensitively. Source search checks
+the publication field; finding and plan searches check their record text.
+Use `entry_id` for
+either a current entry or a planned entry's ID. Area tags are exact and may name
+future areas; they do not implicitly include taxonomy descendants. URL lookup
+drops fragments and uses explicitly recorded aliases.
+
+Filters narrow catalog IDs before records are opened. A text search reads the
+candidate records but returns summaries. Catalogs contain no review or plan
+prose. An unfiltered listing without `q` opens only its requested page. Unknown
+or repeated parameters and malformed values return 400; missing records return
+404; unavailable catalogs return 503. These endpoints have no `revision`,
+`fields`, or entry-context `include` parameters. Use
+`index_authoring_records` after edits; `validate_corpus` checks catalog contents
+and record relationships. See the [record contract](corpus.md#navigating-source-and-planning-records)
+for paths, maintenance, and direct-file fallback.
 
 ### Home-page statistics
 
@@ -373,7 +411,7 @@ changes to committed node data or entry summaries. Tests run the current proof
 checker and its axiom cases in one invocation of the pinned Lean toolchain.
 Build/publication tests use subprocess fixtures to exercise persistence and
 failures without repeatedly compiling temporary Lake projects. Reader behavior
-uses small fixtures alongside representative real-corpus pages. Locality tests
+uses small representative corpus fixtures. Locality tests
 prevent area and detail views from loading unrelated content. Whole-corpus
 validation runs through `validate_corpus`, separately from fixture-based tests.
 
@@ -407,8 +445,9 @@ file reads and template rendering but excluding HTTP transport and static assets
 ## Deployment
 
 Validate the deployed corpus with `validate_corpus --check-sources --write-index`
-before serving it. The authoring APIs require the generated index; ordinary reader
-pages and legacy node APIs also work without it.
+before serving it. Entry/node authoring queries require the generated index.
+Source/planning queries use their independent committed catalogs; ordinary reader
+pages and direct node APIs also work without the entry/node index.
 For deployment, set `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, and explicit
 `DJANGO_ALLOWED_HOSTS`. Serve `config.wsgi:application` from `app/` with a production
 WSGI server and run `uv run python app/manage.py collectstatic` to collect assets.
@@ -437,13 +476,18 @@ deployment step when requirements change.
 
 ## Scaling
 
-Default validation takes O(B + R) time, where B is the input byte count and R is
-the number of references. Each entry JSON, entry HTML, and node JSON is opened once. It keeps
-one HTML tree/record at a time, plus compact area parents, entry block IDs,
-cross-entry links, and node hint edges. Memory therefore grows with these indexes
-and the largest record, rather than all prose, signatures, or HTML trees. Graph
-checks use iterative traversal, including for long chains and shared dependencies.
+Core entry/node validation takes O(B + R) time, where B is the input byte count and
+R is the number of references. Each entry JSON, entry HTML, and node JSON is opened
+once. It keeps one HTML tree/record at a time, plus compact area parents, entry
+block IDs, cross-entry links, and node hint edges. Memory grows with these indexes
+and the largest entry/node record, rather than all entry prose, signatures, or HTML
+trees. Graph checks use iterative traversal, including for long chains and shared dependencies.
 Optional source checks add the bytes of each distinct bound source file.
+
+Source/planning registry validation also reads each JSON record once and retains
+the structured registry records while checking cross-record relationships and
+catalog contents. Its memory cost therefore includes those registries' total
+record bytes. These records are not copied into the entry/node index.
 
 Index generation retains structural relationships and temporary revision inputs
 during that pass, rather than all entry prose or HTML trees.

@@ -388,7 +388,8 @@ def validate_corpus(corpus, *, source_root=None, collector=None):
 
     By default retain only area parents, entry block IDs, cross-entry links and
     node hint edges, rather than whole entry/node records. An optional collector
-    receives the same validated records and HTML trees for an index export.
+    receives the core records and HTML trees for an entry/node index export.
+    Source/planning registries have independent catalogs and validation.
     Generated proof data need not be present or current. Optional source checks
     use the installed files only; neither mode invokes Lean or the build.
     """
@@ -501,4 +502,6 @@ def validate_corpus(corpus, *, source_root=None, collector=None):
                     f"Missing referenced entry: {target}")
             require(anchor in blocks_by_entry[target],
                     f"Reference must name a mathematical block: {target}#{anchor}")
+    from .authoring_validation import validate_authoring_records
+    validate_authoring_records(corpus, blocks_by_entry)
     return len(blocks_by_entry), len(node_ids), len(areas)

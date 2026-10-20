@@ -11,8 +11,8 @@ Own source selection and mathematical scope; return a plan, not an entry or form
 
 ## Context
 
-Inspect nearby entries, `corpus/area_entries.json`, and the relevant parts of
-[reference planning](../corpus/reference-planning.md). Use the
+Inspect nearby entries, `corpus/area_entries.json`, and relevant
+[planning records](../corpus/reference-planning/index.json). Use the
 [scope](../CONTRIBUTING.md#prerequisites-and-scope),
 [reading-order](../CONTRIBUTING.md#reading-order), and
 [citation](../docs/corpus.md#entry-metadata) contracts.
@@ -24,7 +24,11 @@ when titles do not establish scope. Search blocks with topic-specific `q` and
 `include_answers=true` for human prerequisites, starting in the relevant area and
 widening when needed. Retrieve shortlisted prerequisite blocks with `block_ids`
 and `include=blocks,references`; add `navigation` when assessing placement.
-Consult publications, the source register and reference planning directly.
+Look up source records by publication URL or consuming entry, then read their
+relevant findings, prioritizing `severity=serious`. Query planning by the proposed
+entry ID or area and relevant kind. Use the
+[registry lookup workflow](../docs/corpus.md#navigating-source-and-planning-records);
+do not read either complete registry. Consult the selected publications directly.
 
 ## Work
 
@@ -51,8 +55,9 @@ Consult publications, the source register and reference planning directly.
 ## Checks
 
 Check source provenance, mathematical support, and prerequisite coverage as part
-of the work above. If the source register changed, verify its links. No corpus
-validation, rendering, Lean/library search, or build is required for this plan.
+of the work above. If source records changed, rebuild their catalogs and validate
+records and links under the [registry contract](../docs/corpus.md#navigating-source-and-planning-records).
+No other corpus validation, rendering, Lean/library search, or build is required for this plan.
 Formal reuse and signature inspection belong to step 4.
 
 ## Deliverable
@@ -60,4 +65,4 @@ Formal reuse and signature inspection belong to step 4.
 Return the scope and outline, source-to-outline map and citation objects,
 prerequisites and placement, checked repairs and unchecked passages, relevant
 integration candidates, and unresolved drafting questions. Report source-register
-changes when made. Do not create entries, nodes, proofs, or generated data.
+changes when made. Do not create entries, nodes, proofs, or build-generated proof metadata.

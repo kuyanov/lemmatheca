@@ -24,7 +24,7 @@ Follow the [stage responsibilities](CONTRIBUTING.md#stage-responsibilities) and
 work forward through the pipeline.
 
 Maintain confirmed mathematical defects in cited books, papers, and notes in
-[Source errors](corpus/source-errors.md). Prioritize false statements and failed
+[Source errors](corpus/source-errors/index.json). Prioritize false statements and failed
 arguments; valid compressed proofs and missing explanations are not source errors.
 Record the inspected edition, precise location, evidence, repair, and affected
 entry blocks, together with the actual scope of each source check.
@@ -32,12 +32,13 @@ entry blocks, together with the actual scope of each source check.
 Entries should have no major dependencies on substantial theory missing from the
 corpus. Familiar background, including elementary arithmetic and standard facts
 about real numbers, may be used without an entry reference. Track useful future
-links in the single four-column [upcoming-reference table](corpus/reference-planning.md#upcoming-references)
-and add them as the relevant areas develop. The same authoritative
-[Reference backlog and planning](corpus/reference-planning.md) document has separate
-sections for integration and expansion notes.
+links in the `upcoming-reference` collection of
+[reference planning](corpus/reference-planning/index.json), and add them as the
+relevant areas develop. Separate record kinds hold integration and expansion notes.
+Use the [targeted lookup workflow](docs/corpus.md#navigating-source-and-planning-records)
+to read the relevant JSON records rather than the entire collection.
 When an entry supplies planned coverage, add useful links from existing consuming
-entries across areas and remove fulfilled tasks from all planning sections. Keep
+entries across areas and remove fulfilled tasks from all planning records. Keep
 only outstanding work and the context needed to carry it out.
 A missing substantial prerequisite must be developed, or the dependent material
 narrowed or deferred; recording a future reference does not waive this requirement. See the

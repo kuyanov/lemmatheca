@@ -63,6 +63,24 @@ class ProofResultsTests(SimpleTestCase):
                     self.assertEqual(
                         self.statistics.read_bytes(), statistics_before)
 
+    def test_build_accepts_the_same_unicode_module_names_as_validation(self):
+        module = "Lemmatheca.Δ"
+        write_json(self.path, {**read_json(self.path), "module": module})
+
+        def run(command, **kwargs):
+            if command[:2] == ["lake", "build"]:
+                self.assertIn(module, command)
+                return subprocess.CompletedProcess(command, 0)
+            source = (self.root / command[-1]).read_text()
+            self.assertIn(f"import {module}\n", source)
+            output = 'NODE_STATUS ' + json.dumps({
+                "declaration": "example", "verified": True, "module": module,
+            })
+            return subprocess.CompletedProcess(command, 0, stdout=output)
+
+        with patch("catalog.proofs.subprocess.run", side_effect=run):
+            self.assertEqual(build(self.root, self.root), (1, 1))
+
     def test_missing_or_malformed_result_writes_nothing(self):
         previous = self.path.read_bytes()
         entry_before = self.metadata.read_bytes()

@@ -6,14 +6,14 @@ import re
 
 from django.conf import settings
 
-from .files import read_json, read_record, records, write_json
+from .files import read_json, read_record, write_json
 
 LEAN_MODULE = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z")
 TOOLCHAIN_MODULES = {"Init", "Lean", "Std"}
 
 
 def read_nodes(corpus):
-    return records(corpus, "node")
+    return {identifier: read_node(identifier, corpus) for identifier in node_ids(corpus)}
 
 
 def node_ids(corpus=None):

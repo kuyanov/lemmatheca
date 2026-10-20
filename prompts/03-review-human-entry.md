@@ -48,12 +48,16 @@ human-review scope.
 4. Check reading order and the entry's references. Review the relevant integration
    changes from step 2 and report missing, stale, or incorrect links/planning
    items. Do not repeat a corpus-wide consumer search or unrelated planning
-   cleanup. Return proposed corrections; do not edit reference planning.
+   cleanup. Retrieve only planning records associated with the reviewed entries
+   and source records for publications actually investigated, using the
+   [registry lookups](../docs/corpus.md#navigating-source-and-planning-records).
+   Return proposed corrections; do not edit reference planning.
 
 ## Checks
 
 The independent reading and rendering review above is this step's check. Run
-corpus validation only to investigate a specific structural/reference concern.
+corpus validation only to investigate a specific structural/reference concern or
+validate source-record edits. Rebuild the catalogs when source records change.
 No writing build, catalog tests, Lean proof checks, or formal-binding audit is
 required. Maintain source-register links only if that register was changed.
 

@@ -42,10 +42,13 @@ Save drafting and integration edits to the corpus files.
    `corpus/area_entries.json`, with prerequisites before their uses.
 3. For new or changed mathematical coverage, own the
    [reference integration](../CONTRIBUTING.md#reference-integration): check useful
-   outgoing and incoming links, update the single upcoming-reference table, and
+   outgoing and incoming links, update the `upcoming-reference` collection, and
    remove or narrow the related fulfilled tasks in reference planning. Inspect
    exact target statements and assumptions. A local wording or layout revision
    checks affected links only; it does not trigger another corpus-wide search.
+   Select planning records by entry ID, area, or kind through the
+   [registry lookup workflow](../docs/corpus.md#navigating-source-and-planning-records).
+   Edit only affected records and rebuild the compact catalogs after changes.
 4. Leave `data-formal` absent on new blocks. Preserve existing mappings unless
    the mathematics changes; identify affected mappings for step 4. Do not create
    nodes or Lean declarations, and do not use an empty mapping to hide unfinished

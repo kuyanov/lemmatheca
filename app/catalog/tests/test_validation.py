@@ -80,7 +80,7 @@ class CorpusValidationTests(SimpleTestCase):
                 patch('catalog.sources.render_block', side_effect=AssertionError('No rendering')), \
                 patch('django.template.loader.render_to_string', side_effect=AssertionError('No templates')), \
                 patch('catalog.management.commands.validate_corpus.write_index') as export, \
-                patch('catalog.files.records', side_effect=AssertionError('No whole catalog')):
+                patch('catalog.node_files.read_nodes', side_effect=AssertionError('No whole catalog')):
             call_command('validate_corpus', stdout=output)
             export.assert_not_called()
         self.assertIn(
@@ -97,6 +97,50 @@ class CorpusValidationTests(SimpleTestCase):
         (self.root / 'formal/Lemmatheca').mkdir(parents=True)
         (self.root / 'formal/Lemmatheca/Planned.lean').write_text('theorem planned : True := by sorry\n')
         validate_corpus(self.corpus, source_root=self.root)
+
+    def test_authoring_records_check_links_relationships_and_catalog_freshness(self):
+        from catalog.authoring_records import write_authoring_indexes
+
+        for directory in ('source-errors/sources', 'source-errors/findings',
+                          'reference-planning/records'):
+            (self.corpus / directory).mkdir(parents=True)
+        source = self.corpus / 'source-errors/sources/book.json'
+        finding = self.corpus / 'source-errors/findings/BOOK-01.json'
+        plan = self.corpus / 'reference-planning/records/future.json'
+        write_json(source, {'id': 'book', 'publication': 'A book, edition 1.',
+                   'urls': ['https://example.com/book'], 'entry_refs': ['alpha#fact'],
+                   'finding_ids': ['BOOK-01'], 'reviews': [{'checked_passages': 'Chapter 1.',
+                   'consumers': 'Alpha.', 'outcome': 'A repaired error.', 'checked_on': '2026-10-20'}]})
+        write_json(finding, {'id': 'BOOK-01', 'source_ids': ['book'], 'severity': 'serious',
+                   'title': 'Incorrect bound', 'details': 'Counterexample and repair.',
+                   'entry_refs': ['alpha#fact'], 'related_findings': []})
+        write_json(plan, {'id': 'future', 'kind': 'planned-entry', 'title': 'A future entry',
+                   'areas': ['future-area'], 'entry_refs': ['beta#fact'], 'urls': [],
+                   'planned_entry_ids': ['not-yet-added'], 'details': 'Pending scope.'})
+        for directory in ('source-errors', 'reference-planning'):
+            write_json(self.corpus / directory / 'policy.json', {'scope': 'Scoped records.'})
+        write_authoring_indexes(self.corpus)
+        before = {path: path.read_bytes() for path in self.corpus.rglob('*.json')}
+        self.assertEqual(validate_corpus(self.corpus), (2, 1, 2))
+        self.assertEqual(before, {path: path.read_bytes() for path in before})
+        for path, field, value, message in [
+            (source, 'entry_refs', ['alpha#missing'], 'Unknown referenced block'),
+            (finding, 'related_findings', ['BOOK-99'], 'Unknown related finding'),
+            (finding, 'source_ids', ['other'], 'Unknown source'),
+            (source, 'urls', ['https://example.com/new'], 'Source catalog is stale'),
+            (plan, 'planned_entry_ids', ['another-plan'], 'Planning catalog is stale'),
+            (finding, 'details', '[Missing](reference-planning/records/missing.json)',
+             'Missing record link'),
+            (plan, 'details', '[Alpha](entries/alpha/entry.html#fact)',
+             'entry_refs does not index link'),
+        ]:
+            with self.subTest(field=field, value=value):
+                original = read_json(path)
+                write_json(path, {**original, field: value})
+                try:
+                    self.assert_invalid(message)
+                finally:
+                    write_json(path, original)
 
     def test_command_reports_file_and_failure_without_traceback(self):
         self.source.write_text('<section>')

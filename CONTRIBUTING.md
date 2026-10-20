@@ -68,11 +68,10 @@ is not itself a mathematical gap or a drafting blocker.
 
 ### Reference integration
 
-The authoritative [Reference backlog and planning](corpus/reference-planning.md)
-document collects reference work in one place. Its
-[Upcoming references](corpus/reference-planning.md#upcoming-references) section
-contains exactly one four-column table of references from current entries to
-future mathematical areas. Each row records the future area, proposed reference
+The authoritative [reference-planning registry](corpus/reference-planning/index.json)
+collects reference work in focused JSON records. Its `upcoming-reference` kind
+is the single collection of references from current entries to future mathematical
+areas. Each record identifies the future area, proposed reference
 coverage, current consuming entry/block IDs, and the precise fact or context to
 reference. Include useful broader treatments of facts developed locally as well
 as accepted background. Group repeated uses and preserve stable IDs independently
@@ -82,7 +81,7 @@ invent target block IDs or link to nonexistent entries.
 For a new entry or changed mathematical coverage, step 2 audits the relevant
 entry blocks and owns integration: add useful outgoing links, search existing
 entries across areas for consumers of the new coverage, add their incoming links,
-and update the affected planning rows/tasks. Check exact target statements and
+and update the affected planning records. Check exact target statements and
 assumptions. Preserve locally explained background and distinguish optional
 explanatory links from required prerequisites. Remove only fulfilled consuming
 locations and retain outstanding facts.
@@ -97,15 +96,17 @@ rather than leaving required integration solely as suggestions in a handoff.
 
 Keep existing-target integration notes, plans for future consuming entries,
 cross-area correspondence still to prove, and deferred extensions in separate
-planning sections of the same document or in the handoff. Keep maintenance rules
-here and in the prompts. The document is separate from corpus metadata and is
+record kinds in the same registry or in the handoff. Keep maintenance rules
+here and in the prompts. The registry is separate from entry metadata and is
 neither an approval system nor a record of readiness.
-Each affected planning section tracks outstanding work only. Remove fulfilled integration
+Each planning record tracks outstanding work only. Remove fulfilled integration
 tasks, completed roadmap rows and drafting outlines, and completion narratives;
 do not move them into another planning section. For partial coverage, retain only
 the unfulfilled facts and consuming locations. Existing entries may still appear
 as prerequisites of a specific future task, and source research may remain when
-needed by planned work. Source-review history belongs in `corpus/source-errors.md`.
+needed by planned work. Source-review history belongs in `corpus/source-errors/`.
+Use the [targeted lookup workflow](docs/corpus.md#navigating-source-and-planning-records),
+edit only affected records, and rebuild their compact catalogs after changes.
 
 ### Missing prerequisites and assumptions
 
@@ -239,11 +240,14 @@ edits, omitted markup or assets, and stale or ambiguous results.
   index when the requested mutating stage permits it. A successful response can
   still miss new relationships from unvisited sources; check exact target claims
   and assumptions before using a proposed match or reference.
+- Query source reviews and findings by publication URL or entry, and planning by
+  entry, area, or kind, using the [registry endpoints](docs/app.md#source-and-planning-api).
+  Read full records only after selecting relevant IDs. Without a running server,
+  filter the compact JSON catalogs and open the selected paths directly.
 - Inspect current Lean types, definition bodies, instances and axioms locally
   under the formal contract. API signatures and verification flags are saved
-  results. Source publications, the source register and reference planning also
-  need their existing direct-file or source workflows; no API for those or for
-  live Lean inspection is implemented.
+  results. Inspect external publications directly; registry lookups do not replace
+  reading the selected source passages. No API performs live Lean inspection.
 
 Use the API to retrieve evidence; mathematical review, rendering, file edits and
 required checks remain the responsibility of their existing stages. Do not add
@@ -256,7 +260,7 @@ Run batch checks once after the relevant edits, rather than once per entry.
 
 | Change or task | Required check |
 | --- | --- |
-| Source-register edits | Check the edited records and links; no Lean build |
+| Source-register or planning edits | Rebuild catalogs with `index_authoring_records`, then validate the records and links; no Lean build |
 | Corpus HTML, metadata, assets, nodes, mappings, or reading-order edits | `uv run python app/manage.py validate_corpus` |
 | Prose, formulas, figures, or node-description edits | Inspect affected rendered content under the corpus/formal contracts |
 | Formal definitions or target statements | Compile affected modules and inspect elaborated signatures |

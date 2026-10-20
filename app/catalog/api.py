@@ -1,4 +1,4 @@
-"""Read-only authoring queries over the index and directly loaded corpus records."""
+"""Read-only authoring queries over corpus indexes and directly loaded records."""
 
 from functools import wraps
 
@@ -6,6 +6,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.http import require_safe
 
+from .authoring_records import AuthoringRecordError, AuthoringRecords, identifier, normalized_url
 from .index_reader import IndexUnavailable, get_index
 from .queries import CorpusQuery, QueryError
 
@@ -142,3 +143,75 @@ def coverage(request, query):
 @_endpoint("limit", "offset")
 def node_consumers(request, query, node_id):
     return query.get_node_consumers(node_id, **_pagination(request))
+
+
+def _authoring_endpoint(kind, *filters, detail=False):
+    """These record catalogs do not require the main corpus index or revision."""
+    allowed = set(filters) | (set() if detail else {"limit", "offset"})
+
+    def decorate(view):
+        @require_safe
+        @wraps(view)
+        def handle(request, record_id=None):
+            try:
+                unknown = request.GET.keys() - allowed
+                if unknown:
+                    raise QueryError(f"Unknown query parameters: {', '.join(sorted(unknown))}")
+                if any(len(request.GET.getlist(key)) != 1 for key in request.GET):
+                    raise QueryError("Query parameters must not be repeated.")
+                values = {key: request.GET[key] for key in filters if key in request.GET}
+                for key, value in values.items():
+                    if not value.strip():
+                        raise QueryError(f"{key} must not be empty.")
+                    if key == "q":
+                        if len(value) > 200:
+                            raise QueryError("q must contain at most 200 characters.")
+                    elif key == "url":
+                        normalized_url(value)
+                    elif key == "severity":
+                        if value not in {"serious", "local"}:
+                            raise QueryError("severity must be serious or local.")
+                    else:
+                        identifier(value)
+                records = AuthoringRecords(settings.CORPUS_DIR)
+                result = (records.record(kind, record_id) if detail else
+                          records.listing(kind, values, **_pagination(request)))
+                response = JsonResponse(result)
+                response["Cache-Control"] = "no-store"
+                return response
+            except (QueryError, AuthoringRecordError) as error:
+                return _error(error.code, str(error), error.status)
+            except ValueError as error:
+                return _error("invalid_query", str(error), 400)
+        return handle
+    return decorate
+
+
+@_authoring_endpoint("sources", "entry_id", "url", "q")
+def source_reviews(request):
+    """List source summaries, narrowed by the compact source catalog."""
+
+
+@_authoring_endpoint("sources", detail=True)
+def source_review_detail(request, record_id):
+    """Return one complete source review without opening the catalog."""
+
+
+@_authoring_endpoint("findings", "source_id", "entry_id", "severity", "q")
+def source_findings(request):
+    """List source-error findings with their severity and source identifiers."""
+
+
+@_authoring_endpoint("findings", detail=True)
+def source_finding_detail(request, record_id):
+    """Return one complete error finding without opening the catalog."""
+
+
+@_authoring_endpoint("records", "entry_id", "area", "kind", "url", "q")
+def reference_plans(request):
+    """List future references and plans without returning their full prose."""
+
+
+@_authoring_endpoint("records", detail=True)
+def reference_plan_detail(request, record_id):
+    """Return one complete planning record without opening the catalog."""

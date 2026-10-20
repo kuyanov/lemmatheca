@@ -2,7 +2,7 @@
 
 Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
 Independently compare the human mathematics with its formal targets and coverage.
-Entries, nodes, Lean sources, and generated results remain read-only.
+Entries, nodes, Lean sources, and generated proof results remain read-only.
 
 ## Inputs
 
@@ -64,3 +64,5 @@ Separate incorrect targets, missing coverage, unproved work, representation gaps
 and optional simplifications. Route corrections to step 4; report any human error
 for steps 2/3. Record new external-source findings only if source consultation
 actually required it. Do not change bindings or proofs or set approval fields.
+If source records changed, rebuild their catalogs and validate those records and
+links under the [registry contract](../docs/corpus.md#navigating-source-and-planning-records).

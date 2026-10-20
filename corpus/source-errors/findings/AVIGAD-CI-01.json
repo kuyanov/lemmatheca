@@ -1,0 +1,13 @@
+{
+  "id": "AVIGAD-CI-01",
+  "source_ids": [
+    "avigad-computability-incompleteness"
+  ],
+  "severity": "serious",
+  "title": "The minimization formula checks the parameter instead of the proposed least witness.",
+  "details": "[Avigad, *Computability and Incompleteness*](https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf),\nversion 2007-01-09, §4.3, p. 98 (PDF p. 102), immediately before Lemma 4.3.9.\nType: invalid representability formula.\n\nThe least-zero condition bounds the earlier candidates by `w<z`, where `z`\nis a side parameter, instead of `w<y`, where `y` is the proposed output.\nTake `g(0,z)=1` and `g(x,z)=0` for `x>0`. Its least zero is 1, but with\n`z=0` the displayed condition also accepts `y=2`: the earlier-candidate test\nis empty. The claimed unique output is lost.\n\n**Repair and corpus disposition:** replace that bound by `w<y` and retain the\nconvergence checks for earlier computations. Zach's *Incompleteness and\nComputability*, §4.7, pp. 92–96, supplies the corrected construction and numeral\norder reasoning in Q. The [regular-minimization argument](entries/arithmetic-representability/entry.html#regular-minimization)\nuses the corrected candidate bound, with totality of the tested function explicit.",
+  "entry_refs": [
+    "arithmetic-representability#regular-minimization"
+  ],
+  "related_findings": []
+}

@@ -1,17 +1,14 @@
 """Build Lean and prepare proof results and entry summaries before saving them."""
 
 import json
-import re
 import subprocess
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 from .entry_files import entry_ids, read_entry, save_entries
-from .node_files import TOOLCHAIN_MODULES, prepare_results, read_nodes, save_results
+from .node_files import LEAN_MODULE, TOOLCHAIN_MODULES, prepare_results, read_nodes, save_results
 from .progress import entry_progress
 from .sources import parse_source
-
-MODULE = re.compile(r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*")
 
 
 def build(corpus, formal):
@@ -19,7 +16,7 @@ def build(corpus, formal):
     results = {}
     bound = [node for node in nodes.values() if node.get("declaration")]
     modules = {node.get("module") for node in bound}
-    if any(not isinstance(module, str) or not MODULE.fullmatch(module) for module in modules):
+    if any(not isinstance(module, str) or not LEAN_MODULE.fullmatch(module) for module in modules):
         raise ValueError("Every declaration needs a valid Lean module.")
     # Core modules are already supplied by the toolchain, not Lake targets.
     build_modules = sorted(module for module in modules

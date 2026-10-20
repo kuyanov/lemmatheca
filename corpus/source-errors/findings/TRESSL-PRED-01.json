@@ -1,0 +1,13 @@
+{
+  "id": "TRESSL-PRED-01",
+  "source_ids": [
+    "tressl-predicate-logic"
+  ],
+  "severity": "serious",
+  "title": "Bound-variable renaming omits the new variable's freshness condition.",
+  "details": "[Tressl, *Predicate Logic*](https://personalpages.manchester.ac.uk/staff/Marcus.Tressl/teaching/Goedel/PredicateLogic.pdf),\n2018-02-17, Lemma 6.3, p. 56 (PDF p. 57); Definition 1.6.6, p. 17.\nType: missing necessary hypothesis.\n\nThe lemma assumes only that substitution is capture-free when asserting\n`∀x φ ↔ ∀y φ(x/y)` and its existential analogue. Take distinct variables and\n`φ=(x=y)`. Substitution is capture-free, but in a two-element domain the original\nuniversal formula is false and `∀y(y=y)` is true. The new binder captures the\noriginal free occurrence of `y`.\n\n**Repair and corpus disposition:** additionally require `y∉FV(φ)` for a genuine\nrenaming, along with substitutability. The renamed binder then cannot capture an\nold free parameter. Planning only; no current entry adopts this rule. The [normal-form entry](entries/first-order-normal-forms/entry.html#fresh-renaming)\nuses Rossegger's correctly qualified rule. The prenex theorem\nitself is true; expanding routine mixed-prefix cases is not a separate source bug.",
+  "entry_refs": [
+    "first-order-normal-forms#fresh-renaming"
+  ],
+  "related_findings": []
+}

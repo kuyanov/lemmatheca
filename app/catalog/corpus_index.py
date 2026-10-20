@@ -1,9 +1,10 @@
 """Derived structural relationships for validated corpus files.
 
-The validator supplies the records, HTML trees and exact bytes it has read. This
+The validator supplies core entry/node/navigation records, HTML trees and their exact bytes. This
 collector never rereads them, renders templates or invokes Lean. Corpus files
 remain authoritative; metadata available through a direct record read is not
-copied into the index. Authored prose is read separately and never retained by
+copied into the index. Source/planning registries use independent catalogs.
+Authored prose is read separately and never retained by
 this collector. The output is safe to discard and regenerate.
 """
 
