@@ -6,7 +6,8 @@ from django.shortcuts import render
 from django.views.decorators.http import require_safe
 
 from .content import (add_progress, ancestors, area_link, area_list, area_path,
-                      load_entry, load_entry_metadata, load_node, next_entry, node_source)
+                      load_entry, load_entry_metadata, load_node, next_entry, node_source,
+                      optional_index)
 from .entry_files import read_reading_order, read_areas
 from .node_files import node_ids
 from .sources import render_block
@@ -34,30 +35,34 @@ def area(request, path):
     if current is None or area_path(current, taxonomy) != path:
         raise Http404("This area is not in the library.")
     reading_order = read_reading_order()
+    entry_ids = reading_order.get(current["id"], [])
+    index = optional_index() if entry_ids else None
     breadcrumbs = [area_link(item, taxonomy) for item in ancestors(current, taxonomy)]
     return render(request, "catalog/area.html", {
         "area": current,
         "breadcrumbs": breadcrumbs,
         "parent_area": breadcrumbs[-2] if len(breadcrumbs) > 1 else None,
         "areas": area_list(current["id"], taxonomy, reading_order),
-        "entries": [load_entry_metadata(identifier)
-                    for identifier in reading_order.get(current["id"], [])],
+        "entries": [load_entry_metadata(identifier, index)
+                    for identifier in entry_ids],
     })
 
 
 @require_safe
 def entry(request, entry_id):
+    index = optional_index()
+
     @cache
     def read_entry(identifier):
         try:
-            return load_entry(identifier)
+            return load_entry(identifier, index)
         except FileNotFoundError:
             return None
 
     record = read_entry(entry_id)
     if record is None:
         raise Http404("This entry is not in the library.")
-    add_progress(record)
+    add_progress(record, index)
     blocks = [
         {**block, "html": render_block(block, record,
                                        read_entry, request.GET.get("answer"))}
@@ -83,7 +88,7 @@ def entry(request, entry_id):
         return_label = f"Back to {return_block['label']}"
     return render(request, "catalog/entry.html", {
         "entry": {**record, "blocks": blocks},
-        "next_entry": next_entry(record, read_reading_order()),
+        "next_entry": next_entry(record, read_reading_order(), index),
         "return_entry": return_entry,
         "return_block": return_block,
         "return_url": return_url,
@@ -93,18 +98,19 @@ def entry(request, entry_id):
     })
 
 
-def get_node(identifier):
+def get_node(identifier, index=None):
     try:
-        return load_node(identifier)
+        return load_node(identifier, index)
     except FileNotFoundError as error:
         raise Http404("This formal node is not in the library.") from error
 
 
 @require_safe
 def node_page(request, node_id):
-    node = get_node(node_id)
+    index = optional_index()
+    node = get_node(node_id, index)
     context = {"node": node, "dependencies": [
-        load_node(identifier) for identifier in node.get("dependencies", [])]}
+        load_node(identifier, index) for identifier in node.get("dependencies", [])]}
     if node["source"]:
         context.update(node_source(node))
     return render(request, "catalog/node.html", context)
@@ -112,7 +118,8 @@ def node_page(request, node_id):
 
 @require_safe
 def node_list(request):
-    return JsonResponse({"nodes": [load_node(identifier) for identifier in node_ids()]})
+    index = optional_index()
+    return JsonResponse({"nodes": [load_node(identifier, index) for identifier in node_ids()]})
 
 
 @require_safe

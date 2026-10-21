@@ -35,6 +35,10 @@ Entry and node file and directory names must match their record's `id`. Their ID
 start with a letter or digit and use letters, digits, hyphens, or underscores. Keep
 them stable when changing titles or subject categories.
 
+Entry and node JSON contain authored content only. The build stores node proof
+results, entry progress counts and Lean line counts in `index.json`; see the
+[build guide](build.md#what-a-normal-build-does) for storage and regeneration rules.
+
 [Reference planning](../corpus/reference-planning/index.json) records future
 links and expansion context. The `upcoming-reference` kind is one logical
 collection using current consuming entry/block IDs. Separate kinds hold
@@ -113,18 +117,28 @@ publication details include `year`, `venue`, `volume`, `issue`, `pages`, `doi`, 
 citations are supported. Use `[]` for original material with no external sources.
 Citation authors identify the cited work, not the entry's contributor.
 
-The build generates an additional `formalization` object containing the counts,
-status, percentage when applicable, label, and description for the entry-list badge.
-Do not edit it by hand. Area pages read only this metadata, without parsing entry
-HTML or loading nodes. Refresh this data at delivery after adding entries or
-changing block inventory, mappings, node bindings, or Lean declarations/proofs,
-following the [shared build rules](../CONTRIBUTING.md#validation-and-submission).
-Include the refreshed entry and node JSON with the change. Failed checks or
-invalid entry summaries leave the previous generated data intact.
+`entry.json` contains only the authored fields above. The build never rewrites it.
+Generated data belongs to `corpus/index.json`, under `entries[entry_id]`:
+
+```json
+{
+  "formalization": {"complete": 44, "total": 44, "unmapped_blocks": 0},
+  "lean_line_count": 441
+}
+```
+
+The node counts are distinct per entry. `unmapped_blocks` counts blocks without a
+specified formal-node mapping; an explicitly empty mapping does not count.
+Badge status, percentage and wording are derived when requested, using these
+counts and the indexed block count. The line count covers the entry's owned Lean
+directory; see the [build guide](build.md#what-a-normal-build-does) for its rules.
+Both writing build modes regenerate these values. Authors and workers do not
+write them or placeholder summaries. Follow the
+[shared publication rules](../CONTRIBUTING.md#validation-and-submission) after edits.
 
 Corpus-wide aggregate totals and history are stored solely in
 `corpus/statistics.json`. The [statistics workflow](../.github/workflows/statistics.yml)
-writes it after pushes to `main`, using saved metadata and Git
+writes it after pushes to `main`, using indexed entry counts, saved node results and Git
 authors. Contribution branches should leave this file unchanged; the proof build
 does not update it. Its schema is validated when present, without requiring
 freshness during authoring.
@@ -461,7 +475,7 @@ coverage when preparing bindings:
 
 | Attribute | Meaning |
 | --- | --- |
-| Absent | Formalization has not been planned for the block |
+| Absent | The block's formal-node mapping has not been specified |
 | `data-formal=""` | The block has nothing to formalize |
 | `data-formal="node-a node-b"` | The listed nodes collectively cover the block |
 
@@ -473,8 +487,8 @@ empty mapping to hide unfinished work.
 
 Badges count distinct verified nodes, so shared nodes count once per entry. With
 all blocks mapped, they display the verified proportion, or N/A if every mapping
-is empty. Wholly unplanned entries display Not started; partly unplanned entries
-display Partial. These are formalization summaries, not GitHub review decisions.
+is empty. Entries with every block unmapped display Not started; other entries
+with unmapped blocks display Partial. These are formalization summaries, not GitHub review decisions.
 Node pages display Verified or Not verified, the mathematical description, Lean
 declaration, dependencies, and source.
 In node descriptions, enclose mathematical notation in `\(...\)` or `\[...\]`

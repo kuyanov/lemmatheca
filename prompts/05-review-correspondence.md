@@ -32,7 +32,7 @@ coverage. Do not repeat step 4's general reuse search.
 1. Independently check every human definition and claim against its mapping,
    including examples, hidden answers and specified constructions or witnesses.
    Do not assume the preparation map is complete. Distinguish missing coverage,
-   intentionally unbound claims and empty/unplanned mappings.
+   intentionally unbound claims, explicitly empty mappings and unmapped blocks.
 2. Compare each claim and node description with actual types and definitions:
    hypotheses, quantifier order, witness dependencies, specified-map identities,
    domains, instances, conventions and foundation limits. Detect vacuous or weaker

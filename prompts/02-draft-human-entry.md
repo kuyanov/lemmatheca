@@ -38,7 +38,9 @@ entry, area or kind using the
    source passages only when the supplied assessment does not cover them. Report
    scope, prerequisite or entry-splitting needs rather than independently
    replanning the area or compressing the arguments.
-2. Save `entry.html`, author-maintained `entry.json` fields and necessary assets.
+2. Save `entry.html`, [authored `entry.json` fields](../docs/corpus.md#entry-metadata)
+   and necessary assets. Progress counts and Lean line counts are build outputs in
+   the index; do not add them or placeholder summaries to entry metadata.
    Make the abstract understandable before reading the entry, use the shared
    italic proof label, and reserve accent green statement boxes for main results.
    Use stable links independent of adjacency or area membership. For a standalone

@@ -37,6 +37,8 @@ class Command(BaseCommand):
             raise CommandError(getattr(error, "stdout", None)
                                or str(error)) from error
         counts = result["counts"]
+        for warning in result["warnings"]:
+            self.stderr.write(self.style.WARNING(f"WARNING: {warning}"))
         self.stdout.write(f"Corpus valid: {counts['entries']} entries, {counts['nodes']} nodes, {counts['areas']} areas.")
         if options["check"]:
             return ("Generated corpus data is current; Lean verification checked."

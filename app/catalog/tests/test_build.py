@@ -13,6 +13,7 @@ from django.core.management import call_command, CommandError, get_commands
 from django.test import SimpleTestCase, override_settings
 
 from catalog.files import read_json, write_json
+from catalog.index_reader import IndexUnavailable, get_index
 from catalog.proofs import prepare_proof_results
 
 
@@ -24,8 +25,8 @@ class ProofPreparationTests(SimpleTestCase):
         (self.root / "nodes").mkdir()
         self.path = self.root / "nodes/example.json"
         write_json(self.path, {
-            "id": "example", "module": "Lemmatheca", "declaration": "example",
-            "verified": True, "signature": "example : True", "declaration_line": 5,
+            "id": "example", "description": "An example.", "dependencies": [],
+            "module": "Lemmatheca", "declaration": "example",
         })
 
     def test_preparation_returns_results_without_publishing_and_ignores_unrelated_files(self):
@@ -36,7 +37,10 @@ class ProofPreparationTests(SimpleTestCase):
                    return_value=subprocess.CompletedProcess([], 0, output)):
             prepared = prepare_proof_results(self.root, self.root)
         self.assertFalse(prepared["example"]["verified"])
-        self.assertEqual(prepared["example"]["module"], "Lemmatheca.Origin")
+        self.assertEqual(prepared["example"], {
+            "binding": ["Lemmatheca", "example"], "verified": False,
+            "defining_module": "Lemmatheca.Origin",
+        })
         self.assertNotIn("signature", prepared["example"])
         self.assertNotIn("declaration_line", prepared["example"])
         self.assertEqual(before, (self.path.read_bytes(), self.path.stat().st_mtime_ns))
@@ -59,6 +63,11 @@ class ProofPreparationTests(SimpleTestCase):
                    'NODE_STATUS {"declaration":[],"verified":true}',
                    'NODE_STATUS {"declaration":"example","verified":true,"typo":"value"}',
                    'NODE_STATUS {', 'NODE_STATUS {"declaration":"other","verified":true}',
+                   'NODE_STATUS {"declaration":"example","verified":true,"signature":17}',
+                   'NODE_STATUS {"declaration":"example","verified":true,"declaration_line":true}',
+                   'NODE_STATUS {"declaration":"example","verified":true,"module":"../bad"}',
+                   'NODE_STATUS {"declaration":"example","verified":true,"signature":"\\ud800"}',
+                   'NODE_STATUS {"declaration":"\\ud800","verified":true}',
                    'NODE_STATUS {"declaration":"example","verified":true}\n' * 2)
         for output in outputs:
             with self.subTest(output=output), patch("catalog.proofs.subprocess.run",
@@ -85,9 +94,10 @@ class ProofPreparationTests(SimpleTestCase):
         with patch("catalog.proofs.subprocess.run", side_effect=run):
             result = prepare_proof_results(self.root, self.root)
         self.assertTrue(result["example"]["verified"])
-        self.assertEqual(result["example"]["description"], "Edited during compilation.")
-        # Preparation does not persist the generated removal of old fields.
-        self.assertIn("signature", read_json(self.path))
+        self.assertEqual(result["example"]["binding"], [module, "example"])
+        self.assertNotIn("defining_module", result["example"])
+        self.assertEqual(read_json(self.path)["description"], "Edited during compilation.")
+        self.assertNotIn("signature", read_json(self.path))
 
     def test_changed_binding_discards_the_old_lean_result_without_saving(self):
         def run(command, **kwargs):
@@ -97,10 +107,11 @@ class ProofPreparationTests(SimpleTestCase):
 
         with patch("catalog.proofs.subprocess.run", side_effect=run):
             result = prepare_proof_results(self.root, self.root)
-        self.assertEqual(result["example"]["declaration"], "other")
+        self.assertEqual(result["example"]["binding"], ["Lemmatheca", "other"])
         self.assertFalse(result["example"]["verified"])
         self.assertNotIn("signature", result["example"])
-        self.assertTrue(read_json(self.path)["verified"])
+        self.assertEqual(read_json(self.path)["declaration"], "other")
+        self.assertNotIn("verified", read_json(self.path))
 
 
 class BuildCommandTests(SimpleTestCase):
@@ -120,7 +131,6 @@ class BuildCommandTests(SimpleTestCase):
         write_json(self.node, {
             "id": "proof", "description": "A bound proof.", "dependencies": [],
             "module": "Lemmatheca.Example", "declaration": "Example.fact",
-            "verified": True, "signature": "Example.fact : True", "declaration_line": 3,
         })
         write_json(self.planned, {
             "id": "planned", "description": "A planned proof.", "dependencies": [],
@@ -170,12 +180,13 @@ class BuildCommandTests(SimpleTestCase):
         return {path.relative_to(self.root): (path.read_bytes(), path.stat().st_mtime_ns)
                 for path in self.root.rglob("*") if path.is_file()}
 
-    def command(self, *args):
+    def command(self, *args, stderr=None):
         output = StringIO()
-        call_command("build", *args, stdout=output)
+        call_command("build", *args, stdout=output,
+                     stderr=stderr if stderr is not None else StringIO())
         return output.getvalue()
 
-    def lean(self, verified=True, *, fail_at=None):
+    def lean(self, verified=True, *, fail_at=None, defining_module="Lemmatheca.Example"):
         def run(command, **kwargs):
             self.assertEqual(kwargs["cwd"], self.formal)
             self.assertTrue(kwargs["check"])
@@ -188,33 +199,183 @@ class BuildCommandTests(SimpleTestCase):
             self.assertIn('#node_status "Example.fact"', (self.formal / command[-1]).read_text())
             output = "NODE_STATUS " + json.dumps({
                 "declaration": "Example.fact", "verified": verified,
-                "module": "Lemmatheca.Example", "signature": "Example.fact : True",
+                "module": defining_module, "signature": "Example.fact : True",
                 "declaration_line": 3,
             })
             return subprocess.CompletedProcess(command, 0, output)
         return patch("catalog.proofs.subprocess.run", side_effect=run)
 
     def test_no_lean_refresh_preserves_proofs_defaults_missing_status_and_builds_all_outputs(self):
-        proof_before = read_json(self.node)
+        with self.lean():
+            self.command()
+        proof_before = self.node.read_bytes(), self.node.stat().st_mtime_ns
+        planned_before = self.planned.read_bytes(), self.planned.stat().st_mtime_ns
+        entry_before = self.entry.read_bytes(), self.entry.stat().st_mtime_ns
         with patch("subprocess.run", side_effect=AssertionError("No Lean")):
             output = self.command("--no-lean")
         self.assertIn("Corpus valid: 1 entries, 2 nodes, 1 areas.", output)
         self.assertIn("1 of 2 nodes verified.", output)
         self.assertNotIn("counts", read_json(self.index))
-        self.assertEqual(read_json(self.node), proof_before)
-        self.assertFalse(read_json(self.planned)["verified"])
-        summary = read_json(self.entry)["formalization"]
-        self.assertEqual((summary["complete"], summary["total"], summary["label"]), (1, 2, "50%"))
-        self.assertEqual(read_json(self.entry)["title"], "Example")
+        self.assertEqual((self.node.read_bytes(), self.node.stat().st_mtime_ns), proof_before)
+        self.assertEqual((self.planned.read_bytes(), self.planned.stat().st_mtime_ns), planned_before)
+        self.assertEqual(read_json(self.index)["nodes"]["proof"], {
+            "binding": ["Lemmatheca.Example", "Example.fact"], "verified": True,
+            "signature": "Example.fact : True", "declaration_line": 3,
+        })
+        self.assertEqual(read_json(self.index)["nodes"]["planned"], {
+            "binding": [None, None], "verified": False,
+        })
+        indexed = read_json(self.index)["entries"]["example"]
+        self.assertEqual(indexed["formalization"], {
+            "complete": 1, "total": 2, "unmapped_blocks": 0,
+        })
+        self.assertEqual(indexed["lean_line_count"], 0)
+        self.assertEqual((self.entry.read_bytes(), self.entry.stat().st_mtime_ns), entry_before)
         self.assertEqual(read_json(self.index)["node_consumers"]["proof"], ["example#fact"])
         self.assertEqual(read_json(self.catalogs[0])["by_entry"]["example"], ["book"])
         self.assertIn("future", read_json(self.catalogs[1])["records"])
         self.assertFalse((self.corpus / "statistics.json").exists())
 
+    def test_no_lean_missing_snapshot_warns_and_invalid_snapshots_are_preserved(self):
+        with self.lean():
+            self.command()
+        current = read_json(self.index)
+        before = {path: (path.read_bytes(), path.stat().st_mtime_ns)
+                  for path in (self.node, self.planned, self.entry)}
+        self.index.unlink()
+        errors = StringIO()
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean", stderr=errors)
+        self.assertIn("WARNING:", errors.getvalue())
+        self.assertIn("build without --no-lean", errors.getvalue())
+        self.assertEqual(read_json(self.index)["nodes"]["proof"], {
+            "binding": ["Lemmatheca.Example", "Example.fact"], "verified": False,
+        })
+        self.assertEqual(read_json(self.index)["entries"]["example"]["formalization"]["complete"], 0)
+
+        cases = ("not JSON", json.dumps({**current, "schema_version": 6}),
+                 json.dumps({**current, "nodes": {**current["nodes"], "proof": {
+                     **current["nodes"]["proof"], "verified": "true",
+                 }}}),
+                 *(json.dumps({**current, "nodes": {**current["nodes"], "proof": {
+                     **current["nodes"]["proof"], field: value,
+                 }}}) for field, value in (
+                     ("signature", "Example.fact : \ud800"),
+                     ("binding", ["Lemmatheca.Example", "\ud800"]),
+                 )))
+        for contents in cases:
+            with self.subTest(snapshot=contents):
+                self.index.write_text(contents)
+                with self.assertRaises(IndexUnavailable):
+                    get_index(self.index)
+                invalid_before = self.snapshot()
+                with patch("subprocess.run", side_effect=AssertionError("No Lean")), \
+                        self.assertRaisesRegex(CommandError, "build without --no-lean"):
+                    self.command("--no-lean")
+                self.assertEqual(self.snapshot(), invalid_before)
+        with self.lean():
+            self.command()
+        self.assertTrue(read_json(self.index)["nodes"]["proof"]["verified"])
+        self.assertEqual(before, {path: (path.read_bytes(), path.stat().st_mtime_ns)
+                                  for path in before})
+        unreadable_before = self.snapshot()
+        with patch("catalog.build.get_index", side_effect=IndexUnavailable("Unreadable index")), \
+                self.assertRaisesRegex(CommandError, "[Ii]ndex|[Ss]napshot"):
+            self.command("--no-lean")
+        self.assertEqual(self.snapshot(), unreadable_before)
+
+        write_json(self.node, {**read_json(self.node), "module": None, "declaration": None})
+        self.index.unlink()
+        errors = StringIO()
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean", stderr=errors)
+        self.assertNotIn("WARNING:", errors.getvalue())
+
+    def test_no_lean_rebinding_discards_result_and_authored_metadata_edits_keep_it(self):
+        with self.lean():
+            self.command()
+        write_json(self.node, {**read_json(self.node), "description": "Edited description."})
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean")
+            self.assertTrue(read_json(self.index)["nodes"]["proof"]["verified"])
+            node, cached = read_json(self.node), read_json(self.index)
+            for change in ({"declaration": "Example.other"}, {"module": "Lemmatheca.Other"}):
+                with self.subTest(change=change):
+                    write_json(self.node, {**node, **change})
+                    write_json(self.index, cached)
+                    self.command("--no-lean")
+                    self.assertEqual(read_json(self.index)["nodes"]["proof"], {
+                        "binding": [change.get("module", node["module"]),
+                                    change.get("declaration", node["declaration"])],
+                        "verified": False,
+                    })
+            # The snapshot has no history: restoring the old binding after a
+            # checkpoint cannot recover its discarded proof metadata.
+            write_json(self.node, node)
+            self.command("--no-lean")
+            self.assertEqual(read_json(self.index)["nodes"]["proof"], {
+                "binding": [node["module"], node["declaration"]], "verified": False,
+            })
+
+    def test_full_build_reports_defining_module_without_rewriting_import_binding(self):
+        before = self.node.read_bytes(), self.node.stat().st_mtime_ns
+        with self.lean(defining_module="Lemmatheca.Origin"):
+            self.command()
+        indexed = read_json(self.index)
+        self.assertEqual(indexed["nodes"]["proof"]["binding"],
+                         ["Lemmatheca.Example", "Example.fact"])
+        self.assertEqual(indexed["nodes"]["proof"]["defining_module"], "Lemmatheca.Origin")
+        self.assertEqual(indexed["module_nodes"], {"Lemmatheca.Origin": ["proof"]})
+        self.assertEqual((self.node.read_bytes(), self.node.stat().st_mtime_ns), before)
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean")
+        self.assertEqual(read_json(self.index), indexed)
+
+    def test_no_lean_refresh_counts_physical_lines_only_in_each_owned_lean_subfolder(self):
+        additional = self.corpus / "entries/multi-word-entry/entry.json"
+        additional.parent.mkdir()
+        write_json(additional, {**read_json(self.entry), "id": "multi-word-entry"})
+        additional.with_name("entry.html").write_text(
+            '<section id="fact" data-kind="lemma"><h2>A fact</h2><p>A fact.</p></section>')
+        write_json(self.corpus / "reading_order.json", {
+            "areas": {"area": ["example", "multi-word-entry"]},
+        })
+        sources = {
+            "Lemmatheca/Example/Header.lean": "-- Header\n\n",
+            "Lemmatheca/Example/Nested/Proof.lean": "def first := 1\n#check first",
+            "Lemmatheca/Example/Empty.lean": "",
+            "Lemmatheca/Example/Notes.md": "ignored\n" * 10,
+            "Lemmatheca/MultiWordEntry/Main.lean": "\n-- Comment\n#check Nat",
+            "Lemmatheca/multi-word-entry/Main.lean": "wrong folder\n" * 10,
+            "Lemmatheca/OtherEntry/Main.lean": "another entry\n" * 10,
+            "Lemmatheca/Example.lean": "outside the subfolder\n" * 10,
+            "Lemmatheca.lean": "umbrella\n" * 10,
+        }
+        for relative, contents in sources.items():
+            path = self.formal / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(contents)
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean")
+            before = {path: (path.read_bytes(), path.stat().st_mtime_ns)
+                      for path in (self.entry, additional)}
+            indexed = read_json(self.index)
+            self.assertEqual(indexed["entries"]["example"]["lean_line_count"], 4)
+            self.assertEqual(indexed["entries"]["multi-word-entry"]["lean_line_count"], 3)
+            self.assertEqual(indexed["entries"]["multi-word-entry"]["formalization"], {
+                "complete": 0, "total": 0, "unmapped_blocks": 1,
+            })
+            (self.formal / "Lemmatheca/Example/Nested/Proof.lean").write_text(
+                sources["Lemmatheca/Example/Nested/Proof.lean"] + "\n\n")
+            self.command("--no-lean")
+        current = read_json(self.index)
+        self.assertEqual(current["entries"]["example"]["lean_line_count"], 5)
+        self.assertEqual(current["entries"]["multi-word-entry"]["lean_line_count"], 3)
+        self.assertNotEqual(current["revision"], indexed["revision"])
+        self.assertEqual(before, {path: (path.read_bytes(), path.stat().st_mtime_ns)
+                                  for path in before})
+
     def test_read_only_no_lean_check_accepts_missing_generated_outputs_and_lean_installation(self):
-        record = read_json(self.node)
-        record.pop("verified")
-        write_json(self.node, record)
         self.formal.rmdir()
         before = self.snapshot()
         with patch("subprocess.run", side_effect=AssertionError("No Lean")), \
@@ -252,11 +413,12 @@ class BuildCommandTests(SimpleTestCase):
             self.command("--no-lean", "--check")
             self.assertEqual(self.snapshot(), before)
             self.command("--no-lean")
-        current = read_json(self.node)
+        current = read_json(self.index)["nodes"]["proof"]
+        self.assertEqual(current["binding"], [None, None])
         self.assertFalse(current["verified"])
         self.assertNotIn("signature", current)
         self.assertNotIn("declaration_line", current)
-        self.assertEqual(read_json(self.entry)["formalization"]["label"], "0%")
+        self.assertEqual(read_json(self.index)["entries"]["example"]["formalization"]["complete"], 0)
 
     def test_reserved_index_is_not_an_input_and_authored_edits_change_revision(self):
         with patch("subprocess.run", side_effect=AssertionError("No Lean")):
@@ -264,7 +426,7 @@ class BuildCommandTests(SimpleTestCase):
             first = read_json(self.index)
             self.command("--no-lean")
             self.assertEqual(read_json(self.index)["revision"], first["revision"])
-            self.index.write_text("not even JSON")
+            self.index.unlink()
             self.command("--no-lean")
             self.assertEqual(read_json(self.index)["revision"], first["revision"])
             write_json(self.node, {**read_json(self.node), "description": "Updated authored description."})
@@ -274,7 +436,7 @@ class BuildCommandTests(SimpleTestCase):
         self.assertNotIn("counts", current)
         self.assertEqual({key: value for key, value in current.items() if key != "revision"},
                          {key: value for key, value in first.items() if key != "revision"})
-        self.assertTrue(read_json(self.node)["verified"])
+        self.assertNotIn("verified", read_json(self.node))
 
     def test_index_override_and_configured_external_destination(self):
         configured, explicit = self.root / "cache/configured.json", self.root / "cache/explicit.json"
@@ -288,6 +450,41 @@ class BuildCommandTests(SimpleTestCase):
         self.assertFalse(self.index.exists())
         self.assertEqual(read_json(explicit)["revision"], read_json(configured)["revision"])
 
+    def test_no_lean_index_override_reuses_selected_results_and_falls_back_only_when_missing(self):
+        with self.lean():
+            self.command()
+        selected = self.root / "selected.json"
+        errors = StringIO()
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean", "--index", str(selected), stderr=errors)
+        self.assertNotIn("WARNING:", errors.getvalue())
+        self.assertTrue(read_json(selected)["nodes"]["proof"]["verified"])
+        with self.lean(False):
+            self.command("--index", str(selected))
+        with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+            self.command("--no-lean", "--index", str(selected))
+            self.assertFalse(read_json(selected)["nodes"]["proof"]["verified"])
+            self.assertIn("signature", read_json(selected)["nodes"]["proof"])
+            selected.write_text("not JSON")
+            invalid_before = self.snapshot()
+            with self.assertRaisesRegex(CommandError, "[Ii]ndex|[Ss]napshot"):
+                self.command("--no-lean", "--index", str(selected))
+        self.assertEqual(self.snapshot(), invalid_before)
+        self.assertTrue(read_json(self.index)["nodes"]["proof"]["verified"])
+
+        configured = self.root / "cache/configured.json"
+        alternate = self.root / "cache/alternate.json"
+        with override_settings(CORPUS_INDEX_PATH=configured):
+            with self.lean():
+                self.command()
+            self.index.unlink()
+            errors = StringIO()
+            with patch("subprocess.run", side_effect=AssertionError("No Lean")):
+                self.command("--no-lean", "--index", str(alternate), stderr=errors)
+        self.assertNotIn("WARNING:", errors.getvalue())
+        self.assertEqual(read_json(alternate)["nodes"], read_json(configured)["nodes"])
+        self.assertTrue(read_json(alternate)["nodes"]["proof"]["verified"])
+
     def test_symlink_corpus_build_matches_physical_root_and_checks_remain_read_only(self):
         alias = self.root / "corpus-alias"
         alias.symlink_to(self.corpus, target_is_directory=True)
@@ -300,12 +497,12 @@ class BuildCommandTests(SimpleTestCase):
         self.assertEqual(set(after) - set(before), {
             path.relative_to(self.root) for path in (self.index, *self.catalogs)
         })
-        self.assertEqual({path for path in before if before[path] != after[path]}, {
-            self.entry.relative_to(self.root), self.planned.relative_to(self.root),
-        })
+        self.assertEqual({path for path in before if before[path] != after[path]}, set())
         with patch("subprocess.run", side_effect=AssertionError("No Lean")):
             self.command("--no-lean")
         self.assertEqual(read_json(self.index), from_alias)
+        with self.lean():
+            self.command()
         before_checks = self.snapshot()
         with override_settings(CORPUS_DIR=alias, CORPUS_INDEX_PATH=alias / "index.json"):
             with patch("subprocess.run", side_effect=AssertionError("No Lean")):
@@ -345,15 +542,19 @@ class BuildCommandTests(SimpleTestCase):
         self.assertEqual(self.snapshot(), before)
 
     def test_full_refresh_and_lean_failure_preserve_the_last_published_snapshot(self):
+        authored_before = {path: (path.read_bytes(), path.stat().st_mtime_ns)
+                           for path in (self.entry, self.node, self.planned)}
         with self.lean(False) as external:
             self.command()
         self.assertEqual(external.call_count, 2)
-        self.assertFalse(read_json(self.node)["verified"])
-        self.assertEqual(read_json(self.entry)["formalization"]["label"], "0%")
+        self.assertFalse(read_json(self.index)["nodes"]["proof"]["verified"])
+        self.assertEqual(read_json(self.index)["entries"]["example"]["formalization"]["complete"], 0)
         with self.lean(True):
             self.command()
-        self.assertTrue(read_json(self.node)["verified"])
-        self.assertEqual(read_json(self.entry)["formalization"]["label"], "50%")
+        self.assertTrue(read_json(self.index)["nodes"]["proof"]["verified"])
+        self.assertEqual(read_json(self.index)["entries"]["example"]["formalization"]["complete"], 1)
+        self.assertEqual(authored_before, {path: (path.read_bytes(), path.stat().st_mtime_ns)
+                                           for path in authored_before})
         before = self.snapshot()
         for fail_at in ("compile", "inspect"):
             with self.subTest(fail_at=fail_at), self.lean(fail_at=fail_at):
@@ -380,9 +581,11 @@ class BuildCommandTests(SimpleTestCase):
     def test_invalid_prepared_node_prevents_every_metadata_and_catalog_write(self):
         with patch("subprocess.run", side_effect=AssertionError("No Lean")):
             self.command("--no-lean")
-        from catalog.node_files import read_nodes
-        prepared = read_nodes(self.corpus)
-        prepared["proof"] = {**prepared["proof"], "verified": False, "signature": 17}
+        prepared = {
+            "proof": {"binding": ["Lemmatheca.Example", "Example.fact"],
+                      "verified": False, "signature": 17},
+            "planned": {"binding": [None, None], "verified": False},
+        }
         before = self.snapshot()
         with patch("catalog.build.prepare_proof_results", return_value=prepared), \
                 self.assertRaises(CommandError):
@@ -413,9 +616,9 @@ class BuildCommandTests(SimpleTestCase):
             external.side_effect = edit_during_compile
             self.command()
         self.assertEqual(read_json(self.node)["description"], "Concurrent edit.")
-        self.assertFalse(read_json(self.node)["verified"])
+        self.assertFalse(read_json(self.index)["nodes"]["proof"]["verified"])
         self.assertEqual(read_json(self.entry)["reading_time"], 15)
-        self.assertEqual(read_json(self.entry)["formalization"]["label"], "0%")
+        self.assertEqual(read_json(self.index)["entries"]["example"]["formalization"]["complete"], 0)
 
     def test_references_edited_during_lean_are_rechecked_before_publication(self):
         with patch("subprocess.run", side_effect=AssertionError("No Lean")):
@@ -443,19 +646,46 @@ class BuildCommandTests(SimpleTestCase):
     def test_full_check_detects_stale_proof_fields_summaries_and_catalogs_without_saving(self):
         with self.lean():
             self.command()
-        for path, field, value in (
-                (self.node, "verified", False), (self.node, "signature", "Old signature"),
-                (self.node, "declaration_line", 99), (self.node, "module", "Lemmatheca.Old"),
-                (self.entry, "formalization", {**read_json(self.entry)["formalization"], "label": "Old label"}),
-                (self.catalogs[0], "by_entry", {})):
-            with self.subTest(path=path, field=field):
+        current = read_json(self.index)
+        changes = [
+            (self.index, {**current, "nodes": {**current["nodes"], "proof": {
+                **current["nodes"]["proof"], field: value,
+            }}})
+            for field, value in (("verified", False), ("signature", "Old signature"),
+                                 ("declaration_line", 99),
+                                 ("defining_module", "Lemmatheca.Old"))
+        ]
+        changes += [
+            (self.index, {**current, "entries": {**current["entries"], "example": {
+                **current["entries"]["example"], field: value,
+            }}})
+            for field, value in (("formalization", {"complete": 2, "total": 2,
+                                                    "unmapped_blocks": 0}),
+                                 ("lean_line_count", 99))
+        ]
+        changes.append((self.catalogs[0], {**read_json(self.catalogs[0]), "by_entry": {}}))
+        for path, changed in changes:
+            with self.subTest(path=path, changed=changed):
                 original = path.read_bytes()
-                write_json(path, {**read_json(path), field: value})
+                write_json(path, changed)
                 before = self.snapshot()
                 with self.lean(), self.assertRaisesRegex(CommandError, "[Ss]tale|[Oo]utdated|[Dd]iffer"):
                     self.command("--check")
                 self.assertEqual(self.snapshot(), before)
                 path.write_bytes(original)
+
+    def test_full_check_detects_changed_lean_line_count_without_saving(self):
+        source = self.formal / "Lemmatheca/Example/Main.lean"
+        source.parent.mkdir(parents=True)
+        source.write_text("-- One line\n")
+        with self.lean():
+            self.command()
+        self.assertEqual(read_json(self.index)["entries"]["example"]["lean_line_count"], 1)
+        source.write_text("-- One line\n-- Another line\n")
+        before = self.snapshot()
+        with self.lean(), self.assertRaisesRegex(CommandError, r"index\.json"):
+            self.command("--check")
+        self.assertEqual(self.snapshot(), before)
 
     def test_full_check_accepts_current_saved_index_and_writes_nothing(self):
         with self.lean():

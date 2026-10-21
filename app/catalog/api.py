@@ -39,7 +39,7 @@ def _endpoint(*parameters, repeatable=()):
                                      status=409, code="revision_mismatch")
                 result = view(request, CorpusQuery(index, settings.CORPUS_DIR), *args, **kwargs)
                 response = JsonResponse({"index_revision": index["revision"],
-                                         "metadata_source": "live_corpus", **result})
+                                         "metadata_source": "live_corpus_and_index", **result})
                 response["Cache-Control"] = "no-store"
                 return response
             except QueryError as error:

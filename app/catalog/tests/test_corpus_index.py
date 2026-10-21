@@ -31,9 +31,8 @@ class CorpusIndexTests(SimpleTestCase):
         for node_id, dependencies in [("proof", []), ("other", ["proof"])]:
             write_json(self.corpus / f"nodes/{node_id}.json", {
                 "id": node_id, "description": rf"A proof of \(x=x\): {node_id}.",
-                "verified": True, "module": "Lemmatheca.Example",
+                "module": "Lemmatheca.Example",
                 "declaration": "Example.shared", "dependencies": dependencies,
-                "signature": "Example.shared : True", "declaration_line": 3,
             })
         self.alpha = self.add_entry("alpha", r'''
             <section id="question" data-kind="question" data-formal="proof other">
@@ -58,6 +57,13 @@ class CorpusIndexTests(SimpleTestCase):
               <h2>A fact</h2><p>True.</p>
             </section>''')
         self.destination = default_index_path(self.repository)
+        self.node_results = {node_id: {
+            "binding": ["Lemmatheca.Example", "Example.shared"], "verified": True,
+            "signature": "Example.shared : True", "declaration_line": 3,
+        } for node_id in ("proof", "other")}
+
+    def build_index(self):
+        return write_index(self.corpus, self.destination, node_results=self.node_results)
 
     def add_entry(self, identifier, source):
         directory = self.corpus / "entries" / identifier
@@ -86,17 +92,27 @@ class CorpusIndexTests(SimpleTestCase):
         with patch.object(Path, "open", tracked_open), \
                 patch("subprocess.run", side_effect=AssertionError("No Lean")), \
                 patch("catalog.sources.render_block", side_effect=AssertionError("No rendering")):
-            result = write_index(self.corpus, self.destination)
+            result = self.build_index()
         self.assertEqual(reads, Counter({path: 1 for path in before}))
         self.assertEqual(read_json(self.destination), result)
         self.assertEqual(before, {path: path.read_bytes() for path in before})
-        self.assertEqual(result["schema_version"], 5)
+        self.assertEqual(result["schema_version"], 7)
         self.assertNotIn("counts", result)
+        self.assertEqual(result["nodes"], self.node_results)
         self.assertEqual(result["entries"]["alpha"]["reading_position"], 2)
         self.assertEqual(result["entries"]["beta"]["reading_position"], 1)
         self.assertEqual(result["entries"]["alpha"]["blocks"],
                          ["question", "empty", "planned"])
-        self.assertEqual(set(result["entries"]["alpha"]), {"blocks", "reading_position"})
+        self.assertEqual(set(result["entries"]["alpha"]), {
+            "blocks", "reading_position", "formalization", "lean_line_count",
+        })
+        self.assertEqual(result["entries"]["alpha"]["formalization"], {
+            "complete": 2, "total": 2, "unmapped_blocks": 1,
+        })
+        self.assertEqual(result["entries"]["beta"]["formalization"], {
+            "complete": 1, "total": 1, "unmapped_blocks": 0,
+        })
+        self.assertEqual(result["entries"]["alpha"]["lean_line_count"], 0)
         self.assertEqual(result["nodes_by_declaration"]["Example.shared"], ["other", "proof"])
         self.assertEqual(result["module_nodes"]["Lemmatheca.Example"], ["other", "proof"])
         self.assertEqual(result["node_consumers"]["proof"], ["alpha#question", "beta#fact"])
@@ -133,7 +149,7 @@ class CorpusIndexTests(SimpleTestCase):
             </section>'''
         root, *_ = checked_source(source)
         before = deepcopy(root)
-        collector = CorpusIndex(self.corpus)
+        collector = CorpusIndex(self.corpus, node_results=self.node_results)
         collector.add_reading_order({"areas": {"area": ["beta"]}})
         collector.add_entry(read_json(self.beta.parent / "entry.json"), root)
         result = collector.finish()
@@ -159,13 +175,13 @@ class CorpusIndexTests(SimpleTestCase):
             source = source.replace(text, marker)
         self.alpha.write_text(source)
         root, *_ = checked_source(source)
-        collector = CorpusIndex(self.corpus)
+        collector = CorpusIndex(self.corpus, node_results=self.node_results)
         collector.add_reading_order(read_json(self.corpus / "reading_order.json"))
         collector.add_entry(read_json(self.alpha.parent / "entry.json"), root)
         for marker in markers.values():
             self.assertNotIn(marker, str(vars(collector)))
 
-        result = write_index(self.corpus, self.destination)
+        result = self.build_index()
         serialized = json.dumps(result)
         for marker in markers.values():
             self.assertNotIn(marker, serialized)
@@ -175,14 +191,14 @@ class CorpusIndexTests(SimpleTestCase):
             self.assertEqual(set(edge), {"source", "target", "in_answer", "link_index"})
 
         self.alpha.write_text(source.replace("PRIVATE_BODY_MARKER", "UPDATED_PRIVATE_BODY_MARKER"))
-        updated = write_index(self.corpus, self.destination)
+        updated = self.build_index()
         self.assertNotEqual(updated["revision"], result["revision"])
         self.assertEqual({key: value for key, value in updated.items() if key != "revision"},
                          {key: value for key, value in result.items() if key != "revision"})
 
     def test_deterministic_across_collection_order_and_locations(self):
         def collect(reverse=False):
-            collector = CorpusIndex(self.corpus)
+            collector = CorpusIndex(self.corpus, node_results=self.node_results)
             collector.add_reading_order(read_json(self.corpus / "reading_order.json"))
             for path in sorted(self.corpus.rglob("*"), reverse=reverse):
                 if not path.is_file():
@@ -197,51 +213,58 @@ class CorpusIndexTests(SimpleTestCase):
 
         first, second = collect(), collect(reverse=True)
         self.assertEqual(first, second)
-        copied = CorpusIndex(self.repository / "another-checkout/corpus")
+        copied = CorpusIndex(self.repository / "another-checkout/corpus", node_results=self.node_results)
+        copied.add_reading_order(read_json(self.corpus / "reading_order.json"))
         for path in self.corpus.rglob("*"):
-            if path.is_file():
-                copied.add_file(copied.corpus / path.relative_to(self.corpus), path.read_bytes())
-        self.assertEqual(first["revision"], copied.finish()["revision"])
+            if not path.is_file():
+                continue
+            copied.add_file(copied.corpus / path.relative_to(self.corpus), path.read_bytes())
+            if path.parent.name == "nodes":
+                copied.add_node(read_json(path))
+            elif path.name == "entry.html":
+                root, *_ = checked_source(path.read_text())
+                copied.add_entry(read_json(path.parent / "entry.json"), root)
+        self.assertEqual(first, copied.finish())
         self.assertNotIn(str(self.repository), str(first))
 
     def test_invalid_corpus_and_publication_error_preserve_previous_cache(self):
-        write_index(self.corpus, self.destination)
+        self.build_index()
         previous = self.destination.read_bytes()
         source = self.alpha.read_bytes()
         self.alpha.write_text("<section>")
         with self.assertRaises(CorpusError):
-            write_index(self.corpus, self.destination)
+            self.build_index()
         self.assertEqual(self.destination.read_bytes(), previous)
         self.alpha.write_bytes(source)
         previous_artifacts = set(self.destination.parent.iterdir())
         with patch.object(Path, "replace", side_effect=OSError("Cannot publish")):
             with self.assertRaisesRegex(OSError, "Cannot publish"):
-                write_index(self.corpus, self.destination)
+                self.build_index()
         self.assertEqual(self.destination.read_bytes(), previous)
         self.assertEqual(set(self.destination.parent.iterdir()), previous_artifacts)
 
     def test_statistics_updates_do_not_change_the_index_document_or_revision(self):
-        expected = write_index(self.corpus, self.destination)
+        expected = self.build_index()
         statistics = self.corpus / "statistics.json"
         snapshot = {"entries": 2, "verified_entries": 1, "nodes": 2,
                     "verified_nodes": 1, "contributors": 3}
         for data in (snapshot, {**snapshot, "verified_nodes": 2, "contributors": 4}):
             with self.subTest(statistics=data):
                 write_json(statistics, data)
-                self.assertEqual(write_index(self.corpus, self.destination), expected)
+                self.assertEqual(self.build_index(), expected)
 
     def test_revision_hashes_exact_bytes_including_crlf(self):
         paths = [self.alpha, self.alpha.parent / "entry.json"]
-        initial_revision = write_index(self.corpus, self.destination)["revision"]
+        initial_revision = self.build_index()["revision"]
         for path in paths:
             original = path.read_bytes()
             path.write_bytes(original.replace(b"\n", b"\r\n"))
             content = path.read_bytes()
             self.assertIn(b"\r\n", content)
-            result = write_index(self.corpus, self.destination)
+            result = self.build_index()
             self.assertNotEqual(result["revision"], initial_revision)
             path.write_bytes(original)
-            self.assertEqual(write_index(self.corpus, self.destination)["revision"], initial_revision)
+            self.assertEqual(self.build_index()["revision"], initial_revision)
 
     def test_metadata_is_not_duplicated_but_still_changes_revision(self):
         node_path = self.corpus / "nodes/proof.json"
@@ -249,7 +272,6 @@ class CorpusIndexTests(SimpleTestCase):
         taxonomy_path = self.corpus / "taxonomy.json"
         write_json(node_path, {
             **read_json(node_path), "description": "NODE_DESCRIPTION_PRIVATE",
-            "signature": "Example.shared : NODE_SIGNATURE_PRIVATE",
         })
         write_json(metadata_path, {
             **read_json(metadata_path), "abstract": "ENTRY_ABSTRACT_PRIVATE",
@@ -258,31 +280,102 @@ class CorpusIndexTests(SimpleTestCase):
         taxonomy = read_json(taxonomy_path)
         taxonomy["areas"][0]["description"] = "TAXONOMY_DESCRIPTION_PRIVATE"
         write_json(taxonomy_path, taxonomy)
-        result = write_index(self.corpus, self.destination)
-        self.assertTrue({"nodes", "areas", "reading_order", "verification", "files"}.isdisjoint(result))
+        result = self.build_index()
+        self.assertTrue({"areas", "reading_order", "verification", "files"}.isdisjoint(result))
         serialized = json.dumps(result)
-        for text in ["NODE_DESCRIPTION_PRIVATE", "NODE_SIGNATURE_PRIVATE", "ENTRY_ABSTRACT_PRIVATE",
+        for text in ["NODE_DESCRIPTION_PRIVATE", "ENTRY_ABSTRACT_PRIVATE",
                      "CITATION_AUTHOR_PRIVATE", "CITATION_TITLE_PRIVATE", "TAXONOMY_DESCRIPTION_PRIVATE"]:
             self.assertNotIn(text, serialized)
-        self.assertNotIn('"verified"', serialized)
         original_derived_data = {key: value for key, value in result.items()
                                  if key != "revision"}
 
         # Fields omitted from the export still change its revision. The derived
         # relationships themselves need not change when only metadata changes.
         updates = [
-            (node_path, {"description": "UPDATED_NODE_DESCRIPTION", "verified": False}),
+            (node_path, {"description": "UPDATED_NODE_DESCRIPTION"}),
             (metadata_path, {"abstract": "UPDATED_ABSTRACT"}),
             (taxonomy_path, {"areas": [{**taxonomy["areas"][0], "title": "UPDATED_AREA_TITLE"}]}),
         ]
         previous_revision = result["revision"]
         for path, update in updates:
             write_json(path, {**read_json(path), **update})
-            result = write_index(self.corpus, self.destination)
+            result = self.build_index()
             self.assertNotEqual(result["revision"], previous_revision)
             self.assertEqual({key: value for key, value in result.items()
                               if key != "revision"}, original_derived_data)
             previous_revision = result["revision"]
+
+    def test_proof_only_changes_update_indexed_results_counts_and_revision(self):
+        first = self.build_index()
+        node_path = self.corpus / "nodes/proof.json"
+        before = node_path.read_bytes(), node_path.stat().st_mtime_ns
+        self.node_results["proof"] = {**self.node_results["proof"], "verified": False}
+        current = self.build_index()
+        self.assertNotEqual(current["revision"], first["revision"])
+        self.assertEqual(current["entries"]["alpha"]["formalization"], {
+            "complete": 1, "total": 2, "unmapped_blocks": 1,
+        })
+        self.assertEqual(current["entries"]["beta"]["formalization"], {
+            "complete": 0, "total": 1, "unmapped_blocks": 0,
+        })
+        self.assertEqual(current["nodes"]["proof"]["verified"], False)
+        self.assertEqual({key: value for key, value in current.items()
+                          if key not in {"revision", "entries", "nodes"}},
+                         {key: value for key, value in first.items()
+                          if key not in {"revision", "entries", "nodes"}})
+        self.assertEqual(before, (node_path.read_bytes(), node_path.stat().st_mtime_ns))
+        # Location and signatures also contribute even if verification is unchanged.
+        for field, value in (("signature", "Example.shared : (True)"), ("declaration_line", 4)):
+            self.node_results["proof"] = {**self.node_results["proof"], field: value}
+            updated = self.build_index()
+            self.assertNotEqual(updated["revision"], current["revision"])
+            self.assertEqual(updated["entries"], current["entries"])
+            current = updated
+
+    def test_defining_module_is_indexed_without_changing_the_authored_binding(self):
+        authored = read_json(self.corpus / "nodes/proof.json")
+        self.node_results["proof"]["defining_module"] = "Lemmatheca.Origin"
+        current = self.build_index()
+        self.assertEqual(current["module_nodes"], {
+            "Lemmatheca.Example": ["other"], "Lemmatheca.Origin": ["proof"],
+        })
+        self.assertEqual(current["nodes"]["proof"]["binding"],
+                         ["Lemmatheca.Example", "Example.shared"])
+        self.assertEqual(read_json(self.corpus / "nodes/proof.json"), authored)
+
+    def test_default_index_writer_reuses_only_matching_saved_bindings(self):
+        expected = self.build_index()
+        self.assertEqual(write_index(self.corpus, self.destination), expected)
+        path = self.corpus / "nodes/proof.json"
+        write_json(path, {**read_json(path), "declaration": "Example.rebound"})
+        current = write_index(self.corpus, self.destination)
+        self.assertEqual(current["nodes"]["proof"], {
+            "binding": ["Lemmatheca.Example", "Example.rebound"], "verified": False,
+        })
+        self.assertEqual(current["nodes"]["other"], self.node_results["other"])
+        self.assertEqual(current["entries"]["alpha"]["formalization"]["complete"], 1)
+
+    def test_collector_counts_lean_lines_from_an_explicit_formal_root(self):
+        formal = self.repository / "custom-formal"
+        source = formal / "Lemmatheca/Alpha/Proof.lean"
+        source.parent.mkdir(parents=True)
+        source.write_text("-- Comment\n\n#check True")
+        def collect():
+            collector = CorpusIndex(self.corpus, formal, node_results=self.node_results)
+            collector.add_reading_order(read_json(self.corpus / "reading_order.json"))
+            root, *_ = checked_source(self.alpha.read_text())
+            collector.add_entry(read_json(self.alpha.parent / "entry.json"), root)
+            for path in (self.corpus / "nodes").glob("*.json"):
+                collector.add_node(read_json(path))
+            return collector.finish()
+
+        first = collect()
+        self.assertEqual(first["entries"]["alpha"]["lean_line_count"], 3)
+        source.write_text("-- Comment\n\n#check True\n\n")
+        current = collect()
+        self.assertEqual(current["entries"]["alpha"]["lean_line_count"], 4)
+        self.assertNotEqual(current["revision"], first["revision"])
+        self.assertEqual(first["entries"]["alpha"]["lean_line_count"], 3)
 
     def test_rejects_other_destinations_in_corpus_before_validation(self):
         for path in [self.corpus / "cache.json", self.alpha.parent / "../index.json"]:

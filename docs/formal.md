@@ -19,8 +19,7 @@ reference them. A new binding can be written as:
   "description": "If \\(A\\subseteq B\\) and \\(B\\subseteq C\\), then \\(A\\subseteq C\\).",
   "module": "Mathlib.Data.Set.Basic",
   "declaration": "Set.Subset.trans",
-  "dependencies": ["set-subset"],
-  "verified": false
+  "dependencies": ["set-subset"]
 }
 ```
 
@@ -66,10 +65,10 @@ variables that resemble English articles. For a corpus-wide audit, inspect
 untouched records too; a scan for Unicode symbols or single-letter tokens alone
 does not cover these cases. State the actual coverage and limitations of checks.
 
-`declaration` is the full Lean name. `module` is the module that defines it, used
-for both importing and browsing its source. A node can bind directly to a local, mathlib, or Lean core declaration.
-Before a target exists, `module` and `declaration` may both be `null`; start new
-nodes with `verified: false`.
+`declaration` is the full Lean name. `module` is the authored module to import;
+normally it defines the declaration. A node can bind directly to a local,
+mathlib, or Lean core declaration. Before a target exists, `module` and
+`declaration` may both be `null`.
 
 Formalization uses classical Lean and mathlib with `propext`, `Classical.choice`,
 and `Quot.sound` permitted by default. This convention
@@ -87,13 +86,16 @@ axiom systems, remain unbound until an appropriate encoding exists. Adding a
 provable choice principle as a Lean premise does not certify axiom strength.
 Bind faithful principle definitions and constructions with supplied data separately.
 
-The build writes `verified`, the pretty-printed `signature`, and `declaration_line`,
-and refreshes `module` from Lean's defining-module information. Do not fabricate
-these results or source locations. Verification fields may be absent before a
-build; a missing `verified` value is treated as false. Generated declarations may point to a source
-origin with a different name; compare the exported signature with the actual target.
-The reader uses local project, Lake dependency, and Elan toolchain sources for its
-source browser and line links.
+Node JSON contains authored fields only: `id`, `description`, `module`,
+`declaration` and `dependencies`. The build stores `verified`, the pretty-printed
+`signature`, and `declaration_line` under `index.nodes[id]`, together with the
+checked `[module, declaration]` binding. A different defining source module is
+saved as `defining_module`; the authored module stays unchanged. Do not fabricate
+these results or source locations. The reader joins them only while the binding
+matches, and otherwise treats the node as unverified without a saved signature or
+source line. Generated declarations may have a source origin with a different
+name; compare the exported signature with the actual target. Source browsing
+uses local project, Lake dependency, and Elan toolchain sources.
 
 ## Bindings and proof planning
 
@@ -161,6 +163,9 @@ owns `Lemmatheca/ArithmeticTheories/`. An entry may have several modules; import
 them through `formal/Lemmatheca.lean`. Use the existing Lake project. Build
 infrastructure such as `Lemmatheca/ProofStatus.lean` stays outside entry directories.
 
+The build records each directory's Lean line count in the corpus index, also in
+`--no-lean` mode; see the [generated entry results](build.md#what-a-normal-build-does).
+
 Module paths describe ownership; reusable declarations' namespaces describe
 mathematical areas. For example, the module
 `Lemmatheca.ArithmeticTheories.ArithmeticTheories`
@@ -214,10 +219,12 @@ remain Not verified while other nodes are checked. Missing declarations, invalid
 bindings and compilation failures fail the command. Inspect the actual results
 and full diagnostics before claiming proof completion.
 
-Include changed generated node/entry JSON, catalogs and `corpus/index.json` with
-the sources. `build --no-lean` reuses saved proof results; it does
-not certify changed declarations or bindings. Reader requests never run Lean or
-establish source freshness.
+Include changed catalogs and `corpus/index.json` with the sources.
+`build --no-lean` reuses indexed proof results only for matching bindings; it
+does not certify edited Lean code. A no-Lean writing build fails if an existing
+snapshot is unreadable, invalid or incompatible. With no saved snapshot, it can record
+unverified nodes, warning when bound nodes are affected; a full build restores
+proof results. Reader requests never run Lean or establish source freshness.
 
 Focused `lake env lean` or `lake build` checks are useful while editing, but do not
 refresh corpus metadata. Finish formal changes with the full integrated build.

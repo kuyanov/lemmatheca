@@ -8,11 +8,13 @@ from django.core.management import get_commands
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 
-from catalog.content import add_progress, load_entry, next_entry
+from catalog.content import add_progress, load_entry, load_node, next_entry
+from catalog.corpus_index import write_index
 from catalog.entry_files import read_reading_order, read_entry_metadata
 from catalog.files import read_json, write_json
 from catalog.node_files import read_node
-from catalog.progress import entry_progress
+from catalog.index_reader import clear_index_cache, get_index
+from catalog.progress import format_progress
 
 from .html import HTML
 
@@ -26,13 +28,16 @@ class ReaderTests(SimpleTestCase):
             corpus = repository / "corpus"
             (corpus / "nodes").mkdir(parents=True)
             write_json(corpus / "taxonomy.json", {"areas": [
-                {"id": "logic-and-foundations", "title": "Logic and foundations", "parent": None},
-                {"id": "set-theory", "title": "Set theory", "parent": "logic-and-foundations"},
+                {"id": "logic-and-foundations", "title": "Logic and foundations", "parent": None,
+                 "description": "Logic and foundations."},
+                {"id": "set-theory", "title": "Set theory", "parent": "logic-and-foundations",
+                 "description": "Set theory."},
             ]})
             write_json(corpus / "reading_order.json", {"areas": {
                 "set-theory": ["sets-and-maps", "equivalence-relations", "ordered-sets"],
             }})
             nodes = {}
+            results = {}
             for identifier, module, declaration, line, dependencies in [
                 ("set", "Mathlib.Data.Set.Defs", "Set", 2, []),
                 ("nat-membership-and-inclusion-example", "Lemmatheca.ReaderFixture",
@@ -40,10 +45,11 @@ class ReaderTests(SimpleTestCase):
                 ("set-subset-transitive", "Mathlib.Data.Set.Basic", "Set.Subset.trans", 3, ["set"]),
             ]:
                 nodes[identifier] = {
-                    "id": identifier, "description": identifier, "verified": True,
-                    "module": module, "declaration": declaration, "declaration_line": line,
-                    "signature": declaration + " : True", "dependencies": dependencies,
+                    "id": identifier, "description": identifier,
+                    "module": module, "declaration": declaration, "dependencies": dependencies,
                 }
+                results[identifier] = {"binding": [module, declaration], "verified": True,
+                                       "declaration_line": line, "signature": declaration + " : True"}
                 write_json(corpus / "nodes" / f"{identifier}.json", nodes[identifier])
             sources = {
                 "sets-and-maps": [
@@ -65,7 +71,6 @@ class ReaderTests(SimpleTestCase):
                     "id": identifier, "title": identifier.replace("-", " ").title(),
                     "primary_area": "set-theory", "additional_areas": [], "based_on": [],
                     "summary": "A short entry.", "abstract": "A short entry.", "reading_time": 5,
-                    "formalization": entry_progress([{"formal_ids": ids} for _, _, ids, _ in blocks], nodes),
                 })
                 (entry / "entry.html").write_text("".join(
                     f'<section id="{block}" data-kind="{kind}" data-formal="{" ".join(ids)}">'
@@ -82,8 +87,12 @@ class ReaderTests(SimpleTestCase):
                 path = formal / relative
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(source, encoding="utf-8")
-            with override_settings(CORPUS_DIR=corpus, REPOSITORY_DIR=repository):
+            write_index(corpus, corpus / "index.json", node_results=results)
+            with override_settings(CORPUS_DIR=corpus, REPOSITORY_DIR=repository,
+                                   CORPUS_INDEX_PATH=corpus / "index.json"):
+                clear_index_cache()
                 yield corpus
+                clear_index_cache()
 
     def page(self, response):
         self.assertEqual(response.status_code, 200)
@@ -232,18 +241,75 @@ class ReaderTests(SimpleTestCase):
                                     for parent in table.ancestors()))
 
     def test_saved_entry_summaries_match_current_block_bindings_and_node_results(self):
-        for identifier in ("sets-and-maps", "equivalence-relations", "ordered-sets"):
-            with self.subTest(entry=identifier):
-                saved = read_entry_metadata(identifier)["formalization"]
-                self.assertEqual(saved, add_progress(
-                    load_entry(identifier))["formalization"])
+        with self.small_corpus():
+            for identifier in ("sets-and-maps", "equivalence-relations", "ordered-sets"):
+                with self.subTest(entry=identifier):
+                    indexed = get_index()["entries"][identifier]
+                    saved = format_progress(indexed["formalization"], len(indexed["blocks"]))
+                    self.assertEqual(saved, add_progress(
+                        load_entry(identifier))["formalization"])
+
+    def test_entry_lean_line_count_on_list_and_header(self):
+        with self.small_corpus() as corpus:
+            path = corpus / "index.json"
+            index = read_json(path)
+            for count, label in [(None, None), (0, "0 lines of Lean"),
+                                 (1, "1 line of Lean"), (12345, "12,345 lines of Lean")]:
+                with self.subTest(count=count):
+                    if count is None:
+                        path.unlink()
+                    else:
+                        index["entries"]["sets-and-maps"]["lean_line_count"] = count
+                        write_json(path, index)
+                    area = self.page(self.client.get(
+                        "/areas/logic-and-foundations/set-theory/"))
+                    row = area.find_all("a", href="/entries/sets-and-maps/")[0]
+                    entry = self.page(self.client.get("/entries/sets-and-maps/"))
+                    header = next(element for element in entry.find_all("header")
+                                  if entry.find_all("h1", within=element))
+                    for element in (row, header):
+                        if label is None:
+                            self.assertNotRegex(element.text, r"lines? of Lean")
+                        else:
+                            self.assertIn(label, element.text)
+
+    def test_unavailable_index_keeps_authored_content_and_live_progress_readable(self):
+        with self.small_corpus() as corpus:
+            path = corpus / "index.json"
+            valid = read_json(path)
+            node_path = corpus / "nodes/set.json"
+            write_json(node_path, {**read_json(node_path), "verified": True,
+                                  "signature": "Obsolete cached signature", "declaration_line": 999})
+            for index in (None, {}, {**valid, "schema_version": 0}, {**valid, "entries": {}}):
+                with self.subTest(index=index):
+                    if index is None:
+                        path.unlink()
+                    else:
+                        write_json(path, index)
+                    response = self.client.get("/areas/logic-and-foundations/set-theory/")
+                    self.assertEqual(response.status_code, 200)
+                    self.assertNotIn("Formalization:", response.content.decode())
+                    response = self.client.get("/entries/sets-and-maps/")
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(response.context["entry"]["formalization"]["percent"],
+                                     100 if index and index.get("schema_version") == valid["schema_version"] else 0)
+                    self.assertIn("A set.", response.content.decode())
+                    node = self.client.get("/nodes/set/")
+                    self.assertEqual(node.status_code, 200)
+                    if index is None or index.get("schema_version") != valid["schema_version"]:
+                        self.assertFalse(node.context["node"]["verified"])
+                        self.assertNotIn("signature", node.context["node"])
+                        self.assertNotIn("declaration_line", node.context["node"])
+                    else:
+                        self.assertEqual(node.context["node"]["signature"], "Set : True")
+                        self.assertEqual(node.context["node"]["declaration_line"], 2)
 
     def test_node_declarations_and_source_links_do_not_run_lean(self):
         with self.small_corpus():
             identifier = "nat-membership-and-inclusion-example"
-            node = read_node(identifier)
+            node = load_node(identifier)
             for target in (identifier, "set-subset-transitive"):
-                record = read_node(target)
+                record = load_node(target)
                 with patch("subprocess.run", side_effect=AssertionError("Page requests must not run Lean")):
                     response = self.client.get(
                         reverse("catalog:node", args=[target]))
@@ -274,13 +340,15 @@ class ReaderTests(SimpleTestCase):
         with self.small_corpus() as corpus:
             path = corpus / "nodes/set.json"
             node = read_json(path)
-            write_json(path, {**node, "verified": True})
             verified_page = self.page(self.client.get("/nodes/set/"))
             before = add_progress(load_entry(
                 "sets-and-maps"))["formalization"]
-            write_json(path, {**node, "verified": False})
+            index_path = corpus / "index.json"
+            index = read_json(index_path)
+            index["nodes"]["set"]["verified"] = False
+            write_json(index_path, index)
             response = self.client.get("/nodes/set/")
-            self.assert_source_link(response, node)
+            self.assert_source_link(response, load_node("set"))
             self.assertFalse(response.context["node"]["verified"])
             self.assertNotEqual(verified_page.root.text,
                                 self.page(response).root.text)
@@ -299,16 +367,31 @@ class ReaderTests(SimpleTestCase):
                                 for block in entry.context["entry"]["blocks"]
                                 for record in block["formal_nodes"]))
             write_json(
-                path, {"id": "set", "description": "A set.", "verified": False})
+                path, {"id": "set", "description": "A set."})
             response = self.client.get("/nodes/set/")
             self.assertEqual(response.status_code, 200)
             self.assertFalse(response.context["node"]["verified"])
             self.assertIsNone(response.context["node"].get("declaration"))
             self.assertIsNone(response.context["node"]["source"])
 
+    def test_source_browser_uses_the_saved_defining_module(self):
+        with self.small_corpus() as corpus:
+            index_path = corpus / "index.json"
+            index = read_json(index_path)
+            index["nodes"]["set"].update(defining_module="Mathlib.Data.Set.Basic", declaration_line=3)
+            write_json(index_path, index)
+            response = self.client.get("/nodes/set/")
+            node = response.context["node"]
+            self.assertEqual(node["module"], "Mathlib.Data.Set.Basic")
+            self.assertEqual(node["source"], "Mathlib/Data/Set/Basic.lean")
+            self.assert_source_link(response, node)
+            self.assertNotIn("binding", self.client.get("/api/nodes/set/").json())
+            self.assertEqual(read_node("set")["module"], "Mathlib.Data.Set.Defs")
+
     def test_corpus_has_only_verification_status_and_no_review_command(self):
         self.assertNotIn("review", get_commands())
-        self.assertIs(type(read_node("set")["verified"]), bool)
+        self.assertIs(type(load_node("set")["verified"]), bool)
+        self.assertFalse({"verified", "signature", "declaration_line"} & read_node("set").keys())
 
     def test_reader_does_not_repeat_offline_content_or_asset_checks(self):
         with self.small_corpus():

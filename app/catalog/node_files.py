@@ -1,4 +1,4 @@
-"""Read node JSON and Lean source files, and persist build results."""
+"""Read authored node JSON and installed Lean source files."""
 
 import os
 from pathlib import Path
@@ -6,7 +6,7 @@ import re
 
 from django.conf import settings
 
-from .files import read_json, read_record, write_json
+from .files import read_json, read_record
 
 LEAN_MODULE = re.compile(r"[^\W\d][\w']*(?:\.[^\W\d][\w']*)*\Z")
 TOOLCHAIN_MODULES = {"Init", "Lean", "Std"}
@@ -23,10 +23,7 @@ def node_ids(corpus=None):
 
 def read_node(identifier, corpus=None):
     corpus = corpus or settings.CORPUS_DIR
-    record = read_record(corpus / "nodes" / f"{identifier}.json", identifier)
-    if isinstance(record, dict):
-        record.setdefault("verified", False)
-    return record
+    return read_record(corpus / "nodes" / f"{identifier}.json", identifier)
 
 
 def source_for_module(module):
@@ -61,26 +58,3 @@ def source_path(module, root):
 
 def read_source(module, root):
     return source_path(module, root).read_text(encoding="utf-8").splitlines()
-
-
-def prepare_results(corpus, nodes, results):
-    updated = {}
-    for identifier, node in nodes.items():
-        path = corpus / "nodes" / f"{identifier}.json"
-        record = read_json(path)
-        # Preserve metadata edited while Lean was running.
-        if (record.get("module"), record.get("declaration")) != (node.get("module"), node.get("declaration")):
-            result = {"verified": False}
-        else:
-            result = results.get(node.get("declaration"), {"verified": False})
-        for field in ("signature", "declaration_line"):
-            record.pop(field, None)
-        record.update(result)
-        updated[identifier] = record
-    return updated
-
-
-def save_results(corpus, nodes):
-    for identifier, node in nodes.items():
-        write_json(corpus / "nodes" / f"{identifier}.json", node)
-    return sum(node["verified"] for node in nodes.values())

@@ -16,7 +16,6 @@ from .statistics import COUNTS, METRICS
 ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]*\Z")
 ANCHOR = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]*\Z")
 MAX_HTML_DEPTH = 128
-_MISSING = object()
 
 
 class CorpusError(ValueError):
@@ -36,7 +35,7 @@ def checking(path):
         raise CorpusError(f"{path}: {error}") from error
 
 
-def json_object(path, *, collector=None, record=_MISSING):
+def json_object(path, *, collector=None):
     def pairs(items):
         result = {}
         for key, value in items:
@@ -47,27 +46,7 @@ def json_object(path, *, collector=None, record=_MISSING):
     def constant(value):
         raise CorpusError(f"Invalid JSON constant: {value}")
 
-    if record is not _MISSING:
-        # Keep authored-file errors visible even when replacing generated fields.
-        original_bytes = path.read_bytes()
-        original = json.loads(original_bytes.decode("utf-8"), object_pairs_hook=pairs,
-                              parse_constant=constant)
-        require(isinstance(original, dict), "Expected a JSON object")
-        # Changed records are hashed as write_json will serialize them. Unchanged
-        # records retain their original bytes because the build does not rewrite
-        # them merely to normalize whitespace.
-        try:
-            content = (json.dumps(record, indent=2, ensure_ascii=False,
-                                  allow_nan=False) + "\n").encode("utf-8")
-        except TypeError as error:
-            raise CorpusError(f"Invalid JSON record: {error}") from error
-        result = json.loads(content.decode("utf-8"), object_pairs_hook=pairs,
-                            parse_constant=constant)
-        if result == original:
-            content = original_bytes
-        if collector is not None:
-            collector.add_file(path, content)
-    elif collector is None:
+    if collector is None:
         with path.open(encoding="utf-8") as stream:
             result = json.load(stream, object_pairs_hook=pairs,
                                parse_constant=constant)
@@ -300,7 +279,7 @@ def check_asset(directory, source):
 
 def entry_metadata(record, expected, areas):
     fields(record, ("id", "title", "based_on", "primary_area", "additional_areas",
-                    "reading_time", "summary", "abstract"), ("formalization",))
+                    "reading_time", "summary", "abstract"))
     require(record["id"] == expected, "ID does not match directory")
     for key in ("title", "summary", "abstract"):
         text(record[key], key)
@@ -337,30 +316,13 @@ def entry_metadata(record, expected, areas):
         if "doi" in citation:
             require(citation["doi"].startswith("10.")
                     and "/" in citation["doi"], "Use a bare DOI")
-    if "formalization" in record:
-        summary = record["formalization"]
-        fields(summary, ("status", "complete", "total",
-               "unplanned", "label", "description"), ("percent",))
-        require(isinstance(summary["status"], str) and summary["status"] in
-                {"not_started", "not_applicable", "partial", "complete"}, "Invalid formalization status")
-        for key in ("complete", "total", "unplanned", "percent"):
-            if key in summary:
-                require(type(summary[key]) is int and summary[key]
-                        >= 0, f"Invalid formalization {key}")
-        require(summary["complete"] <= summary["total"],
-                "Verified count exceeds total")
-        require(summary.get("percent", 0) <= 100,
-                "Invalid formalization percent")
-        text(summary["label"], "formalization label")
-        text(summary["description"], "formalization description")
 
 
-def node_metadata(record, expected, *, allow_stale_results=False):
+def node_metadata(record, expected):
     fields(record, ("id", "description"),
-           ("verified", "module", "declaration", "dependencies", "signature", "declaration_line"))
+           ("module", "declaration", "dependencies"))
     require(record["id"] == expected, "ID does not match filename")
     text(record["description"], "description")
-    require(type(record.get("verified", False)) is bool, "verified must be a boolean")
     dependencies = record.get("dependencies", [])
     identifiers(dependencies, "dependency")
     module, declaration = record.get("module"), record.get("declaration")
@@ -370,13 +332,6 @@ def node_metadata(record, expected, *, allow_stale_results=False):
         require(isinstance(module, str) and LEAN_MODULE.fullmatch(
             module), "Invalid Lean module")
         text(declaration, "declaration")
-    elif not allow_stale_results:
-        require(not record.get("verified", False), "An unbound node cannot be verified")
-    if "signature" in record:
-        text(record["signature"], "signature")
-    if "declaration_line" in record:
-        require(type(record["declaration_line"]) is int and record["declaration_line"] > 0,
-                "declaration_line must be a positive integer")
     return dependencies
 
 
@@ -426,9 +381,8 @@ def validate_statistics(snapshot):
                         f"History for {key} must end at the current verified count")
 
 
-def validate_corpus(corpus, *, source_root=None, collector=None, nodes=None,
-                    entries=None, authoring_indexes=None, allow_stale_catalogs=False,
-                    allow_stale_results=False):
+def validate_corpus(corpus, *, source_root=None, collector=None,
+                    authoring_indexes=None, allow_stale_catalogs=False):
     """O(input bytes + reference edges) time, without writing files or invoking Lean.
 
     By default retain only area parents, entry block IDs, cross-entry links and
@@ -438,19 +392,10 @@ def validate_corpus(corpus, *, source_root=None, collector=None, nodes=None,
     Generated proof data need not be present or current. Optional source checks
     use the installed files only; neither mode invokes Lean or the build.
 
-    Node/entry overrides are staged complete records keyed by existing IDs.
     Authoring index overrides use corpus-relative catalog paths. These outputs
-    can be checked before publication; a collector hashes their proposed bytes.
+    can be checked before publication.
     Ignoring catalog freshness still checks all authored registry records.
-    A preflight may also accept saved verification on a newly unbound node;
-    the build clears that stale result before validating proposed outputs.
     """
-    nodes = {} if nodes is None else nodes
-    entries = {} if entries is None else entries
-    for overrides, name in ((nodes, "node"), (entries, "entry")):
-        require(isinstance(overrides, dict), f"{name} overrides must be an object")
-        for key in overrides:
-            identifier(key, f"{name} override ID")
     statistics = corpus / "statistics.json"
     if statistics.exists():
         with checking(statistics):
@@ -499,10 +444,8 @@ def validate_corpus(corpus, *, source_root=None, collector=None, nodes=None,
             continue
         with checking(path):
             identifier(path.stem)
-            record = json_object(path, collector=collector,
-                                 record=nodes.get(path.stem, _MISSING))
-            graph[path.stem] = node_metadata(
-                record, path.stem, allow_stale_results=allow_stale_results)
+            record = json_object(path, collector=collector)
+            graph[path.stem] = node_metadata(record, path.stem)
             module = record.get("module")
             if source_root is not None and module and module not in modules:
                 modules.add(module)
@@ -517,8 +460,6 @@ def validate_corpus(corpus, *, source_root=None, collector=None, nodes=None,
     with checking(nodes_dir):
         acyclic(graph, "Node dependencies")
     node_ids = set(graph)
-    require(not (nodes.keys() - node_ids),
-            f"Overrides reference missing nodes: {', '.join(sorted(nodes.keys() - node_ids))}")
     del graph
 
     blocks_by_entry, links = {}, []
@@ -530,8 +471,7 @@ def validate_corpus(corpus, *, source_root=None, collector=None, nodes=None,
         metadata = directory / "entry.json"
         with checking(metadata):
             identifier(directory.name)
-            record = json_object(metadata, collector=collector,
-                                 record=entries.get(directory.name, _MISSING))
+            record = json_object(metadata, collector=collector)
             entry_metadata(record, directory.name, areas)
             require(listed.get(directory.name) == record["primary_area"],
                     "Entry must be listed once under its primary area in reading_order.json")
@@ -557,9 +497,6 @@ def validate_corpus(corpus, *, source_root=None, collector=None, nodes=None,
     with checking(index):
         missing = listed.keys() - blocks_by_entry.keys()
         require(not missing, f"Missing entries: {', '.join(missing)}")
-    require(not (entries.keys() - blocks_by_entry.keys()),
-            "Overrides reference missing entries: "
-            + ", ".join(sorted(entries.keys() - blocks_by_entry.keys())))
     for source, target, anchor in links:
         with checking(source):
             require(target in blocks_by_entry,

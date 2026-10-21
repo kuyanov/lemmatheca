@@ -3,30 +3,14 @@
 import json
 from pathlib import Path
 
+from django.conf import settings
+
 from .authoring_records import build_planning_index, build_source_index
-from .corpus_index import CorpusIndex, validate_index_destination
-from .entry_files import entry_ids, read_entry, save_entries
+from .corpus_index import CorpusIndex, configured_index_path, validate_index_destination
 from .files import read_json, write_json
-from .node_files import read_nodes, save_results
-from .progress import entry_progress
+from .index_reader import IndexUnavailable, get_index
 from .proofs import prepare_proof_results
-from .sources import parse_source
 from .validation import validate_corpus
-
-
-def _entry_results(corpus, nodes):
-    entries = {}
-    for identifier in entry_ids(corpus):
-        entry = read_entry(identifier, corpus)
-        blocks, *_ = parse_source(entry.pop("source"), validate=True)
-        entry.pop("directory")
-        for block in blocks:
-            for node_id in block["formal_ids"] or []:
-                if node_id not in nodes:
-                    raise ValueError(f"{identifier}: unknown formal node: {node_id}")
-        entry["formalization"] = entry_progress(blocks, nodes)
-        entries[identifier] = entry
-    return entries
 
 
 def _authoring_indexes(corpus):
@@ -36,18 +20,8 @@ def _authoring_indexes(corpus):
             for directory, builder in builders if (corpus / directory).exists()}
 
 
-def _check_saved(corpus, nodes, entries, catalogs, index_path, index):
+def _check_saved(corpus, catalogs, index_path, index):
     stale = []
-    for identifier, node in nodes.items():
-        path = corpus / "nodes" / f"{identifier}.json"
-        saved = read_json(path)
-        if any(saved.get(field) != node.get(field) for field in
-               ("verified", "signature", "declaration_line", "module")):
-            stale.append(str(path.relative_to(corpus)))
-    for identifier, entry in entries.items():
-        path = corpus / "entries" / identifier / "entry.json"
-        if read_json(path).get("formalization") != entry["formalization"]:
-            stale.append(str(path.relative_to(corpus)))
     generated = [(corpus / relative, catalog) for relative, catalog in catalogs.items()]
     generated.append((index_path, index))
     for path, expected in generated:
@@ -65,9 +39,23 @@ def _check_saved(corpus, nodes, entries, catalogs, index_path, index):
         raise ValueError(f"Generated corpus data is stale: {preview}{remainder}. Run build.")
 
 
-def _changed(corpus, records, path_for):
-    return {identifier: record for identifier, record in records.items()
-            if read_json(corpus / path_for(identifier)) != record}
+def _saved_node_results(corpus, destination):
+    # An alternate output can start from the normal snapshot. An existing but
+    # invalid alternate snapshot must never silently inherit different results.
+    source = destination
+    try:
+        source.stat()
+    except FileNotFoundError:
+        source = (configured_index_path() if corpus == Path(settings.CORPUS_DIR).resolve()
+                  else corpus / "index.json")
+    try:
+        return get_index(source)["nodes"], None
+    except IndexUnavailable as error:
+        if isinstance(error.__cause__, FileNotFoundError):
+            return {}, source
+        raise ValueError(
+            f"{source}: cannot reuse saved proof results ({error.__cause__ or error}). "
+            "Run build without --no-lean to repair the index.") from error
 
 
 def build_corpus(corpus, formal, index_path, *, no_lean=False, check=False,
@@ -82,31 +70,31 @@ def build_corpus(corpus, formal, index_path, *, no_lean=False, check=False,
     destination = validate_index_destination(corpus, index_path)
     source_root = formal.parent if check_sources else None
     entries_count, nodes_count, areas_count = validate_corpus(
-        corpus, source_root=source_root, allow_stale_catalogs=True,
-        allow_stale_results=True)
+        corpus, source_root=source_root, allow_stale_catalogs=True)
     counts = {"entries": entries_count, "nodes": nodes_count, "areas": areas_count}
     if no_lean and check:
         return {"counts": counts, "verified": None, "index_path": destination,
-                "lean_checked": False}
+                "lean_checked": False, "warnings": []}
 
-    nodes = read_nodes(corpus) if no_lean else prepare_proof_results(corpus, formal)
+    missing_index = None
     if no_lean:
-        for node in nodes.values():
-            if not node.get("declaration"):
-                node["verified"] = False
-                node.pop("signature", None)
-                node.pop("declaration_line", None)
-    entries = _entry_results(corpus, nodes)
-    catalogs = _authoring_indexes(corpus)
-    collector = CorpusIndex(corpus)
-    validate_corpus(corpus, source_root=source_root, collector=collector,
-                    nodes=nodes, entries=entries, authoring_indexes=catalogs)
-    document = collector.finish()
-    if check:
-        _check_saved(corpus, nodes, entries, catalogs, destination, document)
+        results, missing_index = _saved_node_results(corpus, destination)
     else:
-        save_results(corpus, _changed(corpus, nodes, lambda key: f"nodes/{key}.json"))
-        save_entries(corpus, _changed(corpus, entries, lambda key: f"entries/{key}/entry.json"))
+        results = prepare_proof_results(corpus, formal)
+    catalogs = _authoring_indexes(corpus)
+    collector = CorpusIndex(corpus, formal, node_results=results)
+    validate_corpus(corpus, source_root=source_root, collector=collector,
+                    authoring_indexes=catalogs)
+    document = collector.finish()
+    warnings = []
+    if missing_index is not None and any(node["binding"][1] for node in document["nodes"].values()):
+        warnings.append(
+            f"No saved corpus index was available at {missing_index}; bound nodes "
+            "have no verification, signatures or source lines. "
+            "Run build without --no-lean to check them.")
+    if check:
+        _check_saved(corpus, catalogs, destination, document)
+    else:
         for relative, catalog in catalogs.items():
             path = corpus / relative
             try:
@@ -118,5 +106,6 @@ def build_corpus(corpus, formal, index_path, *, no_lean=False, check=False,
         destination.parent.mkdir(parents=True, exist_ok=True)
         write_json(destination, document)
     return {"counts": counts,
-            "verified": sum(node.get("verified", False) for node in nodes.values()),
-            "index_path": destination, "lean_checked": not no_lean}
+            "verified": sum(node["verified"] for node in document["nodes"].values()),
+            "index_path": destination, "lean_checked": not no_lean,
+            "warnings": warnings}

@@ -78,7 +78,7 @@ handoffs rather than repeating completed stages. Content contracts live in
    rendering checks; the root alone runs the final full writing `build` and
    inspects verification results, axioms and warnings for the batch. Fix failures,
    repeat affected reviews if needed, and rebuild after the resulting edits.
-   Include changed generated node/entry JSON, catalogs and `corpus/index.json`.
+   Include changed catalogs and `corpus/index.json`.
    Worker proof completion is provisional until this integrated check passes.
 
 The final handoff reports added entries, their reading order, coverage gaps
@@ -104,13 +104,17 @@ published index revision, available entry/block IDs and when writes may resume.
 Workers can query that snapshot for earlier additions; between checkpoints they
 use current files/handoffs or request another refresh if the API index is stale.
 Coalesce ready updates instead of rebuilding after every edit. The build refreshes
-node/entry derived fields and registry catalogs as well as the index, so no corpus
+indexed proof results and registry catalogs, so no corpus
 writer may overlap it. A failed build may leave partially refreshed generated
 files; resolve the failure and rebuild successfully before announcing a checkpoint.
 
 These snapshots reuse saved proof results. They do not complete step 6, certify
 new bindings or proofs, or replace the root's final full build. Include changed
 generated files in the final contribution, including the latest index.
+
+Checkpoint counts are provisional. Changing a binding, checkpointing, then
+reverting the binding leaves its old result unavailable until a full build;
+the checkpoint retains only the current binding's result.
 
 ## Stage responsibilities
 
@@ -438,13 +442,18 @@ successful build without relevant changes or unresolved diagnostics.
 `build --no-lean --check` is a read-only structural check, not a substitute for
 the final writing build. The index revision hashes raw entry HTML, entry metadata,
 and node-file bytes, so even a whitespace-only edit to those files changes it.
+It also includes generated entry and node results, so proof metadata or a Lean
+line-count change updates the revision.
 Registry records and assets are not hashed into the main index, so edits confined
 to them may leave its regenerated contents byte-identical. Registry-only edits
 still need catalog regeneration. Commit generated files that actually changed.
 
 Saved results are not evidence that edited sources or bindings are verified.
-`--no-lean` reuses them; it makes no new proof-checking claim. Include generated
-node/entry JSON, authoring catalogs, and `corpus/index.json` with their inputs.
+`--no-lean` reuses indexed results only for matching module/declaration bindings;
+an existing invalid snapshot fails the writing build, while a missing snapshot
+allows unverified results with a warning for bound nodes. A full build restores
+proof results. Include changed authoring catalogs and `corpus/index.json`
+with their inputs; builds never rewrite authored entry or node records.
 Full `build --check` requires the selected index to exist and match regeneration,
 including its revision. See the [formal verification rules](docs/formal.md#build-and-verification)
 for proof-completion requirements and the [build guide](docs/build.md#failures-and-scope)

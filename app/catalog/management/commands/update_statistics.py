@@ -9,7 +9,7 @@ from catalog.validation import validate_statistics
 
 
 class Command(BaseCommand):
-    help = "Refresh home-page statistics from saved corpus metadata and Git authors, without Lean."
+    help = "Refresh home-page statistics from the saved corpus index, authored bindings and Git authors, without Lean."
 
     def handle(self, *args, **options):
         try:

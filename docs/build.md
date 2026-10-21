@@ -21,22 +21,48 @@ these tasks; there is no separate validation command.
    errors and missing declarations fail the command. Unfinished proofs or
    unsupported axioms produce `verified: false`; they do not by themselves fail
    the build. See the [verification rules](formal.md#build-and-verification).
-3. **Prepare generated data.** Refresh node proof metadata, entry formalization
-   summaries, source/planning catalogs, and the structural authoring index.
+3. **Prepare generated data.** Build the corpus index, including node proof
+   results, entry formalization counts and Lean line counts. Refresh the
+   source/planning catalogs.
 4. **Validate the proposed result, then save it.** Authored prose, descriptions,
-   mathematical statements, and proof sources are not rewritten.
+   mathematical statements, entry metadata, and proof sources are not rewritten.
 
 The generated outputs are:
 
 | Output | Location | Git |
 | --- | --- | --- |
-| Node verification, declaration signatures, source lines, and defining modules | Generated fields in `corpus/nodes/*.json` | Commit with the inputs |
-| Entry formalization summaries | `formalization` in each `entry.json` | Commit with the inputs |
 | Source-error and reference-planning catalogs | `corpus/source-errors/index.json` and `corpus/reference-planning/index.json` | Commit with the records |
-| Structural authoring index | `corpus/index.json` by default | Commit with the inputs |
+| Node proof results, entry results and structural relationships | `corpus/index.json` by default | Commit with the inputs |
 
-Unchanged node/entry records and catalogs are left untouched. The structural
-index is replaced on every writing build.
+Builds never rewrite entry or node files. Unchanged catalogs are left untouched;
+the index is replaced on every writing build.
+
+Each `index.nodes[node_id]` stores the authored `binding` pair
+`[module, declaration]` and `verified`, with optional `signature` and `declaration_line`.
+If Lean reports a different source module, `defining_module` records it for source
+browsing without changing the authored import module. Unbound nodes store only
+`binding: [null, null]` and `verified: false`.
+
+Each `index.entries[entry_id]` stores `lean_line_count` and exactly three
+`formalization` counts:
+
+| Field | Meaning |
+| --- | --- |
+| `complete` | Distinct mapped nodes whose saved verification flag is true |
+| `total` | Distinct mapped nodes |
+| `unmapped_blocks` | Blocks without a specified `data-formal` mapping |
+
+An explicitly empty `data-formal=""` mapping means nothing needs formalization;
+it does not count as unmapped. The build collects mappings during validation,
+without parsing HTML again for summaries. The reader and API derive status,
+percentage, label and description from these counts and the indexed block count.
+Unmapped blocks prevent a completed badge even when every mapped node is verified.
+
+Each entry's `lean_line_count` sums physical lines in all `.lean` files recursively
+under its `formal/Lemmatheca/<PascalCaseEntryId>/` directory. Blank lines and
+comments count, as does a final line without a newline. Imported code outside that
+directory is excluded; a missing directory gives zero. Counts are recomputed from
+source files even with `--no-lean`, without running the Lean compiler.
 
 The index stores lookup relationships, with no `counts` field. Corpus-wide totals
 and their history belong solely in `corpus/statistics.json`. Validation counts
@@ -44,21 +70,28 @@ printed by `build` are computed in memory, not saved in the index.
 
 Corpus JSON and HTML use LF line endings so the index revision is consistent
 across checkouts. If the generated index has a merge conflict, resolve its input
-files first and regenerate it with the appropriate writing build: `build --no-lean`,
-or full `build` when bindings, declarations, or proofs changed.
+files first, then run full `build` to replace the invalid snapshot. A no-Lean
+refresh requires a valid saved snapshot to preserve its proof results.
 
 ## Flags and combinations
 
 The two main flags control different parts of the command:
 
-- **`--no-lean`** skips Lean and reuses saved proof results. Missing results count
-  as unverified. Nodes without a declaration are reset to unverified, with stale
-  signatures and source lines removed. Saved results for bound nodes do not
-  establish that edited declarations or bindings are still valid.
+- **`--no-lean`** skips Lean and reuses indexed proof results only when their
+  saved binding exactly matches the current authored module and declaration.
+  An existing unreadable, invalid or incompatible snapshot fails the writing
+  build before any generated files are changed; run full `build` to replace it.
+  If no saved snapshot is available, the build can proceed with unverified
+  results and warns when bound nodes are affected. Missing results, new or
+  changed bindings, and unbound nodes give `verified: false` without a signature
+  or source line. Run a full build to recover those results. Reused results do
+  not verify edited Lean code.
+  Entry counts use these results and current block mappings; Lean line counts
+  are refreshed from source files.
 - **`--check`** publishes no corpus data. With Lean enabled, it regenerates data
-  in memory and fails if saved node proof metadata, entry summaries, or authoring
-  catalogs differ, or if the selected index is missing, invalid JSON, or differs
-  from regeneration, including its revision. Combined with `--no-lean`, it stops
+  in memory and fails if authoring catalogs differ, or if the selected index is
+  missing, invalid JSON, or differs from regeneration, including its entry/node
+  results and revision. Combined with `--no-lean`, it stops
   after structural validation; it does **not** compare generated-data freshness.
 
 In this table, `build` abbreviates `uv run python app/manage.py build`:
@@ -87,7 +120,7 @@ the index. Lean-enabled commands may update local compiler caches even with
 | Flag | Effect |
 | --- | --- |
 | `--check-sources` | Also require each bound module's installed `.lean` source file to exist and be readable as UTF-8. Useful for source browsing. It does not run Lean or check proofs by itself, and can be combined with any mode. |
-| `--index PATH` | Override the structural index output or checked path for this invocation. It does not change the reader's configured path or suppress other generated outputs. Full `--check` compares the index at this path; `--no-lean --check` only validates the destination. Check modes write no index. |
+| `--index PATH` | Override the index output or checked path for this invocation. It does not change the reader's configured path or suppress catalog outputs. A no-Lean writing build reuses results from this snapshot; only if it does not exist can it use the normal snapshot. An existing unreadable, invalid or incompatible snapshot fails the command without falling back or writing generated files. Full `--check` compares the selected index; `--no-lean --check` only validates the destination. Check modes write no index. |
 
 The default index path comes from `DJANGO_CORPUS_INDEX_PATH`, falling back to
 `corpus/index.json`. Set that environment variable when both the reader and build
@@ -110,7 +143,9 @@ caching behavior.
 | Check generated data against an index at another path | `build --check --index /tmp/corpus-index.json` |
 
 Corpus finalization includes prose-only and whitespace-only edits: their raw
-bytes affect the index revision. Commit changed generated files, including
+bytes affect the index revision. Generated node and entry results also affect it,
+so proof-result or Lean line-count changes require an index refresh even without
+corpus source edits. Commit changed generated files, including
 `corpus/index.json`. Normally publish at the final mutating stage of a batch;
 a read-only check does not replace the writing build. In a
 [coordinated area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), the root
@@ -118,6 +153,10 @@ alone publishes generated data and also runs `build --no-lean` at coherent
 [index checkpoints](../CONTRIBUTING.md#index-checkpoints) with all corpus writes
 paused. These make earlier additions discoverable to agents without rerunning
 Lean; the final full build remains required for proof verification.
+
+Checkpoint counts are provisional: if a binding changes, a no-Lean checkpoint
+discards the old binding's saved result. Reverting the binding afterward cannot
+recover that result from the new snapshot; run a full build to restore it.
 
 If a full check reports stale generated data, run `build`, inspect the changed
 results and Lean diagnostics, and include the generated JSON changes with their

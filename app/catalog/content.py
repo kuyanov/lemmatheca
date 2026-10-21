@@ -7,13 +7,24 @@ from django.conf import settings
 from django.urls import reverse
 
 from .entry_files import read_entry, read_entry_metadata
+from .index_reader import IndexUnavailable, get_index
 from .node_files import read_node, read_source, source_for_module
-from .progress import block_progress, entry_progress
+from .node_results import with_node_result
+from .progress import block_progress, entry_progress, format_progress
 from .sources import parse_source
 
 
-def load_node(identifier):
-    node = read_node(identifier)
+def optional_index():
+    """Reader pages can display authored content before the first build."""
+    try:
+        return get_index()
+    except IndexUnavailable:
+        return {}
+
+
+def load_node(identifier, index=None):
+    index = optional_index() if index is None else index
+    node = with_node_result(read_node(identifier), index)
     module = node.get("module")
     return {**node, "source": source_for_module(module) if module else None,
             "url": reverse("catalog:node", args=[identifier])}
@@ -59,17 +70,28 @@ def area_list(parent_id, taxonomy, reading_order):
              "entry_count": counts[area["id"]]} for area in children[parent_id]]
 
 
-def load_entry_metadata(identifier):
-    return {**read_entry_metadata(identifier),
+def saved_entry_metrics(identifier, index=None):
+    """Use published summaries when available, while keeping drafts readable."""
+    index = optional_index() if index is None else index
+    indexed = index.get("entries", {}).get(identifier)
+    if indexed is None:
+        return {}
+    return {"formalization": format_progress(indexed["formalization"], len(indexed["blocks"])),
+            "lean_line_count": indexed["lean_line_count"]}
+
+
+def load_entry_metadata(identifier, index=None):
+    return {**read_entry_metadata(identifier), **saved_entry_metrics(identifier, index),
             "url": reverse("catalog:entry", args=[identifier])}
 
 
-def load_entry(identifier):
+def load_entry(identifier, index=None):
     """Parse one entry without loading its nodes or following its references."""
     entry = read_entry(identifier)
     blocks, counts, captioned = parse_source(entry.pop("source"))
     return {
         **entry,
+        **saved_entry_metrics(identifier, index),
         "url": reverse("catalog:entry", args=[identifier]),
         "blocks": blocks,
         "blocks_by_id": {block["id"]: block for block in blocks},
@@ -81,9 +103,10 @@ def load_entry(identifier):
     }
 
 
-def add_progress(entry):
+def add_progress(entry, index=None):
     """Attach saved proof status from only the nodes used by this entry."""
-    nodes = {identifier: load_node(identifier) for identifier in
+    index = optional_index() if index is None else index
+    nodes = {identifier: load_node(identifier, index) for identifier in
              {identifier for block in entry["blocks"] for identifier in block["formal_ids"] or []}}
     for block in entry["blocks"]:
         block["formalization"] = block_progress(block["formal_ids"], nodes)
@@ -93,7 +116,7 @@ def add_progress(entry):
     return entry
 
 
-def next_entry(entry, reading_order):
+def next_entry(entry, reading_order, index=None):
     """Read only the next entry's metadata, following its area's index."""
     siblings = reading_order.get(entry["primary_area"], [])
     try:
@@ -101,4 +124,4 @@ def next_entry(entry, reading_order):
     except ValueError:
         return None
     if position + 1 < len(siblings):
-        return load_entry_metadata(siblings[position + 1])
+        return load_entry_metadata(siblings[position + 1], index)

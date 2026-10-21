@@ -8,10 +8,12 @@ from unittest.mock import patch
 
 from django.test import SimpleTestCase, override_settings
 
+from catalog.corpus_index import CorpusIndex
 from catalog.entry_files import read_entry, read_entry_metadata
-from catalog.files import write_json
+from catalog.files import read_json, write_json
+from catalog.index_reader import clear_index_cache
 from catalog.node_files import read_node
-from catalog.progress import entry_progress
+from catalog.sources import SourceParser
 
 from .html import HTML
 
@@ -20,10 +22,16 @@ class LocalReadTests(SimpleTestCase):
     def setUp(self):
         temporary = TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
-        self.corpus = Path(temporary.name)
-        settings = override_settings(CORPUS_DIR=self.corpus)
+        repository = Path(temporary.name).resolve()
+        self.corpus = repository / "corpus"
+        self.corpus.mkdir()
+        settings = override_settings(CORPUS_DIR=self.corpus,
+                                     REPOSITORY_DIR=repository,
+                                     CORPUS_INDEX_PATH=self.corpus / "index.json")
         settings.enable()
         self.addCleanup(settings.disable)
+        clear_index_cache()
+        self.addCleanup(clear_index_cache)
         (self.corpus / "nodes").mkdir()
         self.statistics = {
             "entries": 3, "verified_entries": 1, "nodes": 23,
@@ -50,17 +58,32 @@ class LocalReadTests(SimpleTestCase):
             write_json(directory / "entry.json", {
                 "id": identifier, "title": identifier.title(), "primary_area": area,
                 "summary": identifier, "reading_time": 5,
-                "formalization": entry_progress(
-                    [{"formal_ids": [formal]}], {formal: {"verified": True}}),
             })
             (directory / "entry.html").write_text(
                 f'<section id="fact" data-kind="lemma" data-formal="{formal}">'
                 f'<h2>{identifier.title()} fact</h2><p>{body}</p></section>')
-        for identifier, dependencies in [("proof", ["hint"]), ("hint", ["unrelated"])]:
+        results = {}
+        for identifier, dependencies in [("proof", ["hint"]), ("hint", ["unrelated"]),
+                                         ("unrelated", [])]:
             write_json(self.corpus / "nodes" / f"{identifier}.json", {
-                "id": identifier, "description": identifier, "verified": True,
+                "id": identifier, "description": identifier,
+                "module": "Lemmatheca.Fixture", "declaration": identifier,
                 "dependencies": dependencies,
             })
+            results[identifier] = {"binding": ["Lemmatheca.Fixture", identifier], "verified": True}
+        source = repository / "formal/Lemmatheca/Fixture.lean"
+        source.parent.mkdir(parents=True)
+        source.write_text("-- Source fixture\n")
+        # Assemble a reader snapshot before making unrelated files unreadable.
+        collector = CorpusIndex(self.corpus, node_results=results)
+        collector.add_reading_order(read_json(self.corpus / "reading_order.json"))
+        for path in (self.corpus / "nodes").glob("*.json"):
+            collector.add_node(read_json(path))
+        for path in (self.corpus / "entries").glob("*/entry.json"):
+            parser = SourceParser()
+            parser.feed(path.with_name("entry.html").read_text())
+            collector.add_entry(read_json(path), parser.root)
+        write_json(self.corpus / "index.json", collector.finish())
         # Broken, unlisted files must not break otherwise valid pages.
         (self.corpus / "nodes/unrelated.json").write_text("not JSON")
         directory = self.corpus / "entries/unrelated"
@@ -92,7 +115,8 @@ class LocalReadTests(SimpleTestCase):
         with self.only_reads("entries/alpha/entry.json", "entries/alpha/entry.html"):
             self.assertIn("Alpha fact", read_entry("alpha")["source"])
         with self.only_reads("nodes/proof.json"):
-            self.assertTrue(read_node("proof")["verified"])
+            self.assertEqual(read_node("proof")["declaration"], "proof")
+            self.assertNotIn("verified", read_node("proof"))
 
     def test_home_and_parent_area_read_only_navigation_and_statistics(self):
         with self.only_reads("taxonomy.json", "reading_order.json", "statistics.json") as reads, \
@@ -126,7 +150,7 @@ class LocalReadTests(SimpleTestCase):
 
     def test_area_reads_only_indexed_metadata_without_html_or_nodes(self):
         with self.only_reads("taxonomy.json", "reading_order.json",
-                             "entries/alpha/entry.json", "entries/next/entry.json") as reads:
+                             "index.json", "entries/alpha/entry.json", "entries/next/entry.json") as reads:
             response = self.client.get("/areas/root/first/")
             self.assertEqual(response.status_code, 200)
             self.assertEqual([item["id"] for item in response.context["entries"]], [
@@ -137,6 +161,7 @@ class LocalReadTests(SimpleTestCase):
 
     def test_entry_reads_references_once_without_their_nodes_or_transitive_links(self):
         with self.only_reads("taxonomy.json", "reading_order.json", "nodes/proof.json",
+                             "index.json",
                              "entries/alpha/entry.json", "entries/alpha/entry.html",
                              "entries/remote/entry.json", "entries/remote/entry.html",
                              "entries/next/entry.json") as reads:
@@ -151,19 +176,21 @@ class LocalReadTests(SimpleTestCase):
         self.assertTrue(all(count == 1 for count in reads.values()))
 
     def test_node_page_reads_only_node_and_direct_hints_and_api_only_node(self):
-        with self.only_reads("nodes/proof.json", "nodes/hint.json") as reads:
+        with self.only_reads("nodes/proof.json", "nodes/hint.json", "index.json") as reads:
             response = self.client.get("/nodes/proof/")
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.context["node"]["verified"])
             self.assertEqual(
                 [node["id"] for node in response.context["dependencies"]], ["hint"])
-        self.assertEqual(reads, {"nodes/proof.json": 1, "nodes/hint.json": 1})
+        self.assertEqual(reads["nodes/proof.json"], 1)
+        self.assertEqual(reads["nodes/hint.json"], 1)
+        self.assertLessEqual(reads["index.json"], 1)
         with self.only_reads("nodes/proof.json") as reads:
             self.assertTrue(self.client.get(
                 "/api/nodes/proof/").json()["verified"])
         self.assertEqual(reads.total(), 1)
         write_json(self.corpus / "nodes/proof.json",
-                   {"id": "proof", "verified": False})
+                   {"id": "proof"})
         self.assertFalse(self.client.get(
             "/api/nodes/proof/").json()["verified"])
 

@@ -1,23 +1,25 @@
 """Summarize saved verification flags for blocks and entries."""
 
 
-def progress(groups, nodes):
-    """Combine node lists; None means unplanned, while [] means not applicable."""
+def progress_counts(groups, nodes):
+    """Count distinct nodes and blocks whose formal mapping is unspecified."""
     ids = {identifier for group in groups for identifier in group or []}
-    unplanned = sum(group is None for group in groups)
-    complete = sum(nodes[identifier].get("verified", False)
-                   for identifier in ids)
-    total = len(ids)
+    return {"complete": sum(nodes.get(identifier, {}).get("verified", False) for identifier in ids),
+            "total": len(ids), "unmapped_blocks": sum(group is None for group in groups)}
+
+
+def format_progress(counts, block_count):
+    """Derive presentation from compact counts and the known number of blocks."""
+    complete, total, unmapped = (counts[key] for key in ("complete", "total", "unmapped_blocks"))
     if total:
-        status = "complete" if complete == total and not unplanned else "partial"
-    elif not unplanned:
+        status = "complete" if complete == total and not unmapped else "partial"
+    elif not unmapped:
         status = "not_applicable"
     else:
-        status = "not_started" if unplanned == len(groups) else "partial"
+        status = "not_started" if unmapped == block_count else "partial"
 
-    result = {"status": status, "complete": complete,
-              "total": total, "unplanned": unplanned}
-    if total and not unplanned:
+    result = {**counts, "status": status}
+    if total and not unmapped:
         result["percent"] = complete * 100 // total
         label = f'{result["percent"]}%'
     else:
@@ -30,9 +32,13 @@ def progress(groups, nodes):
         description = "Nothing to formalize"
     else:
         description = f"{complete} of {total} nodes verified" if total else "Formalization partial"
-        if unplanned:
-            description += f"; {unplanned} block{'s' if unplanned != 1 else ''} awaiting planning"
+        if unmapped:
+            description += f"; {unmapped} block{'s' if unmapped != 1 else ''} without formal-node mappings"
     return {**result, "label": label, "description": description}
+
+
+def progress(groups, nodes):
+    return format_progress(progress_counts(groups, nodes), len(groups))
 
 
 def block_progress(ids, nodes):

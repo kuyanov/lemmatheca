@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 from django.test import SimpleTestCase
 
-from catalog.progress import block_progress, entry_progress
+from catalog.progress import block_progress, entry_progress, format_progress, progress_counts
 
 from .html import HTML
 
@@ -29,7 +29,7 @@ class ProgressBadgeTests(SimpleTestCase):
                 self.assertEqual(block.get("percent"), percent)
                 self.assertEqual(block["complete"], complete)
                 self.assertEqual(block["total"], total)
-                self.assertEqual(block["unplanned"], int(ids is None))
+                self.assertEqual(block["unmapped_blocks"], int(ids is None))
                 page = HTML(render_to_string(
                     "catalog/_formalization_badge.html", {"formal": entry}))
                 self.assertTrue(entry["label"])
@@ -38,18 +38,27 @@ class ProgressBadgeTests(SimpleTestCase):
                 self.assertTrue(page.find_all(
                     **{"aria-label": entry["description"]}))
 
-    def test_unplanned_blocks_do_not_report_complete_or_a_percentage(self):
+    def test_unmapped_blocks_do_not_report_complete_or_a_percentage(self):
         result = entry_progress(
             [{"formal_ids": ["done"]}, {"formal_ids": None}], self.nodes)
         self.assertEqual(result["status"], "partial")
         self.assertNotIn("percent", result)
         self.assertEqual(result["complete"], 1)
         self.assertEqual(result["total"], 1)
-        self.assertEqual(result["unplanned"], 1)
+        self.assertEqual(result["unmapped_blocks"], 1)
         result = entry_progress(
             [{"formal_ids": []}, {"formal_ids": None}], self.nodes)
         self.assertEqual(result["status"], "partial")
         self.assertNotIn("percent", result)
+
+    def test_compact_counts_format_to_the_same_runtime_summary(self):
+        blocks = [{"formal_ids": ["done", "pending"]}, {"formal_ids": None}]
+        counts = progress_counts([block["formal_ids"] for block in blocks], self.nodes)
+        self.assertEqual(counts, {"complete": 1, "total": 2, "unmapped_blocks": 1})
+        summary = format_progress(counts, len(blocks))
+        self.assertEqual(summary, entry_progress(blocks, self.nodes))
+        self.assertIn("mapping", summary["description"])
+        self.assertNotIn("planning", summary["description"])
 
     def test_shared_nodes_are_counted_once(self):
         result = entry_progress(

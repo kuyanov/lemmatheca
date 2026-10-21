@@ -2,7 +2,8 @@
 
 The index supplies structural relationships. A bounded runtime cache supplies
 parsed entry text; entry/node JSON is read directly from current files.
-No request runs Lean. Saved proof flags describe the last build.
+No request runs Lean. Saved proof results are joined from the index only while
+the authored declaration binding still matches the built snapshot.
 """
 
 from collections import defaultdict
@@ -15,7 +16,8 @@ from django.templatetags.static import static
 from .entry_files import read_reading_order, read_areas, read_entry_metadata
 from .entry_text import get_entry_text, render_text
 from .node_files import node_ids, read_node, source_for_module
-from .progress import block_progress, entry_progress
+from .node_results import with_node_result
+from .progress import block_progress, entry_progress, format_progress
 from .sources import KINDS
 from .validation import ANCHOR
 
@@ -72,7 +74,7 @@ class CorpusQuery:
     ENTRY_DEFAULT_FIELDS = {"id", "title", "primary_area", "additional_areas",
                             "reading_position", "block_count", "url"}
     ENTRY_FIELDS = ENTRY_DEFAULT_FIELDS | {
-        "abstract", "summary", "reading_time", "based_on", "formalization"}
+        "abstract", "summary", "reading_time", "based_on", "formalization", "lean_line_count"}
 
     def __init__(self, index, corpus):
         self.index = index
@@ -93,6 +95,10 @@ class CorpusQuery:
                 raise _outdated(f"Indexed entry {identifier} is not a JSON object")
             if record.get("id") != identifier:
                 raise _outdated(f"Indexed entry {identifier} has a different ID")
+            indexed = self.index["entries"][identifier]
+            record = {**record,
+                      "formalization": format_progress(indexed["formalization"], len(indexed["blocks"])),
+                      "lean_line_count": indexed["lean_line_count"]}
             if cache:
                 self._entries[identifier] = record
             return record
@@ -113,6 +119,7 @@ class CorpusQuery:
                 raise _outdated(f"Node {identifier} is not a JSON object")
             if record.get("id") != identifier:
                 raise _outdated(f"Node {identifier} has a different ID")
+            record = with_node_result(record, self.index)
             if cache:
                 self._nodes[identifier] = record
             return record

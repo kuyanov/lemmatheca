@@ -1,7 +1,8 @@
-"""Derived structural relationships for validated corpus files.
+"""Derived relationships and entry metrics for validated corpus files.
 
 The validator supplies core entry/node/navigation records, HTML trees and their exact bytes. This
-collector never rereads them, renders templates or invokes Lean. Corpus files
+collector never rereads them, renders templates or invokes Lean; it reads owned
+Lean source files only to count their lines. Corpus files
 remain authoritative; metadata available through a direct record read is not
 copied into the index. Source/planning registries use independent catalogs.
 Authored prose is read separately and never retained by
@@ -16,10 +17,12 @@ from urllib.parse import urlsplit
 
 from .equations import LABEL
 from .files import write_json
+from .node_results import saved_result, validate_result
+from .progress import progress_counts
 from .sources import Element
 
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 7
 
 
 def default_index_path(repository):
@@ -36,8 +39,9 @@ def configured_index_path():
 class CorpusIndex:
     """Collect one validated snapshot without relying on file iteration order."""
 
-    def __init__(self, corpus):
+    def __init__(self, corpus, formal=None, node_results=None):
         self.corpus = Path(corpus).resolve()
+        self.formal = Path(formal) if formal is not None else self.corpus.parent / "formal"
         # Per-file digests are temporary inputs to the overall revision, not
         # part of the exported index.
         self._file_hashes = {}
@@ -45,6 +49,7 @@ class CorpusIndex:
         self.entries = {}
         self.blocks = {}
         self.nodes = {}
+        self._node_results = node_results or {}
         self.anchors = {}
         self._references = defaultdict(list)
 
@@ -65,7 +70,7 @@ class CorpusIndex:
 
     def add_node(self, record):
         # Retain only the inputs needed for reverse lookups while collecting.
-        # Descriptions, signatures and saved proof flags stay in nodes/<id>.json.
+        # Authored descriptions stay in node files; proof results are separate.
         self.nodes[record["id"]] = (
             record.get("module"), record.get("declaration"),
             tuple(record.get("dependencies", [])),
@@ -121,16 +126,38 @@ class CorpusIndex:
             "blocks": block_ids, "reading_position": self.reading_positions[entry_id],
         }
 
+    def _lean_line_count(self, entry_id):
+        directory = self.formal / "Lemmatheca" / "".join(part.capitalize() for part in entry_id.split("-"))
+        count = 0
+        for path in directory.rglob("*.lean"):
+            if path.is_file():
+                with path.open(encoding="utf-8") as source:
+                    count += sum(1 for _ in source)
+        return count
+
     def finish(self):
-        """Return deterministic JSON data; no filesystem work or publication."""
+        """Prepare deterministic relationships and entry metrics without publishing."""
+        nodes = {}
+        for node_id, (module, declaration, _) in sorted(self.nodes.items()):
+            result = saved_result({"id": node_id, "module": module, "declaration": declaration},
+                                  {"nodes": self._node_results})
+            validate_result(result)
+            nodes[node_id] = result
+        entries = {
+            entry_id: {**entry, "formalization": progress_counts(
+                [self.blocks[f"{entry_id}#{block_id}"]["formal_ids"] for block_id in entry["blocks"]],
+                nodes), "lean_line_count": self._lean_line_count(entry_id)}
+            for entry_id, entry in sorted(self.entries.items())}
         revision_input = json.dumps(
-            {"schema_version": SCHEMA_VERSION, "files": self._file_hashes},
+            {"schema_version": SCHEMA_VERSION, "files": self._file_hashes,
+             "entry_results": {key: {field: entry[field] for field in ("formalization", "lean_line_count")}
+                               for key, entry in entries.items()}, "node_results": nodes},
             sort_keys=True, separators=(",", ":"), ensure_ascii=False,
         ).encode("utf-8")
-        entries = dict(sorted(self.entries.items()))
         nodes_by_declaration, module_nodes = defaultdict(list), defaultdict(list)
         hint_dependents = defaultdict(list)
         for node_id, (module, declaration, dependencies) in sorted(self.nodes.items()):
+            module = nodes[node_id].get("defining_module", module)
             if declaration:
                 nodes_by_declaration[declaration].append(node_id)
             if module:
@@ -154,6 +181,7 @@ class CorpusIndex:
             "schema_version": SCHEMA_VERSION,
             "revision": sha256(revision_input).hexdigest(),
             "entries": entries, "blocks": dict(sorted(self.blocks.items())),
+            "nodes": nodes,
             "anchors": dict(sorted(self.anchors.items())),
             "nodes_by_declaration": dict(sorted(nodes_by_declaration.items())),
             "module_nodes": dict(sorted(module_nodes.items())),
@@ -173,13 +201,19 @@ def validate_index_destination(corpus, destination):
     return destination
 
 
-def write_index(corpus, destination, *, source_root=None):
+def write_index(corpus, destination, *, source_root=None, node_results=None):
     """Validate once and atomically replace the derived structural index."""
     from .validation import validate_corpus
 
     corpus = Path(corpus).resolve()
     destination = validate_index_destination(corpus, destination)
-    collector = CorpusIndex(corpus)
+    if node_results is None:
+        from .index_reader import IndexUnavailable, get_index
+        try:
+            node_results = get_index(destination)["nodes"]
+        except IndexUnavailable:
+            node_results = {}
+    collector = CorpusIndex(corpus, node_results=node_results)
     validate_corpus(corpus, source_root=source_root, collector=collector)
     document = collector.finish()
     destination.parent.mkdir(parents=True, exist_ok=True)

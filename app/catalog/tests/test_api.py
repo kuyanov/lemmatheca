@@ -15,6 +15,7 @@ from catalog.entry_text import clear_text_cache, text_cache_info
 from catalog.files import read_json, write_json
 from catalog.index_reader import clear_index_cache
 from catalog.node_files import read_node
+from catalog.progress import format_progress
 from catalog.queries import CorpusQuery
 
 
@@ -34,6 +35,7 @@ class IndexedAPITests(SimpleTestCase):
         write_json(self.corpus / "reading_order.json", {"areas": {
             "first": ["beta", "alpha"], "second": ["remote"],
         }})
+        results = {}
         for identifier, verified, module, declaration in [
             ("proof", True, "Lemmatheca.Shared", "Example.proof"),
             ("other", False, "Lemmatheca.Other", "Example.other"),
@@ -41,10 +43,13 @@ class IndexedAPITests(SimpleTestCase):
             ("unbound", False, None, None),
         ]:
             record = {"id": identifier, "description": f"Description of {identifier}.",
-                      "verified": verified, "dependencies": []}
+                      "dependencies": []}
             if module:
                 record.update(module=module, declaration=declaration)
             write_json(self.corpus / "nodes" / f"{identifier}.json", record)
+            results[identifier] = {"binding": [module, declaration], "verified": verified}
+            if identifier == "proof":
+                results[identifier].update(signature="Example.proof : IndexedSignature", declaration_line=7)
         self.add_entry("alpha", "first", '''
             <section id="question" data-kind="question" data-formal="proof other">
               <h2>Diagonal question</h2><p>A diagonal argument.</p>
@@ -74,7 +79,7 @@ class IndexedAPITests(SimpleTestCase):
             <section id="fact" data-kind="lemma" data-formal="other">
               <h2>Remote fact</h2><p>A remote argument.</p>
             </section>''')
-        self.revision = write_index(self.corpus, self.cache)["revision"]
+        self.revision = write_index(self.corpus, self.cache, node_results=results)["revision"]
         configuration = override_settings(CORPUS_DIR=self.corpus, CORPUS_INDEX_PATH=self.cache)
         configuration.enable()
         self.addCleanup(configuration.disable)
@@ -98,7 +103,7 @@ class IndexedAPITests(SimpleTestCase):
         self.assertEqual(response.status_code, 200, response.content)
         payload = response.json()
         self.assertEqual(payload["index_revision"], self.revision)
-        self.assertEqual(payload["metadata_source"], "live_corpus")
+        self.assertEqual(payload["metadata_source"], "live_corpus_and_index")
         return payload
 
     def assert_error(self, path, params, status, code=None):
@@ -174,7 +179,7 @@ class IndexedAPITests(SimpleTestCase):
         self.assertEqual([block["id"] for block in entry["blocks"]], ["question", "repeat"])
         self.assertEqual(entry["formalization"]["total"], 2)
         self.assertEqual(entry["formalization"]["complete"], 1)
-        self.assertEqual(entry["formalization"]["unplanned"], 0)
+        self.assertEqual(entry["formalization"]["unmapped_blocks"], 0)
         with self.track_reads(allow_html=True) as reads:
             states = self.get("/api/entries/alpha/context/", {
                 "block_ids": "planned,empty", "include": "nodes,coverage",
@@ -333,6 +338,42 @@ class IndexedAPITests(SimpleTestCase):
         self.assertEqual([node["id"] for node in result["results"]], ["proof"])
         self.assertEqual(self.get("/api/search/nodes/", {"declaration": "Example"})["count"], 0)
 
+    def test_saved_signatures_and_flags_follow_the_current_authored_binding(self):
+        result = self.get("/api/search/nodes/", {"q": "IndexedSignature", "verified": "true"})
+        self.assertEqual([node["id"] for node in result["results"]], ["proof"])
+        node = result["results"][0]
+        self.assertEqual(node["declaration_line"], 7)
+        self.assertNotIn("binding", node)
+        self.assertNotIn("defining_module", node)
+        proof = self.corpus / "nodes/proof.json"
+        original = read_json(proof)
+        for changed in ({**original, "declaration": "Example.changed"},
+                        {**original, "module": "Lemmatheca.Changed"},
+                        {key: value for key, value in original.items()
+                         if key not in {"module", "declaration"}}):
+            with self.subTest(binding=changed):
+                write_json(proof, changed)
+                result = self.get("/api/search/nodes/", {"q": "IndexedSignature"})
+                self.assertEqual(result["count"], 0)
+                context = self.get("/api/entries/alpha/context/", {"include": "nodes,coverage"})
+                node = next(node for node in context["nodes"]["results"] if node["id"] == "proof")
+                self.assertFalse(node["verified"])
+                self.assertNotIn("signature", node)
+                self.assertNotIn("declaration_line", node)
+                self.assertEqual(context["coverage"]["entries"][0]["formalization"]["complete"], 0)
+
+    def test_defining_module_controls_exact_module_search_and_source_paths(self):
+        results = read_json(self.cache)["nodes"]
+        results["proof"]["defining_module"] = "Lemmatheca.DefiningModule"
+        self.revision = write_index(self.corpus, self.cache, node_results=results)["revision"]
+        result = self.get("/api/search/nodes/", {
+            "module": "Lemmatheca.DefiningModule", "declaration": "Example.proof", "verified": "true",
+        })
+        self.assertEqual([node["id"] for node in result["results"]], ["proof"])
+        self.assertEqual(result["results"][0]["module"], "Lemmatheca.DefiningModule")
+        self.assertEqual(result["results"][0]["source_path"], "formal/Lemmatheca/DefiningModule.lean")
+        self.assertEqual(self.get("/api/search/nodes/", {"module": "Lemmatheca.Shared"})["count"], 0)
+
     def test_area_node_collections_deduplicate_consumers_and_filter_usage(self):
         with self.track_reads() as reads:
             result = self.get("/api/search/nodes/", {
@@ -399,18 +440,20 @@ class IndexedAPITests(SimpleTestCase):
             })
         self.assertEqual(nodes["results"], [{"id": "proof", "description": "Description of proof."}])
         metadata = self.corpus / "entries/alpha/entry.json"
-        saved_summary = {"status": "partial", "complete": 1, "total": 2, "unplanned": 1,
-                         "label": "Partial", "description": "Saved summary."}
-        write_json(metadata, {**read_json(metadata), "abstract": "A revised abstract.",
-                              "formalization": saved_summary})
+        write_json(metadata, {**read_json(metadata), "abstract": "A revised abstract."})
+        index = read_json(self.cache)
+        index["entries"]["alpha"]["lean_line_count"] = 1234
+        write_json(self.cache, index)
+        saved_summary = format_progress(index["entries"]["alpha"]["formalization"], 4)
         with self.track_reads():
             entries = self.get("/api/entries/", {
                 "area": "first", "limit": 1, "offset": 1,
-                "fields": "abstract,summary,reading_time,based_on,formalization",
+                "fields": "abstract,summary,reading_time,based_on,formalization,lean_line_count",
             })
         self.assertEqual(entries["results"], [{
             "id": "alpha", "abstract": "A revised abstract.", "summary": "Summary.",
             "reading_time": 5, "based_on": [], "formalization": saved_summary,
+            "lean_line_count": 1234,
         }])
         self.assertEqual(self.get("/api/entries/", {"fields": "id", "limit": 1})["results"],
                          [{"id": "beta"}])
@@ -453,14 +496,17 @@ class IndexedAPITests(SimpleTestCase):
         class TrackedNode(dict):
             pass
 
+        results = read_json(self.cache)["nodes"]
         for number in range(80):
             identifier = f"bulk-{number:03}"
             write_json(self.corpus / "nodes" / f"{identifier}.json", {
                 "id": identifier, "description": f"Description of {identifier}.",
-                "verified": number % 2 == 0, "module": "Lemmatheca.Shared",
+                "module": "Lemmatheca.Shared",
                 "declaration": "Example.proof", "dependencies": [],
             })
-        index = write_index(self.corpus, self.cache)
+            results[identifier] = {"binding": ["Lemmatheca.Shared", "Example.proof"],
+                                   "verified": number % 2 == 0}
+        index = write_index(self.corpus, self.cache, node_results=results)
         for filters, count, expected in [
             ({}, 84, ["bulk-003", "bulk-004"]),
             ({"module": "Lemmatheca.Shared", "declaration": "Example.proof", "verified": True},
@@ -520,7 +566,7 @@ class IndexedAPITests(SimpleTestCase):
         self.assertEqual(alpha["id"], "alpha")
         self.assertEqual(alpha["formalization"]["total"], 2)
         self.assertEqual(alpha["formalization"]["complete"], 1)
-        self.assertEqual(alpha["formalization"]["unplanned"], 1)
+        self.assertEqual(alpha["formalization"]["unmapped_blocks"], 1)
         self.assertEqual(beta["formalization"]["percent"], 100)
         blocks = {block["key"]: block for block in alpha["blocks"]}
         self.assertEqual(blocks["alpha#empty"]["formalization"]["status"], "not_applicable")
@@ -543,14 +589,15 @@ class IndexedAPITests(SimpleTestCase):
         metadata = self.corpus / "entries/alpha/entry.json"
         write_json(metadata, {**read_json(metadata), "title": "Revised title"})
         proof = self.corpus / "nodes/proof.json"
-        write_json(proof, {**read_json(proof), "description": "Revised description", "verified": False})
+        write_json(proof, {**read_json(proof), "description": "Revised description"})
         with self.track_reads(allow_html=True):
             result = self.get("/api/entries/alpha/context/", {"include": "nodes,coverage"})
         self.assertEqual(result["entry"]["title"], "Revised title")
         nodes = {node["id"]: node for node in result["nodes"]["results"]}
         self.assertEqual(nodes["proof"]["description"], "Revised description")
-        self.assertFalse(nodes["proof"]["verified"])
-        self.assertEqual(result["coverage"]["entries"][0]["formalization"]["complete"], 0)
+        self.assertTrue(nodes["proof"]["verified"])
+        self.assertEqual(result["entry"]["formalization"]["complete"], 1)
+        self.assertEqual(result["coverage"]["entries"][0]["formalization"]["complete"], 1)
         search = self.get("/api/search/nodes/", {"q": "revised description"})
         self.assertEqual([node["id"] for node in search["results"]], ["proof"])
 
@@ -766,7 +813,7 @@ class IndexedAPITests(SimpleTestCase):
         self.assert_error("/api/coverage/", {"entry_ids": "alpha"}, 409, "index_outdated")
 
     def test_missing_corrupt_and_incompatible_index_are_service_errors(self):
-        legacy = {**read_json(self.cache), "schema_version": 4}
+        legacy = {**read_json(self.cache), "schema_version": 5}
         for contents in [None, "not JSON", "{}", json.dumps(legacy)]:
             with self.subTest(contents=contents):
                 if contents is None:
@@ -778,6 +825,24 @@ class IndexedAPITests(SimpleTestCase):
                 self.assert_error("/api/entries/", {}, 503)
                 if contents is None:
                     self.assertFalse(self.cache.exists(), "Requests must not generate an index")
+
+    def test_index_entry_metrics_reject_noncompact_or_invalid_counts(self):
+        index = read_json(self.cache)
+        entry = index["entries"]["alpha"]
+        counts = entry["formalization"]
+        invalid = [
+            {**entry, "formalization": {**counts, "label": "Partial"}},
+            {**entry, "formalization": {"complete": 1, "total": 2, "unplanned": 1}},
+            {**entry, "formalization": {**counts, "complete": 3}},
+            {**entry, "formalization": {**counts, "unmapped_blocks": 5}},
+            *({**entry, "formalization": {**counts, field: value}}
+              for field in counts for value in (-1, True)),
+            *({**entry, "lean_line_count": value} for value in (-1, True)),
+        ]
+        for record in invalid:
+            with self.subTest(record=record):
+                write_json(self.cache, {**index, "entries": {**index["entries"], "alpha": record}})
+                self.assert_error("/api/entries/", {}, 503, "index_unavailable")
 
     def test_unknown_targets_return_json_not_found(self):
         for path, params in [

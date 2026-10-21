@@ -5,7 +5,8 @@ import subprocess
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-from .node_files import LEAN_MODULE, TOOLCHAIN_MODULES, prepare_results, read_nodes
+from .node_files import LEAN_MODULE, TOOLCHAIN_MODULES, read_node, read_nodes
+from .node_results import PROOF_FIELDS, validate_result
 
 
 def prepare_proof_results(corpus, formal):
@@ -50,4 +51,18 @@ def prepare_proof_results(corpus, formal):
     if results.keys() != declarations:
         raise ValueError(
             "Lean did not report every registered declaration.")
-    return prepare_results(corpus, nodes, results)
+    prepared = {}
+    for identifier, node in nodes.items():
+        current = read_node(identifier, corpus)
+        binding = [current.get("module"), current.get("declaration")]
+        saved = {"binding": binding, "verified": False}
+        # Editing a binding during compilation cannot borrow its old result.
+        if all(binding) and binding == [node.get("module"), node.get("declaration")]:
+            result = results[node["declaration"]]
+            saved.update({field: result[field] for field in PROOF_FIELDS if field in result})
+            defining_module = result.get("module", binding[0])
+            if defining_module != binding[0]:
+                saved["defining_module"] = defining_module
+        validate_result(saved)
+        prepared[identifier] = saved
+    return prepared

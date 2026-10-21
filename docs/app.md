@@ -37,17 +37,18 @@ to `app/`:
 | `catalog/authoring_validation.py` | Offline source/planning schema, relationship, link, and catalog checks |
 | `catalog/index_reader.py` | Schema-checked, per-process index loading and replacement detection |
 | `catalog/entry_text.py` | On-demand HTML text extraction and a bounded, per-process LRU cache |
-| `catalog/entry_files.py` | Direct entry and metadata reads, navigation files, local assets, summary writes |
-| `catalog/node_files.py` | Direct node reads, installed Lean sources, proof-result preparation and writes |
+| `catalog/entry_files.py` | Direct authored entry and metadata reads, navigation files, local assets |
+| `catalog/node_files.py` | Authored node reads and installed Lean sources |
+| `catalog/node_results.py` | Binding-matched indexed proof results and reader joins |
 | `catalog/files.py` | Shared JSON reading, request ID guards, atomic replacement of individual JSON files |
-| `catalog/content.py` | Reader data, navigation, and block badges |
+| `catalog/content.py` | Reader data, indexed entry results, navigation, and live block badges |
 | `catalog/sources.py`, `catalog/equations.py` | Trusted HTML parsing, references, equation labels, and rendering |
-| `catalog/progress.py` | Shared entry/block verification summaries |
-| `catalog/build.py` | Build orchestration, entry summaries, generated-data comparison and publication |
+| `catalog/progress.py` | Verification counts and runtime badge formatting |
+| `catalog/build.py` | Build orchestration, generated-data comparison and publication |
 | `catalog/proofs.py` | Lean build, declaration checks, and proof-result preparation |
-| `catalog/statistics.py` | Saved-metadata totals, count history, and Git backfill; direct snapshot read for the home page |
+| `catalog/statistics.py` | Indexed entry/node totals, count history, and Git backfill; home-page snapshot reads |
 | `catalog/validation.py` | Offline metadata, HTML, reference, and hierarchy validation |
-| `catalog/corpus_index.py` | Derived authoring-index collection and publication |
+| `catalog/corpus_index.py` | Derived relationships, entry/node results, and index publication |
 | `catalog/management/commands/` | Unified `build` and separate `update_statistics` commands |
 | `catalog/tests/` | Reader, locality, summary, and Lean-build checks |
 
@@ -57,15 +58,22 @@ to `app/`:
 
 Requests use `read_entry(id)`, `read_entry_metadata(id)`, and `read_node(id)`.
 Home reads only taxonomy, reading order, and `corpus/statistics.json`. Area listings
-and next-entry navigation use JSON metadata. In particular,
-area pages use the saved `formalization` summary: they open neither entry HTML nor
-node JSON. The small taxonomy and `reading_order.json` index provide area navigation
-and reading order.
+with entries and next-entry navigation join authored JSON metadata with generated
+entry results from the corpus index. Parent-area pages with navigation only do
+not load the index. Area pages open neither entry HTML nor node JSON and do
+not scan Lean files. The entry header uses the same indexed line count. See the
+[build guide](build.md#what-a-normal-build-does) for stored fields and counting rules.
+The small taxonomy and `reading_order.json` provide area navigation and reading order.
 
-An entry page parses its own HTML and loads its linked nodes. It resolves referenced
+An entry page parses its own HTML and computes progress from its linked nodes and
+their matching indexed proof results.
+If the index is missing or invalid, or a draft has no indexed record, ordinary
+pages remain readable: listings omit the saved badge and line count, while entry
+pages show unverified progress for nodes without matching results. An entry resolves referenced
 entries only as needed for headings, anchors, and contextual return links, reusing
 them within that request. Node pages load the requested node, its direct dependency
-hints, and the defining source file. The single-node API reads only that node.
+hints, matching indexed results, and the defining source file. The single-node API
+reads only that node's authored file and joins its indexed result.
 The full node API and build command enumerate nodes because they cover the collection.
 HTML page requests never launch Lean or write corpus data. They trust corpus structure
 validated offline; metadata ID matching, HTML consistency, reference existence, and
@@ -95,15 +103,19 @@ entries it parses against the index, as described below.
 | `/api/source-errors/findings/` and `/<id>/` | Filtered finding summaries and one finding's evidence and repair |
 | `/api/reference-planning/` and `/<id>/` | Filtered pending development summaries and one planning record |
 
-Reader and API routes accept GET and HEAD. The API adds reader URLs and source paths to the saved node fields. Verification comes from the saved `verified` flag.
+Reader and API routes accept GET and HEAD. Node responses combine authored fields
+with binding-matched indexed proof results and add reader URLs and source paths.
+The cached defining module, when present, supplies the source path and response
+`module`; it does not rewrite the authored import module.
 
 ### Authoring API
 
 The entry, node-search, reference, coverage and consumer authoring endpoints use
 the [derived corpus index](#corpus-index).
-Requests never rebuild it, write files, or invoke Lean. Ordinary HTML pages and
-the existing `/api/nodes/` and `/api/nodes/<id>/` endpoints retain their direct
-file reads and work without the index.
+Requests never rebuild it, write files, or invoke Lean. Ordinary HTML pages remain
+readable without indexed results; `/api/nodes/` and `/api/nodes/<id>/` retain
+their direct authored-file reads and return unverified nodes if no matching
+indexed result is available.
 
 | Endpoint | Query parameters |
 | --- | --- |
@@ -122,7 +134,7 @@ selected entries. Omitting `q` lists the nodes matching the other filters.
 Search `q` is limited to 200 characters per value. Every endpoint
 accepts optional `revision=<expected>`; a different cached index revision returns
 HTTP 409. Responses identify `index_revision` and
-`metadata_source="live_corpus"`.
+`metadata_source="live_corpus_and_index"`.
 
 For entry context, `block_ids=local-id-a,local-id-b` selects up to 100 nonempty
 block IDs within that entry. Repeated IDs are deduplicated, and selected blocks
@@ -146,8 +158,8 @@ payload; parsing and structural validation still cover the whole entry HTML.
 Entry listing returns `id`, `title`, `primary_area`, `additional_areas`,
 `reading_position`, `block_count` and `url` by default. Its comma-separated
 `fields` selector can choose those fields and `abstract`, `summary`, `reading_time`,
-`based_on` or the saved `formalization` summary. Node search preserves its full
-record response when `fields` is omitted; use `fields` to request a smaller
+`based_on`, the formatted indexed `formalization` summary or `lean_line_count`. Node search
+preserves its full record response when `fields` is omitted; use `fields` to request a smaller
 subset of `id`, `description`, `module`, `declaration`, `dependencies`, `verified`,
 `signature`, `declaration_line`, `url`, `source_path` and `matched_queries`.
 Both selectors always include `id`; optional fields absent from the record are
@@ -195,10 +207,12 @@ within the entry and target headings across entries. Figure, table and equation
 anchors receive numbered labels too. These labels also appear in the returned
 prose. `include_answers=false` omits answer text and answer-only links.
 
-Relationships come from the indexed snapshot. Entry text is parsed on demand
-from current HTML, and JSON metadata is read from current corpus files, including
-saved proof results. A response can therefore combine snapshot relationships
-with newer text or metadata. `index_revision` does not certify that these live
+Relationships and generated entry/node results come from the indexed snapshot.
+Entry text is parsed on demand from current HTML; authored metadata comes from
+current JSON files. Coverage uses live block mappings and matching indexed proof
+results after checking their structure against the index. A response can
+therefore combine snapshot results with newer text or metadata. `index_revision`
+does not certify that these live
 files match the snapshot or that Lean has checked current sources. Text-only
 edits become visible without regenerating the index. Whenever the API parses an
 entry's HTML, it checks block structure, formal mappings and the complete internal-link
@@ -211,8 +225,11 @@ the request does not load is visible only after an index refresh.
 Node area and usage filters likewise use indexed block mappings, combined with
 live entry area metadata. They do not parse HTML or detect new or removed
 consumers until the index is refreshed. Entry-list block counts and reading
-positions also come from the snapshot; requested `formalization` values and node
-verification flags are saved build results, not fresh Lean checks.
+positions also come from the snapshot. Requested entry `formalization` values
+are formatted from indexed counts. Node proof results are joined only when the
+current authored module and declaration match the saved binding; otherwise the
+node is unverified without a signature or source line. Neither result is a fresh
+Lean check.
 
 Malformed or unknown query parameters return 400; unknown IDs return 404.
 A selected record missing from the current files returns 409 `index_outdated`.
@@ -270,9 +287,10 @@ competing statistics changes. New authors are counted after their commits reach
 `main`.
 
 The workflow runs `uv run --locked python app/manage.py update_statistics` using
-the committed entry summaries and node verification flags. This command reads one
-metadata record at a time and needs neither Lean nor entry HTML. It validates the
-snapshot before replacing the file atomically and leaves unchanged files untouched.
+indexed entry counts and binding-matched node results. It requires a valid built
+index whose entry and node IDs match the corpus, and refuses to publish otherwise. The
+command needs neither Lean nor entry HTML. It validates the snapshot before
+replacing the file atomically and leaves unchanged files untouched.
 For maintenance, run the same command locally or manually dispatch the workflow on
 `main`; contributors normally leave statistics generation to automation.
 
@@ -292,11 +310,15 @@ room for the plot.
 
 When history is absent, the first refresh imports the local Git history through
 `HEAD`. Use a full, up-to-date clone of the GitHub repository. The import follows
-mainline commits and reads only changed metadata blobs, retaining compact counts
-and proof flags rather than historical HTML or complete records. Legacy
+mainline commits and reads changed metadata and index blobs, retaining compact
+counts, binding pairs and proof flags rather than historical HTML or complete records. Legacy
 `formal/nodes` files contribute to node totals. Verified counts include only saved
-proof flags and entry summaries, starting at zero before these records exist; old
-review approvals are not proof results. Contributor history includes authors from
+proof flags and entry summaries, starting at zero before these records exist.
+Backfill accepts legacy entry summaries and node flags, then uses indexed results
+when available, matching node results against their historical authored bindings.
+It applies each commit as a whole, so migrating results into the index introduces
+no false dip and index-only proof updates are counted.
+Old review approvals are not proof results. Contributor history includes authors from
 merged branches. Later refreshes append the current results without replaying Git
 history, preserving any manual trimming of historical points. The command itself
 does not fetch GitHub or rebuild old Lean projects.
@@ -321,8 +343,13 @@ when installed source-file availability matters.
 
 ### Corpus index
 
-Both writing build modes regenerate the authoring index together with
-entry summaries and authoring catalogs. For example, to refresh derived data
+Both writing build modes regenerate the index and authoring catalogs without
+rewriting entry or node files. A full build checks Lean; `--no-lean` reuses only
+binding-matched results from a valid compatible index. An existing unreadable,
+invalid or incompatible snapshot fails a no-Lean writing build before publication.
+If no snapshot is available, it records unverified nodes without signatures or
+source lines and warns when bound nodes are affected. A full build restores these
+results or replaces a bad snapshot. For example, to refresh derived data
 without Lean at a one-off destination:
 
 ```sh
@@ -340,8 +367,10 @@ index to exist, parse as JSON, and equal regeneration, including its revision;
 
 The index keeps block structure and node mappings, backlinks, node consumers,
 declaration/module lookups, entry block IDs and inverse reading positions. It
-stores no entry headings, statements, answers or link labels, and avoids copying
-entry/node metadata, taxonomy and reading-order records. It has no `counts` field;
+stores generated entry and node results alongside these relationships, but no
+entry headings, statements, answers or link labels. Titles, abstracts, node
+descriptions, taxonomy and reading-order records remain in authored files.
+It has no corpus-wide `counts` field;
 aggregate totals and history are stored only in `corpus/statistics.json`.
 Internal references are stored once with their source-link positions; sparse
 outgoing/incoming maps contain their edge IDs. Non-block anchors map to their
@@ -351,35 +380,39 @@ The main schema fields are:
 
 | Field | Contents |
 | --- | --- |
-| `schema_version`, `revision` | Format version and an aggregate fingerprint of the input snapshot |
-| `entries`, `blocks` | Entry relationships, block kinds/numbers/order and formal mappings, keyed by `entry#block` |
+| `schema_version`, `revision` | Schema 7 and an aggregate fingerprint of source inputs and generated entry/node results |
+| `entries`, `blocks` | Entry relationships and generated results; block kinds/numbers/order and formal mappings, keyed by `entry#block` |
+| `nodes` | Proof results keyed by node ID: checked `binding: [module, declaration]`, `verified`, optional `signature`/`declaration_line`, and `defining_module` when different from the authored module |
 | `references`, `outgoing`, `incoming` | Structural link records with source-link positions and sparse maps of edge IDs |
 | `node_consumers`, `nodes_by_declaration`, `module_nodes` | Reverse block mappings and declaration/module lookups |
 
-Block `formal_ids` preserves all three states: `null` for unplanned mappings,
+Block `formal_ids` preserves all three states: `null` for unspecified mappings,
 `[]` for explicitly nothing to formalize, and node IDs for mapped blocks.
 Any indexed node dependency edges are authored hints, not Lean's dependency graph.
 
 Metadata stays available through `read_node`, `read_entry_metadata`, `read_areas`,
 and `read_reading_order`. Known-path record reads are constant in corpus record
-count, with a cost proportional to the requested record's bytes. Node descriptions,
-signatures, and verification flags are not copied into the index. Unfiltered node
+count, with a cost proportional to the requested record's bytes. Node descriptions
+stay in authored files; proof results live only in the index. Unfiltered node
 description searches scan and read node files; exact declaration/module and area
 filters narrow those reads. Area membership is derived on demand from live entry
 metadata and indexed mappings, without a separate node-area index. A node listing
 without text or verification filters reads only the requested page's node records
 after selecting candidate IDs.
 
-The revision covers the exact indexed input files, including node metadata and
-uncommitted edits, but excludes `statistics.json`. Statistics-only updates leave
-the index and its full-check freshness unchanged. The revision identifies that
+The revision covers exact indexed source bytes, including node metadata and
+uncommitted edits, plus generated entry/node results. A proof-result or Lean
+line-count change therefore changes the revision even if corpus sources are
+unchanged. It excludes `statistics.json`; statistics-only updates leave the index
+and its full-check freshness unchanged. The revision identifies that
 snapshot, not the current Lean proof state or whether the working tree has since
 changed. Per-file hashes are used only
 during generation and are not exported; identifying changed files requires
 another scan.
 
 Authored corpus HTML and JSON remain the source of truth. The index is a
-generated, committed snapshot required only by the authoring API. Each process
+generated, committed snapshot used by the authoring API, reader entry/node results
+and statistics generation. Each process
 caches its parsed index and checks the file's stat information to detect atomic
 replacement; it does not rescan the corpus or cache live metadata between
 requests. Refresh the index explicitly after edits; there is no corpus freshness
@@ -416,8 +449,8 @@ With the pinned Lean environment installed, run all catalog tests with
 The [CI workflow](../.github/workflows/ci.yml) runs structural
 `build --no-lean --check` before installing Lean, runs the tests, and finishes
 with `build --check --check-sources`.
-The final check compares committed proof metadata, summaries, authoring catalogs
-and the selected index, including its revision, without modifying them. Kernel-checker
+The final check compares authoring catalogs and the selected index, including
+entry/node results and revision, without modifying them. Kernel-checker
 tests cover complete and unfinished declarations, transitive axioms and missing
 declarations. Build/publication tests use subprocess fixtures; reader tests use
 small representative corpora and check locality. Whole-corpus structural checking
@@ -430,7 +463,7 @@ checking rendered links or structure. Locate labelled sections using stable
 `aria-labelledby` relationships and require nonempty headings without fixing their
 wording. Check displayed data within the relevant section, using response context
 or corpus records for expected values. Verification expectations should come from
-controlled fixtures or saved node data, not the corpus's current completion rate.
+controlled fixtures or indexed results, not the corpus's current completion rate.
 
 To run only the build and kernel-checker tests:
 
@@ -457,9 +490,10 @@ run `uv run python app/manage.py build --no-lean --check` for read-only structur
 validation. This leaves the committed corpus data unchanged and does not check
 generated-data freshness; deployment relies on CI for that check.
 Add `--check-sources` if installed Lean source-file availability should be checked.
-Entry/node authoring queries use the committed generated index.
-Source/planning queries use their independent committed catalogs; ordinary reader
-pages and direct node APIs also work without the entry/node index.
+Entry/node authoring queries and saved reader entry/node results use the committed
+generated index. Source/planning queries use their independent committed catalogs;
+ordinary reader pages and direct node APIs remain readable without it, with nodes
+shown as unverified and no saved signatures or source lines.
 For deployment, set `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, and explicit
 `DJANGO_ALLOWED_HOSTS`. Serve `config.wsgi:application` from `app/` with a production
 WSGI server and run `uv run python app/manage.py collectstatic` to collect assets.
@@ -502,8 +536,8 @@ the structured registry records while checking cross-record relationships and
 catalog contents. Its memory cost therefore includes those registries' total
 record bytes. These records are not copied into the entry/node index.
 
-Index generation retains structural relationships and temporary revision inputs
-during that pass, rather than all entry prose or HTML trees.
+Index generation retains structural relationships, proof results and temporary
+revision inputs during that pass, rather than all entry prose or HTML trees.
 Collection, hashing, and output are linear in input bytes and indexed
 relationships; sorting K indexed keys for deterministic serialization adds
 O(K log K) work. The validator collects index relationships during its input scan.
@@ -518,7 +552,7 @@ corpus size:
   HTML and directly referenced entries, and load their bound nodes. Node pages
   load direct hints and render the entire defining Lean source file.
 - The full node API returns every record. Large consumers will need pagination.
-- The build holds the registry, results, and pending summaries in memory and
+- The build holds the registry, proof results, and generated index in memory and
   checks all declarations. Per-file writes are atomic, but publication of the
   entire corpus is not a single atomic operation.
 - Static asset directories are scanned at process startup. Lean builds and the

@@ -3,6 +3,9 @@
 See the [build guide](docs/build.md) for corpus builds, validation, flags, and
 generated files.
 
+Entry and node metadata are authored content; builds store proof results, entry
+progress counts and Lean line counts in `corpus/index.json`.
+
 Lemmatheca aims to bring mathematics together in a connected library of readable
 explanations and computer-checked results. An **entry** develops a topic through
 definitions, theorems, proofs, examples, and questions. A **node** records one

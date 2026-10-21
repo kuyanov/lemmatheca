@@ -60,8 +60,10 @@ class StatisticsHistoryTests(SimpleTestCase):
         self.corpus = self.root / "corpus"
         (self.corpus / "nodes").mkdir(parents=True)
         (self.corpus / "entries/alpha").mkdir(parents=True)
-        self.entries = {"alpha": {"formalization": {"status": "partial"}}}
-        self.nodes = {"proof": {"verified": False}}
+        self.entries = {"alpha": {}}
+        self.summaries = {"alpha": {"complete": 0, "total": 1, "unmapped_blocks": 0}}
+        self.nodes = {"proof": {"module": "Test.Proof", "declaration": "Test.proof"}}
+        self.results = {"proof": {"binding": ["Test.Proof", "Test.proof"], "verified": False}}
         self.save_records()
         write_json(self.corpus / "taxonomy.json", {"areas": [{"id": "area"}]})
 
@@ -86,6 +88,17 @@ class StatisticsHistoryTests(SimpleTestCase):
             write_json(path, entry)
         for identifier, node in self.nodes.items():
             write_json(self.corpus / "nodes" / f"{identifier}.json", node)
+        document = {key: {} for key in (
+            "blocks", "anchors", "nodes_by_declaration", "module_nodes", "node_consumers",
+            "hint_dependents", "outgoing", "incoming")}
+        document.update({
+            "schema_version": 7, "revision": "0" * 64, "references": [],
+            "nodes": self.results,
+            "entries": {identifier: {"blocks": ["block"], "reading_position": 1,
+                                     "lean_line_count": 0, "formalization": summary}
+                        for identifier, summary in self.summaries.items()},
+        })
+        write_json(self.corpus / "index.json", document)
 
     def refresh(self):
         with override_settings(CORPUS_DIR=self.corpus, REPOSITORY_DIR=self.root):
@@ -104,15 +117,19 @@ class StatisticsHistoryTests(SimpleTestCase):
 
     def test_git_replays_changes_deletions_and_renames_without_rendering(self):
         first = self.commit(1)
-        self.nodes["proof"]["verified"] = True
-        self.entries["alpha"]["formalization"]["status"] = "complete"
+        self.results["proof"]["verified"] = True
+        self.summaries["alpha"]["complete"] = 1
         self.save_records()
         second = self.commit(2)
-        (self.corpus / "nodes/proof.json").rename(self.corpus / "nodes/renamed.json")
+        (self.corpus / "nodes/proof.json").unlink()
+        self.nodes["renamed"] = self.nodes.pop("proof")
+        self.results["renamed"] = self.results.pop("proof")
+        self.save_records()
         self.commit(3)
-        self.entries["beta"] = {"formalization": {"status": "partial"}}
-        self.nodes = {"renamed": {"verified": True},
-                      "pending": {"verified": False}}
+        self.entries["beta"] = {}
+        self.summaries["beta"] = {"complete": 0, "total": 1, "unmapped_blocks": 0}
+        self.nodes["pending"] = {"module": "Test.Pending", "declaration": "Test.pending"}
+        self.results["pending"] = {"binding": ["Test.Pending", "Test.pending"], "verified": False}
         self.save_records()
         write_json(self.corpus / "taxonomy.json", {"areas": [{}, {}]})
         fourth = self.commit(4, "Bob")
@@ -143,6 +160,7 @@ class StatisticsHistoryTests(SimpleTestCase):
         write_json(legacy, {"reviewed": True})
         write_json(self.corpus / "entries/alpha/entry.json",
                    {"status": "approved"})
+        (self.corpus / "index.json").unlink()
         first = self.commit(1)
         legacy.unlink()
         self.save_records()
@@ -152,10 +170,66 @@ class StatisticsHistoryTests(SimpleTestCase):
                          {"at": first, "count": 1, "verified": 0}])
         self.assertEqual(history["entries"], history["nodes"])
 
+    def test_git_migration_preserves_legacy_verification_and_tracks_index_only_changes(self):
+        self.entries["alpha"] = {"formalization": {"status": "complete"}}
+        self.save_records()
+        # The old structural index did not carry generated entry summaries.
+        write_json(self.corpus / "index.json", {
+            "schema_version": 5, "entries": {"alpha": {"blocks": []}},
+        })
+        first = self.commit(1)
+        self.entries["alpha"] = {}
+        self.summaries["alpha"]["complete"] = 1
+        self.save_records()
+        self.commit(2)
+        # Only the index changes. Every currently bound node is verified, but
+        # this entry still has a block whose mapping has not been supplied.
+        self.summaries["alpha"]["unmapped_blocks"] = 1
+        self.save_records()
+        third = self.commit(3)
+        history = history_from_git(self.corpus, self.root)
+        self.assertEqual(history["entries"], [
+            {"at": first, "count": 1, "verified": 1},
+            {"at": third, "count": 1, "verified": 0},
+        ])
+
+    def test_git_node_migration_tracks_index_results_and_rejects_stale_bindings(self):
+        # Older node records, including records without a binding, carried their
+        # own proof flag. A schema-6 index supplied entry counts only.
+        write_json(self.corpus / "nodes/proof.json", {"verified": True})
+        write_json(self.corpus / "index.json", {
+            "schema_version": 6, "entries": {"alpha": {
+                "formalization": self.summaries["alpha"]}},
+        })
+        first = self.commit(1)
+        self.results["proof"]["verified"] = True
+        self.save_records()
+        self.commit(2)
+        self.results["proof"]["verified"] = False
+        self.save_records()
+        third = self.commit(3)
+        self.results["proof"]["verified"] = True
+        self.save_records()
+        fourth = self.commit(4)
+        self.nodes["proof"]["declaration"] = "Test.changed"
+        self.save_records()
+        fifth = self.commit(5)
+        self.nodes["proof"] = {}
+        self.results["proof"] = {"binding": [None, None], "verified": True}
+        self.save_records()
+        self.commit(6)
+        self.assertEqual(history_from_git(self.corpus, self.root)["nodes"], [
+            {"at": first, "count": 1, "verified": 1},
+            {"at": third, "count": 1, "verified": 0},
+            {"at": fourth, "count": 1, "verified": 1},
+            {"at": fifth, "count": 1, "verified": 0},
+        ])
+
     def test_merge_counts_corpus_once_and_includes_branch_authors(self):
         self.commit(1)
         self.git("checkout", "--quiet", "-b", "contribution")
-        self.nodes["new"] = {"verified": False}
+        self.nodes["new"] = {"module": "Test.New", "declaration": "Test.new"}
+        self.results["new"] = {"binding": ["Test.New", "Test.new"], "verified": False}
         self.save_records()
         self.commit(2, "Bob")
         self.git("checkout", "--quiet", "main")
@@ -181,7 +255,7 @@ class StatisticsHistoryTests(SimpleTestCase):
                 patch("catalog.statistics.timestamp", return_value="2026-02-02T12:00:00+00:00"):
             self.assertEqual(prepare_statistics(
                 self.corpus, self.root), first)
-            self.nodes["proof"]["verified"] = True
+            self.results["proof"]["verified"] = True
             self.save_records()
             changed = prepare_statistics(
                 self.corpus, self.root)
@@ -193,9 +267,10 @@ class StatisticsHistoryTests(SimpleTestCase):
 
     def test_refresh_reads_saved_counts_without_lean_or_html(self):
         self.published_snapshot()
-        self.entries["alpha"]["formalization"]["status"] = "complete"
+        self.summaries["alpha"]["complete"] = 1
         self.entries["draft"] = {}
-        self.nodes["proof"]["verified"] = True
+        self.summaries["draft"] = {"complete": 0, "total": 0, "unmapped_blocks": 1}
+        self.results["proof"]["verified"] = True
         self.save_records()
         records = {path: path.read_bytes() for path in self.corpus.glob("**/*.json")
                    if path.name != "statistics.json"}
@@ -208,6 +283,69 @@ class StatisticsHistoryTests(SimpleTestCase):
         self.assertEqual({path: path.read_bytes()
                          for path in records}, records)
         validate_statistics(snapshot)
+
+    def test_refresh_only_trusts_index_results_for_the_current_bound_declaration(self):
+        self.published_snapshot()
+        self.nodes["proof"]["verified"] = True
+        self.save_records()
+        self.assertEqual(prepare_statistics(self.corpus, self.root)["verified_nodes"], 0)
+        self.results["proof"]["verified"] = True
+        self.save_records()
+        self.assertEqual(prepare_statistics(self.corpus, self.root)["verified_nodes"], 1)
+        self.nodes["proof"]["declaration"] = "Test.changed"
+        self.save_records()
+        self.assertEqual(prepare_statistics(self.corpus, self.root)["verified_nodes"], 0)
+        self.nodes["proof"] = {}
+        self.save_records()
+        self.assertEqual(prepare_statistics(self.corpus, self.root)["verified_nodes"], 0)
+
+    def test_only_nonempty_fully_verified_mapped_entries_count_as_verified(self):
+        self.published_snapshot()
+        self.entries = {identifier: {} for identifier in ("alpha", "unmapped", "na")}
+        # Old generated fields no longer determine the current snapshot.
+        self.entries["alpha"]["formalization"] = {"status": "partial"}
+        self.summaries = {
+            "alpha": {"complete": 1, "total": 1, "unmapped_blocks": 0},
+            "unmapped": {"complete": 1, "total": 1, "unmapped_blocks": 1},
+            "na": {"complete": 0, "total": 0, "unmapped_blocks": 0},
+        }
+        self.save_records()
+        snapshot = prepare_statistics(self.corpus, self.root)
+        self.assertEqual((snapshot["entries"], snapshot["verified_entries"]), (3, 1))
+
+    def test_refresh_requires_saved_entry_counts_and_preserves_snapshot_on_bad_index(self):
+        self.published_snapshot()
+        published = (self.corpus / "statistics.json").read_bytes()
+        index = self.corpus / "index.json"
+        valid = read_json(index)
+        index.unlink()
+        with self.assertRaisesRegex(CommandError, "run build --no-lean"):
+            self.refresh()
+        invalid = (
+            {},
+            {**valid, "entries": {}},
+            {**valid, "nodes": {}},
+            {**valid, "entries": {"alpha": {**valid["entries"]["alpha"],
+                "formalization": {"complete": True, "total": 1, "unmapped_blocks": 0}}}},
+            {**valid, "entries": {"alpha": {**valid["entries"]["alpha"],
+                "formalization": {"complete": 2, "total": 1, "unmapped_blocks": 0}}}},
+        )
+        for record in invalid:
+            with self.subTest(record=record):
+                write_json(index, record)
+                with self.assertRaisesRegex(CommandError, "entry formalization counts"):
+                    self.refresh()
+        self.assertEqual((self.corpus / "statistics.json").read_bytes(), published)
+
+    def test_refresh_uses_configured_index_for_configured_corpus(self):
+        self.published_snapshot()
+        self.summaries["alpha"]["complete"] = 1
+        self.save_records()
+        selected = self.root / "selected-index.json"
+        (self.corpus / "index.json").rename(selected)
+        with override_settings(CORPUS_DIR=self.corpus, CORPUS_INDEX_PATH=selected):
+            snapshot = prepare_statistics(self.corpus, self.root)
+        self.assertEqual(snapshot["verified_entries"], 1)
 
     def test_new_author_appears_after_commit_but_bot_refresh_changes_nothing(self):
         self.commit(1)
@@ -255,7 +393,7 @@ class StatisticsHistoryTests(SimpleTestCase):
 
     def test_refresh_keeps_manually_trimmed_history(self):
         self.published_snapshot()
-        self.nodes["proof"]["verified"] = True
+        self.results["proof"]["verified"] = True
         self.save_records()
         previous = prepare_statistics(
             self.corpus, self.root)

@@ -21,7 +21,7 @@ than repeating human or correspondence review.
 Use the [authoring API](../CONTRIBUTING.md#using-the-authoring-api) entry context
 with `include=nodes,coverage`, selecting `block_ids` where known. For multiple
 entries, `/api/coverage/?entry_ids=id-a,id-b` can shortlist mapped targets before
-fetching their records and supporting blocks. Saved `verified=false` is only a
+fetching their records and supporting blocks. Indexed `verified=false` is only a
 candidate filter; inspect current proofs, dependencies and axioms locally. Use
 targeted searches for supporting lemmas, not a fresh whole-area inventory.
 

@@ -43,10 +43,11 @@ then inspect actual pinned Lean sources rather than saved signatures.
    specified witnesses or maps. Put declarations with their appropriate
    expository owner under the module-layout rules. Bridge proofs belong to step 6.
 4. Create or update node records, mathematical descriptions, direct proof-planning
-   hints and `data-formal` mappings. Distinguish unplanned coverage from blocks
+   hints and `data-formal` mappings. Distinguish unmapped blocks from blocks
    with nothing to formalize. Leave logical-strength claims unbound if their
    intended setting is not encoded, explaining the limitation. Do not fabricate
-   verification fields or generated summaries.
+   `verified`, `signature` or `declaration_line` fields in node JSON, or edit
+   generated index results; the build produces them.
 
 ## Checks
 

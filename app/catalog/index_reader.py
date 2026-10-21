@@ -3,9 +3,11 @@
 from functools import lru_cache
 import json
 import os
+from pathlib import Path
 import re
 
 from .corpus_index import SCHEMA_VERSION, configured_index_path
+from .node_results import validate_result
 from .sources import KINDS
 
 
@@ -35,12 +37,26 @@ def _read_index(path, signature):
         raise ValueError("Unsupported corpus index schema")
     if not isinstance(document.get("revision"), str) or not re.fullmatch(r"[0-9a-f]{64}", document["revision"]):
         raise ValueError("Invalid corpus index revision")
-    for field in ("entries", "blocks", "anchors", "nodes_by_declaration",
+    for field in ("entries", "nodes", "blocks", "anchors", "nodes_by_declaration",
                   "module_nodes", "node_consumers", "hint_dependents", "outgoing", "incoming"):
         if not isinstance(document.get(field), dict):
             raise ValueError(f"Invalid corpus index field: {field}")
     if not isinstance(document.get("references"), list):
         raise ValueError("Invalid corpus index references")
+    for result in document["nodes"].values():
+        validate_result(result)
+    for entry in document["entries"].values():
+        if (not isinstance(entry, dict) or not isinstance(entry.get("blocks"), list)
+                or any(not isinstance(block, str) for block in entry["blocks"])
+                or type(entry.get("reading_position")) is not int or entry["reading_position"] < 1
+                or type(entry.get("lean_line_count")) is not int or entry["lean_line_count"] < 0):
+            raise ValueError("Invalid corpus index entry")
+        counts = entry.get("formalization")
+        if (not isinstance(counts, dict) or set(counts) != {"complete", "total", "unmapped_blocks"}
+                or any(type(value) is not int or value < 0 for value in counts.values())
+                or counts["complete"] > counts["total"]
+                or counts["unmapped_blocks"] > len(entry["blocks"])):
+            raise ValueError("Invalid corpus index formalization counts")
     for block in document["blocks"].values():
         if (not isinstance(block, dict) or not isinstance(block.get("kind"), str)
                 or block["kind"] not in KINDS
@@ -60,9 +76,9 @@ def _read_index(path, signature):
     return document
 
 
-def get_index():
+def get_index(path=None):
     """Cache only index snapshots; live metadata is read separately per request."""
-    path = configured_index_path().resolve()
+    path = Path(path if path is not None else configured_index_path()).resolve()
     try:
         for _ in range(3):
             signature = _signature(path.stat())
@@ -72,7 +88,9 @@ def get_index():
                 continue
     except (OSError, ValueError) as error:
         raise IndexUnavailable(
-            "Corpus index unavailable. Run python app/manage.py build --no-lean."
+            "Corpus index unavailable. Run python app/manage.py build to restore "
+            "proof results. If the index is missing, --no-lean can instead build "
+            "an unverified snapshot; an existing invalid index needs a full build."
         ) from error
     raise IndexUnavailable("Corpus index changed during loading; retry the request.")
 

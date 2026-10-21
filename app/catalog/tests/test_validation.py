@@ -76,7 +76,7 @@ class CorpusValidationTests(SimpleTestCase):
         self.add_entry('beta', '<a href="alpha#fact"></a>')
         self.node = self.corpus / 'nodes/proof.json'
         write_json(self.node, {'id': 'proof', 'description': 'A planned proof.',
-                               'verified': False, 'module': None, 'declaration': None,
+                               'module': None, 'declaration': None,
                                'dependencies': []})
         self.metadata = self.corpus / 'entries/alpha/entry.json'
         self.source = self.corpus / 'entries/alpha/entry.html'
@@ -189,7 +189,6 @@ class CorpusValidationTests(SimpleTestCase):
              'Author'], 'doi': 42}]}, 'doi must'),
             ({'based_on': [{'title': 'Book', 'authors': [
              'Author'], 'url': '/book'}]}, 'HTTP'),
-            ({'formalization': []}, 'Expected an object'),
             ({'typo': 'value'}, 'Unknown fields'),
         ]
         for update, error in cases:
@@ -200,18 +199,17 @@ class CorpusValidationTests(SimpleTestCase):
                    value in original.items() if key != 'summary'})
         self.assert_invalid('Missing fields: summary')
 
-    def test_generated_summary_may_be_absent_or_stale_but_must_be_well_typed(self):
+    def test_entry_metadata_rejects_generated_fields(self):
         record = read_json(self.metadata)
-        summary = {'status': 'complete', 'complete': 42, 'total': 42,
-                   'unplanned': 0, 'percent': 100, 'label': '100%', 'description': 'Old result'}
-        write_json(self.metadata, {**record, 'formalization': summary})
         validate_corpus(self.corpus)
-        for update in ({'complete': True}, {'total': 0}, {'percent': 101}, {'status': []}):
-            with self.subTest(update=update):
-                write_json(self.metadata, {
-                           **record, 'formalization': {**summary, **update}})
-                with self.assertRaises(CorpusError):
-                    validate_corpus(self.corpus)
+        generated = {
+            "formalization": {"complete": 1, "total": 1, "unmapped_blocks": 0},
+            "lean_line_count": 123,
+        }
+        for field, value in generated.items():
+            with self.subTest(field=field):
+                write_json(self.metadata, {**record, field: value})
+                self.assert_invalid(f"Unknown fields: {field}")
 
     def test_invalid_json_and_duplicate_keys(self):
         for content in ('{', '[]', '{"id":"alpha","id":"alpha"}', '{"reading_time":NaN}'):
@@ -307,8 +305,6 @@ class CorpusValidationTests(SimpleTestCase):
         original = read_json(self.node)
         for update, error in [
             ({'id': 'other'}, 'ID does not match'),
-            ({'verified': 'false'}, 'boolean'),
-            ({'verified': True}, 'unbound'),
             ({'description': []}, 'description must'),
             ({'dependencies': 'proof'}, 'must be a list'),
             ({'dependencies': ['missing']}, 'references missing'),
@@ -316,8 +312,6 @@ class CorpusValidationTests(SimpleTestCase):
             ({'dependencies': ['missing', 'missing']}, 'Duplicate'),
             ({'module': 'Lemmatheca'}, 'supplied together'),
             ({'module': '../Lemmatheca', 'declaration': 'proof'}, 'Invalid Lean module'),
-            ({'declaration_line': False}, 'positive integer'),
-            ({'signature': []}, 'signature must'),
             ({'typo': 'value'}, 'Unknown fields: typo'),
         ]:
             with self.subTest(update=update):
@@ -327,6 +321,16 @@ class CorpusValidationTests(SimpleTestCase):
         write_json(self.node.with_name('other.json'), {
                    **original, 'id': 'other', 'dependencies': ['proof']})
         self.assert_invalid('cycle')
+
+    def test_node_metadata_rejects_generated_proof_results(self):
+        record = read_json(self.node)
+        for field, value in (("verified", False), ("signature", "proof : True"),
+                             ("declaration_line", 3), ("defining_module", "Lemmatheca.Origin")):
+            with self.subTest(field=field):
+                write_json(self.node, {**record, field: value})
+                self.assert_invalid(f"Unknown fields: {field}")
+        write_json(self.node, record)
+        validate_corpus(self.corpus)
 
     def test_area_tree_and_reading_order(self):
         original = read_json(self.taxonomy)
