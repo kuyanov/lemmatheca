@@ -12,7 +12,7 @@ from urllib.parse import quote
 
 from django.templatetags.static import static
 
-from .entry_files import read_area_entries, read_areas, read_entry_metadata
+from .entry_files import read_reading_order, read_areas, read_entry_metadata
 from .entry_text import get_entry_text, render_text
 from .node_files import node_ids, read_node, source_for_module
 from .progress import block_progress, entry_progress
@@ -346,7 +346,7 @@ class CorpusQuery:
             result["coverage"] = self._coverage_for_keys({entry_id: keys})
         if "navigation" in include:
             try:
-                ordered = read_area_entries(self.corpus)[entry["primary_area"]]
+                ordered = read_reading_order(self.corpus)[entry["primary_area"]]
                 if (not isinstance(ordered, list)
                         or any(not isinstance(identifier, str) for identifier in ordered)):
                     raise ValueError("Invalid reading order")

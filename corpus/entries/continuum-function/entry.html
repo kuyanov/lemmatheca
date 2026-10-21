@@ -20,8 +20,9 @@
 <section id="large-exponents" data-kind="lemma" data-formal="cardinal-power-large-exponents">
   <h2>A sufficiently large exponent determines the power</h2>
   <p>For infinite \(\lambda\) and \(2\le\kappa\le2^\lambda\), \(\kappa^\lambda=2^\lambda\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Injections of the value sets give \(2^\lambda\le\kappa^\lambda\le(2^\lambda)^\lambda\). By <a href="infinite-cardinal-arithmetic#power-laws">the power laws</a> and the infinite square theorem, the upper bound equals \(2^{\lambda\cdot\lambda}=2^\lambda\). Cantor–Schröder–Bernstein gives equality. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Injections of the value sets give \(2^\lambda\le\kappa^\lambda\le(2^\lambda)^\lambda\). By <a href="infinite-cardinal-arithmetic#power-laws">the power laws</a> and the infinite square theorem, the upper bound equals \(2^{\lambda\cdot\lambda}=2^\lambda\). Cantor–Schröder–Bernstein gives equality.</p>
+</div>
   <p>In particular this applies whenever \(2\le\kappa\le\lambda\), since \(\lambda&lt;2^\lambda\).</p>
 </section>
 
@@ -30,9 +31,10 @@
   <p>For infinite cardinals \(\kappa,\lambda\), without assuming GCH,</p>
   <div class="math-display">\[ (\kappa^+)^\lambda=\kappa^\lambda\cdot\kappa^+. \]</div>
   <p>Thus \(\aleph_{\alpha+1}^{\aleph_\beta}=\aleph_\alpha^{\aleph_\beta}\cdot\aleph_{\alpha+1}\) for ordinal indices \(\alpha,\beta\). Multiplication here is cardinal multiplication.</p>
-  <p class="proof-label">Proof</p>
-  <p>If \(\lambda\ge\kappa^+\), <a href="#large-exponents"></a> makes both powers equal to \(2^\lambda\). Multiplying this infinite cardinal by \(\kappa^+\le2^\lambda\) leaves it unchanged.</p>
-  <p>If \(\lambda&lt;\kappa^+\), <a href="cofinality#successors-are-regular">regularity of the successor cardinal</a> bounds the range of every \(f:\lambda\to\kappa^+\) inside some \(\gamma&lt;\kappa^+\). Each such \(\gamma\) has size at most \(\kappa\), so there are at most \(\kappa^\lambda\) functions into it. Counting the union over \(\kappa^+\) possible bounds gives \((\kappa^+)^\lambda\le\kappa^+\cdot\kappa^\lambda\), using <a href="infinite-sums-and-products#indexed-bounds">indexed bounds</a>. In the other direction, functions into \(\kappa\) embed among these functions, and constant functions supply at least \(\kappa^+\) points. Their maximum equals their product by infinite cardinal multiplication, giving the reverse inequality. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(\lambda\ge\kappa^+\), <a href="#large-exponents"></a> makes both powers equal to \(2^\lambda\). Multiplying this infinite cardinal by \(\kappa^+\le2^\lambda\) leaves it unchanged.</p>
+    <p>If \(\lambda&lt;\kappa^+\), <a href="cofinality#successors-are-regular">regularity of the successor cardinal</a> bounds the range of every \(f:\lambda\to\kappa^+\) inside some \(\gamma&lt;\kappa^+\). Each such \(\gamma\) has size at most \(\kappa\), so there are at most \(\kappa^\lambda\) functions into it. Counting the union over \(\kappa^+\) possible bounds gives \((\kappa^+)^\lambda\le\kappa^+\cdot\kappa^\lambda\), using <a href="infinite-sums-and-products#indexed-bounds">indexed bounds</a>. In the other direction, functions into \(\kappa\) embed among these functions, and constant functions supply at least \(\kappa^+\) points. Their maximum equals their product by infinite cardinal multiplication, giving the reverse inequality.</p>
+</div>
   <p>Infinite exponents are part of the statement. At exponent zero, the power is one, while the displayed product would be \(\kappa^+\).</p>
 </section>
 
@@ -47,15 +49,16 @@
       <li>If \(\mu^\lambda&lt;\kappa\) for every cardinal \(\mu&lt;\kappa\), and \(\operatorname{cf}(\kappa)\le\lambda\), then \(\kappa^\lambda=\kappa^{\operatorname{cf}(\kappa)}\).</li>
     </ol>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Case 1 is <a href="#large-exponents"></a>. In case 2, monotonicity and <a href="infinite-cardinal-arithmetic#power-laws">the power laws</a> give</p>
-  <div class="math-display">\[ \mu^\lambda\le\kappa^\lambda\le(\mu^\lambda)^\lambda=\mu^{\lambda\cdot\lambda}=\mu^\lambda. \]</div>
-  <p>In the remaining cases, \(2^\lambda&lt;\kappa\), so \(\lambda&lt;\kappa\). In case 3, <a href="cofinality#increasing-cofinal-sequences">cofinality bounds</a> place every function \(\lambda\to\kappa\) in some \(\gamma&lt;\kappa\). There are \(|\gamma|^\lambda&lt;\kappa\) functions for each bound. The union over \(\kappa\) bounds has size at most \(\kappa\cdot\kappa=\kappa\), by <a href="infinite-sums-and-products#indexed-bounds">indexed bounds</a>. Constant functions give equality.</p>
-  <p>For case 4 put \(\theta=\operatorname{cf}(\kappa)\), and take positive ordinals \(\gamma_i&lt;\kappa\), for \(i&lt;\theta\), cofinal in \(\kappa\). Encode \(f:\lambda\to\kappa\) by the functions</p>
-  <div class="math-display">\[ f_i(x)=\begin{cases}f(x),&amp;f(x)&lt;\gamma_i,\\0,&amp;f(x)\ge\gamma_i.\end{cases} \]</div>
-  <p>Each \(f_i:\lambda\to\gamma_i\) is well-defined because \(0&lt;\gamma_i\). The code is injective: if two functions differ at \(x\), some \(\gamma_i\) exceeds both values and preserves that difference. Each coordinate has \(|\gamma_i|^\lambda&lt;\kappa\) possibilities. Hence</p>
-  <div class="math-display">\[ \kappa^\lambda\le\prod_{i&lt;\theta}|\gamma_i|^\lambda\le\kappa^\theta\le\kappa^\lambda, \]</div>
-  <p>where the last inequality uses \(\theta\le\lambda\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Case 1 is <a href="#large-exponents"></a>. In case 2, monotonicity and <a href="infinite-cardinal-arithmetic#power-laws">the power laws</a> give</p>
+    <div class="math-display">\[ \mu^\lambda\le\kappa^\lambda\le(\mu^\lambda)^\lambda=\mu^{\lambda\cdot\lambda}=\mu^\lambda. \]</div>
+    <p>In the remaining cases, \(2^\lambda&lt;\kappa\), so \(\lambda&lt;\kappa\). In case 3, <a href="cofinality#increasing-cofinal-sequences">cofinality bounds</a> place every function \(\lambda\to\kappa\) in some \(\gamma&lt;\kappa\). There are \(|\gamma|^\lambda&lt;\kappa\) functions for each bound. The union over \(\kappa\) bounds has size at most \(\kappa\cdot\kappa=\kappa\), by <a href="infinite-sums-and-products#indexed-bounds">indexed bounds</a>. Constant functions give equality.</p>
+    <p>For case 4 put \(\theta=\operatorname{cf}(\kappa)\), and take positive ordinals \(\gamma_i&lt;\kappa\), for \(i&lt;\theta\), cofinal in \(\kappa\). Encode \(f:\lambda\to\kappa\) by the functions</p>
+    <div class="math-display">\[ f_i(x)=\begin{cases}f(x),&amp;f(x)&lt;\gamma_i,\\0,&amp;f(x)\ge\gamma_i.\end{cases} \]</div>
+    <p>Each \(f_i:\lambda\to\gamma_i\) is well-defined because \(0&lt;\gamma_i\). The code is injective: if two functions differ at \(x\), some \(\gamma_i\) exceeds both values and preserves that difference. Each coordinate has \(|\gamma_i|^\lambda&lt;\kappa\) possibilities. Hence</p>
+    <div class="math-display">\[ \kappa^\lambda\le\prod_{i&lt;\theta}|\gamma_i|^\lambda\le\kappa^\theta\le\kappa^\lambda, \]</div>
+    <p>where the last inequality uses \(\theta\le\lambda\).</p>
+</div>
   <p>The last case has \(\operatorname{cf}(\kappa)\le\lambda&lt;\kappa\), so its base is singular. Repeated smaller-base reductions cannot descend forever: cardinals are ordinals and are well-ordered. Thus the unresolved values reduce to power-set sizes and cofinal powers of singular cardinals. The theorem reduces the problem; it does not assign these values.</p>
 </section>
 
@@ -78,10 +81,11 @@
       \lambda^+,&amp;\kappa\le\lambda.
     \end{cases} \]</div>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>If \(\kappa\le\lambda\), <a href="#large-exponents"></a> gives \(\kappa^\lambda=2^\lambda=\lambda^+\). Now assume \(\lambda&lt;\kappa\). Every function \(\lambda\to\kappa\) has a graph in \(\mathcal P(\lambda\times\kappa)\), so the infinite product theorem and GCH give \(\kappa^\lambda\le2^\kappa=\kappa^+\).</p>
-  <p>If also \(\operatorname{cf}(\kappa)\le\lambda\), <a href="infinite-sums-and-products#cofinal-power-growth">König's consequence</a> gives \(\kappa&lt;\kappa^{\operatorname{cf}(\kappa)}\le\kappa^\lambda\). The upper bound \(\kappa^+\) therefore forces equality with \(\kappa^+\).</p>
-  <p>If instead \(\lambda&lt;\operatorname{cf}(\kappa)\), each function has bounded range in \(\kappa\). For each bound \(\gamma&lt;\kappa\), put \(\theta=\max(\lambda,|\gamma|)\), an infinite cardinal below \(\kappa\). Graph coding bounds the number of functions \(\lambda\to\gamma\) by \(2^\theta=\theta^+\le\kappa\). Taking the union over \(\kappa\) bounds gives at most \(\kappa\cdot\kappa=\kappa\) functions. Constant functions give the opposite bound. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(\kappa\le\lambda\), <a href="#large-exponents"></a> gives \(\kappa^\lambda=2^\lambda=\lambda^+\). Now assume \(\lambda&lt;\kappa\). Every function \(\lambda\to\kappa\) has a graph in \(\mathcal P(\lambda\times\kappa)\), so the infinite product theorem and GCH give \(\kappa^\lambda\le2^\kappa=\kappa^+\).</p>
+    <p>If also \(\operatorname{cf}(\kappa)\le\lambda\), <a href="infinite-sums-and-products#cofinal-power-growth">König's consequence</a> gives \(\kappa&lt;\kappa^{\operatorname{cf}(\kappa)}\le\kappa^\lambda\). The upper bound \(\kappa^+\) therefore forces equality with \(\kappa^+\).</p>
+    <p>If instead \(\lambda&lt;\operatorname{cf}(\kappa)\), each function has bounded range in \(\kappa\). For each bound \(\gamma&lt;\kappa\), put \(\theta=\max(\lambda,|\gamma|)\), an infinite cardinal below \(\kappa\). Graph coding bounds the number of functions \(\lambda\to\gamma\) by \(2^\theta=\theta^+\le\kappa\). Taking the union over \(\kappa\) bounds gives at most \(\kappa\cdot\kappa=\kappa\) functions. Constant functions give the opposite bound.</p>
+</div>
   <p>For finite nonzero exponents, an infinite base remains unchanged by <a href="infinite-cardinal-arithmetic#finite-powers">the finite-power theorem</a>. Exponent zero and bases zero or one follow the <a href="infinite-cardinal-arithmetic#empty-function-cases">empty-function conventions</a>.</p>
 </section>
 
@@ -98,8 +102,9 @@
 <section id="continuum-restrictions" data-kind="lemma" data-formal="cardinal-power-exponent-monotone cardinal-cofinal-power-growth power-cardinal-cofinality-bound cantor-larger-cardinality">
   <h2>Known bounds constrain the continuum function without determining it</h2>
   <p>In ZFC the continuum function is nondecreasing, satisfies \(2^\kappa&gt;\kappa\), and satisfies \(\operatorname{cf}(2^\kappa)&gt;\kappa\).</p>
-  <p class="proof-label">Proof</p>
-  <p>For \(\kappa\le\lambda\), extending a binary function by zero injects the functions on \(\kappa\) into those on \(\lambda\), giving \(2^\kappa\le2^\lambda\). Strict growth is <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a>, and the cofinality bound is <a href="infinite-sums-and-products#power-set-cofinality">the consequence of König's inequality</a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For \(\kappa\le\lambda\), extending a binary function by zero injects the functions on \(\kappa\) into those on \(\lambda\), giving \(2^\kappa\le2^\lambda\). Strict growth is <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a>, and the cofinality bound is <a href="infinite-sums-and-products#power-set-cofinality">the consequence of König's inequality</a>.</p>
+</div>
   <p>These are necessary conditions. Nothing proved here says that every assignment satisfying them can occur. The <a href="larger-models#independence-witnesses">model-witness criteria for independence</a> explain what an independence claim must establish. Applying them here requires separate constructions of models of set theory; the inequalities alone supply no such models. At singular strong limits the additional relation to cofinal powers in <a href="#strong-limits-and-sch"></a> also applies.</p>
 </section>
 

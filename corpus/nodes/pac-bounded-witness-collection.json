@@ -1,12 +1,12 @@
 {
   "id": "pac-bounded-witness-collection",
   "description": "In every PA-model, if a fixed arithmetic formula \\(A(i,u,\\bar x)\\) has a witness \\(u\\) for every \\(i\\lt n\\), then one beta code records a suitable witness at each such index. The assertion includes arbitrary internal lengths and fixed parameters.",
-  "module": "Lemmatheca.MathematicalLogic.PAComputations",
-  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.bounded_witness_collection",
+  "module": "Lemmatheca.PaInductionAndHistories.PACollectionModels",
+  "declaration": "Lemmatheca.ProofTheory.PAComputations.bounded_witness_collection",
   "dependencies": [
     "pac-beta-extension"
   ],
   "verified": true,
-  "declaration_line": 433,
-  "signature": "Lemmatheca.MathematicalLogic.PAComputations.bounded_witness_collection.{u} {k : ℕ} {M : Type u}\n  [Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Structure M]\n  [M ⊨ Lemmatheca.MathematicalLogic.ArithmeticTheories.PA]\n  (φ : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula ((Fin k ⊕ Unit) ⊕ Unit)) (x : Fin k → M) (n : M)\n  (h :\n    ∀ (i : M),\n      Lemmatheca.MathematicalLogic.ArithmeticRepresentability.leValue M\n          (Lemmatheca.MathematicalLogic.ArithmeticTheories.succValue M i) n →\n        ∃ y,\n          φ.Realize\n            (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend\n              (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend x i) y)) :\n  ∃ c d,\n    ∀ (i : M),\n      Lemmatheca.MathematicalLogic.ArithmeticRepresentability.leValue M\n          (Lemmatheca.MathematicalLogic.ArithmeticTheories.succValue M i) n →\n        ∀ (y : M),\n          Lemmatheca.MathematicalLogic.ArithmeticRepresentability.decodeRealizes\n              Lemmatheca.MathematicalLogic.ArithmeticRepresentability.betaGraph c d i y →\n            φ.Realize\n              (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend\n                (Lemmatheca.MathematicalLogic.ArithmeticRepresentability.extend x i) y)"
+  "declaration_line": 66,
+  "signature": "Lemmatheca.ProofTheory.PAComputations.bounded_witness_collection.{u} {k : ℕ} {M : Type u}\n  [Lemmatheca.ModelTheory.ArithmeticTheories.language.Structure M] [M ⊨ Lemmatheca.ModelTheory.ArithmeticTheories.PA]\n  (φ : Lemmatheca.ModelTheory.ArithmeticTheories.language.Formula ((Fin k ⊕ Unit) ⊕ Unit)) (x : Fin k → M) (n : M)\n  (h :\n    ∀ (i : M),\n      Lemmatheca.ProofTheory.ArithmeticRepresentability.leValue M\n          (Lemmatheca.ModelTheory.ArithmeticTheories.succValue M i) n →\n        ∃ y,\n          φ.Realize\n            (Lemmatheca.ProofTheory.ArithmeticRepresentability.extend\n              (Lemmatheca.ProofTheory.ArithmeticRepresentability.extend x i) y)) :\n  ∃ c d,\n    ∀ (i : M),\n      Lemmatheca.ProofTheory.ArithmeticRepresentability.leValue M\n          (Lemmatheca.ModelTheory.ArithmeticTheories.succValue M i) n →\n        ∀ (y : M),\n          Lemmatheca.ProofTheory.ArithmeticRepresentability.decodeRealizes\n              Lemmatheca.ProofTheory.ArithmeticRepresentability.betaGraph c d i y →\n            φ.Realize\n              (Lemmatheca.ProofTheory.ArithmeticRepresentability.extend\n                (Lemmatheca.ProofTheory.ArithmeticRepresentability.extend x i) y)"
 }

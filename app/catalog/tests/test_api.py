@@ -31,7 +31,7 @@ class IndexedAPITests(SimpleTestCase):
             {"id": "first", "title": "First", "parent": "root", "description": "First."},
             {"id": "second", "title": "Second", "parent": "root", "description": "Second."},
         ]})
-        write_json(self.corpus / "area_entries.json", {"areas": {
+        write_json(self.corpus / "reading_order.json", {"areas": {
             "first": ["beta", "alpha"], "second": ["remote"],
         }})
         for identifier, verified, module, declaration in [
@@ -724,7 +724,7 @@ class IndexedAPITests(SimpleTestCase):
     @override_settings(CORPUS_TEXT_CACHE_ENTRIES=2)
     def test_coverage_validates_twenty_selected_entries_with_bounded_text_cache(self):
         additions = [f"bulk-{number:02}" for number in range(18)]
-        order_path = self.corpus / "area_entries.json"
+        order_path = self.corpus / "reading_order.json"
         order = read_json(order_path)
         order["areas"]["first"].extend(additions)
         write_json(order_path, order)

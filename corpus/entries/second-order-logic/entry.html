@@ -1,21 +1,21 @@
 <section id="two-kinds-of-variables" data-formal="sol-formula sol-negation sol-conjunction sol-biconditional sol-existential-individual sol-existential-relation" data-kind="definition">
   <h2>Individual and relation variables</h2>
   <p>A first-order quantifier chooses an element of a structure. A second-order quantifier can instead choose a relation on its elements. For example, \(\forall X\,\varphi\), with \(X\) unary, asks whether \(\varphi\) holds for every subset of the domain. The relation is what varies; the domain remains fixed.</p>
-  <p>Fix a <a href="first-order-languages#signatures">first-order language</a> \(L\). Its terms, functions, constants and fixed relation symbols keep their earlier meanings. We add variables \(X_i^n\) for relations of each finite arity \(n\). Their indices are names: \(x_i\) names an individual variable, whereas \(X_i^n\) names an \(n\)-ary relation variable. These are different namespaces, and \(X_i^n\) and \(X_i^m\) are different variables when \(n\ne m\). A nullary relation is a truth value, since there is exactly one empty tuple. Unary relations are subsets; binary relations are sets of ordered pairs.</p>
-  <p>A formula is built from first-order formulas with named free individual variables, relation atoms \(X_i^n(t_1,\ldots,t_n)\), falsity, implication, individual quantification \(\forall x_i\), and relation quantification \(\forall X_i^n\). Negation, conjunction, disjunction and both existential quantifiers are the usual classical abbreviations. Including an entire first-order formula as a starting formula is convenient: it uses the corpus's existing syntax without changing its internal bound-variable convention. It adds no expressive power beyond starting from its individual atoms and connectives.</p>
+  <p>Fix a <a href="first-order-languages#signatures">first-order language</a> \(L\). Its terms, functions, constants and fixed relation symbols keep their earlier meanings. We add <strong>relation variables</strong> \(X_i^n\) for relations of each finite arity \(n\). Their indices are names: \(x_i\) names an individual variable, whereas \(X_i^n\) names an \(n\)-ary relation variable. These are different namespaces, and \(X_i^n\) and \(X_i^m\) are different variables when \(n\ne m\). A nullary relation is a truth value, since there is exactly one empty tuple. Unary relations are subsets; binary relations are sets of ordered pairs.</p>
+  <p>A <strong>second-order formula</strong> is built from first-order formulas with named free individual variables, relation atoms \(X_i^n(t_1,\ldots,t_n)\), falsity, implication, individual quantification \(\forall x_i\), and relation quantification \(\forall X_i^n\). Negation, conjunction, disjunction and both existential quantifiers are the usual classical abbreviations. Including an entire first-order formula as a starting formula is convenient: it uses the corpus's existing syntax without changing its internal bound-variable convention. It adds no expressive power beyond starting from its individual atoms and connectives.</p>
 </section>
 
 <section id="scope-and-free-variables" data-formal="sol-free-individual sol-free-relation sol-sentence" data-kind="definition">
   <h2>Scope and free variables</h2>
   <p>Each quantifier binds the indicated name in its body, until a nearer quantifier binds the same name. In \(\forall x\,(X(x)\to\exists X\,X(x))\), the first occurrence of \(X\) is free; the second lies under \(\exists X\). Both occurrences of \(x\) are bound by \(\forall x\). The arity annotation may be omitted when the application determines it.</p>
-  <p>The finite set of free individual names is computed as in first-order logic. A relation atom contributes the individual names in its argument terms and its one relation name \((n,i)\). Connectives take unions. An individual quantifier removes its individual name; a relation quantifier removes only its own arity-and-name pair. A <em>sentence</em> has neither free individual names nor free relation names.</p>
+  <p>The finite set of <strong>free individual names</strong> is computed as in first-order logic. A relation atom contributes the individual names in its argument terms and its one <strong>free relation name</strong> \((n,i)\). Connectives take unions. An individual quantifier removes its individual name; a relation quantifier removes only its own arity-and-name pair. A <strong>sentence</strong> has neither free individual names nor free relation names.</p>
   <p>Individual substitution must avoid capture by individual binders. Substituting a formula for a relation variable also needs to avoid capture of its free individual and relation names. We do not use such substitutions here: the semantic clauses below change assignments directly. This keeps the distinction between a syntactic replacement and the interpretation of a quantifier visible.</p>
 </section>
 
 <section id="full-semantics" data-formal="sol-relation-assignment sol-full-satisfaction" data-kind="definition">
   <h2>Full semantics</h2>
-  <p>Let \(M\) be a nonempty \(L\)-structure. An individual assignment \(a\) sends individual names to elements of \(M\). A relation assignment \(r\) sends each name \(X_i^n\) to a relation \(r_i^n\subseteq M^n\). We regard an \(n\)-tuple as a function from \(\{0,\ldots,n-1\}\) to \(M\); this includes the empty tuple when \(n=0\). Terms are evaluated using the existing <a href="first-order-structures#term-values">term-value definition</a>.</p>
-  <p>Write \(M,a,r\models\varphi\) for satisfaction. First-order formulas have exactly their previous truth values and ignore \(r\). A relation atom is true when its tuple of term values belongs to the assigned relation. Falsity is false; implication has its ordinary truth condition. The new quantifier clauses are:</p>
+  <p>Let \(M\) be a nonempty \(L\)-structure. An <strong>individual assignment</strong> \(a\) sends individual names to elements of \(M\). A <strong>relation assignment</strong> \(r\) sends each name \(X_i^n\) to a relation \(r_i^n\subseteq M^n\). We regard an \(n\)-tuple as a function from \(\{0,\ldots,n-1\}\) to \(M\); this includes the empty tuple when \(n=0\). Terms are evaluated using the existing <a href="first-order-structures#term-values">term-value definition</a>.</p>
+  <p><strong>Full second-order satisfaction</strong>, written \(M,a,r\models\varphi\), is defined by the following clauses. First-order formulas have exactly their previous truth values and ignore \(r\). A relation atom is true when its tuple of term values belongs to the assigned relation. Falsity is false; implication has its ordinary truth condition. The new quantifier clauses are:</p>
   <div class="math-display">\[M,a,r\models\forall x_i\,\varphi\quad\Longleftrightarrow\quad\forall b\in M\; M,a[x_i:=b],r\models\varphi.\]</div>
   <div class="math-display">\[M,a,r\models\forall X_i^n\,\varphi\quad\Longleftrightarrow\quad\forall R\subseteq M^n\; M,a,r[X_i^n:=R]\models\varphi.\]</div>
   <p>Here an update replaces just one assigned value and leaves all other names unchanged. The word <em>full</em> refers to the range of the second clause: every external relation on \(M\) is included, whether or not it has a definition in \(M\). Existential relation quantification consequently means that at least one such relation works. A fixed symbol of \(L\) still has its one specified interpretation; only variables are quantified.</p>
@@ -24,21 +24,23 @@
 <section id="agreement" data-formal="sol-assignment-agreement sol-sentence-assignment-independence" data-kind="theorem">
   <h2>Agreement on free variables</h2>
   <p>If two individual assignments agree on the free individual names of \(\varphi\), and two relation assignments agree extensionally on its free relation names, then they give \(\varphi\) the same truth value. In particular, truth of a sentence is independent of both assignments.</p>
-  <p class="proof-label">Proof</p>
-  <p>Induct on the construction of the formula. The first-order case is the existing <a href="first-order-structures#free-variable-agreement">agreement theorem</a>. In a relation atom, the argument terms have the same values, and the relation assignments give the same answer on that tuple. Falsity and implication are immediate.</p>
-  <p>For \(\forall x_i\,\psi\), update both individual assignments with the same element \(b\). A free name of \(\psi\) either is \(x_i\), where the updated values are both \(b\), or remains free in the quantified formula, where the original agreement applies. The induction hypothesis works for every \(b\). For \(\forall X_i^n\,\psi\), update both relation assignments with the same relation \(R\). The identical argument applies to arity-and-name pairs, and the induction hypothesis works for every \(R\). This proves the assertion and its sentence consequence.</p>
+  <div class="proof">
+    <p>Induct on the construction of the formula. The first-order case is the existing <a href="first-order-structures#free-variable-agreement">agreement theorem</a>. In a relation atom, the argument terms have the same values, and the relation assignments give the same answer on that tuple. Falsity and implication are immediate.</p>
+    <p>For \(\forall x_i\,\psi\), update both individual assignments with the same element \(b\). A free name of \(\psi\) either is \(x_i\), where the updated values are both \(b\), or remains free in the quantified formula, where the original agreement applies. The induction hypothesis works for every \(b\). For \(\forall X_i^n\,\psi\), update both relation assignments with the same relation \(R\). The identical argument applies to arity-and-name pairs, and the induction hypothesis works for every \(R\). This proves the assertion and its sentence consequence.</p>
+</div>
 </section>
 
 <section id="first-order-inclusion" data-formal="sol-first-order-sentence sol-first-order-sentence-closed sol-first-order-sentence-truth" data-kind="lemma">
   <h2>First-order truth is preserved</h2>
   <p>A first-order sentence, regarded as a second-order sentence without relation-variable quantifiers, is true under full semantics exactly when it is true in the original first-order structure.</p>
-  <p class="proof-label">Proof</p>
-  <p>The first-order starting formula is interpreted by its existing satisfaction definition. A sentence has no free individual names, so changing or supplying an individual assignment makes no difference. The relation assignment is unused. This inclusion allows a second-order theory to retain previously written first-order axioms without rewriting them.</p>
+  <div class="proof">
+    <p>The first-order starting formula is interpreted by its existing satisfaction definition. A sentence has no free individual names, so changing or supplying an individual assignment makes no difference. The relation assignment is unused. This inclusion allows a second-order theory to retain previously written first-order axioms without rewriting them.</p>
+</div>
 </section>
 
 <section id="relation-equality" data-formal="sol-relation-equality sol-relation-equality-truth" data-kind="definition">
   <h2>Equality of relations</h2>
-  <p>Our primitive equality compares individuals. For two \(n\)-ary relation variables, write \(X=Y\) as an abbreviation for extensional equality:</p>
+  <p>Our primitive equality compares individuals. For two \(n\)-ary relation variables, write \(X=Y\) as an abbreviation for <strong>extensional equality of relations</strong>:</p>
   <div class="math-display">\[\forall x_1\cdots\forall x_n\;\bigl(X(x_1,\ldots,x_n)\leftrightarrow Y(x_1,\ldots,x_n)\bigr).\]</div>
   <p>Choose the displayed individual names fresh, so that this abbreviation does not capture other free names. The formula says exactly that the assigned relations contain the same tuples. For arity zero there are no individual quantifiers, and the abbreviation is simply \(X\leftrightarrow Y\). Thus we quantify over relations themselves, rather than over arbitrary names that might denote duplicate copies of the same relation.</p>
 </section>
@@ -46,8 +48,9 @@
 <section id="function-graphs" data-formal="sol-function-graph-formula sol-function-graph-truth sol-unique-function-graph sol-finite-arity-function-graph" data-kind="lemma">
   <h2>Functions represented by graphs</h2>
   <p>A binary relation \(F\subseteq M^2\) is the graph of a function \(M\to M\) if and only if it satisfies the formula \(\forall x\,\exists!y\,F(x,y)\). When this holds the function is unique. Consequently, quantifying over functions can be expressed by quantifying over relations and imposing this condition.</p>
-  <p class="proof-label">Proof</p>
-  <p>A function's graph assigns exactly one output to every input, so it satisfies the formula. Conversely, let \(f(x)\) be the unique \(y\) for which \(F(x,y)\). Existence gives a value for every \(x\), and uniqueness gives \(F(x,y)\leftrightarrow y=f(x)\). Any other function with this graph has the same value at each input. Here the passage from unique witnesses to a function uses ordinary unique choice; no arbitrary selection among competing witnesses is needed. For an \(n\)-argument function, use an \((n+1)\)-ary relation and require one output for every input tuple.</p>
+  <div class="proof">
+    <p>A function's graph assigns exactly one output to every input, so it satisfies the formula. Conversely, let \(f(x)\) be the unique \(y\) for which \(F(x,y)\). Existence gives a value for every \(x\), and uniqueness gives \(F(x,y)\leftrightarrow y=f(x)\). Any other function with this graph has the same value at each input. Here the passage from unique witnesses to a function uses ordinary unique choice; no arbitrary selection among competing witnesses is needed. For an \(n\)-argument function, use an \((n+1)\)-ary relation and require one output for every input tuple.</p>
+</div>
   <p>The uniqueness symbol is itself an abbreviation: \(\exists y\,(F(x,y)\land\forall z\,(F(x,z)\to z=y))\). It does not add a new quantifier to the syntax.</p>
 </section>
 
@@ -56,14 +59,15 @@
   <div class="statement-box"><p>Let \(R\) be an interpreted strict linear order on \(M\). It is a well-order if and only if the following second-order formula is true under full semantics with that interpretation of \(R\):</p>
   <div class="math-display">\[\forall X\,\bigl((\exists x\,X(x))\to\exists m\,(X(m)\land\forall y\,(X(y)\to\neg R(y,m)))\bigr).\]</div></div>
   <p>Here \(X\) is unary. If \(R\) is a fixed symbol of \(L\), the displayed formula is a sentence. In our formal definition, \(R\) is instead its one free binary relation variable, so that the same formula tests any assigned binary relation. Supplying that assignment determines its truth value without changing which variables are syntactically free.</p>
-  <p class="proof-label">Proof</p>
-  <p>Choose an arbitrary subset \(A\subseteq M\) as the value of \(X\). The antecedent says that \(A\) is nonempty. The consequent says that \(A\) contains an element \(m\) with no smaller member of \(A\). Since \(R\) is a strict linear order, this is precisely the assertion that \(m\) is least in \(A\). Full semantics lets \(A\) run through every subset, so the formula holds exactly when every nonempty subset has a least element, the <a href="ordinals#order-types">well-order property</a>. The semantic equivalence with the stated minimum property holds even without linearity; linearity is what permits calling that property a well-order.</p>
+  <div class="proof">
+    <p>Choose an arbitrary subset \(A\subseteq M\) as the value of \(X\). The antecedent says that \(A\) is nonempty. The consequent says that \(A\) contains an element \(m\) with no smaller member of \(A\). Since \(R\) is a strict linear order, this is precisely the assertion that \(m\) is least in \(A\). Full semantics lets \(A\) run through every subset, so the formula holds exactly when every nonempty subset has a least element, the <a href="ordinals#order-types">well-order property</a>. The semantic equivalence with the stated minimum property holds even without linearity; linearity is what permits calling that property a well-order.</p>
+</div>
   <p>The role of full semantics is concrete: a single subset without a least element makes the formula false. Merely checking subsets defined by a particular collection of formulas would not justify the conclusion for all subsets.</p>
 </section>
 
 <section id="induction-formula" data-formal="sol-induction-sentence sol-induction-truth sol-induction-closed" data-kind="definition">
   <h2>Induction as one sentence</h2>
-  <p>In a language with a constant \(0\) and a unary function \(s\), another use of unary relation quantification is:</p>
+  <p>In a language with a constant \(0\) and a unary function \(s\), the <strong>second-order induction sentence</strong> is:</p>
   <div class="math-display">\[\forall X\,\bigl((X(0)\land\forall x\,(X(x)\to X(s(x))))\to\forall x\,X(x)\bigr).\]</div>
   <p>Under full semantics this says exactly that every subset containing \(0\) and closed under \(s\) is the whole domain. To check the equivalence, assign an arbitrary subset to \(X\): its membership predicate gives the three displayed conditions, and every unary relation arises from such a subset. Unlike the <a href="arithmetic-theories#induction-schema">first-order induction schema</a>, this one sentence includes subsets with no first-order definition. It is an induction principle, not by itself a complete set of axioms for arithmetic: successor and the operations still need their own axioms.</p>
 </section>

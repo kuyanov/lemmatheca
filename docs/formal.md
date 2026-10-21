@@ -153,21 +153,49 @@ actual use of an unfinished declaration does affect verification, even if that
 declaration is not listed as a hint. Validation checks dependency references and
 cycles.
 
-Put local modules under `formal/Lemmatheca/` and import them from
-`formal/Lemmatheca.lean`.
-Put reusable definitions, theorem statements, proofs, and construction lemmas in
-the general theory layer for its area, such as `Lemmatheca.SetTheory` or
-`Lemmatheca.MathematicalLogic`. This applies even when
-a declaration first appears in one entry or has only one current caller. Standard
-constructions on particular carriers, such as rational enumeration or Dedekind
-cuts, are still general theory.
-Reserve `Lemmatheca.Entry.<EntryName>` for particular illustrative examples and
-counterexamples with no wider mathematical use, plus their example-specific
-helpers. An entry module must not hold general definitions, general edge cases,
-or reusable steps of an argument. General modules must not import entry modules;
-examples import the theory they illustrate. Keep related declarations together,
-leave routine helpers private where possible, and remove empty entry modules.
-Use the existing Lean project; do not introduce separate per-entry Lake projects.
+## Module layout
+
+Put mathematical modules in the owning entry's directory under
+`formal/Lemmatheca/`, converting its ID to PascalCase: `arithmetic-theories`
+owns `Lemmatheca/ArithmeticTheories/`. An entry may have several modules; import
+them through `formal/Lemmatheca.lean`. Use the existing Lake project. Build
+infrastructure such as `Lemmatheca/ProofStatus.lean` stays outside entry directories.
+
+Module paths describe ownership; reusable declarations' namespaces describe
+mathematical areas. For example, the module
+`Lemmatheca.ArithmeticTheories.ArithmeticTheories`
+defines declarations under `Lemmatheca.ModelTheory.ArithmeticTheories`. Keep
+area-based namespaces such as `Lemmatheca.SetTheory`,
+`Lemmatheca.MathematicalLogic`, `Lemmatheca.ModelTheory`,
+`Lemmatheca.ComputabilityTheory`, and `Lemmatheca.ProofTheory`. Moving an entry to
+another area changes namespaces and node declaration bindings as needed, without
+moving its directory. Update imports and node module bindings when files move.
+
+Reusable definitions, proofs and construction lemmas also have one owning entry;
+other entries import those modules rather than duplicating code or creating a
+parallel area directory. Place foundational definitions and lemmas with the entry
+that first explains and uses them. Audit imports and node bindings that point to a
+later owner in the same area's reading order: remove unnecessary imports, or
+extract the earlier prerequisite from a mixed module instead of moving the whole
+module. Code ownership follows the mathematical exposition; a broad import alone
+does not establish ownership. Keep later construction and integration results
+with their own entries. When reducing a module's imports, give its consumers
+explicit imports for dependencies they previously received indirectly.
+
+Within an area's declaration namespace, use coherent topic subnamespaces for
+reusable code, such as `Lemmatheca.MathematicalLogic.Propositional`, rather than
+putting generic names such as `eval`, `subst`, or `Derives` directly at the area
+root. Related entries may share a topic namespace independently of file ownership.
+Give local instances explicit names unique to their module when sharing a namespace.
+
+Keep particular illustrative examples and counterexamples
+in `Examples.lean` or another clearly named example module within the same entry
+directory. Illustrative declarations may use `Lemmatheca.Entry.<EntryName>`
+namespaces independently of their file paths. Reusable modules must not depend
+on illustrative examples; examples import the mathematics they illustrate.
+A construction's first appearance or sole
+current caller does not make it an illustrative example. Keep related declarations
+together, leave routine helpers private where possible, and remove empty modules.
 
 ## Build and verification
 

@@ -8,20 +8,22 @@
 <section id="composition-and-pullback" data-formal="red-reflexive red-transitive red-decidable-pullback red-enumerable-pullback red-complement" data-kind="lemma">
   <h2>Which properties travel through a reduction?</h2>
   <p>Many-one reducibility is reflexive and transitive. If \(A\le_m B\), then decidability of \(B\) implies decidability of \(A\), and computable enumerability of \(B\) implies computable enumerability of \(A\). The same reduction also gives \(\mathbb N\setminus A\le_m\mathbb N\setminus B\).</p>
-  <p class="proof-label">Proof</p>
-  <p>The identity function reduces a set to itself. If \(f\) reduces \(A\) to \(B\) and \(g\) reduces \(B\) to \(C\), then \(g\circ f\) is total computable and</p>
-  <div class="math-display">\[x\in A\ \Longleftrightarrow\ f(x)\in B\ \Longleftrightarrow\ g(f(x))\in C.\]</div>
-  <p>For decidability, compute \(f(x)\) and apply the decision procedure for \(B\). The resulting characteristic function is \(\chi_B\circ f\). For enumerability, run a recognizer for \(B\) on \(f(x)\): it halts exactly for \(x\in A\). This is the <a href="universal-computation#enumerable-closure">computable preimage construction</a>. Finally, negating the defining equivalence proves the complement claim. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The identity function reduces a set to itself. If \(f\) reduces \(A\) to \(B\) and \(g\) reduces \(B\) to \(C\), then \(g\circ f\) is total computable and</p>
+    <div class="math-display">\[x\in A\ \Longleftrightarrow\ f(x)\in B\ \Longleftrightarrow\ g(f(x))\in C.\]</div>
+    <p>For decidability, compute \(f(x)\) and apply the decision procedure for \(B\). The resulting characteristic function is \(\chi_B\circ f\). For enumerability, run a recognizer for \(B\) on \(f(x)\): it halts exactly for \(x\in A\). This is the <a href="universal-computation#enumerable-closure">computable preimage construction</a>. Finally, negating the defining equivalence proves the complement claim.</p>
+</div>
   <p>Thus an undecidable set reducing to \(B\) proves that \(B\) is undecidable. This is the useful direction: a proposed procedure for the target would supply the missing procedure for the source.</p>
 </section>
 
 <section id="halting-completeness" data-formal="red-halting-complete univ-pair-halting-enumerable" data-kind="theorem">
   <h2>The halting problem receives every enumerable problem</h2>
   <div class="statement-box"><p>Let \(K_0=\{\langle e,x\rangle:\varphi_e(x)\downarrow\}\), using the fixed <a href="universal-computation#universal-evaluation">program enumeration</a> and numerical pairing. The set \(K_0\) is c.e., and every c.e. set \(A\subseteq\mathbb N\) satisfies \(A\le_m K_0\). A c.e. set with this property is called <strong>many-one complete among c.e. sets</strong>.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Enumerability of \(K_0\) was proved in <a href="universal-computation#halting-sets">the halting-set theorem</a>. If \(A\) is c.e., choose an index \(e\) for a partial recursive function with domain \(A\), by <a href="universal-computation#finite-certificates">the domain characterization</a>. The function \(f(x)=\langle e,x\rangle\) is total computable and satisfies</p>
-  <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad\varphi_e(x)\downarrow\quad\Longleftrightarrow\quad\langle e,x\rangle\in K_0.\]</div>
-  <p>This one function supplies the reduction. The index \(e\) is fixed for the chosen set; the reduction does not have to discover an index from an arbitrary description of a set. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Enumerability of \(K_0\) was proved in <a href="universal-computation#halting-sets">the halting-set theorem</a>. If \(A\) is c.e., choose an index \(e\) for a partial recursive function with domain \(A\), by <a href="universal-computation#finite-certificates">the domain characterization</a>. The function \(f(x)=\langle e,x\rangle\) is total computable and satisfies</p>
+    <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad\varphi_e(x)\downarrow\quad\Longleftrightarrow\quad\langle e,x\rangle\in K_0.\]</div>
+    <p>This one function supplies the reduction. The index \(e\) is fixed for the chosen set; the reduction does not have to discover an index from an arbitrary description of a set.</p>
+</div>
 </section>
 
 <section id="sentences-as-inputs" data-formal="red-validity-codes red-satisfiability-codes inc-theorem-codes red-nonvalidity-codes" data-kind="definition">
@@ -40,9 +42,10 @@
   <h2>Put all seven Robinson axioms into one antecedent</h2>
   <p>Write the seven closed <a href="arithmetic-theories#robinson-axioms">Robinson axioms</a>, in their displayed order, as \(q_1,\ldots,q_7\), and put \(q=q_1\land(q_2\land\cdots\land q_7)\). A structure satisfies \(q\) exactly when it is a model of \(Q\). For every arithmetic sentence \(A\),</p>
   <div class="math-display">\[Q\vdash A\quad\Longleftrightarrow\quad\models(q\to A).\]</div>
-  <p class="proof-label">Proof</p>
-  <p>If \(Q\vdash A\), soundness makes \(A\) true in every model of \(Q\). In an arbitrary structure, either \(q\) is false, making \(q\to A\) true, or \(q\) is true and all seven axioms hold, so \(A\) is true. Thus the implication is valid.</p>
-  <p>Conversely, if the implication is valid, every model of \(Q\) satisfies its antecedent and hence \(A\). The <a href="henkin-completeness#deductive-completeness">completeness theorem</a> gives \(Q\vdash A\). Both soundness and completeness matter here: the translation connects formal arithmetic theoremhood to semantic validity. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(Q\vdash A\), soundness makes \(A\) true in every model of \(Q\). In an arbitrary structure, either \(q\) is false, making \(q\to A\) true, or \(q\) is true and all seven axioms hold, so \(A\) is true. Thus the implication is valid.</p>
+    <p>Conversely, if the implication is valid, every model of \(Q\) satisfies its antecedent and hence \(A\). The <a href="henkin-completeness#deductive-completeness">completeness theorem</a> gives \(Q\vdash A\). Both soundness and completeness matter here: the translation connects formal arithmetic theoremhood to semantic validity.</p>
+</div>
 </section>
 
 <section id="effective-antecedent" data-formal="red-validity-map red-validity-map-primitive red-validity-map-correct red-falsum-not-valid" data-kind="lemma">
@@ -51,33 +54,37 @@
   <div class="math-display">\[f(n)=\begin{cases}\mathrm{imp}(\ulcorner q\urcorner,n),&amp;\mathrm{Sent}(n),\\\ulcorner\bot\urcorner,&amp;\text{otherwise}.\end{cases}\]</div>
   <p>This is primitive recursive, and therefore total computable. It satisfies</p>
   <div class="math-display">\[n\in\mathrm{Thm}(Q)\quad\Longleftrightarrow\quad f(n)\in\mathrm{Val}.\]</div>
-  <p class="proof-label">Proof</p>
-  <p>The <a href="coding-formal-proofs#syntax-recognition">sentence test</a> and implication-code constructor are primitive recursive. On a sentence code, correctness is <a href="#finite-axiom-antecedent">the preceding equivalence</a>. On any other input the left side is false, and the output \(\bot\) is false in the standard natural-number structure, so the right side is false as well. This checks the reduction on all numerical inputs, including invalid ones. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The <a href="coding-formal-proofs#syntax-recognition">sentence test</a> and implication-code constructor are primitive recursive. On a sentence code, correctness is <a href="#finite-axiom-antecedent">the preceding equivalence</a>. On any other input the left side is false, and the output \(\bot\) is false in the standard natural-number structure, so the right side is false as well. This checks the reduction on all numerical inputs, including invalid ones.</p>
+</div>
 </section>
 
 <section id="church-theorem" data-formal="red-theoremhood-to-validity red-validity-undecidable" data-kind="theorem">
   <h2>First-order validity is undecidable</h2>
   <div class="statement-box"><p>There is no total computable test for validity of first-order sentences in the arithmetic language. More precisely, \(\mathrm{Thm}(Q)\le_m\mathrm{Val}\), and \(\mathrm{Val}\) is undecidable. Consequently, a procedure deciding validity for arbitrary finite first-order languages is impossible as well.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>The function in <a href="#effective-antecedent">the translation lemma</a> is the reduction. Robinson arithmetic is consistent, as witnessed by the standard natural numbers. The <a href="first-incompleteness#essential-undecidability">essential-undecidability theorem</a>, applied to \(Q\) itself, says that \(\mathrm{Thm}(Q)\) is undecidable. A decider for \(\mathrm{Val}\), composed with \(f\), would contradict that theorem. A decider for arbitrary finite languages would in particular decide this fixed language. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The function in <a href="#effective-antecedent">the translation lemma</a> is the reduction. Robinson arithmetic is consistent, as witnessed by the standard natural numbers. The <a href="first-incompleteness#essential-undecidability">essential-undecidability theorem</a>, applied to \(Q\) itself, says that \(\mathrm{Thm}(Q)\) is undecidable. A decider for \(\mathrm{Val}\), composed with \(f\), would contradict that theorem. A decider for arbitrary finite languages would in particular decide this fixed language.</p>
+</div>
   <p>This is a form of <strong>Church’s theorem</strong>. The statement concerns validity in all structures, rather than truth in the intended arithmetic structure or consequence of a complete arithmetic theory. By the established machine correspondence, the same impossibility holds for the specified machine model.</p>
 </section>
 
 <section id="enumeration-without-decision" data-formal="red-validity-enumerable red-validity-complement-not-enumerable red-nonvalidity-not-enumerable" data-kind="theorem">
   <h2>Proof search recognizes precisely the valid sentences</h2>
   <p>The set \(\mathrm{Val}\) is c.e., but the set of sentence codes that are not valid is not c.e.</p>
-  <p class="proof-label">Proof</p>
-  <p>Take the empty axiom set in <a href="effective-theories#consequence-search">the enumeration theorem for semantic consequences</a>. Soundness and completeness say that its provable sentences are precisely the valid ones. To recognize validity, search for a proof; there is no promised stopping point for invalid sentences.</p>
-  <p>If the nonvalid sentences were also enumerable, combine that enumeration with the decidable set of nonsentence codes. This would enumerate the whole numerical complement of \(\mathrm{Val}\). The <a href="universal-computation#two-sided-recognition">two-sided recognition theorem</a> would then make \(\mathrm{Val}\) decidable, contradicting <a href="#church-theorem">Church’s theorem</a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Take the empty axiom set in <a href="effective-theories#consequence-search">the enumeration theorem for semantic consequences</a>. Soundness and completeness say that its provable sentences are precisely the valid ones. To recognize validity, search for a proof; there is no promised stopping point for invalid sentences.</p>
+    <p>If the nonvalid sentences were also enumerable, combine that enumeration with the decidable set of nonsentence codes. This would enumerate the whole numerical complement of \(\mathrm{Val}\). The <a href="universal-computation#two-sided-recognition">two-sided recognition theorem</a> would then make \(\mathrm{Val}\) decidable, contradicting <a href="#church-theorem">Church’s theorem</a>.</p>
+</div>
 </section>
 
 <section id="satisfiability" data-formal="red-guarded-negation red-guarded-negation-primitive red-negation-satisfiable red-guarded-negation-correct red-satisfiability-not-enumerable red-satisfiability-undecidable" data-kind="theorem">
   <h2>Satisfiable sentences cannot be enumerated</h2>
   <div class="statement-box"><p>The set \(\mathrm{Sat}\) of satisfiable arithmetic sentence codes is not c.e. In particular, it is undecidable.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>A sentence \(A\) is nonvalid exactly when some structure falsifies it, equivalently when \(\neg A\) is satisfiable. Negation of a sentence is an effective operation. To handle all numerical inputs, define \(g(n)\) to be the negation code when \(n\) is a sentence code, and the code of \(\neg\bot\) otherwise. Then</p>
-  <div class="math-display">\[n\notin\mathrm{Val}\quad\Longleftrightarrow\quad g(n)\in\mathrm{Sat}.\]</div>
-  <p>For invalid inputs both sides are true: the input is outside \(\mathrm{Val}\), and \(\neg\bot\) has a model. Thus \(g\) is a total computable reduction of the complement of \(\mathrm{Val}\) to \(\mathrm{Sat}\). If \(\mathrm{Sat}\) were c.e., its computable preimage would make that complement c.e., which the preceding argument rules out. Every decidable set is c.e., so satisfiability is undecidable too. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>A sentence \(A\) is nonvalid exactly when some structure falsifies it, equivalently when \(\neg A\) is satisfiable. Negation of a sentence is an effective operation. To handle all numerical inputs, define \(g(n)\) to be the negation code when \(n\) is a sentence code, and the code of \(\neg\bot\) otherwise. Then</p>
+    <div class="math-display">\[n\notin\mathrm{Val}\quad\Longleftrightarrow\quad g(n)\in\mathrm{Sat}.\]</div>
+    <p>For invalid inputs both sides are true: the input is outside \(\mathrm{Val}\), and \(\neg\bot\) has a model. Thus \(g\) is a total computable reduction of the complement of \(\mathrm{Val}\) to \(\mathrm{Sat}\). If \(\mathrm{Sat}\) were c.e., its computable preimage would make that complement c.e., which the preceding argument rules out. Every decidable set is c.e., so satisfiability is undecidable too.</p>
+</div>
   <p>The asymmetry has a concrete reason. A proof is finite evidence of validity. Satisfiability may require an infinite structure; searching through finite structures would miss such sentences.</p>
 </section>
 

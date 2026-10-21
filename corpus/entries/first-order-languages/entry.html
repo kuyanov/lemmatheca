@@ -1,6 +1,6 @@
 <section id="signatures" data-kind="definition" data-formal="fo-language fo-constant-symbols fo-binary-relation-language">
   <h2>Symbols and their arities</h2>
-  <p>A <strong>first-order signature</strong>, or language, specifies a set \(F_k\) of function symbols and a set \(R_k\) of relation symbols for each natural number \(k\). The number \(k\) is the symbol's <strong>arity</strong>: the number of arguments it takes. A constant is a function symbol of arity zero. The symbol \(=\) is logical equality, rather than a relation symbol whose meaning can be chosen.</p>
+  <p>A <strong>first-order signature</strong>, or <strong>language</strong>, specifies a set \(F_k\) of function symbols and a set \(R_k\) of relation symbols for each natural number \(k\). The number \(k\) is the symbol's <strong>arity</strong>: the number of arguments it takes. A <strong>constant</strong> is a function symbol of arity zero. The symbol \(=\) is logical equality, rather than a relation symbol whose meaning can be chosen.</p>
   <p>For example, the order language has one binary relation symbol \(&lt;\) and no function symbols. The membership language similarly has one binary relation symbol \(\in\). These are different symbols even though both take two arguments. A signature specifies symbols, not what they mean: interpreting \(&lt;\) as an actual order is a further choice.</p>
   <p>We allow any sets of symbols, including empty sets and nullary relations. No countability assumption is needed here. A nullary relation will express a truth value without taking an object as an argument. Familiar <a href="sets-and-maps#maps">maps</a> and <a href="sets-and-maps#pairs-and-relations">relations</a> will supply interpretations.</p>
 </section>
@@ -15,7 +15,7 @@
 <section id="scoped-formulas" data-kind="definition" data-formal="fo-scoped-formula fo-complete-formula fo-negation fo-conjunction fo-disjunction fo-existential fo-truth fo-biconditional fo-every-successor-sentence">
   <h2>Formulas and quantifier scope</h2>
   <p>Free variables and quantified occurrences serve different roles. We use \(x_i\) for variables whose values are supplied from outside, and a disjoint family \(z_j\) for quantified placeholders. A <strong>context of size \(n\)</strong> makes \(z_0,\ldots,z_{n-1}\) available. Within that context, terms may use those placeholders and the free variables \(x_i\).</p>
-  <p>The formulas at context size \(n\) are finite trees built as follows:</p>
+  <p>The <strong>scoped formulas at context size \(n\)</strong> are finite trees built as follows:</p>
   <ul>
     <li>\(\bot\), an equality \(t=u\), and \(R(t_0,\ldots,t_{k-1})\) for \(R\in R_k\) are formulas, using terms available in that context.</li>
     <li>If \(\varphi,\psi\) are formulas at size \(n\), then \((\varphi\to\psi)\) is one too.</li>
@@ -42,15 +42,16 @@
     <p>To prove a property of every term, prove it for variables and show that it holds for \(f(t_0,\ldots,t_{k-1})\) whenever it holds for all the argument terms.</p>
     <p>For formulas, use properties \(P_n\) at every context size \(n\). Prove \(P_n\) for falsity, equalities and relation applications; prove \(P_n(\varphi\to\psi)\) from \(P_n(\varphi)\) and \(P_n(\psi)\); and prove \(P_n(\forall z_n\varphi)\) from \(P_{n+1}(\varphi)\). Then \(P_n\) holds for every formula at every size \(n\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Give each finite tree height zero at a leaf and height one plus the maximum height of its children otherwise. For a function with no arguments, take the maximum of the empty family to be zero. Every child of a non-leaf has smaller height. Strong induction on the height therefore applies the appropriate constructor rule after the property has been proved for every child. In the quantifier case the child has a larger context size but a smaller height; the induction hypothesis must range over all context sizes. This proves both principles. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Give each finite tree height zero at a leaf and height one plus the maximum height of its children otherwise. For a function with no arguments, take the maximum of the empty family to be zero. Every child of a non-leaf has smaller height. Strong induction on the height therefore applies the appropriate constructor rule after the property has been proved for every child. In the quantifier case the child has a larger context size but a smaller height; the induction hypothesis must range over all context sizes. This proves both principles.</p>
+</div>
   <p>This is the same finite-tree method as <a href="propositional-logic#structural-induction">structural induction for propositional formulas</a>. It also justifies recursive definitions: a constructor's value is determined after its children have been evaluated.</p>
 </section>
 
 <section id="free-variables" data-kind="definition" data-formal="fo-scoped-term-free-variables fo-free-variables fo-sentence fo-sentence-from-empty-support fo-parameter-successor-support fo-every-successor-support">
   <h2>Free variables and sentences</h2>
-  <p>Write \(\operatorname{FV}(t)\) for the finite set of free-variable names in a term. A free variable \(x_i\) contributes \(\{x_i\}\), a placeholder \(z_j\) contributes nothing, and a function application contributes the union of its argument sets. For terms outside any scope, these are simply all the variables of the term.</p>
-  <p>For formulas, define the finite free-variable set recursively:</p>
+  <p>Write \(\operatorname{FV}(t)\) for the finite <strong>free-variable set</strong> of a term. A free variable \(x_i\) contributes \(\{x_i\}\), a placeholder \(z_j\) contributes nothing, and a function application contributes the union of its argument sets. For terms outside any scope, these are simply all the variables of the term.</p>
+  <p>For formulas, define the finite <strong>free-variable set</strong> recursively:</p>
   <div class="math-display">\[\begin{gathered}
 \operatorname{FV}(\bot)=\varnothing,\qquad \operatorname{FV}(t=u)=\operatorname{FV}(t)\cup\operatorname{FV}(u),\qquad \operatorname{FV}(R(t_0,\ldots,t_{k-1}))=\bigcup_{i&lt;k}\operatorname{FV}(t_i),\\
 \operatorname{FV}(\varphi\to\psi)=\operatorname{FV}(\varphi)\cup\operatorname{FV}(\psi),\qquad \operatorname{FV}(\forall z_n\varphi)=\operatorname{FV}(\varphi).
@@ -81,9 +82,10 @@
       =\bigcup_{x_i\in\operatorname{FV}(A)}\operatorname{FV}(\sigma(x_i)).
     \]</div>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>First induct on terms. A free variable gives exactly the support of its replacement. A placeholder has empty support on both sides. A function application takes unions over its arguments; regrouping those unions gives the displayed expression. This includes constants, whose union is empty.</p>
-  <p>Now induct on scoped formulas. Falsity has empty support. Equality and relation application use the term result and regroup unions. Implication takes the union of the results for its two children. A universal binder changes neither the body's free-variable set nor the replacement terms, so the body result applies unchanged. These exhaust the primitive constructors. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>First induct on terms. A free variable gives exactly the support of its replacement. A placeholder has empty support on both sides. A function application takes unions over its arguments; regrouping those unions gives the displayed expression. This includes constants, whose union is empty.</p>
+    <p>Now induct on scoped formulas. Falsity has empty support. Equality and relation application use the term result and regroup unions. Implication takes the union of the results for its two children. A universal binder changes neither the body's free-variable set nor the replacement terms, so the body result applies unchanged. These exhaust the primitive constructors.</p>
+</div>
   <p>In particular, substituting into a sentence cannot introduce a free variable. For \(\varphi=\exists z_0 R(x_0,z_0)\), replacing \(x_0\) by \(x_1\) gives exactly free-variable set \(\{x_1\}\).</p>
 </section>
 

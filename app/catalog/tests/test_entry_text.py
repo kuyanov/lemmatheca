@@ -78,6 +78,24 @@ class EntryTextTests(SimpleTestCase):
 
         check_plain(result)
 
+    def test_extracts_css_proof_boundaries_in_text_and_answers(self):
+        path = self.source()
+        path.write_text('''<section id="fact" data-kind="lemma" data-formal="">
+            <h2>A fact</h2><p>A statement.</p>
+            <div class="proof"><p>First argument.</p><p>By <a href="beta#fact"></a>.</p></div>
+            <p>A consequence.</p><div class="proof"><p>Second argument.</p></div>
+            </section><section id="question" data-kind="question" data-formal="">
+            <h2>A question</h2><p>Explain.</p>
+            <details class="question-answer"><summary>Show answer</summary>
+                <div class="proof"><p>The answer.</p></div>
+            </details></section>''', encoding="utf-8")
+        blocks = LRUEntryTextCache().get(self.corpus, "alpha")
+        self.assertEqual(render_text(blocks["fact"]["text"], {0: "the earlier fact"}),
+                         "A statement.\nProof\nFirst argument.\nBy the earlier fact. □\n"
+                         "A consequence.\nProof\nSecond argument. □")
+        self.assertEqual(blocks["question"]["text"], "Explain.")
+        self.assertEqual(blocks["question"]["answer_text"], "Proof\nThe answer. □")
+
     def test_cache_reuses_parse_and_invalidates_in_place_edits(self):
         self.source()
         cache = LRUEntryTextCache()

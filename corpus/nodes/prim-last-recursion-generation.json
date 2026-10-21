@@ -1,8 +1,8 @@
 {
   "id": "prim-last-recursion-generation",
   "description": "Every family of finite-arity numerical functions containing zero, successor and projections, and closed under composition and recursion on the last coordinate, contains all primitive-recursive functions.",
-  "module": "Lemmatheca.MathematicalLogic.PrimitiveRecursionConventions",
-  "declaration": "Lemmatheca.MathematicalLogic.PrimitiveRecursion.generated_by_lastRec",
+  "module": "Lemmatheca.PrimitiveRecursion.PrimitiveRecursionConventions",
+  "declaration": "Lemmatheca.ComputabilityTheory.PrimitiveRecursion.generated_by_lastRec",
   "dependencies": [
     "prim-class",
     "prim-last-coordinate-recursion",
@@ -10,5 +10,5 @@
   ],
   "verified": true,
   "declaration_line": 88,
-  "signature": "Lemmatheca.MathematicalLogic.PrimitiveRecursion.generated_by_lastRec\n  (C : {n : ℕ} → (Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args n → ℕ) → Prop) (hz : C fun x => 0)\n  (hs : C fun v => (List.Vector.head v).succ) (hp : ∀ {n : ℕ} (i : Fin n), C fun v => List.Vector.get v i)\n  (hc :\n    ∀ {m n : ℕ} (f : Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args n → ℕ)\n      (g : Fin n → Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args m → ℕ),\n      C f → (∀ (i : Fin n), C (g i)) → C fun v => f (List.Vector.ofFn fun i => g i v))\n  (hr :\n    ∀ {n : ℕ} (f : Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args n → ℕ)\n      (g : Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args (n + 2) → ℕ),\n      C f → C g → C (Lemmatheca.MathematicalLogic.PrimitiveRecursion.lastRec f g))\n  {n : ℕ} {f : Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args n → ℕ} (hf : Nat.Primrec' f) : C f"
+  "signature": "Lemmatheca.ComputabilityTheory.PrimitiveRecursion.generated_by_lastRec\n  (C : {n : ℕ} → (Lemmatheca.ComputabilityTheory.PrimitiveRecursion.Args n → ℕ) → Prop) (hz : C fun x => 0)\n  (hs : C fun v => (List.Vector.head v).succ) (hp : ∀ {n : ℕ} (i : Fin n), C fun v => List.Vector.get v i)\n  (hc :\n    ∀ {m n : ℕ} (f : Lemmatheca.ComputabilityTheory.PrimitiveRecursion.Args n → ℕ)\n      (g : Fin n → Lemmatheca.ComputabilityTheory.PrimitiveRecursion.Args m → ℕ),\n      C f → (∀ (i : Fin n), C (g i)) → C fun v => f (List.Vector.ofFn fun i => g i v))\n  (hr :\n    ∀ {n : ℕ} (f : Lemmatheca.ComputabilityTheory.PrimitiveRecursion.Args n → ℕ)\n      (g : Lemmatheca.ComputabilityTheory.PrimitiveRecursion.Args (n + 2) → ℕ),\n      C f → C g → C (Lemmatheca.ComputabilityTheory.PrimitiveRecursion.lastRec f g))\n  {n : ℕ} {f : Lemmatheca.ComputabilityTheory.PrimitiveRecursion.Args n → ℕ} (hf : Nat.Primrec' f) : C f"
 }

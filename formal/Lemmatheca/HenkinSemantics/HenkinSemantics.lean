@@ -1,0 +1,5 @@
+import Lemmatheca.HenkinSemantics.HenkinSemanticsCore
+import Lemmatheca.HenkinSemantics.HenkinSemanticsTransfer
+import Lemmatheca.HenkinSemantics.HenkinSemanticsArithmetic
+
+open Lemmatheca.ModelTheory

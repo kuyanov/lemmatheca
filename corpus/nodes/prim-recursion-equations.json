@@ -1,12 +1,12 @@
 {
   "id": "prim-recursion-equations",
   "description": "The specified recursion satisfies \\(F(\\bar x,0)=g(\\bar x)\\) and \\(F(\\bar x,n+1)=h(\\bar x,n,F(\\bar x,n))\\), with the index after the parameter tuple.",
-  "module": "Lemmatheca.MathematicalLogic.PrimitiveRecursion",
-  "declaration": "Lemmatheca.MathematicalLogic.PrimitiveRecursion.lastRec_equations",
+  "module": "Lemmatheca.PrimitiveRecursion.PrimitiveRecursion",
+  "declaration": "Lemmatheca.ComputabilityTheory.PrimitiveRecursion.lastRec_equations",
   "dependencies": [
     "prim-last-coordinate-recursion"
   ],
   "verified": true,
   "declaration_line": 59,
-  "signature": "Lemmatheca.MathematicalLogic.PrimitiveRecursion.lastRec_equations {n : ℕ}\n  (g : Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args n → ℕ)\n  (h : Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args (n + 2) → ℕ)\n  (x : Lemmatheca.MathematicalLogic.PrimitiveRecursion.Args n) (i : ℕ) :\n  Lemmatheca.MathematicalLogic.PrimitiveRecursion.lastRec g h (x ++ 0 ::ᵥ List.Vector.nil) = g x ∧\n    Lemmatheca.MathematicalLogic.PrimitiveRecursion.lastRec g h (x ++ (i + 1) ::ᵥ List.Vector.nil) =\n      h\n        (x ++\n          i ::ᵥ\n            Lemmatheca.MathematicalLogic.PrimitiveRecursion.lastRec g h (x ++ i ::ᵥ List.Vector.nil) ::ᵥ\n              List.Vector.nil)"
+  "signature": "Lemmatheca.ComputabilityTheory.PrimitiveRecursion.lastRec_equations {n : ℕ}\n  (g : Lemmatheca.ComputabilityTheory.PrimitiveRecursion.Args n → ℕ)\n  (h : Lemmatheca.ComputabilityTheory.PrimitiveRecursion.Args (n + 2) → ℕ)\n  (x : Lemmatheca.ComputabilityTheory.PrimitiveRecursion.Args n) (i : ℕ) :\n  Lemmatheca.ComputabilityTheory.PrimitiveRecursion.lastRec g h (x ++ 0 ::ᵥ List.Vector.nil) = g x ∧\n    Lemmatheca.ComputabilityTheory.PrimitiveRecursion.lastRec g h (x ++ (i + 1) ::ᵥ List.Vector.nil) =\n      h\n        (x ++\n          i ::ᵥ\n            Lemmatheca.ComputabilityTheory.PrimitiveRecursion.lastRec g h (x ++ i ::ᵥ List.Vector.nil) ::ᵥ\n              List.Vector.nil)"
 }

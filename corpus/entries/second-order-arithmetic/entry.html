@@ -9,7 +9,7 @@
 
 <section id="finite-peano-theory" data-formal="soa-full-models soa-peano-theory soa-peano-finite soa-peano-sentences soa-model-characterization soa-full-induction-predecessor arith-robinson-theory" data-kind="definition">
   <h2>The second-order Peano theory has finitely many axioms</h2>
-  <p>Define \(\mathrm{PA}_2\) to consist of the seven universally closed axioms of <a href="arithmetic-theories#robinson-axioms">Robinson arithmetic</a> together with \(\mathrm{Ind}_2\). For clarity, its first-order part is</p>
+  <p>Define <strong>second-order Peano arithmetic</strong>, written \(\mathrm{PA}_2\), to consist of the seven universally closed axioms of <a href="arithmetic-theories#robinson-axioms">Robinson arithmetic</a> together with \(\mathrm{Ind}_2\). For clarity, its first-order part is</p>
   <ol>
     <li>\(\forall x\,Sx\ne0\).</li>
     <li>\(\forall x\forall y\,(Sx=Sy\to x=y)\).</li>
@@ -26,8 +26,9 @@
 <section id="standard-model" data-formal="soa-standard-model" data-kind="lemma">
   <h2>The standard arithmetic structure is a full model</h2>
   <p>The natural-number structure \(\mathbb N_A\), with every finite-arity relation available, satisfies \(\mathrm{PA}_2\).</p>
-  <p class="proof-label">Proof</p>
-  <p>The ordinary operations satisfy the seven \(Q\)-axioms, as <a href="arithmetic-theories#robinson-axioms">already checked</a>. Let \(A\subseteq\mathbb N\) contain zero and be successor-closed. Ordinary induction proves that every natural number belongs to \(A\). Since this works for an arbitrary subset, the semantic condition for \(\mathrm{Ind}_2\) holds. These two verifications establish every axiom. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The ordinary operations satisfy the seven \(Q\)-axioms, as <a href="arithmetic-theories#robinson-axioms">already checked</a>. Let \(A\subseteq\mathbb N\) contain zero and be successor-closed. Ordinary induction proves that every natural number belongs to \(A\). Since this works for an arbitrary subset, the semantic condition for \(\mathrm{Ind}_2\) holds. These two verifications establish every axiom.</p>
+</div>
 </section>
 
 <section id="canonical-map" data-formal="arith-numeral-value arith-numeral arith-numerals-distinct soa-canonical-map-unique" data-kind="lemma">
@@ -35,18 +36,20 @@
   <p>For any arithmetic structure \(M\), recursion defines a unique map \(j_M:\mathbb N\to|M|\) satisfying</p>
   <div class="math-display">\[j_M(0)=0^M,\qquad j_M(n+1)=S^M(j_M(n)).\]</div>
   <p>Its value is the interpretation \(n_M\) of the numeral \(\overline n\). If \(M\models Q\), then \(j_M\) is injective.</p>
-  <p class="proof-label">Proof</p>
-  <p>The displayed equations are ordinary recursion on the external natural numbers. They are precisely the defining equations for numeral interpretation. Any other map preserving zero and successor agrees at zero and, if it agrees at \(n\), agrees at \(n+1\); ordinary induction proves uniqueness.</p>
-  <p>For injectivity, suppose \(m&lt;n\) and \(j_M(m)=j_M(n)\). Cancel \(m\) successors using injectivity of \(S^M\). This yields \(0^M=j_M(n-m)\). The right side is a successor since \(n-m&gt;0\), contradicting the first axiom. Thus unequal indices have unequal images. This is the <a href="arithmetic-theories#standard-copy">canonical embedding</a> constructed for models of \(Q\); full induction has not yet been used. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The displayed equations are ordinary recursion on the external natural numbers. They are precisely the defining equations for numeral interpretation. Any other map preserving zero and successor agrees at zero and, if it agrees at \(n\), agrees at \(n+1\); ordinary induction proves uniqueness.</p>
+    <p>For injectivity, suppose \(m&lt;n\) and \(j_M(m)=j_M(n)\). Cancel \(m\) successors using injectivity of \(S^M\). This yields \(0^M=j_M(n-m)\). The right side is a successor since \(n-m&gt;0\), contradicting the first axiom. Thus unequal indices have unequal images. This is the <a href="arithmetic-theories#standard-copy">canonical embedding</a> constructed for models of \(Q\); full induction has not yet been used.</p>
+</div>
 </section>
 
 <section id="image-induction" data-formal="soa-canonical-surjective arith-full-induction-standard-copy" data-kind="lemma">
   <h2>Full induction makes the canonical map surjective</h2>
   <p>If an arithmetic structure \(M\) satisfies \(\mathrm{Ind}_2\), then every element of \(M\) is \(j_M(n)\) for some external natural number \(n\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Consider the actual subset</p>
-  <div class="math-display">\[A:=\{j_M(n):n\in\mathbb N\}\subseteq|M|.\]</div>
-  <p>It contains zero, witnessed by \(n=0\). If \(a\in A\), choose \(n\) with \(a=j_M(n)\). Then \(S^M(a)=j_M(n+1)\), so \(S^M(a)\in A\). Apply full induction to this subset: \(A=|M|\). Unpacking membership in the image gives surjectivity. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Consider the actual subset</p>
+    <div class="math-display">\[A:=\{j_M(n):n\in\mathbb N\}\subseteq|M|.\]</div>
+    <p>It contains zero, witnessed by \(n=0\). If \(a\in A\), choose \(n\) with \(a=j_M(n)\). Then \(S^M(a)=j_M(n+1)\), so \(S^M(a)\in A\). Apply full induction to this subset: \(A=|M|\). Unpacking membership in the image gives surjectivity.</p>
+</div>
   <p>This use of \(A\) needs no formula defining it inside \(M\). Full semantics provides it as a legitimate value for \(X\). In a nonstandard first-order model the same subset is proper and undefinable; consequently that model fails \(\mathrm{Ind}_2\) under full semantics.</p>
 </section>
 
@@ -56,21 +59,23 @@
   <div class="math-display">\[j_M(m+n)=j_M(m)+^M j_M(n).\]</div>
   <div class="math-display">\[j_M(mn)=j_M(m)\cdot^M j_M(n).\]</div>
   <p>If additionally \(M\models\mathrm{Ind}_2\), these identities determine the operations on every pair of elements of \(M\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Fix \(m\) and induct on the ordinary index \(n\). At zero, the addition equation is axiom 4. For the step, axiom 5 and the induction hypothesis give</p>
-  <div class="math-display">\[j_M(m)+^M j_M(n+1)=S^M(j_M(m)+^M j_M(n)).\]</div>
-  <p>By the induction hypothesis the last expression is \(S^M(j_M(m+n))=j_M(m+n+1)\).</p>
-  <p>For multiplication, axiom 6 gives the base case. Axiom 7, the multiplication induction hypothesis and the addition identity give</p>
-  <div class="math-display">\[j_M(m)\cdot^M j_M(n+1)=j_M(mn)+^M j_M(m)=j_M(mn+m).\]</div>
-  <p>These are the <a href="arithmetic-theories#numeral-computation">numeral-computation identities</a>, with the same map now called \(j_M\). Finally, surjectivity expresses arbitrary \(a,b\in M\) as \(j_M(m),j_M(n)\). Hence their sum and product must be the displayed values. Any other operations satisfying the same recursion equations with the same zero and successor give those same values by the same external inductions, so coincide on all pairs. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Fix \(m\) and induct on the ordinary index \(n\). At zero, the addition equation is axiom 4. For the step, axiom 5 and the induction hypothesis give</p>
+    <div class="math-display">\[j_M(m)+^M j_M(n+1)=S^M(j_M(m)+^M j_M(n)).\]</div>
+    <p>By the induction hypothesis the last expression is \(S^M(j_M(m+n))=j_M(m+n+1)\).</p>
+    <p>For multiplication, axiom 6 gives the base case. Axiom 7, the multiplication induction hypothesis and the addition identity give</p>
+    <div class="math-display">\[j_M(m)\cdot^M j_M(n+1)=j_M(mn)+^M j_M(m)=j_M(mn+m).\]</div>
+    <p>These are the <a href="arithmetic-theories#numeral-computation">numeral-computation identities</a>, with the same map now called \(j_M\). Finally, surjectivity expresses arbitrary \(a,b\in M\) as \(j_M(m),j_M(n)\). Hence their sum and product must be the displayed values. Any other operations satisfying the same recursion equations with the same zero and successor give those same values by the same external inductions, so coincide on all pairs.</p>
+</div>
 </section>
 
 <section id="categoricity" data-formal="soa-canonical-isomorphism soa-isomorphism-unique soa-categoricity" data-kind="theorem">
   <h2>Every full Peano model is the standard arithmetic structure</h2>
   <div class="statement-box"><p>For every full model \(M\models\mathrm{PA}_2\), the canonical map \(j_M\) is an arithmetic isomorphism \(\mathbb N_A\cong M\). It is the unique such isomorphism. Consequently any two full models of \(\mathrm{PA}_2\) are isomorphic: \(\mathrm{PA}_2\) is <strong>categorical under full semantics</strong>.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>The first-order axioms give injectivity by <a href="#canonical-map"></a>. Full induction gives surjectivity by <a href="#image-induction"></a>. The map preserves zero and successor by definition, and addition and multiplication by <a href="#arithmetic-preservation"></a>. Thus it is a bijection preserving every symbol of the arithmetic language, which is exactly an arithmetic isomorphism.</p>
-  <p>An isomorphism \(f:\mathbb N_A\to M\) preserves zero and successor, so the uniqueness part of <a href="#canonical-map"></a> gives \(f(n)=j_M(n)\) for every \(n\). Thus no second isomorphism is possible. For two models \(M,N\), compose \(j_M^{-1}\) with \(j_N\) to obtain the isomorphism \(M\to N\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The first-order axioms give injectivity by <a href="#canonical-map"></a>. Full induction gives surjectivity by <a href="#image-induction"></a>. The map preserves zero and successor by definition, and addition and multiplication by <a href="#arithmetic-preservation"></a>. Thus it is a bijection preserving every symbol of the arithmetic language, which is exactly an arithmetic isomorphism.</p>
+    <p>An isomorphism \(f:\mathbb N_A\to M\) preserves zero and successor, so the uniqueness part of <a href="#canonical-map"></a> gives \(f(n)=j_M(n)\) for every \(n\). Thus no second isomorphism is possible. For two models \(M,N\), compose \(j_M^{-1}\) with \(j_N\) to obtain the isomorphism \(M\to N\).</p>
+</div>
   <p>This is an isomorphism theorem, not a decision procedure for all second-order arithmetic statements. Its proof takes place in the surrounding mathematics, where natural-number recursion and all subsets are available.</p>
 </section>
 
@@ -88,23 +93,26 @@
   <p>Add a fresh individual constant \(c\) to the arithmetic language, and form the second-order theory</p>
   <div class="math-display">\[T^*:=\mathrm{PA}_2\cup\{c\ne\overline n:n\in\mathbb N\}.\]</div>
   <p>Every finite subset \(\Delta\subseteq T^*\) has a full model, even one whose arithmetic reduct is \(\mathbb N_A\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Only finitely many constraints \(c\ne\overline n\) occur in \(\Delta\). Let \(F\subseteq\mathbb N\) collect their indices and choose \(r\notin F\), for example one larger than every listed index; take \(r=0\) if none occur. Expand \(\mathbb N_A\) by interpreting \(c\) as \(r\). Keep full relation ranges on the unchanged domain.</p>
-  <p>The expansion satisfies every \(\mathrm{PA}_2\)-axiom, since none mentions \(c\), and \(r\ne n\) for every constraint in \(\Delta\). Therefore it satisfies \(\Delta\). Different finite subsets may choose different values for \(c\); a single value avoiding every numeral has not been produced. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Only finitely many constraints \(c\ne\overline n\) occur in \(\Delta\). Let \(F\subseteq\mathbb N\) collect their indices and choose \(r\notin F\), for example one larger than every listed index; take \(r=0\) if none occur. Expand \(\mathbb N_A\) by interpreting \(c\) as \(r\). Keep full relation ranges on the unchanged domain.</p>
+    <p>The expansion satisfies every \(\mathrm{PA}_2\)-axiom, since none mentions \(c\), and \(r\ne n\) for every constraint in \(\Delta\). Therefore it satisfies \(\Delta\). Different finite subsets may choose different values for \(c\); a single value avoiding every numeral has not been produced.</p>
+</div>
 </section>
 
 <section id="noncompactness" data-formal="soa-noncompactness soa-finite-standard-models" data-kind="theorem">
   <h2>Full second-order semantics is not compact</h2>
   <div class="statement-box"><p>The theory \(T^*\) has no full model, although every finite subset has a full model. Thus the <a href="logical-compactness#compactness">compactness theorem</a> for first-order logic fails for full second-order semantics.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose a full structure satisfies \(T^*\), and let \(M\) be its arithmetic reduct. Its relation ranges remain all relations on the same individual domain, and it satisfies \(\mathrm{PA}_2\). By <a href="#image-induction"></a>, the interpretation of \(c\) equals \(j_M(n)=n_M\) for some natural number \(n\). But the sentence \(c\ne\overline n\) belongs to \(T^*\), a contradiction. Finite satisfiability was proved in <a href="#finite-fragments"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose a full structure satisfies \(T^*\), and let \(M\) be its arithmetic reduct. Its relation ranges remain all relations on the same individual domain, and it satisfies \(\mathrm{PA}_2\). By <a href="#image-induction"></a>, the interpretation of \(c\) equals \(j_M(n)=n_M\) for some natural number \(n\). But the sentence \(c\ne\overline n\) belongs to \(T^*\), a contradiction. Finite satisfiability was proved in <a href="#finite-fragments"></a>.</p>
+</div>
   <p>For first-order PA the same construction <a href="arithmetic-theories#nonstandard-model">produced a nonstandard model</a>. Full induction blocks exactly the extra element that compactness would need. The contradiction uses the interpretation of one finite second-order induction sentence, not an infinite formula.</p>
 </section>
 
 <section id="size-obstruction" data-formal="soa-countable-models soa-no-uncountable-model arith-Q-models-infinite soa-standard-model" data-kind="theorem">
   <h2>A theory with an infinite full model need not have larger models</h2>
   <p>The finite theory \(\mathrm{PA}_2\) has an infinite full model, but every full model has cardinality \(\aleph_0\). In particular it has no uncountable full model and no full models of arbitrarily large cardinality.</p>
-  <p class="proof-label">Proof</p>
-  <p>The standard structure is an infinite full model. For any other full model, <a href="#categoricity"></a> supplies the bijection \(j_M:\mathbb N\to M\). Hence its domain has the same cardinality as \(\mathbb N\). This contradicts the conclusion that <a href="larger-models#arbitrarily-large-extensions">upward Löwenheim–Skolem</a> would give for a first-order theory with an infinite model. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The standard structure is an infinite full model. For any other full model, <a href="#categoricity"></a> supplies the bijection \(j_M:\mathbb N\to M\). Hence its domain has the same cardinality as \(\mathbb N\). This contradicts the conclusion that <a href="larger-models#arbitrarily-large-extensions">upward Löwenheim–Skolem</a> would give for a first-order theory with an infinite model.</p>
+</div>
   <p>This example establishes failure of the upward conclusion for full second-order logic. It does not establish failure of a downward Löwenheim–Skolem conclusion: all these models already have countable domains.</p>
 </section>

@@ -1,32 +1,34 @@
 <section id="describing-a-class" data-formal="exp-binary-language exp-relation-structure fo-theory compactness-theorem" data-kind="definition">
   <h2>A description must work in every structure</h2>
-  <p>Fix a first-order language with one binary relation symbol. Its structures have nonempty domains; the relation may be interpreted arbitrarily. A class is <em>axiomatizable</em> when some set \(T\) of sentences has exactly the members of that class as its models. The set \(T\) may be infinite. By <a href="logical-compactness#compactness">compactness</a>, any proposed description has the following consequence: every finitely satisfiable collection consisting of its axioms and further first-order requirements must have a model.</p>
+  <p>Fix a first-order language with one binary relation symbol. Its structures have nonempty domains; the relation may be interpreted arbitrarily. A class is <strong>axiomatizable</strong> when some set \(T\) of sentences has exactly the members of that class as its models. The set \(T\) may be infinite. By <a href="logical-compactness#compactness">compactness</a>, any proposed description has the following consequence: every finitely satisfiable collection consisting of its axioms and further first-order requirements must have a model.</p>
   <p>We use this consequence twice. First, interpret the relation as a strict order, written \(&lt;\). Then interpret it as an arbitrary relation, written \(E\). Each argument keeps one interpretation of the relation throughout its finite tests. Added constants only name selected elements; they impose no additional property unless a sentence says so.</p>
 </section>
 
 <section id="descending-chains" data-formal="exp-well-ordered exp-well-order-least-element exp-well-order-no-descent exp-natural-well-order exp-finite-descent" data-kind="lemma">
   <h2>A well-order excludes an infinite descent, but permits every finite descent</h2>
   <p>Recall that a <a href="well-ordered-sets#well-orders">strict well-order</a> is a strict linear order in which every nonempty subset has a least element. It has no sequence \(a_0,a_1,\ldots\) with \(a_{i+1}&lt;a_i\) for every \(i\in\mathbb N\).</p>
-  <p class="proof-label">Proof</p>
-  <p>The set \(\{a_i:i\in\mathbb N\}\) would have a least member \(a_j\), while \(a_{j+1}\) is a member strictly below it. This is impossible. □</p>
+  <div class="proof">
+    <p>The set \(\{a_i:i\in\mathbb N\}\) would have a least member \(a_j\), while \(a_{j+1}\) is a member strictly below it. This is impossible.</p>
+</div>
   <p>The exclusion concerns one infinite descending sequence. For every natural number \(N\), the ordinary well-order \((\mathbb N,&lt;)\) contains the finite descent \(N+1,N,\ldots,0\). More precisely, interpreting names by \(c_i=N+1-i\), with subtraction truncated at zero, makes every requirement \(c_{i+1}&lt;c_i\) with \(i\le N\) true. Values of names beyond this finite range do not matter.</p>
 </section>
 
 <section id="well-orders-not-axiomatizable" data-formal="exp-descent-sentence exp-descent-theory exp-descending-model exp-well-orders-not-axiomatizable" data-kind="theorem">
   <h2>No first-order theory describes exactly the well-orders</h2>
   <div class="statement-box"><p>There is no theory in the language \(\{&lt;\}\) whose nonempty models are exactly the strict well-orders.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose that \(T\) were such a theory. Add distinct new constant symbols \(c_0,c_1,\ldots\), and form</p>
-  <div class="math-display">\[T'=T\cup\{c_{i+1}&lt;c_i:i\in\mathbb N\}.\]</div>
-  <p>Take any finite subset \(F\subseteq T'\). Only finitely many displayed descent requirements belong to \(F\). Choose \(N\) at least every index occurring in them; choose \(N=0\) when there are none. Interpret \(&lt;\) as the usual order on \(\mathbb N\), and interpret \(c_i\) by \(N+1-i\). This expansion satisfies the selected descent requirements. It also satisfies every sentence of \(T\), since its original-language reduct is a well-order. Thus it satisfies \(F\).</p>
-  <p>Compactness gives a model \(M\models T'\). Its reduct satisfies \(T\), hence is a well-order. But its interpreted constants form an infinite descending sequence, contradicting <a href="#descending-chains"></a>. □</p>
+  <div class="proof">
+    <p>Suppose that \(T\) were such a theory. Add distinct new constant symbols \(c_0,c_1,\ldots\), and form</p>
+    <div class="math-display">\[T'=T\cup\{c_{i+1}&lt;c_i:i\in\mathbb N\}.\]</div>
+    <p>Take any finite subset \(F\subseteq T'\). Only finitely many displayed descent requirements belong to \(F\). Choose \(N\) at least every index occurring in them; choose \(N=0\) when there are none. Interpret \(&lt;\) as the usual order on \(\mathbb N\), and interpret \(c_i\) by \(N+1-i\). This expansion satisfies the selected descent requirements. It also satisfies every sentence of \(T\), since its original-language reduct is a well-order. Thus it satisfies \(F\).</p>
+    <p>Compactness gives a model \(M\models T'\). Its reduct satisfies \(T\), hence is a well-order. But its interpreted constants form an infinite descending sequence, contradicting <a href="#descending-chains"></a>.</p>
+</div>
   <p>Allowing one axiom for each desired finite test cannot repair this contradiction: the argument already allowed an arbitrary set \(T\) of axioms. In particular no single first-order sentence defines the class of well-orders.</p>
 </section>
 
 <section id="finite-walks" data-formal="exp-finite-walk exp-walk-tuple exp-reachable exp-path-formula" data-kind="definition">
   <h2>A finite walk has an ordinary natural-number length</h2>
-  <p>Let \(E\subseteq M\times M\) be any binary relation. A <em>walk of length \(n\)</em> from \(a\) to \(b\) is a tuple \(a_0,\ldots,a_n\) with \(a_0=a\), \(a_n=b\), and \(E(a_i,a_{i+1})\) for every \(i&lt;n\). Repetitions are allowed. At length zero this means \(a=b\). Say that \(b\) is <em>reachable</em> from \(a\) if such a walk exists for some ordinary \(n\in\mathbb N\). Directions matter unless \(E\) is symmetric.</p>
-  <p>Each fixed length is expressible by a first-order formula. Define</p>
+  <p>Let \(E\subseteq M\times M\) be any binary relation. A <strong>walk of length \(n\)</strong> from \(a\) to \(b\) is a tuple \(a_0,\ldots,a_n\) with \(a_0=a\), \(a_n=b\), and \(E(a_i,a_{i+1})\) for every \(i&lt;n\). Repetitions are allowed. At length zero this means \(a=b\). Say that \(b\) is <strong>reachable</strong> from \(a\) if such a walk exists for some ordinary \(n\in\mathbb N\). Directions matter unless \(E\) is symmetric.</p>
+  <p>Each fixed length is expressible by a first-order formula. Define the <strong>length-\(n\) walk formula</strong> recursively by</p>
   <div class="math-display">\[P_0(x,y):=(x=y),\qquad P_{n+1}(x,y):=\exists z\,(E(x,z)\land P_n(z,y)).\]</div>
   <p>Each recurrence step uses a fresh quantified variable, with capture-safe renaming of the previously constructed formula. The subscript \(n\) counts steps in the construction outside the language. It is not a variable of the structure.</p>
 </section>
@@ -35,27 +37,30 @@
   <h2>The length formulas describe exactly their finite walks</h2>
   <p>For every structure, every \(a,b\) in its domain and every \(n\in\mathbb N\),</p>
   <div class="math-display">\[M\models P_n(a,b)\quad\Longleftrightarrow\quad\text{there is a walk of length }n\text{ from }a\text{ to }b.\]</div>
-  <p class="proof-label">Proof</p>
-  <p>Induct on \(n\). At zero, both sides mean \(a=b\). At \(n+1\), the existential clause of <a href="first-order-structures#satisfaction">satisfaction</a> supplies a first intermediate element \(z\). The conjunction requires \(E(a,z)\) and a length-\(n\) walk from \(z\) to \(b\), by induction. Prepending \(a\) makes the desired walk. Conversely, removing the first step of a length-\(n+1\) walk supplies this witness and shorter walk. □</p>
+  <div class="proof">
+    <p>Induct on \(n\). At zero, both sides mean \(a=b\). At \(n+1\), the existential clause of <a href="first-order-structures#satisfaction">satisfaction</a> supplies a first intermediate element \(z\). The conjunction requires \(E(a,z)\) and a length-\(n\) walk from \(z\) to \(b\), by induction. Prepending \(a\) makes the desired walk. Conversely, removing the first step of a length-\(n+1\) walk supplies this witness and shorter walk.</p>
+</div>
   <p>Thus reachability means that at least one of \(P_0,P_1,\ldots\) holds. Their infinite disjunction is not a first-order formula. This observation alone would not rule out a more ingenious finite formula; the next compactness argument rules out every candidate.</p>
 </section>
 
 <section id="long-chains" data-formal="exp-directed-chain-walk exp-finite-chain exp-finite-chain-connected exp-finite-chain-walk-bound exp-finite-chain-endpoints" data-kind="lemma">
   <h2>A long chain passes any prescribed finite list of exclusions</h2>
   <p>On \(\mathbb N\), put \(E(i,j)\) exactly when \(j=i+1\). A walk of length \(n\) from \(a\) to \(b\) then satisfies \(b=a+n\). Conversely the sequence \(a,a+1,\ldots,a+n\) is such a walk.</p>
-  <p class="proof-label">Proof</p>
-  <p>At length zero the endpoint is unchanged. Each further edge increases the current endpoint by one, so induction proves the equality. The displayed sequence proves the converse. In particular, \(0\) reaches \(N+1\), but no walk of length at most \(N\) joins those endpoints. □</p>
-  <p>We will also need an undirected finite version. On \(\{0,1,\ldots,N+1\}\), join two elements exactly when they differ by one. This relation is symmetric and irreflexive, and every pair is joined by walking along the intervening integers. Yet no walk of length at most \(N\) joins \(0\) to \(N+1\): after \(n\) steps from zero the current integer is at most \(n\), since each step increases it by at most one. Backtracking cannot shorten the necessary journey.</p>
+  <div class="proof">
+    <p>At length zero the endpoint is unchanged. Each further edge increases the current endpoint by one, so induction proves the equality. The displayed sequence proves the converse. In particular, \(0\) reaches \(N+1\), but no walk of length at most \(N\) joins those endpoints.</p>
+    <p>We will also need an undirected finite version. On \(\{0,1,\ldots,N+1\}\), join two elements exactly when they differ by one. This relation is symmetric and irreflexive, and every pair is joined by walking along the intervening integers. Yet no walk of length at most \(N\) joins \(0\) to \(N+1\): after \(n\) steps from zero the current integer is at most \(n\), since each step increases it by at most one. Backtracking cannot shorten the necessary journey.</p>
+</div>
 </section>
 
 <section id="reachability-not-definable" data-formal="exp-named-pair exp-no-path-sentence exp-reachability-theory exp-reachability-not-definable exp-transitive-reachability" data-kind="theorem">
   <h2>No one formula defines reachability in every relation</h2>
   <div class="statement-box"><p>There is no first-order formula \(\rho(x,y)\) in the language \(\{E\}\) such that, in every nonempty structure and at every pair \(a,b\), \(\rho(a,b)\) holds exactly when \(b\) is reachable from \(a\).</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(\rho\) worked. Add constants \(c,d\), and consider the theory</p>
-  <div class="math-display">\[\{\rho(c,d)\}\cup\{\neg P_n(c,d):n\in\mathbb N\}.\]</div>
-  <p>A finite subset forbids only finitely many walk lengths. Choose \(N\) at least all of them. Use the directed chain from <a href="#long-chains"></a>, interpreting \(c=0\) and \(d=N+1\). Its endpoints are reachable, so the assumed defining property makes \(\rho(c,d)\) true. Every selected exclusion is true because its length is at most \(N\). This also handles a finite subset not containing \(\rho(c,d)\).</p>
-  <p>By compactness the whole theory has a model. In it \(\rho(c,d)\) holds, but no walk of any finite length joins those elements. This contradicts the defining property of \(\rho\). □</p>
+  <div class="proof">
+    <p>Suppose \(\rho\) worked. Add constants \(c,d\), and consider the theory</p>
+    <div class="math-display">\[\{\rho(c,d)\}\cup\{\neg P_n(c,d):n\in\mathbb N\}.\]</div>
+    <p>A finite subset forbids only finitely many walk lengths. Choose \(N\) at least all of them. Use the directed chain from <a href="#long-chains"></a>, interpreting \(c=0\) and \(d=N+1\). Its endpoints are reachable, so the assumed defining property makes \(\rho(c,d)\) true. Every selected exclusion is true because its length is at most \(N\). This also handles a finite subset not containing \(\rho(c,d)\).</p>
+    <p>By compactness the whole theory has a model. In it \(\rho(c,d)\) holds, but no walk of any finite length joins those elements. This contradicts the defining property of \(\rho\).</p>
+</div>
   <p>The conclusion is uniform across structures. In a transitive relation, for example, reachability is defined by \(x=y\lor E(x,y)\): a positive-length walk collapses to one edge. Such special cases do not supply a formula for arbitrary relations.</p>
 </section>
 
@@ -63,9 +68,10 @@
   <h2>Even an infinite theory cannot describe exactly the connected relations</h2>
   <p>Call a symmetric irreflexive relation <em>connected</em> when every pair of domain elements is joined by a finite walk. A one-element domain with the empty relation is connected, using length-zero walks. This definition needs no further graph-theory terminology.</p>
   <div class="statement-box"><p>No first-order theory in \(\{E\}\) has exactly the nonempty connected symmetric irreflexive relations as its models.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>If \(T\) were such a theory, expand its language by constants \(c,d\), and add all sentences \(\neg P_n(c,d)\). For a finite subset choose \(N\) bounding the excluded lengths. The finite undirected chain on \(\{0,\ldots,N+1\}\) from <a href="#long-chains"></a> is connected, symmetric and irreflexive, so it satisfies all of \(T\). Its endpoints satisfy every selected exclusion. This explicitly supplies the required finite models.</p>
-  <p>Compactness gives a model of the whole expanded theory. Its reduct is a model of \(T\), so is connected. But its two named elements have no walk of any finite length between them. Contradiction. □</p>
+  <div class="proof">
+    <p>If \(T\) were such a theory, expand its language by constants \(c,d\), and add all sentences \(\neg P_n(c,d)\). For a finite subset choose \(N\) bounding the excluded lengths. The finite undirected chain on \(\{0,\ldots,N+1\}\) from <a href="#long-chains"></a> is connected, symmetric and irreflexive, so it satisfies all of \(T\). Its endpoints satisfy every selected exclusion. This explicitly supplies the required finite models.</p>
+    <p>Compactness gives a model of the whole expanded theory. Its reduct is a model of \(T\), so is connected. But its two named elements have no walk of any finite length between them. Contradiction.</p>
+</div>
   <p>This is a separate argument from the failure of a uniform reachability formula. A sentence describing the connected relations would not itself be a formula defining which particular pairs are reachable. Both impossibility results follow by comparing arbitrarily long finite walks with one compactness model.</p>
 </section>
 

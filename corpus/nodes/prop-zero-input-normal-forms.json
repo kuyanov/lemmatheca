@@ -1,13 +1,13 @@
 {
   "id": "prop-zero-input-normal-forms",
   "description": "Both canonical normal forms on zero inputs are equivalent to \\(\\top\\) or \\(\\bot\\), according to the value of the sole empty row.",
-  "module": "Lemmatheca.MathematicalLogic.PropositionalNormalForms",
-  "declaration": "Lemmatheca.MathematicalLogic.zero_input_normal_forms",
+  "module": "Lemmatheca.PropositionalNormalForms.PropositionalNormalForms",
+  "declaration": "Lemmatheca.MathematicalLogic.Propositional.zero_input_normal_forms",
   "dependencies": [
     "prop-canonical-dnf",
     "prop-canonical-cnf"
   ],
   "verified": true,
   "declaration_line": 237,
-  "signature": "Lemmatheca.MathematicalLogic.zero_input_normal_forms.{u} {α : Type u} [DecidableEq α] (p : Fin 0 → α)\n  (f : Lemmatheca.MathematicalLogic.TruthFunction 0) :\n  have K :=\n    if (f fun i => i.elim0) = true then Lemmatheca.MathematicalLogic.verum\n    else Lemmatheca.MathematicalLogic.PropFormula.falsum;\n  Lemmatheca.MathematicalLogic.SemEquivalent\n      (Lemmatheca.MathematicalLogic.dnfFormula (Lemmatheca.MathematicalLogic.canonicalDnf p f)) K ∧\n    Lemmatheca.MathematicalLogic.SemEquivalent\n      (Lemmatheca.MathematicalLogic.cnfFormula (Lemmatheca.MathematicalLogic.canonicalCnf p f)) K"
+  "signature": "Lemmatheca.MathematicalLogic.Propositional.zero_input_normal_forms.{u} {α : Type u} [DecidableEq α] (p : Fin 0 → α)\n  (f : Lemmatheca.MathematicalLogic.Propositional.TruthFunction 0) :\n  have K :=\n    if (f fun i => i.elim0) = true then Lemmatheca.MathematicalLogic.Propositional.verum\n    else Lemmatheca.MathematicalLogic.Propositional.PropFormula.falsum;\n  Lemmatheca.MathematicalLogic.Propositional.SemEquivalent\n      (Lemmatheca.MathematicalLogic.Propositional.dnfFormula\n        (Lemmatheca.MathematicalLogic.Propositional.canonicalDnf p f))\n      K ∧\n    Lemmatheca.MathematicalLogic.Propositional.SemEquivalent\n      (Lemmatheca.MathematicalLogic.Propositional.cnfFormula\n        (Lemmatheca.MathematicalLogic.Propositional.canonicalCnf p f))\n      K"
 }

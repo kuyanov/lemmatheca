@@ -1,22 +1,24 @@
 <section id="foundation-minimality" data-kind="definition" data-formal="zf-foundation-minimal-member">
   <h2>Membership has minimal elements inside every nonempty set</h2>
-  <p>The <a href="axiomatic-set-theory#foundation">Foundation axiom</a> says that every nonempty set \(A\) contains a member \(a\) such that \(a\cap A=\varnothing\). This is a minimality condition for membership: no member of \(A\) is a member of \(a\). It does not require \(a\) to be empty, nor does it compare all members of \(A\) in a linear order.</p>
+  <p>The <a href="axiomatic-set-theory#foundation"><strong>Foundation axiom</strong></a> says that every nonempty set \(A\) contains a member \(a\) such that \(a\cap A=\varnothing\). Such an \(a\) is a <strong>membership-minimal member</strong> of \(A\): no member of \(A\) is a member of \(a\). It does not require \(a\) to be empty, nor does it compare all members of \(A\) in a linear order.</p>
   <p>In this entry we work in ZF, including Foundation, without Choice. We reuse <a href="ordinals#ordinal-comparison">ordinal comparison</a> and <a href="ordinals#ordinal-suprema">suprema of sets of ordinals</a>. These will measure how far membership descends, even when a set has infinitely many members.</p>
 </section>
 
 <section id="no-membership-cycles" data-kind="theorem" data-formal="set-self-membership-impossible zf-membership-asymmetric no-finite-membership-cycles membership-not-transitive-example">
   <h2>There are no finite membership cycles</h2>
   <p>No set belongs to itself. More generally, there is no finite nonempty list of sets \(x_0,\ldots,x_{n-1}\) with \(x_{i+1}\in x_i\) for successive positions and \(x_0\in x_{n-1}\).</p>
-  <p class="proof-label">Proof</p>
-  <p>If \(x\in x\), the nonempty set \(\{x\}\) has no membership-minimal member, contrary to Foundation. For a cycle, form the nonempty finite set \(A=\{x_0,\ldots,x_{n-1}\}\). Each member \(x_i\) contains the next member in the cycle, which also lies in \(A\). Thus no member has empty intersection with \(A\). Repeated entries do not change this argument. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(x\in x\), the nonempty set \(\{x\}\) has no membership-minimal member, contrary to Foundation. For a cycle, form the nonempty finite set \(A=\{x_0,\ldots,x_{n-1}\}\). Each member \(x_i\) contains the next member in the cycle, which also lies in \(A\). Thus no member has empty intersection with \(A\). Repeated entries do not change this argument.</p>
+</div>
   <p>In particular, \(x\in y\) and \(y\in x\) cannot both hold. But membership still need not be transitive: with \(0=\varnothing\), \(a=\{0\}\), and \(b=\{a\}\), we have \(0\in a\in b\) but \(0\notin b\).</p>
 </section>
 
 <section id="no-descending-sequence" data-kind="lemma" data-formal="zf-membership-well-founded well-founded-no-descending-sequence">
   <h2>No sequence can keep moving to a member forever</h2>
   <p>There is no function \(f\) on \(\omega\) with \(f(n+1)\in f(n)\) for every \(n\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Replacement makes the range \(A=\{f(n):n\in\omega\}\) a nonempty set. If \(a=f(n)\in A\), then \(f(n+1)\in a\cap A\). Thus \(A\) has no membership-minimal member, contradicting Foundation. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Replacement makes the range \(A=\{f(n):n\in\omega\}\) a nonempty set. If \(a=f(n)\in A\), then \(f(n+1)\in a\cap A\). Thus \(A\) has no membership-minimal member, contradicting Foundation.</p>
+</div>
   <p>We proved this consequence directly. The reverse method of turning a failure of minimality into a descending sequence requires a principle for making successive selections: <a href="weaker-forms-of-choice#well-foundedness-and-descending-sequences">dependent choice suffices for relations on sets</a>. We do not use it here.</p>
 </section>
 
@@ -32,9 +34,10 @@
   <p>For a set \(x\), recursively put</p>
   <div class="math-display">\[ X_0=x,\qquad X_{n+1}=X_n\cup\bigcup X_n,\qquad \operatorname{TC}(x)=\bigcup_{n\in\omega}X_n. \]</div>
   <p>This is the unique smallest transitive superset of \(x\). No Choice or Foundation is needed for this construction.</p>
-  <p class="proof-label">Proof</p>
-  <p>Each step is a uniquely specified set by Pairing and Union. To justify the sequence even without an output bound fixed in advance, consider the finite histories of this rule. For each \(n\in\omega\), induction constructs a unique function on \(n+1\) beginning at \(x\) and satisfying the step equation. Restriction and uniqueness make these histories compatible. Replacement collects their uniquely determined last values as \(n\) varies, and also their input-output pairs; this constructs the sequence and its range as sets. Union then constructs \(\operatorname{TC}(x)\).</p>
-  <p>The sequence is increasing, so \(x\subseteq\operatorname{TC}(x)\). If \(y\in\operatorname{TC}(x)\), it belongs to some \(X_n\); every \(z\in y\) lies in \(\bigcup X_n\subseteq X_{n+1}\), hence in the closure. Thus the closure is transitive. If \(U\) is transitive and \(x\subseteq U\), induction gives \(X_n\subseteq U\) for every \(n\), so the union is contained in \(U\). This proves leastness and uniqueness. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Each step is a uniquely specified set by Pairing and Union. To justify the sequence even without an output bound fixed in advance, consider the finite histories of this rule. For each \(n\in\omega\), induction constructs a unique function on \(n+1\) beginning at \(x\) and satisfying the step equation. Restriction and uniqueness make these histories compatible. Replacement collects their uniquely determined last values as \(n\) varies, and also their input-output pairs; this constructs the sequence and its range as sets. Union then constructs \(\operatorname{TC}(x)\).</p>
+    <p>The sequence is increasing, so \(x\subseteq\operatorname{TC}(x)\). If \(y\in\operatorname{TC}(x)\), it belongs to some \(X_n\); every \(z\in y\) lies in \(\bigcup X_n\subseteq X_{n+1}\), hence in the closure. Thus the closure is transitive. If \(U\) is transitive and \(x\subseteq U\), induction gives \(X_n\subseteq U\) for every \(n\), so the union is contained in \(U\). This proves leastness and uniqueness.</p>
+</div>
 </section>
 
 <section id="closure-examples" data-kind="question" data-formal="transitive-closure-examples transitive-closure-transitive-fixed">
@@ -53,16 +56,18 @@
     <div class="math-display">\[ \forall x\,\bigl[(\forall y\in x\,P(y))\Rightarrow P(x)\bigr], \]</div>
     <p>then \(P(x)\) holds for every set \(x\). This is <strong>membership induction</strong>, also called set induction.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>If \(P(a)\) fails, use \(D=\operatorname{TC}(\{a\})\), a transitive set with \(a\in D\). Separation constructs the nonempty set \(B=\{x\in D:\neg P(x)\}\). Foundation supplies \(b\in B\) with \(b\cap B=\varnothing\). Every member of \(b\) lies in \(D\), by transitivity, and none lies in \(B\); hence all satisfy \(P\). The assumed implication gives \(P(b)\), contradicting \(b\in B\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(P(a)\) fails, use \(D=\operatorname{TC}(\{a\})\), a transitive set with \(a\in D\). Separation constructs the nonempty set \(B=\{x\in D:\neg P(x)\}\). Foundation supplies \(b\in B\) with \(b\cap B=\varnothing\). Every member of \(b\) lies in \(D\), by transitivity, and none lies in \(B\); hence all satisfy \(P\). The assumed implication gives \(P(b)\), contradicting \(b\in B\).</p>
+</div>
   <p>The collection of all counterexamples might be a proper class. The transitive closure provides the set-sized search space to which Foundation applies.</p>
 </section>
 
 <section id="induction-implies-foundation" data-kind="lemma" data-formal="foundation-iff-membership-induction-schema membership-induction-principle membership-induction-implies-minimality">
   <h2>Membership induction also implies Foundation</h2>
   <p><a href="first-order-proofs#theory-relative-claims">Over the other axioms of ZF</a>, the membership-induction schema implies Foundation.</p>
-  <p class="proof-label">Proof</p>
-  <p>Suppose a nonempty set \(A\) has no membership-minimal member. Thus every \(x\in A\) has some \(y\in x\cap A\). Apply membership induction to the formula \(P(x)\) meaning \(x\notin A\), with parameter \(A\). If every member of \(x\) lies outside \(A\), then \(x\) cannot belong to \(A\), since a member of \(A\) has a member in \(A\). The induction hypothesis therefore gives \(x\notin A\) for every set \(x\), contradicting nonemptiness of \(A\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose a nonempty set \(A\) has no membership-minimal member. Thus every \(x\in A\) has some \(y\in x\cap A\). Apply membership induction to the formula \(P(x)\) meaning \(x\notin A\), with parameter \(A\). If every member of \(x\) lies outside \(A\), then \(x\) cannot belong to \(A\), since a member of \(A\) has a member in \(A\). The induction hypothesis therefore gives \(x\notin A\) for every set \(x\), contradicting nonemptiness of \(A\).</p>
+</div>
   <p>This equivalence compares an axiom with a <a href="first-order-proofs#theory-relative-claims">schema</a>: each application of induction concerns one formula and its parameters.</p>
 </section>
 
@@ -73,17 +78,18 @@
     <div class="math-display">\[ r_T(x)=\sup\{r_T(y)+1:y\in x\}\quad(x\in T). \]</div>
   </div>
   <p>The supremum of the empty set of ordinals is zero. Membership on \(T\) is <a href="well-ordered-sets#well-founded-relations">well-founded</a> by Foundation, and transitivity ensures that all inputs on the right are in the domain.</p>
-  <p class="proof-label">Proof</p>
-  <p>Call an ordinal-valued function <em>good</em> if its domain is a transitive subset of \(T\) and it satisfies the displayed rule there. Two good functions agree on their common domain. Otherwise, by Separation and Foundation, their disagreements have a membership-minimal member \(x\). Every \(y\in x\) lies in both domains and is an agreement point, so the two suprema at \(x\) are equal, a contradiction. This proves compatibility, including uniqueness on any fixed domain.</p>
-  <p>We show that every \(x\in T\) is in the domain of a good function, by well-founded induction on membership in \(T\). Suppose this has been established for every \(y\in x\). Put \(D_y=\operatorname{TC}(\{y\})\). Any good function containing \(y\) restricts to a good function on \(D_y\), by leastness of the transitive closure. Compatibility makes that restricted function unique; denote it \(f_y\).</p>
-  <p>Replacement, applied to the uniquely specified graphs \(f_y\) for \(y\in x\), gives a set of functions. Their union \(f\) is a function because they agree on overlaps. Its domain \(D=\bigcup_{y\in x}D_y\) is transitive and contains every member of \(x\), and \(f\) is good there. If \(x\in D\), we already have the desired function. Otherwise extend \(f\) by assigning \(x\) the ordinal \(\sup\{f(y)+1:y\in x\}\). Replacement makes the set of ordinal values exist. The enlarged domain \(D\cup\{x\}\) is transitive. No old point of \(D\) has \(x\) as a member, since transitivity would force \(x\in D\); thus its old recursion equation is unchanged. This extension is good and includes \(x\).</p>
-  <p>Induction establishes the assertion for all \(x\in T\). The unique good function on each \(D_x\) now exists, so a further application of Replacement collects all their graphs. Their compatible union is the required function on \(T\). Compatibility proves uniqueness. For \(T=\varnothing\), the construction gives the empty function. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Call an ordinal-valued function <em>good</em> if its domain is a transitive subset of \(T\) and it satisfies the displayed rule there. Two good functions agree on their common domain. Otherwise, by Separation and Foundation, their disagreements have a membership-minimal member \(x\). Every \(y\in x\) lies in both domains and is an agreement point, so the two suprema at \(x\) are equal, a contradiction. This proves compatibility, including uniqueness on any fixed domain.</p>
+    <p>We show that every \(x\in T\) is in the domain of a good function, by well-founded induction on membership in \(T\). Suppose this has been established for every \(y\in x\). Put \(D_y=\operatorname{TC}(\{y\})\). Any good function containing \(y\) restricts to a good function on \(D_y\), by leastness of the transitive closure. Compatibility makes that restricted function unique; denote it \(f_y\).</p>
+    <p>Replacement, applied to the uniquely specified graphs \(f_y\) for \(y\in x\), gives a set of functions. Their union \(f\) is a function because they agree on overlaps. Its domain \(D=\bigcup_{y\in x}D_y\) is transitive and contains every member of \(x\), and \(f\) is good there. If \(x\in D\), we already have the desired function. Otherwise extend \(f\) by assigning \(x\) the ordinal \(\sup\{f(y)+1:y\in x\}\). Replacement makes the set of ordinal values exist. The enlarged domain \(D\cup\{x\}\) is transitive. No old point of \(D\) has \(x\) as a member, since transitivity would force \(x\in D\); thus its old recursion equation is unchanged. This extension is good and includes \(x\).</p>
+    <p>Induction establishes the assertion for all \(x\in T\). The unique good function on each \(D_x\) now exists, so a further application of Replacement collects all their graphs. Their compatible union is the required function on \(T\). Compatibility proves uniqueness. For \(T=\varnothing\), the construction gives the empty function.</p>
+</div>
   <p>This proof does not assume a set of all ordinals as codomain. It constructs each value locally, then uses Replacement to collect the values on a set.</p>
 </section>
 
 <section id="membership-rank" data-kind="definition" data-formal="local-membership-rank-agreement set-membership-rank-equation">
   <h2>The rank of a set is independent of its surrounding carrier</h2>
-  <p>For a set \(x\), define</p>
+  <p>For a set \(x\), define its <strong>membership rank</strong> by</p>
   <div class="math-display">\[ \operatorname{rank}(x)=r_{\operatorname{TC}(\{x\})}(x). \]</div>
   <p>If \(U,T\) are transitive sets containing \(x\) as a member, their rank functions agree on \(U\cap T\) by the compatibility proof above. Also, \(\operatorname{TC}(\{x\})\subseteq U\), and restriction of \(r_U\) gives its unique local function. Thus the value is independent of the carrier. In particular, it satisfies the global rule</p>
   <div class="math-display">\[ \operatorname{rank}(x)=\sup\{\operatorname{rank}(y)+1:y\in x\}. \]</div>
@@ -95,8 +101,9 @@
   <div class="statement-box">
     <p>If \(y\in x\), then \(\operatorname{rank}(y)&lt;\operatorname{rank}(x)\). If \(x\subseteq z\), then \(\operatorname{rank}(x)\le\operatorname{rank}(z)\). A set has rank zero exactly when it is empty.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>For \(y\in x\), the supremum defining rank is at least \(\operatorname{rank}(y)+1\), hence strictly above \(\operatorname{rank}(y)\). For \(x\subseteq z\), the family used in the first supremum is contained in the family used in the second, giving the non-strict comparison. The empty set has rank zero by the empty-supremum convention; a nonempty set has a member, whose successor rank is at least one, so its rank is not zero. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For \(y\in x\), the supremum defining rank is at least \(\operatorname{rank}(y)+1\), hence strictly above \(\operatorname{rank}(y)\). For \(x\subseteq z\), the family used in the first supremum is contained in the family used in the second, giving the non-strict comparison. The empty set has rank zero by the empty-supremum convention; a nonempty set has a member, whose successor rank is at least one, so its rank is not zero.</p>
+</div>
   <p>Inclusion need not strictly increase rank. The sets \(a=\{0\}\) and \(b=\{a\}\) have ranks one and two. Both \(\{b\}\) and its proper superset \(\{0,b\}\) have rank three. Rank measures membership depth, not how many members have been added.</p>
   <figure id="rank-descent" class="proof-figure">
     <div class="figure-image"><img src="assets/membership-rank.svg" width="760" height="350" alt="Membership arrows descend from x of rank three to b of rank two and a of rank one, then to the empty set of rank zero; b also points to a." /></div>
@@ -111,35 +118,39 @@
 \operatorname{rank}(\{x\})=\operatorname{rank}(x)+1,\qquad \operatorname{rank}(\{x,y\})=\max(\operatorname{rank}(x),\operatorname{rank}(y))+1,\\
 \operatorname{rank}\left(\bigcup x\right)=\sup\{\operatorname{rank}(y):y\in x\},\qquad \operatorname{rank}(\mathcal P(x))=\operatorname{rank}(x)+1.
 \end{gathered}\]</div>
-  <p class="proof-label">Proof</p>
-  <p>The singleton and pair formulas substitute their members into the recursion equation. The union formula follows by grouping the same successor ranks:</p>
-  <div class="math-display">\[ \sup_{z\in\bigcup x}(\operatorname{rank}(z)+1)=\sup_{y\in x}\sup_{z\in y}(\operatorname{rank}(z)+1)=\sup_{y\in x}\operatorname{rank}(y). \]</div>
-  <p>All indexed collections are sets by Replacement and Union; the equality also holds for empty indices, with supremum zero. Every \(A\subseteq x\) has rank at most \(\operatorname{rank}(x)\), so the supremum defining the rank of \(\mathcal P(x)\) is at most \(\operatorname{rank}(x)+1\). Since \(x\in\mathcal P(x)\), this very successor rank occurs in that supremum. Equality follows. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The singleton and pair formulas substitute their members into the recursion equation. The union formula follows by grouping the same successor ranks:</p>
+    <div class="math-display">\[ \sup_{z\in\bigcup x}(\operatorname{rank}(z)+1)=\sup_{y\in x}\sup_{z\in y}(\operatorname{rank}(z)+1)=\sup_{y\in x}\operatorname{rank}(y). \]</div>
+    <p>All indexed collections are sets by Replacement and Union; the equality also holds for empty indices, with supremum zero. Every \(A\subseteq x\) has rank at most \(\operatorname{rank}(x)\), so the supremum defining the rank of \(\mathcal P(x)\) is at most \(\operatorname{rank}(x)+1\). Since \(x\in\mathcal P(x)\), this very successor rank occurs in that supremum. Equality follows.</p>
+</div>
   <p>The \(+1\) in these formulas is ordinal successor. In particular, \(\operatorname{rank}(\mathcal P(\varnothing))=1\), even though its only member is empty.</p>
 </section>
 
 <section id="ordinal-ranks" data-kind="theorem" data-formal="ordinal-set-rank omega-set-ordinal-identification">
   <h2>An ordinal is its own membership rank</h2>
   <p>For every ordinal \(\alpha\), \(\operatorname{rank}(\alpha)=\alpha\). In particular, natural numbers have their own finite ranks and \(\operatorname{rank}(\omega)=\omega\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Use transfinite induction on ordinals. Their members are exactly the earlier ordinals, so the induction hypothesis gives</p>
-  <div class="math-display">\[ \operatorname{rank}(\alpha)=\sup_{\beta&lt;\alpha}(\operatorname{rank}(\beta)+1)=\sup_{\beta&lt;\alpha}(\beta+1)=\alpha. \]</div>
-  <p>Every \(\beta+1\) in this family is at most \(\alpha\), while each \(\gamma&lt;\alpha\) belongs to the successor \(\gamma+1\) occurring in the family. Thus its union, and hence its supremum, is precisely \(\alpha\). At zero both are empty. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Use transfinite induction on ordinals. Their members are exactly the earlier ordinals, so the induction hypothesis gives</p>
+    <div class="math-display">\[ \operatorname{rank}(\alpha)=\sup_{\beta&lt;\alpha}(\operatorname{rank}(\beta)+1)=\sup_{\beta&lt;\alpha}(\beta+1)=\alpha. \]</div>
+    <p>Every \(\beta+1\) in this family is at most \(\alpha\), while each \(\gamma&lt;\alpha\) belongs to the successor \(\gamma+1\) occurring in the family. Thus its union, and hence its supremum, is precisely \(\alpha\). At zero both are empty.</p>
+</div>
 </section>
 
 <section id="closure-preserves-rank" data-kind="lemma" data-formal="transitive-closure-rank-preserved zf-singleton-rank">
   <h2>Taking transitive closure preserves rank</h2>
   <p>For every set \(x\), \(\operatorname{rank}(\operatorname{TC}(x))=\operatorname{rank}(x)\).</p>
-  <p class="proof-label">Proof</p>
-  <p>The union formula gives \(\operatorname{rank}(\bigcup u)\le\operatorname{rank}(u)\) for any set \(u\), since each member rank is at most the supremum of its successor ranks. Also, \(\operatorname{rank}(u\cup v)=\max(\operatorname{rank}(u),\operatorname{rank}(v))\), by splitting the family of successor ranks into its two parts. Hence the stages in <a href="#transitive-closure-construction"></a> all have rank \(\operatorname{rank}(x)\), by induction. Applying the union formula to their nonempty set of stages gives the rank of their union as \(\operatorname{rank}(x)\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The union formula gives \(\operatorname{rank}(\bigcup u)\le\operatorname{rank}(u)\) for any set \(u\), since each member rank is at most the supremum of its successor ranks. Also, \(\operatorname{rank}(u\cup v)=\max(\operatorname{rank}(u),\operatorname{rank}(v))\), by splitting the family of successor ranks into its two parts. Hence the stages in <a href="#transitive-closure-construction"></a> all have rank \(\operatorname{rank}(x)\), by induction. Applying the union formula to their nonempty set of stages gives the rank of their union as \(\operatorname{rank}(x)\).</p>
+</div>
   <p>Consequently \(\operatorname{TC}(\{x\})\) has rank \(\operatorname{rank}(x)+1\), in agreement with the fact that it contains \(x\) as a member.</p>
 </section>
 
 <section id="ordinal-height-and-well-foundedness" data-kind="lemma" data-formal="decreasing-ordinal-height-well-founded">
   <h2>Decreasing ordinal heights certify well-foundedness</h2>
   <p>Let \(R\) be a relation on a set \(A\). Suppose each \(a\in A\) is assigned an ordinal \(h(a)\), with \(b\,R\,a\) implying \(h(b)&lt;h(a)\). Then \(R\) is well-founded on \(A\).</p>
-  <p class="proof-label">Proof</p>
-  <p>For a nonempty subset \(B\subseteq A\), Replacement gives the nonempty set \(\{h(b):b\in B\}\) of ordinals. Take its least member and some \(b\in B\) having that value. There cannot be \(c\in B\) with \(c\,R\,b\), since \(h(c)\) would be smaller. Thus \(B\) has an \(R\)-minimal member. No simultaneous selection over all subsets is needed. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For a nonempty subset \(B\subseteq A\), Replacement gives the nonempty set \(\{h(b):b\in B\}\) of ordinals. Take its least member and some \(b\in B\) having that value. There cannot be \(c\in B\) with \(c\,R\,b\), since \(h(c)\) would be smaller. Thus \(B\) has an \(R\)-minimal member. No simultaneous selection over all subsets is needed.</p>
+</div>
   <p>Membership rank supplies such a height on every set of sets. For a general relation the height has domain its carrier \(A\), rather than automatically all sets.</p>
 </section>
 

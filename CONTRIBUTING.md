@@ -22,9 +22,11 @@ handoffs rather than repeating completed stages. Content contracts live in
 1. **Root plans the area.** Execute [step 1](prompts/01-choose-sources.md) at the
    root, rather than delegating the planning step. Compare existing coverage with
    sources, look for uncovered elementary material and missing prerequisites, and
-   choose coherent entry scopes and a dependency-respecting reading order. Honor
-   the requested batch size and scope; distinguish entries proposed for execution
-   now from a deferred roadmap. Do not count existing coverage as new work.
+   assess [area fit and continuity](#area-fit-and-continuity) with the entries
+   already present. Choose coherent entry scopes and a dependency-respecting
+   reading order. Honor the requested batch size and scope; distinguish entries
+   proposed for execution now from a deferred roadmap. Distinguish newly covered
+   mathematics from useful new treatments of existing material.
 2. **Delegate each entry.** Spawn an entry agent for every entry in the execution
    plan. Give it the area plan, sources and inspected passages, prerequisite
    entries, intended placement, owned files, shared-edit boundaries, and prompts
@@ -40,7 +42,9 @@ handoffs rather than repeating completed stages. Content contracts live in
    owner applies findings through steps 2 or 4, then requests the necessary
    rereview. A source or target change revisits only the affected stages below.
 4. **Coordinate shared edits.** Entry agents own their assigned entry files,
-   assets, new nodes and Lean modules. The root serializes changes to reading
+   assets, new nodes and Lean modules in their
+   [PascalCase entry directories](docs/formal.md#module-layout).
+   The root serializes changes to reading
    order, taxonomy when authorized, shared Lean modules/imports, source/planning
    records, and existing consuming entries. Workers perform the relevant
    stage-specific work and send concrete shared-file edits to the root; exclusive
@@ -58,8 +62,10 @@ handoffs rather than repeating completed stages. Content contracts live in
 6. **Root checks the integrated coverage and order.** Compare the actual entries
    with the area plan and inspected sources. Check for missing definitions,
    hypotheses, intermediate results, representation bridges and simpler material
-   that should come first, as well as duplicate coverage. Check entry and block
-   order, backward prerequisite links, and cross-area assumptions. Apply the
+   that should come first. Recheck area fit and continuity; distinguish unnecessary
+   repetition from justified treatments from different areas' perspectives.
+   Check entry and block order, backward prerequisite links, and cross-area
+   assumptions. Apply the
    [exposition and formalization rule](docs/corpus.md#exposition-and-formalization):
    a large excess of formal code over human text may expose compressed arguments
    that need fuller treatment across several entries. Resolve
@@ -110,10 +116,10 @@ generated files in the final contribution, including the latest index.
 
 | Step | Owns | Required checks |
 | --- | --- | --- |
-| [1. Plan the area and choose sources](prompts/01-choose-sources.md) | Root-owned coverage/source plan, gaps, entry scopes, prerequisites, reading order and assignments | Source support, existing coverage and prerequisite dependencies |
-| [2. Draft](prompts/02-draft-human-entry.md) | Human entry, metadata, assets, reading order, reference integration | Finish with a writing corpus build and inspect affected rendered pages |
+| [1. Plan the area and choose sources](prompts/01-choose-sources.md) | Root-owned coverage/source plan, gaps, entry scopes, prerequisites, reading order and per-entry handoffs | Area fit and continuity, source support, existing coverage and prerequisite dependencies |
+| [2. Draft](prompts/02-draft-human-entry.md) | Human entry, metadata, assets and reference integration | Self-check the draft and inspect affected rendered pages; publication follows the shared rules below |
 | [3. Review the entry](prompts/03-review-human-entry.md) | Independent human mathematics and presentation review | Read the requested arguments and answers; inspect presentation and relevant references |
-| [4. Prepare formal nodes](prompts/04-prepare-formal-nodes.md) | Definitions, target statements, node descriptions and mappings | Compile/elaborate targets, finish with a writing corpus build, render new/edited descriptions |
+| [4. Prepare formal nodes](prompts/04-prepare-formal-nodes.md) | Definitions, target statements, node descriptions and mappings | Compile/elaborate targets and render new/edited descriptions; publication follows the shared rules below |
 | [5. Review correspondence](prompts/05-review-correspondence.md) | Independent claim-to-declaration coverage and fidelity review | Inspect current types, definition bodies, representations and witnesses |
 | [6. Prove](prompts/06-prove-nodes.md) | Proof bodies and necessary proof helpers | Compile proofs, run the integrated verification build, inspect axioms and warnings |
 
@@ -127,6 +133,12 @@ Step 4 implements definitions and states missing theorems, including
 representation bridges, with unfinished proofs. Step 5 reviews those statements;
 step 6 proves them. An intentional `sorry` at preparation is not by itself a
 correspondence defect.
+
+Step 1 ends with the plan and handoffs. Delegation, review scheduling, shared
+integration, index checkpoints and final area-wide checks belong to the root's
+driver protocol, not to another execution of the planning step. Later entry
+stages implement or review the assigned scope; they report new global conflicts
+without independently replanning the area.
 
 Author self-checks and independent reviews have different purposes: applying the
 content contract while drafting does not replace step 3, and preparing faithful
@@ -146,6 +158,13 @@ Revisit earlier work only where an input or result changes:
 - Wording, layout, or description-formatting changes need the corresponding
   validation/rendering checks, not another full mathematical or source audit.
 
+These rules also cover exposition gaps newly exposed during formal preparation,
+correspondence review or proving. Report substantive mathematics missing from the
+text under the [exposition and formalization rule](docs/corpus.md#exposition-and-formalization),
+and route expansion or splitting to steps 2/3 and the root's scope/order
+coordination. Do not repeat a general exposition audit in every formal stage or
+treat unexplained arguments as routine implementation details.
+
 For a requested multi-stage task, perform these affected revisions within its
 scope. For an isolated stage, report work belonging to another stage and continue
 unaffected work; do not silently expand the request. These are responsibility
@@ -163,6 +182,31 @@ Familiar background may be used without an entry reference. This includes elemen
 arithmetic, ordinary classical reasoning, and standard real-number facts used in
 examples or short supporting arguments. A missing corpus reference for such a fact
 is not itself a mathematical gap or a drafting blocker.
+
+### Area fit and continuity
+
+Plan from the chosen area's description, its place among neighboring areas, and
+its actual entries. Consider their level, notation, central questions, methods,
+thematic groups and reading sequence. Use that exposition as the baseline for
+the next batch and roadmap, and explain any change in direction. Source contents
+and earlier proposals inform the plan; they do not establish an entry's fit by
+themselves.
+
+For each proposal, explain why its main question, results and approach serve the
+chosen area and how it connects to the existing sequence. A topic can fit several
+areas. Use `additional_areas` when one entry serves those audiences; separate
+entries may also revisit the same definitions or theorems with different
+motivations, examples, proofs or perspectives when this benefits readers. Record
+the intended angle and useful links between treatments. Existing coverage in
+another area does not by itself rule out such an entry. Distinguish this
+pedagogical contribution from newly covered mathematics and avoid repetition
+that adds no value to the area's sequence.
+
+Choose the primary area from the entry's central purpose. Reframe or defer a
+proposal whose main development belongs elsewhere when it falls outside the
+authorized scope. Expository overlap does not require duplicate formal code:
+reuse suitable nodes and Lean declarations under the
+[module ownership rules](docs/formal.md#module-layout).
 
 ### Reference integration
 
@@ -281,6 +325,13 @@ earlier stages. Paths in commands are relative to the repository root; Markdown
 links resolve relative to their document. Supply earlier reports as text, local
 paths, or accessible GitHub references where useful. Reports are inputs, not a
 mandatory approval record or persistent corpus metadata.
+
+All stages inherit the [area-driver rules](#running-an-area-pipeline) for ownership,
+review assignment and checkpoints, the [publication/check matrix](#validation-and-submission),
+and the source-register rule below. These shared requirements apply when their
+trigger occurs; they are not extra checklists to repeat at each stage. In a
+multi-stage task, carry pending publication forward to its coordinated build
+rather than running a writing build at every handoff.
 
 Use the [API retrieval workflow](#using-the-authoring-api) for the queries named
 in each stage's prompt. Keep retrieval within that stage's responsibility.
@@ -404,6 +455,8 @@ index rebuild.
 Describe the contribution's scope, source credit, review findings addressed,
 checks performed, and any remaining gaps in the final handoff or requested pull
 request. Keep stable entry,
-block, and node IDs, reuse existing mathematical coverage, and avoid manually
-editing generated results. Exposition quality, correspondence, and Lean proof
+block, and node IDs, link useful existing treatments, reuse suitable nodes and
+Lean declarations, and avoid manually editing generated results. Follow the
+[area-fit policy](#area-fit-and-continuity) for overlapping exposition.
+Exposition quality, correspondence, and Lean proof
 verification remain separate responsibilities.

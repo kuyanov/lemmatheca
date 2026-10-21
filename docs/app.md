@@ -47,7 +47,7 @@ to `app/`:
 | `catalog/proofs.py` | Lean build, declaration checks, and proof-result preparation |
 | `catalog/statistics.py` | Saved-metadata totals, count history, and Git backfill; direct snapshot read for the home page |
 | `catalog/validation.py` | Offline metadata, HTML, reference, and hierarchy validation |
-| `catalog/corpus_index.py` | Optional derived index collection and publication |
+| `catalog/corpus_index.py` | Derived authoring-index collection and publication |
 | `catalog/management/commands/` | Unified `build` and separate `update_statistics` commands |
 | `catalog/tests/` | Reader, locality, summary, and Lean-build checks |
 
@@ -59,7 +59,7 @@ Requests use `read_entry(id)`, `read_entry_metadata(id)`, and `read_node(id)`.
 Home reads only taxonomy, reading order, and `corpus/statistics.json`. Area listings
 and next-entry navigation use JSON metadata. In particular,
 area pages use the saved `formalization` summary: they open neither entry HTML nor
-node JSON. The small taxonomy and `area_entries.json` index provide area navigation
+node JSON. The small taxonomy and `reading_order.json` index provide area navigation
 and reading order.
 
 An entry page parses its own HTML and loads its linked nodes. It resolves referenced
@@ -181,7 +181,7 @@ curl 'http://127.0.0.1:8000/api/entries/?area=mathematical-logic&fields=id,title
 curl 'http://127.0.0.1:8000/api/entries/propositional-logic/context/?include=blocks,nodes,coverage&limit=10'
 curl 'http://127.0.0.1:8000/api/entries/arithmetic-representability/context/?block_ids=recursive-relations,numeralwise-versus-uniform&include=blocks,nodes,coverage'
 curl 'http://127.0.0.1:8000/api/search/blocks/?q=truth%20table&area=mathematical-logic'
-curl 'http://127.0.0.1:8000/api/search/nodes/?area=mathematical-logic&q=compactness&q=elementary%20embedding&fields=id,description,module,declaration'
+curl 'http://127.0.0.1:8000/api/search/nodes/?area=model-theory&q=compactness&q=elementary%20embedding&fields=id,description,module,declaration'
 curl 'http://127.0.0.1:8000/api/search/nodes/?usage=unmapped&fields=id,description'
 curl 'http://127.0.0.1:8000/api/references/?target=propositional-logic&direction=incoming'
 ```
@@ -361,7 +361,7 @@ Block `formal_ids` preserves all three states: `null` for unplanned mappings,
 Any indexed node dependency edges are authored hints, not Lean's dependency graph.
 
 Metadata stays available through `read_node`, `read_entry_metadata`, `read_areas`,
-and `read_area_entries`. Known-path record reads are constant in corpus record
+and `read_reading_order`. Known-path record reads are constant in corpus record
 count, with a cost proportional to the requested record's bytes. Node descriptions,
 signatures, and verification flags are not copied into the index. Unfiltered node
 description searches scan and read node files; exact declaration/module and area

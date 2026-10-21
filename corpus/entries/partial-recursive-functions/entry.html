@@ -40,9 +40,10 @@
   <p>Partial primitive recursion exists and is unique. More explicitly, \(r(\bar x,n)\downarrow=b\) if and only if there are natural numbers \(a_0,\ldots,a_n\) such that</p>
   <div class="math-display">\[g(\bar x)\downarrow=a_0,\qquad a_n=b,\qquad h(\bar x,i,a_i)\downarrow=a_{i+1}\quad(i&lt;n).\]</div>
   <p>In particular, \(r(\bar x,n)\downarrow\) implies \(r(\bar x,i)\downarrow\) for every \(i\le n\). If \(g\) and \(h\) are total, then \(r\) is total.</p>
-  <p class="proof-label">Proof</p>
-  <p>Define the graph by the displayed finite-chain condition. Any two chains at the same input have the same initial value, since \(g\) is a partial function. Induction then makes their next values equal, using functionality of \(h\). Their final values are therefore equal, so the graph is a partial function.</p>
-  <p>A chain at index zero consists just of the initial value. A chain at index \(n+1\) consists of a chain at index \(n\), followed by one defined application of \(h\). These are precisely the two recursion equations. Conversely, induction on \(n\) shows that any partial function satisfying the equations has this graph, proving uniqueness. Truncating a chain proves the assertion about earlier indices. When \(g,h\) are total, induction extends a chain by one step at every index. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Define the graph by the displayed finite-chain condition. Any two chains at the same input have the same initial value, since \(g\) is a partial function. Induction then makes their next values equal, using functionality of \(h\). Their final values are therefore equal, so the graph is a partial function.</p>
+    <p>A chain at index zero consists just of the initial value. A chain at index \(n+1\) consists of a chain at index \(n\), followed by one defined application of \(h\). These are precisely the two recursion equations. Conversely, induction on \(n\) shows that any partial function satisfying the equations has this graph, proving uniqueness. Truncating a chain proves the assertion about earlier indices. When \(g,h\) are total, induction extends a chain by one step at every index.</p>
+</div>
 </section>
 
 <section id="sequential-minimization" data-formal="partrec-minimization partrec-minimization-output" data-kind="definition">
@@ -62,8 +63,9 @@
 <section id="primitive-recursive-inclusion" data-formal="partrec-primitive-inclusion" data-kind="lemma">
   <h2>Primitive-recursive functions remain total</h2>
   <p>Every primitive-recursive function, viewed as a partial function with its full domain, is total recursive.</p>
-  <p class="proof-label">Proof</p>
-  <p>Induct on its <a href="primitive-recursion#primitive-recursive-functions">finite primitive-recursive construction</a>. The initial functions occur in both definitions and are total. Strict composition of total functions is defined at every input and has the ordinary composite value. The <a href="#recursion-domain">finite-chain criterion</a> shows that partial primitive recursion on total functions remains total and satisfies the ordinary recursion equations. Uniqueness of recursion makes its values the intended ones. Each construction step therefore preserves both partial recursiveness and agreement with the original total function. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Induct on its <a href="primitive-recursion#primitive-recursive-functions">finite primitive-recursive construction</a>. The initial functions occur in both definitions and are total. Strict composition of total functions is defined at every input and has the ordinary composite value. The <a href="#recursion-domain">finite-chain criterion</a> shows that partial primitive recursion on total functions remains total and satisfies the ordinary recursion equations. Uniqueness of recursion makes its values the intended ones. Each construction step therefore preserves both partial recursiveness and agreement with the original total function.</p>
+</div>
 </section>
 
 <section id="search-correctness" data-formal="partrec-predicate-search partrec-predicate-search-output partrec-predicate-search-domain partrec-primitive-predicate-search partrec-recursive-predicate-search partrec-witnessed-search-total" data-kind="theorem">
@@ -75,9 +77,10 @@
     <div class="math-display">\[s(\bar x)\downarrow=n\quad\Longleftrightarrow\quad P(\bar x,n)\ \land\ \forall i&lt;n\;\neg P(\bar x,i).\]</div>
     <p>Consequently \(s(\bar x)\downarrow\) if and only if \(\exists n\,P(\bar x,n)\). If every \(\bar x\) has a witness, then \(s\) is total recursive.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>The test \(1\mathbin{\dot-}\chi_P\) is primitive recursive by <a href="primitive-recursion#truncated-subtraction">truncated subtraction</a> and composition, and is therefore total recursive by <a href="#primitive-recursive-inclusion"></a>. Its value is zero exactly at witnesses and one at all other candidates. Sequential minimization makes \(s\) partial recursive, and its defining condition gives the displayed equivalence.</p>
-  <p>If a witness exists, the <a href="natural-numbers-as-sets#natural-order">well-order of the natural numbers</a> gives a least one; all earlier tests return one, so the search returns it. If the search has an output, that output is a witness. Finally, the assumption that every input has some witness is exactly the assertion that the resulting partial function is total. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The test \(1\mathbin{\dot-}\chi_P\) is primitive recursive by <a href="primitive-recursion#truncated-subtraction">truncated subtraction</a> and composition, and is therefore total recursive by <a href="#primitive-recursive-inclusion"></a>. Its value is zero exactly at witnesses and one at all other candidates. Sequential minimization makes \(s\) partial recursive, and its defining condition gives the displayed equivalence.</p>
+    <p>If a witness exists, the <a href="natural-numbers-as-sets#natural-order">well-order of the natural numbers</a> gives a least one; all earlier tests return one, so the search returns it. If the search has an output, that output is a witness. Finally, the assumption that every input has some witness is exactly the assertion that the resulting partial function is total.</p>
+</div>
   <p>The same proof works if \(\chi_P\) is total recursive rather than primitive recursive: composing total recursive functions and applying minimization uses only the closure rules already stated.</p>
 </section>
 
@@ -86,8 +89,9 @@
   <p>The partial function</p>
   <div class="math-display">\[d(x)=\mu y\,[\,((2y)\mathbin{\dot-}x)+(x\mathbin{\dot-}(2y))=0\,]\]</div>
   <p>is partial recursive, and \(d(x)\downarrow=y\) if and only if \(x=2y\). Thus its domain is precisely the even natural numbers, and \(d(0)\downarrow=0\), \(d(6)\downarrow=3\), while \(d(3)\uparrow\).</p>
-  <p class="proof-label">Proof</p>
-  <p>The displayed test uses <a href="primitive-recursion#arithmetic-examples">addition and multiplication</a> and <a href="primitive-recursion#truncated-subtraction">truncated subtraction</a>, so it is primitive recursive and total. The sum of the two truncated differences is zero exactly when both differences are zero, that is, when \(2y=x\). For fixed \(x\), there is at most one such \(y\), by cancellation of multiplication by the positive number two. If one exists, every earlier candidate has a defined positive test value, and minimization returns it. If none exists, the search has no output. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The displayed test uses <a href="primitive-recursion#arithmetic-examples">addition and multiplication</a> and <a href="primitive-recursion#truncated-subtraction">truncated subtraction</a>, so it is primitive recursive and total. The sum of the two truncated differences is zero exactly when both differences are zero, that is, when \(2y=x\). For fixed \(x\), there is at most one such \(y\), by cancellation of multiplication by the positive number two. If one exists, every earlier candidate has a defined positive test value, and minimization returns it. If none exists, the search has no output.</p>
+</div>
 </section>
 
 <section id="blocked-search" data-formal="partrec-blocked-example partrec-blocked-example-recursive partrec-blocked-example-output partrec-blocked-example-search partrec-blocked-zero-search" data-kind="question">
@@ -107,8 +111,9 @@
   <p>Let \(P(\bar x,n)\) be primitive recursive and \(b(\bar x)\) a primitive-recursive bound. The <a href="primitive-recursion#bounded-search">bounded search</a></p>
   <div class="math-display">\[s_b(\bar x)=\min\bigl(\{n&lt;b(\bar x):P(\bar x,n)\}\cup\{b(\bar x)\}\bigr)\]</div>
   <p>is a total primitive-recursive function. In contrast, let \(s\) be the unbounded search from <a href="#search-correctness"></a>. If a witness below \(b(\bar x)\) exists, then \(s(\bar x)\downarrow=s_b(\bar x)&lt;b(\bar x)\). If no witness below the bound exists, then \(s_b(\bar x)=b(\bar x)\), while \(s(\bar x)\) may be defined later or may be undefined.</p>
-  <p class="proof-label">Proof</p>
-  <p>Bounded minimization is primitive recursive, and composition with the primitive-recursive bound preserves that property. When a witness below the bound exists, the least unrestricted witness lies there too, so the two minima coincide. Otherwise the bounded search returns its sentinel \(b(\bar x)\). There is no corresponding termination conclusion for the unrestricted search. For the relation \(n=c\) and a constant bound \(b\le c\), unrestricted search returns \(c\), while bounded search returns \(b\). For the always-false relation, unrestricted search is undefined and bounded search again returns \(b\). These examples also cover \(b=0\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Bounded minimization is primitive recursive, and composition with the primitive-recursive bound preserves that property. When a witness below the bound exists, the least unrestricted witness lies there too, so the two minima coincide. Otherwise the bounded search returns its sentinel \(b(\bar x)\). There is no corresponding termination conclusion for the unrestricted search. For the relation \(n=c\) and a constant bound \(b\le c\), unrestricted search returns \(c\), while bounded search returns \(b\). For the always-false relation, unrestricted search is undefined and bounded search again returns \(b\). These examples also cover \(b=0\).</p>
+</div>
 </section>
 
 <section id="least-output-question" data-formal="partrec-least-input-example" data-kind="question">

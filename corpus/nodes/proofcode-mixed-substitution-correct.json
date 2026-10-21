@@ -1,10 +1,10 @@
 {
   "id": "proofcode-mixed-substitution-correct",
   "description": "Numerical substitution for an original free name is correct even when the formula and replacement term also contain auxiliary names.",
-  "module": "Lemmatheca.MathematicalLogic.CodingFormalProofsOperations",
-  "declaration": "Lemmatheca.MathematicalLogic.CodingFormalProofs.mixed_substitution_correct",
+  "module": "Lemmatheca.CodingFormalProofs.CodingFormalProofsOperations",
+  "declaration": "Lemmatheca.ProofTheory.CodingFormalProofs.mixed_substitution_correct",
   "dependencies": [],
   "verified": true,
-  "declaration_line": 369,
-  "signature": "Lemmatheca.MathematicalLogic.CodingFormalProofs.mixed_substitution_correct.{u, v} {L : FirstOrder.Language}\n  (S : Lemmatheca.MathematicalLogic.CodingFormalProofs.EffectiveSignature L) {n : ℕ} (a : L.BoundedFormula (ℕ ⊕ ℕ) n)\n  (i : ℕ) (t : L.Term (ℕ ⊕ ℕ)) :\n  Lemmatheca.MathematicalLogic.CodingFormalProofs.substitute S n\n      (Lemmatheca.MathematicalLogic.CodingFormalProofs.mixedCode S a) i\n      (Lemmatheca.MathematicalLogic.CodingFormalProofs.termCode S\n        (Sum.elim Lemmatheca.MathematicalLogic.CodingFormalProofs.freeName\n          Lemmatheca.MathematicalLogic.CodingFormalProofs.auxName)\n        t) =\n    Lemmatheca.MathematicalLogic.CodingFormalProofs.mixedCode S\n      (a.subst fun j => if j = Sum.inl i then t else FirstOrder.Language.var j)"
+  "declaration_line": 371,
+  "signature": "Lemmatheca.ProofTheory.CodingFormalProofs.mixed_substitution_correct.{u, v} {L : FirstOrder.Language}\n  (S : Lemmatheca.ProofTheory.CodingFormalProofs.EffectiveSignature L) {n : ℕ} (a : L.BoundedFormula (ℕ ⊕ ℕ) n) (i : ℕ)\n  (t : L.Term (ℕ ⊕ ℕ)) :\n  Lemmatheca.ProofTheory.CodingFormalProofs.substitute S n (Lemmatheca.ProofTheory.CodingFormalProofs.mixedCode S a) i\n      (Lemmatheca.ProofTheory.CodingFormalProofs.termCode S\n        (Sum.elim Lemmatheca.ProofTheory.CodingFormalProofs.freeName Lemmatheca.ProofTheory.CodingFormalProofs.auxName)\n        t) =\n    Lemmatheca.ProofTheory.CodingFormalProofs.mixedCode S\n      (a.subst fun j => if j = Sum.inl i then t else FirstOrder.Language.var j)"
 }

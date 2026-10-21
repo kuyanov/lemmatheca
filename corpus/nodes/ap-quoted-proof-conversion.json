@@ -1,13 +1,13 @@
 {
   "id": "ap-quoted-proof-conversion",
   "description": "Fix a PA derivation of \\(\\forall\\vec x\\,(A(\\vec x)\\to B(\\vec x))\\). In a PA model in the fixed ambient universe, the specified program combines its actual numeral specialization with an accepted certificate for \\(A(\\overline{\\vec x})\\) and returns an accepted certificate for the original code of \\(B(\\overline{\\vec x})\\), using the native implication-elimination constructor.",
-  "module": "Lemmatheca.MathematicalLogic.PAExtendedBoundedProofs",
-  "declaration": "Lemmatheca.MathematicalLogic.ArithmeticProofPredicates.certified_mapFixedProof",
+  "module": "Lemmatheca.BoundedArithmeticProofs.PAExtendedBoundedProofs",
+  "declaration": "Lemmatheca.ProofTheory.ArithmeticProofPredicates.certified_mapFixedProof",
   "dependencies": [
     "ap-fixed-proof-specialization",
     "ap-mp-internal"
   ],
   "verified": true,
-  "declaration_line": 28,
-  "signature": "Lemmatheca.MathematicalLogic.ArithmeticProofPredicates.certified_mapFixedProof {r : ℕ}\n  (A B : Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Formula (Fin r))\n  (h :\n    Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.MathematicalLogic.ArithmeticTheories.PA\n      (Lemmatheca.MathematicalLogic.ArithmeticTheories.close (A.imp B)))\n  (p : Lemmatheca.MathematicalLogic.PAComputations.Program r) {M : Type}\n  [Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Structure M]\n  [M ⊨ Lemmatheca.MathematicalLogic.ArithmeticTheories.PA] (x : Fin r → M)\n  (hp :\n    Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.Certified\n      Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.axiomVerifier (p.value x)\n      ((Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.FixedSyntaxPrograms.substitution A).value x)) :\n  Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.Certified\n    Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.CheckerPrograms.axiomVerifier\n    ((Lemmatheca.MathematicalLogic.ArithmeticProofPredicates.mapFixedProof A B h p).value x)\n    ((Lemmatheca.MathematicalLogic.PAComputations.ProofPrograms.FixedSyntaxPrograms.substitution B).value x)"
+  "declaration_line": 30,
+  "signature": "Lemmatheca.ProofTheory.ArithmeticProofPredicates.certified_mapFixedProof {r : ℕ}\n  (A B : Lemmatheca.ModelTheory.ArithmeticTheories.language.Formula (Fin r))\n  (h :\n    Lemmatheca.MathematicalLogic.FirstOrderProofs.Derives Lemmatheca.ModelTheory.ArithmeticTheories.PA\n      (Lemmatheca.ModelTheory.ArithmeticTheories.close (A.imp B)))\n  (p : Lemmatheca.ProofTheory.PAComputations.Program r) {M : Type}\n  [Lemmatheca.ModelTheory.ArithmeticTheories.language.Structure M] [M ⊨ Lemmatheca.ModelTheory.ArithmeticTheories.PA]\n  (x : Fin r → M)\n  (hp :\n    Lemmatheca.ProofTheory.PAComputations.ProofPrograms.CheckerPrograms.Certified\n      Lemmatheca.ProofTheory.PAComputations.ProofPrograms.CheckerPrograms.axiomVerifier (p.value x)\n      ((Lemmatheca.ProofTheory.PAComputations.ProofPrograms.FixedSyntaxPrograms.substitution A).value x)) :\n  Lemmatheca.ProofTheory.PAComputations.ProofPrograms.CheckerPrograms.Certified\n    Lemmatheca.ProofTheory.PAComputations.ProofPrograms.CheckerPrograms.axiomVerifier\n    ((Lemmatheca.ProofTheory.ArithmeticProofPredicates.mapFixedProof A B h p).value x)\n    ((Lemmatheca.ProofTheory.PAComputations.ProofPrograms.FixedSyntaxPrograms.substitution B).value x)"
 }

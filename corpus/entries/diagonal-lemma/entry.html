@@ -1,12 +1,12 @@
 <section id="codes-and-instances" data-kind="definition" data-formal="diag-unary-formula-code diag-numeral-substitution">
   <h2>A formula, its code, and an instance</h2>
   <p>Work in the <a href="arithmetic-theories#arithmetic-language">arithmetic language</a> \(L_A=\{0,S,+,\cdot\}\), with <a href="arithmetic-theories#robinson-axioms">Robinson arithmetic</a> \(Q\) and its standard model \(\mathbb N_A\). Use the existing <a href="coding-formal-proofs#tagged-syntax">codes of formulas and sentences</a>. We write \(\ulcorner A\urcorner\) for an external natural-number code and \(\overline{\ulcorner A\urcorner}\) for its numeral, a closed arithmetic term.</p>
-  <p>A formula \(B(x)\) below has at most the one free variable \(x=x_0\); it may also have bound variables. Its code uses the existing free-name label \(0\). The notation \(B(\overline n)\) means capture-safe substitution of the numeral for that free variable, producing a sentence. These three objects have different roles: \(B\) is a formula, \(\ulcorner B\urcorner\) is a number, and \(B(\overline n)\) is a sentence. Arithmetic terms do not contain formulas as subexpressions.</p>
+  <p>A formula \(B(x)\) below has at most the one free variable \(x=x_0\); it may also have bound variables. Its code uses the existing free-name label \(0\). The <strong>numeral instance</strong> \(B(\overline n)\) is the sentence obtained by capture-safe substitution of the numeral for that free variable. These three objects have different roles: \(B\) is a formula, \(\ulcorner B\urcorner\) is a number, and \(B(\overline n)\) is a sentence. Arithmetic terms do not contain formulas as subexpressions.</p>
 </section>
 
 <section id="diagonal-substitution" data-kind="definition" data-formal="diag-diagonal-code">
   <h2>Substitute a code's own numeral</h2>
-  <p>Use the primitive-recursive numeral-code function \(\operatorname{num}\) and the <a href="coding-formal-proofs#coded-substitution">coded free-name substitution</a> \(\operatorname{sub}(k,e,i,t)\). Its first argument is the number of in-scope quantified placeholders, so a complete formula has \(k=0\). Define the total numerical function</p>
+  <p>Use the primitive-recursive numeral-code function \(\operatorname{num}\) and the <a href="coding-formal-proofs#coded-substitution">coded free-name substitution</a> \(\operatorname{sub}(k,e,i,t)\). Its first argument is the number of in-scope quantified placeholders, so a complete formula has \(k=0\). Define the <strong>diagonal substitution function</strong>, a total numerical function, by</p>
   <div class="math-display">\[d(n):=\operatorname{sub}(0,n,0,\operatorname{num}(n)).\]</div>
   <p>The procedure examines the expression coded by \(n\), replaces each free occurrence of \(x_0\) by the numeral for \(n\), and rebuilds the expression. Its existing checks return zero on malformed inputs. It can also process well-formed formulas with other free names, so we do not claim that every numerical input produces a sentence code. The identity needed here concerns codes of formulas whose only possible free name is \(x_0\).</p>
 </section>
@@ -15,8 +15,9 @@
   <h2>The numerical operation agrees with substitution</h2>
   <p>The function \(d\) is primitive recursive. For every formula \(E(x)\) with at most the free variable \(x_0\),</p>
   <div class="math-display">\[d(\ulcorner E\urcorner)=\ulcorner E(\overline{\ulcorner E\urcorner})\urcorner.\]</div>
-  <p class="proof-label">Proof</p>
-  <p>The numeral-code function and substitution procedure are primitive recursive, so their displayed composition is primitive recursive. The <a href="coding-formal-proofs#coded-substitution">substitution correctness identity</a> says that this composition produces the code of precisely the indicated syntactic substitution. A numeral contains no quantified placeholders, so inserting it leaves all bound variables intact. Since \(E\) has no other free names, the result is a sentence. □</p>
+  <div class="proof">
+    <p>The numeral-code function and substitution procedure are primitive recursive, so their displayed composition is primitive recursive. The <a href="coding-formal-proofs#coded-substitution">substitution correctness identity</a> says that this composition produces the code of precisely the indicated syntactic substitution. A numeral contains no quantified placeholders, so inserting it leaves all bound variables intact. Since \(E\) has no other free names, the result is a sentence.</p>
+</div>
   <p>No evaluation of the sentence is involved. The calculation is a finite transformation of symbols, whether the resulting sentence is true or false.</p>
 </section>
 
@@ -29,9 +30,9 @@
 
 <section id="fixed-point-construction" data-kind="definition" data-formal="diag-auxiliary-formula diag-fixed-point-sentence">
   <h2>Build the sentence through an auxiliary formula</h2>
-  <p>Given an arithmetic formula \(B(x)\), define</p>
+  <p>Given an arithmetic formula \(B(x)\), define the <strong>auxiliary formula</strong></p>
   <div class="math-display">\[E_B(x):=\exists y\,\bigl(D(x,y)\land B(y)\bigr).\]</div>
-  <p>Here \(B(y)\) is a capture-safe renaming of the possible free variable of \(B\); bound variables are unaffected. The new quantified witness \(y\) is fresh. Let \(e_B=\ulcorner E_B\urcorner\) and form the sentence</p>
+  <p>Here \(B(y)\) is a capture-safe renaming of the possible free variable of \(B\); bound variables are unaffected. The new quantified witness \(y\) is fresh. Let \(e_B=\ulcorner E_B\urcorner\) and form its <strong>fixed-point sentence</strong></p>
   <div class="math-display">\[G_B:=E_B(\overline{e_B}).\]</div>
   <p>The construction first builds the finite formula \(E_B\), computes its code, and then substitutes that code's numeral into it. There is no circular definition of a string. The <a href="#diagonal-coding"></a> identity gives \(d(e_B)=\ulcorner G_B\urcorner\).</p>
 </section>
@@ -42,10 +43,11 @@
     <p>For every arithmetic formula \(B(x)\) with at most one free variable, the constructed sentence \(G_B\) satisfies</p>
     <div class="math-display">\[Q\vdash G_B\leftrightarrow B(\overline{\ulcorner G_B\urcorner}).\]</div>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Write \(e=e_B\) and \(g=\ulcorner G_B\urcorner=d(e)\). At the fixed input \(\overline e\), <a href="#representing-diagonal"></a> supplies</p>
-  <div class="math-display">\[Q\vdash\forall y\,\bigl(D(\overline e,y)\leftrightarrow y=\overline g\bigr).\]</div>
-  <p>In any model of \(Q\), if \(G_B\) holds, its defining existential formula has a witness \(y\). The output identity forces \(y=\overline g\), and the other conjunct gives \(B(\overline g)\). Conversely, if \(B(\overline g)\) holds, choose \(\overline g\) as the witness; the same identity supplies \(D(\overline e,\overline g)\). Hence every model of \(Q\) satisfies the required equivalence. <a href="henkin-completeness#deductive-completeness">Completeness of the first-order calculus</a> gives the displayed derivation. Equivalently, equality substitution and the existential rules turn the output-identity proof directly into it. □</p>
+  <div class="proof">
+    <p>Write \(e=e_B\) and \(g=\ulcorner G_B\urcorner=d(e)\). At the fixed input \(\overline e\), <a href="#representing-diagonal"></a> supplies</p>
+    <div class="math-display">\[Q\vdash\forall y\,\bigl(D(\overline e,y)\leftrightarrow y=\overline g\bigr).\]</div>
+    <p>In any model of \(Q\), if \(G_B\) holds, its defining existential formula has a witness \(y\). The output identity forces \(y=\overline g\), and the other conjunct gives \(B(\overline g)\). Conversely, if \(B(\overline g)\) holds, choose \(\overline g\) as the witness; the same identity supplies \(D(\overline e,\overline g)\). Hence every model of \(Q\) satisfies the required equivalence. <a href="henkin-completeness#deductive-completeness">Completeness of the first-order calculus</a> gives the displayed derivation. Equivalently, equality substitution and the existential rules turn the output-identity proof directly into it.</p>
+</div>
   <p>The fixed point is a provable equivalence between sentences. It is not an assertion that \(G_B\) literally contains its full own text, or that the two sides are the same syntactic expression. No consistency assumption on an extending theory was used.</p>
 </section>
 
@@ -53,8 +55,9 @@
   <h2>The same sentence works in every extending theory</h2>
   <p>For the same \(G_B\), every arithmetic theory \(T\) containing \(Q\) proves</p>
   <div class="math-display">\[T\vdash G_B\leftrightarrow B(\overline{\ulcorner G_B\urcorner}).\]</div>
-  <p class="proof-label">Proof</p>
-  <p>A proof from \(Q\) remains a proof from \(T\) by <a href="first-order-proofs#derivations-and-theories">weakening the allowed axioms</a>. The construction of \(G_B\) depends on \(B\) and the already fixed \(D\), and not on \(T\). In particular \(T\) need not have an effective axiom enumeration or be sound or consistent. □</p>
+  <div class="proof">
+    <p>A proof from \(Q\) remains a proof from \(T\) by <a href="first-order-proofs#derivations-and-theories">weakening the allowed axioms</a>. The construction of \(G_B\) depends on \(B\) and the already fixed \(D\), and not on \(T\). In particular \(T\) need not have an effective axiom enumeration or be sound or consistent.</p>
+</div>
 </section>
 
 <section id="fixed-point-examples" data-kind="question" data-formal="diag-true-property-example diag-false-property-example">
@@ -68,10 +71,10 @@
 
 <section id="truth-predicate" data-kind="definition" data-formal="diag-defines-truth diag-truth-schema">
   <h2>What a truth predicate would have to say</h2>
-  <p>An arithmetic formula \(\operatorname{Tr}(x)\) would <a href="arithmetic-definability#standard-definability"><em>define arithmetic truth</em></a> if, for every arithmetic sentence \(\sigma\),</p>
+  <p>An arithmetic formula \(\operatorname{Tr}(x)\) is a <a href="arithmetic-definability#standard-definability"><strong>truth predicate</strong></a> for the standard arithmetic structure \(\mathbb N_A\) if, for every arithmetic sentence \(\sigma\),</p>
   <div class="math-display">\[\mathbb N_A\models\operatorname{Tr}(\overline{\ulcorner\sigma\urcorner})\quad\Longleftrightarrow\quad\mathbb N_A\models\sigma.\]</div>
   <p>This requires one fixed formula to work for all sentences. It puts no condition on numbers that do not code sentences. Both satisfaction statements are made in our metatheory; the first evaluates the proposed arithmetic formula at a numerical input.</p>
-  <p>There is a separate, syntactic demand: an arithmetic theory \(T\) might be asked to prove every <em>truth biconditional</em></p>
+  <p>There is a separate, syntactic demand: an arithmetic theory \(T\) might be asked to prove every <strong>truth biconditional</strong></p>
   <div class="math-display">\[T\vdash\operatorname{Tr}(\overline{\ulcorner\sigma\urcorner})\leftrightarrow\sigma.\]</div>
   <p>Defining truth in \(\mathbb N_A\) and proving all these sentences in \(T\) are different requirements. The following two theorems address them separately.</p>
 </section>
@@ -79,10 +82,11 @@
 <section id="truth-schema" data-kind="theorem" data-formal="diag-truth-schema-impossible">
   <h2>A consistent arithmetic theory cannot prove the full truth scheme</h2>
   <p>If \(T\supseteq Q\) is <a href="larger-models#relative-consistency">consistent</a>, no arithmetic formula \(\operatorname{Tr}(x)\) has all its truth biconditionals provable in \(T\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Apply <a href="#diagonal-lemma"></a> to \(B(x):=\neg\operatorname{Tr}(x)\), obtaining a sentence \(L\) with</p>
-  <div class="math-display">\[T\vdash L\leftrightarrow\neg\operatorname{Tr}(\overline{\ulcorner L\urcorner}).\]</div>
-  <p>The proposed full scheme includes \(T\vdash\operatorname{Tr}(\overline{\ulcorner L\urcorner})\leftrightarrow L\). These two biconditionals imply a contradiction by classical propositional reasoning. To see this also in models, consistency gives a model of \(T\) by <a href="henkin-completeness#countable-model-existence">Henkin completeness</a>. Soundness makes both biconditionals true there, forcing the truth value of \(L\) to equal its negation, which is impossible. No soundness assumption about \(T\)'s truth in \(\mathbb N_A\) is needed. □</p>
+  <div class="proof">
+    <p>Apply <a href="#diagonal-lemma"></a> to \(B(x):=\neg\operatorname{Tr}(x)\), obtaining a sentence \(L\) with</p>
+    <div class="math-display">\[T\vdash L\leftrightarrow\neg\operatorname{Tr}(\overline{\ulcorner L\urcorner}).\]</div>
+    <p>The proposed full scheme includes \(T\vdash\operatorname{Tr}(\overline{\ulcorner L\urcorner})\leftrightarrow L\). These two biconditionals imply a contradiction by classical propositional reasoning. To see this also in models, consistency gives a model of \(T\) by <a href="henkin-completeness#countable-model-existence">Henkin completeness</a>. Soundness makes both biconditionals true there, forcing the truth value of \(L\) to equal its negation, which is impossible. No soundness assumption about \(T\)'s truth in \(\mathbb N_A\) is needed.</p>
+</div>
 </section>
 
 <section id="truth-undefinability" data-kind="theorem" data-formal="diag-truth-undefinable">
@@ -90,12 +94,13 @@
   <div class="statement-box">
     <p>No formula \(\operatorname{Tr}(x)\) in the arithmetic language defines truth for all arithmetic sentences in \(\mathbb N_A\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Again take the fixed point \(L\) for \(\neg\operatorname{Tr}(x)\). Since \(\mathbb N_A\models Q\), <a href="first-order-proofs#soundness">soundness</a> gives</p>
-  <div class="math-display">\[\mathbb N_A\models L\leftrightarrow\neg\operatorname{Tr}(\overline{\ulcorner L\urcorner}).\]</div>
-  <p>If \(\operatorname{Tr}\) defined truth, its defining requirement at the particular sentence \(L\) would also give</p>
-  <div class="math-display">\[\mathbb N_A\models\operatorname{Tr}(\overline{\ulcorner L\urcorner})\quad\Longleftrightarrow\quad\mathbb N_A\models L.\]</div>
-  <p>Combining the two statements says that \(L\) is true exactly when it is false, a contradiction. □</p>
+  <div class="proof">
+    <p>Again take the fixed point \(L\) for \(\neg\operatorname{Tr}(x)\). Since \(\mathbb N_A\models Q\), <a href="first-order-proofs#soundness">soundness</a> gives</p>
+    <div class="math-display">\[\mathbb N_A\models L\leftrightarrow\neg\operatorname{Tr}(\overline{\ulcorner L\urcorner}).\]</div>
+    <p>If \(\operatorname{Tr}\) defined truth, its defining requirement at the particular sentence \(L\) would also give</p>
+    <div class="math-display">\[\mathbb N_A\models\operatorname{Tr}(\overline{\ulcorner L\urcorner})\quad\Longleftrightarrow\quad\mathbb N_A\models L.\]</div>
+    <p>Combining the two statements says that \(L\) is true exactly when it is false, a contradiction.</p>
+</div>
   <p>The contradiction rules out the proposed arithmetic truth formula. It does not make the surrounding mathematics inconsistent. We have used the external satisfaction relation already defined for arithmetic structures; that relation has not been identified with a formula of arithmetic.</p>
 </section>
 
@@ -103,13 +108,14 @@
   <h2>Fixed numerical parameters do not supply a truth predicate</h2>
   <p>No arithmetic formula \(A(z_0,\ldots,z_{k-1},x)\), with a fixed finite tuple of standard numerical parameters \(a_0,\ldots,a_{k-1}\), defines truth on all sentence codes by</p>
   <div class="math-display">\[\mathbb N_A\models A(\bar a,\ulcorner\sigma\urcorner)\quad\Longleftrightarrow\quad\mathbb N_A\models\sigma.\]</div>
-  <p class="proof-label">Proof</p>
-  <p>Replace each parameter variable by its numeral, giving the unary formula \(A(\overline{a_0},\ldots,\overline{a_{k-1}},x)\). <a href="first-order-structures#semantic-substitution">Semantic substitution</a> says that it would satisfy exactly the forbidden definition in <a href="#truth-undefinability"></a>. The argument includes an empty parameter tuple. It concerns fixed natural numbers in the standard model; no claim about arbitrary parameters of nonstandard models is being made. □</p>
+  <div class="proof">
+    <p>Replace each parameter variable by its numeral, giving the unary formula \(A(\overline{a_0},\ldots,\overline{a_{k-1}},x)\). <a href="first-order-structures#semantic-substitution">Semantic substitution</a> says that it would satisfy exactly the forbidden definition in <a href="#truth-undefinability"></a>. The argument includes an empty parameter tuple. It concerns fixed natural numbers in the standard model; no claim about arbitrary parameters of nonstandard models is being made.</p>
+</div>
 </section>
 
 <section id="truth-codes" data-kind="definition" data-formal="diag-truth-codes diag-truth-code-correct">
   <h2>The external set of true sentence codes</h2>
-  <p>In the metatheory, form the set</p>
+  <p>In the metatheory, define the <strong>set of true arithmetic sentence codes</strong> by</p>
   <div class="math-display">\[\operatorname{True}_A:=\{\ulcorner\sigma\urcorner:\sigma\text{ is an arithmetic sentence and }\mathbb N_A\models\sigma\}.\]</div>
   <p>Injectivity of the <a href="coding-formal-proofs#tagged-syntax">sentence code</a> gives \(\ulcorner\sigma\urcorner\in\operatorname{True}_A\) exactly when \(\mathbb N_A\models\sigma\). Non-sentence codes are absent. This set exists as a subset of \(\mathbb N\) in our metatheory. Its existence does not supply an arithmetic formula defining it.</p>
 </section>
@@ -117,7 +123,8 @@
 <section id="truth-undecidable" data-kind="theorem" data-formal="diag-truth-not-computable">
   <h2>No total recursive test decides arithmetic truth</h2>
   <p>The set \(\operatorname{True}_A\) is not decidable: there is no total recursive test for membership in it.</p>
-  <p class="proof-label">Proof</p>
-  <p>If it were decidable, <a href="arithmetic-representability#recursive-relations">numeralwise representation of recursive relations</a> would give a formula \(A(x)\) for which \(Q\) proves every true numerical instance and the negation of every false one. By soundness in \(\mathbb N_A\), this formula would define membership in \(\operatorname{True}_A\) on every natural number. In particular, at each sentence code it would satisfy the truth-predicate requirement of <a href="#truth-predicate"></a>, contrary to <a href="#truth-undefinability"></a>. □</p>
+  <div class="proof">
+    <p>If it were decidable, <a href="arithmetic-representability#recursive-relations">numeralwise representation of recursive relations</a> would give a formula \(A(x)\) for which \(Q\) proves every true numerical instance and the negation of every false one. By soundness in \(\mathbb N_A\), this formula would define membership in \(\operatorname{True}_A\) on every natural number. In particular, at each sentence code it would satisfy the truth-predicate requirement of <a href="#truth-predicate"></a>, contrary to <a href="#truth-undefinability"></a>.</p>
+</div>
   <p>This is a claim about the specified notion of total recursive computation. It does not depend on a machine's running time or on an unproved identification with every informal meaning of “algorithm.”</p>
 </section>

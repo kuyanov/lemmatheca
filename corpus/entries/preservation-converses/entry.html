@@ -22,9 +22,10 @@
 <section id="easy-directions" data-formal="pres-universal-preservation-converse pres-existential-equivalent-preserved" data-kind="lemma">
   <h2>The quantifier shapes give the preservation directions</h2>
   <p>If \(T\) has a universal axiomatization, then it is preserved under nonempty substructures. If \(\varphi\) is equivalent modulo \(T\) to an existential formula, then \(\varphi\) is preserved under extensions between models of \(T\).</p>
-  <p class="proof-label">Proof</p>
-  <p>For the first assertion, let \(M\models T\), let \(A\subseteq M\) be nonempty, and choose a universal axiomatization \(U\). Every sentence of \(U\) passes from \(M\) to \(A\) by <a href="elementary-chains#preservation">universal preservation</a>. Thus \(A\models U\), hence \(A\models T\).</p>
-  <p>For the second, write \(\psi\) for the equivalent existential formula. If \(M\subseteq N\) are models of \(T\) and \(M\models\varphi[\bar a]\), equivalence gives \(M\models\psi[\bar a]\). Its witnesses remain in \(N\), and its quantifier-free matrix has the same truth value there. Hence \(N\models\psi[\bar a]\), and equivalence in \(N\) gives \(N\models\varphi[\bar a]\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For the first assertion, let \(M\models T\), let \(A\subseteq M\) be nonempty, and choose a universal axiomatization \(U\). Every sentence of \(U\) passes from \(M\) to \(A\) by <a href="elementary-chains#preservation">universal preservation</a>. Thus \(A\models U\), hence \(A\models T\).</p>
+    <p>For the second, write \(\psi\) for the equivalent existential formula. If \(M\subseteq N\) are models of \(T\) and \(M\models\varphi[\bar a]\), equivalence gives \(M\models\psi[\bar a]\). Its witnesses remain in \(N\), and its quantifier-free matrix has the same truth value there. Hence \(N\models\psi[\bar a]\), and equivalence in \(N\) gives \(N\models\varphi[\bar a]\).</p>
+</div>
 </section>
 
 <section id="universal-consequences" data-formal="pres-universal-part pres-model-universal-part" data-kind="definition">
@@ -37,23 +38,25 @@
 <section id="universal-diagram-test" data-formal="pres-universal-diagram-test" data-kind="lemma">
   <h2>Universal consequences describe structures that embed into models</h2>
   <p>For a nonempty \(L\)-structure \(M\), the following are equivalent: \(M\models T_{\forall}\); and there are a model \(N\models T\) and an embedding \(M\hookrightarrow N\).</p>
-  <p class="proof-label">Proof</p>
-  <p>An embedding identifies \(M\) with a substructure of \(N\). Universal consequences of \(T\) hold in \(N\), pass down to that image, and then hold in \(M\) by isomorphism invariance.</p>
-  <p>Conversely, suppose \(M\models T_{\forall}\). In the language \(L(M)\), consider</p>
-  <div class="math-display">\[T\cup\operatorname{Diag}(M).\]</div>
-  <p>Here \(T\) is carried into the expanded language, and \(\operatorname{Diag}(M)\) is the <a href="diagrams-and-extensions#signed-diagram">signed atomic diagram</a>, containing true atomic sentences and true negated atomic sentences. Suppose the displayed theory were unsatisfiable. By <a href="ultraproducts#compactness">compactness for arbitrary languages</a>, already \(T\) together with finitely many diagram sentences would be unsatisfiable. Conjoin those sentences into a quantifier-free sentence \(\delta(c_{a_0},\ldots,c_{a_{r-1}})\), listing all the finitely many names it uses. Replace the distinct names by distinct variables to obtain \(\delta(\bar y)\).</p>
-  <p>No model of \(T\) can satisfy \(\delta\) at any tuple: that tuple could interpret the fresh names and give a model of the supposedly unsatisfiable finite fragment. Therefore</p>
-  <div class="math-display">\[T\models\forall\bar y\,\neg\delta(\bar y).\]</div>
-  <p>This is a universal consequence of \(T\). But \(M\models\delta[\bar a]\), since each chosen diagram sentence is true in the canonical expansion of \(M\). This contradicts \(M\models T_{\forall}\). Empty conjunctions and empty name lists cause no exception: their matrices are still quantifier-free.</p>
-  <p>Thus the expanded theory has a nonempty model \(N^*\). Its reduct models \(T\), and the <a href="diagrams-and-extensions#signed-diagram-lemma">signed diagram lemma</a> supplies the embedding, sending \(a\) to \(c_a^{N^*}\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>An embedding identifies \(M\) with a substructure of \(N\). Universal consequences of \(T\) hold in \(N\), pass down to that image, and then hold in \(M\) by isomorphism invariance.</p>
+    <p>Conversely, suppose \(M\models T_{\forall}\). In the language \(L(M)\), consider</p>
+    <div class="math-display">\[T\cup\operatorname{Diag}(M).\]</div>
+    <p>Here \(T\) is carried into the expanded language, and \(\operatorname{Diag}(M)\) is the <a href="diagrams-and-extensions#signed-diagram">signed atomic diagram</a>, containing true atomic sentences and true negated atomic sentences. Suppose the displayed theory were unsatisfiable. By <a href="ultraproducts#compactness">compactness for arbitrary languages</a>, already \(T\) together with finitely many diagram sentences would be unsatisfiable. Conjoin those sentences into a quantifier-free sentence \(\delta(c_{a_0},\ldots,c_{a_{r-1}})\), listing all the finitely many names it uses. Replace the distinct names by distinct variables to obtain \(\delta(\bar y)\).</p>
+    <p>No model of \(T\) can satisfy \(\delta\) at any tuple: that tuple could interpret the fresh names and give a model of the supposedly unsatisfiable finite fragment. Therefore</p>
+    <div class="math-display">\[T\models\forall\bar y\,\neg\delta(\bar y).\]</div>
+    <p>This is a universal consequence of \(T\). But \(M\models\delta[\bar a]\), since each chosen diagram sentence is true in the canonical expansion of \(M\). This contradicts \(M\models T_{\forall}\). Empty conjunctions and empty name lists cause no exception: their matrices are still quantifier-free.</p>
+    <p>Thus the expanded theory has a nonempty model \(N^*\). Its reduct models \(T\), and the <a href="diagrams-and-extensions#signed-diagram-lemma">signed diagram lemma</a> supplies the embedding, sending \(a\) to \(c_a^{N^*}\).</p>
+</div>
   <p>The expanded language can be uncountable even when \(L\) is countable, because it names every element of \(M\). This is why the arbitrary-language version of compactness is used.</p>
 </section>
 
 <section id="universal-axiomatization" data-formal="pres-universal-preservation-converse pres-universal-part-equivalent" data-kind="theorem">
   <h2>Substructure preservation is exactly universal axiomatizability</h2>
   <div class="statement-box"><p>A first-order theory \(T\) is preserved under nonempty substructures if and only if it has a universal axiomatization. When this holds, its universal part \(T_{\forall}\) is such an axiomatization.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>The reverse implication was proved in <a href="#easy-directions"></a>. For the forward implication, every \(T\)-model satisfies \(T_{\forall}\). If \(M\models T_{\forall}\), <a href="#universal-diagram-test"></a> embeds \(M\) into some \(N\models T\). Its image is a nonempty substructure, so preservation makes the image a model of \(T\). Isomorphism invariance makes \(M\) a model of \(T\) as well. Thus \(T\) and \(T_{\forall}\) have the same models. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The reverse implication was proved in <a href="#easy-directions"></a>. For the forward implication, every \(T\)-model satisfies \(T_{\forall}\). If \(M\models T_{\forall}\), <a href="#universal-diagram-test"></a> embeds \(M\) into some \(N\models T\). Its image is a nonempty substructure, so preservation makes the image a model of \(T\). Isomorphism invariance makes \(M\) a model of \(T\) as well. Thus \(T\) and \(T_{\forall}\) have the same models.</p>
+</div>
   <p>The theorem concerns classes already given by first-order theories. Closure under substructures alone does not make an arbitrary class axiomatizable.</p>
 </section>
 
@@ -70,7 +73,7 @@
 
 <section id="existential-information" data-formal="pres-existential-information" data-kind="definition">
   <h2>Record the existential facts about a tuple</h2>
-  <p>For a structure \(M\) and a finite tuple \(\bar a\) with variable list \(\bar x\), let</p>
+  <p>For a structure \(M\) and a finite tuple \(\bar a\) with variable list \(\bar x\), define its <strong>existential information</strong> to be</p>
   <div class="math-display">\[E(M,\bar a)=\{\psi(\bar x):\psi\text{ is existential and }M\models\psi[\bar a]\}.\]</div>
   <p>This set records all assertions about \(\bar a\) supported by finitely many witnesses and a quantifier-free matrix. Variables in \(\bar x\) may be unused. In particular, it records all true literals about the tuple, since a literal is existential with an empty quantifier block.</p>
   <p>The inclusion \(E(N,\bar b)\subseteq E(M,\bar a)\) will allow us to place an embedded copy of \(N\) beside an elementary copy of \(M\), identifying their indicated tuples.</p>
@@ -79,13 +82,14 @@
 <section id="compatible-diagrams" data-formal="pres-compatible-diagrams" data-kind="lemma">
   <h2>Compatible tuple information lets two diagrams coexist</h2>
   <p>Let \(M,N\) be nonempty \(L\)-structures and \(\bar a,\bar b\) tuples of the same finite length. If \(E(N,\bar b)\subseteq E(M,\bar a)\), then there are a structure \(C\), an elementary embedding \(j:M\to C\), and an embedding \(f:N\hookrightarrow C\) such that \(f(b_i)=j(a_i)\) for every coordinate \(i\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Use disjoint families of fresh names \(c_m\) for \(M\) and \(d_n\) for \(N\), even if the original domains overlap. Form the theory</p>
-  <div class="math-display">\[\operatorname{ElDiag}(M)\cup\operatorname{Diag}(N)\cup\{d_{b_i}=c_{a_i}:i&lt;|\bar a|\}.\]</div>
-  <p>To check finite satisfiability, retain any finitely many sentences of the elementary diagram and signed diagram, and, if necessary, include all the finitely many displayed tuple equations. Conjoin the selected signed diagram sentences into a quantifier-free formula \(\delta\). Replace the \(N\)-names belonging to the tuple \(\bar b\) by their corresponding variables \(\bar x\), and all other names that occur by distinct variables \(\bar y\).</p>
-  <p>If a value occurs more than once in \(\bar b\), use one chosen coordinate for its name and conjoin the equalities between all coordinates with that same value. The resulting existential formula \(\exists\bar y\,\delta'(\bar x,\bar y)\) is true in \(N\) at \(\bar b\). By the assumed inclusion it is true in \(M\) at \(\bar a\). Choose its witnesses in \(M\).</p>
-  <p>Expand \(M\) by interpreting each \(c_m\) as \(m\), every tuple name \(d_{b_i}\) as \(a_i\), and the other finitely many mentioned \(d\)-names by those witnesses. The coordinate equalities make the tuple-name interpretations well-defined. Interpret any remaining names arbitrarily, using nonemptiness. Every selected elementary-diagram sentence is true in the canonical \(M\)-expansion; the witnesses satisfy the selected signed-diagram sentences and the tuple equations. Thus every finite fragment is satisfiable.</p>
-  <p>Arbitrary-language compactness gives a model of the whole theory. Let \(C\) be its \(L\)-reduct, and set \(j(m)=c_m^C\) and \(f(n)=d_n^C\), reading the constants in that expanded model. The <a href="diagrams-and-extensions#elementary-diagram-lemma">elementary diagram lemma</a> makes \(j\) elementary, and the <a href="diagrams-and-extensions#signed-diagram-lemma">signed diagram lemma</a> makes \(f\) an embedding. The added equations give the stated identities at the tuples. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Use disjoint families of fresh names \(c_m\) for \(M\) and \(d_n\) for \(N\), even if the original domains overlap. Form the theory</p>
+    <div class="math-display">\[\operatorname{ElDiag}(M)\cup\operatorname{Diag}(N)\cup\{d_{b_i}=c_{a_i}:i&lt;|\bar a|\}.\]</div>
+    <p>To check finite satisfiability, retain any finitely many sentences of the elementary diagram and signed diagram, and, if necessary, include all the finitely many displayed tuple equations. Conjoin the selected signed diagram sentences into a quantifier-free formula \(\delta\). Replace the \(N\)-names belonging to the tuple \(\bar b\) by their corresponding variables \(\bar x\), and all other names that occur by distinct variables \(\bar y\).</p>
+    <p>If a value occurs more than once in \(\bar b\), use one chosen coordinate for its name and conjoin the equalities between all coordinates with that same value. The resulting existential formula \(\exists\bar y\,\delta'(\bar x,\bar y)\) is true in \(N\) at \(\bar b\). By the assumed inclusion it is true in \(M\) at \(\bar a\). Choose its witnesses in \(M\).</p>
+    <p>Expand \(M\) by interpreting each \(c_m\) as \(m\), every tuple name \(d_{b_i}\) as \(a_i\), and the other finitely many mentioned \(d\)-names by those witnesses. The coordinate equalities make the tuple-name interpretations well-defined. Interpret any remaining names arbitrarily, using nonemptiness. Every selected elementary-diagram sentence is true in the canonical \(M\)-expansion; the witnesses satisfy the selected signed-diagram sentences and the tuple equations. Thus every finite fragment is satisfiable.</p>
+    <p>Arbitrary-language compactness gives a model of the whole theory. Let \(C\) be its \(L\)-reduct, and set \(j(m)=c_m^C\) and \(f(n)=d_n^C\), reading the constants in that expanded model. The <a href="diagrams-and-extensions#elementary-diagram-lemma">elementary diagram lemma</a> makes \(j\) elementary, and the <a href="diagrams-and-extensions#signed-diagram-lemma">signed diagram lemma</a> makes \(f\) an embedding. The added equations give the stated identities at the tuples.</p>
+</div>
 </section>
 
 <section id="existential-consequences" data-formal="pres-existential-consequences pres-existential-consequences-entail" data-kind="lemma">
@@ -93,23 +97,25 @@
   <p>Suppose \(\varphi(\bar x)\) is preserved under extensions between models of \(T\). Let \(\Gamma(\bar x)\) be all its existential consequences modulo \(T\):</p>
   <div class="math-display">\[\Gamma=\{\psi:\psi\text{ is existential and }T\models\forall\bar x\,(\varphi\to\psi)\}.\]</div>
   <p>If \(M\models T\) and \(M\models\psi[\bar a]\) for every \(\psi\in\Gamma\), then \(M\models\varphi[\bar a]\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Adjoin a fresh tuple of constants \(\bar c\), and consider</p>
-  <div class="math-display">\[T\cup\{\varphi(\bar c)\}\cup\{\neg\psi(\bar c):\psi\text{ existential},\ M\not\models\psi[\bar a]\}.\]</div>
-  <p>This theory is satisfiable. Otherwise compactness would give finitely many excluded formulas \(\psi_1,\ldots,\psi_r\) such that</p>
-  <div class="math-display">\[T\models\forall\bar x\,(\varphi\to\psi_1\lor\cdots\lor\psi_r).\]</div>
-  <p>The disjunction is equivalent to an existential formula, including \(\bot\) when \(r=0\). That formula belongs to \(\Gamma\), so it is true at \(\bar a\) in \(M\). But each disjunct was selected because it is false there, a contradiction.</p>
-  <p>Choose a model \(N^*\) of the displayed theory. Write \(N\) for its \(L\)-reduct and put \(\bar b=\bar c^{N^*}\). Then \(N\models T\) and \(N\models\varphi[\bar b]\). Moreover \(E(N,\bar b)\subseteq E(M,\bar a)\): an existential formula false at \(\bar a\) was explicitly forbidden at \(\bar b\).</p>
-  <p>Apply <a href="#compatible-diagrams"></a> to obtain \(j:M\to C\) elementary and \(f:N\hookrightarrow C\) with \(f(\bar b)=j(\bar a)\). Elementarity makes \(C\) a model of \(T\), since \(M\models T\). Preservation along the embedding \(f\) gives \(C\models\varphi[j(\bar a)]\). Elementarity of \(j\) now reflects this truth to \(M\models\varphi[\bar a]\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Adjoin a fresh tuple of constants \(\bar c\), and consider</p>
+    <div class="math-display">\[T\cup\{\varphi(\bar c)\}\cup\{\neg\psi(\bar c):\psi\text{ existential},\ M\not\models\psi[\bar a]\}.\]</div>
+    <p>This theory is satisfiable. Otherwise compactness would give finitely many excluded formulas \(\psi_1,\ldots,\psi_r\) such that</p>
+    <div class="math-display">\[T\models\forall\bar x\,(\varphi\to\psi_1\lor\cdots\lor\psi_r).\]</div>
+    <p>The disjunction is equivalent to an existential formula, including \(\bot\) when \(r=0\). That formula belongs to \(\Gamma\), so it is true at \(\bar a\) in \(M\). But each disjunct was selected because it is false there, a contradiction.</p>
+    <p>Choose a model \(N^*\) of the displayed theory. Write \(N\) for its \(L\)-reduct and put \(\bar b=\bar c^{N^*}\). Then \(N\models T\) and \(N\models\varphi[\bar b]\). Moreover \(E(N,\bar b)\subseteq E(M,\bar a)\): an existential formula false at \(\bar a\) was explicitly forbidden at \(\bar b\).</p>
+    <p>Apply <a href="#compatible-diagrams"></a> to obtain \(j:M\to C\) elementary and \(f:N\hookrightarrow C\) with \(f(\bar b)=j(\bar a)\). Elementarity makes \(C\) a model of \(T\), since \(M\models T\). Preservation along the embedding \(f\) gives \(C\models\varphi[j(\bar a)]\). Elementarity of \(j\) now reflects this truth to \(M\models\varphi[\bar a]\).</p>
+</div>
 </section>
 
 <section id="existential-preservation" data-formal="pres-existential-preservation-converse pres-downward-preserved pres-downward-inclusion-bridge pres-universal-formula-converse pres-existential-negation pres-universal-negation" data-kind="theorem">
   <h2>Extension preservation is exactly existential definability</h2>
   <div class="statement-box"><p>A first-order formula \(\varphi(\bar x)\) is preserved under extensions between models of \(T\) if and only if there is an existential formula \(\psi(\bar x)\) equivalent to \(\varphi\) modulo \(T\).</p></div>
-  <p class="proof-label">Proof</p>
-  <p>The reverse implication is <a href="#easy-directions"></a>. For the forward implication, let \(\Gamma\) be the existential consequences in <a href="#existential-consequences"></a>. That lemma says that \(T\) together with all formulas in \(\Gamma\) implies \(\varphi\), at every tuple. Treating the free variables as fresh constants, compactness gives finitely many \(\psi_1,\ldots,\psi_r\in\Gamma\) such that</p>
-  <div class="math-display">\[T\models\forall\bar x\,((\psi_1\land\cdots\land\psi_r)\to\varphi).\]</div>
-  <p>Conversely, \(\varphi\) implies every \(\psi_i\) modulo \(T\) by their definition. Their conjunction, written in existential form by <a href="#quantifier-shapes"></a>, is therefore the required \(\psi\). If none is needed, use \(\top\). An inconsistent \(T\) also causes no exception, because every equivalence modulo it is vacuous. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The reverse implication is <a href="#easy-directions"></a>. For the forward implication, let \(\Gamma\) be the existential consequences in <a href="#existential-consequences"></a>. That lemma says that \(T\) together with all formulas in \(\Gamma\) implies \(\varphi\), at every tuple. Treating the free variables as fresh constants, compactness gives finitely many \(\psi_1,\ldots,\psi_r\in\Gamma\) such that</p>
+    <div class="math-display">\[T\models\forall\bar x\,((\psi_1\land\cdots\land\psi_r)\to\varphi).\]</div>
+    <p>Conversely, \(\varphi\) implies every \(\psi_i\) modulo \(T\) by their definition. Their conjunction, written in existential form by <a href="#quantifier-shapes"></a>, is therefore the required \(\psi\). If none is needed, use \(\top\). An inconsistent \(T\) also causes no exception, because every equivalence modulo it is vacuous.</p>
+</div>
   <p>Taking \(T=\varnothing\) gives equivalence in all nonempty structures. Negating gives the dual formula theorem: \(\varphi\) passes down to substructures between models of \(T\) exactly when it is equivalent modulo \(T\) to a universal formula. Indeed, downward preservation of \(\varphi\) is upward preservation of \(\neg\varphi\), and the negation of an existential formula is universal after quantifier duality.</p>
 </section>
 

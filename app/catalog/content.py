@@ -47,9 +47,9 @@ def area_link(area, taxonomy):
     return {**area, "url": reverse("catalog:area", args=[area_path(area, taxonomy)])}
 
 
-def area_list(parent_id, taxonomy, area_entries):
+def area_list(parent_id, taxonomy, reading_order):
     counts = Counter()
-    for area_id, identifiers in area_entries.items():
+    for area_id, identifiers in reading_order.items():
         for ancestor in ancestors(taxonomy[area_id], taxonomy):
             counts[ancestor["id"]] += len(identifiers)
     children = defaultdict(list)
@@ -93,9 +93,9 @@ def add_progress(entry):
     return entry
 
 
-def next_entry(entry, area_entries):
+def next_entry(entry, reading_order):
     """Read only the next entry's metadata, following its area's index."""
-    siblings = area_entries.get(entry["primary_area"], [])
+    siblings = reading_order.get(entry["primary_area"], [])
     try:
         position = siblings.index(entry["id"])
     except ValueError:

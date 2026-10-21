@@ -35,7 +35,7 @@ class LocalReadTests(SimpleTestCase):
             {"id": "first", "title": "First", "parent": "root"},
             {"id": "second", "title": "Second", "parent": "root"},
         ]})
-        write_json(self.corpus / "area_entries.json", {"areas": {
+        write_json(self.corpus / "reading_order.json", {"areas": {
             "first": ["alpha", "next"], "second": ["remote"],
         }})
         for identifier, area, formal, body in [
@@ -95,7 +95,7 @@ class LocalReadTests(SimpleTestCase):
             self.assertTrue(read_node("proof")["verified"])
 
     def test_home_and_parent_area_read_only_navigation_and_statistics(self):
-        with self.only_reads("taxonomy.json", "area_entries.json", "statistics.json") as reads, \
+        with self.only_reads("taxonomy.json", "reading_order.json", "statistics.json") as reads, \
                 patch("subprocess.run", side_effect=AssertionError("No Git or Lean in requests")):
             home = self.client.get("/")
             self.assertEqual(home.status_code, 200)
@@ -106,7 +106,7 @@ class LocalReadTests(SimpleTestCase):
             self.assertEqual(home.context["areas"][0]["entry_count"], 3)
             self.assertEqual(home.context["area_count"], 3)
         self.assertEqual(reads.total(), 3)
-        with self.only_reads("taxonomy.json", "area_entries.json"):
+        with self.only_reads("taxonomy.json", "reading_order.json"):
             area = self.client.get("/areas/root/")
             self.assertEqual(area.status_code, 200)
             self.assertEqual([item["entry_count"]
@@ -125,7 +125,7 @@ class LocalReadTests(SimpleTestCase):
         self.assertEqual(response.context["statistics"], empty)
 
     def test_area_reads_only_indexed_metadata_without_html_or_nodes(self):
-        with self.only_reads("taxonomy.json", "area_entries.json",
+        with self.only_reads("taxonomy.json", "reading_order.json",
                              "entries/alpha/entry.json", "entries/next/entry.json") as reads:
             response = self.client.get("/areas/root/first/")
             self.assertEqual(response.status_code, 200)
@@ -136,7 +136,7 @@ class LocalReadTests(SimpleTestCase):
         self.assertTrue(all(count == 1 for count in reads.values()))
 
     def test_entry_reads_references_once_without_their_nodes_or_transitive_links(self):
-        with self.only_reads("taxonomy.json", "area_entries.json", "nodes/proof.json",
+        with self.only_reads("taxonomy.json", "reading_order.json", "nodes/proof.json",
                              "entries/alpha/entry.json", "entries/alpha/entry.html",
                              "entries/remote/entry.json", "entries/remote/entry.html",
                              "entries/next/entry.json") as reads:

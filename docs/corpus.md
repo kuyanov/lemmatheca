@@ -4,6 +4,9 @@ Entries, nodes, and navigation are repository files. The Django app reads them
 directly. Independent reviews are reported in the task discussion or a pull
 request, without approval fields or an editorial status in the corpus.
 
+The [exposition contract](#exposition-and-formalization) defines what belongs in
+entry blocks and how thoroughly their mathematics must be explained.
+
 ## Layout and navigation
 
 ```text
@@ -14,7 +17,7 @@ corpus/
     assets/                 # Optional figures and supplementary files
   nodes/<node-id>.json
   taxonomy.json
-  area_entries.json
+  reading_order.json
   index.json                # Generated, committed authoring index
   reference-planning/
     index.json             # Compact navigation by entry, area, kind, and URL
@@ -55,13 +58,15 @@ before assigning step 3. Later changes need focused rereview; proposed edits alo
 do not establish that integration was reviewed.
 
 `taxonomy.json` defines areas with `id`, `title`, `parent`, and `description`.
-`area_entries.json` maps primary area IDs to ordered entry-ID lists under `areas`.
+`reading_order.json` maps primary area IDs to ordered entry-ID lists under `areas`.
 Add each entry once to its primary area's list. This index controls listings,
 navigation counts and the next-entry link. The validator rejects missing,
 duplicated, unlisted, or incorrectly assigned entries.
 Every parent must exist, and the area hierarchy must be acyclic.
 Reader area listings use the primary-area index. Authoring API area filters also
 match `additional_areas`.
+Reading order is local to each area; follow linked cross-area prerequisites before
+continuing when an entry needs material from another area.
 
 ## Entry metadata
 
@@ -235,16 +240,61 @@ Do not maintain a second Markdown copy of these registries.
 
 ## Exposition and formalization
 
-If an added entry has much more formal code than human text, treat that as a
-warning that its argument may be too compressed. Check that the text explains
-the substantive mathematics in the formalization, locally or through links to
-earlier entries: its constructions, intermediate results, invariants and proof
-arguments. When the disparity reveals compressed or missing arguments, split the
-material into several coherent entries and develop those arguments more
-thoroughly. Update prerequisites, reading order and references, and review the
-affected exposition and mappings through the pipeline. Code volume is a
-diagnostic, not a fixed numerical threshold; padding prose or removing necessary
-formal code does not repair an exposition gap.
+### Rigorous mathematical blocks
+
+Only rigorous mathematical content belongs in the entry body. Every block must
+define a mathematical object, state and justify a result, or pose a precise
+mathematical question with a justified answer. Use the supported kinds according
+to that purpose:
+
+| Kind | Required mathematical content |
+| --- | --- |
+| `definition` | Clearly identified terms in bold, with precise objects, domains, notation and conventions; justify existence or well-definedness where needed. |
+| `lemma`, `theorem` | A clear statement before the proof, identifying the hypotheses and conclusion, supported by a proof or precise links to established results. |
+| `question` | A genuine mathematical problem and a justified answer, construction or counterexample, normally in the collapsible answer. |
+
+Every definition block must identify what it defines. Mark each newly defined
+term with `<strong>` at its defining occurrence in the body, for example
+`a <strong>singleton</strong> is a set with exactly one element`. Bold each term
+when several notions are introduced; one unrelated bold phrase or the block's
+heading does not suffice. Italics alone do not mark a defined term under this
+convention. For a named construction or notation, give its descriptive name in
+bold and its precise defining rule. If a block defines nothing, merge it into the
+mathematical block it supports or use the appropriate result/question kind;
+do not invent a term merely to add bold text.
+
+Every lemma and theorem must have a recognizable statement in the body before
+its proof. Identify the objects, assumptions, quantifiers and claimed conclusions,
+using explicit local hypotheses or precise references to standing assumptions.
+A reader arriving through a block reference must be able to locate the result
+without reconstructing it from the heading, proof or an informal plan. State all
+distinct conclusions and specify any claimed witness, map or construction. Use
+ordinary paragraphs and displays for supporting results; statement boxes remain
+reserved for main results under the [emphasis rules](#html-and-references).
+
+Worked examples belong within the appropriate kind above; `example` is not a
+separate block kind. State the assumptions and explain the calculation or argument
+that establishes the example.
+
+Use clear explanatory prose within these blocks to introduce notation, explain a
+construction, clarify a proof step or connect a result to its examples. Intuition
+may accompany an argument but cannot replace its justification. Definitions and
+results may build on earlier material through precise references; they need not
+repeat established proofs.
+
+Put general motivation and an accessible overview in the
+[abstract](#entry-metadata). Do not create blocks devoted solely to motivation,
+reading roadmaps, historical context, source surveys, editorial commentary or Lean
+implementation status. A rhetorical question does not turn such a passage into a
+mathematical question block. Keep development plans in reference planning and
+review findings in their handoffs; do not insert narrative-only paragraphs between
+blocks to bypass this content rule.
+
+Human rigor is required whether formal mappings are absent, empty, unfinished or
+verified. A verification badge does not supply a missing argument, and an empty
+`data-formal` mapping does not permit a block without mathematical content.
+
+### Exposition depth and formalization
 
 Give substantive constructions enough space to reconstruct their arguments.
 For an internal algorithm, state its defining recurrence, the induction predicate
@@ -252,11 +302,21 @@ with its parameters, the invariant, and the required syntax or freshness
 conditions. Work through a representative case and explain how the common
 argument handles the remaining cases. Uniform totality or numerical correctness
 alone does not justify additional algebraic or proof-preservation identities.
-When formalization exposes an essential intermediate argument absent from the
-prose, add that argument and its relevant lemmas. Split an entry at mathematical
-boundaries if explaining its constructions would exceed its reading-time scope.
 Routine Lean reindexing, bookkeeping and repeated field calculations need no
 separate prose; the mathematical reasoning they implement must still be clear.
+
+If an added entry has much more formal code than human text, check for compressed
+or missing constructions, intermediate results, invariants and proof arguments.
+Explain that substantive mathematics locally or through links to earlier entries.
+When fuller treatment would exceed the entry's reading-time scope, split the
+material at mathematical boundaries into coherent entries. Update prerequisites,
+reading order and references, and review the affected exposition and mappings
+through the pipeline. Code volume is a diagnostic, not a fixed numerical threshold;
+padding prose or removing necessary formal code does not repair an exposition gap.
+
+Material may be developed in more than one area when different perspectives help
+readers. Follow the [area-fit policy](../CONTRIBUTING.md#area-fit-and-continuity)
+and reuse suitable formal nodes and Lean declarations even when explanations differ.
 
 ## HTML and references
 
@@ -268,11 +328,12 @@ nested markup, since the reader generates the heading and its anchor:
 ```html
 <section id="translation" data-kind="definition">
   <h2>Translation</h2>
-  <p>Translate by \(x\mapsto x+b\).</p>
+  <p>For \(b\in\mathbb R\), the <strong>translation by \(b\)</strong> is the map
+    \(T_b:\mathbb R\to\mathbb R\) given by \(T_b(x)=x+b\).</p>
 </section>
 ```
 
-Supported kinds are `definition`, `lemma`, `theorem`, and `question`. The reader
+Use the [mathematical block kinds](#rigorous-mathematical-blocks) above. The reader
 generates numbering separately for each kind, as well as headings, the contents
 sidebar, badges, and navigation. Do not include a document shell or Django template
 instructions in the entry. The parser handles repository-owned HTML; it is not an
@@ -283,15 +344,29 @@ Select the central conclusions rather than boxing every theorem or lemma. Includ
 the result's hypotheses and conclusion inside the box; keep definitions, supporting
 lemmas, routine facts, examples, questions, proof steps, and proofs outside it.
 
-Introduce proofs with the shared italic label, on its own paragraph:
+Put each proof in its own `<div class="proof">`. The reader's stylesheet
+automatically adds the italic “Proof” label and a closing square:
 
 ```html
-<p class="proof-label">Proof</p>
-<p>The argument begins here.</p>
+<div class="proof">
+  <p>The argument begins here.</p>
+  <p>This establishes the conclusion.</p>
+</div>
 ```
 
-Use this markup consistently; do not use bold or inline `Proof.` labels.
-The reader's stylesheet supplies the italic styling.
+Keep the statement before the proof container and include the whole argument
+inside it. A section may contain several separate proofs, but proof containers
+must not nest or be empty. The final direct child must be a nonempty concluding
+paragraph. If an argument ends with a list or display, add a concluding paragraph
+after it so that the square follows text outside scrollable mathematics.
+
+Do not write labels, squares, `proof-label`/`qed` elements or spacing for these
+markers in the HTML. CSS supplies both markers, including the space before the
+green square. The square follows the concluding text in normal inline flow; it
+must not float, overflow its container or overlap following content.
+Check long conclusions and proofs ending in lists or displays at desktop and
+phone widths. A result justified only by a precise reference needs no empty proof
+container.
 
 Use `href="#block-id"` for a local block and `href="entry-id#block-id"` for another
 entry. Cross-entry references must target mathematical blocks. The renderer resolves
@@ -424,12 +499,17 @@ Use the [shared build modes and check matrix](../CONTRIBUTING.md#validation-and-
 from the repository root. `build --no-lean --check` validates canonical inputs
 without writing, running Lean, or requiring up-to-date derived data. It checks
 metadata, citations, HTML structure, anchors and equations, assets, block links,
-bindings, dependency and area cycles, reading order, and source/planning records.
+bindings, dependency and area cycles, reading-order listings, and source/planning
+records.
 Entry references may be cyclic; node hints and area parents may not. Unknown
 metadata fields and excessively nested HTML are rejected. Missing mappings,
 unbound nodes, and absent generated summaries/signatures remain valid. Structural
 checks do not establish declaration existence or current proof validity. Installed Lean
 source availability is checked only with `--check-sources`.
+
+Prerequisite direction, mathematical reading-order coherence and Lean module
+ownership require the root's planning and integration review; structural
+validation does not establish them.
 
 Finish authored corpus edits other than statistics-only updates with the writing
 `build --no-lean`, and commit changed generated data, including `corpus/index.json`.

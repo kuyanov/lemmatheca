@@ -27,8 +27,9 @@
     \llbracket t\rrbracket^M_{[a],[b]}
     =\bigl[i\mapsto\llbracket t\rrbracket^{M_i}_{a_i,b_i}\bigr].
   \]</div>
-  <p class="proof-label">Proof</p>
-  <p>Induct on the term. A free variable has the assigned class, and an available placeholder has its assigned tuple entry. A function application follows by applying the induction hypotheses to its arguments and using the definition of the function in the ultraproduct. This includes a constant, whose argument tuple is empty. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Induct on the term. A free variable has the assigned class, and an available placeholder has its assigned tuple entry. A function application follows by applying the induction hypotheses to its arguments and using the definition of the function in the ultraproduct. This includes a constant, whose argument tuple is empty.</p>
+</div>
 </section>
 
 <section id="los-theorem" data-formal="ultra-los-scoped ultra-los-sentences" data-kind="theorem">
@@ -42,15 +43,16 @@
     \quad\Longleftrightarrow\quad
     \{i:M_i\models\theta\}\in\mathcal U.
   \]</div></div>
-  <p class="proof-label">Proof</p>
-  <p>Induct on formulas, allowing every context size and every assignment and tuple. For atomic equalities, <a href="#term-evaluation"></a> reduces the claim to the definition of \(\sim_{\mathcal U}\). For relation applications, use the same term lemma and the quotient relation's definition. Falsity corresponds to the empty set, which is not large.</p>
-  <p>For a conjunction, its truth set is the intersection of its two truth sets. An intersection is large exactly when both sets are large. For negation, its truth set is the complement of the original truth set. The <a href="filters-and-ultrafilters#ultrafilter-decision">ultrafilter complement rule</a> says that this complement is large exactly when the original is not. These steps also give implication, since \(\psi\to\chi\) is equivalent to \(\neg(\psi\land\neg\chi)\).</p>
-  <p>Consider an existential formula whose body \(\psi\) has one additional placeholder \(z_n\). If the ultraproduct has a witness \([g]\), induction says that</p>
-  <div class="math-display">\[
-    \{i:M_i\models\psi(a_i,(b_i,g(i)))\}\in\mathcal U.
-  \]</div>
-  <p>This set is contained in \(A=\{i:M_i\models\exists z_n\,\psi(a_i,b_i)\}\), so \(A\) is large.</p>
-  <p>Conversely, suppose \(A\) is large. For each \(i\in A\), choose a witness \(g(i)\in|M_i|\) to the body. For \(i\notin A\), choose any domain element. More explicitly, choose one default element of every nonempty domain first, then use it at indices outside \(A\). Choice supplies both families. The resulting \(g\) belongs to \(P\), and the body's truth set with this witness contains \(A\), so is large. Induction makes \([g]\) a witness in the ultraproduct. The original free-variable assignment stays fixed; the witness is appended to the bound tuple. Finally, \(\forall z_n\,\psi\) is equivalent to \(\neg\exists z_n\neg\psi\), giving the universal step and completing the induction. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Induct on formulas, allowing every context size and every assignment and tuple. For atomic equalities, <a href="#term-evaluation"></a> reduces the claim to the definition of \(\sim_{\mathcal U}\). For relation applications, use the same term lemma and the quotient relation's definition. Falsity corresponds to the empty set, which is not large.</p>
+    <p>For a conjunction, its truth set is the intersection of its two truth sets. An intersection is large exactly when both sets are large. For negation, its truth set is the complement of the original truth set. The <a href="filters-and-ultrafilters#ultrafilter-decision">ultrafilter complement rule</a> says that this complement is large exactly when the original is not. These steps also give implication, since \(\psi\to\chi\) is equivalent to \(\neg(\psi\land\neg\chi)\).</p>
+    <p>Consider an existential formula whose body \(\psi\) has one additional placeholder \(z_n\). If the ultraproduct has a witness \([g]\), induction says that</p>
+    <div class="math-display">\[
+      \{i:M_i\models\psi(a_i,(b_i,g(i)))\}\in\mathcal U.
+    \]</div>
+    <p>This set is contained in \(A=\{i:M_i\models\exists z_n\,\psi(a_i,b_i)\}\), so \(A\) is large.</p>
+    <p>Conversely, suppose \(A\) is large. For each \(i\in A\), choose a witness \(g(i)\in|M_i|\) to the body. For \(i\notin A\), choose any domain element. More explicitly, choose one default element of every nonempty domain first, then use it at indices outside \(A\). Choice supplies both families. The resulting \(g\) belongs to \(P\), and the body's truth set with this witness contains \(A\), so is large. Induction makes \([g]\) a witness in the ultraproduct. The original free-variable assignment stays fixed; the witness is appended to the bound tuple. Finally, \(\forall z_n\,\psi\) is equivalent to \(\neg\exists z_n\neg\psi\), giving the universal step and completing the induction.</p>
+</div>
   <p>Every assignment of classes can be represented in this way by choosing representatives. In particular the theorem allows parameters from the ultraproduct, rather than just sentences with no parameters.</p>
 </section>
 
@@ -68,20 +70,24 @@
   <div class="math-display">\[
     C_S=\{\Delta\in I:S\subseteq\Delta\}.
   \]</div>
-  <p>These cones have the finite intersection property: \(C_\varnothing=I\), \(C_S\cap C_R=C_{S\cup R}\), and \(S\in C_S\). Hence their <a href="filters-and-ultrafilters#generated-filter">generated filter</a> is proper, and <a href="filters-and-ultrafilters#ultrafilter-extension">ultrafilter extension</a> supplies an ultrafilter \(\mathcal U\) containing every cone. In particular, \(\{\Delta:\theta\in\Delta\}=C_{\{\theta\}}\) is large for every \(\theta\in T\).</p>
-  <p>Suppose each finite \(\Delta\subseteq T\) has a nonempty model. We will choose one model \(M_\Delta\models\Delta\) for each index. This uses ordinary choice from sets, rather than a choice from a proper class of models. To see why, let \(\kappa=\max(\aleph_0,|L|)\). The <a href="elementary-submodels#downward-size-bound">downward Löwenheim–Skolem bound</a> gives a model of each \(\Delta\) of size at most \(\kappa\). Transport it by an isomorphism so that its domain is a nonempty subset of \(\kappa\). All \(L\)-structures on these subsets form a set: their functions and relations are sets of tuples of elements of \(\kappa\), indexed by the set of symbols. For each \(\Delta\), the suitable codes are therefore a nonempty subset of this one set. Choice now supplies the required set-indexed family.</p>
+  <p>The cones have the finite intersection property and extend to an ultrafilter containing every cone. If each finite subset of \(T\) has a nonempty model, a family of such models can be chosen with one model for every index.</p>
+  <div class="proof">
+    <p>These cones have the finite intersection property: \(C_\varnothing=I\), \(C_S\cap C_R=C_{S\cup R}\), and \(S\in C_S\). Hence their <a href="filters-and-ultrafilters#generated-filter">generated filter</a> is proper, and <a href="filters-and-ultrafilters#ultrafilter-extension">ultrafilter extension</a> supplies an ultrafilter \(\mathcal U\) containing every cone. In particular, \(\{\Delta:\theta\in\Delta\}=C_{\{\theta\}}\) is large for every \(\theta\in T\).</p>
+    <p>Suppose each finite \(\Delta\subseteq T\) has a nonempty model. We will choose one model \(M_\Delta\models\Delta\) for each index. This uses ordinary choice from sets, rather than a choice from a proper class of models. To see why, let \(\kappa=\max(\aleph_0,|L|)\). The <a href="elementary-submodels#downward-size-bound">downward Löwenheim–Skolem bound</a> gives a model of each \(\Delta\) of size at most \(\kappa\). Transport it by an isomorphism so that its domain is a nonempty subset of \(\kappa\). All \(L\)-structures on these subsets form a set: their functions and relations are sets of tuples of elements of \(\kappa\), indexed by the set of symbols. For each \(\Delta\), the suitable codes are therefore a nonempty subset of this one set. Choice now supplies the required set-indexed family.</p>
+</div>
 </section>
 
 <section id="compactness" data-formal="compactness-theorem" data-kind="theorem">
   <h2>Compactness holds for every set-sized first-order language</h2>
   <div class="statement-box"><p>Let \(L\) be any set-sized first-order language, and \(T\) a set of \(L\)-sentences. Then \(T\) has a nonempty model if and only if every finite subset of \(T\) has a nonempty model.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>A model of \(T\) satisfies each finite subset. Conversely, choose the models \(M_\Delta\) and the ultrafilter containing the finite cones as in <a href="#finite-cones"></a>. Form their ultraproduct \(M=\prod_{\mathcal U}M_\Delta\). For each \(\theta\in T\),</p>
-  <div class="math-display">\[
-    C_{\{\theta\}}
-    \subseteq\{\Delta:M_\Delta\models\theta\}.
-  \]</div>
-  <p>The left-hand side is large, so the right-hand side is large. By <a href="#los-theorem"></a>, \(M\models\theta\). This holds for every axiom, hence \(M\models T\). The ultraproduct is nonempty because the product of its nonempty domains is nonempty. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>A model of \(T\) satisfies each finite subset. Conversely, choose the models \(M_\Delta\) and the ultrafilter containing the finite cones as in <a href="#finite-cones"></a>. Form their ultraproduct \(M=\prod_{\mathcal U}M_\Delta\). For each \(\theta\in T\),</p>
+    <div class="math-display">\[
+      C_{\{\theta\}}
+      \subseteq\{\Delta:M_\Delta\models\theta\}.
+    \]</div>
+    <p>The left-hand side is large, so the right-hand side is large. By <a href="#los-theorem"></a>, \(M\models\theta\). This holds for every axiom, hence \(M\models T\). The ultraproduct is nonempty because the product of its nonempty domains is nonempty.</p>
+</div>
   <p>The proof also covers \(T=\varnothing\): then \(I=\{\varnothing\}\), and its empty cone is the whole nonempty index set. No countability assumption is used. This extends the <a href="logical-compactness#compactness">countable-language compactness theorem</a> as a semantic assertion about existence of models. It makes no additional claim here about a proof calculus for uncountable languages.</p>
 </section>
 
@@ -98,18 +104,22 @@
     \quad\Longleftrightarrow\quad
     A^I/\mathcal U\models\varphi(d(\bar a)).
   \]</div>
-  <p class="proof-label">Proof</p>
-  <p>For constant representative functions, every factor evaluates the formula with the same parameters \(\bar a\). Its truth set is \(I\) when the formula is true in \(A\), and empty otherwise. Exactly the first of these sets is large. Łoś's theorem gives the displayed equivalence. The map is injective: if \(a\ne b\), the equality set of \(c_a,c_b\) is empty, so their classes differ. Atomic instances also show preservation of functions and relations. Thus the assertion concerns the particular map \(a\mapsto[c_a]\), not merely the existence of some elementary embedding. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For constant representative functions, every factor evaluates the formula with the same parameters \(\bar a\). Its truth set is \(I\) when the formula is true in \(A\), and empty otherwise. Exactly the first of these sets is large. Łoś's theorem gives the displayed equivalence. The map is injective: if \(a\ne b\), the equality set of \(c_a,c_b\) is empty, so their classes differ. Atomic instances also show preservation of functions and relations. Thus the assertion concerns the particular map \(a\mapsto[c_a]\), not merely the existence of some elementary embedding.</p>
+</div>
   <p>In particular, \(A\) and its ultrapower satisfy exactly the same sentences. Identifying \(A\) with the image of \(d\) makes that image an elementary substructure. The image can be proper, as the following example shows.</p>
 </section>
 
 <section id="nonstandard-natural" data-formal="ultra-natural-order ultra-natural-identity-element ultra-natural-above-and-outside" data-kind="lemma">
   <h2>One new element lies above every standard natural number</h2>
-  <p>Take the structure \((\mathbb N,&lt;)\), let \(I=\mathbb N\), and let \(\mathcal U\) be a <a href="filters-and-ultrafilters#nonprincipal-existence">nonprincipal ultrafilter</a> on \(\mathbb N\). Put \(h(n)=n\) and \(H=[h]\) in the ultrapower. For every \(k\in\mathbb N\),</p>
-  <div class="math-display">\[
-    \{n:c_k(n)&lt;h(n)\}=\{n:k&lt;n\}
-  \]</div>
-  <p>is cofinite, hence large. The quotient relation therefore gives \(d(k)&lt;H\) for every \(k\). In particular \(H\) is outside the diagonal image: if \(H=d(k)\), this would give \(d(k)&lt;d(k)\), impossible since the ultrapower satisfies the strict-order axioms by Łoś.</p>
+  <p>Take the structure \((\mathbb N,&lt;)\), let \(I=\mathbb N\), and let \(\mathcal U\) be a <a href="filters-and-ultrafilters#nonprincipal-existence">nonprincipal ultrafilter</a> on \(\mathbb N\). Put \(h(n)=n\) and \(H=[h]\) in the ultrapower. Then \(d(k)&lt;H\) for every \(k\in\mathbb N\), where \(d(k)=[n\mapsto k]\) is the <a href="#diagonal-embedding">diagonal map</a>. In particular, \(H\notin d[\mathbb N]\).</p>
+  <div class="proof">
+    <p>For every \(k\in\mathbb N\),</p>
+    <div class="math-display">\[
+      \{n:c_k(n)&lt;h(n)\}=\{n:k&lt;n\}
+    \]</div>
+    <p>is cofinite, hence large. The quotient relation therefore gives \(d(k)&lt;H\) for every \(k\). In particular \(H\) is outside the diagonal image: if \(H=d(k)\), this would give \(d(k)&lt;d(k)\), impossible since the ultrapower satisfies the strict-order axioms by Łoś.</p>
+</div>
   <p>There is no conflict with the fact that every element of \(\mathbb N\) is a natural number. The statement “this element exceeds every member of the diagonal image” compares the ultrapower with an externally specified subset. It is not a first-order formula of the original order language naming all standard natural numbers at once. The ultrapower still agrees with \((\mathbb N,&lt;)\) on every sentence of that language.</p>
 </section>
 
@@ -119,15 +129,16 @@
   <div class="math-display">\[0^M=[n\mapsto0],\qquad S^M([f])=[n\mapsto f(n)+1],\]</div>
   <div class="math-display">\[[f]+^M[g]=[n\mapsto f(n)+g(n)],\qquad [f]\cdot^M[g]=[n\mapsto f(n)g(n)].\]</div>
   <p>The coordinate definitions are independent of representatives by <a href="#quotient-structure">the construction of the ultraproduct structure</a>. This gives an explicit nonstandard model satisfying <a href="arithmetic-theories#true-arithmetic">every arithmetic sentence true in the natural numbers</a>, and hence every axiom of Peano arithmetic, including every first-order induction instance with parameters.</p>
-  <p class="proof-label">Proof</p>
-  <p>For an arithmetic sentence \(\sigma\), every factor has the same truth value. Its truth set is therefore all of \(\mathbb N\) or the empty set. <a href="#los-theorem">Łoś's theorem</a> gives</p>
-  <div class="math-display">\[M\models\sigma\quad\Longleftrightarrow\quad\mathbb N_{\mathrm A}\models\sigma.\]</div>
-  <p>In particular \(M\models\operatorname{Th}(\mathbb N_{\mathrm A})\). The ordinary natural numbers satisfy <a href="arithmetic-theories#peano-arithmetic">PA</a>, so each PA axiom transfers. A universally closed induction instance allows any values of its parameter variables in \(M\), including nonstandard values: transfer is not restricted to standard parameters.</p>
-  <p>The <a href="#diagonal-embedding">diagonal map</a> \(d(n)=[i\mapsto n]\) is an elementary embedding in the full arithmetic language. It sends \(0\) to \(0^M\) and commutes with successor, addition and multiplication. Induction on the external natural number \(n\) consequently gives</p>
-  <div class="math-display">\[d(n)=\overline n^{\,M},\]</div>
-  <p>where \(\overline n^{\,M}\) is the interpretation of the numeral obtained by applying successor \(n\) times to zero. Thus the diagonal image is exactly the <a href="arithmetic-theories#standard-copy">standard copy</a> of the natural numbers inside \(M\).</p>
-  <p>It is a proper copy. The identity sequence still gives \(H=[i\mapsto i]\). Equality \(H=d(n)\) would say that the singleton \(\{i:i=n\}\) is large. A nonprincipal ultrafilter contains no finite set, so this is impossible for every standard \(n\). Hence \(H\) is not the interpretation of any numeral, proving that this particular arithmetic structure is nonstandard.</p>
-  <p>Finally, <a href="arithmetic-theories#external-standard-copy">the standard copy in any nonstandard PA model is not definable with parameters</a>. Indeed, if an arithmetic formula with a fixed finite parameter tuple defined this proper subset, it would hold at zero and be closed under successor. Its own PA induction instance would then force it to hold everywhere, a contradiction. The externally described standard copy is therefore a proper elementary substructure without being a definable subset. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For an arithmetic sentence \(\sigma\), every factor has the same truth value. Its truth set is therefore all of \(\mathbb N\) or the empty set. <a href="#los-theorem">Łoś's theorem</a> gives</p>
+    <div class="math-display">\[M\models\sigma\quad\Longleftrightarrow\quad\mathbb N_{\mathrm A}\models\sigma.\]</div>
+    <p>In particular \(M\models\operatorname{Th}(\mathbb N_{\mathrm A})\). The ordinary natural numbers satisfy <a href="arithmetic-theories#peano-arithmetic">PA</a>, so each PA axiom transfers. A universally closed induction instance allows any values of its parameter variables in \(M\), including nonstandard values: transfer is not restricted to standard parameters.</p>
+    <p>The <a href="#diagonal-embedding">diagonal map</a> \(d(n)=[i\mapsto n]\) is an elementary embedding in the full arithmetic language. It sends \(0\) to \(0^M\) and commutes with successor, addition and multiplication. Induction on the external natural number \(n\) consequently gives</p>
+    <div class="math-display">\[d(n)=\overline n^{\,M},\]</div>
+    <p>where \(\overline n^{\,M}\) is the interpretation of the numeral obtained by applying successor \(n\) times to zero. Thus the diagonal image is exactly the <a href="arithmetic-theories#standard-copy">standard copy</a> of the natural numbers inside \(M\).</p>
+    <p>It is a proper copy. The identity sequence still gives \(H=[i\mapsto i]\). Equality \(H=d(n)\) would say that the singleton \(\{i:i=n\}\) is large. A nonprincipal ultrafilter contains no finite set, so this is impossible for every standard \(n\). Hence \(H\) is not the interpretation of any numeral, proving that this particular arithmetic structure is nonstandard.</p>
+    <p>Finally, <a href="arithmetic-theories#external-standard-copy">the standard copy in any nonstandard PA model is not definable with parameters</a>. Indeed, if an arithmetic formula with a fixed finite parameter tuple defined this proper subset, it would hold at zero and be closed under successor. Its own PA induction instance would then force it to hold everywhere, a contradiction. The externally described standard copy is therefore a proper elementary substructure without being a definable subset.</p>
+</div>
 </section>
 
 <section id="principal-finite-question" data-formal="ultra-principal-evaluation ultra-principal-diagonal-inverse ultra-finite-diagonal-isomorphism" data-kind="question">

@@ -1,12 +1,12 @@
 {
   "id": "pac-strong-induction",
   "description": "In every PA-model, a predicate defined by an arithmetic formula with parameters satisfies strong induction in the arithmetic order.",
-  "module": "Lemmatheca.MathematicalLogic.PAInduction",
-  "declaration": "Lemmatheca.MathematicalLogic.PAComputations.definable_strong_induction",
+  "module": "Lemmatheca.PaInductionAndHistories.PAInduction",
+  "declaration": "Lemmatheca.ProofTheory.PAComputations.definable_strong_induction",
   "dependencies": [
     "pac-least-witness"
   ],
   "verified": true,
-  "declaration_line": 46,
-  "signature": "Lemmatheca.MathematicalLogic.PAComputations.definable_strong_induction.{u} {M : Type u}\n  [Lemmatheca.MathematicalLogic.ArithmeticTheories.language.Structure M]\n  [M ⊨ Lemmatheca.MathematicalLogic.ArithmeticTheories.PA] (P : M → Prop)\n  (hP : Set.univ.Definable₁ Lemmatheca.MathematicalLogic.ArithmeticTheories.language {x | P x})\n  (hs :\n    ∀ (x : M),\n      (∀ (y : M),\n          Lemmatheca.MathematicalLogic.ArithmeticRepresentability.leValue M\n              (Lemmatheca.MathematicalLogic.ArithmeticTheories.succValue M y) x →\n            P y) →\n        P x)\n  (x : M) : P x"
+  "declaration_line": 48,
+  "signature": "Lemmatheca.ProofTheory.PAComputations.definable_strong_induction.{u} {M : Type u}\n  [Lemmatheca.ModelTheory.ArithmeticTheories.language.Structure M] [M ⊨ Lemmatheca.ModelTheory.ArithmeticTheories.PA]\n  (P : M → Prop) (hP : Set.univ.Definable₁ Lemmatheca.ModelTheory.ArithmeticTheories.language {x | P x})\n  (hs :\n    ∀ (x : M),\n      (∀ (y : M),\n          Lemmatheca.ProofTheory.ArithmeticRepresentability.leValue M\n              (Lemmatheca.ModelTheory.ArithmeticTheories.succValue M y) x →\n            P y) →\n        P x)\n  (x : M) : P x"
 }

@@ -34,27 +34,27 @@
     <tbody>
       <tr>
         <td>\(P\Rightarrow Q\)</td>
-        <td>If \(P\) holds, then \(Q\) holds.</td>
+        <td><strong>Implication</strong>: if \(P\) holds, then \(Q\) holds.</td>
       </tr>
       <tr>
         <td>\(P\Longleftrightarrow Q\)</td>
-        <td>\(P\) holds if and only if \(Q\) holds: both implications are claimed.</td>
+        <td><strong>Equivalence</strong>: \(P\) holds if and only if \(Q\) holds; both implications are claimed.</td>
       </tr>
       <tr>
         <td>\(\forall x\in A,\ P(x)\)</td>
-        <td>Every element of \(A\) has property \(P\).</td>
+        <td><strong>Universal quantification</strong>: every element of \(A\) has property \(P\).</td>
       </tr>
       <tr>
         <td>\(\exists x\in A,\ P(x)\)</td>
-        <td>At least one element of \(A\) has property \(P\).</td>
+        <td><strong>Existential quantification</strong>: at least one element of \(A\) has property \(P\).</td>
       </tr>
       <tr>
         <td>\(\exists!x\in A,\ P(x)\)</td>
-        <td>Exactly one element of \(A\) has property \(P\).</td>
+        <td><strong>Unique existence</strong>: exactly one element of \(A\) has property \(P\).</td>
       </tr>
       <tr>
         <td>\(X:=Y\)</td>
-        <td>We define \(X\) to mean \(Y\).</td>
+        <td><strong>Definitional notation</strong>: we define \(X\) to mean \(Y\).</td>
       </tr>
     </tbody>
   </table>
@@ -96,16 +96,20 @@
   <h2>Proving equality by two inclusions</h2>
   <p>For sets \(A,B\),</p>
   <div class="math-display">\[ A=B\quad\Longleftrightarrow\quad A\subseteq B\text{ and }B\subseteq A. \]</div>
-  <p class="proof-label">Proof</p>
-  <p>If \(A=B\), either set has all the elements of the other, so both inclusions hold.
-    Conversely, if both inclusions hold, an object belongs to \(A\) exactly when it belongs to \(B\).
-    The equality rule in <a href="#subsets-and-equality"></a> then gives
-    \(A=B\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(A=B\), either set has all the elements of the other, so both inclusions hold.
+      Conversely, if both inclusions hold, an object belongs to \(A\) exactly when it belongs to \(B\).
+      The equality rule in <a href="#subsets-and-equality"></a> then gives
+      \(A=B\).</p>
+</div>
   <p>This is a useful proof pattern: start with an element of the left-hand set and show that it belongs to
     the right-hand set, then reverse the roles. Another way to write the same reasoning is a chain of
     “if and only if” statements about membership.</p>
   <p>Inclusion is also <strong>transitive</strong>: if \(A\subseteq B\) and \(B\subseteq C\), then
-    \(A\subseteq C\). Indeed, an element of \(A\) first belongs to \(B\), and therefore to \(C\).</p>
+    \(A\subseteq C\).</p>
+  <div class="proof">
+    <p>Indeed, an element of \(A\) first belongs to \(B\), and therefore to \(C\).</p>
+</div>
 </section>
 
 <section id="empty-or-singleton" data-kind="question"
@@ -139,19 +143,19 @@
     </thead>
     <tbody>
       <tr>
-        <td>Union \(A\cup B\)</td>
+        <td><strong>Union</strong> \(A\cup B\)</td>
         <td>Those in \(A\), in \(B\), or in both.</td>
       </tr>
       <tr>
-        <td>Intersection \(A\cap B\)</td>
+        <td><strong>Intersection</strong> \(A\cap B\)</td>
         <td>Those in both \(A\) and \(B\).</td>
       </tr>
       <tr>
-        <td>Difference \(A\setminus B\)</td>
+        <td><strong>Difference</strong> \(A\setminus B\)</td>
         <td>Those in \(A\) that are not in \(B\).</td>
       </tr>
       <tr>
-        <td>Complement \(A^c:=U\setminus A\)</td>
+        <td><strong>Complement</strong> \(A^c:=U\setminus A\)</td>
         <td>Those in \(U\) that are not in \(A\).</td>
       </tr>
     </tbody>
@@ -173,13 +177,14 @@
   <div class="math-display">\[ A\cap(B\cup C)=(A\cap B)\cup(A\cap C), \]</div>
   <div class="math-display">\[ (A\cup B)^c=A^c\cap B^c,\qquad (A\cap B)^c=A^c\cup B^c. \]</div>
   <p>The first is a <strong>distributive law</strong>. The other two are <strong>De Morgan’s laws</strong>.</p>
-  <p class="proof-label">Proof</p>
-  <p>An element belongs to \(A\cap(B\cup C)\) exactly when it belongs to \(A\) and to at least one of
-    \(B,C\). That is exactly the condition for membership in \((A\cap B)\cup(A\cap C)\).
-    Use <a href="#two-inclusions"></a>.</p>
-  <p>An element of \(U\) is outside \(A\cup B\) exactly when it is outside both \(A\) and \(B\).
-    This proves the second identity. It is outside \(A\cap B\) exactly when at least one of the two
-    membership conditions fails. This proves the third. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>An element belongs to \(A\cap(B\cup C)\) exactly when it belongs to \(A\) and to at least one of
+      \(B,C\). That is exactly the condition for membership in \((A\cap B)\cup(A\cap C)\).
+      Use <a href="#two-inclusions"></a>.</p>
+    <p>An element of \(U\) is outside \(A\cup B\) exactly when it is outside both \(A\) and \(B\).
+      This proves the second identity. It is outside \(A\cap B\) exactly when at least one of the two
+      membership conditions fails. This proves the third.</p>
+</div>
   <p>The same method explains \(A\cup B=B\cup A\), \(A\cap B=B\cap A\),
     \(A\cup\varnothing=A\), and \(A\cap\varnothing=\varnothing\). Read each equality as a statement
     about one arbitrary element.</p>
@@ -205,7 +210,7 @@
   <p>Sometimes we have many sets, labelled by elements of an <strong>index set</strong> \(I\).
     A <strong>family</strong> \((A_i)_{i\in I}\) gives a set \(A_i\) for each label \(i\).
     Different labels are allowed to give the same set.</p>
-  <p>Suppose every \(A_i\) is a subset of a fixed \(U\). We define</p>
+  <p>Suppose every \(A_i\) is a subset of a fixed \(U\). The <strong>indexed union</strong> and <strong>indexed intersection</strong> are defined by</p>
   <div class="math-display">\[ \bigcup_{i\in I}A_i=\{x\in U\mid \exists i\in I,\ x\in A_i\}, \]</div>
   <div class="math-display">\[ \bigcap_{i\in I}A_i=\{x\in U\mid \forall i\in I,\ x\in A_i\}. \]</div>
   <p>The union asks for membership in at least one set; the intersection asks for membership in every set.
@@ -306,12 +311,12 @@
   <p>For \(f:A\to B\), \(g:B\to C\), and \(h:C\to D\),</p>
   <div class="math-display">\[ (h\circ g)\circ f=h\circ(g\circ f). \]</div>
   <p>Also, \(\operatorname{id}_B\circ f=f=f\circ\operatorname{id}_A\).</p>
-  <p class="proof-label">Proof</p>
-  <p>At any \(x\in A\), both regroupings have value \(h(g(f(x)))\). The maps are equal because
-    their values agree at every input. Composing with either indicated identity map gives \(f(x)\)
-    at each input, which proves the remaining equalities.
-    <span class="qed" aria-label="End of proof">□</span>
-  </p>
+  <div class="proof">
+    <p>At any \(x\in A\), both regroupings have value \(h(g(f(x)))\). The maps are equal because
+      their values agree at every input. Composing with either indicated identity map gives \(f(x)\)
+      at each input, which proves the remaining equalities.
+    </p>
+</div>
   <p>This is <strong>associativity</strong>: brackets can move, but the order of the maps stays fixed.
     It does not contradict the example in <a href="#composition"></a>.</p>
 </section>
@@ -343,14 +348,14 @@
     <div class="math-display">\[ f^{-1}(T\cap V)=f^{-1}(T)\cap f^{-1}(V), \]</div>
     <div class="math-display">\[ f^{-1}(B\setminus T)=A\setminus f^{-1}(T). \]</div>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Take \(x\in A\). Belonging to the preimage of \(T\cup V\) means that \(f(x)\) lies in
-    at least one of \(T,V\). This says exactly that \(x\) lies in at least one of their preimages.</p>
-  <p>For intersection, replace “at least one” by “both.” For complement, \(f(x)\in B\setminus T\)
-    means precisely \(f(x)\notin T\), since \(f(x)\) already belongs to \(B\). This is equivalent
-    to \(x\notin f^{-1}(T)\). In each case, the two sides have the same elements.
-    <span class="qed" aria-label="End of proof">□</span>
-  </p>
+  <div class="proof">
+    <p>Take \(x\in A\). Belonging to the preimage of \(T\cup V\) means that \(f(x)\) lies in
+      at least one of \(T,V\). This says exactly that \(x\) lies in at least one of their preimages.</p>
+    <p>For intersection, replace “at least one” by “both.” For complement, \(f(x)\in B\setminus T\)
+      means precisely \(f(x)\notin T\), since \(f(x)\) already belongs to \(B\). This is equivalent
+      to \(x\notin f^{-1}(T)\). In each case, the two sides have the same elements.
+    </p>
+</div>
   <p>Notice which set supplies each complement: \(B\) on the output side, and \(A\) on the input side.
     We also have \(f^{-1}(\varnothing)=\varnothing\) and \(f^{-1}(B)=A\).
     These rules hold for every map.</p>
@@ -403,16 +408,17 @@
   <h2>Going forward and back</h2>
   <p>For \(f:A\to B\), \(S\subseteq A\), and \(T\subseteq B\),</p>
   <div class="math-display">\[ S\subseteq f^{-1}(f(S)),\qquad f(f^{-1}(T))=T\cap f(A). \]</div>
-  <p class="proof-label">Proof</p>
-  <p>If \(x\in S\), then \(f(x)\in f(S)\), which places \(x\) in \(f^{-1}(f(S))\).
-    Other inputs may also land in the same image, so this inclusion can be strict.</p>
-  <p>An element of \(f(f^{-1}(T))\) is an output \(f(x)\) that belongs to \(T\). It therefore lies
-    in both \(T\) and \(f(A)\). Conversely, if \(y\) lies in both, write \(y=f(x)\) using its
-    membership in \(f(A)\). Since \(y\in T\), this \(x\) lies in \(f^{-1}(T)\), giving the
-    reverse inclusion. <span class="qed" aria-label="End of proof">□</span></p>
-  <p>If \(f\) is injective, the first inclusion is equality: from \(f(x)=f(s)\) with \(s\in S\),
-    injectivity gives \(x=s\in S\). If \(f\) is surjective, the second identity becomes
-    \(f(f^{-1}(T))=T\), since \(f(A)=B\).</p>
+  <div class="proof">
+    <p>If \(x\in S\), then \(f(x)\in f(S)\), which places \(x\) in \(f^{-1}(f(S))\).
+      Other inputs may also land in the same image, so this inclusion can be strict.</p>
+    <p>An element of \(f(f^{-1}(T))\) is an output \(f(x)\) that belongs to \(T\). It therefore lies
+      in both \(T\) and \(f(A)\). Conversely, if \(y\) lies in both, write \(y=f(x)\) using its
+      membership in \(f(A)\). Since \(y\in T\), this \(x\) lies in \(f^{-1}(T)\), giving the
+      reverse inclusion.</p>
+    <p>If \(f\) is injective, the first inclusion is equality: from \(f(x)=f(s)\) with \(s\in S\),
+      injectivity gives \(x=s\in S\). If \(f\) is surjective, the second identity becomes
+      \(f(f^{-1}(T))=T\), since \(f(A)=B\).</p>
+</div>
 </section>
 
 <section id="inverse-maps" data-kind="theorem"
@@ -424,15 +430,15 @@
     <p>A map has an inverse if and only if it is bijective. When an inverse exists,
       it is unique.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(g\) is an inverse. If \(f(x)=f(x')\), applying \(g\) gives \(x=x'\), so \(f\)
-    is injective. Every \(y\in B\) equals \(f(g(y))\), so \(f\) is surjective.</p>
-  <p>Conversely, if \(f\) is bijective, each \(y\in B\) has exactly one input \(x\) with \(f(x)=y\).
-    Define \(g(y)\) to be that input. Then \(f(g(y))=y\). Also, \(x\) is the unique input for
-    \(f(x)\), so \(g(f(x))=x\). Thus both inverse identities hold. Any inverse must send \(y\)
-    to its unique input, which also proves uniqueness.
-    <span class="qed" aria-label="End of proof">□</span>
-  </p>
+  <div class="proof">
+    <p>Suppose \(g\) is an inverse. If \(f(x)=f(x')\), applying \(g\) gives \(x=x'\), so \(f\)
+      is injective. Every \(y\in B\) equals \(f(g(y))\), so \(f\) is surjective.</p>
+    <p>Conversely, if \(f\) is bijective, each \(y\in B\) has exactly one input \(x\) with \(f(x)=y\).
+      Define \(g(y)\) to be that input. Then \(f(g(y))=y\). Also, \(x\) is the unique input for
+      \(f(x)\), so \(g(f(x))=x\). Thus both inverse identities hold. Any inverse must send \(y\)
+      to its unique input, which also proves uniqueness.
+    </p>
+</div>
   <p>The inverse map is written \(f^{-1}\). This notation now names a map, whereas the preimage notation
     in <a href="#images-and-preimages"></a> always names a set when applied to a subset.
     For a bijection the notations agree: the preimage of \(T\) is the image of \(T\) under the inverse map.</p>

@@ -25,7 +25,7 @@ class CorpusIndexTests(SimpleTestCase):
             {"id": "area", "title": "Area", "parent": None,
              "description": "An area."},
         ]})
-        write_json(self.corpus / "area_entries.json", {
+        write_json(self.corpus / "reading_order.json", {
             "areas": {"area": ["beta", "alpha"]},
         })
         for node_id, dependencies in [("proof", []), ("other", ["proof"])]:
@@ -160,7 +160,7 @@ class CorpusIndexTests(SimpleTestCase):
         self.alpha.write_text(source)
         root, *_ = checked_source(source)
         collector = CorpusIndex(self.corpus)
-        collector.add_reading_order(read_json(self.corpus / "area_entries.json"))
+        collector.add_reading_order(read_json(self.corpus / "reading_order.json"))
         collector.add_entry(read_json(self.alpha.parent / "entry.json"), root)
         for marker in markers.values():
             self.assertNotIn(marker, str(vars(collector)))
@@ -183,7 +183,7 @@ class CorpusIndexTests(SimpleTestCase):
     def test_deterministic_across_collection_order_and_locations(self):
         def collect(reverse=False):
             collector = CorpusIndex(self.corpus)
-            collector.add_reading_order(read_json(self.corpus / "area_entries.json"))
+            collector.add_reading_order(read_json(self.corpus / "reading_order.json"))
             for path in sorted(self.corpus.rglob("*"), reverse=reverse):
                 if not path.is_file():
                     continue

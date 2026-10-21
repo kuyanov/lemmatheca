@@ -1,12 +1,12 @@
 {
   "id": "diag-relation-facts",
   "description": "For every relation symbol \\(R\\) and tuple \\(\\bar a\\) from \\(M\\), the signed diagram contains \\(R(c_{\\bar a})\\) when \\(R^M(\\bar a)\\) holds and its negation when it fails.",
-  "module": "Lemmatheca.MathematicalLogic.Diagrams",
-  "declaration": "Lemmatheca.MathematicalLogic.Diagrams.signedDiagram_relation_fact",
+  "module": "Lemmatheca.DiagramsAndExtensions.Diagrams",
+  "declaration": "Lemmatheca.ModelTheory.Diagrams.signedDiagram_relation_fact",
   "dependencies": [
     "diag-signed-diagram"
   ],
   "verified": true,
-  "declaration_line": 339,
-  "signature": "Lemmatheca.MathematicalLogic.Diagrams.signedDiagram_relation_fact.{u, v, w} {L : FirstOrder.Language} {M : Type w}\n  [L.Structure M] {n : ℕ} (R : L.Relations n) (a : Fin n → M) :\n  have γ := FirstOrder.Language.Relations.formula (Sum.inl R) fun i => (L.con (a i)).term;\n  (FirstOrder.Language.Structure.RelMap R a → γ ∈ Lemmatheca.MathematicalLogic.Diagrams.signedDiagram L M) ∧\n    (¬FirstOrder.Language.Structure.RelMap R a →\n      FirstOrder.Language.Formula.not γ ∈ Lemmatheca.MathematicalLogic.Diagrams.signedDiagram L M)"
+  "declaration_line": 341,
+  "signature": "Lemmatheca.ModelTheory.Diagrams.signedDiagram_relation_fact.{u, v, w} {L : FirstOrder.Language} {M : Type w}\n  [L.Structure M] {n : ℕ} (R : L.Relations n) (a : Fin n → M) :\n  have γ := FirstOrder.Language.Relations.formula (Sum.inl R) fun i => (L.con (a i)).term;\n  (FirstOrder.Language.Structure.RelMap R a → γ ∈ Lemmatheca.ModelTheory.Diagrams.signedDiagram L M) ∧\n    (¬FirstOrder.Language.Structure.RelMap R a →\n      FirstOrder.Language.Formula.not γ ∈ Lemmatheca.ModelTheory.Diagrams.signedDiagram L M)"
 }

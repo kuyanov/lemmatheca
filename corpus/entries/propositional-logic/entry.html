@@ -29,14 +29,14 @@
     prove it for \(\neg A\) whenever it holds for \(A\), and prove it for each of
     \(A\land B,A\lor B,A\to B\) whenever it holds for both \(A\) and \(B\).
     This is <strong>structural induction</strong>.</p>
-  <p class="proof-label">Proof</p>
-  <p>Give atoms and \(\bot\) height zero. Give \(\neg A\) height \(1+h(A)\), and give a binary
-    construction from \(A,B\) height \(1+\max(h(A),h(B))\). Each immediate constituent has smaller
-    height. Strong induction on height now proves the property: the height-zero cases are the base
-    formulas, and the construction rule proves every remaining case from its constituents.
-    Strong induction follows from <a href="natural-numbers-as-sets#induction-on-omega">ordinary induction</a>
-    applied to the assertion that the property holds at every height below a given bound.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Give atoms and \(\bot\) height zero. Give \(\neg A\) height \(1+h(A)\), and give a binary
+      construction from \(A,B\) height \(1+\max(h(A),h(B))\). Each immediate constituent has smaller
+      height. Strong induction on height now proves the property: the height-zero cases are the base
+      formulas, and the construction rule proves every remaining case from its constituents.
+      Strong induction follows from <a href="natural-numbers-as-sets#induction-on-omega">ordinary induction</a>
+      applied to the assertion that the property holds at every height below a given bound.</p>
+</div>
   <p>The same structure supports recursive definitions: assign values to the base formulas and specify
     how to combine the already assigned values of the immediate constituents.</p>
 </section>
@@ -45,7 +45,7 @@
   data-formal="prop-valuation prop-evaluation prop-evaluation-unique prop-verum-tautology">
   <h2>A valuation gives truth values to atoms</h2>
   <p>A <strong>valuation</strong> is a function \(v:P\to\{0,1\}\), where \(1\) means true and \(0\)
-    means false. Its evaluation of a formula, written \(\llbracket A\rrbracket_v\), is defined recursively.
+    means false. Its <strong>evaluation</strong> of a formula, written \(\llbracket A\rrbracket_v\), is defined recursively.
     An atom has value \(v(p)\), and \(\bot\) has value \(0\). Negation exchanges \(0\) and \(1\).
     The three binary operations use the following table.</p>
   <table id="connective-table">
@@ -97,12 +97,12 @@
     These sets are finite, by structural induction.</p>
   <p>If valuations \(v,w\) agree on \(\operatorname{At}(A)\), then</p>
   <div class="math-display">\[ \llbracket A\rrbracket_v=\llbracket A\rrbracket_w. \]</div>
-  <p class="proof-label">Proof</p>
-  <p>At an atom this is the agreement hypothesis; at \(\bot\) both values are zero. For a negation,
-    the induction hypothesis gives equal constituent values, so their negations agree. For a binary
-    construction, agreement on the union gives agreement on both constituent atom sets. Their values
-    agree by induction, and applying the same binary truth operation gives equal results.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>At an atom this is the agreement hypothesis; at \(\bot\) both values are zero. For a negation,
+      the induction hypothesis gives equal constituent values, so their negations agree. For a binary
+      construction, agreement on the union gives agreement on both constituent atom sets. Their values
+      agree by induction, and applying the same binary truth operation gives equal results.</p>
+</div>
   <p>For a finite set of premises, put
     \(\operatorname{At}(\Gamma):=\bigcup_{B\in\Gamma}\operatorname{At}(B)\).
     This is finite as well. Atoms absent from all premises and the conclusion cannot affect whether
@@ -132,14 +132,15 @@
     <p>Consequently a substitution instance of a tautology is a tautology, and for finite \(\Gamma\),
       \(\Gamma\models A\) implies \(\sigma[\Gamma]\models\sigma(A)\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Use structural induction for the displayed identity. At an atom it is the definition of \(u\);
-    at \(\bot\) both sides are zero. A negation applies the same operation to the equal values given
-    by induction. For each of the three binary constructors, substitution keeps its outer operation,
-    and induction gives equal values for both constituents, so the results agree.</p>
-  <p>If \(A\) is a tautology, its value under this induced \(u\) is \(1\). For consequence, take any
-    \(v\models\sigma[\Gamma]\). The identity gives \(u\models\Gamma\), hence \(u\models A\),
-    and then \(v\models\sigma(A)\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Use structural induction for the displayed identity. At an atom it is the definition of \(u\);
+      at \(\bot\) both sides are zero. A negation applies the same operation to the equal values given
+      by induction. For each of the three binary constructors, substitution keeps its outer operation,
+      and induction gives equal values for both constituents, so the results agree.</p>
+    <p>If \(A\) is a tautology, its value under this induced \(u\) is \(1\). For consequence, take any
+      \(v\models\sigma[\Gamma]\). The identity gives \(u\models\Gamma\), hence \(u\models A\),
+      and then \(v\models\sigma(A)\).</p>
+</div>
 </section>
 
 <section id="truth-tables" data-kind="definition"
@@ -178,11 +179,12 @@
       \(A\) false. A row violating this condition supplies a countervaluation by extending it with
       value \(0\) outside \(S\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Every extended row is a valuation, so a violating row refutes consequence. Conversely, restrict
-    an arbitrary valuation to \(S\) and take its row. By <a href="#locality"></a>, the extended row
-    agrees with the original valuation on every premise and on \(A\). If all rows pass the test,
-    every valuation satisfying the premises satisfies \(A\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Every extended row is a valuation, so a violating row refutes consequence. Conversely, restrict
+      an arbitrary valuation to \(S\) and take its row. By <a href="#locality"></a>, the extended row
+      agrees with the original valuation on every premise and on \(A\). If all rows pass the test,
+      every valuation satisfying the premises satisfies \(A\).</p>
+</div>
   <p>With atom names that can be compared for equality, this gives a terminating procedure: collect
     and remove duplicate atoms, list the finitely many rows, evaluate each finite formula, and check
     the condition. The same rows test satisfiability by looking for a row where all premises are true,

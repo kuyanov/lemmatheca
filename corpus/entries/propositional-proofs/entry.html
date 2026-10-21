@@ -25,25 +25,28 @@
 <section id="weakening" data-formal="nd-weakening" data-kind="lemma">
   <h2>Allowing more assumptions preserves a proof</h2>
   <p>If \(\Gamma\subseteq\Delta\) and \(\Gamma\vdash A\), then \(\Delta\vdash A\). This property is called <strong>weakening</strong>.</p>
-  <p class="proof-label">Proof</p>
-  <p>Use induction on the derivation. An open assumption in \(\Gamma\) also belongs to \(\Delta\). Each rule remains the same after enlarging its ambient context. In a branch with temporary assumption \(B\), use \(\Gamma\cup\{B\}\subseteq\Delta\cup\{B\}\); its discharge at the last step is unchanged. This handles implication introduction, negation introduction, classical contradiction, and the two branches of disjunction elimination. The other rules simply combine the weakened premise derivations. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Use induction on the derivation. An open assumption in \(\Gamma\) also belongs to \(\Delta\). Each rule remains the same after enlarging its ambient context. In a branch with temporary assumption \(B\), use \(\Gamma\cup\{B\}\subseteq\Delta\cup\{B\}\); its discharge at the last step is unchanged. This handles implication introduction, negation introduction, classical contradiction, and the two branches of disjunction elimination. The other rules simply combine the weakened premise derivations.</p>
+</div>
   <p>When different premise branches have different contexts, weakening puts them in the union of those contexts. This justifies using one common ambient context in the rule descriptions.</p>
 </section>
 
 <section id="classical-cases" data-formal="nd-excluded-middle nd-binary-cases" data-kind="lemma">
   <h2>Classical contradiction supplies the two cases</h2>
   <p>For every formula \(A\), \(\vdash A\lor\neg A\). Consequently, if \(\Gamma\cup\{A\}\vdash C\) and \(\Gamma\cup\{\neg A\}\vdash C\), then \(\Gamma\vdash C\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Temporarily assume \(\neg(A\lor\neg A)\). Within that branch, assume \(A\). Disjunction introduction gives \(A\lor\neg A\), contradicting the outer assumption. Negation introduction discharges \(A\), giving \(\neg A\). Disjunction introduction now gives \(A\lor\neg A\) again, so the outer assumption produces a contradiction. Classical contradiction discharges it and concludes \(A\lor\neg A\). For the consequence, weaken this assumption-free proof to \(\Gamma\) and apply disjunction elimination to the two given branches. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Temporarily assume \(\neg(A\lor\neg A)\). Within that branch, assume \(A\). Disjunction introduction gives \(A\lor\neg A\), contradicting the outer assumption. Negation introduction discharges \(A\), giving \(\neg A\). Disjunction introduction now gives \(A\lor\neg A\) again, so the outer assumption produces a contradiction. Classical contradiction discharges it and concludes \(A\lor\neg A\). For the consequence, weaken this assumption-free proof to \(\Gamma\) and apply disjunction elimination to the two given branches.</p>
+</div>
 </section>
 
 <section id="soundness" data-formal="nd-soundness" data-kind="theorem">
   <h2>Every derivation preserves truth</h2>
   <div class="statement-box"><p>For every finite context \(\Gamma\) and formula \(A\), if \(\Gamma\vdash A\), then \(\Gamma\models A\): every <a href="propositional-logic#valuations">valuation</a> making all formulas of \(\Gamma\) true also makes \(A\) true.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Induct on the finite derivation. An assumption is true because it belongs to the context. Conjunction introduction combines two true formulas, and its eliminations select a true conjunct. Either disjunction introduction preserves truth. For disjunction elimination, a true disjunction has a true disjunct; apply the induction hypothesis to the branch with that disjunct temporarily added.</p>
-  <p>For implication elimination, a true implication with a true antecedent has a true consequent. For implication introduction, consider a valuation satisfying the ambient context. If \(A\) is false, \(A\to B\) is true. If \(A\) is true, the valuation also satisfies the branch context \(\Gamma\cup\{A\}\), so the induction hypothesis makes \(B\) true.</p>
-  <p>Negation elimination cannot have both its premises true. For negation introduction, if \(A\) were true along with the ambient context, the induction hypothesis for the branch would make \(\bot\) true, which is impossible. Thus \(A\) is false and \(\neg A\) true. Explosion has no valuation satisfying its derived premise \(\bot\), so its conclusion is a consequence of the context. Finally, in classical contradiction, if the conclusion \(A\) were false, \(\neg A\) would be true; the induction hypothesis for that branch would again make \(\bot\) true. These are all the rules. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Induct on the finite derivation. An assumption is true because it belongs to the context. Conjunction introduction combines two true formulas, and its eliminations select a true conjunct. Either disjunction introduction preserves truth. For disjunction elimination, a true disjunction has a true disjunct; apply the induction hypothesis to the branch with that disjunct temporarily added.</p>
+    <p>For implication elimination, a true implication with a true antecedent has a true consequent. For implication introduction, consider a valuation satisfying the ambient context. If \(A\) is false, \(A\to B\) is true. If \(A\) is true, the valuation also satisfies the branch context \(\Gamma\cup\{A\}\), so the induction hypothesis makes \(B\) true.</p>
+    <p>Negation elimination cannot have both its premises true. For negation introduction, if \(A\) were true along with the ambient context, the induction hypothesis for the branch would make \(\bot\) true, which is impossible. Thus \(A\) is false and \(\neg A\) true. Explosion has no valuation satisfying its derived premise \(\bot\), so its conclusion is a consequence of the context. Finally, in classical contradiction, if the conclusion \(A\) were false, \(\neg A\) would be true; the induction hypothesis for that branch would again make \(\bot\) true. These are all the rules.</p>
+</div>
 </section>
 
 <section id="invalid-inference" data-formal="nd-affirming-consequent prop-affirming-consequent-countervaluation" data-kind="question">
@@ -57,29 +60,32 @@
   <p>Write \(v(A)\) for the recursively computed truth value of a formula \(A\). Let \(S\) be a finite set of atoms and \(v\) a valuation. Its <strong>signed context</strong> is</p>
   <div class="math-display">\[L(S,v)=\{p:p\in S,\ v(p)=\mathrm{true}\}\cup\{\neg p:p\in S,\ v(p)=\mathrm{false}\}.\]</div>
   <p>If every atom of \(A\) belongs to \(S\), then \(L(S,v)\vdash A\) when \(v(A)\) is true, and \(L(S,v)\vdash\neg A\) when \(v(A)\) is false.</p>
-  <p class="proof-label">Proof</p>
-  <p>Induct on the construction of \(A\), using the same signed context throughout. For an atom, the required literal is an assumption. The formula \(\bot\) is always false; assume \(\bot\) and immediately discharge it by negation introduction to obtain \(\neg\bot\).</p>
-  <p>For \(\neg B\), if \(B\) is false, the induction hypothesis already derives \(\neg B\). If \(B\) is true, it derives \(B\); assuming \(\neg B\) gives a contradiction, so negation introduction derives \(\neg\neg B\), the negative of the formula under consideration.</p>
-  <p>For \(B\land C\), if both conjuncts are true, combine their derivations. Otherwise at least one is false. Assume the conjunction, extract that conjunct, and contradict its negation supplied by induction; discharge the conjunction to derive \(\neg(B\land C)\).</p>
-  <p>For \(B\lor C\), a true disjunct supplies the disjunction. If both are false, induction supplies \(\neg B\) and \(\neg C\). Assume \(B\lor C\), then use disjunction elimination: the \(B\)-branch contradicts \(\neg B\), and the \(C\)-branch contradicts \(\neg C\). Both conclude \(\bot\), so negation introduction gives \(\neg(B\lor C)\).</p>
-  <p>For \(B\to C\), if \(C\) is true, derive it and introduce the implication, allowing the temporary \(B\) to be unused. If \(B\) is false, induction supplies \(\neg B\); assuming \(B\) gives a contradiction, explosion gives \(C\), and implication introduction discharges \(B\). These cover every true implication. In the false case, \(B\) is true and \(C\) false. Assume \(B\to C\), use the derived \(B\) to obtain \(C\), and contradict the derived \(\neg C\). Negation introduction then gives \(\neg(B\to C)\). Any derivation used inside an enlarged branch is justified by weakening. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Induct on the construction of \(A\), using the same signed context throughout. For an atom, the required literal is an assumption. The formula \(\bot\) is always false; assume \(\bot\) and immediately discharge it by negation introduction to obtain \(\neg\bot\).</p>
+    <p>For \(\neg B\), if \(B\) is false, the induction hypothesis already derives \(\neg B\). If \(B\) is true, it derives \(B\); assuming \(\neg B\) gives a contradiction, so negation introduction derives \(\neg\neg B\), the negative of the formula under consideration.</p>
+    <p>For \(B\land C\), if both conjuncts are true, combine their derivations. Otherwise at least one is false. Assume the conjunction, extract that conjunct, and contradict its negation supplied by induction; discharge the conjunction to derive \(\neg(B\land C)\).</p>
+    <p>For \(B\lor C\), a true disjunct supplies the disjunction. If both are false, induction supplies \(\neg B\) and \(\neg C\). Assume \(B\lor C\), then use disjunction elimination: the \(B\)-branch contradicts \(\neg B\), and the \(C\)-branch contradicts \(\neg C\). Both conclude \(\bot\), so negation introduction gives \(\neg(B\lor C)\).</p>
+    <p>For \(B\to C\), if \(C\) is true, derive it and introduce the implication, allowing the temporary \(B\) to be unused. If \(B\) is false, induction supplies \(\neg B\); assuming \(B\) gives a contradiction, explosion gives \(C\), and implication introduction discharges \(B\). These cover every true implication. In the false case, \(B\) is true and \(C\) false. Assume \(B\to C\), use the derived \(B\) to obtain \(C\), and contradict the derived \(\neg C\). Negation introduction then gives \(\neg(B\to C)\). Any derivation used inside an enlarged branch is justified by weakening.</p>
+</div>
   <p>The conjunction selecting one assignment is developed separately in <a href="propositional-normal-forms#row-formulas">truth-row formulas</a>.</p>
 </section>
 
 <section id="finite-case-elimination" data-formal="nd-finite-case-elimination" data-kind="lemma">
   <h2>A finite collection of atom choices can be discharged</h2>
   <p>Let \(S\) be a finite set of atoms. If \(\Gamma\cup L(S,v)\vdash C\) for every valuation \(v\), then \(\Gamma\vdash C\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Induct on the size of \(S\). If \(S\) is empty, its signed context is empty, so any valuation gives the required derivation from \(\Gamma\). There is always a valuation, for example the one making every atom false, even when there are no atoms.</p>
-  <p>Otherwise write \(S=T\cup\{p\}\) with \(p\notin T\). Fix any valuation \(v\). Change only \(p\), first to true and then to false. The signs on \(T\) remain those of \(v\), and the hypothesis gives derivations of \(C\) from \(\Gamma\cup L(T,v)\cup\{p\}\) and from \(\Gamma\cup L(T,v)\cup\{\neg p\}\). Apply <a href="#classical-cases"></a> to discharge this last choice. We have obtained \(\Gamma\cup L(T,v)\vdash C\) for every \(v\); the induction hypothesis removes the remaining choices. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Induct on the size of \(S\). If \(S\) is empty, its signed context is empty, so any valuation gives the required derivation from \(\Gamma\). There is always a valuation, for example the one making every atom false, even when there are no atoms.</p>
+    <p>Otherwise write \(S=T\cup\{p\}\) with \(p\notin T\). Fix any valuation \(v\). Change only \(p\), first to true and then to false. The signs on \(T\) remain those of \(v\), and the hypothesis gives derivations of \(C\) from \(\Gamma\cup L(T,v)\cup\{p\}\) and from \(\Gamma\cup L(T,v)\cup\{\neg p\}\). Apply <a href="#classical-cases"></a> to discharge this last choice. We have obtained \(\Gamma\cup L(T,v)\vdash C\) for every \(v\); the induction hypothesis removes the remaining choices.</p>
+</div>
 </section>
 
 <section id="completeness" data-formal="nd-completeness nd-tautology-completeness" data-kind="theorem">
   <h2>Every finite-premise consequence has a derivation</h2>
   <div class="statement-box"><p>For every finite context \(\Gamma\) and formula \(C\), \(\Gamma\models C\) if and only if \(\Gamma\vdash C\). In particular, a formula is a <a href="propositional-logic#semantic-notions">tautology</a> if and only if it has a derivation with no open assumptions.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Soundness gives one direction. For the other, assume \(\Gamma\models C\). Let \(S\) contain all atoms occurring in \(C\) or in a member of \(\Gamma\); this set is finite because the context and every formula are finite. Fix a valuation \(v\).</p>
-  <p>If all premises in \(\Gamma\) are true under \(v\), then \(C\) is true, and <a href="#signed-valuations"></a> gives \(L(S,v)\vdash C\). Weaken to \(\Gamma\cup L(S,v)\). If some premise \(B\in\Gamma\) is false, the same lemma gives \(L(S,v)\vdash\neg B\). In the enlarged context \(B\) is also an assumption, so negation elimination gives \(\bot\), and explosion gives \(C\). Thus every valuation supplies \(\Gamma\cup L(S,v)\vdash C\). <a href="#finite-case-elimination"></a> removes the signed assumptions and yields \(\Gamma\vdash C\). The empty-context case is the tautology assertion. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Soundness gives one direction. For the other, assume \(\Gamma\models C\). Let \(S\) contain all atoms occurring in \(C\) or in a member of \(\Gamma\); this set is finite because the context and every formula are finite. Fix a valuation \(v\).</p>
+    <p>If all premises in \(\Gamma\) are true under \(v\), then \(C\) is true, and <a href="#signed-valuations"></a> gives \(L(S,v)\vdash C\). Weaken to \(\Gamma\cup L(S,v)\). If some premise \(B\in\Gamma\) is false, the same lemma gives \(L(S,v)\vdash\neg B\). In the enlarged context \(B\) is also an assumption, so negation elimination gives \(\bot\), and explosion gives \(C\). Thus every valuation supplies \(\Gamma\cup L(S,v)\vdash C\). <a href="#finite-case-elimination"></a> removes the signed assumptions and yields \(\Gamma\vdash C\). The empty-context case is the tautology assertion.</p>
+</div>
   <p>The argument uses a finite truth table. It establishes completeness for finite premises; no assertion about infinite-premise compactness or first-order completeness is needed.</p>
 </section>
 

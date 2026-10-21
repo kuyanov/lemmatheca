@@ -9,16 +9,17 @@
 <section id="literal-criterion" data-kind="lemma" data-formal="fonf-literal diag-atomic-embedding-criterion diag-literal-embedding-criterion elem-quantifier-free-agreement">
   <h2>Embeddings preserve every literal</h2>
   <p>A <strong>literal</strong> is an atomic formula or the negation of an atomic formula. A map \(f:|M|\to|N|\) is an embedding if and only if it preserves the truth of every literal at every finite parameter tuple. Equivalently, it preserves and reflects the truth of every atomic formula.</p>
-  <p class="proof-label">Proof</p>
-  <p>For an embedding, induction on terms gives \(f(t^M[\bar a])=t^N[f(\bar a)]\). Injectivity then gives agreement on equalities, and the relation condition gives agreement on atomic relation formulas. Agreement on atoms also gives agreement on their negations.</p>
-  <p>Conversely, preservation of positive and negative literals gives both directions of atomic agreement. Apply it to \(x=y\) to obtain injectivity. The true atomic formula \(y=g(\bar x)\), evaluated with \(y=g^M(\bar a)\), gives preservation of the function value. This also applies to a constant. Atomic relation formulas give preservation and reflection of each relation. <span class="qed" aria-label="End of proof">□</span></p>
-  <p>Induction on logical connectives therefore shows that embeddings preserve and reflect every quantifier-free formula, just as <a href="elementary-submodels#quantifier-free-agreement">substructure inclusions do</a>.</p>
+  <div class="proof">
+    <p>For an embedding, induction on terms gives \(f(t^M[\bar a])=t^N[f(\bar a)]\). Injectivity then gives agreement on equalities, and the relation condition gives agreement on atomic relation formulas. Agreement on atoms also gives agreement on their negations.</p>
+    <p>Conversely, preservation of positive and negative literals gives both directions of atomic agreement. Apply it to \(x=y\) to obtain injectivity. The true atomic formula \(y=g(\bar x)\), evaluated with \(y=g^M(\bar a)\), gives preservation of the function value. This also applies to a constant. Atomic relation formulas give preservation and reflection of each relation.</p>
+    <p>Induction on logical connectives therefore shows that embeddings preserve and reflect every quantifier-free formula, just as <a href="elementary-submodels#quantifier-free-agreement">substructure inclusions do</a>.</p>
+</div>
 </section>
 
 <section id="names-and-reducts" data-kind="definition" data-formal="diag-named-language diag-canonical-expansion skolem-reduct diag-canonical-map diag-named-formula diag-named-formula-truth diag-every-sentence-named">
   <h2>Giving each element a name</h2>
-  <p>For an \(L\)-structure \(M\), let \(L(M)\) be the language obtained by adjoining a fresh constant symbol \(c_a\) for every \(a\in|M|\). These symbols are distinct from the original symbols. Let \(M_M\) be the canonical expansion of \(M\), in which \(c_a^{M_M}=a\).</p>
-  <p>If \(N^*\) is any \(L(M)\)-structure, its <strong>reduct</strong> \(N=N^*\!\upharpoonright L\) keeps the same domain and forgets the interpretations of the added symbols. The names determine a particular map</p>
+  <p>For an \(L\)-structure \(M\), let the <strong>language with names for \(M\)</strong>, denoted by \(L(M)\), be obtained by adjoining a fresh constant symbol \(c_a\) for every \(a\in|M|\). These symbols are distinct from the original symbols. Let \(M_M\) be the <strong>canonical expansion</strong> of \(M\), in which \(c_a^{M_M}=a\).</p>
+  <p>If \(N^*\) is any \(L(M)\)-structure, its <strong>reduct</strong> \(N=N^*\!\upharpoonright L\) keeps the same domain and forgets the interpretations of the added symbols. The names determine the <strong>canonical map</strong></p>
   <div class="math-display">\[h_{N^*}:|M|\longrightarrow|N|,\qquad h_{N^*}(a)=c_a^{N^*}.\]</div>
   <p>Before imposing any sentences, this map need not be injective or preserve any relations.</p>
   <p>For an \(L\)-formula \(\varphi(\bar x)\) and a tuple \(\bar a\) assigning all its free variables, write \(\varphi(c_{\bar a})\) for the sentence obtained by replacing the free occurrences of each variable by its corresponding name. The <a href="first-order-structures#semantic-substitution">substitution rule</a> gives</p>
@@ -38,10 +39,11 @@
 <section id="signed-diagram-lemma" data-kind="theorem" data-formal="diag-signed-canonical-criterion diag-embedding-named-expansion">
   <h2>Models of the signed diagram contain an embedded copy</h2>
   <div class="statement-box"><p>For every \(L(M)\)-structure \(N^*\), we have \(N^*\models\operatorname{Diag}(M)\) if and only if the canonical map \(h_{N^*}:M\to N^*\!\upharpoonright L\) is an embedding.</p><p>Consequently, an \(L\)-structure \(N\) admits an embedding of \(M\) if and only if \(N\) can be expanded to a model of \(\operatorname{Diag}(M)\).</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(N^*\) satisfies the diagram. Whenever an \(L\)-literal \(\lambda(\bar x)\) is true in \(M\) at \(\bar a\), the named sentence \(\lambda(c_{\bar a})\) belongs to the diagram. Hence it is true in \(N^*\), and <a href="#names-and-reducts"></a> makes \(\lambda\) true at \(h_{N^*}(\bar a)\) in the reduct. The literal criterion in <a href="#literal-criterion"></a> shows that this particular map is an embedding.</p>
-  <p>Conversely, if \(h_{N^*}\) is an embedding, express any literal in the diagram as \(\lambda(c_{\bar a})\). Its truth in \(M_M\) means \(M\models\lambda[\bar a]\). The embedding preserves this truth, so the named sentence is true in \(N^*\). Thus all of the diagram holds.</p>
-  <p>Finally, given an embedding \(f:M\hookrightarrow N\), expand \(N\) by interpreting each \(c_a\) as \(f(a)\). Its canonical map is exactly \(f\), so this expansion satisfies the diagram. The reverse implication follows from the first part. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose \(N^*\) satisfies the diagram. Whenever an \(L\)-literal \(\lambda(\bar x)\) is true in \(M\) at \(\bar a\), the named sentence \(\lambda(c_{\bar a})\) belongs to the diagram. Hence it is true in \(N^*\), and <a href="#names-and-reducts"></a> makes \(\lambda\) true at \(h_{N^*}(\bar a)\) in the reduct. The literal criterion in <a href="#literal-criterion"></a> shows that this particular map is an embedding.</p>
+    <p>Conversely, if \(h_{N^*}\) is an embedding, express any literal in the diagram as \(\lambda(c_{\bar a})\). Its truth in \(M_M\) means \(M\models\lambda[\bar a]\). The embedding preserves this truth, so the named sentence is true in \(N^*\). Thus all of the diagram holds.</p>
+    <p>Finally, given an embedding \(f:M\hookrightarrow N\), expand \(N\) by interpreting each \(c_a\) as \(f(a)\). Its canonical map is exactly \(f\), so this expansion satisfies the diagram. The reverse implication follows from the first part.</p>
+</div>
 </section>
 
 <section id="negative-facts-question" data-kind="question" data-formal="diag-positive-diagram diag-positive-collapse-example diag-positive-relation-example">
@@ -64,42 +66,48 @@
 <section id="elementary-diagram-lemma" data-kind="theorem" data-formal="diag-elementary-canonical-criterion diag-elementary-named-expansion">
   <h2>Models of the elementary diagram contain an elementary copy</h2>
   <div class="statement-box"><p>For every \(L(M)\)-structure \(N^*\), we have \(N^*\models\operatorname{ElDiag}(M)\) if and only if the canonical map \(h_{N^*}:M\to N^*\!\upharpoonright L\) is an elementary embedding.</p><p>Thus an \(L\)-structure \(N\) admits an elementary embedding of \(M\) if and only if it can be expanded to a model of \(\operatorname{ElDiag}(M)\).</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose the elementary diagram holds. For an \(L\)-formula \(\varphi\) and tuple \(\bar a\) from \(M\), either \(\varphi(c_{\bar a})\) or its negation belongs to \(\operatorname{ElDiag}(M)\), according to its truth in \(M\). The same choice must hold in \(N^*\). By <a href="#names-and-reducts"></a>,</p>
-  <div class="math-display">\[M\models\varphi[\bar a]\quad\Longleftrightarrow\quad N^*\!\upharpoonright L\models\varphi[h_{N^*}(\bar a)].\]</div>
-  <p>This is exactly elementarity of the canonical map.</p>
-  <p>Conversely, every sentence of the elementary diagram has the form \(\varphi(c_{\bar a})\). Elementarity transports its truth from \(M\) to the reduct at the interpreted names, so the sentence holds in \(N^*\). Given an elementary embedding \(f:M\to N\), interpret \(c_a\) as \(f(a)\); the resulting expansion has canonical map \(f\) and satisfies the diagram. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose the elementary diagram holds. For an \(L\)-formula \(\varphi\) and tuple \(\bar a\) from \(M\), either \(\varphi(c_{\bar a})\) or its negation belongs to \(\operatorname{ElDiag}(M)\), according to its truth in \(M\). The same choice must hold in \(N^*\). By <a href="#names-and-reducts"></a>,</p>
+    <div class="math-display">\[M\models\varphi[\bar a]\quad\Longleftrightarrow\quad N^*\!\upharpoonright L\models\varphi[h_{N^*}(\bar a)].\]</div>
+    <p>This is exactly elementarity of the canonical map.</p>
+    <p>Conversely, every sentence of the elementary diagram has the form \(\varphi(c_{\bar a})\). Elementarity transports its truth from \(M\) to the reduct at the interpreted names, so the sentence holds in \(N^*\). Given an elementary embedding \(f:M\to N\), interpret \(c_a\) as \(f(a)\); the resulting expansion has canonical map \(f\) and satisfies the diagram.</p>
+</div>
 </section>
 
 <section id="renaming-the-copy" data-kind="lemma" data-formal="elem-embedding-elementary-image diag-copy-equivalence diag-copy-old-points diag-transported-isomorphism diag-transport-elementarity diag-copy-elementarity diag-copy-new-points fo-formula-isomorphism-invariance cardinality-equality-bijection countable-equivalent-types">
   <h2>Turning an embedded copy into an extension</h2>
-  <p>A model of the elementary diagram initially gives an elementary embedding \(h:M\to N\). It need not have \(|M|\subseteq|N|\). The <a href="elementary-submodels#elementary-embeddings">image characterization</a> gives \(h(M)\preccurlyeq N\), isomorphic to \(M\).</p>
-  <p>To obtain a literal extension of \(M\), rename the points of \(h(M)\) by their unique preimages in \(M\), and rename the remaining points by fresh labels outside \(|M|\). More precisely, choose a set \(C\) disjoint from \(|M|\) and a bijection from \(C\) onto \(|N|\setminus h(M)\). On \(D=|M|\cup C\), let \(e:D\to|N|\) be that bijection on \(C\) and let \(e(a)=h(a)\) on \(|M|\). These two pieces make \(e\) a bijection.</p>
-  <p>Transport the structure of \(N\) along \(e\): define</p>
-  <div class="math-display">\[g^{N'}(\bar d)=e^{-1}(g^N(e(\bar d))),\]</div>
-  <div class="math-display">\[R^{N'}(\bar d)\quad\Longleftrightarrow\quad R^N(e(\bar d)).\]</div>
-  <p>Then \(e:N'\cong N\), and on \(|M|\) the transported functions and relations agree with those of \(M\), because \(e\) restricts to the embedding \(h\). For every formula and tuple from \(M\), <a href="first-order-structures#isomorphism-invariance">isomorphism invariance</a> and elementarity of \(h\) give agreement between \(N'\) and \(M\). Thus \(M\preccurlyeq N'\). If \(h\) was not onto, \(C\) is nonempty and this extension is proper. Renaming preserves cardinality and, in particular, countability.</p>
+  <p>Let \(h:M\to N\) be an elementary embedding of nonempty \(L\)-structures. There exist an elementary extension \(M\preccurlyeq N'\) and an isomorphism \(e:N'\to N\) such that \(e(a)=h(a)\) for every \(a\in|M|\). The structure \(N'\) has the same cardinality as \(N\), and the extension is proper if \(h\) is not onto.</p>
+  <div class="proof">
+    <p>The domains of \(M\) and \(N\) need not be nested. The <a href="elementary-submodels#elementary-embeddings">image characterization</a> gives \(h(M)\preccurlyeq N\), isomorphic to \(M\).</p>
+    <p>To obtain a literal extension of \(M\), rename the points of \(h(M)\) by their unique preimages in \(M\), and rename the remaining points by fresh labels outside \(|M|\). More precisely, choose a set \(C\) disjoint from \(|M|\) and a bijection from \(C\) onto \(|N|\setminus h(M)\). On \(D=|M|\cup C\), let \(e:D\to|N|\) be that bijection on \(C\) and let \(e(a)=h(a)\) on \(|M|\). These two pieces make \(e\) a bijection.</p>
+    <p>Transport the structure of \(N\) along \(e\): define</p>
+    <div class="math-display">\[g^{N'}(\bar d)=e^{-1}(g^N(e(\bar d))),\]</div>
+    <div class="math-display">\[R^{N'}(\bar d)\quad\Longleftrightarrow\quad R^N(e(\bar d)).\]</div>
+    <p>Then \(e:N'\cong N\), and on \(|M|\) the transported functions and relations agree with those of \(M\), because \(e\) restricts to the embedding \(h\). For every formula and tuple from \(M\), <a href="first-order-structures#isomorphism-invariance">isomorphism invariance</a> and elementarity of \(h\) give agreement between \(N'\) and \(M\). Thus \(M\preccurlyeq N'\). If \(h\) was not onto, \(C\) is nonempty and this extension is proper. Renaming preserves cardinality and, in particular, countability.</p>
+</div>
 </section>
 
 <section id="proper-countable-extension" data-kind="theorem" data-formal="diag-proper-extension-theory diag-proper-theory-finite-satisfiability diag-proper-theory-model diag-proper-countable-extension fod-model-implies-consistency countable-equivalent-types">
   <h2>A countable infinite structure has a proper countable elementary extension</h2>
   <div class="statement-box"><p>Let \(L\) be countable and let \(M\) be a countably infinite \(L\)-structure. There are a countably infinite \(L\)-structure \(N\), an elementary embedding \(h:M\to N\), and an element \(b\in|N|\setminus h(M)\). After renaming the copy as in <a href="#renaming-the-copy"></a>, this gives a proper countable elementary extension of \(M\).</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Adjoin all the names \(c_a\), and one further fresh constant \(d\). Consider the theory</p>
-  <div class="math-display">\[U=\operatorname{ElDiag}(M)\cup\{d\ne c_a:a\in|M|\}.\]</div>
-  <p>The diagram sentences are viewed in the enlarged language without changing their meaning. This language is countable because \(L\) and \(|M|\) are countable.</p>
-  <p>Every finite subset \(F\subseteq U\) is satisfiable in an expansion of \(M\). Interpret all \(c_a\) by \(a\). Only finitely many inequalities \(d\ne c_a\) occur in \(F\). Since \(M\) is infinite, choose an element outside this finite set and use it for \(d\). All diagram sentences hold by the canonical interpretation, and all selected inequalities hold by the choice of \(d\).</p>
-  <p><a href="logical-compactness#compactness">Countable-language compactness</a> gives a model of \(U\), so \(U\) is <a href="first-order-proofs#consistency-and-finite-support">consistent by soundness</a>. The <a href="henkin-completeness#countable-model-existence">countable model theorem</a> lets us choose such a model \(N^*\) with countable domain. Its reduct \(N\) contains the elementary image of \(M\) by <a href="#elementary-diagram-lemma"></a>. Put \(b=d^{N^*}\). Every inequality in \(U\) holds, so \(b\ne h(a)\) for all \(a\in|M|\). Finally, \(N\) is infinite because it contains an injective image of the infinite structure \(M\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Adjoin all the names \(c_a\), and one further fresh constant \(d\). Consider the theory</p>
+    <div class="math-display">\[U=\operatorname{ElDiag}(M)\cup\{d\ne c_a:a\in|M|\}.\]</div>
+    <p>The diagram sentences are viewed in the enlarged language without changing their meaning. This language is countable because \(L\) and \(|M|\) are countable.</p>
+    <p>Every finite subset \(F\subseteq U\) is satisfiable in an expansion of \(M\). Interpret all \(c_a\) by \(a\). Only finitely many inequalities \(d\ne c_a\) occur in \(F\). Since \(M\) is infinite, choose an element outside this finite set and use it for \(d\). All diagram sentences hold by the canonical interpretation, and all selected inequalities hold by the choice of \(d\).</p>
+    <p><a href="logical-compactness#compactness">Countable-language compactness</a> gives a model of \(U\), so \(U\) is <a href="first-order-proofs#consistency-and-finite-support">consistent by soundness</a>. The <a href="henkin-completeness#countable-model-existence">countable model theorem</a> lets us choose such a model \(N^*\) with countable domain. Its reduct \(N\) contains the elementary image of \(M\) by <a href="#elementary-diagram-lemma"></a>. Put \(b=d^{N^*}\). Every inequality in \(U\) holds, so \(b\ne h(a)\) for all \(a\in|M|\). Finally, \(N\) is infinite because it contains an injective image of the infinite structure \(M\).</p>
+</div>
   <p>The countability assumptions concern this compactness application. The diagram definitions and the two diagram lemmas impose no countability restrictions.</p>
 </section>
 
 <section id="finite-obstruction" data-kind="lemma" data-formal="diag-finite-elementary-onto diag-finite-proper-theory-unsatisfiable diag-exact-finite-obstruction diag-exact-finite-obstruction-subset diag-exact-finite-obstruction-unsatisfiable">
   <h2>Finite structures cannot have proper elementary extensions</h2>
   <p>If \(M\) is finite, every elementary embedding \(h:M\to N\) is onto.</p>
-  <p class="proof-label">Proof</p>
-  <p>List \(|M|=\{a_0,\ldots,a_{m-1}\}\), where \(m\ge1\). In \(M\), the formula with these parameters</p>
-  <div class="math-display">\[\forall y\;\bigvee_{i&lt;m}y=a_i\]</div>
-  <p>is true. Elementarity makes \(\forall y\,\bigvee_{i&lt;m}y=h(a_i)\) true in \(N\), so every element lies in the image. Equivalently, the elementary diagram itself includes the named sentence \(\forall y\,\bigvee_{i&lt;m}y=c_{a_i}\), which prevents an additional point. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>List \(|M|=\{a_0,\ldots,a_{m-1}\}\), where \(m\ge1\). In \(M\), the formula with these parameters</p>
+    <div class="math-display">\[\forall y\;\bigvee_{i&lt;m}y=a_i\]</div>
+    <p>is true. Elementarity makes \(\forall y\,\bigvee_{i&lt;m}y=h(a_i)\) true in \(N\), so every element lies in the image. Equivalently, the elementary diagram itself includes the named sentence \(\forall y\,\bigvee_{i&lt;m}y=c_{a_i}\), which prevents an additional point.</p>
+</div>
   <p>This also pinpoints the failed finite test in the extension construction: the covering sentence together with \(d\ne c_{a_i}\) for all \(i&lt;m\) is already a finite unsatisfiable subset.</p>
 </section>
 

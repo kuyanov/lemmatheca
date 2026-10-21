@@ -9,13 +9,14 @@
 <section id="union-structure" data-formal="ech-raw-union-structure ech-union ech-union-carrier ech-union-direct-limit ech-union-inclusion ech-union-unique fo-term-isomorphism-invariance elem-quantifier-free-agreement" data-kind="lemma">
   <h2>The union is a structure</h2>
   <p>There is a unique \(L\)-structure \(M\) with domain \(U\) for which every \(M_n\) is a substructure. We call \(M\) the <strong>union of the chain</strong> and write \(M=\bigcup_{n&lt;\omega}M_n\).</p>
-  <p class="proof-label">Construction and proof</p>
-  <p>The domain is nonempty because it contains \(|M_0|\). Interpret a constant by its value in \(M_0\). To evaluate a function \(f\) at a finite tuple \(\bar a\in U^k\), choose \(n\) containing the tuple and put</p>
-  <div class="math-display">\[f^M(\bar a)=f^{M_n}(\bar a).\]</div>
-  <p>For a relation symbol \(R\), use the rule</p>
-  <div class="math-display">\[M\models R[\bar a]\quad\Longleftrightarrow\quad M_n\models R[\bar a].\]</div>
-  <p>If two stages contain the tuple, both sit inside the stage with their larger index. The substructure conditions make the two function values and the two relation truth values agree there. Thus the definitions are independent of the chosen stage. A zero-argument function is a constant; a zero-argument relation has the same truth value at every stage. The empty tuple therefore causes no exception.</p>
-  <p>The function values remain in \(U\), and all interpretations restrict to those of each \(M_n\). Hence \(M_n\subseteq M\). These restrictions also force the interpretations on every tuple of \(U\), proving uniqueness. In particular, <a href="elementary-submodels#quantifier-free-agreement">terms and quantifier-free formulas agree</a> between a stage and the union at parameters from that stage. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The domain is nonempty because it contains \(|M_0|\). Interpret a constant by its value in \(M_0\). To evaluate a function \(f\) at a finite tuple \(\bar a\in U^k\), choose \(n\) containing the tuple and put</p>
+    <div class="math-display">\[f^M(\bar a)=f^{M_n}(\bar a).\]</div>
+    <p>For a relation symbol \(R\), use the rule</p>
+    <div class="math-display">\[M\models R[\bar a]\quad\Longleftrightarrow\quad M_n\models R[\bar a].\]</div>
+    <p>If two stages contain the tuple, both sit inside the stage with their larger index. The substructure conditions make the two function values and the two relation truth values agree there. Thus the definitions are independent of the chosen stage. A zero-argument function is a constant; a zero-argument relation has the same truth value at every stage. The empty tuple therefore causes no exception.</p>
+    <p>The function values remain in \(U\), and all interpretations restrict to those of each \(M_n\). Hence \(M_n\subseteq M\). These restrictions also force the interpretations on every tuple of \(U\), proving uniqueness. In particular, <a href="elementary-submodels#quantifier-free-agreement">terms and quantifier-free formulas agree</a> between a stage and the union at parameters from that stage.</p>
+</div>
 </section>
 
 <section id="elementary-chains" data-formal="ech-elementary-chain ech-elementary-successors" data-kind="definition">
@@ -32,18 +33,20 @@
     <div class="math-display">\[M_n\preccurlyeq\bigcup_{r&lt;\omega}M_r\qquad(n&lt;\omega).\]</div>
     <p>The language and the individual domains may have any cardinality.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Let \(M\) be the union structure. Induct on formulas, proving agreement between \(M_n\) and \(M\) simultaneously for every \(n\) and every finite parameter tuple from \(M_n\). The <a href="#union-structure"></a> gives the atomic cases. The truth rules for the propositional connectives preserve agreement.</p>
-  <p>Consider \(\exists y\,\psi(\bar x,y)\), and assume the induction statement for \(\psi\). If \(M_n\models\exists y\,\psi[\bar a,y]\), a witness \(b\in|M_n|\) satisfies the body there. Induction gives \(M\models\psi[\bar a,b]\), so the existential formula holds in \(M\).</p>
-  <p>Conversely, suppose \(M\models\exists y\,\psi[\bar a,y]\), and choose a witness \(b\in U\). There is \(r\ge n\) such that \(b\in|M_r|\); the parameters \(\bar a\) also lie in that stage. Induction gives \(M_r\models\psi[\bar a,b]\), hence \(M_r\models\exists y\,\psi[\bar a,y]\). Because \(M_n\preccurlyeq M_r\), the existential formula is true in \(M_n\). Its witness there need not be the originally chosen \(b\).</p>
-  <p>Universal formulas follow from <a href="first-order-normal-forms#negation-identities">quantifier duality</a>, \(\forall y\,\psi\leftrightarrow\neg\exists y\,\neg\psi\). This proves agreement for every formula, so \(M_n\preccurlyeq M\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Let \(M\) be the union structure. Induct on formulas, proving agreement between \(M_n\) and \(M\) simultaneously for every \(n\) and every finite parameter tuple from \(M_n\). The <a href="#union-structure"></a> gives the atomic cases. The truth rules for the propositional connectives preserve agreement.</p>
+    <p>Consider \(\exists y\,\psi(\bar x,y)\), and assume the induction statement for \(\psi\). If \(M_n\models\exists y\,\psi[\bar a,y]\), a witness \(b\in|M_n|\) satisfies the body there. Induction gives \(M\models\psi[\bar a,b]\), so the existential formula holds in \(M\).</p>
+    <p>Conversely, suppose \(M\models\exists y\,\psi[\bar a,y]\), and choose a witness \(b\in U\). There is \(r\ge n\) such that \(b\in|M_r|\); the parameters \(\bar a\) also lie in that stage. Induction gives \(M_r\models\psi[\bar a,b]\), hence \(M_r\models\exists y\,\psi[\bar a,y]\). Because \(M_n\preccurlyeq M_r\), the existential formula is true in \(M_n\). Its witness there need not be the originally chosen \(b\).</p>
+    <p>Universal formulas follow from <a href="first-order-normal-forms#negation-identities">quantifier duality</a>, \(\forall y\,\psi\leftrightarrow\neg\exists y\,\neg\psi\). This proves agreement for every formula, so \(M_n\preccurlyeq M\).</p>
+</div>
 </section>
 
 <section id="theories-in-the-union" data-formal="ech-embedding-theories" data-kind="lemma">
   <h2>The union satisfies the same theories</h2>
   <p>For any theory \(T\), the union of an elementary chain satisfies \(T\) if and only if any one of its stages satisfies \(T\). In particular, an elementary chain of models of \(T\) has a union that is again a model of \(T\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Apply <a href="#elementary-chain-theorem"></a> to sentences, which have no free parameters. Every stage and the union give the same truth value to each sentence, and hence satisfy exactly the same theories. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Apply <a href="#elementary-chain-theorem"></a> to sentences, which have no free parameters. Every stage and the union give the same truth value to each sentence, and hence satisfy exactly the same theories.</p>
+</div>
 </section>
 
 <section id="dense-order-example" data-formal="ech-rational-tails ech-rational-tails-elementary ech-rational-tails-union ech-rational-tail-elementary" data-kind="lemma">
@@ -51,9 +54,10 @@
   <p>In the language with only the strict-order relation, let</p>
   <div class="math-display">\[D_n=\{q\in\mathbb Q:-n&lt;q\},\]</div>
   <p>with the inherited order. Then \(D_n\preccurlyeq D_{n+1}\), and the union is \((\mathbb Q,&lt;)\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Each \(D_n\) is nonempty, densely linearly ordered and has no endpoints. Between two elements use their midpoint. For an element \(q\), the midpoint of \(-n\) and \(q\) is a smaller element of \(D_n\), while \(q+1\) is a larger one. The inclusion \(D_n\subseteq D_{n+1}\) preserves the strict order. By the <a href="quantifier-elimination#elementary-inclusions">elementarity of order embeddings between dense linear orders without endpoints</a>, this inclusion is elementary.</p>
-  <p>Every rational number is larger than some negative integer, so \(\bigcup_nD_n=\mathbb Q\). The chain theorem therefore shows that every \(D_n\) is elementary in \((\mathbb Q,&lt;)\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Each \(D_n\) is nonempty, densely linearly ordered and has no endpoints. Between two elements use their midpoint. For an element \(q\), the midpoint of \(-n\) and \(q\) is a smaller element of \(D_n\), while \(q+1\) is a larger one. The inclusion \(D_n\subseteq D_{n+1}\) preserves the strict order. By the <a href="quantifier-elimination#elementary-inclusions">elementarity of order embeddings between dense linear orders without endpoints</a>, this inclusion is elementary.</p>
+    <p>Every rational number is larger than some negative integer, so \(\bigcup_nD_n=\mathbb Q\). The chain theorem therefore shows that every \(D_n\) is elementary in \((\mathbb Q,&lt;)\).</p>
+</div>
 </section>
 
 <section id="isomorphic-stages-question" data-formal="ech-integer-tails ech-integer-tail-shift fo-sentence-isomorphism-invariance ech-integer-tails-union ech-integer-tail-least ech-integers-no-least ech-integer-tail-boundaries ech-integer-tail-inclusion-not-elementary" data-kind="question">
@@ -87,16 +91,18 @@
     <p>If \(\psi\) is existential, then</p>
     <div class="math-display">\[A\models\psi[\bar a]\quad\Longrightarrow\quad B\models\psi[\bar a].\]</div>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>For a universal formula, choose any tuple \(\bar b\) from \(A\) for its quantified variables. It is also a tuple from \(B\), so the quantifier-free matrix is true in \(B\) at \((\bar a,\bar b)\). <a href="elementary-submodels#quantifier-free-agreement">Quantifier-free agreement</a> makes it true in \(A\). Since \(\bar b\) was arbitrary, the universal formula is true in \(A\).</p>
-  <p>For an existential formula true in \(A\), keep its witness tuple \(\bar b\) in the larger domain. Quantifier-free agreement makes the matrix true in \(B\) at the same tuple, giving the required witnesses there. Empty quantifier blocks reduce both arguments to quantifier-free agreement. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For a universal formula, choose any tuple \(\bar b\) from \(A\) for its quantified variables. It is also a tuple from \(B\), so the quantifier-free matrix is true in \(B\) at \((\bar a,\bar b)\). <a href="elementary-submodels#quantifier-free-agreement">Quantifier-free agreement</a> makes it true in \(A\). Since \(\bar b\) was arbitrary, the universal formula is true in \(A\).</p>
+    <p>For an existential formula true in \(A\), keep its witness tuple \(\bar b\) in the larger domain. Quantifier-free agreement makes the matrix true in \(B\) at the same tuple, giving the required witnesses there. Empty quantifier blocks reduce both arguments to quantifier-free agreement.</p>
+</div>
 </section>
 
 <section id="universal-theories" data-formal="ech-universal-theory ech-universal-substructure" data-kind="lemma">
   <h2>Substructures of models of universal axioms</h2>
   <p>A <strong>universal theory</strong> is a theory consisting of universal sentences. Every nonempty substructure of a model of a universal theory is again a model of that theory.</p>
-  <p class="proof-label">Proof</p>
-  <p>Each axiom passes from the larger structure to the substructure by <a href="#preservation"></a>. The substructure therefore satisfies all the axioms. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Each axiom passes from the larger structure to the substructure by <a href="#preservation"></a>. The substructure therefore satisfies all the axioms.</p>
+</div>
 </section>
 
 <section id="reverse-preservation-question" data-formal="ech-integer-tail-boundaries ech-integer-least-universal ech-integer-predecessor-existential" data-kind="question">

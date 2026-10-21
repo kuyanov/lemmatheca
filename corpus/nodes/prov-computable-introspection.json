@@ -1,13 +1,13 @@
 {
   "id": "prov-computable-introspection",
   "description": "For the actual certified checker presenting an arithmetic theory \\(T\\supseteq Q\\), there is a total computable function \\(f(p,n)\\) such that every accepted proof certificate \\(p\\) of code \\(n\\) is transformed into an accepted certificate \\(f(p,n)\\) of \\(\\operatorname{Prov}_T(\\overline n)\\). The function also terminates on invalid inputs; no primitive-recursive bound is asserted.",
-  "module": "Lemmatheca.MathematicalLogic.FormalizedProvability",
-  "declaration": "Lemmatheca.MathematicalLogic.FormalizedProvability.computable_introspection_compiler",
+  "module": "Lemmatheca.FormalizedProvability.FormalizedProvability",
+  "declaration": "Lemmatheca.ProofTheory.FormalizedProvability.computable_introspection_compiler",
   "dependencies": [
     "prov-derivability-one",
     "prov-code-primitive"
   ],
   "verified": true,
-  "declaration_line": 113,
-  "signature": "Lemmatheca.MathematicalLogic.FormalizedProvability.computable_introspection_compiler (E : ℕ → ℕ → Bool)\n  (hE : Primrec₂ E)\n  (hQ :\n    Lemmatheca.MathematicalLogic.ArithmeticTheories.Q ⊆\n      Lemmatheca.MathematicalLogic.CodingFormalProofs.theory\n        Lemmatheca.MathematicalLogic.CodingFormalProofs.arithmeticSignature E) :\n  ∃ f,\n    Computable f ∧\n      ∀ (p n : ℕ),\n        Lemmatheca.MathematicalLogic.CodingFormalProofs.certificateCheck\n              Lemmatheca.MathematicalLogic.CodingFormalProofs.arithmeticSignature E p n =\n            true →\n          Lemmatheca.MathematicalLogic.CodingFormalProofs.certificateCheck\n              Lemmatheca.MathematicalLogic.CodingFormalProofs.arithmeticSignature E (f (p, n))\n              (Lemmatheca.MathematicalLogic.FormalizedProvability.provabilityCode\n                (Lemmatheca.MathematicalLogic.FormalizedProvability.certificateRepresentation E hE) n) =\n            true"
+  "declaration_line": 115,
+  "signature": "Lemmatheca.ProofTheory.FormalizedProvability.computable_introspection_compiler (E : ℕ → ℕ → Bool) (hE : Primrec₂ E)\n  (hQ :\n    Lemmatheca.ModelTheory.ArithmeticTheories.Q ⊆\n      Lemmatheca.ProofTheory.CodingFormalProofs.theory Lemmatheca.ProofTheory.CodingFormalProofs.arithmeticSignature\n        E) :\n  ∃ f,\n    Computable f ∧\n      ∀ (p n : ℕ),\n        Lemmatheca.ProofTheory.CodingFormalProofs.certificateCheck\n              Lemmatheca.ProofTheory.CodingFormalProofs.arithmeticSignature E p n =\n            true →\n          Lemmatheca.ProofTheory.CodingFormalProofs.certificateCheck\n              Lemmatheca.ProofTheory.CodingFormalProofs.arithmeticSignature E (f (p, n))\n              (Lemmatheca.ProofTheory.FormalizedProvability.provabilityCode\n                (Lemmatheca.ProofTheory.FormalizedProvability.certificateRepresentation E hE) n) =\n            true"
 }

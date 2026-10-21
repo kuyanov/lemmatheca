@@ -32,9 +32,9 @@ def read_areas(corpus=None):
     return {area["id"]: area for area in read_json(corpus / "taxonomy.json")["areas"]}
 
 
-def read_area_entries(corpus=None):
+def read_reading_order(corpus=None):
     corpus = corpus or settings.CORPUS_DIR
-    return read_json(corpus / "area_entries.json")["areas"]
+    return read_json(corpus / "reading_order.json")["areas"]
 
 
 def is_local_asset(directory, source):

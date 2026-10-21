@@ -19,8 +19,9 @@
   <p>The <strong>theory of a structure</strong> \(M\) is</p>
   <div class="math-display">\[\operatorname{Th}(M)=\{\theta:\theta\text{ is an }L\text{-sentence and }M\models\theta\}.\]</div>
   <p>This theory is satisfiable, complete, and deductively closed. A structure \(M\) is a model of \(T\) exactly when \(T\subseteq\operatorname{Th}(M)\).</p>
-  <p class="proof-label">Proof</p>
-  <p>The structure \(M\) itself satisfies every member of \(\operatorname{Th}(M)\). Each sentence is either true or false in \(M\), so exactly one of it and its negation belongs to the theory. If \(\operatorname{Th}(M)\models\theta\), its model \(M\) satisfies \(\theta\), putting the sentence back in the theory. This proves closure. The final assertion is the definition of satisfying every axiom. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The structure \(M\) itself satisfies every member of \(\operatorname{Th}(M)\). Each sentence is either true or false in \(M\), so exactly one of it and its negation belongs to the theory. If \(\operatorname{Th}(M)\models\theta\), its model \(M\) satisfies \(\theta\), putting the sentence back in the theory. This proves closure. The final assertion is the definition of satisfying every axiom.</p>
+</div>
   <p>Structures \(M,N\) are <strong>elementarily equivalent</strong>, written \(M\equiv N\), if they satisfy the same sentences, or equivalently if \(\operatorname{Th}(M)=\operatorname{Th}(N)\). An <a href="first-order-structures#isomorphism-invariance">isomorphism</a> implies this agreement; the converse can fail.</p>
 </section>
 
@@ -28,9 +29,10 @@
   <h2>Completeness means that the models agree on sentences</h2>
   <div class="statement-box"><p>A satisfiable theory \(T\) is complete if and only if all its models are elementarily equivalent. When \(T\) is complete and \(M\models T\),</p>
   <div class="math-display">\[\operatorname{Cn}(T)=\operatorname{Th}(M).\]</div></div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(T\) is complete. For any sentence \(\theta\), either all models of \(T\) satisfy \(\theta\), or all satisfy its negation. Thus any two models agree on every sentence. Moreover, every consequence is true in \(M\). If \(M\models\theta\), the alternative \(T\models\neg\theta\) is impossible, so \(T\models\theta\). This gives the displayed equality.</p>
-  <p>Conversely, fix one model \(M\) of \(T\), and assume all models of \(T\) are elementarily equivalent. If \(M\models\theta\), every model satisfies \(\theta\), giving \(T\models\theta\). Otherwise every model satisfies \(\neg\theta\), giving the other alternative. Hence \(T\) is complete. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose \(T\) is complete. For any sentence \(\theta\), either all models of \(T\) satisfy \(\theta\), or all satisfy its negation. Thus any two models agree on every sentence. Moreover, every consequence is true in \(M\). If \(M\models\theta\), the alternative \(T\models\neg\theta\) is impossible, so \(T\models\theta\). This gives the displayed equality.</p>
+    <p>Conversely, fix one model \(M\) of \(T\), and assume all models of \(T\) are elementarily equivalent. If \(M\models\theta\), every model satisfies \(\theta\), giving \(T\models\theta\). Otherwise every model satisfies \(\neg\theta\), giving the other alternative. Hence \(T\) is complete.</p>
+</div>
   <p>The satisfiability hypothesis matters. An inconsistent axiom set has no models, so agreement among all its models is vacuous, but it is not a complete theory under our definition.</p>
 </section>
 
@@ -44,16 +46,18 @@
 <section id="finite-axiomatizability" data-formal="theory-finite-complement" data-kind="theorem">
   <h2>A class and its complement can both have axioms only in the finite case</h2>
   <div class="statement-box"><p>A class \(\mathcal C\) of nonempty structures in a fixed countable language is finitely axiomatizable if and only if both \(\mathcal C\) and its complement are axiomatizable. The complement is taken among all nonempty structures in that same language.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>If \(\mathcal C=\operatorname{Mod}(\theta)\), its complement is \(\operatorname{Mod}(\neg\theta)\), so both classes are axiomatizable.</p>
-  <p>For the converse, let \(\mathcal C=\operatorname{Mod}(T)\) and let its complement be \(\operatorname{Mod}(U)\). No structure can satisfy \(T\cup U\). By <a href="logical-compactness#compactness">compactness</a>, there are finite subsets \(T_0\subseteq T\), \(U_0\subseteq U\) such that \(T_0\cup U_0\) has no model. Every member of \(\mathcal C\) satisfies \(T_0\). If a model of \(T_0\) were outside \(\mathcal C\), it would satisfy all of \(U\), hence \(U_0\), a contradiction. Therefore \(\mathcal C=\operatorname{Mod}(T_0)\), giving a finite axiomatization. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(\mathcal C=\operatorname{Mod}(\theta)\), its complement is \(\operatorname{Mod}(\neg\theta)\), so both classes are axiomatizable.</p>
+    <p>For the converse, let \(\mathcal C=\operatorname{Mod}(T)\) and let its complement be \(\operatorname{Mod}(U)\). No structure can satisfy \(T\cup U\). By <a href="logical-compactness#compactness">compactness</a>, there are finite subsets \(T_0\subseteq T\), \(U_0\subseteq U\) such that \(T_0\cup U_0\) has no model. Every member of \(\mathcal C\) satisfies \(T_0\). If a model of \(T_0\) were outside \(\mathcal C\), it would satisfy all of \(U\), hence \(U_0\), a contradiction. Therefore \(\mathcal C=\operatorname{Mod}(T_0)\), giving a finite axiomatization.</p>
+</div>
 </section>
 
 <section id="infinitude-not-finitely-axiomatizable" data-formal="theory-infinitude-not-finite compact-infinite-theory-characterization" data-kind="theorem">
   <h2>Infinitude needs infinitely many first-order requirements</h2>
   <p>In any fixed countable language, the class of infinite structures is axiomatizable but not finitely axiomatizable.</p>
-  <p class="proof-label">Proof</p>
-  <p>The size theory \(\Delta\) axiomatizes infinitude. If there were any finite axiomatization of this class, <a href="#finite-axiomatizability"></a> would make its complement, the class of finite nonempty structures, axiomatizable. This contradicts <a href="logical-compactness#finitude-not-axiomatizable">the compactness obstruction to axiomatizing finitude</a>. The argument excludes every possible finite axiomatization, not just finite subsets of the particular list \(\Delta\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The size theory \(\Delta\) axiomatizes infinitude. If there were any finite axiomatization of this class, <a href="#finite-axiomatizability"></a> would make its complement, the class of finite nonempty structures, axiomatizable. This contradicts <a href="logical-compactness#finitude-not-axiomatizable">the compactness obstruction to axiomatizing finitude</a>. The argument excludes every possible finite axiomatization, not just finite subsets of the particular list \(\Delta\).</p>
+</div>
 </section>
 
 <section id="complete-versus-finite-question" data-formal="theory-empty-equality-incomplete theory-complete fo-singleton-domain-truth" data-kind="question">

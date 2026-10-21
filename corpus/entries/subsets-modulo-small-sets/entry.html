@@ -21,13 +21,14 @@
     [A]_I=\{B\subseteq X:A\mathbin\triangle B\in I\},\qquad
     \mathcal P(X)/I=\{[A]_I:A\subseteq X\}.
   \]</div>
-  <p class="proof-label">Proof</p>
-  <p>Reflexivity uses \(A\mathbin\triangle A=\varnothing\in I\), and symmetry uses \(A\mathbin\triangle B=B\mathbin\triangle A\). For transitivity,</p>
-  <div class="math-display">\[
-    A\mathbin\triangle C\subseteq
-    (A\mathbin\triangle B)\cup(B\mathbin\triangle C).
-  \]</div>
-  <p>Indeed, a point at which \(A\) and \(C\) disagree must disagree between at least one of the two intervening pairs. Union closure and downward closure put the left side in \(I\) whenever both differences on the right belong to \(I\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Reflexivity uses \(A\mathbin\triangle A=\varnothing\in I\), and symmetry uses \(A\mathbin\triangle B=B\mathbin\triangle A\). For transitivity,</p>
+    <div class="math-display">\[
+      A\mathbin\triangle C\subseteq
+      (A\mathbin\triangle B)\cup(B\mathbin\triangle C).
+    \]</div>
+    <p>Indeed, a point at which \(A\) and \(C\) disagree must disagree between at least one of the two intervening pairs. Union closure and downward closure put the left side in \(I\) whenever both differences on the right belong to \(I\).</p>
+</div>
 </section>
 
 <section id="ideal-hypotheses-question" data-formal="small-sets-nonideal-counterexample" data-kind="question">
@@ -41,7 +42,7 @@
 
 <section id="operations-on-classes" data-formal="small-sets-operations" data-kind="definition">
   <h2>Set operations give candidate operations on classes</h2>
-  <p>We want to define meet, join, complement, and the two bounds by</p>
+  <p>Define the <strong>meet</strong>, <strong>join</strong>, <strong>complement</strong>, <strong>zero</strong> and <strong>unit</strong> of classes, respectively, by</p>
   <div class="math-display">\[\begin{gathered}
 [A]_I\wedge[B]_I=[A\cap B]_I,\qquad [A]_I\vee[B]_I=[A\cup B]_I,\qquad [A]_I^c=[X\setminus A]_I,\\
 0=[\varnothing]_I,\qquad 1=[X]_I.
@@ -52,14 +53,15 @@
 <section id="representative-independence" data-formal="small-sets-representative-compatibility" data-kind="lemma">
   <h2>Changing representatives changes the answer only on a small set</h2>
   <p>All the operations in <a href="#operations-on-classes"></a> are well-defined.</p>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(A\sim_I A'\) and \(B\sim_I B'\), and put \(E=(A\mathbin\triangle A')\cup(B\mathbin\triangle B')\in I\). Outside \(E\), membership in each input agrees with membership in its replacement. Membership in the union or intersection therefore also agrees. Hence</p>
-  <div class="math-display">\[(A\cap B)\mathbin\triangle(A'\cap B')\subseteq E,\qquad (A\cup B)\mathbin\triangle(A'\cup B')\subseteq E.\]</div>
-  <p>Downward closure puts both differences in \(I\). For complements, the exact identity</p>
-  <div class="math-display">\[
-    (X\setminus A)\mathbin\triangle(X\setminus A')=A\mathbin\triangle A'
-  \]</div>
-  <p>gives the result. The fixed classes \(0,1\) need no representative choices. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose \(A\sim_I A'\) and \(B\sim_I B'\), and put \(E=(A\mathbin\triangle A')\cup(B\mathbin\triangle B')\in I\). Outside \(E\), membership in each input agrees with membership in its replacement. Membership in the union or intersection therefore also agrees. Hence</p>
+    <div class="math-display">\[(A\cap B)\mathbin\triangle(A'\cap B')\subseteq E,\qquad (A\cup B)\mathbin\triangle(A'\cup B')\subseteq E.\]</div>
+    <p>Downward closure puts both differences in \(I\). For complements, the exact identity</p>
+    <div class="math-display">\[
+      (X\setminus A)\mathbin\triangle(X\setminus A')=A\mathbin\triangle A'
+    \]</div>
+    <p>gives the result. The fixed classes \(0,1\) need no representative choices.</p>
+</div>
 </section>
 
 <section id="quotient-order" data-formal="small-sets-order small-sets-boolean-algebra" data-kind="lemma">
@@ -68,21 +70,23 @@
   <div class="math-display">\[
     [A]_I\le[B]_I\quad\Longleftrightarrow\quad A\setminus B\in I.
   \]</div>
-  <p class="proof-label">Proof</p>
-  <p>The definition says \([A\cap B]_I=[A]_I\), and \((A\cap B)\mathbin\triangle A=A\setminus B\). It is independent of representatives because meet is well-defined.</p>
-  <p>Reflexivity follows from the empty difference. Transitivity follows from \(A\setminus C\subseteq(A\setminus B)\cup(B\setminus C)\). If both \([A]_I\le[B]_I\) and \([B]_I\le[A]_I\), then the union of their two small differences is \(A\mathbin\triangle B\), so the classes are equal. Thus this is a partial order.</p>
-  <p>The class \([A\cap B]_I\) is a lower bound of \([A]_I,[B]_I\). Any other lower bound \([C]_I\) satisfies</p>
-  <div class="math-display">\[
-    C\setminus(A\cap B)=(C\setminus A)\cup(C\setminus B)\in I,
-  \]</div>
-  <p>so it lies below \([A\cap B]_I\). Dually, \([A\cup B]_I\) is the least upper bound, using \((A\cup B)\setminus C=(A\setminus C)\cup(B\setminus C)\). Finally, \(0\le[A]_I\le1\) because both relevant differences are empty. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The definition says \([A\cap B]_I=[A]_I\), and \((A\cap B)\mathbin\triangle A=A\setminus B\). It is independent of representatives because meet is well-defined.</p>
+    <p>Reflexivity follows from the empty difference. Transitivity follows from \(A\setminus C\subseteq(A\setminus B)\cup(B\setminus C)\). If both \([A]_I\le[B]_I\) and \([B]_I\le[A]_I\), then the union of their two small differences is \(A\mathbin\triangle B\), so the classes are equal. Thus this is a partial order.</p>
+    <p>The class \([A\cap B]_I\) is a lower bound of \([A]_I,[B]_I\). Any other lower bound \([C]_I\) satisfies</p>
+    <div class="math-display">\[
+      C\setminus(A\cap B)=(C\setminus A)\cup(C\setminus B)\in I,
+    \]</div>
+    <p>so it lies below \([A\cap B]_I\). Dually, \([A\cup B]_I\) is the least upper bound, using \((A\cup B)\setminus C=(A\setminus C)\cup(B\setminus C)\). Finally, \(0\le[A]_I\le1\) because both relevant differences are empty.</p>
+</div>
 </section>
 
 <section id="quotient-boolean-algebra" data-formal="small-sets-boolean-algebra small-sets-projection-homomorphism quotient-projection-surjective boolean-homomorphism-complement" data-kind="theorem">
   <h2>Ignoring an ideal of errors preserves the Boolean algebra</h2>
   <div class="statement-box"><p>For every ideal \(I\subseteq\mathcal P(X)\), the quotient \(\mathcal P(X)/I\) is a Boolean algebra with the operations in <a href="#operations-on-classes"></a> and the order in <a href="#quotient-order"></a>. The projection \(A\mapsto[A]_I\) is a surjective Boolean homomorphism.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>The quotient order and pairwise bounds give a bounded lattice. The distributive laws follow by taking classes of the usual set identities. Likewise, \(A\cap(X\setminus A)=\varnothing\) and \(A\cup(X\setminus A)=X\) give the complement laws. This is precisely the <a href="boolean-algebras#boolean-operations">Boolean-algebra definition</a>. The projection preserves the two bounds, meet, join, and complement by their definitions, so it is a <a href="boolean-algebras#stone-map">Boolean homomorphism</a>. It is surjective because every quotient element is a class of some subset. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The quotient order and pairwise bounds give a bounded lattice. The distributive laws follow by taking classes of the usual set identities. Likewise, \(A\cap(X\setminus A)=\varnothing\) and \(A\cup(X\setminus A)=X\) give the complement laws. This is precisely the <a href="boolean-algebras#boolean-operations">Boolean-algebra definition</a>. The projection preserves the two bounds, meet, join, and complement by their definitions, so it is a <a href="boolean-algebras#stone-map">Boolean homomorphism</a>. It is surjective because every quotient element is a class of some subset.</p>
+</div>
 </section>
 
 <section id="zero-and-one-classes" data-formal="small-sets-zero-class small-sets-one-class small-sets-nontrivial-quotient small-sets-collapsed-quotient small-sets-improper-ideal" data-kind="lemma">
@@ -93,8 +97,9 @@
     [A]_I=1\Longleftrightarrow X\setminus A\in I.
   \]</div>
   <p>Consequently the quotient is nontrivial exactly when \(I\) is proper.</p>
-  <p class="proof-label">Proof</p>
-  <p>Use \(A\mathbin\triangle\varnothing=A\) and \(A\mathbin\triangle X=X\setminus A\). In particular, \(0=1\) exactly when \(X\in I\). In that case \(I=\mathcal P(X)\), so every set represents zero and the quotient has one element. If \(I\) is proper, the two bound classes are distinct. When \(X=\varnothing\), every ideal is improper and this one-element case is unavoidable. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Use \(A\mathbin\triangle\varnothing=A\) and \(A\mathbin\triangle X=X\setminus A\). In particular, \(0=1\) exactly when \(X\in I\). In that case \(I=\mathcal P(X)\), so every set represents zero and the quotient has one element. If \(I\) is proper, the two bound classes are distinct. When \(X=\varnothing\), every ideal is improper and this one-element case is unavoidable.</p>
+</div>
 </section>
 
 <section id="ignoring-a-fixed-region" data-formal="small-sets-fixed-region-equality small-sets-fixed-region-isomorphism small-sets-zero-class small-sets-collapsed-quotient" data-kind="question">
@@ -108,7 +113,7 @@
 
 <section id="finite-error-quotient" data-formal="small-sets-finite-error-class-equality small-sets-finite-error-class-order small-sets-finite-error-nonzero small-sets-one-class small-sets-nontrivial-quotient small-sets-finite-ideal-proper small-sets-even-class-intermediate" data-kind="definition">
   <h2>Modulo finite sets, the quotient order is almost containment</h2>
-  <p>Take \(X=\mathbb N=\{0,1,2,\ldots\}\) and \(I=\operatorname{Fin}(\mathbb N)\), abbreviated \(\operatorname{Fin}\). Write \([A]\) for \([A]_{\operatorname{Fin}}\). The familiar <a href="finite-errors-and-countable-diagonalization#finite-error-equivalence">finite-error equality</a> and <a href="finite-errors-and-countable-diagonalization#almost-inclusion">almost containment</a> now become equality and order of classes:</p>
+  <p>The <strong>quotient modulo finite sets</strong> is \(\mathcal P(\mathbb N)/\operatorname{Fin}(\mathbb N)\), obtained by taking \(X=\mathbb N=\{0,1,2,\ldots\}\) and \(I=\operatorname{Fin}(\mathbb N)\), abbreviated \(\operatorname{Fin}\), in the preceding construction. Write \([A]\) for \([A]_{\operatorname{Fin}}\). The familiar <a href="finite-errors-and-countable-diagonalization#finite-error-equivalence">finite-error equality</a> and <a href="finite-errors-and-countable-diagonalization#almost-inclusion">almost containment</a> now become equality and order of classes:</p>
   <div class="math-display">\[
     [A]=[B]\Longleftrightarrow A=^*B,\qquad
     [A]\le[B]\Longleftrightarrow A\subseteq^*B.
@@ -123,8 +128,11 @@
   <div class="math-display">\[
     A\cap B\text{ is finite}\quad\Longleftrightarrow\quad[A]\wedge[B]=0.
   \]</div>
-  <p>This translates <a href="almost-disjoint-families#almost-disjoint">almost disjointness</a> into disjointness of nonzero Boolean elements, where disjoint means that their meet is zero.</p>
-  <p>More generally, an almost disjoint family gives distinct nonzero classes with pairwise zero meets. Distinctness is essential: if \([A]=[B]\) and their meet is zero, their common class is zero, contradicting infinitude. Conversely, choosing one representative of each member of a family of distinct nonzero classes with pairwise zero meets gives an almost disjoint family. Each chosen representative is infinite and each pairwise intersection is finite; choosing representatives for an arbitrary family here may use choice.</p>
+  <div class="proof">
+    <p>The meet is the class of the intersection, and <a href="#zero-and-one-classes">a class is zero exactly when its representative is finite</a>. This proves the equivalence.</p>
+    <p>This translates <a href="almost-disjoint-families#almost-disjoint">almost disjointness</a> into disjointness of nonzero Boolean elements, where disjoint means that their meet is zero.</p>
+    <p>More generally, an almost disjoint family gives distinct nonzero classes with pairwise zero meets. Distinctness is essential: if \([A]=[B]\) and their meet is zero, their common class is zero, contradicting infinitude. Conversely, choosing one representative of each member of a family of distinct nonzero classes with pairwise zero meets gives an almost disjoint family. Each chosen representative is infinite and each pairwise intersection is finite; choosing representatives for an arbitrary family here may use choice.</p>
+</div>
 </section>
 
 <section id="representative-intersection-question" data-formal="small-sets-parity-representatives" data-kind="question">
@@ -140,25 +148,27 @@
   <h2>Every nonzero finite-error class splits into smaller nonzero pieces</h2>
   <p>An <strong>atom</strong> of a Boolean algebra is a nonzero element \(q\) whose only elements below it are \(0\) and \(q\). An algebra is <strong>atomless</strong> when it has no atoms.</p>
   <div class="statement-box"><p>For every nonzero \(q\in\mathcal P(\mathbb N)/\operatorname{Fin}\), there are nonzero \(u,v\) with \(u\wedge v=0\) and \(u\vee v=q\). In particular, this Boolean algebra is atomless.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Take an infinite representative \(A\) of \(q\) and <a href="finite-and-countable-sets#infinite-subsets-of-naturals">enumerate it increasingly</a> as \(a_0,a_1,\ldots\). Partition it into</p>
-  <div class="math-display">\[
-    C=\{a_{2n}:n\in\mathbb N\},\qquad
-    D=\{a_{2n+1}:n\in\mathbb N\}.
-  \]</div>
-  <p>Both sets are infinite, they are disjoint, and their union is \(A\). Therefore \(u=[C]\) and \(v=[D]\) have the stated properties. Also \(0&lt;[C]&lt;[A]\): containment gives the non-strict inequality, and \(A\setminus C=D\) is infinite, so their classes differ. Hence \(q\) is not an atom. Increasing enumeration and the split require no choice axiom. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Take an infinite representative \(A\) of \(q\) and <a href="finite-and-countable-sets#infinite-subsets-of-naturals">enumerate it increasingly</a> as \(a_0,a_1,\ldots\). Partition it into</p>
+    <div class="math-display">\[
+      C=\{a_{2n}:n\in\mathbb N\},\qquad
+      D=\{a_{2n+1}:n\in\mathbb N\}.
+    \]</div>
+    <p>Both sets are infinite, they are disjoint, and their union is \(A\). Therefore \(u=[C]\) and \(v=[D]\) have the stated properties. Also \(0&lt;[C]&lt;[A]\): containment gives the non-strict inequality, and \(A\setminus C=D\) is infinite, so their classes differ. Hence \(q\) is not an atom. Increasing enumeration and the split require no choice axiom.</p>
+</div>
 </section>
 
 <section id="countable-lower-bounds" data-formal="small-sets-descending-representatives small-sets-descending-nonzero-lower-bound" data-kind="theorem">
   <h2>A descending countable sequence retains a nonzero lower bound</h2>
   <div class="statement-box"><p>Assuming the axiom of choice, if \(q_0\ge q_1\ge q_2\ge\cdots\) are nonzero elements of \(\mathcal P(\mathbb N)/\operatorname{Fin}\), there is a nonzero \(r\) with \(r\le q_n\) for every \(n\).</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Choose representatives \(q_n=[A_n]\). Each \(A_n\) is infinite, and the descending order gives \(A_n\subseteq^*A_i\) whenever \(i\le n\). Put \(C_n=\bigcap_{i\le n}A_i\). Then</p>
-  <div class="math-display">\[
-    A_n\setminus C_n=\bigcup_{i\le n}(A_n\setminus A_i)
-  \]</div>
-  <p>is finite, so \(C_n\) is infinite. The sets \(C_n\) are decreasing. Every nonempty finite intersection of them equals the member with largest index and is infinite; the empty intersection is \(\mathbb N\). They have the <a href="finite-errors-and-countable-diagonalization#strong-finite-intersections">strong finite intersection property</a>.</p>
-  <p>The <a href="finite-errors-and-countable-diagonalization#countable-pseudointersection">countable pseudointersection theorem</a> gives an infinite \(B\subseteq\mathbb N\) with \(B\subseteq^*C_n\) for every \(n\). Since \(C_n\subseteq A_n\), also \(B\subseteq^*A_n\). Thus \(r=[B]\ne0\) lies below every \(q_n\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Choose representatives \(q_n=[A_n]\). Each \(A_n\) is infinite, and the descending order gives \(A_n\subseteq^*A_i\) whenever \(i\le n\). Put \(C_n=\bigcap_{i\le n}A_i\). Then</p>
+    <div class="math-display">\[
+      A_n\setminus C_n=\bigcup_{i\le n}(A_n\setminus A_i)
+    \]</div>
+    <p>is finite, so \(C_n\) is infinite. The sets \(C_n\) are decreasing. Every nonempty finite intersection of them equals the member with largest index and is infinite; the empty intersection is \(\mathbb N\). They have the <a href="finite-errors-and-countable-diagonalization#strong-finite-intersections">strong finite intersection property</a>.</p>
+    <p>The <a href="finite-errors-and-countable-diagonalization#countable-pseudointersection">countable pseudointersection theorem</a> gives an infinite \(B\subseteq\mathbb N\) with \(B\subseteq^*C_n\) for every \(n\). Since \(C_n\subseteq A_n\), also \(B\subseteq^*A_n\). Thus \(r=[B]\ne0\) lies below every \(q_n\).</p>
+</div>
   <p>Choice was used to select the representative sequence. If representatives \(A_n\) are supplied as part of the data, this proof uses no choice axiom. The nonzero condition matters: zero is always a lower bound, while an infinite pseudointersection supplies a nonzero one.</p>
 </section>
 

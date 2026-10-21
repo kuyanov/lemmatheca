@@ -7,7 +7,7 @@
 
 <section id="robinson-axioms" data-formal="arith-robinson-theory arith-robinson-model-characterization arith-standard-model-Q" data-kind="definition">
   <h2>Robinson arithmetic gives seven basic axioms</h2>
-  <p><strong>Robinson arithmetic</strong>, written \(Q\), consists of the universal closures of the following seven formulas. Universal closure binds every displayed free variable at the front.</p>
+  <p><strong>Robinson arithmetic</strong>, written \(Q\), consists of the universal closures of the following seven formulas. <strong>Universal closure</strong> binds every displayed free variable at the front.</p>
   <ol>
     <li>\(Sx\ne0\).</li>
     <li>\(Sx=Sy\to x=y\).</li>
@@ -25,31 +25,34 @@
   <h2>Every model computes correctly on numerals</h2>
   <p>If \(M\models Q\), then for all external natural numbers \(m,n\),</p>
   <div class="math-display">\[m_M+n_M=(m+n)_M,\qquad m_M\cdot n_M=(mn)_M.\]</div>
-  <p class="proof-label">Proof</p>
-  <p>Fix \(m\) and induct on the ordinary natural number \(n\), outside the structure. For addition, the case \(n=0\) is axiom 4. If the equality holds at \(n\), axiom 5 gives</p>
-  <div class="math-display">\[m_M+(n+1)_M=m_M+S^M(n_M)=S^M(m_M+n_M)=S^M((m+n)_M)=(m+n+1)_M.\]</div>
-  <p>For multiplication, axiom 6 is the base case. Axiom 7 and the addition result give</p>
-  <div class="math-display">\[m_M\cdot(n+1)_M=m_M\cdot n_M+m_M=(mn)_M+m_M=(mn+m)_M.\]</div>
-  <p>This proves both identities. A structural induction on closed terms now shows that each such term has the same numeral value in every model of \(Q\): use zero for the base case, and the successor, addition and multiplication identities at the constructors. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Fix \(m\) and induct on the ordinary natural number \(n\), outside the structure. For addition, the case \(n=0\) is axiom 4. If the equality holds at \(n\), axiom 5 gives</p>
+    <div class="math-display">\[m_M+(n+1)_M=m_M+S^M(n_M)=S^M(m_M+n_M)=S^M((m+n)_M)=(m+n+1)_M.\]</div>
+    <p>For multiplication, axiom 6 is the base case. Axiom 7 and the addition result give</p>
+    <div class="math-display">\[m_M\cdot(n+1)_M=m_M\cdot n_M+m_M=(mn)_M+m_M=(mn+m)_M.\]</div>
+    <p>This proves both identities. A structural induction on closed terms now shows that each such term has the same numeral value in every model of \(Q\): use zero for the base case, and the successor, addition and multiplication identities at the constructors.</p>
+</div>
   <p>The induction here is a proof <em>about</em> all models of \(Q\). It is not an application of an induction axiom <em>inside</em> \(Q\). It ranges over the external natural number indexing a finite numeral or finite term.</p>
 </section>
 
 <section id="standard-copy" data-formal="arith-numerals-distinct arith-standard-embedding arith-Q-models-infinite arith-standard-copy arith-standard-copy-successor arith-standard-copy-operations" data-kind="theorem">
   <h2>Every model contains its canonical copy of the natural numbers</h2>
   <p>For \(M\models Q\), the map \(j_M:\mathbb N\to|M|\) given by \(j_M(n)=n_M\) is injective and preserves zero, successor, addition and multiplication. Consequently every model of \(Q\) is infinite.</p>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(m&lt;n\) and \(m_M=n_M\). Cancel \(m\) successors using axiom 2. This gives \(0^M=(n-m)_M\). Since \(n-m&gt;0\), the right side is a successor, contradicting axiom 1. Thus unequal external natural numbers have unequal numeral values. Zero and successor are preserved by the definition of numerals; the two remaining operations are preserved by <a href="#numeral-computation"></a>. An injection from \(\mathbb N\) proves infinitude. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose \(m&lt;n\) and \(m_M=n_M\). Cancel \(m\) successors using axiom 2. This gives \(0^M=(n-m)_M\). Since \(n-m&gt;0\), the right side is a successor, contradicting axiom 1. Thus unequal external natural numbers have unequal numeral values. Zero and successor are preserved by the definition of numerals; the two remaining operations are preserved by <a href="#numeral-computation"></a>. An injection from \(\mathbb N\) proves infinitude.</p>
+</div>
   <p>Call its image \(\operatorname{Std}(M)=\{n_M:n\in\mathbb N\}\) the <strong>standard copy</strong>. It contains zero and is closed under successor, addition and multiplication. The displayed description is external: we have not given a first-order formula defining this subset inside \(M\).</p>
 </section>
 
 <section id="weak-model" data-formal="arith-infinity-structure arith-infinity-model-Q arith-infinity-successor-fixed arith-Q-no-fixed-point-unprovable" data-kind="theorem">
   <h2>The basic axioms allow a successor fixed point</h2>
   <div class="statement-box"><p>There is a model of \(Q\) containing an element \(a\) with \(Sa=a\). In particular, \(Q\nvdash\forall x\,Sx\ne x\), although \(S^{{\mathbb N}_A}n\ne n\) for every standard natural number \(n\).</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Adjoin one new element \(\infty\) to \(\mathbb N\). Keep zero and all operations on finite elements as usual. Set \(S\infty=\infty\), and let any sum with \(\infty\) equal \(\infty\). For multiplication, a zero factor gives zero; if neither factor is zero and at least one is \(\infty\), the product is \(\infty\). This specifies a total operation on every pair, including \(0\cdot\infty=\infty\cdot0=0\).</p>
-  <p>Successor never takes value zero. It is injective: two finite successors are equal only when their predecessors are equal, and the only predecessor of \(\infty\) under this operation is \(\infty\). Every nonzero finite number has its usual predecessor, and \(\infty\) is its own predecessor. Thus axioms 1–3 hold.</p>
-  <p>Axiom 4 holds for finite inputs and for \(\infty+0=\infty\). For axiom 5, finite inputs satisfy the ordinary identity; if either input is \(\infty\), both sides are \(\infty\). Axiom 6 holds by the zero-factor rule.</p>
-  <p>For axiom 7, first take \(x=0\): both sides are zero for every \(y\), including \(\infty\). If \(x\ne0\) and \(y=\infty\), both sides are \(\infty\). If \(x\) and \(y\) are finite, use ordinary arithmetic. The remaining case is \(x=\infty\) and finite \(y\). For \(y=0\), the identity reads \(\infty=0+\infty\); for \(y&gt;0\), it reads \(\infty=\infty+\infty\). These are both true. All seven axioms therefore hold, while \(S\infty=\infty\). Soundness rules out a \(Q\)-proof of the displayed universal sentence. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Adjoin one new element \(\infty\) to \(\mathbb N\). Keep zero and all operations on finite elements as usual. Set \(S\infty=\infty\), and let any sum with \(\infty\) equal \(\infty\). For multiplication, a zero factor gives zero; if neither factor is zero and at least one is \(\infty\), the product is \(\infty\). This specifies a total operation on every pair, including \(0\cdot\infty=\infty\cdot0=0\).</p>
+    <p>Successor never takes value zero. It is injective: two finite successors are equal only when their predecessors are equal, and the only predecessor of \(\infty\) under this operation is \(\infty\). Every nonzero finite number has its usual predecessor, and \(\infty\) is its own predecessor. Thus axioms 1–3 hold.</p>
+    <p>Axiom 4 holds for finite inputs and for \(\infty+0=\infty\). For axiom 5, finite inputs satisfy the ordinary identity; if either input is \(\infty\), both sides are \(\infty\). Axiom 6 holds by the zero-factor rule.</p>
+    <p>For axiom 7, first take \(x=0\): both sides are zero for every \(y\), including \(\infty\). If \(x\ne0\) and \(y=\infty\), both sides are \(\infty\). If \(x\) and \(y\) are finite, use ordinary arithmetic. The remaining case is \(x=\infty\) and finite \(y\). For \(y=0\), the identity reads \(\infty=0+\infty\); for \(y&gt;0\), it reads \(\infty=\infty+\infty\). These are both true. All seven axioms therefore hold, while \(S\infty=\infty\). Soundness rules out a \(Q\)-proof of the displayed universal sentence.</p>
+</div>
   <p>This countermodel explains one task for induction: the recursion equations and successor axioms alone do not eliminate every unintended element. A nonstandard model of Peano arithmetic will be subtler; it cannot have this fixed point.</p>
 </section>
 
@@ -72,21 +75,23 @@
 <section id="induction-examples" data-formal="arith-PA-zero-left arith-PA-no-fixed-point" data-kind="lemma">
   <h2>Induction recovers familiar identities and excludes fixed points</h2>
   <p>Peano arithmetic proves \(\forall x\,(0+x=x)\) and \(\forall x\,(Sx\ne x)\).</p>
-  <p class="proof-label">Proof</p>
-  <p>For the first result use \(\varphi(x)\equiv0+x=x\). The base case is axiom 4 at zero. If \(0+x=x\), then axiom 5 gives \(0+Sx=S(0+x)=Sx\). This is the induction step, so the corresponding induction axiom gives the universal conclusion.</p>
-  <p>For the second, use \(\psi(x)\equiv Sx\ne x\). Axiom 1 gives \(S0\ne0\). If \(Sx\ne x\) but \(S(Sx)=Sx\), axiom 2 gives \(Sx=x\), a contradiction. Thus \(\psi(x)\to\psi(Sx)\), and induction finishes. The structure of <a href="#weak-model"></a> fails this induction instance. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For the first result use \(\varphi(x)\equiv0+x=x\). The base case is axiom 4 at zero. If \(0+x=x\), then axiom 5 gives \(0+Sx=S(0+x)=Sx\). This is the induction step, so the corresponding induction axiom gives the universal conclusion.</p>
+    <p>For the second, use \(\psi(x)\equiv Sx\ne x\). Axiom 1 gives \(S0\ne0\). If \(Sx\ne x\) but \(S(Sx)=Sx\), axiom 2 gives \(Sx=x\), a contradiction. Thus \(\psi(x)\to\psi(Sx)\), and induction finishes. The structure of <a href="#weak-model"></a> fails this induction instance.</p>
+</div>
 </section>
 
 <section id="parameters-example" data-formal="arith-PA-successor-addition arith-PA-addition-commutative" data-kind="lemma">
   <h2>Parameters let induction prove addition commutative</h2>
   <p>Peano arithmetic proves \(\forall x\forall y\,(x+y=y+x)\).</p>
-  <p class="proof-label">Proof</p>
-  <p>First prove \(\forall x\forall y\,(Sx+y=S(x+y))\). Fix \(x\) as a parameter and induct on \(y\). At zero both sides are \(Sx\), by axiom 4. If the identity holds for \(y\), then axiom 5 twice gives</p>
-  <div class="math-display">\[Sx+Sy=S(Sx+y)=S(S(x+y))=S(x+Sy).\]</div>
-  <p>The induction axiom universally closes the parameter \(x\), so the identity holds for all \(x,y\).</p>
-  <p>Now fix \(x\) and induct on \(y\) in \(x+y=y+x\). At zero, \(x+0=x=0+x\) by axiom 4 and <a href="#induction-examples"></a>. For the step, the induction hypothesis and the identity just proved yield</p>
-  <div class="math-display">\[x+Sy=S(x+y)=S(y+x)=Sy+x.\]</div>
-  <p>Universal closure over the fixed parameter supplies the result for every \(x\). At no stage was \(x\) allowed to change between the base case and the induction step. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>First prove \(\forall x\forall y\,(Sx+y=S(x+y))\). Fix \(x\) as a parameter and induct on \(y\). At zero both sides are \(Sx\), by axiom 4. If the identity holds for \(y\), then axiom 5 twice gives</p>
+    <div class="math-display">\[Sx+Sy=S(Sx+y)=S(S(x+y))=S(x+Sy).\]</div>
+    <p>The induction axiom universally closes the parameter \(x\), so the identity holds for all \(x,y\).</p>
+    <p>Now fix \(x\) and induct on \(y\) in \(x+y=y+x\). At zero, \(x+0=x=0+x\) by axiom 4 and <a href="#induction-examples"></a>. For the step, the induction hypothesis and the identity just proved yield</p>
+    <div class="math-display">\[x+Sy=S(x+y)=S(y+x)=Sy+x.\]</div>
+    <p>Universal closure over the fixed parameter supplies the result for every \(x\). At no stage was \(x\) allowed to change between the base case and the induction step.</p>
+</div>
 </section>
 
 <section id="finite-fragments" data-formal="arith-nonstandard-theory arith-nonstandard-finite-fragments" data-kind="lemma">
@@ -94,35 +99,39 @@
   <p>Add a fresh constant symbol \(c\) to \(L_A\). Regard the \(\mathrm{PA}\)-axioms as sentences in this expanded language, and form</p>
   <div class="math-display">\[T^*=\mathrm{PA}\cup\{c\ne\overline n:n\in\mathbb N\}.\]</div>
   <p>Every finite subset \(\Delta\subseteq T^*\) has a model.</p>
-  <p class="proof-label">Proof</p>
-  <p>Only finitely many constraints \(c\ne\overline n\) occur in \(\Delta\). Let \(F\subseteq\mathbb N\) be their finite set of indices. Choose \(r\notin F\), for instance one larger than every member of \(F\); if \(F\) is empty, take \(r=0\). Expand \(\mathbb N_A\) by interpreting \(c\) as \(r\). It satisfies every \(\mathrm{PA}\)-axiom, and every listed constraint since \(r\ne n\) for \(n\in F\). Thus it satisfies \(\Delta\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Only finitely many constraints \(c\ne\overline n\) occur in \(\Delta\). Let \(F\subseteq\mathbb N\) be their finite set of indices. Choose \(r\notin F\), for instance one larger than every member of \(F\); if \(F\) is empty, take \(r=0\). Expand \(\mathbb N_A\) by interpreting \(c\) as \(r\). It satisfies every \(\mathrm{PA}\)-axiom, and every listed constraint since \(r\ne n\) for \(n\in F\). Thus it satisfies \(\Delta\).</p>
+</div>
   <p>Different finite subsets can use different values of \(c\). No natural number avoids <em>all</em> numerals in the standard structure. This is precisely the gap that compactness bridges by allowing a different model.</p>
 </section>
 
 <section id="nonstandard-model" data-formal="arith-nonstandard-compactness arith-nonstandard-PA-model arith-nonstandard-not-isomorphic" data-kind="theorem">
   <h2>Peano arithmetic has a nonstandard model</h2>
   <div class="statement-box"><p>There is a model \(M\models\mathrm{PA}\) with an element outside \(\operatorname{Std}(M)\). Consequently \(M\) is not isomorphic to \(\mathbb N_A\): first-order Peano arithmetic is not categorical.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>The expanded language is finite, hence countable. By <a href="#finite-fragments"></a> and <a href="logical-compactness#compactness">compactness</a>, \(T^*\) has a model \(M^*\). Forget the extra constant to obtain its \(L_A\)-reduct \(M\). Since all \(\mathrm{PA}\)-axioms use only \(L_A\), the reduct still satisfies \(\mathrm{PA}\). The element \(a=c^{M^*}\) differs from \(n_M\) for every external \(n\), so \(a\notin\operatorname{Std}(M)\).</p>
-  <p>An isomorphism \(f:\mathbb N_A\to M\) would preserve zero and successor. External induction would then give \(f(n)=n_M\) for every \(n\in\mathbb N\). Its image would be exactly \(\operatorname{Std}(M)\), contradicting surjectivity because it misses \(a\). Thus no such isomorphism exists. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The expanded language is finite, hence countable. By <a href="#finite-fragments"></a> and <a href="logical-compactness#compactness">compactness</a>, \(T^*\) has a model \(M^*\). Forget the extra constant to obtain its \(L_A\)-reduct \(M\). Since all \(\mathrm{PA}\)-axioms use only \(L_A\), the reduct still satisfies \(\mathrm{PA}\). The element \(a=c^{M^*}\) differs from \(n_M\) for every external \(n\), so \(a\notin\operatorname{Std}(M)\).</p>
+    <p>An isomorphism \(f:\mathbb N_A\to M\) would preserve zero and successor. External induction would then give \(f(n)=n_M\) for every \(n\in\mathbb N\). Its image would be exactly \(\operatorname{Std}(M)\), contradicting surjectivity because it misses \(a\). Thus no such isomorphism exists.</p>
+</div>
   <p>A <strong>nonstandard model of arithmetic</strong> is a model of \(\mathrm{PA}\) not isomorphic to \(\mathbb N_A\). Unlike the easy \(Q\)-countermodel, this model satisfies every induction instance and has no successor fixed point.</p>
 </section>
 
 <section id="true-arithmetic" data-formal="arith-true-arithmetic arith-PA-in-true-arithmetic arith-nonstandard-true-arithmetic arith-true-arithmetic-agreement arith-nonstandard-not-isomorphic theory-of-structure-complete" data-kind="theorem">
   <h2>Even all true arithmetic sentences have a nonstandard model</h2>
   <p>Let \(\operatorname{Th}(\mathbb N_A)\) be the <a href="theories-and-axiomatization#theory-of-a-structure">theory of the standard structure</a>: all \(L_A\)-sentences true in \(\mathbb N_A\). This theory is called <strong>true arithmetic</strong>. It contains \(\mathrm{PA}\) and has a nonstandard model satisfying exactly the same sentences as \(\mathbb N_A\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Replace \(\mathrm{PA}\) in <a href="#finite-fragments"></a> by \(\operatorname{Th}(\mathbb N_A)\). The finite satisfiability argument is unchanged: every standard arithmetic sentence remains true when we merely interpret a fresh constant. Compactness supplies a model with one element unequal to every numeral. Its arithmetic reduct satisfies true arithmetic and is not isomorphic to \(\mathbb N_A\), by the same argument as <a href="#nonstandard-model"></a>.</p>
-  <p>For any sentence \(\theta\), either \(\theta\) or \(\neg\theta\) is true in \(\mathbb N_A\) and belongs to its theory. A model of that theory therefore agrees with \(\mathbb N_A\) on every sentence, as claimed. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Replace \(\mathrm{PA}\) in <a href="#finite-fragments"></a> by \(\operatorname{Th}(\mathbb N_A)\). The finite satisfiability argument is unchanged: every standard arithmetic sentence remains true when we merely interpret a fresh constant. Compactness supplies a model with one element unequal to every numeral. Its arithmetic reduct satisfies true arithmetic and is not isomorphic to \(\mathbb N_A\), by the same argument as <a href="#nonstandard-model"></a>.</p>
+    <p>For any sentence \(\theta\), either \(\theta\) or \(\neg\theta\) is true in \(\mathbb N_A\) and belongs to its theory. A model of that theory therefore agrees with \(\mathbb N_A\) on every sentence, as claimed.</p>
+</div>
   <p>This separates noncategoricity from incompleteness. True arithmetic is a satisfiable <a href="theories-and-axiomatization#complete-theories">complete theory</a>, yet has nonisomorphic models. We have made no claim here that its axioms can be effectively listed, nor proved that \(\mathrm{PA}\) is incomplete.</p>
 </section>
 
 <section id="external-standard-copy" data-formal="arith-defines-with-parameters arith-standard-copy-undefinable" data-kind="theorem">
   <h2>The standard copy cannot be defined inside a nonstandard model</h2>
   <div class="statement-box"><p>If \(M\models\mathrm{PA}\) and \(\operatorname{Std}(M)\ne|M|\), then no \(L_A\)-formula, even with finitely many parameters from \(M\), defines \(\operatorname{Std}(M)\) in \(M\).</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(\varphi(x,\bar b)\) defines this subset, so \(M\models\varphi(a,\bar b)\) exactly when \(a\in\operatorname{Std}(M)\). The subset contains \(0^M\). It is closed under successor because \(S^M(n_M)=(n+1)_M\). Hence \(M\) satisfies both \(\varphi(0,\bar b)\) and \(\forall x\,(\varphi(x,\bar b)\to\varphi(Sx,\bar b))\).</p>
-  <p>The induction axiom for \(\varphi(x,\bar y)\), instantiated at the fixed tuple \(\bar b\), gives \(M\models\forall x\,\varphi(x,\bar b)\). By the assumed definition this says \(\operatorname{Std}(M)=|M|\), a contradiction. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose \(\varphi(x,\bar b)\) defines this subset, so \(M\models\varphi(a,\bar b)\) exactly when \(a\in\operatorname{Std}(M)\). The subset contains \(0^M\). It is closed under successor because \(S^M(n_M)=(n+1)_M\). Hence \(M\) satisfies both \(\varphi(0,\bar b)\) and \(\forall x\,(\varphi(x,\bar b)\to\varphi(Sx,\bar b))\).</p>
+    <p>The induction axiom for \(\varphi(x,\bar y)\), instantiated at the fixed tuple \(\bar b\), gives \(M\models\forall x\,\varphi(x,\bar b)\). By the assumed definition this says \(\operatorname{Std}(M)=|M|\), a contradiction.</p>
+</div>
   <p>The obstruction includes parameters naming nonstandard elements. Induction applies to every formula with such fixed parameters, but the standard copy is an external subset that none of those formulas defines.</p>
 </section>
 

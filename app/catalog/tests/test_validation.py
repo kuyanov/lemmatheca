@@ -8,7 +8,52 @@ from unittest.mock import patch
 from django.test import SimpleTestCase
 
 from catalog.files import read_json, write_json
-from catalog.validation import CorpusError, acyclic, validate_corpus
+from catalog.validation import CorpusError, acyclic, checked_source, validate_corpus
+
+
+class ProofStructureTests(SimpleTestCase):
+    def check(self, body):
+        return checked_source('<section id="fact" data-kind="lemma">'
+                              '<h2>A fact</h2><p>A precise statement.</p>'
+                              + body + '</section>')
+
+    def test_proof_boundaries_allow_displays_lists_and_separate_arguments(self):
+        proof = ('<div class="proof">'
+                 + r'<div class="math-display">\[x=x\]</div>'
+                 + '<ul><li>One case.</li><li>The other case.</li></ul>'
+                 + '<p>Hence the conclusion.</p></div>')
+        self.check('<div class="proof"><p>The claim follows.</p></div>')
+        self.check(proof + '<p>A further statement.</p>' + proof)
+        self.check('<details class="question-answer"><summary>Answer</summary>'
+                   '<div class="answer-body">' + proof + '</div></details>')
+        self.check('<p>The cited result establishes the statement.</p>')
+
+    def test_proofs_need_a_container_and_concluding_text(self):
+        cases = [
+            ('<p class="proof">Done.</p>',
+             'proof container must be'),
+            ('<div class="proof"> \n </div>', 'must not be empty'),
+            ('<div class="proof"><p> \n </p></div>', 'paragraph must not be empty'),
+            ('<div class="proof"><div class="proof"><p>Done.</p></div><p>Done.</p></div>',
+             'must not nest'),
+            ('<div class="proof"><p>Done.</p>Further text.</div>', 'concluding paragraph'),
+            ('<div class="proof"><div class="math-display">\\[x=x\\]</div></div>',
+             'concluding paragraph'),
+            ('<div class="proof"><p class="math-display">\\[x=x\\]</p></div>',
+             'concluding paragraph'),
+        ]
+        for body, error in cases:
+            with self.subTest(body=body):
+                with self.assertRaisesRegex(CorpusError, error):
+                    self.check(body)
+
+    def test_proof_markers_are_generated_only_by_css(self):
+        for marker in ('<p class="proof-label">Proof</p>',
+                       '<span class="qed" aria-label="End of proof">□</span>'):
+            for body in (marker, '<div class="proof">' + marker + '<p>Done.</p></div>'):
+                with self.subTest(body=body):
+                    with self.assertRaisesRegex(CorpusError, 'CSS-generated'):
+                        self.check(body)
 
 
 class CorpusValidationTests(SimpleTestCase):
@@ -19,7 +64,7 @@ class CorpusValidationTests(SimpleTestCase):
         self.corpus = self.root / 'corpus'
         (self.corpus / 'nodes').mkdir(parents=True)
         self.taxonomy = self.corpus / 'taxonomy.json'
-        self.index = self.corpus / 'area_entries.json'
+        self.index = self.corpus / 'reading_order.json'
         write_json(self.taxonomy, {'areas': [
             {'id': 'root', 'title': 'Root', 'parent': None,
                 'description': 'Root area.'},

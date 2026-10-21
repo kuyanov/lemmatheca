@@ -1013,16 +1013,25 @@ button {
   line-height: 1.55;
 }
 
-/* Keep a wrapped proof marker inside its concluding paragraph. */
-.proof-body p:has(> .qed) {
+/* Contain the complete argument, including its inline closing marker. */
+.proof {
   display: flow-root;
 }
 
-.qed {
-  float: right;
+.proof::before {
+  content: "Proof";
+  display: block;
+  font-style: italic;
+  margin: 12px 0 6px;
+}
+
+.proof > p:last-child::after {
+  content: "\00a0□";
+  content: "\00a0□" / "End of proof";
   color: var(--green);
   font-size: 22px;
-  margin-left: 15px
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .proof-figure {
@@ -1412,11 +1421,6 @@ button {
 
 .block-permalink:hover {
   color: var(--green);
-}
-
-.proof-label {
-  font-style: italic;
-  margin: 12px 0 6px;
 }
 
 .question-answer {

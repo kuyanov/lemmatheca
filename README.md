@@ -20,7 +20,7 @@ uses the same Git workflow as the application code.
 | Location | Purpose |
 | --- | --- |
 | [`corpus/`](corpus/) | Entries, figures, node records, mathematical areas, reading order, reference planning, and source errors; see the [corpus guide](docs/corpus.md) |
-| [`formal/`](formal/) | One Lean project containing local definitions and proofs, with pinned mathlib dependencies; see the [formalization guide](docs/formal.md) |
+| [`formal/`](formal/) | One Lean project with PascalCase per-entry directories, area-based declaration namespaces, and pinned mathlib dependencies; see the [formalization guide](docs/formal.md) |
 | [`app/`](app/) | A Django reader, templates, CSS, JavaScript, and commands for validation and builds; see the [app guide](docs/app.md) |
 | [`prompts/`](prompts/) | Root area planning and five entry stages; see the [area pipeline](CONTRIBUTING.md#running-an-area-pipeline) |
 | [`docs/`](docs/README.md) | Detailed documentation and maintenance guides |

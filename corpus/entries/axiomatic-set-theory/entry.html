@@ -27,8 +27,9 @@
   <div class="statement-box">
     <p>For every set \(A\), the set \(R_A=\{x\in A:x\notin x\}\) is not a member of \(A\). In particular, no set contains every set.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Separation constructs \(R_A\). If \(R_A\in R_A\), its defining condition gives \(R_A\notin R_A\), a contradiction. Thus \(R_A\notin R_A\). If \(R_A\in A\), this fact would make \(R_A\) satisfy the defining condition and hence belong to \(R_A\), again a contradiction. Therefore \(R_A\notin A\). A universal set would contain \(R_A\), which is impossible. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Separation constructs \(R_A\). If \(R_A\in R_A\), its defining condition gives \(R_A\notin R_A\), a contradiction. Thus \(R_A\notin R_A\). If \(R_A\in A\), this fact would make \(R_A\) satisfy the defining condition and hence belong to \(R_A\), again a contradiction. Therefore \(R_A\notin A\). A universal set would contain \(R_A\), which is impossible.</p>
+</div>
   <p>Separation alone gives this contradiction; no further axiom restricting membership is needed. Unrestricted comprehension, asserting a set \(\{x:\varphi(x)\}\) for every condition without a bounding set, would fail for \(\varphi(x)\) meaning \(x\notin x\).</p>
 </section>
 
@@ -67,16 +68,18 @@
 <section id="ordered-pairs-and-products" data-kind="lemma" data-formal="zf-kuratowski-pair zf-kuratowski-pair-equality zf-cartesian-product zf-cartesian-product-members zf-empty-product-cases">
   <h2>Ordered pairs and products are sets</h2>
   <p>Define the <strong>Kuratowski pair</strong> by \(\langle a,b\rangle=\{\{a\},\{a,b\}\}\). Then \(\langle a,b\rangle=\langle c,d\rangle\) exactly when \(a=c\) and \(b=d\). For sets \(A,B\), the collection \(A\times B\) of these pairs is a set.</p>
-  <p class="proof-label">Proof</p>
-  <p>Pairing constructs the coded pair. The intersection of its members is \(\{a\}\), so equality of coded pairs gives \(a=c\). The union of its members is \(\{a,b\}\), hence \(\{a,b\}=\{a,d\}\). If this is a singleton, both \(b,d\) equal \(a\); otherwise its unique member other than \(a\) is both \(b\) and \(d\). Thus \(b=d\). The converse follows directly from the definition.</p>
-  <p>If \(a\in A\) and \(b\in B\), both \(\{a\}\) and \(\{a,b\}\) are subsets of \(A\cup B\). The pair therefore belongs to \(\mathcal P(\mathcal P(A\cup B))\). Separate from this set the objects equal to \(\langle a,b\rangle\) for some \(a\in A,b\in B\). This gives \(A\times B\), including the empty product when either factor is empty. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Pairing constructs the coded pair. The intersection of its members is \(\{a\}\), so equality of coded pairs gives \(a=c\). The union of its members is \(\{a,b\}\), hence \(\{a,b\}=\{a,d\}\). If this is a singleton, both \(b,d\) equal \(a\); otherwise its unique member other than \(a\) is both \(b\) and \(d\). Thus \(b=d\). The converse follows directly from the definition.</p>
+    <p>If \(a\in A\) and \(b\in B\), both \(\{a\}\) and \(\{a,b\}\) are subsets of \(A\cup B\). The pair therefore belongs to \(\mathcal P(\mathcal P(A\cup B))\). Separate from this set the objects equal to \(\langle a,b\rangle\) for some \(a\in A,b\in B\). This gives \(A\times B\), including the empty product when either factor is empty.</p>
+</div>
 </section>
 
 <section id="function-sets" data-kind="lemma" data-formal="zf-function-graph zf-function-set zf-function-set-members zf-empty-function-set-cases zf-definable-image-members">
   <h2>Graphs and collections of functions need no new axiom</h2>
   <p>A <strong>function</strong> \(f:A\to B\) is represented by its graph, a subset of \(A\times B\) with exactly one pair \(\langle a,b\rangle\) for every \(a\in A\). The collection \(B^A\) of all such graphs is a set.</p>
-  <p class="proof-label">Proof</p>
-  <p>Use Separation on \(\mathcal P(A\times B)\) with the condition that every input has exactly one output. For an individual graph, \(f(a)=b\) abbreviates membership of \(\langle a,b\rangle\) in the graph. If \(A=\varnothing\), the empty graph is the unique function, even when \(B=\varnothing\). If \(A\ne\varnothing\) and \(B=\varnothing\), no graph meets the condition. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Use Separation on \(\mathcal P(A\times B)\) with the condition that every input has exactly one output. For an individual graph, \(f(a)=b\) abbreviates membership of \(\langle a,b\rangle\) in the graph. If \(A=\varnothing\), the empty graph is the unique function, even when \(B=\varnothing\). If \(A\ne\varnothing\) and \(B=\varnothing\), no graph meets the condition.</p>
+</div>
   <p>For a fixed graph \(f:A\to B\), its image is a subset of the already known set \(B\), so Separation suffices. Collecting outputs without a pre-existing bound requires a further construction principle.</p>
 </section>
 
@@ -98,7 +101,7 @@
 
 <section id="foundation" data-kind="definition" data-formal="zf-foundation-minimal-member zf-foundation-two-nonempty-minima">
   <h2>Foundation requires a membership-minimal member</h2>
-  <p>The <strong>Foundation axiom</strong>, also called Regularity, says that every nonempty set \(A\) has a member \(a\) such that \(a\cap A=\varnothing\). Equivalently, no member of \(A\) belongs to \(a\).</p>
+  <p>The <strong>Foundation axiom</strong>, also called <strong>Regularity</strong>, says that every nonempty set \(A\) has a member \(a\) such that \(a\cap A=\varnothing\). Equivalently, no member of \(A\) belongs to \(a\).</p>
   <p>This does not say that \(a\) is empty or unique. For example, let \(0=\varnothing\), \(1=\{0\}\), \(2=\{0,1\}\), and \(A=\{1,\{2\}\}\). The two members are distinct: equality \(1=\{2\}\) would imply \(0=2\), although \(0\) is empty and \(2\) is not. Both have empty intersection with \(A\), although neither is empty.</p>
   <p>Foundation controls membership, whereas the axioms above mostly construct sets.</p>
 </section>

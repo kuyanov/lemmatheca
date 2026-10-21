@@ -1,14 +1,15 @@
 <section id="choice-functions" data-kind="definition" data-formal="choice-principle simultaneous-choice">
   <h2>Making one selection for each member of a family</h2>
-<p>Let \((A_i)_{i\in I}\) be a family of nonempty sets, and put \(U=\bigcup_{i\in I}A_i\). A <strong>choice function</strong> is a function \(c:I\to U\) such that \(c(i)\in A_i\) for every \(i\in I\). The <a href="axiomatic-set-theory#choice-and-zfc">axiom of choice</a>, abbreviated AC, says that every such set-indexed family has a choice function.</p>
+<p>Let \((A_i)_{i\in I}\) be a family of nonempty sets, and put \(U=\bigcup_{i\in I}A_i\). A <strong>choice function</strong> is a function \(c:I\to U\) such that \(c(i)\in A_i\) for every \(i\in I\). The <a href="axiomatic-set-theory#choice-and-zfc"><strong>axiom of choice</strong></a>, abbreviated AC, says that every such set-indexed family has a choice function.</p>
 <p>Each individual set being nonempty says that a suitable value exists for each index. AC supplies a single function making all those selections together. We will show that this principle is equivalent to two statements about orders. The arguments use ordinary set formation, including the <a href="axiomatic-set-theory#replacement">Replacement principle</a>, but invoke choice only where indicated.</p>
 </section>
 
 <section id="choices-without-the-axiom" data-kind="lemma" data-formal="finite-family-choice well-ordered-family-choice">
   <h2>Some families already provide a rule for choosing</h2>
 <p>A finite family of nonempty sets has a choice function without assuming AC. So does any family of nonempty subsets of a given well-ordered set.</p>
-<p class="proof-label">Proof</p>
-<p>For a finite family, induct on its number of indices. The empty family has the empty function. At the next step, choose a member of the one additional nonempty set and extend the earlier function. For subsets of a well-ordered set, assign to each subset its least member. Uniqueness specifies a function on the entire family. <span class="qed" aria-label="End of proof">□</span></p>
+<div class="proof">
+  <p>For a finite family, induct on its number of indices. The empty family has the empty function. At the next step, choose a member of the one additional nonempty set and extend the earlier function. For subsets of a well-ordered set, assign to each subset its least member. Uniqueness specifies a function on the entire family.</p>
+</div>
 <p>For example, nonempty subsets of \(\mathbb N\) have canonical least members. A general countably indexed family need not come with such a rule; finite induction by itself does not supply one function on all its indices.</p>
 </section>
 
@@ -46,43 +47,47 @@
 <section id="hartogs-bound" data-kind="lemma" data-formal="hartogs-well-ordered-subset-types hartogs-bound hartogs-bound-no-injection">
   <h2>A set cannot contain distinct choices for arbitrarily long</h2>
 <p>For every set \(A\), there is an ordinal \(h\) for which no injection \(h\to A\) exists. This fact, called <strong>Hartogs’s theorem</strong>, does not require AC.</p>
-<p class="proof-label">Proof</p>
-<p>All well-orders on subsets of \(A\) form a set: their domains belong to \(\mathcal P(A)\), and their relations belong to \(\mathcal P(A\times A)\). Each has a unique ordinal type. Replacement collects these types into a set \(T\). Let \(h=\sup\{\alpha+1:\alpha\in T\}\), which exists by <a href="ordinals#ordinal-suprema">the supremum theorem</a>.</p>
-<p>If \(h\) injected into \(A\), transport its well-order to the image. This would make \(h\) one of the types in \(T\), and hence \(h+1\le h\), a contradiction. <span class="qed" aria-label="End of proof">□</span></p>
+<div class="proof">
+  <p>All well-orders on subsets of \(A\) form a set: their domains belong to \(\mathcal P(A)\), and their relations belong to \(\mathcal P(A\times A)\). Each has a unique ordinal type. Replacement collects these types into a set \(T\). Let \(h=\sup\{\alpha+1:\alpha\in T\}\), which exists by <a href="ordinals#ordinal-suprema">the supremum theorem</a>.</p>
+  <p>If \(h\) injected into \(A\), transport its well-order to the image. This would make \(h\) one of the types in \(T\), and hence \(h+1\le h\), a contradiction.</p>
+</div>
 <p>Only a set of order types is collected. There is no appeal to a set of all ordinals. The empty well-order is among the possibilities, so the bound also works when \(A\) is empty.</p>
 </section>
 
 <section id="choice-implies-well-ordering" data-kind="theorem" data-formal="choice-equivalent-well-ordering choice-bounded-listing-rule choice-bounded-listing-exhausts">
   <h2>Choice lets us list an entire set in well-ordered stages</h2>
 <p>AC implies the well-ordering principle.</p>
-<p class="proof-label">Proof</p>
-<p>Fix a set \(A\). Apply AC to its nonempty subsets to obtain a selector \(s\), with \(s(B)\in B\). Fix a marker \(*\) outside \(A\), and an ordinal \(h\) as in <a href="#hartogs-bound"></a>. Use recursion on \(h\), with fixed value set \(A\cup\{*\}\). Given earlier values \(f\mathbin{\upharpoonright}\alpha\), let</p>
-<div class="math-display">\[
-f(\alpha)=
-\begin{cases}
-s\bigl(A\setminus\operatorname{ran}(f\mathbin{\upharpoonright}\alpha)\bigr),&amp;\text{if this remaining set is nonempty},\\
-*,&amp;\text{otherwise}.
-\end{cases}
-\]</div>
-<p>This rule is defined for every history, so the <a href="well-ordered-sets#well-order-recursion">recursion theorem</a> applies. Before the first marker, each value is a new member of \(A\). If a marker never appeared, \(f\) would inject \(h\) into \(A\), contradicting the bound. Let \(\lambda\) be the first marker stage. At that stage nothing remains, so \(f\mathbin{\upharpoonright}\lambda\) is a bijection onto \(A\). Transfer the ordinal order of \(\lambda\) along it to well-order \(A\). For \(A=\varnothing\), the first marker occurs at zero and the resulting order is empty. <span class="qed" aria-label="End of proof">□</span></p>
+<div class="proof">
+  <p>Fix a set \(A\). Apply AC to its nonempty subsets to obtain a selector \(s\), with \(s(B)\in B\). Fix a marker \(*\) outside \(A\), and an ordinal \(h\) as in <a href="#hartogs-bound"></a>. Use recursion on \(h\), with fixed value set \(A\cup\{*\}\). Given earlier values \(f\mathbin{\upharpoonright}\alpha\), let</p>
+  <div class="math-display">\[
+  f(\alpha)=
+  \begin{cases}
+  s\bigl(A\setminus\operatorname{ran}(f\mathbin{\upharpoonright}\alpha)\bigr),&amp;\text{if this remaining set is nonempty},\\
+  *,&amp;\text{otherwise}.
+  \end{cases}
+  \]</div>
+  <p>This rule is defined for every history, so the <a href="well-ordered-sets#well-order-recursion">recursion theorem</a> applies. Before the first marker, each value is a new member of \(A\). If a marker never appeared, \(f\) would inject \(h\) into \(A\), contradicting the bound. Let \(\lambda\) be the first marker stage. At that stage nothing remains, so \(f\mathbin{\upharpoonright}\lambda\) is a bijection onto \(A\). Transfer the ordinal order of \(\lambda\) along it to well-order \(A\). For \(A=\varnothing\), the first marker occurs at zero and the resulting order is empty.</p>
+</div>
 </section>
 
 <section id="well-ordering-implies-zorn" data-kind="theorem" data-formal="well-ordering-equivalent-zorn chain-selector-increasing-recursion">
   <h2>A well-order prevents endless strict extension</h2>
 <p>The well-ordering principle implies Zorn’s lemma.</p>
-<p class="proof-label">Proof</p>
-<p>Let \(P\) satisfy Zorn’s hypotheses, and fix a well-order of its underlying set. Suppose there is no maximal point. Every chain \(C\) then has a <em>strict</em> upper bound: take an upper bound \(u\). If \(u\notin C\), every point of \(C\) is strictly below \(u\). If \(u\in C\), nonmaximality gives \(v&gt;u\), which is strictly above all of \(C\). For the empty chain any point is a strict upper bound, vacuously.</p>
-<p>Choose for each chain the least strict upper bound in the fixed well-order of \(P\). Recursively on a Hartogs bound \(h\) for \(P\), make the next value this chosen bound of the earlier values. To define the rule on all possible histories, use a fixed point of the nonempty set \(P\) whenever the history has no strict upper bound.</p>
-<p>Induction shows that the actual history is always a chain and that every new value is strictly above all earlier values. At a limit, any two earlier values already occur together at an earlier stage. Thus the fallback is never used, and the recursion gives an injection \(h\to P\). This contradicts <a href="#hartogs-bound"></a>. A maximal point must exist. <span class="qed" aria-label="End of proof">□</span></p>
+<div class="proof">
+  <p>Let \(P\) satisfy Zorn’s hypotheses, and fix a well-order of its underlying set. Suppose there is no maximal point. Every chain \(C\) then has a <em>strict</em> upper bound: take an upper bound \(u\). If \(u\notin C\), every point of \(C\) is strictly below \(u\). If \(u\in C\), nonmaximality gives \(v&gt;u\), which is strictly above all of \(C\). For the empty chain any point is a strict upper bound, vacuously.</p>
+  <p>Choose for each chain the least strict upper bound in the fixed well-order of \(P\). Recursively on a Hartogs bound \(h\) for \(P\), make the next value this chosen bound of the earlier values. To define the rule on all possible histories, use a fixed point of the nonempty set \(P\) whenever the history has no strict upper bound.</p>
+  <p>Induction shows that the actual history is always a chain and that every new value is strictly above all earlier values. At a limit, any two earlier values already occur together at an earlier stage. Thus the fallback is never used, and the recursion gives an injection \(h\to P\). This contradicts <a href="#hartogs-bound"></a>. A maximal point must exist.</p>
+</div>
 </section>
 
 <section id="zorn-implies-choice" data-kind="theorem" data-formal="choice-equivalent-well-ordering well-ordering-equivalent-zorn partial-selection-graph partial-selection-chain-union maximal-partial-selection-total">
   <h2>A maximal partial selection must select everywhere</h2>
 <p>Zorn’s lemma implies AC.</p>
-<p class="proof-label">Proof</p>
-<p>For a family \((A_i)_{i\in I}\) of nonempty sets, order its partial choice functions by extension of their graphs. These graphs are subsets of \(I\times U\), where \(U=\bigcup_i A_i\), so they form a set. The empty graph is one such function.</p>
-<p>The union of a chain of partial choice functions is a partial choice function: any two assigned values at the same index occur together in one of the functions in the chain, and therefore agree. Every assigned value still belongs to the required set. The union extends every member of the chain; the empty chain has the empty function as an upper bound.</p>
-<p>Zorn gives a maximal partial function \(c\). If an index \(i\) were missing from its domain, take one member \(a\in A_i\). Adjoining \((i,a)\) would properly extend \(c\), a contradiction. Thus \(c\) is defined on all of \(I\). Choosing this one witness in a contradiction argument does not assume a simultaneous choice function for the original family. <span class="qed" aria-label="End of proof">□</span></p>
+<div class="proof">
+  <p>For a family \((A_i)_{i\in I}\) of nonempty sets, order its partial choice functions by extension of their graphs. These graphs are subsets of \(I\times U\), where \(U=\bigcup_i A_i\), so they form a set. The empty graph is one such function.</p>
+  <p>The union of a chain of partial choice functions is a partial choice function: any two assigned values at the same index occur together in one of the functions in the chain, and therefore agree. Every assigned value still belongs to the required set. The union extends every member of the chain; the empty chain has the empty function as an upper bound.</p>
+  <p>Zorn gives a maximal partial function \(c\). If an index \(i\) were missing from its domain, take one member \(a\in A_i\). Adjoining \((i,a)\) would properly extend \(c\), a contradiction. Thus \(c\) is defined on all of \(I\). Choosing this one witness in a contradiction argument does not assume a simultaneous choice function for the original family.</p>
+</div>
 </section>
 
 <section id="three-equivalent-principles" data-kind="theorem" data-formal="choice-equivalent-well-ordering well-ordering-equivalent-zorn">
@@ -90,16 +95,18 @@ s\bigl(A\setminus\operatorname{ran}(f\mathbin{\upharpoonright}\alpha)\bigr),&amp
   <div class="statement-box">
     <p>The axiom of choice, the well-ordering principle, and Zorn’s lemma are equivalent.</p>
   </div>
-<p class="proof-label">Proof</p>
-<p>The preceding results give the cycle AC implies well-ordering, well-ordering implies Zorn, and Zorn implies AC. Following the cycle yields every other implication. There is also a direct proof that well-ordering implies AC: well-order the union of a family of nonempty sets and choose the least member of each set. <span class="qed" aria-label="End of proof">□</span></p>
+<div class="proof">
+  <p>The preceding results give the cycle AC implies well-ordering, well-ordering implies Zorn, and Zorn implies AC. Following the cycle yields every other implication. There is also a direct proof that well-ordering implies AC: well-order the union of a family of nonempty sets and choose the least member of each set.</p>
+</div>
 <p>These are <a href="first-order-proofs#theory-relative-claims">equivalences over ZF</a>: each implication uses the other ZF axioms as background. The principles offer different ways to express the same assumption. Choice functions specify selections, well-orders permit least-element arguments and recursion, and Zorn’s lemma turns closure under chains into a maximal object.</p>
 </section>
 
 <section id="sections-of-surjections" data-kind="lemma" data-formal="surjections-have-sections-principle choice-equivalent-sections projection-section-choice-function surjection-right-inverse">
   <h2>Choice is also a way to reverse surjections</h2>
 <p>AC is equivalent to the assertion that every surjection \(p:E\to I\) has a <strong>section</strong>: a map \(s:I\to E\) with \(p\circ s=\operatorname{id}_I\).</p>
-<p class="proof-label">Proof</p>
-<p>Under AC, choose one point of every nonempty fiber \(p^{-1}(\{i\})\); these choices form a section. Conversely, for nonempty sets \(A_i\), let \(E=\{(i,a):i\in I,\ a\in A_i\}\). Projection onto \(I\) is surjective. A section has the form \(s(i)=(i,c(i))\), and its second coordinates give a choice function. Empty index sets cause no difficulty. <span class="qed" aria-label="End of proof">□</span></p>
+<div class="proof">
+  <p>Under AC, choose one point of every nonempty fiber \(p^{-1}(\{i\})\); these choices form a section. Conversely, for nonempty sets \(A_i\), let \(E=\{(i,a):i\in I,\ a\in A_i\}\). Projection onto \(I\) is surjective. A section has the form \(s(i)=(i,c(i))\), and its second coordinates give a choice function. Empty index sets cause no difficulty.</p>
+</div>
 </section>
 
 <section id="adjoining-a-comparison" data-kind="lemma" data-formal="strict-order-adjoined-comparison strict-order-adjoined-comparison-valid">
@@ -109,8 +116,9 @@ s\bigl(A\setminus\operatorname{ran}(f\mathbin{\upharpoonright}\alpha)\bigr),&amp
 R'=R\cup\{(x,y):x\le_R a\text{ and }b\le_R y\}
 \]</div>
 <p>is a strict partial order extending \(R\) and containing \((a,b)\).</p>
-<p class="proof-label">Proof</p>
-<p>A new loop at \(x\) would imply \(b\le_R x\le_R a\), contrary to incomparability. For transitivity, two old comparisons compose in \(R\). An old comparison followed by a new one still has its first point below \(a\); a new comparison followed by an old one still has its last point above \(b\). In either case the composed comparison is new or already old. Two new consecutive comparisons would require \(b\le_R y\le_R a\) at their middle point, which is impossible. Thus \(R'\) is irreflexive and transitive. The pair \((a,b)\) is genuinely new. <span class="qed" aria-label="End of proof">□</span></p>
+<div class="proof">
+  <p>A new loop at \(x\) would imply \(b\le_R x\le_R a\), contrary to incomparability. For transitivity, two old comparisons compose in \(R\). An old comparison followed by a new one still has its first point below \(a\); a new comparison followed by an old one still has its last point above \(b\). In either case the composed comparison is new or already old. Two new consecutive comparisons would require \(b\le_R y\le_R a\) at their middle point, which is impossible. Thus \(R'\) is irreflexive and transitive. The pair \((a,b)\) is genuinely new.</p>
+</div>
 </section>
 
 <section id="order-extension" data-kind="theorem" data-formal="partial-order-linear-extension">
@@ -118,9 +126,10 @@ R'=R\cup\{(x,y):x\le_R a\text{ and }b\le_R y\}
   <div class="statement-box">
     <p>Assuming AC, every partial order on a set \(A\) has a total order extension on the same set.</p>
   </div>
-<p class="proof-label">Proof</p>
-<p>Let \(R_0\) be its strict part. Order by inclusion the set of all strict partial orders on \(A\) containing \(R_0\). It is nonempty because it contains \(R_0\). The union of a chain is irreflexive. It is transitive because any two consecutive comparisons in the union belong together to one member of the chain. The union is therefore an upper bound; for the empty chain use \(R_0\).</p>
-<p>Zorn gives a maximal relation \(R\). If two points were incomparable, <a href="#adjoining-a-comparison"></a> would produce a larger strict partial order, contradicting maximality. Thus \(R\) compares every pair of distinct points. Its reflexive closure is the required total order and preserves every original comparison. The construction also covers the empty set. <span class="qed" aria-label="End of proof">□</span></p>
+<div class="proof">
+  <p>Let \(R_0\) be its strict part. Order by inclusion the set of all strict partial orders on \(A\) containing \(R_0\). It is nonempty because it contains \(R_0\). The union of a chain is irreflexive. It is transitive because any two consecutive comparisons in the union belong together to one member of the chain. The union is therefore an upper bound; for the empty chain use \(R_0\).</p>
+  <p>Zorn gives a maximal relation \(R\). If two points were incomparable, <a href="#adjoining-a-comparison"></a> would produce a larger strict partial order, contradicting maximality. Thus \(R\) compares every pair of distinct points. Its reflexive closure is the required total order and preserves every original comparison. The construction also covers the empty set.</p>
+</div>
 <p>Maximality here concerns inclusion of order relations. It does not claim that the elements of \(A\) themselves have a greatest point.</p>
 </section>
 
@@ -145,25 +154,28 @@ R'=R\cup\{(x,y):x\le_R a\text{ and }b\le_R y\}
   <div class="statement-box">
     <p>Over ZF, AC is equivalent to the assertion that for every two sets \(A,B\), there is an injection \(A\to B\) or an injection \(B\to A\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Under AC, well-order both sets. Their ordinal types are comparable by <a href="ordinals#ordinal-comparison">ordinal comparison</a>; inclusion of the smaller type into the larger gives the required injection after transporting it to the sets.</p>
-  <p>Conversely, compare any set \(A\) with its <a href="#hartogs-bound">Hartogs bound</a> \(h\). There is no injection \(h\to A\), so comparability supplies an injection \(A\to h\). Pull back the ordinal order along this injection to well-order \(A\). The well-ordering principle implies AC by <a href="#three-equivalent-principles"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Under AC, well-order both sets. Their ordinal types are comparable by <a href="ordinals#ordinal-comparison">ordinal comparison</a>; inclusion of the smaller type into the larger gives the required injection after transporting it to the sets.</p>
+    <p>Conversely, compare any set \(A\) with its <a href="#hartogs-bound">Hartogs bound</a> \(h\). There is no injection \(h\to A\), so comparability supplies an injection \(A\to h\). Pull back the ordinal order along this injection to well-order \(A\). The well-ordering principle implies AC by <a href="#three-equivalent-principles"></a>.</p>
+</div>
   <p>Cantor–Schröder–Bernstein proves that injections in both directions give equal sizes without Choice. Comparability asks for at least one direction for every pair of sets, and this stronger assertion is precisely where AC is needed.</p>
 </section>
 
 <section id="hausdorff-maximal-principle" data-kind="theorem" data-formal="hausdorff-maximal-principle choice-equivalent-hausdorff-principle maximal-chain-upper-bound-maximal">
   <h2>Every chain extends to a maximal chain</h2>
   <p>The <strong>Hausdorff maximal principle</strong> says that every chain in a partially ordered set is contained in a chain maximal under inclusion. Over ZF it is equivalent to AC.</p>
-  <p class="proof-label">Proof</p>
-  <p>Assume Zorn's lemma and fix a chain \(C_0\) in a poset \(P\). Order the set of chains containing \(C_0\) by inclusion. It is nonempty, and the union of a nonempty inclusion-chain is again a chain containing \(C_0\): two of its points occur together in one constituent. For the empty inclusion-chain use \(C_0\) as an upper bound. Zorn gives a maximal chain extending \(C_0\).</p>
-  <p>Conversely, suppose the maximal principle holds and \(P\) satisfies Zorn's hypotheses. Extend the empty chain to a maximal chain \(C\), and let \(u\) be an upper bound for \(C\). Since \(C\cup\{u\}\) is a chain, maximality forces \(u\in C\). If \(v&gt;u\), then \(C\cup\{v\}\) would be a larger chain. Thus \(u\) is maximal in \(P\), proving Zorn's lemma and hence AC. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Assume Zorn's lemma and fix a chain \(C_0\) in a poset \(P\). Order the set of chains containing \(C_0\) by inclusion. It is nonempty, and the union of a nonempty inclusion-chain is again a chain containing \(C_0\): two of its points occur together in one constituent. For the empty inclusion-chain use \(C_0\) as an upper bound. Zorn gives a maximal chain extending \(C_0\).</p>
+    <p>Conversely, suppose the maximal principle holds and \(P\) satisfies Zorn's hypotheses. Extend the empty chain to a maximal chain \(C\), and let \(u\) be an upper bound for \(C\). Since \(C\cup\{u\}\) is a chain, maximality forces \(u\in C\). If \(v&gt;u\), then \(C\cup\{v\}\) would be a larger chain. Thus \(u\) is maximal in \(P\), proving Zorn's lemma and hence AC.</p>
+</div>
 </section>
 
 <section id="tukeys-lemma" data-kind="theorem" data-formal="finite-character-family tukey-maximal-principle choice-equivalent-tukey-principle chains-finite-character finite-character-empty-member finite-character-chain-union">
   <h2>Finite tests lead to maximal members</h2>
   <p>A family \(\mathcal F\subseteq\mathcal P(X)\) has <strong>finite character</strong> if, for every \(A\subseteq X\), membership \(A\in\mathcal F\) is equivalent to every finite subset of \(A\) belonging to \(\mathcal F\). <strong>Tukey's lemma</strong> says that if \(\mathcal F\) is nonempty and has finite character, every \(A_0\in\mathcal F\) extends to an inclusion-maximal member. Over ZF it is equivalent to AC.</p>
-  <p class="proof-label">Proof</p>
-  <p>Assume Zorn's lemma. Order the members of \(\mathcal F\) containing \(A_0\) by inclusion. For a nonempty chain, every finite subset of its union lies in one chain member: find a containing member for each of the finitely many points and take the largest of those finitely many members. Finite character puts the finite subset, and then the union, in \(\mathcal F\). The empty chain has upper bound \(A_0\). Zorn supplies a maximal extension.</p>
-  <p>Conversely, the family of chains in any poset has finite character: a subset is a chain exactly when every two of its points are comparable, and this is detected on finite subsets. Tukey's lemma therefore gives the Hausdorff maximal principle, and hence AC. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Assume Zorn's lemma. Order the members of \(\mathcal F\) containing \(A_0\) by inclusion. For a nonempty chain, every finite subset of its union lies in one chain member: find a containing member for each of the finitely many points and take the largest of those finitely many members. Finite character puts the finite subset, and then the union, in \(\mathcal F\). The empty chain has upper bound \(A_0\). Zorn supplies a maximal extension.</p>
+    <p>Conversely, the family of chains in any poset has finite character: a subset is a chain exactly when every two of its points are comparable, and this is detected on finite subsets. Tukey's lemma therefore gives the Hausdorff maximal principle, and hence AC.</p>
+</div>
   <p>Finite character includes the empty subset in its tests. A nonempty family of finite character must contain the empty set.</p>
 </section>

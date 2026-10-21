@@ -1,13 +1,13 @@
 {
   "id": "res-formula-refutation",
   "description": "If a finite clause representation is equivalent to \\(\\neg A\\) in the shared propositional syntax, \\(A\\) is valid if and only if that clause set has a resolution refutation.",
-  "module": "Lemmatheca.MathematicalLogic.Resolution",
-  "declaration": "Lemmatheca.MathematicalLogic.Resolution.formula_refutation",
+  "module": "Lemmatheca.Resolution.Resolution",
+  "declaration": "Lemmatheca.ProofTheory.Resolution.formula_refutation",
   "dependencies": [
     "res-list-cnf-bridge",
     "res-refutation-iff"
   ],
   "verified": true,
-  "declaration_line": 445,
-  "signature": "Lemmatheca.MathematicalLogic.Resolution.formula_refutation.{u} {α : Type u} [DecidableEq α]\n  (A : Lemmatheca.MathematicalLogic.PropFormula α) (L : List (List (Lemmatheca.MathematicalLogic.PropLiteral α)))\n  (h : Lemmatheca.MathematicalLogic.SemEquivalent A.neg (Lemmatheca.MathematicalLogic.cnfFormula L)) :\n  Lemmatheca.MathematicalLogic.Tautology A ↔\n    Lemmatheca.MathematicalLogic.Resolution.Derives (Lemmatheca.MathematicalLogic.Resolution.ofCnf L) ∅"
+  "declaration_line": 447,
+  "signature": "Lemmatheca.ProofTheory.Resolution.formula_refutation.{u} {α : Type u} [DecidableEq α]\n  (A : Lemmatheca.MathematicalLogic.Propositional.PropFormula α)\n  (L : List (List (Lemmatheca.MathematicalLogic.Propositional.PropLiteral α)))\n  (h :\n    Lemmatheca.MathematicalLogic.Propositional.SemEquivalent A.neg\n      (Lemmatheca.MathematicalLogic.Propositional.cnfFormula L)) :\n  Lemmatheca.MathematicalLogic.Propositional.Tautology A ↔\n    Lemmatheca.ProofTheory.Resolution.Derives (Lemmatheca.ProofTheory.Resolution.ofCnf L) ∅"
 }

@@ -24,18 +24,19 @@
   <h2>The pigeonhole principle</h2>
   <p>If there is an injection \([m]\to[n]\), then \(m\le n\). Consequently, any map
     \([m]\to[n]\) with \(m&gt;n\) sends two distinct inputs to the same output.</p>
-  <p class="proof-label">Proof</p>
-  <p>We prove the first assertion by induction on \(n\), allowing every \(m\).
-    When \(n=0\), a map to \(\varnothing\) can only have empty domain, so \(m=0\).</p>
-  <p>Suppose the assertion holds for codomain \([n]\), and let \(f:[m]\to[n+1]\) be
-    injective. If \(m=0\), the desired inequality holds. Otherwise remove the input
-    \(m-1\) and its output \(b=f(m-1)\). Injectivity ensures that the remaining inputs
-    map into \([n+1]\setminus\{b\}\). This codomain is in bijection with \([n]\):
-    send \(y&lt;b\) to \(y\), and \(y&gt;b\) to \(y-1\). The inverse sends \(j&lt;b\)
-    to \(j\), and \(j\ge b\) to \(j+1\). Composing gives an injection
-    \([m-1]\to[n]\). The induction hypothesis yields \(m-1\le n\), hence \(m\le n+1\).</p>
-  <p>For the consequence, a map with no repeated output would be injective, contradicting the
-    first assertion. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>We prove the first assertion by induction on \(n\), allowing every \(m\).
+      When \(n=0\), a map to \(\varnothing\) can only have empty domain, so \(m=0\).</p>
+    <p>Suppose the assertion holds for codomain \([n]\), and let \(f:[m]\to[n+1]\) be
+      injective. If \(m=0\), the desired inequality holds. Otherwise remove the input
+      \(m-1\) and its output \(b=f(m-1)\). Injectivity ensures that the remaining inputs
+      map into \([n+1]\setminus\{b\}\). This codomain is in bijection with \([n]\):
+      send \(y&lt;b\) to \(y\), and \(y&gt;b\) to \(y-1\). The inverse sends \(j&lt;b\)
+      to \(j\), and \(j\ge b\) to \(j+1\). Composing gives an injection
+      \([m-1]\to[n]\). The induction hypothesis yields \(m-1\le n\), hence \(m\le n+1\).</p>
+    <p>For the consequence, a map with no repeated output would be injective, contradicting the
+      first assertion.</p>
+</div>
   <p>For example, any map from \(\{0,1,2,3\}\) to \(\{a,b,c\}\), where the three
     output labels are distinct, has a fiber containing at least two elements.</p>
 </section>
@@ -46,42 +47,48 @@
   <div class="statement-box">
     <p>If \(e:[m]\to A\) and \(d:[n]\to A\) are bijections, then \(m=n\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>The inverse of \(d\) exists by
-    <a href="sets-and-maps#inverse-maps">the inverse-map theorem</a>. Thus \(d^{-1}\circ e\)
-    is a bijection \([m]\to[n]\), and its inverse is an injection \([n]\to[m]\).
-    Applying <a href="#finite-pigeonhole"></a> in both directions gives \(m\le n\) and
-    \(n\le m\), so \(m=n\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The inverse of \(d\) exists by
+      <a href="sets-and-maps#inverse-maps">the inverse-map theorem</a>. Thus \(d^{-1}\circ e\)
+      is a bijection \([m]\to[n]\), and its inverse is an injection \([n]\to[m]\).
+      Applying <a href="#finite-pigeonhole"></a> in both directions gives \(m\le n\) and
+      \(n\le m\), so \(m=n\).</p>
+</div>
   <p>For finite \(A\), this unique number is its <strong>cardinality</strong>, written \(|A|\).
     In particular, \(|\varnothing|=0\) and \(|\{a\}|=1\). Changing the order of a list
     cannot change \(|A|\).</p>
-  <p>The natural numbers are infinite. If \(\mathbb N\) were in bijection with \([n]\),
-    restricting the inverse bijection to \([n+1]\subseteq\mathbb N\) would give an injection
-    \([n+1]\to[n]\), contradicting <a href="#finite-pigeonhole"></a>.</p>
+  <p>The natural numbers are infinite.</p>
+  <div class="proof">
+    <p>If \(\mathbb N\) were in bijection with \([n]\),
+      restricting the inverse bijection to \([n+1]\subseteq\mathbb N\) would give an injection
+      \([n+1]\to[n]\), contradicting <a href="#finite-pigeonhole"></a>.</p>
+</div>
 </section>
 
 <section id="finite-subsets-and-images" data-kind="lemma"
   data-formal="finite-subsets finite-images">
   <h2>Subsets and images of finite sets</h2>
   <p>Every subset of a finite set is finite. The image of a finite set under any map is finite.</p>
-  <p class="proof-label">Proof</p>
-  <p>Let \(e:[n]\to A\) be a bijection. For \(S\subseteq A\), scan the finite list
-    \(e(0),\ldots,e(n-1)\) and retain exactly the terms lying in \(S\). The retained list
-    contains each element of \(S\) exactly once. If it has \(r\) terms, it gives a bijection
-    \([r]\to S\), including \(r=0\).</p>
-  <p>For a map \(f:A\to B\), scan \(f(e(0)),\ldots,f(e(n-1))\) and retain a term
-    only when its value has not already occurred. Every element of \(f(A)\) occurs in the
-    original list, so the retained list contains each image value exactly once. It enumerates
-    \(f(A)\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Let \(e:[n]\to A\) be a bijection. For \(S\subseteq A\), scan the finite list
+      \(e(0),\ldots,e(n-1)\) and retain exactly the terms lying in \(S\). The retained list
+      contains each element of \(S\) exactly once. If it has \(r\) terms, it gives a bijection
+      \([r]\to S\), including \(r=0\).</p>
+    <p>For a map \(f:A\to B\), scan \(f(e(0)),\ldots,f(e(n-1))\) and retain a term
+      only when its value has not already occurred. Every element of \(f(A)\) occurs in the
+      original list, so the retained list contains each image value exactly once. It enumerates
+      \(f(A)\).</p>
+</div>
 </section>
 
 <section id="finite-unions-of-finite-sets" data-kind="lemma"
   data-formal="finite-binary-union finite-union-of-finite-sets finite-indexed-union-of-finite-sets">
   <h2>A finite union of finite sets is finite</h2>
   <p>If \(A\) and \(B\) are finite, then \(A\cup B\) is finite. More generally, if \(I\) is a finite index set and each \(A_i\) is finite for \(i\in I\), then \(\bigcup_{i\in I}A_i\) is finite. Equivalently, for a finite set \(\mathcal A\) of finite sets, \(\bigcup\mathcal A\) is finite.</p>
-  <p class="proof-label">Proof</p>
-  <p>Concatenate finite lists of the elements of \(A\) and \(B\), then discard repeated occurrences as in <a href="#finite-subsets-and-images"></a>. The remaining list contains every member of \(A\cup B\) exactly once, proving the binary case.</p>
-  <p>For a family \(A_0,\ldots,A_{r-1}\), induct on \(r\). The empty family has empty union. Adding \(A_r\) takes the union of two finite sets, so the binary case completes the induction. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Concatenate finite lists of the elements of \(A\) and \(B\), then discard repeated occurrences as in <a href="#finite-subsets-and-images"></a>. The remaining list contains every member of \(A\cup B\) exactly once, proving the binary case.</p>
+    <p>For a family \(A_0,\ldots,A_{r-1}\), induct on \(r\). The empty family has empty union. Adding \(A_r\) takes the union of two finite sets, so the binary case completes the induction.</p>
+</div>
   <p>Consequently, if a finite family of sets has infinite union, at least one of its members is infinite.</p>
 </section>
 
@@ -89,18 +96,19 @@
   data-formal="finite-self-map-injective-iff-surjective nat-successor-injective nat-successor-ne-zero natural-predecessor-example">
   <h2>Injective and surjective self-maps of a finite set</h2>
   <p>For a finite set \(A\), a map \(f:A\to A\) is injective if and only if it is surjective.</p>
-  <p class="proof-label">Proof</p>
-  <p>Use a bijection \([n]\to A\) to replace \(f\) by a map \(g:[n]\to[n]\).
-    If \(n=0\), the unique map is both injective and surjective. If \(n&gt;0\) and
-    \(g\) is injective but misses \(b\), relabel \([n]\setminus\{b\}\) as \([n-1]\)
-    as in <a href="#finite-pigeonhole"></a>. This gives an injection \([n]\to[n-1]\),
-    a contradiction. Thus an injective \(g\) is surjective.</p>
-  <p>Now suppose \(g\) is surjective. For each \(y\in[n]\), let \(s(y)\) be the least
-    input with \(g(s(y))=y\). The map \(s:[n]\to[n]\) is injective: equal chosen inputs
-    have equal outputs under \(g\). By the direction just proved, \(s\) is surjective.
-    If \(g(x)=g(x')\), write \(x=s(y)\) and \(x'=s(y')\). Then \(y=y'\), hence
-    \(x=x'\). So \(g\) is injective. Transferring along the bijection proves both directions
-    for \(f\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Use a bijection \([n]\to A\) to replace \(f\) by a map \(g:[n]\to[n]\).
+      If \(n=0\), the unique map is both injective and surjective. If \(n&gt;0\) and
+      \(g\) is injective but misses \(b\), relabel \([n]\setminus\{b\}\) as \([n-1]\)
+      as in <a href="#finite-pigeonhole"></a>. This gives an injection \([n]\to[n-1]\),
+      a contradiction. Thus an injective \(g\) is surjective.</p>
+    <p>Now suppose \(g\) is surjective. For each \(y\in[n]\), let \(s(y)\) be the least
+      input with \(g(s(y))=y\). The map \(s:[n]\to[n]\) is injective: equal chosen inputs
+      have equal outputs under \(g\). By the direction just proved, \(s\) is surjective.
+      If \(g(x)=g(x')\), write \(x=s(y)\) and \(x'=s(y')\). Then \(y=y'\), hence
+      \(x=x'\). So \(g\) is injective. Transferring along the bijection proves both directions
+      for \(f\).</p>
+</div>
   <p>The finiteness hypothesis matters. The successor map \(n\mapsto n+1\) on \(\mathbb N\)
     is injective but misses zero. The map \(p(0)=0\), \(p(n+1)=n\) is surjective, because
     \(p(n+1)=n\), but not injective, because \(p(0)=p(1)=0\).</p>
@@ -128,17 +136,17 @@
   data-formal="infinite-natural-subset-enumeration">
   <h2>Enumerating an infinite subset of the natural numbers</h2>
   <p>Every infinite subset \(S\subseteq\mathbb N\) has an enumeration in increasing order.</p>
-  <p class="proof-label">Proof</p>
-  <p>Take \(r_0\) to be the least member of \(S\). After choosing \(r_0,\ldots,r_k\),
-    take \(r_{k+1}\) to be the least member not yet chosen. A new member always exists:
-    otherwise \(S\) would be the finite set of chosen terms. The sequence is strictly
-    increasing, since at each stage all smaller members of \(S\) have already been chosen.</p>
-  <p>For surjectivity, fix \(s\in S\). If \(s\) never appeared, it would remain available
-    at every stage, so every selected term would be smaller than \(s\). In particular,
-    \(r_0,\ldots,r_s\) would be \(s+1\) distinct members of \([s]\), contradicting
-    <a href="#finite-pigeonhole"></a>. Thus each \(s\) occurs. Strict increase gives
-    injectivity, so \(k\mapsto r_k\) is a bijection.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Take \(r_0\) to be the least member of \(S\). After choosing \(r_0,\ldots,r_k\),
+      take \(r_{k+1}\) to be the least member not yet chosen. A new member always exists:
+      otherwise \(S\) would be the finite set of chosen terms. The sequence is strictly
+      increasing, since at each stage all smaller members of \(S\) have already been chosen.</p>
+    <p>For surjectivity, fix \(s\in S\). If \(s\) never appeared, it would remain available
+      at every stage, so every selected term would be smaller than \(s\). In particular,
+      \(r_0,\ldots,r_s\) would be \(s+1\) distinct members of \([s]\), contradicting
+      <a href="#finite-pigeonhole"></a>. Thus each \(s\) occurs. Strict increase gives
+      injectivity, so \(k\mapsto r_k\) is a bijection.</p>
+</div>
 </section>
 
 <section id="countable-encodings" data-kind="theorem"
@@ -150,16 +158,16 @@
   </div>
   <p>We call such a map an <strong>encoding</strong>: distinct elements receive distinct
     natural-number codes. Not every natural number needs to be used.</p>
-  <p class="proof-label">Proof</p>
-  <p>If \(A\) is finite, invert a bijection \([n]\to A\) and then include \([n]\)
-    in \(\mathbb N\). If \(A\) is countably infinite, invert its enumeration.
-    Both constructions give injections into \(\mathbb N\), including the empty-domain case.</p>
-  <p>Conversely, let \(c:A\to\mathbb N\) be injective. With codomain restricted to its
-    image \(S=c(A)\), it is a bijection \(A\to S\). If \(S\) is finite, transfer a
-    finite enumeration of \(S\) back to \(A\) using \(c^{-1}\). If \(S\) is infinite,
-    <a href="#infinite-subsets-of-naturals"></a> supplies a bijection \(\mathbb N\to S\);
-    compose it with \(c^{-1}\) to enumerate \(A\). Thus \(A\) is countable in either case.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(A\) is finite, invert a bijection \([n]\to A\) and then include \([n]\)
+      in \(\mathbb N\). If \(A\) is countably infinite, invert its enumeration.
+      Both constructions give injections into \(\mathbb N\), including the empty-domain case.</p>
+    <p>Conversely, let \(c:A\to\mathbb N\) be injective. With codomain restricted to its
+      image \(S=c(A)\), it is a bijection \(A\to S\). If \(S\) is finite, transfer a
+      finite enumeration of \(S\) back to \(A\) using \(c^{-1}\). If \(S\) is infinite,
+      <a href="#infinite-subsets-of-naturals"></a> supplies a bijection \(\mathbb N\to S\);
+      compose it with \(c^{-1}\) to enumerate \(A\). Thus \(A\) is countable in either case.</p>
+</div>
 </section>
 
 <section id="surjective-lists" data-kind="theorem"
@@ -167,22 +175,22 @@
   <h2>Lists that allow repetitions</h2>
   <p>A nonempty set \(A\) is countable if and only if there is a surjection
     \(f:\mathbb N\to A\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(A\) is countable. Choose an encoding \(c:A\to\mathbb N\) from
-    <a href="#countable-encodings"></a> and one element \(a_*\in A\). Define \(f(n)\)
-    to be the unique \(a\) with \(c(a)=n\) when such an element exists, and \(a_*\)
-    otherwise. For each \(a\in A\), we have \(f(c(a))=a\), so \(f\) is surjective.</p>
-  <p>Conversely, suppose \(f:\mathbb N\to A\) is surjective. Define</p>
-  <div class="math-display">\[ c(a):=\min\{n\in\mathbb N:f(n)=a\}. \]</div>
-  <p>The minimum exists because every fiber is nonempty. If \(c(a)=c(b)\), applying
-    \(f\) gives \(a=b\). Thus \(c\) is an encoding, and
-    <a href="#countable-encodings"></a> proves countability.
-    <span class="qed" aria-label="End of proof">□</span></p>
-  <p>This also explains how to remove repetitions. The set of first-occurrence indices
-    \(I=c(A)\subseteq\mathbb N\) contains exactly one index for each value. If \(A\)
-    is infinite, then \(I\) is infinite, since \(f(I)=A\) and a finite image would be finite.
-    Enumerate \(I\) increasingly by <a href="#infinite-subsets-of-naturals"></a> and apply
-    \(f\) to those indices. Every value appears exactly once, in the order of its first occurrence.</p>
+  <div class="proof">
+    <p>Suppose \(A\) is countable. Choose an encoding \(c:A\to\mathbb N\) from
+      <a href="#countable-encodings"></a> and one element \(a_*\in A\). Define \(f(n)\)
+      to be the unique \(a\) with \(c(a)=n\) when such an element exists, and \(a_*\)
+      otherwise. For each \(a\in A\), we have \(f(c(a))=a\), so \(f\) is surjective.</p>
+    <p>Conversely, suppose \(f:\mathbb N\to A\) is surjective. Define</p>
+    <div class="math-display">\[ c(a):=\min\{n\in\mathbb N:f(n)=a\}. \]</div>
+    <p>The minimum exists because every fiber is nonempty. If \(c(a)=c(b)\), applying
+      \(f\) gives \(a=b\). Thus \(c\) is an encoding, and
+      <a href="#countable-encodings"></a> proves countability.</p>
+    <p>This also explains how to remove repetitions. The set of first-occurrence indices
+      \(I=c(A)\subseteq\mathbb N\) contains exactly one index for each value. If \(A\)
+      is infinite, then \(I\) is infinite, since \(f(I)=A\) and a finite image would be finite.
+      Enumerate \(I\) increasingly by <a href="#infinite-subsets-of-naturals"></a> and apply
+      \(f\) to those indices. Every value appears exactly once, in the order of its first occurrence.</p>
+</div>
 </section>
 
 <section id="empty-and-repeated-lists" data-kind="question"
@@ -213,12 +221,13 @@
   data-formal="positive-natural-equivalence nat-even-set even-natural-enumeration">
   <h2>Positive and even natural numbers</h2>
   <p>The sets \(P=\{1,2,3,\ldots\}\) and \(E=\{0,2,4,\ldots\}\) are countably infinite.</p>
-  <p class="proof-label">Proof</p>
-  <p>The map \(u:\mathbb N\to P\), \(u(n)=n+1\), is injective by cancellation of one.
-    Each \(p\in P\) has the preimage \(p-1\in\mathbb N\), proving surjectivity.</p>
-  <p>The map \(v:\mathbb N\to E\), \(v(n)=2n\), is injective by cancellation of two.
-    Every \(e\in E\) equals \(2k\) for some \(k\in\mathbb N\), giving surjectivity.
-    Thus both maps are bijections. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The map \(u:\mathbb N\to P\), \(u(n)=n+1\), is injective by cancellation of one.
+      Each \(p\in P\) has the preimage \(p-1\in\mathbb N\), proving surjectivity.</p>
+    <p>The map \(v:\mathbb N\to E\), \(v(n)=2n\), is injective by cancellation of two.
+      Every \(e\in E\) equals \(2k\) for some \(k\in\mathbb N\), giving surjectivity.
+      Thus both maps are bijections.</p>
+</div>
   <p>The set \(E\) is also an example of <a href="sets-and-maps#sets-and-elements">set-builder notation</a>.
     It is a proper subset of \(\mathbb N\), since it misses one, yet it is in bijection with
     \(\mathbb N\). The codomain matters: \(n\mapsto2n\) is onto \(E\), but not onto
@@ -236,13 +245,13 @@
   <div class="statement-box">
     <p>The map \(z\) is a bijection, so \(\mathbb Z\) is countably infinite.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>A nonnegative integer \(k\) occurs at input \(2k\). A negative integer has the unique
-    form \(-(k+1)\) with \(k\in\mathbb N\), and occurs at input \(2k+1\). This proves
-    surjectivity. Values from even inputs are nonnegative, and values from odd inputs are negative,
-    so equality of outputs forces the inputs to have the same parity. In either case the displayed
-    formulas force the corresponding \(k\)'s, and hence the inputs, to be equal.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>A nonnegative integer \(k\) occurs at input \(2k\). A negative integer has the unique
+      form \(-(k+1)\) with \(k\in\mathbb N\), and occurs at input \(2k+1\). This proves
+      surjectivity. Values from even inputs are nonnegative, and values from odd inputs are negative,
+      so equality of outputs forces the inputs to have the same parity. In either case the displayed
+      formulas force the corresponding \(k\)'s, and hence the inputs, to be equal.</p>
+</div>
 </section>
 
 <section id="countable-subsets-and-images" data-kind="theorem"
@@ -253,18 +262,18 @@
       \(f(A)\) under any map \(f:A\to B\) is countable. If \(A\) and \(B\) are in
       bijection, one is countable if and only if the other is.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Take an encoding \(c:A\to\mathbb N\). Its restriction to \(S\) is injective, so
-    <a href="#countable-encodings"></a> applies to \(S\).</p>
-  <p>For each \(y\in f(A)\), the set of codes</p>
-  <div class="math-display">\[ C_y=\{c(a):a\in A,\ f(a)=y\} \]</div>
-  <p>is nonempty. Assign \(d(y)=\min C_y\). If \(d(y)=d(y')\), this code belongs to
-    both sets, so it equals \(c(a)=c(a')\) for inputs with \(f(a)=y\) and \(f(a')=y'\).
-    Injectivity of \(c\) gives \(a=a'\), hence \(y=y'\). Thus \(d\) encodes \(f(A)\).
-    This argument also covers \(A=\varnothing\), when there are no image elements to encode.</p>
-  <p>Finally, for a bijection \(b:A\to B\), the map \(c\circ b^{-1}\) encodes \(B\).
-    Reversing the bijection proves the converse.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Take an encoding \(c:A\to\mathbb N\). Its restriction to \(S\) is injective, so
+      <a href="#countable-encodings"></a> applies to \(S\).</p>
+    <p>For each \(y\in f(A)\), the set of codes</p>
+    <div class="math-display">\[ C_y=\{c(a):a\in A,\ f(a)=y\} \]</div>
+    <p>is nonempty. Assign \(d(y)=\min C_y\). If \(d(y)=d(y')\), this code belongs to
+      both sets, so it equals \(c(a)=c(a')\) for inputs with \(f(a)=y\) and \(f(a')=y'\).
+      Injectivity of \(c\) gives \(a=a'\), hence \(y=y'\). Thus \(d\) encodes \(f(A)\).
+      This argument also covers \(A=\varnothing\), when there are no image elements to encode.</p>
+    <p>Finally, for a bijection \(b:A\to B\), the map \(c\circ b^{-1}\) encodes \(B\).
+      Reversing the bijection proves the converse.</p>
+</div>
   <p>Images can be finite even when the domain is countably infinite: a constant map on
     \(\mathbb N\) has a singleton image. The conclusion is countability, not infinitude.</p>
 </section>
@@ -276,20 +285,21 @@
     <p>If \(A\) and \(B\) are countable subsets of a common set, then \(A\cup B\) is countable.
       More generally, a union of finitely many countable sets is countable.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Fix encodings \(c:A\to\mathbb N\) and \(d:B\to\mathbb N\). For \(x\in A\cup B\),
-    define</p>
-  <div class="math-display">\[ h(x)=\begin{cases}
-    2c(x)&amp;\text{if }x\in A,\\
-    2d(x)+1&amp;\text{if }x\notin A.
-    \end{cases} \]</div>
-  <p>In the second case \(x\in B\), so \(d(x)\) is defined. Equal codes cannot come from
-    different cases, because even and odd numbers differ. Within each case, equality and cancellation
-    give equality of inputs by injectivity of \(c\) or \(d\). Thus \(h\) is injective.
-    Elements in \(A\cap B\) use the first case, so overlap causes no ambiguity.</p>
-  <p>For a finite family \(A_0,\ldots,A_{r-1}\), induct on \(r\). At \(r=0\), the union
-    is empty and countable. At the next step, take the union of the previous union with \(A_r\)
-    and apply the binary case. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Fix encodings \(c:A\to\mathbb N\) and \(d:B\to\mathbb N\). For \(x\in A\cup B\),
+      define</p>
+    <div class="math-display">\[ h(x)=\begin{cases}
+      2c(x)&amp;\text{if }x\in A,\\
+      2d(x)+1&amp;\text{if }x\notin A.
+      \end{cases} \]</div>
+    <p>In the second case \(x\in B\), so \(d(x)\) is defined. Equal codes cannot come from
+      different cases, because even and odd numbers differ. Within each case, equality and cancellation
+      give equality of inputs by injectivity of \(c\) or \(d\). Thus \(h\) is injective.
+      Elements in \(A\cap B\) use the first case, so overlap causes no ambiguity.</p>
+    <p>For a finite family \(A_0,\ldots,A_{r-1}\), induct on \(r\). At \(r=0\), the union
+      is empty and countable. At the next step, take the union of the previous union with \(A_r\)
+      and apply the binary case.</p>
+</div>
 </section>
 
 <section id="diagonal-enumeration" data-kind="theorem"
@@ -305,25 +315,26 @@
     <figcaption>The number inside each circle is its position in the enumeration, starting at zero.
       The pair below the circle gives its coordinates.</figcaption>
   </figure>
-  <p class="proof-label">Proof</p>
-  <p>Let \(T_0=0\) and \(T_{s+1}=T_s+s+1\). The number \(T_s\) counts the pairs on
-    diagonals with sum smaller than \(s\), since these diagonals have lengths
-    \(1,2,\ldots,s\). In particular, \(T_s=s(s+1)/2\), as induction on \(s\) verifies.</p>
-  <p>Assign the pair \((a,b)\), on diagonal \(s=a+b\), the position</p>
-  <div class="math-display">\[ P(a,b)=T_{a+b}+a. \label{eq:pair-code} \]</div>
-  <p>The diagonal with sum \(s\) occupies exactly the consecutive positions
-    \(T_s,T_s+1,\ldots,T_s+s\). The next diagonal starts at \(T_{s+1}=T_s+s+1\),
-    so these intervals do not overlap and leave no gaps.</p>
-  <p>More explicitly, for every \(n\in\mathbb N\) there is a unique \(s\) satisfying
-    \(T_s\le n&lt;T_{s+1}\). Existence follows by taking the largest \(s\) with
-    \(T_s\le n\): there is at least \(s=0\), and \(T_s\ge s\) bounds such indices by
-    \(n\). Strict increase of \(T_s\) gives uniqueness. Put \(a=n-T_s\) and \(b=s-a\).
-    The inequalities give \(0\le a\le s\), so \((a,b)\) is a pair of natural numbers,
-    and \(P(a,b)=n\).</p>
-  <p>Conversely, the code of a pair determines its unique diagonal and then its first coordinate;
-    the second coordinate is the sum minus the first. Thus \(P\) is injective as well as
-    surjective. Its inverse \(\delta:\mathbb N\to\mathbb N\times\mathbb N\)
-    is the displayed enumeration. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Let \(T_0=0\) and \(T_{s+1}=T_s+s+1\). The number \(T_s\) counts the pairs on
+      diagonals with sum smaller than \(s\), since these diagonals have lengths
+      \(1,2,\ldots,s\). In particular, \(T_s=s(s+1)/2\), as induction on \(s\) verifies.</p>
+    <p>Assign the pair \((a,b)\), on diagonal \(s=a+b\), the position</p>
+    <div class="math-display">\[ P(a,b)=T_{a+b}+a. \label{eq:pair-code} \]</div>
+    <p>The diagonal with sum \(s\) occupies exactly the consecutive positions
+      \(T_s,T_s+1,\ldots,T_s+s\). The next diagonal starts at \(T_{s+1}=T_s+s+1\),
+      so these intervals do not overlap and leave no gaps.</p>
+    <p>More explicitly, for every \(n\in\mathbb N\) there is a unique \(s\) satisfying
+      \(T_s\le n&lt;T_{s+1}\). Existence follows by taking the largest \(s\) with
+      \(T_s\le n\): there is at least \(s=0\), and \(T_s\ge s\) bounds such indices by
+      \(n\). Strict increase of \(T_s\) gives uniqueness. Put \(a=n-T_s\) and \(b=s-a\).
+      The inequalities give \(0\le a\le s\), so \((a,b)\) is a pair of natural numbers,
+      and \(P(a,b)=n\).</p>
+    <p>Conversely, the code of a pair determines its unique diagonal and then its first coordinate;
+      the second coordinate is the sum minus the first. Thus \(P\) is injective as well as
+      surjective. Its inverse \(\delta:\mathbb N\to\mathbb N\times\mathbb N\)
+      is the displayed enumeration.</p>
+</div>
   <p>The pair \((a,b)\) appears after exactly \(T_{a+b}+a\) earlier pairs, a finite number.
     This is why each pair is eventually reached.</p>
 </section>
@@ -353,45 +364,46 @@
       If both are countably infinite, their product is countably infinite. Every product of
       finitely many countable sets is countable.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Fix encodings \(c:A\to\mathbb N\) and \(d:B\to\mathbb N\).
-    Using the pair code from <a href="#diagonal-enumeration"></a>, define</p>
-  <div class="math-display">\[ h:A\times B\longrightarrow\mathbb N,\qquad
-    h(a,b)=P(c(a),d(b)). \]</div>
-  <p>If two values of \(h\) agree, injectivity of \(P\) makes both coordinate codes agree.
-    Injectivity of \(c\) and \(d\) then makes the pairs equal. Thus \(h\) is an encoding.
-    If either factor is empty, the product and its encoding have empty domain, and the same argument applies.</p>
-  <p>If \(e:\mathbb N\to A\) and \(f:\mathbb N\to B\) are bijections, then
-    \((i,j)\mapsto(e(i),f(j))\) is a bijection from \(\mathbb N^2\) onto \(A\times B\),
-    with inverse \((a,b)\mapsto(e^{-1}(a),f^{-1}(b))\). Compose it with \(\delta\)
-    to enumerate the product.</p>
-  <p>Induction gives the assertion for finitely many factors. The product of zero factors is
-    the singleton \(\{()\}\) containing the empty tuple, so it is finite. Adding one factor
-    forms a binary product with the previous product. For example, \(\mathbb N^r\) is
-    countable for every \(r\in\mathbb N\), and countably infinite for \(r\ge1\).
-    For \(r=1\), use the identity enumeration; for \(r&gt;1\), use the binary construction
-    repeatedly. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Fix encodings \(c:A\to\mathbb N\) and \(d:B\to\mathbb N\).
+      Using the pair code from <a href="#diagonal-enumeration"></a>, define</p>
+    <div class="math-display">\[ h:A\times B\longrightarrow\mathbb N,\qquad
+      h(a,b)=P(c(a),d(b)). \]</div>
+    <p>If two values of \(h\) agree, injectivity of \(P\) makes both coordinate codes agree.
+      Injectivity of \(c\) and \(d\) then makes the pairs equal. Thus \(h\) is an encoding.
+      If either factor is empty, the product and its encoding have empty domain, and the same argument applies.</p>
+    <p>If \(e:\mathbb N\to A\) and \(f:\mathbb N\to B\) are bijections, then
+      \((i,j)\mapsto(e(i),f(j))\) is a bijection from \(\mathbb N^2\) onto \(A\times B\),
+      with inverse \((a,b)\mapsto(e^{-1}(a),f^{-1}(b))\). Compose it with \(\delta\)
+      to enumerate the product.</p>
+    <p>Induction gives the assertion for finitely many factors. The product of zero factors is
+      the singleton \(\{()\}\) containing the empty tuple, so it is finite. Adding one factor
+      forms a binary product with the previous product. For example, \(\mathbb N^r\) is
+      countable for every \(r\in\mathbb N\), and countably infinite for \(r\ge1\).
+      For \(r=1\), use the identity enumeration; for \(r&gt;1\), use the binary construction
+      repeatedly.</p>
+</div>
 </section>
 
 <section id="finite-subset-family" data-kind="theorem" data-formal="countable-finite-subset-family finite-subset-binary-code finite-subset-binary-code-injective finite-subset-family-infinite">
   <h2>Finite subsets of a countable set form a countable collection</h2>
   <p>If \(A\) is countable, the collection of all finite subsets of \(A\) is
     countable. If \(A\) is countably infinite, this collection is countably infinite too.</p>
-  <p class="proof-label">Proof</p>
-  <p>Fix an injection \(c:A\to\mathbb N\), using <a href="#countable-encodings"></a>.
-    For a finite subset \(F\subseteq A\), define</p>
-  <div class="math-display">\[ C(F)=\sum_{a\in F}2^{c(a)}. \]</div>
-  <p>The sum is finite, and \(C(\varnothing)=0\). To show injectivity, suppose
-    \(F\ne G\). Their code sets \(c(F),c(G)\) are distinct and finite. Take the
-    largest natural number \(k\) belonging to exactly one of them. Contributions
-    above \(k\) agree and cancel. At \(k\), one sum has an extra \(2^k\),
-    while the absolute difference of the contributions below \(k\) is at most</p>
-  <div class="math-display">\[ \sum_{j=0}^{k-1}2^j=2^k-1. \]</div>
-  <p>For \(k=0\), the lower sum is empty and equals zero; the displayed identity
-    follows by induction for every \(k\). Thus the codes differ, proving countability.</p>
-  <p>Finally, \(a\mapsto\{a\}\) is an injection into the collection. If \(A\)
-    is infinite, this makes the collection infinite, hence countably infinite.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Fix an injection \(c:A\to\mathbb N\), using <a href="#countable-encodings"></a>.
+      For a finite subset \(F\subseteq A\), define</p>
+    <div class="math-display">\[ C(F)=\sum_{a\in F}2^{c(a)}. \]</div>
+    <p>The sum is finite, and \(C(\varnothing)=0\). To show injectivity, suppose
+      \(F\ne G\). Their code sets \(c(F),c(G)\) are distinct and finite. Take the
+      largest natural number \(k\) belonging to exactly one of them. Contributions
+      above \(k\) agree and cancel. At \(k\), one sum has an extra \(2^k\),
+      while the absolute difference of the contributions below \(k\) is at most</p>
+    <div class="math-display">\[ \sum_{j=0}^{k-1}2^j=2^k-1. \]</div>
+    <p>For \(k=0\), the lower sum is empty and equals zero; the displayed identity
+      follows by induction for every \(k\). Thus the codes differ, proving countability.</p>
+    <p>Finally, \(a\mapsto\{a\}\) is an injection into the collection. If \(A\)
+      is infinite, this makes the collection infinite, hence countably infinite.</p>
+</div>
 </section>
 
 <section id="rational-enumeration" data-kind="theorem"
@@ -404,30 +416,30 @@
   <div class="statement-box">
     <p>The set \(\mathbb Q\) is countably infinite.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Both \(\mathbb Z\) and \(\mathbb N\) are countable, so
-    <a href="#finite-products"></a> makes \(\mathbb Z\times\mathbb N\) countable.
-    The map</p>
-  <div class="math-display">\[ F:\mathbb Z\times\mathbb N\longrightarrow\mathbb Q,\qquad
-    F(p,k)=\frac{p}{k+1} \]</div>
-  <p>is surjective: for \(p/q\) with \(q&gt;0\), use the input \((p,q-1)\).
-    Thus \(\mathbb Q=F(\mathbb Z\times\mathbb N)\) is countable by
-    <a href="#countable-subsets-and-images"></a>.</p>
-  <p>The rational numbers contain an infinite subset \(\{0/1,1/1,2/1,\ldots\}\), in
-    bijection with \(\mathbb N\). If \(\mathbb Q\) were finite, this subset would be finite
-    by <a href="#finite-subsets-and-images"></a>, making \(\mathbb N\) finite.
-    Therefore \(\mathbb Q\) is infinite, hence countably infinite.</p>
-  <p>For an explicit list with repetitions, write \(\delta(n)=(a_n,b_n)\) using
-    <a href="#diagonal-enumeration"></a>, and set</p>
-  <div class="math-display">\[ q_n=\frac{z(a_n)}{b_n+1}, \]</div>
-  <p>where \(z\) is the integer enumeration from <a href="#integer-enumeration"></a>.
-    Every \(p/q\) occurs: take the unique \(a\) with \(z(a)=p\), and use the pair
-    \((a,q-1)\), which appears at a finite position. The list begins</p>
-  <div class="math-display">\[ 0,0,-1,0,-\tfrac12,1,0,-\tfrac13,\tfrac12,-2,\ldots \]</div>
-  <p>Keeping first occurrences as in <a href="#surjective-lists"></a> gives an enumeration
-    without repetitions. There are infinitely many retained values, and each rational's first
-    occurrence has only finitely many earlier positions, so each rational is eventually retained.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Both \(\mathbb Z\) and \(\mathbb N\) are countable, so
+      <a href="#finite-products"></a> makes \(\mathbb Z\times\mathbb N\) countable.
+      The map</p>
+    <div class="math-display">\[ F:\mathbb Z\times\mathbb N\longrightarrow\mathbb Q,\qquad
+      F(p,k)=\frac{p}{k+1} \]</div>
+    <p>is surjective: for \(p/q\) with \(q&gt;0\), use the input \((p,q-1)\).
+      Thus \(\mathbb Q=F(\mathbb Z\times\mathbb N)\) is countable by
+      <a href="#countable-subsets-and-images"></a>.</p>
+    <p>The rational numbers contain an infinite subset \(\{0/1,1/1,2/1,\ldots\}\), in
+      bijection with \(\mathbb N\). If \(\mathbb Q\) were finite, this subset would be finite
+      by <a href="#finite-subsets-and-images"></a>, making \(\mathbb N\) finite.
+      Therefore \(\mathbb Q\) is infinite, hence countably infinite.</p>
+    <p>For an explicit list with repetitions, write \(\delta(n)=(a_n,b_n)\) using
+      <a href="#diagonal-enumeration"></a>, and set</p>
+    <div class="math-display">\[ q_n=\frac{z(a_n)}{b_n+1}, \]</div>
+    <p>where \(z\) is the integer enumeration from <a href="#integer-enumeration"></a>.
+      Every \(p/q\) occurs: take the unique \(a\) with \(z(a)=p\), and use the pair
+      \((a,q-1)\), which appears at a finite position. The list begins</p>
+    <div class="math-display">\[ 0,0,-1,0,-\tfrac12,1,0,-\tfrac13,\tfrac12,-2,\ldots \]</div>
+    <p>Keeping first occurrences as in <a href="#surjective-lists"></a> gives an enumeration
+      without repetitions. There are infinitely many retained values, and each rational's first
+      occurrence has only finitely many earlier positions, so each rational is eventually retained.</p>
+</div>
   <p>This list orders the numbers by their occurrence in a traversal of representations, not by
     numerical size. Fractions are names for rational numbers; equality of values determines which
     repetitions to discard. The distinction between a representative and what it represents also

@@ -11,9 +11,10 @@
   <p>Inside \(j\) nested quantifiers of \(A\), retain each internal slot's binder but renumber its old slot \(z_{n+\ell}\) as \(z_{k+\ell}\), for \(\ell&lt;j\). The inserted terms use only \(z_0,\ldots,z_{k-1}\); these refer to the retained surrounding slots, and internal quantifiers occupy higher slots. Thus the operation preserves which quantifier governs each occurrence. Apply it recursively to terms and Boolean connectives and use this renumbering under quantifiers.</p>
   <p>For any structure \(M\) and retained tuple \(b\in M^k\), put \(c_i=\llbracket t_i\rrbracket^M_b\) and \(c=(c_0,\ldots,c_{n-1})\). With the empty free-variable assignment omitted,</p>
   <div class="math-display">\[M,b\models A[t_0,\ldots,t_{n-1}]\quad\Longleftrightarrow\quad M,c\models A.\]</div>
-  <p class="proof-label">Proof</p>
-  <p>Prove the stronger statement inside any number \(j\) of internal binders, assigning those binders the same tuple \(d\) on both sides. The original tuple is \((c,d)\), and the new tuple is \((b,d)\). At an available slot, the replacement has exactly the assigned value \(c_i\). At an internal slot, renumbering retains its value from \(d\). Induction on terms gives equal argument values to each interpreted function, and therefore equal term values.</p>
-  <p>Induct next on formulas. Atomic formulas use the term result; falsity and implication use their truth clauses. At a quantifier, append the same arbitrary element to \(d\) on each side. The induction hypothesis applies at depth \(j+1\), and quantifying over that element proves the required equivalence. Taking \(j=0\) gives the display. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Prove the stronger statement inside any number \(j\) of internal binders, assigning those binders the same tuple \(d\) on both sides. The original tuple is \((c,d)\), and the new tuple is \((b,d)\). At an available slot, the replacement has exactly the assigned value \(c_i\). At an internal slot, renumbering retains its value from \(d\). Induction on terms gives equal argument values to each interpreted function, and therefore equal term values.</p>
+    <p>Induct next on formulas. Atomic formulas use the term result; falsity and implication use their truth clauses. At a quantifier, append the same arbitrary element to \(d\) on each side. The induction hypothesis applies at depth \(j+1\), and quantifying over that element proves the required equivalence. Taking \(j=0\) gives the display.</p>
+</div>
 </section>
 
 <section id="one-witness-function" data-formal="skolem-tuple-witness skolem-constant-witness skolem-one-witness-formula" data-kind="lemma">
@@ -21,8 +22,9 @@
   <p>Let \(A\) be a formula at context size \(k+1\), with no free-variable names, and display its available slots as \(\bar x=(x_1,\ldots,x_k)\) and \(y\). These are labels for placeholders governed by the surrounding quantifiers; \(A\) may have further quantifiers of its own. Let \(f\) be a fresh \(k\)-ary function symbol. By \(A(\bar x,f(\bar x))\) mean the <a href="#scoped-term-instances">simultaneous scoped instance</a> that retains the first \(k\) slots and replaces the last by \(f\) applied to those slots. For a fixed \(L\)-structure \(M\),</p>
   <div class="math-display">\[M\models\forall\bar x\,\exists y\,A(\bar x,y)\quad\Longleftrightarrow\quad\exists M_f\;\bigl(M_f\models\forall\bar x\,A(\bar x,f(\bar x))\bigr).\]</div>
   <p>Here \(M_f\) ranges over expansions of \(M\) to \(L\cup\{f\}\).</p>
-  <p class="proof-label">Proof</p>
-  <p>For each tuple \(\bar a\in M^k\), choose \(b_{\bar a}\) with \(M,(\bar a,b_{\bar a})\models A\). Interpret \(f(\bar a)=b_{\bar a}\). These simultaneous choices use the <a href="axiom-of-choice#choice-functions">axiom of choice</a>. The truth equivalence in <a href="#scoped-term-instances"></a>, together with expansion invariance, proves the required truth of \(A(\bar x,f(\bar x))\) for each tuple. Conversely, that same equivalence in any satisfying expansion supplies \(f(\bar a)\) as a witness for each tuple; then pass to the reduct. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For each tuple \(\bar a\in M^k\), choose \(b_{\bar a}\) with \(M,(\bar a,b_{\bar a})\models A\). Interpret \(f(\bar a)=b_{\bar a}\). These simultaneous choices use the <a href="axiom-of-choice#choice-functions">axiom of choice</a>. The truth equivalence in <a href="#scoped-term-instances"></a>, together with expansion invariance, proves the required truth of \(A(\bar x,f(\bar x))\) for each tuple. Conversely, that same equivalence in any satisfying expansion supplies \(f(\bar a)\) as a witness for each tuple; then pass to the reduct.</p>
+</div>
   <p>Here \(M^0\) has one member, the empty tuple. Thus \(k=0\) gives a constant symbol: \(\exists y\,A(y)\) has a suitable expansion satisfying \(A(c)\) exactly when it is true in the original structure. The chosen functions are extra interpretations; the assertion imposes no requirement that their graphs be described by formulas of \(L\).</p>
 </section>
 
@@ -48,8 +50,9 @@
 <section id="universal-form" data-formal="skolem-universal-sentence skolem-universal-form skolem-fresh-symbols" data-kind="lemma">
   <h2>The result has only universal quantifiers</h2>
   <p>A <strong>universal sentence</strong> has a quantifier-free matrix preceded by a finite prefix of universal quantifiers; the prefix may be empty. The construction terminates and produces such a sentence. There is one new function symbol for every existential occurrence, with the arity specified in <a href="#skolem-construction"></a>.</p>
-  <p class="proof-label">Proof</p>
-  <p>There are finitely many existential occurrences. Each replacement removes one of them and introduces only terms, without introducing a quantifier. Substituting terms into a quantifier-free formula preserves its quantifier-free construction: atomic equalities and relations remain atomic, and Boolean connectives remain Boolean connectives. The retained universal quantifiers therefore form the entire final prefix. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>There are finitely many existential occurrences. Each replacement removes one of them and introduces only terms, without introducing a quantifier. Substituting terms into a quantifier-free formula preserves its quantifier-free construction: atomic equalities and relations remain atomic, and Boolean connectives remain Boolean connectives. The retained universal quantifiers therefore form the entire final prefix.</p>
+</div>
 </section>
 
 <section id="expansion-theorem" data-formal="skolem-model-expansion skolem-model-reduct" data-kind="theorem">
@@ -58,9 +61,10 @@
   <div class="math-display">\[M\models\sigma\quad\Longleftrightarrow\quad\exists M^*\;\bigl(M^*\models\operatorname{Sk}(\sigma)\bigr).\]</div>
   <p>Here \(M^*\) denotes an \(L_\sigma\)-expansion of \(M\).</p>
   <p>Moreover, every \(L_\sigma\)-structure satisfying \(\operatorname{Sk}(\sigma)\) has an \(L\)-reduct satisfying \(\sigma\).</p></div>
-  <p class="proof-label">Proof</p>
-  <p>For the forward direction, process the existential quantifiers from left to right. At each stage the sentence has the form \(\forall\bar u\,\exists y\,C(\bar u,y)\), where \(C\) is the remaining suffix after previous substitutions and may still contain quantifiers. For every tuple \(\bar a\), choose a witness satisfying the whole suffix \(C(\bar a,y)\), rather than just some part of its matrix. Apply <a href="#one-witness-function"></a> in the language already expanded by earlier steps. The new function receives precisely \(\bar u\), the universal choices preceding this existential. Later expansions preserve every sentence already obtained. Finitely many steps give \(M^*\models\operatorname{Sk}(\sigma)\).</p>
-  <p>For the reverse direction, start with any model of the Skolem form and undo the substitutions in the opposite order. At each step, a true instance \(C(\bar a,f(\bar a))\) gives \(\exists y\,C(\bar a,y)\), for every preceding tuple. Forget the function removed at that step; truth of the sentence now expressed in the smaller language is preserved under reduct. Repeating gives a reduct satisfying \(\sigma\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For the forward direction, process the existential quantifiers from left to right. At each stage the sentence has the form \(\forall\bar u\,\exists y\,C(\bar u,y)\), where \(C\) is the remaining suffix after previous substitutions and may still contain quantifiers. For every tuple \(\bar a\), choose a witness satisfying the whole suffix \(C(\bar a,y)\), rather than just some part of its matrix. Apply <a href="#one-witness-function"></a> in the language already expanded by earlier steps. The new function receives precisely \(\bar u\), the universal choices preceding this existential. Later expansions preserve every sentence already obtained. Finitely many steps give \(M^*\models\operatorname{Sk}(\sigma)\).</p>
+    <p>For the reverse direction, start with any model of the Skolem form and undo the substitutions in the opposite order. At each step, a true instance \(C(\bar a,f(\bar a))\) gives \(\exists y\,C(\bar a,y)\), for every preceding tuple. Forget the function removed at that step; truth of the sentence now expressed in the smaller language is preserved under reduct. Repeating gives a reduct satisfying \(\sigma\).</p>
+</div>
 </section>
 
 <section id="equisatisfiability" data-formal="skolem-background-equisatisfiability skolem-every-sentence-universal" data-kind="theorem">
@@ -68,9 +72,10 @@
   <div class="statement-box"><p>A prenex sentence \(\sigma\) and \(\operatorname{Sk}(\sigma)\) are <strong>equisatisfiable</strong>: one has a nonempty model if and only if the other does. More generally, for any set \(T\) of \(L\)-sentences,</p>
   <div class="math-display">\[T\cup\{\sigma\}\text{ has a model}\quad\Longleftrightarrow\quad T\cup\{\operatorname{Sk}(\sigma)\}\text{ has a model},\]</div>
   <p>where the sentences of \(T\) on the right are read in the expanded language.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Expand a model of \(T\cup\{\sigma\}\) using <a href="#expansion-theorem"></a>. The original sentences of \(T\) retain their truth. Conversely, take the reduct of a model of \(T\cup\{\operatorname{Sk}(\sigma)\}\). The same theorem gives \(\sigma\), while reduct invariance gives every member of \(T\). Taking \(T=\varnothing\) gives the first assertion. <span class="qed" aria-label="End of proof">□</span></p>
-  <p>Consequently, for each first-order sentence \(\sigma\), we can choose one language of fresh function symbols and one universal sentence \(\tau\) that work for every background set \(T\) of old-language sentences: \(T\cup\{\sigma\}\) has a model if and only if \(T\cup\{\tau\}\) does in the expanded language. The language and \(\tau\) are chosen from \(\sigma\) alone, before \(T\) is specified. First choose an <a href="first-order-normal-forms#prenex-normal-form">equivalent prenex sentence</a> and construct its Skolem form. That prenex equivalence preserves the original models even after requiring any \(T\), and then the displayed equivalence applies. This is a semantic model construction; it does not use a completeness theorem for a proof calculus.</p>
+  <div class="proof">
+    <p>Expand a model of \(T\cup\{\sigma\}\) using <a href="#expansion-theorem"></a>. The original sentences of \(T\) retain their truth. Conversely, take the reduct of a model of \(T\cup\{\operatorname{Sk}(\sigma)\}\). The same theorem gives \(\sigma\), while reduct invariance gives every member of \(T\). Taking \(T=\varnothing\) gives the first assertion.</p>
+    <p>Consequently, for each first-order sentence \(\sigma\), we can choose one language of fresh function symbols and one universal sentence \(\tau\) that work for every background set \(T\) of old-language sentences: \(T\cup\{\sigma\}\) has a model if and only if \(T\cup\{\tau\}\) does in the expanded language. The language and \(\tau\) are chosen from \(\sigma\) alone, before \(T\) is specified. First choose an <a href="first-order-normal-forms#prenex-normal-form">equivalent prenex sentence</a> and construct its Skolem form. That prenex equivalence preserves the original models even after requiring any \(T\), and then the displayed equivalence applies. This is a semantic model construction; it does not use a completeness theorem for a proof calculus.</p>
+</div>
 </section>
 
 <section id="not-equivalence" data-formal="skolem-arbitrary-expansion-counterexample skolem-model-reduct" data-kind="question">

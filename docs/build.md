@@ -14,8 +14,8 @@ these tasks; there is no separate validation command.
 
 1. **Validate authored inputs.** Check JSON metadata, entry HTML and formulas,
    citations, assets, anchors, internal links, node bindings, dependency cycles,
-   reading order, and source/planning records. Missing or stale generated data is
-   allowed at this stage because the build will regenerate it.
+   reading-order listings, and source/planning records. Missing or stale generated
+   data is allowed at this stage because the build will regenerate it.
 2. **Run Lean.** Build `Lemmatheca` and all bound non-core modules, then inspect
    each registered declaration and its transitive kernel axioms. Compilation
    errors and missing declarations fail the command. Unfinished proofs or
@@ -132,7 +132,8 @@ not a single filesystem transaction: an I/O failure during publication can leave
 some files updated. Resolve the failure and rerun the build.
 
 The command does not render pages, review the mathematics or its correspondence
-with Lean, run the test suite, collect static assets, or restart the reader.
+with Lean, establish prerequisite order or module ownership, run the test suite,
+collect static assets, or restart the reader.
 It validates the shape of `corpus/statistics.json` when present but does not
 regenerate it. Statistics are excluded from the index revision, so statistics-only
 updates do not require rebuilding the index or affect its full-check freshness.

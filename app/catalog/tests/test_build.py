@@ -114,7 +114,7 @@ class BuildCommandTests(SimpleTestCase):
         write_json(self.corpus / "taxonomy.json", {"areas": [{
             "id": "area", "title": "Area", "parent": None, "description": "An area.",
         }]})
-        write_json(self.corpus / "area_entries.json", {"areas": {"area": ["example"]}})
+        write_json(self.corpus / "reading_order.json", {"areas": {"area": ["example"]}})
         self.node = self.corpus / "nodes/proof.json"
         self.planned = self.corpus / "nodes/planned.json"
         write_json(self.node, {

@@ -158,6 +158,22 @@ class CheckedParser(SourceParser):
         raise CorpusError("Processing instructions are not entry content")
 
 
+def check_proof(node):
+    """Check one self-contained proof without imposing proofs on cited results."""
+    require(node.tag == "div", 'A proof container must be <div class="proof">')
+    children = [child for child in node.children
+                if isinstance(child, Element) or child.strip()]
+    require(not any("proof" in (child.attrs.get("class") or "").split()
+                    for child in node.walk() if child is not node),
+            "Proof containers must not nest")
+    require(children, "A proof container must not be empty")
+    last = children[-1]
+    require(isinstance(last, Element) and last.tag == "p"
+            and "math-display" not in (last.attrs.get("class") or "").split(),
+            "A proof must end with a concluding paragraph")
+    require(last.text().strip(), "A proof's concluding paragraph must not be empty")
+
+
 def checked_source(source):
     """Check structure and local references without rendering or opening other entries.
 
@@ -207,6 +223,12 @@ def checked_source(source):
             if key in attrs:
                 require(isinstance(attrs[key], str),
                         f"<{node.tag}>: {key} needs a value")
+        classes = attrs.get("class", "").split()
+        require(not {"proof-label", "qed"}.intersection(classes),
+                "Proof labels and closing squares are CSS-generated; remove "
+                "proof-label/qed markup from the HTML")
+        if "proof" in classes:
+            check_proof(node)
         if "id" in attrs:
             anchor = attrs["id"]
             require(ANCHOR.fullmatch(anchor) and anchor not in anchors,
@@ -452,7 +474,7 @@ def validate_corpus(corpus, *, source_root=None, collector=None, nodes=None,
         areas = set(areas)
     del document
 
-    index = corpus / "area_entries.json"
+    index = corpus / "reading_order.json"
     with checking(index):
         document = json_object(index, collector=collector)
         fields(document, ("areas",))
@@ -512,7 +534,7 @@ def validate_corpus(corpus, *, source_root=None, collector=None, nodes=None,
                                  record=entries.get(directory.name, _MISSING))
             entry_metadata(record, directory.name, areas)
             require(listed.get(directory.name) == record["primary_area"],
-                    "Entry must be listed once under its primary area in area_entries.json")
+                    "Entry must be listed once under its primary area in reading_order.json")
         source = directory / "entry.html"
         with checking(source):
             if collector is None:

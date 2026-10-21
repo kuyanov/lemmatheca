@@ -54,14 +54,14 @@
     \(C_r:=\bigvee_{i=1}^n K_{r,i}\). If a valuation has input row \(s\), then</p>
   <div class="math-display">\[ \llbracket M_r\rrbracket_v=1\iff s=r,
     \qquad \llbracket C_r\rrbracket_v=0\iff s=r. \]</div>
-  <p class="proof-label">Proof</p>
-  <p>The literal \(L_{r,i}\) is true exactly when \(s_i=r_i\), while \(K_{r,i}\) is false
-    exactly when \(s_i=r_i\). A finite conjunction is true exactly when all its members are true;
-    a finite disjunction is false exactly when all its members are false. These facts follow by
-    induction on the list length from the binary truth tables. Thus both displayed conditions
-    say that every coordinate matches. When there are no coordinates, the only rows are equal,
-    \(M_r=\top\), and \(C_r=\bot\), so the assertions still hold.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The literal \(L_{r,i}\) is true exactly when \(s_i=r_i\), while \(K_{r,i}\) is false
+      exactly when \(s_i=r_i\). A finite conjunction is true exactly when all its members are true;
+      a finite disjunction is false exactly when all its members are false. These facts follow by
+      induction on the list length from the binary truth tables. Thus both displayed conditions
+      say that every coordinate matches. When there are no coordinates, the only rows are equal,
+      \(M_r=\top\), and \(C_r=\bot\), so the assertions still hold.</p>
+</div>
 </section>
 
 <section id="normal-form-theorem" data-formal="prop-canonical-dnf prop-canonical-cnf prop-formula-normal-forms prop-canonical-normal-form-bounds" data-kind="theorem">
@@ -75,19 +75,19 @@
       In particular, every propositional formula has a semantically equivalent DNF and CNF
       using no new atoms. The empty-fold conventions cover \(n=0\) as well.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Fix a valuation and let \(s\) be its input row. By <a href="#row-formulas"></a>, a term
-    \(M_r\) is true exactly when \(r=s\). Therefore \(D_f\) is true exactly when the row
-    \(s\) is among the rows with \(f(r)=1\), which means \(f(s)=1\).</p>
-  <p>A clause \(C_r\) is false exactly when \(r=s\). Thus \(N_f\) is false exactly when
-    \(s\) is among the rows with \(f(r)=0\), which means \(f(s)=0\). This proves equality
-    of its value with \(f(s)\) as well. Each literal uses a listed atom, so neither construction
-    introduces any other atom.</p>
-  <p>For a formula \(A\), list its distinct occurring atoms and let \(f\) be its truth-table
-    output. The <a href="propositional-logic#locality">locality lemma</a> makes this output
-    independent of values assigned outside the list. Applying the construction gives formulas
-    with the same value as \(A\) under every valuation.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Fix a valuation and let \(s\) be its input row. By <a href="#row-formulas"></a>, a term
+      \(M_r\) is true exactly when \(r=s\). Therefore \(D_f\) is true exactly when the row
+      \(s\) is among the rows with \(f(r)=1\), which means \(f(s)=1\).</p>
+    <p>A clause \(C_r\) is false exactly when \(r=s\). Thus \(N_f\) is false exactly when
+      \(s\) is among the rows with \(f(r)=0\), which means \(f(s)=0\). This proves equality
+      of its value with \(f(s)\) as well. Each literal uses a listed atom, so neither construction
+      introduces any other atom.</p>
+    <p>For a formula \(A\), list its distinct occurring atoms and let \(f\) be its truth-table
+      output. The <a href="propositional-logic#locality">locality lemma</a> makes this output
+      independent of values assigned outside the list. Applying the construction gives formulas
+      with the same value as \(A\) under every valuation.</p>
+</div>
   <p>Order the rows in any fixed way when expanding the displayed finite folds into formulas.
     There are at most \(2^n\) terms in \(D_f\) and at most \(2^n\) clauses in \(N_f\),
     each with \(n\) literals. This proves existence by an explicit construction; it does not
@@ -98,22 +98,24 @@
   <h2>Two switches with different settings</h2>
   <p>For the lamp that lights exactly when \(p,q\) differ, the true rows give the DNF and the
     false rows give the CNF:</p>
-  <table id="xor-table">
-    <caption>Building formulas for different input values</caption>
-    <thead><tr><th scope="col">\(p\)</th><th scope="col">\(q\)</th>
-      <th scope="col">Desired output</th><th scope="col">Selected term or excluded-row clause</th></tr></thead>
-    <tbody>
-      <tr><td>\(0\)</td><td>\(0\)</td><td>\(0\)</td><td>\(p\lor q\)</td></tr>
-      <tr><td>\(0\)</td><td>\(1\)</td><td>\(1\)</td><td>\(\neg p\land q\)</td></tr>
-      <tr><td>\(1\)</td><td>\(0\)</td><td>\(1\)</td><td>\(p\land\neg q\)</td></tr>
-      <tr><td>\(1\)</td><td>\(1\)</td><td>\(0\)</td><td>\(\neg p\lor\neg q\)</td></tr>
-    </tbody>
-  </table>
-  <div class="math-display">\[ D_f=(\neg p\land q)\lor(p\land\neg q),\qquad
-    N_f=(p\lor q)\land(\neg p\lor\neg q). \]</div>
-  <p>The two terms require different settings. The first clause excludes both switches off, and
-    the second excludes both switches on. These are two formulas for the same truth function,
-    usually called <strong>exclusive or</strong>.</p>
+  <div class="proof">
+    <table id="xor-table">
+      <caption>Building formulas for different input values</caption>
+      <thead><tr><th scope="col">\(p\)</th><th scope="col">\(q\)</th>
+        <th scope="col">Desired output</th><th scope="col">Selected term or excluded-row clause</th></tr></thead>
+      <tbody>
+        <tr><td>\(0\)</td><td>\(0\)</td><td>\(0\)</td><td>\(p\lor q\)</td></tr>
+        <tr><td>\(0\)</td><td>\(1\)</td><td>\(1\)</td><td>\(\neg p\land q\)</td></tr>
+        <tr><td>\(1\)</td><td>\(0\)</td><td>\(1\)</td><td>\(p\land\neg q\)</td></tr>
+        <tr><td>\(1\)</td><td>\(1\)</td><td>\(0\)</td><td>\(\neg p\lor\neg q\)</td></tr>
+      </tbody>
+    </table>
+    <div class="math-display">\[ D_f=(\neg p\land q)\lor(p\land\neg q),\qquad
+      N_f=(p\lor q)\land(\neg p\lor\neg q). \]</div>
+    <p>The two terms require different settings. The first clause excludes both switches off, and
+      the second excludes both switches on. These are two formulas for the same truth function,
+      usually called <strong>exclusive or</strong>.</p>
+</div>
 </section>
 
 <section id="nonunique-normal-forms" data-formal="prop-normal-forms-not-unique" data-kind="question">
@@ -168,24 +170,24 @@
       \{\neg,\to,\bot\},\qquad
       \{\to,\bot\}. \]</div>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>The normal-form theorem first gives a formula using \(\neg,\land,\lor,\bot\).
-    For the first basis, replace every conjunction recursively using</p>
-  <div class="math-display">\[ A\land B\equiv\neg(\neg A\lor\neg B). \]</div>
-  <p>For the second basis, replace every disjunction using
-    \(A\lor B\equiv\neg(\neg A\land\neg B)\). For the third, use</p>
-  <div class="math-display">\[ A\lor B\equiv(\neg A\to B),\qquad
-    A\land B\equiv\neg(A\to\neg B). \]</div>
-  <p>Each identity follows by considering the two constituent truth values. Recursively translate
-    the constituents before applying the indicated identity. Structural induction then shows
-    that the translated formula uses only the chosen symbols and has the original value under
-    every valuation. Atoms and \(\bot\) are unchanged, and the binary cases use the displayed
-    identities on the already translated values.</p>
-  <p>Finally, in a formula using only \(\neg,\to,\bot\), replace each negation recursively by
-    \(\neg A\equiv(A\to\bot)\). The truth table for implication gives this identity, and
-    the same induction proves correctness. The constant true function is represented by
-    \(\bot\to\bot\), so this last basis also covers zero inputs.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The normal-form theorem first gives a formula using \(\neg,\land,\lor,\bot\).
+      For the first basis, replace every conjunction recursively using</p>
+    <div class="math-display">\[ A\land B\equiv\neg(\neg A\lor\neg B). \]</div>
+    <p>For the second basis, replace every disjunction using
+      \(A\lor B\equiv\neg(\neg A\land\neg B)\). For the third, use</p>
+    <div class="math-display">\[ A\lor B\equiv(\neg A\to B),\qquad
+      A\land B\equiv\neg(A\to\neg B). \]</div>
+    <p>Each identity follows by considering the two constituent truth values. Recursively translate
+      the constituents before applying the indicated identity. Structural induction then shows
+      that the translated formula uses only the chosen symbols and has the original value under
+      every valuation. Atoms and \(\bot\) are unchanged, and the binary cases use the displayed
+      identities on the already translated values.</p>
+    <p>Finally, in a formula using only \(\neg,\to,\bot\), replace each negation recursively by
+      \(\neg A\equiv(A\to\bot)\). The truth table for implication gives this identity, and
+      the same induction proves correctness. The constant true function is represented by
+      \(\bot\to\bot\), so this last basis also covers zero inputs.</p>
+</div>
 </section>
 
 <section id="nand-nor" data-formal="prop-nand-nor prop-single-gate-identities prop-single-gate-translation prop-single-gate-falsity prop-single-gate-truth-constant prop-single-gate-completeness prop-single-gate-constant-free-completeness prop-no-atomless-gate-formula" data-kind="question">

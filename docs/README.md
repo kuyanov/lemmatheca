@@ -17,3 +17,7 @@ The [project overview](../README.md) covers setup, and
 
 Use the [targeted registry workflow](corpus.md#navigating-source-and-planning-records)
 to read focused source/planning records.
+
+Reports and migrated snapshots under the ignored `artifacts/` directory preserve
+historical commands, module paths and verification results. Use the guides above
+for current conventions.

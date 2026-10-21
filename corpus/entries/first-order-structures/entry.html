@@ -7,7 +7,7 @@
 
 <section id="term-values" data-kind="definition" data-formal="fo-term-value fo-constant-value fo-double-unary-value">
   <h2>Assignments and values of terms</h2>
-  <p>An <strong>assignment</strong> \(a\) gives each free variable \(x_i\) an element \(a(x_i)\in|M|\). In a <a href="first-order-languages#scoped-formulas">context of size \(n\)</a>, also specify a tuple \(b=(b_0,\ldots,b_{n-1})\) of values for its placeholders. Define a term's value \(\llbracket t\rrbracket^M_{a,b}\) recursively:</p>
+  <p>An <strong>assignment</strong> \(a\) gives each free variable \(x_i\) an element \(a(x_i)\in|M|\). In a <a href="first-order-languages#scoped-formulas">context of size \(n\)</a>, also specify a tuple \(b=(b_0,\ldots,b_{n-1})\) of values for its placeholders. Define a term's <strong>value</strong> \(\llbracket t\rrbracket^M_{a,b}\) recursively:</p>
   <div class="math-display">\[
     \llbracket x_i\rrbracket^M_{a,b}=a(x_i),\qquad
     \llbracket z_j\rrbracket^M_{a,b}=b_j,\qquad
@@ -38,9 +38,10 @@
     <div class="math-display">\[M,a,b\models\varphi\quad\Longleftrightarrow\quad M,a',b\models\varphi.\]</div>
     <p>In particular, satisfaction of a sentence is independent of the assignment.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Induct on terms. For a free variable use the assumed agreement; a placeholder has the same tuple value; a function receives equal argument values by induction. Constants have no arguments.</p>
-  <p>Then induct on scoped formulas, allowing arbitrary assignments and tuples at every context size. Falsity is unchanged. Equality and relation application use the term result. For implication, agreement on the union of the children's free-variable sets gives the same truth values for both children. For \(\forall z_n\varphi\), the body's free-variable set equals that of the quantified formula. For each domain element \(m\), the two extended tuples are identical, so induction gives agreement on the body. Universal quantification of these equivalences proves the claim. Empty free-variable sets impose no condition, giving the sentence conclusion. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Induct on terms. For a free variable use the assumed agreement; a placeholder has the same tuple value; a function receives equal argument values by induction. Constants have no arguments.</p>
+    <p>Then induct on scoped formulas, allowing arbitrary assignments and tuples at every context size. Falsity is unchanged. Equality and relation application use the term result. For implication, agreement on the union of the children's free-variable sets gives the same truth values for both children. For \(\forall z_n\varphi\), the body's free-variable set equals that of the quantified formula. For each domain element \(m\), the two extended tuples are identical, so induction gives agreement on the body. Universal quantification of these equivalences proves the claim. Empty free-variable sets impose no condition, giving the sentence conclusion.</p>
+</div>
   <p>For a sentence \(\theta\), we therefore write \(M\models\theta\), and say that \(\theta\) is <strong>true in \(M\)</strong>. Equivalently it is satisfied under every assignment, or under one assignment. An assignment exists because the domain is nonempty.</p>
 </section>
 
@@ -54,8 +55,9 @@
       M,a,b\models\varphi[\sigma]\ \Longleftrightarrow\ M,a_\sigma,b\models\varphi.
     \]</div>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>For terms, induction gives the chosen replacement value at a free variable, the unchanged tuple value at a placeholder, and equal inputs to each interpreted function. Next induct on formulas. Equality and relation application use those term equalities; falsity and implication follow from their truth clauses. At a universal quantifier, compare the bodies at each extended tuple \((b,m)\). The assignment \(a_\sigma\) is the same for every \(m\), because replacement terms contain no placeholders. The induction equivalence can therefore be quantified over \(m\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For terms, induction gives the chosen replacement value at a free variable, the unchanged tuple value at a placeholder, and equal inputs to each interpreted function. Next induct on formulas. Equality and relation application use those term equalities; falsity and implication follow from their truth clauses. At a universal quantifier, compare the bodies at each extended tuple \((b,m)\). The assignment \(a_\sigma\) is the same for every \(m\), because replacement terms contain no placeholders. The induction equivalence can therefore be quantified over \(m\).</p>
+</div>
   <p>For a single substitution \([t/x_i]\), \(a_\sigma\) is just \(a\) with its value at \(x_i\) changed to \(\llbracket t\rrbracket^M_a\). This is why a substitution that captured a free variable would give the wrong semantic rule.</p>
 </section>
 
@@ -67,10 +69,11 @@
     M,a,(\llbracket t\rrbracket^M_a)\models A.
   \]</div>
   <p>Thus opening the slot has the same effect on truth as assigning that slot the term's value. The original free-variable assignment stays fixed.</p>
-  <p class="proof-label">Proof</p>
-  <p>Put \(m=\llbracket t\rrbracket^M_a\). To handle nested binders, prove a stronger assertion at every depth \(r\): replacing the outer slot \(z_0\) by \(t\) and shifting each remaining \(z_{j+1}\) to \(z_j\) preserves term values and formula truth when the original tuple \((m,b_0,\ldots,b_{r-1})\) is replaced by \((b_0,\ldots,b_{r-1})\). The assignment \(a\) remains unchanged, and the assertion ranges over every tuple of retained values.</p>
-  <p>First induct on terms. A free variable keeps its assigned value. The removed placeholder \(z_0\) has value \(m\), which is also the value of its replacement \(t\); this value is independent of the tuple because \(t\) has no placeholders. Each shifted placeholder keeps the same retained value. Function application then receives the same argument values on both sides.</p>
-  <p>Now induct on scoped formulas. Equality and relation application use the term result; falsity and implication use their truth clauses. At a universal quantifier, append the same arbitrary element \(u\) to both tuples. The induction hypothesis at depth \(r+1\) compares the two bodies, with original tuple \((m,b_0,\ldots,b_{r-1},u)\) and resulting tuple \((b_0,\ldots,b_{r-1},u)\). Quantifying over \(u\) gives the required equivalence. Taking \(r=0\) proves the displayed statement. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Put \(m=\llbracket t\rrbracket^M_a\). To handle nested binders, prove a stronger assertion at every depth \(r\): replacing the outer slot \(z_0\) by \(t\) and shifting each remaining \(z_{j+1}\) to \(z_j\) preserves term values and formula truth when the original tuple \((m,b_0,\ldots,b_{r-1})\) is replaced by \((b_0,\ldots,b_{r-1})\). The assignment \(a\) remains unchanged, and the assertion ranges over every tuple of retained values.</p>
+    <p>First induct on terms. A free variable keeps its assigned value. The removed placeholder \(z_0\) has value \(m\), which is also the value of its replacement \(t\); this value is independent of the tuple because \(t\) has no placeholders. Each shifted placeholder keeps the same retained value. Function application then receives the same argument values on both sides.</p>
+    <p>Now induct on scoped formulas. Equality and relation application use the term result; falsity and implication use their truth clauses. At a universal quantifier, append the same arbitrary element \(u\) to both tuples. The induction hypothesis at depth \(r+1\) compares the two bodies, with original tuple \((m,b_0,\ldots,b_{r-1},u)\) and resulting tuple \((b_0,\ldots,b_{r-1},u)\). Quantifying over \(u\) gives the required equivalence. Taking \(r=0\) proves the displayed statement.</p>
+</div>
   <p>In particular, if \(s\) and \(t\) have the same value under \(a\), then \(A(s)\) and \(A(t)\) have the same truth value: both are evaluated by assigning that common value to the slot.</p>
 </section>
 
@@ -110,9 +113,10 @@
     \]</div>
     <p>Consequently \(M\models\theta\) iff \(N\models\theta\) for every sentence \(\theta\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>The term identity follows by induction: variables transport by definition, and the function step is exactly preservation of the interpreted function. For formulas, equality uses that identity and injectivity of \(h\); relation application uses the defining equivalence for relations. Falsity and implication preserve the resulting truth values.</p>
-  <p>For a universal quantifier, truth in \(M\) gives truth of the body at every \(m\in|M|\). Induction gives truth in \(N\) at \(h(m)\); surjectivity says these exhaust \(|N|\). Conversely, truth at all elements of \(N\) includes every \(h(m)\), so induction gives truth at all \(m\). The sentence conclusion follows from assignment independence. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The term identity follows by induction: variables transport by definition, and the function step is exactly preservation of the interpreted function. For formulas, equality uses that identity and injectivity of \(h\); relation application uses the defining equivalence for relations. Falsity and implication preserve the resulting truth values.</p>
+    <p>For a universal quantifier, truth in \(M\) gives truth of the body at every \(m\in|M|\). Induction gives truth in \(N\) at \(h(m)\); surjectivity says these exhaust \(|N|\). Conversely, truth at all elements of \(N\) includes every \(h(m)\), so induction gives truth at all \(m\). The sentence conclusion follows from assignment independence.</p>
+</div>
 </section>
 
 <section id="theories-and-models" data-kind="definition" data-formal="fo-theory fo-theory-model fo-nonempty-theory-model fo-nonempty-carrier fo-singleton-domain-sentence fo-singleton-domain-truth fo-contradictory-theory-no-model fo-model-isomorphism-invariance">

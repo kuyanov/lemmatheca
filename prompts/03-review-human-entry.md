@@ -1,92 +1,61 @@
 # Step 3: Review the human entry
 
-Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
-Independently review human mathematics and presentation. Authored entry content
-remains read-only; source-register maintenance follows the shared exception.
-
-In the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), the entry
-driver requests review and root alone assigns or spawns the reviewer: root, a new
-agent or another entry owner. As reviewer, you must not have authored the reviewed
-text. Return findings to the entry owner. If delegated, also send them to root
-and leave reviewer assignment to root.
+Independently review human mathematics and presentation. Follow the
+[shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent) and
+[review-assignment protocol](../CONTRIBUTING.md#running-an-area-pipeline).
+Authored entry content remains read-only.
 
 ## Inputs
 
-- Entry ID or entry selection.
-- Optional narrower review scope, drafting handoff, and relevant source material.
-- For an area batch, root's identification of the exact shared integration
-  files/blocks applied and stable for review, and the current index revision
-  after any needed checkpoint.
+- Entry ID or entry selection and optional narrower review scope.
+- Drafting handoff, agreed plan and relevant source assessments when available.
+- The actual applied integration files/blocks, identified by root in an area batch.
 
 ## Context
 
-Read the current entry and metadata, including proofs, examples, figures, and
-hidden answers within the requested scope. Use the [corpus contract](../docs/corpus.md),
-[scope guidance](../CONTRIBUTING.md#prerequisites-and-scope), and
-[reading-order criteria](../CONTRIBUTING.md#reading-order). Judge the actual entry
-independently; a drafting self-check is not this review.
+Read every claim, proof, example and hidden answer within scope, plus entry
+metadata and the relevant applied integration changes. Use the
+[corpus contract](../docs/corpus.md); a drafting self-check does not establish
+correctness. Reuse source assessments unless a concrete question needs investigation.
 
-Use the [authoring API](../docs/app.md#authoring-api) under the
-[shared usage rules](../CONTRIBUTING.md#using-the-authoring-api) to retrieve the
-requested entry context with `include=blocks,references,navigation` and
-`include_answers=true`. Use `block_ids` for an explicitly narrower review; a full
-entry review must cover every block. Use compact area listings to inspect
-placement within the reading order. Keep retrieval within the requested
-human-review scope.
+Use the [authoring API](../CONTRIBUTING.md#using-the-authoring-api) entry context
+with `include=blocks,references,navigation` and `include_answers=true`.
+Use `block_ids` only for an explicitly narrower review; a full review covers every
+block. Inspect assigned placement through compact area listings and retrieve only
+related planning records or source records needed for an investigation.
 
 ## Work
 
-1. Check claims and proofs: hypotheses, quantifiers, domains, conclusions,
-   equivalence directions, witnesses, boundary cases, and freedom from circular
-   reasoning. Assess axiom-strength claims under their stated assumptions.
-   Check that explanations supply the important steps at the intended level.
-2. Check definitions, notation, prerequisites, citations, and linked results.
-   Consult sources where correctness or attribution needs investigation; do not
-   repeat source discovery or re-audit unchanged publications by default.
-   Record any newly confirmed source defect or inspected scope under the
-   [source-error contract](../docs/corpus.md#source-errors).
-3. Review readability, the standalone abstract, title, emphasis, figures,
-   reading-time estimate, and rendered mathematics against the corpus contract.
-   Estimate time from the actual arguments and questions; do not lower the
-   metadata to fit a target. Main-result boxes must contain their hypotheses and
-   conclusions. Inspect desktop and relevant narrow
-   layouts, including hidden answers. Flag any display requiring horizontal
-   scrolling at the normal desktop content width. Split an overflowing row of
-   independent claims into separate displays; keep each equation, implication,
-   or equivalence horizontal when it fits, and break a genuinely long single statement only at meaningful
-   mathematical boundaries. For a line-break audit, enumerate every explicit
-   break and keep short formulas and identity lists compact. Formula scrolling
-   on mobile is acceptable and does not justify extra line breaks.
-4. Check reading order and the entry's references. In an area batch, check the
-   assigned placement and include global conflicts in your findings; do not replan
-   the area during this review.
-   Review the relevant applied integration changes from step 2, identified by root
-   in an area batch, and report missing, stale, or incorrect links/planning items.
-   Do not treat proposed edits as applied or reviewed. Do not repeat a corpus-wide
-   consumer search or unrelated planning cleanup. Retrieve only planning records associated with the reviewed entries
-   and source records for publications actually investigated, using the
-   [registry lookups](../docs/corpus.md#navigating-source-and-planning-records).
-   Return proposed corrections; do not edit reference planning.
+1. Check the claims and proofs: hypotheses, quantifiers, domains, conclusions,
+   equivalence directions, witnesses, boundary cases and circular reasoning.
+   Assess axiom-strength claims under their stated assumptions and whether the
+   explanations supply the important steps at the intended level.
+2. Check definitions, notation, local prerequisites, citations and linked results.
+   Investigate sources where correctness or attribution is uncertain; do not
+   repeat source discovery or unchanged publication audits.
+3. Assess readability, the standalone abstract, plain-text title, main-result
+   emphasis, figures and realistic reading time. Inspect desktop and relevant
+   narrow layouts, including hidden answers, against the
+   [display-layout contract](../docs/corpus.md#mathematics-figures-and-assets).
+   Flag violations and propose corrections; do not edit them. For a requested
+   line-break audit, enumerate every explicit break.
+4. Check fidelity to the assigned scope, area-specific perspective and placement.
+   Judge deliberate overlap by its value to readers; shared subject matter alone
+   is not a defect. Report newly exposed dependency or global-order conflicts to
+   root rather than replanning the area.
+5. Review the entry's references and the relevant applied integration changes.
+   Identify missing, stale or incorrect links and fulfilled planning items left
+   behind. Do not treat proposed edits as applied; do not repeat step 2's broad
+   consumer search or unrelated planning cleanup.
 
-## Checks
+## Checks and deliverable
 
 The independent reading and rendering review above is this step's check. Use
 `build --no-lean --check` only to investigate a concrete structural/reference
-concern. Source-record edits follow the [shared build rules](../CONTRIBUTING.md#validation-and-submission)
-for catalog regeneration. In an area batch, if you are a delegated reviewer, send
-shared-record changes to root unless exclusive file ownership was assigned, and
-leave publication to root. If you are root, apply those changes and refresh the
-catalogs at a coordinated checkpoint or the final build.
-No routine writing build, catalog tests, Lean proof checks, or formal-binding
-audit is required.
+concern. No routine writing build, Lean inspection or formal-binding audit belongs
+here; newly inspected external sources follow the shared register rules.
 
-## Deliverable
-
-Return prioritized findings with block/file references, consequences, and concrete
-corrections; separate errors from optional improvements. State reviewed scope,
-unavailable checks, and revisions needed before formal preparation. Include
-relevant integration findings and source-register changes when applicable.
-Do not rewrite entries, metadata, mappings, or proofs, or set approval fields.
-The area entry driver applies corrections through step 2 and requests focused
-step-3 rereview from root before continuing; root assigns it. Do not perform those
-edits yourself.
+Return prioritized findings with block/file references, consequences and proposed
+corrections. Distinguish errors from optional improvements, state the reviewed
+scope and unavailable checks, and route human corrections to step 2. Do not rewrite
+the entry, reference planning, mappings or proofs.

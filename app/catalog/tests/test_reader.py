@@ -9,7 +9,7 @@ from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 
 from catalog.content import add_progress, load_entry, next_entry
-from catalog.entry_files import read_area_entries, read_entry_metadata
+from catalog.entry_files import read_reading_order, read_entry_metadata
 from catalog.files import read_json, write_json
 from catalog.node_files import read_node
 from catalog.progress import entry_progress
@@ -29,7 +29,7 @@ class ReaderTests(SimpleTestCase):
                 {"id": "logic-and-foundations", "title": "Logic and foundations", "parent": None},
                 {"id": "set-theory", "title": "Set theory", "parent": "logic-and-foundations"},
             ]})
-            write_json(corpus / "area_entries.json", {"areas": {
+            write_json(corpus / "reading_order.json", {"areas": {
                 "set-theory": ["sets-and-maps", "equivalence-relations", "ordered-sets"],
             }})
             nodes = {}
@@ -117,13 +117,13 @@ class ReaderTests(SimpleTestCase):
                 entry_dir.mkdir(parents=True)
                 write_json(entry_dir / "entry.json",
                            {"id": identifier, "primary_area": area})
-            write_json(corpus / "area_entries.json", {
+            write_json(corpus / "reading_order.json", {
                 "areas": {"first": ["zeta", "omega"], "second": ["beta"]},
             })
 
             # No HTML files exist: next-entry navigation needs metadata only.
             with override_settings(CORPUS_DIR=corpus):
-                index = read_area_entries()
+                index = read_reading_order()
                 self.assertEqual(index["first"], ["zeta", "omega"])
                 self.assertEqual(next_entry(
                     read_entry_metadata("zeta"), index)["id"], "omega")

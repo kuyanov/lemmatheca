@@ -1,12 +1,12 @@
 {
   "id": "prop-evaluation-unique",
   "description": "For every valuation, every Boolean evaluation satisfying the atom, falsum and four connective clauses agrees with recursive evaluation on every formula.",
-  "module": "Lemmatheca.MathematicalLogic.Propositional",
-  "declaration": "Lemmatheca.MathematicalLogic.eval_unique",
+  "module": "Lemmatheca.PropositionalLogic.Propositional",
+  "declaration": "Lemmatheca.MathematicalLogic.Propositional.eval_unique",
   "dependencies": [
     "prop-formula-induction"
   ],
   "verified": true,
   "declaration_line": 46,
-  "signature": "Lemmatheca.MathematicalLogic.eval_unique.{u} {α : Type u} (v : Lemmatheca.MathematicalLogic.Valuation α)\n  (E : Lemmatheca.MathematicalLogic.PropFormula α → Bool)\n  (hAtom : ∀ (a : α), E (Lemmatheca.MathematicalLogic.PropFormula.atom a) = v a)\n  (hFalsum : E Lemmatheca.MathematicalLogic.PropFormula.falsum = false)\n  (hNeg : ∀ (A : Lemmatheca.MathematicalLogic.PropFormula α), E A.neg = !E A)\n  (hConj : ∀ (A B : Lemmatheca.MathematicalLogic.PropFormula α), E (A.conj B) = (E A && E B))\n  (hDisj : ∀ (A B : Lemmatheca.MathematicalLogic.PropFormula α), E (A.disj B) = (E A || E B))\n  (hImpl : ∀ (A B : Lemmatheca.MathematicalLogic.PropFormula α), E (A.impl B) = (!E A || E B))\n  (A : Lemmatheca.MathematicalLogic.PropFormula α) : E A = Lemmatheca.MathematicalLogic.eval v A"
+  "signature": "Lemmatheca.MathematicalLogic.Propositional.eval_unique.{u} {α : Type u}\n  (v : Lemmatheca.MathematicalLogic.Propositional.Valuation α)\n  (E : Lemmatheca.MathematicalLogic.Propositional.PropFormula α → Bool)\n  (hAtom : ∀ (a : α), E (Lemmatheca.MathematicalLogic.Propositional.PropFormula.atom a) = v a)\n  (hFalsum : E Lemmatheca.MathematicalLogic.Propositional.PropFormula.falsum = false)\n  (hNeg : ∀ (A : Lemmatheca.MathematicalLogic.Propositional.PropFormula α), E A.neg = !E A)\n  (hConj : ∀ (A B : Lemmatheca.MathematicalLogic.Propositional.PropFormula α), E (A.conj B) = (E A && E B))\n  (hDisj : ∀ (A B : Lemmatheca.MathematicalLogic.Propositional.PropFormula α), E (A.disj B) = (E A || E B))\n  (hImpl : ∀ (A B : Lemmatheca.MathematicalLogic.Propositional.PropFormula α), E (A.impl B) = (!E A || E B))\n  (A : Lemmatheca.MathematicalLogic.Propositional.PropFormula α) :\n  E A = Lemmatheca.MathematicalLogic.Propositional.eval v A"
 }

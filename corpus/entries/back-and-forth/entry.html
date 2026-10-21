@@ -9,8 +9,9 @@
 <section id="atomic-and-quantifier-free" data-kind="lemma" data-formal="bf-quantifier-free-agreement bf-closed-atomic-agreement">
   <h2>What a finite match preserves</h2>
   <p>A finite partial isomorphism preserves and reflects every <a href="first-order-normal-forms#normal-form-definitions">quantifier-free formula</a> on tuples from its domain.</p>
-  <p class="proof-label">Proof</p>
-  <p>Atomic formulas agree by definition. Negation, conjunction and the other Boolean connectives preserve agreement by induction on the formula. Quantifiers are excluded: their witnesses need not lie in the finite domain. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Atomic formulas agree by definition. Negation, conjunction and the other Boolean connectives preserve agreement by induction on the formula. Quantifiers are excluded: their witnesses need not lie in the finite domain.</p>
+</div>
   <p>The empty tuple is included in the definition. Consequently any partial isomorphism, even one with empty domain, requires agreement on closed atomic formulas. For example, if the language has constants \(c,d\), then \(c=d\) must have the same truth value in both structures. One cannot assume that the empty map is always available.</p>
 </section>
 
@@ -27,27 +28,30 @@
 <section id="unions-of-matches" data-kind="lemma" data-formal="bf-covering-chain-isomorphism">
   <h2>Taking the union of compatible matches</h2>
   <p>Suppose \(p_0\subseteq p_1\subseteq\cdots\) are finite partial isomorphisms, their domains cover \(|M|\), and their ranges cover \(|N|\). Then \(h=\bigcup_{n&lt;\omega}p_n\) is an <a href="first-order-structures#isomorphisms">isomorphism</a> from \(M\) onto \(N\), extending every \(p_n\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Extension makes the union a function. Domain coverage makes it total. Any two arguments occur together in one stage, so injectivity of that stage gives injectivity of \(h\). Range coverage gives surjectivity.</p>
-  <p>Every finite tuple lies in the domain of one stage, by taking the maximum of its finitely many stage indices. Atomic formulas therefore agree on that tuple. For a relation symbol, use its atomic formula on variables. For a function symbol \(f\), include both \(\bar a\) and \(f^M(\bar a)\) in the tuple, then apply agreement to \(y=f(\bar x)\). It follows that</p>
-  <div class="math-display">\[h(f^M(\bar a))=f^N(h(\bar a)).\]</div>
-  <p>The same argument covers constants, whose arity is zero. Relations of arity zero agree using the empty tuple. Hence the bijection preserves all interpretations and is an isomorphism. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Extension makes the union a function. Domain coverage makes it total. Any two arguments occur together in one stage, so injectivity of that stage gives injectivity of \(h\). Range coverage gives surjectivity.</p>
+    <p>Every finite tuple lies in the domain of one stage, by taking the maximum of its finitely many stage indices. Atomic formulas therefore agree on that tuple. For a relation symbol, use its atomic formula on variables. For a function symbol \(f\), include both \(\bar a\) and \(f^M(\bar a)\) in the tuple, then apply agreement to \(y=f(\bar x)\). It follows that</p>
+    <div class="math-display">\[h(f^M(\bar a))=f^N(h(\bar a)).\]</div>
+    <p>The same argument covers constants, whose arity is zero. Relations of arity zero agree using the empty tuple. Hence the bijection preserves all interpretations and is an isomorphism.</p>
+</div>
 </section>
 
 <section id="countable-isomorphism" data-kind="theorem" data-formal="bf-countable-isomorphism">
   <h2>Back-and-forth gives an isomorphism on countable structures</h2>
   <div class="statement-box"><p>If the carriers of \(M,N\) are countable and a back-and-forth system \(\mathcal I\) exists between them, every \(p\in\mathcal I\) extends to an isomorphism \(M\cong N\). No countability assumption on the language is needed.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>List the carriers as \(a_0,a_1,\ldots\) and \(b_0,b_1,\ldots\), allowing repetitions when a carrier is finite. Start from the prescribed \(p_0=p\). Given \(p_{2n}\), use forth to choose \(p_{2n+1}\) extending it with \(a_n\) in its domain. Then use back to choose \(p_{2n+2}\) extending that map with \(b_n\) in its range. The resulting increasing sequence covers both carriers. Apply <a href="#unions-of-matches"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>List the carriers as \(a_0,a_1,\ldots\) and \(b_0,b_1,\ldots\), allowing repetitions when a carrier is finite. Start from the prescribed \(p_0=p\). Given \(p_{2n}\), use forth to choose \(p_{2n+1}\) extending it with \(a_n\) in its domain. Then use back to choose \(p_{2n+2}\) extending that map with \(b_n\) in its range. The resulting increasing sequence covers both carriers. Apply <a href="#unions-of-matches"></a>.</p>
+</div>
   <p>The order of these requests matters: answering only requests from \(M\) does not ensure that every element of \(N\) is reached.</p>
 </section>
 
 <section id="dense-orders" data-kind="theorem" data-formal="bf-strict-dense-order-system bf-dense-order-extension bf-dense-order-categoricity cantor-back-and-forth">
   <h2>The dense-order construction as a special case</h2>
   <p>Let \(M,N\) be nonempty dense linear orders without endpoints, in the language with just \(&lt;\). Their finite order isomorphisms form a back-and-forth system. Consequently any two countable such orders are isomorphic.</p>
-  <p class="proof-label">Proof</p>
-  <p>The empty map is available because this language has no closed atomic formulas. For forth, take a point \(a\) outside the finite domain of \(p\). Divide that domain into the points below and above \(a\). If both parts are nonempty, let \(u\) be the greatest point in the lower part and \(v\) the least in the upper part. Choose \(b\) strictly between \(p(u)\) and \(p(v)\). If only the lower part is nonempty, choose \(b\) above its greatest image; if only the upper part is nonempty, choose \(b\) below its least image. If the domain is empty, choose any \(b\in |N|\). Density and the absence of endpoints supply these choices.</p>
-  <p>In each case \(b\) is outside the old range, and adjoining \(a\mapsto b\) preserves the order. Interchange the two orders and apply the same argument to the inverse finite bijection to obtain back. Now use <a href="#countable-isomorphism"></a>. This is the general form of the <a href="dense-linear-orders#cantor-back-and-forth">dense-order back-and-forth proof</a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The empty map is available because this language has no closed atomic formulas. For forth, take a point \(a\) outside the finite domain of \(p\). Divide that domain into the points below and above \(a\). If both parts are nonempty, let \(u\) be the greatest point in the lower part and \(v\) the least in the upper part. Choose \(b\) strictly between \(p(u)\) and \(p(v)\). If only the lower part is nonempty, choose \(b\) above its greatest image; if only the upper part is nonempty, choose \(b\) below its least image. If the domain is empty, choose any \(b\in |N|\). Density and the absence of endpoints supply these choices.</p>
+    <p>In each case \(b\) is outside the old range, and adjoining \(a\mapsto b\) preserves the order. Interchange the two orders and apply the same argument to the inverse finite bijection to obtain back. Now use <a href="#countable-isomorphism"></a>. This is the general form of the <a href="dense-linear-orders#cantor-back-and-forth">dense-order back-and-forth proof</a>.</p>
+</div>
 </section>
 
 <section id="countability-question" data-kind="question" data-formal="bf-strict-dense-order-system real-uncountability rational-encodable countable-indexed-unions bf-countable-uncountable-not-isomorphic">
@@ -65,9 +69,10 @@
 <section id="countable-categoricity-test" data-kind="theorem" data-formal="bf-countable-categoricity-completeness bf-dense-order-no-finite-models bf-dense-order-completeness">
   <h2>Countable categoricity forces completeness when all models are infinite</h2>
   <div class="statement-box"><p>Let \(L\) be countable and \(T\) a satisfiable \(L\)-theory with no finite models. If \(T\) is countably categorical, then \(T\) is complete.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>Take any two models \(M,N\models T\). By <a href="elementary-submodels#countable-submodels">downward Löwenheim–Skolem</a>, choose countable elementary substructures \(M_0\preccurlyeq M\) and \(N_0\preccurlyeq N\). They satisfy \(T\), so the no-finite-model assumption makes them countably infinite. Categoricity gives \(M_0\cong N_0\). Elementarity and <a href="first-order-structures#isomorphism-invariance">isomorphism invariance</a> show that \(M,N\) agree on every sentence. By the <a href="theories-and-axiomatization#complete-models">model criterion for completeness</a>, \(T\) is complete. <span class="qed" aria-label="End of proof">□</span></p>
-  <p>Dense linear orders without endpoints have no finite models: starting from any point, repeatedly choose a larger one to obtain arbitrarily many distinct points. The criterion therefore gives another proof that their theory is complete, alongside the <a href="quantifier-elimination#complete-examples">quantifier-elimination argument</a>.</p>
+  <div class="proof">
+    <p>Take any two models \(M,N\models T\). By <a href="elementary-submodels#countable-submodels">downward Löwenheim–Skolem</a>, choose countable elementary substructures \(M_0\preccurlyeq M\) and \(N_0\preccurlyeq N\). They satisfy \(T\), so the no-finite-model assumption makes them countably infinite. Categoricity gives \(M_0\cong N_0\). Elementarity and <a href="first-order-structures#isomorphism-invariance">isomorphism invariance</a> show that \(M,N\) agree on every sentence. By the <a href="theories-and-axiomatization#complete-models">model criterion for completeness</a>, \(T\) is complete.</p>
+    <p>Dense linear orders without endpoints have no finite models: starting from any point, repeatedly choose a larger one to obtain arbitrarily many distinct points. The criterion therefore gives another proof that their theory is complete, alongside the <a href="quantifier-elimination#complete-examples">quantifier-elimination argument</a>.</p>
+</div>
 </section>
 
 <section id="finite-models-question" data-kind="question" data-formal="bf-empty-theory-models bf-empty-theory-categorical theory-empty-equality-incomplete">

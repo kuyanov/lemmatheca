@@ -11,13 +11,15 @@
   <h2>A parameter can locate a point</h2>
   <p>For any \(a\in M\), the formula \(x=a\), with \(a\) supplied as a parameter, defines \(\{a\}\). A finite set \(\{a_0,\ldots,a_{k-1}\}\) is defined by</p>
   <div class="math-display">\[\bigvee_{i&lt;k}x=a_i.\]</div>
-  <p>When \(k=0\), use the false formula \(x\ne x\). Thus every finite subset is definable with parameters. This says nothing about whether its points can be described without those parameters.</p>
-  <p>In \((\mathbb R,&lt;)\), where the language contains only strict order, the positive ray \(\{x:0&lt;x\}\) is definable over \(\{0\}\) by \(y&lt;x\) with \(y\) assigned \(0\). The symbol for zero is not in this language. We will show in <a href="#positive-ray"></a> that this parameter cannot simply be omitted.</p>
+  <div class="proof">
+    <p>For \(k&gt;0\), the displayed disjunction holds exactly when the value of \(x\) equals one of the listed parameters. When \(k=0\), use the false formula \(x\ne x\). Thus every finite subset is definable with parameters. This says nothing about whether its points can be described without those parameters.</p>
+    <p>In \((\mathbb R,&lt;)\), where the language contains only strict order, the positive ray \(\{x:0&lt;x\}\) is definable over \(\{0\}\) by \(y&lt;x\) with \(y\) assigned \(0\). The symbol for zero is not in this language. We will show in <a href="#positive-ray"></a> that this parameter cannot simply be omitted.</p>
+</div>
 </section>
 
 <section id="definable-functions" data-formal="definable-function-graph definable-identity-term definable-constant-function definable-term-function-graph" data-kind="definition">
   <h2>Relations and functions are described by their graphs</h2>
-  <p>An \(n\)-ary relation is \(A\)-definable when its subset of \(M^n\) is \(A\)-definable. A function \(f:M^n\to M\) is \(A\)-definable when its graph</p>
+  <p>An \(n\)-ary relation is <strong>\(A\)-definable</strong> when its subset of \(M^n\) is \(A\)-definable. A function \(f:M^n\to M\) is <strong>\(A\)-definable</strong> when its graph</p>
   <div class="math-display">\[\{(\bar a,b)\in M^{n+1}:b=f(\bar a)\}\]</div>
   <p>is \(A\)-definable. A defining formula must therefore give exactly one output for every input. A formula defining an arbitrary relation is not automatically the graph of a function.</p>
   <p>The identity function has the parameter-free graph formula \(y=x\). The constant function with value \(a\) has graph formula \(y=a\), using the parameter \(a\). Merely choosing a function in the surrounding mathematics does not establish that its graph is definable in \(M\).</p>
@@ -26,18 +28,20 @@
 <section id="boolean-closure" data-formal="definable-empty-set definable-full-set definable-complement definable-union definable-intersection definable-difference" data-kind="lemma">
   <h2>Combining definitions</h2>
   <p>For fixed arity \(n\) and parameter set \(A\), the \(A\)-definable subsets of \(M^n\) contain \(\varnothing\) and \(M^n\), and are closed under complement, union, intersection, and difference.</p>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(X\) and \(Y\) are defined by \(\varphi(\bar x,\bar b)\) and \(\psi(\bar x,\bar c)\). Put their finite parameter lists into one combined list. Keep the object-variable names fixed and relabel each free parameter name to the slot for its value in that list. This is <a href="first-order-languages#substitution">substitution of free names by free names</a>: the disjoint scoped placeholders remain unchanged, so their occurrences stay bound to the same quantifiers. With these common variable lists, the formulas \(\neg\varphi\), \(\varphi\lor\psi\), \(\varphi\land\psi\), and \(\varphi\land\neg\psi\) define \(M^n\setminus X\), \(X\cup Y\), \(X\cap Y\), and \(X\setminus Y\), respectively. Falsity and its negation define the empty and full sets, including at arity zero. Each assertion follows directly from the truth clauses. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose \(X\) and \(Y\) are defined by \(\varphi(\bar x,\bar b)\) and \(\psi(\bar x,\bar c)\). Put their finite parameter lists into one combined list. Keep the object-variable names fixed and relabel each free parameter name to the slot for its value in that list. This is <a href="first-order-languages#substitution">substitution of free names by free names</a>: the disjoint scoped placeholders remain unchanged, so their occurrences stay bound to the same quantifiers. With these common variable lists, the formulas \(\neg\varphi\), \(\varphi\lor\psi\), \(\varphi\land\psi\), and \(\varphi\land\neg\psi\) define \(M^n\setminus X\), \(X\cup Y\), \(X\cap Y\), and \(X\setminus Y\), respectively. Falsity and its negation define the empty and full sets, including at arity zero. Each assertion follows directly from the truth clauses.</p>
+</div>
 </section>
 
 <section id="projection" data-formal="definable-projection" data-kind="lemma">
   <h2>Forgetting coordinates by asking for a witness</h2>
   <p>If \(X\subseteq M^{n+m}\) is \(A\)-definable, its projection onto the first \(n\) coordinates is \(A\)-definable:</p>
   <div class="math-display">\[\pi(X)=\{\bar a\in M^n:\exists\bar c\in M^m\;(\bar a,\bar c)\in X\}.\]</div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose \(\varphi(\bar x,\bar y,\bar b)\) defines \(X\), where \(\bar y\) denotes its \(m\) discarded free coordinate names. Turn those names into the placeholders \(z_0,\ldots,z_{m-1}\), obtaining a body \(\widehat\varphi\) at context size \(m\). Increase the indices of every existing binder and its placeholders by \(m\), so each occurrence stays attached to its original binder. The object and parameter names remain free. The formula</p>
-  <div class="math-display">\[\exists z_0\cdots\exists z_{m-1}\,\widehat\varphi(\bar x,z_0,\ldots,z_{m-1},\bar b)\]</div>
-  <p>is complete, and its satisfaction clause says exactly that a tuple of discarded coordinates exists. No new parameters have been introduced. For \(m=0\), this is the original formula and the identity projection; for \(n=0\), it asks whether \(X\) is nonempty. Any finite choice of retained coordinates works after a permutation of the coordinate list. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose \(\varphi(\bar x,\bar y,\bar b)\) defines \(X\), where \(\bar y\) denotes its \(m\) discarded free coordinate names. Turn those names into the placeholders \(z_0,\ldots,z_{m-1}\), obtaining a body \(\widehat\varphi\) at context size \(m\). Increase the indices of every existing binder and its placeholders by \(m\), so each occurrence stays attached to its original binder. The object and parameter names remain free. The formula</p>
+    <div class="math-display">\[\exists z_0\cdots\exists z_{m-1}\,\widehat\varphi(\bar x,z_0,\ldots,z_{m-1},\bar b)\]</div>
+    <p>is complete, and its satisfaction clause says exactly that a tuple of discarded coordinates exists. No new parameters have been introduced. For \(m=0\), this is the original formula and the identity projection; for \(n=0\), it asks whether \(X\) is nonempty. Any finite choice of retained coordinates works after a permutation of the coordinate list.</p>
+</div>
 </section>
 
 <section id="automorphisms" data-formal="fo-isomorphism definable-fixes-parameters definable-invariant-set definable-inverse-fixes definable-invariant-image" data-kind="definition">
@@ -49,36 +53,40 @@
 <section id="invariance" data-formal="definable-automorphism-invariance" data-kind="theorem">
   <h2>Definitions cannot distinguish parameter-preserving symmetries</h2>
   <div class="statement-box"><p>Every \(A\)-definable subset \(X\subseteq M^n\) is invariant under every automorphism \(g\) of \(M\) fixing \(A\) pointwise:</p><div class="math-display">\[\bar a\in X\quad\Longleftrightarrow\quad g\bar a\in X.\]</div></div>
-  <p class="proof-label">Proof</p>
-  <p>Take a definition \(X=\varphi(M,\bar b)\) with \(\bar b\) from \(A\). <a href="first-order-structures#isomorphism-invariance">Satisfaction is preserved by an isomorphism</a>, so</p>
-  <div class="math-display">\[M\models\varphi[\bar a,\bar b]\quad\Longleftrightarrow\quad M\models\varphi[g\bar a,g\bar b].\]</div>
-  <p>Since each parameter is fixed, \(g\bar b=\bar b\). The right side is therefore exactly the assertion that \(g\bar a\in X\). This also proves the claim at arity zero. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Take a definition \(X=\varphi(M,\bar b)\) with \(\bar b\) from \(A\). <a href="first-order-structures#isomorphism-invariance">Satisfaction is preserved by an isomorphism</a>, so</p>
+    <div class="math-display">\[M\models\varphi[\bar a,\bar b]\quad\Longleftrightarrow\quad M\models\varphi[g\bar a,g\bar b].\]</div>
+    <p>Since each parameter is fixed, \(g\bar b=\bar b\). The right side is therefore exactly the assertion that \(g\bar a\in X\). This also proves the claim at arity zero.</p>
+</div>
   <p>To show that a particular set is not \(A\)-definable, it is enough to find one automorphism fixing \(A\) and one tuple whose membership changes. The language matters: adding a constant or relation can remove an available symmetry.</p>
 </section>
 
 <section id="positive-ray" data-formal="definable-real-order-translation definable-translation-moves-ray definable-positive-ray-not-parameter-free" data-kind="lemma">
   <h2>The order alone does not identify the positive reals</h2>
   <p>The positive ray \(P=\{x\in\mathbb R:0&lt;x\}\) is not parameter-free definable in \((\mathbb R,&lt;)\).</p>
-  <p class="proof-label">Proof</p>
-  <p>The translation \(g(x)=x-2\) is a bijection, with inverse \(x\mapsto x+2\). It preserves and reflects strict order because \(x-2&lt;y-2\) is equivalent to \(x&lt;y\). There are no function or constant symbols to preserve. Thus \(g\) is an automorphism. But \(1\in P\) and \(g(1)=-1\notin P\), contradicting <a href="#invariance"></a> if \(P\) were parameter-free definable. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The translation \(g(x)=x-2\) is a bijection, with inverse \(x\mapsto x+2\). It preserves and reflects strict order because \(x-2&lt;y-2\) is equivalent to \(x&lt;y\). There are no function or constant symbols to preserve. Thus \(g\) is an automorphism. But \(1\in P\) and \(g(1)=-1\notin P\), contradicting <a href="#invariance"></a> if \(P\) were parameter-free definable.</p>
+</div>
   <p>There is no conflict with <a href="#parameters"></a>: this translation does not fix the allowed parameter \(0\). If the language itself names zero, it is no longer an automorphism of that expanded structure.</p>
 </section>
 
 <section id="counting-definitions" data-formal="definable-subset-cardinality-bound definable-undefinable-subset-exists" data-kind="theorem">
   <h2>Even all finite parameter lists cannot define every subset</h2>
   <div class="statement-box"><p>Let \(L\) be a countable language and \(M\) an infinite \(L\)-structure of cardinality \(\kappa\). There are at most \(\kappa\) subsets of \(M\) definable with finite parameters from \(M\). Consequently, some subset of \(M\) is not definable even with parameters.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>The variables, logical symbols and symbols of \(L\) form a countable alphabet. Finite strings over this alphabet form a countable set, using <a href="finite-and-countable-sets#finite-products">finite products</a> and <a href="infinite-cardinal-arithmetic#countable-unions">countable unions</a>. Hence there are at most countably many formulas and choices of their finite variable lists.</p>
-  <p>For every positive finite \(m\), there are \(\kappa^m=\kappa\) tuples of parameters by <a href="infinite-cardinal-arithmetic#finite-powers">finite powers of an infinite cardinal</a>. The empty tuple contributes one more possibility. Taking all finite lengths gives \(\kappa\cdot\aleph_0=\kappa\) parameter tuples. Thus pairs consisting of a formula and a matching tuple number at most \(\aleph_0\cdot\kappa=\kappa\). Each pair describes at most one subset, and every definable subset has such a description. Different descriptions may define the same subset, which only lowers the count.</p>
-  <p>By <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a>, \(\mathcal P(M)\) has cardinality strictly larger than \(\kappa\). The definable subsets cannot exhaust it. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The variables, logical symbols and symbols of \(L\) form a countable alphabet. Finite strings over this alphabet form a countable set, using <a href="finite-and-countable-sets#finite-products">finite products</a> and <a href="infinite-cardinal-arithmetic#countable-unions">countable unions</a>. Hence there are at most countably many formulas and choices of their finite variable lists.</p>
+    <p>For every positive finite \(m\), there are \(\kappa^m=\kappa\) tuples of parameters by <a href="infinite-cardinal-arithmetic#finite-powers">finite powers of an infinite cardinal</a>. The empty tuple contributes one more possibility. Taking all finite lengths gives \(\kappa\cdot\aleph_0=\kappa\) parameter tuples. Thus pairs consisting of a formula and a matching tuple number at most \(\aleph_0\cdot\kappa=\kappa\). Each pair describes at most one subset, and every definable subset has such a description. Different descriptions may define the same subset, which only lowers the count.</p>
+    <p>By <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a>, \(\mathcal P(M)\) has cardinality strictly larger than \(\kappa\). The definable subsets cannot exhaust it.</p>
+</div>
   <p>This is an external count in the surrounding mathematics. It neither supplies a formula naming all definable subsets inside \(M\), nor identifies a particular undefinable subset.</p>
 </section>
 
 <section id="rigid-structure" data-formal="definable-rigid-structure definable-natural-successor-language compact-successor-natural-structure definable-natural-successor-rigid definable-invariance-not-sufficient" data-kind="lemma">
   <h2>A structure can have no nontrivial symmetries</h2>
   <p>Call a structure <strong>rigid</strong> if its only automorphism is the identity. The structure \((\mathbb N,0,S)\), with \(S(n)=n+1\), is rigid.</p>
-  <p class="proof-label">Proof</p>
-  <p>An automorphism \(g\) must preserve the named zero, so \(g(0)=0\). If \(g(n)=n\), preservation of successor gives \(g(n+1)=g(S(n))=S(g(n))=n+1\). Induction on \(n\) shows \(g(n)=n\) for every natural number. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>An automorphism \(g\) must preserve the named zero, so \(g(0)=0\). If \(g(n)=n\), preservation of successor gives \(g(n+1)=g(S(n))=S(g(n))=n+1\). Induction on \(n\) shows \(g(n)=n\) for every natural number.</p>
+</div>
   <p>Every subset of this structure is invariant under every automorphism, since the identity changes no element. Nevertheless, <a href="#counting-definitions"></a> gives a subset not definable even with parameters. Therefore automorphism invariance is a necessary condition for definability, but is not a sufficient condition in general.</p>
 </section>
 

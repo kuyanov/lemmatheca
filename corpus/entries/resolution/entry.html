@@ -10,7 +10,7 @@
   <h2>Resolve on one atom at a time</h2>
   <p>If \(p\in C\) and \(\neg p\in D\), their <strong>resolvent on \(p\)</strong> is</p>
   <div class="math-display">\[ R_p(C,D):=(C\setminus\{p\})\cup(D\setminus\{\neg p\}). \]</div>
-  <p>The resolution rule permits us to infer this clause from \(C\) and \(D\). The selected atom \(p\) is called the <strong>pivot</strong>. We remove only the selected occurrence from each parent; other literals, including a remaining opposite sign of the pivot, stay in the resolvent. Sets already identify repeated literals.</p>
+  <p>The <strong>resolution rule</strong> permits us to infer this clause from \(C\) and \(D\). The selected atom \(p\) is called the <strong>pivot</strong>. We remove only the selected occurrence from each parent; other literals, including a remaining opposite sign of the pivot, stay in the resolvent. Sets already identify repeated literals.</p>
   <p>For example, resolving \(\{p,\neg q,\neg r\}\) with \(\{\neg p,\neg q\}\) on \(p\) gives \(\{\neg q,\neg r\}\). Resolving the two unit clauses \(\{p\}\) and \(\{\neg p\}\) gives the empty clause. A clause containing both \(p\) and \(\neg p\) is called <strong>tautological</strong>; every valuation satisfies it.</p>
 </section>
 
@@ -24,9 +24,10 @@
 <section id="soundness" data-formal="res-rule-sound res-sound res-refutation-unsatisfiable res-add-resolvent-models res-parent-replacement-counterexample" data-kind="theorem">
   <h2>Resolution preserves every satisfying valuation</h2>
   <div class="statement-box"><p>If \(\Gamma\vdash_{\mathrm{res}}C\), every valuation satisfying \(\Gamma\) satisfies \(C\). Consequently a clause set with a resolution refutation is unsatisfiable.</p></div>
-  <p class="proof-label">Proof</p>
-  <p>First check one inference. Suppose \(v\models C,D\), with pivot \(p\in C\) and \(\neg p\in D\). If \(v(p)=0\), a true literal of \(C\) is different from \(p\), so it remains in \(R_p(C,D)\). If \(v(p)=1\), a true literal of \(D\) is different from \(\neg p\), and again remains. Thus \(v\models R_p(C,D)\).</p>
-  <p>Induct on a derivation tree. Its leaves are satisfied by the hypothesis, and the preceding argument passes satisfaction from each pair of children to their parent. A refutation would make \(v\models\varnothing\), which is impossible. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>First check one inference. Suppose \(v\models C,D\), with pivot \(p\in C\) and \(\neg p\in D\). If \(v(p)=0\), a true literal of \(C\) is different from \(p\), so it remains in \(R_p(C,D)\). If \(v(p)=1\), a true literal of \(D\) is different from \(\neg p\), and again remains. Thus \(v\models R_p(C,D)\).</p>
+    <p>Induct on a derivation tree. Its leaves are satisfied by the hypothesis, and the preceding argument passes satisfaction from each pair of children to their parent. A refutation would make \(v\models\varnothing\), which is impossible.</p>
+</div>
   <p>In particular, adding a resolvent to a clause set preserves exactly its satisfying valuations. The reverse implication holds because the original clauses are still present. Replacing both parents by their resolvent is a different operation and need not preserve the information they carried.</p>
 </section>
 
@@ -40,7 +41,7 @@
 
 <section id="eliminating-an-atom" data-formal="res-eliminate res-elimination-derivable res-elimination-support" data-kind="definition">
   <h2>Forget one atom while retaining its constraints</h2>
-  <p>Fix an atom \(p\). Discard every clause containing both \(p\) and \(\neg p\), since those clauses are always true. Partition the remaining clauses into \(\Gamma_0\), containing neither sign of \(p\); \(\Gamma_+\), containing \(p\) but not \(\neg p\); and \(\Gamma_-\), containing \(\neg p\) but not \(p\). Define</p>
+  <p>Fix an atom \(p\). Discard every clause containing both \(p\) and \(\neg p\), since those clauses are always true. Partition the remaining clauses into \(\Gamma_0\), containing neither sign of \(p\); \(\Gamma_+\), containing \(p\) but not \(\neg p\); and \(\Gamma_-\), containing \(\neg p\) but not \(p\). Define the <strong>elimination of \(p\)</strong> from \(\Gamma\) by</p>
   <div class="math-display">\[ E_p(\Gamma):=\Gamma_0\cup\{R_p(C,D):C\in\Gamma_+,\ D\in\Gamma_-\}. \]</div>
   <p>This finite clause set contains no occurrence of \(p\). Every member is either an original clause or the result of one resolution step, so it is derivable from \(\Gamma\). No other atom is introduced. We discard clauses tautological on the selected pivot only; tautologies on other atoms may remain harmlessly.</p>
 </section>
@@ -48,11 +49,12 @@
 <section id="elimination-extension" data-formal="res-elimination-extension res-elimination-models res-elimination-equisatisfiable" data-kind="lemma">
   <h2>Every model after elimination extends to a model before it</h2>
   <p>If \(v\models E_p(\Gamma)\), there is a valuation \(w\models\Gamma\) that agrees with \(v\) on every atom other than \(p\). Conversely, a valuation satisfying \(\Gamma\) satisfies \(E_p(\Gamma)\). Thus \(\Gamma\) and \(E_p(\Gamma)\) are equisatisfiable.</p>
-  <p class="proof-label">Proof</p>
-  <p>For \(C\in\Gamma_+\), write \(C^-=C\setminus\{p\}\); for \(D\in\Gamma_-\), write \(D^-=D\setminus\{\neg p\}\). These remainders contain neither sign of \(p\), so changing \(v(p)\) does not change their truth values.</p>
-  <p>If every positive remainder \(C^-\) is satisfied by \(v\), set \(w(p)=0\) and leave the other values unchanged. Positive clauses remain true because their remainders are true; negative clauses are true because \(\neg p\) is true.</p>
-  <p>Otherwise choose \(C\in\Gamma_+\) whose remainder is false, and set \(w(p)=1\). Every negative remainder \(D^-\) must be true under \(v\): its union with this fixed false \(C^-\) is a resolvent in \(E_p(\Gamma)\). Hence all negative clauses remain true, and all positive clauses are true because \(p\) is true.</p>
-  <p>In both cases the neutral clauses retain their values, and discarded clauses are tautological. This constructs \(w\models\Gamma\). Conversely, neutral clauses are premises and resolvents follow by the one-step soundness argument in <a href="#soundness"></a>. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For \(C\in\Gamma_+\), write \(C^-=C\setminus\{p\}\); for \(D\in\Gamma_-\), write \(D^-=D\setminus\{\neg p\}\). These remainders contain neither sign of \(p\), so changing \(v(p)\) does not change their truth values.</p>
+    <p>If every positive remainder \(C^-\) is satisfied by \(v\), set \(w(p)=0\) and leave the other values unchanged. Positive clauses remain true because their remainders are true; negative clauses are true because \(\neg p\) is true.</p>
+    <p>Otherwise choose \(C\in\Gamma_+\) whose remainder is false, and set \(w(p)=1\). Every negative remainder \(D^-\) must be true under \(v\): its union with this fixed false \(C^-\) is a resolvent in \(E_p(\Gamma)\). Hence all negative clauses remain true, and all positive clauses are true because \(p\) is true.</p>
+    <p>In both cases the neutral clauses retain their values, and discarded clauses are tautological. This constructs \(w\models\Gamma\). Conversely, neutral clauses are premises and resolvents follow by the one-step soundness argument in <a href="#soundness"></a>.</p>
+</div>
 </section>
 
 <section id="elimination-example" data-formal="res-elimination-example" data-kind="question">
@@ -66,26 +68,29 @@
 <section id="finite-completeness" data-formal="res-finite-completeness res-refutation-iff" data-kind="theorem">
   <h2>Every finite unsatisfiable clause set has a refutation</h2>
   <div class="statement-box"><p>For every finite clause set \(\Gamma\),</p><div class="math-display">\[ \Gamma\text{ is unsatisfiable}\quad\Longleftrightarrow\quad\Gamma\vdash_{\mathrm{res}}\varnothing. \]</div></div>
-  <p class="proof-label">Proof</p>
-  <p>The right-to-left direction is <a href="#soundness"></a>. For the converse, induct on the number of distinct atoms in the clauses. If no atom occurs, every clause is empty. Unsatisfiability rules out the empty clause set; hence \(\varnothing\in\Gamma\), and that premise alone is a refutation.</p>
-  <p>Otherwise choose an occurring atom \(p\). The set \(E_p(\Gamma)\) is finite and has fewer occurring atoms. It is unsatisfiable, since a satisfying valuation would extend to one for \(\Gamma\) by <a href="#elimination-extension"></a>. The induction hypothesis supplies a refutation from \(E_p(\Gamma)\).</p>
-  <p>Each leaf of that tree is derivable from \(\Gamma\), by <a href="#eliminating-an-atom"></a>. Substitute those derivations for the leaves, using the tree construction in <a href="#derivations"></a>. The resulting tree is a refutation from \(\Gamma\) using only the original resolution rule. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The right-to-left direction is <a href="#soundness"></a>. For the converse, induct on the number of distinct atoms in the clauses. If no atom occurs, every clause is empty. Unsatisfiability rules out the empty clause set; hence \(\varnothing\in\Gamma\), and that premise alone is a refutation.</p>
+    <p>Otherwise choose an occurring atom \(p\). The set \(E_p(\Gamma)\) is finite and has fewer occurring atoms. It is unsatisfiable, since a satisfying valuation would extend to one for \(\Gamma\) by <a href="#elimination-extension"></a>. The induction hypothesis supplies a refutation from \(E_p(\Gamma)\).</p>
+    <p>Each leaf of that tree is derivable from \(\Gamma\), by <a href="#eliminating-an-atom"></a>. Substitute those derivations for the leaves, using the tree construction in <a href="#derivations"></a>. The resulting tree is a refutation from \(\Gamma\) using only the original resolution rule.</p>
+</div>
 </section>
 
 <section id="finite-search" data-formal="res-derivation-support res-closed res-closed-derivations res-closed-satisfiable res-saturation-bound res-saturation-step res-saturation-run res-saturation-step-models res-no-step-closed res-saturation-run-models res-saturation-exists res-saturation-refutation-iff res-eliminate-many res-elimination-many-extension res-elimination-many-support res-elimination-many-equisatisfiable res-eliminate-all-decides" data-kind="theorem">
   <h2>Finite closure gives a decision procedure</h2>
   <p>Starting with a finite clause set, repeatedly add any missing resolvent. Stop when the empty clause is found or when no further resolvent can be added. This process terminates. It finds the empty clause exactly when the original clause set is unsatisfiable; otherwise the final clause set is satisfiable.</p>
-  <p class="proof-label">Proof</p>
-  <p>Let \(S\) be the finite set of atoms occurring initially. Resolution never introduces an atom outside \(S\). There are only finitely many literals on \(S\), and hence finitely many subsets of those literals. Each addition is a new clause from this finite collection, so only finitely many additions are possible. More precisely, if \(\mathcal C(S)\) is the set of all clauses on these literals, at most \(|\mathcal C(S)|-|\Gamma|\) additions are possible. A saturation step adds exactly one missing resolvent. No step is available precisely when the current set is closed under resolution, so a closed endpoint is reached within this bound.</p>
-  <p>Each step preserves exactly the satisfying valuations, by <a href="#soundness"></a>; induction along a finite run gives the same conclusion for its endpoint. Every added clause is also derivable, so finding the empty clause certifies unsatisfiability. Suppose instead that the process reaches a clause set \(\Delta\) closed under resolution, without the empty clause. Induction on derivation trees shows that every clause derivable from \(\Delta\) belongs to \(\Delta\). If \(\Delta\) were unsatisfiable, <a href="#finite-completeness"></a> would put the empty clause in it, a contradiction. A model of \(\Delta\) is also a model of the initial set. <span class="qed" aria-label="End of proof">□</span></p>
-  <p>The argument guarantees termination and a correct answer. It makes no claim that the search will be short. Atom elimination gives another terminating procedure. List all occurring atoms and apply the one-atom elimination operation successively. At each stage the chosen atom disappears and satisfiability is preserved. After the last stage, no atom remains, so the only possible clause is the empty clause. If it occurs, the original set is unsatisfiable. Otherwise the final set has no clauses and every valuation satisfies it. Repeatedly apply <a href="#elimination-extension"></a> in reverse order to recover a model of the original clauses; values on atoms outside the eliminated list stay unchanged.</p>
+  <div class="proof">
+    <p>Let \(S\) be the finite set of atoms occurring initially. Resolution never introduces an atom outside \(S\). There are only finitely many literals on \(S\), and hence finitely many subsets of those literals. Each addition is a new clause from this finite collection, so only finitely many additions are possible. More precisely, if \(\mathcal C(S)\) is the set of all clauses on these literals, at most \(|\mathcal C(S)|-|\Gamma|\) additions are possible. A saturation step adds exactly one missing resolvent. No step is available precisely when the current set is closed under resolution, so a closed endpoint is reached within this bound.</p>
+    <p>Each step preserves exactly the satisfying valuations, by <a href="#soundness"></a>; induction along a finite run gives the same conclusion for its endpoint. Every added clause is also derivable, so finding the empty clause certifies unsatisfiability. Suppose instead that the process reaches a clause set \(\Delta\) closed under resolution, without the empty clause. Induction on derivation trees shows that every clause derivable from \(\Delta\) belongs to \(\Delta\). If \(\Delta\) were unsatisfiable, <a href="#finite-completeness"></a> would put the empty clause in it, a contradiction. A model of \(\Delta\) is also a model of the initial set.</p>
+    <p>The argument guarantees termination and a correct answer. It makes no claim that the search will be short. Atom elimination gives another terminating procedure. List all occurring atoms and apply the one-atom elimination operation successively. At each stage the chosen atom disappears and satisfiability is preserved. After the last stage, no atom remains, so the only possible clause is the empty clause. If it occurs, the original set is unsatisfiable. Otherwise the final set has no clauses and every valuation satisfies it. Repeatedly apply <a href="#elimination-extension"></a> in reverse order to recover a model of the original clauses; values on atoms outside the eliminated list stay unchanged.</p>
+</div>
 </section>
 
 <section id="formula-refutation" data-formal="res-formula-refutation res-entailment-refutation res-switch-tautology prop-formula-normal-forms" data-kind="theorem">
   <h2>Prove a formula by refuting its negation</h2>
   <p>Let \(A\) be any propositional formula, and let \(\Gamma\) be a finite clause representation of a formula equivalent to \(\neg A\). Then \(A\) is valid exactly when \(\Gamma\) has a resolution refutation. Such a \(\Gamma\) always exists, by the <a href="propositional-normal-forms#normal-form-theorem">normal-form theorem</a>.</p>
-  <p class="proof-label">Proof</p>
-  <p>Validity means that \(A\) is true under every valuation, equivalently that \(\neg A\) has no satisfying valuation. Conversion to an equivalent CNF and removal of repeated literals and clauses preserve satisfaction. Apply <a href="#finite-completeness"></a> to that finite clause set. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Validity means that \(A\) is true under every valuation, equivalently that \(\neg A\) has no satisfying valuation. Conversion to an equivalent CNF and removal of repeated literals and clauses preserve satisfaction. Apply <a href="#finite-completeness"></a> to that finite clause set.</p>
+</div>
   <p>For example, the negation of \(((p\lor q)\land\neg p)\to q\) is equivalent to \((p\lor q)\land\neg p\land\neg q\). Its clauses are the switch requirements in <a href="#derivations"></a>, where we gave an explicit refutation. Thus this implication is valid. More generally, to test whether finitely many premises entail \(B\), apply the same construction to the conjunction of the premises with \(\neg B\).</p>
   <p>Resolution is a separate proof calculus from <a href="propositional-proofs#proofs-and-discharge">natural deduction</a>. Its completeness concerns refutations of clauses. It does not say that every clause that follows semantically from some premises must itself be obtainable by the resolution rule.</p>
 </section>

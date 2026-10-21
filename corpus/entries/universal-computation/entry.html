@@ -3,17 +3,18 @@
   <p>Use the unary paired-input programs from <a href="machines-and-computation-histories#paired-programs">recursive programs</a>, writing \(E(c,x)\) for \(\llbracket c\rrbracket(x)\). We use descriptive names for the same constructors: \(\mathsf{zero},\mathsf{succ},\mathsf{left},\mathsf{right}\) stand for \(\mathbf0,\mathbf S,\mathbf L,\mathbf R\), while \(\mathsf{prec}\) and \(\mathsf{find}\prime\) stand for \(\operatorname{rec}\) and \(\operatorname{find}\). The full list is</p>
   <div class="math-display">\[\mathsf{zero},\mathsf{succ},\mathsf{left},\mathsf{right},\mathsf{pair}(c,d),\mathsf{comp}(c,d),\mathsf{prec}(c,d),\mathsf{find}'(c).\]</div>
   <p>The two projections decode the <a href="coding-finite-sequences#square-pairing">square pairing</a> \(\langle a,b\rangle\); composition evaluates its second program first. Pairing and composition are strict: every intermediate result they require must exist.</p>
-  <p>Assign the first four programs the codes \(0,1,2,3\), respectively, and define</p>
+  <p>Define the <strong>program code</strong> by assigning the first four programs the numbers \(0,1,2,3\), respectively, and setting</p>
   <div class="math-display">\[\begin{aligned}\#\mathsf{pair}(c,d)&amp;=4\langle\#c,\#d\rangle+4,&amp;\#\mathsf{comp}(c,d)&amp;=4\langle\#c,\#d\rangle+6,\\\#\mathsf{prec}(c,d)&amp;=4\langle\#c,\#d\rangle+5,&amp;\#\mathsf{find}'(c)&amp;=4\#c+7.\end{aligned}\]</div>
-  <p>Every natural number decodes to exactly one program. Write \(c_e\) for the program with code \(e\), and put \(\varphi_e(x)\simeq E(c_e,x)\), using <a href="partial-recursive-functions#partial-equality">equality of partial values</a>. A program index specifies syntax, rather than a unique mathematical function: distinct programs can compute the same function. Several inputs are supplied by numerical tuple codes; in particular \(\varphi_e^{(2)}(a,x)\simeq\varphi_e(\langle a,x\rangle)\).</p>
+  <p>Every natural number decodes to exactly one program. The <strong>decoded program</strong> \(c_e\) is the program with code \(e\). Define its <strong>indexed evaluation</strong> by \(\varphi_e(x)\simeq E(c_e,x)\), using <a href="partial-recursive-functions#partial-equality">equality of partial values</a>. A program index specifies syntax, rather than a unique mathematical function: distinct programs can compute the same function. Several inputs are supplied by numerical tuple codes; in particular \(\varphi_e^{(2)}(a,x)\simeq\varphi_e(\langle a,x\rangle)\).</p>
 </section>
 
 <section id="coding-is-effective" data-formal="univ-decode-encode univ-encode-decode univ-pair-code-primitive univ-composition-code-primitive univ-recursion-code-primitive univ-search-code-primitive univ-structural-recursion-primitive" data-kind="lemma">
   <h2>Programs can be decoded by bounded arithmetic</h2>
   <p>The coding in <a href="#numbering-programs"></a> is a bijection. Its constructor operations on numbers are primitive recursive, and structural recursion on programs preserves primitive recursiveness when each defining operation is primitive recursive in the immediate subprograms and their previously computed values.</p>
-  <p class="proof-label">Proof</p>
-  <p>For \(e\ge4\), compute the remainder of \(e-4\) on division by four. Remainders \(0,1,2\) give respectively pairing, primitive recursion and composition; unpair the quotient to obtain the two subcodes. Remainder \(3\) gives \(\mathsf{find}'\) with subcode \((e-7)/4\). Every resulting subcode is strictly below \(e\), by the <a href="coding-finite-sequences#pairing-bounds">pairing bounds</a>. Strong induction therefore defines a terminating decoder. The quotient and remainder identify the outer constructor uniquely, and induction gives both inverse identities. No number is left over as an invalid program code.</p>
-  <p>The numerical constructor formulas are primitive recursive by <a href="primitive-recursion#arithmetic-examples">arithmetic closure</a> and <a href="coding-finite-sequences#primitive-recursive-pairing">primitive-recursive pairing</a>. To carry out structural recursion, keep a coded list of answers for all smaller indices. Look up the immediate subcodes in that list and apply the appropriate defining operation. The <a href="coding-finite-sequences#history-recursion">history-recursion theorem</a>, including parameters, proves primitive recursiveness. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For \(e\ge4\), compute the remainder of \(e-4\) on division by four. Remainders \(0,1,2\) give respectively pairing, primitive recursion and composition; unpair the quotient to obtain the two subcodes. Remainder \(3\) gives \(\mathsf{find}'\) with subcode \((e-7)/4\). Every resulting subcode is strictly below \(e\), by the <a href="coding-finite-sequences#pairing-bounds">pairing bounds</a>. Strong induction therefore defines a terminating decoder. The quotient and remainder identify the outer constructor uniquely, and induction gives both inverse identities. No number is left over as an invalid program code.</p>
+    <p>The numerical constructor formulas are primitive recursive by <a href="primitive-recursion#arithmetic-examples">arithmetic closure</a> and <a href="coding-finite-sequences#primitive-recursive-pairing">primitive-recursive pairing</a>. To carry out structural recursion, keep a coded list of answers for all smaller indices. Look up the immediate subcodes in that list and apply the appropriate defining operation. The <a href="coding-finite-sequences#history-recursion">history-recursion theorem</a>, including parameters, proves primitive recursiveness.</p>
+</div>
 </section>
 
 <section id="universal-evaluation" data-formal="mach-unary-recursive-bridge mach-finite-arity-recursive-bridge univ-bounded-value univ-bounded-value-primitive univ-bounded-value-output univ-evaluation-output-certificate univ-computation-certificate univ-certificate-primitive univ-evaluation-domain-certificate univ-universal-recursive univ-universal-complete" data-kind="theorem">
@@ -22,10 +23,11 @@
     <p>The function \(U(e,x)\simeq\varphi_e(x)\) is partial recursive jointly in \(e,x\). Every unary partial recursive function is \(\varphi_e\) for some index \(e\). There is also a primitive-recursive relation \(T(e,x,k)\) such that</p>
     <div class="math-display">\[\varphi_e(x)\downarrow\quad\Longleftrightarrow\quad\exists k\,T(e,x,k).\]</div>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Let \(B(k,c,x)=B_k(c,x)\) be the bounded evaluator from <a href="machines-and-computation-histories#bounded-evaluation-correctness">bounded-evaluation correctness</a>. It returns either failure or a natural-number output. Its correctness says that \(E(c,x)\downarrow=y\) exactly when \(B(k,c,x)=\operatorname{some}(y)\) for some \(k\). Increasing \(k\) preserves a successful answer.</p>
-  <p>The same finite-table construction is primitive recursive <em>jointly</em> in \(k,\#c,x\). At resource \(k+1\), retain the table at resource \(k\), and build the new tables for codes at most \(e\) in increasing code order. A request for a proper subprogram uses an earlier table at the current resource; a request for the same program uses the previous resource. Only inputs at most \(k\) can succeed at resource \(k+1\), so every table is finite. Code its failure entries by zero and its successful value \(y\) by \(y+1\). Coded finite-table lookup and <a href="coding-finite-sequences#history-recursion">history recursion with parameters</a> give primitive-recursive table construction and lookup. Thus \(b(k,e,x)\), the encoded value of \(B(k,c_e,x)\), is primitive recursive.</p>
-  <p>Put \(T(e,x,k)\) iff \(b(k,e,x)&gt;0\). Search for its least witness using <a href="partial-recursive-functions#search-correctness">unbounded search over a total test</a>, and return \(b(k,e,x)-1\). If evaluation halts, some witness exists and correctness gives its output; if no witness exists, the search diverges. This proves joint partial recursiveness and the displayed equivalence. Finally, <a href="machines-and-computation-histories#change-of-basis">program equivalence</a> supplies a program for every partial recursive function, and the bijective coding supplies its index. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Let \(B(k,c,x)=B_k(c,x)\) be the bounded evaluator from <a href="machines-and-computation-histories#bounded-evaluation-correctness">bounded-evaluation correctness</a>. It returns either failure or a natural-number output. Its correctness says that \(E(c,x)\downarrow=y\) exactly when \(B(k,c,x)=\operatorname{some}(y)\) for some \(k\). Increasing \(k\) preserves a successful answer.</p>
+    <p>The same finite-table construction is primitive recursive <em>jointly</em> in \(k,\#c,x\). At resource \(k+1\), retain the table at resource \(k\), and build the new tables for codes at most \(e\) in increasing code order. A request for a proper subprogram uses an earlier table at the current resource; a request for the same program uses the previous resource. Only inputs at most \(k\) can succeed at resource \(k+1\), so every table is finite. Code its failure entries by zero and its successful value \(y\) by \(y+1\). Coded finite-table lookup and <a href="coding-finite-sequences#history-recursion">history recursion with parameters</a> give primitive-recursive table construction and lookup. Thus \(b(k,e,x)\), the encoded value of \(B(k,c_e,x)\), is primitive recursive.</p>
+    <p>Put \(T(e,x,k)\) iff \(b(k,e,x)&gt;0\). Search for its least witness using <a href="partial-recursive-functions#search-correctness">unbounded search over a total test</a>, and return \(b(k,e,x)-1\). If evaluation halts, some witness exists and correctness gives its output; if no witness exists, the search diverges. This proves joint partial recursiveness and the displayed equivalence. Finally, <a href="machines-and-computation-histories#change-of-basis">program equivalence</a> supplies a program for every partial recursive function, and the bijective coding supplies its index.</p>
+</div>
   <p>We will use the stronger output form too: \(\varphi_e(x)\downarrow=y\) if and only if \(\exists k\,[b(k,e,x)=y+1]\). A resource bound records a finite successful computation; it is not an upper bound that can be predicted for every terminating program.</p>
 </section>
 
@@ -38,10 +40,11 @@
     <div class="math-display">\[\varphi_{s_{m,n}(e,\bar a)}(L(\bar x))\simeq\varphi_e(L(\bar a\mathbin{{}^\frown}\bar x)).\]</div>
     <p>Here \(\bar a\mathbin{{}^\frown}\bar x\) is the concatenation of the fixed \(m\)-tuple and the remaining \(n\)-tuple, including empty tuples. This is the <strong>parameter theorem</strong>, also called the <strong>s-m-n theorem</strong>.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Define a constant-output program by \(\mathsf{const}(0)=\mathsf{zero}\) and \(\mathsf{const}(a+1)=\mathsf{comp}(\mathsf{succ},\mathsf{const}(a))\). Induction gives \(E(\mathsf{const}(a),x)=a\); its numerical code is primitive recursive in \(a\). The program \(\mathsf{id}=\mathsf{pair}(\mathsf{left},\mathsf{right})\) returns its input by the inverse pairing identity. Now take</p>
-  <div class="math-display">\[s(e,a)=\#\mathsf{comp}\bigl(c_e,\mathsf{pair}(\mathsf{const}(a),\mathsf{id})\bigr).\]</div>
-  <p>The inner program always returns \(\langle a,x\rangle\), and the outer one runs \(c_e\) on it. The displayed numerical construction uses only primitive recursion for constant codes and the primitive-recursive constructor operations; it does not run \(c_e\). This proves the exact partial-value identity even when the original program diverges. For fixed larger arities, encode the whole argument tuple by the list code from <a href="coding-finite-sequences#list-code">finite-sequence coding</a>; fixed-arity tuple formation and extraction are primitive recursive. Use a program for <a href="coding-finite-sequences#concatenation">coded concatenation</a> to prepend the fixed tuple to the remaining tuple before running the original program. Its code is fixed; specialize its fixed-tuple input by the same construction and compose with \(c_e\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Define a constant-output program by \(\mathsf{const}(0)=\mathsf{zero}\) and \(\mathsf{const}(a+1)=\mathsf{comp}(\mathsf{succ},\mathsf{const}(a))\). Induction gives \(E(\mathsf{const}(a),x)=a\); its numerical code is primitive recursive in \(a\). The program \(\mathsf{id}=\mathsf{pair}(\mathsf{left},\mathsf{right})\) returns its input by the inverse pairing identity. Now take</p>
+    <div class="math-display">\[s(e,a)=\#\mathsf{comp}\bigl(c_e,\mathsf{pair}(\mathsf{const}(a),\mathsf{id})\bigr).\]</div>
+    <p>The inner program always returns \(\langle a,x\rangle\), and the outer one runs \(c_e\) on it. The displayed numerical construction uses only primitive recursion for constant codes and the primitive-recursive constructor operations; it does not run \(c_e\). This proves the exact partial-value identity even when the original program diverges. For fixed larger arities, encode the whole argument tuple by the list code from <a href="coding-finite-sequences#list-code">finite-sequence coding</a>; fixed-arity tuple formation and extraction are primitive recursive. Use a program for <a href="coding-finite-sequences#concatenation">coded concatenation</a> to prepend the fixed tuple to the remaining tuple before running the original program. Its code is fixed; specialize its fixed-tuple input by the same construction and compose with \(c_e\).</p>
+</div>
 </section>
 
 <section id="specialization-question" data-formal="univ-specialization-primitive univ-specialization-evaluation" data-kind="question">
@@ -55,16 +58,18 @@
 <section id="no-total-universal" data-formal="univ-no-total-universal" data-kind="theorem">
   <h2>Total recursive functions have no total recursive universal evaluator</h2>
   <p>There is no total recursive function \(V(e,x)\) whose sections \(x\mapsto V(e,x)\) include every unary total recursive function.</p>
-  <p class="proof-label">Proof</p>
-  <p>If there were, \(d(x)=V(x,x)+1\) would be total recursive by composition and successor. For some index \(e\), universality would give \(d(x)=V(e,x)\) for every \(x\). At \(x=e\) this becomes \(V(e,e)+1=V(e,e)\), a contradiction. The issue is the simultaneous requirements of effective evaluation, totality and exhaustive coverage. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If there were, \(d(x)=V(x,x)+1\) would be total recursive by composition and successor. For some index \(e\), universality would give \(d(x)=V(e,x)\) for every \(x\). At \(x=e\) this becomes \(V(e,e)+1=V(e,e)\), a contradiction. The issue is the simultaneous requirements of effective evaluation, totality and exhaustive coverage.</p>
+</div>
 </section>
 
 <section id="beyond-primitive-recursion" data-formal="univ-erase-search univ-search-free univ-erase-search-primitive univ-erase-search-free univ-search-free-fixed univ-search-free-evaluation univ-primitive-search-free-program univ-primitive-diagonal univ-primitive-diagonal-computable univ-primitive-diagonal-not-primitive univ-unary-primitive-equivalence" data-kind="theorem">
   <h2>A total recursive function can escape primitive recursion</h2>
   <p>There is a unary total recursive function that is not primitive recursive.</p>
-  <p class="proof-label">Proof</p>
-  <p>In a program tree replace every \(\mathsf{find}'\) subtree by \(\mathsf{zero}\), leaving the other constructors and their recursively transformed children in place. Write \(r(e)\) for the resulting program code. The transformation is primitive recursive by <a href="#coding-is-effective"></a>. The programs it produces use only initial functions, composition, pairing and primitive recursion, so each evaluates to a total primitive-recursive function; prove this by structural induction. Conversely every unary primitive-recursive function has such a search-free program: pairing packages the inputs in its finite-arity definition, and the paired recursion rule is exactly the same recursion after those inputs are encoded.</p>
-  <p>Consequently \(G(e,x)=U(r(e),x)\) is total recursive and its sections include every unary primitive-recursive function. Put \(d(e)=G(e,e)+1\). If \(d\) were primitive recursive, some search-free program would compute it, giving an index \(j\) with \(G(j,x)=d(x)\) for every \(x\). Then \(d(j)=G(j,j)+1=d(j)+1\), which is impossible. This gives an explicit definition of the separating function without needing a growth-rate theorem. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>In a program tree replace every \(\mathsf{find}'\) subtree by \(\mathsf{zero}\), leaving the other constructors and their recursively transformed children in place. Write \(r(e)\) for the resulting program code. The transformation is primitive recursive by <a href="#coding-is-effective"></a>. The programs it produces use only initial functions, composition, pairing and primitive recursion, so each evaluates to a total primitive-recursive function; prove this by structural induction. Conversely every unary primitive-recursive function has such a search-free program: pairing packages the inputs in its finite-arity definition, and the paired recursion rule is exactly the same recursion after those inputs are encoded.</p>
+    <p>Consequently \(G(e,x)=U(r(e),x)\) is total recursive and its sections include every unary primitive-recursive function. Put \(d(e)=G(e,e)+1\). If \(d\) were primitive recursive, some search-free program would compute it, giving an index \(j\) with \(G(j,x)=d(x)\) for every \(x\). Then \(d(j)=G(j,j)+1=d(j)+1\), which is impossible. This gives an explicit definition of the separating function without needing a growth-rate theorem.</p>
+</div>
 </section>
 
 <section id="halting-problem" data-formal="univ-diagonal-halting-set univ-pair-halting-set univ-diagonal-halting-undecidable univ-pair-halting-undecidable" data-kind="theorem">
@@ -72,10 +77,11 @@
   <div class="statement-box">
     <p>The diagonal halting set \(K=\{e:\varphi_e(e)\downarrow\}\) has no total recursive characteristic function. Neither does the full halting relation \(H(e,x)\) defined by \(\varphi_e(x)\downarrow\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Suppose a total recursive zero-one function \(h\) decides \(K\), with one meaning membership. Define \(g(x)=\mu t\,[h(x)=0]\), using a test independent of \(t\). This partial recursive function returns zero exactly when \(h(x)=0\) and is undefined exactly when \(h(x)=1\). By <a href="#universal-evaluation"></a>, \(g\simeq\varphi_j\) for some \(j\). Hence</p>
-  <div class="math-display">\[\varphi_j(j)\downarrow\quad\Longleftrightarrow\quad g(j)\downarrow\quad\Longleftrightarrow\quad h(j)=0\quad\Longleftrightarrow\quad\varphi_j(j)\uparrow,\]</div>
-  <p>a contradiction. A decision procedure for \(H\) would decide \(K\) by supplying the same number as program and input. Thus it cannot exist either. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Suppose a total recursive zero-one function \(h\) decides \(K\), with one meaning membership. Define \(g(x)=\mu t\,[h(x)=0]\), using a test independent of \(t\). This partial recursive function returns zero exactly when \(h(x)=0\) and is undefined exactly when \(h(x)=1\). By <a href="#universal-evaluation"></a>, \(g\simeq\varphi_j\) for some \(j\). Hence</p>
+    <div class="math-display">\[\varphi_j(j)\downarrow\quad\Longleftrightarrow\quad g(j)\downarrow\quad\Longleftrightarrow\quad h(j)=0\quad\Longleftrightarrow\quad\varphi_j(j)\uparrow,\]</div>
+    <p>a contradiction. A decision procedure for \(H\) would decide \(K\) by supplying the same number as program and input. Thus it cannot exist either.</p>
+</div>
 </section>
 
 <section id="partial-diagonal-question" data-formal="univ-partial-diagonal-divergence" data-kind="question">
@@ -97,8 +103,9 @@
   <div class="statement-box">
     <p>For \(A\subseteq\mathbb N\), the following are equivalent: \(A\) is c.e.; there is a primitive-recursive relation \(R(x,t)\) with \(x\in A\Longleftrightarrow\exists t\,R(x,t)\); there is a decidable relation with the same property.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>If \(A=W_e\), take \(R(x,t)=T(e,x,t)\) from <a href="#universal-evaluation"></a>. Its witness certifies a finite successful computation. A primitive-recursive relation is decidable by <a href="partial-recursive-functions#primitive-recursive-inclusion">primitive-recursive inclusion</a>. Finally, for a decidable \(R\), <a href="partial-recursive-functions#search-correctness">search for its least witness</a>. Its domain is exactly \(\{x:\exists t\,R(x,t)\}\), including when no input has any witness. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(A=W_e\), take \(R(x,t)=T(e,x,t)\) from <a href="#universal-evaluation"></a>. Its witness certifies a finite successful computation. A primitive-recursive relation is decidable by <a href="partial-recursive-functions#primitive-recursive-inclusion">primitive-recursive inclusion</a>. Finally, for a decidable \(R\), <a href="partial-recursive-functions#search-correctness">search for its least witness</a>. Its domain is exactly \(\{x:\exists t\,R(x,t)\}\), including when no input has any witness.</p>
+</div>
 </section>
 
 <section id="enumerating-ranges" data-formal="univ-enumerable-partial-range univ-enumerable-total-range univ-enumerable-primitive-range" data-kind="theorem">
@@ -110,29 +117,32 @@
     <li>\(A\) is empty or the range of a total recursive function.</li>
     <li>\(A\) is empty or the range of a primitive-recursive function.</li>
   </ol>
-  <p class="proof-label">Proof</p>
-  <p>For a c.e. set, choose a primitive-recursive certificate relation \(R\) from <a href="#finite-certificates"></a>. If \(A\ne\varnothing\), fix \(a\in A\), and define</p>
-  <div class="math-display">\[f(\langle x,t\rangle)=\begin{cases}x&amp;\text{if }R(x,t),\\a&amp;\text{otherwise.}\end{cases}\]</div>
-  <p>This is primitive recursive by the <a href="primitive-recursion#definitions-by-cases">case construction</a>. Its outputs all belong to \(A\), and every \(x\in A\) is output at a pair containing one of its certificates. Thus its range is exactly \(A\). Primitive-recursive functions are total recursive, and total recursive functions are partial recursive; the empty set is the range of the everywhere-undefined partial recursive function \(x\mapsto\mu t\,[1=0]\).</p>
-  <p>It remains to show that the range of any partial recursive function \(\varphi_e\) is c.e. By the output form in <a href="#universal-evaluation"></a>,</p>
-  <div class="math-display">\[y\in\operatorname{range}(\varphi_e)\quad\Longleftrightarrow\quad\exists x\,\exists k\,[b(k,e,x)=y+1].\]</div>
-  <p>Pair \(x,k\) into one certificate. The bracketed relation is primitive recursive, so <a href="#finite-certificates"></a> proves the result. This closes the implication cycle and covers empty ranges as well. Repetitions in an enumeration are allowed. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>For a c.e. set, choose a primitive-recursive certificate relation \(R\) from <a href="#finite-certificates"></a>. If \(A\ne\varnothing\), fix \(a\in A\), and define</p>
+    <div class="math-display">\[f(\langle x,t\rangle)=\begin{cases}x&amp;\text{if }R(x,t),\\a&amp;\text{otherwise.}\end{cases}\]</div>
+    <p>This is primitive recursive by the <a href="primitive-recursion#definitions-by-cases">case construction</a>. Its outputs all belong to \(A\), and every \(x\in A\) is output at a pair containing one of its certificates. Thus its range is exactly \(A\). Primitive-recursive functions are total recursive, and total recursive functions are partial recursive; the empty set is the range of the everywhere-undefined partial recursive function \(x\mapsto\mu t\,[1=0]\).</p>
+    <p>It remains to show that the range of any partial recursive function \(\varphi_e\) is c.e. By the output form in <a href="#universal-evaluation"></a>,</p>
+    <div class="math-display">\[y\in\operatorname{range}(\varphi_e)\quad\Longleftrightarrow\quad\exists x\,\exists k\,[b(k,e,x)=y+1].\]</div>
+    <p>Pair \(x,k\) into one certificate. The bracketed relation is primitive recursive, so <a href="#finite-certificates"></a> proves the result. This closes the implication cycle and covers empty ranges as well. Repetitions in an enumeration are allowed.</p>
+</div>
 </section>
 
 <section id="dovetailing" data-formal="univ-dovetail-two univ-dovetail-countable" data-kind="lemma">
   <h2>Parallel search avoids getting trapped in one failed computation</h2>
   <p>Given indices \(e,d\), there is a partial recursive procedure which, on input \(x\), returns an output from \(\varphi_e(x)\) or \(\varphi_d(x)\), and stops exactly when at least one of those computations stops.</p>
-  <p class="proof-label">Proof</p>
-  <p>At stage \(k\), inspect the two total bounded computations \(b(k,e,x)\) and \(b(k,d,x)\). Search for the first stage at which at least one is positive. If the first is positive, return its value minus one; otherwise return the second value minus one. The stage test and output selection are primitive recursive, so minimization followed by composition is partial recursive. Bounded-evaluation correctness proves that every returned value is a genuine output. Conversely, if either computation halts, some stage witnesses it, so the stage search terminates. This scheduling is called <strong>dovetailing</strong>.</p>
-  <p>For a countable family with a total recursive index sequence \(i\mapsto e_i\), on a fixed input, at stage \(k\) inspect the first \(k+1\) indices for \(k\) resources each. This finite search is total recursive: compute each \(e_i\), apply the total bounded evaluator, and combine the results by finite recursion. It need not be primitive recursive because the index sequence was assumed only total recursive. Any fixed successful computation is eventually both included and given enough resources. Running the first computation to completion before starting the next would lack this guarantee. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>At stage \(k\), inspect the two total bounded computations \(b(k,e,x)\) and \(b(k,d,x)\). Search for the first stage at which at least one is positive. If the first is positive, return its value minus one; otherwise return the second value minus one. The stage test and output selection are primitive recursive, so minimization followed by composition is partial recursive. Bounded-evaluation correctness proves that every returned value is a genuine output. Conversely, if either computation halts, some stage witnesses it, so the stage search terminates. This scheduling is called <strong>dovetailing</strong>.</p>
+    <p>For a countable family with a total recursive index sequence \(i\mapsto e_i\), on a fixed input, at stage \(k\) inspect the first \(k+1\) indices for \(k\) resources each. This finite search is total recursive: compute each \(e_i\), apply the total bounded evaluator, and combine the results by finite recursion. It need not be primitive recursive because the index sequence was assumed only total recursive. Any fixed successful computation is eventually both included and given enough resources. Running the first computation to completion before starting the next would lack this guarantee.</p>
+</div>
 </section>
 
 <section id="enumerable-closure" data-formal="univ-enumerable-union univ-enumerable-intersection univ-enumerable-projection univ-enumerable-preimage univ-enumerable-image" data-kind="theorem">
   <h2>Finite combinations and existential quantification preserve enumerability</h2>
   <p>C.e. sets are closed under union and intersection. C.e. relations are closed under existential quantification over a natural-number variable. The inverse image of a c.e. set under a total recursive function is c.e.; so is its image.</p>
-  <p class="proof-label">Proof</p>
-  <p>Write \(x\in A\Longleftrightarrow\exists s\,R(x,s)\) and \(x\in B\Longleftrightarrow\exists t\,S(x,t)\), with primitive-recursive certificate relations. Intersection uses the paired certificate \(\langle s,t\rangle\) and test \(R(x,s)\wedge S(x,t)\). Union uses a tagged certificate saying which of the two tests succeeds. Existential projection \(\exists y\,A(x,y)\) combines \(y\) and its membership certificate into one pair. The tests remain primitive recursive by <a href="primitive-recursion#boolean-closure">Boolean closure</a>, pairing and composition. In operational terms, union can use <a href="#dovetailing"></a>; waiting on one semidecision procedure first could block a positive answer from the other.</p>
-  <p>If \(A\) is the domain of a partial recursive \(f\), then \(g^{-1}(A)\) is the domain of \(f\circ g\), for total recursive \(g\). For the image, use <a href="#enumerating-ranges"></a>: if \(A\) is empty its image is empty, and otherwise \(A\) is the range of a total recursive \(h\); then \(g(A)\) is the range of \(g\circ h\). <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Write \(x\in A\Longleftrightarrow\exists s\,R(x,s)\) and \(x\in B\Longleftrightarrow\exists t\,S(x,t)\), with primitive-recursive certificate relations. Intersection uses the paired certificate \(\langle s,t\rangle\) and test \(R(x,s)\wedge S(x,t)\). Union uses a tagged certificate saying which of the two tests succeeds. Existential projection \(\exists y\,A(x,y)\) combines \(y\) and its membership certificate into one pair. The tests remain primitive recursive by <a href="primitive-recursion#boolean-closure">Boolean closure</a>, pairing and composition. In operational terms, union can use <a href="#dovetailing"></a>; waiting on one semidecision procedure first could block a positive answer from the other.</p>
+    <p>If \(A\) is the domain of a partial recursive \(f\), then \(g^{-1}(A)\) is the domain of \(f\circ g\), for total recursive \(g\). For the image, use <a href="#enumerating-ranges"></a>: if \(A\) is empty its image is empty, and otherwise \(A\) is the range of a total recursive \(h\); then \(g(A)\) is the range of \(g\circ h\).</p>
+</div>
 </section>
 
 <section id="two-sided-recognition" data-formal="univ-two-sided-recognition" data-kind="theorem">
@@ -140,16 +150,18 @@
   <div class="statement-box">
     <p>A set \(A\subseteq\mathbb N\) is decidable if and only if both \(A\) and its complement \(\mathbb N\setminus A\) are c.e.</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>If its characteristic function \(\chi_A\) is total recursive, search using the constant-in-stage tests \(\chi_A(x)=1\) and \(\chi_A(x)=0\). The resulting domains are \(A\) and its complement.</p>
-  <p>Conversely, choose primitive-recursive certificate relations \(R,S\) for \(A\) and its complement. Search for a code \(\langle i,t\rangle\) witnessing either \(i=0\wedge R(x,t)\) or \(i=1\wedge S(x,t)\). Exactly one of the two kinds of witnesses exists for each \(x\), so this search is total recursive. Return one for a witness of the first kind and zero for the second. The result is the total recursive characteristic function of \(A\). Equivalently, dovetail the two semidecision procedures and report whichever one halts. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If its characteristic function \(\chi_A\) is total recursive, search using the constant-in-stage tests \(\chi_A(x)=1\) and \(\chi_A(x)=0\). The resulting domains are \(A\) and its complement.</p>
+    <p>Conversely, choose primitive-recursive certificate relations \(R,S\) for \(A\) and its complement. Search for a code \(\langle i,t\rangle\) witnessing either \(i=0\wedge R(x,t)\) or \(i=1\wedge S(x,t)\). Exactly one of the two kinds of witnesses exists for each \(x\), so this search is total recursive. Return one for a witness of the first kind and zero for the second. The result is the total recursive characteristic function of \(A\). Equivalently, dovetail the two semidecision procedures and report whichever one halts.</p>
+</div>
 </section>
 
 <section id="halting-sets" data-formal="univ-diagonal-halting-enumerable univ-pair-halting-enumerable univ-diagonal-nonhalting-not-enumerable univ-pair-nonhalting-not-enumerable univ-diagonal-halting-undecidable univ-pair-halting-undecidable" data-kind="theorem">
   <h2>Halting is enumerable, but nonhalting is not</h2>
   <p>The sets \(K=\{e:\varphi_e(e)\downarrow\}\) and \(K_0=\{\langle e,x\rangle:\varphi_e(x)\downarrow\}\) are c.e. and undecidable. Their complements are not c.e.</p>
-  <p class="proof-label">Proof</p>
-  <p>They have the primitive-recursive certificate descriptions \(e\in K\Longleftrightarrow\exists k\,T(e,e,k)\) and \(\langle e,x\rangle\in K_0\Longleftrightarrow\exists k\,T(e,x,k)\). Hence they are c.e. by <a href="#finite-certificates"></a>. Their undecidability is <a href="#halting-problem"></a>, using pairing and unpairing for \(K_0\). If either complement were c.e., <a href="#two-sided-recognition"></a> would make the corresponding halting set decidable, a contradiction. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>They have the primitive-recursive certificate descriptions \(e\in K\Longleftrightarrow\exists k\,T(e,e,k)\) and \(\langle e,x\rangle\in K_0\Longleftrightarrow\exists k\,T(e,x,k)\). Hence they are c.e. by <a href="#finite-certificates"></a>. Their undecidability is <a href="#halting-problem"></a>, using pairing and unpairing for \(K_0\). If either complement were c.e., <a href="#two-sided-recognition"></a> would make the corresponding halting set decidable, a contradiction.</p>
+</div>
 </section>
 
 <section id="enumeration-question" data-formal="nonempty-domain-range-nonempty univ-singleton-range-not-injective constant-map-range-singleton univ-pair-halting-undecidable" data-kind="question">

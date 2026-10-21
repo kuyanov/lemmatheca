@@ -23,14 +23,14 @@
   <h2>Subsets inherit a well-order</h2>
   <p>Every subset of a well-ordered set is well-ordered by the restricted order.
     Every finite totally ordered set is well-ordered.</p>
-  <p class="proof-label">Proof</p>
-  <p>If \(B\subseteq A\), the restricted relation is still a total order.
-    A nonempty subset of \(B\) is a nonempty subset of \(A\), and its least element
-    remains least in the restricted order. For a finite total order, every nonempty
-    subset is finite and has a minimal element by
-    <a href="ordered-sets#finite-extrema">the finite-extrema lemma</a>.
-    Totality makes that element least.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If \(B\subseteq A\), the restricted relation is still a total order.
+      A nonempty subset of \(B\) is a nonempty subset of \(A\), and its least element
+      remains least in the restricted order. For a finite total order, every nonempty
+      subset is finite and has a minimal element by
+      <a href="ordered-sets#finite-extrema">the finite-extrema lemma</a>.
+      Totality makes that element least.</p>
+</div>
   <p>Totality matters in the finite assertion. Two distinct incomparable elements,
     with only reflexive comparisons, form a finite partial order whose full set
     has no least element.</p>
@@ -65,12 +65,12 @@
 <section id="well-orders-beyond-naturals" data-kind="definition"
   data-formal="with-top-definition with-top-well-order naturals-with-top-enumeration-bijective naturals-with-top-order-structure lexicographic-strict-comparison lexicographic-linear-order lexicographic-well-founded lex-natural-predecessors finite-predecessor-sets countable-binary-products">
   <h2>A last point and successive infinite blocks</h2>
-  <p>Let \(L=\mathbb N\sqcup\{\ell\}\), where \(\ell\) is a new element distinct
+  <p>The <strong>natural-number order with an adjoined greatest element</strong> has underlying set \(L=\mathbb N\sqcup\{\ell\}\), where \(\ell\) is a new element distinct
     from every natural number. Keep the usual order among naturals and put \(n&lt;\ell\)
     for every \(n\in\mathbb N\). This is a well-order: a nonempty subset containing
     a natural number has a least natural member, and the only nonempty subset with
     no natural members is \(\{\ell\}\).</p>
-  <p>Another well-order is the lexicographic order on \(\mathbb N\times\mathbb N\):</p>
+  <p>Define the <strong>lexicographic order</strong> on \(\mathbb N\times\mathbb N\) by</p>
   <div class="math-display">\[
     (i,j)&lt;_{\mathrm{lex}}(k,m)
     \quad\Longleftrightarrow\quad
@@ -119,16 +119,16 @@
   <p>If \(I\subsetneq A\) is an initial segment of a well-ordered set, there is a
     unique \(a\in A\) such that \(I=A_{&lt;a}\). It is the least member of \(A\setminus I\).
     The initial segments of \(A\) are linearly ordered by inclusion.</p>
-  <p class="proof-label">Proof</p>
-  <p>The nonempty complement has a least member \(a\). Every \(x&lt;a\) belongs to
-    \(I\), or \(a\) would not be least in the complement.
-    Conversely, if \(x\in I\), then \(x\ne a\); the possibility \(a&lt;x\) would force
-    \(a\in I\) by downward closure. Thus \(x&lt;a\), giving \(I=A_{&lt;a}\).
-    The least missing member determines \(a\) uniquely.</p>
-  <p>If \(a&lt;b\), then \(A_{&lt;a}\subsetneq A_{&lt;b}\): transitivity gives the
-    inclusion, and \(a\) belongs only to the latter segment. Totality compares any
-    two endpoints; \(A\) itself contains every initial segment.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>The nonempty complement has a least member \(a\). Every \(x&lt;a\) belongs to
+      \(I\), or \(a\) would not be least in the complement.
+      Conversely, if \(x\in I\), then \(x\ne a\); the possibility \(a&lt;x\) would force
+      \(a\in I\) by downward closure. Thus \(x&lt;a\), giving \(I=A_{&lt;a}\).
+      The least missing member determines \(a\) uniquely.</p>
+    <p>If \(a&lt;b\), then \(A_{&lt;a}\subsetneq A_{&lt;b}\): transitivity gives the
+      inclusion, and \(a\) belongs only to the latter segment. Totality compares any
+      two endpoints; \(A\) itself contains every initial segment.</p>
+</div>
   <p>In a nonempty well-order, the empty segment is the segment below its least element.
     For the empty well-order there are no proper initial segments.</p>
 </section>
@@ -140,7 +140,7 @@
     \(\{x\in A:a&lt;x\}\), written \(s(a)\).
     Thus \(a&lt;s(a)\) and no element lies strictly between them.
     A point \(b\) is a <strong>successor point</strong> if \(b=s(a)\) for some \(a\);
-    that \(a\) is its immediate predecessor.</p>
+    that \(a\) is its <strong>immediate predecessor</strong>.</p>
   <p>For a nonempty well-order, every point is exactly one of: its least point,
     a successor point, or a <strong>limit point</strong>, meaning a nonleast point
     with no immediate predecessor.
@@ -167,11 +167,12 @@
     \]</div>
     <p>then \(P(a)\) holds for every \(a\in A\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>If the set \(E=\{a\in A:\neg P(a)\}\) were nonempty, take its least member \(e\).
-    Every \(b&lt;e\) lies outside \(E\), so \(P(b)\) holds for all such \(b\).
-    The assumed implication then gives \(P(e)\), contradicting \(e\in E\).
-    Thus \(E\) is empty. <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>If the set \(E=\{a\in A:\neg P(a)\}\) were nonempty, take its least member \(e\).
+      Every \(b&lt;e\) lies outside \(E\), so \(P(b)\) holds for all such \(b\).
+      The assumed implication then gives \(P(e)\), contradicting \(e\in E\).
+      Thus \(E\) is empty.</p>
+</div>
   <p>The premise is called the <strong>induction step</strong>.
     At the least point there are no earlier elements, so its antecedent is true
     and the step must establish the base case. For \(A=\mathbb N\), this is strong
@@ -183,14 +184,14 @@
   <h2>The induction principle detects a well-order</h2>
   <p>A total order is a well-order if and only if the principle in
     <a href="#well-order-induction"></a> holds for every property of its elements.</p>
-  <p class="proof-label">Proof</p>
-  <p>One direction is the theorem. Conversely, suppose a nonempty subset \(S\) has
-    no least element. Let \(P(a)\) mean \(a\notin S\).
-    If all elements below \(a\) satisfy \(P\), then \(a\) cannot belong to \(S\):
-    in a total order, a member of \(S\) with no member of \(S\) below it would be least.
-    Thus \(P\) satisfies the induction step. The principle would make \(P\) true
-    everywhere, contradicting nonemptiness of \(S\).
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>One direction is the theorem. Conversely, suppose a nonempty subset \(S\) has
+      no least element. Let \(P(a)\) mean \(a\notin S\).
+      If all elements below \(a\) satisfy \(P\), then \(a\) cannot belong to \(S\):
+      in a total order, a member of \(S\) with no member of \(S\) below it would be least.
+      Thus \(P\) satisfies the induction step. The principle would make \(P\) true
+      everywhere, contradicting nonemptiness of \(S\).</p>
+</div>
 </section>
 
 <section id="three-case-induction" data-kind="lemma"
@@ -199,12 +200,12 @@
   <p>On a nonempty well-order, it suffices to prove \(P\) at the least point,
     prove \(P(s(a))\) whenever \(s(a)\) exists and \(P(a)\) holds, and prove \(P(b)\)
     at each limit point \(b\) assuming \(P(a)\) for every \(a&lt;b\).</p>
-  <p class="proof-label">Proof</p>
-  <p>To check the step of <a href="#well-order-induction"></a> at \(b\), assume \(P\)
-    below \(b\). If \(b\) is least, use the base case. If \(b=s(a)\), the assumption
-    includes \(P(a)\), so use the successor case. Otherwise \(b\) is a limit point,
-    and its case applies. The induction theorem gives the result.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>To check the step of <a href="#well-order-induction"></a> at \(b\), assume \(P\)
+      below \(b\). If \(b\) is least, use the base case. If \(b=s(a)\), the assumption
+      includes \(P(a)\), so use the successor case. Otherwise \(b\) is a limit point,
+      and its case applies. The induction theorem gives the result.</p>
+</div>
   <p>The limit case is essential when the order has limit points. Its hypothesis
     concerns the entire earlier segment, which may be infinite.</p>
 </section>
@@ -231,17 +232,17 @@
   data-formal="well-order-initial-embedding-unique order-isomorphism-initial-embedding">
   <h2>An order isomorphism between well-orders is unique</h2>
   <p>If \(f,g:A\to B\) are order isomorphisms between well-ordered sets, then \(f=g\).</p>
-  <p class="proof-label">Proof</p>
-  <p>By <a href="#well-order-induction"></a>, fix \(a\in A\) and assume \(f(b)=g(b)\)
-    for every \(b&lt;a\).
-    Suppose \(f(a)&lt;g(a)\), using the order on \(B\).
-    The point \(b=g^{-1}(f(a))\) lies below \(a\), because \(g\) reflects order.
-    The hypothesis gives \(f(b)=g(b)=f(a)\).
-    Injectivity of \(f\) then gives \(b=a\), contradicting \(b&lt;a\).
-    The possibility \(g(a)&lt;f(a)\) is ruled out by exchanging \(f\) and \(g\).
-    Totality on \(B\) leaves \(f(a)=g(a)\).
-    Induction proves equality at every input.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>By <a href="#well-order-induction"></a>, fix \(a\in A\) and assume \(f(b)=g(b)\)
+      for every \(b&lt;a\).
+      Suppose \(f(a)&lt;g(a)\), using the order on \(B\).
+      The point \(b=g^{-1}(f(a))\) lies below \(a\), because \(g\) reflects order.
+      The hypothesis gives \(f(b)=g(b)=f(a)\).
+      Injectivity of \(f\) then gives \(b=a\), contradicting \(b&lt;a\).
+      The possibility \(g(a)&lt;f(a)\) is ruled out by exchanging \(f\) and \(g\).
+      Totality on \(B\) leaves \(f(a)=g(a)\).
+      Induction proves equality at every input.</p>
+</div>
   <p>In particular, the only order automorphism of a well-order is the identity.
     Arbitrary bijections between the underlying sets can still be plentiful.</p>
 </section>
@@ -250,16 +251,16 @@
   data-formal="no-proper-initial-self-embedding well-order-increasing-map-not-decreasing positive-natural-equivalence positive-even-subsets-not-initial">
   <h2>A well-order is not isomorphic to a proper initial segment</h2>
   <p>A well-ordered set \(A\) is not order-isomorphic to \(A_{&lt;a}\) for any \(a\in A\).</p>
-  <p class="proof-label">Proof</p>
-  <p>First, every strictly increasing map \(f:A\to A\) satisfies \(x\le f(x)\).
-    Otherwise take the least \(x\) with \(f(x)&lt;x\).
-    Minimality gives \(f(x)\le f(f(x))\), since \(f(x)\) is earlier than \(x\).
-    But strict increase applied to \(f(x)&lt;x\) gives \(f(f(x))&lt;f(x)\),
-    a contradiction.</p>
-  <p>Now an order isomorphism \(A\to A_{&lt;a}\), followed by inclusion into \(A\),
-    would be strictly increasing and satisfy \(f(a)&lt;a\).
-    This contradicts the preceding inequality.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>First, every strictly increasing map \(f:A\to A\) satisfies \(x\le f(x)\).
+      Otherwise take the least \(x\) with \(f(x)&lt;x\).
+      Minimality gives \(f(x)\le f(f(x))\), since \(f(x)\) is earlier than \(x\).
+      But strict increase applied to \(f(x)&lt;x\) gives \(f(f(x))&lt;f(x)\),
+      a contradiction.</p>
+    <p>Now an order isomorphism \(A\to A_{&lt;a}\), followed by inclusion into \(A\),
+      would be strictly increasing and satisfy \(f(a)&lt;a\).
+      This contradicts the preceding inequality.</p>
+</div>
   <p>The natural numbers are in bijection with their proper subset of positive elements.
     That subset is not an initial segment of the usual natural-number order.
     The theorem concerns both the order structure and the position of the subset.</p>
@@ -269,7 +270,7 @@
   data-formal="well-founded-definition well-founded-minimal-criterion well-founded-no-self-dependency well-founded-no-descending-sequence three-point-fork-dependency three-point-fork-well-founded">
   <h2>Well-founded reasoning allows incomparable elements</h2>
   <p>A relation \(R\) on a set \(A\) is <strong>well-founded</strong> if every
-    nonempty subset \(S\subseteq A\) contains an \(R\)-minimal member:
+    nonempty subset \(S\subseteq A\) contains an <strong>\(R\)-minimal member</strong>:
     an \(a\in S\) for which there is no \(b\in S\) with \(b\,R\,a\).
     The direction \(b\,R\,a\) means that \(b\) is a permitted earlier dependency of \(a\).</p>
   <p>The strict relation of a well-order is well-founded. Totality is not required
@@ -289,11 +290,11 @@
   <h2>Induction along a well-founded relation</h2>
   <p>Let \(R\) be well-founded on \(A\). If for every \(a\in A\), the truth of \(P(b)\)
     for all \(b\,R\,a\) implies \(P(a)\), then \(P\) holds everywhere on \(A\).</p>
-  <p class="proof-label">Proof</p>
-  <p>A nonempty set of counterexamples would have an \(R\)-minimal member \(a\).
-    Every \(b\,R\,a\) would satisfy \(P\), since no such \(b\) could belong to the
-    counterexample set. The step would give \(P(a)\), a contradiction.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>A nonempty set of counterexamples would have an \(R\)-minimal member \(a\).
+      Every \(b\,R\,a\) would satisfy \(P\), since no such \(b\) could belong to the
+      counterexample set. The step would give \(P(a)\), a contradiction.</p>
+</div>
   <p>A useful way to establish well-foundedness is a <strong>natural-number measure</strong>.
     If \(\mu:A\to\mathbb N\) satisfies \(\mu(b)&lt;\mu(a)\) whenever \(b\,R\,a\),
     choose a member of any nonempty \(S\) having the least occurring measure.
@@ -334,13 +335,13 @@
   <p>Any two partial solutions for the same rules agree on the intersection of their
     domains. In particular, there is at most one full solution of
     \eqref{eq:well-order-recursion}.</p>
-  <p class="proof-label">Proof</p>
-  <p>Let \(h:I\to S\) and \(k:J\to S\) be partial solutions.
-    If they disagree anywhere in \(I\cap J\), take the least disagreement \(a\).
-    Every predecessor of \(a\) lies in both domains and has the same value under the
-    two functions. Thus their restrictions to \(A_{&lt;a}\) are equal.
-    Applying the same map \(\Phi_a\) gives \(h(a)=k(a)\), a contradiction.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Let \(h:I\to S\) and \(k:J\to S\) be partial solutions.
+      If they disagree anywhere in \(I\cap J\), take the least disagreement \(a\).
+      Every predecessor of \(a\) lies in both domains and has the same value under the
+      two functions. Thus their restrictions to \(A_{&lt;a}\) are equal.
+      Applying the same map \(\Phi_a\) gives \(h(a)=k(a)\), a contradiction.</p>
+</div>
   <p>This agreement is what permits compatible pieces of a recursive definition to be
     assembled, including across infinitely many earlier positions.</p>
 </section>
@@ -353,31 +354,31 @@
       <a href="#recursion-rules"></a>, there exists a unique function \(F:A\to S\)
       satisfying \eqref{eq:well-order-recursion} at every \(a\in A\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Regard partial solutions as their graphs, subsets of \(A\times S\).
-    The collection \(\mathcal H\) of all such solutions is therefore a set, contained
-    in \(\mathcal P(A\times S)\); it contains the empty solution.
-    Form the union of their graphs,
-    \(F=\bigcup_{h\in\mathcal H}h\).
-    By <a href="#compatible-partial-solutions"></a>, two graphs never assign different
-    values to the same input, so this union is a function into \(S\).
-    Its domain \(D\), the union of their initial segments, is itself an initial segment.</p>
-  <p>For any \(a\in D\), some partial solution \(h\) contains \(a\) in its domain.
-    It also contains every predecessor of \(a\). Compatibility makes the restriction
-    of \(F\) to those predecessors equal to the restriction of \(h\).
-    Hence \(F\) obeys the recursion rule at \(a\), and is a partial solution.</p>
-  <p>If \(D\ne A\), take the least missing point \(a\).
-    Then \(D=A_{&lt;a}\) by <a href="#classification-of-initial-segments"></a>.
-    Extend \(F\) to a function \(\widetilde F\) by assigning
-    \(\widetilde F(a)=\Phi_a(F|_D)\) and keeping its values on \(D\).
-    The extended domain \(D\cup\{a\}\) is an initial segment.
-    No earlier equation changes, because the newly assigned point is later than
-    every member of \(D\); the new equation holds by construction.
-    This gives another member of \(\mathcal H\).
-    Its graph must already be contained in the union defining \(F\), contradicting
-    that \(a\) was missing. Thus \(D=A\), proving existence.
-    Uniqueness follows from <a href="#compatible-partial-solutions"></a>.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Regard partial solutions as their graphs, subsets of \(A\times S\).
+      The collection \(\mathcal H\) of all such solutions is therefore a set, contained
+      in \(\mathcal P(A\times S)\); it contains the empty solution.
+      Form the union of their graphs,
+      \(F=\bigcup_{h\in\mathcal H}h\).
+      By <a href="#compatible-partial-solutions"></a>, two graphs never assign different
+      values to the same input, so this union is a function into \(S\).
+      Its domain \(D\), the union of their initial segments, is itself an initial segment.</p>
+    <p>For any \(a\in D\), some partial solution \(h\) contains \(a\) in its domain.
+      It also contains every predecessor of \(a\). Compatibility makes the restriction
+      of \(F\) to those predecessors equal to the restriction of \(h\).
+      Hence \(F\) obeys the recursion rule at \(a\), and is a partial solution.</p>
+    <p>If \(D\ne A\), take the least missing point \(a\).
+      Then \(D=A_{&lt;a}\) by <a href="#classification-of-initial-segments"></a>.
+      Extend \(F\) to a function \(\widetilde F\) by assigning
+      \(\widetilde F(a)=\Phi_a(F|_D)\) and keeping its values on \(D\).
+      The extended domain \(D\cup\{a\}\) is an initial segment.
+      No earlier equation changes, because the newly assigned point is later than
+      every member of \(D\); the new equation holds by construction.
+      This gives another member of \(\mathcal H\).
+      Its graph must already be contained in the union defining \(F\), contradicting
+      that \(a\) was missing. Thus \(D=A\), proving existence.
+      Uniqueness follows from <a href="#compatible-partial-solutions"></a>.</p>
+</div>
 </section>
 
 <section id="natural-number-recursion" data-kind="lemma"
@@ -388,12 +389,12 @@
   <div class="math-display">\[
     F(0)=c,\qquad F(n+1)=T(n,F(n)).
   \]</div>
-  <p class="proof-label">Proof</p>
-  <p>Set \(\Phi_0(u)=c\). At \(n+1\), let
-    \(\Phi_{n+1}(u)=T(n,u(n))\); the coordinate \(n\) is in the earlier segment,
-    so this value is available. The full recursion theorem supplies a unique
-    function. Its equations are exactly the two displayed rules.
-    <span class="qed" aria-label="End of proof">□</span></p>
+  <div class="proof">
+    <p>Set \(\Phi_0(u)=c\). At \(n+1\), let
+      \(\Phi_{n+1}(u)=T(n,u(n))\); the coordinate \(n\) is in the earlier segment,
+      so this value is available. The full recursion theorem supplies a unique
+      function. Its equations are exactly the two displayed rules.</p>
+</div>
   <p>For example, choose \(S=\mathbb N\), \(c=1\), and \(T(n,x)=(n+1)x\).
     The resulting function is factorial:
     \(F(0)=1\), \(F(1)=1\), \(F(2)=2\), \(F(3)=6\), and \(F(4)=24\).

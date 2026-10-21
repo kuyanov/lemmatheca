@@ -97,8 +97,16 @@ def _plain_text(nodes, *, omit_answers=False, omit_summary=False, empty_links=No
         boundary = node.tag in TEXT_BOUNDARIES
         if boundary:
             parts.append("\n")
+        proof = node.tag == "div" and "proof" in node.attrs.get("class", "").split()
+        if proof:
+            # These visible boundaries are supplied by CSS in the reader.
+            parts.append("Proof\n")
         for child in node.children:
             visit(child)
+        if proof:
+            while parts and isinstance(parts[-1], str) and not parts[-1].strip():
+                parts.pop()
+            parts.append(" □")
         if node.tag in {"td", "th"}:
             parts.append(" ")
         if boundary:

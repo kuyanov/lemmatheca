@@ -1,8 +1,8 @@
 {
   "id": "mach-normal-form",
   "description": "Every unary partial recursive function \\(f\\) has a primitive-recursive Boolean certificate test \\(T_f(x,w)\\) such that \\(f(x)\\simeq U(\\mu w\\,[T_f(x,w)])\\); its graph is existence of an accepted certificate with the specified extracted output, and all certificates at one input have that same output.",
-  "module": "Lemmatheca.MathematicalLogic.MachinesAndComputationHistories",
-  "declaration": "Lemmatheca.MathematicalLogic.MachinesAndComputationHistories.normal_form",
+  "module": "Lemmatheca.MachinesAndComputationHistories.MachinesAndComputationHistories",
+  "declaration": "Lemmatheca.ComputabilityTheory.MachinesAndComputationHistories.normal_form",
   "dependencies": [
     "mach-machine-equivalence",
     "mach-certificate-primitive",
@@ -10,5 +10,5 @@
   ],
   "verified": true,
   "declaration_line": 653,
-  "signature": "Lemmatheca.MathematicalLogic.MachinesAndComputationHistories.normal_form (f : ℕ → Part ℕ)\n  (hf : Lemmatheca.MathematicalLogic.PartialRecursiveFunctions.Recursive fun v => f (List.Vector.get v 0)) :\n  ∃ T,\n    Primrec₂ T ∧\n      (∀ (x y : ℕ),\n          y ∈ f x ↔ ∃ w, T x w = true ∧ Lemmatheca.MathematicalLogic.MachinesAndComputationHistories.extract w = y) ∧\n        (∀ (x : ℕ),\n            f x =\n              Part.map Lemmatheca.MathematicalLogic.MachinesAndComputationHistories.extract\n                (Lemmatheca.MathematicalLogic.MachinesAndComputationHistories.searchTest T x)) ∧\n          ∀ (x u v : ℕ),\n            T x u = true →\n              T x v = true →\n                Lemmatheca.MathematicalLogic.MachinesAndComputationHistories.extract u =\n                  Lemmatheca.MathematicalLogic.MachinesAndComputationHistories.extract v"
+  "signature": "Lemmatheca.ComputabilityTheory.MachinesAndComputationHistories.normal_form (f : ℕ → Part ℕ)\n  (hf : Lemmatheca.ComputabilityTheory.PartialRecursiveFunctions.Recursive fun v => f (List.Vector.get v 0)) :\n  ∃ T,\n    Primrec₂ T ∧\n      (∀ (x y : ℕ),\n          y ∈ f x ↔ ∃ w, T x w = true ∧ Lemmatheca.ComputabilityTheory.MachinesAndComputationHistories.extract w = y) ∧\n        (∀ (x : ℕ),\n            f x =\n              Part.map Lemmatheca.ComputabilityTheory.MachinesAndComputationHistories.extract\n                (Lemmatheca.ComputabilityTheory.MachinesAndComputationHistories.searchTest T x)) ∧\n          ∀ (x u v : ℕ),\n            T x u = true →\n              T x v = true →\n                Lemmatheca.ComputabilityTheory.MachinesAndComputationHistories.extract u =\n                  Lemmatheca.ComputabilityTheory.MachinesAndComputationHistories.extract v"
 }

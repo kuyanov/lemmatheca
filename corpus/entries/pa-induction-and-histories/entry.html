@@ -1,6 +1,6 @@
 <section id="internal-and-external-induction" data-kind="definition" data-formal="pac-definable-induction pac-models-to-derivations">
 <h2>An induction axiom applies to a formula and all its parameters</h2>
-<p>The <a href="arithmetic-theories#induction-schema">induction schema of Peano arithmetic</a> has one axiom for each arithmetic formula \(A(x,\bar u)\). Its parameters \(\bar u\) remain free until we close the axiom universally. Consequently the axiom applies in every PA-model with any fixed values of those parameters. The induction variable ranges over all of the model, including its nonstandard elements.</p>
+<p>The <a href="arithmetic-theories#induction-schema"><strong>induction schema of Peano arithmetic</strong></a> has one axiom for each arithmetic formula \(A(x,\bar u)\). Its parameters \(\bar u\) remain free until we close the axiom universally. Consequently the axiom applies in every PA-model with any fixed values of those parameters. The induction variable ranges over all of the model, including its nonstandard elements.</p>
 <div class="math-display">\[A(0,\bar u)\land\forall x\,(A(x,\bar u)\to A(Sx,\bar u))\;\longrightarrow\;\forall x\,A(x,\bar u).\]</div>
 <p>This does not give induction for every external subset of the model. For example, the set of standard elements of a nonstandard model contains zero and is closed under successor, but it is a proper external subset. If one applied induction to that subset, one would wrongly conclude that the model had no nonstandard elements. Each induction below therefore specifies an arithmetic assertion, with a fixed finite tuple of parameters.</p>
 <p>We will sometimes prove an arithmetic sentence by working in an arbitrary model of PA. After proving that the sentence holds in <em>every</em> such model, <a href="henkin-completeness#deductive-completeness">first-order completeness</a> supplies a PA derivation in the shared proof calculus. This is a semantic route to a derivation, rather than an algorithm that prints that derivation. It uses neither truth only in the standard natural numbers nor induction for arbitrary subsets. When we write “PA proves”, this passage back to an actual derivation is included.</p>
@@ -11,33 +11,40 @@
   <h2>Internal induction also proves least-element principles</h2>
   <p>PA proves induction for every arithmetic formula with parameters. Consequently, if an arithmetic formula \(A(x,\bar u)\) has a witness, it has a least witness:</p>
   <div class="math-display">\[\mathrm{PA}\vdash\forall\bar u\,\bigl(\exists x\,A(x,\bar u)\to\exists x\,(A(x,\bar u)\land\forall z\lt x\,\neg A(z,\bar u))\bigr).\]</div>
-  <p class="proof-label">Proof</p>
-  <p>Induct on \(n\) in the formula saying that either every \(x\le n\) fails \(A\), or there is a least witness at most \(n\). At zero, test \(A(0,\bar u)\). In the step, retain an already found least witness; otherwise test \(A(Sn,\bar u)\). If some witness exists, apply the resulting assertion at that witness. The parameters remain fixed in this induction. □</p>
+  <div class="proof">
+    <p>Induct on \(n\) in the formula saying that either every \(x\le n\) fails \(A\), or there is a least witness at most \(n\). At zero, test \(A(0,\bar u)\). In the step, retain an already found least witness; otherwise test \(A(Sn,\bar u)\). If some witness exists, apply the resulting assertion at that witness. The parameters remain fixed in this induction.</p>
+</div>
   <p>PA also proves the discrete linear-order and semiring laws used below. Associativity, commutativity and distributivity follow by induction from the recursive addition and multiplication axioms. Additive cancellation needs induction too: induct on the common summand in \(a+b=a+c\Rightarrow b=c\). At \(a=0\), use the zero-on-the-left law; at \(Sa\), rewrite both sides as successors, apply successor injectivity, and use the induction hypothesis. Injectivity alone would not supply cancellation.</p>
   <p>Induction on \(v\), using the predecessor axiom, proves \(u\le v\) or \(v\lt u\). Cancellation and the successor axioms then give antisymmetry. All these are inductions on arithmetic formulas, with their other variables as parameters.</p>
 </section>
 <section id="strong-induction" data-kind="lemma" data-formal="pac-strong-induction pac-strong-induction-derives">
 <h2>A least counterexample justifies recursion on smaller codes</h2>
 <p>For each fixed arithmetic formula \(P(x,\bar u)\), PA proves strong induction: if \(P(x,\bar u)\) follows from its truth at every \(y\lt x\), then it holds for every \(x\).</p>
-<p class="proof-label">Proof</p><p>Fix the parameters and suppose a counterexample exists. Apply <a href="#induction-as-a-proof-rule">the least-witness principle</a> to \(\neg P\). Its least witness \(c\) has \(P(y,\bar u)\) for every \(y\lt c\). The assumed induction step gives \(P(c,\bar u)\), contradicting the choice of \(c\). This proof is first-order: the formula \(\neg P\) names the counterexamples. □</p>
+<div class="proof">
+  <p>Fix the parameters and suppose a counterexample exists. Apply <a href="#induction-as-a-proof-rule">the least-witness principle</a> to \(\neg P\). Its least witness \(c\) has \(P(y,\bar u)\) for every \(y\lt c\). The assumed induction step gives \(P(c,\bar u)\), contradicting the choice of \(c\). This proof is first-order: the formula \(\neg P\) names the counterexamples.</p>
+</div>
 <p>This is the form of induction needed when a syntax routine calls itself on the children of an encoded expression. The input decreases numerically; it need not be the immediate predecessor. A bounded loop, a maximum or a graph-defined function inside \(P\) must first be written using its arithmetic graph, so that \(P\) really is an arithmetic formula.</p>
 </section>
 
 <section id="internal-division" data-formal="pac-internal-division pac-division-derives" data-kind="lemma">
 <h2>Division with remainder is an arithmetic induction</h2>
 <p>PA proves that, for every \(m\ne0\) and every \(c\), there are unique \(q,r\) with \(c=mq+r\) and \(r\lt m\).</p>
-<p class="proof-label">Proof</p><p>Induct on \(c\). The representation of zero uses \(q=r=0\). From \(c=mq+r\), retain \(q\) and increase \(r\) when \(Sr\lt m\); when \(Sr=m\), use \(Sq\) and zero. These cases exhaust \(r\lt m\) by the discrete order laws.</p>
-<p>For uniqueness, if \(q\lt q'\), then \(mq+r\lt m(q+1)\le mq'\le mq'+r'\), contradicting equality of the two representations. The reversed inequality is impossible in the same way, so \(q=q'\). Additive cancellation then gives equality of the remainders. □</p>
+<div class="proof">
+  <p>Induct on \(c\). The representation of zero uses \(q=r=0\). From \(c=mq+r\), retain \(q\) and increase \(r\) when \(Sr\lt m\); when \(Sr=m\), use \(Sq\) and zero. These cases exhaust \(r\lt m\) by the discrete order laws.</p>
+  <p>For uniqueness, if \(q\lt q'\), then \(mq+r\lt m(q+1)\le mq'\le mq'+r'\), contradicting equality of the two representations. The reversed inequality is impossible in the same way, so \(q=q'\). Additive cancellation then gives equality of the remainders.</p>
+</div>
 </section>
 
 <section id="signed-coefficients" data-kind="lemma" data-formal="pac-internal-divisibility pac-internal-coprimality pac-bezout-model pac-bezout-derives pac-internal-coprime-product pac-internal-coprime-cancellation pac-coprime-cancellation-derives pac-internal-two-modulus pac-two-modulus-derives">
 <h2>Bézout coefficients and two coprime congruences</h2>
-<p>Write \(a\mid b\) for \(\exists q\,(aq=b)\). Positive \(m,n\) are coprime when every common divisor is \(1\). PA proves the signed-coefficient Bézout identity</p>
+<p>Write \(a\mid b\) for \(\exists q\,(aq=b)\). Positive \(m,n\) are coprime when every common divisor is \(1\). PA proves that, for all positive coprime \(m,n\), the signed-coefficient Bézout identity holds:</p>
 <div class="math-display">\[\exists u\exists v\exists u'\exists v'\;(mu+nv=1+mu'+nv').\]</div>
 <p>It follows internally that coprime \(r,n\) satisfy \(r\mid nt\Rightarrow r\mid t\), and that positive coprime moduli admit simultaneous prescribed remainders \(a\lt m,b\lt n\).</p>
-<p class="proof-label">Proof</p><p>The arithmetic language has no subtraction on arbitrary numbers. Describe a positive difference by \(z\ne0\) and \(mu+nv=z+(mu'+nv')\). Such a difference exists: take \(z=m\). The <a href="#induction-as-a-proof-rule">least-witness theorem</a> supplies a least positive difference \(z\). Divide \(m\) by \(z\). If its remainder is positive, substituting the displayed expression for the multiple of \(z\) and moving terms across the equality writes that remainder as a smaller positive difference of combinations of \(m,n\), a contradiction. The same reasoning applies to \(n\). Thus \(z\) divides both, and coprimality gives \(z=1\).</p>
-<p>For cancellation, multiply the Bézout equality for \(r,n\) by \(t\). Since \(r\mid nt\), all terms except \(t\) are multiples of \(r\). The division theorem, or cancellation of a quotient difference, then gives \(r\mid t\). Multiplying two Bézout identities similarly shows that coprimality with each of two factors implies coprimality with their product.</p>
-<p>For simultaneous residues, the Bézout coefficients provide a signed solution to the two congruences by the <a href="arithmetic-representability#simultaneous-remainders">two-modulus calculation</a>. Add a sufficiently large multiple of \(mn\) to obtain a nonnegative solution, and divide to choose its remainder representative. Every difference used in this argument is expressed by an equality of nonnegative sums. Its least element and quotient therefore come from arithmetic formulas, so the same argument works at internal moduli. □</p>
+<div class="proof">
+  <p>The arithmetic language has no subtraction on arbitrary numbers. Describe a positive difference by \(z\ne0\) and \(mu+nv=z+(mu'+nv')\). Such a difference exists: take \(z=m\). The <a href="#induction-as-a-proof-rule">least-witness theorem</a> supplies a least positive difference \(z\). Divide \(m\) by \(z\). If its remainder is positive, substituting the displayed expression for the multiple of \(z\) and moving terms across the equality writes that remainder as a smaller positive difference of combinations of \(m,n\), a contradiction. The same reasoning applies to \(n\). Thus \(z\) divides both, and coprimality gives \(z=1\).</p>
+  <p>For cancellation, first handle zero moduli. If \(r=0\), coprimality forces \(n=1\), and \(r\mid nt\) then forces \(t=0\). If \(n=0\), coprimality forces \(r=1\), which divides every \(t\). Otherwise both moduli are positive: multiply their Bézout equality by \(t\). Since \(r\mid nt\), all terms except \(t\) are multiples of \(r\). The division theorem, or cancellation of a quotient difference, then gives \(r\mid t\). Multiplying two Bézout identities similarly shows that coprimality with each of two factors implies coprimality with their product.</p>
+  <p>For simultaneous residues, the Bézout coefficients provide a signed solution to the two congruences by the <a href="arithmetic-representability#simultaneous-remainders">two-modulus calculation</a>. Add a sufficiently large multiple of \(mn\) to obtain a nonnegative solution, and divide to choose its remainder representative. Every difference used in this argument is expressed by an equality of nonnegative sums. Its least element and quotient therefore come from arithmetic formulas, so the same argument works at internal moduli.</p>
+</div>
 </section>
 
 <section id="internal-beta-decoder" data-formal="repr-beta-bounded-formula pac-beta-total-unique" data-kind="lemma">
@@ -45,8 +52,9 @@
   <p>Retain the existing <a href="arithmetic-representability#beta-graph">bounded graph</a></p>
   <div class="math-display">\[B(c,d,i,z)\;\Longleftrightarrow\;z\lt (i+1)d+1\ \land\ \exists q\le c\;(c=((i+1)d+1)q+z).\]</div>
   <p>PA proves \(\forall c\,\forall d\,\forall i\,\exists!z\,B(c,d,i,z)\). We may therefore write \(\beta(c,d,i)\) as a graph abbreviation, not as a new symbol of \(L_A\).</p>
-  <p class="proof-label">Proof</p>
-  <p>The modulus \((i+1)d+1\) is positive even when \(d=0\). Apply <a href="#internal-division">the division lemma</a>. Its quotient is at most \(c\), since a positive multiple of the quotient plus a nonnegative remainder is \(c\). The division uniqueness proof gives the required uniqueness. □</p>
+  <div class="proof">
+    <p>The modulus \((i+1)d+1\) is positive even when \(d=0\). Apply <a href="#internal-division">the division lemma</a>. Its quotient is at most \(c\), since a positive multiple of the quotient plus a nonnegative remainder is \(c\). The division uniqueness proof gives the required uniqueness.</p>
+</div>
 </section>
 
 <section id="pairwise-coprime-moduli" data-kind="lemma" data-formal="pac-pairwise-moduli pac-common-multiple pac-common-multiple-derives pac-pairwise-moduli-derives">
@@ -54,9 +62,11 @@
 <p>PA proves one uniform sentence:</p>
 <div class="math-display">\[\forall N\exists D\;(D\ne0\land\forall j\le N\,(j\ne0\to j\mid D)).\]</div>
 <p>For such a positive common multiple \(d'\) through \(n+1\), the moduli \(m_i=1+(i+1)d'\), for \(i\le n\), are pairwise coprime.</p>
-<p class="proof-label">Proof</p><p>For the first assertion, induct on \(N\): use \(1\) at zero, and replace a suitable \(D\) by \(D(N+1)\) in the step. Multiplication preserves the preceding divisibilities. This proves the single sentence at all internal \(N\); no factorial function has been assumed.</p>
+<div class="proof">
+  <p>For the first assertion, induct on \(N\): use \(1\) at zero, and replace a suitable \(D\) by \(D(N+1)\) in the step. Multiplication preserves the preceding divisibilities. This proves the single sentence at all internal \(N\); no factorial function has been assumed.</p>
 
-<p>For the second assertion, take \(i\lt j\le n\) and a common divisor \(r\) of \(m_i,m_j\). A common divisor of \(r,d'\) divides \(m_i\) and \((i+1)d'\), hence divides \(1\); thus \(r,d'\) are coprime. The equations for the two moduli show \(r\mid(j-i)d'\). Coprime cancellation gives \(r\mid j-i\). The positive difference \(j-i\le n+1\) divides \(d'\), so \(r\mid d'\). As \(r\mid m_i\) too, \(r\mid1\), giving \(r=1\). The differences are abbreviations for the unique additive gaps supplied by the arithmetic order. □</p>
+  <p>For the second assertion, take \(i\lt j\le n\) and a common divisor \(r\) of \(m_i,m_j\). A common divisor of \(r,d'\) divides \(m_i\) and \((i+1)d'\), hence divides \(1\); thus \(r,d'\) are coprime. The equations for the two moduli show \(r\mid(j-i)d'\). Coprime cancellation gives \(r\mid j-i\). The positive difference \(j-i\le n+1\) divides \(d'\), so \(r\mid d'\). As \(r\mid m_i\) too, \(r\mid1\), giving \(r=1\). The differences are abbreviations for the unique additive gaps supplied by the arithmetic order.</p>
+</div>
 </section>
 
 <section id="internal-beta-extension" data-formal="pac-beta-extension pac-beta-extension-derives" data-kind="theorem">
@@ -66,10 +76,11 @@
   <div class="math-display">\[\forall c\,\forall d\,\forall n\,\forall a\,\exists c'\exists d'\;\bigl(\beta(c',d',n)=a\land\forall i\lt n\;\beta(c',d',i)=\beta(c,d,i)\bigr).\]</div>
   <p>This is an assertion about arbitrary internal codes and lengths. It does not quantify over an external list of length \(n\).</p>
   </div>
-  <p class="proof-label">Proof</p>
-  <p>Use <a href="#pairwise-coprime-moduli">the common-multiple lemma</a> at \(N=n+1\). Multiply its positive \(D\) by \(c+a+2\), obtaining a common multiple \(d'\gt c,a\). The same lemma makes the moduli \(m_i=1+(i+1)d'\), for \(i\le n\), pairwise coprime.</p>
-  <p>Prescribe the remainder \(\beta(c,d,i)\) when \(i\lt n\), and \(a\) when \(i=n\). Each is less than \(d'\), hence less than its new modulus: a remainder of \(c\) is at most \(c\). PA can solve all these congruences without assuming that an arbitrary internal list has already been coded. Induct on \(k\le n+1\) in the following arithmetic assertion: there exist a simultaneous solution \(s\) for the indices below \(k\), and a positive modulus \(p\), such that every earlier \(m_i\) divides \(p\), and \(p\) is coprime to every remaining \(m_j\), \(k\le j\le n\).</p>
-  <p>At \(k=0\), take \(s=0,p=1\). For the step, solve the two congruences modulo \(p\) and \(m_k\) using <a href="#signed-coefficients">the two-modulus theorem</a>, prescribing the old residue \(s\bmod p\) and the new required residue. Replace \(p\) by \(pm_k\). Earlier residues are preserved because their moduli divide \(p\); coprimality with all remaining moduli follows from pairwise coprimality and the product rule. At \(k=n+1\) let \(c'=s\). The congruences and remainder uniqueness give precisely the displayed assertion. Both inductions have arithmetic formulas with the original parameters fixed. □</p>
+  <div class="proof">
+    <p>Use <a href="#pairwise-coprime-moduli">the common-multiple lemma</a> at \(N=n+1\). Multiply its positive \(D\) by \(c+a+2\), obtaining a common multiple \(d'\gt c,a\). The same lemma makes the moduli \(m_i=1+(i+1)d'\), for \(i\le n\), pairwise coprime.</p>
+    <p>Prescribe the remainder \(\beta(c,d,i)\) when \(i\lt n\), and \(a\) when \(i=n\). Each is less than \(d'\), hence less than its new modulus: a remainder of \(c\) is at most \(c\). PA can solve all these congruences without assuming that an arbitrary internal list has already been coded. Induct on \(k\le n+1\) in the following arithmetic assertion: there exist a simultaneous solution \(s\) for the indices below \(k\), and a positive modulus \(p\), such that every earlier \(m_i\) divides \(p\), and \(p\) is coprime to every remaining \(m_j\), \(k\le j\le n\).</p>
+    <p>At \(k=0\), take \(s=0,p=1\). For the step, solve the two congruences modulo \(p\) and \(m_k\) using <a href="#signed-coefficients">the two-modulus theorem</a>, prescribing the old residue \(s\bmod p\) and the new required residue. Replace \(p\) by \(pm_k\). Earlier residues are preserved because their moduli divide \(p\); coprimality with all remaining moduli follows from pairwise coprimality and the product rule. At \(k=n+1\) let \(c'=s\). The congruences and remainder uniqueness give precisely the displayed assertion. Both inductions have arithmetic formulas with the original parameters fixed.</p>
+</div>
 </section>
 
 <section id="bounded-witness-collection" data-formal="pac-bounded-witness-collection pac-bounded-collection-derives" data-kind="lemma">
@@ -77,8 +88,9 @@
   <p>For every fixed arithmetic formula \(A(i,u,\bar x)\), PA proves</p>
   <div class="math-display">\[\forall i\lt n\,\exists u\,A(i,u,\bar x)\ \Longrightarrow\ \exists c\exists d\,\forall i\lt n\,A(i,\beta(c,d,i),\bar x).\]</div>
   <p>The displayed implication is universally closed over \(n,\bar x\). It is a schema, one theorem for each fixed formula \(A\).</p>
-  <p class="proof-label">Proof</p>
-  <p>Induct on \(k\le n\) in the assertion that codes exist for witnesses at all indices below \(k\). At zero any codes work. At the step choose a witness \(u\) for \(A(k,u,\bar x)\), and apply <a href="#internal-beta-extension">the history-extension theorem</a> to append it. Earlier values are unchanged. The assertion at \(k=n\) is the conclusion. For a fixed tuple of witnesses, repeat this construction once for each coordinate. □</p>
+  <div class="proof">
+    <p>Induct on \(k\le n\) in the assertion that codes exist for witnesses at all indices below \(k\). At zero any codes work. At the step choose a witness \(u\) for \(A(k,u,\bar x)\), and apply <a href="#internal-beta-extension">the history-extension theorem</a> to append it. Earlier values are unchanged. The assertion at \(k=n\) is the conclusion. For a fixed tuple of witnesses, repeat this construction once for each coordinate.</p>
+</div>
   <p>PA also proves a common bound for a bounded family: append the witnesses and use the fact that every decoded value is at most the first code parameter. This is why a bounded universal quantifier over existential assertions can be converted to one existential choice of codes followed by bounded tests.</p>
 </section>
 
