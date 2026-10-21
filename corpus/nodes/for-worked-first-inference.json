@@ -1,0 +1,13 @@
+{
+  "id": "for-worked-first-inference",
+  "description": "For unary \\(P,Q,f\\), the fresh-copy inference from \\(\\{P(x_0)\\}\\) and \\(\\{\\neg P(f(x_0)),Q(x_0)\\}\\) selects their displayed opposing literals, uses exactly \\([f(x_1)/x_0]\\) as a most general unifier, and concludes \\(\\{Q(x_1)\\}\\).",
+  "module": "Lemmatheca.FirstOrderResolution.Examples",
+  "declaration": "Lemmatheca.Entry.FirstOrderResolution.worked_first_step",
+  "dependencies": [
+    "for-inference-data",
+    "for-resolvent"
+  ],
+  "verified": true,
+  "declaration_line": 99,
+  "signature": "Lemmatheca.Entry.FirstOrderResolution.worked_first_step.{u, v} {L : FirstOrder.Language} (P Q : L.Relations 1)\n  (f : L.Functions 1) :\n  ∃ d,\n    d.positiveFamily =\n        {Lemmatheca.Entry.FirstOrderResolution.signed true\n            (Lemmatheca.Entry.FirstOrderResolution.unaryAtom P (FirstOrder.Language.var 0))} ∧\n      d.negativeFamily =\n          {Lemmatheca.Entry.FirstOrderResolution.signed false\n              (Lemmatheca.Entry.FirstOrderResolution.unaryAtom P\n                (Lemmatheca.Entry.FirstOrderResolution.unary f (FirstOrder.Language.var 1)))} ∧\n        d.unifier = Lemmatheca.Entry.FirstOrderResolution.workedMu f ∧\n          Lemmatheca.MathematicalLogic.FirstOrderResolution.resolvent d =\n            Lemmatheca.Entry.FirstOrderResolution.workedMiddle Q"
+}

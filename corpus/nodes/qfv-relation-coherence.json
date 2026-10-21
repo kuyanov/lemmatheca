@@ -1,0 +1,13 @@
+{
+  "id": "qfv-relation-coherence",
+  "module": "Lemmatheca.QuantifierFreeValidity.Literals",
+  "declaration": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.relationMap_coherent",
+  "description": "Replacing every retained argument by a congruent term preserves the relation-map truth value on its tuple of classes.",
+  "dependencies": [
+    "qfv-relation-map",
+    "geq-closure-congruence"
+  ],
+  "verified": true,
+  "declaration_line": 208,
+  "signature": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.relationMap_coherent.{u, v} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] [(n : ℕ) → DecidableEq (L.Relations n)]\n  (Γ : Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Problem L) {n : ℕ} (R : L.Relations n)\n  (ts us : Fin n → Lemmatheca.MathematicalLogic.GroundEquality.GroundTerm L)\n  (ht : ∀ (i : Fin n), ts i ∈ Lemmatheca.MathematicalLogic.QuantifierFreeValidity.support Γ)\n  (hu : ∀ (i : Fin n), us i ∈ Lemmatheca.MathematicalLogic.QuantifierFreeValidity.support Γ)\n  (h : ∀ (i : Fin n), (ts i, us i) ∈ Lemmatheca.MathematicalLogic.QuantifierFreeValidity.closure Γ) :\n  (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.relationMap Γ R fun i =>\n      Lemmatheca.MathematicalLogic.QuantifierFreeValidity.classOf Γ (ts i) ⋯) ↔\n    Lemmatheca.MathematicalLogic.QuantifierFreeValidity.relationMap Γ R fun i =>\n      Lemmatheca.MathematicalLogic.QuantifierFreeValidity.classOf Γ (us i) ⋯"
+}

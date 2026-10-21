@@ -1,0 +1,80 @@
+<section id="one-new-relation" data-formal="bd-expanded-language bd-old-inclusion bd-expansion bd-expansion-old-language bd-expansion-recovers bd-relation-atom" data-kind="definition">
+  <h2>Compare expansions of one fixed structure</h2>
+  <p>Let \(L\) be any first-order language, let \(n\ge0\), and add one fresh \(n\)-ary relation symbol \(R\), obtaining \(L_R\). The <strong>old-language inclusion</strong> \(i_R:L\hookrightarrow L_R\) leaves all old symbols unchanged. If \(M\) is a nonempty \(L\)-structure and \(r\subseteq M^n\), write \(M[r]\) for the <strong>relation expansion</strong> with the same domain and old interpretations and with \(R^{M[r]}=r\). Every \(L_R\)-structure is such an expansion of its old-language reduct.</p>
+  <p>Fix a set \(T\) of \(L_R\)-sentences. We do not assume that \(T\) is complete, consistent or closed under consequence. Formulas have the <a href="first-order-languages#scoped-formulas">existing scoped first-order syntax</a>, and \(\bar x\) denotes the finite free-variable context \(x_0,\ldots,x_{n-1}\). Arity zero is included: \(M^0\) has one empty tuple, so a zero-ary relation is a truth value.</p>
+</section>
+
+<section id="implicit-definition" data-formal="bd-implicit" data-kind="definition">
+  <h2>Uniqueness can be imposed without writing a defining formula</h2>
+  <p>The theory \(T\) <strong>implicitly defines</strong> \(R\) over \(L\) if, for every nonempty old-language structure \(M\) and relations \(r,s\subseteq M^n\),</p>
+  <div class="math-display">\[M[r]\models T\ \text{ and }\ M[s]\models T\quad\Longrightarrow\quad r=s.\]</div>
+  <p>Thus a fixed old structure has at most one expansion satisfying \(T\). Equality of the old interpretations and underlying domain is essential; merely comparing isomorphic old reducts would require transporting the new relation along that isomorphism. This condition imposes no existence requirement on an arbitrary \(M\).</p>
+</section>
+
+<section id="explicit-definition" data-formal="bd-defining-axiom bd-defined-by bd-explicit bd-defining-truth" data-kind="definition">
+  <h2>An explicit definition uses only the old vocabulary</h2>
+  <p>An <strong>explicit definition</strong> of \(R\) modulo \(T\) is an \(L\)-formula \(\rho(\bar x)\), with no free variables outside the displayed tuple, such that</p>
+  <div class="math-display">\[T\models D_\rho,\qquad D_\rho:=\forall\bar x\,\bigl(R(\bar x)\leftrightarrow i_R(\rho)(\bar x)\bigr).\]</div>
+  <p>The formula \(\rho\) is selected once, before a model or tuple is selected. The notation \(i_R(\rho)\) means the actual <a href="changing-languages#language-maps">formula translation along the inclusion</a>. For \(n=0\), the universal prefix is empty and \(\rho\) is an old-language sentence. This is definability uniformly across all \(T\)-models, stronger than separately choosing a formula in each model.</p>
+</section>
+
+<section id="explicit-gives-unique" data-formal="bd-explicit-implicit" data-kind="lemma">
+  <h2>A defining formula determines the expansion</h2>
+  <p>If \(T\) explicitly defines \(R\), then \(T\) implicitly defines \(R\).</p>
+  <div class="proof"><p>Suppose \(M[r]\) and \(M[s]\) both satisfy \(T\), and take any tuple \(\bar a\in M^n\). The defining sentence and <a href="changing-languages#satisfaction-translation">truth under reducts</a> give \(\bar a\in r\) exactly when \(M\models\rho[\bar a]\), and give the same equivalence for \(s\). Hence membership in the two relations agrees on every tuple, so \(r=s\). For \(n=0\), the same argument compares their truth values at the empty tuple.</p></div>
+</section>
+
+<section id="two-copies" data-formal="bd-doubled-language bd-side-renaming bd-double-expansion bd-double-models bd-agreement bd-two-copy-characterization" data-kind="lemma">
+  <h2>Put two proposed expansions into one language</h2>
+  <p>Add two distinct fresh \(n\)-ary relations \(R,S\) to \(L\), obtaining \(L_{R,S}\). Let \(j_R,j_S:L_R\hookrightarrow L_{R,S}\) fix the old language and send the new symbol respectively to \(R,S\). Write \(T_R=j_R(T)\) and \(T_S=j_S(T)\). Then \(T\) implicitly defines \(R\) if and only if</p>
+  <div class="math-display">\[T_R\cup T_S\models\forall\bar x\,(R(\bar x)\leftrightarrow S(\bar x)).\]</div>
+  <div class="proof"><p>A structure of the doubled language consists exactly of one old structure \(M\) and two independently chosen relations \(r,s\). Its \(j_R\)-reduct is \(M[r]\), and its \(j_S\)-reduct is \(M[s]\). The language-map satisfaction identity says that it satisfies \(T_R\cup T_S\) exactly when these two reducts both satisfy \(T\). Its displayed sentence says precisely that \(r\) and \(s\) agree at every tuple. These equivalences prove both directions. In particular, the comparison uses actual expansions on the same old structure, rather than an unproved amalgamation assertion.</p></div>
+</section>
+
+<section id="finite-witnesses" data-formal="bd-finite-conjunction bd-finite-conjunction-truth bd-finite-witnesses" data-kind="lemma">
+  <h2>Only finitely many axioms are needed for the comparison</h2>
+  <p>If \(T\) implicitly defines \(R\), there are finite subsets \(\Gamma,\Delta\subseteq T\) such that, putting \(A=\bigwedge_{\sigma\in\Gamma}j_R(\sigma)\) and \(B=\bigwedge_{\tau\in\Delta}j_S(\tau)\),</p>
+  <div class="math-display">\[A\land B\models\forall\bar x\,(R(\bar x)\leftrightarrow S(\bar x)).\]</div>
+  <p>The <strong>finite conjunction</strong> of an empty set of sentences is \(\top\). Neither conjunction is required to be an axiom of \(T\).</p>
+  <div class="proof"><p>By the preceding lemma, \(T_R\cup T_S\) entails the displayed universal sentence. The <a href="changing-languages#arbitrary-language-completeness">finite-support consequence theorem</a>, obtained from compactness and completeness, supplies a finite subset of the union already implying it. For each selected axiom on the \(R\)-side choose one preimage in \(T\), and do the same on the \(S\)-side. This produces finite \(\Gamma,\Delta\subseteq T\). Their translated conjunctions imply every axiom of that finite subset, so imply the desired sentence. An axiom lying in both images can be assigned to either side.</p></div>
+</section>
+
+<section id="separating-the-copies" data-formal="bd-strip-formula bd-strip-identity bd-common-old-symbols bd-separation ci-formula-interpolation" data-kind="lemma">
+  <h2>Interpolation removes both private relation symbols</h2>
+  <p>Let \(\Gamma,\Delta,A,B\) be as above. There is an old-language formula \(\rho(\bar x)\) such that, under all assignments in nonempty doubled-language structures,</p>
+  <div class="math-display">\[A\land R(\bar x)\models i(\rho)(\bar x),\qquad i(\rho)(\bar x)\models \bigl(B\to S(\bar x)\bigr),\]</div>
+  <p>where \(i:L\hookrightarrow L_{R,S}\) is the common old-language inclusion. In these formulas the sentences \(A,B\) ignore the displayed assignment.</p>
+  <div class="proof"><p>First \(A\land R(\bar x)\models B\to S(\bar x)\): if \(B\) is also true, the finite-witness consequence gives \(R(\bar x)\leftrightarrow S(\bar x)\), and hence \(S(\bar x)\). Apply <a href="craig-interpolation#formula-interpolation">Craig interpolation for formulas in a fixed finite free context</a>. It gives a formula \(\theta(\bar x)\) between these two sides, with no extra free names and using only their common nonlogical symbols.</p><p>The left side contains old symbols and possibly \(R\), but no \(S\). The right side contains old symbols and possibly \(S\), but no \(R\). Since the two new symbols are distinct, every symbol of \(\theta\) belongs to \(L\). Replace each such symbol by its old-language preimage. This recursive restriction yields an actual \(L\)-formula \(\rho\) with \(i(\rho)=\theta\). Variables, connectives and quantifiers are unchanged, so the free context is still exactly the permitted \(\bar x\). Substitution of that identity into the interpolant's two consequences proves the assertion.</p></div>
+</section>
+
+<section id="beth-theorem" data-formal="bd-beth" data-kind="theorem">
+  <h2>Implicit first-order definitions are explicit</h2>
+  <div class="statement-box"><p><strong>Beth's definability theorem.</strong> For every first-order language \(L\), every finite arity \(n\ge0\), and every theory \(T\) of the language \(L_R\) obtained by adding one fresh \(n\)-ary relation \(R\), the following are equivalent: \(T\) implicitly defines \(R\); and there is an explicit old-language definition \(\rho(\bar x)\) of \(R\) modulo \(T\). No countability or consistency assumption on \(T\) is needed.</p></div>
+  <div class="proof"><p>The explicit-to-implicit direction is <a href="#explicit-gives-unique"></a>. Conversely assume implicit definition and choose the finite witnesses and \(\rho\) from the preceding lemmas. Take any \(N=M[r]\models T\) and tuple \(\bar a\). If \(\bar a\in r\), expand \(M\) to the doubled language by interpreting \(R\) as \(r\) and \(S\) as any relation, for instance the empty one. Because \(\Gamma\subseteq T\), its sentence \(A\) is true. The first interpolant consequence gives \(M\models\rho[\bar a]\).</p><p>For the reverse implication, suppose \(M\models\rho[\bar a]\). Expand \(M\) instead by interpreting \(S\) as \(r\) and \(R\) arbitrarily. Now \(B\) is true because \(\Delta\subseteq T\). The second interpolant consequence gives \(S(\bar a)\), which means \(\bar a\in r\). The old formula has the same truth in both expansions. Thus every \(T\)-model satisfies \(D_\rho\), as required. The construction of \(\rho\) preceded the choices of \(N\) and \(\bar a\), so this is one uniform definition.</p></div>
+</section>
+
+<section id="native-proof" data-formal="bd-beth-derives" data-kind="theorem">
+  <h2>The definition has a proof in the existing calculus</h2>
+  <p>The theory \(T\) implicitly defines \(R\) if and only if there is an old-language formula \(\rho(\bar x)\) with \(T\vdash D_\rho\), where \(\vdash\) is the corpus's existing first-order derivability relation.</p>
+  <div class="proof"><p>From implicit definition, Beth's theorem gives \(T\models D_\rho\); <a href="changing-languages#arbitrary-language-completeness">completeness in arbitrary signatures</a> yields the asserted derivation of the universal closure. Conversely, soundness turns such a derivation into an explicit semantic definition, which gives implicit definition. An inconsistent theory entails and proves every defining sentence, so it also meets both sides; no satisfiability premise has been concealed.</p></div>
+</section>
+
+<section id="identity-example" data-formal="bd-operation-language bd-identity-formula bd-identity-theory bd-identity-definition bd-identity-implicit" data-kind="lemma">
+  <h2>A named neutral element is already determined by the operation</h2>
+  <p>Let \(L\) have one binary function \(\cdot\), and let \(T\) say that \(R\) is nonempty and that each of its members is a two-sided identity:</p>
+  <div class="math-display">\[\exists x\,R(x),\qquad \forall x\,\bigl(R(x)\to\forall y\,(x\cdot y=y\land y\cdot x=y)\bigr).\]</div>
+  <p>Then \(T\) explicitly, and hence implicitly, defines \(R\) by the old formula \(\rho(x):=\forall y\,(x\cdot y=y\land y\cdot x=y)\). No associativity axiom is needed.</p>
+  <div class="proof"><p>The second axiom gives \(R(x)\to\rho(x)\). Choose \(e\) satisfying \(R(e)\), so \(e\) is a two-sided identity. If \(\rho(a)\), then \(a\cdot e=e\) because \(a\) is a left identity, and \(a\cdot e=a\) because \(e\) is a right identity. Hence \(a=e\), and \(R(a)\) follows from \(R(e)\). This proves the other implication uniformly in every model. It also shows directly why two expansions of the same operation cannot choose different nonempty sets of identities.</p></div>
+</section>
+
+<section id="no-existence" data-formal="bd-singleton-restriction bd-restricted-full-definition bd-restricted-full-implicit bd-singleton-expansion bd-two-element-no-expansion" data-kind="question">
+  <h2>Does uniqueness guarantee an expansion of every old structure?</h2>
+  <p>In the equality language, add a unary \(R\) and let \(T\) consist of \(\forall x\forall y\,x=y\) and \(\forall x\,R(x)\). Does \(T\) implicitly define \(R\)? Does every nonempty equality structure admit a \(T\)-expansion?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>It implicitly defines \(R\), explicitly by \(\rho(x):=(x=x)\). Every \(T\)-model interprets \(R\) as its whole domain. But a two-element equality structure has no \(T\)-expansion, since the first axiom already fails in its reduct. A singleton does have exactly one such expansion. Thus Beth's theorem converts an at-most-one condition to a formula; it does not turn it into existence. By contrast, <a href="definitional-extensions#unique-expansion">adding a defining axiom to an old theory</a> gives exactly one expansion of every model of that old theory.</p></div></details>
+</section>
+
+<section id="zero-and-empty" data-formal="bd-singleton-empty-full-witnesses bd-empty-theory-not-implicit bd-full-relation-definition" data-kind="question">
+  <h2>What do arity zero and an empty theory change?</h2>
+  <p>Let \(R\) be a fresh relation of any arity \(n\ge0\). Does the empty \(L_R\)-theory implicitly define it? What definition does the theory \(\{\forall\bar x\,R(\bar x)\}\) provide when \(n=0\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The empty theory does not implicitly define \(R\). On a singleton old structure, the empty relation and the full relation are different and both satisfy the empty theory. This remains true for \(n=0\), since the set of empty tuples is a singleton. The theory in the second question explicitly defines the relation by \(\top\); at arity zero its sole axiom is simply \(R\), and its defining sentence is \(R\leftrightarrow\top\). Thus none of the argument depends on there being a displayed input variable.</p></div></details>
+</section>

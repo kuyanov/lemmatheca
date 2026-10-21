@@ -1,0 +1,104 @@
+<section id="equivalent-formulas" data-formal="prop-semantic-equivalence baf-quotient baf-class baf-class-equality" data-kind="definition">
+  <h2>Identify formulas with the same truth conditions</h2>
+  <p>Fix a set \(P\) of atoms and let \(\mathrm{Form}(P)\) be the <a href="propositional-logic#formulas">finite propositional formulas</a>. Write \(A\sim B\) if \(v(A)=v(B)\) for every valuation \(v:P\to\{0,1\}\). This is <strong>semantic equivalence</strong>. It is reflexive, symmetric, and transitive, since equality of truth values has those properties. The <strong>Boolean algebra of formulas</strong> will have underlying set \(\mathbb B(P)=\mathrm{Form}(P)/{\sim}\). Write \([A]\) for the equivalence class of \(A\).</p>
+  <p>Here and below \(\top\) abbreviates \(\neg\bot\). The relation \(\sim\) concerns every valuation, not just those satisfying a particular theory. Thus \([A]\) is fixed before any premises are chosen.</p>
+</section>
+
+<section id="proof-equivalence" data-formal="baf-proof-equivalence" data-kind="lemma">
+  <h2>Equivalence can also be expressed by proofs</h2>
+  <p>For formulas \(A,B\), we have \(A\sim B\) exactly when both \(\{A\}\vdash B\) and \(\{B\}\vdash A\), in the <a href="propositional-proofs#deduction-rules">existing natural-deduction calculus</a>.</p>
+  <div class="proof"><p>By <a href="propositional-proofs#completeness">soundness and finite-premise completeness</a>, the two derivabilities are equivalent to \(v(A)=1\Rightarrow v(B)=1\) and \(v(B)=1\Rightarrow v(A)=1\), for every \(v\). Two truth values satisfy both implications exactly when they are equal. This proves both directions.</p></div>
+</section>
+
+<section id="quotient-operations" data-formal="baf-operations baf-order" data-kind="definition">
+  <h2>The connectives become operations on equivalence classes</h2>
+  <p>Define <strong>meet</strong>, <strong>join</strong>, <strong>complement</strong>, <strong>zero</strong>, and <strong>one</strong> on \(\mathbb B(P)\) by</p>
+  <div class="math-display">\[ [A]\wedge[B]=[A\wedge B],\qquad [A]\vee[B]=[A\vee B],\qquad \neg[A]=[\neg A]. \]</div>
+  <div class="math-display">\[ 0=[\bot],\qquad 1=[\top]. \]</div>
+  <p>These definitions are independent of representatives. For example, if \(A\sim A'\) and \(B\sim B'\), then for each \(v\), the truth value of \(A\wedge B\) is the conjunction of the same two truth values as that of \(A'\wedge B'\). Hence their classes agree. The argument for disjunction is identical with “or” in place of “and”; negation applies the same Boolean complement to equal truth values.</p>
+  <p>The <strong>quotient order</strong> is \([A]\leq[B]\) if every valuation making \(A\) true makes \(B\) true. Equivalent representatives give the same condition. Thus smaller elements impose stronger demands.</p>
+</section>
+
+<section id="boolean-laws" data-formal="baf-boolean-algebra baf-order-proof baf-implication" data-kind="theorem">
+  <h2>The quotient is a Boolean algebra</h2>
+  <div class="statement-box"><p>The operations above make \(\mathbb B(P)\) a <a href="boolean-algebras#boolean-operations">Boolean algebra</a>. Moreover, \([A]\leq[B]\) exactly when \(\{A\}\vdash B\), and implication has the algebraic expression \([A\to B]=\neg[A]\vee[B]\).</p></div>
+  <div class="proof">
+    <p>To verify an equality of classes it suffices to evaluate at an arbitrary \(v\). Under evaluation, meet, join, and complement become the usual operations on \(\{0,1\}\). Their truth tables give commutativity, associativity, absorption, both distributive laws, the zero and one laws, and</p>
+    <div class="math-display">\[ x\wedge\neg x=0,\qquad x\vee\neg x=1. \]</div>
+    <p>For the order, reflexivity and transitivity follow from implication of truth values. If \(x\leq y\) and \(y\leq x\), their representatives have equal truth values everywhere, so \(x=y\). The condition \(x\leq y\) is also equivalent to \(x\wedge y=x\). Conjunction is the greatest lower bound: it implies both factors, and any formula implying both factors implies their conjunction. Disjunction gives the least upper bound by the dual argument. This verifies the ordered-algebra definition as well as the identities.</p>
+    <p>Soundness and completeness give the asserted proof description of the order. Finally, \(v(A\to B)=v(\neg A\vee B)\) for each valuation by the implication truth table, giving the last identity.</p>
+  </div>
+</section>
+
+<section id="truth-sets" data-formal="baf-truth-set baf-truth-set-injective baf-truth-set-meet baf-truth-set-join baf-truth-set-complement baf-truth-set-zero baf-truth-set-one baf-order" data-kind="lemma">
+  <h2>Each class is its set of satisfying valuations</h2>
+  <p>The map \(\Theta:\mathbb B(P)\to\mathcal P(\{0,1\}^{P})\), given by \(\Theta([A])=\{v:v(A)=1\}\), is injective. It carries meet to intersection, join to union, complement to set complement, \(0\) to the empty set, and \(1\) to the whole valuation space. It also reflects inclusion: \(\Theta(x)\subseteq\Theta(y)\) exactly when \(x\leq y\).</p>
+  <div class="proof"><p>Equivalent formulas have the same satisfying valuations, so the map is well-defined. Conversely, equal truth sets mean that at each valuation either both formulas are true or both are false. Their truth values therefore agree and their classes are equal. Each operation assertion follows directly from its truth table. The inclusion assertion is the definition of the quotient order.</p></div>
+</section>
+
+<section id="finite-atoms" data-formal="baf-finite-truth-sets baf-finite-cardinality prop-canonical-dnf" data-kind="question">
+  <h2>How many classes are there on finitely many atoms?</h2>
+  <p>If \(P\) has \(n\) elements, how many elements does \(\mathbb B(P)\) have?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>There are \(2^n\) valuations, and every subset of this finite valuation space is the truth set of a formula. For a valuation \(v\), conjoin the literals \(p\) when \(v(p)=1\) and \(\neg p\) when \(v(p)=0\), over all \(p\in P\). This formula is true only at \(v\). Disjoin these formulas over the desired subset, using \(\bot\) for the empty disjunction. When \(P\) is empty, the one empty conjunction is \(\top\), so the argument still applies. The injectivity of \(\Theta\) now gives \(|\mathbb B(P)|=2^{2^n}\).</p></div>
+  </details>
+</section>
+
+<section id="closed-theories" data-formal="baf-closed-theory baf-consequence-closure baf-closed-membership baf-closure-closed baf-closed-consistency" data-kind="definition">
+  <h2>A closed theory contains all its consequences</h2>
+  <p>A <strong>deductively closed propositional theory</strong> is a set \(T\subseteq\mathrm{Form}(P)\) such that \(T\vdash A\) implies \(A\in T\). Here <a href="propositional-compactness#finite-proofs">derivability from a set</a> still means a finite proof using finitely many members of that set. Every member of \(T\) is derivable by the assumption rule, so closure says \(A\in T\) exactly when \(T\vdash A\).</p>
+  <p>For any set of premises \(\Gamma\), its <strong>consequence closure</strong> is \(\operatorname{Cn}(\Gamma)=\{A:\Gamma\vdash A\}\). This is closed: by <a href="propositional-compactness#strong-completeness">strong completeness</a>, it is equally the set of formulas true in every valuation satisfying \(\Gamma\). Any valuation satisfying \(\Gamma\) satisfies all those formulas, so a consequence of \(\operatorname{Cn}(\Gamma)\) is already a consequence of \(\Gamma\).</p>
+  <p>A theory is <strong>consistent</strong> if it does not derive \(\bot\). A closed theory is therefore consistent exactly when \(\bot\notin T\).</p>
+</section>
+
+<section id="theories-and-filters" data-formal="baf-theory-filter baf-filter-theory baf-filter-membership baf-filter-theory-closed baf-theory-inverse baf-filter-inverse baf-theory-inclusion baf-filter-inclusion baf-proper-consistent baf-closed-equivalence" data-kind="theorem">
+  <h2>Closed theories are exactly Boolean filters</h2>
+  <div class="statement-box"><p>Deductively closed theories and <a href="boolean-algebras#ideals-and-filters">filters</a> on \(\mathbb B(P)\) correspond by</p>
+    <div class="math-display">\[ F_T=\{[A]:A\in T\},\qquad T_F=\{A:[A]\in F\}. \]</div>
+    <p>These constructions are mutually inverse and preserve inclusion. A closed theory is consistent exactly when its corresponding filter is proper.</p>
+  </div>
+  <div class="proof">
+    <p>First let \(T\) be closed. If \(A\sim B\), then \(A\in T\) implies \(B\in T\): every model of \(T\) satisfies \(A\) and hence \(B\), so strong completeness and closure apply. Thus \(F_T\) does not depend on representatives. A tautology belongs to \(T\), so \(1\in F_T\). If \(A,B\in T\), every model of \(T\) satisfies \(A\wedge B\), so \([A]\wedge[B]\in F_T\). If \([A]\leq[B]\) and \(A\in T\), the same argument gives \(B\in T\). These are the filter conditions.</p>
+    <p>Conversely let \(F\) be a filter, and suppose \(T_F\vdash C\). The proof uses a finite list \(A_1,\ldots,A_k\) from \(T_F\). Let \(D=A_1\wedge\cdots\wedge A_k\), with \(D=\top\) when \(k=0\). Soundness gives \([D]\leq[C]\): any valuation satisfying \(D\) satisfies all used premises and hence \(C\). The filter contains \([D]\) by finite meet closure, and therefore contains \([C]\) by upward closure. Thus \(C\in T_F\).</p>
+    <p>Taking the inverse image and then the image of a filter returns it, since every class has a representative. For a closed theory, taking the image then inverse image returns the original theory by invariance under equivalence. Both constructions plainly preserve inclusion. Finally, \(0\in F_T\) exactly when \(\bot\in T\); for a closed theory this is exactly inconsistency.</p>
+  </div>
+</section>
+
+<section id="complete-theories" data-formal="baf-complete-theory baf-maximal-theory baf-all-formulas-inconsistent" data-kind="definition">
+  <h2>A complete consistent theory decides every formula</h2>
+  <p>A closed theory \(T\) is <strong>complete and consistent</strong> if it is consistent and, for each formula \(A\), either \(A\in T\) or \(\neg A\in T\). The alternatives cannot both hold, since together they derive \(\bot\). A <strong>maximal consistent closed theory</strong> is a consistent closed theory with no strictly larger consistent closed theory.</p>
+  <p>These definitions require consistency. The set of all formulas decides every formula but is not a complete consistent theory.</p>
+</section>
+
+<section id="ultrafilters-and-completeness" data-formal="baf-complete-maximal baf-complete-ultrafilter boolean-ultrafilter-characterizations" data-kind="theorem">
+  <h2>Ultrafilters correspond to complete consistent theories</h2>
+  <p>For a closed theory \(T\), the following are equivalent: \(T\) is complete and consistent; \(T\) is maximal consistent among closed theories; and \(F_T\) is an ultrafilter.</p>
+  <div class="proof"><p>The preceding correspondence preserves inclusion and properness, so maximal consistent closed theories correspond exactly to maximal proper filters. For a proper Boolean filter, <a href="boolean-algebras#boolean-ultrafilters">maximality is equivalent to deciding every complementary pair</a>: exactly one of \(x,\neg x\) belongs to it. Taking \(x=[A]\) translates this directly into exactly one of \(A,\neg A\) belonging to \(T\). This proves all three equivalences.</p></div>
+</section>
+
+<section id="valuations-and-theories" data-formal="baf-valuation-theory baf-valuation-theory-closed baf-valuation-theory-complete baf-theory-valuation baf-complete-membership baf-unique-valuation baf-valuation-filter baf-valuation-ultrafilter-bijection" data-kind="theorem">
+  <h2>Every complete consistent theory comes from one truth assignment</h2>
+  <div class="statement-box"><p>Each valuation \(v\) determines the complete consistent theory \(T_v=\{A:v(A)=1\}\). Conversely, each complete consistent closed theory \(T\) is \(T_v\) for exactly one valuation, namely</p>
+    <div class="math-display">\[ v_T(p)=1\quad\Longleftrightarrow\quad p\in T. \]</div>
+    <p>Consequently valuations correspond bijectively to ultrafilters on \(\mathbb B(P)\).</p>
+  </div>
+  <div class="proof">
+    <p>Soundness makes \(T_v\) closed. It cannot derive \(\bot\), because \(v(\bot)=0\). Each formula has exactly one truth value, so exactly one of \(A,\neg A\) is in \(T_v\).</p>
+    <p>Conversely define \(v_T\) by the displayed rule. We prove \(v_T(A)=1\) exactly when \(A\in T\), by structural induction. Atoms give the defining rule, and falsum is absent by consistency. For negation, completeness and consistency say \(\neg A\in T\) exactly when \(A\notin T\). For conjunction, \(A\wedge B\in T\) exactly when both \(A,B\in T\), using conjunction introduction and elimination. For disjunction, membership of either disjunct suffices. If neither belongs, completeness gives both negations in \(T\); these and \(A\vee B\) would derive a contradiction by disjunction elimination. Hence membership of the disjunction implies membership of a disjunct.</p>
+    <p>Finally \(A\to B\) is equivalent to \(\neg A\vee B\), so the implication case follows from invariance under equivalence and the two cases just proved. This completes the induction. Thus \(T=T_{v_T}\). Any valuation with this theory must agree with \(v_T\) on every atom, establishing uniqueness. Combining this with the filter correspondence proves the final assertion.</p>
+  </div>
+</section>
+
+<section id="extension-and-separation" data-formal="baf-consistent-extension baf-consequence-separation" data-kind="lemma">
+  <h2>Consistent premises extend to a complete theory</h2>
+  <p>Every consistent set of premises \(\Gamma\) is contained in a complete consistent closed theory. If \(\Gamma\nvdash A\), one can choose such a theory containing \(\Gamma\) and omitting \(A\).</p>
+  <div class="proof"><p>By <a href="propositional-compactness#consistency-satisfiability">consistency and satisfiability</a>, a consistent \(\Gamma\) has a satisfying valuation \(v\). Its theory \(T_v\) is the required extension. If \(\Gamma\nvdash A\), strong completeness says \(\Gamma\not\models A\). Thus there is a valuation satisfying \(\Gamma\) and making \(A\) false; its theory gives the strengthened conclusion. These arguments use the arbitrary-atom compactness theorem already established.</p></div>
+</section>
+
+<section id="infinite-truth-sets" data-formal="baf-infinite-singleton" data-kind="question">
+  <h2>Does every set of valuations represent one formula?</h2>
+  <p>Let \(P=\mathbb N\). Is the singleton consisting of the all-true valuation the truth set of a finite formula?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. A formula \(A\) contains only finitely many atoms. Choose \(p\) outside that finite set. If the all-true valuation satisfies \(A\), changing just \(p\) to false still satisfies \(A\), by <a href="propositional-logic#locality">locality of evaluation</a>. Its truth set therefore cannot be that singleton. Thus the representation \(\Theta\) is a Boolean algebra of subsets, but for infinitely many atoms it need not be the entire power set. The distinction is the same one appearing in <a href="boolean-algebras#full-power-set-question">Boolean representation by sets</a>.</p></div>
+  </details>
+</section>

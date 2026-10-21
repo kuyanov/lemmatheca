@@ -1,0 +1,10 @@
+{
+  "id": "herb-ground-reading-truth",
+  "description": "For every \\(L\\)-structure \\(M\\), relational matrix \\(A\\), and ground tuple \\(\\bar t\\), the ground reading is true under \\(b_M\\) exactly when \\(A\\) is true at the tuple of term values \\(\\bar t^M\\).",
+  "module": "Lemmatheca.HerbrandModels.HerbrandModels",
+  "declaration": "Lemmatheca.MathematicalLogic.HerbrandModels.groundReading_realize",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 158,
+  "signature": "Lemmatheca.MathematicalLogic.HerbrandModels.groundReading_realize.{u, v, z} {L : FirstOrder.Language} {M : Type z}\n  [L.Structure M] {n : ℕ} (φ : L.BoundedFormula Empty n)\n  (h : Lemmatheca.MathematicalLogic.HerbrandModels.RelationalQF φ)\n  (ts : Fin n → Lemmatheca.MathematicalLogic.HerbrandModels.GroundTerm L) :\n  Lemmatheca.MathematicalLogic.Propositional.eval (Lemmatheca.MathematicalLogic.HerbrandModels.modelValuation M)\n        (Lemmatheca.MathematicalLogic.HerbrandModels.groundReading φ ts) =\n      true ↔\n    φ.Realize Empty.elim fun i => FirstOrder.Language.Term.realize Empty.elim (ts i)"
+}

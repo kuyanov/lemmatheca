@@ -1,0 +1,91 @@
+<section id="unary-language" data-formal="mon-language mon-predicate mon-predicate-structure mon-profile mon-profile-class" data-kind="definition">
+  <h2>A finite unary language</h2>
+  <p>Fix a natural number \(k\). A <strong>monadic language</strong> in this entry has equality and exactly the unary relation symbols \(P_0,\ldots,P_{k-1}\), with no constants and no function symbols. Its <strong>structures</strong> consist of a nonempty set \(M\) and subsets \(P_i^M\subseteq M\). Terms are therefore variables. Formulas use equality, these predicates, Boolean connectives and quantifiers, with arbitrary nesting. We use the <a href="first-order-languages#scoped-formulas">usual first-order syntax</a>; in the primitive presentation the constructors are \(\bot\), equality, relation application, implication and universal quantification. Negation and the existential quantifier are their usual abbreviations.</p>
+  <p>For an element \(a\in M\), its <strong>predicate profile</strong> is the function \(\pi_M(a):\{0,\ldots,k-1\}\to\{0,1\}\) given by \(\pi_M(a)(i)=1\) exactly when \(a\in P_i^M\). Write \(M_p=\{a\in M:\pi_M(a)=p\}\) for the <strong>profile class</strong> associated with a profile \(p\). Empty classes are allowed. Different classes are disjoint and their union is \(M\).</p>
+</section>
+
+<section id="profile-count" data-formal="partition-relations-function-cardinality" data-kind="lemma">
+  <h2>There are only finitely many profiles</h2>
+  <p>A language with \(k\) unary predicates has exactly \(2^k\) possible profiles. In particular, a structure has at most \(2^k\) nonempty profile classes.</p>
+  <div class="proof"><p>A profile independently chooses either \(0\) or \(1\) at each of \(k\) coordinates. Multiplication gives \(2^k\) choices. Each element lies in the class indexed by its own profile, and no element lies in two different classes. When \(k=0\), the unique profile is the empty function, and its class is the whole domain.</p></div>
+</section>
+
+<section id="equality-needs-copies" data-formal="mon-equality-counterexample mon-many-copies-formula mon-many-copies-semantics mon-distinct-witnesses mon-many-copies-model eus-distinct-cardinality" data-kind="question">
+  <h2>Can one representative of each profile suffice?</h2>
+  <p>Consider a structure with two distinct elements, both satisfying the sole predicate \(P\). Does keeping just one of them preserve every monadic sentence?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The sentence \(\exists x\,\exists y\;(P(x)\land P(y)\land x\ne y)\) holds in the two-element structure and fails in its singleton substructure. Both structures have exactly the same realized profile, so the existence of a profile alone does not record the multiplicity detected by equality. More generally, for each positive integer \(s\), the sentence</p>
+  <div class="math-display">\[ \exists x_1\cdots\exists x_s\;\Bigl(\bigwedge_{i=1}^{s}P(x_i)\land\bigwedge_{1\le i&lt;j\le s}x_i\ne x_j\Bigr) \]</div>
+  <p>holds exactly when at least \(s\) elements satisfy \(P\). The forward direction uses the displayed pairwise inequalities; for the reverse direction, choose \(s\) distinct elements of \(P^M\) as witnesses.</p></div></details>
+</section>
+
+<section id="quantifier-budget" data-formal="mon-quantifier-count mon-negation-count mon-existential-count mon-at-least mon-capacities" data-kind="definition">
+  <h2>A finite quantifier budget</h2>
+  <p>The <strong>quantifier count</strong> \(q(\varphi)\) counts all quantifier occurrences in the primitive syntax. Its defining recursion is</p>
+  <div class="math-display">\[ q(\bot)=q(t=u)=q(P_i(t))=0,\qquad q(\varphi\to\psi)=q(\varphi)+q(\psi). \]</div>
+  <div class="math-display">\[ q(\forall x\,\varphi)=q(\varphi)+1. \]</div>
+  <p>Consequently \(q(\neg\varphi)=q(\varphi)\) and \(q(\exists x\,\varphi)=q(\varphi)+1\). The count is computed by reading a finite syntax tree; no conversion to prenex form is required. It can exceed the maximum number of nested quantifiers, which is harmless for the bound below.</p>
+  <p>Fix a nonnegative integer \(r\). Two structures \(M,N\) have <strong>matching profile capacities at \(r\)</strong> if, for every profile \(p\), either \(M_p\) and \(N_p\) have the same finite size less than \(r\), or both contain at least \(r\) elements. “At least \(r\)” means that there is an injective map from \(\{0,\ldots,r-1\}\) into the class, so it includes infinite classes. In particular, at \(r=0\) the capacity condition imposes no restriction.</p>
+</section>
+
+<section id="assignment-matching" data-formal="mon-matching-assignment mon-assignment-bijection" data-kind="definition">
+  <h2>What an assignment must preserve</h2>
+  <p>For tuples \(a=(a_0,\ldots,a_{n-1})\in M^n\) and \(b=(b_0,\ldots,b_{n-1})\in N^n\), a <strong>matching assignment</strong> means that corresponding elements have the same profiles and the tuples have the same equality pattern:</p>
+  <div class="math-display">\[ \pi_M(a_i)=\pi_N(b_i),\qquad a_i=a_j\ \Longleftrightarrow\ b_i=b_j\quad(i,j&lt;n). \]</div>
+  <p>Repeated coordinates are allowed. These conditions give a well-defined bijection between the distinct elements used by the tuples: send \(a_i\) to \(b_i\). Equality preservation makes the map well-defined and injective; every used element of \(b\) occurs as some \(b_i\), so it is surjective. The bijection preserves each profile. Thus the number of already used elements of any given profile is the same on both sides and is at most \(n\).</p>
+</section>
+
+<section id="witness-extension" data-formal="mon-witness-extension" data-kind="lemma">
+  <h2>Extending a matching assignment</h2>
+  <p>Suppose \(M,N\) have matching profile capacities at \(r\), the tuples \(a\in M^n,b\in N^n\) match, and \(n&lt;r\). Every \(x\in M\) has a corresponding \(y\in N\) such that the extended tuples \((a,x)\) and \((b,y)\) match. Conversely, every \(y\in N\) has such an \(x\in M\).</p>
+  <div class="proof"><p>First choose \(x\in M\). If \(x=a_i\) for some \(i\), put \(y=b_i\). The equality pattern ensures that this choice is independent of which occurrence of \(x\) was selected. For every \(j\), one has \(x=a_j\) exactly when \(y=b_j\), and the profiles agree.</p>
+  <p>Otherwise \(x\) is fresh: it differs from every \(a_i\). Let \(p=\pi_M(x)\). If both profile classes contain at least \(r\) elements, fewer than \(r\) points of \(N_p\) have been used, because at most \(n&lt;r\) coordinates are available. Choose \(y\in N_p\) outside the used tuple. If the classes instead have the same finite size \(s&lt;r\), let \(u\) be the common number of used points of profile \(p\). The fresh point \(x\) shows \(u&lt;s\), so \(N_p\) also has an unused point \(y\). Either choice supplies the required profile and all the required inequalities. All old comparisons remain true.</p>
+  <p>For the converse, start with \(y\). A reused \(b_i\) is matched by \(a_i\). A fresh point is matched using the same two cases with \(M,N\) interchanged. This proves both directions; choosing arbitrary representatives without excluding already assigned points would not suffice.</p></div>
+</section>
+
+<section id="truth-invariance" data-formal="mon-truth-invariance" data-kind="theorem">
+  <h2>Bounded formulas cannot distinguish matching capacities</h2>
+  <p>Suppose \(M,N\) have matching profile capacities at \(r\), and \(a\in M^n,b\in N^n\) are matching assignments for the free variables of a formula \(\varphi\). If \(n+q(\varphi)\le r\), then</p>
+  <div class="math-display">\[ M\models\varphi[a]\ \Longleftrightarrow\ N\models\varphi[b]. \]</div>
+  <div class="proof"><p>Induct on the actual formula, with the tuple length and both assignments as parameters. Terms are variables. An equality atom has the same truth value by equality-pattern preservation. A predicate atom has the same truth value by profile preservation, and falsity is false in both structures.</p>
+  <p>For \(\psi\to\theta\), the budget implies both \(n+q(\psi)\le r\) and \(n+q(\theta)\le r\), since the counts are nonnegative and add. The induction hypotheses identify the two antecedent truth values and the two consequent truth values. An implication is false exactly when its antecedent is true and its consequent false, so its truth agrees as well.</p>
+  <p>For \(\forall x\,\psi\), the budget gives \(n&lt;r\) and \((n+1)+q(\psi)\le r\). Suppose first that \(M\models\forall x\,\psi[a]\). For any \(y\in N\), the reverse witness extension supplies \(x\in M\) for which \((a,x)\) matches \((b,y)\). The universal assumption gives \(M\models\psi[a,x]\), and the induction hypothesis gives \(N\models\psi[b,y]\). Since \(y\) was arbitrary, the universal formula holds in \(N\). The forward witness extension proves the converse with the structures interchanged. Negation and existential quantification follow from their definitions; equivalently, an existential witness is transported in the forward direction and then in the reverse direction. This completes the structural induction, including arbitrary alternations.</p></div>
+</section>
+
+<section id="capped-representatives" data-formal="eus-induced-structure mon-capped mon-capped-representatives" data-kind="lemma">
+  <h2>Choosing capped representatives</h2>
+  <p>Let \(M\) be a nonempty monadic structure and let \(r\ge1\). There is a nonempty finite subset \(D\subseteq M\) such that, for each profile \(p\), the set \(D\cap M_p\) contains all elements of \(M_p\) when that class has fewer than \(r\) elements, and exactly \(r\) elements otherwise. In particular,</p>
+  <div class="math-display">\[ 1\le |D|\le r\,2^k. \]</div>
+  <div class="proof"><p>For each of the finitely many profiles, choose its entire class if its size is less than \(r\); otherwise choose \(r\) distinct elements of the class. This finite choice can be constructed one point at a time: start empty, repeatedly add an element outside the set already chosen, and stop either when none remains or after \(r\) additions. Take \(D\) to be the union of the chosen sets. The profile classes are disjoint, so at most \(r\) points are retained from each of \(2^k\) classes. Choose an element \(a\in M\). Its class is nonempty and \(r\ge1\), so that class contributes at least one point to \(D\).</p>
+  <p>Give \(D\) the induced unary predicates \(P_i^D=P_i^M\cap D\), with ordinary equality. No closure under constants or functions is needed. An element of \(D\) has precisely its original profile. Hence \(M,D\) have matching profile capacities at \(r\): small classes have identical sizes, and all other classes have at least \(r\) elements in each structure.</p></div>
+</section>
+
+<section id="small-model" data-formal="mon-bound mon-top-bound mon-small-submodel" data-kind="theorem">
+  <h2>A finite bound for every monadic sentence</h2>
+  <div class="statement-box"><p>Let \(\varphi\) be a sentence in a language with \(k\) unary predicates, equality, and no constants or functions. If \(\varphi\) has a model, it has a nonempty finite model of size at most</p>
+  <div class="math-display">\[ B(\varphi)=\max\{1,q(\varphi)\}\,2^k. \]</div></div>
+  <div class="proof"><p>Take a model \(M\) and put \(r=\max\{1,q(\varphi)\}\). Choose the capped representative substructure \(D\). Sentences have an empty assignment, and the empty tuples match. Since \(0+q(\varphi)\le r\), truth invariance gives \(D\models\varphi\). The preceding bound gives the stated size. This also explains the factor \(1\) in the maximum: a true sentence with no quantifiers still requires a nonempty domain. For example, \(\top\) with \(k=0\) has a singleton model, whereas the expression \(q(\top)2^0\) would incorrectly give zero.</p></div>
+</section>
+
+<section id="finite-search" data-formal="eus-table eus-table-structure eus-table-count eus-table-enumeration eus-evaluation mon-decision-procedure cl-formula-symbol-support cl-finite-language-factorization skolem-reduct-invariance" data-kind="definition">
+  <h2>An explicit finite truth-table search</h2>
+  <p>For \(d\ge1\), a <strong>unary structure table</strong> on \(\{0,\ldots,d-1\}\) assigns a bit \(T(i,a)\) to each \(i&lt;k,a&lt;d\). The associated predicate holds exactly when this bit is \(1\). There are \(2^{kd}\) tables, obtained by listing the \(kd\) cells in index order and trying both bits at each cell. This is the unary, constant-free case of the <a href="existential-universal-sentences#finite-tables">finite structure tables</a>.</p>
+  <p>The <strong>finite evaluator</strong> \(E(T,\psi,v)\) takes an actual formula and an assignment into this finite domain. It returns false on \(\bot\), compares assigned values for equality, reads \(T(i,v(x))\) for \(P_i(x)\), and uses the Boolean implication operation for implication. For a universal formula it returns the conjunction, over all \(a&lt;d\), of \(E(T,\psi,(v,a))\). Existential formulas are evaluated through their defining abbreviation, or by the corresponding finite disjunction. Every recursive call uses a proper subformula, and every quantifier loop has \(d\) steps, so this evaluation terminates.</p>
+  <p>Define the <strong>satisfiability procedure</strong> \(\operatorname{Sat}(\varphi)\) by computing \(B(\varphi)\), listing every \(d=1,\ldots,B(\varphi)\), listing every table of that size, and returning true as soon as \(E(T,\varphi,())\) returns true. If every listed table fails, return false. This is a procedure on finite formula syntax: its input is not an assumed truth oracle or a choice of a model. Any sentence in a larger, effectively presented unary vocabulary with decidable equality of predicate symbols uses only finitely many predicate symbols; listing the symbols appearing in its syntax and replacing them by \(P_0,\ldots,P_{k-1}\) supplies such an input and preserves truth by <a href="changing-languages#satisfaction-translation">renaming symbols</a>.</p>
+</section>
+
+<section id="decision-correctness" data-formal="mon-bound-positive mon-bounded-table-model mon-validity-procedure mon-decision-sound mon-decision-complete mon-decision-correct mon-validity-correct eus-evaluation-correct fo-sentence-isomorphism-invariance" data-kind="theorem">
+  <h2>Satisfiability and validity are decidable</h2>
+  <div class="statement-box"><p>For every sentence \(\varphi\) in the stated finite monadic language, the finite search terminates and satisfies</p>
+  <div class="math-display">\[ \operatorname{Sat}(\varphi)=\mathrm{true}\ \Longleftrightarrow\ \varphi\text{ has a model}. \]</div>
+  <p>Validity is decided by returning the negation of \(\operatorname{Sat}(\neg\varphi)\).</p></div>
+  <div class="proof"><p>The quantifier count is computed by structural recursion, and \(B(\varphi)\) is a positive integer. There are finitely many domain sizes, finitely many tables for each size, and the evaluator terminates on every table. Its correctness follows by structural induction: the atomic and Boolean clauses are exactly the semantic clauses, while quantifier evaluation visits each member of the domain exactly as required by universal or existential satisfaction.</p>
+  <p>If the procedure returns true, the successful table itself describes a nonempty finite model, by evaluator correctness. Conversely, if \(\varphi\) has a model, the small-model theorem gives a finite model with some size \(d\le B(\varphi)\). Choose a bijection from its domain to \(\{0,\ldots,d-1\}\) and transport each unary predicate along it. Equality and predicate truth are preserved, and a structural induction transports all formula truth, since the bijection also transports every quantified choice. The resulting table occurs in the enumeration and its evaluator returns true. Finally, \(\varphi\) is valid exactly when no model satisfies \(\neg\varphi\), which proves the validity claim.</p></div>
+</section>
+
+<section id="bounds-and-boundaries" data-formal="mon-one-witness-formula mon-one-witness-semantics mon-one-witness-bound mon-singleton-witness mon-opposite-formula mon-opposite-semantics mon-opposite-model eus-distinct-cardinality eus-natural-strict-order-model eus-no-finite-strict-successors" data-kind="question">
+  <h2>What does the bound measure?</h2>
+  <p>Is \(B(\varphi)\) always the size of a smallest model? How does this result compare with the existential–universal fragment, and what fails if a binary relation is allowed?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The bound need not be sharp. For \(\exists x\,P(x)\), one has \(k=1\), \(q=1\), and \(B=2\), but a singleton satisfying \(P\) is already a model. By contrast, the sentence requiring \(s\) distinct \(P\)-elements above needs at least \(s\) points of one profile. The bound controls a sufficient search space, not an exact minimum.</p>
+  <p>The <a href="existential-universal-sentences#small-model">existential–universal bound</a> allows relation symbols of any finite arity but restricts sentences to a block of existential quantifiers followed by a block of universal quantifiers with quantifier-free matrix. Here the unary restriction permits arbitrary quantifier alternation. For example, in the one-predicate language, \(\forall x\,\exists y\;(P(x)\leftrightarrow\neg P(y))\) has a two-element model with opposite profiles. It says that every element has an element of the opposite profile; the two witnesses may be reused as \(x\) varies.</p>
+  <p>With a binary relation \(R\), a conjunction can instead say that \(R\) is irreflexive and transitive and that \(\forall x\,\exists y\;R(x,y)\). The natural numbers with their strict order satisfy it. In any finite model, start at an element and repeatedly choose an \(R\)-successor. Some element eventually repeats. Transitivity turns the resulting nonempty cycle into \(R(a,a)\), contradicting irreflexivity. Thus this binary sentence has models but no finite ones, as in the <a href="existential-universal-sentences#boundary">quantifier-order counterexample</a>. Unary profiles cannot record such relations between different objects.</p></div></details>
+</section>

@@ -1,0 +1,107 @@
+<section id="fresh-names" data-formal="tseitin-expanded-atoms tseitin-old-atom tseitin-fresh-atom tseitin-restrict-valuation tseitin-subformula-list tseitin-tree-size tseitin-tags-fresh tseitin-tree-size-recursions" data-kind="definition">
+  <h2>Names for the values of subformulas</h2>
+  <p>Let \(P\) be a set of atoms, and use the <a href="propositional-logic#formulas">usual finite formulas</a> with constructors \(p,\bot,\neg B,B\land C,B\lor C,B\to C\). A <strong>subformula list</strong> \(S(A)\) records the whole formula followed by its children's subformula lists: \(S(p)=[p]\), \(S(\bot)=[\bot]\), \(S(\neg B)=[\neg B]\mathbin{+\!+}S(B)\), and \(S(B\mathbin\circ C)=[B\mathbin\circ C]\mathbin{+\!+}S(B)\mathbin{+\!+}S(C)\) for each binary connective \(\circ\). Here \(+\!+\) denotes list concatenation. Repeated occurrences remain in the list.</p>
+  <p>The <strong>tree size</strong> is \(N(A):=|S(A)|\). Thus leaves have size one, negation adds one to its child's size, and a binary connective has size \(1+N(B)+N(C)\). This counts occurrences, including repeated copies of an identical subformula.</p>
+  <p>Our <strong>expanded atom set</strong> is the disjoint union \(P^+:=P\sqcup\operatorname{Form}(P)\). Write \(\bar p\) for the first copy of \(p\), and \(d_B\) for the second copy of a formula \(B\). These tags give \(\bar p\ne d_B\) and \(d_B=d_C\) exactly when \(B=C\). In particular, no assumption that \(P\) contains unused atoms is needed. Identical subformulas share a name, even when they occur at different places.</p>
+  <p>For an expanded valuation \(w:P^+\to\{0,1\}\), its <strong>restriction</strong> is \(w^-(p):=w(\bar p)\). The intended meaning of \(d_B\) is the truth value \(\llbracket B\rrbracket_{w^-}\), using the <a href="propositional-logic#valuations">ordinary truth tables</a>.</p>
+</section>
+
+<section id="gate-clauses" data-formal="tseitin-gate-clauses tseitin-gate-condition tseitin-gate-bounds" data-kind="definition">
+  <h2>A few clauses describe each connective</h2>
+  <p>A <strong>gate clause list</strong> \(G(B)\) imposes the defining truth condition on \(d_B\). In the table, each comma separates clauses, and each parenthesis is a <a href="propositional-normal-forms#normal-form-definitions">disjunction of literals</a>. The letters \(x,y,z\) in the binary rows stand for \(d_B,d_C,d_{B\mathbin\circ C}\), respectively.</p>
+  <table id="gate-table">
+    <caption>Clauses for the six formula constructors</caption>
+    <thead><tr><th scope="col">Subformula</th><th scope="col">Gate clauses</th></tr></thead>
+    <tbody>
+      <tr><td>\(p\), with \(z=d_p\)</td><td>\((\neg z\lor\bar p),\ (z\lor\neg\bar p)\)</td></tr>
+      <tr><td>\(\bot\), with \(z=d_\bot\)</td><td>\((\neg z)\)</td></tr>
+      <tr><td>\(\neg B\), with \(x=d_B,z=d_{\neg B}\)</td><td>\((\neg z\lor\neg x),\ (z\lor x)\)</td></tr>
+      <tr><td>\(B\land C\)</td><td>\((\neg z\lor x),\ (\neg z\lor y),\ (z\lor\neg x\lor\neg y)\)</td></tr>
+      <tr><td>\(B\lor C\)</td><td>\((z\lor\neg x),\ (z\lor\neg y),\ (\neg z\lor x\lor y)\)</td></tr>
+      <tr><td>\(B\to C\)</td><td>\((z\lor x),\ (z\lor\neg y),\ (\neg z\lor\neg x\lor y)\)</td></tr>
+    </tbody>
+  </table>
+  <p>These are lists, so a repeated literal or clause is retained. Each row has at most three clauses and seven literal occurrences. A formula's <strong>local gate condition</strong> says that its name has the correct value in terms of the old atom or its immediate children's names: respectively \(w(d_p)=w(\bar p)\), \(w(d_\bot)=0\), \(w(d_{\neg B})=1-w(d_B)\), or the displayed connective's truth function of \(w(d_B),w(d_C)\).</p>
+</section>
+
+<section id="gate-correctness" data-formal="tseitin-gate-correctness" data-kind="lemma">
+  <h2>The clauses enforce exactly the gate's truth table</h2>
+  <p>For every subformula \(B\) and expanded valuation \(w\), all clauses of \(G(B)\) are true exactly when the local gate condition for \(B\) holds.</p>
+  <div class="proof">
+    <p>The atom row says both that \(z\) implies \(\bar p\) and that \(\bar p\) implies \(z\), hence their values agree. The falsity row forces \(z=0\). For negation, the first clause forbids \(z=x=1\), and the second forbids \(z=x=0\). The two remaining possibilities are precisely \(z=1-x\).</p>
+    <p>For conjunction, if \(z=1\), the first two clauses force \(x=y=1\). If \(x=y=1\), the third forces \(z=1\). When either input is zero, the corresponding first or second clause forces \(z=0\); the third is then already true. Thus exactly \(z=x\land y\) is allowed. For disjunction, the first two clauses force \(z=1\) whenever either input is one, while the third forces \(z=0\) when both inputs are zero. For implication the inputs yielding truth are \(x=0\) or \(y=1\), and the first two clauses force \(z=1\) in those cases. When \(x=1,y=0\), the third forces \(z=0\). These arguments also show that setting the output to its truth-table value satisfies every clause.</p>
+  </div>
+</section>
+
+<section id="encoding" data-formal="tseitin-definition-clauses tseitin-encoding-clauses tseitin-encoding-formula tseitin-clause-list-models tseitin-list-formula-bridge tseitin-definitions-flat-map tseitin-encoding-cnf res-list-cnf-bridge" data-kind="definition">
+  <h2>Collect the definitions and assert the root</h2>
+  <p>The <strong>definition clause list</strong> \(D(A)\) consists of the gate lists for all occurrences in \(S(A)\), in that order. Equivalently, it is given recursively by \(D(p)=G(p)\), \(D(\bot)=G(\bot)\),</p>
+  <div class="math-display">\[D(\neg B)=G(\neg B)\mathbin{+\!+}D(B),\]</div>
+  <div class="math-display">\[D(B\mathbin\circ C)=G(B\mathbin\circ C)\mathbin{+\!+}D(B)\mathbin{+\!+}D(C).\]</div>
+  <p>The <strong>Tseitin encoding</strong> \(T(A)\) is the CNF whose clause list is \([(d_A)]\mathbin{+\!+}D(A)\). The first unit clause requires the whole formula to be true. A valuation satisfies a clause list when it satisfies every listed clause. An empty clause is false, while an empty clause list is true. Replacing each list of literals by its finite set, and then taking the finite set of clauses, preserves this satisfaction condition: a disjunction needs one true member, and a conjunction needs all members true. Thus the encoding can also be read as the <a href="resolution#clauses">finite clause sets</a> used for resolution.</p>
+  <p>The lists here are produced by the defining recursion on the actual input formula. In particular, repeated equal subformulas contribute repeated gate lists even though their names agree.</p>
+</section>
+
+<section id="definition-models" data-formal="tseitin-definitions-models" data-kind="lemma">
+  <h2>The definitions determine every used name</h2>
+  <p>An expanded valuation \(w\) satisfies \(D(A)\) if and only if</p>
+  <div class="math-display">\[w(d_B)=\llbracket B\rrbracket_{w^-}\quad\text{for every }B\in S(A).\]</div>
+  <div class="proof">
+    <p>Induct on \(A\). At an atom or falsity, the assertion is exactly <a href="#gate-correctness">the gate lemma</a>. At \(\neg C\), satisfying \(D(A)\) means satisfying its own gate and \(D(C)\). The induction hypothesis determines all names in \(S(C)\), including \(d_C\). Its gate then determines \(d_A\) as the negation of the correct child value, which is \(\llbracket A\rrbracket_{w^-}\). Conversely, correct values on \(S(A)\) give correct values on \(S(C)\) and the right output for the root gate, so they satisfy both parts of \(D(A)\).</p>
+    <p>At a binary connective, the induction hypotheses determine the two child values and all their descendants. Its gate equates the root name with precisely the truth function used to evaluate that connective. Conversely, correctness on the whole subformula list supplies correctness on each child list and satisfies the root gate. Concatenation requires all three parts. Equal subformulas cause no conflict, because evaluating the same formula under the same restricted valuation gives the same value.</p>
+  </div>
+</section>
+
+<section id="extension-restriction" data-formal="tseitin-canonical-extension tseitin-restriction-extension tseitin-extend-definitions tseitin-extension-correctness tseitin-restriction-correctness tseitin-equisatisfiability" data-kind="theorem">
+  <h2>Satisfying valuations extend and restrict</h2>
+  <div class="statement-box">
+    <p>For every original valuation \(v:P\to\{0,1\}\), define its <strong>canonical extension</strong> by \(\widehat v(\bar p)=v(p)\) and \(\widehat v(d_B)=\llbracket B\rrbracket_v\). Then \(\widehat v^-=v\), and</p>
+    <div class="math-display">\[\widehat v\models T(A)\quad\Longleftrightarrow\quad\llbracket A\rrbracket_v=1.\]</div>
+    <p>Conversely, for every expanded valuation \(w\),</p>
+    <div class="math-display">\[w\models T(A)\quad\Longleftrightarrow\quad w\models D(A)\ \text{ and }\ \llbracket A\rrbracket_{w^-}=1.\]</div>
+    <p>In particular, \(T(A)\) is satisfiable if and only if \(A\) is satisfiable.</p>
+  </div>
+  <div class="proof">
+    <p>The restriction identity follows from the first defining clause of \(\widehat v\). Its second clause gives correct values on every member of \(S(A)\), so <a href="#definition-models"></a> proves \(\widehat v\models D(A)\). The remaining unit clause says \(\widehat v(d_A)=1\), which is exactly \(\llbracket A\rrbracket_v=1\).</p>
+    <p>For arbitrary \(w\), satisfaction of \(T(A)\) means \(w\models D(A)\) and \(w(d_A)=1\). The whole formula belongs to \(S(A)\), so the definition-model lemma replaces this last value by \(\llbracket A\rrbracket_{w^-}\). Conversely these two conditions make all the clauses true. A satisfying original valuation therefore supplies the specified satisfying extension; a satisfying expanded valuation supplies its specified original restriction. This proves both directions of satisfiability preservation.</p>
+  </div>
+</section>
+
+<section id="unique-used-values" data-formal="tseitin-used-values-unique tseitin-unused-values-irrelevant" data-kind="lemma">
+  <h2>Only used names have forced values</h2>
+  <p>If \(w\) and \(u\) satisfy \(D(A)\) and have the same restriction \(v\), then \(w(d_B)=u(d_B)=\llbracket B\rrbracket_v\) for every \(B\in S(A)\). There is no condition on names of formulas outside \(S(A)\).</p>
+  <div class="proof">
+    <p>The equality follows twice from <a href="#definition-models"></a>. Every literal in \(D(A)\) refers either to an original atom or to a name belonging to \(S(A)\): a root gate mentions only itself, its immediate children, and the old atom in an atom gate. The same holds for the extra root clause. Changing a name outside \(S(A)\) therefore changes no literal value. Consequently arbitrary choices on unused names preserve satisfaction. Uniqueness of an entire expanded valuation is not asserted.</p>
+  </div>
+</section>
+
+<section id="linear-size" data-formal="tseitin-literal-count tseitin-gate-bounds tseitin-definitions-bounds tseitin-linear-bounds" data-kind="theorem">
+  <h2>A linear bound on clauses and literal occurrences</h2>
+  <div class="statement-box">
+    <p>Let \(c(A)\) be the number of clauses in the list defining \(T(A)\), and let \(\ell(A)\) be the sum of their lengths. Then</p>
+    <div class="math-display">\[c(A)\le 3N(A)+1,\qquad \ell(A)\le 7N(A)+1.\]</div>
+    <p>Every clause has at most three literals. These bounds count repeated clauses and literals; removing repetitions only decreases the counts.</p>
+  </div>
+  <div class="proof">
+    <p>For the definition lists alone, prove the bounds \(|D(A)|\le3N(A)\) and \(\sum_{C\in D(A)}|C|\le7N(A)\) simultaneously by induction. An atom contributes two clauses of length two; falsity contributes one clause of length one. Negation contributes two clauses with four literal occurrences, in addition to its child's list. Each binary gate contributes three clauses with seven literal occurrences, in addition to the two child lists. Concatenation adds the clause counts and the sums of lengths, while the node count adds one for the gate. Thus the induction hypotheses give each bound. The asserted root contributes one clause with one literal, proving the displayed inequalities. The gate table and the root clause also prove the width bound.</p>
+    <p>These are bounds on the number of clauses and literal occurrences. They do not count the written lengths of formula-indexed names or assert an implementation running time. For a fixed input tree, the clause and literal bounds depend linearly on its size, rather than on the number of rows used by the <a href="propositional-normal-forms#normal-form-theorem">truth-table construction</a>. The price is the expanded atom set and preservation of satisfiability through extension and restriction.</p>
+  </div>
+</section>
+
+<section id="worked-encoding" data-formal="tseitin-sample-encoding" data-kind="question">
+  <h2>What do the names say for a short formula?</h2>
+  <p>For \(A=p\lor(q\land r)\), take \(a=d_p,b=d_q,c=d_r,e=d_{q\land r},z=d_A\). How many clauses and literal occurrences does \(T(A)\) have? What is its canonical extension when \(v(p)=0,v(q)=v(r)=1\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The three atom gates each contribute two clauses of length two. The conjunction and disjunction gates each contribute three clauses of total length seven. The root adds one unit clause. Hence there are \(6+3+3+1=13\) clauses and \(12+7+7+1=27\) literal occurrences. The tree has five nodes, so the general bounds give \(16\) and \(36\), respectively.</p>
+    <p>The canonical values are \(a=0,b=c=1,e=1,z=1\). For example, the conjunction clauses are \((\neg e\lor b),(\neg e\lor c),(e\lor\neg b\lor\neg c)\), and the disjunction clauses are \((z\lor\neg a),(z\lor\neg e),(\neg z\lor a\lor e)\). Substituting the listed values satisfies each clause, as well as the three atom gates and the root unit clause. Thus this extension satisfies \(T(A)\).</p>
+  </div></details>
+</section>
+
+<section id="definitions-without-root" data-formal="tseitin-definitions-satisfiable tseitin-falsum-encoding tseitin-not-equivalent" data-kind="question">
+  <h2>Why assert the root, and why not claim equivalence?</h2>
+  <p>Is \(D(A)\) always satisfiable? Can \(T(A)\) have the same truth value as the original formula, read on the old copy of its atoms, under every expanded valuation?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>For every original valuation, the canonical extension satisfies all definitions, whether or not \(A\) is true. Such a valuation always exists, for instance the constantly zero valuation. Thus \(D(A)\) is always satisfiable. When \(A=\bot\), its definition is \((\neg d_\bot)\); the asserted root \((d_\bot)\) creates the required contradiction.</p>
+    <p>Equivalence under arbitrary expanded valuations fails already for \(A=p\). Set \(w(\bar p)=1\) and set every new name to zero. Then the old formula is true but the unit clause \((d_p)\) is false, so \(T(p)\) is false. The theorem instead states equivalence for the specified canonical extension, and correct restriction of every satisfying expanded valuation. This is exactly what is needed for a satisfiability test.</p>
+  </div></details>
+</section>

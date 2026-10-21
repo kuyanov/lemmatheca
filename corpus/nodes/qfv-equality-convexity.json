@@ -1,0 +1,14 @@
+{
+  "id": "qfv-equality-convexity",
+  "module": "Lemmatheca.QuantifierFreeValidity.Convexity",
+  "declaration": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.equality_convexity",
+  "description": "In the fixed ambient model universe, a finite set \\(E\\) of positive ground equations entails a finite disjunction of ground equalities if and only if it entails at least one disjunct. The empty disjunction is falsity.",
+  "dependencies": [
+    "qfv-disjunction-truth",
+    "geq-term-value",
+    "geq-closure-sound"
+  ],
+  "verified": true,
+  "declaration_line": 39,
+  "signature": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.equality_convexity.{u, v} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] (E : Finset (Lemmatheca.MathematicalLogic.GroundEquality.TermPair L))\n  (ps : List (Lemmatheca.MathematicalLogic.GroundEquality.TermPair L)) :\n  (∀ (M : Type u) (inst : L.Structure M),\n      Nonempty M →\n        Lemmatheca.MathematicalLogic.QuantifierFreeValidity.EquationsHold E M →\n          M ⊨ Lemmatheca.MathematicalLogic.QuantifierFreeValidity.equationDisjunction ps) ↔\n    ∃ p ∈ ps, Lemmatheca.MathematicalLogic.QuantifierFreeValidity.EquationConsequence E p"
+}

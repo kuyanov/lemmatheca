@@ -1,0 +1,96 @@
+<section id="interpolants" data-formal="ci-interpolant cl-formula-symbol-support" data-kind="definition">
+  <h2>Ask which vocabulary carries a consequence</h2>
+  <p>Let \(\varphi,\psi\) be sentences of a first-order language \(L\). Write \(\operatorname{sym}(\varphi)\) for the finite set of function and relation symbols actually occurring in \(\varphi\), retaining their kinds and arities. Equality is logical and is not in this set. All structures have nonempty domains, and \(\varphi\models\psi\) means that every \(L\)-structure satisfying \(\varphi\) satisfies \(\psi\).</p>
+  <p>An <strong>interpolant</strong> for this consequence is a sentence \(\theta\) such that</p>
+  <div class="math-display">\[\varphi\models\theta,\qquad\theta\models\psi,\qquad \operatorname{sym}(\theta)\subseteq\operatorname{sym}(\varphi)\cap\operatorname{sym}(\psi).\]</div>
+  <p>The last condition is essential: taking \(\theta=\varphi\) always meets the first two conditions, but can retain symbols absent from \(\psi\). The <a href="changing-languages#finite-symbol-support">symbol-support definition</a> applies to the actual syntax, not just to symbols on which a particular structure's truth value happens to depend.</p>
+</section>
+
+<section id="propositional-example" data-formal="ci-forgetting-operation ci-forgetting-semantics ci-propositional-example prop-substitution-evaluation res-elimination-extension res-elimination-models" data-kind="lemma">
+  <h2>A shared atom can carry the whole implication</h2>
+  <p>For distinct propositional atoms \(p,q,r\), the consequence \(p\land q\models q\lor r\) has interpolant \(q\). More generally, for a finite propositional formula \(A\), eliminating an atom \(p\) by the formula \(A[p:=\bot]\lor A[p:=\top]\) gives exactly the assignments to the remaining atoms that extend to an assignment satisfying \(A\).</p>
+  <div class="proof">
+    <p>If \(p\land q\) is true, then \(q\) is true; if \(q\) is true, then \(q\lor r\) is true. The only common atom is \(q\). For the general assertion, any truth value assigned to \(p\) is either false or true. Thus one of the two substituted formulas is true exactly when such an extension exists. This is the semantic operation implemented by <a href="resolution#eliminating-an-atom">resolution elimination</a>. First-order quantifiers and functions prevent this two-case argument from being a general first-order proof.</p>
+  </div>
+</section>
+
+<section id="supported-sentences" data-formal="cl-formula-restriction cl-formula-restriction-recovery ci-included-symbols" data-kind="lemma">
+  <h2>Move each sentence into its exact finite language</h2>
+  <p>Put \(S=\operatorname{sym}(\varphi)\), \(T=\operatorname{sym}(\psi)\), \(L_1=L\upharpoonright S\), \(L_2=L\upharpoonright T\), and \(L_0=L\upharpoonright(S\cap T)\). There are sentences \(\varphi_1\) of \(L_1\) and \(\psi_2\) of \(L_2\) whose translations along the inclusions are exactly \(\varphi\) and \(\psi\). If \(\eta\) is an \(L_0\)-sentence, its translation \(\theta\) into \(L\) satisfies \(\operatorname{sym}(\theta)\subseteq S\cap T\).</p>
+  <div class="proof">
+    <p>Use <a href="changing-languages#restriction-to-support">restriction to symbol support</a>: replace each symbol by itself together with the certificate that it belongs to the chosen finite set. Translating back removes those certificates, so recovers the original syntax. An induction proves the last assertion. Variables have no nonlogical symbols; a function or relation application introduces only its own certified symbol and those in its arguments; a connective takes the union of its children's supports; a quantifier introduces none.</p>
+    <p>Restriction applies equally to \(\neg\psi\), because negation adds no nonlogical symbol. The ambient language \(L\) may be uncountable: only the two active sublanguages are finite.</p>
+  </div>
+</section>
+
+<section id="sentence-interpolation" data-formal="ci-sentence-interpolation" data-kind="theorem">
+  <h2>Every first-order consequence has a common-language interpolant</h2>
+  <div class="statement-box"><p><strong>Craig interpolation.</strong> If \(\varphi\models\psi\), then there is an \(L_0\)-sentence \(\eta\) whose translation \(\theta\) to \(L\) satisfies \(\varphi\models\theta\models\psi\). In particular, \(\theta\) is an interpolant in the sense above. No countability assumption is made on \(L\).</p></div>
+  <div class="proof">
+    <p>Consider the two singleton theories \(\{\varphi_1\}\) and \(\{\neg\psi_2\}\). Their translated union has no model, since such a model would satisfy both \(\varphi\) and \(\neg\psi\), contrary to the assumed consequence. By the <a href="joint-consistency#joint-model">joint-model theorem</a>, these two theories are not inseparable. Hence there is an actual \(L_0\)-sentence \(\eta\) such that</p>
+    <div class="math-display">\[\{\varphi_1\}\vdash\eta,\qquad \{\neg\psi_2\}\vdash\neg\eta.\]</div>
+    <p>Here each occurrence of \(\eta\) means its inclusion into that side's language. Translate these proofs into \(L\). Their common conclusions are the same sentence \(\theta\), since both composite language maps are the direct inclusion of \(L_0\) into \(L\). Soundness gives \(\varphi\models\theta\) and \(\neg\psi\models\neg\theta\). If a structure satisfied \(\theta\) and failed \(\psi\), the second consequence would make it satisfy \(\neg\theta\), a contradiction. Thus \(\theta\models\psi\). The support lemma gives the required vocabulary bound.</p>
+    <p>The joint-model theorem supplies the substantive construction: it makes two compatible term models agree on their common named part. We use its proved conclusion here rather than assuming that two separately consistent theories can always be joined.</p>
+  </div>
+</section>
+
+<section id="deductive-interpolation" data-formal="ci-deductive-interpolation ci-derivation-composition" data-kind="theorem">
+  <h2>The interpolant also factors an actual derivation</h2>
+  <p>If \(\{\varphi\}\vdash\psi\) in the corpus's first-order calculus, there is an interpolant \(\theta\) with \(\{\varphi\}\vdash\theta\) and \(\{\theta\}\vdash\psi\). Conversely, two such derivations imply \(\{\varphi\}\vdash\psi\). The interpolant can be chosen with the same common-vocabulary bound as above.</p>
+  <div class="proof">
+    <p>Soundness turns the given derivation into a consequence. Apply sentence interpolation, then <a href="changing-languages#arbitrary-language-completeness">completeness for arbitrary languages</a> to each of the two resulting consequences. Conversely, soundness gives the two consequences; their composition is \(\varphi\models\psi\), and completeness supplies the requested derivation. Thus the conclusion concerns the existing proof calculus, although the construction of the interpolant is semantic.</p>
+  </div>
+</section>
+
+<section id="constants-and-free-variables" data-formal="jc-formulas-as-named-sentences jc-name-sentence-truth ci-name-symbols ci-unname-symbols ci-names-consequence" data-kind="lemma">
+  <h2>Turn a finite tuple of free variables into fresh constants</h2>
+  <p>Fix distinct free names \(x_0,\ldots,x_{n-1}\). Let \(L[\bar c]\) add distinct new constants \(c_0,\ldots,c_{n-1}\), none belonging to \(L\). For an \(L\)-formula \(A(\bar x)\) with no other free names, let \(A^{\bar c}\) replace each free \(x_i\) by \(c_i\). Every \(L[\bar c]\)-sentence \(B\) conversely determines an \(L\)-formula \(B^{\bar x}\) by replacing those constants by the corresponding free names. These operations are inverse and satisfy</p>
+  <div class="math-display">\[(M,\bar a)\models A^{\bar c}\ \Longleftrightarrow\ M\models A[\bar a],\qquad M\models B^{\bar x}[\bar a]\ \Longleftrightarrow\ (M,\bar a)\models B.\]</div>
+  <p>Here \((M,\bar a)\) interprets \(c_i\) as \(a_i\). In passing to \(B^{\bar x}\), an original \(L\)-symbol occurs exactly when that same symbol occurs in \(B\); the added constants become free names and contribute no \(L\)-symbol.</p>
+  <div class="proof">
+    <p>For terms, replace a variable leaf by its new constant leaf, or the new constant leaf by its variable. Original functions retain their arguments, so the two term operations are inverse and preserve values under the indicated assignments. Apply the operations recursively to equality and relation atoms and then to connectives and quantifiers. Free names are represented separately from quantified placeholders in the <a href="first-order-languages#scoped-formulas">scoped syntax</a>; replacing a constant by a free name therefore does not let an existing quantifier capture that name. Induction on the formula proves both inverse identities, both satisfaction identities, and the original-symbol assertion. This is the finite-name version of the <a href="joint-consistency#consistent-pairs">named-sentence representation</a> used earlier.</p>
+  </div>
+</section>
+
+<section id="formula-interpolation" data-formal="ci-formula-interpolation" data-kind="theorem">
+  <h2>Interpolate formulas without introducing extra free names</h2>
+  <div class="statement-box"><p>Let \(\varphi(\bar x),\psi(\bar x)\) have their free names among \(x_0,\ldots,x_{n-1}\). Suppose that in every nonempty \(L\)-structure, every assignment satisfying \(\varphi\) satisfies \(\psi\). There is an \(L\)-formula \(\theta(\bar x)\), with free names among that same tuple, such that \(\varphi\models\theta\models\psi\) under assignments and \(\operatorname{sym}(\theta)\subseteq\operatorname{sym}(\varphi)\cap\operatorname{sym}(\psi)\).</p></div>
+  <div class="proof">
+    <p>Every expansion by \(\bar c\) comes from the tuple of its constant values. The preceding satisfaction identity therefore turns the hypothesis into the sentence consequence \(\varphi^{\bar c}\models\psi^{\bar c}\). Sentence interpolation in \(L[\bar c]\) gives a sentence \(B\) using only symbols shared by these two translated sentences. Decode it to \(\theta=B^{\bar x}\). The satisfaction identities give both required consequences for every assignment.</p>
+    <p>If an original \(L\)-symbol occurs in \(\theta\), it occurs in \(B\), hence in both \(\varphi^{\bar c}\) and \(\psi^{\bar c}\), and hence in both \(\varphi\) and \(\psi\). Decoding introduces only names from the fixed tuple, so introduces no other free names. This statement does not require a free name to occur in both original formulas; the common-vocabulary condition concerns nonlogical symbols.</p>
+  </div>
+</section>
+
+<section id="equality-only-example" data-formal="ci-two-objects ci-constant-inequality ci-two-objects-truth ci-equality-only ci-no-valid-equality-interpolant" data-kind="lemma">
+  <h2>An empty common vocabulary still expresses cardinality</h2>
+  <p>Let \(c,d\) be distinct constant symbols and let \(\alpha=\exists x\exists y\,(x\ne y)\). The consequence \(c\ne d\models\alpha\) has interpolant \(\alpha\), although the common nonlogical vocabulary is empty. Moreover, no sentence true in every nonempty structure can be an interpolant for this consequence.</p>
+  <div class="proof">
+    <p>A structure satisfying \(c\ne d\) supplies two witnesses for \(\alpha\), and \(\alpha\models\alpha\). The sentence \(\alpha\) uses only equality. If a valid sentence \(\theta\) implied \(\alpha\), then a singleton structure would satisfy \(\alpha\), which it does not. Thus an empty common vocabulary does not mean the interpolant must be \(\top\) or \(\bot\).</p>
+  </div>
+</section>
+
+<section id="private-function-example" data-formal="ci-some-predicate ci-all-predicate ci-function-images ci-private-function" data-kind="lemma">
+  <h2>A private function can disappear behind an existence statement</h2>
+  <p>Let \(P,Q\) be distinct unary relation symbols and \(f\) a unary function symbol. The consequence</p>
+  <div class="math-display">\[\forall x\,P(f(x))\ \models\ (\exists x\,P(x))\lor(\forall x\,Q(x))\]</div>
+  <p>has interpolant \(\exists x\,P(x)\), whose only nonlogical symbol is the common symbol \(P\).</p>
+  <div class="proof">
+    <p>Choose an element \(a\) of the nonempty domain. The premise gives \(P(f(a))\), so \(f(a)\) witnesses \(\exists x\,P(x)\). That existence statement implies the displayed disjunction by its left alternative. The premise contains \(f,P\), the conclusion contains \(P,Q\), and the interpolant contains only \(P\). No interpretation of \(Q\) is needed.</p>
+  </div>
+</section>
+
+<section id="degenerate-cases" data-formal="ci-inconsistent-premise ci-valid-conclusion" data-kind="lemma">
+  <h2>Inconsistent premises and valid conclusions have simple interpolants</h2>
+  <p>If \(\varphi\) has no nonempty model, then \(\bot\) is an interpolant for \(\varphi\models\psi\), for every \(\psi\). If \(\psi\) is valid, then \(\top\) is an interpolant for \(\varphi\models\psi\), for every \(\varphi\).</p>
+  <div class="proof">
+    <p>In the first case \(\varphi\models\bot\), and \(\bot\models\psi\) because no structure satisfies \(\bot\). In the second case \(\varphi\models\top\) and \(\top\models\psi\). Both chosen sentences have empty symbol support, so meet every common-vocabulary bound.</p>
+  </div>
+</section>
+
+<section id="nonuniqueness" data-formal="ci-endpoint-interpolants ci-singleton-predicate-structure ci-nonequivalent-endpoints" data-kind="question">
+  <h2>Must an interpolant give an equivalent reformulation of the premise?</h2>
+  <p>For \(\forall x\,P(x)\models\exists x\,P(x)\), is the interpolant \(\exists x\,P(x)\) equivalent to the premise? Can the premise itself also serve as an interpolant?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The two sentences are not equivalent. On a two-element domain, interpret \(P\) as a singleton: the existential sentence is true and the universal sentence false. Nevertheless both are interpolants. Nonemptiness makes \(\forall x\,P(x)\models\exists x\,P(x)\); either endpoint therefore lies between them, and both use just the common symbol \(P\). Craig's theorem asserts the existence of a suitable intermediate sentence, not its uniqueness or equivalence to either endpoint.</p>
+  </div></details>
+</section>

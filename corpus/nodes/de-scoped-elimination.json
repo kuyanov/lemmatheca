@@ -1,0 +1,13 @@
+{
+  "id": "de-scoped-elimination",
+  "description": "In every expansion satisfying the definitions, the specified scoped elimination translation preserves satisfaction at every free-variable assignment and every tuple of available quantified placeholders.",
+  "module": "Lemmatheca.DefinitionalExtensions.DefinitionalExtensions",
+  "declaration": "Lemmatheca.MathematicalLogic.DefinitionalExtensions.DefinitionPackage.realize_translateAux",
+  "dependencies": [
+    "de-scoped-translation",
+    "de-term-graph-truth"
+  ],
+  "verified": true,
+  "declaration_line": 344,
+  "signature": "Lemmatheca.MathematicalLogic.DefinitionalExtensions.DefinitionPackage.realize_translateAux.{u, v, u', v', w, z}\n  {L : FirstOrder.Language} {K : FirstOrder.Language} {α : Type z} {M : Type w} [L.Structure M]\n  (d : Lemmatheca.MathematicalLogic.DefinitionalExtensions.DefinitionPackage L K) [(L.sum K).Structure M]\n  [FirstOrder.Language.LHom.sumInl.IsExpansionOn M] (h : d.GoodExpansion M) {n : ℕ} (A : (L.sum K).BoundedFormula α n)\n  (v : α → M) (xs : Fin n → M) : (d.translateAux A).Realize (Sum.elim v xs) ↔ A.Realize v xs"
+}

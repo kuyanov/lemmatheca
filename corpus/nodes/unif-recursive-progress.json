@@ -1,0 +1,12 @@
+{
+  "id": "unif-recursive-progress",
+  "description": "Each recursive solver step preserves the allowed-variable invariant and decreases either the allowed-set cardinality or, with that set fixed, the total term-node count.",
+  "module": "Lemmatheca.TermUnification.TermUnification",
+  "declaration": "Lemmatheca.MathematicalLogic.TermUnification.recursive_progress",
+  "dependencies": [
+    "fo-term-substitution-support"
+  ],
+  "verified": true,
+  "declaration_line": 654,
+  "signature": "Lemmatheca.MathematicalLogic.TermUnification.recursive_progress.{u, v} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] (V : Finset ℕ) (P : Lemmatheca.MathematicalLogic.TermUnification.Problem L)\n  (hv : Lemmatheca.MathematicalLogic.TermUnification.Supported V P) :\n  (∀ (Q : Lemmatheca.MathematicalLogic.TermUnification.Problem L),\n      Lemmatheca.MathematicalLogic.TermUnification.classify P =\n          Lemmatheca.MathematicalLogic.TermUnification.Action.keep Q →\n        Lemmatheca.MathematicalLogic.TermUnification.Supported V Q ∧\n          Lemmatheca.MathematicalLogic.TermUnification.problemSize Q <\n            Lemmatheca.MathematicalLogic.TermUnification.problemSize P) ∧\n    ∀ (x : ℕ) (t : L.Term ℕ) (R : Lemmatheca.MathematicalLogic.TermUnification.Problem L),\n      Lemmatheca.MathematicalLogic.TermUnification.classify P =\n          Lemmatheca.MathematicalLogic.TermUnification.Action.eliminate x t R →\n        Lemmatheca.MathematicalLogic.TermUnification.Supported (V.erase x)\n            (Lemmatheca.MathematicalLogic.TermUnification.substProblem\n              (Lemmatheca.MathematicalLogic.TermUnification.single x t) R) ∧\n          (V.erase x).card < V.card"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "geq-represented-output-unique",
+  "description": "Any two retained applications of the same symbol whose argument classes match the same tuple have the same output class.",
+  "module": "Lemmatheca.GroundEquality.Models",
+  "declaration": "Lemmatheca.MathematicalLogic.GroundEquality.represented_output_unique",
+  "dependencies": [
+    "geq-closure-congruence",
+    "quotient-projection-equality"
+  ],
+  "verified": true,
+  "declaration_line": 21,
+  "signature": "Lemmatheca.MathematicalLogic.GroundEquality.represented_output_unique.{u, v} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] (S : Finset (Lemmatheca.MathematicalLogic.GroundEquality.GroundTerm L))\n  (E : Finset (Lemmatheca.MathematicalLogic.GroundEquality.TermPair L)) (hE : E ⊆ S.product S)\n  (hS : Lemmatheca.MathematicalLogic.GroundEquality.SubtermClosed S) {n : ℕ} (f : L.Functions n)\n  (xs : Fin n → Lemmatheca.MathematicalLogic.GroundEquality.Carrier S E hE)\n  (a b : Lemmatheca.MathematicalLogic.GroundEquality.ApplicationWitness S E hE ⋯ f xs) :\n  Lemmatheca.MathematicalLogic.GroundEquality.classOf S E hE (FirstOrder.Language.func f a.terms) ⋯ =\n    Lemmatheca.MathematicalLogic.GroundEquality.classOf S E hE (FirstOrder.Language.func f b.terms) ⋯"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "qfv-same-model-relation",
+  "module": "Lemmatheca.QuantifierFreeValidity.Literals",
+  "declaration": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.model_relation_iff",
+  "description": "For a retained ground argument tuple \\(\\bar t\\), the specified positive-relation model satisfies \\(R(\\bar t)\\) exactly when a positive input \\(R(\\bar u)\\) has componentwise congruent arguments.",
+  "dependencies": [
+    "qfv-same-model-term",
+    "qfv-relation-map"
+  ],
+  "verified": true,
+  "declaration_line": 238,
+  "signature": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.model_relation_iff.{u, v} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] [(n : ℕ) → DecidableEq (L.Relations n)]\n  (Γ : Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Problem L) {n : ℕ} (R : L.Relations n)\n  (ts : Fin n → Lemmatheca.MathematicalLogic.GroundEquality.GroundTerm L)\n  (ht : ∀ (i : Fin n), ts i ∈ Lemmatheca.MathematicalLogic.QuantifierFreeValidity.support Γ) :\n  (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Atom.rel R ts).Realize\n      (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Carrier Γ) ↔\n    ∃ us,\n      (true, Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Atom.rel R us) ∈ Γ ∧\n        ∀ (i : Fin n), (us i, ts i) ∈ Lemmatheca.MathematicalLogic.QuantifierFreeValidity.closure Γ"
+}

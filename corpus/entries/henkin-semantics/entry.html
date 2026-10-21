@@ -57,7 +57,7 @@
 </div>
 </section>
 
-<section id="model-correspondence" data-formal="hs-tagged-structure hs-forward-model hs-decoded-structure hs-decoded-domains hs-decoded-presentation hs-decoded-nonempty hs-model-correspondence" data-kind="theorem">
+<section id="model-correspondence" data-formal="hs-tagged-structure hs-forward-model hs-decoded-structure hs-decoded-domains hs-decoded-presentation hs-decoded-nonempty hs-model-correspondence it-truth" data-kind="theorem">
   <h2>General models are exactly the translated first-order models</h2>
   <div class="statement-box"><p>A second-order theory \(T\) has a general model with nonempty relation families if and only if its first-order translation \(T^\flat\) has a nonempty model. The translation preserves satisfaction under corresponding assignments, and the equivalence remains true after adding any specified comprehension scheme.</p></div>
   <div class="proof">
@@ -66,6 +66,7 @@
     <p>Conversely, let \(U\models T^\flat\). Take \(M=I^U\) as a subtype of \(U\); nonemptiness gives an individual, and the closure axioms restrict each original function to this subtype. Restrict original relations to individual tuples. For each object \(A\in R_n^U\), define a relation on \(M^n\) by \(E_n^U(A,\bar x)\), and let \(\mathcal D_n\) be the image of this map. Nonemptiness of \(R_n^U\) makes the image family nonempty.</p>
     <p>Term evaluation in \(M\), followed by inclusion into \(U\), equals evaluation in \(U\), by induction on terms and function closure. The formula induction now reverses the forward argument. Its relation-quantifier step uses the surjection onto the image, as in <a href="#duplicate-relation-objects"></a>; it does not assume distinct objects have distinct extensions. Every translated member of \(T\) therefore gives a true original sentence in this one general model. The argument applies to comprehension sentences exactly as to any others.</p>
 </div>
+  <p>The individual-domain step is the <a href="interpreting-theories#truth-translation">truth-preserving interpretation on a definable domain</a>; its function-closure hypothesis is essential.</p>
 </section>
 
 <section id="translated-calculus" data-formal="hs-translated-derivability hs-application-countable" data-kind="definition">
@@ -75,13 +76,14 @@
   <p>The calculus on the right is the existing <a href="first-order-proofs#derivations-and-theories">first-order proof calculus</a>, not a newly postulated second-order rule system. For models satisfying a scheme \(C\), use \((T\cup C)^\flat\) as the premises. In particular, the definition permits a proof to use finitely many translated comprehension axioms when the scheme is included.</p>
 </section>
 
-<section id="henkin-completeness" data-formal="hs-consequence-translation hs-completeness" data-kind="theorem">
+<section id="henkin-completeness" data-formal="hs-consequence-translation hs-completeness sov-no-effective-completeness" data-kind="theorem">
   <h2>Completeness for the specified general semantics</h2>
   <div class="statement-box"><p>For a countable original language, \(T\vdash_{\mathrm H}\sigma\) if and only if every general model of \(T\) satisfies \(\sigma\). The same statement holds with a fixed comprehension scheme among the premises.</p></div>
   <div class="proof">
     <p>If there is a first-order proof from \(T^\flat\), <a href="first-order-proofs#soundness">soundness</a> makes its conclusion true in each forward encoding of a general model. Satisfaction preservation gives \(\sigma\). Conversely, suppose every general model of \(T\) satisfies \(\sigma\). Decode any ordinary model of \(T^\flat\); the model correspondence gives a general model of \(T\), hence truth of \(\sigma\), hence truth of its translation in the original ordinary model. The translation is therefore a first-order consequence of \(T^\flat\). <a href="henkin-completeness#deductive-completeness">First-order completeness</a> gives its proof. Adding a scheme merely replaces \(T\) by \(T\cup C\).</p>
 </div>
   <p>This theorem certifies exactly the translated calculus in the definition. A completeness claim for a native second-order calculus with its own substitution and comprehension rules would additionally require proof transformations connecting those rules to this calculus.</p>
+  <p>For full relation domains, <a href="second-order-validity#no-effective-completeness">effective weak completeness fails</a>: every sound calculus with enumerable theorem codes misses a full validity. This is a different obstruction from compactness for consequence from arbitrary premises.</p>
 </section>
 
 <section id="henkin-compactness" data-formal="hs-compactness hs-compactness-with-scheme" data-kind="theorem">

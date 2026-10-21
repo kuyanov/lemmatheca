@@ -1,0 +1,107 @@
+<section id="partial-assignments" data-formal="prop-literal prop-literal-clause prop-conjunctive-normal-form dpll-opposite dpll-partial-assignment dpll-extends tseitin-clause-list-models dpll-satisfiable dpll-residual tseitin-list-formula-bridge res-list-cnf-bridge dpll-empty-cases" data-kind="definition">
+  <h2>Clauses and incomplete settings</h2>
+  <p>Use the <a href="propositional-normal-forms#normal-form-definitions">literals and conjunctive normal forms</a> on an atom set \(P\) with decidable equality. A literal is a pair \((p,b)\), where \(b\in\{0,1\}\); it means \(p\) when \(b=1\), and \(\neg p\) when \(b=0\). Its <strong>opposite</strong> is \(\overline{(p,b)}=(p,1-b)\). A clause is a finite list of literals, read disjunctively; a CNF \(\Gamma\) is a finite list of clauses, read conjunctively. Repetitions do not affect truth. Write \(v\models\Gamma\) when every clause has a literal \((p,b)\) with \(v(p)=b\). The empty CNF is true and an empty clause is false.</p>
+  <p>A <strong>partial assignment</strong> is a map \(\tau:P\to\{0,1,*\}\), where \(*\) means unassigned. A valuation \(v:P\to\{0,1\}\) <strong>extends</strong> \(\tau\) if \(\tau(p)=b\in\{0,1\}\) implies \(v(p)=b\). A literal is <strong>true under \(\tau\)</strong> if \(\tau(p)=b\), <strong>false under \(\tau\)</strong> if \(\tau(p)=1-b\), and otherwise unassigned.</p>
+  <p>The <strong>residual CNF</strong> \(\Gamma\vert\tau\) is obtained by discarding every clause with a true literal, then deleting every false literal from the remaining clauses. Thus a remaining clause consists exactly of its unassigned literals. All these operations inspect finite lists.</p>
+</section>
+
+<section id="residual-semantics" data-formal="dpll-residual-semantics dpll-partial-extension dpll-residual-terminal" data-kind="theorem">
+  <h2>The residual describes exactly the remaining requirements</h2>
+  <p>For every CNF \(\Gamma\), partial assignment \(\tau\), and valuation \(v\) extending \(\tau\),</p>
+  <div class="math-display">\[ v\models\Gamma\quad\Longleftrightarrow\quad v\models\Gamma\vert\tau. \]</div>
+  <div class="proof">
+    <p>A discarded clause has a literal already made true by \(\tau\), and that literal is true under every extending \(v\). In an undiscarded clause every assigned literal is false under \(v\). Therefore that clause has a true literal under \(v\) exactly when its remaining, unassigned part does. Apply this observation separately to every clause.</p>
+    <p>This also explains both terminal cases. If the residual is empty, every extension satisfies the original CNF. If the residual contains an empty clause, no extension satisfies it. An extension always exists: assign any fixed truth value to every still unassigned atom.</p>
+  </div>
+</section>
+
+<section id="one-setting" data-formal="dpll-single-assignment dpll-setting dpll-support dpll-setting-residual dpll-setting-support" data-kind="definition">
+  <h2>Simplify after setting a single atom</h2>
+  <p>Let \(v[p:=b]\) mean the valuation that has value \(b\) at \(p\) and agrees with \(v\) elsewhere. The <strong>single-setting residual</strong> \(R_{p,b}(\Gamma)\) discards clauses containing \((p,b)\) and removes every literal on \(p\) from all other clauses. Equivalently it is \(\Gamma\vert\tau\) for \(\tau(p)=b\) and \(\tau(q)=*\) when \(q\ne p\). Deleting all occurrences is important when a list contains repetitions.</p>
+  <p>The <strong>support</strong> \(S(\Gamma)\) is the finite set of atoms occurring in its literals. The single-setting residual uses only atoms of \(S(\Gamma)\setminus\{p\}\). In particular it contains no occurrence of \(p\), even if \(p\) occurred with both signs in a clause: such a clause was discarded.</p>
+</section>
+
+<section id="single-setting-semantics" data-formal="dpll-setting-semantics" data-kind="lemma">
+  <h2>Recover the selected setting when returning a model</h2>
+  <p>For every valuation \(v\), atom \(p\), truth value \(b\), and CNF \(\Gamma\),</p>
+  <div class="math-display">\[ v[p:=b]\models\Gamma\quad\Longleftrightarrow\quad v\models R_{p,b}(\Gamma). \]</div>
+  <div class="proof">
+    <p>Apply <a href="#residual-semantics"></a> to \(v[p:=b]\) and the partial assignment in <a href="#one-setting"></a>. The residual contains no \(p\), so changing the value of \(p\) does not change its truth value. The two valuations agree at every atom appearing in each remaining literal. This gives the displayed equivalence with \(v\) itself on the right.</p>
+  </div>
+</section>
+
+<section id="unit-rule" data-formal="dpll-unit-forced dpll-unit-equisatisfiable dpll-unit-chain dpll-unit-chain-forced dpll-unit-chain-bound" data-kind="lemma">
+  <h2>A clause with one literal forces its setting</h2>
+  <p>A <strong>unit clause</strong> is a one-element list \([(p,b)]\). If it occurs in \(\Gamma\), every model of \(\Gamma\) has \(v(p)=b\), and \(\Gamma\) is satisfiable exactly when \(R_{p,b}(\Gamma)\) is satisfiable.</p>
+  <div class="proof">
+    <p>To satisfy a one-element disjunction its only literal must be true. A model of \(\Gamma\) thus has the required value at \(p\) and satisfies the residual by <a href="#single-setting-semantics"></a>. Conversely any model \(v\) of the residual gives the model \(v[p:=b]\) of \(\Gamma\). This converse does not need the unit-clause assumption.</p>
+    <p>Repeatedly applying this rule is <strong>unit propagation</strong>. Every chosen unit atom occurs in the current residual and disappears after it is set. No later residual reintroduces it. Therefore every such propagation chain has distinct chosen atoms from the initial support, and has at most \(|S(\Gamma)|\) steps. Each step preserves satisfiability and is forced in every model compatible with earlier settings. Encountering an empty clause proves that no such model exists.</p>
+  </div>
+</section>
+
+<section id="unit-chain" data-formal="dpll-unit-trace" data-kind="question">
+  <h2>Follow a chain of forced choices</h2>
+  <p>Apply unit propagation to \(\Gamma=[(p),(\neg p\lor q),(\neg q\lor r),(\neg r)]\), where \(p,q,r\) are distinct. What happens if the units are chosen first in the order \(p,q,r\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Setting \(p=1\) gives \([(q),(\neg q\lor r),(\neg r)]\). Setting \(q=1\) then gives \([(r),(\neg r)]\). Setting \(r=1\) discards \((r)\) but changes \((\neg r)\) to the empty clause. Hence the original CNF is unsatisfiable. Each displayed step sets a unit forced by the preceding residual. Choosing \(r=0\) from the original last clause instead leads to the same conclusion, though it propagates in the other direction.</p>
+  </div></details>
+</section>
+
+<section id="pure-rule" data-formal="dpll-occurs dpll-pure dpll-pure-update dpll-pure-equisatisfiable" data-kind="lemma">
+  <h2>A literal appearing in only one direction can be chosen safely</h2>
+  <p>A literal \((p,b)\) is <strong>pure in \(\Gamma\)</strong> if it occurs in some clause and its opposite occurs in no clause. More generally, if \((p,1-b)\) occurs nowhere, setting \(p=b\) preserves satisfiability, even if neither sign occurs. Precisely, every model \(v\) of \(\Gamma\) gives another model \(v[p:=b]\), and \(\Gamma\) is satisfiable exactly when \(R_{p,b}(\Gamma)\) is satisfiable.</p>
+  <div class="proof">
+    <p>Consider a true literal of any clause under \(v\). If its atom differs from \(p\), updating \(p\) leaves it true. If its atom is \(p\), its sign must be \(b\), by the absence of the opposite sign, so it becomes or remains true. Thus updating \(p\) preserves each satisfied clause. Apply <a href="#single-setting-semantics"></a> to get a model of the residual. The reverse satisfiability direction again updates an arbitrary residual model at \(p\).</p>
+  </div>
+</section>
+
+<section id="pure-not-forced" data-formal="dpll-pure-not-forced" data-kind="question">
+  <h2>Does the pure rule describe every model?</h2>
+  <p>For distinct atoms \(p,q\), the positive literal \(p\) is pure in \([(p\lor q)]\). Must every model have \(p=1\)? Is the residual after that setting equivalent to the original CNF under all valuations?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No: \(p=0,q=1\) satisfies the original clause. The setting \(p=1\) discards its only clause, leaving the empty CNF, which is true even when \(p=q=0\); the original is false there. The pure rule preserves the existence of a model, and constructs one by changing \(p\). It does not force \(p\) in every old model. The exact equivalence of <a href="#residual-semantics"></a> still holds on valuations extending the chosen setting.</p>
+  </div></details>
+</section>
+
+<section id="branching" data-formal="dpll-branching" data-kind="lemma">
+  <h2>The two settings cover every remaining possibility</h2>
+  <p>For every CNF \(\Gamma\) and atom \(p\),</p>
+  <div class="math-display">\[ \Gamma\text{ is satisfiable}\quad\Longleftrightarrow\quad R_{p,1}(\Gamma)\text{ or }R_{p,0}(\Gamma)\text{ is satisfiable}. \]</div>
+  <div class="proof">
+    <p>A model has either \(v(p)=1\) or \(v(p)=0\), and the appropriate residual is satisfied by the same valuation. Conversely a model \(v\) of either residual extends back to \(v[p:=b]\models\Gamma\) by <a href="#single-setting-semantics"></a>. Thus failure in one branch warrants trying the other; failure in both rules out every model.</p>
+  </div>
+</section>
+
+<section id="ordered-search" data-formal="dpll-preferred dpll-restore dpll-solve dpll-depth dpll-depth-bound dpll-support-input" data-kind="definition">
+  <h2>A precise finite search</h2>
+  <p>Fix a finite list \(L\) of atoms containing \(S(\Gamma)\). Define the <strong>ordered DPLL search</strong> \(D(L,\Gamma)\) to return either a valuation or the answer \(\mathrm{failure}\). Its recursive rules are as follows, tested in the displayed order.</p>
+  <ol>
+    <li>If \(\Gamma\) is empty, return the valuation constantly equal to \(0\).</li>
+    <li>If an empty clause occurs in \(\Gamma\), return failure.</li>
+    <li>If \(L\) is empty, return failure. Otherwise write \(L=p::K\), where \(K\) is the remaining list.</li>
+    <li>If \([(p,1)]\) occurs, use only the setting \(b=1\). Otherwise, if \([(p,0)]\) occurs, use only \(b=0\).</li>
+    <li>If neither preceding unit occurs and \((p,0)\) occurs nowhere, use only \(b=1\). Otherwise, if \((p,1)\) occurs nowhere, use only \(b=0\).</li>
+    <li>In every other case, try \(b=1\), and try \(b=0\) if the first attempt fails.</li>
+  </ol>
+  <p>An <strong>attempt at \(b\)</strong> calls \(D(K,R_{p,b}(\Gamma))\). If it returns \(v\), the attempt returns \(v[p:=b]\); if it fails, the attempt fails. These rules are a recursion on the length of \(L\), so they define a terminating algorithm. Every path makes at most \(|L|\) assignments. One may obtain \(L\) by listing the atoms of the finite input and deleting repetitions. Atoms outside this list receive the default value \(0\).</p>
+  <p>This variant applies a unit or pure rule when it concerns the current pivot \(p\). It does not first scan all other atoms for units. The separate unit-propagation process in <a href="#unit-rule"></a> can perform that simplification earlier, but is not an extra unstated step in this recurrence. The tests here inspect only literal equality and membership in finite lists.</p>
+</section>
+
+<section id="search-correctness" data-formal="dpll-supported dpll-setting-supported dpll-preferred-safe dpll-solve-sound dpll-solve-complete dpll-solve-failure dpll-solve-outside dpll-depth-bound" data-kind="theorem">
+  <h2>The search constructs a model exactly when one exists</h2>
+  <div class="statement-box"><p>Let \(\Gamma\) be a finite CNF, and let \(L\) contain every occurring atom. The ordered search \(D(L,\Gamma)\) terminates. If it returns a valuation \(v\), then \(v\models\Gamma\). It returns failure exactly when \(\Gamma\) is unsatisfiable. Its answer on atoms outside \(L\) is \(0\).</p></div>
+  <div class="proof">
+    <p>Induct on \(L\), with \(\Gamma\) varying over all CNFs supported by that list. The empty-CNF and empty-clause cases have exactly the stated truth behavior. If \(L\) is empty and neither terminal case has applied, every occurring literal would have an atom in the empty support, which is impossible. Hence every clause is empty; the lack of an empty clause then says that there are no clauses, contradicting this case. The third failure rule is therefore unreachable on a supported nonterminal input.</p>
+    <p>Now let \(L=p::K\). Every residual \(R_{p,b}(\Gamma)\) is supported by \(K\): it introduces no atoms, and removes \(p\). The induction hypothesis applies to both recursive calls. A successful call returns a model of the residual; restoring the selected setting gives a model of the parent CNF by <a href="#single-setting-semantics"></a>.</p>
+    <p>For completeness, if a unit rule selects one branch, its satisfiability is equivalent to the parent's by <a href="#unit-rule"></a>. If an absent-opposite test selects one branch, use <a href="#pure-rule"></a>. Otherwise the two branches cover satisfiability by <a href="#branching"></a>. The induction hypothesis says that each attempted branch fails exactly when it has no model. Thus a single forced or pure branch fails exactly when the parent has no model, and in the last case both branches fail exactly when the parent has no model.</p>
+    <p>The recurrence shortens \(L\) at every call. Finally, the returned valuation is built from the constant-zero valuation by updates at list members. An atom outside \(L\) is never updated, so its value remains zero. This proves every asserted part of the specification.</p>
+  </div>
+</section>
+
+<section id="branch-trace" data-formal="dpll-branch-trace" data-kind="question">
+  <h2>A failed first branch and a successful second one</h2>
+  <p>Let \(p,q\) be distinct. Run the ordered search with \(L=[p,q]\) on \(\Gamma=[(\neg p\lor q),(\neg p\lor\neg q),(p\lor q)]\). What model is returned?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>There are no unit clauses and both signs of \(p\) occur, so first try \(p=1\). The residual is \([(q),(\neg q)]\). The positive unit for \(q\) selects \(q=1\), leaving an empty clause, so that branch fails. Try \(p=0\) instead. The first two original clauses disappear and the last becomes \((q)\). Its positive unit selects \(q=1\), leaving the empty CNF. Unwinding the updates returns \(p=0,q=1\), with every other atom zero. The original three clauses are then true, respectively because \(\neg p\), \(\neg p\), and \(q\) are true.</p>
+  </div></details>
+</section>

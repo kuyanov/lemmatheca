@@ -1,0 +1,12 @@
+{
+  "id": "unif-elimination-sound",
+  "description": "If \\(x\\notin\\operatorname{FV}(t)\\) and \\(\\theta\\) unifies \\(R[t/x]\\), then \\(\\theta\\star[t/x]\\) unifies \\((x\\doteq t)::R\\).",
+  "module": "Lemmatheca.TermUnification.TermUnification",
+  "declaration": "Lemmatheca.MathematicalLogic.TermUnification.elimination_sound",
+  "dependencies": [
+    "unif-term-composition"
+  ],
+  "verified": true,
+  "declaration_line": 148,
+  "signature": "Lemmatheca.MathematicalLogic.TermUnification.elimination_sound.{u, v, w} {L : FirstOrder.Language} {α : Type w} (x : ℕ)\n  (t : L.Term ℕ) (R : Lemmatheca.MathematicalLogic.TermUnification.Problem L) (hx : x ∉ t.varFinset) (θ : ℕ → L.Term α)\n  (hθ :\n    Lemmatheca.MathematicalLogic.TermUnification.Unifies θ\n      (Lemmatheca.MathematicalLogic.TermUnification.substProblem\n        (Lemmatheca.MathematicalLogic.TermUnification.single x t) R)) :\n  Lemmatheca.MathematicalLogic.TermUnification.Unifies\n    (Lemmatheca.MathematicalLogic.TermUnification.compose θ (Lemmatheca.MathematicalLogic.TermUnification.single x t))\n    ((FirstOrder.Language.var x, t) :: R)"
+}

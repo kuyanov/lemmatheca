@@ -1,0 +1,12 @@
+{
+  "id": "for-full-fiber-example",
+  "description": "For unary \\(P\\), a constant \\(a\\), and the ground substitution sending every variable to \\(a\\), the clause \\(\\{P(x_0),P(x_1)\\}\\) has image \\(\\{P(a)\\}\\); deleting either one of its two literals before substitution still leaves that same nonempty ground image.",
+  "module": "Lemmatheca.FirstOrderResolution.Examples",
+  "declaration": "Lemmatheca.Entry.FirstOrderResolution.duplicate_pivot_fiber",
+  "dependencies": [
+    "herb-clause-substitution"
+  ],
+  "verified": true,
+  "declaration_line": 518,
+  "signature": "Lemmatheca.Entry.FirstOrderResolution.duplicate_pivot_fiber.{u, v} {L : FirstOrder.Language} (P : L.Relations 1)\n  (a : L.Functions 0) :\n  have γ := fun x => Lemmatheca.Entry.FirstOrderResolution.constant a;\n  have p := Lemmatheca.Entry.FirstOrderResolution.unaryAtom P (Lemmatheca.Entry.FirstOrderResolution.constant a);\n  Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst γ (Lemmatheca.Entry.FirstOrderResolution.pairPositive P) =\n      {Lemmatheca.Entry.FirstOrderResolution.signed true p} ∧\n    Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst γ\n          (Finset.erase (Lemmatheca.Entry.FirstOrderResolution.pairPositive P)\n            (Lemmatheca.Entry.FirstOrderResolution.signed true\n              (Lemmatheca.Entry.FirstOrderResolution.unaryAtom P (FirstOrder.Language.var 0)))) =\n        {Lemmatheca.Entry.FirstOrderResolution.signed true p} ∧\n      Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst γ\n          (Finset.erase (Lemmatheca.Entry.FirstOrderResolution.pairPositive P)\n            (Lemmatheca.Entry.FirstOrderResolution.signed true\n              (Lemmatheca.Entry.FirstOrderResolution.unaryAtom P (FirstOrder.Language.var 1)))) =\n        {Lemmatheca.Entry.FirstOrderResolution.signed true p}"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "dpll-branch-trace",
+  "description": "For distinct \\(p,q\\), ordered search on \\([p,q]\\) and \\([(\\neg p\\lor q),(\\neg p\\lor\\neg q),(p\\lor q)]\\) fails in the first branch \\(p=1\\) and returns exactly the valuation \\(p=0,q=1\\), with all other atoms zero.",
+  "module": "Lemmatheca.DpllSatisfiability.Examples",
+  "declaration": "Lemmatheca.Entry.DpllSatisfiability.branch_trace",
+  "dependencies": [
+    "dpll-solve",
+    "dpll-setting"
+  ],
+  "verified": true,
+  "declaration_line": 51,
+  "signature": "Lemmatheca.Entry.DpllSatisfiability.branch_trace.{u} {α : Type u} [DecidableEq α] (p q : α) (hpq : p ≠ q) :\n  Lemmatheca.MathematicalLogic.DpllSatisfiability.setting p true\n        (Lemmatheca.Entry.DpllSatisfiability.branchExample p q) =\n      [[{ atom := q, positive := true }], [{ atom := q, positive := false }]] ∧\n    Lemmatheca.MathematicalLogic.DpllSatisfiability.solve [q]\n          (Lemmatheca.MathematicalLogic.DpllSatisfiability.setting p true\n            (Lemmatheca.Entry.DpllSatisfiability.branchExample p q)) =\n        none ∧\n      Lemmatheca.MathematicalLogic.DpllSatisfiability.setting p false\n            (Lemmatheca.Entry.DpllSatisfiability.branchExample p q) =\n          [[{ atom := q, positive := true }]] ∧\n        Lemmatheca.MathematicalLogic.DpllSatisfiability.solve [p, q]\n            (Lemmatheca.Entry.DpllSatisfiability.branchExample p q) =\n          some (Function.update (Function.update (fun x => false) q true) p false)"
+}

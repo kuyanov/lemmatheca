@@ -1,0 +1,126 @@
+<section id="ground-terms" data-formal="herb-universe herb-term-structure herb-ground-term-classification" data-kind="definition">
+  <h2>Closed terms form a possible domain</h2>
+  <p>Fix a first-order language \(L\), with the <a href="first-order-languages#terms">usual terms</a> and nonempty structures. A <strong>ground term</strong> is a term with no variables. The set \(H_L\) of all ground terms is the <strong>Herbrand universe</strong>. Its elements are syntactic expressions: two expressions are equal here exactly when their term trees are identical. A constant is a ground term, and applying a function symbol to ground terms gives another ground term.</p>
+  <p>Until <a href="#fresh-constant"></a>, assume \(H_L\ne\varnothing\). If \(L\) has one constant \(c\) and one unary function \(f\), and no other function symbols, then \(H_L=\{c,f(c),f(f(c)),\ldots\}\). Each term is \(f^n(c)\) for a unique natural number \(n\), by induction on its construction and the distinctness of term constructors. Relations add no terms.</p>
+  <p>A <strong>term-generated function interpretation</strong> on \(H_L\) interprets each \(k\)-ary symbol \(g\) by the constructor itself:</p>
+  <div class="math-display">\[g^{H_L}(t_0,\ldots,t_{k-1})=g(t_0,\ldots,t_{k-1}).\]</div>
+  <p>This includes constants, with their empty tuple of arguments. A choice of relation interpretations will turn these functions into an \(L\)-structure.</p>
+</section>
+
+<section id="relation-atoms" data-formal="herb-atom herb-atom-formula herb-atom-substitution prop-valuation" data-kind="definition">
+  <h2>Relation applications can be propositional atoms</h2>
+  <p>For any variable set \(X\), a <strong>relation atom over \(X\)</strong> consists of a relation symbol \(R\) of arity \(k\) and a tuple of actual \(L\)-terms \((t_i)_{i&lt;k}\) over \(X\). It denotes the first-order formula \(R(t_0,\ldots,t_{k-1})\). A <strong>ground relation atom</strong> has all its terms in \(H_L\). Write \(B_L\) for the set of these atoms. Zero-ary relations are allowed: they have an empty argument tuple and still give an atom.</p>
+  <p>A <strong>ground valuation</strong> is a propositional valuation \(b:B_L\to\{0,1\}\). It initially treats different ground relation expressions as independent atoms. A term substitution \(\sigma:X\to H_L\) sends an atom \(R(t_0,\ldots,t_{k-1})\) to \(R(t_0\sigma,\ldots,t_{k-1}\sigma)\), using the existing <a href="first-order-structures#semantic-substitution">simultaneous substitution</a> on terms.</p>
+</section>
+
+<section id="relational-matrices" data-formal="herb-relational-matrix herb-matrix herb-universal-theory herb-universal-closure-truth herb-ground-reading" data-kind="definition">
+  <h2>Universal formulas with an equality-free matrix</h2>
+  <p>An <strong>equality-free quantifier-free matrix</strong>, called a <strong>relational matrix</strong> below, is an actual first-order formula constructed from relation atoms and \(\bot\) by implication. Negation, conjunction, disjunction and truth have their usual definitions in this basis. Neither equality atoms nor quantifiers occur inside the matrix. This is a restriction on the <a href="first-order-languages#scoped-formulas">shared formula syntax</a>, rather than a new formula language.</p>
+  <p>A matrix \(A(x_0,\ldots,x_{n-1})\) may omit some of its displayed variables, and \(n\) may be zero. Its <strong>universal closure</strong> is the sentence \(\forall x_0\cdots\forall x_{n-1}\,A\). A structure satisfies this sentence exactly when it satisfies \(A\) at every tuple in its domain. Let \(\Gamma\) be any set of such matrices, each with its own finite tuple of variables; write \(T_\Gamma\) for the theory of their universal closures.</p>
+  <p>For a ground tuple \(\bar t\in H_L^n\), the <strong>ground instance</strong> \(A(\bar t)\) fills all these slots by the indicated terms. This is the <a href="skolemization#scoped-term-instances">simultaneous filling of scoped slots</a>, with no remaining slots. Ground terms contain no variables that could become captured.</p>
+</section>
+
+<section id="propositional-translation" data-formal="herb-reading herb-atom-formula-substitution herb-ground-reading herb-ground-reading-instantiation herb-ground-theory" data-kind="definition">
+  <h2>Preserve connectives and remember the complete atom</h2>
+  <p>The <strong>propositional reading</strong> \(A^{\mathrm p}\) of a relational matrix replaces each relation application by the corresponding single atom and preserves \(\bot\) and implication. Its atoms still carry their actual first-order term arguments. After a ground substitution, the reading \(A[\bar t]^{\mathrm p}\) is a formula over \(B_L\). Explicitly,</p>
+  <div class="math-display">\[(R(\bar s)[\bar t])^{\mathrm p}=p_{R(\bar s[\bar t])},\qquad \bot^{\mathrm p}=\bot.\]</div>
+  <div class="math-display">\[((C\to D)[\bar t])^{\mathrm p}=C[\bar t]^{\mathrm p}\to D[\bar t]^{\mathrm p}.\]</div>
+  <p>Reading a formula and then substituting in each atom gives the same propositional formula as filling its first-order slots and then reading it. Both operations preserve the two constructors above, while at an atom both substitute into exactly its argument terms. Induction on the matrix proves the identity.</p>
+  <p>The <strong>ground-instance theory</strong> of \(\Gamma\) is the propositional theory</p>
+  <div class="math-display">\[G_\Gamma=\{A[\bar t]^{\mathrm p}:A\in\Gamma,\ \bar t\in H_L^{n_A}\}.\]</div>
+  <p>All members must be true under one valuation of the shared atom set \(B_L\). Assigning a separate valuation to each instance would be a different condition.</p>
+</section>
+
+<section id="truth-bridge" data-formal="herb-model-valuation herb-ground-reading-truth herb-actual-instance-truth" data-kind="lemma">
+  <h2>A model supplies a valuation of all ground atoms</h2>
+  <p>Let \(M\) be an \(L\)-structure. Define \(b_M(R(\bar s))=1\) exactly when \(M\models R(\bar s)\). For every relational matrix \(A(\bar x)\) and ground tuple \(\bar t\),</p>
+  <div class="math-display">\[\llbracket A[\bar t]^{\mathrm p}\rrbracket_{b_M}=1\quad\Longleftrightarrow\quad M\models A[\bar t].\]</div>
+  <p>Equivalently, the right side is truth of \(A\) when \(x_i\) is assigned the value \(t_i^M\).</p>
+  <div class="proof">
+    <p>For a term \(s\), simultaneous substitution satisfies \((s[\bar t])^M=s^M[\bar t^M]\), by <a href="first-order-structures#semantic-substitution">semantic substitution</a>. At a relation atom, both sides of the proposed equivalence therefore test the same relation on the same tuple. At \(\bot\), both sides are false. For \(C\to D\), its propositional reading is true precisely when the reading of \(C\) is false or that of \(D\) is true; the induction hypotheses make this precisely the first-order truth condition for implication. This proves the claim by structural induction, and also covers the defined Boolean connectives.</p>
+  </div>
+</section>
+
+<section id="herbrand-structure" data-formal="herb-term-structure" data-kind="definition">
+  <h2>A valuation supplies the missing relations on the term domain</h2>
+  <p>For a ground valuation \(b\), the <strong>Herbrand structure</strong> \(\mathcal H_b\) has domain \(H_L\), the term-generated functions of <a href="#ground-terms"></a>, and relations given by</p>
+  <div class="math-display">\[R^{\mathcal H_b}(t_0,\ldots,t_{k-1})\quad\Longleftrightarrow\quad b(R(t_0,\ldots,t_{k-1}))=1.\]</div>
+  <p>These interpretations have the required arities. Because \(H_L\) is nonempty, this is a structure with the required nonempty domain. Equality, though absent from our matrices, retains its ordinary interpretation as identity of domain elements: it means syntactic identity of ground terms in this structure.</p>
+</section>
+
+<section id="term-truth" data-formal="herb-term-substitution-evaluation herb-term-valuation herb-term-truth" data-kind="lemma">
+  <h2>Evaluation on the term domain is substitution</h2>
+  <p>In \(\mathcal H_b\), every ground term evaluates to itself. More generally, evaluating a term \(s(\bar x)\) at a tuple of ground terms \(\bar t\) yields the syntactic term \(s[\bar t]\). Consequently, for every relational matrix,</p>
+  <div class="math-display">\[\mathcal H_b\models A[\bar t]\quad\Longleftrightarrow\quad \llbracket A[\bar t]^{\mathrm p}\rrbracket_b=1.\]</div>
+  <div class="proof">
+    <p>Induct on the term \(s\). A variable evaluates to its assigned ground term, which is its substitution. At \(g(s_0,\ldots,s_{k-1})\), the induction hypotheses give the substituted children, and the interpretation of \(g\) builds precisely \(g(s_0[\bar t],\ldots,s_{k-1}[\bar t])\). A closed term has no variable case, so this specializes to self-evaluation.</p>
+    <p>Thus the valuation induced by \(\mathcal H_b\) on a ground relation atom is exactly \(b\): its arguments evaluate to themselves, and its relation interpretation tests that same atom. Apply <a href="#truth-bridge"></a>. The conclusion also says that truth of \(A\) at an arbitrary tuple of domain elements is truth of the corresponding ground instance, since every domain element is a ground term.</p>
+  </div>
+</section>
+
+<section id="herbrand-theorem" data-formal="herb-herbrand-satisfiability herb-specified-term-model" data-kind="theorem">
+  <h2>Ground instances determine whether a universal theory has a model</h2>
+  <div class="statement-box"><p>Suppose \(H_L\ne\varnothing\), and let \(\Gamma\) be any set of relational matrices. The first-order theory \(T_\Gamma\) is satisfiable if and only if the propositional theory \(G_\Gamma\) is satisfiable. In the latter case, any valuation satisfying \(G_\Gamma\) gives the model \(\mathcal H_b\models T_\Gamma\).</p></div>
+  <div class="proof">
+    <p>If \(M\models T_\Gamma\), then \(M\) satisfies each matrix at every tuple, in particular at the values of any ground terms. By <a href="#truth-bridge"></a>, \(b_M\) satisfies every member of \(G_\Gamma\).</p>
+    <p>Conversely, suppose one ground valuation \(b\) satisfies \(G_\Gamma\). Construct \(\mathcal H_b\). For \(A\in\Gamma\), take an arbitrary tuple in its domain. This tuple is a tuple \(\bar t\) of ground terms. The corresponding instance belongs to \(G_\Gamma\), so its reading is true under \(b\). By <a href="#term-truth"></a>, \(A\) is true at that tuple. It is therefore true at every tuple, and its universal closure holds. This works for every \(A\in\Gamma\), giving the required model.</p>
+  </div>
+  <p>No claim is made that an arbitrary original model consists of term values. The construction replaces it by a model in which all elements are terms.</p>
+</section>
+
+<section id="finite-obstruction" data-formal="herb-finite-ground-obstruction" data-kind="theorem">
+  <h2>Unsatisfiability is witnessed by finitely many ground instances</h2>
+  <div class="statement-box"><p>Under the hypotheses of <a href="#herbrand-theorem"></a>, \(T_\Gamma\) is unsatisfiable if and only if some finite subset \(\Delta\subseteq G_\Gamma\) is propositionally unsatisfiable.</p></div>
+  <div class="proof">
+    <p>By <a href="#herbrand-theorem"></a>, unsatisfiability of \(T_\Gamma\) is equivalent to unsatisfiability of \(G_\Gamma\). The <a href="propositional-compactness#finite-obstructions">finite-obstruction form of propositional compactness</a> gives exactly the finite subset \(\Delta\). It applies to the atom set \(B_L\) without a countability assumption. Conversely, any valuation of all of \(G_\Gamma\) would satisfy \(\Delta\), so an unsatisfiable such subset prevents both a ground valuation and a first-order model.</p>
+  </div>
+  <p>Both the selected matrices and their selected term tuples are finite in number. The whole ground-instance theory can nevertheless be infinite, even when \(\Gamma\) has just one member.</p>
+</section>
+
+<section id="clauses" data-formal="res-clause prop-literal herb-literal-substitution herb-clause-substitution herb-clause-formula herb-clause-satisfiable herb-ground-clauses herb-clause-formula-truth" data-kind="definition">
+  <h2>The same construction applies directly to signed clauses</h2>
+  <p>A <strong>relation literal</strong> is a relation atom or its negation. A <strong>first-order relation clause</strong> is a finite set of such literals, interpreted as their disjunction, with all its variables universally quantified when it is asserted. These use the <a href="resolution#clauses">same signed-atom clauses</a> as propositional resolution, now with actual relation atoms as their atom type. The empty clause is false.</p>
+  <p>A substitution acts on a clause by substituting in every atom and taking the finite set of resulting literals; signs are unchanged. Duplicate resulting literals collapse. For a ground substitution \(\sigma\), write \(C\sigma\) for this ground clause. If \(\mathcal C\) is any set of clauses, its <strong>ground clause set</strong> is \(\mathcal C^g=\{C\sigma:C\in\mathcal C,\ \sigma\text{ ground}\}\).</p>
+  <p>These clauses also denote actual formulas: read a positive literal as its relation formula, a negative one as its negation, and take a finite disjunction. Any listing of the finite set gives the same truth condition, namely that at least one literal is true. For variables from a larger stock, only the finite set occurring in the clause is closed universally.</p>
+</section>
+
+<section id="clause-bridge" data-formal="herb-grounded-clause-truth herb-clause-herbrand herb-finite-clause-obstruction herb-finite-ground-refutation" data-kind="lemma">
+  <h2>Ground clauses have exactly their propositional truth conditions</h2>
+  <p>For every structure \(M\), clause \(C\), and ground substitution \(\sigma\), the actual first-order clause formula at the term values \(\sigma(x)^M\) is true exactly when the ground propositional clause \(C\sigma\) is satisfied by \(b_M\). In particular, with \(H_L\ne\varnothing\), a set \(\mathcal C\) of universally asserted relation clauses has a model if and only if one ground valuation satisfies all of \(\mathcal C^g\).</p>
+  <div class="proof">
+    <p>At a positive literal, use <a href="#truth-bridge"></a> for its atom; at a negative literal, negate that equivalence. Finite disjunction is true exactly when one member is true. Taking the image under substitution preserves this existential condition, including when several literals acquire the same image. An empty clause has no witness on either side.</p>
+    <p>A model supplies \(b_M\) satisfying every ground clause. In the reverse direction, form \(\mathcal H_b\). For a clause and any assignment of its variables to domain elements, those elements are ground terms, so that assignment is itself a ground substitution. Self-evaluation and the literal argument show that the clause is true at this assignment. Hence all its universal instances hold.</p>
+  </div>
+  <p>Applying <a href="propositional-compactness#finite-obstructions">propositional compactness</a> to the propositional formulas of the ground clauses gives a finite unsatisfiable ground clause set whenever \(\mathcal C\) has no model. Such a finite set is exactly an input for the existing <a href="resolution#finite-completeness">propositional resolution completeness theorem</a>.</p>
+  <p>The <a href="first-order-resolution#tree-lifting">ground-proof lifting theorem</a> turns this finite ground refutation into a proof with variables. It yields <a href="first-order-resolution#refutational-completeness">refutational completeness for first-order relation clauses</a> under the same nonempty-ground-universe hypothesis.</p>
+</section>
+
+<section id="worked-instance" data-formal="herb-worked-ground-obstruction herb-worked-theory-unsatisfiable" data-kind="question">
+  <h2>Find the finite obstruction in an infinite stock of terms</h2>
+  <p>Let \(L\) have a constant \(c\), a unary function \(f\), and a unary relation \(P\). Can the following three sentences hold together?</p>
+  <div class="math-display">\[P(c),\qquad \forall x\,(P(x)\to P(f(x))),\qquad \neg P(f(f(c))).\]</div>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. The terms \(c,f(c),f(f(c))\) give the four ground formulas</p>
+    <div class="math-display">\[p_{P(c)},\qquad p_{P(c)}\to p_{P(f(c))}.\]</div>
+    <div class="math-display">\[p_{P(f(c))}\to p_{P(f(f(c)))},\qquad\neg p_{P(f(f(c)))}.\]</div>
+    <p>The first formula and first implication force \(p_{P(f(c))}=1\); the second implication then forces \(p_{P(f(f(c)))}=1\), contradicting the last formula. This is a finite unsatisfiable subset of the ground-instance theory, although the language has infinitely many ground terms.</p>
+  </div></details>
+</section>
+
+<section id="fresh-constant" data-formal="herb-fresh-language herb-fresh-term herb-matrix-translation herb-fresh-constant-satisfiable herb-fresh-constant-herbrand herb-fresh-constant-finite-obstruction" data-kind="theorem">
+  <h2>One fresh constant removes the empty-term obstruction</h2>
+  <p>For any language \(L\), add a new constant \(d\) and translate every matrix using the symbol inclusion \(j:L\hookrightarrow L(d)\). Then \(T_\Gamma\) has a nonempty model exactly when \(T_{j\Gamma}\) does; the expanded language has the ground term \(d\). Consequently the preceding ground-instance and finite-obstruction theorems apply to \(j\Gamma\) without assuming \(L\) already has a ground term.</p>
+  <div class="proof">
+    <p>Given a nonempty model of \(T_\Gamma\), choose one of its elements and interpret \(d\) by it, retaining every old interpretation. This is the <a href="changing-languages#arbitrary-expansions">expansion along a language inclusion</a>. Translated old sentences keep exactly their truth values by <a href="changing-languages#satisfaction-translation">satisfaction under translation</a>. Conversely, forget the new constant in any model of the expanded theory; the same translation theorem gives a model of the old theory. The term \(d\) makes the expanded Herbrand universe nonempty, so <a href="#herbrand-theorem"></a> and <a href="#finite-obstruction"></a> now apply.</p>
+  </div>
+</section>
+
+<section id="boundary-cases" data-formal="herb-no-constant-counterexample herb-equality-not-independent herb-equality-needs-quotient" data-kind="question">
+  <h2>Why keep the constant and equality qualifications?</h2>
+  <p>What fails if we allow an empty ground-term universe or treat ground equalities as independent propositional atoms?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Take a language with one unary relation \(P\) and no function symbols, including no constants. It has no ground terms. The sentence \(\forall x\,(P(x)\land\neg P(x))\) has no ground instances, so that empty propositional theory is satisfiable. The sentence itself has no nonempty model: choose a domain element and its two required truth values contradict each other. After adjoining \(d\), its instance \(P(d)\land\neg P(d)\) exposes the contradiction.</p>
+    <p>Equality cannot be valued freely. The single ground formula \(\neg(c=c)\) would be propositionally satisfiable if \(c=c\) were an independent atom assigned false, but it has no structure. In the other direction, \(c=e\) for two distinct constants has a one-element model, while the raw term domain interprets those constants as different syntactic terms. Equality requires coherence and often a quotient, as in the <a href="henkin-completeness#term-quotient">Henkin term model</a>; finite ground formulas with equality and relations have a <a href="quantifier-free-validity#ground-formula-test">decision by congruence closure and realizable truth rows</a>. Our theorem deliberately restricts its matrices to relation atoms.</p>
+    <p>The <a href="equality-axioms#equisatisfiability">equality-as-a-relation reduction</a> removes this restriction by adding a fresh relation with congruence axioms and recovering ordinary equality in a quotient. Its <a href="equality-axioms#axiom-clauses">five signed clause families</a> use the relation-clause representation developed here.</p>
+  </div></details>
+</section>

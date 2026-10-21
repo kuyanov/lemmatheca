@@ -1,0 +1,13 @@
+{
+  "id": "de-term-graph-truth",
+  "description": "In every expansion satisfying the definitions, the specified elimination graph satisfies \\(G_t(v,b)\\leftrightarrow b=t[v]\\), for every shared term, assignment, and output.",
+  "module": "Lemmatheca.DefinitionalExtensions.DefinitionalExtensions",
+  "declaration": "Lemmatheca.MathematicalLogic.DefinitionalExtensions.DefinitionPackage.realize_termGraph",
+  "dependencies": [
+    "de-term-graph",
+    "de-defining-models"
+  ],
+  "verified": true,
+  "declaration_line": 280,
+  "signature": "Lemmatheca.MathematicalLogic.DefinitionalExtensions.DefinitionPackage.realize_termGraph.{u, v, u', v', w, z}\n  {L : FirstOrder.Language} {K : FirstOrder.Language} {α : Type z} {M : Type w} [L.Structure M]\n  (d : Lemmatheca.MathematicalLogic.DefinitionalExtensions.DefinitionPackage L K) [(L.sum K).Structure M]\n  [FirstOrder.Language.LHom.sumInl.IsExpansionOn M] (h : d.GoodExpansion M) (t : (L.sum K).Term α) (v : α → M) (y : M) :\n  (d.termGraph t).Realize (Sum.elim v fun x => y) ↔ y = FirstOrder.Language.Term.realize v t"
+}

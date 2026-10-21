@@ -1,0 +1,12 @@
+{
+  "id": "it-scoped-truth",
+  "description": "The specified translation preserves satisfaction for every shared scoped formula, free assignment, and available-placeholder tuple valued in the selected subtype.",
+  "module": "Lemmatheca.InterpretingTheories.InterpretingTheories",
+  "declaration": "Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData.realize_translateAux",
+  "dependencies": [
+    "it-term-graph-truth"
+  ],
+  "verified": true,
+  "declaration_line": 271,
+  "signature": "Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData.realize_translateAux.{u, v, u', v', w, z}\n  {L : FirstOrder.Language} {K : FirstOrder.Language} {α : Type z}\n  {I : Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData L K} {M : Type w} [K.Structure M]\n  (h : I.GoodGraphs M) {n : ℕ} (A : L.BoundedFormula α n) (v : α → I.Domain M) (xs : Fin n → I.Domain M) :\n  (I.translateAux A).Realize (Sum.elim (fun a => ↑(v a)) fun i => ↑(xs i)) ↔ A.Realize v xs"
+}

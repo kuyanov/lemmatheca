@@ -12,13 +12,14 @@
   <p>Individual substitution must avoid capture by individual binders. Substituting a formula for a relation variable also needs to avoid capture of its free individual and relation names. We do not use such substitutions here: the semantic clauses below change assignments directly. This keeps the distinction between a syntactic replacement and the interpretation of a quantifier visible.</p>
 </section>
 
-<section id="full-semantics" data-formal="sol-relation-assignment sol-full-satisfaction" data-kind="definition">
+<section id="full-semantics" data-formal="sol-relation-assignment sol-full-satisfaction sov-validity-not-enumerable" data-kind="definition">
   <h2>Full semantics</h2>
   <p>Let \(M\) be a nonempty \(L\)-structure. An <strong>individual assignment</strong> \(a\) sends individual names to elements of \(M\). A <strong>relation assignment</strong> \(r\) sends each name \(X_i^n\) to a relation \(r_i^n\subseteq M^n\). We regard an \(n\)-tuple as a function from \(\{0,\ldots,n-1\}\) to \(M\); this includes the empty tuple when \(n=0\). Terms are evaluated using the existing <a href="first-order-structures#term-values">term-value definition</a>.</p>
   <p><strong>Full second-order satisfaction</strong>, written \(M,a,r\models\varphi\), is defined by the following clauses. First-order formulas have exactly their previous truth values and ignore \(r\). A relation atom is true when its tuple of term values belongs to the assigned relation. Falsity is false; implication has its ordinary truth condition. The new quantifier clauses are:</p>
   <div class="math-display">\[M,a,r\models\forall x_i\,\varphi\quad\Longleftrightarrow\quad\forall b\in M\; M,a[x_i:=b],r\models\varphi.\]</div>
   <div class="math-display">\[M,a,r\models\forall X_i^n\,\varphi\quad\Longleftrightarrow\quad\forall R\subseteq M^n\; M,a,r[X_i^n:=R]\models\varphi.\]</div>
   <p>Here an update replaces just one assigned value and leaves all other names unchanged. The word <em>full</em> refers to the range of the second clause: every external relation on \(M\) is included, whether or not it has a definition in \(M\). Existential relation quantification consequently means that at least one such relation works. A fixed symbol of \(L\) still has its one specified interpretation; only variables are quantified.</p>
+  <p>The <a href="second-order-validity#non-enumerability">full-validity obstruction</a> shows that no program can enumerate all and only the sentences valid under this semantics, already in the arithmetic signature.</p>
 </section>
 
 <section id="agreement" data-formal="sol-assignment-agreement sol-sentence-assignment-independence" data-kind="theorem">

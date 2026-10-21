@@ -39,11 +39,12 @@
   </div></details>
 </section>
 
-<section id="eliminating-an-atom" data-formal="res-eliminate res-elimination-derivable res-elimination-support" data-kind="definition">
+<section id="eliminating-an-atom" data-formal="res-eliminate res-elimination-derivable res-elimination-support ci-forgetting-semantics ci-propositional-example" data-kind="definition">
   <h2>Forget one atom while retaining its constraints</h2>
   <p>Fix an atom \(p\). Discard every clause containing both \(p\) and \(\neg p\), since those clauses are always true. Partition the remaining clauses into \(\Gamma_0\), containing neither sign of \(p\); \(\Gamma_+\), containing \(p\) but not \(\neg p\); and \(\Gamma_-\), containing \(\neg p\) but not \(p\). Define the <strong>elimination of \(p\)</strong> from \(\Gamma\) by</p>
   <div class="math-display">\[ E_p(\Gamma):=\Gamma_0\cup\{R_p(C,D):C\in\Gamma_+,\ D\in\Gamma_-\}. \]</div>
   <p>This finite clause set contains no occurrence of \(p\). Every member is either an original clause or the result of one resolution step, so it is derivable from \(\Gamma\). No other atom is introduced. We discard clauses tautological on the selected pivot only; tautologies on other atoms may remain harmlessly.</p>
+  <p>For \(p\land q\models q\lor r\) with distinct atoms, removing \(p\) from the premise gives the <a href="craig-interpolation#propositional-example">shared-vocabulary interpolant</a> \(q\).</p>
 </section>
 
 <section id="elimination-extension" data-formal="res-elimination-extension res-elimination-models res-elimination-equisatisfiable" data-kind="lemma">
@@ -73,6 +74,7 @@
     <p>Otherwise choose an occurring atom \(p\). The set \(E_p(\Gamma)\) is finite and has fewer occurring atoms. It is unsatisfiable, since a satisfying valuation would extend to one for \(\Gamma\) by <a href="#elimination-extension"></a>. The induction hypothesis supplies a refutation from \(E_p(\Gamma)\).</p>
     <p>Each leaf of that tree is derivable from \(\Gamma\), by <a href="#eliminating-an-atom"></a>. Substitute those derivations for the leaves, using the tree construction in <a href="#derivations"></a>. The resulting tree is a refutation from \(\Gamma\) using only the original resolution rule.</p>
 </div>
+  <p>For clauses whose relation atoms contain variables and terms, <a href="first-order-resolution#refutational-completeness">first-order refutational completeness</a> combines this finite ground theorem with Herbrand models and a lifting argument. Its rule explicitly includes the factoring needed when several literals acquire the same instance.</p>
 </section>
 
 <section id="finite-search" data-formal="res-derivation-support res-closed res-closed-derivations res-closed-satisfiable res-saturation-bound res-saturation-step res-saturation-run res-saturation-step-models res-no-step-closed res-saturation-run-models res-saturation-exists res-saturation-refutation-iff res-eliminate-many res-elimination-many-extension res-elimination-many-support res-elimination-many-equisatisfiable res-eliminate-all-decides" data-kind="theorem">
@@ -83,6 +85,8 @@
     <p>Each step preserves exactly the satisfying valuations, by <a href="#soundness"></a>; induction along a finite run gives the same conclusion for its endpoint. Every added clause is also derivable, so finding the empty clause certifies unsatisfiability. Suppose instead that the process reaches a clause set \(\Delta\) closed under resolution, without the empty clause. Induction on derivation trees shows that every clause derivable from \(\Delta\) belongs to \(\Delta\). If \(\Delta\) were unsatisfiable, <a href="#finite-completeness"></a> would put the empty clause in it, a contradiction. A model of \(\Delta\) is also a model of the initial set.</p>
     <p>The argument guarantees termination and a correct answer. It makes no claim that the search will be short. Atom elimination gives another terminating procedure. List all occurring atoms and apply the one-atom elimination operation successively. At each stage the chosen atom disappears and satisfiability is preserved. After the last stage, no atom remains, so the only possible clause is the empty clause. If it occurs, the original set is unsatisfiable. Otherwise the final set has no clauses and every valuation satisfies it. Repeatedly apply <a href="#elimination-extension"></a> in reverse order to recover a model of the original clauses; values on atoms outside the eliminated list stay unchanged.</p>
 </div>
+  <p>For <a href="horn-clauses#horn-rules">Horn clauses</a>, <a href="horn-clauses#decision-procedure">forward chaining</a> constructs a least model or detects a violated constraint.</p>
+  <p>An alternative <a href="dpll-satisfiability#search-correctness">search by simplification and branching</a> constructs a model directly, using unit clauses and literals that occur with only one sign.</p>
 </section>
 
 <section id="formula-refutation" data-formal="res-formula-refutation res-entailment-refutation res-switch-tautology prop-formula-normal-forms" data-kind="theorem">
@@ -93,4 +97,5 @@
 </div>
   <p>For example, the negation of \(((p\lor q)\land\neg p)\to q\) is equivalent to \((p\lor q)\land\neg p\land\neg q\). Its clauses are the switch requirements in <a href="#derivations"></a>, where we gave an explicit refutation. Thus this implication is valid. More generally, to test whether finitely many premises entail \(B\), apply the same construction to the conjunction of the premises with \(\neg B\).</p>
   <p>Resolution is a separate proof calculus from <a href="propositional-proofs#proofs-and-discharge">natural deduction</a>. Its completeness concerns refutations of clauses. It does not say that every clause that follows semantically from some premises must itself be obtainable by the resolution rule.</p>
+  <p>For a short refutation input, one may instead use the <a href="tseitin-encoding#extension-restriction">Tseitin encoding</a> of the negation: equisatisfiability suffices for the same unsatisfiability test.</p>
 </section>

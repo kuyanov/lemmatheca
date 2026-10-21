@@ -1,0 +1,12 @@
+{
+  "id": "qfv-skeleton-truth",
+  "module": "Lemmatheca.QuantifierFreeValidity.Formulas",
+  "declaration": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.skeleton_truth",
+  "description": "An actual quantifier-free ground formula is true in a structure exactly when its propositional skeleton is true under the structure's actual atomic truth valuation.",
+  "dependencies": [
+    "qfv-skeleton-roundtrip"
+  ],
+  "verified": true,
+  "declaration_line": 90,
+  "signature": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.skeleton_truth.{u, v, w} {L : FirstOrder.Language} (A : L.Sentence)\n  (hA : FirstOrder.Language.BoundedFormula.IsQF A) (M : Type w) [L.Structure M] :\n  M ⊨ A ↔\n    Lemmatheca.MathematicalLogic.Propositional.eval\n        (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.truthValuation M)\n        (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.skeleton A) =\n      true"
+}

@@ -47,11 +47,11 @@
   <p>The work below goes further: its conclusions are PA derivations, rather than only truths in \(\mathbb N_A\).</p>
 </section>
 
-<section id="internal-proof-method" data-formal="henkin-deductive-completeness" data-kind="lemma">
+<section id="internal-proof-method" data-formal="henkin-deductive-completeness de-elimination-truth" data-kind="lemma">
   <h2>How a model argument gives a PA derivation</h2>
 <p>Let \(H\) be a sentence of the original arithmetic language. If every model \(M\models\mathrm{PA}\) satisfies \(H\), then \(\mathrm{PA}\vdash H\). The same conclusion applies when function abbreviations in \(H\) have first been expanded using their canonical graph formulas.</p>
 <div class="proof">
-  <p>Apply <a href="henkin-completeness#deductive-completeness">deductive completeness</a> to \(\mathrm{PA}\models H\). For graph-defined abbreviations, their conservative elimination gives a sentence in the original language to which completeness applies.</p>
+  <p>Apply <a href="henkin-completeness#deductive-completeness">deductive completeness</a> to \(\mathrm{PA}\models H\). For graph-defined abbreviations, their <a href="definitional-extensions#formula-elimination">conservative elimination</a> gives a sentence in the original language to which completeness applies.</p>
 </div>
 <p>The crucial restriction is on induction inside \(M\). An arbitrary externally specified subset of a nonstandard model need not satisfy induction. Every invariant used below must be given by an arithmetic formula, with the current inputs as parameters. Graph totality lets us replace each program-value abbreviation by existentially quantified graph outputs. The resulting invariant is therefore one of the formulas to which PA's own induction schema applies.</p>
 <p>For example, an induction invariant may say: “if all tests through the current bound are true, the proof-building program's output is accepted with the prescribed conclusion.” Acceptance, the test, the output and the conclusion code are all arithmetically defined. Proving the base and successor cases establishes this invariant for every element of \(M\), including its nonstandard elements. Completeness then supplies a derivation of its universal closure in the shared proof calculus.</p>

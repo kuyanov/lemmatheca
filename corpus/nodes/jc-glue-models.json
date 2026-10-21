@@ -1,0 +1,10 @@
+{
+  "id": "jc-glue-models",
+  "description": "For finite symbol sets \\(S,T\\), models \\(M,N\\) of theories \\(T_1,T_2\\), an isomorphism \\(e\\) of their common reducts, and a chosen \\(m_0\\in M\\), the specified structure obtained by keeping the first interpretations, transporting private second-side interpretations along \\(e\\), and using \\(m_0\\) for unused functions satisfies both translated theories on the domain \\(M\\).",
+  "module": "Lemmatheca.JointConsistency.JointConsistency",
+  "declaration": "Lemmatheca.MathematicalLogic.JointConsistency.glue_structure_models",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 698,
+  "signature": "Lemmatheca.MathematicalLogic.JointConsistency.glue_structure_models.{u, v, w, w'} {L : FirstOrder.Language}\n  (S T : Finset L.Symbols) {M : Type w} {N : Type w'}\n  [sM : (Lemmatheca.MathematicalLogic.ChangingLanguages.supportedLanguage S).Structure M]\n  [sN : (Lemmatheca.MathematicalLogic.ChangingLanguages.supportedLanguage T).Structure N] [Nonempty M] [Nonempty N]\n  (e : (Lemmatheca.MathematicalLogic.ChangingLanguages.supportedLanguage (S ∩ T)).Equiv M N)\n  (T₁ : (Lemmatheca.MathematicalLogic.ChangingLanguages.supportedLanguage S).Theory)\n  (T₂ : (Lemmatheca.MathematicalLogic.ChangingLanguages.supportedLanguage T).Theory) (h₁ : M ⊨ T₁) (h₂ : N ⊨ T₂)\n  (m₀ : M) :\n  have e₀ := e.toEquiv;\n  M ⊨\n    (Lemmatheca.MathematicalLogic.ChangingLanguages.supportInclusion S).onTheory T₁ ∪\n      (Lemmatheca.MathematicalLogic.ChangingLanguages.supportInclusion T).onTheory T₂"
+}

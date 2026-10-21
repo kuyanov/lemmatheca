@@ -1,0 +1,13 @@
+{
+  "id": "qfv-row-truth",
+  "module": "Lemmatheca.QuantifierFreeValidity.Formulas",
+  "declaration": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.rowProblem_truth",
+  "description": "A structure satisfies a row problem exactly when the truth value of every atom in its finite support agrees with the specified Boolean row.",
+  "dependencies": [
+    "qfv-row-problem",
+    "qfv-literal-truth"
+  ],
+  "verified": true,
+  "declaration_line": 102,
+  "signature": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.rowProblem_truth.{u, v, w} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] [(n : ℕ) → DecidableEq (L.Relations n)]\n  (S : Finset (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Atom L))\n  (b : Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Atom L → Bool) (M : Type w) [L.Structure M] :\n  Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Satisfies\n      (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.rowProblem S b) M ↔\n    ∀ a ∈ S, a.Realize M ↔ b a = true"
+}

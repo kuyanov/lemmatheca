@@ -1,0 +1,115 @@
+<section id="relation-definitions" data-formal="de-relation-axiom de-extension de-conservative-extension" data-kind="definition">
+  <h2>A relation name abbreviates a formula</h2>
+  <p>Let \(L\) be a first-order language, \(T\) an \(L\)-theory, and \(\rho(x_0,\ldots,x_{r-1})\) an \(L\)-formula whose free variables are among the displayed ones. Add a fresh \(r\)-ary relation symbol \(R\), obtaining \(L'=L\cup\{R\}\). Its <strong>explicit defining axiom</strong> is</p>
+  <div class="math-display">\[D_R:=\forall\bar x\,(R(\bar x)\leftrightarrow\rho(\bar x)).\]</div>
+  <p>The <strong>relation definition extension</strong> is \(T_R:=T\cup\{D_R\}\), with the old axioms read in \(L'\) by the <a href="changing-languages#language-maps">language inclusion</a>. No existence or uniqueness hypothesis about \(\rho\) is needed: a relation may hold on any collection of tuples. Arity zero is allowed, in which case the definition names the truth value of an old sentence.</p>
+  <p>A theory \(T'\) in a larger language is a <strong>conservative extension</strong> of \(T\) if, for every old-language sentence \(\sigma\), \(T'\vdash\sigma\) implies \(T\vdash\sigma\). Here \(\vdash\) means the <a href="first-order-proofs#derivations-and-theories">existing first-order derivability relation</a>.</p>
+</section>
+
+<section id="relation-elimination" data-formal="de-relation-only de-relation-elimination de-relation-support" data-kind="lemma">
+  <h2>Remove a defined relation without capturing variables</h2>
+  <p>There is a formula operation \(A\mapsto A^-\), independent of \(T\), replacing \(R\)-atoms by \(\rho\) and preserving the free-variable context, such that every model \(N\models D_R\), with old-language reduct \(M\), satisfies</p>
+  <div class="math-display">\[N\models A[v]\quad\Longleftrightarrow\quad M\models A^-[v].\]</div>
+  <div class="proof">
+    <p>Leave terms, equality and old relation atoms unchanged. At an atom \(R(t_0,\ldots,t_{r-1})\), use the <a href="first-order-languages#substitution">simultaneous capture-free instance</a> \(\rho(t_0,\ldots,t_{r-1})\). Recurse through falsity, implication and universal quantification. The construction uses \(\rho\), not the axioms of \(T\).</p>
+    <p>For each context size and valuation, induct on the scoped formula. The new atomic case is precisely \(D_R\) together with the substitution truth identity; old atoms are unchanged. Implication combines the two induction hypotheses at the same valuation. Under a universal quantifier, apply the body hypothesis for every value of the newest placeholder. Bound placeholders in \(\rho\) and in the surrounding formula are kept in their separate scopes throughout substitution, so this step cannot capture an inserted variable.</p>
+  </div>
+</section>
+
+<section id="capture-example" data-formal="de-capture-counterexample" data-kind="question">
+  <h2>Which variable must stay free?</h2>
+  <p>Suppose \(R(x)\) abbreviates \(\exists y\,E(x,y)\). What is the old-language meaning of \(R(y)\), and why is \(\exists y\,E(y,y)\) an incorrect replacement?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>The correct instance is \(\exists z\,E(y,z)\), with \(z\) fresh. The displayed \(y\) stays free and denotes its supplied value. The incorrect replacement binds both occurrences. For a two-element structure with \(E(a,b)\) true exactly when \(a\ne b\), the correct instance is true at both values of \(y\), whereas \(\exists y\,E(y,y)\) is false. In the <a href="first-order-languages#scoped-formulas">scoped convention</a>, the existential placeholder and the inserted free variable are distinct from the start.</p></div>
+  </details>
+</section>
+
+<section id="function-definitions" data-formal="de-total-unique de-total-unique-meaning de-function-axiom de-short-function-axiom de-short-full-equivalent de-definition-package de-admissible de-extension" data-kind="definition">
+  <h2>A function name needs exactly one value</h2>
+  <p>Let \(\gamma(x_0,\ldots,x_{n-1},y)\) be an old-language formula, with no other free variables. Its <strong>total unique graph sentence</strong> is</p>
+  <div class="math-display">\[U_\gamma:=\forall\bar x\,\exists!y\,\gamma(\bar x,y).\]</div>
+  <p>If \(T\vdash U_\gamma\), we may introduce a fresh function symbol \(f\) of arity \(n\). Its <strong>graph defining axiom</strong> can be written</p>
+  <div class="math-display">\[D_f:=\forall\bar x\,\forall y\,(\gamma(\bar x,y)\leftrightarrow y=f(\bar x)).\]</div>
+  <p>Under \(U_\gamma\), this is equivalent to the shorter axiom \(\forall\bar x\,\gamma(\bar x,f(\bar x))\): the shorter axiom selects an output, and uniqueness identifies all outputs with it. For \(n=0\), the new symbol is a constant and the required condition is \(\exists!y\,\gamma(y)\).</p>
+  <p>More generally, a <strong>definition package</strong> assigns an old-language formula \(\rho_R(\bar x)\) to each new relation symbol and an old-language graph \(\gamma_f(\bar x,y)\) to each new function symbol. All formulas have only their indicated free variables. Write \(L^+\) for the disjoint union of the old and new symbol sets, \(D\) for the set of their graph and relation defining axioms, and \(T^+:=T\cup D\). Assume \(T\vdash U_{\gamma_f}\) for every new function \(f\). The package may have any set of symbols; every formula still uses finitely many of them.</p>
+</section>
+
+<section id="unique-expansion" data-formal="de-unique-expansion de-defining-models bd-beth bd-two-element-no-expansion" data-kind="theorem">
+  <h2>Every old model has exactly one defined expansion</h2>
+  <div class="statement-box"><p>For every definition package as above, every nonempty \(M\models T\) has exactly one expansion \(M^+\) on the same underlying set satisfying \(D\), hence exactly one satisfying \(T^+\).</p></div>
+  <div class="proof">
+    <p>Interpret \(R\) by the tuples \(\bar a\) satisfying \(\rho_R\) in \(M\). By soundness of each proof \(T\vdash U_{\gamma_f}\), every tuple \(\bar a\) has exactly one \(b\) satisfying \(\gamma_f(\bar a,b)\). Define \(f^{M^+}(\bar a)\) to be this value. These interpretations satisfy the displayed biconditional defining axioms. All old symbols retain their interpretations, so the old axioms remain true by <a href="changing-languages#satisfaction-translation">truth under reducts</a>.</p>
+    <p>If a second expansion satisfies \(D\), its relation interpretations agree tuple by tuple with the prescribed ones. Its function value at any tuple satisfies the same graph, so uniqueness makes that value equal to the prescribed value. Thus all symbol interpretations agree, which is equality of expansions on this fixed set. The claim concerns an actual unique expansion, not just uniqueness up to isomorphism.</p>
+  </div>
+  <p>Conversely, if a first-order theory determines at most one interpretation of a new relation on each old structure, <a href="beth-definability#beth-theorem">Beth definability</a> proves that this relation has a uniform old-language formula. That uniqueness condition alone <a href="beth-definability#no-existence">does not guarantee an expansion of every old structure</a>.</p>
+</section>
+
+<section id="term-graphs" data-formal="de-term-graph de-symbol-graph" data-kind="definition">
+  <h2>Replace a whole term by a formula for its value</h2>
+  <p>For each \(L^+\)-term \(t\), define its <strong>elimination graph</strong> \(G_t(\bar x,y)\), an \(L\)-formula with the original variable context \(\bar x\) and one additional output variable. First put \(G_{x_i}(\bar x,y):=(y=x_i)\). For a function symbol \(h\), define its <strong>symbol graph</strong> \(H_h(\bar z,y)\) to be \(y=h(\bar z)\) if \(h\) is old, and \(\gamma_h(\bar z,y)\) if it is new. Recursively put</p>
+  <div class="math-display">\[G_{h(t_0,\ldots,t_{k-1})}(\bar x,y):=\exists z_0\cdots\exists z_{k-1}\left(\bigwedge_{i&lt;k}G_{t_i}(\bar x,z_i)\land H_h(\bar z,y)\right).\]</div>
+  <p>The \(z_i\) are new, disjoint auxiliary placeholders, chosen separately at each constructor. The indicated graph instances use simultaneous relabeling of free variables. Existing bound variables inside a child graph stay bound there. Thus neither the original variables nor the distinguished output \(y\) is captured. For \(k=0\), the empty conjunction is true and the existential prefix is empty; constants are included in the same clause.</p>
+</section>
+
+<section id="term-graph-correctness" data-formal="de-term-graph-truth" data-kind="lemma">
+  <h2>The graph records exactly the term's value</h2>
+  <p>In any expansion \(N\models D\) of an \(L\)-structure \(M\), for every term \(t\), every assignment \(v\) to its variable context, and every \(b\in M\),</p>
+  <div class="math-display">\[M\models G_t[v,b]\quad\Longleftrightarrow\quad b=t^N[v].\]</div>
+  <div class="proof">
+    <p>Induct on the term with the predicate quantified over every assignment \(v\) and output \(b\). A variable gives its defining equality. For \(h(\bar t)\), the induction hypotheses say that the existential witnesses must satisfy \(z_i=t_i^N[v]\). Conversely, that tuple supplies all the child graphs. For an old \(h\), its symbol graph then says exactly \(b=h^N(\bar z)\), since the old interpretation is preserved. For a new \(h\), its defining axiom says the same thing. Substituting the forced tuple proves both directions. The empty tuple covers constants.</p>
+    <p>In particular, \(G_t\) has exactly one output at every assignment in every such reduct. This correctness statement does not need an extra totality assumption: the given expansion already satisfies \(D\). Totality of the defining graphs is what guarantees that every \(T\)-model admits that expansion.</p>
+  </div>
+</section>
+
+<section id="formula-elimination" data-formal="de-symbol-relation de-formula-translation de-scoped-translation de-formula-support" data-kind="definition">
+  <h2>Eliminate atoms, then rebuild their logical structure</h2>
+  <p>Define the <strong>elimination translation</strong> \(A\mapsto A^-\) for \(L^+\)-formulas. For an old relation \(Q\), put \(J_Q(\bar z):=Q(\bar z)\); for a new relation, put \(J_R:=\rho_R\). Translate atoms by</p>
+  <div class="math-display">\[\begin{aligned}
+    (s=t)^-&amp;:=\exists y\,(G_s(\bar x,y)\land G_t(\bar x,y)),\\
+    (Q(t_0,\ldots,t_{k-1}))^-&amp;:=\exists\bar z\left(\bigwedge_{i&lt;k}G_{t_i}(\bar x,z_i)\land J_Q(\bar z)\right).
+  \end{aligned}\]</div>
+  <p>Set \(\bot^-:=\bot\), \((A\to B)^-:=A^-\to B^-\), and \((\forall z_n\,A)^-:=\forall z_n\,A^-\). In the quantifier clause, first treat all \(n+1\) available placeholders as separate temporary free inputs to the body's translation, then rebind precisely its last input. The other \(n\) placeholders remain inputs of the result. Auxiliary graph variables are bound only inside translated atoms. This gives a recursion over the actual <a href="first-order-languages#scoped-formulas">scoped first-order syntax</a>, at every context size; it requires no special syntax for formulas containing new symbols.</p>
+  <p>The output uses only \(L\), with no new free variables. It is chosen from the package before the theory or model is chosen. On formulas using only \(L\), this graph translation may insert quantifiers, so it need not return the identical tree; it will return an equivalent formula. The relation-only replacement in <a href="#relation-elimination"></a> is a simpler available translation when no function symbol is being added.</p>
+</section>
+
+<section id="nested-example" data-formal="de-doubling-graph de-doubling-admissible de-nested-elimination" data-kind="question">
+  <h2>How do nested functions disappear?</h2>
+  <p>Suppose \(L\) contains a binary function symbol \(+\) and a unary relation \(P\). Add \(d\) with graph \(\gamma_d(x,y):=(y=x+x)\). Give an old-language formula equivalent to \(P(d(d(x)))\), and explain why the function condition is available without any axioms about \(+\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>A simplified result of graph elimination is</p><div class="math-display">\[\exists u\,\exists v\,(u=x+x\land v=u+u\land P(v)).\]</div><p>The innermost occurrence first contributes \(u=x+x\); the next contributes \(v=u+u\). These equations force \(u\) and \(v\), and their actual term values supply witnesses in the other direction. A function interpretation for \(+\) is already a total operation, so for every \(x\) there is exactly one object equal to \(x+x\). This is valid in every \(L\)-structure and is therefore derivable with no nonlogical assumptions by <a href="changing-languages#arbitrary-language-completeness">completeness</a>. The general recursion may introduce extra intermediate variables for old function applications and variable leaves; the term-graph lemma removes those redundant equalities.</p></div>
+  </details>
+</section>
+
+<section id="elimination-correctness" data-formal="de-scoped-elimination de-elimination-truth de-uniform-elimination" data-kind="theorem">
+  <h2>Every expanded formula has an old-language meaning</h2>
+  <div class="statement-box"><p>For every package, every scoped \(L^+\)-formula \(A\), every expansion \(N\models D\) of \(M\), and every valuation of its free variables and available placeholders,</p><div class="math-display">\[N\models A[v]\quad\Longleftrightarrow\quad M\models A^-[v].\]</div><p>Consequently every expanded formula has an old-language formula with the same free-variable context, chosen uniformly for all such expansions.</p></div>
+  <div class="proof">
+    <p>Use structural induction, with the statement quantified over all context sizes and valuations. For equality, the two graphs have a common output exactly when the two terms have equal values, by <a href="#term-graph-correctness"></a>. For a relation application, the child graphs force precisely the argument tuple. The old relation case uses the preserved old interpretation, and the new case uses its relation defining axiom.</p>
+    <p>Falsity is unchanged. The two induction hypotheses preserve the truth condition for implication at each valuation. For \(\forall z_n A\), fix the previous inputs and let the last input vary over the whole domain. The body induction hypothesis applies to every such value, so the two universal assertions agree. Rebinding that single input gives the original scoped quantifier. This also proves the usual negation, conjunction and existential cases, because these are fixed abbreviations in the primitive syntax.</p>
+  </div>
+</section>
+
+<section id="conservativity" data-formal="de-conservative de-satisfiable de-consistent" data-kind="theorem">
+  <h2>Definitions preserve old theorems</h2>
+  <div class="statement-box"><p>If \(T\vdash U_{\gamma_f}\) for every new function symbol, then, for every old sentence \(\sigma\),</p><div class="math-display">\[T^+\vdash\sigma\quad\Longleftrightarrow\quad T\vdash\sigma.\]</div><p>Moreover \(T^+\) is satisfiable exactly when \(T\) is satisfiable, and it is syntactically consistent exactly when \(T\) is.</p></div>
+  <div class="proof">
+    <p>For the forward implication, take any nonempty \(M\models T\). Its unique defined expansion satisfies \(T^+\), so soundness of the given expanded-language derivation gives \(M^+\models\sigma\). An old sentence has the same truth value in the reduct, hence \(M\models\sigma\). Thus \(T\models\sigma\); <a href="changing-languages#arbitrary-language-completeness">completeness for the existing calculus in arbitrary set-sized signatures</a> gives an actual \(T\)-derivation. The reverse implication translates the old derivation along the language inclusion and weakens its assumptions to \(T^+\).</p>
+    <p>Expansion sends any \(T\)-model to a \(T^+\)-model, and reduct sends a \(T^+\)-model to a \(T\)-model. This proves the satisfiability equivalence. Apply the derivability equivalence to falsity to obtain the consistency equivalence, using <a href="first-order-proofs#consistency-and-finite-support">consistency as absence of a derivation of falsity</a>. If \(T\) is inconsistent, the semantic argument has no models to test, but completeness still supplies the asserted derivations.</p>
+  </div>
+  <p>The function-name result in <a href="pa-computations#definitional-extensions">Peano arithmetic</a> is a useful special case. Its additional conclusion about expanded induction uses the formula-elimination theorem to turn each expanded induction instance into an old-language instance; the general conservation theorem here does not add arbitrary new axiom schemes.</p>
+</section>
+
+<section id="failed-functions" data-formal="de-false-graph-totality de-false-graph-inconsistent de-true-graph-nonunique de-nonunique-collapse de-short-conservative de-short-nonunique" data-kind="question">
+  <h2>What fails without totality or uniqueness?</h2>
+  <p>For a proposed constant \(c\), compare \(\gamma(y):=(y\ne y)\) and \(\gamma(y):=(y=y)\) over the empty theory in the equality language. What happens if we add the full graph axiom \(\forall y(\gamma(y)\leftrightarrow y=c)\)? What happens if we add only \(\gamma(c)\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>For \(y\ne y\), totality fails in every structure. The full graph axiom is false at \(y=c\), and the shorter axiom says \(c\ne c\); both are inconsistent, so they are not conservative over the consistent empty theory.</p><p>For \(y=y\), totality holds but uniqueness fails in every domain with at least two elements. The full graph axiom forces every element to equal \(c\), so it proves the old sentence \(\forall x\forall y\,x=y\), which is false in a two-element old structure. The shorter axiom \(c=c\) merely names an arbitrary element. It is conservative by <a href="changing-languages#conservative-language-inclusions">conservative addition of uninterpreted symbols</a>, but a fixed two-element old structure has two expansions and the name is not defined by its graph. Thus totality and uniqueness are sufficient for our theorem; uniqueness is essential for the claimed unique expansion and the equivalence of the two forms of graph axiom.</p></div>
+  </details>
+</section>
+
+<section id="finite-chains" data-formal="de-tower-language de-tower-theory de-tower-translation de-tower-conservative de-tower-unique-expansion de-tower-elimination" data-kind="lemma">
+  <h2>Definitions may use earlier definitions</h2>
+  <p>Let \(T_0,T_1,\ldots,T_m\) be a finite chain in which each \(T_{i+1}\) is a definition extension of \(T_i\), with each function graph proved total and unique in \(T_i\). Then every \(T_0\)-model has a unique expansion through the chain, \(T_m\) is conservative over \(T_0\), and every final-language formula has a \(T_0\)-language translation with the same truth in these expansions.</p>
+  <div class="proof"><p>Induct on the number of steps. At a successor, the unique expansion for the previous stages has exactly one further expansion by <a href="#unique-expansion"></a>. If two full expansions existed, their previous reducts would agree by induction and their final interpretations would then agree by the one-step theorem. For conservativity, a final proof of a \(T_0\)-sentence first becomes a proof in \(T_{m-1}\), then in the preceding theories, ending in \(T_0\). For formula elimination, apply the last translation first, then the preceding translations in reverse order. At each step the satisfaction equivalence holds with every valuation, so composing these equivalences proves the claim. The zero-step translation is the identity.</p></div>
+  <p>There is no circular definition in this construction. A new graph may use earlier symbols, but its defining formula contains no symbols from its own new package.</p>
+</section>

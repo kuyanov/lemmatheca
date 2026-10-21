@@ -2,7 +2,10 @@
   "id": "avigad-heule-nawrocki-mechanized-reasoning",
   "publication": "[Avigad, Heule and Nawrocki, *Logic and Mechanized Reasoning*](https://avigad.github.io/lamr/proof_systems_for_first_order_logic.html). Online 0.1, accessed 2026-10-19; no fixed commit inspected.",
   "urls": [
-    "https://avigad.github.io/lamr/proof_systems_for_first_order_logic.html"
+    "https://avigad.github.io/lamr/proof_systems_for_first_order_logic.html",
+    "https://avigad.github.io/lamr/decision_procedures_for_propositional_logic.html",
+    "https://avigad.github.io/lamr/implementing_first_order_logic.html",
+    "https://avigad.github.io/lamr/decision_procedures_for_equality.html"
   ],
   "reviews": [
     {
@@ -10,8 +13,56 @@
       "consumers": "Planning only; Herbrand/resolution branch.",
       "outcome": "Full first-order resolution completeness is explicitly a sketch; equality requires its separate treatment. This is not a complete proof audit.",
       "checked_on": "2026-10-19"
+    },
+    {
+      "checked_passages": "§6.1 complete gate encoding, equisatisfiability, fresh definitions and clause-size discussion; §§6.2–6.3 simplification, unit/pure rules and DPLL recursion. Planning comparison: §11.4 unification; §§12.1,12.3 ground equality and universal validity; §§16.1–16.2 equality-free resolution and term-model argument. Online release0.1, accessed2026-10-21, no immutable commit inspected.",
+      "consumers": "Definitional normal forms; planned finite satisfiability and ground-instance branch.",
+      "outcome": "Full equivalence gates adopted, with explicit tagged fresh atoms and uniqueness only on used names. Runtime of an optimized implementation is not imported. The source DPLL uses partial recursion; the corpus supplies a terminating variant and its correctness proof. The finite-subterm default interpretation in §12.1 requires a representative-existence repair (LAMR-EQ-01). The first-order lifting proof remains a sketch and needs the separately inspected Gallier supplement.",
+      "checked_on": "2026-10-21"
+    },
+    {
+      "checked_passages": "§12.1 Equality: finite ground equations/disequations, subterm saturation, quotient/default model and examples. §11.4 Unification: substitution, matching, most-generality, occurs check and algorithm sketch. Reused root assessment from2026-10-21.",
+      "consumers": "Ground equations: finite congruence closure and models; Term unification: substitutions and most general solutions.",
+      "outcome": "Ground equality uses the represented-application existence repair in LAMR-EQ-01, proves the finite saturation and actual model truth lemma, and covers empty input and noninjective operations. Unification uses shared arity-indexed terms and a finite equation-list solver with full factorization and termination proofs, supplied with the Pfenning/Mukund supplements. Source partial and arity-unchecked implementation is not used as a verified bridge.",
+      "checked_on": "2026-10-21"
+    },
+    {
+      "checked_passages": "§16.2: full semantic ground-instance theorem, propositional compactness, relation-valued term-model construction and truth induction. Constant assumption and equality restriction checked.",
+      "consumers": "Ground instances: term models and Herbrand’s theorem.",
+      "outcome": "The corpus supplies actual bounded-matrix and signed-clause truth bridges, explicit inhabited-ground-term hypotheses, fresh-constant expansion/reduct preservation, and finite obstruction via arbitrary-atom compactness. It treats this as a satisfiability criterion for an infinite instance set, not a decision algorithm. Equality atoms require a separate coherent quotient interpretation and are excluded from this theorem.",
+      "checked_on": "2026-10-21"
+    },
+    {
+      "checked_passages": "Section 12.3, complete finite relation-literal extension, naming variables, ground Boolean formula decision and universal-validity/existential-satisfiability reduction; section 12.1 convexity paragraph. Online release 0.1, accessed 2026-10-21.",
+      "consumers": "Quantifier-free logic: ground literals and universal validity.",
+      "outcome": "The corpus supplies the exact finite literal conflict test and a positive-relation interpretation retaining the repaired ground-equality functions, with same-model truth bridges. It explicitly enumerates realizable Boolean rows and names variables by fresh constants. Universal validity tests unsatisfiability of the named negation, repairing the missing negation in the source final reduction (LAMR-VALID-01). No arbitrary background theory, universal satisfiability or optimized implementation is claimed. Convexity retains all conclusion terms in the finite support.",
+      "checked_on": "2026-10-21"
+    },
+    {
+      "checked_passages": "Section 16.4, all five equivalence/function/relation axiom families and the equality-relation quotient reduction. Online release 0.1, accessed 2026-10-21; no immutable revision inspected.",
+      "consumers": "Equality as a relation: congruence axioms and quotient models.",
+      "outcome": "The entry develops the source quotient sketch using actual scoped formula translation, a specified nonempty quotient and projection, term evaluation and full truth preservation through quantifiers using surjectivity. Function and relation congruence include arity zero. A fixed language and translation precede arbitrary theories, and exact signed-clause/native-formula bridges expose the equality axiom families to clause methods. It makes the required same-model representation hypothesis explicit instead of claiming an unproved clausification algorithm. No additional serious defect established in the adopted passage. The concrete translation of original signed equality/relation clauses has a native-formula truth bridge and exact model correspondence with its relation-clause image plus the equality axiom clauses.",
+      "checked_on": "2026-10-21"
+    },
+    {
+      "checked_passages": "Sections 16.1–16.2: generalized multi-literal resolution, barber example, variable separation, ground-step/proof lifting and Herbrand completeness sketch. Online release 0.1, accessed 2026-10-21; no immutable revision inspected.",
+      "consumers": "First-order resolution: factoring and lifting ground proofs.",
+      "outcome": "The corpus explicitly includes factoring, separates the two parents at every inference by disjoint even/odd variable injections, and proves full-fiber deletion and exact ground-resolvent lifting. It uses the separately inspected Gallier lifting supplement and the preceding actual term-unification/Herbrand interfaces. The single-pair-MGU restriction has its own two-variable invariant counterexample rather than relying on a one-step barber observation. Equality uses the concrete equality-clause translation and five congruence-clause families. No unproved arbitrary-theory clausification, arbitrary-signature search enumeration or termination on satisfiable inputs is asserted.",
+      "checked_on": "2026-10-21"
     }
   ],
-  "entry_refs": [],
-  "finding_ids": []
+  "entry_refs": [
+    "tseitin-encoding",
+    "dpll-satisfiability",
+    "ground-equality",
+    "term-unification",
+    "herbrand-models",
+    "quantifier-free-validity",
+    "equality-axioms",
+    "first-order-resolution"
+  ],
+  "finding_ids": [
+    "LAMR-EQ-01",
+    "LAMR-VALID-01"
+  ]
 }

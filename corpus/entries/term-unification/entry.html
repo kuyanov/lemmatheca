@@ -1,0 +1,133 @@
+<section id="substitutions-and-composition" data-formal="fo-term-substitution unif-identity-substitution unif-composition unif-single-replacement" data-kind="definition">
+  <h2>Apply substitutions in a specified order</h2>
+  <p>Fix a first-order language \(L\) and variables \(x_0,x_1,\ldots\). Terms are the finite trees defined in <a href="first-order-languages#terms">the first-order syntax</a>. All terms here contain free variables only, with no quantified placeholders. A <strong>substitution</strong> is a map \(\sigma:\mathbb N\to\operatorname{Term}_L(\mathbb N)\). Its action \(t[\sigma]\) is the existing <a href="first-order-languages#substitution">simultaneous substitution</a>: replace a variable once by its assigned term and recurse through function applications.</p>
+  <p>The <strong>identity substitution</strong> is \(\mathrm{id}(x_i)=x_i\). The <strong>composition</strong> \(\tau\star\sigma\) means apply \(\sigma\) first and then \(\tau\):</p>
+  <div class="math-display">\[(\tau\star\sigma)(x_i):=\sigma(x_i)[\tau].\]</div>
+  <p>A <strong>single-variable substitution</strong> \([t/x]\) sends \(x\) to \(t\) and fixes every other variable. Substitutions are total maps; a finite description lists only the variables they change. Constants and function symbols are never replaced. We also use replacements into terms with variables in another set \(A\): if \(\sigma\) has images with variables in \(A\) and \(\tau\) replaces those variables, the same formula defines \(\tau\star\sigma\). Substitution composition is therefore also meaningful when its intermediate and final variable alphabets differ.</p>
+</section>
+
+<section id="composition-identities" data-formal="unif-term-composition unif-term-identity unif-composition-associative unif-composition-identities unif-composition-order" data-kind="lemma">
+  <h2>Composing replacements agrees with composing their actions</h2>
+  <p>For every term \(s\) and substitutions \(\sigma,\tau\),</p>
+  <div class="math-display">\[s[\mathrm{id}]=s,\qquad s[\sigma][\tau]=s[\tau\star\sigma].\]</div>
+  <p>Consequently \(\star\) is associative and has \(\mathrm{id}\) as a two-sided identity.</p>
+  <div class="proof">
+    <p>Induct on the tree \(s\). At a variable, both identities are the definitions. At \(f(s_0,\ldots,s_{k-1})\), substitution retains \(f\) and acts separately on each argument; the induction hypotheses give the claimed equality of argument tuples. This includes constants, which have no arguments. To check associativity, evaluate both substitutions at an arbitrary variable and apply the second identity to its replacement term. The identity laws follow in the same way.</p>
+  </div>
+  <p>The order matters. If \(\sigma=[f(x_1)/x_0]\) and \(\tau=[a/x_1]\), then \((\tau\star\sigma)(x_0)=f(a)\), whereas \((\sigma\star\tau)(x_0)=f(x_1)\).</p>
+</section>
+
+<section id="problems-and-generality" data-formal="unif-problem unif-unifier unif-factorization unif-most-general unif-variable-constant unif-binary-constant-images" data-kind="definition">
+  <h2>One solution represents all its further instances</h2>
+  <p>A <strong>unification problem</strong> is a finite list \(P\) of pairs of terms, written as equations \(s\doteq t\). The symbol \(\doteq\) asks for literal equality of the resulting trees; it does not assert equality in one chosen structure. A substitution \(\sigma\), whose images may have variables in any set \(A\), is a <strong>unifier</strong> of \(P\) if \(s[\sigma]=t[\sigma]\) for every pair in \(P\). Repetitions and the order of equations do not affect this definition.</p>
+  <p>A unifier \(\mu:\mathbb N\to\operatorname{Term}_L(\mathbb N)\) is <strong>most general</strong> if, for every set \(A\) and every unifier \(\sigma:\mathbb N\to\operatorname{Term}_L(A)\), some \(\rho:\mathbb N\to\operatorname{Term}_L(A)\) satisfies</p>
+  <div class="math-display">\[\sigma(x)=\mu(x)[\rho]\qquad\text{for every variable }x.\]</div>
+  <p>Thus \(\sigma=\rho\star\mu\). The equality is required on all variables, including those absent from \(P\). This convention retains their unrestricted choices in \(\rho\). Taking \(A=\varnothing\) includes substitutions by closed terms; it will be useful when a general solution is instantiated by ground terms. Most general does not mean a unique written substitution: different choices of variables to eliminate can produce different substitutions with this same factorization property.</p>
+  <p>For example, \([a/x_0]\) is a most general unifier of the one-equation problem \(x_0\doteq a\). Any solution fixes \(x_0\)'s image to \(a\), and is its own further substitution on the other variables. A solution of \(f(x_0,a)\doteq f(b,x_1)\) must have \(\sigma(x_0)=b\) and \(\sigma(x_1)=a\), because function applications have unique argument trees.</p>
+</section>
+
+<section id="size-and-occurs-check" data-formal="unif-node-count unif-occurs-obstruction" data-kind="lemma">
+  <h2>A finite term cannot contain itself properly</h2>
+  <p>Let \(|x|=1\) and \(|f(t_0,\ldots,t_{k-1})|=1+\sum_{i&lt;k}|t_i|\) be the <strong>node count</strong> of a term. If \(x\in\operatorname{FV}(t)\) and \(t\ne x\), then no substitution \(\sigma\), even into terms with a different variable alphabet, satisfies \(\sigma(x)=t[\sigma]\).</p>
+  <div class="proof">
+    <p>Each argument of a function application has strictly smaller node count than that application. Since \(x\) occurs in \(t\), follow one branch of its finite tree to an occurrence of \(x\). After substitution the same branch reaches the whole term \(\sigma(x)\), because substitution preserves every function symbol above that occurrence. If \(t\ne x\), the branch contains at least one function node, so \(|\sigma(x)|&lt;|t[\sigma]|\). Equal terms have equal node counts, giving a contradiction. This argument also follows by induction on \(t\), choosing an argument containing \(x\) at the function case.</p>
+  </div>
+  <p>Testing whether \(x\) occurs in \(t\) before assigning \(x\mapsto t\) is the <strong>occurs check</strong>. It is a finite traversal of the tree. The equation \(x\doteq x\) is harmless and is discarded first; \(x\doteq f(x)\) fails the check. This concerns finite terms, not infinite trees satisfying a recursive equation.</p>
+</section>
+
+<section id="elimination-lemma" data-formal="unif-problem-substitution unif-elimination-sound unif-elimination-factorization unif-elimination-generality" data-kind="lemma">
+  <h2>Eliminate a variable without losing any solution</h2>
+  <p>Suppose \(x\notin\operatorname{FV}(t)\). Put \(\tau=[t/x]\), let \(R[\tau]\) mean apply \(\tau\) to both sides of every equation of \(R\), and put \(P=(x\doteq t)::R\). Then the following hold.</p>
+  <ol>
+    <li>If \(\theta\) unifies \(R[\tau]\), then \(\theta\star\tau\) unifies \(P\).</li>
+    <li>If \(\sigma\) unifies \(P\), then \(\sigma\) unifies \(R[\tau]\) and \(\sigma=\sigma\star\tau\).</li>
+    <li>If \(\theta\) is most general for \(R[\tau]\), then \(\theta\star\tau\) is most general for \(P\).</li>
+  </ol>
+  <div class="proof">
+    <p>Substitution by \(\tau\) leaves \(t\) unchanged, since it changes only a variable absent from \(t\). Thus \(x[\tau][\theta]=t[\theta]=t[\tau][\theta]\); the remaining equations follow from the composition identity and the assumption about \(R[\tau]\). This proves the first assertion.</p>
+    <p>For the second, \(\sigma(x)=t[\sigma]\) says exactly that \((\sigma\star\tau)(x)=\sigma(x)\); at every other variable the equality is automatic. Therefore the substitutions are equal everywhere. If \(s\doteq u\) belongs to \(R\), then \(s[\tau][\sigma]=s[\sigma]=u[\sigma]=u[\tau][\sigma]\), proving the new equations.</p>
+    <p>For the third, take any original unifier \(\sigma\). The second assertion makes it a unifier of \(R[\tau]\), so choose \(\rho\) with \(\sigma=\rho\star\theta\). Also \(\sigma=\sigma\star\tau\). Substitution and associativity give \(\sigma=\rho\star(\theta\star\tau)\), as required on every variable. This is the factorization step that allows one successful recursive answer to represent all original solutions.</p>
+  </div>
+  <p>The same assertions apply to an equation written \(t\doteq x\), by symmetry. The condition \(x\notin\operatorname{FV}(t)\) is needed for the first assertion: without it, the assigned variable need not agree with its own substituted right-hand side.</p>
+</section>
+
+<section id="solver" data-formal="unif-problem-variables unif-solver unif-initialized-solver" data-kind="definition">
+  <h2>The solver returns a substitution or failure</h2>
+  <p>Assume equality of function symbols at each arity is decidable. Together with equality of natural-number variables this makes the following tests executable. Define the <strong>unification solver</strong> \(\operatorname{solve}(V,P)\), where \(V\) is a finite set containing every variable occurring in \(P\). Its output is either failure or a substitution. Start with \(V=\operatorname{FV}(P)\), the union of the variable sets of both sides of all equations.</p>
+  <ol>
+    <li>If \(P\) is empty, return the identity substitution.</li>
+    <li>Read the first equation. If it is \(x\doteq x\), discard it and solve the remaining list \(R\), with the same \(V\).</li>
+    <li>If either side is a variable \(x\), orient it as \(x\doteq t\). The preceding case has already removed \(t=x\). If \(x\in\operatorname{FV}(t)\), return failure. Otherwise put \(\tau=[t/x]\) and recursively solve \((V\setminus\{x\},R[\tau])\). Return failure if that call fails; if it returns \(\theta\), return \(\theta\star\tau\).</li>
+    <li>The remaining case is \(f(s_0,\ldots,s_{k-1})\doteq g(t_0,\ldots,t_{\ell-1})\). If the arities or function symbols differ, return failure. Otherwise replace that equation by \(s_0\doteq t_0,\ldots,s_{k-1}\doteq t_{k-1}\), followed by \(R\), and solve with the same \(V\).</li>
+  </ol>
+  <p>In the last case a constant has arity zero, so two equal constants contribute no new equations. The variable rule does not make a separate recursive call just to reverse an equation: it directly carries out the indicated test and elimination. Let \(\operatorname{unify}(P)\) abbreviate the initialized call.</p>
+</section>
+
+<section id="termination" data-formal="unif-recursive-progress" data-kind="theorem">
+  <h2>Each recursive call makes finite progress</h2>
+  <p>The solver is well-defined and terminates on every finite input. At every recursive call, the new variable set contains the variables of the new equations, and the ordered pair</p>
+  <div class="math-display">\[\left(|V|,\ \sum_{(s,t)\in P}(|s|+|t|)\right)\]</div>
+  <p>strictly decreases in lexicographic order: first compare the first coordinates, and use the second only when the first coordinates agree.</p>
+  <div class="proof">
+    <p>Discarding \(x\doteq x\) removes two nodes. Decomposing an equation between equal function symbols removes their two outer nodes; it retains exactly the argument nodes and the remaining equations. In both cases \(V\) is unchanged and the second coordinate strictly decreases. Removing the outer nodes introduces no variables.</p>
+    <p>In a variable elimination, \(x\) belongs to \(V\), because it occurs in the selected equation. Every variable of \(t\) also belongs to \(V\), and the occurs check ensures that none is \(x\). The <a href="first-order-languages#substitution-support">substitution-support identity</a> now shows that every variable in \(R[\tau]\) belongs to \(V\setminus\{x\}\). Its cardinality is \(|V|-1\). Substitution may increase the number of term nodes, but the first coordinate has decreased.</p>
+    <p>There is no infinite lexicographically decreasing sequence of such pairs. The first coordinate can drop only finitely many times. After its last drop it is fixed and the second coordinate would be a strictly decreasing sequence of natural numbers, which cannot continue indefinitely. Each local test and finite traversal terminates, so the recursive specification is an executable terminating algorithm.</p>
+  </div>
+</section>
+
+<section id="correctness-and-generality" data-formal="unif-solver-sound unif-solver-factorization unif-solver-complete unif-failure-criterion unif-identity-off-input unif-solver-most-general" data-kind="theorem">
+  <h2>A successful answer accounts for every solution</h2>
+  <div class="statement-box">
+    <p>For every finite problem \(P\), exactly the following alternatives apply.</p>
+    <ul>
+      <li>\(\operatorname{unify}(P)\) returns failure, and \(P\) has no unifier.</li>
+      <li>It returns a most general unifier \(\mu\), and \(\mu(x)=x\) for every variable \(x\notin\operatorname{FV}(P)\).</li>
+    </ul>
+    <p>In particular, the algorithm decides whether a finite list of first-order terms has a simultaneous syntactic solution, and every solution is a further substitution instance of the returned one.</p>
+  </div>
+  <div class="proof">
+    <p>Prove a stronger assertion for every supported call \(\operatorname{solve}(V,P)\): success returns a most general unifier fixing every variable outside \(V\), and failure means there is no unifier. Use induction on the lexicographic measure from <a href="#termination">the termination theorem</a>.</p>
+    <p>An empty list is unified by the identity, and any substitution \(\sigma\) factors through it using \(\rho=\sigma\). Dropping \(x\doteq x\) preserves exactly the unifiers. For equal outer function symbols, equality of substituted applications is equivalent to equality of each substituted pair of arguments, so decomposition also preserves exactly the unifiers. Their recursive answers and all-variable factorizations apply unchanged. Different outer symbols or arities cannot become equal under substitution, so a clash has no solution.</p>
+    <p>The remaining immediate failure is the occurs check, handled by <a href="#size-and-occurs-check">the finite-term obstruction</a>. In a successful elimination, apply <a href="#elimination-lemma">the elimination lemma</a> to the recursive most general answer \(\theta\). It gives both that \(\theta\star\tau\) unifies the original problem and that every original solution factors through it. If the recursive call fails, any original solution would unify the reduced problem by the same lemma, contradicting the induction hypothesis.</p>
+    <p>It remains to check variables outside \(V\). Dropping and decomposition preserve their identity images by induction. In an elimination, such a variable differs from \(x\), so \(\tau\) fixes it; it is also outside \(V\setminus\{x\}\), so \(\theta\) fixes it. Their composition fixes it too. Initializing \(V\) with \(\operatorname{FV}(P)\) proves the assertion. The returned substitution consequently has a finite description, even though the factorization quantifies over all variables.</p>
+  </div>
+  <p>The factorization for ground substitutions is used in <a href="first-order-resolution#one-step-lifting">lifting resolution inferences</a>: a ground pivot match factors through a most general unifier, retaining the exact ground resolvent as an instance.</p>
+</section>
+
+<section id="worked-solution" data-formal="unif-worked-answer unif-worked-generality unif-worked-off-support" data-kind="question">
+  <h2>Why must replacements reach the remaining equations?</h2>
+  <p>Let \(f\) be binary, \(g\) unary, and \(a\) a constant. Unify</p>
+  <div class="math-display">\[f(x_0,g(x_1))\doteq f(g(x_2),x_3),\qquad x_2\doteq a.\]</div>
+  <p>Give one most general answer and explain why assigning variables independently would lose a required relation.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Decompose the first equation into \(x_0\doteq g(x_2)\) and \(g(x_1)\doteq x_3\). Eliminate \(x_0\), then \(x_3\), and finally \(x_2\). Compose the replacements in that order, so the last replacement also acts inside the earlier image \(g(x_2)\). The resulting substitution is</p>
+      <div class="math-display">\[\mu(x_0)=g(a),\quad\mu(x_1)=x_1,\quad\mu(x_2)=a,\quad\mu(x_3)=g(x_1),\]</div>
+      <p>and \(\mu(x_j)=x_j\) for all other indices. Direct substitution gives \(f(g(a),g(x_1))\) on both sides of the first equation and \(a\) on both sides of the second. Any unifier \(\sigma\) must satisfy \(\sigma(x_2)=a\), then \(\sigma(x_0)=g(a)\) and \(\sigma(x_3)=g(\sigma(x_1))\). Hence \(\sigma=\sigma\star\mu\), so this displayed answer is most general. The value of \(x_3\) is tied to the freely chosen value of \(x_1\); choosing their images independently need not satisfy the equation.</p>
+    </div>
+  </details>
+</section>
+
+<section id="cyclic-equations" data-formal="unif-cyclic-impossibility" data-kind="question">
+  <h2>A cycle can appear only after an elimination</h2>
+  <p>Let \(f\) be unary. Does the problem \(x_0\doteq f(x_1),\ x_1\doteq f(x_0)\) have a unifier? Neither original right-hand side contains its own left-hand variable.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Eliminating \(x_0\) replaces the second equation by \(x_1\doteq f(f(x_1))\). It now fails the occurs check. The elimination lemma proves that this failure rules out an original unifier as well. Equivalently any original solution would imply \(\sigma(x_1)=f(f(\sigma(x_1)))\), impossible for a finite term by node count. An occurs check confined to the unchanged original equations would miss this obstruction.</p>
+    </div>
+  </details>
+</section>
+
+<section id="matching-and-interpretation" data-formal="unif-matching unif-matching-counterexample unif-distinct-constants unif-same-constant-values fo-term-semantic-substitution" data-kind="question">
+  <h2>Unification is syntactic and two-sided</h2>
+  <p>Compare unification with the following two problems: finding \(\sigma\) with \(s[\sigma]=t\), where the target \(t\) is left unchanged; and finding an assignment in a structure making the values of \(s,t\) equal. Are these the same problem?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The first problem is <strong>matching</strong>, which changes only the pattern. For distinct variables \(x_0,x_1\), the terms \(f(x_0,x_0)\) and \(f(x_1,a)\) unify by sending both variables to \(a\), but the first does not match the second: its two argument images would have to be both the unchanged variable \(x_1\) and the constant \(a\). If variables in a target must stay fixed during unification, they need to be treated as fixed parameters rather than substitutable variables.</p>
+      <p>The second problem depends on the chosen interpretations of symbols. Distinct constants \(a,b\) do not unify: substitution changes neither tree. Nevertheless a structure may interpret them by the same object. Indeed a one-element structure does so. The <a href="first-order-structures#semantic-substitution">semantic substitution identity</a> shows that syntactically equal substituted terms have equal values under every interpretation and assignment, but its converse fails in a particular structure. The solver decides equality of substituted finite trees, not arbitrary equations in a mathematical theory.</p>
+    </div>
+  </details>
+</section>

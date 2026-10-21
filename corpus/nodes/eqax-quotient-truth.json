@@ -1,0 +1,13 @@
+{
+  "id": "eqax-quotient-truth",
+  "description": "For every equality-axiom model \\(N\\), actual scoped formula \\(A\\), free assignment \\(v\\) and slot assignment \\(w\\), \\(Q_N\\models A[q\\circ v,q\\circ w]\\) if and only if \\(N\\models A^E[v,w]\\), including quantified formulas.",
+  "module": "Lemmatheca.EqualityAxioms.EqualityAxioms",
+  "declaration": "Lemmatheca.MathematicalLogic.EqualityAxioms.quotient_truth",
+  "dependencies": [
+    "eqax-term-projection",
+    "eqax-quotient-relation"
+  ],
+  "verified": true,
+  "declaration_line": 207,
+  "signature": "Lemmatheca.MathematicalLogic.EqualityAxioms.quotient_truth.{u, v, w, z} {L : FirstOrder.Language} {α : Type w}\n  {N : Type z} [(Lemmatheca.MathematicalLogic.EqualityAxioms.Extended L).Structure N]\n  (h : Lemmatheca.MathematicalLogic.EqualityAxioms.Axioms L N) {n : ℕ} (A : L.BoundedFormula α n) (v : α → N)\n  (w : Fin n → N) :\n  A.Realize (Lemmatheca.MathematicalLogic.EqualityAxioms.projection h ∘ v)\n      (Lemmatheca.MathematicalLogic.EqualityAxioms.projection h ∘ w) ↔\n    (Lemmatheca.MathematicalLogic.EqualityAxioms.translate A).Realize v w"
+}

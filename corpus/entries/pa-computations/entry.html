@@ -78,13 +78,14 @@
   <p>There are two different inductions in this proof. The metatheoretic induction constructs a formula and a finite PA proof from a finite presentation. At each recursion step, that proof contains an induction <em>inside PA</em>, covering all its internal computation lengths. The latter is the additional strength absent from a mere list of numeralwise proofs.</p>
 </section>
 
-<section id="definitional-extensions" data-formal="pac-graph-extension pac-graph-extension-conservative pac-graph-extension-unique" data-kind="theorem">
+<section id="definitional-extensions" data-formal="pac-graph-extension pac-graph-extension-conservative pac-graph-extension-unique de-conservative de-elimination-truth" data-kind="theorem">
   <h2>Function names can abbreviate their proved graphs</h2>
   <p>Let \(F(\bar x,y)\) be any arithmetic graph with PA-provable uniform totality and uniqueness. Adding a new function symbol \(f\) with the defining axiom \(F(\bar x,f(\bar x))\) is conservative over PA: it creates no new theorem in the original language. One may also use induction for formulas containing the new symbol.</p>
   <div class="proof">
     <p>Every PA-model has a unique expansion interpreting \(f\): assign the unique value supplied by \(F\). To translate an expanded formula back, replace each added function application by a fresh value variable and its graph assertion, starting with the innermost application. Totality and uniqueness give satisfaction equivalence by induction on terms and formulas. An induction instance in the expanded language consequently translates to an induction instance for an arithmetic formula, with the same parameters. Thus every PA-model expands to a model of the defining axiom and all expanded induction instances. An original-language consequence holds in every PA-model and therefore has a PA proof by <a href="henkin-completeness#deductive-completeness">completeness</a>.</p>
 </div>
   <p>This justifies graph abbreviations throughout the argument. It does not assert that every true identity involving the added functions is provable. Such identities must follow from their proved defining equations, arithmetic laws and induction.</p>
+  <p>The <a href="definitional-extensions#conservativity">general conservation theorem for definitions</a> applies to any first-order theory. Its <a href="definitional-extensions#formula-elimination">explicit elimination construction</a> handles nested terms and arbitrary packages of new symbols; expanded induction here is the additional arithmetic argument.</p>
 </section>
 
 <section id="doubling-example" data-formal="pac-doubling pac-doubling-derives" data-kind="question">

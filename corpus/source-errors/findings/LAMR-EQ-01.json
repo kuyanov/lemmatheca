@@ -1,0 +1,15 @@
+{
+  "id": "LAMR-EQ-01",
+  "source_ids": [
+    "avigad-heule-nawrocki-mechanized-reasoning"
+  ],
+  "severity": "serious",
+  "title": "The finite-subterm function interpretation can depend on representatives.",
+  "details": "Logic and Mechanized Reasoning online0.1, §12.1, displayed interpretation following the definition of [t], accessed2026-10-21. The rule returns [f(t₁,…,tₙ)] when that application lies in the finite subterm set S, and otherwise returns a new default star. Congruence alone does not make this rule independent of representatives: take equations a=b and f(a)=f(a), so S contains a,b,f(a) but not f(b). The same input class [a]=[b] then gives [f(a)] using representative a and star using representative b. These are different domain elements. Repair: return the class of any represented application whose argument classes equal the input classes, if such an application exists; congruence makes all represented witnesses give the same output. Use the default only when no such witness exists. A fixed arbitrary representative rule without this existence search does not suffice. This is an error in the displayed model construction, not a counterexample to congruence-closure decidability. The ground-equality entry supplies the repaired construction, its well-definedness and exact term-value argument.",
+  "entry_refs": [
+    "ground-equality#represented-applications",
+    "ground-equality#total-interpretation",
+    "ground-equality#representative-question"
+  ],
+  "related_findings": []
+}

@@ -1,0 +1,13 @@
+{
+  "id": "eqax-clause-quotient-truth",
+  "description": "In every equality-axiom model \\(N\\), an original native clause formula holds at \\(q\\circ u\\) in its specified quotient if and only if the actual translated shared relation-clause formula holds at \\(u\\) in \\(N\\).",
+  "module": "Lemmatheca.EqualityAxioms.EqualityAxioms",
+  "declaration": "Lemmatheca.MathematicalLogic.EqualityAxioms.originalClause_quotient_truth",
+  "dependencies": [
+    "eqax-clause-translation-truth",
+    "eqax-quotient-truth"
+  ],
+  "verified": true,
+  "declaration_line": 616,
+  "signature": "Lemmatheca.MathematicalLogic.EqualityAxioms.originalClause_quotient_truth.{u, v, w, z} {L : FirstOrder.Language}\n  {α : Type w} {N : Type z} [(Lemmatheca.MathematicalLogic.EqualityAxioms.Extended L).Structure N]\n  (h : Lemmatheca.MathematicalLogic.EqualityAxioms.Axioms L N)\n  (C : Lemmatheca.MathematicalLogic.EqualityAxioms.OriginalClause L α) (v : α → N) :\n  (Lemmatheca.MathematicalLogic.EqualityAxioms.originalClauseFormula C).Realize\n      (Lemmatheca.MathematicalLogic.EqualityAxioms.projection h ∘ v) ↔\n    (Lemmatheca.MathematicalLogic.HerbrandModels.clauseToFormula\n          (Lemmatheca.MathematicalLogic.EqualityAxioms.translateClause C)).Realize\n      v"
+}

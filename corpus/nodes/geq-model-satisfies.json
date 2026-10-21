@@ -1,0 +1,13 @@
+{
+  "id": "geq-model-satisfies",
+  "description": "If finite subterm-closed \\(S\\) contains all terms of a ground equality problem and no disequation is in the computed closure, the specified quotient-plus-default structure satisfies that problem.",
+  "module": "Lemmatheca.GroundEquality.Models",
+  "declaration": "Lemmatheca.MathematicalLogic.GroundEquality.model_satisfies",
+  "dependencies": [
+    "geq-model-equality",
+    "geq-equations-in-closure"
+  ],
+  "verified": true,
+  "declaration_line": 92,
+  "signature": "Lemmatheca.MathematicalLogic.GroundEquality.model_satisfies.{u, v} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] (P : Lemmatheca.MathematicalLogic.GroundEquality.Problem L)\n  (S : Finset (Lemmatheca.MathematicalLogic.GroundEquality.GroundTerm L)) (hE : P.equations ⊆ S.product S)\n  (hD : P.disequations ⊆ S.product S) (hS : Lemmatheca.MathematicalLogic.GroundEquality.SubtermClosed S)\n  (hcheck : ∀ p ∈ P.disequations, p ∉ Lemmatheca.MathematicalLogic.GroundEquality.closure S P.equations) :\n  Lemmatheca.MathematicalLogic.GroundEquality.Satisfies P\n    (Lemmatheca.MathematicalLogic.GroundEquality.Carrier S P.equations hE)"
+}

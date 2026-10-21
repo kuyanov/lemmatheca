@@ -1,0 +1,12 @@
+{
+  "id": "il-induction",
+  "description": "Structural induction for infinitary formulas ranges over every finite bound-slot context; at a countable conjunction its hypotheses include every conjunct.",
+  "module": "Lemmatheca.InfinitaryLogic.Syntax",
+  "declaration": "Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula.rec",
+  "dependencies": [
+    "il-formula"
+  ],
+  "verified": true,
+  "declaration_line": 12,
+  "signature": "Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula.rec.{u_1, u, v, w} {L : FirstOrder.Language} {α : Type w}\n  [Finite α] {motive : (a : ℕ) → Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula L α a → Sort u_1}\n  (falsum : {n : ℕ} → motive n Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula.falsum)\n  (equal :\n    {n : ℕ} → (t s : L.Term (α ⊕ Fin n)) → motive n (Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula.equal t s))\n  (rel :\n    {n k : ℕ} →\n      (R : L.Relations k) →\n        (ts : Fin k → L.Term (α ⊕ Fin n)) → motive n (Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula.rel R ts))\n  (imp :\n    {n : ℕ} →\n      (φ ψ : Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula L α n) → motive n φ → motive n ψ → motive n (φ.imp ψ))\n  (all :\n    {n : ℕ} →\n      (φ : Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula L α (n + 1)) → motive (n + 1) φ → motive n φ.all)\n  (conj :\n    {n : ℕ} →\n      (φ : ℕ → Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula L α n) →\n        ((a : ℕ) → motive n (φ a)) → motive n (Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula.conj φ))\n  {a✝ : ℕ} (t : Lemmatheca.MathematicalLogic.InfinitaryLogic.Formula L α a✝) : motive a✝ t"
+}

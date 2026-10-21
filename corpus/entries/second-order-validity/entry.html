@@ -1,0 +1,105 @@
+<section id="validity" data-formal="sov-full-validity sov-sound sov-weak-complete univ-enumerable-predicate" data-kind="definition">
+  <h2>Validity and an effective list of theorems</h2>
+  <p>Use the arithmetic language with zero, successor, addition and multiplication, and the <a href="second-order-logic#two-kinds-of-variables">shared second-order syntax</a>. A <strong>full validity</strong> is a second-order sentence true in every nonempty structure for this language, with relation quantifiers ranging over every relation of the indicated arity. Write \(\operatorname{Val}_2(\varphi)\) for this property. Assignments do not affect a sentence's truth, by <a href="second-order-logic#agreement">the agreement theorem</a>.</p>
+  <p>An <strong>effective theorem set</strong> is a predicate \(P(n)\) on natural-number sentence codes which is computably enumerable. Thus a program can accept exactly its members; it may run forever on a nonmember. A <strong>sound</strong> theorem set contains only codes of full validities. It is <strong>weakly complete</strong> if it contains the code of every full validity. Weak completeness concerns sentences provable with no premises; it already suffices for the obstruction we shall prove.</p>
+  <p>These notions concern actual algorithms and the <a href="universal-computation#decidable-and-enumerable">established notion of computable enumerability</a>. Merely choosing an arbitrary sequence of sentences would not make their set effective. We will fix explicit codes below, including how to handle numbers which code no arithmetic sentence.</p>
+</section>
+
+<section id="finite-peano-sentence" data-formal="sov-peano-conjunction sov-peano-closed red-robinson-conjunction sol-induction-sentence" data-kind="definition">
+  <h2>Putting the finite Peano axioms into one sentence</h2>
+  <p>Let \(q\) be the conjunction, in a fixed order, of the seven <a href="arithmetic-theories#robinson-axioms">Robinson arithmetic axioms</a>. This is the same <a href="computable-reductions#finite-axiom-antecedent">fixed finite conjunction</a> used in effective first-order reductions. Let \(\iota\) be the <a href="second-order-arithmetic#full-induction">full second-order induction sentence</a>. Regard the first-order sentence \(q\) as a second-order sentence via the <a href="second-order-logic#first-order-inclusion">first-order inclusion</a>, written \(\widehat q\). Define the <strong>Peano conjunction</strong></p>
+  <div class="math-display">\[\Pi=\widehat q\wedge\iota.\]</div>
+  <p>This is one fixed sentence, not an infinite axiom scheme. Conjunction is the existing abbreviation \(\varphi\wedge\psi=\neg(\varphi\to\neg\psi)\), so \(\Pi\) belongs to the actual second-order syntax. Its first conjunct has no free variables; its second binds both the induction predicate and its individual variables. Thus \(\Pi\) is closed.</p>
+</section>
+
+<section id="peano-models" data-formal="sov-peano-models sov-standard-model soa-canonical-isomorphism" data-kind="lemma">
+  <h2>The conjunction has exactly the full Peano models</h2>
+  <p>A structure satisfies \(\Pi\) under full semantics if and only if it satisfies every member of the <a href="second-order-arithmetic#finite-peano-theory">finite second-order Peano theory</a>. The standard natural-number structure satisfies \(\Pi\), and every structure satisfying \(\Pi\) is isomorphic to it in the entire arithmetic language.</p>
+  <div class="proof">
+    <p>The semantics of the conjunction requires both \(\widehat q\) and \(\iota\). First-order inclusion preserves truth, so the first condition is satisfaction of all seven Robinson axioms. The second is induction for every subset of the domain. These are exactly the two parts of the finite second-order Peano theory. The <a href="second-order-arithmetic#standard-model">standard-model argument</a> supplies a model, and <a href="second-order-arithmetic#categoricity">categoricity</a> supplies the required isomorphism. That isomorphism preserves zero, successor, addition and multiplication; preserving only the successor structure would not yet justify transferring arbitrary arithmetic sentences.</p>
+  </div>
+</section>
+
+<section id="truth-to-validity" data-formal="sov-validity-translation sov-translation-closed sov-truth-to-validity" data-kind="theorem">
+  <h2>Arithmetic truth becomes validity of an implication</h2>
+  <p>For each first-order arithmetic sentence \(\sigma\), define its <strong>validity translation</strong> by \(\tau(\sigma)=\Pi\to\widehat\sigma\). It is a closed sentence, and</p>
+  <div class="statement-box"><div class="math-display">\[\mathbb N\models\sigma\quad\Longleftrightarrow\quad\operatorname{Val}_2(\tau(\sigma)).\]</div></div>
+  <div class="proof">
+    <p>Suppose \(\mathbb N\models\sigma\), and take any nonempty arithmetic structure \(M\). If \(M\) does not satisfy \(\Pi\), the implication is true. If it does, <a href="#peano-models"></a> gives an arithmetic isomorphism \(\mathbb N\cong M\). First-order sentences are invariant under such isomorphisms, so \(M\models\sigma\). First-order inclusion then gives \(M\models\widehat\sigma\). The implication is therefore true in every full structure.</p>
+    <p>Conversely, evaluate the proposed validity in the standard natural-number structure. This structure satisfies \(\Pi\). The implication therefore gives \(\widehat\sigma\), which has exactly the truth value of \(\sigma\) in \(\mathbb N\). Closure of the translation follows from closure of both the antecedent and the consequent.</p>
+  </div>
+  <p>The same fixed antecedent works for every \(\sigma\). In the forward direction the argument examines an arbitrary structure; it does not run a procedure deciding whether that structure satisfies \(\Pi\).</p>
+</section>
+
+<section id="syntax-codes" data-formal="sov-formula-code sov-validity-codes proofcode-node" data-kind="definition">
+  <h2>Codes for the actual second-order syntax</h2>
+  <p>Use the established <a href="coding-formal-proofs#tagged-syntax">tagged natural-number nodes</a> \(N(t,[a_1,\ldots,a_k])\), whose tag and finite argument list can be recovered uniquely. For a first-order formula with named free variables, let \(c_{\mathrm{FO}}\) be the existing named-formula code. In particular, a closed sentence, regarded as a first-order formula with named free variables, satisfies \(c_{\mathrm{FO}}(\sigma)=\ulcorner\sigma\urcorner\), where the latter is the existing arithmetic sentence code.</p>
+  <p>Define the <strong>second-order code</strong> \(c_2\) recursively on the six constructors:</p>
+  <div class="math-display">\[c_2(\operatorname{FO}(\alpha))=N(20,[c_{\mathrm{FO}}(\alpha)]),\qquad c_2(\bot)=N(22,[]).\]</div>
+  <div class="math-display">\[c_2(X^n(t_0,\ldots,t_{n-1}))=N(21,[n,X,c_T(t_0),\ldots,c_T(t_{n-1})]).\]</div>
+  <div class="math-display">\[c_2(\varphi\to\psi)=N(23,[c_2(\varphi),c_2(\psi)]).\]</div>
+  <div class="math-display">\[c_2(\forall x\,\varphi)=N(24,[x,c_2(\varphi)]),\qquad c_2(\forall X^n\,\varphi)=N(25,[n,X,c_2(\varphi)]).\]</div>
+  <p>Here \(c_T\) is the established term coding with each free individual name coded as a free name. Lists of term arguments keep their order. Bound first-order placeholders inside an initial first-order formula retain the existing first-order coding; individual and relation binders added by the second-order syntax are recorded by their displayed natural-number names and arities. The separate outer tags distinguish a first-order starting formula from an added relation atom, even when they happen to express equivalent statements.</p>
+  <p>Define the <strong>validity-code predicate</strong> \(V_2(n)\) to hold when \(n=c_2(\varphi)\) for a closed full validity \(\varphi\). A number which codes no such sentence is outside \(V_2\).</p>
+</section>
+
+<section id="faithful-coding" data-formal="sov-code-injective sov-code-validity" data-kind="lemma">
+  <h2>Codes distinguish the formulas they encode</h2>
+  <p>The map \(c_2\) is injective. Consequently \(V_2(c_2(\varphi))\) holds exactly when \(\varphi\) is a closed full validity.</p>
+  <div class="proof">
+    <p>Compare two formulas having equal codes and induct on the first formula, with the second arbitrary. Recovering the outer tag forces them to have the same constructor. For a first-order starting formula, recovering its sole argument and <a href="coding-formal-proofs#coding-is-faithful">injectivity of named first-order coding</a> gives equality. For a relation atom, the argument list first gives the arity and relation name, and then equal term codes at each position. Injectivity of term coding gives the same ordered term tuple.</p>
+    <p>For implication, recovering the two argument codes and applying the two induction hypotheses gives identical subformulas. For an individual binder, recover its name and its body's code, then apply the induction hypothesis to the body. For a relation binder recover both its arity and name before doing the same. Falsity has no arguments. This covers every constructor and proves injectivity. If a validity-code witness has the same code as \(\varphi\), injectivity identifies that witness with \(\varphi\), proving the consequence.</p>
+  </div>
+</section>
+
+<section id="effective-code-map" data-formal="sov-code-translation sov-code-translation-primitive sov-sentence-code-equation sov-invalid-input sov-falsum-not-valid" data-kind="lemma">
+  <h2>The translation is an effective operation on numbers</h2>
+  <p>Let \(\operatorname{Sent}(n)\) be the established primitive recursive <a href="coding-formal-proofs#syntax-recognition">test for first-order arithmetic sentence codes</a>, and put \(p=c_2(\Pi)\), \(b=N(22,[])\). Define the total <strong>guarded code translation</strong></p>
+  <div class="math-display">\[f(n)=\begin{cases}N(23,[p,N(20,[n])])&amp;\text{if }\operatorname{Sent}(n),\\b&amp;\text{otherwise.}\end{cases}\]</div>
+  <p>This function is primitive recursive. On a genuine sentence code it satisfies \(f(\ulcorner\sigma\urcorner)=c_2(\tau(\sigma))\). On every other input it returns the code of falsity.</p>
+  <div class="proof">
+    <p>The constant \(p\) is the code of a single fixed finite formula. The function only constructs fixed-length argument lists and applies the primitive recursive node operation. It then chooses between that value and the constant \(b\) using the primitive recursive sentence test. Primitive recursive functions are closed under these operations, so \(f\) is primitive recursive and hence computable.</p>
+    <p>For a genuine sentence code the test succeeds, by exact sentence recognition. The first-order inclusion retains its original sentence code inside the named-formula payload. The defining equations for the first-order constructor and implication therefore give precisely \(c_2(\Pi\to\widehat\sigma)\). If the test fails the second branch is its definition. Falsity is closed and false in the standard natural-number structure, so its code never belongs to \(V_2\).</p>
+  </div>
+  <p>This proof specifies the numerical operation itself. The semantic equivalence of <a href="#truth-to-validity"></a>, by itself, would not establish computability of a translation on codes.</p>
+</section>
+
+<section id="reduction" data-formal="sov-true-arithmetic-codes sov-true-arithmetic-code sov-code-reduction sov-many-one-reduction" data-kind="theorem">
+  <h2>A reduction which also handles invalid inputs</h2>
+  <p>Let \(\operatorname{TrueAr}(n)\) mean that \(n=\ulcorner\sigma\urcorner\) for a first-order arithmetic sentence true in \(\mathbb N\). Then the specified computable function \(f\) satisfies</p>
+  <div class="math-display">\[\operatorname{TrueAr}(n)\quad\Longleftrightarrow\quad V_2(f(n))\qquad(n\in\mathbb N).\]</div>
+  <div class="proof">
+    <p>If \(\operatorname{Sent}(n)\) holds, exact recognition supplies an actual sentence \(\sigma\) with code \(n\). Injectivity of sentence coding says that \(\operatorname{TrueAr}(n)\) is exactly \(\mathbb N\models\sigma\). The code equation from <a href="#effective-code-map"></a>, faithful second-order coding, and <a href="#truth-to-validity"></a> identify this with \(V_2(f(n))\).</p>
+    <p>If \(\operatorname{Sent}(n)\) fails, \(n\) cannot witness \(\operatorname{TrueAr}(n)\): every arithmetic sentence passes the test. Meanwhile \(f(n)=b\), the code of falsity, which is not in \(V_2\). Both sides are false. Thus the equivalence holds on all natural numbers, as required for a reduction between predicates on numbers.</p>
+  </div>
+</section>
+
+<section id="non-enumerability" data-formal="sov-validity-not-enumerable sov-validity-undecidable" data-kind="theorem">
+  <h2>Full validities cannot be enumerated</h2>
+  <div class="statement-box"><p>The predicate \(V_2\) is not computably enumerable. In particular, no algorithm decides full second-order validity in the arithmetic language.</p></div>
+  <div class="proof">
+    <p>Suppose a program accepts exactly the members of \(V_2\). Given a natural number \(n\), compute \(f(n)\) and run that program on the result. It accepts exactly when \(V_2(f(n))\), hence exactly when \(\operatorname{TrueAr}(n)\), by <a href="#reduction"></a>. This is the <a href="universal-computation#enumerable-closure">closure of computable enumerability under computable preimages</a>, applied to the concrete map already proved computable.</p>
+    <p>The resulting program would enumerate true arithmetic, contrary to <a href="first-incompleteness#true-arithmetic">the non-enumerability of true arithmetic</a>. Thus no validity semidecision program exists. Every decidable predicate is computably enumerable, so a validity decision procedure is impossible as well.</p>
+  </div>
+  <p>This result uses only the fixed arithmetic signature. Any larger effective syntax admitting a computable translation which preserves and reflects validity inherits the obstruction; no assertion about such a further encoding is needed here.</p>
+</section>
+
+<section id="no-effective-completeness" data-formal="sov-no-effective-completeness sov-sound-effective-incomplete sov-sound-consistent sov-certified sov-certified-enumerable sov-no-complete-checker" data-kind="theorem">
+  <h2>Every sound effective calculus misses a validity</h2>
+  <div class="statement-box"><p>Let \(P\subseteq\mathbb N\) be any computably enumerable theorem-code set. If \(P\) is sound for full second-order semantics, some closed full validity has code outside \(P\). Thus no effective theorem set is both sound and weakly complete.</p></div>
+  <div class="proof">
+    <p>Soundness says \(P\subseteq V_2\). If every closed full validity had its code in \(P\), weak completeness would say \(V_2\subseteq P\). Then the two predicates would be equal, making \(V_2\) computably enumerable. This contradicts <a href="#non-enumerability"></a>. Negating the alleged inclusion supplies a number in \(V_2\setminus P\), and its definition supplies the omitted closed sentence.</p>
+  </div>
+  <p>Soundness also guarantees consistency in the sense that falsity has no accepted theorem code: falsity fails in the standard natural-number structure. Thus an enumerable sound calculus is consistent but incomplete for full validity. Its incompleteness is the omission of a valid sentence.</p>
+  <p>A calculus with finite certificates and a computable checking relation has an enumerable theorem-code set: search all certificate codes and accept a proposed conclusion once a certificate checks. A primitive recursive checker is a particular case. Enumerable axiom schemes are compatible with such certificates when proofs include finite witnesses certifying their axiom occurrences, as in <a href="coding-formal-proofs#certified-proofs">the earlier certificate construction</a>. The conclusion applies to every such calculus once its theorem codes are shown enumerable; it does not depend on inventing a particular finite collection of second-order proof rules.</p>
+</section>
+
+<section id="limits-of-the-obstruction" data-formal="sov-semantic-theorem-set sov-validity-not-enumerable hs-completeness soa-noncompactness" data-kind="question">
+  <h2>Which completeness claim has failed?</h2>
+  <p>A colleague gives two proposals. First, take every full validity as an axiom. Second, use the <a href="henkin-semantics#translated-calculus">translated Henkin calculus</a>. Do these contradict the theorem? Does the earlier failure of full-semantic compactness already prove the same theorem?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The first proposal is sound and weakly complete by its definition, but its theorem codes cannot be computably enumerable. It is a semantic specification of axioms, not an effective axiom list. The theorem excludes effectivity together with soundness and weak completeness; it does not exclude every abstract relation one might call provability.</p>
+    <p>The Henkin calculus is <a href="henkin-semantics#henkin-completeness">complete for its specified general models</a>. Full models form a subclass of those models, so its soundness also holds for full models. The theorem shows that any version with enumerable theorem codes must miss a full validity. Requiring even full comprehension in general models does not force every external subset to be available, as <a href="henkin-semantics#comprehension-is-not-fullness">nonstandard arithmetic examples</a> show.</p>
+    <p>Finally, <a href="second-order-arithmetic#noncompactness">noncompactness</a> obstructs a sound, strongly complete consequence calculus in which every proof uses finitely many premises: a consequence of an infinite theory would otherwise follow from a finite subtheory. Weak completeness asks only about valid sentences with no premises, so that compactness argument does not establish its failure. The effective reduction above proves the stronger computational obstruction needed here: no enumeration of exactly the full validities exists.</p>
+  </div></details>
+</section>

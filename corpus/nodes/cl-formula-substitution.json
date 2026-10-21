@@ -1,0 +1,13 @@
+{
+  "id": "cl-formula-substitution",
+  "description": "For every scoped formula \\(A\\), language map \\(j\\) and free-name substitution \\(\\sigma\\), \\(j_*(A[\\sigma])=(j_*A)[j_*\\sigma]\\).",
+  "module": "Lemmatheca.ChangingLanguages.ChangingLanguages",
+  "declaration": "Lemmatheca.MathematicalLogic.ChangingLanguages.map_formula_subst",
+  "dependencies": [
+    "cl-term-substitution",
+    "cl-formula-translation"
+  ],
+  "verified": true,
+  "declaration_line": 44,
+  "signature": "Lemmatheca.MathematicalLogic.ChangingLanguages.map_formula_subst.{u, v, u', v', w, w'} {L : FirstOrder.Language}\n  {K : FirstOrder.Language} {α : Type w} {β : Type w'} (j : L →ᴸ K) {n : ℕ} (A : L.BoundedFormula α n)\n  (σ : α → L.Term β) : j.onBoundedFormula (A.subst σ) = (j.onBoundedFormula A).subst fun x => j.onTerm (σ x)"
+}

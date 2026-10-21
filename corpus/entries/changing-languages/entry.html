@@ -1,0 +1,121 @@
+<section id="language-maps" data-formal="cl-language-map cl-language-inclusion cl-language-isomorphism cl-term-translation cl-formula-translation cl-theory-translation" data-kind="definition">
+  <h2>Send symbols to symbols of the same arity</h2>
+  <p>Let \(L,K\) be <a href="first-order-languages#signatures">first-order languages</a>. A <strong>language map</strong> \(j:L\to K\) consists of maps from the \(n\)-ary function symbols of \(L\) to the \(n\)-ary function symbols of \(K\), and likewise for relation symbols, for every finite arity \(n\). Constants are function symbols of arity zero. Logical connectives, equality, free variable names, and quantified placeholders are fixed. A <strong>language inclusion</strong> is a language map injective on each of these symbol sets. An actual sublanguage is a special case: \(L\subseteq K\) and \(j\) is inclusion.</p>
+  <p>The <strong>symbol translation</strong> \(j_*\) is defined by recursion on terms and scoped formulas:</p>
+  <div class="math-display">\[j_*x=x,\qquad j_*f(t_0,\ldots,t_{n-1})=j(f)(j_*t_0,\ldots,j_*t_{n-1}).\]</div>
+  <p>It sends \(t=u\) to \(j_*t=j_*u\), and \(R(\bar t)\) to \(j(R)(j_*\bar t)\). It commutes with falsity, implication, and universal quantification. Thus it also commutes with all our defined connectives and the existential quantifier. Translation changes no variable or placeholder and therefore changes no binding. For a theory \(T\), put \(j_*T=\{j_*A:A\in T\}\).</p>
+  <p>The definition applies even when \(j\) identifies symbols. Renaming, in the strict sense of replacing symbols by distinct new symbols, is an inclusion; an invertible language map is a <strong>language isomorphism</strong>.</p>
+</section>
+
+<section id="translation-identities" data-formal="cl-term-substitution cl-formula-substitution cl-fresh-name-translation cl-bound-instance-translation cl-translation-identity cl-translation-composition cl-term-translation-identity cl-term-translation-composition" data-kind="lemma">
+  <h2>Translation respects substitution and composition</h2>
+  <p>For language maps \(j:L\to K\), \(k:K\to H\), a term substitution \(\sigma\), and a scoped formula \(A\),</p>
+  <div class="math-display">\[j_*(A[\sigma])=(j_*A)[j_*\sigma],\qquad (k\circ j)_*A=k_*(j_*A),\qquad (\mathrm{id}_L)_*A=A.\]</div>
+  <p>The analogous identities hold for terms. Translation also commutes with turning the outermost placeholder into a fresh name and with <a href="first-order-languages#bound-slot-instantiation">instantiating a bound slot</a>. In particular, it takes sentences to sentences and closed terms to closed terms.</p>
+  <div class="proof">
+    <p>Induct first on terms. A variable is unchanged, so the substitution identity is its defining clause. At a function application the induction hypotheses apply to every argument, and both sides have outer function symbol \(j(f)\). For formulas, an equality or relation uses this term identity. An implication uses the two induction hypotheses. Under a universal quantifier, the substitution is lifted by leaving its new placeholder fixed. Symbol translation fixes that placeholder too, so the two lifted substitutions agree. This proves the formula identity in every context size, rather than just for sentences.</p>
+    <p>The same inductions prove the identity and composition laws. Replacing a placeholder by a name or a term is a variable operation; the proof just given works for that operation as well. No choice of fresh names is needed for symbol translation itself.</p>
+  </div>
+</section>
+
+<section id="reducts-and-expansions" data-formal="skolem-reduct skolem-expansion" data-kind="definition">
+  <h2>Read a structure through a language map</h2>
+  <p>If \(N\) is a nonempty \(K\)-structure and \(j:L\to K\), its <strong>reduct along \(j\)</strong>, denoted \(N\upharpoonright j\), has the same domain and interprets each \(L\)-symbol using its image:</p>
+  <div class="math-display">\[f^{N\upharpoonright j}=j(f)^N,\qquad R^{N\upharpoonright j}=j(R)^N.\]</div>
+  <p>For a sublanguage inclusion, this simply forgets the additional symbols. An <strong>expansion along an inclusion</strong> \(j:L\hookrightarrow K\) of an \(L\)-structure \(M\) is a \(K\)-structure on the same domain whose reduct is \(M\). This generalizes the <a href="skolemization#expansions-and-reducts">expansions used for Skolem functions</a>.</p>
+  <p>A noninjective map also has a reduct, but it forces symbols with the same image to have the same interpretation. Consequently an arbitrary \(L\)-structure need not have an expansion along such a map.</p>
+</section>
+
+<section id="satisfaction-translation" data-formal="cl-term-truth skolem-reduct-invariance cl-theory-truth" data-kind="theorem">
+  <h2>Translated formulas have exactly their original truth conditions</h2>
+  <div class="statement-box"><p>Let \(j:L\to K\), let \(N\) be a nonempty \(K\)-structure, and use the same assignments to free names and placeholders in \(N\) and \(N\upharpoonright j\). Then every term \(t\) and scoped formula \(A\) satisfy</p>
+  <div class="math-display">\[ (j_*t)^N=t^{N\upharpoonright j},\qquad N\models j_*A[\bar a]\quad\Longleftrightarrow\quad N\upharpoonright j\models A[\bar a].\]</div></div>
+  <div class="proof">
+    <p>Induct on terms. The variable case uses the shared assignment. For a function application, evaluate its translated arguments using the induction hypotheses, then use \(f^{N\upharpoonright j}=j(f)^N\). For an atomic formula, equality uses actual equality of these term values; a relation uses the defining relation clause of the reduct. Falsity and implication preserve truth by their semantic clauses.</p>
+    <p>For \(\forall x\,A\), both sides quantify over exactly the same domain. For each domain element, extend both placeholder assignments by that element; the induction hypothesis for the body identifies their truth values. Thus the universal statements agree. This is why the induction includes every placeholder context. The <a href="first-order-structures#satisfaction">semantics of the defined connectives</a> gives their cases too.</p>
+  </div>
+  <p>In particular, \(N\models j_*T\) if and only if \(N\upharpoonright j\models T\). This includes theories with any set of sentences, since satisfaction means satisfying each sentence separately.</p>
+</section>
+
+<section id="arbitrary-expansions" data-formal="cl-default-expansion cl-satisfiable-inclusion" data-kind="lemma">
+  <h2>An inclusion permits arbitrary interpretations of the new symbols</h2>
+  <p>For any inclusion \(j:L\hookrightarrow K\), every nonempty \(L\)-structure \(M\) has an expansion along \(j\). Hence \(T\) is satisfiable if and only if \(j_*T\) is satisfiable.</p>
+  <div class="proof">
+    <p>Choose \(m_0\in M\). For a \(K\)-function symbol in the image of \(j\), use the interpretation of its unique preimage. Interpret every other function as the constant function with value \(m_0\), including new constants. For an image relation use its unique preimage's interpretation; interpret every other relation as false. Injectivity makes these instructions unambiguous. They give an expansion with reduct exactly \(M\).</p>
+    <p>An expansion of a model of \(T\) satisfies \(j_*T\) by <a href="#satisfaction-translation"></a>. Conversely, the reduct of a model of \(j_*T\) satisfies \(T\). We use classical set theory with choice throughout, as in the <a href="henkin-completeness#countable-languages">model-existence development</a>.</p>
+  </div>
+</section>
+
+<section id="proof-transport" data-formal="cl-core-proof-transport cl-proof-transport cl-derivability-transport" data-kind="theorem">
+  <h2>Translate the actual natural-deduction tree</h2>
+  <div class="statement-box"><p>For every language map \(j:L\to K\), theory \(T\), and sentence \(A\),</p>
+  <div class="math-display">\[T\vdash_L A\quad\Longrightarrow\quad j_*T\vdash_K j_*A.\]</div>
+  <p>More precisely, translating every formula and term in any finite proof from \(\Gamma\) gives a proof from \(j_*\Gamma\), using the same primitive <a href="first-order-proofs#derivations-and-theories">natural-deduction rules</a>.</p></div>
+  <div class="proof">
+    <p>Induct on the finite proof tree. An assumption translates to a member of the translated assumption set. Each connective rule translates to the same rule, since translation commutes with its connective. Discharged assumptions remain the translated discharged assumptions; if distinct assumptions happen to become equal, a finite assumption set simply contains that formula once.</p>
+    <p>For universal elimination and existential introduction, translate the closed instantiating term and use <a href="#translation-identities"></a>: the translated instance is precisely the instance of the translated body. For universal introduction, the new auxiliary name is kept separate from all existing names; translation changes signature symbols, not names. The translated lifted assumptions therefore still exclude the protected name, and the translated premise is the translated body's fresh-name instance. The same observation preserves existential elimination, including its side condition on the conclusion.</p>
+    <p>Equality introduction translates \(t=t\) to \(j_*t=j_*t\). In equality elimination, the same instance identity identifies the two translated instances with the body at \(j_*s\) and \(j_*t\), so the original equality rule applies. These cover every primitive rule. The additional reserve of auxiliary names allowed in a <a href="first-order-proofs#fresh-parameters">proof</a> is unchanged, so the construction also gives a proof in that convention. Finally, the original proof uses finitely many assumptions from \(T\); their translations form a finite subset of \(j_*T\).</p>
+  </div>
+  <p>Injectivity of \(j\) is unnecessary here. Protected auxiliary names supply quantifier freshness independently of the signature. This proof transformation does not appeal to completeness.</p>
+</section>
+
+<section id="finite-symbol-support" data-formal="cl-term-symbol-support cl-formula-symbol-support" data-kind="definition">
+  <h2>Record every symbol that an expression uses</h2>
+  <p>The <strong>symbol support</strong> \(\operatorname{sym}(t)\) of a term is the set of its function symbols, with their arities recorded. Define it recursively by</p>
+  <div class="math-display">\[\operatorname{sym}(x)=\varnothing,\qquad \operatorname{sym}(f(\bar t))=\{f\}\cup\bigcup_{i&lt;n}\operatorname{sym}(t_i).\]</div>
+  <p>The <strong>symbol support of a formula</strong> is defined by taking the union of its term supports at equality, adding \(R\) and its argument supports at \(R(\bar t)\), taking unions at connectives, and leaving the support unchanged when adding a quantifier. Falsity has empty support. Function and relation symbols are tagged separately, even if written with the same letter. These sets are finite: every union here has finitely many finite constituents, so <a href="first-order-languages#structural-induction">structural induction</a> proves the claim.</p>
+  <p>For a finite set \(\Gamma\) of sentences, put \(\operatorname{sym}(\Gamma)=\bigcup_{B\in\Gamma}\operatorname{sym}(B)\). This is finite too. This support records signature symbols, not free names or quantified variables.</p>
+</section>
+
+<section id="restriction-to-support" data-formal="cl-supported-language cl-support-inclusion cl-support-language-finite cl-term-restriction cl-formula-restriction cl-term-restriction-recovery cl-formula-restriction-recovery cl-finite-language-factorization" data-kind="lemma">
+  <h2>A finite collection lives in a finite sublanguage</h2>
+  <p>Let \(\Gamma\) be a finite set of \(L\)-sentences and let \(A\) be an \(L\)-sentence. There are a finite sublanguage \(L_0\), its inclusion \(i:L_0\hookrightarrow L\), sentences \(A_0\) and \(B_0\) for every \(B\in\Gamma\), with</p>
+  <div class="math-display">\[i_*A_0=A,\qquad i_*B_0=B.\]</div>
+  <p>The sublanguage may be chosen to have exactly the symbols in \(\operatorname{sym}(\Gamma)\cup\operatorname{sym}(A)\). It need not contain a constant.</p>
+  <div class="proof">
+    <p>Take that finite set of symbols, keeping their kinds and arities. To restrict a term to \(L_0\), keep each variable and replace each symbol \(f\) by that same symbol regarded as a member of \(L_0\). Every symbol encountered belongs to the support, so this operation is defined. Recurse through the arguments. An induction gives that including the restricted term back into \(L\) recovers the original term.</p>
+    <p>Perform the same construction on formulas, keeping equality and the logical constructors and restricting their terms. Quantifier bodies use the same symbol set as their quantified formulas, so all placeholder contexts are handled together. The recovery identity follows by structural induction. Apply it to \(A\) and every member of \(\Gamma\). This also treats an empty support: formulas using only equality and logical symbols restrict to the language without nonlogical symbols.</p>
+  </div>
+</section>
+
+<section id="finite-semantic-support" data-formal="compact-finite-consequence" data-kind="lemma">
+  <h2>Compactness reduces a consequence to finitely many axioms</h2>
+  <p>For an arbitrary set-sized first-order language \(L\), if \(T\models A\), some finite \(\Gamma\subseteq T\) satisfies \(\Gamma\models A\).</p>
+  <div class="proof">
+    <p>Suppose no finite subset has this property. For every finite \(\Gamma\subseteq T\), there is an \(L\)-model of \(\Gamma\) in which \(A\) is false. Consequently every finite subset of \(T\cup\{\neg A\}\) is satisfiable: select its finitely many premises from \(T\), and use such a countermodel, which also satisfies \(\neg A\) whether or not that sentence was selected.</p>
+    <p><a href="ultraproducts#compactness">Semantic compactness for arbitrary languages</a> gives a model of all of \(T\cup\{\neg A\}\), contrary to \(T\models A\). Thus a finite \(\Gamma\) exists. The compactness result used here was proved by an ultraproduct, independently of the deductive completeness theorem we are about to obtain.</p>
+  </div>
+</section>
+
+<section id="arbitrary-language-completeness" data-formal="cl-arbitrary-completeness cl-arbitrary-finite-proof-support" data-kind="theorem">
+  <h2>Completeness holds for every set-sized first-order language</h2>
+  <div class="statement-box"><p>Let \(L\) have any set of symbols, let \(T\) be an \(L\)-theory, and let \(A\) be an \(L\)-sentence. Then</p>
+  <div class="math-display">\[T\models A\quad\Longleftrightarrow\quad T\vdash_L A.\]</div>
+  <p>When these conditions hold, there is a finite \(\Gamma\subseteq T\) with \(\Gamma\vdash_L A\).</p></div>
+  <div class="proof">
+    <p>Soundness gives the right-to-left implication. Suppose \(T\models A\). By <a href="#finite-semantic-support"></a>, choose finite \(\Gamma\subseteq T\) with \(\Gamma\models A\). Use <a href="#restriction-to-support"></a> to find the finite sublanguage \(L_0\), inclusion \(i\), and restricted sentences. Write \(\Gamma_0\) for the set of restricted members, so \(i_*\Gamma_0=\Gamma\) and \(i_*A_0=A\).</p>
+    <p>We claim \(\Gamma_0\models A_0\). Indeed, an arbitrary nonempty \(L_0\)-model \(M\) of \(\Gamma_0\) has an \(L\)-expansion \(M^+\) by <a href="#arbitrary-expansions"></a>. Satisfaction translation makes it a model of \(\Gamma\), so \(M^+\models A\). The same translation then gives \(M\models A_0\). This proves the claim for every \(M\), including when \(\Gamma_0\) has no model.</p>
+    <p>The finite language \(L_0\) is countable. <a href="henkin-completeness#deductive-completeness">Countable-language deductive completeness</a> therefore supplies an actual natural-deduction proof \(\Gamma_0\vdash_{L_0}A_0\). Translate its tree along \(i\) using <a href="#proof-transport"></a>. Its assumptions become \(\Gamma\) and its conclusion becomes \(A\), giving \(\Gamma\vdash_L A\). Since \(\Gamma\subseteq T\), the same proof gives \(T\vdash_L A\).</p>
+  </div>
+  <p>Only the finite vocabulary of one consequence was reduced. We have not enumerated an arbitrary language or extended the countable Henkin enumeration to an uncountable list.</p>
+</section>
+
+<section id="conservative-language-inclusions" data-formal="cl-semantic-inclusion cl-deductive-inclusion cl-consistent-inclusion" data-kind="theorem">
+  <h2>Adding uninterpreted symbols preserves old consequences</h2>
+  <p>If \(j:L\hookrightarrow K\) is an inclusion, then for every \(L\)-theory \(T\) and \(L\)-sentence \(A\),</p>
+  <div class="math-display">\[j_*T\models j_*A\ \Longleftrightarrow\ T\models A,\qquad j_*T\vdash_K j_*A\ \Longleftrightarrow\ T\vdash_L A.\]</div>
+  <p>In particular, the translated theory is consistent exactly when the original theory is consistent.</p>
+  <div class="proof">
+    <p>If \(T\models A\), take the reduct of any model of \(j_*T\) and apply satisfaction translation. Conversely, expand any model of \(T\) along \(j\); the assumed translated consequence gives its truth of \(A\). This proves the semantic equivalence. Apply <a href="#arbitrary-language-completeness"></a> to both languages for the deductive equivalence. Consistency is the absence of a derivation of falsity, and falsity is unchanged by translation.</p>
+  </div>
+  <p>This generalizes <a href="henkin-completeness#fresh-constants">conservative addition of fresh constants</a>. That earlier syntactic proof remains part of the construction of countable completeness; the present argument uses the now established theorem and cannot replace a prerequisite step in its proof.</p>
+</section>
+
+<section id="identifying-constants" data-formal="cl-identifying-constants cl-collapse-no-expansion" data-kind="question">
+  <h2>What fails if two constants get the same name?</h2>
+  <p>Let \(L\) have distinct constants \(c,d\), and let \(j:L\to K\) send both to one constant \(e\). Is the translated theory of \(T=\{\neg(c=d)\}\) consistent? Does every \(L\)-structure expand along \(j\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The original theory has a two-element model with distinct values for \(c,d\), so soundness makes it consistent. Its translation is \(\{\neg(e=e)\}\). Equality introduction proves \(e=e\), and the translated assumption gives a contradiction. Thus a language map need not preserve consistency, even though it preserves every existing proof.</p>
+    <p>In every reduct along \(j\), the interpretations of \(c\) and \(d\) are both the interpretation of \(e\). The two-element structure with distinct values for them is therefore no such reduct. This is exactly where injectivity was needed in the expansion and conservativity arguments.</p>
+  </div></details>
+</section>

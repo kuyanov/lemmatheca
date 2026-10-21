@@ -1,0 +1,12 @@
+{
+  "id": "it-term-graph-truth",
+  "description": "For every domain-valued assignment and ambient output \\(b\\), the specified term graph holds exactly when \\(b\\) is the underlying interpreted term value.",
+  "module": "Lemmatheca.InterpretingTheories.InterpretingTheories",
+  "declaration": "Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData.realize_termGraph",
+  "dependencies": [
+    "it-induced-function-graph"
+  ],
+  "verified": true,
+  "declaration_line": 169,
+  "signature": "Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData.realize_termGraph.{u, v, u', v', w, z}\n  {L : FirstOrder.Language} {K : FirstOrder.Language} {α : Type z}\n  {I : Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData L K} {M : Type w} [K.Structure M]\n  (h : I.GoodGraphs M) (t : L.Term α) (v : α → I.Domain M) (y : M) :\n  (I.termGraph t).Realize (Sum.elim (fun a => ↑(v a)) fun x => y) ↔ y = ↑(FirstOrder.Language.Term.realize v t)"
+}

@@ -1,0 +1,154 @@
+<section id="extended-language" data-kind="definition" data-formal="eqax-language eqax-term-translation eqax-equality-free">
+  <h2>Keep the symbols and add one fresh relation</h2>
+  <p>Fix a first-order language \(L\), allowing function and relation symbols of every finite arity, including zero. The <strong>equality-relation language</strong> \(L^E\) has exactly the same function symbols as \(L\), one distinguished copy of each old relation symbol, and one further binary relation symbol \(E\). The old copies are disjoint from \(E\), even if an old relation happened to have that printed name. Terms are therefore carried to \(L^E\) by preserving every variable and function application; write \(t^E\) for this <strong>term translation</strong>.</p>
+  <p>Both languages still have logical equality in their syntax and ordinary structures interpret it as identity. We shall construct formulas of \(L^E\) that never use its equality constructor. Calling them <strong>equality-free</strong> means precisely that no logical equality atom occurs; relation atoms, falsity, implication and quantifiers are allowed. We work throughout with nonempty structures, as in <a href="first-order-structures#structures">first-order semantics</a>.</p>
+</section>
+
+<section id="formula-translation" data-kind="definition" data-formal="eqax-translation eqax-translation-equality-free">
+  <h2>Replace equality at its actual place in the syntax</h2>
+  <p>The <strong>equality translation</strong> \(A\mapsto A^E\) acts on the <a href="first-order-languages#scoped-formulas">actual scoped first-order syntax</a>. It preserves every free variable name and every in-scope bound slot. Its clauses are</p>
+  <div class="math-display">\[\bot^E=\bot,\qquad (s=t)^E=E(s^E,t^E),\qquad R(\bar t)^E=R(\bar t^E).\]</div>
+  <div class="math-display">\[(A\to B)^E=A^E\to B^E,\qquad (\forall x\,A)^E=\forall x\,A^E.\]</div>
+  <p>Negation, conjunction, disjunction, biconditional and existential quantification are the usual abbreviations, so the translation commutes with them too. Under a quantifier the new bound slot is retained, and the translation is applied to its body with that larger slot context. There is no substitution or renaming of variables in this operation. Structural induction immediately shows that \(A^E\) is equality-free: the equality case becomes a relation atom and no other case introduces equality.</p>
+</section>
+
+<section id="five-schemes" data-kind="definition" data-formal="eqax-axioms eqax-e-congruence eqax-axiom-theory">
+  <h2>The five requirements on the new relation</h2>
+  <p>The <strong>equality axiom schemes</strong> \(\operatorname{EqAx}(L)\) consist of the universal closures of the following formulas. Here \(f\) ranges over every \(k\)-ary function symbol of \(L\), \(R\) over every \(k\)-ary old relation symbol, and \(k\) over all natural numbers. All displayed variables in a formula are universally quantified independently of those in other formulas.</p>
+  <div class="math-display">\[E(x,x).\]</div>
+  <div class="math-display">\[E(x,y)\to E(y,x).\]</div>
+  <div class="math-display">\[E(x,y)\land E(y,z)\to E(x,z).\]</div>
+  <div class="math-display">\[\bigwedge_{i&lt;k}E(x_i,y_i)\to E(f(\bar x),f(\bar y)).\]</div>
+  <div class="math-display">\[\bigwedge_{i&lt;k}E(x_i,y_i)\land R(\bar x)\to R(\bar y).\]</div>
+  <p>The first three express reflexivity, symmetry and transitivity. The fourth is <strong>function congruence</strong>; the fifth is <strong>relation congruence</strong>. The relation scheme is stated as one implication. Symmetry applied to each \(E(x_i,y_i)\) gives the reverse implication as well, so related tuples have exactly the same relation truth value. No additional congruence scheme for \(E\) itself is necessary: if \(E(a,a')\) and \(E(b,b')\), symmetry and transitivity give \(E(a,b)\leftrightarrow E(a',b')\).</p>
+  <p>The empty conjunction, when \(k=0\), is true. Thus a constant \(c\) contributes \(E(c,c)\), and a zero-ary relation contributes \(R()\to R()\). Keeping these harmless instances makes the schemes apply uniformly to every arity.</p>
+</section>
+
+<section id="identity-expansion" data-kind="lemma" data-formal="eqax-identity-expansion eqax-identity-axioms eqax-identity-term eqax-identity-truth">
+  <h2>An ordinary model gives an equality-axiom model</h2>
+  <p>For every nonempty \(L\)-structure \(M\), let its <strong>identity expansion</strong> \(M^=\) retain the domain, functions and old relations and interpret \(E(a,b)\) as \(a=b\). Then \(M^=\models\operatorname{EqAx}(L)\). At every free-name assignment \(v\) and every assignment \(w\) to its bound slots, an actual scoped formula satisfies</p>
+  <div class="math-display">\[M^=\models A^E[v,w]\quad\Longleftrightarrow\quad M\models A[v,w].\]</div>
+  <div class="proof">
+    <p>Identity is reflexive, symmetric and transitive. Pointwise identical tuples are identical tuples, so their function values and relation truth values agree. This proves all schemes, including empty tuples. Induction on terms shows that \(t^E\) has exactly the value of \(t\). At an equality atom, the definition of \(E\) makes the two truth conditions identical; at an old relation atom, the relation and argument values are unchanged. Falsity and implication preserve the induction claim. A universal quantifier ranges over the same domain on both sides and extends the same slot assignment by the same element; apply the induction hypothesis to each such extension. This proves the displayed equivalence for all scoped formulas.</p>
+  </div>
+</section>
+
+<section id="quotient-model" data-kind="definition" data-formal="eqax-equivalence eqax-prestructure eqax-quotient eqax-projection eqax-quotient-nonempty eqax-quotient-function eqax-quotient-relation quotient-projection-equality quotient-projection-surjective">
+  <h2>Collapse the pairs that the axioms identify</h2>
+  <p>Let \(N\) be a nonempty \(L^E\)-structure satisfying \(\operatorname{EqAx}(L)\). Put \(a\sim b\) exactly when \(N\models E(a,b)\). The first three schemes make this an <a href="equivalence-relations#relation-properties">equivalence relation</a>. Its <strong>quotient model</strong> \(Q_N\) has domain \(N/{\sim}\), with \(q(a)=[a]\). Define its old symbols by</p>
+  <div class="math-display">\[f^{Q_N}([a_0],\ldots,[a_{k-1}])=[f^N(a_0,\ldots,a_{k-1})].\]</div>
+  <div class="math-display">\[R^{Q_N}([a_0],\ldots,[a_{k-1}])\quad\Longleftrightarrow\quad R^N(a_0,\ldots,a_{k-1}).\]</div>
+  <p>These rules do not depend on representatives. Replacing \(a_i\) by \(b_i\sim a_i\) makes the two function outputs related, by function congruence, hence gives the same output class. Relation congruence in both directions gives the same relation truth value. This is the <a href="equivalence-relations#rules-on-representatives">criterion for defining rules on classes</a>. In particular, \(c^{Q_N}=[c^N]\) for a constant, and a zero-ary relation keeps its original truth value.</p>
+  <p>The projection \(q\) is onto because every class has a representative, and the quotient is nonempty because \(q(a)\) exists for any \(a\in N\). Also</p>
+  <div class="math-display">\[q(a)=q(b)\quad\Longleftrightarrow\quad N\models E(a,b).\]</div>
+  <p>Equality in \(Q_N\) is actual equality of classes. This general construction uses the same kind of representative check as the <a href="henkin-completeness#term-quotient">Henkin term model</a>, but its starting objects may be arbitrary elements of an expanded structure.</p>
+</section>
+
+<section id="term-projection" data-kind="lemma" data-formal="eqax-term-projection">
+  <h2>Evaluation of terms commutes with projection</h2>
+  <p>For \(N,Q_N,q\) as in <a href="#quotient-model"></a>, every actual term \(t\) and assignment \(u\) of all its variables satisfy</p>
+  <div class="math-display">\[t^{Q_N}[q\circ u]=q\bigl((t^E)^N[u]\bigr).\]</div>
+  <p>For a scoped term, the variables here comprise both its free names and its current bound slots, so the statement also applies to their combined assignment.</p>
+  <div class="proof">
+    <p>A variable gives \(q(u(x))\) on both sides. If \(t=f(t_0,\ldots,t_{k-1})\), the induction hypotheses identify the values of its children with \(q((t_i^E)^N[u])\). The defining rule for \(f^{Q_N}\) then gives the class of \(f^N((t_0^E)^N[u],\ldots,(t_{k-1}^E)^N[u])\), which is precisely the right side. This includes the zero-argument application, so constants require no exceptional argument.</p>
+  </div>
+</section>
+
+<section id="truth-preservation" data-kind="theorem" data-formal="eqax-quotient-truth">
+  <h2>The quotient preserves truth through every quantifier</h2>
+  <div class="statement-box"><p>Let \(N\models\operatorname{EqAx}(L)\) be nonempty. For every actual scoped \(L\)-formula \(A\), every assignment \(v\) to its free names and every assignment \(w\) to its current bound slots,</p>
+  <div class="math-display">\[Q_N\models A[q\circ v,q\circ w]\quad\Longleftrightarrow\quad N\models A^E[v,w].\]</div></div>
+  <div class="proof">
+    <p>Induct on the actual formula constructors, keeping both assignments arbitrary. At \(s=t\), the term lemma changes equality of the quotient values to equality of the classes of \((s^E)^N\) and \((t^E)^N\). The projection equality criterion says precisely that these two elements satisfy \(E\) in \(N\), which is truth of \((s=t)^E\). At \(R(\bar t)\), the term lemma and the definition of the quotient relation give truth of \(R(\bar t^E)\). Falsity is false on both sides. For an implication, the two induction equivalences identify its antecedent and consequent truth conditions.</p>
+    <p>It remains to justify a universal quantifier. Write its body as \(B\); its new slot is assigned the quantified element. If \(Q_N\models\forall x\,B\), take any \(a\in N\). Apply this universal statement to \(q(a)\), then the induction hypothesis at the extended assignments. It yields \(N\models B^E[v,w,a]\). Since \(a\) was arbitrary, \(N\models\forall x\,B^E\).</p>
+    <p>Conversely, suppose \(N\models\forall x\,B^E\). To test \(B\) at an arbitrary \(b\in Q_N\), use surjectivity to choose \(a\in N\) with \(q(a)=b\). The hypothesis gives \(B^E\) at the extended slot assignment \((w,a)\); the induction hypothesis gives \(B\) at \((q\circ w,b)\). Projection commutes with extending a slot assignment, so these are exactly the assignments required by the quantifier clause. Thus \(Q_N\models\forall x\,B\), completing the induction.</p>
+  </div>
+  <p>Existential quantification follows as an abbreviation, or by projecting a witness in one direction and choosing a representative in the other. Surjectivity is the step that extends the atomic argument to all formulas.</p>
+</section>
+
+<section id="equisatisfiability" data-kind="theorem" data-formal="eqax-translated-theory eqax-encoded-theory eqax-encoded-theory-truth eqax-equisatisfiable">
+  <h2>One fixed translation works for every theory</h2>
+  <p>For an arbitrary \(L\)-theory \(T\), let \(T^E=\{A^E:A\in T\}\), a theory of actual \(L^E\)-sentences.</p>
+  <div class="statement-box"><p>Choose \(L^E\), the translation, and \(\operatorname{EqAx}(L)\) from \(L\) once and for all, before choosing \(T\). For every theory \(T\),</p>
+  <div class="math-display">\[T\text{ has a nonempty model}\quad\Longleftrightarrow\quad T^E\cup\operatorname{EqAx}(L)\text{ has a nonempty model}.\]</div></div>
+  <div class="proof">
+    <p>If \(M\models T\), its identity expansion satisfies the axioms and every translated sentence by <a href="#identity-expansion"></a>. Conversely, let \(N\) satisfy the theory on the right. Construct \(Q_N\). For each \(A\in T\), truth of \(A^E\) transfers to truth of \(A\) by <a href="#truth-preservation"></a> with the empty assignments. The nonempty quotient therefore models all of \(T\). Neither construction requires \(T\) to be finite or countable, and the added symbols and translation do not depend on which axioms belong to \(T\).</p>
+  </div>
+</section>
+
+<section id="equality-clauses" data-kind="definition" data-formal="eqax-original-atom eqax-original-clause eqax-original-clause-formula eqax-clause-translation eqax-translated-clauses eqax-original-clause-satisfiable">
+  <h2>Translate clauses that contain actual equality atoms</h2>
+  <p>An <strong>original atom</strong> over variables \(\mathbb N\) is either a pair of actual \(L\)-terms \((s,t)\), denoting logical equality \(s=t\), or an actual <a href="herbrand-models#relation-atoms">relation atom</a> \(R(\bar t)\) of \(L\). An <strong>original equality clause</strong> is a finite set of signed original atoms. Its <strong>native formula</strong> \(\operatorname{eqcl}(C)\) is the disjunction of the corresponding positive or negated actual atomic formulas. The empty set denotes falsity; asserting a clause requires truth under every assignment of its natural-number variables.</p>
+  <p>The <strong>clause translation</strong> \(C\mapsto C^E\) sends \(s=t\) to the actual relation atom \(E(s^E,t^E)\), sends \(R(\bar t)\) to the old-copy relation atom \(R(\bar t^E)\), preserves every sign, and takes the finite image of the signed set. Thus \(C^E\) is an actual equality-free relation clause, in exactly the representation of <a href="herbrand-models#clauses">Herbrand relation clauses</a>. Any duplicate image literals merge. For a set of original clauses \(\Delta\), write \(\Delta^E=\{C^E:C\in\Delta\}\). All variables are preserved, and each translated clause is independently asserted under all assignments.</p>
+</section>
+
+<section id="axiom-clauses" data-kind="definition" data-formal="eqax-axiom-clauses eqax-zero-arity-clauses herb-atom res-clause prop-literal">
+  <h2>The five schemes are equality-free signed clauses</h2>
+  <p>Use the actual <a href="herbrand-models#relation-atoms">relation atoms</a> and <a href="herbrand-models#clauses">signed finite-set clauses</a> over variables \(x_0,x_1,\ldots\). A positive atom denotes itself and a negative atom its negation; the clause denotes their disjunction. Define the <strong>equality axiom clause family</strong> \(\mathcal E_L\) by the following five kinds of finite sets, with the last two taken for every old symbol of every arity:</p>
+  <div class="math-display">\[\{E(x_0,x_0)\}.\]</div>
+  <div class="math-display">\[\{\neg E(x_0,x_1),\ E(x_1,x_0)\}.\]</div>
+  <div class="math-display">\[\{\neg E(x_0,x_1),\ \neg E(x_1,x_2),\ E(x_0,x_2)\}.\]</div>
+  <p>For an arity \(k\), put \(\bar x=(x_{2i})_{i&lt;k}\) and \(\bar y=(x_{2i+1})_{i&lt;k}\). The remaining clauses are</p>
+  <div class="math-display">\[\{\neg E(x_{2i},x_{2i+1}):i&lt;k\}\cup\{E(f(\bar x),f(\bar y))\}.\]</div>
+  <div class="math-display">\[\{\neg E(x_{2i},x_{2i+1}):i&lt;k\}\cup\{\neg R(\bar x),R(\bar y)\}.\]</div>
+  <p>Every term in these atoms is an actual translated \(L^E\)-term, and \(E\) is an ordinary relation symbol in each atom. Hence these are clauses in the same equality-free representation used for ground instances. Each clause has its own universal variable assignment; there is no single shared choice of values for variables across the family. At arity zero, the first finite set is empty: a constant gives the unit clause \(\{E(c,c)\}\), while a zero-ary relation gives the tautological clause \(\{\neg R(),R()\}\).</p>
+</section>
+
+<section id="clause-truth-bridge" data-kind="lemma" data-formal="eqax-clause-equality-free eqax-axioms-clause-truth eqax-universal-closure eqax-universal-closure-truth eqax-closure-equality-free eqax-axiom-theory eqax-axiom-theory-truth herb-clause-formula-truth">
+  <h2>Clause satisfaction is exactly axiom satisfaction</h2>
+  <p>Let \(N\) be any nonempty \(L^E\)-structure. Then \(N\models\operatorname{EqAx}(L)\) if and only if, for every \(C\in\mathcal E_L\) and every assignment \(u:\mathbb N\to N\), the actual first-order clause formula \(\operatorname{cl}(C)\) is true at \(u\). Each \(\operatorname{cl}(C)\) is equality-free. Universally closing just its finitely many occurring variables gives the corresponding axiom sentence.</p>
+  <div class="proof">
+    <p>The <a href="herbrand-models#clauses">native clause truth bridge</a> says that \(\operatorname{cl}(C)\) is true exactly when some signed member of \(C\) is true. A disjunction \(\neg P_0\lor\cdots\lor\neg P_{k-1}\lor Q\) is true exactly when \((\bigwedge_{i&lt;k}P_i)\to Q\). The same observation with the extra negative literal \(\neg R(\bar x)\) gives the relation implication. For the first three finite sets it gives reflexivity, symmetry and transitivity directly. Empty conjunctions and duplicate literals cause no change in this truth equivalence.</p>
+    <p>If the five schemes hold, these observations show that every listed clause is true at every assignment. For the converse, arbitrary elements \(a,b,c\) can be assigned to \(x_0,x_1,x_2\). For arbitrary tuples \(\bar a,\bar b\in N^k\), assign \(x_{2i}\) the value \(a_i\) and \(x_{2i+1}\) the value \(b_i\). These coordinates are distinct, so this prescribes a consistent finite partial assignment. Choose one element of the nonempty domain for all remaining variables. Clause truth now gives precisely the required function or relation congruence implication for those tuples. Thus all instances of all schemes hold.</p>
+    <p>Only the finitely many occurring variables affect a clause formula. Every assignment to them extends to all natural-number variables using the same default element. Truth at every total assignment is consequently equivalent to truth of its universal closure, proving the claimed sentence formulation as well.</p>
+  </div>
+</section>
+
+<section id="equality-clause-reduction" data-kind="theorem" data-formal="eqax-clause-translation-truth eqax-clause-quotient-truth eqax-original-clause-equisatisfiable">
+  <h2>Every equality-clause set has a concrete relation-clause reduction</h2>
+  <p>For every original clause \(C\), every expanded structure \(N\), and every assignment \(u:\mathbb N\to N\),</p>
+  <div class="math-display">\[N\models (\operatorname{eqcl}(C))^E[u]\quad\Longleftrightarrow\quad N\models\operatorname{cl}(C^E)[u].\]</div>
+  <p>If \(N\models\operatorname{EqAx}(L)\), the same truth bridge and the quotient theorem give</p>
+  <div class="math-display">\[Q_N\models\operatorname{eqcl}(C)[q\circ u]\quad\Longleftrightarrow\quad N\models\operatorname{cl}(C^E)[u].\]</div>
+  <p>Consequently, for every set \(\Delta\) of original equality clauses,</p>
+  <div class="math-display">\[\Delta\text{ has a nonempty clause model}\quad\Longleftrightarrow\quad\Delta^E\cup\mathcal E_L\text{ has a nonempty clause model}.\]</div>
+  <div class="proof">
+    <p>For each signed original atom, translating its native formula gives exactly the translated positive atom or its negation. Both clause truth conditions therefore say that some signed member of \(C\) has true translated formula. Taking a finite image preserves this existence condition: each image member comes from a source member, and each source member has an image. Neither enumeration order nor merging duplicate literals changes a disjunction's truth. This proves the first equivalence without assuming the equality axioms. Apply <a href="#truth-preservation"></a> to the actual formula \(\operatorname{eqcl}(C)\) to obtain the second.</p>
+    <p>If an ordinary structure satisfies \(\Delta\), its identity expansion satisfies all translated clauses by the first equivalence and <a href="#identity-expansion"></a>, and satisfies \(\mathcal E_L\) by <a href="#clause-truth-bridge"></a>. Conversely, suppose \(N\) models the displayed clause union. It satisfies the equality axioms, so form \(Q_N\). Given an assignment of the variables of a clause \(C\) to quotient elements, choose a representative for each of its finitely many occurring variables, and extend these choices to all natural-number variables using one fixed element of \(N\). The projected assignment agrees on every variable of \(C\). The second truth equivalence and <a href="first-order-structures#free-variable-agreement">assignment agreement</a> show that \(C\) holds at the given quotient assignment. Hence \(Q_N\) is a nonempty clause model of all of \(\Delta\).</p>
+  </div>
+</section>
+
+<section id="clause-model-reduction" data-kind="theorem" data-formal="eqax-represented-theory-reduction">
+  <h2>The reduction can be supplied to an equality-free clause method</h2>
+  <p>Let \(T\) be an \(L\)-theory and let \(\Gamma\) be a set of equality-free relation clauses over natural-number variables in \(L^E\). Suppose that, in each nonempty \(L^E\)-structure \(N\), the universally asserted native clause formulas of \(\Gamma\) are true exactly when \(N\models T^E\). Then</p>
+  <div class="math-display">\[T\text{ has a nonempty model}\quad\Longleftrightarrow\quad\Gamma\cup\mathcal E_L\text{ has a nonempty clause model}.\]</div>
+  <p>The representation hypothesis is about the same expanded structure: all clauses in \(\Gamma\) hold under all assignments if and only if all translated theory sentences hold there. It does not allow a separate model for each clause or each sentence.</p>
+  <div class="proof">
+    <p>A structure satisfies every clause in the union if and only if it satisfies all clauses in \(\Gamma\) and all clauses in \(\mathcal E_L\). The hypothesis identifies the first condition with \(T^E\), and <a href="#clause-truth-bridge"></a> identifies the second with \(\operatorname{EqAx}(L)\). Thus a nonempty model of that clause union is precisely a nonempty model of \(T^E\cup\operatorname{EqAx}(L)\). Apply <a href="#equisatisfiability"></a> to obtain the equivalence.</p>
+  </div>
+  <p>This gives an exact interface to any equality-free clause method when its representation hypothesis has been established. If clausification adds further symbols, its separate satisfiability-preservation theorem must retain the equality-axiom clauses along with the translated theory. No clausification procedure or inference strategy is asserted here.</p>
+</section>
+
+<section id="zero-arity-example" data-kind="question" data-formal="eqax-one-point-structure eqax-one-point-axioms eqax-one-point-quotient eqax-constant-formula eqax-constant-example eqax-one-point-no-inequivalent eqax-zero-arity-clauses">
+  <h2>Constants, sentences and a one-point quotient</h2>
+  <p>Suppose \(L\) has two constants \(c,d\) and a zero-ary relation \(P\). Describe an equality-axiom model of \(E(c,d)\land P()\) and its quotient. Is a one-element model always possible for the equality axioms alone?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Take the one-element domain \(\{*\}\), interpret both constants as \(*\), set \(E(*,*)\) true, and set \(P()\) true. All equivalence axioms hold. Each function tuple has the same unique output, so function congruence holds; every relation is evaluated on identical tuples, so relation congruence holds. In particular, the constant clauses are true and the zero-ary relation clause is \(\neg P()\lor P()\). The quotient has one class, the two constants name it, and \(P()\) remains true.</p>
+      <p>More generally, every language has a one-element model of \(\operatorname{EqAx}(L)\): interpret all functions by the unique possible output, choose any truth value for each old relation, and make \(E\) the unique true binary relation on that domain. This is the identity expansion of that one-element ordinary structure. Additional translated theory axioms can of course exclude it; for example, \(\exists x\exists y\,\neg E(x,y)\) does.</p>
+    </div>
+  </details>
+</section>
+
+<section id="relation-congruence-example" data-kind="question" data-formal="eqax-bad-structure eqax-bad-function-congruence eqax-bad-predicate eqax-bad-clause eqax-bad-axioms">
+  <h2>An equivalence relation alone does not suffice</h2>
+  <p>On the two-element domain \(\{0,1\}\), interpret \(E\) as the total relation and a unary predicate \(P\) by \(P(0)\) true and \(P(1)\) false. Does the quotient give an interpretation of \(P\)? Which axiom clause detects the problem?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Total \(E\) is an equivalence relation, and any functions would respect it, since every pair of outputs is related. The quotient has one class, \([0]=[1]\). But the proposed rule for the unary relation would make \(P([0])\) true using representative \(0\) and false using representative \(1\). Thus the representative rule fails to define a relation.</p>
+      <p>The relation-congruence clause is \(\neg E(x_0,x_1)\lor\neg P(x_0)\lor P(x_1)\). Under \(x_0=0,x_1=1\), all three literals are false. This failure explains the need for the fifth scheme: compatibility of functions cannot supply compatibility of predicates.</p>
+    </div>
+  </details>
+</section>

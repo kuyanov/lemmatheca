@@ -1,0 +1,13 @@
+{
+  "id": "for-clause-substitution-truth",
+  "description": "For every actual structure \\(M\\), relation clause \\(C\\), substitution \\(\\sigma\\) and assignment \\(v\\), \\(C\\sigma\\) is true at \\(v\\) exactly when \\(C\\) is true at \\(x\\mapsto\\sigma(x)^M_v\\).",
+  "module": "Lemmatheca.FirstOrderResolution.FirstOrderResolution",
+  "declaration": "Lemmatheca.MathematicalLogic.FirstOrderResolution.clause_subst_realize",
+  "dependencies": [
+    "herb-clause-formula-truth",
+    "herb-clause-substitution"
+  ],
+  "verified": true,
+  "declaration_line": 42,
+  "signature": "Lemmatheca.MathematicalLogic.FirstOrderResolution.clause_subst_realize.{u, v, w, w', z} {L : FirstOrder.Language}\n  {α : Type w} {β : Type w'} {M : Type z} [L.Structure M] (C : Lemmatheca.MathematicalLogic.HerbrandModels.FOClause L α)\n  (σ : α → L.Term β) (v : β → M) :\n  Lemmatheca.MathematicalLogic.HerbrandModels.ClauseRealize\n      (Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst σ C) v ↔\n    Lemmatheca.MathematicalLogic.HerbrandModels.ClauseRealize C fun x => FirstOrder.Language.Term.realize v (σ x)"
+}

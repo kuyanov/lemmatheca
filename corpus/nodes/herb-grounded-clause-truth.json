@@ -1,0 +1,10 @@
+{
+  "id": "herb-grounded-clause-truth",
+  "description": "For every actual structure \\(M\\), relation clause \\(C\\), and ground substitution \\(\\sigma\\), the actual clause formula is true at the term values \\(\\sigma(x)^M\\) exactly when \\(b_M\\) satisfies the shared propositional ground clause \\(C\\sigma\\).",
+  "module": "Lemmatheca.HerbrandModels.HerbrandModels",
+  "declaration": "Lemmatheca.MathematicalLogic.HerbrandModels.grounded_clause_truth",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 341,
+  "signature": "Lemmatheca.MathematicalLogic.HerbrandModels.grounded_clause_truth.{u, v, w, z} {L : FirstOrder.Language} {α : Type w}\n  {M : Type z} [L.Structure M] (C : Lemmatheca.MathematicalLogic.HerbrandModels.FOClause L α)\n  (σ : α → Lemmatheca.MathematicalLogic.HerbrandModels.GroundTerm L) :\n  ((Lemmatheca.MathematicalLogic.HerbrandModels.clauseToFormula C).Realize fun x =>\n      FirstOrder.Language.Term.realize Empty.elim (σ x)) ↔\n    Lemmatheca.ProofTheory.Resolution.ClauseSat (Lemmatheca.MathematicalLogic.HerbrandModels.modelValuation M)\n      (Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst σ C)"
+}

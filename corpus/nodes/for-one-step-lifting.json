@@ -1,0 +1,17 @@
+{
+  "id": "for-one-step-lifting",
+  "description": "If \\(A\\in C\\sigma\\) and \\(\\neg A\\in D\\tau\\) for ground substitutions, one admissible generalized inference on \\(C,D\\), selecting exactly the full pivot fibers in their fresh copies, has a resolvent \\(E\\) and ground \\(\\rho\\) with \\(E\\rho=(C\\sigma\\setminus\\{A\\})\\cup(D\\tau\\setminus\\{\\neg A\\})\\).",
+  "module": "Lemmatheca.FirstOrderResolution.FirstOrderResolution",
+  "declaration": "Lemmatheca.MathematicalLogic.FirstOrderResolution.one_step_lifting",
+  "dependencies": [
+    "for-parent-instance-identities",
+    "for-atom-mgu-existence",
+    "for-atom-mgu-factorization",
+    "for-delete-full-fiber",
+    "for-pivot-fiber",
+    "for-clause-substitution-composition"
+  ],
+  "verified": true,
+  "declaration_line": 330,
+  "signature": "Lemmatheca.MathematicalLogic.FirstOrderResolution.one_step_lifting.{u, v} {L : FirstOrder.Language}\n  (C D : Lemmatheca.MathematicalLogic.HerbrandModels.FOClause L ℕ)\n  (σ τ : ℕ → Lemmatheca.MathematicalLogic.HerbrandModels.GroundTerm L)\n  (p : Lemmatheca.MathematicalLogic.HerbrandModels.GroundAtom L)\n  (hp : Lemmatheca.ProofTheory.Resolution.pos p ∈ Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst σ C)\n  (hn : Lemmatheca.ProofTheory.Resolution.neg p ∈ Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst τ D) :\n  ∃ d,\n    d.positiveFamily =\n        Lemmatheca.MathematicalLogic.FirstOrderResolution.pivotFiber\n          (Lemmatheca.MathematicalLogic.FirstOrderResolution.combine σ τ)\n          (Lemmatheca.MathematicalLogic.FirstOrderResolution.leftCopy C) (Lemmatheca.ProofTheory.Resolution.pos p) ∧\n      d.negativeFamily =\n          Lemmatheca.MathematicalLogic.FirstOrderResolution.pivotFiber\n            (Lemmatheca.MathematicalLogic.FirstOrderResolution.combine σ τ)\n            (Lemmatheca.MathematicalLogic.FirstOrderResolution.rightCopy D) (Lemmatheca.ProofTheory.Resolution.neg p) ∧\n        ∃ ρ,\n          Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst ρ\n              (Lemmatheca.MathematicalLogic.FirstOrderResolution.resolvent d) =\n            Lemmatheca.ProofTheory.Resolution.resolvent p (Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst σ C)\n              (Lemmatheca.MathematicalLogic.HerbrandModels.clauseSubst τ D)"
+}

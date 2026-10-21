@@ -1,0 +1,10 @@
+{
+  "id": "it-induced-function-graph",
+  "description": "For selected inputs, the guarded graph holds at an ambient output exactly when it equals the underlying value of the induced function.",
+  "module": "Lemmatheca.InterpretingTheories.InterpretingTheories",
+  "declaration": "Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData.induced_fun_graph",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 95,
+  "signature": "Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData.induced_fun_graph.{u, v, u', v', w}\n  {L : FirstOrder.Language} {K : FirstOrder.Language}\n  (I : Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData L K) {M : Type w} [K.Structure M]\n  (h : I.GoodGraphs M) {n : ℕ} (f : L.Functions n) (x : Fin n → I.Domain M) (y : M) :\n  (I.guardedGraph f).Realize (Sum.elim (fun i => ↑(x i)) fun x => y) ↔ y = ↑(FirstOrder.Language.Structure.funMap f x)"
+}

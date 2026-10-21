@@ -1,0 +1,12 @@
+{
+  "id": "qfv-finite-restriction-truth",
+  "module": "Mathlib.ModelTheory.Semantics",
+  "declaration": "FirstOrder.Language.BoundedFormula.realize_restrictFreeVar",
+  "description": "Restricting the free names of a shared scoped formula preserves truth whenever the restricted and original assignments agree, through the supplied relabelling, on its finite free-variable support.",
+  "dependencies": [
+    "qfv-finite-restriction"
+  ],
+  "verified": true,
+  "declaration_line": 443,
+  "signature": "FirstOrder.Language.BoundedFormula.realize_restrictFreeVar.{u, v, w, u', v'} {L : FirstOrder.Language} {M : Type w}\n  [L.Structure M] {α : Type u'} {β : Type v'} [DecidableEq α] {n : ℕ} {φ : L.BoundedFormula α n}\n  {f : ↥φ.freeVarFinset → β} {v : β → M} {xs : Fin n → M} (v' : α → M)\n  (hv' : ∀ (a : ↥φ.freeVarFinset), v (f a) = v' ↑a) : (φ.restrictFreeVar f).Realize v xs ↔ φ.Realize v' xs"
+}

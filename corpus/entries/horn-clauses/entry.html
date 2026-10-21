@@ -1,0 +1,97 @@
+<section id="horn-rules" data-formal="horn-rule horn-clause horn-rule-clause horn-rule-clause-horn horn-clause-representation horn-empty-rules" data-kind="definition">
+  <h2>One possible positive conclusion</h2>
+  <p>Fix a set \(P\) of atoms. A <strong>Horn clause</strong> is a finite clause with at most one positive literal. It can be written as a <strong>Horn rule</strong> \(B\Rightarrow h\), where the <strong>body</strong> \(B\subseteq P\) is finite and the <strong>head</strong> \(h\) is either an atom or the symbol \(\bot\). Its meaning is the implication</p>
+  <div class="math-display">\[ \bigwedge_{b\in B}b\ \longrightarrow\ h. \]</div>
+  <p>A rule with an atomic head is <strong>definite</strong>. A rule with head \(\bot\) is a <strong>constraint</strong>. A definite rule with empty body is a <strong>fact</strong>; its head must be true. The constraint \(\varnothing\Rightarrow\bot\) is always false. A <strong>finite Horn theory</strong> \(\Gamma\) is a finite set of these rules. The empty conjunction means \(\top\), as in the <a href="propositional-normal-forms#normal-form-definitions">normal-form conventions</a>.</p>
+  <p>Writing a rule as a clause gives the finite set \(\{\neg b:b\in B\}\cup\{h\}\) for an atomic head, and just \(\{\neg b:b\in B\}\) for a constraint. Conversely, take the atoms of the negative literals as the body, and the unique positive literal, if present, as the head. This recovers the original clause. An atom may occur both in the body and as the head: the rule then expresses a tautology, which is harmless. Repetitions and ordering are immaterial because bodies and clauses are finite sets.</p>
+</section>
+
+<section id="rule-semantics" data-formal="horn-rule-satisfaction horn-theory-models horn-clause-bridge horn-clause-set horn-theory-bridge horn-formula horn-formula-bridge res-list-cnf-bridge" data-kind="lemma">
+  <h2>Rule satisfaction is ordinary clause satisfaction</h2>
+  <p>Identify a valuation with its true set \(X\subseteq P\). It satisfies a definite rule \(B\Rightarrow p\) exactly when \(B\subseteq X\) implies \(p\in X\), and it satisfies a constraint \(B\Rightarrow\bot\) exactly when \(B\nsubseteq X\). These conditions are equivalent to satisfying the associated clauses, with precisely the same valuation. Consequently they describe the same models as the CNF formed from those clauses.</p>
+  <div class="proof">
+    <p>The associated clause is true if some \(b\in B\) is false, or its atomic head is true. The first alternative means \(B\nsubseteq X\). If every body atom is true, the clause therefore requires the head to be true; without an atomic head it is false. This proves both cases, including empty bodies. Conjoining over the finite theory gives the CNF assertion. The <a href="resolution#clauses">finite-set and finite-list clause representations</a> have the same truth conditions, so no new interpretation of propositional logic is being introduced.</p>
+  </div>
+</section>
+
+<section id="forward-iteration" data-formal="horn-support horn-forward-step horn-forward-stages horn-forward-closure horn-closed-set" data-kind="definition">
+  <h2>Add the conclusions whose premises are already known</h2>
+  <p>The <strong>support</strong> \(S\) of a finite Horn theory \(\Gamma\) is the finite set of all its body and head atoms. For a finite set \(X\subseteq P\), define the <strong>forward step</strong></p>
+  <div class="math-display">\[ F_\Gamma(X):=X\cup\{p:(B\Rightarrow p)\in\Gamma,\ B\subseteq X\}. \]</div>
+  <p>Constraints add no atoms. The <strong>forward stages</strong> start with \(X_0=\varnothing\) and satisfy \(X_{i+1}=F_\Gamma(X_i)\). This is a simultaneous update: a rule can use atoms added at stage \(i+1\) only in the next step. For \(n=|S|\), call \(L_\Gamma:=X_n\) the <strong>forward closure</strong>. A set \(Y\subseteq P\), finite or infinite, is <strong>closed under the definite rules</strong> when every definite rule with body contained in \(Y\) has its head in \(Y\).</p>
+  <p>Each update is a finite calculation: inspect every definite rule, test membership of each body atom in the current finite set, and add the head when all tests succeed. Thus \(n\) updates specify an algorithm, without a search over all valuations. An earlier stop when a stage does not change gives the same closure, as proved next.</p>
+</section>
+
+<section id="iteration-invariants" data-formal="horn-step-inflation horn-step-monotone horn-stage-support horn-stage-increasing horn-stage-closed-invariant horn-stationary-stages" data-kind="lemma">
+  <h2>Stages grow within every closed set</h2>
+  <p>For all finite sets \(X\subseteq Y\), we have \(X\subseteq F_\Gamma(X)\) and \(F_\Gamma(X)\subseteq F_\Gamma(Y)\). Every stage lies in \(S\), and \(X_i\subseteq X_{i+1}\). If \(Y\subseteq P\) is closed under the definite rules, then \(X_i\subseteq Y\) for every \(i\). Finally, if \(X_{i+1}=X_i\), every later stage equals \(X_i\).</p>
+  <div class="proof">
+    <p>The first inclusion follows from the union in the definition of \(F_\Gamma\). A body contained in \(X\) is also contained in \(Y\), proving monotonicity. Starting with the empty set, a step adds only head atoms of \(\Gamma\), which belong to \(S\). Induction proves the support assertion and the increasing-stage assertion.</p>
+    <p>For the closed-set invariant, induct on \(i\). There is nothing to prove at zero. If \(X_i\subseteq Y\), an atom of \(X_{i+1}\) either already belongs to \(X_i\), or is the head of a rule whose body lies in \(X_i\), hence in \(Y\). Closure puts that head in \(Y\). This proves the next induction step. If two consecutive stages are equal, applying the same function to equal inputs gives the next equality; induction keeps the process stationary forever.</p>
+  </div>
+</section>
+
+<section id="finite-bound" data-formal="horn-support-stabilization horn-stationary-stages" data-kind="lemma">
+  <h2>The support size bounds the number of updates</h2>
+  <p>If \(n=|S|\), then \(X_{n+1}=X_n\). In particular, the forward closure is a fixed point of \(F_\Gamma\), and every stage at or after \(n\) equals \(L_\Gamma\).</p>
+  <div class="proof">
+    <p>A strict increase of finite sets adds at least one element, so it increases cardinality by at least one. If \(X_{n+1}\ne X_n\), no earlier consecutive stages could have been equal, by <a href="#iteration-invariants"></a>. All \(n+1\) inclusions from \(X_0\) to \(X_{n+1}\) would therefore be strict. Starting with cardinality zero gives \(|X_{n+1}|\ge n+1\). But \(X_{n+1}\subseteq S\), so \(|X_{n+1}|\le n\), a contradiction. The stationary-stage conclusion now follows from the same invariant. If \(S=\varnothing\), no rule has an atomic head, and the conclusion says correctly that the empty initial stage is already fixed.</p>
+  </div>
+</section>
+
+<section id="least-model" data-formal="horn-least-closed-set horn-definite-least-model horn-models-contain-closure" data-kind="theorem">
+  <h2>The closure is the least model of the definite rules</h2>
+  <div class="statement-box">
+    <p>For a finite Horn theory \(\Gamma\), the forward closure \(L_\Gamma\) is closed under its definite rules and is contained in every set closed under those rules. In particular, if \(\Gamma\) has no constraints, then \(L_\Gamma\) is its least model, ordered by inclusion of true atoms.</p>
+  </div>
+  <div class="proof">
+    <p>If a definite rule has body contained in \(L_\Gamma\), its head belongs to \(F_\Gamma(L_\Gamma)\). The <a href="#finite-bound">fixed-point identity</a> puts that head in \(L_\Gamma\), so the closure is closed. The closed-set invariant in <a href="#iteration-invariants"></a>, applied at stage \(|S|\), puts \(L_\Gamma\) in every closed set. For a theory consisting of definite rules, closed sets are exactly the satisfying true sets by <a href="#rule-semantics"></a>. This proves the least-model assertion, including truth values of atoms outside the support: the least model makes them false.</p>
+  </div>
+</section>
+
+<section id="decision-procedure" data-formal="horn-constraint-test horn-constraint-test-characterization horn-satisfiability-test horn-accepts horn-accepted-model horn-decision-correctness horn-models-contain-closure" data-kind="theorem">
+  <h2>Check constraints only after forward chaining</h2>
+  <div class="statement-box">
+    <p>A finite Horn theory \(\Gamma\) is satisfiable if and only if no constraint body is contained in \(L_\Gamma\):</p>
+    <div class="math-display">\[ \Gamma\text{ is satisfiable}\quad\Longleftrightarrow\quad\forall(B\Rightarrow\bot)\in\Gamma,\ B\nsubseteq L_\Gamma. \]</div>
+    <p>When this condition holds, \(L_\Gamma\) is a model of \(\Gamma\), contained in every other model. Computing \(|S|\) forward steps and then testing these finite bodies is a terminating decision procedure.</p>
+  </div>
+  <div class="proof">
+    <p>Suppose a constraint body \(B\) lies in \(L_\Gamma\). Every model of \(\Gamma\) is closed under the definite rules, so it contains \(L_\Gamma\), and hence contains \(B\). It would violate that constraint, a contradiction. Thus a model can exist only if every constraint passes the stated test.</p>
+    <p>Conversely, if all constraints pass, \(L_\Gamma\) satisfies them by <a href="#rule-semantics"></a>. It satisfies every definite rule by <a href="#least-model"></a>, so it is a model of the whole theory. Its containment in all other models follows from the same theorem. There are finitely many updates and finitely many body tests, each on a finite set, so this is an actual terminating calculation. No estimate for an optimized implementation's running time is needed.</p>
+  </div>
+</section>
+
+<section id="positive-consequence" data-formal="horn-positive-consequence" data-kind="theorem">
+  <h2>Exactly which atoms must be true?</h2>
+  <p>If a finite Horn theory \(\Gamma\) is satisfiable, an atom \(p\) is true in every model of \(\Gamma\) exactly when \(p\in L_\Gamma\).</p>
+  <div class="proof">
+    <p>Every model contains the forward closure, so membership in \(L_\Gamma\) makes \(p\) true in every model. Conversely, <a href="#decision-procedure"></a> supplies the particular model \(L_\Gamma\). If \(p\) is true in every model, it is true in this one, which means \(p\in L_\Gamma\). Satisfiability is necessary for this equivalence: an inconsistent theory has no models and therefore entails every atom, even atoms never added by its definite rules.</p>
+  </div>
+</section>
+
+<section id="chaining-example" data-formal="horn-trace-stages horn-trace-consequences" data-kind="question">
+  <h2>Follow the simultaneous updates</h2>
+  <p>On distinct atoms \(p,q,r,s\), take the rules \(\varnothing\Rightarrow p\), \(\{p\}\Rightarrow q\), \(\{p,q\}\Rightarrow r\), \(\{r\}\Rightarrow q\), and the constraint \(\{r,s\}\Rightarrow\bot\). What are the forward stages and the least model? Does the theory entail \(s\), or \(\neg s\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The stages are \(X_0=\varnothing\), \(X_1=\{p\}\), \(X_2=\{p,q\}\), and \(X_3=\{p,q,r\}\). The next stage is unchanged, and \(n=4\) because \(s\) occurs in the constraint. Thus \(L_\Gamma=\{p,q,r\}\). Since \(s\notin L_\Gamma\), the constraint passes and this is the least model. The theory does not entail \(s\). It does entail \(\neg s\): every model contains \(r\), and the constraint then forces \(s\) to be false. The positive-consequence test concerns atoms; it is not a test saying that every atom outside the closure can independently be made true.</p>
+  </div></details>
+</section>
+
+<section id="cycles-without-facts" data-formal="horn-cycle-no-facts horn-cycle-with-fact horn-cycle-inconsistent" data-kind="question">
+  <h2>Can two rules start one another?</h2>
+  <p>On distinct atoms \(p,q\), consider \(\{p\}\Rightarrow q\) and \(\{q\}\Rightarrow p\). Do these rules force either atom? What changes if the fact \(\varnothing\Rightarrow p\) is added? What if the constraint \(\{q\}\Rightarrow\bot\) is then also added?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Without a fact, no body is contained in \(X_0=\varnothing\), so every stage is empty. The least model is empty and neither atom is forced. Both atoms may also be true: \(\{p,q\}\) is another model. A cycle permits truth to propagate once it is supplied; it does not supply a starting fact.</p>
+    <p>With the fact, the stages are \(\varnothing,\{p\},\{p,q\}\), followed by the same set. Both atoms are now forced. Adding the final constraint leaves the forward closure unchanged, but its body \(\{q\}\) is contained in the closure. The resulting theory is unsatisfiable. This also gives a failure of the positive-consequence equivalence without its satisfiability hypothesis: an atom \(r\) distinct from \(p,q\) is not in the closure, yet it is true in every model because there are no models.</p>
+  </div></details>
+</section>
+
+<section id="intersections" data-formal="horn-model-intersection horn-nonhorn-intersection horn-empty-rules horn-constraint-universe" data-kind="lemma">
+  <h2>Intersecting models preserves Horn rules</h2>
+  <p>If \(\mathcal M\) is a nonempty family of models of a Horn theory \(\Gamma\), then \(\bigcap\mathcal M\) is a model of \(\Gamma\). Here the theory need not be finite, but every rule still has a finite body. In contrast, the clause \(p\lor q\), with distinct \(p,q\), has two models whose intersection is not a model.</p>
+  <div class="proof">
+    <p>Suppose a rule's body is contained in the intersection. It is then contained in every member of \(\mathcal M\). For a definite rule, satisfaction puts its head in every member, hence in their intersection. For a constraint, choose a member of the nonempty family; it could not contain that body, a contradiction. Thus every rule is satisfied. This argument in fact works for arbitrary bodies whenever their conjunction is interpreted by containment.</p>
+    <p>For the contrast, the true sets \(\{p\}\) and \(\{q\}\) both satisfy \(p\lor q\), but their intersection is empty and satisfies neither disjunct. Nonemptiness in the Horn assertion matters as well: the intersection of an empty family of subsets of \(P\) is \(P\), which violates any constraint with body contained in \(P\).</p>
+  </div>
+</section>

@@ -1,0 +1,13 @@
+{
+  "id": "unif-elimination-generality",
+  "description": "If \\(x\\notin\\operatorname{FV}(t)\\) and \\(\\theta\\) is most general for \\(R[t/x]\\), then \\(\\theta\\star[t/x]\\) is most general for \\((x\\doteq t)::R\\).",
+  "module": "Lemmatheca.TermUnification.TermUnification",
+  "declaration": "Lemmatheca.MathematicalLogic.TermUnification.elimination_most_general",
+  "dependencies": [
+    "unif-elimination-sound",
+    "unif-elimination-factorization"
+  ],
+  "verified": true,
+  "declaration_line": 171,
+  "signature": "Lemmatheca.MathematicalLogic.TermUnification.elimination_most_general.{u, v, w} {L : FirstOrder.Language} (x : ℕ)\n  (t : L.Term ℕ) (R : Lemmatheca.MathematicalLogic.TermUnification.Problem L) (hx : x ∉ t.varFinset) (θ : ℕ → L.Term ℕ)\n  (hθ :\n    Lemmatheca.MathematicalLogic.TermUnification.MostGeneral\n      (Lemmatheca.MathematicalLogic.TermUnification.substProblem\n        (Lemmatheca.MathematicalLogic.TermUnification.single x t) R)\n      θ) :\n  Lemmatheca.MathematicalLogic.TermUnification.MostGeneral ((FirstOrder.Language.var x, t) :: R)\n    (Lemmatheca.MathematicalLogic.TermUnification.compose θ (Lemmatheca.MathematicalLogic.TermUnification.single x t))"
+}

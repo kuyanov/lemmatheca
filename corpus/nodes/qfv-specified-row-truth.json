@@ -1,0 +1,13 @@
+{
+  "id": "qfv-specified-row-truth",
+  "module": "Lemmatheca.QuantifierFreeValidity.Formulas",
+  "declaration": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.skeleton_truth_of_row",
+  "description": "If a structure satisfies the row problem of a quantifier-free ground formula, that actual formula is true exactly when its skeleton evaluates to true under the same specified row.",
+  "dependencies": [
+    "qfv-row-truth",
+    "qfv-skeleton-truth"
+  ],
+  "verified": true,
+  "declaration_line": 120,
+  "signature": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.skeleton_truth_of_row.{u, v, w} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] [(n : ℕ) → DecidableEq (L.Relations n)] (A : L.Sentence)\n  (hA : FirstOrder.Language.BoundedFormula.IsQF A)\n  (b : Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Atom L → Bool) (M : Type w) [L.Structure M]\n  (hM :\n    Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Satisfies\n      (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.rowProblem\n        (Lemmatheca.MathematicalLogic.Propositional.atoms\n          (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.skeleton A))\n        b)\n      M) :\n  M ⊨ A ↔\n    Lemmatheca.MathematicalLogic.Propositional.eval b (Lemmatheca.MathematicalLogic.QuantifierFreeValidity.skeleton A) =\n      true"
+}

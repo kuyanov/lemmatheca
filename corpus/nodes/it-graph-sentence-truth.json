@@ -1,0 +1,10 @@
+{
+  "id": "it-graph-sentence-truth",
+  "description": "The graph sentence holds exactly when every selected input tuple has exactly one ambient output satisfying the guarded graph.",
+  "module": "Lemmatheca.InterpretingTheories.InterpretingTheories",
+  "declaration": "Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData.realize_graphSentence",
+  "dependencies": [],
+  "verified": true,
+  "declaration_line": 62,
+  "signature": "Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData.realize_graphSentence.{u, v, u', v', w}\n  {L : FirstOrder.Language} {K : FirstOrder.Language}\n  (I : Lemmatheca.MathematicalLogic.InterpretingTheories.InterpretationData L K) {M : Type w} [K.Structure M] {n : ℕ}\n  (f : L.Functions n) :\n  M ⊨ I.graphSentence f ↔\n    ∀ (x : Fin n → M),\n      (∀ (i : Fin n), I.domain.Realize fun x_1 => x i) → ∃! y, (I.guardedGraph f).Realize (Sum.elim x fun x => y)"
+}

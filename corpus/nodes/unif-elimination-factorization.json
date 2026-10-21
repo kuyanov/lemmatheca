@@ -1,0 +1,12 @@
+{
+  "id": "unif-elimination-factorization",
+  "description": "Every unifier \\(\\sigma\\) of \\((x\\doteq t)::R\\) also unifies \\(R[t/x]\\) and satisfies \\(\\sigma\\star[t/x]=\\sigma\\) on all variables.",
+  "module": "Lemmatheca.TermUnification.TermUnification",
+  "declaration": "Lemmatheca.MathematicalLogic.TermUnification.elimination_factors",
+  "dependencies": [
+    "unif-term-composition"
+  ],
+  "verified": true,
+  "declaration_line": 159,
+  "signature": "Lemmatheca.MathematicalLogic.TermUnification.elimination_factors.{u, v, w} {L : FirstOrder.Language} {α : Type w}\n  (x : ℕ) (t : L.Term ℕ) (R : Lemmatheca.MathematicalLogic.TermUnification.Problem L) (σ : ℕ → L.Term α)\n  (hσ : Lemmatheca.MathematicalLogic.TermUnification.Unifies σ ((FirstOrder.Language.var x, t) :: R)) :\n  Lemmatheca.MathematicalLogic.TermUnification.Unifies σ\n      (Lemmatheca.MathematicalLogic.TermUnification.substProblem\n        (Lemmatheca.MathematicalLogic.TermUnification.single x t) R) ∧\n    Lemmatheca.MathematicalLogic.TermUnification.compose σ (Lemmatheca.MathematicalLogic.TermUnification.single x t) = σ"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "geq-model-equality",
+  "description": "Two retained ground terms have equal values in the specified finite structure if and only if their pair belongs to the computed bounded closure.",
+  "module": "Lemmatheca.GroundEquality.Models",
+  "declaration": "Lemmatheca.MathematicalLogic.GroundEquality.model_equality_iff",
+  "dependencies": [
+    "geq-term-value",
+    "quotient-projection-equality"
+  ],
+  "verified": true,
+  "declaration_line": 82,
+  "signature": "Lemmatheca.MathematicalLogic.GroundEquality.model_equality_iff.{u, v} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] (S : Finset (Lemmatheca.MathematicalLogic.GroundEquality.GroundTerm L))\n  (E : Finset (Lemmatheca.MathematicalLogic.GroundEquality.TermPair L)) (hE : E ⊆ S.product S)\n  (hS : Lemmatheca.MathematicalLogic.GroundEquality.SubtermClosed S)\n  (t s : Lemmatheca.MathematicalLogic.GroundEquality.GroundTerm L) (ht : t ∈ S) (hs : s ∈ S) :\n  FirstOrder.Language.Term.realize Empty.elim t = FirstOrder.Language.Term.realize Empty.elim s ↔\n    (t, s) ∈ Lemmatheca.MathematicalLogic.GroundEquality.closure S E"
+}

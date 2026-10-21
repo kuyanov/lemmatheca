@@ -1,0 +1,13 @@
+{
+  "id": "qfv-same-model-term",
+  "module": "Lemmatheca.QuantifierFreeValidity.Literals",
+  "declaration": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.model_term_value",
+  "description": "Every retained ground term \\(t\\in S\\) evaluates to its own class \\([t]\\) in the specified positive-relation model, which retains the ground-equality function map.",
+  "dependencies": [
+    "qfv-relation-model",
+    "geq-represented-output-unique"
+  ],
+  "verified": true,
+  "declaration_line": 219,
+  "signature": "Lemmatheca.MathematicalLogic.QuantifierFreeValidity.model_term_value.{u, v} {L : FirstOrder.Language}\n  [(n : ℕ) → DecidableEq (L.Functions n)] [(n : ℕ) → DecidableEq (L.Relations n)]\n  (Γ : Lemmatheca.MathematicalLogic.QuantifierFreeValidity.Problem L)\n  (t : Lemmatheca.MathematicalLogic.GroundEquality.GroundTerm L)\n  (ht : t ∈ Lemmatheca.MathematicalLogic.QuantifierFreeValidity.support Γ) :\n  FirstOrder.Language.Term.realize Empty.elim t = Lemmatheca.MathematicalLogic.QuantifierFreeValidity.classOf Γ t ht"
+}

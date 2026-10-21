@@ -1,0 +1,12 @@
+{
+  "id": "eqax-zero-arity-clauses",
+  "description": "For each constant \\(c\\), its congruence clause is exactly \\(\\{E(c,c)\\}\\); for each zero-ary old relation \\(R\\), its clause is exactly \\(\\{\\neg R(),R()\\}\\).",
+  "module": "Lemmatheca.EqualityAxioms.EqualityAxioms",
+  "declaration": "Lemmatheca.MathematicalLogic.EqualityAxioms.zero_arity_clauses",
+  "dependencies": [
+    "eqax-axiom-clauses"
+  ],
+  "verified": true,
+  "declaration_line": 687,
+  "signature": "Lemmatheca.MathematicalLogic.EqualityAxioms.zero_arity_clauses.{u, v} {L : FirstOrder.Language} (c : L.Functions 0)\n  (R : L.Relations 0) :\n  Lemmatheca.MathematicalLogic.EqualityAxioms.functionClause c =\n      {Lemmatheca.MathematicalLogic.EqualityAxioms.positive\n          (Lemmatheca.MathematicalLogic.EqualityAxioms.eqAtom (FirstOrder.Language.func c Fin.elim0)\n            (FirstOrder.Language.func c Fin.elim0))} ∧\n    Lemmatheca.MathematicalLogic.EqualityAxioms.relationClause R =\n      {Lemmatheca.MathematicalLogic.EqualityAxioms.negative\n          (Lemmatheca.MathematicalLogic.EqualityAxioms.oldAtom R Fin.elim0),\n        Lemmatheca.MathematicalLogic.EqualityAxioms.positive\n          (Lemmatheca.MathematicalLogic.EqualityAxioms.oldAtom R Fin.elim0)}"
+}

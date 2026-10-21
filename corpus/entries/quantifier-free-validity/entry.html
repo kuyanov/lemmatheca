@@ -1,0 +1,153 @@
+<section id="signed-ground-atoms" data-formal="qfv-ground-atom qfv-signed-literal qfv-literal-problem qfv-literal-formula qfv-literal-truth qfv-equality-atom-truth qfv-relation-atom-truth qfv-literal-satisfaction qfv-literal-model qfv-positive-equations qfv-negative-equations" data-kind="definition">
+  <h2>Finite demands on equations and relations</h2>
+  <p>Fix a first-order language \(L\). A <strong>ground atom</strong> is an equality \(s=t\) of <a href="ground-equality#ground-constraints">ground terms</a>, or a relation application \(R(t_0,\ldots,t_{n-1})\) to ground terms. A <strong>signed ground literal</strong> consists of an atom and a truth sign: the positive sign asserts the atom, and the negative sign asserts its negation. These are the atomic formulas and negated atomic formulas of the <a href="first-order-languages#scoped-formulas">shared first-order syntax</a>, with no variables.</p>
+  <p>A <strong>ground literal problem</strong> is a finite set \(\Gamma\) of signed ground literals. A <strong>solution</strong> is a nonempty \(L\)-structure making every member true. Separate its requirements into positive equalities \(E\), negative equalities \(D\), positive relation applications \(P\), and negative relation applications \(N\). Relation symbols retain their arities; two symbols of different arity cannot be compared as the same application.</p>
+  <p>No axioms constrain the symbols. Thus a binary symbol written \(+\) need not denote addition, and a binary relation written \(&lt;\) need not be an order. The decision problem here concerns arbitrary structures, rather than structures of a background theory.</p>
+</section>
+
+<section id="relational-conflicts" data-formal="qfv-literal-support qfv-support-closed qfv-relation-congruent qfv-conflict-free" data-kind="definition">
+  <h2>Equality can make two relation demands coincide</h2>
+  <p>Let \(S\) be the union of the <a href="ground-equality#finite-subterms">subterm sets</a> of every term occurring in \(\Gamma\), and put \(m=|S|\). It is finite and subterm-closed. Compute the <a href="ground-equality#finite-saturation">equality saturation</a> from the positive equations \(E\) on \(S\), and write \(s\sim t\) for membership in its fixed stage \(R_{m^2}\).</p>
+  <p>An <strong>equality conflict</strong> is a pair \((s,t)\in D\) with \(s\sim t\). A <strong>relation conflict</strong> consists of \(R(s_0,\ldots,s_{n-1})\in P\) and \(R(t_0,\ldots,t_{n-1})\in N\) with the same relation symbol and \(s_i\sim t_i\) for every \(i&lt;n\). We call the problem <strong>conflict-free</strong> when neither kind of conflict occurs.</p>
+  <p>Only positive equations generate the congruence. Relation demands do not identify terms: a unary relation may hold of two distinct objects, or fail of both. For a relation of arity zero, the tuple condition is empty, so asserting and denying that same symbol is already a conflict. Such literals add no terms to \(S\).</p>
+</section>
+
+<section id="conflict-soundness" data-formal="qfv-conflict-sound" data-kind="lemma">
+  <h2>A conflict rules out every structure</h2>
+  <p>If \(\Gamma\) has a solution, then it is conflict-free.</p>
+  <div class="proof">
+    <p>A solution satisfies \(E\), so <a href="ground-equality#closure-soundness">soundness of equality saturation</a> makes \(s^M=t^M\) whenever \(s\sim t\). An equality conflict contradicts the corresponding negative equality.</p>
+    <p>In a relation conflict, the two argument tuples therefore have exactly the same values in \(M\). The same interpreted relation on the same tuple cannot be both true and false. This contradicts the positive and negative demands and proves the assertion.</p>
+  </div>
+</section>
+
+<section id="relation-model" data-formal="qfv-relation-map qfv-relation-model qfv-relation-coherence geq-carrier geq-carrier-finite geq-carrier-bound" data-kind="definition">
+  <h2>Keep the function model and interpret the relations</h2>
+  <p>Take exactly the <a href="ground-equality#quotient-and-default">finite carrier</a> \(A=(S/{\sim})\sqcup\{\ast\}\) from ground equality, and exactly its <a href="ground-equality#total-interpretation">represented-application function operations</a>. A retained application with the required input classes supplies its output class; if there is no such application, the output is \(\ast\). Define the <strong>positive-relation model</strong> \(M_\Gamma\) by replacing only the relation interpretations:</p>
+  <div class="math-display">\[R^{M_\Gamma}(a_0,\ldots,a_{n-1})\quad\Longleftrightarrow\quad \exists R(t_0,\ldots,t_{n-1})\in P\ \ \forall i&lt;n\ [t_i]=a_i.\]</div>
+  <p>The equality of relation symbols in this rule is literal equality of symbols of the same arity. A different symbol contributes no witness. This rule defines a relation on elements of \(A\): it asks for any positive application representing the tuple, so changing representatives of its classes cannot change the answer. A tuple with a default coordinate has no positive witness at that coordinate. At arity zero, the relation is true exactly when its positive literal occurs.</p>
+  <p>All function operations remain the previously specified total functions. In particular, this construction keeps the represented-application existence test; it does not apply a function to arbitrarily chosen representatives. The carrier is still nonempty and has at most \(m+1\) elements.</p>
+</section>
+
+<section id="same-model-truth" data-formal="qfv-same-model-term qfv-same-model-equality qfv-same-model-relation" data-kind="lemma">
+  <h2>Read every input atom in the same model</h2>
+  <p>For every retained ground term \(t\in S\), one has \(t^{M_\Gamma}=[t]\). Consequently, for retained terms \(s,t\) and a retained tuple \(\bar t\),</p>
+  <div class="math-display">\[M_\Gamma\models s=t\quad\Longleftrightarrow\quad s\sim t.\]</div>
+  <div class="math-display">\[M_\Gamma\models R(\bar t)\quad\Longleftrightarrow\quad \exists R(\bar u)\in P\ \ \forall i&lt;n\ u_i\sim t_i.\]</div>
+  <p>Here a retained tuple means that every argument belongs to \(S\); its application need not be an additional term.</p>
+  <div class="proof">
+    <p>Term evaluation uses the function interpretations and never the relation interpretations. Those functions are exactly the ground-equality functions. More explicitly, induct on \(t=f(\bar u)\in S\). Subterm closure and the induction hypotheses make its argument values \([u_i]\). The retained application \(t\) represents this tuple, so the specified function returns \([t]\), using uniqueness of the output class. This proves the term identity in this same structure, including constants.</p>
+    <p>Equality of the term values is equality of classes, which is exactly \(s\sim t\). For a relation, substitute the term identities into its defining rule. A positive tuple represents \(([t_i])_i\) exactly when all its classes agree with those of the input tuple. Equality of classes is again equivalence under \(\sim\), proving the second equivalence.</p>
+  </div>
+</section>
+
+<section id="literal-criterion" data-formal="qfv-model-satisfies qfv-literal-criterion geq-carrier geq-carrier-finite geq-carrier-bound" data-kind="theorem">
+  <h2>The two finite conflict tests are exact</h2>
+  <div class="statement-box"><p>A finite ground literal problem \(\Gamma\) has a solution if and only if it is conflict-free. If it is conflict-free, the specified positive-relation model \(M_\Gamma\) is a solution, on the same carrier and with the same function operations as the ground-equality construction. In particular it is finite, nonempty, and has at most \(|S|+1\) elements.</p></div>
+  <div class="proof">
+    <p>A solution excludes conflicts by <a href="#conflict-soundness"></a>. Conversely suppose the problem is conflict-free. Every positive equation belongs to the saturated equality relation. The equality equivalence in <a href="#same-model-truth"></a> therefore makes it true in \(M_\Gamma\). No negative equation belongs to that relation, so the same equivalence makes each required disequality true.</p>
+    <p>A positive relation literal witnesses its own truth: each argument is equivalent to itself. If a negative relation literal were false, the second equivalence in <a href="#same-model-truth"></a> would supply a positive literal with the same relation symbol and congruent arguments. This would be a relation conflict. Thus every negative relation literal is true as well. All four kinds of requirement hold in the one specified structure, whose carrier already has the asserted bound.</p>
+  </div>
+</section>
+
+<section id="literal-test" data-formal="qfv-literal-test qfv-literal-test-correct" data-kind="definition">
+  <h2>An executable finite test</h2>
+  <p>Assume that equality of function symbols, and equality of relation symbols, at each arity are decidable. Define the <strong>literal test</strong> \(\operatorname{LitSat}(\Gamma)\) as follows:</p>
+  <ol>
+    <li>Collect the finite subterm set \(S\), and extract \(E,D,P,N\).</li>
+    <li>Starting with \(E\), perform \(m^2\) equality-saturation steps on \(S\times S\).</li>
+    <li>Reject if a pair in \(D\) belongs to the resulting relation, or if a pair of opposite-sign relation literals has the same symbol and componentwise equivalent arguments. Otherwise accept.</li>
+  </ol>
+  <p>Every loop ranges over a specified finite set: input literals, retained terms, pairs of retained terms, or the finitely many arguments of one application. Comparing two applications first checks arity, then their symbols, then their arguments. There is no loop through the signature, and no query whether a structure exists. The <a href="#literal-criterion">criterion</a> proves that this terminating test accepts exactly the satisfiable problems. The model construction proves correctness; computing the decision does not require making its classical choices.</p>
+</section>
+
+<section id="dependent-atoms" data-formal="qfv-example-conflict qfv-example-congruence qfv-example-independent-row" data-kind="question">
+  <h2>Which truth-table rows can actually occur?</h2>
+  <p>Let \(a,b\) be constants and \(P\) a unary relation. Consider the three atoms \(a=b\), \(P(a)\), and \(P(b)\). Can a structure realize the Boolean row \((\mathrm{true},\mathrm{true},\mathrm{false})\)? Is the formula \((a=b\land P(a))\to P(b)\) valid?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The row asserts \(a=b,P(a),\neg P(b)\). Its equality saturation identifies \(a,b\), and the two relation demands form a conflict. Hence no structure realizes this row. In any structure, if \(a=b\) and \(P(a)\), then \(P(b)\), so the displayed implication is valid.</p>
+    <p>As a propositional formula on three independent letters, however, that implication is false at precisely this row. An ordinary truth table can list possible atom values, but a first-order decision procedure must discard rows incompatible with equality and relation congruence.</p>
+  </div></details>
+</section>
+
+<section id="propositional-skeleton" data-formal="qfv-skeleton qfv-skeleton-roundtrip qfv-row-problem fonf-quantifier-free prop-atom-support" data-kind="definition">
+  <h2>The Boolean structure of an actual ground formula</h2>
+  <p>Let \(A\) be an actual <a href="first-order-normal-forms#normal-form-definitions">quantifier-free</a> ground formula. Its <strong>propositional skeleton</strong> \(\operatorname{sk}(A)\) is a <a href="propositional-logic#formulas">propositional formula</a> whose letters are the ground atoms themselves. Replace each atomic subformula \(B\) by the propositional letter labelled \(B\), and preserve falsity and implication recursively:</p>
+  <div class="math-display">\[\operatorname{sk}(\bot)=\bot,\qquad \operatorname{sk}(B\to C)=\operatorname{sk}(B)\to\operatorname{sk}(C).\]</div>
+  <p>Our defined Boolean connectives expand into this basis, so the same operation commutes with them. There is no quantifier case because \(A\) has none. Equal occurrences of an atom use the same letter. The finite set \(\operatorname{At}(A)\) is obtained by taking a singleton at an atom, the empty set at falsity, and unions at implication.</p>
+  <p>For a row \(b:\operatorname{At}(A)\to\{\mathrm{false},\mathrm{true}\}\), its <strong>row problem</strong> \(\Gamma_{A,b}\) contains, for each atom in this set, the positive literal if its row value is true and the negative literal otherwise. Thus it demands exactly that row, rather than merely demanding the atoms that make the whole formula true.</p>
+</section>
+
+<section id="skeleton-truth" data-formal="qfv-row-truth qfv-skeleton-truth qfv-specified-row-truth" data-kind="lemma">
+  <h2>The skeleton and the first-order formula agree</h2>
+  <p>Let \(M\) be any nonempty structure. Give each atom of \(A\) its actual truth value in \(M\), obtaining a row \(b_M\). Then \(M\) satisfies \(\Gamma_{A,b_M}\), and</p>
+  <div class="math-display">\[M\models A\quad\Longleftrightarrow\quad \operatorname{sk}(A)\text{ evaluates to true under }b_M.\]</div>
+  <p>More generally, if \(M\) satisfies a row problem \(\Gamma_{A,b}\), the same equivalence holds with that specified row \(b\).</p>
+  <div class="proof">
+    <p>The first assertion follows directly from how signs are selected. For the general equivalence, induct on the actual quantifier-free formula. At an atom, its signed demand in the row problem says exactly that its truth agrees with the row value. Falsity is false in both semantics. At \(B\to C\), the induction hypotheses identify the truth of each child, and both semantics use the same implication truth table. The induction applies to every subformula: its atom set is contained in that of \(A\), so the row problem supplies every demanded atomic value.</p>
+    <p>This proves the bridge for the actual first-order formula, with its actual term evaluation and equality. It also covers the Boolean abbreviations by expansion into the basis.</p>
+  </div>
+</section>
+
+<section id="ground-formula-test" data-formal="qfv-formula-support qfv-row-support qfv-ground-test qfv-passing-row-model qfv-ground-test-correct" data-kind="theorem">
+  <h2>Search the rows that have first-order models</h2>
+  <div class="statement-box"><p>For a quantifier-free ground formula \(A\), define \(\operatorname{GroundSat}(A)\) to accept exactly when some Boolean row \(b\) on \(\operatorname{At}(A)\) makes \(\operatorname{sk}(A)\) true and has \(\operatorname{LitSat}(\Gamma_{A,b})=\mathrm{true}\). With decidable symbol equality this is a terminating test, and</p>
+  <div class="math-display">\[\operatorname{GroundSat}(A)=\mathrm{true}\quad\Longleftrightarrow\quad A\text{ is satisfiable}.\]</div>
+  <p>If it accepts, the positive-relation model for the accepted row satisfies \(A\). Its size is at most one plus the number of distinct subterms occurring in \(A\).</p></div>
+  <div class="proof">
+    <p>There are \(2^{|\operatorname{At}(A)|}\) rows, each with a finite propositional evaluation and a terminating literal test. Suppose a structure satisfies \(A\). Its actual row \(b_M\) makes the skeleton true by <a href="#skeleton-truth"></a>; it also satisfies the row problem. Correctness of the literal test makes this an accepted row.</p>
+    <p>Conversely, an accepted row has the specified finite positive-relation model by <a href="#literal-criterion"></a>. It satisfies the entire row problem. The skeleton is true at that same row, so <a href="#skeleton-truth"></a> makes the actual formula true in that same model. The row problem contains every atom of \(A\), with one of its signs, so its collected term set is exactly the subterm set of \(A\). This proves the stated size bound.</p>
+  </div>
+  <p>If the atom set is empty, there is one empty row. Its empty literal problem is satisfiable on the one-element default carrier; the formula is accepted precisely when its Boolean evaluation is true.</p>
+</section>
+
+<section id="name-free-variables" data-formal="qfv-finite-restriction qfv-finite-named jc-formulas-as-named-sentences" data-kind="definition">
+  <h2>Turn finitely many variables into fresh constants</h2>
+  <p>Let \(A(x_0,\ldots,x_{k-1})\) be a quantifier-free \(L\)-formula whose free variables are among this finite displayed list. Its <strong>named ground formula</strong> \(A^{\mathrm c}\) is formed in \(L^+=L\cup\{c_0,\ldots,c_{k-1}\}\), with distinct fresh constant symbols, by including each old symbol and replacing \(x_i\) by \(c_i\). Function arguments and Boolean constructors are transformed recursively. There are no binders in \(A\), so no variable capture is possible.</p>
+  <p>The constants are fresh symbols, but their values in a structure need not be distinct. The list may include unused variables and may be empty. An arbitrary finite formula has only finitely many free variables, so one may first list those occurring variables and relabel them by this finite index set. Relabelling changes no truth condition when the assignment is relabelled with it, by the <a href="first-order-structures#semantic-substitution">substitution convention</a>.</p>
+</section>
+
+<section id="naming-truth" data-formal="qfv-finite-restriction-truth qfv-named-qf qfv-naming-term-truth jc-name-sentence-truth qfv-naming-reduct-truth" data-kind="lemma">
+  <h2>An assignment and an expansion express the same choice</h2>
+  <p>For every nonempty \(L\)-structure \(M\) and tuple \(\bar a\in M^k\), let \(M_{\bar a}\) be its expansion with \(c_i^{M_{\bar a}}=a_i\). Then the named terms have the original terms' values and</p>
+  <div class="math-display">\[M_{\bar a}\models A^{\mathrm c}\quad\Longleftrightarrow\quad M\models A[\bar a].\]</div>
+  <p>Conversely every nonempty \(L^+\)-structure \(N\) is the expansion of its \(L\)-reduct with the tuple \((c_i^N)_i\), and satisfies this same equivalence. The named formula is ground and quantifier-free.</p>
+  <div class="proof">
+    <p>Define the expansion by keeping every old function and relation and giving each new constant its specified value; the disjoint choice of fresh symbols makes this unambiguous, as in <a href="changing-languages#reducts-and-expansions">expansions and reducts</a>. Induct on terms. At \(x_i\), its new constant value is precisely \(a_i\). At \(f(\bar t)\), the function interpretation is unchanged and the argument values agree by induction. Equality and relation atoms therefore have identical truth conditions.</p>
+    <p>Induct on the formula through falsity and implication to obtain the displayed equivalence, using the term identity at atoms. The construction introduces constants, never variables or quantifiers, proving the syntactic assertion too. For an arbitrary \(N\), the old interpretations are exactly those of its reduct and the chosen tuple is exactly the values of its new constants. Applying the same inductions proves the converse assertion with this specified reduct and tuple.</p>
+  </div>
+</section>
+
+<section id="universal-validity" data-formal="qfv-existential-test qfv-universal-test qfv-existential-correct qfv-existential-witness-model qfv-universal-correct qfv-universal-sound qfv-finite-countermodel qfv-matrix-opening qfv-matrix-truth qfv-universal-prefix-correct qfv-existential-prefix-correct" data-kind="theorem">
+  <h2>Decide universal validity and existential satisfiability</h2>
+  <div class="statement-box"><p>Let \(A(\bar x)\) be quantifier-free, with all its free variables in the finite tuple \(\bar x\). Over nonempty structures with no background axioms,</p>
+  <div class="math-display">\[\exists\bar x\,A\text{ is satisfiable}\quad\Longleftrightarrow\quad \operatorname{GroundSat}(A^{\mathrm c})=\mathrm{true}.\]</div>
+  <div class="math-display">\[\forall\bar x\,A\text{ is valid}\quad\Longleftrightarrow\quad \operatorname{GroundSat}((\neg A)^{\mathrm c})=\mathrm{false}.\]</div>
+  <p>Thus decidable equality of the signature symbols gives terminating decisions for both questions. An accepted satisfiability row supplies a finite model with witnesses; a rejected validity claim supplies a finite countermodel by taking the reduct of the accepted model for the named negation.</p></div>
+  <div class="proof">
+    <p>An existential sentence has a model exactly when some structure and tuple make its matrix true. By <a href="#naming-truth"></a>, that is equivalent to the existence of a model of \(A^{\mathrm c}\). Apply <a href="#ground-formula-test"></a>. The finite named model's new constant values are the required existential witnesses in its reduct.</p>
+    <p>A universal sentence is invalid exactly when some nonempty structure has a tuple making \(A\) false. The same naming equivalence identifies this with satisfiability of \((\neg A)^{\mathrm c}\). Hence validity is equivalent to unsatisfiability of that named negation. Negation preserves quantifier-freeness, so the same finite test decides it, with its answer reversed. If the negation is accepted, the constructed named model and its constant tuple give the asserted finite countermodel after taking the reduct.</p>
+  </div>
+  <p>The quantifier blocks may be empty. This theorem does not test satisfiability of universal sentences with arbitrary function symbols: a universal requirement asks for the matrix at every tuple within one model, while the finite naming test asks whether a chosen tuple can occur in some model.</p>
+</section>
+
+<section id="validity-versus-satisfiability" data-formal="qfv-example-satisfiable-universals qfv-example-universal-countermodel qfv-example-tests" data-kind="question">
+  <h2>What does a failed validity test mean?</h2>
+  <p>In a language with unary \(P\), compare \(\forall x\,P(x)\) with \(\forall x\,(P(x)\lor\neg P(x))\). Can both be satisfiable even though their validity tests give different answers? What does the test do with \(\exists x\,(P(x)\land\neg P(x))\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Yes. A one-element structure with \(P\) true satisfies both universal sentences. But the first is not valid: the one-element structure with \(P\) false is a countermodel. Its named negation \(\neg P(c)\) has a conflict-free row, so the validity test returns false. The second is valid, because every row gives \(P(c)\lor\neg P(c)\) true. Its negation has no Boolean row making it true, so the validity test returns true.</p>
+    <p>The existential sentence is unsatisfiable. No Boolean row makes \(P(c)\land\neg P(c)\) true, so the satisfiability test rejects. A failed validity test supplies a countermodel; it does not assert that the original sentence has no models.</p>
+  </div></details>
+</section>
+
+<section id="convexity" data-formal="qfv-equation-disjunction qfv-disjunction-truth qfv-equality-convexity" data-kind="question">
+  <h2>Can equations force a disjunction without forcing a disjunct?</h2>
+  <p>Let \(E\) be a finite set of positive ground equations and let \((s_i,t_i)\), \(i&lt;r\), be finitely many pairs of ground terms. Prove that</p>
+  <div class="math-display">\[E\models\bigvee_{i&lt;r}s_i=t_i\quad\Longleftrightarrow\quad \exists i&lt;r\ E\models s_i=t_i.\]</div>
+  <p>The empty disjunction means falsity.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The right-to-left implication follows from the truth condition of disjunction. For the reverse, include all terms of \(E\) and all the displayed conclusion terms in the finite subterm-closed set \(S\). Saturate only the equations \(E\). The ground-equality model on classes plus the default point satisfies \(E\), regardless of whether any conclusion pair is identified.</p>
+    <p>If the disjunction is a consequence, it is true in that specified model. Some \(i&lt;r\) therefore has equal term values. Exact term evaluation makes \(s_i\sim t_i\). Soundness of saturation makes \(s_i=t_i\) true in every model of \(E\), proving the desired disjunct. If \(r=0\), the displayed model shows that \(E\) does not entail falsity, so both sides of the equivalence are false.</p>
+    <p>Including the conclusion terms in \(S\) is necessary for this argument: it is the exact evaluation of those retained terms that turns equality in the one canonical model into an equality in the computed congruence.</p>
+  </div></details>
+</section>

@@ -1,0 +1,13 @@
+{
+  "id": "mon-truth-invariance",
+  "description": "In constant-free unary languages, matching capacities at \\(r\\) and matching assignments of length \\(n\\) give equal truth values for every actual shared formula \\(\\varphi\\) with \\(n+q(\\varphi)\\le r\\).",
+  "module": "Lemmatheca.MonadicLogic.Invariance",
+  "declaration": "Lemmatheca.MathematicalLogic.MonadicLogic.truth_invariance",
+  "dependencies": [
+    "mon-witness-extension",
+    "mon-quantifier-count"
+  ],
+  "verified": true,
+  "declaration_line": 197,
+  "signature": "Lemmatheca.MathematicalLogic.MonadicLogic.truth_invariance.{u_1, u_2} {k : ℕ} {M : Type u_1} {N : Type u_2}\n  [(Lemmatheca.MathematicalLogic.MonadicLogic.lang k).Structure M]\n  [(Lemmatheca.MathematicalLogic.MonadicLogic.lang k).Structure N] {r n : ℕ}\n  (hcap :\n    Lemmatheca.MathematicalLogic.MonadicLogic.Capacities r Lemmatheca.MathematicalLogic.MonadicLogic.profile\n      Lemmatheca.MathematicalLogic.MonadicLogic.profile)\n  (φ : (Lemmatheca.MathematicalLogic.MonadicLogic.lang k).BoundedFormula Empty n) (a : Fin n → M) (b : Fin n → N)\n  (hmatch :\n    Lemmatheca.MathematicalLogic.MonadicLogic.Matching Lemmatheca.MathematicalLogic.MonadicLogic.profile\n      Lemmatheca.MathematicalLogic.MonadicLogic.profile a b)\n  (hbudget : n + Lemmatheca.MathematicalLogic.MonadicLogic.quantifiers φ ≤ r) :\n  φ.Realize Empty.elim a ↔ φ.Realize Empty.elim b"
+}
