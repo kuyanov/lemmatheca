@@ -7,9 +7,9 @@ source-register maintenance follows the shared exception.
 
 In the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), the entry
 driver requests review and root alone assigns or spawns the reviewer: root, a new
-agent or another entry owner. The reviewer must not have authored the reviewed
-text or targets. Reviewers return findings to the driver and root; they do not
-spawn or reassign reviewers.
+agent or another entry owner. As reviewer, you must not have authored the reviewed
+text or targets. Return findings to the entry owner. If delegated, also send them
+to root and leave reviewer assignment to root.
 
 ## Inputs
 
@@ -81,8 +81,10 @@ and optional simplifications. Route corrections to step 4; report any human erro
 for steps 2/3. Record new external-source findings only if source consultation
 actually required it. Do not change bindings or proofs or set approval fields.
 Source-record edits follow the [shared build rules](../CONTRIBUTING.md#validation-and-submission)
-for catalog regeneration and record validation. In an area batch, send shared
-record changes to root unless exclusive ownership was assigned; root publishes
-derived data. The entry driver applies corrections through step 4 and requests
+for catalog regeneration and record validation. In an area batch, if you are a
+delegated reviewer, send shared-record changes to root unless exclusive ownership
+was assigned, and leave publication to root. If you are root, apply those changes
+and refresh the catalogs at a coordinated checkpoint or the final build.
+The entry driver applies corrections through step 4 and requests
 focused step-5 rereview from root before proving; root assigns it. Human
 corrections return through steps 2/3.

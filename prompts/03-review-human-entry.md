@@ -6,9 +6,9 @@ remains read-only; source-register maintenance follows the shared exception.
 
 In the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), the entry
 driver requests review and root alone assigns or spawns the reviewer: root, a new
-agent or another entry owner. The reviewer must not have authored the reviewed
-text. Reviewers return findings to the driver and root; they do not spawn or
-reassign reviewers.
+agent or another entry owner. As reviewer, you must not have authored the reviewed
+text. Return findings to the entry owner. If delegated, also send them to root
+and leave reviewer assignment to root.
 
 ## Inputs
 
@@ -58,7 +58,8 @@ human-review scope.
    break and keep short formulas and identity lists compact. Formula scrolling
    on mobile is acceptable and does not justify extra line breaks.
 4. Check reading order and the entry's references. In an area batch, check the
-   assigned placement and report global conflicts to root; do not replan the area.
+   assigned placement and include global conflicts in your findings; do not replan
+   the area during this review.
    Review the relevant applied integration changes from step 2, identified by root
    in an area batch, and report missing, stale, or incorrect links/planning items.
    Do not treat proposed edits as applied or reviewed. Do not repeat a corpus-wide
@@ -72,8 +73,10 @@ human-review scope.
 The independent reading and rendering review above is this step's check. Use
 `build --no-lean --check` only to investigate a concrete structural/reference
 concern. Source-record edits follow the [shared build rules](../CONTRIBUTING.md#validation-and-submission)
-for catalog regeneration; in an area batch, send shared-record changes to root
-unless exclusive file ownership was assigned, and leave publication to root.
+for catalog regeneration. In an area batch, if you are a delegated reviewer, send
+shared-record changes to root unless exclusive file ownership was assigned, and
+leave publication to root. If you are root, apply those changes and refresh the
+catalogs at a coordinated checkpoint or the final build.
 No routine writing build, catalog tests, Lean proof checks, or formal-binding
 audit is required.
 
@@ -85,5 +88,5 @@ unavailable checks, and revisions needed before formal preparation. Include
 relevant integration findings and source-register changes when applicable.
 Do not rewrite entries, metadata, mappings, or proofs, or set approval fields.
 The area entry driver applies corrections through step 2 and requests focused
-step-3 rereview from root before continuing; root assigns it, and this reviewer
-does not perform those edits.
+step-3 rereview from root before continuing; root assigns it. Do not perform those
+edits yourself.

@@ -3,10 +3,10 @@
 Follow the [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
 Own the human exposition and its integration into the corpus.
 
-In the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), the entry
-driver follows its assigned plan through steps 2–6 without asking the user between stages.
-It requests reviews from root; root alone assigns or spawns reviewers and owns
-global scope, coverage gaps and reading order.
+In the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline), you are the
+entry owner. Follow your assigned plan through steps 2–6 without asking the user
+between stages. Request reviews from root; root alone assigns or spawns reviewers
+and owns global scope, coverage gaps and reading order.
 
 ## Inputs
 
@@ -104,4 +104,4 @@ and concrete shared-file edits. This stage ends at the draft. In an area batch,
 request step-3 review from root with those edits. Root applies the shared
 integration, identifies the stable files/blocks, completes any needed index
 checkpoint, then assigns the reviewer. Apply corrections through step 2 and
-request focused rereview; root assigns it before the driver continues the sequence.
+request focused rereview; root assigns it before you continue the sequence.

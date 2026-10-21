@@ -1,6 +1,6 @@
 # Step 1: Plan the area and choose sources
 
-The root agent executes this step itself. Follow the
+You are the root agent; execute this step yourself. Follow the
 [area-pipeline protocol](../CONTRIBUTING.md#running-an-area-pipeline) and
 [shared execution rules](../CONTRIBUTING.md#running-one-step-with-an-ai-agent).
 Own the area-wide source plan, coverage assessment, entry scopes, prerequisites,
@@ -68,20 +68,21 @@ Inspect the selected publications directly; do not read whole registries.
    outline, source-to-outline map and citation objects, reading-time estimate,
    prerequisites, and intended placement. Note known consuming blocks and related
    pending references; full entry-level integration discovery belongs to step 2.
-   Define owned files and shared work that the root will coordinate.
+   Assign file ownership to entry agents and identify the shared edits you will
+   coordinate.
 6. For an authorized entry-addition pipeline, spawn an entry agent for each entry
    in the execution plan with prompts 02–06 and its complete handoff. Schedule
    independent entries in parallel and dependency-bound work when its inputs
-   exist. Entry owners request reviews for steps 3 and 5; the root alone assigns
-   reviewers under the independence rule. Plan index checkpoints before dependent
-   agents need to discover earlier additions. Follow the central protocol for
+   exist. Entry owners request reviews for steps 3 and 5; assign or spawn their
+   reviewers yourself under the independence rule. Plan index checkpoints before
+   dependent agents need to discover earlier additions. Follow the central protocol for
    applying integration edits before review, shared ownership, final gap/order
    checks, and integrated verification.
 
 ## Checks
 
-Source support, prerequisite completeness, coverage gaps and reading order are
-[root responsibilities](../CONTRIBUTING.md#running-an-area-pipeline). Do not
+You own source support, prerequisite completeness, coverage gaps and reading order
+under the [area protocol](../CONTRIBUTING.md#running-an-area-pipeline). Do not
 hand off the planning decision or repeat formal node-reuse searches, which belong
 to step 4.
 
@@ -89,7 +90,7 @@ Planning alone leaves entries, taxonomy, reading order and reference planning
 unchanged. If source-register records changed in a planning-only task, finish with
 `build --no-lean` under the
 [shared build rules](../CONTRIBUTING.md#validation-and-submission). For a full
-pipeline, combine that refresh with a root-owned index checkpoint or the final
+pipeline, combine that refresh with an index checkpoint you coordinate or the final
 batch build. No routine rendering, Lean build or catalog tests are required for
 the planning phase.
 
@@ -99,9 +100,8 @@ Provide the area coverage/gap assessment, ordered entry plan and source maps,
 prerequisite dependencies, inspected-source limits, execution/deferred scopes,
 and per-entry assignments. For a planning-only request, stop here.
 
-For an authorized pipeline, continue through delegation and root integration
-without a new permission request between stages. Before delivery, the root checks
-the actual added coverage and reading order, resolves in-scope gaps through the
-affected stages, and completes the final build. Report deferred prerequisites and
-unavailable checks honestly; do not present a roadmap or unverified worker handoff
-as completed entries.
+For an authorized pipeline, continue through delegation and shared integration
+without a new permission request between stages. Before delivery, check the actual
+added coverage and reading order, resolve in-scope gaps through the affected stages,
+and complete the final build. Report deferred prerequisites and unavailable checks
+honestly; do not present a roadmap or unverified worker handoff as completed entries.

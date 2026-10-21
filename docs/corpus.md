@@ -165,9 +165,10 @@ records. All six steps maintain this register when actual source checks reveal n
 defects or extend reviewed coverage. Steps 1, 3, and 5 may update these records
 and refresh the derived data required by that source-register maintenance using
 `build --no-lean`; authored entry/node fields and Lean sources remain read-only.
-In a coordinated batch, send shared record changes to the root for application
-and catalog refresh at a checkpoint or final build rather than running a
-competing writing build.
+In a coordinated batch, entry agents and delegated reviewers send shared record
+changes to the root unless exclusive ownership was assigned. The root applies
+shared changes and refreshes catalogs at a coordinated checkpoint or final build;
+workers do not run competing writing builds.
 Save confirmed findings before the handoff rather than leaving them solely in a
 chat or pull request. Entry editorial findings and formal correspondence findings
 stay in their review handoffs. This register has no approval flags or effect on

@@ -79,7 +79,7 @@ a writing build yourself.
   defer the writing build to its final mutating stage and record the requirement
   in the handoff; do not add a no-Lean build if a full build will satisfy it.
   In an area batch, root owns coordinated index checkpoints and the final full
-  build; workers use focused compilation and do not publish generated data.
+  build; use focused compilation and do not publish generated data yourself.
 - Read and render new or edited node descriptions to check notation, intended
   symbols, delimiters, and KaTeX output. Do not redo the human-entry layout audit.
 
@@ -90,6 +90,6 @@ unproved bridges, representation decisions, checks, and unresolved correspondenc
 questions. Include generated-data changes when refreshed, or identify a deferred
 root refresh and required shared-file edits within an area batch. Passing
 compilation is not correspondence review or proof completion. In an area batch,
-the entry driver requests step-5 review from root, applies target corrections
-through step 4, and requests focused rereview from root before continuing to step 6.
+request step-5 review from root, apply target corrections through step 4, and
+request focused rereview from root before continuing to step 6.
 Root alone assigns or spawns those reviewers.
