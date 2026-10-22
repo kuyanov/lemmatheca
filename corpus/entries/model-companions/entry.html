@@ -1,0 +1,113 @@
+<section id="companions" data-formal="mt-companion-embeds-models mt-companion-companions mt-companion-model-companion" data-kind="definition">
+  <h2>Compare theories by the models they can contain</h2>
+  <p>Fix a set-sized first-order language \(L\) with equality. All structures are nonempty. Two \(L\)-theories \(T\) and \(U\) are <strong>companions</strong> if every model of \(T\) embeds into some model of \(U\), and every model of \(U\) embeds into some model of \(T\). These are <a href="diagrams-and-extensions#embeddings">structure embeddings</a>, which preserve functions and preserve and reflect relations.</p>
+  <p>A <strong>model companion</strong> of \(T\) is a companion \(U\) that is <a href="model-completeness#model-complete">model complete</a>. Thus, in addition, every embedding between \(U\)-models is elementary. The definition does not require that every \(T\)-model itself satisfy \(U\), or that all \(U\)-models agree on sentences.</p>
+  <p>For inductive theories, <a href="existentially-closed-extensions#companion-criterion">a model companion axiomatizes exactly the existentially closed models</a>.</p>
+</section>
+
+<section id="equivalence-relation" data-formal="mt-companion-reflexive mt-companion-symmetric mt-companion-transitive" data-kind="lemma">
+  <h2>Being companions is an equivalence relation</h2>
+  <p>Every theory is its own companion; the companion relation is symmetric and transitive. Consequently, any two model companions of one theory are companions of each other.</p>
+  <div class="proof">
+    <p>Identity embeddings prove reflexivity, and interchanging the two clauses of the definition proves symmetry. For transitivity, suppose \(T\) and \(U\) are companions, and so are \(U\) and \(V\). A \(T\)-model embeds into a \(U\)-model, which embeds into a \(V\)-model. Composition gives the required embedding. Reverse the roles for the other direction. Finally use symmetry and transitivity through the original theory.</p>
+  </div>
+</section>
+
+<section id="universal-parts" data-formal="mt-companion-universal-parts" data-kind="theorem">
+  <h2>Companions have exactly the same universal consequences</h2>
+  <div class="statement-box"><p>Let \(T_{\forall}\) and \(U_{\forall}\) be the <a href="preservation-converses#universal-consequences">universal parts</a> of \(T\) and \(U\). Then \(T\) and \(U\) are companions if and only if \(T_{\forall}=U_{\forall}\).</p></div>
+  <div class="proof">
+    <p>Suppose the theories are companions, and let \(\sigma\) be a universal consequence of \(T\). Every \(U\)-model embeds into a \(T\)-model. The latter satisfies \(\sigma\); <a href="elementary-chains#preservation">universal truth passes down embeddings</a>, so the former satisfies it as well. Thus \(\sigma\in U_{\forall}\). Interchanging the theories gives equality.</p>
+    <p>Conversely, assume equality and let \(M\models T\). Then \(M\models T_{\forall}=U_{\forall}\). The <a href="preservation-converses#universal-diagram-test">universal diagram test</a> embeds \(M\) into a model of \(U\). The same argument starts from any \(U\)-model and produces a \(T\)-model containing an embedded copy. This is precisely the companion condition. The argument includes inconsistent theories: if one theory has no models, the companion condition forces the other to have none.</p>
+  </div>
+</section>
+
+<section id="alternating-models" data-formal="mt-companion-common-elementary-extension" data-kind="lemma">
+  <h2>Interleave models of two model-complete companions</h2>
+  <p>Suppose \(U\) and \(V\) are model complete and are companions. For every \(M_0\models U\), there are a model \(C\) of both \(U\) and \(V\), and an elementary embedding \(M_0\to C\).</p>
+  <div class="proof">
+    <p>Use the companion condition successively to choose embeddings in an alternating sequence:</p>
+    <div class="math-display">\[M_0\hookrightarrow N_0\hookrightarrow M_1\hookrightarrow N_1\hookrightarrow M_2\hookrightarrow\cdots,\]</div>
+    <p>where every \(M_i\models U\) and every \(N_i\models V\). Each choice supplies the input for the next one, so countable recursion and choice construct the whole sequence. Compose adjacent maps to obtain \(M_i\hookrightarrow M_{i+1}\) and \(N_i\hookrightarrow N_{i+1}\). Model completeness makes these composite maps elementary. It does not assert that the intermediate maps \(M_i\hookrightarrow N_i\) are elementary.</p>
+    <p>Take the <a href="inductive-theories#directed-union">union of the embedding sequence</a>, identifying each structure with its embedded copy. Equivalently, use the abstract embedding-chain union construction. Every element of an \(N_i\) maps into \(M_{i+1}\), and every element of an \(M_i\) maps into \(N_i\). Hence the \(M_i\) alone and the \(N_i\) alone have the same union \(C\); each subsequence is cofinal in the full sequence. Their interpretations agree on overlaps because the connecting maps are embeddings.</p>
+    <p>Apply the <a href="elementary-chains#elementary-chain-theorem">elementary-chain theorem</a> to the \(M_i\) sequence. It makes \(M_0\to C\) elementary, so \(C\models U\). Applying the theorem to the \(N_i\) sequence gives \(N_0\preccurlyeq C\), so \(C\models V\). Nonemptiness follows already from \(M_0\).</p>
+  </div>
+</section>
+
+<section id="uniqueness" data-formal="mt-companion-unique" data-kind="theorem">
+  <h2>A model companion is unique up to equivalence</h2>
+  <div class="statement-box"><p>If \(U\) and \(V\) are model companions of \(T\), then they have exactly the same nonempty models.</p></div>
+  <div class="proof">
+    <p>They are companions by <a href="#equivalence-relation"></a>, and both are model complete. Given \(M\models U\), <a href="#alternating-models"></a> supplies an elementary embedding \(M\to C\) into a common model. Since \(C\models V\), elementarity makes every sentence of \(V\) true in \(M\). Thus \(M\models V\). Interchanging the theories gives the reverse containment of model classes. This is <a href="theories-and-axiomatization#axioms-and-consequences">equivalence of theories</a>, not literal equality of their chosen axiom sets.</p>
+  </div>
+</section>
+
+<section id="model-completion" data-formal="mt-companion-diagram-theory mt-companion-model-completion" data-kind="definition">
+  <h2>A complete description after naming an original model</h2>
+  <p>Assume \(T\subseteq U\) as axiom sets. For \(M\models T\), name every element of \(M\) by a new constant and put</p>
+  <div class="math-display">\[D_U(M)=U\cup\operatorname{Diag}(M).\]</div>
+  <p>Here \(U\) is carried into the expanded language \(L(M)\), and \(\operatorname{Diag}(M)\) is the <a href="diagrams-and-extensions#signed-diagram">signed atomic diagram</a>, including true negated atoms. The theory \(U\) is a <strong>model completion</strong> of \(T\) if \(D_U(M)\) is satisfiable and complete in \(L(M)\) for every nonempty \(M\models T\).</p>
+  <p>Completeness concerns sentences containing the names of the original model. It requires all \(U\)-extensions of that named copy to agree on those sentences. Satisfiability separately ensures that such an extension exists. We include this requirement explicitly in the definition.</p>
+</section>
+
+<section id="completion-companion" data-formal="mt-companion-completion-is-companion" data-kind="lemma">
+  <h2>Every model completion is a model companion</h2>
+  <p>If \(U\) is a model completion of \(T\), then \(U\) is a model companion of \(T\).</p>
+  <div class="proof">
+    <p>For \(M\models T\), choose a model of \(D_U(M)\). Its reduct is a \(U\)-model, and the <a href="diagrams-and-extensions#signed-diagram-lemma">diagram lemma</a> embeds \(M\) into it by interpreting the names. Conversely, every \(U\)-model is a \(T\)-model because \(T\subseteq U\), so the identity supplies the other direction.</p>
+    <p>To prove model completeness, let \(f:A\hookrightarrow B\) embed two \(U\)-models. Name \(A\) in \(A\) by its own elements and in \(B\) by their images under \(f\). Both expansions model \(D_U(A)\). Its completeness makes them agree on every \(L(A)\)-sentence. In particular, for an \(L\)-formula \(\varphi(\bar x)\) and tuple \(\bar a\) in \(A\), they agree on \(\varphi(c_{\bar a})\). Thus \(A\models\varphi[\bar a]\) if and only if \(B\models\varphi[f(\bar a)]\), proving elementarity of this same \(f\).</p>
+  </div>
+</section>
+
+<section id="self-completion" data-formal="mt-companion-self-completion" data-kind="lemma">
+  <h2>A model-complete theory completes itself</h2>
+  <p>A theory \(T\) is model complete if and only if it is a model completion of itself.</p>
+  <div class="proof">
+    <p>The reverse implication follows from <a href="#completion-companion"></a>. Conversely, assume model completeness and fix \(M\models T\). The canonical named expansion of \(M\) satisfies \(D_T(M)\), so this theory is satisfiable. Any other model of \(D_T(M)\) gives an embedding of \(M\) into its reduct. This embedding is elementary, because both reducts satisfy \(T\). Therefore every such named expansion agrees with \(M\) on every sentence with names from \(M\). All models of \(D_T(M)\) consequently agree on each sentence, and the <a href="theories-and-axiomatization#complete-models">semantic criterion for completeness</a> proves that it is complete.</p>
+  </div>
+</section>
+
+<section id="qe-completion-criterion" data-formal="mt-companion-qe-completion" data-kind="lemma">
+  <h2>An embedding extension with quantifier elimination is a completion</h2>
+  <p>Suppose \(T\subseteq U\), every \(T\)-model embeds into a \(U\)-model, and \(U\) has <a href="quantifier-elimination#equivalence-modulo-a-theory">quantifier elimination</a>. Then \(U\) is a model completion of \(T\).</p>
+  <div class="proof">
+    <p>Fix \(M\models T\). A chosen embedding into a \(U\)-model interprets all its names and gives a model of \(D_U(M)\). For completeness, take two models of \(D_U(M)\). The diagram lemma gives embeddings \(f:M\hookrightarrow A\) and \(g:M\hookrightarrow B\) into their reducts.</p>
+    <p>Any sentence of \(L(M)\) uses only finitely many new names, so it is \(\varphi(c_{\bar a})\) for an \(L\)-formula and a finite tuple from \(M\). Choose a quantifier-free \(\theta\) equivalent to \(\varphi\) modulo \(U\). Its truth in \(A\) at \(f(\bar a)\) is exactly its truth in \(M\) at \(\bar a\), since \(f\) is an embedding; the same holds in \(B\) using \(g\). Thus the two expansions agree on \(\varphi(c_{\bar a})\). Notice that we used the equivalence \(\varphi\leftrightarrow\theta\) only in \(A,B\), which are \(U\)-models; \(M\) need not be one. This proves completeness.</p>
+  </div>
+</section>
+
+<section id="linear-order-theory" data-formal="mt-companion-linear-order-theory mt-companion-linear-order-models mt-companion-order-axioms-subset" data-kind="definition">
+  <h2>The strict-linear-order theory</h2>
+  <p>In the language with one binary relation \(&lt;\), let \(T_{\mathrm{lo}}\) be the <strong>strict-linear-order theory</strong>, with the following three axioms:</p>
+  <div class="math-display">\[\forall x\,\neg(x&lt;x),\qquad \forall x\forall y\forall z\,((x&lt;y\land y&lt;z)\to x&lt;z),\]</div>
+  <div class="math-display">\[\forall x\forall y\,(x&lt;y\lor x=y\lor y&lt;x).\]</div>
+  <p>These say that the relation is irreflexive, transitive and total on distinct points. They are precisely the order axioms already included in the <a href="quantifier-elimination#dense-orders">dense-linear-order theory</a> \(T_{\mathrm{dlo}}\). In particular \(T_{\mathrm{lo}}\subseteq T_{\mathrm{dlo}}\). Neither density nor the absence of endpoints is required by \(T_{\mathrm{lo}}\).</p>
+</section>
+
+<section id="lexicographic-extension" data-formal="mt-companion-lex-extension mt-companion-lex-map mt-companion-lex-relation mt-companion-lex-embedding" data-kind="lemma">
+  <h2>Replace each point by a copy of the rational order</h2>
+  <p>Every nonempty strict linear order \(A\) embeds into a dense linear order without endpoints. One specified extension is \(A\times\mathbb Q\) with its lexicographic order:</p>
+  <div class="math-display">\[(a,q)&lt;(b,r)\quad\Longleftrightarrow\quad a&lt;b\ \lor\ (a=b\land q&lt;r).\]</div>
+  <p>The embedding is \(a\mapsto(a,0)\).</p>
+  <div class="proof">
+    <p>The displayed relation is irreflexive. For transitivity, two successive comparisons either give a strict increase among first coordinates, or all three first coordinates agree and transitivity in \(\mathbb Q\) applies. More explicitly, a strict first-coordinate comparison combined with equality or a later strict comparison still gives a strict comparison by transitivity in \(A\). Totality follows by comparing first coordinates, then rational coordinates when those first coordinates agree. The map \(a\mapsto(a,0)\) is injective and preserves and reflects strict order.</p>
+    <p>Given \((a,q)&lt;(b,r)\), if \(a=b\), choose a rational \(s\) with \(q&lt;s&lt;r\). Then \((a,s)\) lies strictly between them. If \(a&lt;b\), the point \((a,q+1)\) lies between them, regardless of \(r\). Finally, \((a,q-1)\) and \((a,q+1)\) lie below and above \((a,q)\). These witnesses prove density and the absence of endpoints; nonemptiness follows from nonemptiness of \(A\).</p>
+  </div>
+</section>
+
+<section id="dense-order-completion" data-formal="mt-companion-dlo-completion mt-companion-completion-is-companion mt-companion-unique" data-kind="theorem">
+  <h2>Dense linear orders complete strict linear orders</h2>
+  <div class="statement-box"><p>The theory \(T_{\mathrm{dlo}}\) is a model completion, and hence the unique model companion up to equivalence, of \(T_{\mathrm{lo}}\).</p></div>
+  <div class="proof">
+    <p>The order axioms give \(T_{\mathrm{lo}}\subseteq T_{\mathrm{dlo}}\). The <a href="#lexicographic-extension"></a> embeds every nonempty \(T_{\mathrm{lo}}\)-model into a \(T_{\mathrm{dlo}}\)-model. The latter theory has <a href="quantifier-elimination#dlo-elimination">quantifier elimination</a>, so <a href="#qe-completion-criterion"></a> proves the model-completion claim. Apply <a href="#completion-companion"></a> and <a href="#uniqueness"></a> for the remaining assertions.</p>
+  </div>
+  <p>Thus <a href="existentially-closed-extensions#closed-linear-orders">the existentially closed strict linear orders</a> are precisely the nonempty dense orders without endpoints.</p>
+</section>
+
+<section id="which-completeness" data-formal="mt-companion-self-completion mt-mc-one-point-model-complete mt-mc-not-sentence-complete mt-companion-model-completion" data-kind="question">
+  <h2>Must a model completion itself be a complete theory?</h2>
+  <p>Does the definition of a model completion force its models to agree on every sentence of the original language, without any named original model?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. The <a href="model-completeness#completeness-separation">one-point binary-relation theory</a> is model complete but not complete: its models can interpret the relation as empty or full. By <a href="#self-completion"></a>, it is a model completion of itself. For a fixed one-point model, its signed diagram records which of these interpretations it has, and the corresponding named theory is complete. Different original models can give different complete named theories. The dense-order example happens also to be complete in its original language, by <a href="quantifier-elimination#complete-examples">quantifier elimination for sentences</a>, but that extra property is not part of the model-completion definition.</p>
+  </div></details>
+</section>

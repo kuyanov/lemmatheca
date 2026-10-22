@@ -1,6 +1,7 @@
 import Lemmatheca.ElementarySubmodels.ElementarySubmodels
 import Lemmatheca.FirstOrderStructures.BasicStructures
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.Analysis.Real.Cardinality
 
 /-! The positive-natural counterexample and a prescribed real-order submodel. -/
 
@@ -66,5 +67,16 @@ theorem real_order_countable_submodel :
     ∃ S : binaryRelLanguage.ElementarySubstructure ℝ,
       integerPiSeed ⊆ S ∧ Countable S := by
   exact exists_countable_elementarySubstructure integerPiSeed integerPiSeed_countable
+
+/-- A proper elementary inclusion of a countable real-order submodel is not an isomorphism. -/
+theorem real_order_countable_proper_submodel :
+    ∃ S : binaryRelLanguage.ElementarySubstructure ℝ,
+      Countable S ∧ ¬ Function.Surjective (Subtype.val : S → ℝ) := by
+  obtain ⟨S, _, hS⟩ := real_order_countable_submodel
+  refine ⟨S, hS, ?_⟩
+  let : Countable S := hS
+  intro h
+  have : Countable ℝ := Function.Surjective.countable h
+  exact (not_countable (α := ℝ)) this
 
 end Lemmatheca.Entry.ElementarySubmodels

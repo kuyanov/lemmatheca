@@ -1,0 +1,148 @@
+<section id="graphs" data-formal="exp-binary-language exp-relation-structure mt-rado-graph mt-rado-embedding-criterion" data-kind="definition">
+  <h2>Graphs as structures with one relation</h2>
+  <p>A <strong>simple graph</strong> is a set \(G\) with a symmetric, irreflexive binary relation \(E\). Its elements are <strong>vertices</strong>; two vertices are <strong>joined</strong> when \(E(a,b)\) holds. Symmetry means \(E(a,b)\iff E(b,a)\), and irreflexivity means \(\neg E(a,a)\). We use the <a href="ages-and-amalgamation#finite-relational-structures">finite relational language</a> \(L_g=\{E\}\), with no functions or constants.</p>
+  <p>A <strong>graph embedding</strong> \(f:G\hookrightarrow H\) is an injective map such that \(E_G(a,b)\iff E_H(f(a),f(b))\). Thus it preserves both edges and nonedges, exactly as an <a href="ages-and-amalgamation#embeddings">embedding of relational structures</a> does. The graph induced on a subset retains precisely the edges between its vertices. Empty finite graphs are allowed as induced substructures and as members of an age; ordinary models of a first-order theory remain nonempty.</p>
+</section>
+
+<section id="finite-extension-property" data-formal="mt-rado-extension" data-kind="definition">
+  <h2>Every finite request has a fresh solution</h2>
+  <p>A graph \(G\) has the <strong>finite extension property</strong> if, for every pair of disjoint finite subsets \(U,V\subseteq G\), there is a vertex \(z\) such that</p>
+  <div class="math-display">\[z\notin U\cup V,\qquad (\forall u\in U)\,E(z,u),\qquad (\forall v\in V)\,\neg E(z,v).\]</div>
+  <p>Either prescribed set may be empty. The requirement that \(z\) lie outside both sets is part of the property: the vertex being added must be distinct from every vertex already placed. A countable graph with this property is called a <strong>countable random graph</strong>. Below we construct one and prove uniqueness up to isomorphism; no probability is needed for this characterization.</p>
+</section>
+
+<section id="infinitely-many-vertices" data-formal="mt-rado-fresh-solutions mt-rado-infinite" data-kind="lemma">
+  <h2>The extension property forces infinitely many vertices</h2>
+  <p>A graph with the finite extension property is infinite. More precisely, each fixed request \((U,V)\) has infinitely many distinct solutions.</p>
+  <div class="proof">
+    <p>Given finitely many solutions \(z_0,\ldots,z_{r-1}\) to the fixed request, put \(W=\{z_0,\ldots,z_{r-1}\}\). Every member of \(W\) lies outside \(U\), so \(U\) and \(V\cup W\) are disjoint finite sets. Apply the extension property to these two sets. The resulting vertex still satisfies the original request and lies outside \(W\). Starting with \(U=V=\varnothing\) and repeating this argument produces arbitrarily many distinct vertices.</p>
+  </div>
+</section>
+
+<section id="binary-graph" data-formal="mt-rado-binary-digit mt-rado-binary-edge mt-rado-binary-graph" data-kind="definition">
+  <h2>A graph read from binary digits</h2>
+  <p>For \(i,n\in\mathbb N\), write \(\varepsilon_i(n)=\lfloor n/2^i\rfloor\bmod 2\) for the <strong>binary digit</strong> in position \(i\). Define the <strong>Rado graph</strong> \(R\) on \(\mathbb N\) by</p>
+  <div class="math-display">\[E_R(a,b)\iff (a&lt;b\ \land\ \varepsilon_a(b)=1)\ \lor\ (b&lt;a\ \land\ \varepsilon_b(a)=1).\]</div>
+  <p>This is symmetric because interchanging the arguments interchanges the two alternatives. It is irreflexive because neither strict inequality holds when the arguments coincide. Thus it is a simple graph, and its vertex set is countably infinite.</p>
+</section>
+
+<section id="binary-subset-digits" data-formal="mt-rado-digit-sum" data-kind="lemma">
+  <h2>A sum of distinct powers records exactly its chosen positions</h2>
+  <p>If \(F\subseteq\mathbb N\) is finite and \(s_F=\sum_{j\in F}2^j\), then \(\varepsilon_i(s_F)=1\) if and only if \(i\in F\).</p>
+  <div class="proof">
+    <p>First, \(\sum_{j&lt;k}2^j=2^k-1\), by induction on \(k\), including \(k=0\). Split the sum into positions below, equal to, and above \(i\). The lower part \(\ell=\sum_{j\in F,\,j&lt;i}2^j\) satisfies \(0\le\ell&lt;2^i\). The part above \(i\) is a multiple of \(2^{i+1}\), say \(2^{i+1}q\). Thus</p>
+    <div class="math-display">\[s_F=\ell+\delta\,2^i+2^{i+1}q,\qquad \delta=\begin{cases}1&amp;i\in F,\\0&amp;i\notin F.\end{cases}\]</div>
+    <p>Dividing by \(2^i\) and taking the integer part gives \(\delta+2q\), whose remainder modulo \(2\) is \(\delta\). The strict bound on the lower part prevents any carry into position \(i\). This is also the coding principle behind <a href="finite-and-countable-sets#finite-subset-family">coding finite subsets by sums of powers of two</a>.</p>
+  </div>
+</section>
+
+<section id="binary-extension" data-formal="mt-rado-binary-witness mt-rado-witness-answers mt-rado-binary-extension" data-kind="theorem">
+  <h2>The explicit graph grants every finite request</h2>
+  <div class="statement-box"><p>The Rado graph \(R\) has the finite extension property. For disjoint finite \(U,V\subseteq\mathbb N\), choose \(m\) larger than every member of \(U\cup V\). Then one solution is</p>
+    <div class="math-display">\[w=2^m+\sum_{u\in U}2^u.\]</div>
+  </div>
+  <div class="proof">
+    <p>If both sets are empty, any \(m\), for example \(0\), is permitted. In all cases \(m\notin U\), so the displayed sum uses distinct positions \(\{m\}\cup U\). By <a href="#binary-subset-digits"></a>, its digit in every position below \(m\) is \(1\) exactly at the positions in \(U\), and is therefore \(0\) at the positions in \(V\).</p>
+    <p>The inequality \(2^m&gt;m\) follows by induction: it holds at \(0\), and \(2^{m+1}=2\cdot2^m\ge 2(m+1)&gt;m+1\). Consequently \(w\ge2^m&gt;m\), so \(w\) is greater than every vertex in \(U\cup V\) and is a fresh vertex. For each prescribed vertex \(a\), the edge \(E_R(w,a)\) is determined by digit \(a\) of \(w\). The digits just computed give exactly the required edges and nonedges.</p>
+  </div>
+</section>
+
+<section id="one-vertex-extension" data-formal="mt-rado-one-vertex" data-kind="lemma">
+  <h2>An embedding of a finite piece extends by one vertex</h2>
+  <p>Let \(G,H\) be graphs, with \(H\) having the finite extension property. If \(A\subseteq G\) is finite, \(f:G\mathbin{\upharpoonright}A\hookrightarrow H\) is an embedding, and \(x\in G\setminus A\), then \(f\) extends to an embedding of the graph induced on \(A\cup\{x\}\).</p>
+  <div class="proof">
+    <p>Partition the image of \(A\) into</p>
+    <div class="math-display">\[U=\{f(a):a\in A,\ E_G(x,a)\},\qquad V=\{f(a):a\in A,\ \neg E_G(x,a)\}.\]</div>
+    <p>The sets are finite and disjoint because \(f\) is injective. The extension property in \(H\) gives \(z\notin U\cup V=f(A)\) with the prescribed incidences. Retain \(f\) on \(A\) and send \(x\) to \(z\). This map is injective. Pairs in \(A\) retain their edge status, pairs involving \(x\) have the required status by construction and symmetry, and the pair \((x,x)\) has no edge in either graph by irreflexivity. The map is therefore an embedding.</p>
+  </div>
+</section>
+
+<section id="finite-placements" data-formal="mt-rado-finite-placements" data-kind="theorem">
+  <h2>Every finite graph can be placed around a specified finite copy</h2>
+  <p>Let \(H\) have the finite extension property. For finite graphs \(A,B\) and embeddings \(f:A\hookrightarrow H\), \(g:A\hookrightarrow B\), there is an embedding \(h:B\hookrightarrow H\) with \(h\circ g=f\). In particular, every finite graph embeds into \(H\).</p>
+  <div class="proof">
+    <p>The specified placement on the induced subset \(g(A)\subseteq B\) sends \(g(a)\) to \(f(a)\). This is well-defined and is an embedding because both \(f\) and \(g\) are embeddings. List the finitely many remaining vertices of \(B\), and apply <a href="#one-vertex-extension"></a> successively to that placement. Every step preserves all previous values. After the last step, the resulting map \(h\) has domain all of \(B\) and satisfies the required equation.</p>
+    <p>For the last assertion, take \(A\) to be the empty graph. Its unique maps into \(B\) and \(H\) are embeddings, so the same argument gives an embedding of \(B\).</p>
+  </div>
+</section>
+
+<section id="fraisse-identification" data-formal="mt-rado-finite-class mt-rado-age mt-rado-class-extension mt-rado-fraisse-limit mt-rado-ultrahomogeneous mt-rado-countable-universality mt-rado-amalgamation" data-kind="theorem">
+  <h2>The finite graphs form the age of one universal homogeneous structure</h2>
+  <p>Let \(K\) be the class of all finite simple graphs, including the empty graph. The Rado graph is a Fraïssé limit of \(K\). It is ultrahomogeneous, every countable graph embeds into it, and \(K\) has the amalgamation property.</p>
+  <div class="proof">
+    <p>Every finite induced substructure of a graph is a graph, and <a href="#finite-placements"></a> embeds every finite graph into \(R\). Hence \(\operatorname{Age}(R)=K\). The same theorem gives exactly the <a href="fraisse-limits#extension-property">\(K\)-extension property</a>, including its equation for a specified placement. Since \(R\) is countable, it is a Fraïssé limit by definition.</p>
+    <p><a href="fraisse-limits#ultrahomogeneity">The extension–homogeneity equivalence</a> makes it ultrahomogeneous. Any countable graph has age contained in \(K\), so <a href="fraisse-limits#universality">the limit universality theorem</a> embeds it into \(R\). Finally, the <a href="ages-and-amalgamation#homogeneous-ages-amalgamate">age of an ultrahomogeneous structure has amalgamation</a>, giving AP for \(K\). These conclusions concern induced embeddings, which preserve nonedges as well as edges.</p>
+  </div>
+</section>
+
+<section id="random-graph-theory" data-formal="mt-rado-extension-sentence mt-rado-theory" data-kind="definition">
+  <h2>A first-order theory states all finite requests</h2>
+  <p>The <strong>random graph theory</strong> \(T_{\mathrm{rg}}\) in \(L_g\) consists of the graph axioms</p>
+  <div class="math-display">\[\forall x\,\neg E(x,x),\qquad \forall x\,\forall y\,(E(x,y)\leftrightarrow E(y,x)),\]</div>
+  <p>together with the following <strong>extension schema</strong>, one sentence for every \(m,n\in\mathbb N\). For tuples \(\bar x=(x_i)_{i&lt;m}\) and \(\bar y=(y_j)_{j&lt;n}\), use the formula abbreviations</p>
+  <div class="math-display">\[D(\bar x,\bar y)=\bigwedge_{i&lt;m,\,j&lt;n}x_i\ne y_j,\]</div>
+  <div class="math-display">\[P(z,\bar x)=\bigwedge_{i&lt;m}(z\ne x_i\land E(z,x_i)).\]</div>
+  <div class="math-display">\[N(z,\bar y)=\bigwedge_{j&lt;n}(z\ne y_j\land\neg E(z,y_j)).\]</div>
+  <p>The sentence for these two lengths is</p>
+  <div class="math-display">\[\forall\bar x\,\forall\bar y\,\bigl(D(\bar x,\bar y)\to\exists z\,(P(z,\bar x)\land N(z,\bar y))\bigr).\]</div>
+  <p>These are abbreviations for finite formulas in the existing first-order syntax, not new relation symbols. Empty conjunctions mean \(\top\). Repetitions within either tuple are allowed; \(D\) forbids only equality between a coordinate of \(\bar x\) and a coordinate of \(\bar y\). The inequalities involving \(z\) state freshness explicitly, including on the nonadjacent side.</p>
+</section>
+
+<section id="theory-models" data-formal="mt-rado-extension-sentence-truth mt-rado-models mt-rado-model mt-rado-infinite" data-kind="lemma">
+  <h2>The models are exactly the graphs with the extension property</h2>
+  <p>A nonempty \(L_g\)-structure is a model of \(T_{\mathrm{rg}}\) if and only if it is a simple graph with the finite extension property. In particular, the theory has a model and has no finite models.</p>
+  <div class="proof">
+    <p>The first two axioms say exactly that the relation is symmetric and irreflexive. In a model of the schema, enumerate any disjoint finite sets \(U,V\) as the two tuples, allowing a tuple to have length zero. Their disjointness makes \(D\) true, and the supplied witness is outside both sets and has the required incidences.</p>
+    <p>Conversely, suppose a graph has the extension property. For any assignment to \(\bar x,\bar y\) satisfying \(D\), their ranges are disjoint finite sets. A fresh solution for these ranges satisfies every conjunct of \(P\) and \(N\), even if a tuple contains repetitions. Thus every schema sentence is true. The Rado graph supplies a model by <a href="#binary-extension"></a>, and <a href="#infinitely-many-vertices"></a> excludes finite models.</p>
+  </div>
+</section>
+
+<section id="categoricity-and-completeness" data-formal="mt-rado-prescribed-isomorphism mt-rado-theory-complete" data-kind="theorem">
+  <h2>The theory has one countable model and decides every sentence</h2>
+  <p>Any two countable models of \(T_{\mathrm{rg}}\) are isomorphic. More strongly, any isomorphism between their finite induced subgraphs extends to an isomorphism of the models. The theory \(T_{\mathrm{rg}}\) is complete.</p>
+  <div class="proof">
+    <p>By <a href="#theory-models"></a> and <a href="#finite-placements"></a>, both models have age \(K\) and the \(K\)-extension property. They are therefore Fraïssé limits of \(K\). The <a href="fraisse-limits#prescribed-isomorphism">uniqueness theorem with a prescribed finite map</a> gives the stated isomorphism. Starting with the empty map proves the unprescribed assertion.</p>
+    <p>The language is finite, hence countable. The theory is satisfiable and has no finite models, so the existing <a href="back-and-forth#countable-categoricity-test">countable-categoricity test for completeness</a> applies. Thus every sentence or its negation is a consequence of \(T_{\mathrm{rg}}\).</p>
+  </div>
+</section>
+
+<section id="finite-maps-are-elementary" data-formal="mt-rado-finite-elementarity" data-kind="theorem">
+  <h2>A finite graph isomorphism preserves every formula about its vertices</h2>
+  <p>Let \(G,H\models T_{\mathrm{rg}}\), with no countability assumption. Every isomorphism \(p:A\cong B\) between finite induced subgraphs is a partial elementary map: for every first-order formula \(\varphi(\bar x)\) and every tuple \(\bar a\) from \(A\),</p>
+  <div class="math-display">\[G\models\varphi(\bar a)\iff H\models\varphi(p(\bar a)).\]</div>
+  <div class="proof">
+    <p>Induct on formulas, asserting the induction hypothesis for every finite partial graph isomorphism between any two models of the theory, and every tuple from its domain. Terms in this language are variables. Atomic equalities agree because the map is injective, and atomic edge formulas agree because it is an isomorphism on its induced domain. The induction steps for Boolean connectives follow by combining the corresponding truth equivalences.</p>
+    <p>For an existential formula, suppose \(G\models\exists y\,\theta(\bar a,y)\), and choose a witness \(u\in G\). By <a href="#one-vertex-extension"></a>, extend the very same finite map \(p\) to a finite partial graph isomorphism \(q\) whose domain contains \(u\). If the vertex is already in the domain, retain \(p\). The induction hypothesis for \(\theta\), applied to \(q\) and \((\bar a,u)\), gives \(H\models\theta(p(\bar a),q(u))\). Thus \(q(u)\) is a witness in \(H\).</p>
+    <p>Conversely, start with a witness in \(H\) and apply the same argument to the inverse finite map \(p^{-1}\), using the extension property in \(G\). This gives the reverse implication. Universal quantifiers are handled by \(\forall y\,\theta\equiv\neg\exists y\,\neg\theta\). The induction therefore proves agreement for every formula, without restricting the sizes of the ambient models.</p>
+  </div>
+</section>
+
+<section id="atomic-patterns" data-formal="qe-atomic-pattern qe-atomic-pattern-truth mt-rado-pattern-elementarity" data-kind="definition">
+  <h2>A finite tuple has a finite pattern of equalities and edges</h2>
+  <p>For the fixed variables \(x_0,\ldots,x_{r-1}\), a <strong>complete atomic pattern</strong> is a conjunction choosing, for each of the atoms \(x_i=x_j\) and \(E(x_i,x_j)\), either that atom or its negation. There are finitely many such patterns, since there are only \(2r^2\) atoms on this list. The empty pattern for \(r=0\) is \(\top\). A pattern is <strong>realizable</strong> if some tuple in some model of \(T_{\mathrm{rg}}\) satisfies it.</p>
+  <p>Every tuple satisfies exactly one complete pattern. Some formal choices are not realizable, since equality, symmetry and irreflexivity impose restrictions. If tuples \(\bar a\) and \(\bar b\) in two graph structures satisfy the same pattern, the assignment \(a_i\mapsto b_i\) is a well-defined isomorphism between their finite induced ranges: the equality choices make it well-defined and bijective, and the edge choices preserve and reflect the relation. These patterns are actual quantifier-free \(L_g\)-formulas, using the finite conjunctions described in <a href="quantifier-elimination#one-quantifier">the one-quantifier criterion</a>.</p>
+</section>
+
+<section id="quantifier-elimination" data-formal="qe-quantifier-elimination mt-rado-quantifier-elimination" data-kind="theorem">
+  <h2>Every formula reduces to a finite combination of equalities and edges</h2>
+  <div class="statement-box"><p>The random graph theory \(T_{\mathrm{rg}}\) has <a href="quantifier-elimination#equivalence-modulo-a-theory">quantifier elimination</a> in its first-order language. For every formula \(\varphi(x_0,\ldots,x_{r-1})\), there is a quantifier-free formula \(\psi\) in those variables such that</p>
+    <div class="math-display">\[T_{\mathrm{rg}}\models\forall\bar x\,(\varphi(\bar x)\leftrightarrow\psi(\bar x)).\]</div>
+  </div>
+  <div class="proof">
+    <p>If tuples in two models of the theory have the same complete atomic pattern, their finite induced ranges are isomorphic by the map sending corresponding coordinates to each other. By <a href="#finite-maps-are-elementary"></a>, they agree on \(\varphi\). Consequently, among tuples in models of the theory, the truth of \(\varphi\) depends only on the pattern.</p>
+    <p>Take the finite collection of realizable patterns for which \(\varphi\) is true at a realizing tuple, and let \(\psi\) be their disjunction. The previous paragraph shows that a different realization of the same pattern has the same truth value, even in a different model, so this choice is unambiguous. For any tuple in any model, its own pattern belongs to the collection exactly when \(\varphi\) is true there. Thus \(\psi\) has exactly the same truth value as \(\varphi\) throughout the models of the theory.</p>
+    <p>This is a finite disjunction of finite conjunctions of literals in the graph language, and hence is quantifier-free. If the collection is empty, use \(\bot\). If \(r=0\), the only pattern is \(\top\), so the result is either \(\top\) or \(\bot\). Unrealizable patterns need not be included.</p>
+  </div>
+</section>
+
+<section id="elimination-examples" data-formal="mt-rado-common-neighbor mt-rado-mixed-neighbor" data-kind="question">
+  <h2>Eliminate two common-neighbor quantifiers</h2>
+  <p>Find quantifier-free equivalents modulo \(T_{\mathrm{rg}}\) of \(\exists z\,(E(z,x)\land E(z,y))\) and \(\exists z\,(E(z,x)\land\neg E(z,y))\). The coordinates \(x,y\) are allowed to coincide.</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><div class="proof">
+      <p>The first formula is equivalent to \(\top\). Apply the finite extension property with \(U=\{x,y\}\) and \(V=\varnothing\); this also works when the set has only one member.</p>
+      <p>The second formula is equivalent to \(x\ne y\). A witness makes equality impossible, since the two required truth values would then contradict each other. If \(x\ne y\), apply the property to the disjoint sets \(U=\{x\}\), \(V=\{y\}\), obtaining a witness. Both equivalences concern the given vertices in every model of the theory.</p>
+    </div></div>
+  </details>
+</section>

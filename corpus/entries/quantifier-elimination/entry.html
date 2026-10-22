@@ -17,6 +17,7 @@
     <p>A witness for the left side satisfies one disjunct, and a witness for any disjunct satisfies the left side. Apply the hypothesis to each conjunction. Each step uses only the remaining free variables.</p>
 </div>
   <p>In the two languages treated below—equality alone, and equality with one binary order relation—there are no function or constant symbols, so every term is a variable. For a fixed finite list of variables there are therefore only finitely many equality atoms, or equality and order atoms. A useful alternative is to record every atom's truth or falsity in a <strong>complete atomic pattern</strong>, a conjunction containing one literal for each atom. A quantifier-free formula can be written as a disjunction of such patterns. Discard inconsistent patterns before using a witness argument: an arbitrary list of truth values need not respect equality or order.</p>
+  <p>For another application of finite atomic patterns, see <a href="random-graph#quantifier-elimination">quantifier elimination for the random graph theory</a>, where the patterns record equalities and edges.</p>
 </section>
 
 <section id="infinite-equality" data-formal="compact-infinite-theory compact-infinite-theory-characterization elem-at-least-n-sentence elem-at-least-n-truth" data-kind="definition">
@@ -43,6 +44,7 @@
     \]</div>
     <p>where \(C\) contains every conjunct independent of \(x\), and \(F\) is finite. An infinite domain has an element outside the finite set of values \(\{y_i:i\in F\}\). Thus the existential formula is equivalent to \(C(\bar y)\). This includes \(F=\varnothing\), using nonemptiness. Every case gives a quantifier-free formula in the original remaining variables.</p>
 </div>
+  <p>For the related type classification, see <a href="isolated-types#infinite-equality">isolating formulas for equality patterns</a>.</p>
 </section>
 
 <section id="equality-examples" data-formal="qe-equality-examples qe-finite-equality-obstruction" data-kind="question">
@@ -85,6 +87,7 @@
     <p>Use <a href="#one-quantifier"></a> and the positive-conjunction reduction in <a href="#dense-orders"></a>. In a conjunction under \(\exists x\), a conjunct \(x&lt;x\) makes the answer \(\bot\), while \(x=x\) can be deleted. Collect all conjuncts independent of \(x\) into \(C(\bar y)\).</p>
     <p>If an equality \(x=y_i\) remains, substitute \(y_i\) for \(x\) throughout the conjunction. As in the equality argument, this gives a necessary and sufficient quantifier-free condition, including all comparisons and any additional equalities. If no equality fixes \(x\), every remaining atom involving \(x\) has the form \(y_i&lt;x\) or \(x&lt;y_j\). Apply <a href="#finite-bounds"></a>: the result is \(C(\bar y)\) conjoined with every comparison \(y_i&lt;y_j\) from a lower-bound variable to an upper-bound variable. The four bound cases cover all possibilities. Induction then eliminates every quantifier.</p>
 </div>
+  <p>For the related classification of complete types, see <a href="isolated-types#dense-orders">ordered equality patterns with repeated coordinates</a>.</p>
 </section>
 
 <section id="order-examples" data-formal="qe-order-examples qe-integer-pairs-pattern qe-integer-between-disagrees qe-integer-between-not-quantifier-free qe-quantifier-free-pattern-agreement" data-kind="question">
@@ -113,6 +116,7 @@
     <p>The infinity signs mean unbounded rays, not extra elements. On each cell every atomic comparison with a parameter has a fixed truth value; so does every Boolean combination. The defined set is a union of some of these finitely many cells. If there are no parameters, there is just the whole-domain cell. Conversely, each listed cell has a quantifier-free definition: \(x=a_i\), \(a_i&lt;x&lt;a_{i+1}\), \(x&lt;a_1\), or \(a_k&lt;x\). The whole-domain cell is defined by \(\top\), and the empty set by \(\bot\); finite disjunctions define their unions.</p>
 </div>
   <p>In particular, in either language the only parameter-free unary definable subsets are the empty set and the whole domain. The richer possibilities above come from supplying parameters.</p>
+  <p>For the resulting closure calculation over any parameter set, see <a href="definable-and-algebraic-closure#equality-and-dense-orders">definable and algebraic closure in equality and dense orders</a>.</p>
 </section>
 
 <section id="complete-examples" data-formal="qe-equality-theory-complete qe-dense-order-theory-complete qe-equality-sentence-agreement qe-dense-order-sentence-agreement" data-kind="theorem">
@@ -132,4 +136,5 @@
     <div class="math-display">\[M\models\varphi(\bar a)\iff M\models\psi(\bar a)\iff N\models\psi(f\bar a)\iff N\models\varphi(f\bar a).\]</div>
     <p>This is exactly the definition of an <a href="elementary-submodels#elementary-embeddings">elementary embedding</a>. In the inclusion case it says that \(M\) is an elementary substructure of \(N\). Both structures must be models of the stated theory; an arbitrary ordered subset can lose density or endpoints and need not be elementary.</p>
 </div>
+  <p>The general property that every embedding between models is elementary is called <a href="model-completeness#model-complete">model completeness</a>.</p>
 </section>

@@ -1,0 +1,141 @@
+<section id="directed-systems" data-formal="mt-inductive-directed-index mt-inductive-directed-system" data-kind="definition">
+  <h2>Structures joined by compatible embeddings</h2>
+  <p>Fix a set-sized first-order language \(L\) with equality. All structures are nonempty. A partially ordered set \(I\) is <strong>directed</strong> if it is nonempty and any two indices have a common upper bound. A <strong>directed system of embeddings</strong> consists of \(L\)-structures \(M_i\) for \(i\in I\) and embeddings \(f_{ij}:M_i\hookrightarrow M_j\) for \(i\le j\), satisfying</p>
+  <div class="math-display">\[f_{ii}=\operatorname{id}_{M_i},\qquad f_{ik}=f_{jk}\circ f_{ij}\quad(i\le j\le k).\]</div>
+  <p>The maps are <a href="elementary-submodels#embeddings">ordinary embeddings</a>: they preserve functions and preserve and reflect relations. They are not assumed elementary. A nested family of substructures is a special case, with the maps given by inclusions. A <strong>chain</strong> is the special case in which the indices are linearly ordered; in particular, an increasing sequence has index set \(\omega\).</p>
+</section>
+
+<section id="directed-union" data-formal="mt-inductive-direct-limit mt-inductive-stage-embedding mt-inductive-stage-compatibility mt-inductive-finite-stage ech-union-direct-limit" data-kind="lemma">
+  <h2>Constructing a union when the domains are not already nested</h2>
+  <p>Every directed system of embeddings has a nonempty \(L\)-structure \(U\) and embeddings \(\iota_i:M_i\hookrightarrow U\) such that \(\iota_j\circ f_{ij}=\iota_i\). Every finite tuple in \(U\) comes from one stage. For a nested family, \(U\) is canonically isomorphic to its ordinary union. We call \(U\) the <strong>directed union</strong> or <strong>direct limit</strong> of the system.</p>
+  <div class="proof">
+    <p>Take the disjoint union of the sets \(\{i\}\times |M_i|\). Declare \((i,a)\sim(j,b)\) when, for some \(k\ge i,j\),</p>
+    <div class="math-display">\[f_{ik}(a)=f_{jk}(b).\]</div>
+    <p>This is an equivalence relation. For transitivity, take a common upper bound of the two stages witnessing consecutive equalities and use compatibility of the maps. Write \([i,a]\) for an equivalence class, and set \(\iota_i(a)=[i,a]\). If \([i,a]=[i,b]\), equality holds after an injective transition map, so \(a=b\). Thus each \(\iota_i\) is injective.</p>
+    <p>Any finite collection of classes has representatives at a common stage, by repeated directedness. To interpret a function at such a tuple, evaluate it in that stage and take the resulting class. For a relation, use its truth value in that stage. A different choice of representatives or stage gives the same answer: move all finitely many representatives and equality witnesses to a further common stage. Transition embeddings preserve function values and preserve and reflect relation truth. This also covers constants and zero-argument relations; the empty tuple can be evaluated at any stage.</p>
+    <p>These interpretations make each \(\iota_i\) an embedding and give the stated compatibility. If the original maps are inclusions, the map \([i,a]\mapsto a\) is a well-defined bijection onto the union and respects these interpretations. This extends the earlier <a href="elementary-chains#union-structure">construction for increasing sequences</a>.</p>
+  </div>
+</section>
+
+<section id="universal-existential-formulas" data-formal="mt-inductive-prefix mt-inductive-axiom-set mt-inductive-axiomatization mt-inductive-universal-boundary" data-kind="definition">
+  <h2>Universal choices followed by existential witnesses</h2>
+  <p>A <strong>universal-existential formula</strong>, also called a <strong>\(\forall\exists\)-formula</strong>, has the form</p>
+  <div class="math-display">\[\forall\bar u\,\exists\bar v\,\theta(\bar x,\bar u,\bar v),\]</div>
+  <p>where \(\theta\) is quantifier-free and all tuples are finite. Either quantified tuple may be empty, so universal formulas, existential formulas and quantifier-free formulas are included. The variables \(\bar x\) are the free variables. A <strong>universal-existential theory</strong> is a set of sentences of this form. A <strong>universal-existential axiomatization</strong> of \(T\) is such a theory with exactly the same nonempty models as \(T\). As with the earlier <a href="preservation-converses#quantifier-shapes">universal and existential descriptions</a>, a formula equivalent to one of this form need not itself be written in this form.</p>
+</section>
+
+<section id="finite-combinations" data-formal="mt-inductive-conjunction mt-inductive-disjunction pres-universal-negation" data-kind="lemma">
+  <h2>Combining finitely many requirements keeps the same quantifier pattern</h2>
+  <p>Finite conjunctions and finite disjunctions of universal-existential formulas are logically equivalent, over nonempty structures, to universal-existential formulas with the same free variables. The negation of a universal formula is equivalent to an existential formula.</p>
+  <div class="proof">
+    <p>Rename bound variables so that the two prefixes use disjoint variables, none free in the other formula. For either connective \(\circ\in\{\land,\lor\}\), the <a href="first-order-normal-forms#moving-quantifiers">quantifier-moving identities</a> give</p>
+    <div class="math-display">\[(\forall\bar u\,\exists\bar v\,\alpha)\circ(\forall\bar s\,\exists\bar t\,\beta)\ \longleftrightarrow\ \forall\bar u\,\forall\bar s\,\exists\bar v\,\exists\bar t\,(\alpha\circ\beta).\]</div>
+    <p>For disjunction, one can also check the only delicate direction directly. If neither of the two original formulas holds, choose a failing \(\bar u\) and a failing \(\bar s\); no pair of witness tuples makes the matrix on the right true. In the other direction, witnesses for a true disjunct can be supplemented by arbitrary values for the unused witness tuple. Nonemptiness supplies those values and also justifies moving vacuous quantifiers. Iteration proves the finite cases; use \(\top\) for an empty conjunction and \(\bot\) for an empty disjunction. Finally, <a href="first-order-normal-forms#negation-identities">quantifier duality</a> changes \(\neg\forall\bar u\,\theta\) into \(\exists\bar u\,\neg\theta\), with a quantifier-free matrix.</p>
+  </div>
+</section>
+
+<section id="union-preservation" data-formal="mt-inductive-formula-union mt-inductive-theory-union" data-kind="lemma">
+  <h2>Witnesses chosen at a stage remain available in the union</h2>
+  <p>Let \(U\) be the directed union of \((M_i,f_{ij})\), let \(\bar a\) be a tuple from \(M_i\), and let \(\varphi(\bar x)\) be universal-existential. If</p>
+  <div class="math-display">\[M_j\models\varphi[f_{ij}(\bar a)]\qquad\text{for every }j\ge i,\]</div>
+  <p>then \(U\models\varphi[\iota_i(\bar a)]\). In particular, a directed union of models of a universal-existential theory is again a model of that theory.</p>
+  <div class="proof">
+    <p>Write \(\varphi=\forall\bar u\,\exists\bar v\,\theta\) with \(\theta\) quantifier-free. Given a tuple \(\bar b\) in \(U\) for \(\bar u\), choose a stage containing representatives of all its coordinates, then a common upper bound \(j\) of that stage and \(i\). There is a tuple \(\bar b'\) in \(M_j\) with \(\iota_j(\bar b')=\bar b\). The assumed truth in \(M_j\) supplies \(\bar c\) such that</p>
+    <div class="math-display">\[M_j\models\theta[f_{ij}(\bar a),\bar b',\bar c].\]</div>
+    <p>The embedding \(\iota_j\) preserves the quantifier-free matrix. Thus \(\iota_j(\bar c)\) is the required witness in \(U\), with the old parameters equal to \(\iota_i(\bar a)\). Empty tuples give the universal and existential boundary cases by the same argument. Apply the result to each axiom, using the empty free tuple, to obtain the assertion for theories.</p>
+  </div>
+</section>
+
+<section id="inductive-theories" data-formal="mt-inductive-inductive mt-inductive-directed-closed mt-inductive-omega-closed mt-inductive-literal-omega mt-inductive-consequences mt-inductive-consequences-model" data-kind="definition">
+  <h2>Theories whose models survive increasing unions</h2>
+  <p>An \(L\)-theory \(T\) is <strong>inductive</strong> if the union of every nonempty, set-indexed increasing chain of models of \(T\) is again a model of \(T\). The inclusions are substructure inclusions and need not be elementary. An <a href="elementary-chains#theories-in-the-union">elementary chain</a> has a union satisfying its stages' theories for every \(T\); the present condition asks for this conclusion under the weaker hypothesis of ordinary inclusions.</p>
+  <p>The <strong>universal-existential consequences</strong> of \(T\) form the theory</p>
+  <div class="math-display">\[T_{\forall\exists}=\{\sigma:\sigma\text{ is a universal-existential sentence and }T\models\sigma\}.\]</div>
+  <p>Every model of \(T\) models \(T_{\forall\exists}\). The converse will characterize inductive theories. Nothing here assumes completeness or satisfiability of \(T\): an inconsistent theory has no chains of models and is inductive vacuously.</p>
+</section>
+
+<section id="universal-diagram" data-formal="mt-inductive-universal-diagram mt-inductive-diagram-includes-signed mt-mc-existentially-closed-embedding" data-kind="definition">
+  <h2>Remembering all universal facts about named elements</h2>
+  <p>For a nonempty structure \(M\), use the language \(L(M)\) with a name \(c_a\) for every \(a\in M\). Its <strong>universal diagram</strong> \(D_{\forall}(M)\) consists of the universal \(L(M)\)-sentences true when these names have their canonical interpretations in \(M\). Quantifier-free sentences count as universal, so this diagram contains the <a href="diagrams-and-extensions#signed-diagram">signed atomic diagram</a>.</p>
+  <p>An embedding \(f:M\hookrightarrow N\) <strong>reflects existential formulas</strong> if, for every existential \(L\)-formula \(\eta(\bar x)\) and tuple \(\bar a\) in \(M\),</p>
+  <div class="math-display">\[N\models\eta[f(\bar a)]\quad\Longrightarrow\quad M\models\eta[\bar a].\]</div>
+  <p>Embeddings always preserve existential formulas in the forward direction. Consequently the condition says exactly that the two structures agree on existential formulas at tuples related by this particular map.</p>
+</section>
+
+<section id="existentially-faithful-extension" data-formal="mt-inductive-diagram-reflection mt-inductive-diagram-satisfiable mt-inductive-reflecting-test" data-kind="lemma">
+  <h2>The universal-existential consequences give an existentially faithful embedding</h2>
+  <p>For a nonempty \(L\)-structure \(M\), the following are equivalent:</p>
+  <ol><li>\(M\models T_{\forall\exists}\).</li><li>There are \(N\models T\) and an embedding \(f:M\hookrightarrow N\) reflecting existential formulas.</li></ol>
+  <p>In the forward construction, \(N\) is the reduct of a model \(N^*\) of \(T\cup D_{\forall}(M)\), and the specified embedding is \(f(a)=c_a^{N^*}\).</p>
+  <div class="proof">
+    <p>Assume condition 1. We prove that \(T\cup D_{\forall}(M)\) is satisfiable, carrying \(T\) into the named language. Otherwise, <a href="ultraproducts#compactness">compactness for arbitrary set-sized languages</a> gives a finite conjunction \(\delta(\bar c)\) of universal-diagram sentences inconsistent with \(T\). By combining their universal prefixes, take \(\delta\) universal. List all distinct names used, and replace them by free variables to obtain a universal formula \(\delta(\bar x)\).</p>
+    <p>No tuple in any model of \(T\) satisfies \(\delta\): interpreting the fresh names by that tuple would satisfy the forbidden finite fragment. Hence</p>
+    <div class="math-display">\[T\models\forall\bar x\,\neg\delta(\bar x).\]</div>
+    <p>Negating the universal prefix of \(\delta\) makes the displayed sentence universal-existential. It therefore belongs to \(T_{\forall\exists}\). But \(M\models\delta[\bar a]\) at the actual tuple of named elements, a contradiction. The empty conjunction and empty name list are included.</p>
+    <p>Choose \(N^*\models T\cup D_{\forall}(M)\). The signed diagram gives the stated embedding \(f\). If an existential \(\eta\) were true at \(f(\bar a)\) in \(N\) but false at \(\bar a\) in \(M\), the universal sentence \(\neg\eta(\bar c_{\bar a})\), in its equivalent universal form, would belong to the diagram and be false in \(N^*\). Thus \(f\) reflects existential formulas.</p>
+    <p>Conversely, suppose condition 2 and let \(\forall\bar u\,\exists\bar v\,\theta\) belong to \(T_{\forall\exists}\). For any tuple \(\bar a\) in \(M\), the model \(N\) satisfies \(\exists\bar v\,\theta[f(\bar a),\bar v]\). Reflection along the specified \(f\) gives the required witnesses in \(M\). Thus \(M\) satisfies every consequence in \(T_{\forall\exists}\).</p>
+  </div>
+</section>
+
+<section id="elementary-factorization" data-formal="mt-inductive-factorization" data-kind="lemma">
+  <h2>Factoring the same embedding through an elementary extension</h2>
+  <p>Let \(f:M\hookrightarrow N\) reflect existential formulas. There are a nonempty structure \(P\), an elementary embedding \(e:M\to P\), and an embedding \(g:N\hookrightarrow P\) such that</p>
+  <div class="math-display">\[g\circ f=e.\]</div>
+  <p>After renaming embedded copies, this gives \(M\subseteq N\subseteq P\) with \(M\preccurlyeq P\); the original map \(f\) becomes the first inclusion.</p>
+  <div class="proof">
+    <p>Use disjoint families of names \(c_a\) for \(M\) and \(d_b\) for \(N\). Consider</p>
+    <div class="math-display">\[\operatorname{ElDiag}(M)\ \cup\ \operatorname{Diag}(N)\ \cup\ \{d_{f(a)}=c_a:a\in M\}.\]</div>
+    <p>Fix a finite fragment. Its finitely many \(N\)-diagram sentences have a quantifier-free conjunction. List the finitely many mentioned \(d\)-names whose indices lie in \(f(M)\), including those in selected equations, as \(d_{f(a_0)},\ldots,d_{f(a_{r-1})}\), without repeats. All remaining mentioned \(d\)-names become a fresh tuple \(\bar y\). Replacing the first group by \(\bar x\) gives a quantifier-free formula \(\delta(\bar x,\bar y)\) with</p>
+    <div class="math-display">\[N\models\exists\bar y\,\delta[f(\bar a),\bar y].\]</div>
+    <p>Reflection gives witnesses \(\bar b\) in \(M\) for \(\delta[\bar a,\bar y]\). Expand \(M\) by interpreting every \(c_a\) canonically, each mentioned \(d_{f(a_i)}\) by \(a_i\), and the other mentioned \(d\)-names by the witnesses. Injectivity of \(f\) makes this interpretation well-defined. Unmentioned names receive arbitrary values. The selected elementary-diagram sentences hold because the \(c\)-names are canonical; the selected signed-diagram sentences and equations hold by construction. Thus every finite fragment is satisfiable.</p>
+    <p>Compactness gives a model of the whole theory. Its reduct is \(P\), with \(e(a)=c_a\) and \(g(b)=d_b\) read in that model. The <a href="diagrams-and-extensions#elementary-diagram-lemma">elementary diagram</a> and <a href="diagrams-and-extensions#signed-diagram-lemma">signed diagram</a> give the two asserted maps. All the equations hold, so \(g(f(a))=e(a)\) for every \(a\). Finally apply the <a href="diagrams-and-extensions#renaming-the-copy">renaming construction</a>, first to \(f\) and then to \(g\). Its transport of functions and relations uses only the embedding condition; elementarity of the composite ensures \(M\preccurlyeq P\).</p>
+  </div>
+</section>
+
+<section id="interleaved-chains" data-formal="mt-inductive-interleaving" data-kind="lemma">
+  <h2>Two cofinal chains can have different kinds of inclusions</h2>
+  <p>Suppose the union of every increasing \(\omega\)-chain of \(T\)-models is again a \(T\)-model. Then every model of \(T_{\forall\exists}\) is a model of \(T\).</p>
+  <div class="proof">
+    <p>Start with \(M_0\models T_{\forall\exists}\). By <a href="#existentially-faithful-extension"></a>, embed it existentially faithfully into \(N_0\models T\). By <a href="#elementary-factorization"></a>, place \(N_0\) inside an elementary extension \(M_1\) of \(M_0\), keeping the two maps' composite equal to the elementary map. Rename copies to obtain literal inclusions</p>
+    <div class="math-display">\[M_0\subseteq N_0\subseteq M_1,\qquad M_0\preccurlyeq M_1.\]</div>
+    <p>Since elementary extensions satisfy the same sentences, \(M_1\models T_{\forall\exists}\). Repeat with \(M_1\), and continue by recursion and choice. This yields</p>
+    <div class="math-display">\[M_0\subseteq N_0\subseteq M_1\subseteq N_1\subseteq M_2\subseteq\cdots,\qquad M_n\preccurlyeq M_{n+1},\quad N_n\models T.\]</div>
+    <p>The two subsequences have the same union \(U\): every \(M_n\) lies in \(N_n\), and every \(N_n\) lies in \(M_{n+1}\). The structures induced on this common set agree, because all inclusions in the combined sequence are substructure inclusions. By the assumed ordinary-chain closure, \(U=\bigcup_nN_n\models T\). By the <a href="elementary-chains#elementary-chain-theorem">elementary-chain theorem</a>, \(M_0\preccurlyeq\bigcup_nM_n=U\). Consequently \(M_0\models T\), as required.</p>
+  </div>
+</section>
+
+<section id="union-characterization" data-formal="mt-inductive-part-equivalence mt-inductive-chain-to-omega mt-inductive-directed-to-chain mt-inductive-axioms-to-directed mt-inductive-arbitrary-system mt-inductive-characterization" data-kind="theorem">
+  <h2>Inductive theories are exactly the universal-existential theories</h2>
+  <div class="statement-box"><p>For any first-order theory \(T\), the following are equivalent:</p>
+    <ol><li>\(T\) is inductive.</li><li>Unions of increasing \(\omega\)-chains of \(T\)-models satisfy \(T\).</li><li>\(T\) is equivalent to \(T_{\forall\exists}\).</li><li>\(T\) has a universal-existential axiomatization.</li><li>Every directed union of \(T\)-models along embeddings satisfies \(T\).</li></ol>
+  </div>
+  <div class="proof">
+    <p>Condition 1 implies condition 2 by restricting to chains indexed by \(\omega\). Condition 2 implies condition 3 by <a href="#interleaved-chains"></a>, together with the fact that \(T\) entails all its universal-existential consequences. Condition 3 implies condition 4 by the definition of \(T_{\forall\exists}\). Condition 4 implies condition 5 by <a href="#union-preservation"></a> applied to each axiom of an equivalent universal-existential theory. Finally, every nonempty chain is directed, and its ordinary union is its directed union by <a href="#directed-union"></a>, so condition 5 implies condition 1.</p>
+    <p>If \(T\) is inconsistent, \(\bot\) is a universal-existential consequence, so condition 3 still holds; all the model-closure conditions are vacuous. Thus satisfiability is not an omitted hypothesis.</p>
+  </div>
+</section>
+
+<section id="ordinary-versus-elementary" data-formal="mt-inductive-no-greatest-theory mt-inductive-no-greatest-prefix mt-inductive-no-greatest-inductive mt-inductive-natural-rational-models mt-inductive-natural-rational-embedding mt-inductive-between-formula mt-inductive-between-gap mt-inductive-inclusion-not-elementary" data-kind="question">
+  <h2>Does an inductive theory make its embeddings elementary?</h2>
+  <p>In the language \(\{&lt;\}\), let \(T\) say that the relation is a strict linear order and that there is no greatest element. Show that \(T\) is inductive. Is every inclusion of \(T\)-models elementary?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The theory is inductive, but an inclusion between its models need not be elementary.</p>
+    <div class="proof">
+    <p>The strict linear-order axioms are universal, and the remaining axiom is \(\forall x\,\exists y\,(x&lt;y)\). Thus \(T\) is already universal-existential and is inductive by <a href="#union-characterization"></a>.</p>
+    <p>The usual inclusion \((\mathbb N,&lt;)\subseteq(\mathbb Q,&lt;)\) is an embedding between models of \(T\). At the parameters \(0,1\), however,</p>
+    <div class="math-display">\[\exists z\,(0&lt;z\land z&lt;1)\]</div>
+    <p>is false in \(\mathbb N\) and true in \(\mathbb Q\), with witness \(1/2\). Here \(0,1\) denote the supplied parameters, not symbols added to the order language. The inclusion is therefore not elementary. The union theorem controls which sentences remain true in the final union; it does not say that an individual embedding preserves all formulas.</p>
+    </div>
+  </div></details>
+</section>
+
+<section id="greatest-element-question" data-formal="mt-inductive-greatest-sentence mt-inductive-greatest-theory mt-inductive-greatest-semantics mt-inductive-finite-greatest mt-inductive-natural-no-greatest mt-inductive-greatest-not-inductive mt-inductive-greatest-not-prefix" data-kind="question">
+  <h2>A last point can disappear in an increasing union</h2>
+  <p>Can the theory of nonempty strict linear orders with a greatest element have a universal-existential axiomatization? Its greatest-element axiom can be written \(\exists z\,\forall x\,(x&lt;z\lor x=z)\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No equivalent universal-existential axiomatization exists.</p>
+    <div class="proof">
+    <p>For \(n&lt;\omega\), take the finite order \(M_n=\{0,\ldots,n\}\). Each stage has a greatest element, and its inclusion in the next stage is a substructure inclusion in the relational language \(\{&lt;\}\). The union is \((\mathbb N,&lt;)\), which has no greatest element: \(n+1\) lies above each \(n\). The theory is not inductive, so <a href="#union-characterization"></a> rules out any equivalent universal-existential axiomatization. This conclusion excludes every possible such axiomatization, not merely a rearrangement of the displayed axiom.</p>
+    </div>
+  </div></details>
+</section>

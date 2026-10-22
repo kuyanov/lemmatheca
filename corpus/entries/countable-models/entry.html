@@ -1,0 +1,137 @@
+<section id="counting-models" data-formal="mt-cmodels-countable-model mt-cmodels-model-isomorphism mt-cmodels-model-classes mt-cmodels-count mt-cmodels-classes-isomorphism mt-cmodels-finite-count mt-cmodels-count-one" data-kind="definition">
+  <h2>Count models up to isomorphism</h2>
+  <p>Throughout, structures are nonempty. For a complete satisfiable theory \(T\) in a countable language, with an infinite model, write <strong>the number of countable models</strong> as \(I(T,\aleph_0)\): this is the cardinality of the set of isomorphism classes of countably infinite models of \(T\). Completeness and <a href="countable-categoricity#countable-realization">the countable-model argument</a> ensure that such models exist and that every model of \(T\) is infinite.</p>
+  <p>This is a set-sized count. Replace the carrier of each countably infinite model by \(\mathbb N\); the interpretations of the countably many symbols then form a set, and isomorphism is an equivalence relation on that set. The value \(I(T,\aleph_0)=1\) is exactly <a href="countable-categoricity#countable-categoricity">countable categoricity</a>.</p>
+</section>
+
+<section id="increasing-names" data-formal="mt-cmodels-named-language mt-cmodels-sequence-theory mt-cmodels-sequence-model" data-kind="definition">
+  <h2>A dense order with an increasing named sequence</h2>
+  <p>Let \(L_*\) contain the strict-order symbol \(&lt;\) and constant symbols \(c_0,c_1,\ldots\). Define the <strong>increasing-sequence order theory</strong> \(T_*\) by the axioms for a <a href="quantifier-elimination#dense-orders">dense linear order without endpoints</a>, together with</p>
+  <div class="math-display">\[c_n&lt;c_{n+1}\qquad(n\in\mathbb N).\]</div>
+  <p>Transitivity gives \(c_i&lt;c_j\) whenever \(i&lt;j\), so the names have distinct interpretations. The rational order, with \(c_n=n\), is a model. Every model is infinite. For the next several blocks, a model means a model of \(T_*\), and \(c_n\) denotes its interpreted value.</p>
+</section>
+
+<section id="named-completeness" data-formal="mt-cmodels-named-elimination mt-cmodels-sequence-complete mt-omit-formula-support mt-cmodels-general-named-elimination" data-kind="lemma">
+  <h2>Each formula can inspect only finitely many names</h2>
+  <p>Every \(L_*\)-formula is equivalent modulo \(T_*\) to a Boolean combination of equality and strict-order comparisons between its free variables and finitely many named constants. Consequently \(T_*\) is complete. More generally, adjoining any set of constant symbols gives quantifier elimination for every theory containing the translated dense-order axioms.</p>
+  <div class="proof">
+    <p>A formula is a finite expression, so only finitely many constants occur in it. List the distinct names as \(c_{i_0},\ldots,c_{i_{m-1}}\). Replace those constants by additional free variables \(y_0,\ldots,y_{m-1}\), retaining the original quantified variables and avoiding capture. Induction on terms and formulas shows that interpreting these new free variables by the listed constants recovers the original truth value. This is the same <a href="countable-saturated-models#lifting-finite-parameters">constant-to-variable translation</a> used for finite parameter types.</p>
+    <p>Apply <a href="quantifier-elimination#dlo-elimination">quantifier elimination for the original order language</a> to the translated formula. Its quantifier-free result uses only equality and order between free variables. Substitute the listed constants back. This proves the formula assertion without assuming a new quantifier-elimination theorem for the enlarged language. The same construction uses only the finite set of names occurring in the formula, so it works for any set of additional constants and any theory containing the translated dense-order axioms. Completeness requires the further check of constant comparisons below.</p>
+    <p>For a sentence, the resulting comparisons concern constants alone. The axioms fix all of them: \(c_i=c_j\) holds exactly when \(i=j\), and \(c_i&lt;c_j\) exactly when \(i&lt;j\). Every model therefore assigns the same truth value to the sentence. Since the rational model exists, this proves completeness.</p>
+  </div>
+</section>
+
+<section id="upper-tail" data-formal="mt-cmodels-upper-tail mt-cmodels-tail-shape mt-cmodels-tail-upward mt-cmodels-upper-bound mt-cmodels-shape-isomorphism" data-kind="definition">
+  <h2>The points above the entire sequence</h2>
+  <p>For a model \(M\), define its <strong>upper tail</strong> by</p>
+  <div class="math-display">\[U_M=\{x\in M:(\forall n\in\mathbb N)\;c_n&lt;x\}.\]</div>
+  <p>This set is a final segment: if \(x\in U_M\) and \(x&lt;y\), transitivity gives \(y\in U_M\). A point is an upper bound of the sequence in the non-strict sense exactly when it belongs to \(U_M\). Indeed, if every \(c_n\le x\), then \(c_n&lt;c_{n+1}\le x\). Thus \(U_M\) is empty exactly when the named sequence is unbounded above.</p>
+  <p>The alternatives are: \(U_M\) is empty; it is nonempty with no least point; or it has a least point. These alternatives are preserved by every \(L_*\)-isomorphism, because such an isomorphism preserves order and every individual name.</p>
+</section>
+
+<section id="lower-cells" data-formal="mt-cmodels-lower-cells mt-cmodels-cell-partition mt-cmodels-cell-orders countable-subsets" data-kind="lemma">
+  <h2>The part below the tail splits into fixed intervals</h2>
+  <p>Every point outside \(U_M\) lies in exactly one of the sets</p>
+  <div class="math-display">\[(-\infty,c_0),\qquad \{c_n\}\ (n\in\mathbb N),\qquad (c_n,c_{n+1})\ (n\in\mathbb N).\]</div>
+  <p>Each displayed open interval, with its induced order, is a nonempty dense linear order without endpoints. If \(M\) is countable, each such interval is countable.</p>
+  <div class="proof">
+    <p>For \(x\notin U_M\), choose the least \(k\) with \(x\le c_k\). If \(k=0\), then \(x&lt;c_0\) or \(x=c_0\). If \(k=n+1\), minimality gives \(c_n&lt;x\), so \(x\) lies in \((c_n,c_{n+1})\) or equals \(c_{n+1}\). Strict increase makes these cells disjoint.</p>
+    <p>Density gives a point in every interval \((c_n,c_{n+1})\), and the absence of a left endpoint gives a point below \(c_0\). Density is inherited by an interval. Given a point inside an interval, apply density between it and the relevant finite boundary to find a smaller or larger interior point; below \(c_0\), use the absence of a left endpoint for the smaller point. Thus there are no endpoints within any cell. A subset of a countable set is countable.</p>
+  </div>
+</section>
+
+<section id="tail-orders" data-formal="mt-cmodels-tail-order mt-cmodels-tail-remainder-order countable-subsets" data-kind="lemma">
+  <h2>A nonempty tail contributes one more dense interval</h2>
+  <p>If \(U_M\) is nonempty with no least point, its induced order is a dense linear order without endpoints. If it has a least point \(u\), then \(U_M\setminus\{u\}\) is a nonempty dense linear order without endpoints. These orders are countable when \(M\) is countable.</p>
+  <div class="proof">
+    <p>The final-segment property retains every point between two tail points. There is no greatest point, since the ambient order has no right endpoint. If \(U_M\) has no least point, each member has a smaller member: otherwise it would be least in the linear order.</p>
+    <p>If \(u\) is least, the ambient order supplies a point above \(u\), so the tail with \(u\) removed is nonempty. For any \(x&gt;u\), density supplies \(y\) with \(u&lt;y&lt;x\); finality puts \(y\) in the tail. This gives no left endpoint after removing \(u\). Density and the lack of a right endpoint follow as before.</p>
+  </div>
+</section>
+
+<section id="same-tail-isomorphism" data-formal="mt-cmodels-same-tail" data-kind="theorem">
+  <h2>The tail alternative determines the countable model</h2>
+  <p>Two countable models of \(T_*\) are isomorphic if and only if their upper tails have the same one of the three alternatives in <a href="#upper-tail"></a>.</p>
+  <div class="proof">
+    <p>An isomorphism preserves the alternative by <a href="#upper-tail"></a>. Conversely, match \(c_n^M\) with \(c_n^N\) for every \(n\). By <a href="#lower-cells"></a>, the open intervals below the named points are countable dense orders without endpoints. The <a href="back-and-forth#dense-orders">countable dense-order isomorphism theorem</a> supplies an order isomorphism from \((-\infty,c_0^M)\) to \((-\infty,c_0^N)\) and, separately for every \(n\), from \((c_n^M,c_{n+1}^M)\) to \((c_n^N,c_{n+1}^N)\).</p>
+    <p>If both tails are empty, nothing remains. If both are nonempty with no least point, apply the same theorem to the two tails using <a href="#tail-orders"></a>. If both have least points, match those points and apply the theorem to the tails with those least points removed.</p>
+    <p>Glue these maps on the disjoint cells. Each component is a bijection onto its corresponding cell, and the partition includes every point, so the glued function is bijective. It preserves order within a cell. It also preserves order between cells: the initial interval precedes \(c_0\), each \(c_n\) precedes its following interval and \(c_{n+1}\), and every tail point follows all those cells. Its inverse has the same property. The function fixes every named constant in the required sense and is therefore an \(L_*\)-isomorphism.</p>
+  </div>
+</section>
+
+<section id="three-representatives" data-formal="mt-cmodels-representative-carriers mt-cmodels-representative-names mt-cmodels-representative-structures mt-cmodels-representative-model mt-cmodels-representative-countable mt-cmodels-representative-infinite mt-cmodels-representative-shapes" data-kind="lemma">
+  <h2>Build the three orders without taking a real limit</h2>
+  <p>There are countable models of \(T_*\) with each of the three tail alternatives. Explicit carriers are</p>
+  <div class="math-display">\[\mathbb Q,\qquad \mathbb Q+\mathbb Q,\qquad \mathbb Q+1+\mathbb Q,\]</div>
+  <p>where an <strong>ordered sum</strong> keeps the given order in each disjoint block and places every point of an earlier block before every point of a later block. The symbol \(1\) denotes a single point. In all three structures, interpret \(c_n\) as the rational number \(n\) in the first rational block.</p>
+  <div class="proof">
+    <p>Each carrier is countable. Its block order is a strict linear order. Within a rational block, density supplies a point between distinct points. Between two blocks, a point of the lower rational block can be increased while staying below every point of the higher block. For the singleton-to-final-block case, decrease the given point of the final rational block. These cases prove density across all joins. The first and last rational blocks have no endpoints, so neither does the entire sum. The named sequence is strictly increasing.</p>
+    <p>The natural numbers are cofinal in the rational order: write a rational as \(a/b\), where \(a\in\mathbb Z\) and \(b\) is a positive integer, and choose a natural number larger than \(|a|+1\). Thus no point in the first rational block is above every \(c_n\). In the one-block order the tail is empty. In \(\mathbb Q+\mathbb Q\), the tail is precisely the second rational block, with no least point. In \(\mathbb Q+1+\mathbb Q\), the tail is the singleton followed by the last rational block, and the singleton is its least point.</p>
+  </div>
+</section>
+
+<section id="exactly-three" data-formal="mt-cmodels-exactly-three" data-kind="theorem">
+  <h2>A complete theory can have exactly three countable models</h2>
+  <div class="statement-box"><p>The complete theory \(T_*\) has exactly three countably infinite models up to isomorphism. In particular, \(I(T_*,\aleph_0)=3\).</p></div>
+  <div class="proof">
+    <p>Completeness was proved in <a href="#named-completeness"></a>. Every tail has exactly one of the three alternatives. By <a href="#same-tail-isomorphism"></a>, models with the same alternative are isomorphic. The <a href="#three-representatives">three explicit representatives</a> realize all alternatives, and no two of them are isomorphic because the alternative is preserved by isomorphisms.</p>
+  </div>
+</section>
+
+<section id="tail-sentence-question" data-formal="mt-cmodels-no-tail-sentence" data-kind="question">
+  <h2>Can a sentence tell the three cases apart?</h2>
+  <p>Is there an \(L_*\)-sentence saying that the named sequence has an upper bound?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No sentence can express this property on all models of \(T_*\). The <a href="#three-representatives">first representative</a> has no upper bound, and the other two have upper bounds. But <a href="#named-completeness">completeness</a> says that they agree on every sentence.</p>
+    <p>The expression \(\exists x\,\bigwedge_{n&lt;\omega}c_n&lt;x\) suggests the property, but its infinite conjunction is not a first-order formula. Every actual first-order sentence mentions only finitely many of the constants.</p>
+  </div></details>
+</section>
+
+<section id="finite-spectrum-small" data-formal="mt-cmodels-finite-spectrum-small" data-kind="lemma">
+  <h2>Finitely many countable models allow only countably many types</h2>
+  <p>If a complete satisfiable theory \(T\) in a countable language has finitely many countable models up to isomorphism, then \(T\) is <a href="countable-saturated-models#small-theories">small</a>: every \(S_n(T)\) is countable.</p>
+  <div class="proof">
+    <p>Choose countable representatives \(M_0,\ldots,M_{k-1}\). Every complete \(n\)-type has a realization in some countable model by <a href="countable-categoricity#countable-realization">the countable realization lemma</a>. Move this realizing tuple by an isomorphism into the appropriate representative. Thus the map taking a tuple to its complete type is a surjection</p>
+    <div class="math-display">\[\coprod_{i&lt;k}M_i^n\longrightarrow S_n(T).\]</div>
+    <p>A finite union of finite powers of countable sets is countable. Its image is countable, proving the assertion. The empty tuple is included when \(n=0\).</p>
+  </div>
+</section>
+
+<section id="naming-preserves-noncategoricity" data-formal="mt-cmodels-named-formula-equivalence mt-cmodels-named-class-map mt-cmodels-named-class-injection mt-cmodels-named-noncategorical" data-kind="lemma">
+  <h2>Naming finitely many points cannot remove old formula distinctions</h2>
+  <p>Let \(T\) be complete and satisfiable, let \(M\models T\), and let \(A\subseteq M\) be finite. Put \(T_A=\operatorname{Th}(M_A)\). For old-language formulas \(\varphi,\psi\) in the same finite context,</p>
+  <div class="math-display">\[\varphi\equiv_T\psi\quad\Longleftrightarrow\quad\varphi\equiv_{T_A}\psi.\]</div>
+  <p>Consequently the map from old <a href="countable-categoricity#formula-classes">formula classes</a> to the corresponding \(T_A\)-formula classes is injective. If \(L\) is countable, \(T\) has an infinite model, and \(T\) is not countably categorical, then \(T_A\) is not countably categorical either.</p>
+  <div class="proof">
+    <p>Equivalence modulo \(T\) remains true in every reduct of a \(T_A\)-model, since such a reduct models \(T\). Conversely, suppose \(\varphi\) and \(\psi\) are not equivalent modulo \(T\). Some model of \(T\) has a tuple where their truth values differ. The sentence asserting the existence of such a tuple is therefore consistent with \(T\); completeness makes it true in every model of \(T\), including \(M\). The same tuple witnesses failure of equivalence in \(M_A\), so equivalence modulo \(T_A\) fails.</p>
+    <p>If \(T\) is not countably categorical, the <a href="countable-categoricity#categoricity-criterion">formula-class criterion</a> gives a finite context with infinitely many \(T\)-formula classes. Their distinct images remain distinct for \(T_A\). The named language is countable, its complete theory has the infinite model \(M_A\), and the same criterion rules out countable categoricity of \(T_A\).</p>
+  </div>
+</section>
+
+<section id="atomic-saturated-categorical" data-formal="mt-cmodels-atomic-saturated-categorical" data-kind="lemma">
+  <h2>An atomic saturated model forces countable categoricity</h2>
+  <p>If a complete satisfiable theory in a countable language, with an infinite model, has a model that is both atomic and omega-saturated, then the theory is countably categorical. In particular, an atomic model of a noncategorical such theory is not omega-saturated.</p>
+  <div class="proof">
+    <p>By <a href="saturated-models#finite-tuples">finite-tuple saturation</a>, every complete finite-tuple type of the theory is realized in the given model, using the empty parameter set. Atomicity says that each realized type is isolated. Hence every complete type is isolated. Apply the <a href="countable-categoricity#categoricity-criterion">isolation criterion for countable categoricity</a>. Countability of the particular atomic saturated model is not needed.</p>
+  </div>
+</section>
+
+<section id="third-model" data-formal="mt-cmodels-third-model" data-kind="theorem">
+  <h2>A small noncategorical theory has a third countable model</h2>
+  <p>Let \(T\) be complete, satisfiable and small in a countable language, with an infinite model, and suppose \(T\) is not countably categorical. There are three pairwise nonisomorphic countable models of \(T\).</p>
+  <div class="proof">
+    <p>By the <a href="countable-saturated-models#existence-criterion">saturated-model existence theorem</a> and the <a href="countable-saturated-models#small-prime-model">atomic-model conclusion</a>, choose a countable atomic model \(P\) and a countable omega-saturated model \(S\). Noncategoricity and the <a href="countable-categoricity#categoricity-criterion">isolation criterion</a> give some nonisolated \(p\in S_n(T)\). Finite-tuple saturation realizes it in \(S\), say by \(\bar a\). Atomicity prevents its realization in \(P\). Thus \(P\) and \(S\) are not isomorphic.</p>
+    <p>Let \(A\) be the finite set of coordinates of \(\bar a\), and put \(T_A=\operatorname{Th}(S_A)\). By <a href="saturated-models#finite-names">preservation under finite naming</a>, \(S_A\) is omega-saturated. It is countable, so <a href="countable-saturated-models#saturation-forces-smallness">its theory is small</a>. Choose a countable atomic model \(N^+\models T_A\), and let \(N\) be its old-language reduct. This reduct is a countable model of \(T\).</p>
+    <p>Every formula \(\varphi(\bar x)\in p\), after its variables are replaced by the names of the coordinates of \(\bar a\), is a sentence true in \(S_A\). It belongs to \(T_A\), so the tuple of the corresponding constant values in \(N^+\) satisfies \(\varphi\) in \(N\). Hence \(N\) realizes \(p\), and \(N\not\cong P\).</p>
+    <p>By <a href="#naming-preserves-noncategoricity"></a>, \(T_A\) is not countably categorical. Since \(N^+\) is atomic, <a href="#atomic-saturated-categorical"></a> says that it is not omega-saturated. If its reduct \(N\) were omega-saturated, <a href="saturated-models#finite-names">the arbitrary finite-constant version of finite naming</a> would make \(N^+\) omega-saturated as well. This version matters: its constant symbols are indexed by \(A\subseteq S\), but their values lie in \(N\); they are not literally the original elements of \(S\). Thus \(N\) is not omega-saturated. <a href="saturated-models#isomorphism-invariance">Isomorphism invariance of saturation</a> separates \(N\) from \(S\). The models \(P,S,N\) are pairwise nonisomorphic.</p>
+  </div>
+</section>
+
+<section id="never-two" data-formal="mt-cmodels-never-two" data-kind="theorem">
+  <h2>Exactly two countable models are impossible</h2>
+  <div class="statement-box"><p>A complete satisfiable theory in a countable first-order language, with an infinite model, cannot have exactly two countably infinite models up to isomorphism.</p></div>
+  <div class="proof">
+    <p>Suppose there were exactly two. By <a href="#finite-spectrum-small"></a>, the theory would be small. Having two nonisomorphic countable models makes it noncategorical. But <a href="#third-model"></a> then produces three pairwise nonisomorphic countable models, a contradiction.</p>
+  </div>
+  <p>This is Vaught's never-two theorem. The <a href="#exactly-three">three-model order theory</a> shows that replacing “two” by “three” would make the statement false.</p>
+</section>

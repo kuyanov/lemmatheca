@@ -214,7 +214,7 @@ reuse suitable nodes and Lean declarations under the
 
 ### Reference integration
 
-The authoritative [reference-planning registry](corpus/reference-planning/index.json)
+The authoritative [reference-planning registry](corpus/reference-planning/README.md)
 collects reference work in focused JSON records. Its `upcoming-reference` kind
 is the single collection of references from current entries to future mathematical
 areas. Each record identifies the future area, proposed reference

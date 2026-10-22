@@ -1,0 +1,138 @@
+<section id="countable-categoricity" data-kind="definition" data-formal="bf-categoricity mt-cat-models-infinite mt-cat-countable-model mt-cat-zero-type">
+  <h2>One countably infinite model, up to isomorphism</h2>
+  <p>Throughout, let \(T\) be a satisfiable complete theory in a countable first-order language \(L\), and suppose \(T\) has an infinite model. All structures are nonempty. The theory is <strong>countably categorical</strong>, or <strong>\(\aleph_0\)-categorical</strong>, if it has a countably infinite model and any two such models are isomorphic.</p>
+  <p>In fact every model of \(T\) is infinite. For each positive integer \(r\), the sentence asserting at least \(r\) distinct elements holds in the given infinite model. Completeness of \(T\) makes it hold in every model. Thus a countable model of \(T\) is automatically countably infinite.</p>
+  <p>Write \(S_n(T)\) for the complete types in the fixed free context \(x_0,\ldots,x_{n-1}\). Formulas may leave some of those variables unused. Include \(n=0\): there is one empty tuple and, because \(T\) is complete, one zero-type.</p>
+  <p>For complete theories with several countable models, a <a href="countable-models#exactly-three">named dense-order example</a> gives exactly three, while <a href="countable-models#never-two">Vaught's theorem</a> rules out exactly two.</p>
+</section>
+
+<section id="countable-realization" data-kind="lemma" data-formal="mt-cat-countable-realization mt-cat-countable-model">
+  <h2>Every complete finite-tuple type occurs in a countable model</h2>
+  <p>Every \(p\in S_n(T)\) has a realization in a countable model of \(T\). In particular, \(T\) has a countably infinite model.</p>
+  <div class="proof">
+    <p><a href="types-and-realization#complete-types">Consistency of a complete type</a> gives a model \(N\models T\) and a tuple \(\bar a\) realizing it. Apply <a href="elementary-submodels#countable-submodels">downward Löwenheim–Skolem</a> to the finite set of coordinates of \(\bar a\). This gives a countable elementary submodel \(M\preccurlyeq N\) containing every coordinate. It models \(T\), and elementarity preserves every formula of \(p\) at the same tuple.</p>
+    <p>For the empty tuple, use any model of \(T\) and the empty prescribed set. Every resulting countable model is infinite by <a href="#countable-categoricity"></a>.</p>
+  </div>
+</section>
+
+<section id="categoricity-and-isolation" data-kind="lemma" data-formal="mt-cat-categoricity-isolation">
+  <h2>Uniqueness of the countable model is equivalent to isolation of every type</h2>
+  <p>The theory \(T\) is countably categorical if and only if every type in every \(S_n(T)\) is isolated.</p>
+  <div class="proof">
+    <p>Suppose \(T\) is countably categorical and \(p\) is nonisolated. <a href="omitting-types#countable-omission">Omitting types</a> gives a countable model \(M\) omitting \(p\), while <a href="#countable-realization"></a> gives a countable model \(N\) realizing it. These models cannot be isomorphic: isomorphisms preserve all formulas and hence realization of a complete type. This contradicts categoricity.</p>
+    <p>Conversely, suppose all finite-tuple types are isolated. Every model of \(T\) is then <a href="atomic-and-prime-models#atomic-models">atomic</a>, since each of its realized tuple types is isolated. The <a href="atomic-and-prime-models#atomic-uniqueness">uniqueness theorem for countable atomic models</a> makes any two countable models isomorphic. The preceding lemma supplies one, so \(T\) is countably categorical.</p>
+  </div>
+</section>
+
+<section id="formula-classes" data-kind="definition" data-formal="fonf-equivalence mt-cat-formula-classes mt-cat-formula-class mt-cat-truth-set">
+  <h2>Identify formulas that agree throughout the theory</h2>
+  <p>Two formulas in the same \(n\)-variable context are <strong>equivalent modulo \(T\)</strong> if</p>
+  <div class="math-display">\[\varphi\equiv_T\psi\quad\Longleftrightarrow\quad T\models\forall\bar x\,(\varphi\leftrightarrow\psi).\]</div>
+  <p>This is an equivalence relation: equality of truth values at every tuple in every model is reflexive, symmetric and transitive. Let \(F_n(T)\) denote its set of equivalence classes, and write \([\varphi]_T\) for the class of \(\varphi\).</p>
+  <p>A formula class has a <strong>type truth set</strong></p>
+  <div class="math-display">\[V_n([\varphi]_T)=\{p\in S_n(T):\varphi\in p\}.\]</div>
+  <p>This is well-defined. Realize a type in a model of \(T\); equivalent formulas have equal truth values there, so one belongs to the type exactly when the other does.</p>
+</section>
+
+<section id="types-and-formulas" data-kind="lemma" data-formal="mt-cat-truth-set-injective mt-cat-type-profile mt-cat-profile-injective mt-cat-finite-types-formulas">
+  <h2>Finitely many types and finitely many formula classes are equivalent</h2>
+  <p>For each finite \(n\), the set \(S_n(T)\) is finite if and only if \(F_n(T)\) is finite.</p>
+  <div class="proof">
+    <p>The map \(V_n:F_n(T)\to\mathcal P(S_n(T))\) is injective. If the two classes have the same type truth set, take any tuple in any model of \(T\). Its complete type contains the first formula exactly when it contains the second; the tuple therefore satisfies them together or fails them together. This is equivalence modulo \(T\). A finite \(S_n(T)\) has a finite power set, proving this direction.</p>
+    <p>For the converse, send each type \(p\) to its set of formula classes \(\{[\varphi]_T:\varphi\in p\}\). Membership is independent of the representative by the same realization argument. Different types disagree on a formula, so this map from \(S_n(T)\) into \(\mathcal P(F_n(T))\) is injective. If \(F_n(T)\) is finite, its power set is finite, and so is \(S_n(T)\).</p>
+  </div>
+</section>
+
+<section id="categoricity-criterion" data-kind="theorem" data-formal="mt-cat-categoricity-isolation mt-cat-categoricity-types mt-cat-categoricity-formulas">
+  <h2>The countable categoricity theorem</h2>
+  <div class="statement-box"><p>For a satisfiable complete theory \(T\) in a countable language with an infinite model, the following conditions are equivalent:</p>
+    <ol>
+      <li>\(T\) is countably categorical.</li>
+      <li>For every finite \(n\), every type in \(S_n(T)\) is isolated.</li>
+      <li>For every finite \(n\), \(S_n(T)\) is finite.</li>
+      <li>For every finite \(n\), there are only finitely many formulas in that context up to equivalence modulo \(T\).</li>
+    </ol>
+  </div>
+  <div class="proof">
+    <p>The first two conditions are equivalent by <a href="#categoricity-and-isolation"></a>. The second and third are equivalent by the <a href="isolated-types#isolated-types-finite">finite-type isolation theorem</a>, applied separately in each context. The third and fourth are equivalent by <a href="#types-and-formulas"></a>. This proves all four equivalences, including the empty context.</p>
+  </div>
+  <p>This is the Engeler–Ryll-Nardzewski–Svenonius theorem in its type and formula formulations.</p>
+</section>
+
+<section id="automorphism-orbits" data-kind="definition" data-formal="mt-cat-same-orbit mt-cat-orbit-classes mt-cat-oligomorphic mt-cat-empty-orbit mt-cat-orbit-type">
+  <h2>Move tuples by symmetries of the whole model</h2>
+  <p>For an \(L\)-structure \(M\), let <strong>\(\operatorname{Aut}(M)\)</strong> be its automorphisms. Tuples \(\bar a,\bar b\in M^n\) lie in the same <strong>automorphism orbit</strong> if some \(g\in\operatorname{Aut}(M)\) satisfies \(g(a_i)=b_i\) for every \(i&lt;n\).</p>
+  <p>This is an equivalence relation. The identity map proves reflexivity, the inverse automorphism proves symmetry, and composition proves transitivity. Write \(M^n/\operatorname{Aut}(M)\) for the orbit set. Say that the automorphisms are <strong>oligomorphic</strong> if this set is finite for every finite \(n\). The empty tuple has one orbit.</p>
+  <p>Automorphisms preserve complete types, since <a href="first-order-structures#isomorphism-invariance">isomorphisms preserve every formula</a>. Thus each orbit consists of tuples of one complete type.</p>
+</section>
+
+<section id="types-are-orbits" data-kind="theorem" data-formal="mt-cat-same-type-orbit mt-cat-orbit-type-bijection mt-cat-orbit-isolator">
+  <h2>In the unique countable model, types are exactly symmetry orbits</h2>
+  <p>Suppose \(T\) is countably categorical and \(M\models T\) is countable. Two finite tuples in \(M\) have the same complete type if and only if they lie in the same automorphism orbit. Every type in \(S_n(T)\) is realized in \(M\), so the orbit set is in bijection with \(S_n(T)\). Each orbit is defined without parameters by an isolating formula for its type.</p>
+  <div class="proof">
+    <p>Only the forward implication about two tuples needs proof. If \(\operatorname{tp}(\bar a)=\operatorname{tp}(\bar b)\), the assignment \(a_i\mapsto b_i\) defines a bijection between their finite coordinate sets. It is well-defined and injective because the two types agree on every equality \(x_i=x_j\). Any formula with parameters from the first set can be expressed using the coordinate tuple, repeating or omitting coordinates as needed. Equality of the tuple types then says exactly that this finite map preserves that formula's truth.</p>
+    <p>By <a href="#categoricity-criterion"></a>, \(M\) is atomic. Apply the <a href="atomic-and-prime-models#atomic-uniqueness">prescribed-map form of atomic uniqueness</a> with both models equal to \(M\). It extends this particular finite elementary map to an automorphism \(g\), so \(g(a_i)=b_i\) at every coordinate.</p>
+    <p>Every type is isolated by the same criterion and is <a href="isolated-types#unavoidable-realization">realized in every model of the complete theory</a>, hence in \(M\). This proves the claimed bijection. If \(\theta_p\) isolates \(p\), a tuple satisfies \(\theta_p\) exactly when it realizes \(p\). The equivalence just proved makes its solution set the orbit of any realizing tuple.</p>
+  </div>
+  <p>These finite definable orbits also imply that <a href="types-and-symmetry#invariant-sets-definable">a subset of a finite tuple power is parameter-free definable exactly when it is invariant under every automorphism</a>.</p>
+</section>
+
+<section id="finitely-many-realized-types" data-kind="lemma" data-formal="mt-cat-finite-realized-exhaust">
+  <h2>A model realizing only finitely many types cannot miss another one</h2>
+  <p>If a model \(M\models T\) realizes only finitely many \(n\)-types, then it realizes every type in \(S_n(T)\), and that set is finite.</p>
+  <div class="proof">
+    <p>List the realized types as \(q_0,\ldots,q_{r-1}\). Suppose another type \(p\) were omitted. For each \(q_i\), choose \(\varphi_i\in p\) with \(\neg\varphi_i\in q_i\), using <a href="isolated-types#separating-types">separation of distinct complete types</a>. Let \(\theta=\bigwedge_{i&lt;r}\varphi_i\).</p>
+    <p>A realization of \(p\) in some model satisfies \(\theta\). Completeness therefore gives \(T\models\exists\bar x\,\theta\), so \(M\) has a tuple satisfying \(\theta\). Its type is one of the \(q_i\), which also contains \(\neg\varphi_i\). The tuple would satisfy both \(\varphi_i\) and its negation, a contradiction. Consequently every type is on the finite list.</p>
+  </div>
+</section>
+
+<section id="automorphism-criterion" data-kind="theorem" data-formal="mt-cat-finite-realized-from-orbits mt-cat-categoricity-orbits-all mt-cat-categoricity-orbits">
+  <h2>Finitely many tuple orbits characterize countable categoricity</h2>
+  <div class="statement-box"><p>The theory \(T\) is countably categorical if and only if it has a countable model whose automorphisms are oligomorphic. When this holds, the automorphisms of every countable model of \(T\) are oligomorphic.</p></div>
+  <div class="proof">
+    <p>If \(T\) is countably categorical, <a href="#types-are-orbits"></a> identifies the orbits in each finite context with the finite set \(S_n(T)\), so every countable model has finitely many orbits.</p>
+    <p>Conversely, let \(M\) be a countable model with finitely many orbits in every finite context. Each orbit has one type, so \(M\) realizes only finitely many \(n\)-types for every \(n\). By <a href="#finitely-many-realized-types"></a>, each whole set \(S_n(T)\) is finite. The <a href="#categoricity-criterion">categoricity criterion</a> proves that \(T\) is countably categorical.</p>
+  </div>
+</section>
+
+<section id="finite-parameter-definitions" data-kind="lemma" data-formal="mt-cat-unary-evaluation mt-cat-unary-class-evaluation mt-cat-unary-class-range mt-cat-finite-definable-sets mt-cat-categoricity-formulas">
+  <h2>A finite parameter set allows only finitely many unary definable sets</h2>
+  <p>Suppose \(T\) is countably categorical. For every model \(M\models T\) and every finite \(A\subseteq M\), there are only finitely many \(A\)-definable subsets of \(M\). The model need not be countable.</p>
+  <div class="proof">
+    <p>List \(A\) without repetition as \(\bar a=(a_0,\ldots,a_{m-1})\). Any unary formula with parameters in \(A\) can be written as \(\varphi(x,\bar a)\) for an \(L\)-formula in \(m+1\) variables. Replace each parameter name \(a_i\) by a separate free variable \(y_i\), keeping \(x\) free and choosing bound variables apart. The same term/formula induction used for <a href="omitting-types#finite-condition-formula">constant lifting</a> preserves truth at every assignment: a replaced parameter has its assigned \(y_i\)-value, old symbols retain their interpretations, and quantifiers leave the free \(x,\bar y\)-values fixed. Evaluating \(\bar y\) at \(\bar a\) therefore recovers the original definition. Unused parameters simply give unused variables.</p>
+    <p>Equivalent formulas modulo \(T\) give the same subset of this fixed \(M\) at the same fixed tuple \(\bar a\). Thus the map \([\varphi]_T\mapsto\varphi(M,\bar a)\) from \(F_{m+1}(T)\) onto the family of \(A\)-definable unary sets is well-defined and surjective. Its domain is finite by <a href="#categoricity-criterion"></a>, so its image is finite.</p>
+  </div>
+</section>
+
+<section id="finite-closures" data-kind="theorem" data-formal="mt-cat-finite-acl mt-cat-finite-dcl mt-cat-finite-generated mt-cat-categoricity-formulas">
+  <h2>Finite parameters have finite algebraic closure and a finite generated carrier</h2>
+  <p>Suppose \(T\) is countably categorical, \(M\models T\), and \(A\subseteq M\) is finite. Then \(\operatorname{acl}_M(A)\), \(\operatorname{dcl}_M(A)\), and the <a href="elementary-submodels#generated-carriers">carrier generated by \(A\)</a> are all finite.</p>
+  <div class="proof">
+    <p>Let \(\mathcal D_A\) be the family of unary \(A\)-definable subsets of \(M\). The <a href="definable-and-algebraic-closure#closure-definitions">definition of algebraic closure</a> gives</p>
+    <div class="math-display">\[\operatorname{acl}_M(A)=\bigcup\{D\in\mathcal D_A:D\text{ is finite}\}.\]</div>
+    <p>The family \(\mathcal D_A\) is finite by <a href="#finite-parameter-definitions"></a>. The displayed union is therefore a finite union of finite sets. Since definable closure is contained in algebraic closure, it too is finite.</p>
+    <p>By the <a href="definable-and-algebraic-closure#closure-substructures">closure-under-functions lemma</a>, \(\operatorname{dcl}_M(A)\) contains \(A\), all constant values, and every function value on its elements. <a href="elementary-submodels#generated-minimality">Minimality of the generated carrier</a> puts it inside \(\operatorname{dcl}_M(A)\), proving finiteness. If \(A\) is empty and the language has no constants, <a href="elementary-submodels#empty-generated-carriers">its generated carrier is empty</a>; the finiteness assertion includes this case and does not assert that an empty carrier is a model.</p>
+  </div>
+</section>
+
+<section id="uniform-local-finiteness" data-kind="question" data-formal="mt-cat-term-graph mt-cat-term-graph-truth mt-cat-generated-injection mt-cat-uniform-bound mt-cat-uniform-local-finiteness mt-cat-uniform-local-finiteness-result mt-cat-categoricity-formulas">
+  <h2>Can the bound depend only on the number of generators?</h2>
+  <p>For each finite \(m\), is there one bound, depending only on \(T\) and \(m\), for the size of the carrier generated by any \(m\)-tuple in any model of a countably categorical \(T\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Yes. The finite number \(K_m=|F_{m+1}(T)|\) is a uniform bound.</p>
+    <div class="proof">
+    <p>By <a href="elementary-submodels#generated-term-values">the term-value description</a>, every element of the carrier generated by \(\bar a\) is the value of a term using finitely many parameters from its range. For each such parameter choose an index \(i&lt;m\) at which it occurs in \(\bar a\), and relabel that variable by \(y_i\). The resulting term \(t(\bar y)\) has value \(t^M(\bar a)\), even when the original tuple repeats coordinates. Ground terms cover \(m=0\).</p>
+    <p>Associate to a term the formula \(x=t(\bar y)\). If two such formulas are equivalent modulo \(T\), evaluate them at \(\bar y=\bar a\) and \(x=t^M(\bar a)\). The equivalence forces the two term values to be equal. Hence terms producing distinct elements give distinct classes in \(F_{m+1}(T)\). Choosing a representative term for each generated element gives an injection into this finite class set, so the generated carrier has at most \(K_m\) elements.</p>
+    </div>
+    <p>This proves <strong>uniform local finiteness</strong>: the same bound works for every parameter tuple of that length in every model. The preceding theorem also proves finiteness of algebraic closure, which can contain more than just the term-generated elements.</p>
+  </div></details>
+</section>
+
+<section id="equality-and-order" data-kind="lemma" data-formal="bf-empty-theory-categorical bf-dense-order-categoricity mt-isolated-equality-types-finite mt-isolated-dlo-types-finite mt-cat-equality-pair-orbits mt-cat-dlo-pair-orbits">
+  <h2>Equality patterns and ordered patterns give the basic examples</h2>
+  <p>The complete theory of infinite equality structures and the complete theory of nonempty dense linear orders without endpoints are countably categorical.</p>
+  <div class="proof">
+    <p>The <a href="isolated-types#infinite-equality">equality-pattern classification</a> gives finitely many complete types in every finite context for infinite equality structures. The <a href="isolated-types#dense-orders">ordered-pattern classification</a> does the same for dense orders. Apply <a href="#categoricity-criterion"></a> in each case.</p>
+    <p>In a countable infinite equality structure, ordered pairs have two automorphism orbits: equal coordinates and different coordinates. In a countable dense order, pairs have three orbits: \(x_0=x_1\), \(x_0&lt;x_1\), and \(x_1&lt;x_0\). These are exactly the previously classified pair types by <a href="#types-are-orbits"></a>; repeated coordinates are included.</p>
+  </div>
+</section>

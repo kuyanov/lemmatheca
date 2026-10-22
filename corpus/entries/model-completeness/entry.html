@@ -1,0 +1,95 @@
+<section id="model-complete" data-formal="mt-mc-model-complete" data-kind="definition">
+  <h2>When every embedding is elementary</h2>
+  <p>Fix a set-sized first-order language \(L\) with equality, and an \(L\)-theory \(T\). All structures in this entry are nonempty. An <a href="diagrams-and-extensions#embeddings">embedding</a> preserves functions and both preserves and reflects relations. It therefore preserves and reflects every quantifier-free formula.</p>
+  <p>The theory \(T\) is <strong>model complete</strong> if every embedding \(f:M\hookrightarrow N\) between models of \(T\) is <a href="elementary-submodels#elementary-embeddings">elementary</a>: for every formula \(\varphi(\bar x)\) and every finite tuple \(\bar a\) from \(M\),</p>
+  <div class="math-display">\[M\models\varphi[\bar a]\quad\Longleftrightarrow\quad N\models\varphi[f(\bar a)].\]</div>
+  <p>The word “model” matters. <a href="theories-and-axiomatization#complete-theories">Completeness of a theory</a> asks that its models agree on sentences. Model completeness asks that embeddings preserve formulas with parameters; it does not require embeddings between every pair of models. An inconsistent theory is model complete vacuously.</p>
+</section>
+
+<section id="inclusions" data-formal="mt-mc-inclusion-test" data-kind="lemma">
+  <h2>It suffices to consider inclusions of models</h2>
+  <p>A theory \(T\) is model complete if and only if every substructure inclusion \(M\subseteq N\) between its models is elementary.</p>
+  <div class="proof">
+    <p>One direction follows because an inclusion is an embedding. Conversely, let \(f:M\hookrightarrow N\) be an embedding of models. Its image \(f(M)\) is a substructure of \(N\), and \(f:M\to f(M)\) is an isomorphism. Thus \(f(M)\models T\) by <a href="first-order-structures#isomorphism-invariance">isomorphism invariance</a>. The assumed inclusion \(f(M)\subseteq N\) is elementary. Its composite with the isomorphism preserves and reflects all formulas, so it is the original elementary map \(f:M\to N\).</p>
+  </div>
+</section>
+
+<section id="existential-closure" data-formal="mt-mc-existentially-closed-embedding mt-mc-existentially-closed-model mt-mc-all-models-closed mt-mc-closure-inclusions" data-kind="definition">
+  <h2>Bringing witnesses back into a smaller model</h2>
+  <p>Recall that an <a href="preservation-converses#quantifier-shapes">existential formula</a> is a finite block of existential quantifiers followed by a quantifier-free matrix; the block may be empty. For \(M\subseteq N\), say that \(M\) is <strong>existentially closed in \(N\)</strong> if, for every existential formula \(\psi(\bar x)\) and every tuple \(\bar a\) from \(M\),</p>
+  <div class="math-display">\[N\models\psi[\bar a]\quad\Longrightarrow\quad M\models\psi[\bar a].\]</div>
+  <p>A model \(M\models T\) is <strong>existentially closed among models of \(T\)</strong> if it is existentially closed in every extension \(N\models T\). Both structures must satisfy \(T\). The definition imposes no demand on extensions outside this class.</p>
+  <p>The forward implication from \(M\) to \(N\) always holds for existential formulas: their witnesses remain available, and embeddings preserve the quantifier-free matrix. Thus existential closure means agreement on these formulas, with every finite tuple of parameters allowed.</p>
+  <p>Every model of an inductive theory has an <a href="existentially-closed-extensions#closed-extension">existentially closed extension</a>, with a bound on its size.</p>
+</section>
+
+<section id="qe-implies" data-formal="mt-mc-qe-sufficient" data-kind="lemma">
+  <h2>Quantifier elimination gives model completeness</h2>
+  <p>If \(T\) has <a href="quantifier-elimination#equivalence-modulo-a-theory">quantifier elimination</a>, then it is model complete.</p>
+  <div class="proof">
+    <p>Let \(f:M\hookrightarrow N\) be an embedding of \(T\)-models, and let \(\varphi(\bar x)\) be any formula. Choose a quantifier-free \(\theta(\bar x)\) equivalent to it modulo \(T\). Then</p>
+    <div class="math-display">\[M\models\varphi[\bar a]\iff M\models\theta[\bar a]\iff N\models\theta[f(\bar a)]\iff N\models\varphi[f(\bar a)].\]</div>
+    <p>The middle equivalence uses only that \(f\) is an embedding. The other two use that both structures model \(T\). This is precisely elementarity of the given map \(f\).</p>
+  </div>
+</section>
+
+<section id="existential-to-universal" data-formal="mt-mc-existential-universal" data-kind="lemma">
+  <h2>Existential closure changes existential formulas into universal ones</h2>
+  <p>Suppose every model of \(T\) is existentially closed among models of \(T\). Then every existential formula is equivalent modulo \(T\) to a universal formula.</p>
+  <div class="proof">
+    <p>Let \(\psi(\bar x)\) be existential. Its truth passes down every inclusion \(M\subseteq N\) of \(T\)-models by the hypothesis. The <a href="preservation-converses#existential-preservation">relative universal preservation theorem</a> therefore supplies a universal formula equivalent to \(\psi\) modulo \(T\). The same conclusion holds for embeddings by factoring them through their images, as in <a href="#inclusions"></a>.</p>
+  </div>
+</section>
+
+<section id="normal-form-induction" data-formal="mt-mc-normal-forms" data-kind="lemma">
+  <h2>The witness condition controls arbitrary quantifiers</h2>
+  <p>Under the hypothesis of <a href="#existential-to-universal"></a>, every formula is equivalent modulo \(T\) to both a universal formula and an existential formula.</p>
+  <div class="proof">
+    <p>First, every universal formula \(\alpha\) also has an existential equivalent. Its negation is equivalent, by quantifier duality, to an existential formula \(\beta\). By the preceding lemma, \(\beta\) has a universal equivalent \(\gamma\). Consequently \(\alpha\) is equivalent to \(\neg\gamma\), which becomes existential after dualizing its quantifiers. Thus either of the two quantifier forms can be converted to the other modulo \(T\).</p>
+    <p>Now put an arbitrary formula into <a href="first-order-normal-forms#prenex-normal-form">prenex normal form</a>, renaming bound variables so that none is captured. Induct on the length of its prefix. A quantifier-free matrix is already both universal and existential. For a prefix beginning with \(\forall y\), replace the remainder by a universal equivalent, treating \(y\) as an additional free variable. Prefixing \(\forall y\) gives a universal formula; convert it to an existential equivalent by the first paragraph. For a prefix beginning with \(\exists y\), replace the remainder by an existential equivalent and prefix \(\exists y\); then convert that existential formula to a universal one. Equivalence modulo \(T\) is preserved when quantifying a free variable, since it holds for every assignment in each \(T\)-model. This completes the induction.</p>
+  </div>
+</section>
+
+<section id="robinson-test" data-formal="mt-mc-robinson-test mt-mc-existential-criterion mt-mc-universal-criterion mt-mc-elementary-reflects-existential" data-kind="theorem">
+  <h2>Robinson's test for model completeness</h2>
+  <div class="statement-box"><p>For any first-order theory \(T\), the following conditions are equivalent:</p>
+    <ol>
+      <li>\(T\) is model complete.</li>
+      <li>Every model of \(T\) is existentially closed among models of \(T\).</li>
+      <li>Every formula is equivalent modulo \(T\) to an existential formula.</li>
+      <li>Every formula is equivalent modulo \(T\) to a universal formula.</li>
+    </ol>
+  </div>
+  <div class="proof">
+    <p>Condition 1 implies condition 2 because an elementary inclusion reflects every formula. Condition 2 implies conditions 3 and 4 by <a href="#normal-form-induction"></a>.</p>
+    <p>Conditions 3 and 4 imply one another by negation: apply the assumed condition to \(\neg\varphi\), then negate the resulting equivalent formula. In particular, if \(\neg\varphi\) is equivalent to \(\psi\), it is \(\neg\psi\), not \(\neg\varphi\), that gives the new quantifier form for \(\varphi\).</p>
+    <p>Finally, assume condition 3, hence also condition 4. Given an embedding \(f:M\hookrightarrow N\) of \(T\)-models and a formula \(\varphi\), choose an existential equivalent \(\psi\) and a universal equivalent \(\chi\). Truth of \(\varphi\) in \(M\) transfers to \(\psi\), passes upwards along \(f\), and transfers back to \(\varphi\) in \(N\). Conversely, truth in \(N\) transfers to \(\chi\), passes down along \(f\), and transfers back in \(M\). Thus the specified embedding preserves and reflects \(\varphi\), proving condition 1.</p>
+  </div>
+  <p>Every model-complete theory has a <a href="existentially-closed-extensions#model-complete-inductive">universal-existential axiomatization</a>, obtained from its elementary-chain closure.</p>
+</section>
+
+<section id="equality-and-order" data-formal="mt-mc-equality-model-complete mt-mc-dlo-model-complete" data-kind="theorem">
+  <h2>Infinite sets and dense orders are model complete</h2>
+  <p>The theory of infinite sets in the language of equality is model complete. The theory of nonempty dense linear orders without endpoints in the language \(\{&lt;\}\) is model complete as well.</p>
+  <div class="proof">
+    <p>Both theories have <a href="quantifier-elimination#equality-elimination">quantifier</a> <a href="quantifier-elimination#dlo-elimination">elimination</a>, so <a href="#qe-implies"></a> applies. An embedding of equality structures is just an injection; an embedding of strict linear orders is an order embedding. Therefore every such embedding between the respective models is elementary. By <a href="#robinson-test"></a>, any existential statement about a finite tuple in the smaller model that has witnesses in the larger model already has witnesses in the smaller one.</p>
+  </div>
+  <p>For how this example relates to all strict linear orders, see <a href="model-companions#dense-order-completion">dense orders as a model completion</a>.</p>
+</section>
+
+<section id="completeness-separation" data-formal="mt-mc-one-point-theory mt-mc-diagonal-relation mt-mc-point-models mt-mc-diagonal-relation-truth mt-mc-one-point-model-complete mt-mc-not-sentence-complete mt-mc-singleton-models" data-kind="question">
+  <h2>Does model completeness imply completeness?</h2>
+  <p>Let \(L=\{R\}\) have one binary relation symbol, and let \(T\) consist of the sentence \(\forall x\,\forall y\;(x=y)\). Is \(T\) model complete? Is it complete?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Every nonempty model has exactly one element. Every embedding between two such models is bijective, hence an isomorphism, and therefore elementary. So \(T\) is model complete.</p>
+    <p>On a one-point domain there are two possible interpretations of \(R\): the empty relation and the full relation. Both model \(T\). The sentence \(\forall x\,R(x,x)\) is false in the first and true in the second. Thus \(T\) is satisfiable but not complete. There is no embedding between these two particular models, because an embedding must both preserve and reflect \(R\); model completeness makes no assertion that such an embedding exists.</p>
+  </div></details>
+</section>
+
+<section id="outside-theory" data-formal="mt-mc-different-point-formula mt-mc-different-point-existential mt-mc-different-point-one-two mt-mc-one-to-two-embedding mt-mc-two-points-not-model" data-kind="question">
+  <h2>Why restrict the extensions to models of the theory?</h2>
+  <p>For the model-complete one-point theory in <a href="#completeness-separation"></a>, is a model existentially closed in every extension as an \(L\)-structure?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Take a one-point structure \(M=\{a\}\) with the empty relation, and extend it to \(N=\{a,b\}\), still with the empty relation and with \(a\ne b\). The inclusion is an embedding. The existential formula \(\exists y\,(y\ne x)\) holds at \(a\) in \(N\), with witness \(b\), but fails at \(a\) in \(M\). The larger structure does not satisfy \(T\), since it has two elements. Model completeness promises existential closure only for extensions that remain models of \(T\).</p>
+  </div></details>
+</section>

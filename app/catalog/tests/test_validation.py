@@ -144,8 +144,6 @@ class CorpusValidationTests(SimpleTestCase):
         write_json(plan, {'id': 'future', 'kind': 'planned-entry', 'title': 'A future entry',
                    'areas': ['future-area'], 'entry_refs': ['beta#fact'], 'urls': [],
                    'planned_entry_ids': ['not-yet-added'], 'details': 'Pending scope.'})
-        for directory in ('source-errors', 'reference-planning'):
-            write_json(self.corpus / directory / 'policy.json', {'scope': 'Scoped records.'})
         write_authoring_indexes(self.corpus)
         before = {path: path.read_bytes() for path in self.corpus.rglob('*.json')}
         self.assertEqual(validate_corpus(self.corpus), (2, 1, 2))

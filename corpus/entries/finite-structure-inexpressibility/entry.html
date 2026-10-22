@@ -1,0 +1,129 @@
+<section id="finite-definability" data-formal="mt-fsi-finite-definability mt-fsi-finite-order mt-fsi-finite-order-enumeration finite-cardinality-invariant finite-initial-segment-cardinality fo-formula-isomorphism-invariance" data-kind="definition">
+  <h2>Defining a class only among finite structures</h2>
+  <p>Fix the language with one binary relation. A class \(\mathcal C\) of nonempty finite structures is <strong>first-order definable among finite structures</strong> if some sentence \(\sigma\) holds in exactly the members of \(\mathcal C\), when its models are restricted to the stated finite structures. For example, when discussing finite strict linear orders, no requirement is imposed on structures whose relation is not a strict linear order.</p>
+  <p>Write \(I_n=(\{0,\ldots,n-1\},&lt;)\) for the <strong>finite order of length \(n\)</strong>, where \(n\ge1\). Every finite strict linear order is isomorphic to exactly one \(I_n\).</p>
+  <div class="proof">
+    <p>A nonempty finite linear order has a least element: induct on its size, removing one point and comparing it with the least of the remainder. Repeatedly remove that least point. The resulting increasing list is an isomorphism from the corresponding \(I_n\), and its length is the cardinality of the original carrier. Cardinality also proves uniqueness of \(n\).</p>
+  </div>
+  <p>Sentences are <a href="first-order-structures#isomorphism-invariance">invariant under isomorphism</a>, so it suffices to work with these specified orders.</p>
+</section>
+
+<section id="order-gaps" data-formal="mt-fsi-adjacent-gap mt-fsi-gap-size mt-fsi-gap-property mt-fsi-corresponding-gaps" data-kind="definition">
+  <h2>Count the unused points between selected points</h2>
+  <p>Suppose two tuple positions in finite orders give the same equality pattern and the same order comparisons, hence an <a href="finite-round-comparison#tuple-positions">atomic position</a>. List their distinct selected points increasingly as \(a_0&lt;\cdots&lt;a_{r-1}\) and \(b_0&lt;\cdots&lt;b_{r-1}\), with the same tuple coordinates assigned to corresponding points.</p>
+  <p>The <strong>gaps</strong> are the unused points before the first selected point, between consecutive selected points, and after the last selected point. With no selected point there is one gap, the whole order. Corresponding gaps occupy the same position in these two lists.</p>
+  <p>For \(k\ge0\), put \(t_k=2^k-1\). Say that the position has the <strong>\(k\)-gap property</strong> when it is atomic and, for each pair of corresponding gap sizes \(u,v\),</p>
+  <div class="math-display">\[u=v\quad\text{or}\quad (u\ge t_k\text{ and }v\ge t_k).\]</div>
+  <p>Thus small gaps must match exactly, while large gaps need only remain large enough. Since \(t_0=0\), the zero-gap property places no condition beyond atomic agreement.</p>
+</section>
+
+<section id="split-a-gap" data-formal="mt-fsi-split-gap" data-kind="lemma">
+  <h2>One response preserves the gap property with one fewer round</h2>
+  <p>From a position with the \((k+1)\)-gap property, every choice in either order has a response producing the \(k\)-gap property.</p>
+  <div class="proof">
+    <p>If a selected point is chosen again, respond with its old match. No gap changes, and the threshold decreases, so the required property remains true. Otherwise the point lies in one gap. Let its two new subgap sizes be \(l,r\), so the old gap has \(l+r+1\) points. Put \(t=t_k\); then \(t_{k+1}=2t+1\).</p>
+    <p>If the corresponding old gaps have equal size, respond at the same position within the other gap. Both new pairs of subgaps are equal. If their sizes differ, both have at least \(2t+1\) points. If \(l&lt;t\), choose the response with exactly \(l\) points to its left in its gap. The left gaps now match, and both right gaps have at least \(t\) points. If \(r&lt;t\), do the same from the right. The two small cases cannot occur together, since then the original gap would have fewer than \(2t+1\) points.</p>
+    <p>In the remaining case \(l,r\ge t\), choose a point with exactly \(t\) points to its left in the other gap. Its gap had at least \(2t+1\) points, so at least \(t\) remain on its right. Both new pairs are therefore large enough. The new point and its response lie in corresponding gaps, so adjoining them preserves order and equality. All other gaps are unchanged. The same argument works when the initial choice is in the other order.</p>
+  </div>
+</section>
+
+<section id="large-orders" data-formal="mt-fsi-gap-wins mt-fsi-large-orders" data-kind="theorem">
+  <h2>Long finite orders agree up to a fixed quantifier rank</h2>
+  <div class="statement-box">
+    <p>For every \(k\ge0\) and \(m,n\ge1\), if \(m,n\ge2^k-1\), then \(I_m\) and \(I_n\) satisfy exactly the same sentences of quantifier rank at most \(k\).</p>
+  </div>
+  <div class="proof">
+    <p>More generally, the \(k\)-gap property gives Duplicator a strategy for \(k\) further rounds. Induct on \(k\). At zero rounds the property says that the position is atomic, which wins. At the successor step, <a href="#split-a-gap"></a> answers every move from either order with the property for one fewer round. These responses and the inductive continuations give the required strategy.</p>
+    <p>At the empty initial position there is just one gap in each order. Their sizes \(m,n\) meet the threshold, so the property holds. The <a href="finite-round-comparison#ef-theorem">Ehrenfeucht–Fraïssé theorem</a> now gives sentence agreement. This proves the statement for all indicated finite orders, not just for one chosen pair.</p>
+  </div>
+</section>
+
+<section id="parity-not-definable" data-formal="mt-fsi-parity-not-definable mt-fsi-oddness-not-definable" data-kind="theorem">
+  <h2>Parity is not first-order definable on finite orders</h2>
+  <p>No first-order sentence holds in exactly the finite nonempty strict linear orders of even size. The same is true for odd size.</p>
+  <div class="proof">
+    <p>Suppose \(\sigma\) defined even size, and let \(k\) be its quantifier rank. Choose an even \(m\ge\max(2,2^k-1)\), and put \(n=m+1\). The orders \(I_m,I_n\) must give different answers to \(\sigma\), since their sizes have opposite parity. But <a href="#large-orders"></a> says that they agree on every sentence of rank at most \(k\), a contradiction. If odd size were definable, negating its defining sentence would define even size within these same finite orders.</p>
+  </div>
+</section>
+
+<section id="graphs-and-paths" data-formal="mt-fsi-graph mt-fsi-reachability-equivalence exp-finite-walk exp-walk-tuple exp-reachable exp-connected-relation" data-kind="definition">
+  <h2>Graphs, finite paths and connectedness</h2>
+  <p>A <strong>graph</strong> is a structure whose binary edge relation \(E\) is symmetric and irreflexive. A <strong>path</strong> from \(a\) to \(b\) is the same finite walk used in <a href="expressive-limits#finite-walks">the earlier reachability definition</a>: a finite sequence \(a=v_0,v_1,\ldots,v_s=b\) with \(E(v_i,v_{i+1})\) for every \(i&lt;s\). Length zero is allowed. We say \(b\) is <strong>reachable</strong> from \(a\) when such a path exists, and a nonempty graph is <strong>connected</strong> when every two vertices are joined by a path.</p>
+  <p>A path may repeat vertices. Reversing a path uses symmetry of \(E\), and joining the finite lists for two paths gives a path from the first start to the second end. Thus reachability is reflexive, symmetric and transitive.</p>
+</section>
+
+<section id="cyclic-successor" data-formal="mt-fsi-successor-formula mt-fsi-minimum-formula mt-fsi-maximum-formula mt-fsi-cyclic-successor-formula mt-fsi-two-step-formula mt-fsi-graph-edge-formula mt-fsi-defining-formula-ranks mt-fsi-cyclic-successor-truth mt-fsi-graph-edge-truth mt-fsi-cyclic-successor-fin mt-fsi-graph-edge-fin mt-fsi-cyclic-graph-is-graph" data-kind="definition">
+  <h2>Read a finite order cyclically</h2>
+  <p>In the strict-order language, the <strong>immediate-successor formula</strong> and the <strong>minimum formula</strong> and <strong>maximum formula</strong> are:</p>
+  <div class="math-display">\[\operatorname{succ}(x,y):=(x&lt;y)\land\neg\exists z\,(x&lt;z\land z&lt;y).\]</div>
+  <div class="math-display">\[\operatorname{min}(x):=\neg\exists z\,(z&lt;x),\qquad \operatorname{max}(x):=\neg\exists z\,(x&lt;z).\]</div>
+  <p>The <strong>cyclic successor formula</strong> is</p>
+  <div class="math-display">\[C(x,y):=\operatorname{succ}(x,y)\lor(\operatorname{max}(x)\land\operatorname{min}(y)).\]</div>
+  <p>In \(I_n\), it says that \(y\) is the residue of \(x+1\) modulo \(n\): an ordinary successor follows the order, and the greatest point returns to the least. These formulas have quantifier rank one. The <strong>cyclic-distance-two graph formula</strong> is</p>
+  <div class="math-display">\[D(x,y):=\exists z\,(C(x,z)\land C(z,y)),\qquad G(x,y):=D(x,y)\lor D(y,x).\]</div>
+  <p>For \(n\ge3\), let \(G_n\) have the same carrier as \(I_n\), with edge relation defined by \(G\). Its edges join each \(i\) to \(i+2\pmod n\), in both directions. They have distinct endpoints because \(n\ge3\), so \(G_n\) is indeed a graph. The <strong>two-step formula</strong> \(D\) and the graph formula \(G\) have rank two.</p>
+</section>
+
+<section id="cyclic-graph-parity" data-formal="mt-fsi-cyclic-graph-parity" data-kind="lemma">
+  <h2>The distance-two graph is connected exactly at odd sizes</h2>
+  <p>For every \(n\ge3\), the finite graph \(G_n\) is connected if and only if \(n\) is odd.</p>
+  <div class="proof">
+    <p>If \(n=2m\), adding or subtracting two modulo \(n\) preserves parity. Every edge, and therefore every finite path, remains among the even vertices or among the odd vertices. In particular \(0\) cannot reach \(1\), so the graph is not connected.</p>
+    <p>If \(n=2m+1\), the successive residues obtained by repeatedly adding two give the closed walk</p>
+    <div class="math-display">\[0,2,4,\ldots,2m,1,3,\ldots,2m-1,0.\]</div>
+    <p>Every consecutive pair is an edge: the ordinary increases are by two, while \(2m+2\) has residue \(1\), and \(2m+1\) has residue \(0\). Every vertex appears because the first part lists all even vertices and the second all odd vertices. Hence every vertex has a path from \(0\). Reverse one such path and join it to another to connect any two vertices. The graph is therefore connected.</p>
+  </div>
+</section>
+
+<section id="graph-formula-translation" data-formal="mt-fsi-graph-translation" data-kind="definition">
+  <h2>Replace each edge atom by its order formula</h2>
+  <p>For each graph-language formula \(\varphi\), define its <strong>order translation</strong> \(\varphi^G\) recursively. Keep equality atoms; replace an edge atom \(E(t,u)\) by the actual formula \(G(t,u)\) from <a href="#cyclic-successor"></a>; preserve Boolean connectives and quantifiers. There are no functions or constants, so every term is a variable.</p>
+  <p>In each replacement, choose the inserted bound variables freshly from the surrounding formula and the substituted variables. The new binders therefore cannot capture substituted variables, and the retained outer binders still bind the original variable occurrences. Equivalently, the new binders use new slots after the atomic formula's current variable context. This is <a href="interpreting-theories#formula-translation">formula translation</a> by a relation formula, rather than a relabeling of one relation symbol by another.</p>
+</section>
+
+<section id="translation-truth" data-formal="mt-fsi-translation-truth mt-fsi-translation-rank" data-kind="lemma">
+  <h2>The translation preserves truth and bounds quantifier rank</h2>
+  <p>For every \(n\ge3\), every graph-language formula \(\varphi(\bar x)\) and every tuple \(\bar a\) from \(I_n\),</p>
+  <div class="math-display">\[G_n\models\varphi[\bar a]\quad\Longleftrightarrow\quad I_n\models\varphi^G[\bar a].\]</div>
+  <p>Moreover, \(\operatorname{qr}(\varphi^G)\le\operatorname{qr}(\varphi)+2\).</p>
+  <div class="proof">
+    <p>Induct on the formula. Equality has the same interpretation because the two structures have the same carrier. An edge atom agrees with its replacement by the definition of \(G_n\). Capture-free substitution makes that replacement evaluate \(G\) at exactly the values of the displayed terms. Boolean connectives preserve the equivalence. At an existential quantifier, witnesses range over the same finite carrier on both sides; apply the inductive equivalence at each extended assignment. Universals are handled in the same way. Thus every translated formula has the claimed truth value.</p>
+    <p>For the rank bound, an equality atom stays at rank zero and an edge atom is replaced by a rank-two formula. Boolean connectives take maxima, and each retained quantifier adds one on both sides of the inequality. Induction therefore gives the displayed bound for the complete formula.</p>
+  </div>
+</section>
+
+<section id="connectedness-not-definable" data-formal="mt-fsi-connectedness-not-definable" data-kind="theorem">
+  <h2>Connectedness is not first-order definable on finite graphs</h2>
+  <div class="statement-box">
+    <p>No first-order sentence defines connectedness among all nonempty finite graphs.</p>
+  </div>
+  <div class="proof">
+    <p>Suppose \(\sigma\) did so. By <a href="#translation-truth"></a>, its order translation \(\sigma^G\) holds in \(I_n\), for \(n\ge3\), exactly when \(G_n\) is connected, which by <a href="#cyclic-graph-parity"></a> is exactly when \(n\) is odd.</p>
+    <p>Let \(k\) be the rank of \(\sigma^G\). Choose an even \(m\ge\max(4,2^k-1)\) and put \(n=m+1\). Both graph constructions apply, and \(\sigma^G\) would distinguish these two orders. This contradicts <a href="#large-orders"></a>. The argument ignores the finitely many smaller orders, so the construction's \(n\ge3\) hypothesis causes no gap.</p>
+  </div>
+</section>
+
+<section id="reachability-not-definable" data-formal="mt-fsi-reachability-not-definable" data-kind="theorem">
+  <h2>A formula cannot uniformly express finite-graph reachability</h2>
+  <p>No graph-language formula \(\rho(x,y)\) holds at exactly the pairs joined by a finite path in every nonempty finite graph.</p>
+  <div class="proof">
+    <p>If such a formula existed, the sentence \(\forall x\,\forall y\,\rho(x,y)\) would hold in exactly the connected finite graphs, contradicting <a href="#connectedness-not-definable"></a>. Length-zero paths ensure that the intended relation includes each diagonal pair, as required by the definition of connectedness.</p>
+  </div>
+</section>
+
+<section id="bounded-size-question" data-formal="mt-fsi-short-walk mt-fsi-bounded-connectedness-sentence mt-fsi-bounded-connectedness-truth exp-path-formula exp-path-formula-correct" data-kind="question">
+  <h2>What changes when a size bound is fixed in advance?</h2>
+  <p>For a fixed positive integer \(N\), can one first-order sentence define connectedness among graphs of size at most \(N\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Yes. A fixed finite bound on path length can be written as one formula.</p>
+      <div class="proof">
+        <p>Whenever a path repeats a vertex, remove the segment between two consecutive occurrences of that vertex. This shortens the path without changing its endpoints. Repeating the operation leaves a path without repeated vertices, which has at most \(N-1\) edges in a graph of at most \(N\) vertices.</p>
+        <p>Use the already constructed <a href="expressive-limits#finite-walks">length-\(s\) formulas \(P_s(x,y)\)</a>, whose <a href="expressive-limits#path-formula-correctness">truth criterion</a> says exactly that a length-\(s\) path exists. Then</p>
+        <div class="math-display">\[\forall x\,\forall y\,\bigvee_{s&lt;N}P_s(x,y)\]</div>
+        <p>defines connectedness on this bounded class. The disjunction is finite because \(N\) was fixed before choosing the sentence. There is no one bound on path length that works uniformly over all finite graphs, as <a href="#connectedness-not-definable"></a> shows.</p>
+      </div>
+    </div>
+  </details>
+</section>

@@ -1,0 +1,137 @@
+<section id="quantifier-rank" data-formal="mt-ef-quantifier-rank mt-ef-rank-negation mt-ef-rank-conjunction mt-ef-rank-disjunction mt-ef-rank-existential mt-ef-rank-three-example mt-ef-rank-agreement" data-kind="definition">
+  <h2>Count nested quantifiers</h2>
+  <p>Fix a finite relational language \(L\): there are finitely many relation symbols, each of finite arity, and no function symbols or constants. Nullary relation symbols are allowed. All structures below are nonempty. We use the <a href="first-order-languages#scoped-formulas">first-order formulas</a> already defined, with equality.</p>
+  <p>The <strong>quantifier rank</strong> \(\operatorname{qr}(\varphi)\) counts the greatest number of nested quantifiers. Atomic formulas and \(\bot\) have rank zero; negation leaves rank unchanged; a binary Boolean connective takes the maximum of its two ranks; and</p>
+  <div class="math-display">\[\operatorname{qr}(\exists x\,\varphi)=\operatorname{qr}(\forall x\,\varphi)=\operatorname{qr}(\varphi)+1.\]</div>
+  <p>Thus \(\exists x\,\forall y\,(R(x,y)\lor\exists z\,R(y,z))\) has rank three when \(R\) is binary. Writing the same variable name again does not reduce the nesting depth; bound variables may always be renamed to avoid capture.</p>
+  <p>For tuples \(\bar a\in M^n\), \(\bar b\in N^n\), write \((M,\bar a)\equiv_k(N,\bar b)\) for <strong>rank-\(k\) agreement</strong>: every formula with free variables among \(x_0,\ldots,x_{n-1}\) and rank <em>at most</em> \(k\) has the same truth value at those tuples. For \(n=0\), this means agreement on sentences.</p>
+</section>
+
+<section id="tuple-positions" data-formal="mt-ef-atomic-position mt-ef-atomic-position-clauses mt-ef-tuple-partial-isomorphism" data-kind="definition">
+  <h2>Finite positions remember repeated choices</h2>
+  <p>A <strong>tuple position</strong> is a pair \((\bar a,\bar b)\) of tuples of the same finite length, in \(M\) and \(N\). It is an <strong>atomic position</strong> when, for all coordinate indices,</p>
+  <div class="math-display">\[a_i=a_j\ \Longleftrightarrow\ b_i=b_j,\]</div>
+  <p>and, for every relation symbol \(R\) of arity \(r\) and every choice \(i_0,\ldots,i_{r-1}&lt;n\),</p>
+  <div class="math-display">\[R^M(a_{i_0},\ldots,a_{i_{r-1}})\ \Longleftrightarrow\ R^N(b_{i_0},\ldots,b_{i_{r-1}}).\]</div>
+  <p>The equality condition makes \(a_i\mapsto b_i\) a well-defined bijection between the two finite ranges, even when coordinates repeat. The relation condition makes it a <a href="back-and-forth#finite-partial-isomorphisms">finite partial isomorphism</a>. Conversely such a map gives an atomic position whenever it sends every \(a_i\) to \(b_i\). This uses the absence of function symbols: all terms are variables.</p>
+  <p>When \(r=0\), the relation condition compares the two truth values of \(R\), using the empty tuple. Thus an empty initial position need not be atomic if the language has nullary relations.</p>
+</section>
+
+<section id="zero-rounds" data-formal="mt-ef-rank-zero" data-kind="lemma">
+  <h2>Atomic agreement is exactly rank-zero agreement</h2>
+  <p>A tuple position is atomic if and only if \((M,\bar a)\equiv_0(N,\bar b)\).</p>
+  <div class="proof">
+    <p>Atomic formulas in a relational language are precisely the equalities and relation instances listed in <a href="#tuple-positions"></a>. Each has rank zero, so rank-zero agreement implies atomic agreement. Conversely a rank-zero formula has no quantifiers. Induction through its Boolean connectives preserves agreement, as in <a href="back-and-forth#atomic-and-quantifier-free">quantifier-free preservation</a>. The falsum case is false in both structures. This proves the equivalence.</p>
+  </div>
+</section>
+
+<section id="finite-round-game" data-formal="mt-ef-finite-extension-condition mt-ef-winning-strategy mt-ef-repeated-response" data-kind="definition">
+  <h2>A game with a fixed number of moves</h2>
+  <p>The <strong>\(k\)-round Ehrenfeucht–Fraïssé game</strong> from an initial tuple position has two players. In each round, Spoiler chooses an element of either structure; Duplicator chooses an element of the other. Append the chosen elements to the corresponding tuples, in the order of the rounds. Duplicator wins when the final position is atomic. A <strong>winning strategy</strong> chooses a response for every possible history and Spoiler move, and wins against every sequence of Spoiler moves.</p>
+  <p>Write \(W_k(M,\bar a;N,\bar b)\) for the following recursively defined <strong>finite extension condition</strong>. The condition \(W_0\) says that the position is atomic. The condition \(W_{k+1}\) says that the position is atomic and that both requirements hold:</p>
+  <ul>
+    <li>for every \(a\in M\), some \(b\in N\) satisfies \(W_k(M,\bar a a;N,\bar b b)\);</li>
+    <li>for every \(b\in N\), some \(a\in M\) satisfies \(W_k(M,\bar a a;N,\bar b b)\).</li>
+  </ul>
+  <p>Here \(\bar a a\) denotes the tuple obtained by appending \(a\). Elements may be chosen again. If \(a=a_i\), atomic agreement forces the response to be \(b_i\); repeated choices cannot change an earlier value.</p>
+</section>
+
+<section id="strategy-recursion" data-formal="mt-ef-strategy-recursion mt-ef-fewer-rounds" data-kind="lemma">
+  <h2>The extension condition describes winning strategies</h2>
+  <p>Duplicator has a winning strategy for \(k\) rounds from a tuple position if and only if \(W_k\) holds there. Moreover, \(W_{k+1}\) implies \(W_k\).</p>
+  <div class="proof">
+    <p>Induct on \(k\). With zero rounds, the final position is the initial one, so both conditions say exactly that it is atomic. With \(k+1\) rounds, a winning strategy answers every possible first choice; its continuation wins the remaining \(k\) rounds. The inductive hypothesis gives the two extension requirements. The initial position is atomic because a failed equality or relation on old coordinates still fails in every extension.</p>
+    <p>Conversely, choose a response witnessing the appropriate extension requirement for each first move. At the resulting position, the inductive hypothesis supplies a strategy for the remaining rounds. These choices define a winning strategy. We use ordinary set theory with choice in selecting all responses and continuations.</p>
+    <p>For monotonicity, the case \(W_1\Rightarrow W_0\) is part of the definition. If \(W_{k+1}\Rightarrow W_k\) holds at every position, apply it to each response supplied by \(W_{k+2}\). Those responses now satisfy \(W_k\), giving \(W_{k+1}\) at the original position. This completes the induction.</p>
+  </div>
+</section>
+
+<section id="games-preserve-formulas" data-formal="mt-ef-game-formula-preservation mt-ef-native-tuple-free mt-ef-native-tuple-bound mt-ef-native-rank-free mt-ef-native-rank-bound" data-kind="lemma">
+  <h2>A winning strategy preserves formulas of bounded rank</h2>
+  <p>If \(W_k(M,\bar a;N,\bar b)\), then \((M,\bar a)\equiv_k(N,\bar b)\).</p>
+  <div class="proof">
+    <p>Induct on formulas, proving the assertion for every position and every budget \(k\) at least the formula's rank. Atomic formulas agree because \(W_k\) includes atomic agreement; \(\bot\) is false on both sides. Negation and Boolean connectives follow from the inductive hypotheses for their constituent formulas.</p>
+    <p>Suppose \(\exists y\,\psi(\bar x,y)\) has rank at most \(k\), so \(k\ge1\). If it holds at \(\bar a\), choose a witness \(a\). The forth requirement supplies \(b\) with \(W_{k-1}(M,\bar a a;N,\bar b b)\). Since \(\operatorname{qr}(\psi)\le k-1\), the inductive hypothesis transports \(\psi\) to \((\bar b,b)\), giving the existential statement in \(N\). The back requirement proves the reverse implication. Universal quantification follows by writing \(\forall y\,\psi\) as \(\neg\exists y\,\neg\psi\). Thus all formulas within the budget agree.</p>
+  </div>
+</section>
+
+<section id="atomic-descriptions" data-formal="mt-ef-finite-atomic-formulas mt-ef-atomic-description mt-ef-characteristic-rank mt-ef-characteristic-family-finite mt-ef-characteristic-partition mt-ef-characteristic-agreement" data-kind="lemma">
+  <h2>Only finitely many atomic descriptions use a fixed tuple</h2>
+  <p>For each \(n\), there is a finite family \(\mathcal D_{0,n}\) of rank-zero formulas in \(n\) variables such that every tuple in every \(L\)-structure satisfies exactly one member, and any two tuples satisfying the same member agree on all rank-zero formulas.</p>
+  <div class="proof">
+    <p>List the finitely many equalities \(x_i=x_j\), and, for every relation symbol \(R\) of arity \(r\), the \(n^r\) instances obtained by choosing its variable indices. A nullary relation contributes one instance, even when \(n=0\). This gives a finite list \(\mathcal A_n\) containing every atomic formula in the indicated variables.</p>
+    <p>For each subset \(S\subseteq\mathcal A_n\), take the conjunction of the atoms in \(S\) and the negations of all remaining atoms. Use \(\top\) for an empty conjunction. A tuple satisfies the conjunction indexed by its actual atomic truth values and no other. Some conjunctions are never satisfied, for instance one asserting \(x_0\ne x_0\); retaining them causes no problem. Tuples satisfying one conjunction agree atomically, so <a href="#zero-rounds"></a> gives rank-zero agreement.</p>
+  </div>
+</section>
+
+<section id="characteristic-descriptions" data-formal="mt-ef-characteristic-formula mt-ef-characteristic-truth" data-kind="definition">
+  <h2>Describe all one-point extension possibilities</h2>
+  <p>Define finite families of <strong>characteristic descriptions</strong> \(\mathcal D_{k,n}\) recursively, starting with <a href="#atomic-descriptions"></a>. Once \(\mathcal D_{k,n+1}\) is defined, take every \(\eta\in\mathcal D_{0,n}\) and every subset \(S\subseteq\mathcal D_{k,n+1}\), and include the formula</p>
+  <div class="math-display">\[\delta_{\eta,S}(\bar x)=\eta(\bar x)\land\bigwedge_{\chi\in S}\exists y\,\chi(\bar x,y)\land\bigwedge_{\chi\notin S}\neg\exists y\,\chi(\bar x,y)\]</div>
+  <p>in \(\mathcal D_{k+1,n}\). The last conjunction ranges over \(\mathcal D_{k,n+1}\setminus S\). All conjunctions are finite. The variable \(y\) is the new last variable, which is bound in the displayed formula; bound variables inside \(\chi\) are renamed if necessary. Thus these are ordinary first-order formulas in the original language, with free variables among \(\bar x\).</p>
+  <p>The description records the old atomic facts and exactly which previous descriptions occur after adjoining one element. As before, descriptions that cannot occur in any structure may remain in the family.</p>
+</section>
+
+<section id="characteristic-formulas" data-formal="mt-ef-characteristic-rank mt-ef-characteristic-family-finite mt-ef-characteristic-partition mt-ef-characteristic-agreement" data-kind="lemma">
+  <h2>One finite description determines all formulas within a rank bound</h2>
+  <p>For every \(k,n\), the family \(\mathcal D_{k,n}\) is finite, its formulas have rank at most \(k\), and each tuple in each structure satisfies exactly one member. Tuples satisfying the same member agree on every formula of rank at most \(k\).</p>
+  <div class="proof">
+    <p>Prove all assertions together by induction on \(k\). The base case is <a href="#atomic-descriptions"></a>. At the successor step there are finitely many choices of \(\eta\) and \(S\), and each displayed existential test has rank at most \(k+1\). A tuple determines its unique old atomic description \(\eta\) and its unique set \(S\) of one-point descriptions that occur over it. It therefore satisfies exactly that \(\delta_{\eta,S}\). Different choices disagree on an atomic fact or on one of the existential tests.</p>
+    <p>It remains to prove agreement for rank-at-most-\(k+1\) formulas at two tuples satisfying the same \(\delta_{\eta,S}\). Use structural induction on such a formula. Atomic formulas agree by \(\eta\), and Boolean connectives preserve agreement. For an existential formula \(\exists y\,\psi(\bar x,y)\), the matrix has rank at most \(k\). By the rank induction hypothesis, its truth is constant on each member \(\chi\) of \(\mathcal D_{k,n+1}\): if one tuple satisfying \(\chi\) makes \(\psi\) true, every such tuple does.</p>
+    <p>Let \(J\) be the set of descriptions on which \(\psi\) is true; unrealized descriptions may be left out. Every extended tuple satisfies one description, so in every structure</p>
+    <div class="math-display">\[\exists y\,\psi(\bar x,y)\quad\Longleftrightarrow\quad\bigvee_{\chi\in J}\exists y\,\chi(\bar x,y).\]</div>
+    <p>This is a finite disjunction, and the empty disjunction is \(\bot\). The shared \(\delta_{\eta,S}\) fixes the truth of each disjunct: it holds exactly when \(\chi\in S\). Hence the existential formulas agree. Universals follow by negation, completing both inductions.</p>
+  </div>
+</section>
+
+<section id="agreement-supplies-responses" data-formal="mt-ef-agreement-forth mt-ef-agreement-back" data-kind="lemma">
+  <h2>Bounded-rank agreement supplies each response</h2>
+  <p>If \((M,\bar a)\equiv_{k+1}(N,\bar b)\), then for every \(a\in M\) there is \(b\in N\) with \((M,\bar a a)\equiv_k(N,\bar b b)\). The same assertion holds with \(M,N\) interchanged.</p>
+  <div class="proof">
+    <p>Choose the unique \(\chi\in\mathcal D_{k,n+1}\) satisfied by \((\bar a,a)\). The formula \(\exists y\,\chi(\bar x,y)\) has rank at most \(k+1\) and holds at \(\bar a\). Agreement makes it true at \(\bar b\), so some \(b\) gives an extended tuple satisfying the same \(\chi\). By <a href="#characteristic-formulas"></a>, the extended tuples agree up to rank \(k\). Agreement is symmetric, so the same proof answers a choice from \(N\).</p>
+  </div>
+</section>
+
+<section id="ef-theorem" data-formal="mt-ef-theorem" data-kind="theorem">
+  <h2>The Ehrenfeucht–Fraïssé theorem</h2>
+  <div class="statement-box">
+    <p>In a finite relational language with no constants or functions, let \(M,N\) be nonempty structures and \(\bar a\in M^n\), \(\bar b\in N^n\). Duplicator has a winning strategy for \(k\) further rounds from \((\bar a,\bar b)\) if and only if</p>
+    <div class="math-display">\[(M,\bar a)\equiv_k(N,\bar b).\]</div>
+    <p>In particular, from the empty position, the game characterizes agreement on all sentences of quantifier rank at most \(k\). No finiteness or countability assumption is imposed on the carriers.</p>
+  </div>
+  <div class="proof">
+    <p>A winning strategy gives \(W_k\) by <a href="#strategy-recursion"></a>, and <a href="#games-preserve-formulas"></a> gives formula agreement. For the converse, induct on \(k\). Rank-zero agreement is an atomic position. At rank \(k+1\), <a href="#agreement-supplies-responses"></a> answers every choice in either structure with rank-\(k\) agreement at the extended position. The inductive hypothesis gives \(W_k\) there. Atomic agreement already follows from the rank bound, so the two extension requirements give \(W_{k+1}\), hence a winning strategy.</p>
+  </div>
+  <p>The finite-order gap strategy uses this theorem to prove <a href="finite-structure-inexpressibility#parity-not-definable">nondefinability of parity</a>. A formula translation then transfers that obstruction to <a href="finite-structure-inexpressibility#connectedness-not-definable">connectedness of finite graphs</a>.</p>
+</section>
+
+<section id="finite-signature-question" data-formal="mt-ef-infinite-unary-language mt-ef-infinite-unary-carrier mt-ef-infinite-unary-structure mt-ef-finite-unary-structure mt-ef-infinite-unary-point mt-ef-infinite-language-agreement mt-ef-infinite-language-unanswered mt-ef-infinite-language-no-strategy" data-kind="question">
+  <h2>Why require a finite language for the converse?</h2>
+  <p>Must rank-one agreement give a winning one-round strategy if there are infinitely many unary predicate symbols?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. Let the symbols be \(P_i\) for \(i\in\mathbb N\). There are structures agreeing on all rank-one sentences where Duplicator cannot answer one particular first move.</p>
+      <div class="proof">
+        <p>Let \(B\) consist of the finite subsets of \(\mathbb N\), and let \(A=B\cup\{\mathbb N\}\). Interpret \(P_i(S)\) by \(i\in S\). A rank-one sentence is a Boolean combination of closed atomic formulas and statements \(\exists x\,\theta(x)\) with \(\theta\) quantifier-free: inspect its outer Boolean connectives, and note that no quantifier can occur inside the matrix of another. There are no closed atomic formulas in this language.</p>
+        <p>Every such \(\theta\) mentions only finitely many \(P_i\). Any pattern on those finitely many indices is realized by a finite subset, so exactly the same quantifier-free one-variable conditions are realizable in \(A\) and \(B\). Thus all rank-one sentences agree. But Spoiler can choose \(\mathbb N\in A\), which satisfies every predicate. Every response \(F\in B\) is finite, and some \(i\notin F\) makes \(P_i\) fail there. The resulting position is not atomic, so Duplicator loses. The missing response would have required an infinite conjunction of predicates; the finite characteristic-family argument no longer applies.</p>
+      </div>
+    </div>
+  </details>
+</section>
+
+<section id="equality-game" data-formal="mt-ef-equality-game mt-ef-equality-large-sets" data-kind="question">
+  <h2>How many fresh points can the game detect?</h2>
+  <p>In the language with equality alone, start from an atomic position. What condition on the numbers of points outside the two tuple ranges is equivalent to winning \(k\) further rounds?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Either the two numbers are equal and less than \(k\), or both structures have at least \(k\) unused points. Infinite remainders satisfy the latter condition.</p>
+      <div class="proof">
+        <p>If there are equally many unused points, fewer than \(k\), choose a bijection between those finite remainders and answer according to it. Together with the existing match this preserves equality throughout. If both remainders have at least \(k\) points, answer a repeated choice by its old match and a fresh choice by any fresh point on the other side. Before round \(j+1\), at most \(j&lt;k\) unused points have been consumed on either side, so such a response exists.</p>
+        <p>If the stated condition fails, one remainder has exactly \(r&lt;k\) points and the other has at least \(r+1\). Spoiler chooses \(r+1\) distinct fresh points from the larger remainder in successive rounds. An atomic response must be fresh and distinct each time; the smaller remainder runs out. Hence no strategy wins. For \(k=0\), both remainders have at least zero points and the initial atomic position already wins.</p>
+        <p>In particular, two nonempty sets of sizes at least \(k\) agree on all rank-at-most-\(k\) sentences by <a href="#ef-theorem"></a>, although a sentence with more quantifiers may distinguish their sizes.</p>
+      </div>
+    </div>
+  </details>
+</section>

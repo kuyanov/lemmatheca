@@ -1,0 +1,126 @@
+<section id="existential-closure" data-kind="definition" data-formal="mt-mc-existentially-closed-model mt-mc-existentially-closed-embedding mt-ec-model-class mt-ec-existing-definition">
+  <h2>A model already contains every possible finite witness</h2>
+  <p>Fix a set-sized first-order language \(L\) and an <a href="inductive-theories#inductive-theories">inductive</a> \(L\)-theory \(T\). All structures are nonempty. Recall that a model \(M\models T\) is <strong>existentially closed among models of \(T\)</strong> if every embedding \(f:M\hookrightarrow N\) into a model \(N\models T\) <a href="inductive-theories#universal-diagram">reflects existential formulas</a>: for every existential \(\varphi(\bar x)\) and finite tuple \(\bar a\) in \(M\),</p>
+  <div class="math-display">\[N\models\varphi[f(\bar a)]\quad\Longrightarrow\quad M\models\varphi[\bar a].\]</div>
+  <p>Write <strong>\(\operatorname{EC}(T)\)</strong> for the class of these models. Membership includes \(M\models T\); it is not merely a condition on arbitrary structures. For literal inclusions this is the earlier <a href="model-completeness#existential-closure">witness condition</a>. The embedding formulation is equivalent by passing to the image and using isomorphism invariance.</p>
+</section>
+
+<section id="reflection-in-a-chain" data-kind="lemma" data-formal="mt-ec-composite-reflection">
+  <h2>A reflected composite reflects witnesses from the intermediate structure</h2>
+  <p>Let \(f:M\hookrightarrow N\) and \(g:N\hookrightarrow P\) be embeddings of nonempty structures. If \(g\circ f\) reflects existential formulas, then \(f\) does so. In particular, this holds when \(g\circ f\) is elementary.</p>
+  <div class="proof">
+    <p>If an existential formula is true in \(N\) at \(f(\bar a)\), it remains true in \(P\) at \(g(f(\bar a))\): apply \(g\) to its witnesses and use preservation of the quantifier-free matrix. Reflection by the composite then gives its truth in \(M\) at \(\bar a\). An elementary embedding reflects all formulas, hence existential ones.</p>
+  </div>
+</section>
+
+<section id="model-complete-inductive" data-kind="lemma" data-formal="mt-inductive-characterization mt-ec-model-complete-inductive">
+  <h2>Model-complete theories have universal-existential axioms</h2>
+  <p>Every model-complete theory \(U\) is inductive and has a universal-existential axiomatization.</p>
+  <div class="proof">
+    <p>In an increasing \(\omega\)-chain of \(U\)-models, each substructure inclusion is elementary by <a href="model-completeness#model-complete">model completeness</a>. The <a href="elementary-chains#elementary-chain-theorem">elementary-chain theorem</a> therefore makes its union a \(U\)-model. The <a href="inductive-theories#union-characterization">inductive-theory characterization</a> converts this countable-chain closure into inductiveness and an equivalent universal-existential axiom set. This does not assert that the originally chosen axioms of \(U\) already have that syntactic form.</p>
+  </div>
+</section>
+
+<section id="reflecting-model-status" data-kind="lemma" data-formal="mt-ec-reflecting-model-status">
+  <h2>Existential reflection recovers the inductive theory itself</h2>
+  <p>Suppose \(N\models T\) and \(f:M\hookrightarrow N\) reflects existential formulas, where \(M\) is a nonempty structure not initially assumed to model \(T\). Then \(M\models T\).</p>
+  <div class="proof">
+    <p>Choose a universal-existential theory equivalent to \(T\), by <a href="inductive-theories#union-characterization"></a>. Consider one of its axioms \(\forall\bar x\,\exists\bar y\,\theta(\bar x,\bar y)\), with \(\theta\) quantifier-free. For an arbitrary tuple \(\bar a\) from \(M\), its existential part is true in \(N\) at \(f(\bar a)\). Reflection gives witnesses in \(M\). Since \(\bar a\) was arbitrary, the axiom holds in \(M\). Apply this to every axiom, including those with either quantified tuple empty, and use equivalence with \(T\).</p>
+  </div>
+</section>
+
+<section id="requests-and-passes" data-kind="definition" data-formal="mt-ec-request mt-ec-request-realized mt-ec-request-possible mt-ec-completed-pass">
+  <h2>Handle the requests of one fixed base before admitting new parameters</h2>
+  <p>For \(A\models T\), an <strong>existential request over \(A\)</strong> is a pair \((\varphi,\bar a)\), where \(\varphi(\bar x)\) is an existential \(L\)-formula and \(\bar a\) is a finite tuple from \(A\). It is <strong>possible over an extension \(B\supseteq A\)</strong> if some further extension \(C\supseteq B\), with \(C\models T\), satisfies \(\varphi[\bar a]\).</p>
+  <p>A <strong>completed pass over \(A\)</strong> is an extension \(A\subseteq B\models T\) such that, for every request over \(A\),</p>
+  <div class="math-display">\[(\exists C\supseteq B\;[C\models T\text{ and }C\models\varphi[\bar a]])\quad\Longrightarrow\quad B\models\varphi[\bar a].\]</div>
+  <p>Only parameters from the fixed base \(A\) occur in this condition. An extension may add new parameters, whose requests will need later passes. For abstract embeddings, interpret \(\bar a\) by the composite of the specified maps; the condition and construction are invariant under renaming copies.</p>
+</section>
+
+<section id="set-sized-choices" data-kind="lemma" data-formal="elem-downward-size-bound model-formula-cardinality-bound mt-ec-size-bound mt-ec-coded-model mt-ec-coded-cardinality mt-ec-code-original-model mt-ec-requests-cardinality mt-ec-small-witness-extension">
+  <h2>Witness extensions can be chosen from a set with one fixed size bound</h2>
+  <p>Put \(\lambda=\max(\aleph_0,|L|,|M|)\) for the original supplied model \(M\models T\), where \(|L|\) counts the language's symbols. If \(B\models T\) has size at most \(\lambda\), and a request over \(B\) is realized in any \(T\)-extension, it is realized in a \(T\)-extension of size at most \(\lambda\). There are at most \(\lambda\) requests over any such \(B\).</p>
+  <div class="proof">
+    <p>Let \(C\supseteq B\) realize \(\exists\bar y\,\theta[\bar b,\bar y]\), and choose its finite witness tuple \(\bar c\). The <a href="elementary-submodels#downward-size-bound">downward Löwenheim–Skolem theorem</a> gives an elementary substructure \(C'\preccurlyeq C\) containing \(|B|\cup\{c_i\}\), of size at most \(\lambda\). It is a \(T\)-model by elementarity, still contains \(B\) as a substructure, and contains the witnesses. The matrix is quantifier-free, so the request holds there.</p>
+    <p>There are at most \(\lambda\) finite strings made from language symbols, variables and punctuation, and at most \(\lambda\) finite tuples from a set of size at most \(\lambda\). The <a href="infinite-cardinal-arithmetic#finite-powers">arithmetic of infinite cardinals</a> therefore bounds the set of requests by \(\lambda\).</p>
+    <p>These bounds also justify choice and recursion without choosing from a proper class. Code each nonempty structure of size at most \(\lambda\) by a structure on a nonempty subset of a fixed set of cardinality \(\lambda\). All such structures and all embeddings between them form sets: functions and relations are sets of finite tuples over that fixed set, indexed by the set of symbols. The Löwenheim–Skolem argument ensures that every possible request has a witness among these coded choices, with an embedding of the current coded model. Track those embeddings rather than requiring the coded domains to be nested. At a limit, recode the direct limit if needed and compose all its canonical embeddings with that isomorphism. The initial model's map is retained throughout. Literal inclusions can be restored by the earlier <a href="diagrams-and-extensions#renaming-the-copy">renaming construction</a>.</p>
+  </div>
+</section>
+
+<section id="one-pass-construction" data-kind="lemma" data-formal="mt-ec-transfinite-pass mt-ec-pass mt-ec-transfinite-pass-exists mt-ec-pass-final-map mt-ec-completed-pass-exists mt-ec-rejected-request-persists">
+  <h2>A transfinite pass settles every request from its original base</h2>
+  <p>For every \(A\models T\) with \(|A|\le\lambda\), there is a completed pass \(A\subseteq B\models T\) with \(|B|\le\lambda\). The construction retains an embedding of the supplied \(A\), and, after renaming, that map is the displayed inclusion.</p>
+  <div class="proof">
+    <p>Well-order all requests over \(A\) as \((\varphi_\alpha,\bar a_\alpha)\) for \(\alpha&lt;\mu\), where \(|\mu|\le\lambda\). First choose a coded copy \(B_0\) of \(A\) on a subset of the fixed arena, retaining the isomorphism \(A\to B_0\). Construct a compatible embedding chain \((B_\alpha)_{\alpha\le\mu}\) from that copy, composing this initial isomorphism with every stage map. At successor stage \(\alpha+1\), ask whether the request indexed by \(\alpha\), with its original parameters transported into \(B_\alpha\), is possible over \(B_\alpha\). If it is, choose a witness extension of size at most \(\lambda\) by <a href="#set-sized-choices"></a>, and use it as \(B_{\alpha+1}\). If it is not, leave the stage unchanged and use the identity embedding.</p>
+    <p>At each nonzero limit ordinal \(\beta\le\mu\), take the directed union of the preceding stages. The union models \(T\), because \(T\) is inductive. Its size is at most \(\lambda\): it is a quotient of a disjoint union of at most \(\lambda\) sets, each of size at most \(\lambda\). Recode it as in the preceding lemma if necessary. Thus all successor choices and limit stages stay in the fixed set of coded possibilities, so transfinite recursion and choice construct the whole chain.</p>
+    <p>Set \(B=B_\mu\), retaining the composite embedding of the original \(A\). Rename the final carrier over \(A\) when literal inclusion notation is desired. Suppose an extension \(C\supseteq B\) realizes a request over \(A\), and choose its index \(\alpha\). The composite embedding \(B_\alpha\to B\to C\) already proves that this request was possible when its turn was reached. It was therefore realized in \(B_{\alpha+1}\), and existential truth passes forward to \(B\). This proves the completed-pass condition. Equivalently, a request rejected at its turn stays impossible over every later stage: a later witness extension would also have been a witness extension at that earlier turn.</p>
+  </div>
+</section>
+
+<section id="closed-extension" data-kind="theorem" data-formal="mt-inductive-direct-limit mt-inductive-stage-embedding mt-inductive-stage-compatibility mt-ec-outer-pass-chain mt-ec-initial-map mt-ec-limit-model mt-ec-limit-cardinality mt-ec-limit-reflection mt-ec-limit-existentially-closed mt-ec-outer-pass-chain-exists mt-ec-extension-exists">
+  <h2>Every model of an inductive theory has an existentially closed extension</h2>
+  <div class="statement-box"><p>Let \(T\) be inductive and \(M\models T\). There are a model \(E\in\operatorname{EC}(T)\) and an embedding \(e:M\hookrightarrow E\), with</p>
+    <div class="math-display">\[|E|\le\max(\aleph_0,|L|,|M|).\]</div>
+    <p>The embedding is the initial-stage map of the construction. Renaming its image gives a literal existentially closed extension of \(M\).</p>
+  </div>
+  <div class="proof">
+    <p>Fix the displayed bound \(\lambda\). Start with \(M_0=M\), and apply <a href="#one-pass-construction"></a> successively to obtain \(M_n\subseteq M_{n+1}\), where \(M_{n+1}\) is a completed pass over \(M_n\). Take \(E=\bigcup_{n&lt;\omega}M_n\). Inductiveness gives \(E\models T\), and the countable union has size at most \(\lambda\).</p>
+    <p>Let \(E\subseteq C\models T\), and suppose \(C\models\varphi[\bar a]\) for an existential formula and finite tuple in \(E\). The <a href="inductive-theories#directed-union">finite-tuple property of unions</a> puts \(\bar a\) in some \(M_n\). Since \(C\) extends \(E\), it extends \(M_{n+1}\) and realizes this request from \(M_n\). The completed-pass property gives \(M_{n+1}\models\varphi[\bar a]\). Existential preservation then yields \(E\models\varphi[\bar a]\). Thus \(E\) is existentially closed. Factoring any embedding through its image gives the equivalent embedding formulation with the same supplied initial map.</p>
+  </div>
+</section>
+
+<section id="elementary-ec-class" data-kind="definition" data-formal="mt-ec-axiomatizes-class mt-ec-elementary-class">
+  <h2>Asking whether the closed models themselves can be axiomatized</h2>
+  <p>The class \(\operatorname{EC}(T)\) is <strong>elementary</strong> if there is an \(L\)-theory \(U\) such that, for every nonempty \(L\)-structure \(M\),</p>
+  <div class="math-display">\[M\models U\quad\Longleftrightarrow\quad M\in\operatorname{EC}(T).\]</div>
+  <p>This is <a href="theories-and-axiomatization#axiomatizable-classes">axiomatizability</a> by some set of first-order sentences in the same language; “elementary” here refers to that first-order description. It does not mean that the axiom set is finite or that its theory is complete.</p>
+</section>
+
+<section id="companion-model-status" data-kind="lemma" data-formal="mt-ec-companion-models-closed">
+  <h2>A companion's models satisfy the original inductive theory</h2>
+  <p>Let \(U\) be a model companion of the inductive theory \(T\). Then every \(U\)-model belongs to \(\operatorname{EC}(T)\). In particular, it is a \(T\)-model, although the definition of a companion does not assume \(T\subseteq U\).</p>
+  <div class="proof">
+    <p>Fix \(M\models U\). The <a href="model-companions#companions">companion condition</a> first gives \(M\hookrightarrow N\models T\), and then \(N\hookrightarrow P\models U\). Both ends of the composite are \(U\)-models, so model completeness makes that composite elementary. By <a href="#reflection-in-a-chain"></a>, the first map reflects existential formulas. Since \(N\models T\), <a href="#reflecting-model-status"></a> now proves \(M\models T\). This establishes model status before using it.</p>
+    <p>For any other embedding \(f:M\hookrightarrow N'\models T\), choose an embedding \(g:N'\hookrightarrow P'\models U\). Again \(g\circ f\) is an embedding between \(U\)-models, hence elementary, so \(f\) reflects existential formulas. This is the defining condition for \(M\in\operatorname{EC}(T)\).</p>
+  </div>
+</section>
+
+<section id="closed-models-satisfy-companion" data-kind="lemma" data-formal="mt-ec-closed-models-companion">
+  <h2>An existentially closed model satisfies every model companion</h2>
+  <p>If \(U\) is a model companion of \(T\), every \(M\in\operatorname{EC}(T)\) is a \(U\)-model.</p>
+  <div class="proof">
+    <p>Choose embeddings \(M\hookrightarrow N\hookrightarrow P\) with \(N\models U\) and \(P\models T\), by the two companion clauses. Because \(M\) is existentially closed among \(T\)-models, its composite embedding into \(P\) reflects existential formulas. By <a href="#reflection-in-a-chain"></a>, its embedding into \(N\) does too.</p>
+    <p>The theory \(U\) is model complete, so it is inductive by <a href="#model-complete-inductive"></a>. Apply <a href="#reflecting-model-status"></a> with \(U\) in place of \(T\) and \(N\models U\). It gives \(M\models U\). We did not assume that the chosen axioms of one theory literally contain those of the other.</p>
+  </div>
+</section>
+
+<section id="companion-criterion" data-kind="theorem" data-formal="mt-companion-model-companion mt-mc-robinson-test mt-ec-class-gives-companion mt-ec-companion-class-criterion mt-ec-companion-existence">
+  <h2>The model companion axiomatizes exactly the existentially closed models</h2>
+  <div class="statement-box"><p>For an inductive theory \(T\), a theory \(U\) is its model companion if and only if \(U\) axiomatizes \(\operatorname{EC}(T)\). Consequently, \(T\) has a model companion if and only if \(\operatorname{EC}(T)\) is elementary.</p></div>
+  <div class="proof">
+    <p>If \(U\) is a model companion, <a href="#companion-model-status"></a> and <a href="#closed-models-satisfy-companion"></a> identify its models with \(\operatorname{EC}(T)\).</p>
+    <p>Conversely, suppose \(U\) axiomatizes this class. By <a href="#closed-extension"></a>, every \(T\)-model embeds into an existentially closed \(T\)-model, hence into a \(U\)-model. Every \(U\)-model is itself a \(T\)-model, so its identity embedding supplies the reverse companion clause. Finally, an embedding between two \(U\)-models is an embedding between \(T\)-models whose domain is existentially closed among \(T\)-models. Thus all \(U\)-models are existentially closed among \(U\)-models. <a href="model-completeness#robinson-test">Robinson's test</a> makes \(U\) model complete, proving that it is a model companion.</p>
+    <p>Quantify over \(U\) to obtain the existence criterion. If \(T\) is inconsistent, \(\operatorname{EC}(T)\) is empty and is axiomatized by \(\bot\); an inconsistent theory is its model companion. No hidden consistency hypothesis is needed.</p>
+  </div>
+</section>
+
+<section id="closed-linear-orders" data-kind="lemma" data-formal="mt-companion-linear-order-theory mt-companion-dlo-completion mt-ec-orders-inductive mt-ec-closed-orders-dense">
+  <h2>The existentially closed linear orders are exactly the dense orders without endpoints</h2>
+  <p>Among nonempty strict linear orders, the existentially closed models are exactly the nonempty dense linear orders without endpoints.</p>
+  <div class="proof">
+    <p>The <a href="model-companions#linear-order-theory">strict-linear-order theory</a> has universal axioms, so it is inductive by <a href="inductive-theories#union-characterization"></a>. The <a href="model-companions#dense-order-completion">dense-order theory is its model companion</a>. Applying <a href="#companion-criterion"></a> identifies its models with the existentially closed strict linear orders.</p>
+    <p>This also explains the three witness requirements directly. If an order has a first or last point, an extension can add a point below or above it. If \(a&lt;b\) have no point between them, an extension can insert one. Existential closure forbids these omissions. Conversely, the dense-order theory's model completeness supplies the required reflection in all order extensions through the companion argument above.</p>
+  </div>
+</section>
+
+<section id="one-pass-question" data-kind="question" data-formal="mt-ec-rational-inclusion mt-ec-second-greatest-inclusion mt-ec-rational-closed mt-ec-rational-pass-completed mt-ec-above-formula mt-ec-above-formula-existential mt-ec-greatest-no-witness mt-ec-new-greatest-witness mt-ec-one-pass-not-closed">
+  <h2>Why must the passes be repeated after new elements appear?</h2>
+  <p>Can a completed pass over \(A\) fail to be existentially closed? Consider strict linear orders, take \(A=(\mathbb Q,&lt;)\), and form \(B\) by adjoining a new greatest point \(g\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The extension \(B\) is a completed pass over \(A\), but it is not existentially closed.</p>
+    <div class="proof">
+      <p>By <a href="#closed-linear-orders"></a>, \(A\) is existentially closed among strict linear orders. If an extension \(C\supseteq B\) realizes an existential request with parameters from \(A\), then \(C\) also extends \(A\), so the request already holds in \(A\). Its witnesses remain in \(B\). Thus \(B\) satisfies the completed-pass condition over \(A\).</p>
+      <p>However, the new parameter \(g\) has no larger point in \(B\). Adjoin a further greatest point \(h\) to obtain a strict linear order extension with \(g&lt;h\). The existential formula \(\exists y\,(g&lt;y)\) is true there and false in \(B\). The first pass's condition did not include requests involving \(g\). The outer \(\omega\)-sequence of passes ensures that every finite tuple of newly added parameters is eventually handled.</p>
+    </div>
+  </div></details>
+</section>

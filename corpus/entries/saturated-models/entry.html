@@ -1,0 +1,120 @@
+<section id="omega-saturation" data-formal="mt-sat-omega-saturated mt-type-complete" data-kind="definition">
+  <h2>Realize every description using finitely many parameters</h2>
+  <p>Fix a nonempty first-order \(L\)-structure \(M\). For \(A\subseteq M\), recall the <a href="types-and-realization#types-over-parameters">named expansion</a> \(M_A\) and the complete types \(S_n^M(A)=S_n(\operatorname{Th}(M_A))\). We work with classical choice. No countability assumption on \(L\) is made in this entry.</p>
+  <p>The structure \(M\) is <strong>\(\omega\)-saturated</strong> if, for every finite \(A\subseteq M\), every complete one-type over \(A\) is realized in \(M\):</p>
+  <div class="math-display">\[\forall A\subseteq M\text{ finite}\;\forall q\in S_1^M(A)\;\exists b\in M\quad \operatorname{tp}^M(b/A)=q.\]</div>
+  <p>When the carrier is countable, we also call such a structure <strong>saturated</strong> in this entry. For an uncountable carrier we retain the explicit term “\(\omega\)-saturated”. Each type may contain infinitely many formulas; it is the set of available parameters that is required to be finite.</p>
+</section>
+
+<section id="partial-type-test" data-formal="mt-sat-partial-type-test mt-sat-finite-structures" data-kind="lemma">
+  <h2>Complete types can be replaced by partial types</h2>
+  <p>The structure \(M\) is \(\omega\)-saturated if and only if every partial one-type over every finite parameter set \(A\subseteq M\) is realized in \(M\). In particular, every finite nonempty structure is \(\omega\)-saturated.</p>
+  <div class="proof">
+    <p>Every partial type has a <a href="types-and-realization#completing-a-type">complete extension</a>. A tuple realizing that extension realizes the original collection of conditions. Conversely a complete type is a partial type, and a realization determines exactly that complete type. For a finite structure, <a href="types-and-realization#finite-models">every partial type in finitely many variables is already realized</a>, so the one-variable condition follows.</p>
+  </div>
+</section>
+
+<section id="finite-elementary-maps" data-formal="mt-atomic-finite-elementary-map mt-atomic-map-extension" data-kind="definition">
+  <h2>Preserve every formula on a finite domain</h2>
+  <p>Let \(M,N\) be nonempty \(L\)-structures. A <strong><a href="atomic-and-prime-models#partial-elementary-maps">finite partial elementary map</a></strong> is a bijection \(f:A\to B\), with finite \(A\subseteq M\) and \(B\subseteq N\), such that, for every \(L\)-formula \(\varphi(x_0,\ldots,x_{r-1})\) and tuple \(\bar a\in A^r\),</p>
+  <div class="math-display">\[M\models\varphi[\bar a]\quad\Longleftrightarrow\quad N\models\varphi[f(\bar a)].\]</div>
+  <p>The empty tuple is included. The finite sets need not be closed under functions or contain language constants. Terms and quantifiers are evaluated in the ambient structures. Every such map is therefore a <a href="back-and-forth#finite-partial-isomorphisms">finite partial isomorphism</a>, with preservation strengthened from atomic formulas to all formulas.</p>
+  <p>A map \(g\) <strong>extends</strong> \(f\) if it has a larger domain and assigns the same value to every element of \(A\). We write \(f\subseteq g\), identifying a map with its graph.</p>
+  <p>This is the <a href="atomic-and-prime-models#partial-elementary-maps">finite partial elementary map notion used for atomic models</a>, applied here to the specified structures. Saturation supplies another hypothesis for extending these maps.</p>
+</section>
+
+<section id="elementary-map-basics" data-formal="mt-atomic-empty-map mt-atomic-map-equivalence mt-atomic-map-inverse mt-atomic-map-restriction" data-kind="lemma">
+  <h2>Start from the empty map and reverse a finite map</h2>
+  <p>The empty map from \(M\) to \(N\) is partial elementary exactly when \(M\equiv N\). The inverse of a finite partial elementary map is partial elementary, as is its restriction to any subset of its domain.</p>
+  <div class="proof">
+    <p>On the empty domain the only available tuples have length zero, so the defining condition is agreement on all sentences: <a href="elementary-submodels#elementary-substructures">elementary equivalence</a>. For the inverse, lift a tuple from the range through the finite bijection and reverse the same truth equivalence. For a restriction, every tuple in the smaller domain was already a tuple in the original domain.</p>
+  </div>
+</section>
+
+<section id="pushforward-types" data-formal="mt-sat-parameter-renaming mt-sat-pushforward mt-sat-pushforward-complete" data-kind="lemma">
+  <h2>Transport a type along the given finite elementary map</h2>
+  <p>Let \(f:A\to B\) be a finite partial elementary map from \(M\) to \(N\). Replace each parameter name \(c_a\) by \(c_{f(a)}\), keeping the original language symbols and displayed variables. Write \(\varphi^f\) for this renaming. For every \(q\in S_n^M(A)\), its <strong>pushforward type</strong></p>
+  <div class="math-display">\[f_*q=\{\varphi^f:\varphi\in q\}\]</div>
+  <p>belongs to \(S_n^N(B)\). Renaming back with \(f^{-1}\) recovers \(q\).</p>
+  <div class="proof">
+    <p>Consider finitely many formulas from \(f_*q\), and choose their preimages \(\varphi_0,\ldots,\varphi_{k-1}\in q\). By the <a href="types-and-realization#parameter-finite-test">finite parameter-type test</a>, their conjunction has a realizing tuple in \(M\). Equivalently the sentence with parameters \(\exists\bar x\,\bigwedge_{i&lt;k}\varphi_i\) is true in \(M_A\). Replace its finitely many parameter names by free variables. Partial elementarity of \(f\) transfers that formula, with those parameter values, to \(N\). Thus the renamed conjunction has a solution in \(N_B\).</p>
+    <p>The same finite test proves consistency over \(\operatorname{Th}(N_B)\). Renaming by a bijection of parameter names is a bijection on formulas and commutes with negation. Since \(q\) decides every formula, the consistent set \(f_*q\) does too, and is complete. Applying the inverse renaming restores every original formula and hence the original type. Empty conjunctions and zero-variable types obey the same argument.</p>
+  </div>
+</section>
+
+<section id="one-point-extension" data-formal="mt-sat-one-point-extension" data-kind="lemma">
+  <h2>One realized type extends the specified map by one point</h2>
+  <p>Suppose \(N\) is \(\omega\)-saturated and \(f:A\to B\) is a finite partial elementary map from \(M\) to \(N\). For every \(a\in M\), there are \(b\in N\) and a finite partial elementary map</p>
+  <div class="math-display">\[f':A\cup\{a\}\longrightarrow B\cup\{b\},\qquad f'\!\upharpoonright A=f,\qquad f'(a)=b.\]</div>
+  <p>If \(a\notin A\), the chosen \(b\) lies outside \(B\).</p>
+  <div class="proof">
+    <p>If \(a\in A\), take \(b=f(a)\) and \(f'=f\). Otherwise put \(q=\operatorname{tp}^M(a/A)\). By <a href="#pushforward-types"></a>, \(f_*q\in S_1^N(B)\). Since \(B\) is finite, choose a realization \(b\in N\) using \(\omega\)-saturation. Each inequality \(x\ne c_d\), for \(d\in A\), belongs to \(q\), so \(b\ne f(d)\) for every old domain point. Thus adjoining \(a\mapsto b\) gives a bijection of the displayed finite sets.</p>
+    <p>To check all formulas, take a tuple from \(A\cup\{a\}\) and a formula \(\theta\) on that tuple. Replace every occurrence of the new value \(a\) in its tuple by one variable \(x\), and replace each remaining coordinate by its parameter name from \(A\). This gives an \(L(A)\)-formula \(\psi(x)\), possibly using \(x\) several times or not at all. Truth of \(\theta\) in \(M\) is membership of \(\psi\) in \(q\); truth after applying \(f'\) in \(N\) is membership of \(\psi^f\) in the type of \(b\), which is \(f_*q\). The two assertions agree, so \(f'\) is partial elementary.</p>
+  </div>
+</section>
+
+<section id="finite-tuples" data-formal="mt-sat-finite-tuple-test" data-kind="lemma">
+  <h2>One-variable saturation already realizes every finite tuple type</h2>
+  <p>A nonempty structure \(M\) is \(\omega\)-saturated if and only if, for every finite \(A\subseteq M\) and every natural number \(n\), every partial \(n\)-type over \(A\) in \(M\) is realized in \(M\).</p>
+  <div class="proof">
+    <p>Assume \(\omega\)-saturation. By <a href="types-and-realization#elementary-realization">elementary realization</a>, realize the given type by \(\bar c\) in an elementary extension \(M\preccurlyeq E\). The identity on the finite set \(A\) is a partial elementary map from \(E\) to \(M\). Apply <a href="#one-point-extension"></a> successively to \(c_0,\ldots,c_{n-1}\), always taking \(E\) as source and \(M\) as target. Each intermediate domain is finite. Previously assigned values stay fixed, including all parameters in \(A\).</p>
+    <p>The final map sends \(\bar c\) to a tuple \(\bar b\in M^n\). Partial elementarity, with the fixed parameters from \(A\), transfers every formula of the original type to \(\bar b\). Coordinates may repeat or already belong to \(A\); the first case of the extension lemma handles both. When \(n=0\), the identity on \(A\) already transfers all the required sentences, so the empty tuple realizes the type. Conversely, apply the displayed property at \(n=1\) to complete types.</p>
+  </div>
+</section>
+
+<section id="finite-names" data-formal="mt-sat-finite-names mt-sat-finite-constant-expansion" data-kind="lemma">
+  <h2>Naming finitely many points preserves saturation</h2>
+  <p>If \(M\) is \(\omega\)-saturated and \(C\subseteq M\) is finite, the named expansion \(M_C\), in the language \(L(C)\), is \(\omega\)-saturated. More generally, adjoining finitely many constant symbols with chosen interpretations preserves \(\omega\)-saturation, even when several symbols name the same element.</p>
+  <div class="proof">
+    <p>Take a partial one-type over a finite \(B\subseteq M_C\). Its formulas use original \(L\)-symbols, the already named elements of \(C\), and the additional parameters from \(B\). Regard every such name instead as a parameter name from the finite union \(B\cup C\), identifying names with the same interpreted value. For arbitrary finitely many new constant symbols, replace \(C\) by the finite set of their interpreted values. This produces a collection of \(L(B\cup C)\)-formulas.</p>
+    <p>Every finite part has a solution in \(M\): the original finite part has a solution in \((M_C)_B\) by the parameter-type test, and interpreting the renamed constants by the same elements changes no truth value. The renamed collection is therefore a partial type over \(B\cup C\) in \(M\). Realize it using <a href="#partial-type-test"></a>. The same point satisfies all original formulas in \((M_C)_B\). The partial-type test, now for the language \(L(C)\), proves the assertion.</p>
+  </div>
+  <p>The <a href="named-rational-order#prime-not-saturated">example of naming all rationals</a> shows that an infinite family of new constant symbols can destroy omega-saturation.</p>
+</section>
+
+<section id="isomorphism-invariance" data-formal="mt-sat-isomorphism-invariance" data-kind="lemma">
+  <h2>Isomorphic structures have the same saturation property</h2>
+  <p>If the specified map \(h:M\to N\) is an isomorphism, then \(M\) is \(\omega\)-saturated if and only if \(N\) is \(\omega\)-saturated.</p>
+  <div class="proof">
+    <p>Assume \(M\) is \(\omega\)-saturated. Given finite \(B\subseteq N\), let \(A=h^{-1}[B]\), which is finite because \(h\) is a bijection. Restricting \(h\) gives a finite partial elementary bijection \(A\to B\), since <a href="elementary-submodels#elementary-embeddings">an isomorphism is elementary</a>. Pull any \(q\in S_1^N(B)\) back along its inverse using <a href="#pushforward-types"></a>. Realize the resulting type by \(a\in M\). Isomorphism invariance of formulas, with these same renamed parameters, says that \(h(a)\) realizes \(q\). This proves saturation of \(N\). Apply the same argument to \(h^{-1}\) for the converse.</p>
+  </div>
+</section>
+
+<section id="countable-universality" data-formal="mt-sat-countable-embedding mt-atomic-empty-map" data-kind="theorem">
+  <h2>Build an elementary embedding by answering every source request</h2>
+  <div class="statement-box"><p>Let \(M\) have countable carrier and let \(N\) be \(\omega\)-saturated. Every finite partial elementary map \(f\) from \(M\) to \(N\) extends to an elementary embedding \(e:M\to N\). Consequently, if \(M\equiv N\), such an embedding exists.</p></div>
+  <div class="proof">
+    <p>List \(M\) as \(a_0,a_1,\ldots\), allowing repetitions for a finite carrier. Start from the prescribed \(f_0=f\). Given \(f_i\), use <a href="#one-point-extension"></a> to obtain \(f_{i+1}\) extending it with \(a_i\) in its domain. A repeated request leaves the map unchanged. Every stage has finite domain, so saturation applies at every step.</p>
+    <p>The union \(e=\bigcup_{i&lt;\omega}f_i\) is a total function because every source point was requested, and compatibility makes its value independent of the stage. Any two arguments occur in one stage, so stagewise injectivity makes \(e\) injective. Any finite tuple also occurs together in one stage: take the maximum of its finitely many first-appearance indices. All formulas on that tuple agree in the two structures because that stage is partial elementary.</p>
+    <p>In particular, applying this agreement to relations on variables and to \(y=g(\bar x)\), with the function value included in the tuple, proves preservation of the language operations and relations, including constants and nullary relations. Thus \(e\) is an elementary embedding and extends the original \(f\). When \(M\equiv N\), <a href="#elementary-map-basics"></a> supplies the empty initial map. The target need not have countable carrier.</p>
+  </div>
+  <p>For the condition ensuring a countable saturated target exists, see the <a href="countable-saturated-models#existence-criterion">countable saturation existence criterion</a>.</p>
+</section>
+
+<section id="countable-isomorphism" data-formal="mt-sat-countable-isomorphism mt-atomic-empty-map" data-kind="theorem">
+  <h2>Use requests from both sides to obtain an isomorphism</h2>
+  <div class="statement-box"><p>If \(M,N\) have countable carriers and both are \(\omega\)-saturated, every finite partial elementary map \(f\) from \(M\) to \(N\) extends to an isomorphism \(M\cong N\). In particular, elementarily equivalent countable saturated structures are isomorphic.</p></div>
+  <div class="proof">
+    <p>Enumerate both carriers, allowing repetitions. Begin with the specified \(f\). At even steps, use saturation of \(N\) to put the next point of \(M\) into the domain. At odd steps, invert the current finite elementary map, use saturation of \(M\) to put the next point of \(N\) into that inverse domain, and then invert back. This answers a range request while preserving every previous assignment.</p>
+    <p>The family of all finite partial elementary maps is nonempty, since it contains \(f\), and satisfies these two extension requirements. It is therefore a <a href="back-and-forth#back-and-forth-systems">back-and-forth system</a> after forgetting all-formula preservation down to atomic preservation. The <a href="back-and-forth#countable-isomorphism">countable back-and-forth theorem</a> gives an isomorphism extending the original map; equivalently their compatible union is bijective and preserves every interpretation. For the final assertion, elementary equivalence again supplies the empty map. No enumeration of formulas or language symbols is used.</p>
+  </div>
+</section>
+
+<section id="homogeneity" data-formal="mt-sat-homogeneity mt-atomic-tuple-formula-map" data-kind="theorem">
+  <h2>Equal finite-tuple types give an automorphism with the required values</h2>
+  <p>Let \(M\) be countable and \(\omega\)-saturated, let \(A\subseteq M\) be finite, and let \(\bar a,\bar b\in M^n\) have the same complete type over \(A\). There is an automorphism \(g\) of \(M\) fixing \(A\) pointwise and satisfying \(g(a_i)=b_i\) for every \(i&lt;n\).</p>
+  <div class="proof">
+    <p>On \(A\cup\{a_i:i&lt;n\}\), send every point of \(A\) to itself and each \(a_i\) to \(b_i\). Equality of types preserves the equations \(x_i=x_j\) and \(x_i=c_d\) for \(d\in A\), and their negations. Thus these assignments give a well-defined bijection onto \(A\cup\{b_i:i&lt;n\}\), including when coordinates repeat or meet \(A\).</p>
+    <p>A formula on a tuple from the displayed finite domain can be written as an \(L(A)\)-formula on \(\bar a\): replace domain coordinates in \(A\) by their parameter names and the others by the appropriate tuple coordinates. Its renamed image is the same formula on \(\bar b\). Equality of the two types therefore makes the prescribed map partial elementary. Apply <a href="#countable-isomorphism"></a> with source and target both \(M\). The resulting automorphism has exactly the required old values. For empty tuples this gives an automorphism fixing \(A\), with no extra coordinate requirements.</p>
+  </div>
+  <p>For finite parameters in a countable omega-saturated model, <a href="types-and-symmetry#same-type-same-orbit">complete types are exactly the parameter-fixing automorphism orbits</a>.</p>
+</section>
+
+<section id="arithmetic-question" data-formal="mt-sat-standard-arithmetic-not-saturated mt-sat-finite-structures mt-type-nonstandard-finite mt-type-nonstandard-omitted" data-kind="question">
+  <h2>Does compactness make the standard natural numbers saturated?</h2>
+  <p>Is the standard arithmetic structure \(\mathbb N_A\) \(\omega\)-saturated? Here the subscript denotes its arithmetic language, not a named parameter set.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. The <a href="types-and-realization#nonstandard-type">partial type</a> \(p(x)=\{x\ne\overline{k}:k\in\mathbb N\}\) uses no parameters and is finitely realized in \(\mathbb N_A\), but no standard natural number realizes all its conditions. This contradicts <a href="#partial-type-test"></a> if \(\mathbb N_A\) were \(\omega\)-saturated. Equivalently, complete \(p\) over \(\operatorname{Th}(\mathbb N_A)\); that complete one-type is omitted by the standard structure.</p>
+    <p>Compactness realizes the type in an elementary extension. Saturation demands a realization in the specified structure itself. In contrast, finite nonempty structures are saturated by <a href="#partial-type-test"></a>, even though they cannot realize a consistent description demanding an element different from every point of their domain: that last description already has an unrealizable finite subset.</p>
+  </div></details>
+</section>

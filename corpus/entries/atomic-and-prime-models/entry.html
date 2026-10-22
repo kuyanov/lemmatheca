@@ -1,0 +1,144 @@
+<section id="atomic-models" data-formal="mt-atomic-model mt-atomic-zero-tuple" data-kind="definition">
+  <h2>Every realized finite description is isolated</h2>
+  <p>Fix a satisfiable complete theory \(T\) in a countable first-order language \(L\). All models are nonempty, and “countable” includes finite. A model \(M\models T\) is <strong>atomic</strong> if, for every finite tuple \(\bar a\in M^n\), its <a href="types-and-realization#tuple-types">complete type</a> \(\operatorname{tp}^M(\bar a)\) is <a href="isolated-types#isolating-formulas">isolated</a>: some formula \(\theta(\bar x)\) true at \(\bar a\) implies, modulo \(T\), every formula in that type.</p>
+  <p>Atomicity concerns the types actually realized in \(M\). It does not assert that every complete type of \(T\) is isolated. The empty tuple is included; its type is isolated by \(\top\), since completeness of \(T\) fixes the truth of every sentence. The definition itself does not require \(M\) to be countable.</p>
+</section>
+
+<section id="partial-elementary-maps" data-formal="mt-atomic-finite-elementary-map mt-atomic-map-extension mt-atomic-map-range-bijection mt-atomic-map-inverse mt-atomic-map-restriction mt-atomic-empty-map mt-atomic-map-equivalence mt-atomic-map-finite-context" data-kind="definition">
+  <h2>A finite map preserving all formulas</h2>
+  <p>For models \(M,N\models T\), a <strong>finite partial elementary map</strong> \(p:M\rightharpoonup N\) is a map with finite domain \(A\subseteq M\) such that, for every first-order formula \(\varphi(x_0,\ldots,x_{r-1})\) and tuple \(\bar a\in A^r\),</p>
+  <div class="math-display">\[M\models\varphi(\bar a)\iff N\models\varphi(p(\bar a)).\]</div>
+  <p>The domain need not be a substructure. Equality formulas imply that \(p\) is injective, so it is a bijection from \(A\) to its finite image. Its <strong>inverse map</strong> has this image as domain and is again partial elementary, by the same equivalences in reverse. A <strong>restriction</strong> of \(p\) keeps its values on a subset of \(A\); the required equivalences are a subset of those already true for \(p\).</p>
+  <p>One such map <strong>extends</strong> another when it has the larger domain and retains every old value. The empty map between models of \(T\) is partial elementary: the only tuples to check have length zero, and the two models agree on sentences because \(T\) is complete.</p>
+</section>
+
+<section id="tuple-maps" data-formal="mt-atomic-type-agreement mt-atomic-tuple-map mt-atomic-tuple-formula-map mt-atomic-map-of-tuple" data-kind="lemma">
+  <h2>Equal tuple types specify a finite elementary map</h2>
+  <p>Tuples \(\bar a\in M^n\), \(\bar b\in N^n\) have the same complete type if and only if the assignment \(a_i\mapsto b_i\) is a well-defined partial elementary map between their ranges. Repeated coordinates are allowed.</p>
+  <div class="proof">
+    <p>If the types agree, they agree on every equality \(x_i=x_j\). Thus \(a_i=a_j\) exactly when \(b_i=b_j\), making the assignment well-defined and injective. For any finite tuple from the range of \(\bar a\), choose indices \(i_0,\ldots,i_{r-1}\) for its coordinates. A formula about that tuple becomes a formula about \(\bar a\) by substituting \(x_{i_0},\ldots,x_{i_{r-1}}\) for its displayed variables, avoiding capture as in <a href="first-order-structures#semantic-substitution">semantic substitution</a>. Equality of the original types gives the required truth equivalence for the selected tuple.</p>
+    <p>Conversely, apply partial elementarity to the tuple \(\bar a\) itself and every formula in those variables. The two tuples satisfy exactly the same formulas, which is equality of their complete types. For \(n=0\), this is the empty map and agreement on sentences.</p>
+  </div>
+</section>
+
+<section id="joint-isolation" data-formal="mt-atomic-parameter-isolation mt-atomic-joint-isolation" data-kind="lemma">
+  <h2>Isolation separates into a tuple and its remaining parameters</h2>
+  <p>For finite tuples \(\bar a,\bar b\) in a model \(M\models T\), the joint type \(\operatorname{tp}(\bar a,\bar b)\) is isolated if and only if both \(\operatorname{tp}(\bar a)\) and \(\operatorname{tp}(\bar b/\bar a)\) are isolated. A type over the tuple means the <a href="types-and-realization#types-over-parameters">type over its finite set of coordinates</a>, with those parameters fixed.</p>
+  <div class="proof">
+    <p>Suppose \(\theta(\bar x,\bar y)\) isolates the joint type. Then \(\exists\bar y\,\theta(\bar x,\bar y)\) is true at \(\bar a\). Any formula \(\rho(\bar x)\) true there also belongs to the joint type, so \(T\models\theta\to\rho\), with universal closure understood. Consequently \(T\models(\exists\bar y\,\theta)\to\rho\), giving an isolator for \(\operatorname{tp}(\bar a)\). The formula \(\theta(\bar a,\bar y)\) isolates the parameter type of \(\bar b\): every formula with those parameters can be written as \(\eta(\bar a,\bar y)\), and isolation of the joint type gives the corresponding implication after substituting \(\bar a\).</p>
+    <p>Conversely, let \(\psi(\bar x)\) isolate \(\operatorname{tp}(\bar a)\), and let \(\chi(\bar a,\bar y)\) isolate \(\operatorname{tp}(\bar b/\bar a)\). Their conjunction is true at \((\bar a,\bar b)\). For any \(\eta(\bar x,\bar y)\) true there, parameter isolation gives</p>
+    <div class="math-display">\[M\models\forall\bar y\,(\chi(\bar a,\bar y)\to\eta(\bar a,\bar y)).\]</div>
+    <p>The displayed assertion is a formula about \(\bar a\), so its truth is forced by \(\psi\). Hence \(T\models(\psi(\bar x)\land\chi(\bar x,\bar y))\to\eta(\bar x,\bar y)\). This conjunction therefore isolates the joint type.</p>
+  </div>
+</section>
+
+<section id="finite-parameters" data-formal="mt-atomic-finite-parameters" data-kind="lemma">
+  <h2>Atomicity can be checked one element at a time</h2>
+  <p>A model \(M\models T\) is atomic if and only if \(\operatorname{tp}(b/A)\) is isolated for every finite \(A\subseteq M\) and every \(b\in M\).</p>
+  <div class="proof">
+    <p>If \(M\) is atomic, enumerate \(A\) by a finite tuple \(\bar a\). The joint type of \((\bar a,b)\) is isolated, so <a href="#joint-isolation"></a> isolates the type of \(b\) over those parameters.</p>
+    <p>Conversely, induct on tuple length. The empty tuple has the isolator \(\top\). If the type of \(\bar a\) is isolated, the hypothesis isolates \(\operatorname{tp}(b/\bar a)\), and <a href="#joint-isolation"></a> isolates the joint type of \((\bar a,b)\). This includes tuples with repeated coordinates and proves atomicity.</p>
+  </div>
+</section>
+
+<section id="prime-models" data-formal="mt-atomic-prime-model" data-kind="definition">
+  <h2>A model that embeds elementarily into every model</h2>
+  <p>A model \(M\models T\) is <strong>prime</strong> if, for every model \(N\models T\), there is an <a href="elementary-submodels#elementary-embeddings">elementary embedding</a> \(M\to N\). Thus every formula about a tuple from \(M\) has the same truth value after the embedding. No inclusion of carriers is assumed, and the embedding need not be unique.</p>
+  <p>Atomicity is a condition on finite descriptions within a model. Primeness compares that model with every model of the theory. The following constructions connect these two conditions.</p>
+</section>
+
+<section id="one-point-extension" data-formal="mt-atomic-one-point-extension" data-kind="lemma">
+  <h2>An atomic source lets a finite elementary map extend by one element</h2>
+  <p>Let \(M\models T\) be atomic, let \(N\models T\), and let \(p:M\rightharpoonup N\) be finite partial elementary. For every \(a\in M\), there is a finite partial elementary extension \(q\supseteq p\) with domain \(\operatorname{dom}(p)\cup\{a\}\).</p>
+  <div class="proof">
+    <p>If \(a\) is already in the domain, retain \(p\). Otherwise enumerate its finite domain as \(\bar c\), allowing the tuple to be empty, and put \(\bar d=p(\bar c)\). Atomicity of the source \(M\) provides an isolating formula \(\theta(\bar x,y)\) for \(\operatorname{tp}^M(\bar c,a)\).</p>
+    <p>The formula \(\exists y\,\theta(\bar x,y)\) holds at \(\bar c\). Partial elementarity makes it true at \(\bar d\) in \(N\), so choose \(b\in N\) with \(N\models\theta(\bar d,b)\). Both joint tuples realize the type isolated by \(\theta\), and therefore have the same complete type. By <a href="#tuple-maps"></a>, the assignment extending \(p\) by \(a\mapsto b\) is partial elementary.</p>
+    <p>It is genuinely a map with the claimed domain. In particular, the joint type contains each inequality \(y\ne x_i\), so its isolator forces \(b\ne d_i\) whenever \(a\) is a new domain element. Thus no old image point is reused.</p>
+  </div>
+</section>
+
+<section id="prime-embedding" data-formal="mt-atomic-chain-embedding mt-atomic-countable-embedding mt-atomic-prescribed-embedding mt-atomic-countable-prime" data-kind="theorem">
+  <h2>A countable atomic model embeds while preserving a specified finite match</h2>
+  <p>Let \(M\models T\) be countable and atomic, and let \(N\models T\). Every finite partial elementary map \(p:M\rightharpoonup N\) extends to an elementary embedding \(f:M\to N\) with \(f(a)=p(a)\) for every \(a\in\operatorname{dom}(p)\). Consequently \(M\) is prime.</p>
+  <div class="proof">
+    <p>Enumerate \(M\) as \(m_0,m_1,\ldots\), repeating elements if the domain is finite. Start with \(p_0=p\), and use <a href="#one-point-extension"></a> to extend \(p_s\) to a finite partial elementary map \(p_{s+1}\) containing \(m_s\) in its domain. Every old assigned pair is retained.</p>
+    <p>The union \(f=\bigcup_s p_s\) is a function defined on all of \(M\). It is injective because any two domain elements occur together in one stage. For a finite tuple \(\bar a\), choose a stage containing all its coordinates, taking stage zero for the empty tuple. Partial elementarity there gives \(M\models\varphi(\bar a)\iff N\models\varphi(f(\bar a))\) for every formula. Thus \(f\) is elementary and preserves the original map \(p\).</p>
+    <p>To obtain primeness, begin with the empty partial elementary map. The target \(N\) was arbitrary.</p>
+  </div>
+</section>
+
+<section id="atomic-uniqueness" data-formal="mt-atomic-prescribed-isomorphism mt-atomic-tuple-isomorphism mt-atomic-uniqueness" data-kind="theorem">
+  <h2>Countable atomic models are isomorphic with any given finite match preserved</h2>
+  <p>If \(M,N\models T\) are countable and atomic, every finite partial elementary map \(p:M\rightharpoonup N\) extends to an isomorphism \(f:M\cong N\). In particular, the countable atomic model is unique up to isomorphism. If tuples \(\bar a\in M^n\), \(\bar b\in N^n\) have the same complete type, the isomorphism may be required to satisfy \(f(a_i)=b_i\) for every coordinate.</p>
+  <div class="proof">
+    <p>Enumerate both carriers, repeating elements in a finite carrier. Starting with \(p\), alternate two operations. At a forth stage, use atomicity of \(M\) and <a href="#one-point-extension"></a> to include the next source element in the domain. At a back stage, invert the current finite map, use atomicity of \(N\) to include the next target element in its domain, and invert back. Both operations retain every previously assigned pair.</p>
+    <p>The union is an elementary embedding by the finite-tuple argument in <a href="#prime-embedding"></a>, and the back stages make it surjective. A bijective elementary embedding is an isomorphism: atomic formulas already preserve the interpreted functions and relations, and its inverse preserves them as well. The union extends the specified \(p\).</p>
+    <p>The empty map gives uniqueness without a prescribed match. For the tuple version, start with the finite partial elementary map from <a href="#tuple-maps"></a>. In the case \(M=N\), this gives an automorphism sending the specified tuple to the other tuple.</p>
+  </div>
+  <p>For the resulting description of symmetries in a unique countable model, see <a href="countable-categoricity#types-are-orbits">complete types as automorphism orbits</a>.</p>
+</section>
+
+<section id="prime-iff-atomic" data-formal="mt-atomic-prime-countable mt-atomic-prime-atomic mt-atomic-prime-iff" data-kind="theorem">
+  <h2>Prime models are exactly countable atomic models</h2>
+  <div class="statement-box"><p>For a satisfiable complete theory in a countable language, a model is prime if and only if it is countable and atomic.</p></div>
+  <div class="proof">
+    <p>The reverse implication is <a href="#prime-embedding"></a>. For the forward implication, let \(M\) be prime. By <a href="elementary-submodels#countable-submodels">downward Löwenheim–Skolem</a>, \(T\) has a countable model \(N\). An elementary embedding \(M\to N\) is injective, so \(M\) is countable.</p>
+    <p>If some tuple \(\bar a\in M^n\) had a nonisolated complete type \(p\), the <a href="omitting-types#countable-omission">omitting types theorem</a>, applied just to \(p\), would give a countable model \(N'\models T\) omitting it. Primeness supplies an elementary embedding \(f:M\to N'\). By <a href="types-and-realization#realization-transport">preservation of tuple types</a>, \(f(\bar a)\) realizes \(p\), a contradiction. Every realized finite-tuple type in \(M\) is therefore isolated.</p>
+  </div>
+</section>
+
+<section id="isolating-refinements" data-formal="mt-atomic-consistent-formula mt-atomic-isolating-refinement mt-atomic-refinements mt-atomic-refinement-consistent mt-atomic-refinements-types" data-kind="definition">
+  <h2>Strengthening a possible formula to one complete description</h2>
+  <p>An \(L\)-formula \(\varphi(\bar x)\) is <strong>consistent with \(T\)</strong> if some tuple in some model of \(T\) satisfies it. An <strong>isolating refinement</strong> of \(\varphi\) is a formula \(\psi(\bar x)\) consistent with \(T\) that isolates a complete type and satisfies</p>
+  <div class="math-display">\[T\models\forall\bar x\,(\psi(\bar x)\to\varphi(\bar x)).\]</div>
+  <p>Say that \(T\) has <strong>isolating refinements</strong> if every \(T\)-consistent formula, in every finite tuple of variables, has one. Equivalently, every consistent formula belongs to some isolated complete type: its isolator then implies that formula; conversely, a refinement isolates a type containing the original formula.</p>
+</section>
+
+<section id="finite-isolating-extension" data-formal="mt-atomic-finite-refinement" data-kind="lemma">
+  <h2>A finite named condition can isolate the type of any named tuple</h2>
+  <p>Suppose \(T\) has isolating refinements. Adjoin fresh constants \(C=\{c_0,c_1,\ldots\}\). If \(\Gamma\) is a finite set of \(L(C)\)-sentences with \(T+\Gamma\) satisfiable, then for any finite tuple \(\bar c\) of these names there is an isolating \(L\)-formula \(\psi(\bar x)\) such that \(T+\Gamma+\{\psi(\bar c)\}\) remains satisfiable. Repeated names and the empty tuple are allowed.</p>
+  <div class="proof">
+    <p>Take the formula \(\chi_{\Gamma,\bar c}(\bar x)\) from <a href="omitting-types#finite-condition-formula">the finite-condition formula lemma</a>. It says exactly that the old-language structure can be expanded to satisfy \(\Gamma\) while giving the indicated names the displayed tuple values. Since \(T+\Gamma\) has a model, \(\chi\) is consistent with \(T\).</p>
+    <p>Choose an isolating refinement \(\psi\) of \(\chi\). Its consistency gives \(M\models T\) and \(\bar a\) satisfying \(\psi\), hence \(\chi\). The defining equivalence for \(\chi\) supplies an expansion satisfying \(\Gamma\) with \(\bar c\) interpreted by \(\bar a\). That expansion also satisfies \(\psi(\bar c)\), proving satisfiability of the extended condition.</p>
+    <p>The formula \(\chi\) includes the equalities imposed by repeated names. Thus choosing a refinement cannot give contradictory values to two occurrences of the same name. No distinctness of names or their interpreted values has been assumed.</p>
+  </div>
+</section>
+
+<section id="atomic-construction-tasks" data-formal="mt-atomic-task mt-atomic-meets-task mt-atomic-finite-construction mt-atomic-countable-tasks mt-atomic-task-enumeration mt-atomic-construction-exists" data-kind="definition">
+  <h2>Every named tuple receives an isolating formula</h2>
+  <p>An <strong>atomic construction task</strong> in \(L(C)\) is one of: decide a sentence; supply a conditional witness \((\exists z\,\eta(z))\to\eta(c_k)\); or add an isolating formula \(\psi(\bar c)\) for a specified finite tuple of names \(\bar c\). The third task permits repeated indices and includes every tuple length, including zero.</p>
+  <p>These tasks form a countable set. The first two sets are countable by the <a href="omitting-types#countable-tasks">countable-language enumeration</a>. The index tuples for the third form \(\bigcup_{n&lt;\omega}\mathbb N^n\), a countable union of countable sets. Fix a sequence containing every task.</p>
+  <p>An <strong>atomic finite-stage construction</strong> is an increasing sequence of finite conditions \(\Gamma_s\), starting with \(\Gamma_0=\varnothing\), such that \(T+\Gamma_s\) is satisfiable and the next stage meets the scheduled task. Use the <a href="omitting-types#decision-and-witness">decision-and-witness lemma</a> to decide sentences and choose fresh witness names; for the third task use the <a href="#finite-isolating-extension">isolating-extension lemma</a>. These rules recursively produce such a sequence whenever \(T\) has isolating refinements. Each stage adds one sentence, so its added condition stays finite.</p>
+</section>
+
+<section id="atomic-construction" data-formal="mt-atomic-limit mt-atomic-named-isolators mt-atomic-limit-consistent mt-atomic-limit-properties mt-atomic-named-atomic mt-atomic-exists-countable" data-kind="theorem">
+  <h2>The named model of the construction is atomic</h2>
+  <p>If \(T\) has isolating refinements, an atomic finite-stage construction produces a nonempty countable atomic model of \(T\).</p>
+  <div class="proof">
+    <p>Let \(U=T\cup\bigcup_s\Gamma_s\). Every finite subset lies in some satisfiable \(T+\Gamma_s\), using stage zero if there are no added sentences, so compactness gives an \(L(C)\)-model \(N^*\models U\). Let \(N\) be its \(L\)-reduct, and let \(S=\{c_k^{N^*}:k\in\mathbb N\}\).</p>
+    <p>The set \(S\) is nonempty and countable. It is a substructure because the witness task for \(z=f(\bar c)\) names every old function value on named arguments, including old constants when the argument tuple is empty. For any existential \(L\)-formula with parameters from \(S\), choose names for its parameter tuple. Its conditional witness task names a witness whenever the existential formula holds. Thus the <a href="elementary-submodels#tarski-vaught">Tarski–Vaught criterion</a> gives \(S\preccurlyeq N\), and \(S\models T\). This is exactly the <a href="omitting-types#named-elementarity">named-model argument</a>, which uses only the witness tasks.</p>
+    <p>Now take any finite tuple \(\bar a\) from \(S\) and choose a tuple of names \(\bar c\) with those values. The task for that very name tuple adds some isolating formula \(\psi(\bar c)\) to \(U\). Hence \(N\models\psi(\bar a)\), and elementarity gives \(S\models\psi(\bar a)\). An isolator has only one complete type containing it, so \(\operatorname{tp}^S(\bar a)\) is that isolated type. Every finite tuple is covered, including tuples requiring repeated names. Therefore \(S\) is atomic.</p>
+  </div>
+</section>
+
+<section id="existence-criterion" data-formal="mt-atomic-atomic-refinements mt-atomic-existence-criterion mt-atomic-prime-existence" data-kind="theorem">
+  <h2>Exactly the theories with isolating refinements have prime models</h2>
+  <div class="statement-box"><p>For a satisfiable complete theory \(T\) in a countable language, the following are equivalent: \(T\) has isolating refinements; \(T\) has a nonempty countable atomic model; \(T\) has a prime model.</p></div>
+  <div class="proof">
+    <p>Isolating refinements give a countable atomic model by <a href="#atomic-construction"></a>. A countable atomic model is prime, and a prime model is countable and atomic, by <a href="#prime-iff-atomic"></a>.</p>
+    <p>For the remaining implication, let \(M\models T\) be atomic, and let \(\varphi(\bar x)\) be consistent with \(T\). The sentence \(\exists\bar x\,\varphi\) is true in some model of \(T\); completeness therefore makes it true in every model, including \(M\). Choose \(\bar a\) in \(M\) satisfying \(\varphi\). An isolator \(\psi\) of \(\operatorname{tp}^M(\bar a)\) is consistent and implies \(\varphi\), because \(\varphi\) belongs to that type. It is the required refinement.</p>
+    <p>The construction uses countably many tuple requirements, rather than a request to omit an arbitrary collection of nonisolated types.</p>
+  </div>
+  <p>Having only countably many complete types in each finite context is one useful sufficient condition: the <a href="countable-saturated-models#small-prime-model">small-theory construction</a> omits all nonisolated types to obtain a countable atomic and prime model.</p>
+  <p>The <a href="independent-predicates#no-atomic-or-prime">independent-predicate theory</a> gives an example with no isolated one-types and hence no prime model.</p>
+</section>
+
+<section id="atomic-not-always-prime" data-formal="mt-atomic-dlo-atomic mt-atomic-rational-prime mt-atomic-real-not-prime" data-kind="question">
+  <h2>Is the real order prime because its tuple types are isolated?</h2>
+  <p>Every finite tuple in a dense linear order without endpoints has an isolated ordered equality pattern. Does this make \((\mathbb R,&lt;)\) a prime model of that theory? What happens for \((\mathbb Q,&lt;)\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Both structures are atomic: the <a href="isolated-types#dense-orders">finite ordered equality patterns</a> isolate every realized finite-tuple type, including repeated coordinates. The rational order is countable, so <a href="#prime-embedding"></a> makes it prime.</p>
+    <p>The real order is uncountable and cannot embed injectively into the countable rational order, which is another model of the same complete theory. It is therefore not prime, in agreement with <a href="#prime-iff-atomic"></a>. Atomicity alone, without countability, does not imply primeness.</p>
+  </div></details>
+  <p>The <a href="named-rational-order#no-countable-saturation">fully named rational order</a> gives another comparison: it is prime, and its theory has no countable saturated model.</p>
+</section>

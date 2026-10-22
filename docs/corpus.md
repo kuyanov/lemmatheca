@@ -22,12 +22,12 @@ corpus/
   reference-planning/
     index.json             # Compact navigation by entry, area, kind, and URL
     records/<id>.json       # One focused pending reference or development record
-    policy.json            # Shared planning scope and interpretation
+    README.md              # Shared planning scope and interpretation
   source-errors/
     index.json             # Compact navigation by entry and publication URL
     sources/<id>.json       # One publication/version and its scoped reviews
     findings/<id>.json      # One serious defect or local slip, with stable ID
-    policy.json            # Register scope, classification, and maintenance
+    README.md              # Register scope, classification, and maintenance
   statistics.json           # Generated home-page counts and change history
 ```
 
@@ -39,7 +39,7 @@ Entry and node JSON contain authored content only. The build stores node proof
 results, entry progress counts and Lean line counts in `index.json`; see the
 [build guide](build.md#what-a-normal-build-does) for storage and regeneration rules.
 
-[Reference planning](../corpus/reference-planning/index.json) records future
+[Reference planning](../corpus/reference-planning/README.md) records future
 links and expansion context. The `upcoming-reference` kind is one logical
 collection using current consuming entry/block IDs. Separate kinds hold
 existing-target integration, future-entry plans, correspondences to establish,
@@ -155,7 +155,7 @@ Block structure, human references, and formal-node mappings belong in HTML.
 
 ## Source errors
 
-[Source errors](../corpus/source-errors/index.json) is the permanent register of confirmed
+[Source errors](../corpus/source-errors/README.md) is the permanent register of confirmed
 mathematical defects in external books, papers, and notes used by the corpus.
 Prioritize false statements, missing necessary hypotheses, invalid constructions,
 and deductions that fail as written. Distinguish these from local mathematical
@@ -202,6 +202,10 @@ lookup relationships, without copying review or planning prose. Source catalogs
 provide `by_url`, `by_entry`, and finding-to-source relationships. Planning catalogs
 provide `by_entry`, `by_area`, `by_kind`, and `by_url`; `by_entry` includes planned
 entry IDs as well as current consumers.
+
+Each registry's README documents its scope and maintenance rules; it is not
+machine-consumed registry data. README links use normal file-relative paths;
+Markdown links in JSON records resolve relative to `corpus/`.
 
 With the reader running, use the
 [source and planning API](app.md#source-and-planning-api):

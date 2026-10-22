@@ -1,0 +1,117 @@
+<section id="named-rationals" data-formal="mt-nrq-language mt-nrq-rational-model mt-nrq-theory mt-nrq-order-reduct mt-nrq-named-order mt-nrq-unnamed-real theory-of-structure-complete" data-kind="definition">
+  <h2>A language naming every rational point</h2>
+  <p>Let <strong>the named rational order</strong> be the structure \(Q_*=(\mathbb Q,&lt;,(c_q)_{q\in\mathbb Q})\), where \(c_q^{Q_*}=q\). Its language \(L_*\) has the strict-order relation and one constant for each rational number. Put \(T=\operatorname{Th}(Q_*)\), the set of all \(L_*\)-sentences true in this structure.</p>
+  <p>The language is countable and \(T\) is complete and satisfiable. Every model \(M\models T\) is a nonempty dense linear order without endpoints, and its named points satisfy \(c_p^M&lt;c_q^M\) exactly when \(p&lt;q\). Thus \(q\mapsto c_q^M\) is an order embedding. The theory permits elements outside the named copy of \(\mathbb Q\): <a href="#named-real-model">the named real order below</a> supplies such a model. An infinite disjunction saying that a point equals one of all the rational names would not be a first-order formula.</p>
+</section>
+
+<section id="tuple-isolators" data-formal="mt-nrq-tuple-formula mt-nrq-tuple-truth mt-nrq-tuple-isolation" data-kind="lemma">
+  <h2>A tuple of named points has an isolating formula</h2>
+  <p>For \(\bar a=(a_0,\ldots,a_{n-1})\in\mathbb Q^n\), the formula</p>
+  <div class="math-display">\[\theta_{\bar a}(\bar x)=\bigwedge_{i&lt;n}x_i=c_{a_i}\]</div>
+  <p>isolates \(\operatorname{tp}^{Q_*}(\bar a)\) over \(T\). For \(n=0\), the conjunction is \(\top\).</p>
+  <div class="proof">
+    <p>The formula is true at \(\bar a\). If \(\varphi(\bar x)\) is also true there, the sentence \(\varphi(c_{a_0},\ldots,c_{a_{n-1}})\) belongs to \(T\). In any model of \(T\), a tuple satisfying \(\theta_{\bar a}\) has precisely these named coordinates. Substitution of equal values therefore gives \(T\models\forall\bar x\,(\theta_{\bar a}\to\varphi)\). This is the definition of <a href="isolated-types#isolating-formulas">an isolator</a>. Repeated coordinates impose compatible equalities. For the empty tuple, the same argument says that every true sentence already belongs to \(T\).</p>
+  </div>
+</section>
+
+<section id="rational-prime" data-formal="mt-nrq-atomic mt-nrq-prime mt-nrq-canonical-embedding mt-nrq-unique-embedding" data-kind="theorem">
+  <h2>The named rational order is prime</h2>
+  <div class="statement-box"><p>The countable model \(Q_*\) is atomic and prime. For every \(M\models T\), its unique elementary embedding into \(M\) is the specified map \(q\mapsto c_q^M\).</p></div>
+  <div class="proof">
+    <p><a href="#tuple-isolators">The preceding isolators</a> make every realized finite-tuple type isolated, so \(Q_*\) is atomic. It is countable, and <a href="atomic-and-prime-models#prime-embedding">the atomic embedding theorem</a> makes it prime.</p>
+    <p>Any elementary embedding preserves constants. Consequently every such embedding \(f\) satisfies \(f(q)=f(c_q^{Q_*})=c_q^M\). Existence supplies an elementary embedding with exactly these values, and the same equation proves its uniqueness.</p>
+  </div>
+</section>
+
+<section id="isolated-point-types" data-formal="mt-nrq-point-type mt-nrq-point-injection mt-nrq-isolated-points" data-kind="theorem">
+  <h2>The isolated one-types are exactly the named points</h2>
+  <p>A complete one-type \(p\in S_1(T)\) is isolated if and only if \(p=\operatorname{tp}^{Q_*}(q)\) for some \(q\in\mathbb Q\). Different rational numbers give different such types.</p>
+  <div class="proof">
+    <p>An isolated type is <a href="isolated-types#unavoidable-realization">realized in every model</a> of the complete theory, hence in \(Q_*\). Its realizing element is some rational \(q\), which identifies the type. Conversely \(x=c_q\) isolates that point type by <a href="#tuple-isolators">the named-tuple lemma</a>. For distinct rationals \(a,b\), the formula \(x=c_a\) holds at \(a\) and fails at \(b\), so their types differ.</p>
+  </div>
+</section>
+
+<section id="above-all-names" data-formal="mt-nrq-above-formula mt-nrq-above-type mt-nrq-above-truth mt-nrq-finite-request mt-nrq-partial-request mt-nrq-omitted-request" data-kind="lemma">
+  <h2>A consistent request above every named rational</h2>
+  <p>The partial one-type \(p_\infty(x)=\{c_q&lt;x:q\in\mathbb Q\}\) is finitely realized in \(Q_*\), but is omitted by \(Q_*\).</p>
+  <div class="proof">
+    <p>A finite subset mentions only finitely many rationals. Choose a rational greater than all of them, taking \(0\) if the subset is empty. It satisfies the finite subset. No rational \(a\) realizes the whole collection, because its member \(c_a&lt;x\) would require \(a&lt;a\).</p>
+  </div>
+</section>
+
+<section id="prime-not-saturated" data-formal="mt-nrq-prime-not-saturated mt-sm-order-models mt-sat-finite-names" data-kind="theorem">
+  <h2>A countable prime model need not be saturated</h2>
+  <p>The model \(Q_*\) is not omega-saturated, despite being countable, atomic and prime.</p>
+  <div class="proof">
+    <p>The conditions in <a href="#above-all-names">\(p_\infty\)</a> are formulas in the language \(L_*\) itself; they need no additional parameters. Their finite realizability makes them consistent with \(T\), by <a href="types-and-realization#parameter-finite-test">the finite consistency test</a>. Omega-saturation would realize this partial type over the empty parameter set, by <a href="saturated-models#partial-type-test">the partial-type criterion</a>. The preceding omission contradicts that conclusion.</p>
+    <p>The original order \( (\mathbb Q,&lt;) \), before these names are added, is omega-saturated by <a href="countable-saturated-models#categorical-examples">the categorical order example</a>. Thus naming infinitely many elements can destroy saturation, although <a href="saturated-models#finite-names">naming finitely many preserves it</a>.</p>
+  </div>
+</section>
+
+<section id="named-real-model" data-formal="mt-nrq-real-structure mt-nrq-real-model mt-nrq-real-inclusion" data-kind="lemma">
+  <h2>The real order is another model with the same rational names</h2>
+  <p>Let \(R_*=(\mathbb R,&lt;,(q)_{q\in\mathbb Q})\), where each constant is interpreted by the corresponding rational real number. The ordinary inclusion \(\mathbb Q\to\mathbb R\), with all these names retained, is elementary. In particular \(R_*\models T\).</p>
+  <div class="proof">
+    <p>Both original order structures are dense linear orders without endpoints. The inclusion is an order embedding, so <a href="quantifier-elimination#elementary-inclusions">quantifier elimination makes that very map elementary</a> in the original order language.</p>
+    <p>For a formula in \(L_*\), only finitely many constant names occur. Replace those occurrences by extra free variables. Truth of the original formula is recovered by assigning those variables their named rational values, as in <a href="diagrams-and-extensions#names-and-reducts">the translation of names to variables</a>. The original elementary inclusion preserves the translated formula and sends every such parameter to the same rational real number. It therefore preserves the original named formula. Agreement on sentences gives \(R_*\models\operatorname{Th}(Q_*)\). This is also <a href="diagrams-and-extensions#elementary-diagram-lemma">the elementary-diagram interpretation</a> of naming an elementary embedding.</p>
+  </div>
+</section>
+
+<section id="real-types" data-formal="mt-nrq-real-type mt-nrq-cut-formula mt-nrq-cut-truth mt-nrq-real-type-injection" data-kind="lemma">
+  <h2>Different real cuts give different complete types</h2>
+  <p>For \(r\in\mathbb R\), let \(p_r=\operatorname{tp}^{R_*}(r)\in S_1(T)\). The map \(r\mapsto p_r\) is injective.</p>
+  <div class="proof">
+    <p>If \(r&lt;s\), choose a rational \(q\) with \(r&lt;q&lt;s\), using <a href="dense-linear-orders#density-and-completeness">rational order density in the reals</a>. The formula \(x&lt;c_q\) belongs to \(p_r\) and does not belong to \(p_s\). Thus the types differ. Interchanging the two reals handles the other strict order. In the <a href="constructing-number-systems#cut-approximations">Dedekind-cut construction</a>, this is the same separation of two cuts by a rational cut.</p>
+  </div>
+</section>
+
+<section id="type-upper-bound" data-formal="mt-nrq-formula-injection mt-nrq-type-upper-bound" data-kind="lemma">
+  <h2>A countable language gives at most continuum many types</h2>
+  <p>For any theory \(U\) in a countable first-order language and any finite \(n\), the set \(S_n(U)\) has cardinality at most \(\mathfrak c=2^{\aleph_0}\). In particular this holds for \(S_1(T)\).</p>
+  <div class="proof">
+    <p>There are countably many formulas in each fixed finite-variable context: each is a finite string built from a countable alphabet. Each complete type is a subset of this countable formula set, and different types have different subsets. Injecting that formula set into \(\mathbb N\) injects its power set into \(\mathcal P(\mathbb N)\). Therefore \(|S_n(U)|\le 2^{\aleph_0}\), with no completeness or satisfiability hypothesis on \(U\).</p>
+  </div>
+</section>
+
+<section id="continuum-types" data-formal="mt-nrq-continuum-types mt-nrq-countably-isolated" data-kind="theorem">
+  <h2>There are continuum many complete one-types</h2>
+  <div class="statement-box"><p>The complete named rational-order theory satisfies \(|S_1(T)|=\mathfrak c\). Its isolated one-types are only the countably many named-point types.</p></div>
+  <div class="proof">
+    <p>The injection <a href="#real-types">\(r\mapsto p_r\)</a> gives \(\mathfrak c\le |S_1(T)|\). <a href="#type-upper-bound">The opposite bound</a> gives equality. <a href="#isolated-point-types">The isolated types</a> are exactly those indexed by the rationals; their distinctness makes that set countably infinite.</p>
+  </div>
+</section>
+
+<section id="no-countable-saturation" data-formal="mt-nrq-not-small mt-nrq-no-countable-saturated mt-nrq-no-countable-universal" data-kind="theorem">
+  <h2>The theory has a prime model but no countable saturated or universal model</h2>
+  <p>The theory \(T\) is not small. It has no countable omega-saturated model and no countable elementary-universal model.</p>
+  <div class="proof">
+    <p>Cantor's theorem gives \(\mathfrak c&gt;\aleph_0\), so <a href="#continuum-types">the one-type set</a> is uncountable. This already violates <a href="countable-saturated-models#small-theories">smallness</a>. Both nonexistence conclusions follow from <a href="countable-saturated-models#existence-criterion">the countable-model existence criterion</a>. Meanwhile <a href="#rational-prime">\(Q_*\) is prime</a>.</p>
+    <p>This distinguishes an omitted request in the particular prime model from the stronger conclusion that no countable model of the theory can realize all finite-parameter types.</p>
+  </div>
+</section>
+
+<section id="irrational-types" data-formal="mt-nrq-irrational-types" data-kind="lemma">
+  <h2>Realized irrational cuts are nonisolated</h2>
+  <p>The type \(p_r\) is isolated exactly when \(r\) is rational.</p>
+  <div class="proof">
+    <p>If \(r=q\) is rational, the elementary inclusion in <a href="#named-real-model">the named real model</a> identifies \(p_r\) with the named-point type in \(Q_*\), which is isolated. If \(p_r\) were isolated for irrational \(r\), <a href="#isolated-point-types">the characterization of isolated point types</a> would identify it with some named-point type. That type contains \(x=c_q\), forcing \(r=q\) in \(R_*\), a contradiction.</p>
+  </div>
+</section>
+
+<section id="another-countable-model" data-formal="mt-nrq-another-countable-model" data-kind="question">
+  <h2>Do the rational names determine the whole countable model?</h2>
+  <p>Must every countable model of \(T\) be isomorphic to \(Q_*\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. There is a countable model with an element above every named rational, and it is not isomorphic to \(Q_*\).</p>
+    <div class="proof"><p>Extend <a href="#above-all-names">\(p_\infty\)</a> to a complete type, by <a href="types-and-realization#completing-a-type">completion of a consistent type</a>. <a href="countable-categoricity#countable-realization">Countable realization</a> gives a countable \(M\models T\) with a point \(b\) above every \(c_q^M\). The unique elementary map \(Q_*\to M\) has precisely the named points as its image, so \(b\) lies outside that image. The model \(M\) realizes \(p_\infty\), whereas \(Q_*\) omits it; an isomorphism would preserve every named condition, so they are not isomorphic.</p></div>
+  </div></details>
+</section>
+
+<section id="not-only-real-types" data-formal="mt-nrq-not-only-real-types" data-kind="question">
+  <h2>Have the real points listed every complete one-type?</h2>
+  <p>Does every complete one-type of \(T\) equal \(p_r\) for some \(r\in\mathbb R\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Every complete extension of \(p_\infty\) is omitted by the named real model.</p>
+    <div class="proof"><p>A complete extension of \(p_\infty\) contains \(c_q&lt;x\) for every rational \(q\). For any real \(r\), choose a rational \(q\) strictly between \(r\) and \(r+1\). The formula \(c_q&lt;x\) is false at \(r\), so this complete extension differs from \(p_r\). The real-point types suffice for the cardinality lower bound; they need not exhaust the type set.</p></div>
+  </div></details>
+</section>

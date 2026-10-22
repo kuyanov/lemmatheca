@@ -1,0 +1,127 @@
+<section id="predicate-cells" data-formal="mt-independent-language mt-independent-language-countable mt-independent-predicate mt-independent-cell mt-independent-cell-formula mt-independent-cell-truth" data-kind="definition">
+  <h2>Infinitely many independent questions about one element</h2>
+  <p>Let <strong>\(L_{\mathrm{ind}}\)</strong> be the first-order language with equality and unary relation symbols \(P_n\), one for each \(n\in\mathbb N\), and with no constants or function symbols. Its terms are variables. An \(L_{\mathrm{ind}}\)-structure is a nonempty set \(M\) with a subset \(P_n^M\subseteq M\) for each \(n\).</p>
+  <p>For disjoint finite sets \(F,G\subseteq\mathbb N\), the <strong>cell</strong> specified by \((F,G)\) is</p>
+  <div class="math-display">\[C_M(F,G)=\{a\in M:(\forall n\in F)\,P_n(a)\text{ and }(\forall n\in G)\,\neg P_n(a)\}.\]</div>
+  <p>Its defining formula is <strong>\(\chi_{F,G}(x)\)</strong>, the conjunction of the corresponding positive and negative predicate literals. An empty conjunction is \(\top\), so \(C_M(\varnothing,\varnothing)=M\). A repeated request has the same meaning as one occurrence; requests for both \(P_n\) and \(\neg P_n\) are inconsistent and are excluded by \(F\cap G=\varnothing\).</p>
+</section>
+
+<section id="independent-theory" data-formal="mt-independent-cell-sentence mt-independent-cell-sentence-truth mt-independent-theory mt-independent-theory-countable mt-independent-model-cells" data-kind="definition">
+  <h2>Axioms saying every finite pattern has infinitely many witnesses</h2>
+  <p>The <strong>independent-predicate theory</strong> \(T_{\mathrm{ind}}\) contains, for each disjoint finite \(F,G\) and every \(k\in\mathbb N\), the sentence</p>
+  <div class="math-display">\[\exists x_0\cdots\exists x_{k-1}\;\Bigl(\bigwedge_{i&lt;k}\chi_{F,G}(x_i)\;\land\!\bigwedge_{i&lt;j&lt;k}x_i\ne x_j\Bigr).\]</div>
+  <p>Thus \(M\models T_{\mathrm{ind}}\) exactly when every such cell is infinite. The \(k=0\) instance is true; positive instances require arbitrarily many distinct witnesses. Both the language and the axiom set are countable: finite subsets and finite lists of natural numbers can be enumerated. All structures below remain nonempty.</p>
+</section>
+
+<section id="finite-subset-model" data-formal="mt-independent-finite-structure mt-independent-finite-witness mt-independent-finite-witness-membership mt-independent-finite-witness-injective mt-independent-finite-model mt-independent-finite-model-size" data-kind="lemma">
+  <h2>A countable model made from finite subsets</h2>
+  <p>Let \(M_{\mathrm{fin}}\) have domain \(\operatorname{Fin}(\mathbb N)\), the set of finite subsets of \(\mathbb N\), with \(P_n(A)\) meaning \(n\in A\). Then \(M_{\mathrm{fin}}\) is a countably infinite model of \(T_{\mathrm{ind}}\).</p>
+  <div class="proof">
+    <p>Finite subsets are images of finite lists, and the set of finite lists of natural numbers is countable. The singleton map \(n\mapsto\{n\}\) is injective, so the domain is infinite. Fix disjoint finite \(F,G\), and choose \(K\) larger than every member of \(F\cup G\), taking \(K=0\) if that union is empty. The distinct sets \(F\cup\{K+r\}\), for \(r\in\mathbb N\), all belong to \(C_{M_{\mathrm{fin}}}(F,G)\). They contain \(F\), avoid \(G\), and differ at their added element. This proves every cell is infinite, including the cell with no conditions.</p>
+  </div>
+</section>
+
+<section id="subset-model" data-formal="mt-independent-subset-structure mt-independent-subset-model cantor-no-power-set-surjection" data-kind="lemma">
+  <h2>A model containing every complete membership pattern</h2>
+  <p>Let \(M_{\mathrm{all}}\) have domain \(\mathcal P(\mathbb N)\), again with \(P_n(A)\) meaning \(n\in A\). Then \(M_{\mathrm{all}}\models T_{\mathrm{ind}}\).</p>
+  <div class="proof">
+    <p>The same witnesses \(F\cup\{K+r\}\) used in <a href="#finite-subset-model">the finite-subset model</a> are also distinct elements of \(\mathcal P(\mathbb N)\). Hence every finite cell is infinite in this structure as well. In particular, the axioms are satisfiable in two explicitly specified structures, one countable and one uncountable.</p>
+  </div>
+</section>
+
+<section id="fresh-cell-witness" data-formal="mt-independent-fresh-witness" data-kind="lemma">
+  <h2>A finite pattern can avoid finitely many old elements</h2>
+  <p>If \(M\models T_{\mathrm{ind}}\), \(F,G\) are disjoint finite subsets of \(\mathbb N\), and \(a_0,\ldots,a_{m-1}\in M\), there is \(b\in C_M(F,G)\) different from every \(a_i\).</p>
+  <div class="proof">
+    <p>The axiom for \((F,G,k=m+1)\) supplies \(m+1\) distinct members of the cell. A set of at most \(m\) old elements cannot contain them all. Choosing one outside that set proves the assertion. The old tuple may repeat elements, and for \(m=0\) the axiom with \(k=1\) supplies a witness.</p>
+  </div>
+</section>
+
+<section id="eliminating-one-variable" data-formal="mt-independent-literal-elimination" data-kind="lemma">
+  <h2>Eliminating a conjunction of literals</h2>
+  <p>For every finite conjunction of literals \(\Gamma(\bar x,y)\), the formula \(\exists y\,\Gamma(\bar x,y)\) is equivalent modulo \(T_{\mathrm{ind}}\) to a quantifier-free formula in \(\bar x\).</p>
+  <div class="proof">
+    <p>A literal is an atom or its negation. Here atoms are equalities of variables or expressions \(P_n(z)\). If \(\Gamma\) contains \(y=x_i\) or \(x_i=y\), replace every occurrence of \(y\) by \(x_i\). The resulting conjunction is equivalent to the existential formula: any witness must equal \(x_i\), and \(x_i\) itself is a witness when that substituted conjunction holds. This is <a href="quantifier-elimination#equality-elimination">the equality-witness substitution argument</a>.</p>
+    <p>Otherwise discard the tautology \(y=y\). A literal \(y\ne y\), or the simultaneous requirements \(P_n(y)\) and \(\neg P_n(y)\), makes the conjunction impossible, so use \(\bot\). In every other case, collect the predicate requirements on \(y\) into disjoint finite sets \(F,G\). All remaining equalities involving \(y\) are inequalities \(y\ne x_i\); orientations can be reversed. The literals not involving \(y\) form a conjunction \(\Gamma_0(\bar x)\).</p>
+    <p>Existence of a witness implies \(\Gamma_0\). Conversely, if \(\Gamma_0\) holds, <a href="#fresh-cell-witness">a fresh cell witness</a> satisfies every required predicate and avoids all the finitely many forbidden coordinates. Thus the existential formula is equivalent to \(\Gamma_0\). This includes an empty old-variable context and an empty list of predicate requirements.</p>
+  </div>
+</section>
+
+<section id="quantifier-elimination" data-formal="mt-independent-quantifier-elimination qe-literal-conjunction-criterion" data-kind="theorem">
+  <h2>All formulas reduce to finite predicate and equality tests</h2>
+  <div class="statement-box"><p>The theory \(T_{\mathrm{ind}}\) has <a href="quantifier-elimination#equivalence-modulo-a-theory">quantifier elimination</a> in its actual first-order language.</p></div>
+  <div class="proof">
+    <p>Apply <a href="quantifier-elimination#one-quantifier">the literal-conjunction criterion</a> to <a href="#eliminating-one-variable">the preceding lemma</a>. More explicitly, a quantifier-free matrix is a finite disjunction of finite conjunctions of literals; existential quantification distributes over that disjunction. Eliminate the quantified variable in each conjunction and take the resulting disjunction. Structural induction on formulas then eliminates innermost quantifiers, using \(\forall y\,\varphi\equiv\neg\exists y\,\neg\varphi\). Each step uses only finitely many symbols, although the language itself has infinitely many predicates.</p>
+  </div>
+</section>
+
+<section id="completeness" data-formal="mt-independent-complete mt-independent-infinite-models" data-kind="theorem">
+  <h2>All models satisfy the same sentences</h2>
+  <p>The theory \(T_{\mathrm{ind}}\) is complete and has an infinite model.</p>
+  <div class="proof">
+    <p>Satisfiability follows from <a href="#finite-subset-model">the countable model</a>. Quantifier elimination replaces every sentence by a quantifier-free sentence. There are no closed terms, since there are no constants or functions. Consequently a closed quantifier-free formula has no equality or predicate atoms: it is built from \(\bot\) by Boolean connectives. Its truth value is the same in every structure. Hence all models of \(T_{\mathrm{ind}}\) agree on every sentence, which is completeness. The empty-pattern axioms require arbitrarily many distinct elements, so every model is infinite.</p>
+  </div>
+</section>
+
+<section id="one-variable-patterns" data-formal="mt-independent-one-variable-type" data-kind="lemma">
+  <h2>In one variable, the predicate answers determine the entire type</h2>
+  <p>Suppose \(M,N\models T_{\mathrm{ind}}\), \(a\in M\), and \(b\in N\). If \(P_n^M(a)\) and \(P_n^N(b)\) have the same truth value for every \(n\), then \(\operatorname{tp}^M(a)=\operatorname{tp}^N(b)\).</p>
+  <div class="proof">
+    <p>The atoms in a quantifier-free formula with just the free variable \(x\) are \(x=x\) and \(P_n(x)\). Equality is true at both elements, and every predicate agrees by assumption. Induction through Boolean connectives gives agreement for each quantifier-free formula. <a href="#quantifier-elimination">Quantifier elimination</a> gives agreement for every formula in that context. A <a href="types-and-realization#tuple-types">tuple type</a> is exactly the collection of those formulas true at the tuple, so the types are equal.</p>
+  </div>
+</section>
+
+<section id="types-as-subsets" data-formal="mt-independent-subset-type mt-independent-coordinate-formula mt-independent-type-coordinate mt-independent-profile mt-independent-type-bijection mt-independent-type-equivalence mt-independent-profile-inverse mt-independent-type-cardinality" data-kind="theorem">
+  <h2>There are continuum many complete one-types</h2>
+  <div class="statement-box"><p>The map \(A\mapsto p_A=\operatorname{tp}^{M_{\mathrm{all}}}(A)\) is a bijection from \(\mathcal P(\mathbb N)\) to \(S_1(T_{\mathrm{ind}})\). In particular, \(|S_1(T_{\mathrm{ind}})|=2^{\aleph_0}\).</p></div>
+  <div class="proof">
+    <p>If \(A\ne B\), some \(n\) belongs to exactly one of them. The formula \(P_n(x)\) belongs to exactly one of \(p_A,p_B\), proving injectivity.</p>
+    <p>For surjectivity, let \(p\in S_1(T_{\mathrm{ind}})\), and <a href="types-and-realization#completing-a-type">realize this complete type</a> by an element \(b\) of some model \(N\models T_{\mathrm{ind}}\). Put \(A=\{n:P_n(x)\in p\}\). Completeness of \(p\) and realization give \(P_n^N(b)\) exactly when \(n\in A\). The element \(A\) of \(M_{\mathrm{all}}\) has those same predicate answers. By <a href="#one-variable-patterns">the preceding lemma</a>, its complete type is \(p\), so \(p=p_A\).</p>
+  </div>
+</section>
+
+<section id="finite-predicate-support" data-formal="mt-independent-predicate-support mt-independent-support-truth" data-kind="lemma">
+  <h2>A single formula can inspect only finitely many predicate coordinates</h2>
+  <p>For each quantifier-free formula \(\psi(x)\), there is a finite set \(J\subseteq\mathbb N\) such that, for all \(A,B\subseteq\mathbb N\), agreement of \(A\) and \(B\) on \(J\) implies</p>
+  <div class="math-display">\[M_{\mathrm{all}}\models\psi[A]\quad\Longleftrightarrow\quad M_{\mathrm{all}}\models\psi[B].\]</div>
+  <div class="proof">
+    <p>Let \(J\) be the set of indices of predicates occurring in the finite syntax tree of \(\psi\). At an atom \(P_n(x)\), its index lies in \(J\), so the assumed membership agreement identifies its truth values. Equality atoms are \(x=x\) and have fixed truth; falsity is false. Boolean induction proves the displayed equivalence. Negated predicates require the same indices, and repeated occurrences do not enlarge the set.</p>
+  </div>
+</section>
+
+<section id="nonisolated-types" data-formal="mt-independent-nonisolated" data-kind="theorem">
+  <h2>No single formula isolates a complete one-type</h2>
+  <div class="statement-box"><p>Every complete one-type of \(T_{\mathrm{ind}}\) is nonisolated.</p></div>
+  <div class="proof">
+    <p>Write the type as \(p_A\) using <a href="#types-as-subsets">the bijection</a>. Suppose a formula \(\theta(x)\in p_A\) isolated it. By quantifier elimination choose a quantifier-free \(\psi(x)\) equivalent to \(\theta\) modulo \(T_{\mathrm{ind}}\). Let \(J\) be <a href="#finite-predicate-support">its finite predicate support</a>, choose \(m\notin J\), and let \(B=A\mathbin{\triangle}\{m\}\), changing only membership of \(m\).</p>
+    <p>The elements \(A,B\) agree on \(J\), so \(\psi\), and therefore \(\theta\), holds at both in \(M_{\mathrm{all}}\). Thus \(\theta\in p_B\), but \(p_A\ne p_B\) because they disagree on \(P_m(x)\). This contradicts <a href="isolated-types#unique-completion">the unique-completion characterization of isolation</a>.</p>
+  </div>
+</section>
+
+<section id="omitted-profile" data-formal="mt-independent-finite-realization mt-independent-all-positive mt-independent-positive-finite mt-independent-positive-omitted mt-independent-positive-completion" data-kind="question">
+  <h2>Which complete one-types does the countable model realize?</h2>
+  <p>In <a href="#finite-subset-model">\(M_{\mathrm{fin}}\)</a>, is the description \(\{P_n(x):n\in\mathbb N\}\) realized? More generally, which of the types \(p_A\) occur?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The realized types are exactly \(p_A\) for finite \(A\). In particular, the description requiring every predicate is omitted, although every finite part is realized.</p>
+    <div class="proof">
+      <p>An element of \(M_{\mathrm{fin}}\) is a finite set \(F\). Its predicate answers are exactly membership in \(F\), so <a href="#one-variable-patterns">its type is \(p_F\)</a>. Conversely each finite \(F\) is an element and realizes that type. The description containing all \(P_n(x)\) would require the infinite set \(\mathbb N\), which is absent from this domain. Every finite part mentions only finitely many positive predicates; their finite index set is a witness. Its unique complete extension is \(p_{\mathbb N}\), by the classification.</p>
+    </div>
+  </div></details>
+</section>
+
+<section id="no-atomic-or-prime" data-formal="mt-independent-no-atomic mt-independent-no-prime" data-kind="theorem">
+  <h2>There is no atomic model and no prime model</h2>
+  <p>The theory \(T_{\mathrm{ind}}\) has no atomic model and no prime model.</p>
+  <div class="proof">
+    <p>Every nonempty model contains an element \(a\), and its complete one-type is nonisolated by <a href="#nonisolated-types">the theorem</a>. This violates <a href="atomic-and-prime-models#atomic-models">atomicity</a>, which requires the type of every finite tuple to be isolated. In a countable language, every prime model of a complete satisfiable theory is countable and atomic by <a href="atomic-and-prime-models#prime-iff-atomic">the prime-model characterization</a>. Hence there is no prime model either.</p>
+  </div>
+</section>
+
+<section id="no-countable-universal" data-formal="mt-independent-not-small mt-independent-no-saturated mt-independent-no-universal cantor-no-power-set-surjection" data-kind="theorem">
+  <h2>No countable model can receive all complete descriptions</h2>
+  <p>The theory \(T_{\mathrm{ind}}\) has no countable omega-saturated model and no countable elementary-universal model.</p>
+  <div class="proof">
+    <p>The bijection \(\mathcal P(\mathbb N)\to S_1(T_{\mathrm{ind}})\), together with <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a>, makes this type set uncountable. Thus \(T_{\mathrm{ind}}\) is not <a href="countable-saturated-models#small-theories">small</a>. The <a href="countable-saturated-models#existence-criterion">existence criterion for countable saturated and elementary-universal models</a> excludes both.</p>
+    <p>Concretely, a countable model has only countably many elements, hence realizes only countably many complete one-types. A saturated model would realize all of them. An elementary-universal model would also realize all of them: every complete one-type is realized in a countable model, and an elementary embedding into the universal model preserves that type. Both demands therefore exceed what a countable domain can supply.</p>
+  </div>
+</section>

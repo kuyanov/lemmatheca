@@ -1,0 +1,135 @@
+<section id="fresh-names-and-support" data-kind="definition" data-formal="mt-type-named-theory jc-formulas-as-named-sentences mt-omit-term-support mt-omit-formula-support mt-omit-condition-support mt-omit-term-locality mt-omit-formula-locality">
+  <h2>Only finitely many new names affect a sentence</h2>
+  <p>Fix a countable first-order language \(L\) and a satisfiable complete \(L\)-theory \(T\). All structures are nonempty. Adjoin a disjoint sequence of fresh constant symbols \(C=\{c_0,c_1,\ldots\}\), giving the <strong>language of new names</strong> \(L(C)\). The old axioms are viewed in this language through the inclusion of \(L\). For a finite set \(\Gamma\) of \(L(C)\)-sentences, write</p>
+  <div class="math-display">\[T+\Gamma=T\cup\Gamma,\]</div>
+  <p>with this inclusion understood. The <strong>new-name support</strong> of a term or formula is the set of new constants occurring in it. This set is finite: a term or formula is a finite expression. The support of a finite collection is the union of its members' supports.</p>
+  <p>Changing the interpretation of a new constant outside a formula's support leaves its truth unchanged at every assignment. Induct on terms to obtain unchanged term values, then on formulas to obtain unchanged atomic truth, Boolean combinations and quantified truth. For a quantifier, the induction hypothesis holds at each possible value of the quantified variable. The interpretations of all old \(L\)-symbols stay fixed.</p>
+</section>
+
+<section id="finite-condition-formula" data-kind="lemma" data-formal="mt-omit-constant-lifting mt-omit-lifting-truth mt-omit-sentence-lifting-truth mt-omit-condition-matrix mt-omit-matrix-truth mt-omit-condition-formula mt-omit-condition-formula-truth mt-omit-repeated-names">
+  <h2>A finite named condition becomes one formula about the indicated tuple</h2>
+  <p>Let \(\Gamma\) be a finite set of \(L(C)\)-sentences, and let \(\bar c=(c_{t_0},\ldots,c_{t_{n-1}})\) be a tuple of new names, allowing repetitions. There is an \(L\)-formula \(\chi_{\Gamma,\bar c}(\bar x)\) such that, for every nonempty \(L\)-structure \(M\) and tuple \(\bar a\in M^n\), the following equivalence holds. Here \(M^*\) ranges over expansions of \(M\) to \(L(C)\).</p>
+  <div class="math-display">\[M\models\chi_{\Gamma,\bar c}[\bar a]\quad\Longleftrightarrow\quad\exists M^*\;\bigl(M^*\models\Gamma\land\forall i&lt;n\;c_{t_i}^{M^*}=a_i\bigr).\]</div>
+  <div class="proof">
+    <p>List without repetition all new constants occurring in \(\Gamma\) or in \(\bar c\), as \(d_0,\ldots,d_{m-1}\). Let \(r(i)\) be the position of \(c_{t_i}\) in this list. Replace every \(d_j\) in the conjunction of \(\Gamma\) by a variable \(y_j\), obtaining an \(L\)-formula \(\delta(\bar y)\). Choose these variables and the displayed \(\bar x\) apart from bound variables, renaming bound variables first if necessary. Define</p>
+    <div class="math-display">\[\chi_{\Gamma,\bar c}(\bar x)=\exists y_0\cdots\exists y_{m-1}\Bigl(\delta(\bar y)\land\bigwedge_{i&lt;n}x_i=y_{r(i)}\Bigr).\]</div>
+    <p>Existential quantification binds only the \(y\)-variables; the \(x\)-variables remain free. The constant-to-variable translation has the following truth identity: whenever \(d_j^{M^*}=b_j\) for every listed name,</p>
+    <div class="math-display">\[M\models\delta[\bar b]\quad\Longleftrightarrow\quad M^*\models\bigwedge\Gamma.\]</div>
+    <p>For terms, prove this by induction: a listed constant has value \(b_j\) on both sides, and every old function is interpreted unchanged. Induction on formulas then preserves equality, relations and Boolean operations. At a quantifier, vary the quantified variable on both sides while keeping the free \(y\)-values fixed. This proves the displayed identity for the original conjunction.</p>
+    <p>Witnesses for \(\chi\) therefore interpret the listed constants so that \(\Gamma\) holds and the indicated tuple has value \(\bar a\). Give every other new constant an arbitrary fixed value in \(M\), possible because \(M\) is nonempty. Conversely, an expansion as in the statement supplies the witnesses \(d_j^{M^*}\).</p>
+    <p>If two tuple entries are the same name, they have the same index \(r(i)\). The corresponding equalities in \(\chi\) force those two coordinates of \(\bar a\) to be equal. No distinctness assumption on the tuple names is used. Empty conjunctions mean \(\top\); if there are no listed names, the existential list is empty and the same argument applies.</p>
+  </div>
+</section>
+
+<section id="finite-avoidance" data-kind="lemma" data-formal="mt-omit-finite-avoidance">
+  <h2>A finite consistent condition can make a named tuple fail the type</h2>
+  <p>Let \(p\in S_n(T)\) be nonisolated. If \(T+\Gamma\) is satisfiable and \(\bar c\) is any \(n\)-tuple of new names, there exists \(\varphi\in p\) such that</p>
+  <div class="math-display">\[T+\Gamma+\{\neg\varphi(\bar c)\}\quad\text{is satisfiable}.\]</div>
+  <div class="proof">
+    <p>Suppose no such formula existed. Then every model of \(T+\Gamma\) would satisfy \(\varphi(\bar c)\), for every \(\varphi\in p\): a countermodel would satisfy the allegedly unsatisfiable extension by its negation.</p>
+    <p>Use \(\chi=\chi_{\Gamma,\bar c}\) from <a href="#finite-condition-formula"></a>. It is consistent with \(T\), because any model of \(T+\Gamma\) makes it true at its interpreted tuple. Whenever \(M\models T\) and \(M\models\chi[\bar a]\), the same lemma supplies an expansion satisfying \(\Gamma\) with \(\bar c\) interpreted by \(\bar a\). Our assumption therefore gives \(M\models\varphi[\bar a]\) for every \(\varphi\in p\).</p>
+    <p>Complete the consistent condition \(\{\chi\}\) to a <a href="types-and-realization#completing-a-type">complete type</a> \(q\). A realization of \(q\) satisfies \(\chi\), hence every formula of \(p\), so \(p\subseteq q\) and maximality gives \(p=q\). In particular \(\chi\in p\), and the preceding argument shows \(T\models\forall\bar x\,(\chi\to\varphi)\) for every \(\varphi\in p\). Thus \(\chi\) isolates \(p\), a contradiction. Some required negation must preserve satisfiability.</p>
+  </div>
+</section>
+
+<section id="decision-and-witness" data-kind="lemma" data-formal="mt-omit-decision mt-omit-witness-axiom mt-omit-fresh-witness">
+  <h2>Decisions and fresh conditional witnesses preserve satisfiability</h2>
+  <p>Suppose \(\Gamma\) is finite and \(T+\Gamma\) is satisfiable. For every \(L(C)\)-sentence \(\sigma\), at least one of \(T+\Gamma+\{\sigma\}\) and \(T+\Gamma+\{\neg\sigma\}\) is satisfiable. For every \(L(C)\)-formula \(\eta(z)\) with no other free variables, some fresh name \(c_k\) makes</p>
+  <div class="math-display">\[T+\Gamma+\{(\exists z\,\eta(z))\to\eta(c_k)\}\]</div>
+  <p>satisfiable. The name can be chosen outside the new-name supports of \(\Gamma\) and \(\eta\).</p>
+  <div class="proof">
+    <p>Choose a model of \(T+\Gamma\). It either satisfies \(\sigma\) or satisfies its negation, proving the first assertion.</p>
+    <p>For the second, choose \(c_k\) outside the indicated finite support. If the chosen model satisfies \(\exists z\,\eta(z)\), reinterpret \(c_k\) as a witness. If not, give it any value. Truth of \(\Gamma\), \(T\) and \(\eta\) is unchanged by <a href="#fresh-names-and-support"></a>, and the conditional witness sentence holds in either case. Substitution of \(c_k\) for the free variable has exactly the chosen-value interpretation.</p>
+    <p>The current condition need not decide whether the existential sentence is true. Keeping the implication ensures that every final model in which it is true has the chosen named witness.</p>
+  </div>
+</section>
+
+<section id="countable-tasks" data-kind="definition" data-formal="mt-omit-tasks mt-omit-tasks-countable mt-omit-schedule">
+  <h2>Schedule every sentence, witness and potentially realizing tuple</h2>
+  <p>Let \(I\) be a countable index set, possibly finite or empty. For each \(j\in I\), fix a nonisolated complete type \(p_j\in S_{n_j}(T)\), where \(n_j\) is finite. A <strong>construction task</strong> is one of the following:</p>
+  <ul>
+    <li>decide an \(L(C)\)-sentence \(\sigma\);</li>
+    <li>give a conditional witness to an \(L(C)\)-formula \(\eta(z)\) with at most the displayed free variable;</li>
+    <li>make a tuple \((c_{t_0},\ldots,c_{t_{n_j-1}})\) fail one formula from \(p_j\), for specified \(j\) and specified indices \((t_0,\ldots,t_{n_j-1})\).</li>
+  </ul>
+  <p>The tasks form a countable set. The enlarged language has a countable alphabet, and formulas and sentences are finite strings, so the first two kinds are countable. For each \(j\), the tuples of indices form the countable set \(\mathbb N^{n_j}\); a countable union over \(j\) is countable. Repeated indices are included. Choose a sequence of tasks \(\mathcal R_0,\mathcal R_1,\ldots\) containing every task. Tasks may be repeated; each needs to occur at least once.</p>
+</section>
+
+<section id="finite-stage-construction" data-kind="definition" data-formal="mt-omit-stages mt-omit-stages-exist">
+  <h2>Keep the added condition finite at every stage</h2>
+  <p>A <strong>finite-stage omission construction</strong> for the chosen task sequence is an increasing sequence \(\Gamma_0\subseteq\Gamma_1\subseteq\cdots\) of finite sets of \(L(C)\)-sentences such that \(\Gamma_0=\varnothing\), every \(T+\Gamma_s\) is satisfiable, and task \(\mathcal R_s\) is met by the next stage.</p>
+  <p>Such a construction exists by recursion. At a decision task, add one satisfiable choice from <a href="#decision-and-witness"></a>. At a witness task, add the conditional witness sentence from that lemma, using a name fresh for the current finite condition and the formula. At an omission task for \(p_j\) and \(\bar c\), add one \(\neg\varphi(\bar c)\) supplied by <a href="#finite-avoidance"></a>. Each step adds just one sentence, retains all earlier sentences and preserves satisfiability. The base case is satisfiability of \(T\).</p>
+  <p>Only the added set \(\Gamma_s\) is finite; the whole theory \(T\) remains present throughout. The choices of witnesses and formulas need not be effective. This is an existence construction using ordinary classical choice and recursion, rather than an assertion of a computable procedure.</p>
+</section>
+
+<section id="limit-model" data-kind="lemma" data-formal="mt-omit-limit mt-omit-limit-satisfiable mt-omit-limit-properties">
+  <h2>Compactness gives an ambient model of all the requests</h2>
+  <p>The \(L(C)\)-theory</p>
+  <div class="math-display">\[U=T\cup\bigcup_{s\in\mathbb N}\Gamma_s\]</div>
+  <p>is satisfiable. It contains one of \(\sigma,\neg\sigma\) for every sentence, a conditional witness sentence for every \(\eta(z)\), and a selected failure \(\neg\varphi(\bar c)\) for every listed omission task.</p>
+  <div class="proof">
+    <p>A finite subset of \(U\) uses finitely many added sentences. Each belongs to some \(\Gamma_s\), and the maximum of the finitely many stage indices places all of them in one stage. If none occurs, use stage zero. Thus that finite subset is included in a satisfiable \(T+\Gamma_s\). <a href="ultraproducts#compactness">Compactness</a> supplies a model \(N^*\models U\).</p>
+    <p>Every task occurs, and its chosen sentence remains in all later stages, giving the three listed properties of \(U\). Let \(N\) be the \(L\)-reduct of \(N^*\). It is a model of \(T\), but we have not asserted that it omits the requested types.</p>
+  </div>
+</section>
+
+<section id="named-substructure" data-kind="lemma" data-formal="mt-omit-named-closed mt-omit-named-substructure mt-omit-named-nonempty mt-omit-named-countable">
+  <h2>The named elements form a countable substructure</h2>
+  <p>In any \(N^*\models U\), the set</p>
+  <div class="math-display">\[S=\{c_k^{N^*}:k\in\mathbb N\}\]</div>
+  <p>is nonempty, countable, and closed under all interpreted \(L\)-functions, including the interpretations of old constant symbols. With the restricted relations and functions it is an \(L\)-substructure of the reduct \(N\).</p>
+  <div class="proof">
+    <p>The value of \(c_0\) belongs to \(S\). The displayed enumeration makes it countable, even when different names have equal values.</p>
+    <p>Let \(f\) be an \(m\)-ary old function symbol and let \(a_0,\ldots,a_{m-1}\in S\). Choose names for this finite tuple. The formula \(z=f(c_{t_0},\ldots,c_{t_{m-1}})\) occurs among the witness tasks, and its existential closure is true in \(N^*\). The retained conditional witness sentence therefore names the function value by some \(c_k\). That value belongs to \(S\). When \(m=0\), the same argument names the interpretation of the old constant, with no tuple to choose.</p>
+    <p>Restricting each relation to \(S\) now gives a substructure, because the function values just shown remain inside its domain.</p>
+  </div>
+</section>
+
+<section id="named-elementarity" data-kind="lemma" data-formal="mt-omit-named-elementary mt-omit-named-model">
+  <h2>Every existential request with named parameters has a named witness</h2>
+  <p>The named substructure \(S\) is elementary in \(N\). Consequently \(S\models T\).</p>
+  <div class="proof">
+    <p>Apply the <a href="elementary-submodels#tarski-vaught">Tarski–Vaught criterion</a>. Suppose an \(L\)-formula \(\rho(z,\bar a)\), with a finite tuple \(\bar a\) from \(S\), has a witness in \(N\). Choose a new name for each of its parameter values, allowing the same name to be used repeatedly. After substituting these names for the parameters, obtain an \(L(C)\)-formula \(\eta(z)\). Its existential sentence is true in \(N^*\).</p>
+    <p>The witness task for \(\eta\) supplies an implication \((\exists z\,\eta)\to\eta(c_k)\) in \(U\). Thus \(c_k^{N^*}\in S\) is a witness for the original formula. This is precisely the criterion, so \(S\preccurlyeq N\). Agreement on sentences transports every axiom of \(T\) from \(N\) to \(S\).</p>
+  </div>
+</section>
+
+<section id="named-omission" data-kind="lemma" data-formal="mt-omit-named-omission">
+  <h2>Every tuple in the named model has a recorded failure</h2>
+  <p>The named elementary substructure \(S\) omits every type \(p_j\).</p>
+  <div class="proof">
+    <p>Fix \(j\) and a tuple \(\bar a\in S^{n_j}\). Choose a name \(c_{t_i}\) with value \(a_i\) for each coordinate. The task for this very index tuple occurs in the sequence, including when indices repeat. It adds \(\neg\varphi(c_{t_0},\ldots,c_{t_{n_j-1}})\) for some \(\varphi\in p_j\).</p>
+    <p>Since \(N^*\models U\), the reduct \(N\) makes \(\varphi\) false at \(\bar a\). By elementarity, it is false at the same tuple in \(S\). Hence \(\bar a\) does not realize \(p_j\). Every tuple of \(S\) is covered by this argument, so \(S\) omits \(p_j\), for every \(j\).</p>
+  </div>
+</section>
+
+<section id="countable-omission" data-kind="theorem" data-formal="mt-omit-simultaneous">
+  <h2>Countably many nonisolated types can be omitted together</h2>
+  <div class="statement-box"><p>Let \(T\) be a satisfiable complete theory in a countable first-order language. Let \((p_j)_{j\in I}\) be a countable family of nonisolated complete types over \(T\), each in a finite tuple of variables. There is a nonempty countable model of \(T\) omitting every \(p_j\).</p></div>
+  <div class="proof">
+    <p>Enumerate the countable task set and perform the finite-stage construction. Its finite avoidance steps are justified by nonisolation, and its decision and witness steps preserve satisfiability. By <a href="#limit-model"></a>, the union theory has an ambient model \(N^*\).</p>
+    <p>Take the substructure \(S\) of the original-language reduct consisting of the new-name values. It is nonempty and countable by <a href="#named-substructure"></a>, is a model of \(T\) by <a href="#named-elementarity"></a>, and omits every listed type by <a href="#named-omission"></a>. This is the required model.</p>
+  </div>
+  <p>“Countable” allows finite domains. Nothing in the argument requires different new names to denote different elements.</p>
+  <p>The <a href="omitting-partial-types#partial-omission">partial-type version</a> replaces nonisolation by nonprincipality and also allows the background theory to be incomplete.</p>
+</section>
+
+<section id="isolation-obstruction" data-kind="theorem" data-formal="mt-omit-isolation-obstruction mt-omit-omission-equivalence">
+  <h2>Isolation is exactly the obstruction to countable omission</h2>
+  <div class="statement-box"><p>For a satisfiable complete theory \(T\) in a countable language and a complete finite-tuple type \(p\), the following are equivalent: \(p\) is isolated; every nonempty countable model of \(T\) realizes \(p\). Equivalently, \(p\) is nonisolated if and only if some nonempty countable model of \(T\) omits it.</p></div>
+  <div class="proof">
+    <p>An isolated type is <a href="isolated-types#unavoidable-realization">realized in every model of the complete theory</a>, in particular in every countable model. If the type is nonisolated, apply <a href="#countable-omission"></a> to the family consisting of that single type. The resulting countable model omits it, proving the converse and the equivalent formulation.</p>
+  </div>
+  <p>For an application to models that embed elementarily into every model, see the <a href="atomic-and-prime-models#prime-iff-atomic">characterization of prime models</a>.</p>
+  <p>The comparison with countable realization gives the <a href="countable-categoricity#categoricity-and-isolation">link between isolation and a unique countable model</a>.</p>
+</section>
+
+<section id="ambient-model-question" data-kind="question" data-formal="mt-omit-finite-realization mt-omit-ambient-realization mt-omit-name-image mt-omit-unnamed-coordinate">
+  <h2>Could the ambient model still realize an omitted type?</h2>
+  <p>Suppose the list contains \(p_j\). Must every \(L(C)\)-model of the final theory \(U\) omit \(p_j\) in its \(L\)-reduct?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Let \(N^*\models U\). Every finite subset \(p_0\subseteq p_j\) is realized in its reduct \(N\): the sentence \(\exists\bar x\,\bigwedge p_0\) holds in a model realizing \(p_j\), and completeness of \(T\) forces that sentence to hold in every model of \(T\), including \(N\).</p>
+    <p>View the formulas of \(p_j\) in \(L(C)\); they use none of the new names. They are finitely realizable in \(N^*\), so the <a href="types-and-realization#elementary-realization">elementary-extension realization theorem</a>, applied in that enlarged language, gives an elementary extension of \(N^*\) realizing the whole type. This extension still satisfies every sentence of \(U\), so its original-language reduct is an ambient model that realizes \(p_j\).</p>
+    <p>The new constants still denote the elementary image of the original named set \(S\). That named substructure remains isomorphic to \(S\) and omits the type; the new realizing tuple must contain an unnamed element. The construction guarantees omission in the named model, and this is why that model was selected in the theorem.</p>
+  </div></details>
+</section>

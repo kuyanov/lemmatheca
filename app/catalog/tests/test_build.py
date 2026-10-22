@@ -166,8 +166,6 @@ class BuildCommandTests(SimpleTestCase):
             "entry_refs": ["example#fact"], "urls": [], "details": "Pending scope.",
             "planned_entry_ids": ["future-entry"],
         })
-        for directory in ("source-errors", "reference-planning"):
-            write_json(self.corpus / directory / "policy.json", {"scope": "Scoped records."})
         self.index = self.corpus / "index.json"
         self.catalogs = [self.corpus / "source-errors/index.json",
                          self.corpus / "reference-planning/index.json"]

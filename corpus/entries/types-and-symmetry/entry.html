@@ -1,0 +1,92 @@
+<section id="parameter-fixing-orbits" data-formal="mt-symmetry-automorphisms mt-symmetry-tuple-orbit mt-symmetry-point-orbit mt-symmetry-equivalence mt-symmetry-own-orbit mt-symmetry-empty-tuple" data-kind="definition">
+  <h2>The symmetries that leave the parameters in place</h2>
+  <p>Let \(L\) be a countable first-order language and \(M\) a nonempty \(L\)-structure. For \(A\subseteq M\), let <strong>\(\operatorname{Aut}(M/A)\)</strong> denote the automorphisms fixing every element of \(A\). Fixing is pointwise: \(g(a)=a\) for every \(a\in A\).</p>
+  <p>The <strong>orbit of a finite tuple \(\bar b\) over \(A\)</strong> is</p>
+  <div class="math-display">\[O_A(\bar b)=\{g(\bar b):g\in\operatorname{Aut}(M/A)\},\qquad g(\bar b)=(g(b_0),\ldots,g(b_{n-1})).\]</div>
+  <p>For a single element write \(O_A(b)\). The identity puts each tuple in its own orbit; inverse and composition show that being in the same orbit is an equivalence relation. Repeated coordinates are allowed. The empty tuple has a singleton orbit.</p>
+</section>
+
+<section id="orbits-preserve-types" data-formal="mt-symmetry-preserves-type mt-symmetry-definable-invariant" data-kind="lemma">
+  <h2>A parameter-fixing symmetry preserves the complete description</h2>
+  <p>If \(g\in\operatorname{Aut}(M/A)\), then \(\operatorname{tp}^M(g(\bar b)/A)=\operatorname{tp}^M(\bar b/A)\). In particular every set definable over \(A\) is a union of these orbits.</p>
+  <div class="proof">
+    <p>Expand \(M\) by names for \(A\). Since \(g\) fixes their interpretations, it is an automorphism of this named structure. <a href="types-and-realization#realization-transport">Formula preservation</a> gives the same truth value for every \(L(A)\)-formula at \(\bar b\) and \(g(\bar b)\). Complete type membership is precisely this truth assertion. Applying the same preservation to a defining formula shows that membership in its solution set is constant on every orbit.</p>
+  </div>
+</section>
+
+<section id="same-type-same-orbit" data-formal="mt-symmetry-type-orbit mt-symmetry-point-type-orbit" data-kind="theorem">
+  <h2>In a countable saturated model, a complete type is an orbit</h2>
+  <div class="statement-box"><p>Suppose \(M\) is countable and omega-saturated and \(A\subseteq M\) is finite. Two finite tuples of the same length have equal complete types over \(A\) if and only if an automorphism fixing \(A\) sends the first tuple to the second.</p></div>
+  <div class="proof">
+    <p>The reverse implication is <a href="#orbits-preserve-types">type preservation</a>. For the forward implication, apply <a href="saturated-models#homogeneity">the specified-tuple homogeneity theorem</a>. Equality of the \(L(A)\)-types makes the map from the distinct coordinates of the first tuple to those of the second elementary. Equality formulas make it well-defined even when coordinates repeat.</p>
+    <p><a href="saturated-models#finite-names">Naming the finite set \(A\) retains omega-saturation</a>. The back-and-forth construction in the countable named structure extends that finite elementary map to an automorphism of \(M_A\), with the indicated coordinate values. Its old-language reduct fixes every named parameter and sends exactly the given tuple to the other. The same argument includes the empty tuple.</p>
+  </div>
+</section>
+
+<section id="finite-exclusion-test" data-formal="mt-symmetry-finite-exclusion" data-kind="lemma">
+  <h2>Saturation detects a finite obstruction to avoiding a finite set</h2>
+  <p>Assume \(M\) is omega-saturated, \(A\subseteq M\) is finite, and \(p(x)\) is a complete type over \(\operatorname{Th}(M_A)\). Let \(S\subseteq M\) be finite. If every finite subset of \(p\) has a realization in \(M\setminus S\), then \(p\) has a realization in \(M\setminus S\).</p>
+  <div class="proof">
+    <p>Put \(B=A\cup S\), a finite parameter set. View the formulas of \(p\) as \(L(B)\)-formulas through the inclusion of parameter names, and adjoin the finitely many inequalities \(x\ne c_s\), \(s\in S\). Each finite subset of this new collection contains a finite set of original conditions. By assumption those have a witness outside all of \(S\), which also satisfies every requested inequality. The collection is therefore finitely realized in the named structure \(M_B\).</p>
+    <p><a href="saturated-models#partial-type-test">The partial-type test for omega-saturation</a>, with the finite parameter set \(B\), realizes the whole collection in \(M\). Its original conditions realize \(p\), and its inequalities put the realizing element outside \(S\). Parameter inclusion changes the labels available in a formula, not the interpretation of the original names from \(A\).</p>
+  </div>
+</section>
+
+<section id="finite-orbits-definable" data-formal="mt-symmetry-orbit-formula mt-symmetry-orbit-definable" data-kind="lemma">
+  <h2>A finite orbit has one defining formula over the original parameters</h2>
+  <p>If \(M\) is countable and omega-saturated, \(A\subseteq M\) is finite, and \(O_A(b)\) is finite, then \(O_A(b)\) is definable over \(A\).</p>
+  <div class="proof">
+    <p>Put \(p=\operatorname{tp}^M(b/A)\) and \(S=O_A(b)\). By <a href="#same-type-same-orbit">the orbit theorem</a>, the realizations of \(p\) in \(M\) are exactly \(S\). Hence no realization of \(p\) lies outside \(S\).</p>
+    <p>The contrapositive of <a href="#finite-exclusion-test">finite exclusion</a> gives a finite subset \(\Delta\subseteq p\) with no realization outside \(S\). Let \(\delta(x)\) be its conjunction, with the empty conjunction interpreted as \(\top\). Every realization of \(p\) satisfies \(\delta\), so \(S\) is contained in its solution set. Conversely, a solution of \(\delta\) outside \(S\) would realize \(\Delta\) there, which is impossible. Thus \(\delta\) defines exactly \(S\).</p>
+    <p>Although the exclusion argument temporarily names the elements of \(S\), the extracted conjunction \(\delta\) uses only formulas of \(p\), hence only the original parameters \(A\). This removal of the extra names supplies the required definition over \(A\).</p>
+  </div>
+</section>
+
+<section id="definable-closure-orbits" data-formal="mt-symmetry-definable-closure" data-kind="theorem">
+  <h2>Unique definition means that every parameter-fixing symmetry fixes the point</h2>
+  <div class="statement-box"><p>In a countable omega-saturated structure, for finite \(A\subseteq M\),</p>
+  <div class="math-display">\[b\in\operatorname{dcl}_M(A)\quad\Longleftrightarrow\quad O_A(b)=\{b\}.\]</div></div>
+  <div class="proof">
+    <p>If \(b\) is uniquely definable over \(A\), its singleton is preserved by every automorphism fixing \(A\), by <a href="definable-and-algebraic-closure#automorphisms">the earlier invariance lemma</a>. Thus every orbit point equals \(b\), and the identity supplies \(b\) itself.</p>
+    <p>Conversely, a singleton orbit is finite, so <a href="#finite-orbits-definable">the preceding lemma</a> defines it over \(A\). This is exactly <a href="definable-and-algebraic-closure#closure-definitions">membership in definable closure</a>.</p>
+  </div>
+</section>
+
+<section id="algebraic-closure-orbits" data-formal="mt-symmetry-algebraic-closure" data-kind="theorem">
+  <h2>A finite list of definable possibilities means finitely many conjugates</h2>
+  <div class="statement-box"><p>In a countable omega-saturated structure, for finite \(A\subseteq M\),</p>
+  <div class="math-display">\[b\in\operatorname{acl}_M(A)\quad\Longleftrightarrow\quad O_A(b)\text{ is finite}.\]</div></div>
+  <div class="proof">
+    <p>If \(b\) lies in a finite set defined over \(A\), <a href="#orbits-preserve-types">invariance</a> puts its whole orbit inside that finite set. Hence the orbit is finite.</p>
+    <p>Conversely, a finite orbit is itself <a href="#finite-orbits-definable">a finite set definable over \(A\)</a>, and it contains \(b\). It witnesses membership in algebraic closure. This characterizes the number of actual conjugates inside the specified model; no larger ambient model is needed.</p>
+  </div>
+</section>
+
+<section id="categorical-orbits" data-formal="mt-cat-orbit-isolator mt-cat-categoricity-orbits-all mt-cat-same-type-orbit" data-kind="lemma">
+  <h2>A countably categorical model has finitely many definable tuple orbits</h2>
+  <p>Let \(T\) be a complete satisfiable theory in a countable language, countably categorical and with an infinite model. If \(M\models T\) is countable, then for each finite \(n\) there are finitely many automorphism orbits on \(M^n\), and every such orbit is definable without parameters.</p>
+  <div class="proof">
+    <p><a href="countable-categoricity#automorphism-criterion">The countable categoricity criterion</a> identifies the tuple orbits with the finitely many complete \(n\)-types. Each type is isolated by one formula. A tuple satisfies that isolator exactly when it has the corresponding type, so the formula defines its orbit. These are <a href="countable-categoricity#automorphism-orbits">the supplied-tuple orbit calculation</a> and its isolator conclusion.</p>
+    <p>This proof uses the earlier categoricity results directly. It does not require a later existence construction for countable saturated models. At \(n=0\), the single empty tuple is the unique orbit and is defined by \(\top\).</p>
+  </div>
+</section>
+
+<section id="invariant-sets-definable" data-formal="mt-symmetry-categorical-invariant" data-kind="theorem">
+  <h2>In a countably categorical model, symmetry detects every parameter-free definition</h2>
+  <div class="statement-box"><p>Under the hypotheses of <a href="#categorical-orbits">the preceding lemma</a>, a subset \(D\subseteq M^n\) is definable without parameters if and only if it is invariant under every automorphism of \(M\).</p></div>
+  <div class="proof">
+    <p>A parameter-free defining formula is preserved by every automorphism, so the forward implication holds in any structure.</p>
+    <p>Conversely, invariance makes \(D\) a union of whole tuple orbits: if one tuple belongs, every automorphic image belongs, and applying inverse automorphisms gives the reverse membership implication. There are only finitely many orbits, each defined by an isolating formula. Disjoin the formulas of the orbits contained in \(D\). This is a finite first-order formula and defines exactly \(D\). If \(D\) is empty, use \(\bot\); the same reasoning includes the empty tuple context.</p>
+  </div>
+</section>
+
+<section id="why-finiteness-matters" data-formal="definable-invariance-not-sufficient definable-rigid-structure" data-kind="question">
+  <h2>Can arbitrary unions of orbits always be defined?</h2>
+  <p>Every invariant set is a union of automorphism orbits. Why does that observation alone fail to prove definability in an arbitrary countable structure?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>There may be infinitely many orbits, and first-order formulas do not permit arbitrary infinite disjunctions. Invariance can therefore leave many more sets than the formulas describe.</p>
+    <div class="proof">
+      <p>The <a href="definability-and-automorphisms#rigid-structure">rigid structure \((\mathbb N,0,S)\)</a> has only the identity automorphism. Each singleton is an orbit, so every subset is invariant. Its language has only countably many formulas, whereas \(\mathcal P(\mathbb N)\) is uncountable. Hence some invariant subsets are not parameter-free definable. The categorical theorem supplies the missing finite bound on the number of tuple orbits; it does not follow from invariance alone.</p>
+    </div>
+  </div></details>
+</section>

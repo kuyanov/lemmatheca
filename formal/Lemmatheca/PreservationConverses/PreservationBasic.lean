@@ -151,20 +151,20 @@ theorem exists_existential_not {ι : Type u'} {m : ℕ} {φ : L.BoundedFormula �
     simp only [BoundedFormula.realize_all, BoundedFormula.realize_ex, not_forall]
     exact exists_congr fun x => hs M v (Fin.snoc xs x)
 
-private theorem existential_castLE {ι : Type u'} {m : ℕ} {φ : L.BoundedFormula ι m}
+theorem existential_castLE {ι : Type u'} {m : ℕ} {φ : L.BoundedFormula ι m}
     (hφ : φ.IsExistential) : ∀ {n} {h : m ≤ n}, (φ.castLE h).IsExistential :=
   BoundedFormula.IsExistential.recOn
     (motive := @fun m φ _ => ∀ (n : ℕ) (h : m ≤ n), (φ.castLE h).IsExistential) hφ
     (@fun _ _ hq _ _ => hq.castLE.isExistential)
     (@fun _ _ _ ih _ _ => (ih _ _).ex) _ _
 
-private theorem existential_liftAt {ι : Type u'} {m : ℕ} {φ : L.BoundedFormula ι m}
+theorem existential_liftAt {ι : Type u'} {m : ℕ} {φ : L.BoundedFormula ι m}
     (hφ : φ.IsExistential) {k n : ℕ} : (φ.liftAt k n).IsExistential :=
   BoundedFormula.IsExistential.recOn hφ
     (fun hq => hq.liftAt.isExistential)
     (fun _ ih => (existential_castLE ih).ex)
 
-private theorem exists_existential_binary {ι : Type u'} {m : ℕ}
+theorem exists_existential_binary {ι : Type u'} {m : ℕ}
     {φ ψ : L.BoundedFormula ι m} (hφ : φ.IsExistential) (hψ : ψ.IsExistential)
     (b : Bool) :
     ∃ χ : L.BoundedFormula ι m, χ.IsExistential ∧

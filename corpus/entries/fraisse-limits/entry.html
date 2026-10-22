@@ -1,0 +1,120 @@
+<section id="extension-property" data-formal="mt-fraisse-extension-property mt-fraisse-limit mt-fraisse-extension-homogeneous" data-kind="definition">
+  <h2>Extending a placement of a finite piece</h2>
+  <p>Fix a <a href="ages-and-amalgamation#finite-relational-structures">finite relational language</a> \(L\). Finite induced substructures and their empty carriers are allowed as in that entry. Let \(K\) be a class of finite \(L\)-structures. A structure \(M\) has the <strong>\(K\)-extension property</strong> if, whenever \(A,B\in K\) and \(f:A\hookrightarrow M\), \(g:A\hookrightarrow B\) are embeddings, there is an embedding \(h:B\hookrightarrow M\) such that</p>
+  <div class="math-display">\[h\circ g=f.\]</div>
+  <p>The condition preserves the specified placement of \(A\); it does not merely find an unrelated copy of \(B\). A <strong>Fraïssé limit</strong> of \(K\) is a countable, possibly empty structure \(M\) with \(\operatorname{Age}(M)=K\) and the \(K\)-extension property.</p>
+</section>
+
+<section id="fraisse-classes" data-formal="mt-fraisse-class mt-fraisse-class-conditions mt-fraisse-representatives mt-age-fg-finite" data-kind="definition">
+  <h2>Classes whose finite pieces can be amalgamated</h2>
+  <p>A <strong>Fraïssé class</strong> here is a nonempty class \(K\) of finite \(L\)-structures, closed under isomorphism and satisfying the <a href="ages-and-amalgamation#hereditary-and-joint-embedding">hereditary and joint embedding properties</a> and the <a href="ages-and-amalgamation#amalgamation">amalgamation property</a>. We do not require arbitrarily large members. This permits finite limits, and even an empty limit when the class consists of the copies of one empty structure.</p>
+  <p>By <a href="ages-and-amalgamation#listing-finite-structures">the enumeration of finite pieces</a>, choose a list \(A_0,A_1,\ldots\) in \(K\) meeting every isomorphism type, with repetitions allowed. This list is fixed throughout the construction.</p>
+</section>
+
+<section id="completing-a-task" data-formal="mt-age-amalgamation mt-age-copy-equivalence mt-age-copy-old-points mt-age-copy-inclusion" data-kind="lemma">
+  <h2>One extension request can be completed without changing old points</h2>
+  <p>Let \(K\) be a Fraïssé class, \(B,A\in K\), and let \(C\) be an induced substructure of \(B\). Given an embedding \(g:C\hookrightarrow A\), there are an induced extension \(B\subseteq B'\in K\) and an embedding \(h:A\hookrightarrow B'\) whose composite with \(g\) is the inclusion of \(C\).</p>
+  <div class="proof">
+    <p>HP puts \(C\) in \(K\). Apply AP to the inclusion \(i:C\hookrightarrow B\) and \(g:C\hookrightarrow A\). It gives \(D\in K\) and embeddings \(u:B\hookrightarrow D\), \(v:A\hookrightarrow D\) with \(u\circ i=v\circ g\). In particular, the two pieces being embedded into \(D\) are \(B\) and \(A\).</p>
+    <p>Use <a href="ages-and-amalgamation#transporting-an-extension">transport along the embedding \(u\)</a> to replace \(D\) by an isomorphic copy \(B'\) that contains \(B\) literally. If \(e:D\cong B'\) is this relabeling, then \(e\circ u\) is the inclusion of \(B\). Set \(h=e\circ v\). The commuting equation gives \(h\circ g=e\circ u\circ i\), exactly the required inclusion of \(C\).</p>
+  </div>
+</section>
+
+<section id="finite-batch-extension" data-formal="mt-fraisse-finite-amalgamation mt-age-copy-inclusion" data-kind="lemma">
+  <h2>A finite batch can be completed while preserving earlier answers</h2>
+  <p>Let \(B\in K\), where \(K\) is a Fraïssé class. For a finite list of requests \(g_j:C_j\hookrightarrow D_j\), where each \(C_j\) is induced in \(B\) and each \(D_j\in K\), there is an induced extension \(B\subseteq B'\in K\) and embeddings \(h_j:D_j\hookrightarrow B'\) such that every \(h_j\circ g_j\) is the inclusion of \(C_j\).</p>
+  <div class="proof">
+    <p>Start with \(E_0=B\). After completing the first \(j\) requests, maintain \(B\subseteq E_j\in K\) and the embeddings answering those requests into \(E_j\). The next \(C_j\) is still an induced substructure of \(E_j\), since it was induced in \(B\). Apply <a href="#completing-a-task"></a> to \(E_j\), \(D_j\) and \(g_j\), obtaining \(E_{j+1}\supseteq E_j\) and an answer to request \(j\).</p>
+    <p>Compose every earlier answer with the inclusion of \(E_j\) into \(E_{j+1}\). This preserves its specified values on the old common part, so all earlier commuting equations remain true. After the finite list is exhausted, take \(B'\) to be the last structure. For an empty list, \(B'=B\) suffices.</p>
+  </div>
+</section>
+
+<section id="scheduled-chain" data-formal="mt-fraisse-chain mt-fraisse-stage-requests mt-fraisse-next-stage mt-fraisse-chain-fairness mt-fraisse-fair-chain" data-kind="theorem">
+  <h2>The chain eventually answers every finite request</h2>
+  <p>For a Fraïssé class \(K\), there is an increasing chain \(B_0\subseteq B_1\subseteq\cdots\) of structures in \(K\) with these two properties:</p>
+  <ol>
+    <li>Every representative \(A_r\) embeds into some \(B_n\).</li>
+    <li>For every \(i\), every induced \(C\subseteq B_i\), and every embedding \(g:C\hookrightarrow A_r\), there are \(n\ge i\) and an embedding \(h:A_r\hookrightarrow B_n\) such that \(h\circ g\) is the inclusion of \(C\) into \(B_n\).</li>
+  </ol>
+  <div class="proof">
+    <p>Start with \(B_0=A_0\). At stage \(n\), retain this original finite structure \(B_n\) while listing all triples consisting of an induced \(C\subseteq B_n\), an index \(r\le n\), and an embedding \(g:C\hookrightarrow A_r\). This is a finite list: there are finitely many subsets of \(B_n\), finitely many permitted indices, and finitely many maps between each pair of finite carriers.</p>
+    <p>First use JEP to embed \(B_n\) and \(A_n\) into a member of \(K\). Relabel it along the first embedding to obtain \(E\in K\) with \(B_n\subseteq E\) literally and an embedding \(A_n\hookrightarrow E\). Every common part on the list remains induced in \(E\).</p>
+    <p>Apply <a href="#finite-batch-extension"></a> to \(E\) and the finite list just formed, and call the resulting extension \(B_{n+1}\). Although the intermediate amalgams may grow, the requests at this stage were all listed using the original \(B_n\). Thus \(B_{n+1}\) is a finite member of \(K\), contains \(B_n\) as an induced substructure, contains a copy of \(A_n\), and answers every request on that finite list.</p>
+    <p>The copy of \(A_r\) supplied at stage \(r\) lies in \(B_{r+1}\), proving the first property. For the second, take \(C\subseteq B_i\) and \(g:C\hookrightarrow A_r\). Put \(N=\max(i,r)\). The same literal structure \(C\) is induced in \(B_N\), and \(r\le N\), so this request occurs in the finite batch at stage \(N\). It is therefore answered in \(B_{N+1}\), with the required equality on every point of \(C\). Later inclusions preserve that equality.</p>
+  </div>
+</section>
+
+<section id="fraisse-existence" data-formal="mt-fraisse-existence mt-fraisse-factor-finite-embedding mt-fraisse-countable-union mt-fraisse-union-age mt-fraisse-union-extension mt-fraisse-union-stage-ranges" data-kind="theorem">
+  <h2>The union has the prescribed age and extension property</h2>
+  <div class="statement-box"><p>Every Fraïssé class in a finite relational language has a Fraïssé limit.</p></div>
+  <div class="proof">
+    <p>Take the chain from <a href="#scheduled-chain"></a> and give \(M=\bigcup_n B_n\) the union structure, interpreting a relation on a tuple in any stage containing its coordinates. The <a href="ages-and-amalgamation#age-existence">earlier union argument</a> shows that these interpretations are consistent, that \(M\) is countable, and that its age is \(K\): every representative appears by the first property of the chain, and every finite piece of the union lies in a stage. An empty piece may use stage \(0\).</p>
+    <p>To prove the extension property, take \(A,B\in K\), \(f:A\hookrightarrow M\), and \(g:A\hookrightarrow B\). The finite image \(C=f(A)\) lies in some \(B_i\), using \(i=0\) if the image is empty. Let \(a:A\cong C\) be the map induced by \(f\), and choose an isomorphism \(b:B\cong A_r\) to a representative. The registered request on the literal substructure \(C\subseteq B_i\) is</p>
+    <div class="math-display">\[b\circ g\circ a^{-1}:C\hookrightarrow A_r.\]</div>
+    <p>The second property of the chain supplies \(n\ge i\) and \(k:A_r\hookrightarrow B_n\) whose composite with this request is the inclusion of \(C\). Let \(\iota_n:B_n\hookrightarrow M\) be the inclusion and set \(h=\iota_n\circ k\circ b\). For each \(x\in A\),</p>
+    <div class="math-display">\[h(g(x))=\iota_n(k(b(g(x))))=\iota_n(a(x))=f(x).\]</div>
+    <p>Thus the extension respects the original specified map \(f\), rather than just an isomorphic copy of its domain.</p>
+  </div>
+  <p>For a concrete class with arbitrarily large members, see <a href="random-graph#fraisse-identification">the Rado graph as a Fraïssé limit of finite graphs</a>, with vertices explicitly given by natural numbers.</p>
+</section>
+
+<section id="size-of-the-limit" data-formal="mt-age-nonempty-carrier mt-age-unbounded-iff-infinite" data-kind="lemma">
+  <h2>The limit need not be infinite</h2>
+  <p>A Fraïssé limit \(M\) of \(K\) is nonempty if and only if \(K\) has a nonempty member, and is countably infinite if and only if \(K\) has arbitrarily large members.</p>
+  <div class="proof">
+    <p>Its age is \(K\), so apply <a href="ages-and-amalgamation#size-of-the-witness">the age-size criterion</a> and use the countability in the definition of a limit. Neither task scheduling nor taking the union forces new elements at every stage. If all members of \(K\) are empty, the union is empty; if their sizes have a finite bound, the union is finite.</p>
+  </div>
+</section>
+
+<section id="universality" data-formal="mt-fraisse-universality" data-kind="theorem">
+  <h2>Every compatible countable structure embeds into the limit</h2>
+  <p>If \(M\) is a Fraïssé limit of \(K\) and \(N\) is a countable structure with \(\operatorname{Age}(N)\subseteq K\), then \(N\) embeds into \(M\).</p>
+  <div class="proof">
+    <p>If \(N\) is empty, it is itself a member of its age, and the age inclusion gives an embedding into \(M\). Otherwise list its elements as \(a_0,a_1,\ldots\), repeating elements when \(N\) is finite. Let \(N_i\) be induced on \(\{a_0,\ldots,a_i\}\). Since \(N_0\in K=\operatorname{Age}(M)\), choose an embedding \(f_0:N_0\hookrightarrow M\).</p>
+    <p>Given \(f_i\), apply the extension property to it and the inclusion \(N_i\hookrightarrow N_{i+1}\). This yields \(f_{i+1}\) extending \(f_i\). Their union is defined on all of \(N\) and is injective because any two arguments occur together at a stage. Every finite tuple occurs at a stage as well, so each relation and its failure are preserved. Hence the union is an embedding. For a nullary relation, any stage already supplies the required agreement.</p>
+  </div>
+</section>
+
+<section id="extending-finite-matches" data-formal="mt-fraisse-extension-pair" data-kind="lemma">
+  <h2>The extension property answers both sides of a finite match</h2>
+  <p>Let \(M,N\) have age \(K\) and the \(K\)-extension property. An isomorphism \(p:A\cong A'\) between finite induced substructures of \(M,N\) can be extended to include any requested element of \(M\) in its domain, or any requested element of \(N\) in its range.</p>
+  <div class="proof">
+    <p>For an element \(x\in M\), induce \(B\) on \(A\cup\{x\}\). Both \(A,B\) lie in \(K\). Regard \(p\) as an embedding \(A\hookrightarrow N\), and use the extension property in \(N\) with the inclusion \(A\hookrightarrow B\). The resulting embedding \(B\hookrightarrow N\) is an isomorphism onto its finite induced image and extends \(p\).</p>
+    <p>For a requested element of \(N\), apply the same argument to \(p^{-1}\), using the extension property in \(M\), and invert the extended finite isomorphism. Thus both forth and back preserve every pair already assigned.</p>
+  </div>
+</section>
+
+<section id="prescribed-isomorphism" data-formal="mt-fraisse-prescribed-isomorphism mt-fraisse-uniqueness" data-kind="theorem">
+  <h2>Uniqueness while preserving a prescribed finite map</h2>
+  <div class="statement-box"><p>If \(M,N\) are Fraïssé limits of the same class \(K\), every isomorphism \(p:A\cong A'\) between finite induced substructures extends to an isomorphism \(M\cong N\). In particular, the limit is unique up to isomorphism.</p></div>
+  <div class="proof">
+    <p>If one carrier is empty, the other is empty too: a point in the other would give a singleton in its age, which could not embed in the empty carrier. The unique empty isomorphism then suffices.</p>
+    <p>Otherwise the finite isomorphisms form a <a href="back-and-forth#back-and-forth-systems">back-and-forth system</a> by <a href="#extending-finite-matches"></a>, and contain the prescribed map \(p\). The <a href="back-and-forth#countable-isomorphism">countable back-and-forth theorem</a> supplies an isomorphism extending it.</p>
+    <p>For the unprescribed uniqueness assertion, the two empty induced substructures are isomorphic, even if the language has nullary relations. Indeed, the empty induced substructure of \(M\) belongs to \(\operatorname{Age}(N)\), so an embedding into \(N\) preserves and reflects precisely those nullary truth values. Its empty image is the empty induced substructure of \(N\). Start with this empty isomorphism.</p>
+  </div>
+</section>
+
+<section id="ultrahomogeneity" data-formal="mt-fraisse-extension-homogeneous mt-fraisse-homogeneous-extension" data-kind="lemma">
+  <h2>Finite extension and global symmetry are equivalent</h2>
+  <p>A countable structure with age \(K\) has the \(K\)-extension property if and only if it is <a href="ages-and-amalgamation#ultrahomogeneity">ultrahomogeneous</a>.</p>
+  <div class="proof">
+    <p>If it has the extension property, use <a href="#prescribed-isomorphism"></a> with the same structure on both sides. Every finite isomorphism extends to an automorphism.</p>
+    <p>Conversely, suppose \(M\) is ultrahomogeneous. For \(f:A\hookrightarrow M\) and \(g:A\hookrightarrow B\), where \(A,B\in K\), choose an embedding \(q:B\hookrightarrow M\) using the age equality. The map \(q(g(a))\mapsto f(a)\) is an isomorphism between finite induced substructures, so it extends to an automorphism \(\alpha\) of \(M\). Then \(h=\alpha\circ q\) satisfies \(h\circ g=f\). This direction does not require countability.</p>
+  </div>
+</section>
+
+<section id="fraisse-characterization" data-formal="mt-fraisse-characterization mt-fraisse-class-conditions" data-kind="theorem">
+  <h2>Exactly the amalgamating classes have limits</h2>
+  <p>A class of finite structures in a finite relational language has a Fraïssé limit if and only if it is a Fraïssé class.</p>
+  <div class="proof">
+    <p>Sufficiency is <a href="#fraisse-existence"></a>. For necessity, its age is nonempty, is closed under isomorphism, and has HP and JEP by <a href="ages-and-amalgamation#necessary-age-properties">the necessary age properties</a>. The limit is ultrahomogeneous by <a href="#ultrahomogeneity"></a>, so its age has AP by <a href="ages-and-amalgamation#homogeneous-ages-amalgamate">the amalgamation lemma for homogeneous ages</a>. These are exactly the required conditions, including nonemptiness of the class.</p>
+  </div>
+</section>
+
+<section id="bounded-finite-sets" data-formal="mt-fraisse-finite-equality-homogeneous mt-fraisse-finite-equality-age mt-fraisse-finite-equality-limit mt-fraisse-characterization" data-kind="question">
+  <h2>A finite limit in the equality language</h2>
+  <p>Fix \(m\in\mathbb N\). In the language with equality alone, which structure is a Fraïssé limit of the class \(K_m\) of finite sets of size at most \(m\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Take any set \(M\) of size \(m\). Its age is \(K_m\). Every bijection between two subsets of \(M\) extends to a permutation: the two complements have the same finite size, so choose a bijection between them and join it to the given bijection. Thus \(M\) is ultrahomogeneous and has the extension property by <a href="#ultrahomogeneity"></a>, making it a Fraïssé limit. At \(m=0\), this is the empty structure. The <a href="#fraisse-characterization">characterization</a> then also gives HP, JEP and AP for \(K_m\); AP permits identifications outside the prescribed common part, so no contradiction with the size bound arises.</p>
+  </div></details>
+</section>

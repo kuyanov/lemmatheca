@@ -12,8 +12,8 @@ The [project overview](../README.md) covers setup, and
 | [Web app](app.md) | Reader and authoring APIs, derived index, bounded text cache, tests, deployment, and scaling |
 | [Vendor assets](vendor.md) | Bundled KaTeX provenance, license, and update procedure |
 | [Prompts](../prompts/) | Root-owned area planning and delegated entry stages; see the [area pipeline](../CONTRIBUTING.md#running-an-area-pipeline) |
-| [Source errors](../corpus/source-errors/index.json) | Publication reviews and findings, indexed by entry and publication URL |
-| [Reference planning](../corpus/reference-planning/index.json) | Pending references and development records, indexed by entry, area, kind, and URL |
+| [Source errors](../corpus/source-errors/README.md) | Register scope, maintenance, and catalog of publication reviews and findings |
+| [Reference planning](../corpus/reference-planning/README.md) | Planning scope, maintenance, and catalog of pending references and development |
 
 Use the [targeted registry workflow](corpus.md#navigating-source-and-planning-records)
 to read focused source/planning records.

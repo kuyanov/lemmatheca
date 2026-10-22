@@ -1,0 +1,100 @@
+<section id="partial-requirements" data-formal="mt-type-partial mt-type-omits" data-kind="definition">
+  <h2>Descriptions that need not decide every formula</h2>
+  <p>Fix a countable first-order language \(L\) and a satisfiable \(L\)-theory \(T\). We do not assume \(T\) complete. All structures are nonempty. A <a href="types-and-realization#partial-types">partial type</a> \(p(\bar x)\) is a collection of formulas in a fixed finite tuple \(\bar x=(x_0,\ldots,x_{n-1})\), jointly consistent with \(T\). It need not choose between every formula and its negation.</p>
+  <p>A model <strong>omits \(p\)</strong> if no tuple in its domain satisfies every formula of \(p\). Equivalently, each tuple fails at least one condition from \(p\). This is stronger than omitting one chosen complete extension: a tuple could realize a different completion while still satisfying all the original requirements.</p>
+</section>
+
+<section id="nonprincipal-types" data-formal="mt-partial-omit-principal mt-partial-omit-nonprincipal mt-partial-omit-complete-isolation" data-kind="definition">
+  <h2>No single consistent formula forces the whole description</h2>
+  <p>A partial type \(p(\bar x)\) is <strong>principal over \(T\)</strong> if some \(L\)-formula \(\theta(\bar x)\) satisfies both conditions:</p>
+  <ul>
+    <li>\(T\cup\{\theta(\bar c)\}\) has a model, where the fresh tuple of constants \(\bar c\) names a realizing tuple;</li>
+    <li>for every \(\varphi\in p\), one has \(T\models\forall\bar x\,(\theta\to\varphi)\).</li>
+  </ul>
+  <p>It is <strong>nonprincipal over \(T\)</strong> if no such formula exists. The first condition is essential: an inconsistent formula implies every condition vacuously. The forcing formula need not itself be a member of \(p\).</p>
+  <p>For a complete type, principality is exactly <a href="isolated-types#isolating-formulas">isolation</a>. Indeed, an isolator is a consistent forcing formula. Conversely, complete the consistent formula \(\theta\) to a complete type \(q\). Every realization of \(q\) satisfies all of \(p\), so maximality gives \(q=p\). Hence \(\theta\in p\), and it isolates \(p\).</p>
+</section>
+
+<section id="finite-condition-translation" data-formal="mt-omit-condition-formula mt-omit-condition-formula-truth mt-omit-repeated-names mt-omit-constant-lifting mt-omit-lifting-truth" data-kind="lemma">
+  <h2>The same finite-support formula works without completeness</h2>
+  <p>Adjoin fresh names \(C=\{c_0,c_1,\ldots\}\). Let \(\Gamma\) be a finite set of \(L(C)\)-sentences and \(\bar c=(c_{t_0},\ldots,c_{t_{n-1}})\) a tuple of names, allowing repetitions. The <a href="omitting-types#finite-condition-formula">finite-condition formula</a> \(\chi_{\Gamma,\bar c}(\bar x)\) has the following property in every nonempty \(L\)-structure:</p>
+  <div class="math-display">\[M\models\chi_{\Gamma,\bar c}[\bar a]\quad\Longleftrightarrow\quad\exists M^*\;(M^*\models\Gamma\land\bar c^{M^*}=\bar a).\]</div>
+  <p>No theory-completeness hypothesis enters this identity.</p>
+  <div class="proof">
+    <p>List the finite union of the new-name supports of \(\Gamma\) and \(\bar c\). Replace those names by distinct free variables \(\bar y\) in the conjunction of \(\Gamma\), and append equations identifying each \(x_i\) with the variable for its name \(c_{t_i}\). Existentially bind only \(\bar y\). The native constant-to-variable truth identity follows by term and formula induction, with old symbols fixed and quantified variables varying on both sides. The witnesses supply exactly the required interpretation of the finitely many names; unused names receive arbitrary values.</p>
+    <p>Repeated names give repeated right-hand variables in the equations, forcing the corresponding tuple coordinates to agree. Empty supports and the empty tuple are permitted. The construction depends only on \(\Gamma\) and the tuple of names, before any model or background theory is chosen.</p>
+  </div>
+</section>
+
+<section id="finite-avoidance" data-formal="mt-partial-omit-finite-avoidance" data-kind="lemma">
+  <h2>A nonprincipal partial type can be avoided at any named tuple</h2>
+  <p>Suppose \(p(\bar x)\) is nonprincipal over \(T\), the finite condition \(T+\Gamma\) is satisfiable, and \(\bar c\) is any tuple of new names of the appropriate arity. Then some \(\varphi\in p\) makes</p>
+  <div class="math-display">\[T+\Gamma+\{\neg\varphi(\bar c)\}\quad\text{satisfiable}.\]</div>
+  <div class="proof">
+    <p>Suppose every such extension were unsatisfiable. Put \(\chi=\chi_{\Gamma,\bar c}\). A model of \(T+\Gamma\) makes \(\chi\) true at its tuple of interpreted names, so \(\chi\) is consistent with \(T\).</p>
+    <p>Take any \(M\models T\) and any \(\bar a\) satisfying \(\chi\). The <a href="#finite-condition-translation">translation lemma</a> gives an expansion \(M^*\models\Gamma\) whose indicated names denote \(\bar a\). If \(\varphi\in p\) failed at \(\bar a\), that expansion would satisfy \(T+\Gamma+\{\neg\varphi(\bar c)\}\), contrary to the assumption. Thus every such tuple satisfies every \(\varphi\in p\).</p>
+    <p>Consequently \(\chi\) is a \(T\)-consistent formula forcing all of \(p\), which contradicts nonprincipality directly. There is no need to select a complete extension of \(p\). The argument keeps the entire, possibly incomplete theory \(T\) in each satisfiability test.</p>
+  </div>
+</section>
+
+<section id="countable-requests" data-formal="mt-partial-omit-meets-task mt-omit-tasks mt-omit-tasks-countable mt-omit-schedule" data-kind="definition">
+  <h2>Schedule partial types in different finite contexts</h2>
+  <p>Let \(I\) be a countable index set, possibly finite or empty. For each \(i\in I\), fix a nonprincipal partial type \(p_i(\bar x_i)\), where the tuple length \(n_i\) is finite and may depend on \(i\). A <strong>partial-type omission task</strong> specifies an index \(i\) and a tuple of names \((c_{t_0},\ldots,c_{t_{n_i-1}})\). It asks us to retain \(\neg\varphi(c_{t_0},\ldots,c_{t_{n_i-1}})\) for some actual condition \(\varphi\in p_i\).</p>
+  <p>Include these tasks together with all sentence-decision and conditional-witness tasks from <a href="omitting-types#countable-tasks">the earlier construction</a>. There are countably many: the expanded language is countable, and for each index the name tuples form \(\mathbb N^{n_i}\). Enumerate all tasks in one sequence. Repeated names, zero-length tuples and repetitions of tasks are included.</p>
+</section>
+
+<section id="finite-construction" data-formal="mt-partial-omit-construction mt-partial-omit-construction-exists mt-omit-decision mt-omit-fresh-witness" data-kind="lemma">
+  <h2>Every stage retains a finite satisfiable condition</h2>
+  <p>There is an increasing sequence \(\Gamma_0\subseteq\Gamma_1\subseteq\cdots\) of finite added conditions such that \(\Gamma_0=\varnothing\), every \(T+\Gamma_s\) is satisfiable, and the task at stage \(s\) is met in \(\Gamma_{s+1}\).</p>
+  <div class="proof">
+    <p>Start with satisfiability of \(T\). At a decision task add either \(\sigma\) or \(\neg\sigma\), choosing a satisfiable side. At a witness task use <a href="omitting-types#decision-and-witness">a fresh conditional witness</a> \((\exists z\,\eta(z))\to\eta(c_k)\). Its proof uses a model of the current condition and changes only a fresh name, so it does not require \(T\) to be complete.</p>
+    <p>At a partial-type task add the negation supplied by <a href="#finite-avoidance">finite avoidance</a>. Each step adds one sentence, preserves all earlier choices, and keeps the current added set finite. Classical recursion makes these choices at every natural stage. The original theory \(T\), which can be infinite, remains present throughout.</p>
+  </div>
+</section>
+
+<section id="ambient-limit" data-formal="mt-partial-omit-limit mt-partial-omit-limit-consistent mt-partial-omit-avoids-original mt-partial-omit-limit-properties" data-kind="lemma">
+  <h2>The union has a model, but omission is not yet guaranteed there</h2>
+  <p>The expanded theory \(U=T\cup\bigcup_s\Gamma_s\) is satisfiable. It contains every chosen decision, witness implication and failed partial-type condition.</p>
+  <div class="proof">
+    <p>A finite subset uses added sentences from only finitely many stages. Their largest index puts them all in one satisfiable \(T+\Gamma_s\), using stage zero when there are no added sentences. <a href="ultraproducts#compactness">Compactness</a> gives an ambient model \(N^*\models U\). Its \(L\)-reduct \(N\) satisfies \(T\). Each task occurred and its added sentence persisted, giving the stated retained conditions.</p>
+    <p>Only tuples denoted by the new names were assigned failures. An unnamed tuple in \(N\) may still realize a requested partial type. The next step selects the model on which all tuples were covered.</p>
+  </div>
+</section>
+
+<section id="named-elementary-model" data-formal="mt-omit-named-closed mt-omit-named-substructure mt-omit-named-nonempty mt-omit-named-countable mt-omit-named-elementary mt-omit-named-model" data-kind="lemma">
+  <h2>Use precisely the named elements as the final domain</h2>
+  <p>The set \(S=\{c_k^{N^*}:k\in\mathbb N\}\), with the induced \(L\)-structure, is a nonempty countable elementary submodel of \(N\). In particular \(S\models T\).</p>
+  <div class="proof">
+    <p>The value of \(c_0\) proves nonemptiness, and the names enumerate the domain. Each old function value on named arguments is itself named: the witness task for \(z=f(c_{t_0},\ldots,c_{t_{m-1}})\) supplies a name for this value. This includes old constants, where the argument tuple is empty. Thus \(S\) is a substructure.</p>
+    <p>For an arbitrary existential formula true in \(N\) with a finite tuple of parameters from \(S\), choose names for those parameters. Its conditional-witness task gives a named witness. The <a href="elementary-submodels#tarski-vaught">Tarski–Vaught criterion</a> therefore gives \(S\preccurlyeq N\). These are exactly <a href="omitting-types#named-substructure">the named-carrier</a> and <a href="omitting-types#named-elementarity">elementarity</a> arguments; neither used completeness of the background theory or maximality of the types to be omitted.</p>
+  </div>
+</section>
+
+<section id="partial-omission" data-formal="mt-partial-omit-named-omission mt-partial-omit-general-omission mt-partial-omit-partial-types" data-kind="theorem">
+  <h2>Countably many nonprincipal partial types can be omitted together</h2>
+  <div class="statement-box"><p>Let \(T\) be a satisfiable theory in a countable first-order language. Every countable family of nonprincipal partial types over \(T\), in possibly different finite tuple contexts, is omitted in some nonempty countable model of \(T\). The theory need not be complete.</p></div>
+  <div class="proof">
+    <p>Perform <a href="#finite-construction">the finite construction</a>, take an ambient model of its union, and select <a href="#named-elementary-model">the named elementary submodel</a> \(S\).</p>
+    <p>Fix an index \(i\) and a tuple \(\bar a\in S^{n_i}\). Choose a name for each coordinate, allowing repetitions. The omission task for this exact tuple of indices retained \(\neg\varphi(\bar c)\) for some \(\varphi\in p_i\). It is true in \(N^*\), hence \(\varphi\) is false at \(\bar a\) in \(N\). Elementarity makes it false at the same tuple in \(S\). Thus \(\bar a\) fails a condition of \(p_i\), and \(S\) omits \(p_i\). This covers every index and tuple, including empty tuples.</p>
+  </div>
+</section>
+
+<section id="complete-type-specialization" data-formal="mt-partial-omit-complete-types mt-isolated-unavoidable" data-kind="lemma">
+  <h2>The earlier complete-type theorem is recovered</h2>
+  <p>For complete types, <a href="#nonprincipal-types">nonprincipality is nonisolation</a>. Hence the simultaneous omission theorem for nonisolated complete types follows from <a href="#partial-omission">the partial-type theorem</a>. Its construction does not require \(T\) complete; completeness is needed for the separate assertion that an isolated type is realized in every model.</p>
+  <div class="proof">
+    <p>Apply the theorem to the formula sets of the given complete types. Their consistency is part of being complete types. The equivalence of nonprincipality and nonisolation gives the hypothesis. If \(T\) is complete, the earlier <a href="isolated-types#unavoidable-realization">unavoidable-realization theorem</a> supplies the asserted converse obstruction.</p>
+  </div>
+</section>
+
+<section id="limits-of-the-criterion" data-formal="mt-partial-omit-unary-condition mt-partial-omit-unary-type mt-partial-omit-empty-predicate mt-partial-omit-principal-omitted mt-partial-omit-tautology mt-partial-omit-tautology-realized mt-partial-omit-completion-insufficient" data-kind="question">
+  <h2>Is nonprincipality necessary, and does omitting one completion suffice?</h2>
+  <p>If \(T\) is incomplete, must every omitted partial type be nonprincipal? Can a model omitting one complete extension of \(p\) still realize \(p\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Nonprincipality need not be necessary for omission, and omitting one completion need not omit the original partial type.</p>
+    <div class="proof">
+    <p>Nonprincipality is sufficient for omission, but it need not be necessary over an incomplete theory. Let \(T\) be the empty theory in a language with one unary predicate \(P\), and let \(p(x)=\{P(x)\}\). It is consistent and principal, forced by \(P(x)\) itself. A one-element structure with \(P\) empty nevertheless omits it. Consistency of \(P(x)\) with \(T\) does not force every model of this incomplete theory to contain a \(P\)-element.</p>
+    <p>Omitting one completion also does not suffice. Over true arithmetic take \(p(x)=\{x=x\}\), which every element realizes. A complete extension containing all numeral inequalities \(x\ne\overline n\) is omitted by the standard arithmetic structure, as in <a href="types-and-realization#nonstandard-type">the nonstandard-type example</a>. That structure still realizes \(p\). The omission construction must therefore schedule failures from the original \(p_i\), rather than from arbitrarily chosen completions.</p>
+    </div>
+  </div></details>
+</section>

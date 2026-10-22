@@ -1,0 +1,109 @@
+<section data-formal="mt-isolated-isolates mt-isolated-isolated mt-isolated-existential-sentence mt-isolated-existential-truth" id="isolating-formulas" data-kind="definition">
+  <h2>One condition determines every condition in a type</h2>
+  <p>Fix a first-order language \(L\), a satisfiable theory \(T\), and a finite variable list \(\bar x=(x_0,\ldots,x_{n-1})\), allowing \(n=0\). All structures are nonempty. Use the <a href="types-and-realization#complete-types">complete type space</a> \(S_n(T)\). A formula \(\theta(\bar x)\) <strong>isolates</strong> a complete type \(p\in S_n(T)\) if \(\theta\in p\) and, for every \(\varphi\in p\),</p>
+  <div class="math-display">\[T\models\forall\bar x\,(\theta(\bar x)\to\varphi(\bar x)).\]</div>
+  <p>A type with such a formula is <strong>isolated</strong>. The quantifiers close exactly the displayed free variables; when \(n=0\), there are no quantifiers to add. Membership \(\theta\in p\) ensures that \(\theta\) is consistent with \(T\), so an impossible formula cannot isolate a type.</p>
+  <p>The formula need not be a literal or quantifier-free. Isolation asks for one finite expression, while the type may contain infinitely many formulas. Named parameters can be included by treating their parameter language as \(L\).</p>
+  <p><a href="omitting-partial-types#nonprincipal-types">Principality for partial types</a> uses a consistent formula forcing every requirement; for complete types it agrees with isolation.</p>
+</section>
+
+<section data-formal="mt-isolated-unique" id="unique-completion" data-kind="lemma">
+  <h2>Isolation is uniqueness of the compatible complete type</h2>
+  <p>For \(p\in S_n(T)\) and \(\theta\in p\), the formula \(\theta\) isolates \(p\) if and only if \(p\) is the only complete type containing \(\theta\).</p>
+  <div class="proof">
+    <p>Suppose \(\theta\) isolates \(p\), and let \(q\) be a complete type containing it. Realize \(q\) by \(\bar b\) in a model \(N\models T\), using <a href="types-and-realization#completing-a-type">realization of complete types</a>. Since \(N\models\theta[\bar b]\), every formula of \(p\) is true there. The <a href="types-and-realization#tuple-types">type of this tuple</a> is \(q\), so \(p\subseteq q\). Maximal consistency gives \(p=q\).</p>
+    <p>Conversely, suppose \(p\) is the only complete type containing \(\theta\). If some \(\varphi\in p\) were not a consequence of \(\theta\) modulo \(T\), there would be a model \(N\models T\) and tuple \(\bar b\) with \(N\models\theta[\bar b]\land\neg\varphi[\bar b]\). The complete type of \(\bar b\) contains \(\theta\), hence equals \(p\), but it also contains \(\neg\varphi\). This contradicts \(\varphi\in p\). Thus every required implication holds.</p>
+  </div>
+</section>
+
+<section data-formal="mt-isolated-equivalent mt-isolated-isolator-realizes" id="equivalent-isolators" data-kind="lemma">
+  <h2>Different isolating formulas describe the same tuples</h2>
+  <p>If \(\theta\) and \(\eta\) both isolate \(p\in S_n(T)\), then \(T\models\forall\bar x\,(\theta\leftrightarrow\eta)\). Moreover, in any \(M\models T\), the tuples satisfying \(\theta\) are exactly the tuples realizing \(p\).</p>
+  <div class="proof">
+    <p>Each isolator belongs to \(p\), and the other implies every formula in \(p\), giving the two implications between \(\theta\) and \(\eta\). A tuple realizing \(p\) satisfies \(\theta\) because \(\theta\in p\). Conversely, a tuple satisfying \(\theta\) satisfies every formula in \(p\) by isolation, so realizes \(p\). Its complete type is therefore exactly \(p\).</p>
+  </div>
+</section>
+
+<section data-formal="mt-isolated-unavoidable" id="unavoidable-realization" data-kind="theorem">
+  <h2>Every model of a complete theory realizes its isolated types</h2>
+  <div class="statement-box"><p>Let \(T\) be satisfiable and complete. Every isolated \(p\in S_n(T)\) is realized in every nonempty model of \(T\).</p></div>
+  <div class="proof">
+    <p>Let \(\theta\) isolate \(p\). A realization of \(p\) in some model of \(T\) shows that the sentence \(\exists\bar x\,\theta\) is consistent with \(T\). By <a href="theories-and-axiomatization#complete-theories">completeness of the theory</a>, either this sentence or its negation holds in every model. The negation is excluded by that realizing model, so \(T\models\exists\bar x\,\theta\).</p>
+    <p>Consequently any \(M\models T\) has a tuple satisfying \(\theta\), and <a href="#equivalent-isolators"></a> says that the tuple realizes \(p\). For \(n=0\), the existential closure is just \(\theta\) and the tuple is the unique empty tuple.</p>
+  </div>
+  <p>The assumption is completeness of \(T\), not completeness of an individual type: types are complete throughout this statement.</p>
+  <p>For the converse question in countable languages, see <a href="omitting-types#isolation-obstruction">isolation as the obstruction to countable omission</a>.</p>
+</section>
+
+<section data-formal="mt-isolated-nonstandard mt-type-completion mt-type-nonstandard-partial" id="omitted-nonisolated" data-kind="question">
+  <h2>Why the numeral exclusions cannot be isolated</h2>
+  <p>Let \(q(x)=\{x\ne\overline{k}:k\in\mathbb N\}\) in the arithmetic language. Show that any complete type over true arithmetic extending \(q\) is nonisolated.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The <a href="types-and-realization#nonstandard-type">numeral-exclusion example</a> proves that \(q\) is a partial type over the complete satisfiable theory \(\operatorname{Th}(\mathbb N_A)\), where \(\mathbb N_A\) is the standard arithmetic structure. It therefore has a complete extension \(p\).</p>
+    <p>No tuple in \(\mathbb N_A\) realizes \(p\), since a realization would also realize \(q\), whereas every natural number equals its own numeral. If \(p\) were isolated, <a href="#unavoidable-realization"></a> would force a realization in this same standard model. Thus \(p\) is nonisolated. The argument applies to every complete extension, without choosing a particular one.</p>
+  </div></details>
+</section>
+
+<section data-formal="mt-isolated-separates" id="separating-types" data-kind="lemma">
+  <h2>Different complete types can be separated by a formula</h2>
+  <p>If \(p,q\in S_n(T)\) and \(p\ne q\), there is a formula \(\varphi\in p\) with \(\neg\varphi\in q\).</p>
+  <div class="proof">
+    <p>If \(p\subseteq q\), maximal consistency would imply equality. Thus some \(\varphi\in p\) does not belong to \(q\). Since \(q\) decides every formula, it contains \(\neg\varphi\), as required.</p>
+  </div>
+</section>
+
+<section data-formal="mt-isolated-finite-implies-isolated" id="finite-types-isolated" data-kind="theorem">
+  <h2>Finitely many complete types can each be singled out</h2>
+  <p>If \(S_n(T)\) is finite, every member of \(S_n(T)\) is isolated. No completeness assumption on \(T\) is needed.</p>
+  <div class="proof">
+    <p>Fix \(p\in S_n(T)\). For every other type \(q\), choose by <a href="#separating-types"></a> a formula \(\varphi_q\in p\) with \(\neg\varphi_q\in q\). There are only finitely many such choices. Let</p>
+    <div class="math-display">\[\theta_p=\bigwedge_{q\in S_n(T),\ q\ne p}\varphi_q.\]</div>
+    <p>The empty conjunction is \(\top\). Any realization of \(p\) satisfies every chosen formula and hence \(\theta_p\), so \(\theta_p\in p\). No \(q\ne p\) can contain \(\theta_p\): its realizing tuple would satisfy \(\varphi_q\) and \(\neg\varphi_q\) simultaneously. Thus \(p\) is the unique complete type containing \(\theta_p\), and <a href="#unique-completion"></a> gives isolation. This includes the one-type case, where \(\top\) isolates that type.</p>
+  </div>
+</section>
+
+<section data-formal="mt-isolated-finite-iff-isolated" id="isolated-types-finite" data-kind="theorem">
+  <h2>Compactness turns individual isolators into a finite list</h2>
+  <div class="statement-box"><p>For every satisfiable theory \(T\) and every finite \(n\), the set \(S_n(T)\) is finite if and only if every one of its types is isolated.</p></div>
+  <div class="proof">
+    <p>One direction is <a href="#finite-types-isolated"></a>. For the converse, choose an isolating formula \(\theta_p\) for each \(p\in S_n(T)\), and suppose the set of types were infinite. Consider the requests</p>
+    <div class="math-display">\[r(\bar x)=\{\neg\theta_p(\bar x):p\in S_n(T)\}.\]</div>
+    <p>Every finite subset of these requests excludes only finitely many of the types. Choose a type \(q\) outside that finite list and realize it by a tuple in a model of \(T\). That tuple cannot satisfy any selected \(\theta_p\), because <a href="#unique-completion"></a> would then give \(q=p\). It therefore realizes all the finitely many selected negations.</p>
+    <p>By <a href="types-and-realization#finite-consistency">compactness for partial types</a>, \(r\) has a realization \(\bar b\) in some model \(N\models T\). Let \(q=\operatorname{tp}^N_T(\bar b)\). Since \(\theta_q\in q\), the tuple satisfies \(\theta_q\). But \(\neg\theta_q\in r\), so it also satisfies its negation. This contradiction proves finiteness.</p>
+  </div>
+  <p>For what this finiteness says about all countable models of a theory, see the <a href="countable-categoricity#categoricity-criterion">countable categoricity theorem</a>.</p>
+</section>
+
+<section data-formal="mt-isolated-equality-pattern mt-isolated-equality-formula mt-isolated-equality-truth" id="equality-patterns" data-kind="definition">
+  <h2>A finite pattern of equal and different coordinates</h2>
+  <p>In the language containing only equality, an <strong>equality pattern</strong> on \(n\) coordinates is an equivalence relation \(E\) on \(\{0,\ldots,n-1\}\). Its <strong>pattern formula</strong> is the conjunction</p>
+  <div class="math-display">\[\theta_E(\bar x)=\bigwedge_{i\,E\,j}x_i=x_j\ \land\!\bigwedge_{\neg(i\,E\,j)}x_i\ne x_j.\]</div>
+  <p>All indices range over the displayed finite set, and an empty conjunction is \(\top\). A tuple satisfies \(\theta_E\) exactly when its equal coordinates are precisely the \(E\)-equivalent positions, by the truth clause for a conjunction.</p>
+</section>
+
+<section data-formal="mt-isolated-equality-realizable mt-isolated-equality-isolates mt-isolated-equality-classification mt-isolated-equality-patterns-finite mt-isolated-equality-types-finite" id="infinite-equality" data-kind="theorem">
+  <h2>Equality patterns are exactly the types in an infinite set</h2>
+  <p>Let \(T_\infty\) be the theory of infinite sets in the equality language. Complete \(n\)-types over \(T_\infty\) correspond bijectively to equality patterns, and \(\theta_E\) isolates the type with pattern \(E\). In particular, there are finitely many such types for each \(n\).</p>
+  <div class="proof">
+    <p>An equality pattern is realizable in an infinite set: choose a different element for each of its finitely many equivalence classes, and assign that element to the coordinates in the class. Its tuple type contains \(\theta_E\).</p>
+    <p>By <a href="quantifier-elimination#infinite-equality">quantifier elimination for infinite sets</a>, every formula is equivalent modulo \(T_\infty\) to a quantifier-free formula. There are no functions, constants or relation symbols, so its atoms are equalities of coordinates. Two tuples with the same equality pattern, in any models of \(T_\infty\), therefore agree on atoms, then on Boolean combinations, and hence on every formula. Thus \(\theta_E\) belongs to exactly one complete type and isolates it.</p>
+    <p>Conversely, realize any complete type in a model of \(T_\infty\). Equality of coordinates gives its equivalence relation \(E\), so the type is the one just constructed. Different patterns disagree on some equality, hence yield different types. Finally there are only finitely many binary relations on a finite coordinate set, so only finitely many equivalence relations. For \(n=0\) the unique empty pattern gives the unique zero-type.</p>
+  </div>
+</section>
+
+<section data-formal="mt-isolated-ordered-pattern mt-isolated-ordered-formula mt-isolated-ordered-truth mt-isolated-ordered-tuple" id="ordered-patterns" data-kind="definition">
+  <h2>Equal coordinates arranged in increasing blocks</h2>
+  <p>An <strong>ordered equality pattern</strong> on \(n\) coordinates is a partition of \(\{0,\ldots,n-1\}\) into a finite ordered list of nonempty disjoint blocks \(B_0,\ldots,B_{k-1}\). Their union is the coordinate set; if \(n=0\), the list is empty. Its <strong>order-pattern formula</strong> is</p>
+  <div class="math-display">\[\theta_{\bar B}(\bar x)=\bigwedge_{\substack{i,j\in B_r\text{ for some }r}}x_i=x_j\ \land\!\bigwedge_{\substack{i\in B_r,\ j\in B_s\\r&lt;s}}x_i&lt;x_j.\]</div>
+  <p>Within a block the coordinates coincide; points from an earlier block are smaller than those from a later block. These clauses decide every equality and strict comparison of coordinates in a linear order, including comparisons in the reverse direction. The formulas use no parameters.</p>
+</section>
+
+<section data-formal="mt-isolated-ordered-realizable mt-isolated-ordered-patterns-finite mt-isolated-ordered-isolates mt-isolated-dlo-classification mt-isolated-dlo-types-finite mt-isolated-pair-equal mt-isolated-pair-less mt-isolated-pair-greater mt-isolated-dlo-two-types" id="dense-orders" data-kind="theorem">
+  <h2>Dense-order types include repeated coordinates</h2>
+  <p>Let \(T_{\mathrm{dlo}}\) be the theory of nonempty dense linear orders without endpoints in the strict-order language. Its complete \(n\)-types correspond bijectively to ordered equality patterns, and each order-pattern formula isolates its corresponding type. For two variables there are exactly three types, isolated respectively by \(x_0=x_1\), \(x_0&lt;x_1\), and \(x_1&lt;x_0\).</p>
+  <div class="proof">
+    <p>Every ordered equality pattern is realized in any model of \(T_{\mathrm{dlo}}\). If there are \(k&gt;0\) blocks, choose \(k\) strictly increasing points: start anywhere and repeatedly use the absence of a greatest point. Assign the \(r\)-th point to every coordinate in \(B_r\). When there are no blocks, take the empty tuple.</p>
+    <p>By <a href="quantifier-elimination#dlo-elimination">quantifier elimination for dense orders</a>, every formula is equivalent to a Boolean combination of equalities and strict comparisons. The pattern fixes the truth of all those atoms, hence of every formula. As in <a href="#infinite-equality"></a>, its formula belongs to exactly one complete type and isolates it.</p>
+    <p>Conversely, in any realizing tuple, group equal coordinates and order their distinct values increasingly. This produces the ordered equality pattern of its type. Two different patterns disagree on an equality or a comparison, so the correspondence is injective as well as onto. There are finitely many patterns because they are determined by the finitely many equality and comparison truth values. With two coordinates the two entries either coincide or occur in one of the two strict orders; all three possibilities are realized.</p>
+  </div>
+</section>

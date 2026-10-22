@@ -1,0 +1,113 @@
+<section id="closure-definitions" data-formal="mt-closure-definable mt-closure-algebraic definable-finite-parameters" data-kind="definition">
+  <h2>One answer or finitely many possible answers</h2>
+  <p>Fix a nonempty \(L\)-structure \(M\) and a parameter set \(A\subseteq M\). Recall that an <a href="definability-and-automorphisms#definable-sets">\(A\)-definable set</a> is defined by a first-order formula using a finite tuple of parameters from \(A\). All closures in this entry are taken inside this specified \(M\).</p>
+  <p>An element \(b\in M\) is <strong>definable over \(A\)</strong> if the singleton \(\{b\}\) is \(A\)-definable. It is <strong>algebraic over \(A\)</strong> if it belongs to some finite \(A\)-definable subset of \(M\). Define the <strong>definable closure</strong> and <strong>algebraic closure</strong> by</p>
+  <div class="math-display">\[\operatorname{dcl}_M(A)=\{b\in M:\{b\}\text{ is }A\text{-definable}\},\]</div>
+  <div class="math-display">\[\operatorname{acl}_M(A)=\{b\in M:b\text{ belongs to a finite }A\text{-definable set}\}.\]</div>
+  <p>Equivalently, choose a formula \(\varphi(x,\bar y)\) and a finite tuple \(\bar a\) from \(A\). Definability of \(b\) asks that \(\varphi(M,\bar a)=\{b\}\); algebraicity asks that this solution set be finite and contain \(b\). Language constants are already available, even when \(A=\varnothing\). The word “algebraic” here does not assume that \(M\) is a field.</p>
+</section>
+
+<section id="first-laws" data-formal="mt-closure-extensive mt-closure-unique-implies-finite mt-closure-definable-monotone mt-closure-algebraic-monotone mt-closure-definable-finite-character mt-closure-algebraic-finite-character" data-kind="lemma">
+  <h2>Enlarging the parameter set and using only finitely many parameters</h2>
+  <p>For all \(A,B\subseteq M\),</p>
+  <div class="math-display">\[A\subseteq\operatorname{dcl}_M(A)\subseteq\operatorname{acl}_M(A).\]</div>
+  <p>If \(A\subseteq B\), then \(\operatorname{dcl}_M(A)\subseteq\operatorname{dcl}_M(B)\) and \(\operatorname{acl}_M(A)\subseteq\operatorname{acl}_M(B)\). Each membership has <strong>finite character</strong>: an element belongs to either closure of \(A\) if and only if it belongs to the same closure of some finite subset \(A_0\subseteq A\).</p>
+  <div class="proof">
+    <p>For \(a\in A\), the formula \(x=a\) defines \(\{a\}\), and a singleton is finite. A formula using parameters from \(A\) also uses parameters from \(B\) when \(A\subseteq B\), proving monotonicity. Finally every defining formula uses only finitely many parameter values. Collect them into \(A_0\); its solution set is unchanged. The reverse finite-character implication is monotonicity.</p>
+  </div>
+</section>
+
+<section id="two-point-question" data-formal="mt-closure-two-point-closures definable-automorphism-invariance" data-kind="question">
+  <h2>Can a finite choice fail to determine a point?</h2>
+  <p>Let \(M\) have exactly two elements and only equality in its language. Determine \(\operatorname{dcl}_M(\varnothing)\) and \(\operatorname{acl}_M(\varnothing)\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The formula \(x=x\) defines all of \(M\), a finite set, so \(\operatorname{acl}_M(\varnothing)=M\). The permutation interchanging the two points is an automorphism. A parameter-free definable singleton would be preserved by it, contradicting <a href="definability-and-automorphisms#invariance">automorphism invariance</a>. Neither singleton is definable, so \(\operatorname{dcl}_M(\varnothing)=\varnothing\). Thus definable and algebraic closure can differ even in a finite structure.</p>
+  </div></details>
+</section>
+
+<section id="uniquely-defined-parameters" data-formal="mt-closure-eliminate-unique-parameters" data-kind="lemma">
+  <h2>Eliminate parameters that already have unique definitions</h2>
+  <p>If \(B\subseteq\operatorname{dcl}_M(A)\), every \(B\)-definable subset of a finite power of \(M\) is \(A\)-definable.</p>
+  <div class="proof">
+    <p>Let the set be defined by \(\varphi(\bar x,b_0,\ldots,b_{n-1})\). For each \(i&lt;n\), choose an \(A\)-formula \(\psi_i(y_i,\bar a_i)\) whose unique solution is \(b_i\). Combine the finitely many parameter lists \(\bar a_i\) into one finite list from \(A\), and rename bound variables to keep all displayed variables free and distinct. Then the original set is defined by</p>
+    <div class="math-display">\[\exists y_0\cdots\exists y_{n-1}\;\left(\bigwedge_{i&lt;n}\psi_i(y_i,\bar a_i)\land\varphi(\bar x,\bar y)\right).\]</div>
+    <p>The tuple \(\bar b\) witnesses the forward direction. In the reverse direction, uniqueness forces every chosen \(y_i\) to equal \(b_i\). This is a first-order formula with parameters only from \(A\). For \(n=0\), the conjunction is \(\top\), and the quantifier block is empty. The construction uses the <a href="definability-and-automorphisms#boolean-closure">Boolean closure</a> and <a href="definability-and-automorphisms#projection">projection</a> rules for definability.</p>
+  </div>
+</section>
+
+<section id="uniform-finite-bound" data-formal="mt-closure-fiber-bound-formula mt-closure-fiber-bound-realization mt-closure-fiber-bound-cardinality" data-kind="definition">
+  <h2>Say inside a formula that a fiber has bounded size</h2>
+  <p>For a fixed natural number \(m\) and formula \(\varphi(x,\bar y)\), the <strong>at-most-\(m\)-solutions formula</strong> is</p>
+  <div class="math-display">\[B_m\varphi(\bar y)=\exists z_0\cdots\exists z_{m-1}\,\forall x\;\left(\varphi(x,\bar y)\to\bigvee_{j&lt;m}x=z_j\right).\]</div>
+  <p>Its truth at \(\bar c\) means exactly that \(\varphi(M,\bar c)\) has at most \(m\) elements. Bound names are chosen fresh, so this construction retains the free tuple \(\bar y\).</p>
+  <div class="proof">
+    <p>If the formula holds, its finitely many witnesses cover the solution set. Conversely, enumerate that finite set and, when it has fewer than \(m\) elements, fill the remaining slots with any point of the nonempty domain. For \(m=0\), there are no witnesses and the disjunction is \(\bot\); the formula says that the solution set is empty.</p>
+  </div>
+</section>
+
+<section id="idempotence" data-formal="mt-closure-definable-idempotent mt-closure-algebraic-idempotent" data-kind="theorem">
+  <h2>Taking either closure twice adds nothing</h2>
+  <div class="statement-box"><p>For every \(A\subseteq M\),</p>
+    <div class="math-display">\[\operatorname{dcl}_M(\operatorname{dcl}_M(A))=\operatorname{dcl}_M(A),\qquad \operatorname{acl}_M(\operatorname{acl}_M(A))=\operatorname{acl}_M(A).\]</div>
+  </div>
+  <div class="proof">
+    <p>Extensivity gives one inclusion in each equality. If a singleton is definable over \(\operatorname{dcl}_M(A)\), <a href="#uniquely-defined-parameters"></a> gives its definition over \(A\). This proves the other inclusion for definable closure.</p>
+    <p>For algebraic closure, let \(c\in\operatorname{acl}_M(\operatorname{acl}_M(A))\). Choose \(\varphi(x,\bar b)\) with a finite solution set containing \(c\), where every \(b_i\in\operatorname{acl}_M(A)\). Let \(m\) be the size of this particular solution set. For each \(i&lt;n\), choose an \(A\)-formula \(\psi_i(y_i,\bar a_i)\) with finite solution set containing \(b_i\).</p>
+    <p>Only finitely many tuples \(\bar y\) satisfy all the \(\psi_i\): they belong to a finite product of finite sets. Some such tuples might make \(\varphi(M,\bar y)\) infinite. Exclude them by the first-order size condition from <a href="#uniform-finite-bound"></a>. Put</p>
+    <div class="math-display">\[\Delta(\bar y)=\bigwedge_{i&lt;n}\psi_i(y_i,\bar a_i)\land B_m\varphi(\bar y),\qquad \chi(x)=\exists\bar y\;(\Delta(\bar y)\land\varphi(x,\bar y)).\]</div>
+    <p>The formula \(\chi\) uses only the combined finite parameter list from \(A\). Its solution set is contained in a union, over finitely many candidate tuples, of sets with at most \(m\) elements. It is therefore finite. The original tuple \(\bar b\) satisfies \(\Delta\), so \(\chi(c)\) holds. Thus \(c\in\operatorname{acl}_M(A)\). Empty parameter tuples give one candidate, the empty tuple, and the same proof applies.</p>
+  </div>
+</section>
+
+<section id="closure-substructures" data-formal="mt-closure-definable-functions mt-closure-algebraic-functions mt-closure-definable-substructure mt-closure-algebraic-substructure" data-kind="lemma">
+  <h2>Closures contain constants and are closed under the language functions</h2>
+  <p>Both \(\operatorname{dcl}_M(A)\) and \(\operatorname{acl}_M(A)\) contain the interpretations of all language constants and are closed under every language function. They are therefore <a href="elementary-submodels#function-closed-carriers">function-closed carriers</a> in \(M\). When a carrier is nonempty, its induced structure is an \(L\)-substructure of \(M\). An empty closure is allowed as carrier data; it is not a nonempty model.</p>
+  <div class="proof">
+    <p>For an \(n\)-ary function symbol \(f\) and tuple \(\bar b\), the formula \(x=f(b_0,\ldots,b_{n-1})\) uniquely defines the output over the input tuple. If all inputs belong to \(\operatorname{dcl}_M(A)\), this output belongs to \(\operatorname{dcl}_M(\operatorname{dcl}_M(A))=\operatorname{dcl}_M(A)\). If all inputs belong to \(\operatorname{acl}_M(A)\), the output belongs to \(\operatorname{dcl}_M(\operatorname{acl}_M(A))\subseteq\operatorname{acl}_M(\operatorname{acl}_M(A))=\operatorname{acl}_M(A)\). Here monotonicity allows the finite input tuple as parameters, and the equalities are <a href="#idempotence">idempotence</a>. For \(n=0\), the tuple is empty and the same argument covers every constant symbol.</p>
+  </div>
+  <p>For stronger finiteness conclusions under countable categoricity, see <a href="countable-categoricity#finite-closures">closures of finite parameter sets</a>.</p>
+</section>
+
+<section id="finite-fibers" data-formal="mt-closure-elementary-finite-fiber" data-kind="lemma">
+  <h2>Elementary maps preserve an entire finite solution set</h2>
+  <p>Let \(f:M\to N\) be an <a href="elementary-submodels#elementary-embeddings">elementary embedding</a>. If \(S=\varphi(M,\bar a)\) is finite, then</p>
+  <div class="math-display">\[\varphi(N,f(\bar a))=f[S].\]</div>
+  <div class="proof">
+    <p>Enumerate \(S=\{b_0,\ldots,b_{m-1}\}\). In \(M\), the formula</p>
+    <div class="math-display">\[\forall x\;\left(\varphi(x,\bar a)\leftrightarrow\bigvee_{j&lt;m}x=b_j\right)\]</div>
+    <p>is true. Regard \(\bar a,\bar b\) as its finite free parameter tuple before evaluating it. Elementarity transfers this same formula to \(N\), with parameters \(f(\bar a),f(\bar b)\). Its truth says exactly that the displayed solution set in \(N\) is \(\{f(b_0),\ldots,f(b_{m-1})\}\). This also handles \(m=0\): an empty solution set cannot gain a witness under an elementary embedding.</p>
+  </div>
+</section>
+
+<section id="elementary-transport" data-formal="mt-closure-elementary-definable-image mt-closure-elementary-algebraic-image" data-kind="theorem">
+  <h2>Closures agree along an elementary embedding</h2>
+  <div class="statement-box"><p>For every elementary embedding \(f:M\to N\) and every \(A\subseteq M\),</p>
+    <div class="math-display">\[f[\operatorname{dcl}_M(A)]=\operatorname{dcl}_N(f[A]),\qquad f[\operatorname{acl}_M(A)]=\operatorname{acl}_N(f[A]).\]</div>
+  </div>
+  <div class="proof">
+    <p>If \(b\) belongs to either closure in \(M\), take its defining singleton or finite solution set over a finite tuple from \(A\). By <a href="#finite-fibers"></a>, the same formula with transported parameters defines exactly its image in \(N\). The image is again a singleton or a finite set, respectively. This proves both forward inclusions.</p>
+    <p>Conversely, suppose \(c\in\operatorname{acl}_N(f[A])\). Choose a finite solution set \(S_N=\varphi(N,f(\bar a))\) containing \(c\), lifting its finitely many parameters to a tuple \(\bar a\) from \(A\). Elementarity gives \(f[S_M]\subseteq S_N\), where \(S_M=\varphi(M,\bar a)\). Injectivity of \(f\) makes \(S_M\) finite. The preceding lemma now gives \(S_N=f[S_M]\), so \(c=f(b)\) for some \(b\in S_M\subseteq\operatorname{acl}_M(A)\). If \(S_N=\{c\}\), then \(S_M\) is a singleton as well, because its image is that nonempty singleton and \(f\) is injective. This proves the reverse definable-closure inclusion too.</p>
+  </div>
+</section>
+
+<section id="automorphisms" data-formal="mt-closure-elementary-definable-image mt-closure-elementary-algebraic-image mt-closure-automorphism-fixes-definable elem-isomorphism-elementary definable-automorphism-invariance" data-kind="lemma">
+  <h2>Symmetries preserve closures and fix uniquely defined points</h2>
+  <p>For every automorphism \(g\) of \(M\),</p>
+  <div class="math-display">\[g[\operatorname{dcl}_M(A)]=\operatorname{dcl}_M(g[A]),\qquad g[\operatorname{acl}_M(A)]=\operatorname{acl}_M(g[A]).\]</div>
+  <p>If \(g\) fixes \(A\) pointwise, it fixes every element of \(\operatorname{dcl}_M(A)\) pointwise and preserves \(\operatorname{acl}_M(A)\) as a set.</p>
+  <div class="proof">
+    <p>An isomorphism is elementary, so the image equalities follow from <a href="#elementary-transport"></a>. When \(g\) fixes \(A\), we have \(g[A]=A\), giving preservation of both closures as sets. For the stronger pointwise assertion, take an \(A\)-definable singleton \(\{b\}\). <a href="definability-and-automorphisms#invariance">Definability makes this singleton invariant under \(g\)</a>, so \(g(b)=b\).</p>
+  </div>
+  <p>The converse characterizations hold in countable omega-saturated models over finite parameter sets: <a href="types-and-symmetry#definable-closure-orbits">singleton orbits characterize definable closure</a>, and <a href="types-and-symmetry#algebraic-closure-orbits">finite orbits characterize algebraic closure</a>.</p>
+</section>
+
+<section id="equality-and-dense-orders" data-formal="mt-closure-infinite-equality-closures mt-closure-dense-order-closures qe-dense-order-definable-classification" data-kind="theorem">
+  <h2>Equality and dense order add no points to the parameters</h2>
+  <p>For an infinite equality structure \(M\), and for a nonempty dense linear order without endpoints in the strict-order language, every \(A\subseteq M\) satisfies</p>
+  <div class="math-display">\[\operatorname{dcl}_M(A)=\operatorname{acl}_M(A)=A.\]</div>
+  <div class="proof">
+    <p>Consider first an infinite equality structure, and a finite \(A\)-definable set \(S\). Its formula uses a finite parameter set \(A_0\subseteq A\). If \(b\in S\setminus A_0\), choose \(d\) outside the finite set \(S\cup A_0\), using infinitude. The permutation swapping \(b,d\) and fixing every other point is an automorphism of the equality structure fixing \(A_0\). Invariance of \(S\) would give \(d\in S\), a contradiction. Hence \(S\subseteq A_0\subseteq A\).</p>
+    <p>In a dense linear order, <a href="quantifier-elimination#unary-definable-sets">quantifier elimination describes an \(A\)-definable set</a> as a finite union of points from \(A\) and open intervals or rays with endpoints, when finite, in \(A\). Every nonempty interval or ray contains infinitely many points. For a bounded interval, density repeatedly inserts another point before its upper endpoint; for a ray, use density together with the missing-endpoint condition. Thus a finite definable set can receive no point from a nonempty interval or ray, and all its points belong to \(A\).</p>
+    <p>In either case, every finite \(A\)-definable set is contained in \(A\), so \(\operatorname{acl}_M(A)\subseteq A\). The inclusions in <a href="#first-laws"></a> then give both equalities. In particular, both closures of \(\varnothing\) are empty in these languages. The infinitude hypothesis for equality is essential, as <a href="#two-point-question"></a> shows.</p>
+  </div>
+</section>

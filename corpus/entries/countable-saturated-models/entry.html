@@ -1,0 +1,117 @@
+<section id="small-theories" data-formal="mt-sm-small mt-cat-zero-type mt-type-parameter-expansion" data-kind="definition">
+  <h2>Counting complete descriptions</h2>
+  <p>Throughout, \(L\) is a countable first-order language and \(T\) is a complete satisfiable \(L\)-theory. All structures are nonempty. Countable includes finite. Write \(S_n(T)\) for the <a href="types-and-realization#complete-types">complete types</a> in the fixed context \(x_0,\ldots,x_{n-1}\).</p>
+  <p>The theory \(T\) is <strong>small</strong> if \(S_n(T)\) is countable for every natural number \(n\). The condition includes \(n=0\); completeness makes that type set a singleton. Countability of the language gives only countably many individual formulas. It does not by itself give only countably many complete types, which are sets of formulas.</p>
+  <p>For a model \(M\models T\) and a subset \(A\subseteq M\), retain the notation \(S_n^M(A)=S_n(\operatorname{Th}(M_A))\) from <a href="types-and-realization#types-over-parameters">types over parameters</a>. The subscripted structure interprets a new constant \(c_a\) by each \(a\in A\).</p>
+  <p>The <a href="independent-predicates#types-as-subsets">independent-predicate example</a> has a countable language and continuum many complete one-types.</p>
+</section>
+
+<section id="lifting-finite-parameters" data-formal="mt-sm-parameter-formula mt-sm-parameter-truth mt-sm-parameter-lift mt-sm-parameter-recovery mt-sm-parameter-injection mt-sm-parameter-countable" data-kind="lemma">
+  <h2>A finite list of parameters can become extra coordinates</h2>
+  <p>Let \(M\models T\), let \(A\subseteq M\) be finite, and let \(\bar a=(a_0,\ldots,a_{m-1})\) enumerate \(A\) without repetition. For every finite \(r\), there is an injection</p>
+  <div class="math-display">\[S_r^M(A)\longrightarrow S_{r+m}(T).\]</div>
+  <div class="proof">
+    <p>Given \(p\in S_r^M(A)\), <a href="types-and-realization#elementary-realization">realize it in an elementary extension</a> \(M\preccurlyeq N\), say by \(\bar b\). Choose one such realization for each \(p\), and send \(p\) to \(q=\operatorname{tp}^N_T(\bar b,\bar a)\).</p>
+    <p>To recover \(p\), take any \(L(A)\)-formula \(\varphi(\bar x)\). Replace each constant \(c_{a_j}\) by the extra free variable \(y_j\), obtaining an \(L\)-formula \(\widehat\varphi(\bar x,\bar y)\). This is a syntactic operation: old function and relation symbols stay fixed, constants in \(A\) become the indicated variables, and quantified variables stay quantified. Induction on terms and formulas gives</p>
+    <div class="math-display">\[N_A\models\varphi[\bar b]\quad\Longleftrightarrow\quad N\models\widehat\varphi[\bar b,\bar a].\]</div>
+    <p>At a quantifier, the added free coordinates retain their assigned parameter values while the quantified coordinate varies. Consequently \(\varphi\in p\) if and only if \(\widehat\varphi\in q\). Equal image types therefore recover equal original types, proving injectivity. This argument also handles an empty parameter list or an empty tuple of object variables.</p>
+  </div>
+</section>
+
+<section id="counting-requests" data-formal="mt-sm-request mt-sm-countable-requests mt-sm-request-enumeration" data-kind="lemma">
+  <h2>There are countably many requests over a countable model</h2>
+  <p>If \(T\) is small and \(M\models T\) is countable, then the set of pairs \((A,p)\), where \(A\subseteq M\) is finite and \(p\in S_1^M(A)\), is countable.</p>
+  <div class="proof">
+    <p>For each finite \(A\), <a href="#lifting-finite-parameters">the injection just proved</a> embeds \(S_1^M(A)\) into \(S_{1+|A|}(T)\), a countable set. The finite subsets of a countable set form a countable set: enumerate their finite lists and then forget the order and repetitions. A countable union of countable sets is countable, so all the pairs can be put in one list \((A_s,p_s)\), \(s\in\mathbb N\). Repetitions are harmless.</p>
+    <p>The same proof counts types in any fixed finite tuple context over each finite \(A\). We use one-variable requests because the definition of <a href="saturated-models#omega-saturation">omega-saturation</a> asks for those.</p>
+  </div>
+</section>
+
+<section id="one-request" data-formal="mt-sm-realizes-through mt-sm-realization-preserved mt-sm-one-request" data-kind="lemma">
+  <h2>One request can be met without losing countability</h2>
+  <p>Let \(M\preccurlyeq N\) be countable models of \(T\), let \(A\subseteq M\) be finite, and let \(p\in S_1^M(A)\). There is a countable elementary extension \(N\preccurlyeq N'\) containing a realization of \(p\), with each parameter from \(A\) kept fixed.</p>
+  <div class="proof">
+    <p>Every finite part of \(p\) is realized in \(M_A\) by <a href="types-and-realization#parameter-finite-test">the finite parameter test</a>, and hence in \(N_A\) by elementarity. The <a href="types-and-realization#elementary-realization">elementary realization theorem</a> gives an elementary extension \(N\preccurlyeq P\) and an element \(b\in P\) realizing \(p\).</p>
+    <p>Apply <a href="elementary-submodels#countable-submodels">downward Löwenheim–Skolem</a> inside \(P\) to the countable subset \(N\cup\{b\}\). Obtain a countable elementary substructure \(N'\preccurlyeq P\) containing that set. Since \(N\preccurlyeq P\), the inclusion \(N\subseteq N'\) is elementary: both structures evaluate a formula with parameters from \(N\) just as \(P\) does. Elementarity also retains the formulas of \(p\) at \(b\).</p>
+    <p>If the realization theorem first gives an elementary embedding rather than a literal inclusion, use <a href="diagrams-and-extensions#renaming-the-copy">renaming of the elementary copy</a> before applying this construction. Thus the specified old parameters are preserved throughout.</p>
+  </div>
+</section>
+
+<section id="one-pass-extension" data-formal="mt-sm-chain mt-sm-chain-union mt-sm-chain-union-exists mt-sm-request-chain mt-sm-request-chain-exists mt-sm-request-chain-union mt-sm-all-original-requests mt-sm-one-pass" data-kind="theorem">
+  <h2>Realizing every type over the original finite parameter sets</h2>
+  <div class="statement-box"><p>If \(T\) is small and \(M\models T\) is countable, there is a countable elementary extension \(M\preccurlyeq M^+\) realizing every member of \(S_1^M(A)\) for every finite \(A\subseteq M\).</p></div>
+  <div class="proof">
+    <p>Use <a href="#counting-requests">one enumeration</a> \((A_s,p_s)\) of all these requests. Starting with \(N_0=M\), apply <a href="#one-request">the preceding lemma</a> at stage \(s\) to obtain a countable elementary extension \(N_s\preccurlyeq N_{s+1}\) realizing \(p_s\). Here \(A_s\) always lies in the original \(M\), which is an elementary substructure of every \(N_s\). Earlier realizations remain realizations in later stages.</p>
+    <p>Let \(M^+=\bigcup_{s&lt;\omega}N_s\), using compatible elementary inclusions. The <a href="elementary-chains#elementary-chain-theorem">elementary chain theorem</a> makes each stage elementary in the union, so \(M\preccurlyeq M^+\). The union is countable, and the witness added for every listed request still satisfies its entire type there.</p>
+  </div>
+</section>
+
+<section id="why-repeat" data-formal="mt-sm-all-original-requests" data-kind="question">
+  <h2>Has one pass already produced a saturated model?</h2>
+  <p>Does <a href="#one-pass-extension">the preceding theorem</a> alone establish that \(M^+\) is omega-saturated?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>It establishes realization only over finite subsets of the original \(M\). New elements of \(M^+\) may be used as parameters, and requests involving those elements were absent from the original list. Another construction is needed to cover such requests. The next argument repeats the entire pass with an enlarged parameter base at each outer stage.</p>
+  </div></details>
+</section>
+
+<section id="saturated-extension" data-formal="mt-sm-finite-stage mt-sm-finite-parameter-pullback mt-sm-outer-chain mt-sm-union-saturated mt-sm-saturated-extension" data-kind="theorem">
+  <h2>A countable saturated elementary extension</h2>
+  <div class="statement-box"><p>If \(T\) is small, every countable \(M\models T\) has a countable omega-saturated elementary extension.</p></div>
+  <div class="proof">
+    <p>Build a second elementary chain \(M_0\preccurlyeq M_1\preccurlyeq\cdots\), beginning with \(M_0=M\), by taking \(M_{i+1}=M_i^+\) from <a href="#one-pass-extension">the whole preceding construction</a>. Thus each outer successor already contains a union of an inner countable chain meeting all requests based on \(M_i\).</p>
+    <p>Let \(U=\bigcup_{i&lt;\omega}M_i\). It is countable and is an elementary extension of every \(M_i\). Given a finite \(A\subseteq U\), choose a stage containing all its elements, by taking the largest of their finitely many stage indices. For \(A=\varnothing\), take stage \(0\). If \(p\in S_1^U(A)\), elementarity gives \(\operatorname{Th}((M_i)_A)=\operatorname{Th}(U_A)\). Hence \(p\) is also a member of \(S_1^{M_i}(A)\), and it is realized in \(M_{i+1}\), therefore in \(U\).</p>
+    <p>This is precisely omega-saturation. The inner enumeration handles all types over an already fixed base; the outer chain ensures every finite parameter set in the final model eventually belongs to such a base.</p>
+  </div>
+</section>
+
+<section id="saturation-forces-smallness" data-formal="mt-sm-saturated-types mt-sm-saturated-small" data-kind="lemma">
+  <h2>A countable saturated model can realize only countably many types</h2>
+  <p>If \(T\) has a countable omega-saturated model \(U\), then \(T\) is small.</p>
+  <div class="proof">
+    <p>Fix \(n\). Completeness of \(T\) identifies its complete types with those over the empty parameter set in \(U\). By <a href="saturated-models#finite-tuples">finite-tuple realization in a saturated model</a>, every \(p\in S_n(T)\) is realized by a tuple of \(U^n\). Thus the map \(\bar b\mapsto\operatorname{tp}^U_T(\bar b)\) from \(U^n\) onto \(S_n(T)\) is surjective. A finite power of a countable set is countable, so \(S_n(T)\) is countable. For \(n=0\), the source is the singleton containing the empty tuple.</p>
+  </div>
+</section>
+
+<section id="elementary-universality" data-formal="mt-sm-universal mt-sm-saturated-universal mt-sat-countable-embedding" data-kind="definition">
+  <h2>A model receiving every countable model</h2>
+  <p>A <strong>countable elementary-universal model</strong> of \(T\) is a countable model \(U\models T\) such that every countable \(N\models T\) admits an elementary embedding \(N\to U\). The embeddings must preserve every first-order formula, including formulas with parameters from the source.</p>
+  <p>A countable omega-saturated model has this property by <a href="saturated-models#countable-universality">the successive extension of finite elementary maps</a>. Elementary universality itself imposes no explicit condition on types over finite parameter sets in \(U\).</p>
+</section>
+
+<section id="universality-forces-smallness" data-formal="mt-sm-universal-types mt-sm-universal-small" data-kind="lemma">
+  <h2>A universal model receives a realization of every type</h2>
+  <p>If \(T\) has a countable elementary-universal model \(U\), then \(T\) is small.</p>
+  <div class="proof">
+    <p>For each \(p\in S_n(T)\), <a href="countable-categoricity#countable-realization">countable realization of a type</a> gives a countable \(N\models T\) and a realizing tuple \(\bar a\). An elementary embedding \(f:N\to U\) preserves the type, so \(f(\bar a)\) realizes \(p\) in \(U\). Therefore \(U^n\) again surjects onto \(S_n(T)\), which is countable.</p>
+  </div>
+</section>
+
+<section id="existence-criterion" data-formal="mt-sm-saturated-exists mt-sm-saturated-criterion mt-sm-universal-criterion" data-kind="theorem">
+  <h2>Smallness characterizes the two existence questions</h2>
+  <div class="statement-box"><p>The following are equivalent: \(T\) is small; \(T\) has a countable omega-saturated model; \(T\) has a countable elementary-universal model. Moreover, when these conditions hold, every countable model of \(T\) has a countable omega-saturated elementary extension.</p></div>
+  <div class="proof">
+    <p>A countable model of \(T\) exists by <a href="elementary-submodels#countable-submodels">downward Löwenheim–Skolem</a> applied to any model. Smallness and <a href="#saturated-extension">the extension construction</a> then give a countable saturated model. Saturation gives elementary universality by <a href="saturated-models#countable-universality">the earlier embedding theorem</a>. Conversely <a href="#universality-forces-smallness">universality forces smallness</a>. The stronger elementary-extension assertion is exactly the construction already proved.</p>
+  </div>
+  <p>The equivalence concerns existence. Given a particular elementary-universal model, its universality proves smallness and hence the existence of a saturated model; this reasoning does not assert that the given model is saturated.</p>
+</section>
+
+<section id="small-prime-model" data-formal="mt-sm-nonisolated-family mt-sm-nonisolated-countable mt-sm-atomic-exists mt-sm-prime-exists" data-kind="theorem">
+  <h2>Small theories also have a countable prime model</h2>
+  <div class="statement-box"><p>If \(T\) is small, then \(T\) has a countable atomic model and hence a prime model.</p></div>
+  <div class="proof">
+    <p>For each \(n\), the nonisolated members of \(S_n(T)\) form a countable set. Their disjoint union over all finite arities is countable. Apply <a href="omitting-types#countable-omission">simultaneous omission with varying finite arities</a> to this family. It gives a countable \(N\models T\) omitting every listed type.</p>
+    <p>For any finite tuple \(\bar b\) in \(N\), its complete type is realized in \(N\), so it cannot be one of the omitted nonisolated types. It is therefore isolated. This says exactly that \(N\) is <a href="atomic-and-prime-models#atomic-models">atomic</a>. A <a href="atomic-and-prime-models#prime-embedding">countable atomic model is prime</a>.</p>
+  </div>
+  <p>The omission list includes every finite tuple length, rather than only one-variable types, because atomicity is a condition on all finite tuples.</p>
+  <p>Together with countable saturation, this atomic-model existence result yields <a href="countable-models#third-model">a third countable model for every small noncategorical theory</a> in a countable language with an infinite model.</p>
+  <p><a href="named-rational-order#rational-prime">Naming every rational</a> gives a prime model whose theory has continuum many complete one-types.</p>
+</section>
+
+<section id="categorical-examples" data-formal="mt-sm-categorical-small mt-sm-categorical-models mt-sm-equality-models mt-sm-order-models" data-kind="lemma">
+  <h2>The earlier categorical examples satisfy the criterion</h2>
+  <p>A countably categorical complete theory in a countable language with an infinite model has a countable omega-saturated model and a countable prime model.</p>
+  <div class="proof">
+    <p>By <a href="countable-categoricity#categoricity-criterion">the categoricity criterion</a>, every \(S_n(T)\) is finite, hence countable. Apply <a href="#existence-criterion">the existence criterion</a> and <a href="#small-prime-model">the prime-model conclusion</a>.</p>
+    <p>In particular this applies to the theory of infinite sets in the equality language and to dense linear orders without endpoints, using <a href="countable-categoricity#equality-and-order">their existing classifications</a>. In each case uniqueness of the countable model identifies the saturated and prime models obtained above, although their constructions meet different sets of requirements.</p>
+  </div>
+</section>

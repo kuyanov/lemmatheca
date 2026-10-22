@@ -1,0 +1,104 @@
+<section id="finite-relational-structures" data-formal="mt-age-finite-relational-language elem-substructure elem-induced-interpretations mt-age-relational-closure mt-age-fg-finite" data-kind="definition">
+  <h2>Restricting relations to a finite set</h2>
+  <p>Fix a <strong>finite relational language</strong> \(L\): it has finitely many relation symbols, each of finite arity, and no function symbols or constants. Equality belongs to the logic. If \(M\) is an \(L\)-structure and \(A\subseteq |M|\), the <strong>induced substructure</strong> \(M\mathbin{\upharpoonright}A\) has carrier \(A\) and interprets every relation by restriction:</p>
+  <div class="math-display">\[R^{M\upharpoonright A}(a_1,\ldots,a_r)\quad\Longleftrightarrow\quad R^M(a_1,\ldots,a_r).\]</div>
+  <p>There are no functions whose values could leave \(A\), so every subset gives a substructure. In this entry, these structures may have empty carriers. This convention includes the empty induced substructure and is used for finite-structure constructions; when speaking of models of first-order theories, we retain the corpus convention of nonempty carriers. A nullary relation has a truth value, which is inherited even on the empty induced substructure.</p>
+</section>
+
+<section id="embeddings" data-formal="diag-embedding elem-embedding-image-isomorphism diag-atomic-embedding-criterion bf-finite-partial-isomorphism" data-kind="definition">
+  <h2>Embeddings preserve relations and their failures</h2>
+  <p>An <strong>embedding</strong> \(f:A\hookrightarrow B\) is an injective map such that, for every relation symbol \(R\) and every tuple \(\bar a\) from \(A\),</p>
+  <div class="math-display">\[R^A(\bar a)\quad\Longleftrightarrow\quad R^B(f(\bar a)).\]</div>
+  <p>Thus \(f\) is an isomorphism from \(A\) onto the substructure induced on its image. Preserving only true relations is insufficient: a map that turns a false relation into a true one is not an embedding. This is the same distinction captured by <a href="diagrams-and-extensions#signed-diagram-lemma">signed atomic diagrams</a>. For finite induced substructures, their isomorphisms are precisely the <a href="back-and-forth#finite-partial-isomorphisms">finite partial isomorphisms</a> between the ambient structures.</p>
+</section>
+
+<section id="age" data-formal="mt-age-age mt-age-iso-closed mt-age-unbounded-sizes mt-age-isomorphism-invariance" data-kind="definition">
+  <h2>The finite structures occurring inside a structure</h2>
+  <p>The <strong>age</strong> of \(M\), written \(\operatorname{Age}(M)\), is the class of all finite \(L\)-structures that embed into \(M\). We regard isomorphic copies as belonging to the same class: membership does not depend on the names of the elements. Equivalently, its isomorphism types are those of the structures induced on finite subsets of \(M\).</p>
+  <p>A class \(K\) is <strong>closed under isomorphism</strong> if \(A\in K\) and \(A\cong B\) imply \(B\in K\). It has <strong>arbitrarily large members</strong> if, for every \(n\in\mathbb N\), some \(A\in K\) has at least \(n\) elements. This is stronger than merely saying that the class is nonempty.</p>
+</section>
+
+<section id="hereditary-and-joint-embedding" data-formal="mt-age-hereditary mt-age-joint-embedding" data-kind="definition">
+  <h2>Two requirements on finite pieces</h2>
+  <p>Let \(K\) be a class of finite \(L\)-structures closed under isomorphism. Its <strong>hereditary property</strong>, abbreviated HP, says that every induced substructure of a member of \(K\) also belongs to \(K\). Its <strong>joint embedding property</strong>, abbreviated JEP, says that for any \(A,B\in K\), there are \(C\in K\) and embeddings \(A\hookrightarrow C\), \(B\hookrightarrow C\).</p>
+  <p>The embeddings in JEP need not have disjoint images. The requirement is that both structures can occur together in one permitted finite structure.</p>
+</section>
+
+<section id="necessary-age-properties" data-formal="mt-age-nonempty mt-age-isomorphism-invariance mt-age-hereditary-age mt-age-joint-embedding-age mt-age-countable-age" data-kind="lemma">
+  <h2>Every age has the two properties</h2>
+  <p>For every \(L\)-structure \(M\), its age is nonempty, is closed under isomorphism, and has HP and JEP. If \(M\) is countable, its age has at most countably many isomorphism types.</p>
+  <div class="proof">
+    <p>The empty induced substructure belongs to the age. Composing an isomorphism with an embedding proves closure under isomorphism. Composing two embeddings proves HP. For JEP, embed \(A,B\) into \(M\), take the union of their finite images, and induce the structure from \(M\) on that union. Both embeddings then have their images in this finite member of the age.</p>
+    <p>If \(M\) is countable, its <a href="finite-and-countable-sets#finite-subset-family">finite subsets form a countable set</a>. Every isomorphism type in the age is represented by one of their induced structures, so there are at most countably many types.</p>
+  </div>
+</section>
+
+<section id="listing-finite-structures" data-formal="mt-age-finite-interpretations mt-age-countable-finite-types countable-iff-surjection-naturals" data-kind="lemma">
+  <h2>Why the finite pieces can be listed</h2>
+  <p>In a finite relational language, there are only finitely many structures on each fixed finite carrier and at most countably many finite structures up to isomorphism. Consequently, every nonempty isomorphism-closed class \(K\) of finite structures has a list \(A_0,A_1,\ldots\) meeting all its isomorphism types, with repetitions allowed.</p>
+  <div class="proof">
+    <p>On the carrier \(\{0,\ldots,n-1\}\), a relation of arity \(r\) is a subset of the finite set of \(r\)-tuples. There are only finitely many choices for it. Taking the product over the finitely many symbols still gives finitely many choices. This also covers nullary relations: the set of empty tuples has one element, so there are two possible truth values.</p>
+    <p>Every \(n\)-element structure is isomorphic to one on this carrier. Taking the countable union over \(n\) proves countability of the types. Choose representatives of the types in \(K\); a finite nonempty list may be repeated indefinitely.</p>
+  </div>
+</section>
+
+<section id="transporting-an-extension" data-formal="mt-age-copy-equivalence mt-age-copy-old-points mt-age-copy-inclusion diag-transported-isomorphism" data-kind="lemma">
+  <h2>Making an embedding into a literal inclusion</h2>
+  <p>If \(f:B\hookrightarrow C\) is an embedding of finite relational structures, there is an isomorphic copy \(C'\) of \(C\) that contains \(B\) as an induced substructure, with the copy of \(f\) equal to the inclusion of \(B\).</p>
+  <div class="proof">
+    <p>Keep the elements of \(B\), and choose a disjoint set \(D\) in bijection with \(C\setminus f(B)\). The bijection \(h:C\to B\cup D\) sends \(f(b)\) to \(b\), and sends the remaining elements according to that chosen bijection. Give \(B\cup D\) the structure transported along \(h\): a relation holds on a tuple exactly when it holds on its inverse image under \(h\).</p>
+    <p>For tuples from \(B\), reflection and preservation by \(f\) show that this transported relation is exactly the original relation of \(B\). Thus \(C'=B\cup D\) is the required extension. The argument fixes the old elements, rather than merely producing another abstract embedding.</p>
+  </div>
+</section>
+
+<section id="age-existence" data-formal="mt-age-existence mt-age-fg-finite" data-kind="theorem">
+  <h2>Constructing a countable structure from its finite pieces</h2>
+  <div class="statement-box"><p>A nonempty class \(K\) of finite \(L\)-structures, closed under isomorphism, is the age of a countable, possibly empty structure if and only if it has HP and JEP.</p></div>
+  <div class="proof">
+    <p>Necessity is <a href="#necessary-age-properties"></a>. For sufficiency, list representatives \(A_0,A_1,\ldots\) as in <a href="#listing-finite-structures"></a>. We construct an increasing sequence of finite structures \(B_0\subseteq B_1\subseteq\cdots\), each in \(K\), such that \(A_i\) embeds into \(B_i\).</p>
+    <p>Take \(B_0=A_0\). Given \(B_n\), JEP gives \(C\in K\) into which \(B_n\) and \(A_{n+1}\) embed. Use <a href="#transporting-an-extension"></a> on the first embedding to replace \(C\) by an isomorphic copy \(B_{n+1}\) containing \(B_n\) literally. The second embedding becomes an embedding of \(A_{n+1}\) into \(B_{n+1}\). Closure under isomorphism keeps \(B_{n+1}\) in \(K\).</p>
+    <p>Let \(|M|=\bigcup_n|B_n|\). Interpret a relation on a finite tuple using any stage containing all its coordinates. Such a stage exists, and the answer is independent of the stage because each inclusion is an induced-substructure inclusion. For nullary relations, every stage gives the same answer. This defines a structure in which every \(B_n\) is induced. The carrier is countable by <a href="infinite-cardinal-arithmetic#countable-unions">countable unions of finite sets</a>.</p>
+    <p>Every member of \(K\) is isomorphic to some \(A_i\), so it embeds into \(M\). Conversely, the image of any finite structure embedding into \(M\) lies in a single \(B_n\): take the maximum of the finitely many indices needed for its image points, using stage \(0\) when the image is empty. HP and closure under isomorphism put that structure in \(K\). Thus \(\operatorname{Age}(M)=K\).</p>
+  </div>
+</section>
+
+<section id="size-of-the-witness" data-formal="mt-age-nonempty-carrier mt-age-unbounded-iff-infinite" data-kind="lemma">
+  <h2>When the constructed structure is infinite</h2>
+  <p>If \(\operatorname{Age}(M)=K\), then \(M\) is nonempty exactly when \(K\) contains a nonempty member, and \(M\) is infinite exactly when \(K\) has arbitrarily large members. In particular, the construction in <a href="#age-existence"></a> yields a countably infinite structure whenever \(K\) has arbitrarily large members.</p>
+  <div class="proof">
+    <p>A point of \(M\) gives a singleton induced substructure, and an embedding of a nonempty structure supplies a point of \(M\). An infinite set contains \(n\) distinct points for every \(n\), whose induced substructure belongs to the age. Conversely, if \(M\) had \(m\) elements, no structure with more than \(m\) elements could embed into it.</p>
+  </div>
+</section>
+
+<section id="amalgamation" data-formal="mt-age-amalgamation" data-kind="definition">
+  <h2>Joining pieces over a prescribed common part</h2>
+  <p>A class \(K\) has the <strong>amalgamation property</strong>, abbreviated AP, if for every \(A,B,C\in K\) and embeddings \(f:A\hookrightarrow B\), \(g:A\hookrightarrow C\), there are \(D\in K\) and embeddings \(u:B\hookrightarrow D\), \(v:C\hookrightarrow D\) satisfying</p>
+  <div class="math-display">\[u\circ f=v\circ g.\]</div>
+  <p>Such a diagram is an <strong>amalgam</strong>. The equality requires that the two copies of the specified common part agree point by point. Other points of \(B\) and \(C\) may also become identified; excluding these extra identifications is an additional condition, which we do not impose.</p>
+</section>
+
+<section id="ultrahomogeneity" data-formal="mt-age-ultrahomogeneous mt-age-fg-finite elem-embedding-image-isomorphism" data-kind="definition">
+  <h2>Extending a finite symmetry to the whole structure</h2>
+  <p>A structure \(M\) is <strong>ultrahomogeneous</strong> if every isomorphism between finite induced substructures of \(M\) extends to an automorphism of \(M\). Equivalently, if \(A\) is a finite induced substructure and \(f:A\hookrightarrow M\) is an embedding, there is an automorphism \(\alpha\) with \(\alpha\mathbin{\upharpoonright}A=f\).</p>
+  <p>The formulations agree because an embedding is an isomorphism onto its induced image. This property asks for a global symmetry extending a specified finite map. Merely knowing that every permitted finite structure embeds somewhere in \(M\) does not specify how to extend an already chosen map.</p>
+</section>
+
+<section id="homogeneous-ages-amalgamate" data-formal="mt-age-homogeneous-age-amalgamation" data-kind="theorem">
+  <h2>Finite symmetries force amalgamation</h2>
+  <div class="statement-box"><p>If \(M\) is ultrahomogeneous, then \(\operatorname{Age}(M)\) has the amalgamation property.</p></div>
+  <div class="proof">
+    <p>Take embeddings \(f:A\hookrightarrow B\), \(g:A\hookrightarrow C\) between members of the age. Choose embeddings \(b:B\hookrightarrow M\) and \(c:C\hookrightarrow M\). The map</p>
+    <div class="math-display">\[b(f(a))\longmapsto c(g(a))\qquad(a\in A)\]</div>
+    <p>is an isomorphism between finite induced substructures: both sides identify their structures with \(A\). By ultrahomogeneity it extends to an automorphism \(\alpha\) of \(M\). Consequently \(\alpha\circ b\circ f=c\circ g\).</p>
+    <p>Induce a finite structure \(D\) on \(\alpha(b(B))\cup c(C)\). The maps \(u=\alpha\circ b\) and \(v=c\), with their codomains restricted to \(D\), are embeddings into a member of the age. They agree on \(A\), as required. The adjustment by \(\alpha\) is what makes two arbitrary placements of the pieces respect the specified common part.</p>
+  </div>
+  <p>For the converse construction from an amalgamating class, see <a href="fraisse-limits#fraisse-existence">the Fraïssé existence theorem</a>.</p>
+</section>
+
+<section id="finite-sets-example" data-formal="mt-age-finite-sets-fraisse mt-age-countable-set-limit" data-kind="question">
+  <h2>Amalgamating finite sets</h2>
+  <p>In the language with equality alone, let \(K\) consist of all finite sets, including the empty set. Does \(K\) have HP, JEP and AP? Is it the age of \(\mathbb N\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Embeddings are simply injections. Subsets prove HP, and disjoint union proves JEP. For AP, take disjoint copies of \(B\) and \(C\), and identify the copy of \(f(a)\) with that of \(g(a)\) for every \(a\in A\). Injectivity of \(f,g\) ensures that distinct points within either original set remain distinct, so the quotient maps from \(B,C\) are injections. The finite quotient is an amalgam. Every finite set injects into \(\mathbb N\), so its age is exactly \(K\).</p>
+  </div></details>
+</section>

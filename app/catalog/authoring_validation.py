@@ -141,9 +141,6 @@ def validate_authoring_records(corpus, blocks, *, indexes=None, allow_stale_cata
         path = source_root / "index.json"
         with checking(path):
             catalog(path, source_catalog(sources, findings), "Source")
-        with checking(source_root / "policy.json"):
-            _links(json_object(source_root / "policy.json"), corpus, blocks,
-                   generated_links=generated_links)
 
     plan_root = corpus / "reference-planning"
     if plan_root.exists():
@@ -163,6 +160,3 @@ def validate_authoring_records(corpus, blocks, *, indexes=None, allow_stale_cata
         path = plan_root / "index.json"
         with checking(path):
             catalog(path, planning_catalog(records), "Planning")
-        with checking(plan_root / "policy.json"):
-            _links(json_object(plan_root / "policy.json"), corpus, blocks,
-                   generated_links=generated_links)

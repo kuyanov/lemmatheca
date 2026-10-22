@@ -1,0 +1,128 @@
+<section data-formal="mt-type-realizes mt-type-omits mt-type-named-theory mt-type-partial mt-type-model-bridge" id="partial-types" data-kind="definition">
+  <h2>Compatible conditions on one tuple</h2>
+  <p>Fix a first-order language \(L\) with equality, a theory \(T\), and a finite ordered variable list \(\bar x=(x_0,\ldots,x_{n-1})\), where \(n\ge0\). All structures are nonempty, and we work in classical set theory with choice. Write \(\operatorname{Form}_n(L)\) for the formulas whose free variables belong to this list; a formula may use only some of them.</p>
+  <p>A collection \(p(\bar x)\subseteq\operatorname{Form}_n(L)\) is <strong>consistent with \(T\)</strong> if there are a model \(N\models T\) and a tuple \(\bar b\in N^n\) such that \(N\models\varphi[\bar b]\) for every \(\varphi\in p\). Such a consistent collection is a <strong>partial type over \(T\)</strong>. The tuple \(\bar b\) <strong>realizes</strong> \(p\), and \(N\) <strong>omits</strong> \(p\) if no tuple in \(N^n\) realizes it.</p>
+  <p>Consistency here has its semantic meaning: simultaneous truth somewhere. To express it as satisfiability of sentences, adjoin a fresh constant \(d_i\) for each \(x_i\), and put</p>
+  <div class="math-display">\[T[p]=T\cup\{\varphi(\bar d):\varphi\in p\}.\]</div>
+  <p>Substitution of these names gives a bijective correspondence between an interpretation of \(\bar d\) satisfying those sentences and a realizing tuple in the reduct. Thus \(p\) is a partial type exactly when \(T[p]\) is satisfiable. The original axioms of \(T\) are translated into the enlarged language. If \(T\) has no model, it has no partial types, including the empty collection.</p>
+  <p>For constructing models that avoid such a description, see <a href="omitting-partial-types#nonprincipal-types">nonprincipal partial types</a>.</p>
+</section>
+
+<section data-formal="mt-type-finite-test" id="finite-consistency" data-kind="theorem">
+  <h2>Compatibility can be tested on finite parts</h2>
+  <div class="statement-box"><p>For \(p\subseteq\operatorname{Form}_n(L)\), the following are equivalent: \(p\) is consistent with \(T\); every finite \(p_0\subseteq p\) is realized by a tuple in some model of \(T\). The model and tuple in the finite test may depend on \(p_0\).</p></div>
+  <div class="proof">
+    <p>A tuple realizing all of \(p\) realizes every finite part. Conversely, suppose the finite test holds. A finite subset of \(T[p]\) contains finitely many sentences from \(T\) and finitely many new conditions \(\varphi(\bar d)\). Choose a model of all of \(T\) and a tuple realizing those finitely many formulas. Interpret \(\bar d\) by that tuple. This expanded model satisfies the selected finite subset.</p>
+    <p><a href="ultraproducts#compactness">Compactness for arbitrary set-sized languages</a> now gives a model of \(T[p]\). Its reduct and interpreted tuple realize \(p\). The empty finite test requires a model of \(T\), so the argument also handles an empty \(p\).</p>
+  </div>
+  <p>For a finite \(p_0\), write \(\bigwedge p_0\) for its conjunction, with the empty conjunction interpreted as \(\top\). The finite test says that \(T\cup\{\exists\bar x\,\bigwedge p_0\}\) has a model. It does not generally say that every model of \(T\) contains a solution.</p>
+</section>
+
+<section data-formal="mt-type-complete-partial mt-type-complete mt-type-formula-presentation mt-type-decides mt-type-complete-bridge mt-type-complete-consistent mt-type-closed" id="complete-types" data-kind="definition">
+  <h2>A description that decides every formula</h2>
+  <p>A <strong>complete \(n\)-type over \(T\)</strong> is a partial type \(q\) maximal under inclusion among partial types in \(\operatorname{Form}_n(L)\). The set of these types is denoted by \(S_n(T)\). Maximality refers to one fixed variable list and one fixed theory.</p>
+  <p>Every complete type contains exactly one of \(\varphi\) and \(\neg\varphi\), for each \(\varphi\in\operatorname{Form}_n(L)\). Indeed, a realizing tuple makes one of them true, so adjoining that choice remains consistent; maximality puts it in the type. Both choices cannot belong, since no tuple realizes a contradiction. Conversely, a partial type deciding every formula this way is maximal: a strictly larger partial type would contain a formula whose negation was already present.</p>
+  <p>Completeness also forces closure under consequences at the tuple. If \(q\cup\{\neg\psi\}\) is inconsistent, every tuple realizing \(q\) satisfies \(\psi\), and adjoining \(\psi\) remains consistent; hence \(\psi\in q\). In particular, \(q\) contains tautologies and all formulas that hold at every tuple in every model of \(T\).</p>
+</section>
+
+<section data-formal="mt-type-of-tuple mt-type-tuple-membership mt-type-realized-complete" id="tuple-types" data-kind="definition">
+  <h2>The complete description of a tuple</h2>
+  <p>If \(M\models T\) and \(\bar a\in M^n\), its <strong>complete type over \(T\)</strong> is</p>
+  <div class="math-display">\[\operatorname{tp}^M_T(\bar a)=\{\varphi(\bar x):M\models\varphi[\bar a]\}.\]</div>
+  <p>This is consistent, witnessed by \(M,\bar a\), and it decides every formula by the ordinary truth clauses. It is therefore a complete type. A complete type \(q\) is realized by \(\bar a\) precisely when \(q=\operatorname{tp}^M_T(\bar a)\): one inclusion is realization, and maximality gives equality. We omit the subscript when the background theory is understood.</p>
+  <p>The type records all first-order information about the displayed tuple, including sentences, which use none of its variables. Two tuples can have the same type without being the same tuple or belonging to the same model.</p>
+</section>
+
+<section data-formal="mt-type-completion mt-type-some-model mt-type-nonempty" id="completing-a-type" data-kind="theorem">
+  <h2>Every partial type has a complete extension</h2>
+  <div class="statement-box"><p>Every partial \(n\)-type \(p\) over \(T\) is contained in a complete type \(q\in S_n(T)\). Every complete type is realized in some model of \(T\). Consequently \(S_n(T)\ne\varnothing\) exactly when \(T\) has a model.</p></div>
+  <div class="proof">
+    <p>By the definition of consistency, choose \(N\models T\) and a tuple \(\bar b\) realizing \(p\). The complete type \(q=\operatorname{tp}^N_T(\bar b)\) contains \(p\). Every complete type is a partial type, so it too has a realizing tuple in some model. This does not assert realization in every model.</p>
+    <p>If \(T\) has a model, choose an \(n\)-tuple there, using nonemptiness when \(n&gt;0\); its type belongs to \(S_n(T)\). For \(n=0\) use the unique empty tuple. Conversely, a member of \(S_n(T)\) supplies a model by consistency.</p>
+  </div>
+</section>
+
+<section data-formal="diag-named-language mt-type-parameter-expansion theory-of-structure mt-type-complete mt-type-partial" id="types-over-parameters" data-kind="definition">
+  <h2>Keeping the original parameters fixed</h2>
+  <p>Let \(M\) be an \(L\)-structure and let \(A\subseteq |M|\), possibly empty. Add one new name \(c_a\) for each \(a\in A\), obtaining the <strong>parameter language</strong> \(L(A)\). The <strong>named expansion</strong> \(M_A\) interprets \(c_a\) by \(a\). Unlike the full language \(L(M)\) in <a href="diagrams-and-extensions#names-and-reducts">the diagram construction</a>, this language names only the chosen parameters.</p>
+  <p>A <strong>partial type over \(A\) in \(M\)</strong> is a partial type over \(\operatorname{Th}(M_A)\), using formulas from \(\operatorname{Form}_n(L(A))\). A <strong>complete type over \(A\)</strong> is a complete type over that theory; write</p>
+  <div class="math-display">\[S_n^M(A)=S_n(\operatorname{Th}(M_A)).\]</div>
+  <p>For \(\bar b\in M^n\), write \(\operatorname{tp}^M(\bar b/A)\) for its type in \(M_A\). In an elementary extension \(M\preccurlyeq N\), interpret each parameter name by that same original element. A formula with parameters is an ordinary first-order formula in this expanded language; each individual formula uses only finitely many names even when \(A\) is infinite.</p>
+</section>
+
+<section data-formal="mt-type-finitely-realized mt-type-parameters-finite-test" id="parameter-finite-test" data-kind="lemma">
+  <h2>Finite consistency over parameters is tested in the original structure</h2>
+  <p>A collection \(p\subseteq\operatorname{Form}_n(L(A))\) is a partial type over \(A\) in \(M\) if and only if every finite subset of \(p\) is realized in \(M_A\).</p>
+  <div class="proof">
+    <p>Suppose \(p\) is consistent with \(\operatorname{Th}(M_A)\), and let \(p_0\subseteq p\) be finite. In a model realizing \(p\), the sentence \(\exists\bar x\,\bigwedge p_0\) is true. If it were false in \(M_A\), its negation would belong to \(\operatorname{Th}(M_A)\), contradicting that realization. Thus the sentence is true in \(M_A\), which means precisely that \(p_0\) has a realizing tuple there.</p>
+    <p>Conversely, the original structure supplies the models required by <a href="#finite-consistency"></a> with background theory \(\operatorname{Th}(M_A)\). The empty conjunction is true, including when \(n=0\), so no exceptional finite case is omitted.</p>
+  </div>
+  <p>The complete theory of \(M_A\), rather than just an arbitrary theory true in \(M\), is crucial to the first direction. It decides the existential sentence used in the proof.</p>
+</section>
+
+<section data-formal="mt-type-elementary-realization mt-type-parameter-translation mt-type-parameter-translation-truth mt-type-parameter-realization" id="elementary-realization" data-kind="theorem">
+  <h2>Realizing a parameter type in an elementary extension</h2>
+  <div class="statement-box"><p>Let \(M\) be nonempty, let \(A\subseteq |M|\), and let \(p(\bar x)\) be a collection of \(L(A)\)-formulas in a finite tuple of variables. There exist an elementary extension \(M\preccurlyeq N\) and a tuple \(\bar b\in N^n\) realizing \(p\), with the original interpretations of all parameters, if and only if every finite subset of \(p\) is realized in \(M\). Equivalently, these are exactly the partial types over \(A\) in \(M\).</p></div>
+  <div class="proof">
+    <p>First suppose \(\bar b\) realizes \(p\) in \(N\). For a finite \(p_0\subseteq p\), the formula \(\exists\bar x\,\bigwedge p_0\), with its finitely many parameters from \(A\), is true in \(N\). Elementarity makes it true in \(M\), supplying a finite realizing tuple there.</p>
+    <p>Conversely, assume finite realizability in \(M\). Name every element of \(M\), not only those of \(A\), and add a disjoint list of fresh constants \(\bar d\) for the new tuple. In the resulting language consider</p>
+    <div class="math-display">\[U=\operatorname{ElDiag}(M)\cup\{\varphi(\bar d):\varphi\in p\}.\]</div>
+    <p>Here each old parameter symbol in \(\varphi\) is sent to its corresponding name among the names of \(M\). Original language symbols are kept, and the fresh tuple names are distinct from all old names. A finite subset of \(U\) contains finitely many requested formulas. Choose a tuple in \(M\) realizing those requests, interpret \(\bar d\) by that tuple, and interpret every old name by its original element. Every selected diagram sentence is true in this expansion, as are the requests.</p>
+    <p>Compactness gives a model \(N^*\models U\). The <a href="diagrams-and-extensions#elementary-diagram-lemma">elementary diagram lemma</a> makes the particular map \(h(a)=c_a^{N^*}\) an elementary embedding of \(M\) into the reduct \(N\). The tuple \(d_i^{N^*}\) satisfies each requested formula with parameter \(a\) interpreted by \(h(a)\). By <a href="diagrams-and-extensions#renaming-the-copy">renaming this elementary copy</a>, replace \(N\) by an isomorphic structure in which \(h(a)\) is literally \(a\). The transported tuple then realizes \(p\) in an elementary extension of \(M\).</p>
+    <p>Finally <a href="#parameter-finite-test"></a> identifies the finite test with consistency over \(\operatorname{Th}(M_A)\). Naming all of \(M\) in the compactness construction ensures an elementary copy of the whole structure; naming only \(A\) would by itself preserve only the theory of the named expansion.</p>
+  </div>
+  <p>For the contrast with choosing a model that avoids a type, see <a href="omitting-types#ambient-model-question">named omitting models and their larger ambient models</a>.</p>
+  <p>For a complete theory in a countable language, the <a href="countable-saturated-models#saturated-extension">countable saturation construction</a> meets every finite-parameter request in one countable elementary extension when there are only countably many complete types in each finite context.</p>
+</section>
+
+<section data-formal="mt-type-parameter-transport" id="realization-transport" data-kind="lemma">
+  <h2>Elementary maps preserve the whole type of a tuple</h2>
+  <p>Let \(f:M\to N\) be an elementary embedding, let \(A\subseteq |M|\), and let \(\bar b\in M^n\). For every \(L(A)\)-formula \(\varphi(\bar x)\), interpret its parameter name \(c_a\) in \(N\) by \(f(a)\). Then</p>
+  <div class="math-display">\[M_A\models\varphi[\bar b]\quad\Longleftrightarrow\quad N_{f(A)}\models\varphi^f[f(\bar b)].\]</div>
+  <p>The notation \(\varphi^f\) replaces each named parameter \(c_a\) by \(c_{f(a)}\) and keeps the displayed variables. Consequently the complete types correspond under that same replacement of names. In particular, when \(M\preccurlyeq N\) and \(A\subseteq |M|\),</p>
+  <div class="math-display">\[\operatorname{tp}^M(\bar b/A)=\operatorname{tp}^N(\bar b/A).\]</div>
+  <div class="proof">
+    <p>Replace the finitely many parameter names used in \(\varphi\) by fresh free variables to obtain an \(L\)-formula. Elementarity of the specified map \(f\) gives truth equivalence for the combined tuple consisting of \(\bar b\) and those parameters. Substituting the names back gives the first equivalence. Membership in either complete type is exactly the corresponding truth assertion, so it gives the equality when parameters are identified.</p>
+  </div>
+</section>
+
+<section data-formal="mt-type-restriction mt-type-restriction-complete mt-type-restriction-tuple mt-type-restriction-surjective" id="restrict-parameters" data-kind="lemma">
+  <h2>Restricting parameters gives every type over the smaller set</h2>
+  <p>Let \(A\subseteq B\subseteq |M|\), and let \(q\in S_n^M(B)\). Its <strong>restriction to \(A\)</strong> is</p>
+  <div class="math-display">\[q\!\upharpoonright A=\{\varphi\in\operatorname{Form}_n(L(A)):\varphi\text{ viewed in }L(B)\text{ belongs to }q\}.\]</div>
+  <p>This restriction belongs to \(S_n^M(A)\), and the restriction map \(S_n^M(B)\to S_n^M(A)\) is surjective. If \(q=\operatorname{tp}^M(\bar b/B)\), then \(q\!\upharpoonright A=\operatorname{tp}^M(\bar b/A)\).</p>
+  <div class="proof">
+    <p>Realize \(q\) in an elementary extension of \(M\) by <a href="#elementary-realization"></a>. The same tuple realizes the restricted formulas, so they are consistent over \(\operatorname{Th}(M_A)\). Each \(L(A)\)-formula is decided by \(q\) when viewed in \(L(B)\), and its negation is translated to the negation of that formula. Thus the restriction decides every formula and is complete. For a tuple from \(M\), both descriptions consist of exactly the \(L(A)\)-formulas true of that tuple.</p>
+    <p>For surjectivity, start with any \(p\in S_n^M(A)\). Its finite parts are realized in \(M_A\) by <a href="#parameter-finite-test">the finite parameter test</a>. Hence <a href="#elementary-realization">parameter realization</a> gives an elementary embedding \(f:M\to N\) and a tuple \(\bar b\in N^n\) realizing \(p\), with each old parameter name \(c_a\) interpreted as \(f(a)\).</p>
+    <p>Interpret every name \(c_b\), \(b\in B\), as \(f(b)\), and take the complete type of \(\bar b\) in this \(L(B)\)-expansion of \(N\). The named map \(M_B\to N_{f(B)}\) is elementary, so the expansion satisfies \(\operatorname{Th}(M_B)\); this gives a type \(q\in S_n^M(B)\). For an \(L(A)\)-formula \(\varphi\), viewing its names in \(L(B)\) still interprets each \(c_a\) as the same \(f(a)\). Therefore \(\varphi\in q\!\upharpoonright A\) exactly when \(\varphi\) is true of \(\bar b\) in the named \(A\)-expansion, exactly when \(\varphi\in p\). Thus \(q\!\upharpoonright A=p\). The argument permits empty parameter sets and the empty tuple.</p>
+  </div>
+</section>
+
+<section data-formal="mt-type-nonstandard-conditions mt-type-nonstandard-finite mt-type-nonstandard-omitted mt-type-nonstandard-partial mt-type-nonstandard-extension" id="nonstandard-type" data-kind="question">
+  <h2>A consistent description omitted by the natural numbers</h2>
+  <p>Let \(\mathbb N_A\) be the <a href="arithmetic-theories#arithmetic-language">standard arithmetic structure</a>; here the subscript denotes the arithmetic language, not a parameter set. Is \(p(x)=\{x\ne\overline{k}:k\in\mathbb N\}\) a partial type over \(\operatorname{Th}(\mathbb N_A)\)? Is it realized in \(\mathbb N_A\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Every finite subset excludes only finitely many numerals, and there is a natural number outside that finite set. Hence <a href="#parameter-finite-test"></a>, with no named parameters, shows that \(p\) is a partial type. But every natural number equals its own numeral, so none realizes all of \(p\).</p>
+    <p>By <a href="#elementary-realization"></a>, an elementary extension of \(\mathbb N_A\) contains an element satisfying every inequality. Thus some complete type extending \(p\) is omitted by \(\mathbb N_A\) but realized in an elementary extension. This strengthens the distinction between finite and simultaneous solutions already used to construct <a href="arithmetic-theories#true-arithmetic">nonstandard models of true arithmetic</a>.</p>
+    <p>The <a href="isolated-types#omitted-nonisolated">type-isolation question</a> develops this example further.</p>
+</div></details>
+  <p>For what this example says about realizing types in the original structure, see <a href="saturated-models#arithmetic-question">saturation of the standard arithmetic structure</a>.</p>
+</section>
+
+<section data-formal="mt-type-finite-model-realization" id="finite-models" data-kind="lemma">
+  <h2>Finite structures already realize every parameter type</h2>
+  <p>Let \(M\) be a finite nonempty structure, let \(A\subseteq |M|\), and let \(p\) be a partial \(n\)-type over \(A\) in \(M\). Then \(p\) is realized in \(M\).</p>
+  <div class="proof">
+    <p>Suppose there were no realizing tuple. For each \(\bar a\in M^n\), choose a formula \(\varphi_{\bar a}\in p\) false at \(\bar a\). There are finitely many tuples, since \(M\) and \(n\) are finite. Thus \(p_0=\{\varphi_{\bar a}:\bar a\in M^n\}\) is a finite subset of \(p\) with no realization in \(M\), contradicting <a href="#parameter-finite-test"></a>.</p>
+    <p>For \(n=0\) there is one empty tuple and the same argument applies. The result also follows from <a href="diagrams-and-extensions#finite-obstruction">surjectivity of elementary embeddings out of finite structures</a>, but the finite-tuple argument exhibits directly why compactness cannot create a missing type over a finite model.</p>
+  </div>
+</section>
+
+<section data-formal="mt-type-zero-theory mt-type-zero-completions mt-type-zero-unique mt-type-nonempty" id="empty-tuple" data-kind="question">
+  <h2>What does a complete type with no variables record?</h2>
+  <p>Describe \(S_0(T)\). What changes when \(T=\operatorname{Th}(M_A)\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>A formula with no free variables is a sentence. A complete \(0\)-type is therefore a satisfiable set of sentences extending all consequences of \(T\) and deciding every sentence: a deductively closed complete theory extending \(T\). Conversely every such deductively closed complete theory is a complete \(0\)-type. Its realizing tuple is the unique empty tuple, in any of its models.</p>
+    <p>Since \(\operatorname{Th}(M_A)\) already decides every sentence and has a model, its only complete \(0\)-type is \(\operatorname{Th}(M_A)\) itself. More generally, \(S_0(T)\) may contain several completions when \(T\) has not decided every sentence, and is empty if \(T\) is inconsistent.</p>
+  </div></details>
+</section>
