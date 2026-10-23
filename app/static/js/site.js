@@ -25,28 +25,28 @@ dialog.addEventListener("click", (event) => {
 });
 
 // Keep the contents and anchor targets below the sticky area/return navigation.
-const outline = document.querySelector(".proof-outline");
-const entryNavigation = document.querySelector(".entry-navigation-bar");
-if (outline) {
+const tableOfContents = document.querySelector(".entry-toc");
+const pageNavigation = document.querySelector(".page-navigation");
+if (tableOfContents) {
   let scheduled = false;
-  const fitOutline = () => {
+  const fitTableOfContents = () => {
     scheduled = false;
-    if (entryNavigation) {
+    if (pageNavigation) {
       document.documentElement.style.setProperty(
-        "--entry-nav-height", `${entryNavigation.getBoundingClientRect().height}px`);
+        "--page-navigation-height", `${pageNavigation.getBoundingClientRect().height}px`);
     }
-    const available = window.innerHeight - Math.max(0, outline.getBoundingClientRect().top) - 24;
-    outline.style.setProperty("--outline-height", `${Math.max(0, available)}px`);
+    const available = window.innerHeight - Math.max(0, tableOfContents.getBoundingClientRect().top) - 24;
+    tableOfContents.style.setProperty("--entry-toc-height", `${Math.max(0, available)}px`);
   };
   const scheduleFit = () => {
     if (!scheduled) {
       scheduled = true;
-      requestAnimationFrame(fitOutline);
+      requestAnimationFrame(fitTableOfContents);
     }
   };
   window.addEventListener("scroll", scheduleFit, { passive: true });
   window.addEventListener("resize", scheduleFit);
   window.addEventListener("load", scheduleFit);
-  if (entryNavigation) new ResizeObserver(scheduleFit).observe(entryNavigation);
-  fitOutline();
+  if (pageNavigation) new ResizeObserver(scheduleFit).observe(pageNavigation);
+  fitTableOfContents();
 }

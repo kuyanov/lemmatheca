@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ area.title }} — Lemmatheca{% endblock %}
 {% block content %}
-{% include "catalog/_breadcrumbs.html" %}
+{% include "catalog/_page_navigation.html" %}
 <section class="area-intro">
   <p class="eyebrow">Area of mathematics</p>
   <h1>{{ area.title }}</h1>
@@ -21,13 +21,13 @@
     <h2 id="statements-title">Entries</h2><span>{{ entries|length }} entr{{ entries|length|pluralize:"y,ies" }}</span>
   </div>
   {% for entry in entries %}
-  <a class="entry-row" href="{{ entry.url }}"><span class="entry-type">
+  <a class="entry-row" href="{{ entry.url }}"><span class="entry-badges">
       {% include "catalog/_formalization_badge.html" with formal=entry.formalization only %}
       {% include "catalog/_lean_line_count.html" with count=entry.lean_line_count only %}</span>
     <div>
       <h3>{{ entry.title }}</h3>
       <p>{{ entry.summary }}</p>
-      <span class="entry-meta">{{ entry.reading_time }} min read</span>
+      <span class="entry-reading-time">{{ entry.reading_time }} min read</span>
     </div><span class="entry-arrow" aria-hidden="true">↗</span>
   </a>
   {% endfor %}

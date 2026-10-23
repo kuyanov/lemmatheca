@@ -584,8 +584,42 @@ button {
   color: #92988c
 }
 
-.breadcrumbs {
-  padding-top: var(--space-md);
+.page-navigation {
+  --navigation-spacing: var(--space-md);
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--paper);
+  padding-block: var(--navigation-spacing);
+  border-bottom: 1px solid var(--line);
+}
+
+.page-navigation:has(.entry-return) {
+  padding-bottom: 0;
+}
+
+.entry-return {
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  padding: 8px 12px;
+  margin: var(--navigation-spacing) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.entry-return .back-link {
+  margin: 0;
+}
+
+.entry-return-location {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin: 0;
 }
 
 .breadcrumbs ol {
@@ -644,13 +678,19 @@ button {
   padding: 20px 0;
 }
 
-.entry-type {
-  font-size: 11px;
-  color: var(--muted);
+.entry-row+.entry-row {
+  border-top: 0;
+}
+
+.entry-badges {
   display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.entry-row .entry-badges {
   flex-direction: column;
-  gap: 8px;
-  align-items: start
+  align-items: flex-start;
 }
 
 .entry-row h3 {
@@ -665,7 +705,7 @@ button {
   margin: 6px 0 10px;
 }
 
-.entry-meta {
+.entry-reading-time {
   font-size: 12px;
   color: var(--muted);
 }
@@ -710,27 +750,29 @@ button {
   margin: 8px 0 16px;
 }
 
-.proof-article {
-  --anchor-offset: calc(var(--entry-nav-height, 48px) + 16px);
+.entry-page {
+  --anchor-offset: calc(var(--page-navigation-height, 48px) + 16px);
+  display: grid;
+  grid-template-columns: 175px minmax(0, 720px);
+  grid-template-areas: "toc header" "toc content";
+  column-gap: 45px;
   max-width: 1000px;
   margin: 0 auto
 }
 
-.proof-header {
+.entry-header {
   grid-area: header;
   max-width: 720px;
   padding: 24px 0;
 }
 
-.proof-meta {
-  display: flex;
+.entry-header .entry-badges {
   flex-wrap: wrap;
-  align-items: center;
   gap: 12px;
   margin-bottom: 12px;
 }
 
-.proof-header h1 {
+.entry-header h1 {
   font-family: var(--serif);
   font-size: clamp(34px, 3.8vw, 44px);
   line-height: 1.12;
@@ -738,14 +780,13 @@ button {
   max-width: 640px
 }
 
-.proof-deck {
+.entry-abstract {
   font-size: 16px;
   color: var(--muted);
-  line-height: var(--reading-leading);
   margin-top: 12px;
 }
 
-.reading-meta {
+.entry-reading-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 16px;
@@ -754,7 +795,7 @@ button {
   margin-top: 12px;
 }
 
-.reading-meta span+span:before {
+.entry-reading-meta span+span:before {
   content: "·";
   margin-right: 16px;
 }
@@ -857,7 +898,7 @@ button {
 }
 
 .math-display[id],
-.proof-body table[id] {
+.entry-content table[id] {
   scroll-margin-top: var(--anchor-offset);
 }
 
@@ -872,55 +913,48 @@ button {
   outline-offset: 3px;
 }
 
-.proof-body table {
+.entry-content table {
   width: 100%;
   border-collapse: collapse;
   font-size: 16px;
 }
 
-.proof-body caption {
+.entry-content caption {
   text-align: left;
   padding-bottom: 8px;
 }
 
-.proof-body th,
-.proof-body td {
+.entry-content th,
+.entry-content td {
   border-bottom: 1px solid var(--line);
   padding: 8px 12px;
   text-align: left;
 }
 
-.proof-body thead th {
+.entry-content thead th {
   background: var(--soft-green);
 }
 
-.proof-body ul,
-.proof-body ol {
+.entry-content ul,
+.entry-content ol {
   padding-left: 24px;
   margin: 10px 0;
 }
 
-.proof-layout {
-  display: grid;
-  grid-template-columns: 175px minmax(0, 720px);
-  grid-template-areas: "outline header" "outline body";
-  column-gap: 45px;
-}
-
-.proof-outline {
-  grid-area: outline;
+.entry-toc {
+  grid-area: toc;
   position: sticky;
-  top: calc(var(--entry-nav-height, 48px) + 16px);
+  top: calc(var(--page-navigation-height, 48px) + 16px);
   align-self: start;
   min-height: 0;
   margin-top: 24px;
 }
 
-.outline-scroll {
+.entry-toc-links {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: var(--outline-height, calc(100dvh - var(--entry-nav-height, 48px) - 40px));
+  max-height: var(--entry-toc-height, calc(100dvh - var(--page-navigation-height, 48px) - 40px));
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -928,58 +962,54 @@ button {
   padding: 4px 8px 8px 0;
 }
 
-.outline-scroll>* {
+.entry-toc-links>* {
   flex: none;
 }
 
-.outline-scroll:focus-visible {
+.entry-toc-links:focus-visible {
   outline: 1px solid var(--green);
   outline-offset: 3px;
 }
 
-.outline-scroll>.eyebrow {
+.entry-toc-links>.eyebrow {
   font-size: 9px;
   margin-bottom: 4px;
   color: #92988b
 }
 
-.proof-outline a {
+.entry-toc a {
   font-size: 11px;
   color: #858b80
 }
 
-.proof-outline a:hover {
+.entry-toc a:hover {
   color: var(--green)
 }
 
-.proof-body,
+.entry-content,
 .node-description {
   font-family: var(--serif);
   font-size: 18px;
   line-height: var(--reading-leading);
 }
 
-.proof-body {
-  grid-area: body;
+.entry-content {
+  grid-area: content;
   min-width: 0;
 }
 
-.proof-body section {
+.entry-content section {
   margin-bottom: var(--space-lg);
 }
 
-.proof-body h2 {
+.entry-content h2 {
   font-size: 25px;
   letter-spacing: -.4px;
   line-height: 1.3;
   margin-bottom: 10px;
 }
 
-.proof-body p {
-  line-height: var(--reading-leading);
-}
-
-.proof-body strong {
+.entry-content strong {
   font-weight: 600
 }
 
@@ -990,7 +1020,7 @@ button {
   margin: 10px -3px;
 }
 
-.proof-body .katex,
+.entry-content .katex,
 .node-description .katex {
   font-size: 1.04em
 }
@@ -1058,7 +1088,7 @@ button {
 }
 
 .proof-figure figcaption,
-.proof-body caption {
+.entry-content caption {
   font-family: var(--sans);
   font-size: 12px;
   color: #818a7b;
@@ -1071,7 +1101,7 @@ button {
 
 /* Keep label spacing off the spans generated by KaTeX. */
 .proof-figure .figure-label,
-.proof-body caption .table-label {
+.entry-content caption .table-label {
   font-weight: 600;
   color: #5c7059;
   margin-right: var(--space-sm)
@@ -1109,7 +1139,6 @@ button {
 
 .node-heading-meta {
   display: flex;
-  justify-content: flex-start;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
@@ -1263,7 +1292,7 @@ button {
   }
 }
 
-.entry-navigation {
+.entry-pagination {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1273,7 +1302,7 @@ button {
   font-family: var(--sans);
 }
 
-.entry-navigation .back-link {
+.entry-pagination .back-link {
   margin: 0;
 }
 
@@ -1322,11 +1351,7 @@ button {
   white-space: nowrap;
 }
 
-.entry-row+.entry-row {
-  border-top: 0;
-}
-
-.outline-label {
+.entry-toc-label {
   display: block;
   font-size: 9px;
   color: var(--muted);
@@ -1356,7 +1381,7 @@ button {
   font-family: var(--sans);
 }
 
-.proof-body .block-title {
+.entry-content .block-title {
   margin: 0 0 12px;
   overflow-wrap: anywhere;
 }
@@ -1392,7 +1417,7 @@ button {
 }
 
 .formal-node-list,
-.proof-body .formal-node-list {
+.entry-content .formal-node-list {
   list-style: none;
   padding: 8px 0 0;
   margin: 0;
@@ -1453,44 +1478,6 @@ button {
 
 .question-answer[open] .answer-hide {
   display: inline;
-}
-
-.entry-navigation-bar {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  background: var(--paper);
-  padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--line);
-}
-
-.entry-navigation-bar:has(.reading-return) {
-  padding-bottom: 0;
-}
-
-.reading-return {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-bottom: 0;
-  border-radius: 4px 4px 0 0;
-  padding: 8px 12px;
-  margin: var(--space-md) 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-}
-
-.reading-return .back-link {
-  margin: 0;
-}
-
-.return-location {
-  display: block;
-  font-size: 10px;
-  color: var(--muted);
-  margin: 0;
 }
 
 .placeholder-dialog {
@@ -1609,20 +1596,20 @@ button {
     column-gap: 26px
   }
 
-  .proof-layout {
+  .entry-page {
     grid-template-columns: 145px minmax(0, 1fr);
     column-gap: 35px;
   }
 
-  .proof-header h1 {
+  .entry-header h1 {
     font-size: 40px;
   }
 
-  .proof-deck {
+  .entry-abstract {
     font-size: 15px
   }
 
-  .proof-body,
+  .entry-content,
   .node-description {
     font-size: 17px
   }
@@ -1721,8 +1708,8 @@ button {
     margin-left: 0
   }
 
-  .breadcrumbs {
-    padding-top: 12px;
+  .page-navigation {
+    --navigation-spacing: 12px;
   }
 
   .breadcrumbs ol {
@@ -1731,14 +1718,6 @@ button {
 
   .breadcrumbs li+li:before {
     margin: 0 8px
-  }
-
-  .entry-navigation-bar {
-    padding-bottom: 12px;
-  }
-
-  .reading-return {
-    margin-top: 12px;
   }
 
   .area-intro {
@@ -1755,7 +1734,7 @@ button {
     padding: 16px 0;
   }
 
-  .entry-type {
+  .entry-row .entry-badges {
     grid-column: 1 / -1;
     flex-direction: row;
   }
@@ -1773,27 +1752,27 @@ button {
     font-size: 25px
   }
 
-  .proof-header {
+  .entry-header {
     padding: 20px 0;
   }
 
-  .proof-header h1 {
+  .entry-header h1 {
     font-size: 36px;
     max-width: 560px
   }
 
-  .proof-layout {
+  .entry-page {
     display: block
   }
 
-  .proof-outline {
+  .entry-toc {
     position: static;
     margin: 0 0 20px;
     border-top: 1px solid var(--line);
     padding-top: 12px;
   }
 
-  .outline-scroll {
+  .entry-toc-links {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-height: none;
@@ -1801,19 +1780,19 @@ button {
     padding: 0;
   }
 
-  .outline-scroll>.eyebrow {
+  .entry-toc-links>.eyebrow {
     grid-column: 1 / -1;
   }
 
-  .reading-meta {
+  .entry-reading-meta {
     gap: 8px 14px
   }
 
-  .reading-meta span+span:before {
+  .entry-reading-meta span+span:before {
     margin-right: 14px
   }
 
-  .proof-body h2 {
+  .entry-content h2 {
     font-size: 24px;
   }
 
@@ -1861,11 +1840,11 @@ button {
     font-size: 38px;
   }
 
-  .proof-header h1 {
+  .entry-header h1 {
     font-size: 32px;
   }
 
-  .reading-meta {
+  .entry-reading-meta {
     font-size: 9px
   }
 
@@ -1920,40 +1899,40 @@ button {
   .site-header,
   .site-footer,
   .breadcrumbs,
-  .entry-navigation-bar,
-  .proof-outline,
+  .page-navigation,
+  .entry-toc,
   .header-actions,
   .back-link,
-  .entry-navigation,
-  .reading-return,
+  .entry-pagination,
+  .entry-return,
   .block-permalink,
   .formal-node-list,
   dialog {
     display: none
   }
 
-  .proof-header {
+  .entry-header {
     margin: 0;
     padding: 0 0 24px
   }
 
-  .proof-header h1 {
+  .entry-header h1 {
     font-size: 32px
   }
 
-  .proof-layout {
+  .entry-page {
     display: block
   }
 
-  .proof-body {
+  .entry-content {
     font-size: 12pt
   }
 
-  .proof-body h2 {
+  .entry-content h2 {
     font-size: 18pt
   }
 
-  .proof-body section {
+  .entry-content section {
     margin-bottom: 20px
   }
 
@@ -1971,7 +1950,7 @@ button {
     overflow: visible
   }
 
-  .proof-deck {
+  .entry-abstract {
     font-size: 12pt
   }
 }
