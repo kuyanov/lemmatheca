@@ -65,8 +65,11 @@ entry, area or kind using the
 
 Inspect changed rendered pages and hidden answers at normal desktop size and
 relevant narrow widths under the display-layout contract. Check the draft's
-metadata, links and assets. This self-check does not replace step 3's independent
-review.
+metadata, links and assets. For each changed figure, also inspect an intrinsic-size
+render: edges and arrow tips must meet their intended vertices, comparable labels
+must align, and text must remain clear of the drawing and other text. Check actual
+glyph bounds and marker geometry, rather than relying on approximate coordinates.
+This self-check does not replace step 3's independent review.
 
 Finish mutating work under the
 [shared build rules](../CONTRIBUTING.md#validation-and-submission): standalone

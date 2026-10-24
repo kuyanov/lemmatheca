@@ -37,6 +37,10 @@ related planning records or source records needed for an investigation.
    emphasis, figures and realistic reading time. Inspect desktop and relevant
    narrow layouts, including hidden answers, against the
    [display-layout contract](../docs/corpus.md#mathematics-figures-and-assets).
+   Inspect figure geometry at intrinsic size as well: check edge and arrow-tip
+   attachment to vertices, label anchors and baselines, and clearance between
+   text, edges, arrowheads and shapes. Report visible gaps, misalignment,
+   overlaps or clipping even when the SVG and corpus validate.
    Flag violations and propose corrections; do not edit them. For a requested
    line-break audit, enumerate every explicit break.
 4. Check fidelity to the assigned scope, area-specific perspective and placement.

@@ -466,6 +466,27 @@ and height. Check typography at normal desktop zoom: labels should be proportion
 to the surrounding text, with clear space around legends and notes. Use original
 figures or establish the basis for reuse and credit their sources.
 
+Derive connecting edges and vertices from the same coordinates. For point
+vertices, draw edges to the vertex coordinates and paint the vertices over them;
+for outlined nodes, intersect the edge with the actual circle, ellipse or box
+boundary. Include the arrow marker's reference point and painted tip, including
+its stroke caps and joins, in that calculation; its viewport must contain the
+whole arrowhead without clipping. Fit or phase dashed edges so their first and
+last visible dashes reach the intended attachments, too.
+An intended connection must meet its vertex cleanly, without a visible gap,
+overshoot or arrowhead inside the label. Route curved edges by their endpoint
+tangents, rather than estimating attachment points by eye.
+
+Align comparable labels with consistent text anchors and baselines. Center node
+labels within their shapes using the rendered text bounds, including subscripts,
+superscripts and accents. Keep text clear of edges, arrowheads, other labels and
+unrelated shapes; reserve space for edge labels and legends instead of placing
+them over the drawing. Check the actual rendered glyphs, not just their SVG
+coordinates. Inspect every changed figure at intrinsic size and in the reader
+at normal desktop zoom and a relevant narrow width, including figures inside
+answers. Fix attachment, alignment, overlap and clipping defects before handoff;
+a successful SVG parse or corpus build does not check visual geometry.
+
 Store images and supplements in the entry's `assets/` directory and reference them
 as `assets/filename.svg` or `assets/supplement.pdf`. Paths must remain inside that
 directory. The reader maps them to static URLs. Restart the development server when
