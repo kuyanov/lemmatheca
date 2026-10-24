@@ -1,0 +1,127 @@
+<section data-formal="abs-absolute abs-upward abs-downward abs-domain-inclusion transitive-zf-set" id="comparing-transitive-domains" data-kind="definition">
+  <h2>Compare the same parameters under actual membership</h2>
+  <p>Let \(M\subseteq N\) be nonempty transitive sets, equipped with actual membership. We use the <a href="membership-models#relativized-satisfaction">set-domain satisfaction convention</a>; for definable proper classes the same notation has the <a href="membership-models#class-model-convention">formula-by-formula meaning</a>. Transitivity means that \(x\in y\in M\) implies \(x\in M\), and similarly for \(N\).</p>
+  <p>A membership-language formula \(\varphi(\bar a)\) is <strong>absolute between \(M\) and \(N\)</strong>, at parameters \(\bar a\) from \(M\), if</p>
+  <div class="math-display">\[M\models\varphi[\bar a]\quad\Longleftrightarrow\quad N\models\varphi[\bar a].\]</div>
+  <p>It is <strong>upward absolute</strong> if the forward implication holds and <strong>downward absolute</strong> if the reverse implication holds. These terms refer to every allowed tuple when no particular tuple is specified. Agreement always concerns the same actual objects as parameters. We will not assume that arbitrary membership structures, with an unrelated interpreted relation, have these properties.</p>
+</section>
+
+<section data-formal="abs-bounded-syntax abs-bounded-existence" id="bounded-formulas" data-kind="definition">
+  <h2>Bounded quantifiers search the members of one set</h2>
+  <p>A <strong>bounded quantifier</strong> has one of the forms</p>
+  <div class="math-display">\[(\exists x\in y)\,\psi\;:=\;\exists x\,(x\in y\land\psi),\qquad (\forall x\in y)\,\psi\;:=\;\forall x\,(x\in y\to\psi).\]</div>
+  <p>Here \(y\) is a variable already available outside this quantifier; rename bound variables to avoid capture. The <strong>bounded formulas</strong>, or <strong>\(\Delta_0\) formulas</strong>, are built from equality and membership atoms by Boolean connectives and these bounded quantifiers. Falsity and truth may be included as logical abbreviations. There are no additional function symbols: a notation such as \(\mathcal P(y)\) must first be expanded into a defining formula.</p>
+  <p>For example, \((\forall u\in x)(u\in y)\) is bounded. The formula \(\forall z\,(z\subseteq y\to z\in p)\) has an unbounded quantifier over \(z\), even though expanding its subset test introduces only bounded quantifiers. Merely writing a finite formula, or giving it finitely many variable slots, does not make its quantifiers bounded in this set-theoretic sense.</p>
+</section>
+
+<section data-formal="abs-guarded-translation abs-native-satisfaction abs-guarded-truth abs-bounded-existence-truth abs-native-existential-guard" id="guard-expansion" data-kind="lemma">
+  <h2>Bounded syntax expands into ordinary first-order syntax</h2>
+  <p>The <strong>guard expansion</strong> \(G(\varphi)\) of a bounded formula leaves its atoms unchanged, commutes with Boolean connectives, and expands every bounded quantifier by the displayed membership guard. In any membership structure \((D,E)\), under any assignment of the available variables in \(D\), the ordinary formula \(G(\varphi)\) has exactly the truth value obtained by evaluating the bounded grammar: a quantifier bounded by \(y\) tests precisely the \(b\in D\) with \(E(b,y)\).</p>
+  <div class="proof">
+    <p>Induct on that grammar. The atom and Boolean cases are unchanged. For a bounded existential, the expansion \(\exists x(x\in y\land G(\psi))\) asks for exactly a domain element satisfying \(E(x,y)\), then evaluates the child formula with that value assigned to \(x\). For a bounded universal, the implication guard requires the child exactly at those domain elements. The child induction hypothesis applies to each extended assignment. Renaming bound variables preserves the earlier assignment and prevents capture of the bounding variable or parameters.</p>
+  </div>
+  <p>Hence bounded formulas use the same ordinary satisfaction relation as other membership formulas. Their special feature is the restricted form of their quantifiers, not a second truth relation.</p>
+</section>
+
+<section data-formal="abs-bounded-to-universe abs-bounded-absoluteness abs-bounded-class-schema mm-class-model-convention" id="bounded-absoluteness" data-kind="theorem">
+  <h2>Transitivity makes every bounded formula absolute</h2>
+  <div class="statement-box"><p>If \(M\) is a nonempty transitive set and \(\bar a\) is a tuple of its members, then for every \(\Delta_0\) formula \(\varphi\),</p>
+    <div class="math-display">\[M\models\varphi[\bar a]\quad\Longleftrightarrow\quad\varphi(\bar a)\text{ holds in the ambient universe}.\]</div>
+    <p>Consequently every bounded formula is absolute between nonempty transitive sets \(M\subseteq N\). The same assertions hold schematically for nonempty definable transitive classes.</p></div>
+  <div class="proof">
+    <p>Induct on the bounded construction of \(\varphi\), retaining the assertion for every assignment of its available variables in \(M\). An equality or membership atom compares the same actual sets and relation on both sides. Boolean connectives preserve equivalence, so their steps follow from the induction hypotheses.</p>
+    <p>Consider \((\exists x\in y)\,\psi\), where the assigned value of \(y\) lies in \(M\). A witness inside the structure is an actual \(b\in y\) that also belongs to \(M\). The induction hypothesis makes \(\psi\) true at that same witness in the ambient universe. Conversely, any ambient witness \(b\in y\) is in \(M\) by transitivity. Extend the assignment by this \(b\), apply the induction hypothesis to \(\psi\), and obtain a witness in the structure. This proves both directions for the bounded existential.</p>
+    <p>For \((\forall x\in y)\,\psi\), the possible values of \(x\) are again exactly all actual members of \(y\) on both sides. The induction hypothesis therefore gives the same answer for every value. Equivalently, use the bounded existential case and negation. The induction proves the first assertion. Apply it to both \(M\) and \(N\) to compare their answers through the common ambient answer.</p>
+    <p>For a definable transitive class, repeat this proof for each fixed formula using its quantifier relativization. No set collecting the whole class or uniform truth predicate is used.</p>
+  </div>
+  <p>No axiom-system assumption on \((M,\in)\) is needed. The two essential conditions are actual membership and transitivity, with every displayed parameter already in the domain.</p>
+</section>
+
+<section data-formal="abs-empty-test abs-subset-test abs-pair-test abs-empty-test-correct abs-subset-test-correct abs-pair-test-correct" id="bounded-set-tests" data-kind="lemma">
+  <h2>Empty sets, inclusion, and pairs have bounded tests</h2>
+  <p>The following formulas are bounded and test the stated actual set constructions:</p>
+  <div class="math-display">\[\begin{aligned}x=\varnothing&amp;\quad\Longleftrightarrow\quad(\forall u\in x)\,u\ne u,\\x\subseteq y&amp;\quad\Longleftrightarrow\quad(\forall u\in x)\,u\in y,\\x=\{y,z\}&amp;\quad\Longleftrightarrow\quad y\in x\land z\in x\land(\forall u\in x)(u=y\lor u=z).\end{aligned}\]</div>
+  <div class="proof">
+    <p>The first test says that \(x\) has no member: any member would have to differ from itself. The second is exactly the <a href="sets-and-maps#subsets-and-equality">definition of inclusion</a>. In the third, the first two conjuncts put both prescribed elements in \(x\), and the bounded universal excludes all other elements. Extensionality identifies the set as \(\{y,z\}\). The argument allows \(y=z\).</p>
+    <p>Each displayed quantifier is bounded, so <a href="#bounded-absoluteness"></a> applies whenever all its parameters lie in the transitive domain. In particular, setting \(y=z\) gives the singleton test. These are tests of a supplied candidate \(x\), not assertions that the domain contains a candidate for every pair.</p>
+  </div>
+</section>
+
+<section data-formal="abs-transitive-test abs-ordinal-test abs-transitive-test-correct abs-ordinal-test-correct" id="bounded-ordinal-test" data-kind="lemma">
+  <h2>Transitivity and ordinalhood can also be tested boundedly</h2>
+  <p>Write</p>
+  <div class="math-display">\[\operatorname{Tr}(x)\;:=\;(\forall u\in x)(\forall v\in u)\,v\in x.\]</div>
+  <p>This bounded formula holds exactly when \(x\) is transitive. In the ambient ZF mathematics, the following bounded test holds exactly when \(x\) is a von Neumann ordinal:</p>
+  <div class="math-display">\[\operatorname{OrdTest}(x)\;:=\;\operatorname{Tr}(x)\land(\forall u\in x)\operatorname{Tr}(u)\land(\forall u\in x)(\forall v\in x)(u\in v\lor u=v\lor v\in u).\]</div>
+  <div class="proof">
+    <p>The transitivity test just expands the definition. Every <a href="ordinals#transitive-sets">ordinal</a> is transitive, its members are transitive ordinals, and any two members are comparable by membership. Thus an ordinal passes the displayed test.</p>
+    <p>Conversely suppose the test holds. Membership on \(x\) is transitive because every \(w\in x\) is a transitive set: \(u\in v\in w\) implies \(u\in w\). It is irreflexive by Foundation and compares any two distinct members by the last conjunct. If \(B\subseteq x\) is nonempty, Foundation gives \(u\in B\) with no member in \(B\). For any \(v\in B\), the alternative \(v\in u\) is excluded, so comparison gives \(u=v\) or \(u\in v\). Thus \(u\) is a least point of \(B\). Membership well-orders \(x\), which is transitive, so \(x\) is an ordinal.</p>
+  </div>
+  <p>The empty set passes the test and is the ordinal zero. Bounded absoluteness preserves this test on transitive domains. If an alternative definition is only <em>provably equivalent</em> in a theory, transferring that equivalence to a domain additionally requires that it satisfy the theory, as below.</p>
+<p>This bounded test <a href="constructible-hierarchy#ordinals-at-each-level">defines the ordinal part of each transitive constructible level</a>, which allows the next level to contain its index ordinal.</p>
+</section>
+
+<section data-formal="abs-sigma-one abs-pi-one abs-sigma-translation abs-pi-translation abs-sigma-negation abs-pi-negation abs-sigma-dual-truth abs-pi-dual-truth" id="one-unbounded-block" data-kind="definition">
+  <h2>One unbounded block changes the available witnesses</h2>
+  <p>A <strong>\(\Sigma_1\) presentation</strong> is a formula \(\exists x_1\cdots\exists x_k\,\psi\) with a bounded matrix \(\psi\). A <strong>\(\Pi_1\) presentation</strong> is \(\forall x_1\cdots\forall x_k\,\psi\) with a bounded matrix. The block is finite; an empty block is allowed, so bounded formulas qualify for both. These are the first levels of the <strong>Lévy hierarchy</strong> of membership formulas.</p>
+  <p>We use these specified presentations, or formulas logically equivalent to them, when applying the next result. Equivalence obtainable only from the axioms of a theory needs the extra model hypotheses of <a href="#relative-delta-one"></a>. Negating a \(\Sigma_1\) presentation yields a \(\Pi_1\) presentation, and conversely, because the negation of a bounded formula is bounded.</p>
+</section>
+
+<section data-formal="abs-sigma-upward abs-pi-downward abs-directional-class-schema" id="directional-absoluteness" data-kind="theorem">
+  <h2>Existential witnesses move upward and universal tests move downward</h2>
+  <div class="statement-box"><p>For nonempty transitive domains \(M\subseteq N\) and parameters \(\bar a\) from \(M\),</p>
+    <div class="math-display">\[M\models\sigma[\bar a]\ \Longrightarrow\ N\models\sigma[\bar a]\qquad(\sigma\text{ a }\Sigma_1\text{ presentation}),\]</div>
+    <div class="math-display">\[N\models\pi[\bar a]\ \Longrightarrow\ M\models\pi[\bar a]\qquad(\pi\text{ a }\Pi_1\text{ presentation}).\]</div>
+    <p>The statements include definable class domains under the same schematic convention.</p></div>
+  <div class="proof">
+    <p>Write \(\sigma=\exists\bar x\,\psi\) with bounded \(\psi\). A witnessing finite tuple \(\bar b\) in \(M\) also lies in \(N\). Bounded absoluteness, applied with both \(\bar a\) and \(\bar b\), transfers the truth of \(\psi\) to \(N\). The same tuple witnesses \(\sigma\) there. This argument also covers an empty block.</p>
+    <p>If the universal presentation \(\pi\) were false in \(M\), its negation would have an existential presentation true in \(M\). The first part would make that negation true in \(N\), contradicting the hypothesis. This proves the universal assertion by contraposition. Alternatively, every tuple tested in \(M\) is among the tuples tested in \(N\), and their bounded matrices agree.</p>
+  </div>
+</section>
+
+<section data-formal="abs-finite-domains abs-membership-existential abs-finite-direction-counterexample abs-membership-witness" id="finite-direction-counterexample" data-kind="lemma">
+  <h2>The reverse directions already fail in small finite domains</h2>
+  <p>Take \(M=V_1=\{\varnothing\}\) and \(N=V_2=\{\varnothing,\{\varnothing\}\}\). Both are nonempty transitive sets and \(M\subseteq N\). The \(\Sigma_1\) sentence \(\exists x\exists y\,(x\in y)\) is true in \(N\) and false in \(M\). Its \(\Pi_1\) negation \(\forall x\forall y\,(x\notin y)\) is true in \(M\) and false in \(N\).</p>
+  <div class="proof">
+    <p>The witnesses \(x=\varnothing\), \(y=\{\varnothing\}\) belong to \(N\) and satisfy membership. In \(M\), both variables must equal \(\varnothing\), and \(\varnothing\notin\varnothing\). The statements about the universal sentence are the negations of these two answers. Transitivity follows immediately by inspecting the displayed members.</p>
+  </div>
+  <p>Thus downward \(\Sigma_1\) absoluteness and upward \(\Pi_1\) absoluteness need not hold. Neither the positive theorem nor this counterexample assumes that these domains are models of ZF.</p>
+  <p><a href="rank-reflection#rank-reflection">Reflection</a> selects particular larger stages where a prescribed finite family, including unbounded formulas, does agree.</p>
+</section>
+
+<section data-formal="abs-relative-delta-one" id="relative-delta-one" data-kind="definition">
+  <h2>A theory can supply two equivalent descriptions</h2>
+  <p>For a membership-language theory \(T\), a formula \(\theta(\bar x)\) is <strong>\(\Delta_1\) in \(T\)</strong> if there are a \(\Sigma_1\) presentation \(\sigma\) and a \(\Pi_1\) presentation \(\pi\), with the same free parameters, such that \(T\) proves the universal closures of</p>
+  <div class="math-display">\[\theta(\bar x)\leftrightarrow\sigma(\bar x),\qquad\theta(\bar x)\leftrightarrow\pi(\bar x).\]</div>
+  <p>This definition records proofs from \(T\), not just an accidental agreement of the formulas in the ambient universe. A transitive domain need not satisfy \(T\); to use those equivalences inside it, we require that additional hypothesis.</p>
+</section>
+
+<section data-formal="abs-relative-delta-one-absoluteness mm-transitive-set-model fod-soundness" id="delta-one-absoluteness" data-kind="theorem">
+  <h2>Two descriptions give agreement in both directions</h2>
+  <p>Suppose \(M\subseteq N\) are nonempty transitive models of \(T\), and \(\theta\) is \(\Delta_1\) in \(T\). Then \(\theta\) is absolute between \(M\) and \(N\) at every parameter tuple from \(M\).</p>
+  <div class="proof">
+    <p>By <a href="first-order-proofs#soundness">soundness</a>, both models satisfy the two proved equivalences. If \(M\models\theta[\bar a]\), use its existential description to get \(M\models\sigma[\bar a]\). Upward absoluteness gives \(N\models\sigma[\bar a]\), and the equivalence in \(N\) gives \(N\models\theta[\bar a]\).</p>
+    <p>Conversely, from \(N\models\theta[\bar a]\) use its universal description \(\pi\). Downward absoluteness gives \(M\models\pi[\bar a]\), and the equivalence in \(M\) recovers \(M\models\theta[\bar a]\). Each direction uses one description and the relevant model's equivalence.</p>
+  </div>
+  <p>Bounded formulas themselves supply both presentations without additional theory. For more elaborate definitions, the assumptions that the domains satisfy the theory must be retained; bounded absoluteness alone does not supply them.</p>
+</section>
+
+<section data-formal="abs-missing-pair abs-pair-test-correct" id="pair-existence-question" data-kind="question">
+  <h2>Does an absolute pair test supply a missing pair?</h2>
+  <p>Let \(M=2=\{0,1\}\), using von Neumann finite ordinals. It is transitive and contains both \(0\) and \(1\). Does absoluteness of the bounded pair test imply \(M\models\exists x\,(x=\{0,1\})\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. The actual pair \(\{0,1\}=2\) is not a member of \(M\); its only candidates are \(0\) and \(1\), neither equal to that pair. The bounded test therefore rejects both candidates in \(M\), as it does externally. The existential assertion has an <em>unbounded</em> quantifier asking for an object of the domain. It is false in \(M\), although it is true in the ambient universe, where \(2\) supplies the witness. Pairing is an extra closure property, not a consequence of transitivity.</p>
+  </div></details>
+</section>
+
+<section data-formal="abs-power-set-formula abs-finite-four abs-internal-subset-candidates abs-power-parameters abs-internal-power-true abs-external-power-false abs-larger-power-false" id="power-set-question" data-kind="question">
+  <h2>Why can a transitive domain miss subsets?</h2>
+  <p>Let \(M=4=\{0,1,2,3\}\), with actual membership, and take parameters \(a=2\), \(p=3\) in \(M\). Evaluate the formula</p>
+  <div class="math-display">\[\operatorname{Pow}(p,a)\;:=\;\forall z\,\bigl(z\in p\leftrightarrow(\forall u\in z)\,u\in a\bigr).\]</div>
+  <p>Does this formula have the same answer in \(M\) and outside it? Is it a bounded formula?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The domain \(M\) is transitive. Among its four possible values of \(z\), exactly \(0,1,2\) are subsets of \(a=2\): the first three pass by inspecting their members, and \(3\) fails because \(2\in3\) but \(2\notin2\). These same three objects are precisely the members of \(p=3\). Hence \(M\models\operatorname{Pow}(3,2)\).</p>
+    <p>Externally, \(z=\{1\}\) is a subset of \(2=\{0,1\}\) but is not an element of \(3=\{0,1,2\}\). Thus \(\operatorname{Pow}(3,2)\) is false outside \(M\). For two set domains, compare \(M\) with \(V_4\): this transitive stage contains all four finite ordinals below \(4\) and also \(\{1\}\), so the same witness makes the formula false there.</p>
+    <p>The outer quantifier \(\forall z\) is unbounded. Transitivity supplies the members of each set present; it does not supply every subset of that set as a new object. The bounded subset test for a given \(z\) is absolute, while the universal search over all candidate subsets can change. This example makes no assertion that either finite domain satisfies the axioms of ZF.</p>
+  </div></details>
+</section>

@@ -1,0 +1,142 @@
+<section data-formal="msf-signature msf-list-signature" id="functional-signatures" data-kind="definition">
+  <h2>Operations have argument sorts and a result sort</h2>
+  <p>Fix a nonempty set \(S\) of sorts. A <strong>many-sorted signature with functions</strong> specifies relation symbols with finite lists of argument sorts, as in <a href="many-sorted-logic#sorted-signatures">the relational signature</a>, and function symbols with profiles</p>
+  <div class="math-display">\[f:(s_0,\ldots,s_{k-1})\longrightarrow s.\]</div>
+  <p>The profile requires the \(i\)-th input to have sort \(s_i\) and the result to have sort \(s\). A <strong>constant of sort \(s\)</strong> is a function symbol with no arguments and result sort \(s\). All symbol collections are sets; no countability assumption is made. Equality is available between terms of the same sort. Relations of arity zero are allowed and express truth values.</p>
+  <p>For a running example use sorts \(E\) for elements and \(Q\) for lists, with \(\mathsf{nil}:Q\), \(\mathsf{cons}:(E,Q)\to  Q\), and \(\mathsf{head}:Q\to  E\). The signature declares where operations may be used. It does not yet assert any equation about lists or prescribe what \(\mathsf{head}(\mathsf{nil})\) means.</p>
+</section>
+
+<section data-formal="msf-term msf-formula msf-list-signature" id="typed-terms-and-formulas" data-kind="definition">
+  <h2>Build terms before forming atomic formulas</h2>
+  <p>In a finite <a href="many-sorted-logic#sorted-formulas">sorted context</a> \(\gamma=(s_0,\ldots,s_{n-1})\), a <strong>term of sort \(s\)</strong> is built by two rules. A variable \(z_i\) has its declared sort \(s_i\). If \(f:(r_0,\ldots,r_{k-1})\to  s\) and each \(t_i\) has sort \(r_i\), then \(f(t_0,\ldots,t_{k-1})\) has sort \(s\). The zero-argument case supplies constants. There are no other terms.</p>
+  <p>An <strong>atomic sorted formula</strong> is \(t=u\) for terms of the same sort, or \(R(t_0,\ldots,t_{k-1})\) with the required argument sorts. Build <strong>sorted formulas with functions</strong> from these atoms, falsity, implication, and sorted universal quantification. A quantifier appends its placeholder: a body in \((\gamma,s)\) gives \(\forall z_n:s\,A\) in \(\gamma\). Other classical connectives and existence retain their usual abbreviations. A <strong>sentence</strong> has empty context.</p>
+  <p>For \(x:E\) and \(q:Q\), the term \(\mathsf{head}(\mathsf{cons}(x,q))\) has sort \(E\), so its equality with \(x\) is a formula. The expression \(\mathsf{head}(x)\) is not a term. Sort checking precedes interpretation.</p>
+</section>
+
+<section data-formal="msf-model msf-assignment msf-extended-assignment msf-evaluation msf-satisfaction" id="functional-models" data-kind="definition">
+  <h2>Evaluate inside the prescribed carriers</h2>
+  <p>A <strong>sorted structure</strong> supplies a nonempty carrier \(D_s\) for every sort, a total function \(f^D:\prod_{i&lt;k}D_{s_i}\to  D_s\) for every function profile, and a relation on the prescribed product for every relation symbol. A constant denotes a point of its result carrier. We use classical choice when selecting points from all these nonempty carriers.</p>
+  <p>A <strong>sorted assignment</strong> \(a\) in \(\gamma\) has \(a_i\in D_{s_i}\). Define <strong>term evaluation</strong> recursively: \(z_i^D[a]=a_i\), and</p>
+  <div class="math-display">\[f(t_0,\ldots,t_{k-1})^D[a]=f^D(t_0^D[a],\ldots,t_{k-1}^D[a]).\]</div>
+  <p>The value of a sort-\(s\) term lies in \(D_s\), by induction on the term. <strong>Sorted satisfaction</strong> evaluates atomic formulas by these values, uses ordinary falsity and implication, and interprets \(\forall z_n:s\,A\) by requiring \(A\) at every extended assignment \((a,d)\) with \(d\in D_s\). Equality is actual equality within that carrier.</p>
+</section>
+
+<section data-formal="msf-substitution msf-term-substitution msf-weakening msf-lift msf-formula-substitution" id="simultaneous-substitution" data-kind="definition">
+  <h2>Replace variables by terms of the same sort</h2>
+  <p>A <strong>sort-preserving substitution</strong> \(\sigma:\gamma\to \delta\), where \(\delta\) has length \(m\), assigns to each \(z_i\) of \(\gamma\) a term \(\sigma_i\) of sort \(s_i\) in \(\delta\). Define \(t[\sigma]\) by replacing a variable \(z_i\) by \(\sigma_i\), and commuting with every function application. All replacements are simultaneous: the substitution is not applied again inside an inserted \(\sigma_i\).</p>
+  <p>To pass a quantifier of sort \(s\), use the <strong>lifted substitution</strong> \(\sigma^+:(\gamma,s)\to (\delta,s)\). Each old variable receives \(\sigma_i\) with its existing indices unchanged in the longer context, and the new last variable \(z_n\) receives the new last variable \(z_m\). The first operation is <strong>weakening</strong>: it makes a term available in an extended context without adding any occurrence of the appended variable.</p>
+  <p>Substitute into atoms through their terms, commute with falsity and implication, and put</p>
+  <div class="math-display">\[(\forall z_n:s\,A)[\sigma]=\forall z_m:s\,(A[\sigma^+]).\]</div>
+  <p>This is the sorted version of <a href="first-order-languages#substitution">capture-avoiding substitution</a>. Induction on terms and formulas shows that every resulting term retains its result sort and every resulting formula is well formed in the target context.</p>
+</section>
+
+<section data-formal="msf-pulled-assignment msf-evaluation-substitution msf-evaluation-weakening msf-lifted-assignment" id="term-substitution" data-kind="lemma">
+  <h2>Evaluation after substitution is evaluation at the substituted assignment</h2>
+  <p>For an assignment \(a\) in \(\delta\), define the <strong>pulled assignment</strong> \(\sigma^*a\) in \(\gamma\) by \((\sigma^*a)_i=\sigma_i^D[a]\). For every term \(t\) in \(\gamma\),</p>
+  <div class="math-display">\[(t[\sigma])^D[a]=t^D[\sigma^*a].\]</div>
+  <div class="proof"><p>Induct on \(t\). For a variable, the two sides are equal by the definition of \(\sigma^*a\). For \(f(t_0,\ldots,t_{k-1})\), both sides apply the same \(f^D\). Its input tuples agree coordinate by coordinate by induction. With no arguments this simply says that the same constant has the same value.</p><p>The same induction proves the weakening identity: evaluating a weakened term at \((a,d)\) gives its original value at \(a\), because no variable occurrence points to the appended coordinate. Consequently</p>
+  <div class="math-display">\[(\sigma^+)^*(a,d)=(\sigma^*a,d).\]</div>
+  <p>The old coordinates use the weakening identity; the last coordinate is \(d\) by the definition of the lifted substitution.</p></div>
+</section>
+
+<section data-formal="msf-semantic-substitution" id="formula-substitution" data-kind="theorem">
+  <h2>The semantic substitution lemma includes sorted quantifiers</h2>
+  <div class="statement-box"><p>For every sorted formula \(A\) in \(\gamma\), sort-preserving substitution \(\sigma:\gamma\to \delta\), and sorted assignment \(a\) in \(\delta\),</p>
+  <div class="math-display">\[D,a\models A[\sigma]\quad\Longleftrightarrow\quad D,\sigma^*a\models A.\]</div></div>
+  <div class="proof"><p>Induct on \(A\), keeping contexts, substitutions and assignments arbitrary. For equality and relation atoms, use <a href="#term-substitution"></a> on every argument term. Falsity agrees on both sides. For implication, apply the induction equivalences to its two children.</p><p>For \(A=\forall z_n:s\,B\), the left side requires \(D,(a,d)\models B[\sigma^+]\) for every \(d\in D_s\). Induction changes this to \(D,(\sigma^+)^*(a,d)\models B\). The lifted-assignment identity makes this exactly \(D,(\sigma^*a,d)\models B\) for every such \(d\), which is the right side. The range of this quantifier is the same carrier on both sides; sort preservation ensures that every old coordinate also has the required value type.</p></div>
+</section>
+
+<section data-formal="msf-list-signature msf-list-substitution msf-list-model msf-list-calculation" id="list-example" data-kind="lemma">
+  <h2>One substitution in a two-sort example</h2>
+  <p>In the context \(x:E,q:Q\), let \(\sigma_x=\mathsf{head}(q)\) and \(\sigma_q=\mathsf{cons}(x,\mathsf{nil})\). This is sort preserving. Its action on the sort-\(E\) term \(t=\mathsf{head}(\mathsf{cons}(x,q))\) is</p>
+  <div class="math-display">\[t[\sigma]=\mathsf{head}\bigl(\mathsf{cons}(\mathsf{head}(q),\mathsf{cons}(x,\mathsf{nil}))\bigr).\]</div>
+  <p>Interpret \(E\) as \(\mathbb N\), \(Q\) as finite lists of natural numbers, \(\mathsf{nil}\) as the empty list, and \(\mathsf{cons}\) as prepending. Interpret \(\mathsf{head}\) as the first element of a nonempty list, and as \(0\) on the empty list. At \(x=7,q=[2,5]\), the displayed substituted term has value \(2\), as does \(t\) at the pulled assignment \(x=2,q=[7]\).</p>
+  <div class="proof"><p>Replace the two variable occurrences by their specified terms, preserving the surrounding operation symbols. Do not replace \(q\) inside the inserted \(\mathsf{head}(q)\), or \(x\) inside the inserted \(\mathsf{cons}(x,\mathsf{nil})\). Under the given assignment, those two inserted terms evaluate to \(2\) and \([7]\). The outer expression therefore evaluates to the head of the list whose first element is \(2\), proving both calculations.</p></div>
+</section>
+
+<section data-formal="msf-capture-counterexample msf-lift msf-formula-substitution" id="capture-question" data-kind="question">
+  <h2>What if a replacement variable becomes bound?</h2>
+  <p>In ordinary variable names of one sort, substitute the free variable \(y\) for \(x\) in \(\forall y\,(x=y)\). Why is \(\forall y\,(y=y)\) the wrong answer?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The replacement \(y\) must remain free. Rename the bound variable first, obtaining \(\forall u\,(y=u)\). In a two-element carrier, this is false at every assigned value of the free \(y\), whereas \(\forall y\,(y=y)\) is true. Thus capturing the free replacement changes truth.</p><p>In the indexed convention no renaming guess is needed. The free target coordinate stays an old coordinate; the quantifier appends a distinct new last coordinate. The lifted substitution sends the old bound placeholder to that new coordinate and weakens every free replacement past it.</p></div></details>
+</section>
+
+<section data-formal="msf-erased-language msf-term-erasure msf-guarded-translation msf-existential-guard" id="erased-language" data-kind="definition">
+  <h2>Keep functions and erase their sort annotations</h2>
+  <p>The <strong>ordinary language</strong> \(L^\flat\) has an ordinary function symbol \(f^\flat\) of arity \(k\) for each sorted function with \(k\) inputs, and an ordinary relation \(R^\flat\) of the same arity for each sorted relation. Add a distinct unary predicate \(P_s\) for each sort. These predicates are tagged separately from old unary relations. Constants remain nullary functions.</p>
+  <p>The <strong>erasure of a term</strong> \(t^\flat\) retains its variable indices and function tree, using these ordinary function symbols. The <strong>guarded translation</strong> \(A^\flat\) retains equality, relations, falsity and implication through the translated terms, and replaces sorted quantifiers by</p>
+  <div class="math-display">\[(\forall z_n:s\,A)^\flat=\forall z_n\,(P_s(z_n)\to A^\flat).\]</div>
+  <p>These are ordinary terms and scoped formulas in the <a href="first-order-languages#scoped-formulas">existing first-order syntax</a>. As in <a href="many-sorted-logic#guarded-translation">relational guarded translation</a>, existential quantification becomes classically equivalent to \(\exists z_n(P_s(z_n)\land A^\flat)\).</p>
+</section>
+
+<section data-formal="msf-sort-axiom msf-closure-axiom msf-typing-axioms msf-typed-model msf-sort-axiom-truth msf-closure-axiom-truth msf-typing-theory-truth" id="typing-axioms" data-kind="definition">
+  <h2>Nonempty sorts must be closed under the operations</h2>
+  <p>Keep the <strong>sort-existence axioms</strong> \(\eta_s=\exists z\,P_s(z)\). For each \(f:(s_0,\ldots,s_{k-1})\to  s\), add its <strong>function-closure axiom</strong></p>
+  <div class="math-display">\[\chi_f=\forall z_0\cdots\forall z_{k-1}\,\Bigl(\bigwedge_{i&lt;k}P_{s_i}(z_i)\ \to\ P_s(f^\flat(z_0,\ldots,z_{k-1}))\Bigr).\]</div>
+  <p>Write \(\mathcal A\) for the set of all these axioms. For \(k=0\), the premise is the empty conjunction and there are no quantifiers: the requirement is equivalent to \(P_s(c^\flat)\). Thus constants are covered too.</p>
+  <p>No condition is imposed on functions at tuples of the wrong sorts, or on relations at such tuples. The predicates need not be disjoint or cover the ambient carrier. Sorts remain distinct typed copies even if their predicates overlap. A graph-based treatment is another option, but its separate <a href="interpreting-theories#function-data">existence and uniqueness requirements</a> are unnecessary for this direct translation, which retains ordinary function symbols.</p>
+</section>
+
+<section data-formal="msf-term-sort" id="term-sort-preservation" data-kind="lemma">
+  <h2>Translated terms stay inside their result sorts</h2>
+  <p>Let an ordinary nonempty \(L^\flat\)-structure \(U\) satisfy \(\mathcal A\). If \(a_i\in P_{s_i}^U\) is a well-sorted assignment in \(\gamma\), then the value of \(t^\flat\) belongs to \(P_s^U\) whenever \(t\) has sort \(s\).</p>
+  <div class="proof"><p>Induct on the term. A variable uses its assignment's sort condition. For a function application, induction puts each argument value in its required predicate. The axiom \(\chi_f\) then puts the resulting function value in the result predicate. This includes constants: their closure axiom supplies the predicate membership without any argument hypotheses.</p></div>
+</section>
+
+<section data-formal="msf-tagged-model msf-tag-bijection msf-tagged-nonempty msf-tagged-typing msf-tagged-constant msf-tagged-evaluation" id="tagged-construction" data-kind="lemma">
+  <h2>A sorted model gives total ordinary functions</h2>
+  <p>Every sorted structure \(D\) has a nonempty ordinary presentation satisfying \(\mathcal A\). Its carrier is \(U=\{(s,d):s\in S,d\in D_s\}\), and \(P_s^U=\{(s,d):d\in D_s\}\). The map \(d\mapsto (s,d)\) is a bijection onto that predicate.</p>
+  <div class="proof"><p>Choose a point \(d_s^0\in D_s\) for every sort. For \(f:(s_0,\ldots,s_{k-1})\to  s\), define its ordinary function on a tuple with the correct tags by</p>
+  <div class="math-display">\[f^U((s_0,d_0),\ldots,(s_{k-1},d_{k-1}))=(s,f^D(d_0,\ldots,d_{k-1})).\]</div>
+  <p>On any other tuple put \(f^U=(s,d_s^0)\). This defines a total ordinary function on \(U^k\). For a constant, the tuple is empty and the correct-tag case applies, giving its prescribed sorted value.</p><p>Interpret relations by their sorted truth on correctly tagged tuples, and by false otherwise. Nonemptiness of the sorts gives every \(\eta_s\). Correctly tagged function values have their result tag, proving every \(\chi_f\). The carrier \(U\) is nonempty because \(S\) and each \(D_s\) are nonempty.</p><p>Induction on a term shows that evaluating its erasure at the tagged assignment gives the tag of its sorted value. In a function step all arguments already have the correct tags, so the default case is never used. Atomic truth is therefore preserved, including equality within a fixed sort.</p></div>
+
+  <figure id="sorted-function-totalization" class="proof-figure">
+    <div class="figure-image"><img src="assets/sorted-function-totalization.svg" width="760" height="520" alt="The sorted carriers E and Q tag into P_E and P_Q inside U. A solid head arrow takes (Q,[2,5]) to (E,2); a dashed wrong-tag input (E,7) returns the chosen E-default (E,0)."></div>
+    <figcaption>Only the solid, correctly sorted cases are reached by translated sorted terms. Dashed wrong-tag cases make the ordinary function total but do not affect translated sorted truth. The valid list \(\mathsf{nil}\) is a well-sorted input; its head is prescribed by the original sorted structure.</figcaption>
+  </figure>
+</section>
+
+<section data-formal="msf-subtype-model msf-subtype-evaluation" id="subtype-construction" data-kind="lemma">
+  <h2>An ordinary typed model recovers genuine sorted operations</h2>
+  <p>Conversely, let \(U\models\mathcal A\). Put \(D_s=\{u\in U:P_s^U(u)\}\), regarded as a separate carrier for each sort. Each is nonempty. Restrict \(f^U\) to the product of its required carriers, and regard its output as an element of its result carrier; restrict relations to the corresponding products.</p>
+  <div class="proof"><p>The axiom \(\eta_s\) supplies a point of \(D_s\). For a function's well-sorted input tuple, \(\chi_f\) says exactly that its output belongs to \(D_s\). This makes the restricted function total with the required result sort. In particular a constant becomes a point of its declared carrier.</p><p>Inducting on terms shows that the underlying ambient value of each sorted evaluation equals evaluation of the erased term in \(U\). The variable case uses the same coordinate. The function case uses equality of the argument values and the definition by restriction. Equality in a carrier is equality of the underlying values, and relation truth agrees by restriction.</p></div>
+</section>
+
+<section data-formal="msf-tagged-satisfaction msf-subtype-satisfaction msf-existential-guard" id="translation-correctness" data-kind="theorem">
+  <h2>Both model constructions preserve satisfaction</h2>
+  <div class="statement-box"><p>For the ordinary presentation \(U\) built from a sorted structure \(D\), every sorted formula \(A\) and assignment \(a\) satisfy</p>
+  <div class="math-display">\[D,a\models A\quad\Longleftrightarrow\quad U,\operatorname{tag}(a)\models A^\flat.\]</div>
+  <p>For the sorted structure extracted from \(U\models\mathcal A\), the corresponding equivalence uses the underlying ambient values of the assignment. It holds for every formula, including formulas with free variables.</p></div>
+  <div class="proof"><p>Use the term-evaluation identities from the two constructions and induct on formulas. They give the atomic cases. Falsity and implication use their ordinary truth clauses and the induction equivalences.</p><p>A sorted universal quantifier ranges over exactly \(D_s\). In the tagged construction this carrier is in bijection with all ambient points satisfying \(P_s\); in the extracted construction it is precisely that predicate as a subtype. The translated universal considers every ambient point, but imposes its body only when the guard \(P_s\) holds. At those points the extended assignment is well sorted and induction applies. Thus the two quantified conditions agree in both model directions.</p><p>Ordinary existence follows by the classical abbreviation, with a conjunctive guard. The argument never requires predicates to partition the ambient carrier: each quantifier uses only its own predicate.</p></div>
+</section>
+
+<section data-formal="msf-relational-inclusion msf-relational-truth msf-ordinary-relational-inclusion msf-relational-erasure" id="relational-fragment" data-kind="lemma">
+  <h2>The earlier relational formulas form the same fragment</h2>
+  <p>Forget the function symbols of a sorted signature. Every formula in the <a href="many-sorted-logic#sorted-formulas">earlier relational syntax</a> has a canonical reading here: read each variable argument as a variable term, and retain equality, relations, implication, falsity and appended quantifiers. Its truth in every full sorted structure equals its earlier relational truth in the reduct that forgets functions.</p>
+  <div class="proof"><p>Induct on that earlier formula. Variable terms evaluate to the original coordinates, giving equality and relation cases. The connective cases retain their truth clauses, and the quantifier cases retain the same carrier and extended assignment.</p><p>There is also a natural inclusion of the earlier ordinary erased language into the present ordinary language, keeping its relation symbols and sort predicates. Translating the included relational formula agrees with applying this language inclusion to its old guarded translation: the atomic and connective cases are unchanged, and both quantifier clauses add the same guard. Thus the present construction extends the actual earlier syntax and translation.</p></div>
+</section>
+
+<section data-formal="msf-erased-theory msf-satisfiability msf-satisfiability-transfer" id="theory-transfer" data-kind="theorem">
+  <h2>The translation works for a whole theory at once</h2>
+  <p>For a set \(T\) of sorted sentences, define the ordinary theory</p>
+  <div class="math-display">\[T^\flat=\{A^\flat:A\in T\}\cup\mathcal A.\]</div>
+  <p>Then \(T\) has a sorted model with nonempty carriers if and only if \(T^\flat\) has a nonempty ordinary first-order model.</p>
+  <div class="proof"><p>A sorted model has a single tagged presentation satisfying every typing axiom. By <a href="#translation-correctness"></a>, it satisfies every translated sentence of \(T\). Conversely, an ordinary model of \(T^\flat\) satisfies \(\mathcal A\), so the subtype construction supplies a sorted structure with all required operations. The reverse satisfaction equivalence gives every sentence of \(T\) in that same structure.</p></div>
+</section>
+
+<section data-formal="msf-compactness" id="sorted-compactness" data-kind="theorem">
+  <h2>Functions and sorts preserve compactness</h2>
+  <div class="statement-box"><p>For any set-sized many-sorted signature with functions and nonempty sort set, a theory has a sorted model with all carriers nonempty if and only if every finite subset has such a model.</p></div>
+  <div class="proof"><p>One model satisfies all finite subsets. Conversely, take a finite fragment \(F\subseteq T^\flat\). For each member belonging to the translated part, choose an original sentence in \(T\) with that translation. These finitely many originals form \(T_0\subseteq T\). By hypothesis it has a sorted model.</p><p>That model interprets the entire signature, including sorts and functions not mentioned by \(T_0\). Its tagged presentation satisfies every axiom of \(\mathcal A\) and the translations of \(T_0\), hence all of \(F\). Thus the ordinary theory is finitely satisfiable. Its language is set-sized, so <a href="ultraproducts#compactness">ordinary first-order compactness</a> gives a model. Apply <a href="#theory-transfer"></a> to recover a sorted model of \(T\).</p></div>
+</section>
+
+<section data-formal="msf-constant-existence msf-constant-countermodel msf-closure-axiom-truth" id="constant-question" data-kind="question">
+  <h2>Does a constant need its own closure condition?</h2>
+  <p>Let the ordinary carrier be \(\{0,1\}\), with a sort predicate \(P_s=\{0\}\) and a constant \(c^U=1\) declared to have sort \(s\). The sort-existence axiom holds. Can this ordinary structure be extracted into a sorted structure with the same constant value?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No: the proposed carrier \(D_s\) contains only \(0\), so \(c^U=1\) is not an available value for its sorted constant. The missing axiom is \(P_s(c)\), the nullary case of \(\chi_f\).</p><p>For example, \(\exists x:s\,(x=c)\) is true in every allowed sorted structure, witnessed by the constant's value. Its translation \(\exists x(P_s(x)\land x=c)\) is false in this ordinary structure. Nonempty predicates alone therefore do not establish the satisfaction correspondence when functions are present.</p></div></details>
+</section>
+
+<section data-formal="msf-sorted-agreement msf-evaluation-agreement msf-satisfaction-agreement" id="default-question" data-kind="question">
+  <h2>Can a different value on wrongly sorted inputs change translated truth?</h2>
+  <p>In the tagged construction, replace the selected default outputs by other values on the wrongly sorted input tuples, retaining the prescribed function values on every correctly sorted tuple. Can a translated sorted sentence change truth?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. By <a href="#term-sort-preservation"></a>, every term reached under a well-sorted assignment evaluates inside its required sort, and each function is applied to a correctly sorted tuple. Guarded quantifiers test their bodies only at such extended assignments. The satisfaction induction therefore uses only the unchanged function values. Relations are likewise consulted only on correctly sorted tuples.</p><p>The two ordinary structures can disagree on arbitrary ordinary formulas with unguarded variables. The assertion concerns translated sorted sentences and, more generally, translated formulas at well-sorted assignments.</p></div></details>
+</section>

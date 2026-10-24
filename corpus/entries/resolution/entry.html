@@ -19,6 +19,11 @@
   <p>A <strong>resolution derivation from \(\Gamma\)</strong> is a finite tree of clauses. Each leaf is a member of \(\Gamma\); each internal node is the resolvent of its two children on a specified pivot. Write \(\Gamma\vdash_{\mathrm{res}}C\) if such a tree has root \(C\). A derivation with root the empty clause is a <strong>refutation</strong>.</p>
   <p>For the switch requirements, the leaves \(\{p,q\}\) and \(\{\neg p\}\) give \(\{q\}\); resolving this with the leaf \(\{\neg q\}\) gives \(\varnothing\). All three leaves belong to the given clause set, so this is a refutation.</p>
   <p>A derived clause can replace a leaf in another derivation. More precisely, if every member of \(\Delta\) has a derivation from \(\Gamma\), then every clause derivable from \(\Delta\) is derivable from \(\Gamma\). Induct on the second tree: replace a premise leaf by its supplied derivation, and retain each resolution node. This is a construction using the stated rule, rather than an additional inference rule.</p>
+
+  <figure id="resolution-switch-refutation" class="proof-figure">
+    <div class="figure-image"><img src="assets/resolution-switch-refutation.svg" width="760" height="310" alt="Proof tree with leaves {p,q},{¬p},{¬q}: resolving the first pair on p gives {q}, then resolving on q gives the empty clause."></div>
+    <figcaption>Each horizontal line is one resolution inference, labeled by its single pivot. The three leaves are original premises; the empty clause is the final derived root.</figcaption>
+  </figure>
 </section>
 
 <section id="soundness" data-formal="res-rule-sound res-sound res-refutation-unsatisfiable res-add-resolvent-models res-parent-replacement-counterexample" data-kind="theorem">

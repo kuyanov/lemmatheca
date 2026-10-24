@@ -1,0 +1,107 @@
+<section data-formal="cw-principles-over-zf filter proper-filter ultrafilter boolean-filter boolean-proper-filter boolean-ultrafilter prop-theory-satisfiable" id="three-principles" data-kind="definition">
+  <h2>Three ways to extend compatible Boolean decisions</h2>
+  <p>We work over <strong>ZF</strong>, without assuming the axiom of choice. All atom sets, algebras and theories below are arbitrary sets. In particular, an atom set is not required to be countable or well orderable. Consider the following three <strong>principles</strong>.</p>
+  <p>The <strong>ultrafilter extension principle for sets</strong>, abbreviated <strong>UFL</strong>, says that every proper filter of subsets of any set \(X\) is contained in an ultrafilter on \(X\). The <strong>Boolean prime ideal principle in filter form</strong>, abbreviated <strong>BPI</strong>, says that every proper filter on any Boolean algebra is contained in a Boolean ultrafilter. The ideal form will be related to it below.</p>
+  <p><strong>Propositional compactness</strong>, abbreviated <strong>PC</strong>, says that, for every set \(P\) of atoms and every set \(\Gamma\) of <a href="propositional-logic#formulas">finite propositional formulas</a> over \(P\), if each finite subset of \(\Gamma\) has a satisfying valuation, then one valuation \(v:P\to\{0,1\}\) satisfies all of \(\Gamma\).</p>
+  <p>Use the existing definitions of <a href="filters-and-ultrafilters#proper-filters">proper subset filters</a>, <a href="boolean-algebras#ideals-and-filters">Boolean filters and ideals</a>, and <a href="boolean-algebras#boolean-ultrafilters">Boolean ultrafilters</a>. Their elementary filter and complement arguments do not require choice. The extension assertions above are principles whose relationship is to be proved.</p>
+</section>
+
+<section data-formal="cw-ideal-equivalence-over-zf boolean-complement-duality boolean-duality-inclusion cw-prime-dual cw-trivial-no-proper" id="ideal-form" data-kind="lemma">
+  <h2>The filter form is the prime ideal extension form</h2>
+  <p>A <strong>prime ideal</strong> of a Boolean algebra \(B\) is a proper ideal \(I\) such that \(a\wedge b\in I\) implies \(a\in I\) or \(b\in I\). BPI is equivalent over ZF to the assertion that every proper ideal of every Boolean algebra extends to a prime ideal.</p>
+  <div class="proof"><p>The <a href="boolean-algebras#complement-duality">complement-operation duality</a> sends a proper filter \(F\) to \(I_F=\{b:b^c\in F\}\), and a proper ideal \(I\) to \(F_I=\{b:b^c\in I\}\). It preserves properness and inclusion and is its own inverse.</p><p>An ultrafilter \(U\) makes \(I_U\) prime: if \(a\wedge b\in I_U\), then \(a^c\vee b^c\in U\). Primeness of the ultrafilter gives \(a^c\in U\) or \(b^c\in U\), hence \(a\in I_U\) or \(b\in I_U\). Conversely, if \(I\) is prime, apply its condition to \(a\wedge a^c=0\in I\). At least one of \(a,a^c\) belongs to \(I\), and both cannot belong because their join is \(1\). Thus \(F_I\) decides each complementary pair and is an ultrafilter. Applying the two dual operations to extension statements gives the equivalence.</p><p>If \(0=1\), no proper filter or proper ideal exists. Both extension statements are then vacuous; no prime ideal of this trivial algebra is asserted.</p></div>
+</section>
+
+<section data-formal="cw-bpi-to-ufl-over-zf cw-subset-boolean-filter cw-boolean-subset-filter cw-subset-filter-bridge cw-subset-ultrafilter-bridge cw-subset-extension-bridge" id="bpi-to-ufl" data-kind="lemma">
+  <h2>Power sets are particular Boolean algebras</h2>
+  <p>BPI implies UFL.</p>
+  <div class="proof"><p>The <a href="boolean-algebras#set-algebra-examples">power-set algebra</a> \(\mathcal P(X)\) has intersection as meet, union as join and relative complement as Boolean complement. A proper Boolean filter on it is precisely a proper filter of subsets of \(X\). A Boolean ultrafilter decides every complementary pair, which is exactly the subset-ultrafilter condition. Apply BPI to this algebra and the given filter.</p><p>The empty set causes no exception: it supports no proper subset filter, so there is no instance to extend.</p></div>
+</section>
+
+<section data-formal="cw-truth-set cw-valuation-space-nonempty cw-truth-set-laws" id="truth-sets" data-kind="definition">
+  <h2>Use all valuations, without choosing local witnesses</h2>
+  <p>Fix an atom set \(P\) and a finitely satisfiable propositional theory \(\Gamma\). Let \(X=\{0,1\}^P\) be the set of <strong>all total valuations</strong>. It is nonempty: the constant-zero valuation exists, also when \(P\) is empty. For each formula \(A\), define its <strong>truth set</strong></p>
+  <div class="math-display">\[C_A=\{v\in X:v\models A\}.\]</div>
+  <p>The recursive truth clauses give \(C_\bot=\varnothing\), \(C_\top=X\), and</p>
+  <div class="math-display">\[C_{\neg A}=X\setminus C_A,\qquad C_{A\land B}=C_A\cap C_B,\qquad C_{A\lor B}=C_A\cup C_B.\]</div>
+  <p>For the primitive implication syntax one similarly has \(C_{A\to B}=(X\setminus C_A)\cup C_B\). Thus propositional operations become Boolean operations on subsets of this one fixed set.</p>
+</section>
+
+<section data-formal="cw-truth-filter cw-truth-filter-membership cw-truth-filter-proper" id="truth-set-filter" data-kind="lemma">
+  <h2>Finite satisfiability gives a proper truth-set filter</h2>
+  <p>Define the <strong>truth-set filter generated by \(\Gamma\)</strong> by</p>
+  <div class="math-display">\[\mathcal F_\Gamma=\{Y\subseteq X:\exists\Delta\subseteq\Gamma\text{ finite},\ \bigcap_{A\in\Delta}C_A\subseteq Y\}.\]</div>
+  <p>This is a proper filter, and it contains \(C_A\) for every \(A\in\Gamma\).</p>
+  <div class="proof"><p>Every displayed finite intersection is nonempty because \(\Delta\) has a satisfying total valuation. The empty intersection is \(X\). Hence \(X\) belongs to the family, while \(\varnothing\) does not. Upward closure is immediate. If finite fragments \(\Delta_0,\Delta_1\) witness two members, their union witnesses the intersection of those members. A singleton fragment gives each generator \(C_A\).</p><p>This is the <a href="filters-and-ultrafilters#generated-filter">generated-filter argument</a>, written directly with finite formula fragments. For any one fragment its nonempty intersection suffices. No function choosing a valuation for every fragment is used.</p></div>
+</section>
+
+<section data-formal="cw-ultrafilter-valuation cw-ultrafilter-truth cw-ultrafilter-model" id="ultrafilter-valuation" data-kind="theorem">
+  <h2>An ultrafilter on truth sets supplies the required valuation</h2>
+  <p>Let \(\mathcal U\) be any ultrafilter on \(X\) extending \(\mathcal F_\Gamma\). Define the <strong>ultrafilter valuation</strong> by</p>
+  <div class="math-display">\[v_{\mathcal U}(p)=1\quad\Longleftrightarrow\quad C_p\in\mathcal U.\]</div>
+  <p>For every propositional formula \(A\),</p>
+  <div class="math-display">\[v_{\mathcal U}\models A\quad\Longleftrightarrow\quad C_A\in\mathcal U.\]</div>
+  <p>In particular, this specified valuation satisfies all of \(\Gamma\).</p>
+  <div class="proof"><p>An ultrafilter contains the whole space and excludes the empty set. Exactly one of a set and its complement belongs. An intersection belongs exactly when both factors belong, using meet closure and upward closure. A union belongs exactly when at least one factor belongs: if neither belongs, both complements belong, so the complement of their union belongs and the union cannot belong.</p><p>Induct on the actual finite formula. The atomic clause is the definition of \(v_{\mathcal U}\), and falsity is handled by \(\varnothing\notin\mathcal U\). The complement, intersection and union laws prove the corresponding connective clauses. Equivalently, in the syntax generated by atoms, falsity and implication, apply the complement and union laws to \(C_{A\to B}\), and use the two induction equivalences. This proves the assertion for every formula. Each \(A\in\Gamma\) has \(C_A\in\mathcal F_\Gamma\subseteq\mathcal U\), giving the last conclusion.</p></div>
+</section>
+
+<section data-formal="cw-ufl-to-pc-over-zf cw-truth-filter-proper cw-ultrafilter-model" id="ufl-to-pc" data-kind="theorem">
+  <h2>Subset-ultrafilter extension implies compactness</h2>
+  <p>UFL implies PC, for arbitrary sets of propositional atoms.</p>
+  <div class="proof"><p>Starting with finitely satisfiable \(\Gamma\), form the set \(X\), its truth sets and the proper filter \(\mathcal F_\Gamma\). Apply UFL once to extend this particular filter to an ultrafilter \(\mathcal U\). The specified valuation of <a href="#ultrafilter-valuation"></a> satisfies \(\Gamma\).</p><p>All objects used before that application were defined as sets from \(P\) and \(\Gamma\). No enumeration or well ordering of either set was required.</p></div>
+</section>
+
+<section data-formal="cw-cell cw-finite-generated cw-cell-partition cw-cell-normal-form cw-finite-generated-finite cw-cell-character cw-finite-character cw-finite-constructions-over-zf" id="finite-boolean-cells" data-kind="lemma">
+  <h2>A finite Boolean pattern has a two-valued character</h2>
+  <p>Let \(K\subseteq B\) be finite, and let \(C\) be the Boolean subalgebra generated by \(K\). Then \(C\) is finite. For every nonzero \(m\in C\), there is a Boolean homomorphism \(h:C\to\mathbf2\) with \(h(m)=1\). This conclusion is a theorem of ZF.</p>
+  <div class="proof"><p>List \(K\) as \(b_0,\ldots,b_{n-1}\). For each binary string \(\epsilon\) of length \(n\), form the <strong>cell</strong></p>
+  <div class="math-display">\[a_\epsilon=\bigwedge_{i&lt;n}b_i^{\epsilon(i)},\qquad b_i^1=b_i,\quad b_i^0=b_i^c.\]</div>
+  <p>Different cells are disjoint: at a coordinate where the strings differ their meet contains \(b_i\wedge b_i^c\). Repeated distributivity gives \(\bigvee_\epsilon a_\epsilon=1\), by expanding \(\bigwedge_i(b_i\vee b_i^c)\). Likewise \(b_i\) is the join of the cells with \(\epsilon(i)=1\).</p><p>All joins of subfamilies of these finitely many cells form a Boolean subalgebra: joining corresponds to union of cell selections, meeting to intersection after zero cells are discarded, and complementing to taking the remaining nonzero cells. It contains \(K\). Conversely every cell, and every such join, is a Boolean expression in \(K\). This family is exactly \(C\), so \(C\) is finite.</p><p>Since \(m\) is a join of cells and is nonzero, at least one nonzero cell \(a\) lies below \(m\). Choose this one cell. For every \(c\in C\), either \(a\le c\) or \(a\wedge c=0\), according to whether its cell occurs in a representation of \(c\). Nonzero cells are disjoint, so this alternative is independent of the representation. Define \(h(c)=1\) exactly when \(a\le c\).</p><p>Then \(h(0)=0\), \(h(1)=1\), and \(h(m)=1\). A meet contains \(a\) exactly when both factors do. A join contains \(a\) exactly when one factor does, by the disjoint-cell description; complement reverses the decision. Thus \(h\) preserves every Boolean operation. For \(K=\varnothing\), the single empty cell is \(1\), and the same proof applies when a nonzero \(m\) is given. Selecting one witness from this finite construction requires no choice principle.</p></div>
+</section>
+
+<section data-formal="cw-constraint-origin cw-constraint-formula cw-constraint-theory cw-valuation-character" id="boolean-constraint-theory" data-kind="definition">
+  <h2>Ask one atom about each algebra element</h2>
+  <p>Fix a Boolean algebra \(B\) and a proper filter \(F\). Take a distinct propositional atom \(q_b\) for every \(b\in B\). The <strong>Boolean constraint theory</strong> \(\Theta_F\) contains \(q_1,\neg q_0\), all instances of</p>
+  <div class="math-display">\[q_{b^c}\leftrightarrow\neg q_b,\qquad q_{b\wedge c}\leftrightarrow(q_b\land q_c),\qquad q_{b\vee c}\leftrightarrow(q_b\lor q_c),\]</div>
+  <p>and \(q_f\) for every \(f\in F\). All formulas are finite formulas in the existing propositional syntax. Their intended meaning is that \(b\mapsto v(q_b)\) is a Boolean homomorphism to \(\mathbf2\), taking every member of \(F\) to \(1\).</p>
+</section>
+
+<section data-formal="cw-selected-labels cw-selected-filter-labels cw-selected-meet cw-selected-meet-proper cw-partial-character-valuation cw-finite-constraint-model cw-constraint-finite-satisfiable cw-finite-constructions-over-zf" id="finite-constraint-model" data-kind="lemma">
+  <h2>Every finite selection of Boolean constraints is satisfiable</h2>
+  <p>Every finite subset \(\Delta\subseteq\Theta_F\) has a satisfying total valuation on the atom set \(\{q_b:b\in B\}\), in ZF.</p>
+  <div class="proof"><p>For each selected sentence choose one origin among the displayed families of constraints. Only finitely many choices are needed. Let \(K\subseteq B\) consist of all the labels of atoms appearing in \(\Delta\), and let \(E\subseteq F\) be the finite set of filter elements whose positive requirements were selected in this way. Each element of \(E\) belongs to \(K\).</p><p>Form the finite subalgebra \(C\) generated by \(K\), and put \(m=\bigwedge E\), with \(m=1\) if \(E\) is empty. This element belongs to \(C\) and to \(F\), so it is nonzero. Properness of \(F\) also ensures \(0\ne1\). By <a href="#finite-boolean-cells"></a>, obtain \(h:C\to\mathbf2\) with \(h(m)=1\). Since \(m\le f\) for every \(f\in E\), preservation of meets makes \(h(f)=1\).</p><p>Define \(v(q_b)=h(b)\) when \(b\in C\), and \(v(q_b)=0\) otherwise. Every atom label in \(\Delta\) lies in \(C\). Its selected operation constraints therefore hold because \(h\) is a Boolean homomorphism, and its filter constraints hold by the preceding paragraph. This total valuation satisfies \(\Delta\). Its construction concerns one specified finite fragment; it does not choose homomorphisms simultaneously for all fragments.</p></div>
+</section>
+
+<section data-formal="cw-pc-to-bpi-over-zf cw-valuation-character cw-valuation-filter-closed cw-valuation-filter cw-valuation-filter-spec" id="pc-to-bpi" data-kind="theorem">
+  <h2>Compactness supplies a Boolean ultrafilter extending the given filter</h2>
+  <p>PC implies BPI.</p>
+  <div class="proof"><p>Apply PC to the finitely satisfiable theory \(\Theta_F\), and let \(v\) satisfy it. Define \(h(b)=v(q_b)\). The constraints make this particular map preserve \(0,1\), complements, meets and joins, and give \(h(f)=1\) for every \(f\in F\). Put</p>
+  <div class="math-display">\[U=h^{-1}(\{1\})=\{b\in B:h(b)=1\}.\]</div>
+  <p>It contains \(1\), excludes \(0\), and is closed under meets. If \(b\le c\) and \(h(b)=1\), then \(b=b\wedge c\), so \(1=1\wedge h(c)\) forces \(h(c)=1\). Thus \(U\) is an upward-closed proper filter, and it contains \(F\).</p><p>For each \(b\), preservation of complement says that exactly one of \(h(b),h(b^c)\) is \(1\). Hence exactly one of \(b,b^c\) belongs to \(U\). If a proper filter strictly extended \(U\), it would contain a new \(b\notin U\) as well as \(b^c\in U\); their meet would put \(0\) in that filter. Thus \(U\) is maximal proper, and is the required Boolean ultrafilter.</p></div>
+</section>
+
+<section data-formal="cw-equivalence-over-zf cw-ideal-equivalence-over-zf cw-bpi-to-ufl-over-zf cw-ufl-to-pc-over-zf cw-pc-to-bpi-over-zf boolean-ultrafilter-extension" id="equivalence" data-kind="theorem">
+  <h2>The three principles have the same strength over ZF</h2>
+  <div class="statement-box"><p>Over ZF, the following are equivalent: Boolean prime ideal extension, subset-ultrafilter extension, and propositional compactness for arbitrary sets of atoms.</p>
+  <div class="math-display">\[\mathrm{BPI}\quad\Longleftrightarrow\quad\mathrm{UFL}\quad\Longleftrightarrow\quad\mathrm{PC}.\]</div></div>
+  <div class="proof"><p>The implications <a href="#bpi-to-ufl">BPI to UFL</a>, <a href="#ufl-to-pc">UFL to PC</a>, and <a href="#pc-to-bpi">PC to BPI</a> form a cycle. Each construction used only ZF together with the principle assumed for that implication. The <a href="#ideal-form">complement duality argument</a> identifies the filter and prime ideal versions.</p></div>
+  <p>The <a href="boolean-algebras#ultrafilter-extension">existing Zorn argument</a> shows that the axiom of choice implies BPI, and hence all three principles. The equivalence above identifies the same extension principle inside the compactness statement.</p>
+</section>
+
+<section data-formal="cw-point-valuation finite-space-ultrafilter-principal" id="principal-question" data-kind="question">
+  <h2>What does the truth-set construction give for a point ultrafilter?</h2>
+  <p>If the ultrafilter on \(X=\{0,1\}^P\) is the point ultrafilter at one valuation \(w\), which valuation is \(v_{\mathcal U}\)? What happens for ultrafilters on a finite nonempty set?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>A truth set \(C_p\) belongs to the point ultrafilter exactly when \(w\in C_p\), which means \(w(p)=1\). Thus \(v_{\mathcal U}=w\) coordinate by coordinate.</p><p>Every ultrafilter on finite nonempty \(X\) is a point ultrafilter, in ZF. If none of the finitely many singletons belonged, all their complements would belong, and their finite intersection would be empty, contradicting properness. A singleton \(\{x\}\) in the filter forces its members to be exactly the sets containing \(x\). This is the <a href="filters-and-ultrafilters#principal-ultrafilters">finite-member characterization</a>.</p></div></details>
+</section>
+
+<section data-formal="cw-nonprincipal-existence-over-zf cw-cofinite-exclusion nonprincipal-ultrafilter-cofinite-characterization" id="cofinite-consequence" data-kind="lemma">
+  <h2>The equivalent principles give a nonprincipal ultrafilter on the natural numbers</h2>
+  <p>Assuming any of the equivalent principles, the cofinite filter on \(\mathbb N\) extends to an ultrafilter containing no finite set.</p>
+  <div class="proof"><p>The <a href="filters-and-ultrafilters#cofinite-filter">cofinite filter</a> is proper, so UFL extends it. If a finite set \(A\) belonged to the extension, its cofinite complement would also belong, forcing the empty intersection into it. Hence there is no finite member. A principal ultrafilter is a point ultrafilter and has a singleton member, so this extension is nonprincipal.</p></div>
+</section>
+
+<section data-formal="cw-fragment-choice-boundary cw-truth-filter-proper cw-constraint-finite-satisfiable" id="choice-question" data-kind="question">
+  <h2>Why not choose a valuation for every finite fragment first?</h2>
+  <p>Finite satisfiability says that every finite fragment has some satisfying valuation. Why does the proof avoid beginning with “choose one such valuation for every fragment”?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>There can be an arbitrary set of fragments. Passing from separate existence statements to a single function selecting a witness for every index is a choice step that needs justification when proving an implication over ZF. A proof using such a step silently would not establish the claimed dependence on UFL alone.</p><p>The construction instead uses the already defined set of all total valuations. Finite satisfiability proves directly that each finite truth-set intersection is nonempty. The generated filter is defined from all these sets without selecting a point in each. Only the explicitly assumed extension principle is then applied. Likewise the reverse construction proves one finite fragment satisfiable at a time, using one finite subalgebra and one nonzero cell.</p></div></details>
+</section>

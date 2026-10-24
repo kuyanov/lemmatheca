@@ -85,6 +85,15 @@
   <div class="math-display">\[B_{k+1}(\operatorname{rec}(c,d),\langle a,n+1\rangle)=B_{k+1}(d,\langle a,\langle n,v\rangle\rangle)\quad\text{if }B_k(\operatorname{rec}(c,d),\langle a,n\rangle)=\operatorname{some}(v).\]</div>
   <p>The latter returns \(\operatorname{none}\) when the indicated earlier value is absent. For \(\operatorname{find}(c)\) at \(\langle a,m\rangle\), first calculate \(B_{k+1}(c,\langle a,m\rangle)\). Return \(m\) if this is \(\operatorname{some}(0)\); if it is \(\operatorname{some}(v)\) with \(v&gt;0\), use \(B_k(\operatorname{find}(c),\langle a,m+1\rangle)\); if it is \(\operatorname{none}\), return \(\operatorname{none}\).</p>
   <p>These are terminating definitions: a recursive call either has smaller allowance, or has the same allowance and a proper subprogram. The input check applies afresh to <em>every</em> call, including intermediate inputs in composition. An allowance is not a bound on the answer; for example, a successful successor call at input \(k\) and allowance \(k+1\) returns \(k+1\).</p>
+
+
+
+
+
+  <figure id="bounded-evaluation-dependencies" class="proof-figure">
+    <div class="figure-image"><img src="assets/bounded-evaluation-dependencies.svg" width="760" height="750" alt="Recursion and search dependency diagrams distinguish calls at smaller allowance from calls to proper subprograms at unchanged allowance. Search returns the current witness on zero and continues only on a positive test value." /></div>
+    <figcaption>The two allowed decreases make the bounded evaluator terminate: keep the program and lower the allowance, or keep the allowance and pass to a proper subprogram. Every displayed call repeats its own input test.</figcaption>
+  </figure>
 </section>
 
 <section id="bounded-evaluation-correctness" data-formal="mach-bounded-primitive mach-bounded-number-primitive mach-bounded-monotone mach-bounded-sound mach-bounded-complete" data-kind="theorem">

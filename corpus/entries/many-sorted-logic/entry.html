@@ -3,6 +3,7 @@
   <p>A relation may connect objects of different kinds: a membership relation connects an element with a set of elements. In ordinary <a href="first-order-languages#signatures">first-order syntax</a>, every variable has the same range. A <strong>many-sorted relational signature</strong> instead specifies a nonempty set \(S\) of <strong>sorts</strong>, a set \(R_k\) of relation symbols of each finite arity \(k\), and, for each \(R\in R_k\), a list of argument sorts \(\sigma_R(0),\ldots,\sigma_R(k-1)\). There are no function or constant symbols in this entry. Equality is allowed only between variables of the same sort.</p>
   <p>For example, take sorts \(E\) and \(C\), and a binary symbol \(B\) with profile \((E,C)\). The expression \(B(x,X)\) is allowed when \(x\) has sort \(E\) and \(X\) has sort \(C\); \(B(X,x)\) is not. A sort is part of the syntax, not a property inferred from an interpretation.</p>
   <p>A <strong>many-sorted structure</strong> supplies a nonempty carrier \(D_s\) for each sort \(s\), and a relation \(R^M\subseteq\prod_{i&lt;k}D_{\sigma_R(i)}\). A zero-argument relation is simply a truth value. No carrier is required to be a collection of all subsets of another carrier: that would be an extra semantic condition.</p>
+  <p>The <a href="many-sorted-functions#functional-signatures">extension with sorted functions</a> adds terms with declared result sorts and a substitution rule that preserves them.</p>
 </section>
 
 <section id="sorted-formulas" data-formal="ms-sorted-formula ms-satisfaction ms-native-satisfaction" data-kind="definition">
@@ -35,7 +36,7 @@
   <p>The <strong>erased language</strong> \(L^\flat\) is the following ordinary relational first-order language. It has a unary relation symbol \(P_s\) for every sort, and a relation symbol \(R^\flat\) of the same arity for every original relation \(R\). The new symbols are distinct, even if an old relation is unary. The language has no functions. An ambient presentation is exactly an \(L^\flat\)-structure in which each sort predicate is nonempty.</p>
   <p>For each \(s\in S\), let the <strong>sort-existence axiom</strong> be</p>
   <div class="math-display">\[\eta_s=\exists z_0\,P_s(z_0).\]</div>
-  <p>No typing axioms for \(R^\flat\) are needed: translated formulas apply it only to well-sorted values. Adding axioms making it false on ill-sorted tuples would be harmless but unnecessary. Because the signature is relational, no function-closure axioms arise. For a sorted function one would need a graph relation together with existence and uniqueness axioms; that extension is outside the present result.</p>
+  <p>No typing axioms for \(R^\flat\) are needed: translated formulas apply it only to well-sorted values. Adding axioms making it false on ill-sorted tuples would be harmless but unnecessary. Because the signature is relational, no function-closure axioms arise. The <a href="many-sorted-functions#typing-axioms">functional continuation</a> retains ordinary function symbols and adds axioms saying that correctly sorted inputs have outputs in the declared sort.</p>
   <p>For one selected domain, the <a href="interpreting-theories#function-data">guarded graph construction</a> explains the required existence and uniqueness condition for functions.</p>
 </section>
 

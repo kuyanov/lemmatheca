@@ -38,11 +38,15 @@ entry, area or kind using the
    source passages only when the supplied assessment does not cover them. Report
    scope, prerequisite or entry-splitting needs rather than independently
    replanning the area or compressing the arguments.
+   Consider figures that help the reader follow an example, construction or
+   proof. Whenever a source includes figures, take that as a cue to consider an
+   illustration in the entry as well. Choose figures for their explanatory value
+   and follow the [figure and asset contract](../docs/corpus.md#mathematics-figures-and-assets)
+   for original artwork, reuse and credit.
 2. Save `entry.html`, [authored `entry.json` fields](../docs/corpus.md#entry-metadata)
    and necessary assets. Progress counts and Lean line counts are build outputs in
    the index; do not add them or placeholder summaries to entry metadata.
-   Make the abstract understandable before reading the entry, use the shared
-   italic proof label, and reserve accent green statement boxes for main results.
+   Make the abstract understandable before reading the entry and reserve accent green statement boxes for main results.
    Use stable links independent of adjacency or area membership. For a standalone
    new entry, save its agreed placement once in `corpus/reading_order.json`; in an
    area batch, root applies placement and other shared-file edits.

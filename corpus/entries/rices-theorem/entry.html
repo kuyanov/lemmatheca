@@ -1,0 +1,113 @@
+<section id="behavior-and-indices" data-formal="rice-index-set rice-nontrivial rice-extensional rice-index-set-extensional rice-extensional-index-sets rice-nontrivial-indices mach-unary-recursive-bridge" data-kind="definition">
+  <h2>Properties of behavior and sets of program indices</h2>
+  <p>Use the fixed <a href="universal-computation#numbering-programs">program numbering</a>, with partial function \(\varphi_e:\mathbb N\rightharpoonup\mathbb N\) at index \(e\). Let \(\mathcal R\) be the collection of unary partial recursive functions. A <strong>behavioral property</strong> is a subset \(\mathcal C\subseteq\mathcal R\). Its <strong>index set</strong> is</p>
+  <div class="math-display">\[I(\mathcal C)=\{e\in\mathbb N:\varphi_e\in\mathcal C\}.\]</div>
+  <p>The property is <strong>nontrivial</strong> when there are \(g,h\in\mathcal R\) with \(g\in\mathcal C\) and \(h\notin\mathcal C\). Equivalently, \(I(\mathcal C)\) is neither empty nor all of \(\mathbb N\), since <a href="universal-computation#universal-evaluation">every partial recursive function has an index</a>.</p>
+  <p>A set of indices \(A\subseteq\mathbb N\) is <strong>extensional</strong> when equality of computed partial functions preserves membership:</p>
+  <div class="math-display">\[\varphi_e\simeq\varphi_d\quad\Longrightarrow\quad(e\in A\Longleftrightarrow d\in A).\]</div>
+  <p>Here equality means the <a href="partial-recursive-functions#partial-equality">same definedness and value at every input</a>. An index set \(I(\mathcal C)\) is extensional. Conversely, if \(A\) is extensional, let \(\mathcal C\) consist of the functions computed by indices in \(A\). If \(\varphi_e\) lies in this collection, it agrees with \(\varphi_d\) for some \(d\in A\), so extensionality puts \(e\) in \(A\). Thus \(A=I(\mathcal C)\).</p>
+</section>
+
+<section id="nowhere-defined" data-formal="rice-bottom rice-bottom-recursive rice-bottom-zero-distinct univ-universal-complete" data-kind="definition">
+  <h2>The function which never returns an answer</h2>
+  <p>The <strong>nowhere-defined function</strong> \(\bot:\mathbb N\rightharpoonup\mathbb N\) has empty domain. It is partial recursive: the search \(\bot(x)\simeq\mu t\,[1=0]\) never finds a witness. Consequently it has a program index.</p>
+  <p>It differs from the constant-zero function \(z(x)=0\). The latter is defined on every input, whereas \(\bot\) is defined on none. This distinction matters even when a property describes only outputs: saying that a computation returns zero requires it to terminate with that output. We do not assign an extra numerical value to divergence.</p>
+</section>
+
+<section id="waiting-construction" data-formal="rice-waiting rice-waiting-recursive rice-waiting-program rice-waiting-program-spec rice-waiting-map rice-waiting-map-primitive rice-waiting-map-evaluation rice-waiting-map-cases" data-kind="lemma">
+  <h2>Turn a halting event into a whole partial function</h2>
+  <p>For every fixed partial recursive function \(g\), there is a total computable function \(f_g:\mathbb N\to\mathbb N\) such that</p>
+  <div class="math-display">\[\varphi_{f_g(e)}\simeq\begin{cases}g,&amp;\varphi_e(e)\downarrow,\\\bot,&amp;\varphi_e(e)\uparrow.\end{cases}\]</div>
+  <p>The transformation can be chosen primitive recursive. Its output is a program index even when \(\varphi_e(e)\) diverges.</p>
+  <div class="proof">
+    <p>Choose an index \(a\) for \(g\). On paired input \(\langle e,x\rangle\), perform the following partial computation \(H_g(e,x)\): run \(\varphi_e(e)\); if it returns any value, discard that value and run \(g(x)\). The first computation uses the <a href="universal-computation#universal-evaluation">partial recursive universal evaluator</a>. Keeping \(x\) alongside the result, then projecting back to \(x\) and running \(g\), uses pairing and <a href="partial-recursive-functions#strict-composition">strict composition</a>. Thus \(H_g\) is partial recursive jointly in its two inputs. In particular the first evaluation cannot be erased merely because its numerical result is discarded.</p>
+    <p>Choose an index \(b\) for the unary paired-input function \(\langle e,x\rangle\mapsto H_g(e,x)\), and use the <a href="universal-computation#parameter-theorem">parameter theorem</a> to set</p>
+    <div class="math-display">\[f_g(e)=s(b,e),\qquad\varphi_{f_g(e)}(x)\simeq H_g(e,x).\]</div>
+    <p>This is the promised map: \(b\) is fixed once \(g\) and its program are fixed, and \(s\) is primitive recursive. Producing \(s(b,e)\) inserts \(e\) into finite program text; it does not execute the waiting instruction.</p>
+    <p>If \(\varphi_e(e)\) halts, then for every input \(x\) the first stage finishes and the new program has exactly the definedness and value of \(g(x)\). This includes inputs where \(g\) diverges. If \(\varphi_e(e)\) diverges, then the first stage never finishes for any \(x\), and the new program computes \(\bot\). These are equalities of entire partial functions, which proves the claim.</p>
+  </div>
+</section>
+
+<section id="rice-reductions" data-formal="rice-waiting-membership rice-waiting-nonmembership rice-reductions" data-kind="theorem">
+  <h2>One of the two answers receives the halting problem</h2>
+  <div class="statement-box"><p>Let \(\mathcal C\subseteq\mathcal R\) be nontrivial, and let \(K=\{e:\varphi_e(e)\downarrow\}\). If \(\bot\notin\mathcal C\), then \(K\le_m I(\mathcal C)\). If \(\bot\in\mathcal C\), then \(K\le_m\bigl(\mathbb N\setminus I(\mathcal C)\bigr)\). In both cases the reduction is the map \(f_g(e)=s(b,e)\) from the waiting construction, with \(g\) chosen on the opposite side of \(\mathcal C\) from \(\bot\).</p></div>
+  <div class="proof">
+    <p>First suppose \(\bot\notin\mathcal C\). Nontriviality provides a partial recursive \(g\in\mathcal C\). By <a href="#waiting-construction">the waiting construction</a>, a halting input \(e\in K\) produces the function \(g\), so \(f_g(e)\in I(\mathcal C)\). A nonhalting input produces \(\bot\), so \(f_g(e)\notin I(\mathcal C)\). Thus</p>
+    <div class="math-display">\[e\in K\quad\Longleftrightarrow\quad f_g(e)\in I(\mathcal C).\]</div>
+    <p>Now suppose \(\bot\in\mathcal C\). Choose a partial recursive \(g\notin\mathcal C\), again using nontriviality. A halting input now produces a function outside \(\mathcal C\), while a nonhalting input produces a function inside it. Hence</p>
+    <div class="math-display">\[e\in K\quad\Longleftrightarrow\quad f_g(e)\notin I(\mathcal C).\]</div>
+    <p>Both maps are total computable, as required by the <a href="computable-reductions#many-one-reductions">definition of many-one reduction</a>. The second case reduces to the complement; reversing the final membership answer is not part of a many-one reduction to \(I(\mathcal C)\) itself.</p>
+  </div>
+
+
+
+
+
+  <figure id="rice-waiting-program" class="proof-figure">
+    <div class="figure-image"><img src="assets/rice-waiting-program.svg" width="760" height="750" alt="Always-terminating code formation produces s(b,e). Its runtime program waits for the diagonal computation before running g(x). The two behavioral cases yield a reduction to I(C) when bottom is outside C and to its complement when bottom is inside C." /></div>
+    <figcaption>The total code transformation precedes any execution. The waiting program then has the whole behavior of \(g\) or of \(\bot\); which reduction target is used depends on whether \(\bot\) belongs to \(\mathcal C\).</figcaption>
+  </figure>
+</section>
+
+<section id="rice-theorem" data-formal="rice-undecidable rice-extensional-decidable" data-kind="theorem">
+  <h2>Rice’s theorem</h2>
+  <div class="statement-box"><p>For every nontrivial behavioral property \(\mathcal C\subseteq\mathcal R\), the index set \(I(\mathcal C)\) is undecidable. Equivalently, an extensional set of program indices is decidable if and only if it is empty or all of \(\mathbb N\).</p></div>
+  <div class="proof">
+    <p>If \(I(\mathcal C)\) were decidable, so would its complement: interchange the two values of a characteristic function. The appropriate reduction in <a href="#rice-reductions">the preceding theorem</a>, together with <a href="computable-reductions#composition-and-pullback">decidable pullback</a>, would decide \(K\). This contradicts <a href="universal-computation#halting-problem">halting undecidability</a>.</p>
+    <p>For the equivalent formulation, an extensional set is the index set of a behavioral property by <a href="#behavior-and-indices">the first definition</a>. If it is neither empty nor universal, that property is nontrivial and the result just proved rules out decidability. Empty and universal sets have constant characteristic functions, so both are decidable. This proves both directions.</p>
+  </div>
+</section>
+
+<section id="halts-at-zero" data-formal="rice-halts-zero rice-halts-zero-facts" data-kind="theorem">
+  <h2>A fixed input already gives an undecidable property</h2>
+  <p>The set \(D_0=\{e:\varphi_e(0)\downarrow\}\) is c.e. and undecidable. In fact \(K\le_m D_0\), with the waiting construction using the constant-zero function.</p>
+  <div class="proof">
+    <p>The behavioral property is \(\mathcal C_0=\{g\in\mathcal R:g(0)\downarrow\}\). The nowhere-defined function fails it and the constant-zero function satisfies it. Thus the first case of <a href="#rice-reductions">the reduction theorem</a> applies. Its map produces a constant-zero function when the original diagonal computation halts, and a nowhere-defined function otherwise; its new program therefore halts at zero exactly in the first case. <a href="#rice-theorem">Rice’s theorem</a> gives undecidability.</p>
+    <p>For enumerability, the procedure on input \(e\) simply simulates \(\varphi_e(0)\). It halts exactly on \(D_0\), so its domain is \(D_0\). This is a partial recursive function by specialization of the universal evaluator. The example shows that Rice’s theorem does not assert failure of computable enumerability: a positive answer here can be recognized by waiting for the finite successful computation.</p>
+  </div>
+</section>
+
+<section id="ever-outputs" data-formal="rice-ever-outputs rice-ever-outputs-facts" data-kind="theorem">
+  <h2>Does the program ever output a specified number?</h2>
+  <p>The set \(O_{17}=\{e:\exists x\,[\varphi_e(x)\downarrow=17]\}\) is c.e. and undecidable.</p>
+  <div class="proof">
+    <p>The property of a partial function is that its range contains \(17\). It holds for the constant-\(17\) function and fails for \(\bot\). Both are partial recursive, so <a href="#rice-theorem">Rice’s theorem</a> proves undecidability; the first case of <a href="#rice-reductions">the reduction theorem</a> also gives a reduction using the constant-\(17\) function as the waiting program’s second stage.</p>
+    <p>To recognize the positive answers, search for a pair \(\langle x,k\rangle\) such that the <a href="universal-computation#universal-evaluation">bounded evaluator</a> has returned \(17\) for program \(e\) on input \(x\) within resource \(k\). This is a primitive-recursive certificate test. Such a pair exists exactly when \(e\in O_{17}\), so the <a href="universal-computation#finite-certificates">certificate characterization</a> makes \(O_{17}\) c.e. Running input zero to completion, then input one, would not work: a divergent earlier input might prevent reaching an input that returns \(17\). The certificate search gives all inputs a chance.</p>
+  </div>
+</section>
+
+<section id="totality" data-formal="rice-totality rice-totality-facts" data-kind="theorem">
+  <h2>Does the program halt on every input?</h2>
+  <p>The <strong>totality index set</strong> \(\mathrm{Tot}=\{e:\forall x\,\varphi_e(x)\downarrow\}\) is undecidable. The waiting construction with \(g(x)=0\) gives \(K\le_m\mathrm{Tot}\).</p>
+  <div class="proof">
+    <p>Totality depends only on the partial function, including its domain. The constant-zero function is total, whereas \(\bot\) is not total, since it is undefined at zero. These are the two nontriviality witnesses required by <a href="#rice-theorem">Rice’s theorem</a>.</p>
+    <p>More explicitly, the map from <a href="#waiting-construction">the waiting lemma</a> produces a program computing the total function \(g\) when \(e\in K\), and the nowhere-defined function otherwise. Therefore \(e\in K\) if and only if \(f_g(e)\in\mathrm{Tot}\). This proves the claimed reduction. The quantifier pattern for this property was expressed arithmetically in <a href="arithmetic-definability#totality-pattern">the totality formula</a>; the present argument proves undecidability from its behavior as a property of functions.</p>
+  </div>
+</section>
+
+<section id="fixed-function" data-formal="rice-equivalent-to rice-fixed-function-undecidable rice-equivalent-programs rice-program-equivalence-undecidable" data-kind="theorem">
+  <h2>Agreement with a fixed computable function is undecidable</h2>
+  <p>Fix any unary partial recursive function \(h\). Then \(E_h=\{e:\varphi_e\simeq h\}\) is undecidable. Consequently there is no total computable decision procedure which, on every pair of indices \(e,d\), decides whether \(\varphi_e\simeq\varphi_d\).</p>
+  <div class="proof">
+    <p>The class \(\{h\}\) is a behavioral property. It contains a partial recursive function, namely \(h\). It also excludes one: if \(h\not\simeq\bot\), take \(\bot\); if \(h\simeq\bot\), take the constant-zero function, which differs from it at input zero. Thus the property is nontrivial, and <a href="#rice-theorem">Rice’s theorem</a> makes \(E_h\) undecidable, including the case where \(h\) is nowhere defined.</p>
+    <p>For the second assertion, choose once an index \(d\) for \(h\). A decision procedure for pairs, with this second input fixed, would decide \(E_h\). Fixing a numerical input preserves total computability by <a href="universal-computation#parameter-theorem">specialization</a>, so this would contradict the first assertion.</p>
+  </div>
+</section>
+
+<section id="syntax-question" data-formal="rice-syntax-counterexample" data-kind="question">
+  <h2>Why can program text still have decidable properties?</h2>
+  <p>Let \(A=\{0\}\), the set whose sole member is the index of the \(\mathsf{zero}\) program in our fixed numbering. It is nonempty and not universal. Why does deciding membership in \(A\) not contradict Rice’s theorem?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Equality to the natural number zero is a terminating arithmetic test, so \(A\) is decidable. But it is not extensional. The program \(\mathsf{comp}(\mathsf{zero},\mathsf{zero})\) has code \(6\): the <a href="universal-computation#numbering-programs">coding rule</a> gives \(4\langle0,0\rangle+6=6\). It computes the same total constant-zero function as code zero, since both evaluations in its strict composition terminate. Nevertheless \(0\in A\) and \(6\notin A\).</p>
+    <p>Rice’s theorem applies when changing program text without changing the entire partial function cannot change membership. A finite syntactic test need not have that invariance.</p>
+  </div></details>
+</section>
+
+<section id="promise-question" data-formal="rice-promise-test rice-promise-test-spec rice-promise-total-inputs rice-promise-boundary rice-totality-facts" data-kind="question">
+  <h2>What changes if every input program is promised total?</h2>
+  <p>Suppose we are promised that an input index \(e\) computes a total function. Can we then decide whether \(\varphi_e(0)=0\)? Explain why your answer is compatible with Rice’s theorem.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Yes, on these promised inputs. Run \(\varphi_e(0)\) and return one if the resulting number is zero, and zero otherwise. The promise ensures that this computation terminates. The property is nontrivial even among total functions, since the constant-zero and constant-one functions give opposite answers.</p>
+    <p>This procedure is partial recursive on arbitrary indices, and need not halt when the promise fails. Rice’s theorem rules out a total computable characteristic function defined on every natural-number index. Its waiting construction uses a nowhere-defined output function in one case, which lies outside the promised class. A decision procedure for promised total programs is therefore a different requirement. Checking the promise itself is impossible by <a href="#totality">the totality theorem</a>.</p>
+  </div></details>
+</section>

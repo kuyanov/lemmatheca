@@ -1,0 +1,154 @@
+<section id="semantic-forcing" data-kind="definition" data-formal="fth-context fth-ground-name fth-filter-code fth-value-domain fth-value fth-value-assignment fth-ground-family fth-subset-code fth-subset-code-members fth-ground-family-iff fth-ground-family-countable fth-conditions-countable fth-generic-through-condition fth-semantic-forcing fth-semantic-monotone fgen-ground-model-convention fgen-generic-for fname-extension mm-actual-membership-structure">
+  <h2>A condition can guarantee truth in every generic extension through it</h2>
+  <p>Let \(M\) be an externally countable transitive ZFC-model, let \(P,\le,1_P\in M\) be a <a href="forcing-and-generic-filters#ground-model">forcing order</a>, and let \(\bar\tau\) be a finite tuple of \(P\)-names in \(M\). For a fixed ordinary membership-language formula \(\varphi(\bar x)\), define <strong>semantic forcing</strong> by</p>
+  <div class="math-display">\[
+    p\Vdash\varphi(\bar\tau)\ \Longleftrightarrow\
+    \forall G\,[G\text{ is }M\text{-generic and }p\in G
+       \ \Longrightarrow\ M[G]\models\varphi(\bar\tau[G])].
+  \]</div>
+  <p>The tuple \(\bar\tau[G]\) consists of the <a href="forcing-names#evaluation">name values</a>. Satisfaction is ordinary first-order satisfaction in the nonempty transitive set \(M[G]\); the definition does not assume that all ZFC axioms have already been established there. The <a href="forcing-and-generic-filters#generic-through-condition">existence of a generic through every condition</a> prevents this definition from being vacuous.</p>
+  <p>It is immediately monotone: if \(q\le p\) and \(p\Vdash\varphi\), then \(q\Vdash\varphi\). Any filter containing \(q\) also contains \(p\) by upward closure.</p>
+</section>
+
+<section id="auxiliary-language" data-kind="definition" data-formal="fth-auxiliary-syntax fth-auxiliary-holds fth-term-slot fth-translation fth-auxiliary-value-truth fth-semantic-auxiliary">
+  <h2>Use membership and inequality as the atomic formulas</h2>
+  <p>The <strong>auxiliary formula language</strong> is generated from atoms \(x\in y\) and \(x\ne y\) by negation, disjunction and existential quantification. Free variables can be assigned names from \(M\); quantifiers append a new variable to the context. Its <strong>value interpretation</strong> evaluates all assigned names in \(G\), interprets the atoms by actual membership and inequality, and uses ordinary classical truth clauses in \(M[G]\).</p>
+  <p>There is a <strong>translation \(\varphi\mapsto\varphi^*\)</strong> from the ordinary membership-language syntax. Membership stays membership; equality becomes negated inequality; translate the connectives recursively using</p>
+  <div class="math-display">\[
+    (A\to B)^*=\neg A^*\lor B^*,\qquad
+    (\forall x\,A)^*=\neg\exists x\,\neg A^*.
+  \]</div>
+  <p>Translate falsity as \(\exists z\,(z\ne z)\), with \(z\) a fresh bound placeholder. The extra quantifier is internal to that translated subformula and introduces no free variable. Equivalently, translate conjunction by \(\neg(\neg A^*\lor\neg B^*)\). This is a recursive translation of the <a href="membership-models#membership-structures">ordinary membership syntax</a>, not a new interpretation of its equality symbol.</p>
+</section>
+
+<section id="translation-truth" data-kind="lemma" data-formal="fth-term-slot-realization fth-translation-realization fth-translation-set-truth fth-semantic-translation">
+  <h2>The auxiliary translation preserves the actual formula meaning</h2>
+  <p>For every nonempty actual-membership structure \(D\), ordinary formula \(\varphi\), and assignment \(\bar a\) to its free variables, \(D\models\varphi[\bar a]\) if and only if the value interpretation of \(\varphi^*\) is true at \(\bar a\). The translation has exactly the same free-variable context.</p>
+  <div class="proof"><p>Induct on the ordinary scoped formula. Membership is unchanged, and actual equality is exactly negated actual inequality. The translated falsity is false because no object differs from itself. Implication uses the classical equivalence \(A\to B\) with \(\neg A\lor B\), together with the induction equivalences for both children.</p><p>For a universal formula the translation says that there is no value for the newly appended variable making the translated body false. By induction on the body this is exactly the ordinary universal condition. Appending that variable in both syntaxes preserves the same old coordinates, and the bound placeholder introduced for falsity stays local to its subformula. This proves both the satisfaction equivalence and preservation of scope.</p></div>
+</section>
+
+<section id="atomic-recursion" data-kind="definition" data-formal="fth-attached fth-rank-key fth-pair-earlier fth-atomic-kind fth-atomic-step fth-atomic-positive fth-atomic-negative fth-atomic-membership-clause fth-atomic-inequality-clause fth-atomic-inequality-symmetric">
+  <h2>Define the atomic auxiliary relation by smaller name pairs</h2>
+  <p>We define an <strong>auxiliary forcing relation</strong> \(p\Vdash^*A\), which is different from semantic forcing. First define it for membership and inequality between names, together with their negations. Order unordered name-rank pairs by the lexicographic order of</p>
+  <div class="math-display">\[
+    \bigl(\min\{\rho(\sigma),\rho(\tau)\},
+          \max\{\rho(\sigma),\rho(\tau)\}\bigr).
+  \]</div>
+  <p>At a given pair, membership is defined by</p>
+  <div class="math-display">\[
+    p\Vdash^*\sigma\in\tau
+      \ \Longleftrightarrow\
+    \exists(\theta,q)\in\tau\,
+       [\,p\le q\ \land\ p\Vdash^*\neg(\theta\ne\sigma)\,].
+  \]</div>
+  <p>For inequality, \(p\Vdash^*\sigma\ne\tau\) means that either some \((\theta,q)\in\sigma\) has \(p\le q\) and \(p\Vdash^*\neg(\theta\in\tau)\), or some \((\theta,q)\in\tau\) has \(p\le q\) and \(p\Vdash^*\neg(\theta\in\sigma)\). Thus an attached member of one name is certified to be absent from the other.</p>
+  <p>For either atomic formula \(A\), once its positive relation at this rank pair is defined, define its negation by</p>
+  <div class="math-display">\[
+    p\Vdash^*\neg A
+       \ \Longleftrightarrow\
+    \forall q\le p\ (q\not\Vdash^*A).
+  \]</div>
+  <p>All conditions quantified here belong to \(P\), and all names are ground-model names. The inequality clause is symmetric in the two names.</p>
+</section>
+
+<section id="atomic-well-foundedness" data-kind="lemma" data-formal="fth-pair-earlier-well-founded fth-child-left-earlier fth-child-right-earlier fth-atomic-unique fth-bounded-name fth-bounded-name-child-closed fth-atomic-bounded-agreement fth-internal-atomic-definition lexicographic-well-founded fname-rank-child zf-set-valued-recursion-schema">
+  <h2>The rank-pair recursion is well founded and definable</h2>
+  <p>The atomic clauses define unique relations. Each of the four atomic and negated-atomic relations is definable inside \(M\), from the forcing order.</p>
+  <div class="proof"><p>Whenever a clause replaces one name by an attached child, that name's rank strictly decreases by the <a href="forcing-names#name-rank">name-rank equation</a>. Reordering the two ranks does not change their unordered pair. Decreasing one coordinate of a pair, keeping the other fixed, either decreases its minimum, or preserves the minimum and decreases its maximum. Thus every recursive call in a positive atomic clause uses a smaller displayed pair. Its negative relation at that smaller pair is already available. Defining a negative relation at the current pair only uses the positive relation just defined, so no circular call is introduced.</p><p>On any set of rank pairs the lexicographic order is well founded: a nonempty subset has a least first coordinate, then a least second coordinate among those with that first coordinate. To compute the relation for two particular names, choose an ordinal \(\beta\) larger than their ranks. The names of rank below \(\beta\) form the set \(N_\beta\). All needed children remain in this set. <a href="mostowski-collapse#well-founded-set-valued-recursion">Well-founded set recursion</a> therefore constructs the atomic truth values for every condition and every pair of names in \(N_\beta\).</p><p>These calculations agree on overlapping bounds by uniqueness. Existence of such a bounded recursive calculation, with the displayed clauses, is a first-order set-theoretic condition. It defines each relation on arbitrary supplied names. The construction and its uniqueness are provable in ZF, so they are available internally in \(M\). Its internal hierarchy stages need not equal the external stages; the definition uses the stages computed in \(M\) and its own names. Each internal stage is closed under taking attached children, and all quantified conditions range over the same actual \(P\). Transitivity and uniqueness of the bounded recursive calculation therefore identify its internal output with the external auxiliary relation on those names.</p></div>
+</section>
+
+<section id="connective-recursion" data-kind="definition" data-formal="fth-auxiliary-forcing fth-internal-assignment fth-auxiliary-definable fth-separation-closed fth-fixed-formula-definability fth-internal-atomic-definition zf-separation-schema">
+  <h2>Disjunction and existence have explicit auxiliary witnesses</h2>
+  <p>Extend \(\Vdash^*\) to every auxiliary formula by recursion on its finite syntax:</p>
+  <div class="math-display">\[
+    p\Vdash^*(A\lor B)\ \Longleftrightarrow\
+       p\Vdash^*A\text{ or }p\Vdash^*B.
+  \]</div>
+  <div class="math-display">\[
+    p\Vdash^*\exists x\,A(x)\ \Longleftrightarrow\
+       \exists\tau\in M\,[\,\tau\text{ is a }P\text{-name and }p\Vdash^*A(\tau)\,].
+  \]</div>
+  <p>For every formula use \(p\Vdash^*\neg A\) exactly when no \(q\le p\) auxiliary-forces \(A\), as in the atomic definition. These are syntactic clauses. In particular the auxiliary disjunction clause chooses a disjunct at \(p\), and its existential clause chooses a particular name at \(p\).</p>
+  <p>For each fixed auxiliary formula \(A(\bar x)\), <strong>definability of auxiliary forcing</strong> means that some ordinary set-theoretic formula \(\mathrm{Force}^*_A(p,\bar\tau,P,\le)\), interpreted in \(M\), defines this relation on its names. Atomic definability is established above; the displayed clauses and negation construct the defining formula inductively. For existence this is an ordinary unbounded internal quantifier over names, not a set collecting every name.</p>
+</section>
+
+<section id="auxiliary-monotonicity" data-kind="lemma" data-formal="fth-atomic-monotone fth-auxiliary-monotone">
+  <h2>Auxiliary forcing persists under strengthening</h2>
+  <p>If \(p\Vdash^*A\) and \(r\le p\), then \(r\Vdash^*A\), for every auxiliary formula and assignment of names.</p>
+  <div class="proof"><p>First use rank-pair induction for atoms and their negations. A membership witness \((\theta,q)\) with \(p\le q\) also has \(r\le q\); the smaller-pair induction hypothesis transfers \(p\Vdash^*\neg(\theta\ne\sigma)\) to \(r\). The same argument transfers the absent-member witness for inequality. For negation, every extension of \(r\) is an extension of \(p\), so the assertion that none auxiliary-forces the positive atom remains true.</p><p>Then induct on the whole formula. A disjunct or a witness name at \(p\) remains available at \(r\) by induction on its child. For any negated formula, the same inclusion of sets of extensions proves monotonicity directly. This establishes all cases.</p></div>
+</section>
+
+<section id="dense-decisions" data-kind="lemma" data-formal="fth-decision-set fth-decision-closed fth-decision-from-definability fth-decision-dense fth-generic-decision fth-fixed-formula-definability">
+  <h2>A generic filter makes exactly one auxiliary decision</h2>
+  <p>For each fixed auxiliary formula \(A(\bar\tau)\), the set \(D_A=\{p:p\Vdash^*A\text{ or }p\Vdash^*\neg A\}\) belongs to \(M\) and is dense. Every \(M\)-generic filter \(G\) therefore satisfies exactly one of</p>
+  <div class="math-display">\[
+    \exists p\in G\ (p\Vdash^*A),\qquad
+    \exists p\in G\ (p\Vdash^*\neg A).
+  \]</div>
+  <div class="proof"><p>Definability and Separation put \(D_A\) in \(M\). For a condition \(p\), if some \(q\le p\) auxiliary-forces \(A\), that \(q\) lies in \(D_A\). If none does, \(p\Vdash^*\neg A\) by definition, so \(p\) itself lies in \(D_A\). This proves density, hence genericity gives at least one of the alternatives.</p><p>If \(p,q\in G\) witnessed both, directedness supplies \(r\in G\) with \(r\le p,q\). Monotonicity gives \(r\Vdash^*A\), contradicting \(q\Vdash^*\neg A\). Thus at most one holds. Consequently existence of a condition in \(G\) auxiliary-forcing \(\neg A\) is equivalent to nonexistence of one auxiliary-forcing \(A\).</p></div>
+</section>
+
+<section id="activation-lemma" data-kind="lemma" data-formal="fth-activation">
+  <h2>An attached condition and a truth witness can be refined together</h2>
+  <p>Fix a name \(\tau\) and formulas \(B_\theta\), one for each attached child under consideration. Suppose truth already corresponds to a condition in \(G\) auxiliary-forcing \(B_\theta\). Then the following are equivalent: some \((\theta,q)\in\tau\) has \(q\in G\) and \(B_\theta\) true in \(M[G]\); some \(p\in G\) and \((\theta,q)\in\tau\) have \(p\le q\) and \(p\Vdash^*B_\theta\).</p>
+  <div class="proof"><p>From the first assertion, the assumed truth correspondence supplies \(r\in G\) auxiliary-forcing \(B_\theta\). Refine \(r,q\) to a common \(p\in G\). Monotonicity preserves the auxiliary assertion and \(p\le q\), proving the second assertion with the same attached pair. Conversely \(p\le q\) and \(p\in G\) put \(q\in G\) by upward closure, while the assumed truth correspondence makes \(B_\theta\) true. These operations retain the actual attached witness.</p></div>
+</section>
+
+<section id="atomic-truth" data-kind="theorem" data-formal="fth-atomic-truth fname-evaluation-members fth-activation">
+  <h2>Atomic and negated-atomic auxiliary forcing match name values</h2>
+  <p>For each of \(A=\sigma\in\tau,\ \sigma\ne\tau,\ \neg(\sigma\in\tau),\ \neg(\sigma\ne\tau)\),</p>
+  <div class="math-display">\[
+    M[G]\models A[G]\quad\Longleftrightarrow\quad
+        \exists p\in G\ (p\Vdash^*A).
+  \]</div>
+  <div class="proof"><p>Induct on the unordered name-rank pair, assuming all four correspondences at every smaller pair. For membership, its defining auxiliary witness is an attached \((\theta,q)\in\tau\), an extension \(p\le q\), and \(p\Vdash^*\neg(\theta\ne\sigma)\). The last statement involves a smaller rank pair. By its induction hypothesis and <a href="#activation-lemma"></a>, existence of these witnesses with \(p\in G\) is equivalent to an active attachment with \(\theta[G]=\sigma[G]\). By the evaluation rule this is exactly \(\sigma[G]\in\tau[G]\). This proves both directions while preserving the attached condition.</p><p>For inequality, the same argument changes an auxiliary absent-member witness into an active child of one name whose value does not belong to the other value. Conversely, if the two values differ, Extensionality for actual sets supplies an element in one and not the other. Evaluation represents that element by an active attached child on that side. The smaller-pair induction hypothesis for negated membership, followed by the common-refinement lemma, supplies the required auxiliary witness. Thus the positive inequality correspondence holds as well.</p><p>Now apply <a href="#dense-decisions"></a> separately to these two positive atoms. A condition in \(G\) auxiliary-forces the negation exactly when no condition in \(G\) auxiliary-forces the positive atom. By the two just-proved correspondences, this is exactly the negation of the corresponding value assertion. This proves the two negative cases at the current pair and completes the rank induction.</p></div>
+</section>
+
+<section id="auxiliary-truth" data-kind="theorem" data-formal="fth-auxiliary-truth fname-extension-members">
+  <h2>The auxiliary truth lemma holds for every formula</h2>
+  <p>For every auxiliary formula \(A\), every tuple of ground-model names, and every \(M\)-generic \(G\),</p>
+  <div class="math-display">\[
+    M[G]\models A[G]\quad\Longleftrightarrow\quad
+      \exists p\in G\ (p\Vdash^*A).
+  \]</div>
+  <div class="proof"><p>Induct on \(A\). The atomic cases are <a href="#atomic-truth"></a>. For negation, the decision lemma changes an auxiliary witness for \(\neg B\) into absence of any auxiliary witness for \(B\). By induction this is precisely that \(B[G]\) is false.</p><p>For disjunction, the defining clause says that a condition auxiliary-forces one disjunct. Thus existence of a condition in \(G\) witnessing that clause is equivalent to existence of a witness for one disjunct; induction gives exactly the ordinary disjunction truth clause. The direction starting with a true disjunct uses its own witnessing condition.</p><p>For \(\exists x\,B(x)\), a true existential has a witness in \(M[G]\), and by definition of this set that witness is \(\tau[G]\) for some name \(\tau\in M\). Apply induction to the body with this appended name to obtain a condition in \(G\) auxiliary-forcing \(B(\tau)\). The existential clause then applies. Conversely an auxiliary witness gives a particular \(\tau[G]\in M[G]\) and, by induction, truth of the body there. All assignments and appended variables remain arbitrary throughout the induction.</p></div>
+</section>
+
+<section id="semantic-double-negation" data-kind="theorem" data-formal="fth-semantic-double-negation fth-generic-through-condition">
+  <h2>Double negation recovers semantic forcing</h2>
+  <p>For every auxiliary formula \(A\) and condition \(p\), semantic forcing of its value interpretation satisfies</p>
+  <div class="math-display">\[
+    p\Vdash A\quad\Longleftrightarrow\quad p\Vdash^*\neg\neg A.
+  \]</div>
+  <div class="proof"><p>If \(p\Vdash^*\neg\neg A\) and \(G\) is generic through \(p\), the auxiliary truth lemma makes \(\neg\neg A[G]\) true, hence makes \(A[G]\) true. This proves semantic forcing.</p><p>Conversely suppose \(p\Vdash A\), but \(p\not\Vdash^*\neg\neg A\). By the negation clause some \(q\le p\) auxiliary-forces \(\neg A\). Choose an \(M\)-generic filter through \(q\). It also contains \(p\). Semantic forcing makes \(A[G]\) true, whereas auxiliary truth makes \(\neg A[G]\) true, a contradiction. Thus \(p\Vdash^*\neg\neg A\), proving the equivalence.</p></div>
+</section>
+
+<section id="forcing-theorem" data-kind="theorem" data-formal="fth-ordinary-truth fth-ordinary-forcing-definition fth-ordinary-forcing-definable fth-fixed-formula-definability fgen-ground-model-convention">
+  <h2>Ordinary truth and forcing agree, and forcing is definable</h2>
+  <div class="statement-box"><p>For every fixed ordinary membership-language formula \(\varphi(\bar x)\), ground-model names \(\bar\tau\), and \(M\)-generic filter \(G\),</p>
+  <div class="math-display">\[
+    M[G]\models\varphi(\bar\tau[G])
+       \quad\Longleftrightarrow\quad
+    \exists p\in G\ (p\Vdash\varphi(\bar\tau)).
+  \]</div>
+  <p>Moreover a set-theoretic formula, depending on the fixed syntactic formula \(\varphi\), defines \(p\Vdash\varphi(\bar\tau)\) inside \(M\). One such definition is \(p\Vdash^*\neg\neg\varphi^*(\bar\tau)\).</p></div>
+  <div class="proof"><p>The <a href="#translation-truth">ordinary syntax translation</a> and <a href="#semantic-double-negation">double-negation equivalence</a> give the displayed defining relation. Auxiliary definability provides an ordinary set-theoretic defining formula for this fixed \(\varphi\).</p><p>If \(\varphi(\bar\tau[G])\) is true, translate it and apply auxiliary truth to get \(p\in G\) with \(p\Vdash^*\varphi^*(\bar\tau)\). For every other \(M\)-generic filter \(H\) through this same \(p\), auxiliary truth makes \(\varphi^*(\bar\tau[H])\) true. Translation truth makes the original formula true there, so \(p\Vdash\varphi(\bar\tau)\). Conversely a semantic forcing condition in \(G\) gives the asserted truth directly from its definition.</p><p>This is a theorem scheme with a separate defining formula for each fixed \(\varphi\). It does not assert that the ground model has a single truth predicate for all its formulas or for all formulas of the extension.</p></div>
+<p>Its formula-by-formula definability supplies the <a href="forcing-extensions#separation-name">exact Separation name</a> and the bounds used to establish <a href="forcing-extensions#replacement">Replacement</a> in the extension.</p>
+</section>
+
+<section id="refining-witnesses" data-kind="lemma" data-formal="fth-refining-existential fth-refining-disjunction">
+  <h2>A forced existential or disjunction has witnesses after strengthening</h2>
+  <p>If \(p\Vdash\exists x\,\varphi(x,\bar\tau)\), then some \(q\le p\) and ground-model name \(\sigma\) satisfy \(q\Vdash\varphi(\sigma,\bar\tau)\). If \(p\Vdash(\varphi\lor\psi)\), some \(q\le p\) semantically forces one of the two disjuncts.</p>
+  <div class="proof"><p>Choose a generic \(G\) through \(p\). In the existential case its extension has a witness, represented by a ground-model name \(\sigma\). The ordinary truth lemma supplies \(r\in G\) forcing the witnessed matrix. Refine \(r,p\) inside \(G\) to \(q\); monotonicity of semantic forcing gives the required assertion. In the disjunction case, one disjunct is true in this extension; apply the same truth lemma and common-refinement argument to that disjunct.</p><p>The conclusion concerns a stronger condition and, for existence, a specified name there. It does not replace semantic forcing's quantification over generic extensions by the auxiliary clauses at the original condition.</p></div>
+</section>
+
+<section id="auxiliary-equality-question" data-kind="question" data-formal="fth-reflexive-equality fth-three-conditions fth-three-order fth-three-top fth-split-name fth-empty-name-valid fth-split-name-valid fth-empty-ground-name fth-split-ground-name fth-three-order-facts fth-split-dense fth-split-ground fth-membership-counterexample">
+  <h2>Do the two forcing relations agree directly?</h2>
+  <p>For any name \(\sigma\), define auxiliary equality by \(\neg(\sigma\ne\sigma)\). Does every condition auxiliary-force it? Does that by itself make the membership clauses of the two relations identical?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Every condition does auxiliary-force \(\neg(\sigma\ne\sigma)\). Otherwise some \(q\le p\) auxiliary-forces \(\sigma\ne\sigma\). A generic through \(q\) exists, and the auxiliary truth lemma would make \(\sigma[G]\ne\sigma[G]\), a contradiction.</p><p>This does not identify direct auxiliary membership with semantic membership. For example, let \(P=\{1,a,b\}\), with \(a,b\le1\) incompatible and no stronger conditions below either, and let \(M\) contain this finite order. Put \(\tau=\{(\varnothing,a),(\varnothing,b)\}\). Every \(M\)-generic filter meets the dense set \(\{a,b\}\); hence every such filter gives \(\varnothing\in\tau[G]\). Thus \(1\Vdash\varnothing\in\tau\). But \(1\not\Vdash^*\varnothing\in\tau\): its membership clause would need an attached condition \(q\in\{a,b\}\) with \(1\le q\), which neither satisfies. The double-negated auxiliary relation, rather than the direct one, agrees with semantic forcing.</p>
+  <figure id="two-generic-decisions-figure" class="proof-figure">
+    <div class="figure-image"><img src="assets/two-generic-decisions.svg" width="760" height="570" alt="The fork1 above incompatible a,b is shown twice. The left filter uses a and the right uses b. Their corresponding active name edges both lead to the empty name, so tau evaluates to singleton empty in both cases. The top1 is not below either attachment condition."></div>
+    <figcaption>For \(\tau=\{(\varnothing,a),(\varnothing,b)\}\), each of the two generic filters activates one attachment, so \(\varnothing\in\tau[G]\) always holds. Direct auxiliary membership at \(1\) would need \(1\le a\) or \(1\le b\), which both fail. This is the specified finite-order counterexample, not an identification of the two forcing relations.</figcaption>
+  </figure>
+</div></details>
+</section>

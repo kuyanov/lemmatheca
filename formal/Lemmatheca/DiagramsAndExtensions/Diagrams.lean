@@ -197,7 +197,7 @@ private theorem literal_isQF {α : Type*} {n : ℕ} {φ : L.BoundedFormula α n}
   · exact h.isQF
   · exact hψ.isQF.not
 
-private theorem hom_preserves_atomic {α : Type*} {n : ℕ}
+theorem hom_preserves_atomic {α : Type*} {n : ℕ}
     (f : M →[L] N) {φ : L.BoundedFormula α n} (hφ : φ.IsAtomic)
     (a : α → M) (xs : Fin n → M) :
     φ.Realize a xs → φ.Realize (f ∘ a) (f ∘ xs) := by

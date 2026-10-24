@@ -90,12 +90,6 @@ theorem finite_stage (D : CountableChain T) (U : D.Union) (A : Finset U.model) :
 
 end CountableChain
 
-/-- Every one-type over each original finite parameter set is realized through the same map. -/
-def RealizesAllOver {M N : Type} [L.Structure M] [L.Structure N] [Nonempty M]
-    (f : M ↪ₑ[L] N) : Prop :=
-  ∀ A : Finset M, ∀ p : (L[[(↑A : Set M)]].completeTheory M).CompleteType (Fin 1),
-    ∃ b : Fin 1 → N, RealizesThrough f p b
-
 /-- One chosen old-base request is realized in a countable further elementary extension. -/
 theorem one_request [Countable L.Symbols] {M N : Type}
     [L.Structure M] [L.Structure N] [Nonempty M] [Nonempty N]

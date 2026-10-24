@@ -1,0 +1,130 @@
+<section id="name-hierarchy" data-kind="definition" data-formal="fname-child fname-domain fname-domain-members fname-is-name fname-is-name-recursion fname-hierarchy fname-hierarchy-zero fname-hierarchy-successor fname-hierarchy-limit fname-rank fname-rank-equation zf-kuratowski-pair">
+  <h2>Names are sets whose members carry conditions</h2>
+  <p>Fix a <a href="forcing-and-generic-filters#forcing-orders">forcing order</a> \((P,\le,1_P)\). Define the <strong>hierarchy of \(P\)-names</strong> by ordinal recursion:</p>
+  <div class="math-display">\[
+    N_0=\varnothing,\qquad N_{\alpha+1}=\mathcal P(N_\alpha\times P),
+    \qquad N_\lambda=\bigcup_{\alpha&lt;\lambda}N_\alpha\quad(\lambda\text{ limit}).
+  \]</div>
+  <p>A <strong>\(P\)-name</strong> is a set belonging to some \(N_\alpha\). Thus each of its members is an ordered pair \((\sigma,p)\), where \(\sigma\) is another name and \(p\in P\). The <strong>domain</strong> of a name is \(\operatorname{dom}(\tau)=\{\sigma:\exists p\in P,\ (\sigma,p)\in\tau\}\). Use ordinary set-coded ordered pairs throughout.</p>
+  <p>The <strong>name rank</strong> is the ordinal defined recursively by</p>
+  <div class="math-display">\[
+    \rho(\tau)=\sup\{\rho(\sigma)+1:(\sigma,p)\in\tau\}.
+  \]</div>
+  <p>The empty supremum is zero. This is the rank in the name tree, not necessarily the ordinary <a href="foundation-and-rank#membership-rank">membership rank</a> of its pair-coded set.</p>
+</section>
+
+<section id="name-rank" data-kind="lemma" data-formal="fname-child-membership-rank fname-child-well-founded fname-hierarchy-monotone fname-rank-child fname-hierarchy-membership fname-least-name-stage fname-rank-unique well-founded-recursion-exists-unique zf-set-valued-recursion-schema">
+  <h2>The hierarchy and the recursive rank agree</h2>
+  <p>The name hierarchy consists of sets, is increasing, and satisfies \(N_\alpha=\{\tau:\tau\text{ is a name and }\rho(\tau)&lt;\alpha\}\). In particular, \(\rho(\tau)\) is the least \(\alpha\) for which \(\tau\in N_{\alpha+1}\), and every \(\sigma\in\operatorname{dom}(\tau)\) has \(\rho(\sigma)&lt;\rho(\tau)\).</p>
+  <div class="proof"><p>Power Set gives each successor stage; Replacement and Union give each limit stage. Ordinal induction shows monotonicity. At a successor stage, \(\tau\in N_{\alpha+1}\) exactly when every attached child \(\sigma\) lies in \(N_\alpha\). By induction this says that all child ranks are below \(\alpha\), equivalently that \(\sup(\rho(\sigma)+1)\le\alpha\). At a limit stage, being below the limit is equivalent to being below some smaller stage; a name of rank \(\beta&lt;\lambda\) already lies in \(N_{\beta+1}\), with \(\beta+1&lt;\lambda\).</p><p>The recursion is legitimate: a child \(\sigma\) occurs inside an ordered pair belonging to \(\tau\), so its ordinary membership rank is strictly below that of \(\tau\). The resulting child relation is well founded by <a href="foundation-and-rank#ordinal-height-and-well-foundedness">its decreasing ordinal height</a>. <a href="mostowski-collapse#well-founded-set-valued-recursion">Well-founded set-valued recursion</a> on the set of iterated children defines the displayed ordinal values uniquely. The successor and limit calculations identify them with the least hierarchy stages, and the rank equation gives strict decrease to every child.</p></div>
+</section>
+
+<section id="evaluation" data-kind="definition" data-formal="fname-evaluation-rule fname-evaluation fname-evaluation-members fname-evaluation-unique well-founded-recursion-exists-unique">
+  <h2>A filter activates attached members</h2>
+  <p>For any filter \(G\subseteq P\), the <strong>value of a name</strong> is given by well-founded recursion:</p>
+  <div class="math-display">\[
+    \tau[G]=\{\sigma[G]:\exists p\in G,\ (\sigma,p)\in\tau\}.
+  \]</div>
+  <p>The recursion is unique because each child has smaller name rank. For one name, all iterated children form a set, and Replacement collects their already defined values at each recursive step. Thus this definition yields a set \(\tau[G]\), not just a class prescription. The value can depend on \(G\); genericity is not needed to define it.</p>
+</section>
+
+<section id="recursion-absoluteness" data-kind="lemma" data-formal="fname-child-in-transitive-domain fname-namehood-partial-agreement fname-rank-partial-agreement fname-evaluation-partial-agreement fname-model-recursion-absoluteness abs-bounded-absoluteness zf-set-valued-recursion-schema">
+  <h2>Transitive models agree on the name recursions</h2>
+  <p>If \(A\subseteq B\) are transitive ZF-models containing \(P\), then for each \(\tau\in A\) they agree on whether \(\tau\) is a \(P\)-name, and on its name rank when it is. If also \(G\in A\), they agree on \(\tau[G]\). The same conclusions compare a transitive set model with the ambient universe satisfying ZF.</p>
+  <div class="proof"><p>Every ordered pair occurring in \(\tau\), and every child it codes, belongs to both transitive domains. Pair decoding and the supplied membership tests are <a href="absoluteness#bounded-set-tests">bounded and absolute</a>. Induct on the well-founded child relation, or on ordinary membership rank. A proposed name is valid precisely when all its members have the required pair form with a condition in the same \(P\), and every child is a valid name. The induction equivalences therefore give agreement on namehood.</p><p>For rank, both models form the same set of child-rank successors, by induction, and take its union as ordinal supremum. For evaluation, they select the same attached conditions in \(G\); the child values agree by induction, so Replacement produces exactly the same set of values. Uniqueness of these recursions proves agreement.</p><p>This argument transfers a recursion with its required parameters present. It does not claim that power sets, whole hierarchy stages, or arbitrary recursive definitions are bounded formulas. In particular, evaluation cannot be carried out inside a ground model missing \(G\).</p></div>
+</section>
+
+<section id="extension-as-values" data-kind="definition" data-formal="fname-extension fname-extension-members fname-ground-model-convention">
+  <h2>Collect values of ground-model names</h2>
+  <p>Let \(M\) be a transitive set model of ZFC, let \(P,\le,1_P\in M\) form a forcing order, and let \(G\subseteq P\) be any filter. The <strong>extension by name values</strong> is</p>
+  <div class="math-display">\[
+    M[G]=\{\tau[G]:\tau\in M,\ \tau\text{ is a }P\text{-name}\}.
+  \]</div>
+  <p>This is a set: Separation selects the names in the set \(M\), and Replacement under the evaluation rule collects their values. The preceding absoluteness result identifies these names with the names recognized internally by \(M\). The model \(M\) need not be externally countable for this definition; countability enters when constructing <a href="forcing-and-generic-filters#generic-through-condition">generic filters</a>.</p>
+<p>For an \(M\)-generic filter, the <a href="forcing-theorem#forcing-theorem">forcing theorem</a> connects truth of each fixed ordinary formula in this set-domain structure with a condition in the filter.</p>
+</section>
+
+<section id="check-names" data-kind="theorem" data-formal="fname-internal-name-constructions fname-coded-filter fname-filter-set fname-filter-set-members fname-coded-filter-bridge fname-coded-filter-iff fname-top-in-filter fname-check-name fname-check-name-members fname-check-name-valid fname-check-name-value fname-ground-inclusion zf-membership-well-founded">
+  <h2>Every old set has its canonical name</h2>
+  <p>For each set \(x\), its <strong>check name</strong> is \(\check x=\{(\check y,1_P):y\in x\}\). This recursion defines a \(P\)-name, and \(\check x[G]=x\) for every filter \(G\). If \(x\in M\), then \(\check x\in M\). Consequently \(M\subseteq M[G]\).</p>
+  <div class="proof"><p>Use <a href="foundation-and-rank#set-induction">membership induction</a>. The recursively obtained child names form a set by Replacement, so the displayed collection is a name. Since \(1_P\in G\), evaluation gives \(\check x[G]=\{\check y[G]:y\in x\}\). Induction identifies this with \(x\). The same definable recursion is available in \(M\), and <a href="#recursion-absoluteness"></a> identifies its output with \(\check x\). Thus \(\check x\) is a ground-model name for every \(x\in M\), proving the inclusion.</p></div>
+</section>
+
+<section id="generic-name" data-kind="theorem" data-formal="fname-generic-name fname-generic-name-valid fname-generic-name-value fname-filter-in-extension fname-internal-name-constructions">
+  <h2>The filter itself has a ground-model name</h2>
+  <p>The <strong>canonical filter name</strong> is \(\dot G=\{(\check p,p):p\in P\}\). It belongs to \(M\), and \(\dot G[G]=G\). Hence \(G\in M[G]\).</p>
+  <div class="proof"><p>Replacement in \(M\) builds this set from \(P\) and the check-name recursion. It is a name because each \(\check p\) is a name. Evaluation and <a href="#check-names"></a> give \(\dot G[G]=\{\check p[G]:p\in P,\ p\in G\}=\{p:p\in G\}=G\). This conclusion holds even if the supplied filter is not generic.</p></div>
+</section>
+
+<section id="transitivity-and-countability" data-kind="lemma" data-formal="fname-extension-transitive fname-extension-countable">
+  <h2>The extension is transitive and remains externally countable</h2>
+  <p>For every filter \(G\), the set \(M[G]\) is transitive. If \(M\) is externally countable, then \(M[G]\) is externally countable.</p>
+  <div class="proof"><p>If \(y\in x=\tau[G]\) with \(\tau\in M\), then \(y=\sigma[G]\) for some attached pair \((\sigma,p)\in\tau\) with \(p\in G\). Transitivity of \(M\), applied through the set-coded pair, gives \(\sigma\in M\). Therefore \(y\in M[G]\).</p><p>The ground-model names form a subset of \(M\), and evaluation maps that set onto \(M[G]\). The image of a countable set is countable, so the external countability assertion follows. These facts do not yet assert that every ZFC axiom holds in \(M[G]\).</p></div>
+</section>
+
+<section id="pair-and-ordered-pair-names" data-kind="definition" data-formal="fname-pair-name fname-ordered-pair-name fname-pair-name-valid fname-pair-name-value fname-ordered-pair-name-valid fname-ordered-pair-name-value fname-extension-pair-closed fname-internal-name-constructions zf-kuratowski-pair">
+  <h2>Pairing names gives exact pair values</h2>
+  <p>For names \(\sigma,\tau\), define the <strong>pair name</strong> \(\operatorname{pair}(\sigma,\tau)=\{(\sigma,1_P),(\tau,1_P)\}\). Its value is exactly \(\{\sigma[G],\tau[G]\}\), since both attachments are active. Define the <strong>ordered-pair name</strong> by the Kuratowski construction</p>
+  <div class="math-display">\[
+    \operatorname{op}(\sigma,\tau)=
+    \operatorname{pair}(\operatorname{pair}(\sigma,\sigma),\operatorname{pair}(\sigma,\tau)).
+  \]</div>
+  <p>Applying the pair evaluation twice gives \(\operatorname{op}(\sigma,\tau)[G]=(\sigma[G],\tau[G])\). If the input names lie in \(M\), these finite set constructions lie in \(M\) as well.</p>
+</section>
+
+<section id="union-name" data-kind="theorem" data-formal="fname-grand-domain fname-grand-domain-members fname-union-name fname-union-name-members fname-union-name-valid fname-union-name-value fname-extension-union-closed fname-internal-name-constructions">
+  <h2>Union needs a common refinement of two attachments</h2>
+  <p>For a name \(\tau\), define its <strong>union name</strong> by</p>
+  <div class="math-display">\[
+    \operatorname{un}(\tau)=
+    \{(\chi,r):\exists(\pi,p)\in\tau\ \exists(\chi,q)\in\pi,\ r\in P,\ r\le p,q\}.
+  \]</div>
+  <p>It is a name and satisfies \(\operatorname{un}(\tau)[G]=\bigcup\tau[G]\) for every filter \(G\). If \(\tau\in M\), then \(\operatorname{un}(\tau)\in M\).</p>
+  <div class="proof"><p>The possible children \(\chi\) form a set, obtained from the iterated domains of \(\tau\). Separation from its product with \(P\) defines the displayed name. This construction is also available internally in \(M\); its defining tests of supplied conditions and pairs are absolute, so the resulting name is the same.</p><p>If \(z=\chi[G]\in\operatorname{un}(\tau)[G]\), choose an active \(r\in G\) and witnesses \((\pi,p)\in\tau\), \((\chi,q)\in\pi\), with \(r\le p,q\). Upward closure puts both \(p,q\) in \(G\). Hence \(z\in\pi[G]\in\tau[G]\), giving \(z\in\bigcup\tau[G]\).</p><p>Conversely, if \(z\in y\in\tau[G]\), choose \(y=\pi[G]\) with attachment \(p\in G\), then \(z=\chi[G]\) with attachment \(q\in G\) in \(\pi\). Directedness supplies \(r\in G\) refining both \(p,q\). The pair \((\chi,r)\) belongs to the union name, so \(z\in\operatorname{un}(\tau)[G]\). This proves the exact equality.</p></div>
+</section>
+
+<section id="union-attachment-question" data-kind="question" data-formal="fname-singleton-attachment fname-naive-union-counterexample">
+  <h2>Can the outer attachment be discarded when taking a union?</h2>
+  <p>Let \(p\notin G\), put \(\pi=\{(\varnothing,1_P)\}\), and put \(\tau=\{(\pi,p)\}\). What happens if a proposed union name keeps every attachment found inside \(\pi\) but ignores the outer condition \(p\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The outer attachment is inactive, so \(\tau[G]=\varnothing\) and \(\bigcup\tau[G]=\varnothing\). Naive flattening instead gives the name \(\{(\varnothing,1_P)\}\), whose value is \(\{\varnothing\}\), since \(1_P\in G\). It adds an unwanted member.</p><p>The corrected union name permits \((\varnothing,r)\) only when \(r\le p,1_P\). No such \(r\) can belong to \(G\), because upward closure would then put \(p\) in \(G\). Its value is therefore empty, as required. The refinement condition remembers both levels of activation.</p>
+  <figure id="name-union-activation-figure" class="proof-figure">
+    <div class="figure-image"><img src="assets/name-union-activation.svg" width="760" height="490" alt="A two-edge name path tau to pi to chi has active labels p and q. The flattened union-name edge uses r in G below both. Beside it, tau to pi has inactive p while pi to the empty name has active1_P; the true union value stays empty."></div>
+    <figcaption>Name edges carry their attachment conditions. When both are active, directedness supplies \(r\in G\) with \(r\le p,q\) for the union name. In the counterexample on the right, the inactive outer edge prevents the active inner empty-name attachment from contributing; discarding it would give the wrong value.</figcaption>
+  </figure>
+</div></details>
+</section>
+
+<section id="same-ordinals" data-kind="theorem" data-formal="fname-value-rank-bound fname-same-ordinals fname-internal-name-constructions abs-ordinal-test-correct">
+  <h2>Name rank bounds value rank and prevents new ordinals</h2>
+  <div class="statement-box"><p>For every name \(\tau\) and filter \(G\), \(\operatorname{rank}(\tau[G])\le\rho(\tau)\). Consequently \(M\) and \(M[G]\) have exactly the same ordinals.</p></div>
+  <div class="proof"><p>Induct on name rank. Every member of \(\tau[G]\) is some active \(\sigma[G]\), whose rank is at most \(\rho(\sigma)\) by induction. The <a href="foundation-and-rank#membership-rank">rank equation</a> therefore gives</p>
+  <div class="math-display">\[
+    \operatorname{rank}(\tau[G])
+      \le\sup\{\rho(\sigma)+1:(\sigma,p)\in\tau\}=\rho(\tau).
+  \]</div>
+  <p>If \(\beta\) is an ordinal in \(M[G]\), write \(\beta=\tau[G]\) for a name \(\tau\in M\). Its name rank is an ordinal belonging to \(M\), by internal recursion and <a href="#recursion-absoluteness"></a>. Since <a href="foundation-and-rank#ordinal-ranks">an ordinal is its own membership rank</a>, \(\beta\le\rho(\tau)\). Equality puts \(\beta\) in \(M\) directly, and strict inequality puts it in \(M\) by transitivity. Conversely \(M\subseteq M[G]\), so every old ordinal is present. Actual ordinalhood is absolute for these transitive domains by the <a href="absoluteness#bounded-ordinal-test">bounded ordinal test</a>.</p></div>
+</section>
+
+<section id="structural-axioms" data-kind="theorem" data-formal="fname-empty-sentence fname-pairing-sentence fname-union-sentence fname-successor-relation-test fname-successor-relation-correct fname-infinity-sentence fname-structural-theory fname-empty-realization fname-pairing-realization fname-union-realization fname-infinity-realization fname-structural-model fname-extension-structural-model mm-extensionality-sentence mm-foundation-sentence mm-transitive-set-model fname-internal-name-constructions">
+  <h2>Several set-theoretic axioms hold for every filter</h2>
+  <p>For any filter \(G\), the actual-membership structure on \(M[G]\) satisfies Extensionality, Foundation, Empty Set, Pairing, Union and Infinity.</p>
+  <div class="proof"><p>It is a nonempty transitive set: it contains \(M\). Distinct members differ on an actual member of one of them, which remains in \(M[G]\) by transitivity; thus Extensionality holds. For any nonempty \(x\in M[G]\), ambient Foundation supplies \(y\in x\) disjoint from \(x\). This \(y\) lies in \(M[G]\), proving the relativized Foundation axiom. The empty set belongs because it belongs to \(M\).</p><p>Given two values of ground-model names, their pair name belongs to \(M\) and has their exact pair as value. Likewise <a href="#union-name"></a> supplies the exact union of any member. These prove Pairing and Union internally. Finally \(\omega\in M\subseteq M[G]\), with its actual elements and successor operation, witnesses Infinity.</p><p>These proofs use the explicit names or transitivity for each asserted axiom. No assertion about Separation, Replacement, Power Set or Choice in \(M[G]\) follows merely from the closure facts proved here.</p></div>
+<p>For a generic filter, <a href="forcing-extensions#zfc-extension">the remaining ZFC axioms</a> follow from forcing-definable names and set-sized bounds.</p>
+</section>
+
+<section id="cohen-real-name" data-kind="theorem" data-formal="fname-bit-code fname-condition-code fname-cohen-poset-set fname-cohen-relation-set fname-condition-code-members fname-condition-code-injective fname-cohen-code-bijective fname-cohen-coding fname-cohen-coding-value fname-condition-code-order fname-cohen-relation-correct fname-condition-code-top fname-binary-sequence-code fname-binary-sequence-function fname-binary-sequence-complete fname-binary-sequence-injective fname-cohen-name fname-cohen-name-valid fname-cohen-name-attachments fname-cohen-name-members fname-cohen-name-union fname-cohen-real-name-value fname-cohen-name-in-extension fname-cohen-new-real-in-extension fname-internal-name-constructions zf-function-graph fgen-cohen-generic-real">
+  <h2>The union of a Cohen filter has an explicit name</h2>
+  <p>For the <a href="forcing-and-generic-filters#cohen-order">Cohen order</a>, the name</p>
+  <div class="math-display">\[
+    \dot g=\{(\operatorname{op}(\check n,\check i),p):
+           p\in P_{\mathrm C},\ n\in\operatorname{dom}(p),\ i=p(n)\}
+  \]</div>
+  <p>belongs to \(M\) and has value \(\dot g[G]=\bigcup G\). For an \(M\)-generic Cohen filter, this value is a total binary sequence in \(M[G]\setminus M\).</p>
+  <div class="proof"><p>Each check name and ordered-pair name is defined in \(M\). Separation and Replacement over \(P_{\mathrm C}\times\omega\times2\) collect the displayed attachments into a name in \(M\). Evaluating it gives exactly the pairs \((n,i)\) assigned by conditions \(p\in G\). This is the graph union \(\bigcup G\), proving the equality. For a generic filter, <a href="forcing-and-generic-filters#cohen-union">totality</a> and <a href="forcing-and-generic-filters#cohen-disagreement">disagreement with every old sequence</a> give the final conclusion.</p></div>
+</section>
+
+<section id="name-uniqueness-question" data-kind="question" data-formal="fname-inactive-attachment fname-internal-name-constructions">
+  <h2>Does a set have only one name?</h2>
+  <p>Suppose \(p\in P\setminus G\). Compare the names \(\varnothing\) and \(\tau=\{(\varnothing,p)\}\). Are their values different? What does this say about recovering a name from its value?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Both values are empty: the empty name has no attachments, and the only attachment in \(\tau\) is inactive because \(p\notin G\). The names are distinct sets, however. Evaluation is therefore not injective, and its image description of \(M[G]\) does not select a unique name for an extension object. If \(p\in M\), both names lie in \(M\), so this already happens among ground-model names.</p></div></details>
+</section>

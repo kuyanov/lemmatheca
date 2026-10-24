@@ -1,0 +1,117 @@
+<section id="extension-hypotheses" data-kind="definition" data-formal="fgen-ground-model-convention fgen-generic-for fth-context fth-ground-name fth-value-domain fth-ordinary-truth fth-ordinary-forcing-definable">
+  <h2>Keep the model and genericity assumptions explicit</h2>
+  <p>Let \(M\) be an externally countable transitive set model of ZFC, let \(P,\le,1_P\in M\) be a <a href="forcing-and-generic-filters#forcing-orders">forcing order</a>, and let \(G\subseteq P\) be \(M\)-generic. Put \(M[G]=\{\tau[G]:\tau\in M\text{ is a }P\text{-name}\}\), using the <a href="forcing-names#extension-as-values">name-value construction</a>. All model assertions use actual membership.</p>
+  <p>A <strong>ground-model name</strong> below means a \(P\)-name belonging to \(M\). We use the <a href="forcing-theorem#forcing-theorem">forcing theorem</a> for each fixed ordinary membership-language formula. It supplies a defining formula inside \(M\) for forcing that particular formula, and a condition in \(G\) witnessing every truth in \(M[G]\). Assertions about Separation and Replacement are schemes, one proof for each formula; no global truth predicate is assumed.</p>
+</section>
+
+<section id="structural-axioms" data-kind="lemma" data-formal="fname-extension-structural-model fname-pair-name-value fname-union-name-value mm-transitive-set-model">
+  <h2>The elementary closure axioms already have exact witnesses</h2>
+  <p>The structure \(M[G]\) is a nonempty transitive set satisfying Extensionality, Foundation, Empty Set, Pairing, Union and Infinity.</p>
+  <div class="proof"><p>These are the <a href="forcing-names#structural-axioms">structural-axiom conclusions</a> proved for every filter. In particular the pair name evaluates to the exact pair, and the union name uses a common stronger condition for the outer and inner attachments, giving the exact union. Transitivity supplies actual members for Extensionality and Foundation, and the old set \(\omega\) witnesses Infinity. Genericity is additional information used in the proofs of the remaining axioms.</p></div>
+</section>
+
+<section id="separation-name" data-kind="theorem" data-formal="fext-slot-map fext-slot-map-truth fext-separation-matrix fext-separation-matrix-truth fext-separation-sentence fext-separation-sentence-truth fext-separation-name fext-selected-subset fext-separation-name-members fext-separation-name-valid fext-separation-name-value fext-separation-names-closed fext-extension-separation fext-ground-separation-names herb-universal-closure-truth zf-separation-schema fth-fixed-formula-definability">
+  <h2>Force membership and the defining condition together</h2>
+  <p>Fix a formula \(\varphi(x,\bar z)\), a name \(\sigma\), and parameter names \(\bar\tau\). The ground-model name</p>
+  <div class="math-display">\[
+    \rho=\{(\pi,p)\in\operatorname{dom}(\sigma)\times P:
+          p\Vdash(\pi\in\sigma\ \land\ \varphi(\pi,\bar\tau))\}
+  \]</div>
+  <p>has value exactly \(\{x\in\sigma[G]:M[G]\models\varphi(x,\bar\tau[G])\}\). In the displayed definition, \(p\) forces the whole conjunction. Consequently \(M[G]\) satisfies every Separation instance.</p>
+  <div class="proof"><p>Forcing this fixed conjunction is definable inside \(M\). Separation there produces \(\rho\in M\). Its possible children are all names in \(\operatorname{dom}(\sigma)\), so it is a \(P\)-name.</p><p>If \(x\in\rho[G]\), write \(x=\pi[G]\) with \(p\in G\) and \((\pi,p)\in\rho\). Semantic forcing gives both \(x\in\sigma[G]\) and \(\varphi(x,\bar\tau[G])\), proving one inclusion.</p><p>Conversely let \(x\in\sigma[G]\) satisfy the formula. Evaluation supplies \(\pi\in\operatorname{dom}(\sigma)\) with \(x=\pi[G]\). The conjunction \(\pi[G]\in\sigma[G]\land\varphi(\pi[G],\bar\tau[G])\) is true. The truth lemma supplies \(p\in G\) forcing this conjunction. Thus \((\pi,p)\in\rho\) and \(x\in\rho[G]\). This proves equality and the asserted Separation instance for arbitrary parameters in the extension.</p></div>
+</section>
+
+<section id="ground-collection" data-kind="lemma" data-formal="fext-relevant-indices fext-least-witness-stage fext-collection-bound fext-collected-witnesses fext-least-witness-stage-spec fext-collected-witness-members fext-collection-exact-bound fext-collection-over-zf zf-replacement-schema zf-separation-schema cumulative-hierarchy">
+  <h2>Replacement gives a set of witnesses without choosing one witness per index</h2>
+  <p>ZF proves the following <strong>Collection principle</strong> for every fixed formula \(R(i,y)\): for a set \(I\), there is a set \(S\) such that</p>
+  <div class="math-display">\[
+    \forall i\in I\,
+      [\,\exists y\,R(i,y)\ \Longrightarrow\ \exists y\in S\,R(i,y)\,].
+  \]</div>
+  <p>It therefore holds inside \(M\), including when the witnesses are ground-model names satisfying a fixed forcing condition.</p>
+  <div class="proof"><p>Separate \(I_0=\{i\in I:\exists y\,R(i,y)\}\). For each \(i\in I_0\), let \(\alpha_i\) be the least ordinal \(\alpha\) with some \(y\in V_\alpha\) satisfying \(R(i,y)\). A witness has a rank and belongs to some hierarchy stage, so the least ordinal exists. Its defining property is unique and first-order expressible using the <a href="cumulative-hierarchy#hierarchy-definition">definable cumulative hierarchy</a>.</p><p>Replacement collects the ordinals \(\alpha_i\) into a set. Let \(\beta\) be their supremum, or zero if \(I_0\) is empty. Since \(\alpha_i\le\beta\), each relevant index has a witness in \(V_\beta\). Put \(S=\{y\in V_\beta:\exists i\in I_0,\ R(i,y)\}\), using Separation. This set contains a witness for every relevant index. The construction collects all appropriate candidates in a rank bound; it does not select arbitrary individual witnesses from a class.</p></div>
+</section>
+
+<section id="replacement-bound" data-kind="lemma" data-formal="fext-top-product-name fext-name-values fext-top-product-valid fext-top-product-value fext-collected-names fext-functional-on fext-replacement-bound fext-ground-replacement-bounds fext-collection-over-zf fth-ordinary-forcing-definable">
+  <h2>Bound all actual replacement outputs by one name</h2>
+  <p>Fix a formula \(\varphi(x,y,\bar z)\) and names \(\sigma,\bar\tau\). Suppose that in \(M[G]\), every \(x\in\sigma[G]\) has exactly one \(y\) satisfying \(\varphi(x,y,\bar\tau[G])\). There is a ground-model set \(S\) of names such that every one of these actual outputs belongs to \((S\times\{1_P\})[G]\).</p>
+  <div class="proof"><p>Inside \(M\), use indices \((\pi,p)\in\operatorname{dom}(\sigma)\times P\). Apply <a href="#ground-collection"></a> to the definable relation saying that \(\mu\) is a \(P\)-name and \(p\Vdash\varphi(\pi,\mu,\bar\tau)\). Restricting the collected set to names gives \(S\in M\) with</p>
+  <div class="math-display">\[
+    \exists\mu\ (p\Vdash\varphi(\pi,\mu,\bar\tau))
+       \ \Longrightarrow\
+    \exists\mu\in S\ (p\Vdash\varphi(\pi,\mu,\bar\tau)).
+  \]</div>
+  <p>Here and throughout this implication, \(\mu\) ranges over names of \(M\). Define the name \(B=S\times\{1_P\}\in M\); it has value \(\{\mu[G]:\mu\in S\}\).</p><p>For an actual \(x\in\sigma[G]\), choose a representing \(\pi\in\operatorname{dom}(\sigma)\). Its unique output has the form \(\nu[G]\) for some ground-model name \(\nu\). The truth lemma gives \(p\in G\) forcing \(\varphi(\pi,\nu,\bar\tau)\). The collection property supplies \(\mu\in S\) with the same condition forcing \(\varphi(\pi,\mu,\bar\tau)\). Since \(p\in G\), the actual value \(\mu[G]\) satisfies that formula. Uniqueness of the output implies \(\mu[G]=\nu[G]\). Hence the output belongs to \(B[G]\), as claimed.</p></div>
+</section>
+
+<section id="replacement" data-kind="theorem" data-formal="fext-range-matrix fext-range-matrix-truth fext-functionality-matrix fext-replacement-sentence fext-replacement-sentence-truth fext-replacement-range-name fext-replacement-range-name-value fext-replacement-bounds-closed fext-extension-replacement fext-ground-replacement-bounds fext-ground-separation-names">
+  <h2>Separation extracts the exact replacement range</h2>
+  <p>The structure \(M[G]\) satisfies every Replacement instance.</p>
+  <div class="proof"><p>Fix an instance with the hypotheses of <a href="#replacement-bound"></a>, and let \(B[G]\) be its supplied bound. The already established Separation scheme forms</p>
+  <div class="math-display">\[
+    Y=\{y\in B[G]:M[G]\models
+          \exists x\in\sigma[G]\ \varphi(x,y,\bar\tau[G])\}.
+  \]</div>
+  <p>Every required output belongs to the bound and is selected; every selected value is an actual output. Thus \(Y\in M[G]\) is exactly the replacement range. This reasoning is valid for every fixed formula and every tuple of extension parameters. The bounding name was allowed to contain additional values, since Separation removes them.</p></div>
+</section>
+
+<section id="power-set-bound" data-kind="lemma" data-formal="fext-internal-power-set fext-restriction-name fext-restriction-subset fext-restriction-name-valid fext-restriction-name-value fext-power-bound-valid fext-power-bound fext-power-bounds-closed fext-ground-power-bounds fext-top-product-name fext-top-product-value">
+  <h2>Subsets have names with children from one fixed domain</h2>
+  <p>Fix a ground-model name \(\sigma\). Let \(Q=\mathcal P^M(\operatorname{dom}(\sigma)\times P)\), the power set computed in \(M\), and let \(B=Q\times\{1_P\}\). Every member of \(Q\) is a name, \(B\) is a name in \(M\), and every subset of \(\sigma[G]\) which belongs to \(M[G]\) is a member of \(B[G]\).</p>
+  <div class="proof"><p>Every \(\tau\in Q\) consists of pairs whose children belong to \(\operatorname{dom}(\sigma)\), hence are names. It is therefore a name; bounding the ranks of these children makes this explicit in the <a href="forcing-names#name-hierarchy">name hierarchy</a>. The same holds internally in \(M\), so \(B\) is a ground-model name and \(B[G]=\{\tau[G]:\tau\in Q\}\).</p><p>Let \(\mu[G]\subseteq\sigma[G]\), with \(\mu\) a ground-model name. Define in \(M\)</p>
+  <div class="math-display">\[
+    \tau=\{(\pi,p)\in\operatorname{dom}(\sigma)\times P:p\Vdash\pi\in\mu\}.
+  \]</div>
+  <p>Definability and Separation give \(\tau\in M\), and its displayed subset relation puts it in \(Q\). If \(x\in\tau[G]\), an active attachment and semantic forcing give \(x\in\mu[G]\).</p><p>Conversely let \(x\in\mu[G]\). Since \(\mu[G]\subseteq\sigma[G]\), some \(\pi\in\operatorname{dom}(\sigma)\) has \(x=\pi[G]\). The truth lemma for \(\pi[G]\in\mu[G]\) gives \(p\in G\) forcing \(\pi\in\mu\). Thus \((\pi,p)\in\tau\), so \(x\in\tau[G]\). This proves \(\tau[G]=\mu[G]\), placing the given subset in \(B[G]\).</p></div>
+</section>
+
+<section id="power-set" data-kind="theorem" data-formal="fext-power-set-name fext-power-set-name-value fext-power-set-sentence fext-power-set-sentence-truth fext-extension-power-set abs-power-set-formula abs-bounded-absoluteness fext-ground-power-bounds">
+  <h2>The internal power set is an exact separated subset of the bound</h2>
+  <p>The structure \(M[G]\) satisfies Power Set. For \(x=\sigma[G]\), its internal power set has exactly the members \(y\in M[G]\) with \(y\subseteq x\).</p>
+  <div class="proof"><p>Take \(B[G]\) from <a href="#power-set-bound"></a>. Separation in \(M[G]\) forms \(\{y\in B[G]:y\subseteq\sigma[G]\}\). The subset test is bounded, so transitivity makes it agree with the actual subset relation. Every extension subset belongs to the bound by the lemma and is selected, while every selected member is such a subset. This is precisely the relativized Power Set axiom.</p><p>The construction uses the old internal power set \(Q\) of a different set, namely possible name attachments. It does not assume that \(M\) already contains all subsets of \(\sigma[G]\), or that the extension contains every ambient subset.</p></div>
+
+  <figure id="extension-power-bound-figure" class="proof-figure">
+    <div class="figure-image"><img src="assets/extension-power-bound.svg" width="760" height="485" alt="On the ground-model side Q is the internal power set of possible attachments. Evaluation sends a canonical name tau to an extension subset y inside a highlighted region of B[G]. Another possible value eta[G] lies outside that region. Separation selects the values that are subsets of x."></div>
+    <figcaption>For each extension subset \(y=\mu[G]\subseteq x\), the proof constructs a name \(\tau\in Q\) with \(\tau[G]=y\). The old internal power set \(Q\) is a collection of name attachments, not a power set of \(x\). Its evaluated bound may contain extra values; Separation keeps precisely the extension subsets of \(x\). The picture does not assert that evaluation is injective or that every ambient subset is present.</figcaption>
+  </figure>
+</section>
+
+<section id="choice-name" data-kind="lemma" data-formal="fext-enumeration-name fext-enumeration-graph fext-enumeration-name-valid fext-enumeration-name-value fext-enumeration-graph-function fext-enumeration-graph-covers fext-enumeration-graph-in-extension fext-ground-child-enumeration fname-ordered-pair-name-value zf-function-graph">
+  <h2>An old well-order of children gives an extension function with enough values</h2>
+  <p>For every ground-model name \(\sigma\), there are an ordinal \(\alpha\in M\) and a function \(f\in M[G]\) with domain \(\alpha\) whose range contains \(\sigma[G]\).</p>
+  <div class="proof"><p>Choice in \(M\) well-orders \(\operatorname{dom}(\sigma)\), giving an enumeration \((\pi_\gamma)_{\gamma&lt;\alpha}\) by an ordinal \(\alpha\). Use the <a href="forcing-names#pair-and-ordered-pair-names">specified ordered-pair name</a> to form in \(M\)</p>
+  <div class="math-display">\[
+    \dot f=\{(\operatorname{op}(\check\gamma,\pi_\gamma),1_P):\gamma&lt;\alpha\}.
+  \]</div>
+  <p>Its exact evaluation is \(\{(\gamma,\pi_\gamma[G]):\gamma&lt;\alpha\}\). Thus \(f=\dot f[G]\in M[G]\) is a function on \(\alpha\). Every \(x\in\sigma[G]\) is the value of some child \(\pi\in\operatorname{dom}(\sigma)\), so it occurs in this range. Different children can have the same value, and inactive children may contribute values outside \(\sigma[G]\). Only containment of \(\sigma[G]\) in the range is claimed.</p></div>
+</section>
+
+<section id="choice" data-kind="theorem" data-formal="fext-least-preimage fext-least-preimage-spec fext-least-preimage-graph fext-preimage-well-order fext-least-preimage-injective fext-least-preimage-function fext-preimage-order-correct fext-preimage-is-well-order fext-internal-choice choice-equivalent-well-ordering zf-separation-schema zf-replacement-schema">
+  <h2>Least preimages well-order every set of the extension</h2>
+  <p>The structure \(M[G]\) satisfies the axiom of choice.</p>
+  <div class="proof"><p>All ZF axioms have now been established in \(M[G]\). Given \(x=\sigma[G]\), take the function \(f:\alpha\to M[G]\) from <a href="#choice-name"></a>, with \(x\subseteq\operatorname{ran}(f)\). Work inside \(M[G]\). For each \(z\in x\), the set \(\{\gamma&lt;\alpha:f(\gamma)=z\}\) is nonempty and has a least member. Separation and Replacement define the function \(h\) selecting this least member.</p><p>If \(h(z)=h(w)\), applying \(f\) gives \(z=w\); hence \(h:x\to\alpha\) is injective. Pulling back the ordinal order along \(h\) well-orders \(x\). This proves that every set can be well-ordered, which implies Choice by <a href="axiom-of-choice#three-equivalent-principles">the well-ordering formulation</a>. The proof uses the actual function name for the whole child enumeration; it does not presume that the active children can be selected inside \(M\).</p></div>
+</section>
+
+<section id="zfc-extension" data-kind="theorem" data-formal="fext-zfc-extension fname-extension-transitive fname-extension-countable fname-ground-inclusion fname-filter-in-extension fname-same-ordinals fname-extension-structural-model fext-extension-separation fext-extension-replacement fext-extension-power-set fext-internal-choice">
+  <h2>A generic extension is a transitive ZFC-model with the old ordinals</h2>
+  <div class="statement-box"><p>Under the stated countable transitive ground-model and genericity hypotheses, \(M[G]\) is an externally countable transitive set model of ZFC, \(M\subseteq M[G]\), \(G\in M[G]\), and \(M[G]\) has exactly the ordinals of \(M\).</p></div>
+  <div class="proof"><p>The <a href="forcing-names#check-names">check names</a>, <a href="forcing-names#generic-name">canonical filter name</a>, and <a href="forcing-names#transitivity-and-countability">transitivity and countability</a> give the inclusions and structural properties. The <a href="forcing-names#same-ordinals">name-rank argument</a> gives equality of ordinals.</p><p>Combine the <a href="#structural-axioms">structural axioms</a> with <a href="#separation-name">Separation</a>, <a href="#replacement">Replacement</a>, <a href="#power-set">Power Set</a>, and <a href="#choice">Choice</a>. Each schema instance uses its own fixed forcing-defining formula. Together these establish all ZFC axioms in the actual-membership structure on \(M[G]\).</p><p>The theorem constructs an extension from the assumed model and filter. It does not construct the assumed transitive ZFC-model from a bare consistency statement.</p></div>
+</section>
+
+<section id="minimality" data-kind="theorem" data-formal="fext-class-transitive fext-class-evaluation-agreement fext-minimality-recursive-witness fext-model-minimality fname-model-recursion-absoluteness mm-class-model-convention zf-set-valued-recursion-schema">
+  <h2>The extension is the smallest transitive ZF-model containing the old sets and the filter</h2>
+  <p>If \(N\) is any transitive ZF-model with \(M\subseteq N\) and \(G\in N\), then \(M[G]\subseteq N\). Thus \(M[G]\) is the least such model under inclusion. This applies to set models and, formula by formula, to definable transitive class models under the <a href="membership-models#class-model-convention">class-model convention</a>.</p>
+  <div class="proof"><p>Every ground-model name \(\tau\in M\) belongs to \(N\), and so do \(P\) and \(G\). The name-evaluation recursion can therefore be performed inside \(N\). The <a href="forcing-names#recursion-absoluteness">absoluteness of this unique recursion</a> identifies its internal output with the actual \(\tau[G]\). Hence every such value belongs to \(N\), proving \(M[G]\subseteq N\).</p><p>The extension itself is a transitive ZF-model containing \(M\) pointwise and containing \(G\) as an element, by the preceding theorem. It therefore belongs to the class of models being compared, so the inclusion just proved is exactly the stated leastness. No intersection of models is needed to construct it.</p></div>
+</section>
+
+<section id="cohen-extension" data-kind="theorem" data-formal="fname-cohen-name-union fname-binary-sequence-function fname-cohen-new-real-in-extension fext-zfc-extension">
+  <h2>A Cohen extension contains a new binary sequence</h2>
+  <p>For the Cohen order and an \(M\)-generic \(G\), the explicitly named sequence \(g=\bigcup G\) belongs to \(M[G]\setminus M\), while \(M[G]\) is a countable transitive ZFC-model with the same ordinals as \(M\).</p>
+  <div class="proof"><p>The <a href="forcing-names#cohen-real-name">Cohen graph name</a> evaluates exactly to \(g\), placing it in \(M[G]\). <a href="forcing-and-generic-filters#cohen-disagreement">Dense disagreement requirements</a> make it different from every old binary sequence. Apply <a href="#zfc-extension"></a> for the model and ordinal conclusions. No assertion about which cardinals are preserved follows merely from equality of ordinals.</p></div>
+</section>
+
+<section id="ambient-power-set-question" data-kind="question" data-formal="fext-binary-subset fext-binary-subset-bound fext-binary-subset-injective fext-missing-ambient-subset fname-extension-countable fext-power-set-name-value mm-skolem-uncountability">
+  <h2>Does the extension contain every ambient subset of the natural numbers?</h2>
+  <p>The extension satisfies Power Set and contains the actual \(\omega\). Does it follow that it contains every subset of \(\omega\) available in the ambient universe?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The Power Set axiom quantifies over the sets of the model. Its power-set object has exactly the subsets of \(\omega\) which themselves belong to \(M[G]\). Since \(M[G]\) is externally countable, this is an externally countable family, whereas the ambient \(\mathcal P(\omega)\) is uncountable by Cantor's theorem. Some ambient subsets are therefore missing.</p><p>Inside \(M[G]\), its power-set object is still uncountable. An external enumeration is not an available internal enumeration, just as in the <a href="membership-models#skolem-paradox">internal and external countability distinction</a>. The bounding-name and Separation proof established the internal axiom, preserving these quantifier domains.</p></div></details>
+</section>

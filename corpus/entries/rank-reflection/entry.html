@@ -1,0 +1,130 @@
+<section data-formal="rrefl-hierarchy rrefl-union rrefl-nonempty-union rrefl-level-inclusion rrefl-transitive-union rrefl-definable-hierarchy-schema" id="continuous-transitive-hierarchies" data-kind="definition">
+  <h2>Work with a hierarchy of transitive sets</h2>
+  <p><a href="absoluteness#finite-direction-counterexample">An existential statement can acquire a witness in a larger rank stage</a>. We will select heights at which this does not happen for a chosen finite collection of statements. The basic argument works in ambient ZF; the countable-model application below uses ambient ZFC.</p>
+  <p>A <strong>definable continuous transitive hierarchy</strong> is a definable class function \(\alpha\mapsto M_\alpha\), assigning a set to each ordinal, such that each \(M_\alpha\) is transitive, \(M_\alpha\subseteq M_\beta\) for \(\alpha\le\beta\), and</p>
+  <div class="math-display">\[M_\lambda=\bigcup_{\alpha<\lambda}M_\alpha\qquad(\lambda\text{ a nonzero limit ordinal}).\]</div>
+  <p>Let \(M=\bigcup_{\alpha\in\mathrm{Ord}}M_\alpha\), and assume \(M\ne\varnothing\). Here a class function is specified by a formula with fixed set parameters and uniquely determined set values. The union is a definable class, possibly a set; its members are exactly the objects appearing at some level. It is transitive because every level is transitive. The <a href="cumulative-hierarchy#transitive-and-increasing">rank hierarchy</a> is the main example.</p>
+</section>
+
+<section data-formal="rrefl-syntax rrefl-translation rrefl-expansion rrefl-expansion-truth rrefl-subformulas rrefl-finite-closure rrefl-closure-contains rrefl-closure-closed rrefl-native-family-expansion rrefl-union-satisfaction rrefl-reflection rrefl-native-reflection" id="finite-reflection-family" data-kind="definition">
+  <h2>Fix the formulas before collecting witnesses</h2>
+  <p>Fix a finite family \(\mathcal F\) of membership-language formulas. Expand logical abbreviations using atoms, negation, conjunction and existential quantification, then close the family under subformulas. This remains finite. At an existential subformula, its body is considered with its newly available variable as an additional parameter. Rename variables when needed to keep these roles distinct.</p>
+  <p>A nonempty level \(M_\alpha\) <strong>reflects \(\mathcal F\) from \(M\)</strong> if for every \(\varphi\in\mathcal F\) and every assignment \(\bar a\) of its free variables in \(M_\alpha\),</p>
+  <div class="math-display">\[M_\alpha\models\varphi[\bar a]\quad\Longleftrightarrow\quad M\models\varphi[\bar a].\]</div>
+  <p>When \(M\) is a proper class, the right side means the particular <a href="membership-models#class-model-convention">relativized formula</a> \(\varphi^M(\bar a)\). Because the family is fixed and finite, its finitely many truth conditions are ordinary formulas available for Separation and Replacement. No truth predicate for all formulas of a proper class is being assumed.</p>
+</section>
+
+<section data-formal="rrefl-least-level rrefl-least-level-correct rrefl-no-witness-zero rrefl-witness-bound rrefl-exact-supremum rrefl-bound-grows rrefl-bound-witnesses rrefl-choice-free-bound-schema" id="least-witness-levels" data-kind="lemma">
+  <h2>Bound witness levels without choosing individual witnesses</h2>
+  <p>For every ordinal \(\alpha\), there is a uniquely specified ordinal \(h(\alpha)>\alpha\) such that the following holds for every existential member \(\exists x\,\psi(x,\bar y)\) of \(\mathcal F\): if \(\bar a\) lies in \(M_\alpha\) and \(M\models\exists x\,\psi(x,\bar a)\), then some \(b\in M_{h(\alpha)}\) satisfies \(M\models\psi(b,\bar a)\).</p>
+  <div class="proof">
+    <p>For that formula and parameter tuple, if a witness exists in \(M\), let \(\beta\) be the least ordinal such that some witness belongs to \(M_\beta\). Such a level exists because every object of \(M\) appears at a level. A least one can be found among ordinals up to any witnessing level. If there is no witness, assign the bound \(0\).</p>
+    <p>For each existential formula, its parameter tuples from \(M_\alpha\) form a set, including the singleton family of empty tuples when there are no parameters. The bound is uniquely defined by a fixed formula. Replacement collects all these ordinals, and the finite union over the chosen formulas is a set \(B_\alpha\). Define</p>
+    <div class="math-display">\[h(\alpha)=\sup\bigl(\{\alpha+1\}\cup\{\beta+1:\beta\in B_\alpha\}\bigr).\]</div>
+    <p>This ordinal exceeds \(\alpha\) and every collected bound. Monotonicity of the hierarchy therefore puts each required witness in \(M_{h(\alpha)}\). The rule is uniquely specified even if the family has no existential formulas. It chooses least ordinal bounds, never a simultaneous family of witness objects, so this step needs no Choice.</p>
+  </div>
+</section>
+
+<section data-formal="rrefl-sequence rrefl-height rrefl-sequence-correct rrefl-cofinal-level-union rrefl-finite-tuple-stage rrefl-witness-closed rrefl-height-witness-closed rrefl-initial-level rrefl-initial-level-correct" id="witness-closure-sequence" data-kind="lemma">
+  <h2>A countable sequence makes every finite tuple available in time</h2>
+  <p>For every ordinal \(\theta\), there is a nonzero limit \(\lambda>\theta\) with \(M_\lambda\ne\varnothing\) such that every true \(M\)-existential from \(\mathcal F\), at parameters in \(M_\lambda\), has a witness in \(M_\lambda\) whose matrix is true in \(M\).</p>
+  <div class="proof">
+    <p>Choose \(\alpha_0>\theta\) at which the hierarchy is nonempty. Such a level exists since \(M\ne\varnothing\); enlarge its index if necessary. Define \(\alpha_{n+1}=h(\alpha_n)\) by <a href="cumulative-hierarchy#set-valued-ordinal-recursion">set-valued recursion</a>, and put \(\lambda=\sup_{n\in\omega}\alpha_n\). Replacement collects the sequence. It is strictly increasing, so each \(\alpha_n<\lambda\) and \(\lambda\) is a nonzero limit above \(\theta\).</p>
+    <p>Continuity and monotonicity give \(M_\lambda=\bigcup_{n\in\omega}M_{\alpha_n}\): a member of \(M_\lambda\) appears below some \(\xi<\lambda\), and cofinality of the sequence gives \(\xi\le\alpha_n\) for some \(n\). For any finite parameter tuple in \(M_\lambda\), take the maximum of its finitely many stage indices. All its entries then lie in one \(M_{\alpha_n}\); for an empty tuple use \(n=0\).</p>
+    <p>If an existential statement about that tuple holds in \(M\), the witness-bound property supplies a witness in \(M_{\alpha_{n+1}}\). This is contained in \(M_\lambda\), proving the assertion.</p>
+  </div>
+
+  <figure id="reflection-witness-ladder-figure" class="proof-figure">
+    <div class="figure-image"><img src="assets/reflection-witness-ladder.svg" width="760" height="470" alt="A finite tuple a0,a1 lies in the inner domain M alpha n. A witness b lies in the next domain M alpha n plus one. Both lie in the enclosing limit domain, the union of the chosen stages."></div>
+    <figcaption>Every finite parameter tuple in \(M_\lambda\) lies together in some \(M_{\alpha_n}\). A true existential from the fixed family has a witness in \(M_{\alpha_{n+1}}\), hence in \(M_\lambda\). The witness may already lie in the earlier level; inclusions need not be strict. The union class need not satisfy ZF.</figcaption>
+  </figure>
+</section>
+
+<section data-formal="rrefl-reflecting-height rrefl-reflection-induction rrefl-constructed-reflection rrefl-native-constructed-reflection rrefl-reflection-schema" id="hierarchy-reflection" data-kind="theorem">
+  <h2>Every fixed finite family reflects arbitrarily high</h2>
+  <div class="statement-box"><p>For a definable continuous transitive hierarchy with nonempty union \(M\), every fixed finite family \(\mathcal F\) of formulas and every ordinal \(\theta\) admit \(\lambda>\theta\) such that \(M_\lambda\ne\varnothing\) and</p>
+    <div class="math-display">\[M_\lambda\models\varphi[\bar a]\quad\Longleftrightarrow\quad M\models\varphi[\bar a]\]</div>
+    <p>for every \(\varphi\in\mathcal F\) and every allowed parameter tuple \(\bar a\) in \(M_\lambda\). The union class \(M\) is not required to satisfy ZF.</p></div>
+  <div class="proof">
+    <p>Use the finite subformula closure and the level \(\lambda\) from <a href="#witness-closure-sequence"></a>. Induct on the chosen formulas, with the induction assertion for every assignment in \(M_\lambda\). Equality and membership atoms agree because both domains use actual membership. Negation and conjunction preserve agreement.</p>
+    <p>For \(\exists x\,\psi(x,\bar a)\), a witness in \(M_\lambda\) transports to an \(M\)-witness by the induction hypothesis for \(\psi\). Conversely, if \(M\) satisfies the existential, the closure property supplies \(b\in M_\lambda\) with \(M\models\psi(b,\bar a)\). The induction hypothesis makes this matrix true in \(M_\lambda\), giving the desired existential there. Both hypotheses are applicable because \(\psi\) belongs to the subformula closure and all its parameters, including \(b\), lie in the smaller domain.</p>
+    <p>This proves agreement for the expanded family and hence for the originally specified formulas. The construction used definability and the ambient set axioms to collect bounds. It did not use any axioms assumed true in the union class.</p>
+  </div>
+<p>The <a href="constructible-hierarchy#transitive-increasing-levels">constructible hierarchy</a> supplies another such continuous transitive hierarchy. Reflection applies to its union without presupposing the later inner-model axiom proof.</p>
+<p>Its use in <a href="constructible-inner-model#separation-in-l">Separation inside L</a> comes before the conclusion that L satisfies ZF.</p>
+</section>
+
+<section data-formal="rrefl-closed-levels rrefl-closed-unbounded-schema" id="closed-unbounded-reflecting-levels" data-kind="theorem">
+  <h2>The reflecting heights form a closed unbounded class</h2>
+  <p>For the finite family closed under subformulas, let \(C_{\mathcal F}\) be the class of ordinals whose nonempty levels reflect it. This is a <strong>closed unbounded class of ordinals</strong>: above every ordinal there is a member, and if \(\lambda>0\) is a limit ordinal with \(C_{\mathcal F}\cap\lambda\) unbounded in \(\lambda\), then \(\lambda\in C_{\mathcal F}\).</p>
+  <div class="proof">
+    <p>Unboundedness is <a href="#hierarchy-reflection"></a>. For closedness, continuity says that every finite parameter tuple in \(M_\lambda\) appears in some earlier level. Choose a reflecting \(\alpha<\lambda\) above its finitely many appearance indices, possible by the cofinality assumption. Nonemptiness of such a level also makes \(M_\lambda\) nonempty.</p>
+    <p>Prove agreement at \(M_\lambda\) by formula induction. The atom and Boolean cases are unchanged. If \(M\models\exists x\,\psi(x,\bar a)\), choose such a reflecting \(\alpha\) containing \(\bar a\). Reflection of that existential supplies \(b\in M_\alpha\) with \(M_\alpha\models\psi(b,\bar a)\); reflection of its matrix gives \(M\models\psi(b,\bar a)\). Since \(b\in M_\lambda\), the induction hypothesis at \(\lambda\) makes its matrix true there. The forward existential direction uses any smaller-domain witness and the same induction hypothesis. Thus every formula agrees at \(\lambda\).</p>
+  </div>
+  <p>For a family not already closed under subformulas, the closed unbounded class obtained from its finite closure still supplies simultaneous reflection of the original formulas.</p>
+</section>
+
+<section data-formal="rrefl-rank-hierarchy rrefl-rank-nonempty rrefl-rank-union-truth rrefl-rank-reflection rrefl-rank-reflection-schema" id="rank-reflection" data-kind="theorem">
+  <h2>Apply reflection to the cumulative hierarchy</h2>
+  <div class="statement-box"><p>For every fixed finite family \(\mathcal F\) of membership formulas, there are arbitrarily large limit ordinals \(\lambda\) such that \(V_\lambda\) agrees with the ambient universe on every formula in \(\mathcal F\), at every parameter tuple in \(V_\lambda\).</p></div>
+  <div class="proof">
+    <p>The stages \(V_\alpha\) are definable, transitive, increasing and continuous. Every set belongs to some stage, by <a href="cumulative-hierarchy#every-set-has-a-stage">rank exhaustion</a>, so their union class is \(V\). The general construction gives the required nonzero limit heights above any starting ordinal. Relativization to \(V\) is each original formula itself, with its quantifiers ranging over all sets.</p>
+  </div>
+  <p>Bounded formulas already agree at every nonempty transitive stage by <a href="absoluteness#bounded-absoluteness">bounded absoluteness</a>. Reflection supplies specially chosen stages for the additional unbounded quantifiers in the fixed family.</p>
+</section>
+
+<section data-formal="rrefl-empty-axiom rrefl-pairing-axiom rrefl-union-axiom rrefl-empty-truth rrefl-pairing-truth rrefl-union-truth rrefl-limit-basic-axioms mm-extensionality-sentence mm-foundation-sentence" id="limit-stage-basic-axioms" data-kind="lemma">
+  <h2>Limit stages satisfy the basic membership and closure axioms</h2>
+  <p>For every nonzero limit ordinal \(\lambda\), the actual-membership structure on \(V_\lambda\) satisfies Extensionality, Foundation, Empty Set, Pairing and Union.</p>
+  <div class="proof">
+    <p>The set \(\varnothing\) belongs to \(V_\lambda\), since its rank is zero. Thus the structure is nonempty and has an empty set. If two of its objects have equal members inside the domain, transitivity ensures that these are all their actual members; ambient Extensionality identifies them. For an internally nonempty \(a\in V_\lambda\), ambient Foundation supplies a member \(b\in a\) disjoint from \(a\). Transitivity puts \(b\) in the domain, and actual disjointness excludes every internal common member, proving internal Foundation.</p>
+    <p>For \(x,y\in V_\lambda\), the pair \(\{x,y\}\) and union \(\bigcup x\) belong to \(V_\lambda\) by <a href="cumulative-hierarchy#closure-within-stages">the rank bounds for operations at a limit</a>. Their actual membership conditions give the corresponding internal axioms; all potential members are present by transitivity.</p>
+  </div>
+</section>
+
+<section data-formal="rrefl-separation-subset rrefl-limit-separation rrefl-limit-power-set" id="limit-stage-separation-and-power" data-kind="lemma">
+  <h2>Separation and full power sets also hold at a limit stage</h2>
+  <p>For every nonzero limit \(\lambda\), the structure on \(V_\lambda\) satisfies every instance of Separation and the Power Set axiom. Its power set of any \(a\in V_\lambda\) is the full ambient \(\mathcal P(a)\).</p>
+  <div class="proof">
+    <p>Fix one formula \(\psi(x,\bar p)\), its parameters \(\bar p\) in \(V_\lambda\), and \(a\in V_\lambda\). Ambient Separation forms \(b=\{x\in a:\psi^{V_\lambda}(x,\bar p)\}\). Because \(b\subseteq a\), its rank is at most the rank of \(a\), so \(b\in V_\lambda\). <a href="membership-models#relativized-satisfaction">Relativized satisfaction</a> identifies its defining condition with the requested internal Separation instance. This construction works for each fixed formula.</p>
+    <p>The actual \(\mathcal P(a)\) belongs to \(V_\lambda\), since its rank is \(\operatorname{rank}(a)+1<\lambda\). Every subset \(z\subseteq a\) also belongs to \(V_\lambda\), by the same subset-rank bound. At any candidate \(z\) from the domain, the bounded subset test agrees with the ambient test. Therefore the actual power set has exactly the internally required members, and none of the ambient subsets is missing.</p>
+  </div>
+  <p>The domain \(4\) in the <a href="absoluteness#power-set-question">finite power-set counterexample</a> has no such rank-stage closure guarantee. Transitivity alone did not supply its missing subsets.</p>
+</section>
+
+<section data-formal="rrefl-inductive-test rrefl-infinity-axiom rrefl-inductive-correct rrefl-infinity-above-omega rrefl-no-infinity-at-omega rrefl-range-rank-bound" id="infinity-and-replacement-boundary" data-kind="question">
+  <h2>Which conclusions need more than limit-stage closure?</h2>
+  <p>When does the preceding rank argument also supply Infinity? Why does the Separation proof not already prove every Replacement instance?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>If \(\lambda>\omega\), then \(\omega\in V_\lambda\) because its rank is \(\omega\). Its zero and every finite successor are present, and their defining membership equations hold in the structure, so \(\omega\) witnesses Infinity. At \(\lambda=\omega\), every member of \(V_\omega\) is hereditarily finite. An inductive set contains every finite ordinal and is infinite, so no such member can witness Infinity.</p>
+    <p>Separation produces a subset of the supplied set \(a\), giving its rank bound immediately. Replacement instead collects outputs of a formula uniquely defining one object for each member of \(a\). Although each output lies in \(V_\lambda\), the ranks of all the outputs must be bounded below \(\lambda\) to put their collected range there. No such bound follows from the subset argument, because the outputs need not be members of \(a\). The earlier closure proofs therefore leave Replacement as an additional requirement. A fixed finite list of its instances can instead be included in the reflection family.</p>
+  <p>At an <a href="inaccessible-cardinals#replacement-in-rank-model">inaccessible height</a>, every object has smaller cardinality, and regularity bounds all the output ranks. This gives Replacement for every fixed formula in the same rank stage.</p></div></details>
+</section>
+
+<section data-formal="rrefl-finite-native-fragment rrefl-finite-zfc-fragment-schema" id="finite-fragment-transitive-models" data-kind="theorem">
+  <h2>Each fixed finite axiom fragment has a countable transitive model</h2>
+  <div class="statement-box"><p>Work in ambient ZFC and fix a finite list \(\Gamma\) of ZFC axioms, choosing particular instances wherever a schema is involved. There is a limit \(\lambda\) with \(V_\lambda\models\Gamma\), and there is a countable transitive set \(T\) whose membership structure satisfies \(\Gamma\).</p></div>
+  <div class="proof">
+    <p>Add Extensionality to the finite list. Rank reflection gives \(\lambda>\omega\) reflecting these sentences. Each listed axiom holds in the ambient universe, so it holds in \(V_\lambda\). The membership language is countable. Apply <a href="elementary-submodels#downward-size-bound">downward Löwenheim–Skolem</a> to obtain a nonempty countable elementary substructure \(H\preccurlyeq(V_\lambda,\in)\). It satisfies \(\Gamma\) and Extensionality.</p>
+    <p>The relation on \(H\) is actual membership restricted to this set of objects, so it is externally well-founded by ambient Foundation, even though \(H\) need not be transitive. Its internal Extensionality says that this relation is extensional. Apply the <a href="membership-models#collapse-models">Mostowski model collapse</a> to get an isomorphism onto a nonempty transitive set \(T\). The same isomorphism preserves every sentence of \(\Gamma\), and its bijectivity preserves countability.</p>
+  </div>
+  <p>This is a corollary schema: for each fixed finite list one obtains the corresponding construction and proof. It does not assert here a single internal theorem quantifying over all coded finite subsets of ZFC, or produce a model of the full theory from a consistency assertion.</p>
+</section>
+
+<section data-formal="rrefl-singleton-hierarchy rrefl-singleton-reflection" id="union-model-question" data-kind="question">
+  <h2>Must the union class already satisfy ZF?</h2>
+  <p>Can the general reflection theorem apply when the union fails Infinity? Consider the constant hierarchy \(M_\alpha=\{\varnothing\}\) at every ordinal.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Yes. Every level is a transitive set, the hierarchy is increasing and continuous at nonzero limits, and its nonempty union is the same singleton. Every level has exactly the same membership structure as the union, so it reflects every chosen finite family. The only object is empty and cannot be inductive, so the union does not satisfy Infinity.</p>
+    <p>The reflection proof collects bounds in the ambient theory. Its hierarchy assumptions and fixed formula relativizations suffice; there is no requirement that the union already satisfy the axioms later being investigated.</p>
+  </div></details>
+</section>
+
+<section data-formal="rrefl-quantifier-order-example rrefl-fixed-family-boundary" id="fixed-family-question" data-kind="question">
+  <h2>Why keep the finite family fixed?</h2>
+  <p>Each fixed finite family has arbitrarily high reflecting stages. Does choosing one such stage for each family already give a single stage that reflects every membership formula?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No such conclusion follows from those choices. The assertion has the order “for each finite family, there is a height,” and the height may depend on the family. Exchanging those quantifiers would require another argument. Even the elementary assertions “for every natural number \(n\), there is \(k\ge n\)” do not give one natural number at least every \(n\).</p>
+    <p>There is also a definability boundary in the construction: for a fixed finite family, its finitely many relativized truth conditions can be written down and used in Replacement. Applying that step simultaneously to all formulas of a proper class would require a uniform truth condition that this argument does not provide. Thus the corollary about finite axiom fragments keeps its specified finite list; the missing <a href="membership-models#consistency-question">full transitive-model implication</a> has not been obtained.</p>
+  </div></details>
+</section>

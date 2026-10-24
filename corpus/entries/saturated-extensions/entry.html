@@ -1,0 +1,88 @@
+<section id="finite-parameter-requests" data-kind="definition" data-formal="mt-sm-request mt-sm-realizes-through mt-sm-all-original-requests">
+  <h2>Requests that keep the old parameters fixed</h2>
+  <p>Fix a set-sized first-order language \(L\) and a nonempty \(L\)-structure \(M\). We use classical choice. A <strong>request over \(M\)</strong> is a pair \(r=(A,q)\), where \(A\subseteq M\) is finite and \(q\in S_1^M(A)\) is a <a href="types-and-realization#types-over-parameters">complete one-type over \(A\)</a>. Thus \(q\) is a consistent collection of formulas about one variable \(x\), with names for elements of \(A\), deciding every such formula.</p>
+  <p>For an elementary embedding \(f:M\to N\), an element \(b\in N\) <strong>answers</strong> the request when every formula of \(q\) holds at \(b\), with a parameter \(a\in A\) interpreted by \(f(a)\). We say that \(f\) <strong>answers all old requests</strong> when this holds for every finite \(A\subseteq M\) and every \(q\in S_1^M(A)\), with the answering point allowed to depend on the request.</p>
+  <p>The word “old” refers to parameters in \(M\). It imposes no requirement on types using points of \(N\) outside \(f[M]\). Answering requests is also different from deciding which requests have solutions in \(M\): the extension supplies solutions whether or not they were already present.</p>
+</section>
+
+<section id="finite-parts" data-kind="lemma" data-formal="mt-type-complete-consistent mt-type-parameters-finite-test">
+  <h2>Each finite part already has a solution</h2>
+  <p>If \(r=(A,q)\) is a request over \(M\) and \(q_0\subseteq q\) is finite, then some \(b\in M\) satisfies every member of \(q_0\), using the original interpretations of \(A\).</p>
+  <div class="proof"><p>A complete type over \(A\) is consistent with the complete theory of the named structure \(M_A\). If the sentence \(\exists x\,\bigwedge q_0(x)\) were false in \(M_A\), its negation would belong to that complete theory and contradict consistency of \(q\). Hence the sentence is true in \(M_A\), supplying \(b\). This is the <a href="types-and-realization#parameter-finite-test">finite parameter-type test</a>. When \(q_0\) is empty, any element of the nonempty structure works.</p></div>
+  <p>Different finite selections may need different points. The assertion does not yet give a point realizing all of \(q\), and it does not give a common point for different complete types.</p>
+</section>
+
+<section id="set-of-requests" data-kind="lemma" data-formal="mt-sm-request sat-ext-names sat-ext-name-disjointness">
+  <h2>All requests form a set</h2>
+  <p>The collection</p>
+  <div class="math-display">\[\mathcal R(M)=\{(A,q):A\subseteq M\text{ finite},\ q\in S_1^M(A)\}\]</div>
+  <p>is a set. Consequently we may add one fresh constant symbol \(d_r\) for every \(r\in\mathcal R(M)\), together with one old-element name \(c_a\) for every \(a\in M\), keeping the two families disjoint.</p>
+  <div class="proof"><p>The finite subsets of the set \(M\) form a set. For each such \(A\), the parameter language \(L(A)\) and its formulas form sets, and its complete types are a subset of the power set of those formulas. Taking these pairs over a set of finite parameter sets still gives a set. Tagging a symbol as an old name or a request name keeps the families disjoint, even if the labels themselves happen to be equal as set-theoretic objects. There is no countability assertion in this argument.</p></div>
+</section>
+
+<section id="simultaneous-theory" data-kind="definition" data-formal="sat-ext-request-formula sat-ext-request-formula-truth sat-ext-request-formulas sat-ext-simultaneous-theory">
+  <h2>Name every old element and one answer to every request</h2>
+  <p>Expand \(L\) by the disjoint families \(c_a\) and \(d_r\). For \(r=(A,q)\) and \(\varphi(x)\in q\), write \(\varphi^r(d_r)\) for the sentence obtained by interpreting each parameter name from \(A\) as the corresponding old name \(c_a\), and replacing its free variable by \(d_r\). Define</p>
+  <div class="math-display">\[U_M=\operatorname{ElDiag}(M)\ \cup\ \{\varphi^r(d_r):r=(A,q)\in\mathcal R(M),\ \varphi\in q\}.\]</div>
+  <p>The <a href="diagrams-and-extensions#elementary-diagram">elementary diagram</a> is read in this larger language. It names every point of \(M\), rather than only the parameters of a particular request. That is what will preserve an elementary copy of the whole original structure.</p>
+  <p>Each new requirement involves at most one request name \(d_r\), although it may involve several old names. No requirement compares the answering points for two different requests. Fresh symbols are distinct syntactically; they need not denote distinct elements.</p>
+</section>
+
+<section id="finite-simultaneous-realization" data-kind="lemma" data-formal="sat-ext-finite-simultaneous">
+  <h2>Finitely many independent requests can be answered together</h2>
+  <p>Every finite subset of \(U_M\) has a model on the original carrier \(M\), keeping each \(c_a\) interpreted by \(a\).</p>
+  <div class="proof"><p>Fix a finite fragment \(\Delta\subseteq U_M\). For each sentence of \(\Delta\) not already taken from the elementary diagram, choose one representation \(\varphi^r(d_r)\) with \(r=(A,q)\) and \(\varphi\in q\). There are only finitely many chosen request labels. For each such \(r\), let \(q_r^0\subseteq q\) be the finite set of formulas chosen with that label. By <a href="#finite-parts"></a>, choose \(b_r\in M\) satisfying all of \(q_r^0\). Choosing origins also covers formulas that do not use \(x\), whose translated sentences need not contain \(d_r\) at all.</p><p>Interpret \(d_r\) by \(b_r\) for these finitely many requests. Choose one fixed \(m_*\in M\) for every remaining request name, and interpret every old name \(c_a\) by \(a\). The old structure satisfies every selected elementary-diagram sentence. Each selected request sentence holds by the choice of its own \(b_r\), since the parameter names retain their original values. Choices for different requests do not interfere: none of the imposed formulas uses two request names. Thus this one expansion of \(M\) satisfies all of \(\Delta\).</p><p>If \(\Delta\) contains no request sentences, use \(m_*\) for all request names. The same construction includes the empty fragment, so every finite case is covered.</p></div>
+</section>
+
+<section id="one-pass-extension" data-kind="theorem" data-formal="sat-ext-simultaneous-satisfiable sat-ext-canonical-embedding sat-ext-canonical-old-names sat-ext-canonical-request-answer sat-ext-one-pass diag-copy-elementarity">
+  <h2>One extension answers every request over the original model</h2>
+  <div class="statement-box"><p>Every nonempty \(L\)-structure \(M\) has an elementary embedding \(f:M\to N\) into a nonempty structure \(N\) that answers all old requests. This holds for every set-sized language, without a smallness or countability assumption.</p></div>
+  <div class="proof"><p>The language of \(U_M\) is set-sized by <a href="#set-of-requests"></a>, and every finite fragment has a model by <a href="#finite-simultaneous-realization"></a>. <a href="ultraproducts#compactness">Compactness for arbitrary set-sized languages</a> supplies a model \(N^*\models U_M\). Let \(N\) be its \(L\)-reduct, and define \(f(a)=c_a^{N^*}\).</p><p>The <a href="diagrams-and-extensions#elementary-diagram-lemma">elementary diagram lemma</a> makes this particular map elementary, hence injective. For each request \(r=(A,q)\), put \(b_r=d_r^{N^*}\). Every sentence \(\varphi^r(d_r)\) lies in \(U_M\), so every \(\varphi\in q\) holds at \(b_r\) with parameters \(f(a)\). Thus \(b_r\) answers that request. The same \(f\) retains all old points for all requests at once.</p></div>
+  <p>By <a href="diagrams-and-extensions#renaming-the-copy">renaming the elementary copy</a>, we may regard this as a literal elementary extension \(M\preccurlyeq N\). This replaces an embedding by an inclusion without changing the formulas satisfied by its answering points.</p>
+</section>
+
+<section id="fresh-name-question" data-kind="question" data-formal="sat-ext-singleton-type-unique sat-ext-singleton-distinct-requests sat-ext-singleton-answers sat-ext-singleton-extension">
+  <h2>Must different request names have different values?</h2>
+  <p>Suppose \(M\) has exactly one element. Can the simultaneous theory be satisfied if every request name is required to denote a different element? Does the actual construction impose that requirement?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>There are already two requests: the unique one-type over the empty parameter set and the unique one-type over the singleton parameter set. These requests are different pairs, even though the same point answers both. The elementary diagram contains the sentence saying that every point equals the named old point. It therefore forbids two different answering values. Adding an inequality between the two request names would make the theory inconsistent.</p><p>The actual \(U_M\) adds no such inequality. Interpreting all request names by the unique point satisfies every request. This also illustrates why independent choices for different requests are compatible without requiring different witnesses.</p></div></details>
+</section>
+
+<section id="repeat-the-pass" data-kind="definition" data-formal="sat-ext-chain sat-ext-transition sat-ext-union sat-ext-union-exists sat-ext-sequence-of-passes sat-ext-sequence-exists">
+  <h2>Give newly introduced parameters their own turn</h2>
+  <p>A <strong>sequence of passes</strong> is an elementary chain</p>
+  <div class="math-display">\[M_0\preccurlyeq M_1\preccurlyeq M_2\preccurlyeq\cdots,\]</div>
+  <p>such that each inclusion \(M_n\to M_{n+1}\) answers every request over \(M_n\). Starting with a specified \(M_0=M\), <a href="#one-pass-extension"></a> and recursive choice construct such a sequence. Write \(V=\bigcup_{n<\omega}M_n\) with the compatible union structure.</p>
+  <p>One pass promises realization over finite subsets of its source. Its target has additional finite parameter sets involving new points, and those were not in the source's list. The next pass explicitly includes them. It is this repeated enlargement of the parameter base, rather than repeated work on one fixed list, that will establish saturation.</p>
+</section>
+
+<section id="finite-parameters-in-a-stage" data-kind="lemma" data-formal="sat-ext-finite-stage sat-ext-named-theory-agreement mt-sm-finite-parameter-pullback sat-ext-countable-unbounded">
+  <h2>A finite parameter set belongs to one stage</h2>
+  <p>Every finite \(A\subseteq V\) is contained in some \(M_n\). At that stage the named structures \((M_n)_A\) and \(V_A\) have the same complete theory.</p>
+  <div class="proof"><p>For each \(a\in A\), choose a stage containing \(a\). The maximum of these finitely many stage indices contains all the points, since the chain is increasing. For \(A=\varnothing\), take \(n=0\).</p><p>The <a href="elementary-chains#elementary-chain-theorem">elementary chain theorem</a> gives \(M_n\preccurlyeq V\). Each sentence in the parameter language \(L(A)\) is a formula with a finite list of those parameters fixed. Elementarity preserves its truth. Thus the two named complete theories agree, and their complete one-types over \(A\) agree as sets of formulas.</p></div>
+  <p>Finiteness of \(A\) is essential to the stage argument. A countably infinite set of parameters can have one point entering at each stage and need not be contained in any single stage.</p>
+</section>
+
+<section id="union-is-saturated" data-kind="theorem" data-formal="sat-ext-union-saturated mt-sat-omega-saturated">
+  <h2>The union answers every finite-parameter type</h2>
+  <p>The union \(V\) of a sequence of passes is <a href="saturated-models#omega-saturation">omega-saturated</a>.</p>
+  <div class="proof"><p>Take a finite \(A\subseteq V\) and \(q\in S_1^V(A)\). Choose \(n\) with \(A\subseteq M_n\) by <a href="#finite-parameters-in-a-stage"></a>. The named complete theories agree, so the very same \(q\) belongs to \(S_1^{M_n}(A)\). Hence \(r=(A,q)\) is a request included in pass \(n\).</p><p>The defining property of that pass supplies \(b\in M_{n+1}\) realizing all formulas of \(q\), with the original parameters in \(A\). Since \(M_{n+1}\preccurlyeq V\), every one of those formulas remains true at \(b\) in \(V\). Thus \(q\) is realized in \(V\). This holds for every finite \(A\) and every complete one-type over it, which is exactly omega-saturation.</p></div>
+</section>
+
+<section id="saturated-extension" data-kind="theorem" data-formal="sat-ext-saturated-extension diag-copy-elementarity mt-sat-finite-tuple-test">
+  <h2>Every structure has an omega-saturated elementary extension</h2>
+  <div class="statement-box"><p>For every nonempty structure \(M\) in a set-sized first-order language \(L\), there are a nonempty omega-saturated \(L\)-structure \(V\) and an elementary embedding \(e:M\to V\). Equivalently, after renaming the copy, \(M\) has an omega-saturated elementary extension.</p></div>
+  <div class="proof"><p>Begin the sequence of passes with \(M_0=M\). The elementary chain theorem preserves every stage in its union \(V\), so the inclusion of this specified initial model is elementary. The union is omega-saturated by <a href="#union-is-saturated"></a>. If the construction is carried out with elementary embeddings between successive stages, use their elementary union with its compatible stage maps; its stage-zero map is the required \(e\). Renaming that copy gives the stated literal extension.</p></div>
+  <p>The theorem also realizes every partial type in a finite tuple over finitely many parameters, by the <a href="saturated-models#finite-tuples">finite-tuple saturation theorem</a>. No bound on the size of \(V\) is asserted.</p>
+</section>
+
+<section id="finite-model-question" data-kind="question" data-formal="mt-sat-finite-structures mt-type-finite-model-realization diag-finite-elementary-onto sat-ext-old-point-exclusions sat-ext-finite-exclusions">
+  <h2>Does a finite structure need to grow?</h2>
+  <p>If \(M\) is finite and nonempty, can the saturated extension be \(M\) itself? Why does the type demanding a point different from every point of \(M\) not contradict this?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Yes. Every finite nonempty structure is already <a href="saturated-models#partial-type-test">omega-saturated</a>, so the identity embedding works. A finitely realizable collection of conditions in a finite structure has a common solution: otherwise choose, for each of the finitely many points, one condition it fails. Those finitely many chosen conditions would have no solution, contradicting finite realizability.</p><p>When \(M\) is finite, the exclusions \(x\ne a\) for every \(a\in M\) form a finite collection with no solution in \(M\). They therefore do not form a parameter type over \(M\) consistent with its named complete theory. Indeed that theory says every element is one of the named old points. No elementary extension can add a genuinely new point.</p></div></details>
+</section>
+
+<section id="countable-size-question" data-kind="question" data-formal="mt-nrq-no-countable-saturated mt-sm-saturated-criterion">
+  <h2>Can a countable source always keep a countable extension?</h2>
+  <p>Does the existence theorem imply that every countable structure in a countable language has a countable omega-saturated elementary extension?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No size bound was imposed on the set of requests or on its compactness model. A countable language has only countably many formulas, but can have uncountably many complete types, since a type is a set of formulas. The <a href="named-rational-order#no-countable-saturation">named rational order</a> gives a countable structure in a countable language whose complete theory has no countable omega-saturated model. Any elementary extension has that same complete theory, so no such extension can be both countable and omega-saturated.</p><p>The <a href="countable-saturated-models#existence-criterion">countable-size criterion</a> identifies the extra hypothesis: for a complete theory in a countable language, a countable saturated model exists exactly when its complete types in each finite tuple context form a countable set. This condition is called smallness. The general existence argument above does not require it.</p></div></details>
+</section>

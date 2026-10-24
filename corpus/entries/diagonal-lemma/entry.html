@@ -35,9 +35,14 @@
   <p>Here \(B(y)\) is a capture-safe renaming of the possible free variable of \(B\); bound variables are unaffected. The new quantified witness \(y\) is fresh. Let \(e_B=\ulcorner E_B\urcorner\) and form its <strong>fixed-point sentence</strong></p>
   <div class="math-display">\[G_B:=E_B(\overline{e_B}).\]</div>
   <p>The construction first builds the finite formula \(E_B\), computes its code, and then substitutes that code's numeral into it. There is no circular definition of a string. The <a href="#diagonal-coding"></a> identity gives \(d(e_B)=\ulcorner G_B\urcorner\).</p>
+
+  <figure id="diagonal-object-levels" class="proof-figure">
+    <div class="figure-image"><img src="assets/diagonal-object-levels.svg" width="760" height="570" alt="The formula E has external code e. Its numeral ē is substituted into E to form sentence G. Encoding G and applying d to e give the same number g; representation forces D(ē,y) exactly at ḡ."></div>
+    <figcaption>Here \(E=E_B\) and \(G=G_B\). Every arrow is a finite construction or a proved coding identity. The sentence is built after the auxiliary formula and its code, so no string is defined circularly and no formula is inserted as an arithmetic term.</figcaption>
+  </figure>
 </section>
 
-<section id="diagonal-lemma" data-kind="theorem" data-formal="diag-fixed-point-equivalence">
+<section id="diagonal-lemma" data-kind="theorem" data-formal="rec-thm-transformer-fixed-point diag-fixed-point-equivalence">
   <h2>Every property of codes has a fixed-point sentence</h2>
   <div class="statement-box">
     <p>For every arithmetic formula \(B(x)\) with at most one free variable, the constructed sentence \(G_B\) satisfies</p>
@@ -49,6 +54,7 @@
     <p>In any model of \(Q\), if \(G_B\) holds, its defining existential formula has a witness \(y\). The output identity forces \(y=\overline g\), and the other conjunct gives \(B(\overline g)\). Conversely, if \(B(\overline g)\) holds, choose \(\overline g\) as the witness; the same identity supplies \(D(\overline e,\overline g)\). Hence every model of \(Q\) satisfies the required equivalence. <a href="henkin-completeness#deductive-completeness">Completeness of the first-order calculus</a> gives the displayed derivation. Equivalently, equality substitution and the existential rules turn the output-identity proof directly into it.</p>
 </div>
   <p>The fixed point is a provable equivalence between sentences. It is not an assertion that \(G_B\) literally contains its full own text, or that the two sides are the same syntactic expression. No consistency assumption on an extending theory was used.</p>
+  <p>For programs, the <a href="recursion-theorem#transformer-fixed-points">recursion theorem</a> gives equality of computed partial functions. Its fixed points concern program behavior; the equivalence here is a theorem of arithmetic.</p>
 </section>
 
 <section id="extensions" data-kind="theorem" data-formal="diag-extension-fixed-point">

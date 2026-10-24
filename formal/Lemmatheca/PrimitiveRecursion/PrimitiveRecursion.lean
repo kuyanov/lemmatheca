@@ -1,3 +1,4 @@
+import Lemmatheca.FiniteDescriptionsAndDecisionProblems.Decisions
 import Mathlib.Computability.Primrec.List
 import Mathlib.Data.Nat.Factorial.Basic
 import Mathlib.Tactic.Linarith
@@ -152,17 +153,8 @@ theorem boundedProduct_equations {α : Type*} (f : α → ℕ → ℕ) (x : α) 
       boundedProduct f x (b + 1) = boundedProduct f x b * f x b := by
   simp [boundedProduct, Finset.prod_range_succ]
 
-noncomputable def characteristic {α : Type*} (R : α → Prop) (x : α) : ℕ := by
-  classical
-  exact if R x then 1 else 0
-
 def PRRelation {α : Type*} [Primcodable α] (R : α → Prop) : Prop :=
   Primrec (characteristic R)
-
-theorem characteristic_spec {α : Type*} (R : α → Prop) (x : α) :
-    (characteristic R x = 1 ↔ R x) ∧ (characteristic R x = 0 ↔ ¬ R x) := by
-  classical
-  by_cases h : R x <;> simp [characteristic, h]
 
 theorem PRRelation_iff {α : Type*} [Primcodable α] (R : α → Prop) :
     PRRelation R ↔ PrimrecPred R := by
@@ -234,7 +226,7 @@ theorem bounded_quantifier_characteristics {α : Type*} (R : α → ℕ → Prop
   have hall : boundedProduct (fun x i => characteristic (R x) i) x b = 1 ↔ ∀ i < b, R x i := by
     simp [boundedProduct, Finset.prod_eq_one_iff, characteristic]
   have hzero : boundedSum (fun x i => characteristic (R x) i) x b = 0 ↔ ∀ i < b, ¬ R x i := by
-    simp [boundedSum, Finset.sum_eq_zero_iff, characteristic]
+    simp [boundedSum, characteristic]
   have hb : boundedProduct (fun x i => characteristic (R x) i) x b ≤ 1 := by
     clear hall hzero
     induction b with

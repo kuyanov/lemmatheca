@@ -103,5 +103,10 @@
   <p>Let \(p,q\) be distinct. Run the ordered search with \(L=[p,q]\) on \(\Gamma=[(\neg p\lor q),(\neg p\lor\neg q),(p\lor q)]\). What model is returned?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>There are no unit clauses and both signs of \(p\) occur, so first try \(p=1\). The residual is \([(q),(\neg q)]\). The positive unit for \(q\) selects \(q=1\), leaving an empty clause, so that branch fails. Try \(p=0\) instead. The first two original clauses disappear and the last becomes \((q)\). Its positive unit selects \(q=1\), leaving the empty CNF. Unwinding the updates returns \(p=0,q=1\), with every other atom zero. The original three clauses are then true, respectively because \(\neg p\), \(\neg p\), and \(q\) are true.</p>
-  </div></details>
+
+  <figure id="dpll-backtracking-tree" class="proof-figure">
+    <div class="figure-image"><img src="assets/dpll-backtracking-tree.svg" width="760" height="430" alt="The p=1 branch reaches an empty clause after q=1. Backtracking to p=0 and then q=1 reaches the empty CNF and returns the model p=0,q=1."></div>
+    <figcaption>An empty clause fails one branch; it does not fail the search while another branch remains. A successful residual model is returned with the chosen settings restored.</figcaption>
+  </figure>
+</div></details>
 </section>

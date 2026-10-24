@@ -1,0 +1,110 @@
+<section data-formal="fo-binary-relation-language fo-binary-relation-interpretation fo-satisfaction fo-nonempty-carrier fo-theory-model mm-zf-model-convention mm-actual-membership-structure mm-transitive-set-model mm-nontransitive-singleton" data-kind="definition" id="membership-structures">
+<h2>A model specifies what membership means</h2>
+<p>A universe with only countably many objects seems unable to contain an uncountable set. The difficulty is deciding what “contain” and “uncountable” mean in that universe. We begin with the <a href="first-order-structures#satisfaction">ordinary satisfaction relation</a>, applied to the language with equality and one binary relation symbol \(\in\).</p>
+<p>A <strong>membership structure</strong> is a nonempty set \(M\) equipped with a relation \(E\subseteq M\times M\). In \(\mathcal M=(M,E)\), the atomic formula \(x\in y\) means \(E(x,y)\), while equality means actual equality of elements of \(M\). Every quantifier ranges over \(M\). The relation \(E\) need not be actual membership between its objects. A <strong>model of ZF</strong>, or of <strong>ZFC</strong>, is such a structure satisfying every axiom of that theory, including every instance of its schemas.</p>
+<p>An <strong>actual-membership structure</strong> has the form \((D,\in\!\upharpoonright D)\), with \(D\ne\varnothing\). It is a <strong>transitive set model</strong> of a theory when \(D\) is transitive and this structure satisfies the theory. Neither actual membership nor transitivity alone says that the axioms hold. For example, on \(D=\{\{\varnothing\}\}\) the sole object has no members in the structure, although it is a nonempty set externally: its actual member \(\varnothing\) is missing from \(D\).</p>
+</section>
+<section data-formal="mm-extension mm-represented mm-unrepresented-subset mm-extensionality-sentence mm-extensionality-realize mm-extension-injective mm-internal-zf-objects mm-actual-extension mm-transitive-extension" data-kind="definition" id="internal-objects">
+<h2>An internal set has an external collection of members</h2>
+<p>For \(a\in M\), write</p>
+<div class="math-display">\[\operatorname{ext}_{\mathcal M}(a)=\{b\in M:E(b,a)\}.\]</div>
+<p>This is a set in the surrounding mathematics. It describes the members that \(\mathcal M\) attributes to \(a\); it need not equal the actual set \(a\). An external subset \(B\subseteq M\) is <strong>represented in \(\mathcal M\)</strong> if \(B=\operatorname{ext}_{\mathcal M}(a)\) for some \(a\in M\). Arbitrary external subsets need not be represented. Extensionality inside \(\mathcal M\) says exactly that the map \(a\mapsto\operatorname{ext}_{\mathcal M}(a)\) is injective.</p>
+<p>When ZF proves that a formula specifies a unique object, it specifies a unique object in every ZF-model too. Thus \(\omega^{\mathcal M}\in M\) denotes the object that the model identifies as its natural numbers. This notation describes interpretation of a defining formula; it does not identify that object or all its members with the ambient \(\omega\). An internal function is likewise an object satisfying the formula for a set of ordered pairs with the required mapping property. Its quantifiers, ordered pairs, domain, and range are all interpreted using \(E\).</p>
+<p>For an actual-membership structure, \(\operatorname{ext}_{D}(a)=a\cap D\). If \(D\) is transitive, this is exactly \(a\) for every \(a\in D\). This is one reason transitivity is a useful additional hypothesis.</p>
+</section>
+<section data-formal="mm-countable-language henkin-countable-model-existence mm-countable-zfc-model mm-internal-zf-objects" data-kind="theorem" id="countable-models">
+<h2>Consistency gives a countable model</h2>
+<div class="statement-box"><p>If ZFC is syntactically consistent, there is a countably infinite membership structure \(\mathcal M\) satisfying ZFC.</p></div>
+<p>Here consistency is the external assertion \(\operatorname{Con}(\mathrm{ZFC})\) that there is no finite proof of contradiction. The surrounding mathematics is where we speak about proofs, construct models, and count their objects.</p>
+<div class="proof">
+<p>The membership language is countable: it has just one nonlogical symbol. By <a href="henkin-completeness#countable-model-existence">countable model existence</a>, consistency gives a nonempty model with at most countably many elements. Equivalently, one can first use completeness and then the <a href="elementary-submodels#downward-size-bound">downward Löwenheim–Skolem theorem</a>. A ZFC-model is infinite: for every ordinary natural number \(n\), the theory proves that the finite ordinals \(0,\ldots,n\) exist and are distinct. Thus its carrier cannot have any finite size.</p>
+</div>
+<p>This conclusion is a model-existence assertion, with no external well-foundedness or transitivity hypothesis. It does not supply either of those additional properties.</p>
+</section>
+<section data-formal="mm-skolem-uncountability mm-countable-extension mm-external-injection mm-internal-zf-objects" data-kind="lemma" id="skolem-paradox">
+<h2>Internally uncountable can be externally countable</h2>
+<p>In every countable ZFC-model \(\mathcal M\), there is \(a\in M\) whose collection of members is externally at most countable although</p>
+<div class="math-display">\[\mathcal M\models\text{“there is no injection from }a\text{ into }\omega\text{.”}\]</div>
+<div class="proof">
+<p>ZF proves that some set has no injection into \(\omega\), by <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a> applied to \(\mathcal P(\omega)\), so its existential conclusion supplies \(a\) inside the model. Externally, \(\operatorname{ext}_{\mathcal M}(a)\subseteq M\) is at most countable.</p>
+<p>Even an external injection from \(\operatorname{ext}_{\mathcal M}(a)\) into \(\operatorname{ext}_{\mathcal M}(\omega^{\mathcal M})\) exists. The latter set contains the infinitely many distinct interpretations \(0^{\mathcal M},1^{\mathcal M},\ldots\) of the ordinary finite ordinals. Inject the at most countable source into the ambient \(\omega\), and send \(n\) to \(n^{\mathcal M}\).</p>
+</div>
+<p>The displayed assertion excludes an object \(f\in M\) satisfying the model's formula for such an injection. It does not quantify over all maps available in the surrounding mathematics. Thus the externally defined map cannot be represented by an internal object that the model recognizes as the asserted injection.</p>
+<p>This is <strong>Skolem's paradox</strong>: the two claims count different things and quantify over different collections of maps. Countability of the carrier does not make every external function an internal function.</p>
+  <p>For a countable transitive ZFC-model, <a href="forcing-and-generic-filters#generic-through-condition">external enumeration of its dense requirements</a> constructs a generic filter; the resulting <a href="forcing-and-generic-filters#countability-question">new binary sequence</a> illustrates the same distinction.</p>
+</section>
+<section data-formal="well-founded-definition well-founded-minimal-criterion mm-internal-foundation mm-foundation-sentence mm-foundation-realize mm-well-founded-foundation well-founded-iff-no-descending-sequence mm-ill-founded-zfc-model" data-kind="definition" id="foundation-and-well-foundedness">
+<h2>Foundation tests the sets available inside the model</h2>
+<p>The external relation \(E\) is <strong>well-founded</strong> if every nonempty subset \(B\subseteq M\), formed in the surrounding mathematics, has an \(E\)-minimal element. By contrast, the Foundation axiom in \(\mathcal M\) says</p>
+<div class="math-display">\[\forall a\in M\;\Bigl[\operatorname{ext}_{\mathcal M}(a)\ne\varnothing\ \Longrightarrow\ \exists b\in\operatorname{ext}_{\mathcal M}(a)\;\neg\exists c\in M\;\bigl(E(c,a)\land E(c,b)\bigr)\Bigr].\]</div>
+<p>Thus Foundation supplies a minimal point in each nonempty <em>represented</em> collection \(\operatorname{ext}_{\mathcal M}(a)\). It says nothing by itself about an external subset of \(M\) with no representing object. External well-foundedness implies the displayed condition. If ZFC is consistent, the reverse implication fails even for ZFC-models, as the following construction shows.</p>
+<p>In particular an external infinite descending chain is enough to refute external well-foundedness: its range is a nonempty subset with no minimal element. We will construct precisely such a chain.</p>
+</section>
+<section data-formal="mm-ill-founded-zfc-model mm-chain-sentence mm-chain-theory mm-reverse-numerals mm-finite-chain-expansion mm-finite-chain-satisfiability mm-chain-satisfiability mm-model-with-descent compactness-theorem well-founded-iff-no-descending-sequence mm-compactness-model-reduct mm-compactness-constant-map mm-compactness-specified-chain" data-kind="theorem" id="ill-founded-models">
+<h2>Compactness can add a descending chain</h2>
+<div class="statement-box"><p>If ZFC is consistent, there is a ZFC-model \(\mathcal N=(N,F)\) and an external sequence \((b_n)_{n\in\omega}\) of its objects such that \(F(b_{n+1},b_n)\) for every \(n\). In particular, \(F\) is externally ill-founded.</p></div>
+<div class="proof">
+<p>Expand the membership language by fresh constants \(c_n\), one for each ordinary natural number, and form the theory</p>
+<div class="math-display">\[\Sigma=\mathrm{ZFC}\ \cup\ \{c_{n+1}\in c_n:n\in\omega\}.\]</div>
+<p>Take a model \(\mathcal A\) of ZFC, supplied by consistency and completeness. Let \(\Gamma\subseteq\Sigma\) be finite. Choose an ordinary natural number \(r\) strictly larger than every index \(n\) for which the sentence \(c_{n+1}\in c_n\) occurs in \(\Gamma\); take \(r=0\) if none occurs. For \(i\le r\), interpret \(c_i\) in \(\mathcal A\) as the finite ordinal \((r-i)^{\mathcal A}\). Interpret every remaining constant arbitrarily.</p>
+<p>For each requested link, \(n&lt;r\), and the consecutive finite ordinals satisfy \((r-n-1)^{\mathcal A}\in^{\mathcal A}(r-n)^{\mathcal A}\). All the ZFC-sentences in \(\Gamma\) also hold in \(\mathcal A\). Therefore every finite subset of \(\Sigma\) has a model.</p>
+<p>By <a href="ultraproducts#compactness">compactness</a>, obtain a model of all of \(\Sigma\), and let \(\mathcal N\) be its reduct to the membership language. Set \(b_n=c_n^{\mathcal N}\), retaining the interpretations from the expansion. The added sentences give \(F(b_{n+1},b_n)\). The external set \(B=\{b_n:n\in\omega\}\) is nonempty and every one of its elements has an \(F\)-predecessor in \(B\), so \(F\) is not well-founded.</p>
+</div>
+<p>Every finite portion of the chain can live among finite ordinals. Compactness realizes all of those demands together; it does not turn the resulting external sequence into a set represented inside the model.</p>
+</section>
+<section data-formal="mm-descending-range-unrepresented mm-internal-foundation mm-ill-founded-zfc-model" data-kind="question" id="foundation-question">
+<h2>Where would a contradiction with Foundation arise?</h2>
+<p>In the model just constructed, why can no object \(a\in N\) have exactly \(\{b_n:n\in\omega\}\) as its collection of \(F\)-members? Does the construction violate the model's Foundation axiom?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+<p>If \(\operatorname{ext}_{\mathcal N}(a)=B\), then \(a\) is internally nonempty. Foundation supplies \(b\in B\) with no \(F\)-predecessor in \(B\). But \(b=b_n\) for some \(n\), and \(b_{n+1}\in B\) satisfies \(F(b_{n+1},b)\), a contradiction. Hence no such \(a\) exists. Foundation holds in \(\mathcal N\); the external range \(B\) is one of the collections its quantified variable does not represent.</p>
+</div></details>
+</section>
+<section data-formal="mostowski-collapse-theorem mostowski-collapse-equation mm-extensionality-realize mm-collapse-isomorphism mm-collapse-map-value mm-collapse-satisfaction mm-collapse-theory mostowski-transitive-fixed transitive-membership-isomorphism-identity" data-kind="theorem" id="collapse-models">
+<h2>External well-foundedness gives a transitive representation</h2>
+<div class="statement-box"><p>Let \(\mathcal M=(M,E)\) be a ZF-model whose relation \(E\) is externally well-founded. There is a unique transitive set \(T\) and unique bijection \(\pi:M\to T\) satisfying</p>
+<div class="math-display">\[E(b,a)\quad\Longleftrightarrow\quad\pi(b)\in\pi(a).\]</div>
+<p>For every membership-language formula \(\varphi\) and every tuple \(\bar a\) from \(M\),</p>
+<div class="math-display">\[\mathcal M\models\varphi[\bar a]\quad\Longleftrightarrow\quad(T,\in\!\upharpoonright T)\models\varphi[\pi(\bar a)].\]</div>
+<p>Consequently the structure on \(T\) satisfies ZF, and satisfies ZFC if \(\mathcal M\) does.</p></div>
+<div class="proof">
+<p>The internal Extensionality axiom says that equal \(E\)-predecessor sets imply equal points of \(M\). Thus \(E\) is an extensional relation on the set \(M\). The <a href="mostowski-collapse#mostowski-collapse-theorem">Mostowski collapse theorem</a> applies with the assumed external well-foundedness. It supplies exactly the transitive set and bijection above; explicitly, \(\pi(a)=\{\pi(b):E(b,a)\}\). Since \(M\) is nonempty, so is \(T\).</p>
+<p>The relation equivalence makes \(\pi\) an <a href="first-order-structures#isomorphisms">isomorphism</a>. Satisfaction is preserved by formula induction: injectivity handles equality, the displayed equivalence handles membership, and Boolean connectives preserve equivalence. For an existential quantifier a witness \(a\in M\) transports to \(\pi(a)\in T\); conversely every witness in \(T\) has a preimage because \(\pi\) is onto. Universal quantifiers follow in the same way.</p>
+<p>Apply this to every axiom sentence, including each schema instance, to transfer ZF or ZFC. Uniqueness is the uniqueness of the transitive representation in the collapse theorem. A <a href="mostowski-collapse#transitive-sets-fixed">transitive set is already its own collapse</a>.</p>
+</div>
+<p>More generally the same map preserves any specified membership-language theory satisfied by \(\mathcal M\); the collapse does not improve or change its answers to sentences.</p>
+</section>
+<section data-formal="mm-membership-domain-data mm-relativization mm-set-domain-formula mm-set-domain-truth mm-set-relativization it-relational-translation mm-upward-member-sentence mm-transitive-counterexample" data-kind="definition" id="relativization">
+<h2>Restrict every quantifier to a chosen domain</h2>
+<p>Let \(C\) be a <a href="axiomatic-set-theory#sets-and-classes">definable class</a>, described by a fixed formula \(\delta(x,\bar p)\) with fixed set parameters. For each membership-language formula \(\varphi\), its <strong>relativization</strong> \(\varphi^C\) leaves equality and membership atoms unchanged, commutes with Boolean connectives, and replaces quantifiers by</p>
+<div class="math-display">\[\begin{aligned}(\exists x\,\psi)^C&amp;=\exists x\bigl(\delta(x,\bar p)\land\psi^C\bigr),\\(\forall x\,\psi)^C&amp;=\forall x\bigl(\delta(x,\bar p)\to\psi^C\bigr).\end{aligned}\]</div>
+<p>Rename bound variables first when necessary, so they do not capture the fixed parameters or other free variables in the defining formula. This is a construction on each finite formula; the notation does not introduce quantification over classes. For a set \(D\), use the defining condition \(x\in D\) and write \(\varphi^D\).</p>
+<p>For example, \(\forall x\exists y\,(x\in y)\) becomes “for every \(x\in D\) there is \(y\in D\) with \(x\in y\).” With \(D=\{\varnothing\}\), this is false, although the original assertion is true in the ambient universe by Pairing. This \(D\) is transitive, illustrating that transitivity alone gives no agreement on arbitrary formulas. The general logic construction is <a href="interpreting-theories#relational-data">relational interpretation by a domain formula</a>.</p>
+</section>
+<section data-formal="mm-set-relativization-truth mm-relativization-truth it-relational-truth" data-kind="theorem" id="relativized-satisfaction">
+<h2>Relativization computes satisfaction on a set domain</h2>
+<div class="statement-box"><p>Let \(D\ne\varnothing\) be any set, and let every member of the parameter tuple \(\bar a\) belong to \(D\). Then</p>
+<div class="math-display">\[(D,\in\!\upharpoonright D)\models\varphi[\bar a]\quad\Longleftrightarrow\quad\varphi^D(\bar a)\text{ holds in the surrounding universe}.\]</div>
+<p>Transitivity of \(D\) is not required.</p></div>
+<div class="proof">
+<p>Induct on \(\varphi\), with its assignment of all free variables in \(D\). Equality atoms compare the same two objects on both sides. Membership atoms use actual membership on both sides, restricted to assigned objects already in \(D\). Negation and each binary connective follow from the induction hypotheses.</p>
+<p>For \(\exists x\,\psi\), satisfaction on the left means that some \(b\in D\) makes \(\psi\) true with the extended assignment. The induction hypothesis identifies this with some \(b\) satisfying \(b\in D\) and \(\psi^D\). That is exactly the relativized existential. For \(\forall x\,\psi\), the same reasoning tests every \(b\in D\), exactly the guard \(b\in D\to\psi^D\). This completes the induction.</p>
+</div>
+<p>The assignment restriction matters: an external parameter outside \(D\) is not an allowed parameter in this structure. The assertion compares truth in the structure with truth of the <em>relativized</em> formula, rather than with the original formula in the ambient universe.</p>
+  <p>For <a href="absoluteness#bounded-absoluteness">bounded formulas on transitive domains</a>, the original and relativized formulas do agree.</p>
+</section>
+<section data-formal="mm-class-model-convention mm-relativization mm-zf-model-convention" data-kind="definition" id="class-model-convention">
+<h2>For proper classes, model notation is schematic</h2>
+<p>For a nonempty definable proper class \(C\) with actual membership, the notation \(C\models\varphi[\bar a]\) will mean the particular assertion \(\varphi^C(\bar a)\), with \(\bar a\) in \(C\). A <strong>transitive class model</strong> additionally has the condition that every member of an object in \(C\) is in \(C\). Saying that it satisfies ZF means that, for each axiom sentence \(\sigma\), one proves \(\sigma^C\), including each instance of the schemas.</p>
+<p>This is a formula-by-formula convention in ZF, whose variables still range over sets. It does not assert a single first-order truth predicate simultaneously deciding all formulas for \(C\). In particular, taking \(C=V\) gives back each original formula separately; it supplies no truth predicate for the universe. The <a href="larger-models#relative-consistency">completeness and consistency criterion</a> used above concerns set-sized structures. It does not identify syntactic consistency with existence of a definable proper class model.</p>
+<p>For a <a href="constructible-hierarchy#set-structure-satisfaction">set-sized membership domain</a>, recursion on finite formula codes does give a satisfaction relation, including an explicit empty-domain convention. The constructible hierarchy uses this set construction at each successor stage.</p>
+</section>
+<section data-formal="mm-transitive-model-consistency mm-countable-zfc-model mm-ill-founded-zfc-model mostowski-collapse-theorem mostowski-transitive-fixed model-consistency-satisfiability" data-kind="question" id="consistency-question">
+<h2>Does consistency already give a transitive model?</h2>
+<p>Can one combine countable model existence with the collapse theorem to obtain a transitive set model of ZFC from \(\operatorname{Con}(\mathrm{ZFC})\) alone? Conversely, what does existence of a transitive set model say about consistency?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+<p>The proposed combination has a missing hypothesis. Completeness gives a membership structure satisfying the axioms, including internal Foundation, while collapse requires external well-foundedness of its membership relation. The compactness construction shows that ZFC-models can lack precisely this property. No external well-foundedness argument has been supplied for the model obtained from consistency. Thus these theorems do not establish the proposed implication; this answer is not an independence proof about that implication.</p>
+<p>A transitive set model does imply syntactic consistency, by soundness: a proof of contradiction would be false in a model satisfying all its axioms. Its actual membership relation is externally well-founded by ambient Foundation, and it is already its own transitive collapse. This direction uses an existing model as the witness and does not construct one from a consistency assertion.</p>
+<p>In ambient ZFC, <a href="rank-reflection#finite-fragment-transitive-models">each fixed finite axiom fragment</a> does have a countable transitive model. That construction keeps the finite fragment fixed and does not give the full-theory conclusion asked here.</p></div></details>
+<p>Starting instead with an assumed countable transitive ZFC-model, the <a href="forcing-extensions#zfc-extension">generic extension theorem</a> constructs further transitive ZFC-models with the same ordinals.</p>
+</section>
+

@@ -6,6 +6,7 @@
   <p>Define the <strong>program code</strong> by assigning the first four programs the numbers \(0,1,2,3\), respectively, and setting</p>
   <div class="math-display">\[\begin{aligned}\#\mathsf{pair}(c,d)&amp;=4\langle\#c,\#d\rangle+4,&amp;\#\mathsf{comp}(c,d)&amp;=4\langle\#c,\#d\rangle+6,\\\#\mathsf{prec}(c,d)&amp;=4\langle\#c,\#d\rangle+5,&amp;\#\mathsf{find}'(c)&amp;=4\#c+7.\end{aligned}\]</div>
   <p>Every natural number decodes to exactly one program. The <strong>decoded program</strong> \(c_e\) is the program with code \(e\). Define its <strong>indexed evaluation</strong> by \(\varphi_e(x)\simeq E(c_e,x)\), using <a href="partial-recursive-functions#partial-equality">equality of partial values</a>. A program index specifies syntax, rather than a unique mathematical function: distinct programs can compute the same function. Several inputs are supplied by numerical tuple codes; in particular \(\varphi_e^{(2)}(a,x)\simeq\varphi_e(\langle a,x\rangle)\).</p>
+  <p>The general distinction between <a href="finite-descriptions-and-decision-problems#program-behavior">program descriptions and their behavior</a> now has a specific effective model. A property of the computed partial function can be studied through <a href="rices-theorem#rice-theorem">Rice’s theorem</a>.</p>
 </section>
 
 <section id="coding-is-effective" data-formal="univ-decode-encode univ-encode-decode univ-pair-code-primitive univ-composition-code-primitive univ-recursion-code-primitive univ-search-code-primitive univ-structural-recursion-primitive" data-kind="lemma">
@@ -31,7 +32,7 @@
   <p>We will use the stronger output form too: \(\varphi_e(x)\downarrow=y\) if and only if \(\exists k\,[b(k,e,x)=y+1]\). A resource bound records a finite successful computation; it is not an upper bound that can be predicted for every terminating program.</p>
 </section>
 
-<section id="parameter-theorem" data-formal="univ-constant-program univ-constant-program-primitive univ-constant-program-evaluation univ-identity-program univ-identity-evaluation univ-specialization univ-specialization-primitive univ-specialization-evaluation univ-tuple-specialization" data-kind="theorem">
+<section id="parameter-theorem" data-formal="rec-thm-recursion-theorem univ-constant-program univ-constant-program-primitive univ-constant-program-evaluation univ-identity-program univ-identity-evaluation univ-specialization univ-specialization-primitive univ-specialization-evaluation univ-tuple-specialization" data-kind="theorem">
   <h2>Fixed inputs can be inserted into program text</h2>
   <div class="statement-box">
     <p>There is a primitive-recursive numerical function \(s(e,a)\) such that</p>
@@ -45,6 +46,7 @@
     <div class="math-display">\[s(e,a)=\#\mathsf{comp}\bigl(c_e,\mathsf{pair}(\mathsf{const}(a),\mathsf{id})\bigr).\]</div>
     <p>The inner program always returns \(\langle a,x\rangle\), and the outer one runs \(c_e\) on it. The displayed numerical construction uses only primitive recursion for constant codes and the primitive-recursive constructor operations; it does not run \(c_e\). This proves the exact partial-value identity even when the original program diverges. For fixed larger arities, encode the whole argument tuple by the list code from <a href="coding-finite-sequences#list-code">finite-sequence coding</a>; fixed-arity tuple formation and extraction are primitive recursive. Use a program for <a href="coding-finite-sequences#concatenation">coded concatenation</a> to prepend the fixed tuple to the remaining tuple before running the original program. Its code is fixed; specialize its fixed-tuple input by the same construction and compose with \(c_e\).</p>
 </div>
+  <p>Self-specialization \(s(a,a)\) gives the <a href="recursion-theorem#recursion-theorem">recursion theorem</a>: a program can use its own index as an extra input.</p>
 </section>
 
 <section id="specialization-question" data-formal="univ-specialization-primitive univ-specialization-evaluation" data-kind="question">
@@ -82,6 +84,7 @@
     <div class="math-display">\[\varphi_j(j)\downarrow\quad\Longleftrightarrow\quad g(j)\downarrow\quad\Longleftrightarrow\quad h(j)=0\quad\Longleftrightarrow\quad\varphi_j(j)\uparrow,\]</div>
     <p>a contradiction. A decision procedure for \(H\) would decide \(K\) by supplying the same number as program and input. Thus it cannot exist either.</p>
 </div>
+  <p>The <a href="finite-descriptions-and-decision-problems#diagonal-obstruction">general diagonal obstruction</a> shows why some problem escapes any fixed numbering. Here the particular halting problem is identified using the effective operations of this model.</p>
 </section>
 
 <section id="partial-diagonal-question" data-formal="univ-partial-diagonal-divergence" data-kind="question">
@@ -134,6 +137,15 @@
     <p>At stage \(k\), inspect the two total bounded computations \(b(k,e,x)\) and \(b(k,d,x)\). Search for the first stage at which at least one is positive. If the first is positive, return its value minus one; otherwise return the second value minus one. The stage test and output selection are primitive recursive, so minimization followed by composition is partial recursive. Bounded-evaluation correctness proves that every returned value is a genuine output. Conversely, if either computation halts, some stage witnesses it, so the stage search terminates. This scheduling is called <strong>dovetailing</strong>.</p>
     <p>For a countable family with a total recursive index sequence \(i\mapsto e_i\), on a fixed input, at stage \(k\) inspect the first \(k+1\) indices for \(k\) resources each. This finite search is total recursive: compute each \(e_i\), apply the total bounded evaluator, and combine the results by finite recursion. It need not be primitive recursive because the index sequence was assumed only total recursive. Any fixed successful computation is eventually both included and given enough resources. Running the first computation to completion before starting the next would lack this guarantee.</p>
 </div>
+
+
+
+
+
+  <figure id="dovetailing-grid" class="proof-figure">
+    <div class="figure-image"><img src="assets/dovetailing-grid.svg" width="760" height="465" alt="A triangular program-by-allowance grid. Stage three checks programs zero to three, and a successful call for program two at allowance three is included with sufficient resources thereafter." /></div>
+    <figcaption>Each column is one finite stage, rather than a run waited on until completion. The starred example first succeeds at \((i_0,k_0)=(2,3)\) and is available at every later stage.</figcaption>
+  </figure>
 </section>
 
 <section id="enumerable-closure" data-formal="univ-enumerable-union univ-enumerable-intersection univ-enumerable-projection univ-enumerable-preimage univ-enumerable-image" data-kind="theorem">

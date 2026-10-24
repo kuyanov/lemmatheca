@@ -1,0 +1,148 @@
+<section data-formal="inacc-weak inacc-strong inacc-strong-definition strong-limit-cardinal" id="inaccessible-definitions" data-kind="definition">
+<h2>Two ways a cardinal can be inaccessible</h2>
+<p>A limit stage of the rank hierarchy can contain pairs, unions and power sets without automatically collecting the range of every internally defined function. The missing issue is whether a set of output ranks can approach the height of the stage. We work throughout in ambient ZFC, and identify each cardinal with its initial ordinal.</p>
+<p>An uncountable cardinal \(\kappa\) is <strong>weakly inaccessible</strong> if it is <a href="cofinality#regular-and-singular">regular</a> and a limit cardinal. It is <strong>strongly inaccessible</strong> if it is regular and a <a href="continuum-function#strong-limits-and-sch">strong limit</a>:
+</p>
+<div class="math-display">\[2^\mu&lt;\kappa\qquad\text{for every cardinal }\mu&lt;\kappa.\]</div>
+<p>A limit cardinal is a nonzero cardinal that is not a successor cardinal. These definitions impose properties on a supplied cardinal; they do not assert that such cardinals exist.</p>
+<p>In the remainder of the entry, “inaccessible” means strongly inaccessible. The two ingredients will have different jobs: the power-set bound controls sizes at successor stages, and regularity bounds unions and output ranks.</p>
+</section>
+
+<section data-formal="inacc-strong-implies-weak inacc-aleph-zero-strong-limit aleph-zero-regular inacc-aleph-one-not-strong-limit infinite-successor-cardinal-regular" id="strong-implies-weak" data-kind="lemma">
+<h2>A strong limit cannot be a successor cardinal</h2>
+<p>Every strongly inaccessible cardinal is weakly inaccessible.</p>
+<div class="proof">
+<p>If \(\kappa=\mu^+\), then \(\mu&lt;\kappa\). Cantor's theorem gives \(\mu&lt;2^\mu\), so the definition of successor cardinal yields \(\kappa\le 2^\mu\). This contradicts the strong-limit inequality. Uncountability and regularity are already part of the hypotheses.</p>
+</div>
+<p>For comparison, \(\aleph_0\) is regular and a strong limit, because the power set of a finite set is finite. It is excluded by the uncountability requirement. The first uncountable cardinal is regular, but it is not a strong limit: \(2^{\aleph_0}\ge\aleph_1\).</p>
+</section>
+
+<section data-formal="inacc-stages-small regularity-small-unions" id="small-rank-stages" data-kind="theorem">
+<h2>Every earlier rank stage has size below the inaccessible height</h2>
+<p>If \(\kappa\) is inaccessible, then
+</p>
+<div class="math-display">\[|V_\beta|&lt;\kappa\qquad(\beta&lt;\kappa).\]</div>
+<div class="proof">
+<p>Use transfinite induction on \(\beta&lt;\kappa\). The initial stage is empty, so its size is zero. At a successor stage, the induction hypothesis and the strong-limit condition give
+</p>
+<div class="math-display">\[|V_{\gamma+1}|=|\mathcal P(V_\gamma)|=2^{|V_\gamma|}&lt;\kappa.\]</div>
+<p>At a nonzero limit \(\beta&lt;\kappa\), the stage is \(\bigcup_{\gamma&lt;\beta}V_\gamma\). There are \(|\beta|&lt;\kappa\) indices, and every member of this family has size below \(\kappa\) by induction. The <a href="cofinality#regular-unions">small-union characterization of regularity</a> therefore gives the required bound for their union. These are all cases of the rank recursion.</p>
+</div>
+<p>This controls the size of an entire rank stage, not just the cardinality of an ordinal below \(\kappa\).</p>
+</section>
+
+<section data-formal="inacc-members-small hierarchy-membership-rank" id="members-are-small" data-kind="lemma">
+<h2>Every object in the rank model is externally small</h2>
+<p>If \(x\in V_\kappa\), then \(|x|&lt;\kappa\).</p>
+<div class="proof">
+<p>Put \(\rho=\operatorname{rank}(x)\). The <a href="cumulative-hierarchy#rank-characterizes-stages">rank characterization</a> gives \(\rho&lt;\kappa\), and every member of \(x\) has rank below \(\rho\). Thus \(x\subseteq V_\rho\), including the case \(x=\varnothing\). Consequently
+</p>
+<div class="math-display">\[|x|\le |V_\rho|&lt;\kappa\]</div>
+<p>by <a href="#small-rank-stages">the stage-size bound</a>.</p>
+</div>
+</section>
+
+<section data-formal="inacc-output-bound inacc-small-family-range regularity-bounded-subsets" id="small-indexed-rank-bound" data-kind="lemma">
+<h2>Fewer than kappa many output ranks have a common bound</h2>
+<p>Suppose \(\kappa\) is regular uncountable, \(|I|&lt;\kappa\), and a set-indexed family \((y_i)_{i\in I}\) consists of members of \(V_\kappa\). Then its range \(Y=\{y_i:i\in I\}\) belongs to \(V_\kappa\).</p>
+<div class="proof">
+<p>Every \(\operatorname{rank}(y_i)+1\) is below \(\kappa\), since an infinite initial ordinal is a limit ordinal. Replacement forms their set \(B\), whose cardinality is at most \(|I|&lt;\kappa\). By regularity, \(B\) is bounded below \(\kappa\), so
+</p>
+<div class="math-display">\[\gamma=\sup B&lt;\kappa.\]</div>
+<p>For nonempty \(I\), the inequalities \(\operatorname{rank}(y_i)+1\le\gamma\) put every \(y_i\) in \(V_\gamma\). Hence \(Y\subseteq V_\gamma\), and \(\operatorname{rank}(Y)\le\gamma&lt;\kappa\). If \(I\) is empty, then \(Y=\varnothing\), whose rank is zero. In both cases \(Y\in V_\kappa\).</p>
+</div>
+<p>Only regularity is used in this lemma. Inaccessibility will supply its small index set when \(I\) is an object of the rank model.</p>
+</section>
+
+<section data-formal="inacc-replacement-functional inacc-replacement-output inacc-replacement-range inacc-replacement-output-correct inacc-replacement" id="replacement-in-rank-model" data-kind="theorem">
+<h2>Internal functional definitions have ranges inside the stage</h2>
+<p>For inaccessible \(\kappa\), the actual-membership structure \((V_\kappa,\in)\) satisfies every instance of Replacement.</p>
+<div class="proof">
+<p>Fix one membership-language formula \(\varphi(a,b,\bar p)\), parameters \(\bar p\in V_\kappa\), and \(x\in V_\kappa\). Suppose the structure satisfies that every \(a\in x\) has exactly one output \(b\) satisfying \(\varphi\).</p>
+<p>By <a href="membership-models#relativized-satisfaction">set-domain relativization</a>, this says in the ambient universe that each actual \(a\in x\) has a unique \(b\in V_\kappa\) with \(\varphi^{V_\kappa}(a,b,\bar p)\). Transitivity ensures that all members of \(x\) are available in the domain. The relativized condition is an ordinary fixed formula with the set \(V_\kappa\) as an additional parameter. Ambient Replacement therefore collects its unique outputs into a set \(Y\).</p>
+<p>By <a href="#members-are-small">the smallness of members</a>, \(|x|&lt;\kappa\). Apply <a href="#small-indexed-rank-bound">the output-rank bound</a> to this family indexed by \(x\). It yields \(Y\in V_\kappa\). For every \(b\) in the domain,
+</p>
+<div class="math-display">\[b\in Y\quad\Longleftrightarrow\quad (V_\kappa,\in)\models\exists a\in x\,\varphi(a,b,\bar p).\]</div>
+<p>Thus this very set is a witness to the internal Replacement instance. The argument works for each fixed formula and every allowed parameter tuple.</p>
+</div>
+</section>
+
+<section data-formal="inacc-ordinal-height rrefl-limit-basic-axioms rrefl-infinity-above-omega" id="basic-rank-model-axioms" data-kind="lemma">
+<h2>The membership axioms and Infinity have their actual witnesses</h2>
+<p>For inaccessible \(\kappa\), the structure on \(V_\kappa\) satisfies Extensionality, Foundation, Empty Set, Pairing, Union and Infinity.</p>
+<div class="proof">
+<p>The cardinal \(\kappa\) is a nonzero limit ordinal. The <a href="rank-reflection#limit-stage-basic-axioms">limit-stage axiom checks</a> therefore apply. In detail, transitivity makes internal membership in each object its full actual membership, so ambient Extensionality identifies objects with the same members. Ambient Foundation supplies an actual membership-minimal member of each internally nonempty object; transitivity puts that witness in the domain.</p>
+<p>The empty set has rank zero. For \(x,y\in V_\kappa\), the pair has rank \(\max(\operatorname{rank}(x),\operatorname{rank}(y))+1&lt;\kappa\); the union of \(x\) has rank at most \(\operatorname{rank}(x)&lt;\kappa\). These actual sets therefore witness the corresponding internal axioms. Finally \(\omega\in V_\kappa\), since its rank is \(\omega&lt;\kappa\). Its zero and finite successors are all present, with their actual membership equations, so it witnesses Infinity.</p>
+</div>
+</section>
+
+<section data-formal="rrefl-separation-subset rrefl-limit-separation inacc-ordinal-height" id="separation-in-rank-model" data-kind="lemma">
+<h2>Separation uses the relativized formula on an existing set</h2>
+<p>The structure on \(V_\kappa\) satisfies every instance of Separation.</p>
+<div class="proof">
+<p>Fix a formula \(\psi(a,\bar p)\), its parameters from the domain, and \(x\in V_\kappa\). Ambient Separation forms
+</p>
+<div class="math-display">\[z=\{a\in x:\psi^{V_\kappa}(a,\bar p)\}.\]</div>
+<p>Because \(z\subseteq x\), its rank is at most the rank of \(x\), so \(z\in V_\kappa\). Relativized satisfaction identifies its defining condition with the required internal formula. This supplies the actual desired subset for every fixed instance, even when \(\psi\) has unbounded quantifiers.</p>
+</div>
+<p>Here the outputs are already bounded by \(x\). Replacement needed a separate bound on the ranks of its outputs.</p>
+</section>
+
+<section data-formal="rrefl-limit-power-set inacc-ordinal-height abs-power-set-formula" id="full-power-sets" data-kind="lemma">
+<h2>The internal power set contains every ambient subset</h2>
+<p>For \(x\in V_\kappa\), the actual \(\mathcal P(x)\) belongs to \(V_\kappa\) and is its internal power set of \(x\).</p>
+<div class="proof">
+<p>Write \(\rho=\operatorname{rank}(x)&lt;\kappa\). The power set has rank \(\rho+1&lt;\kappa\). Every actual subset \(z\subseteq x\) has rank at most \(\rho\), so it too lies in the domain. At every candidate \(z\) in that domain, the <a href="absoluteness#bounded-set-tests">bounded subset test</a> agrees with actual inclusion. Thus the members of the actual power set are exactly the candidates required by the internal Power Set axiom. There are no missing ambient subsets.</p>
+</div>
+</section>
+
+<section data-formal="inacc-relation-rank zf-kuratowski-pair" id="finite-rank-overhead" data-kind="lemma">
+<h2>A relation on an object still has rank below the height</h2>
+<p>If \(\kappa\) is an infinite limit ordinal, \(x\in V_\kappa\), and \(R\subseteq x\times x\), then \(R\in V_\kappa\). Use the usual Kuratowski ordered pairs.</p>
+<div class="proof">
+<p>Let \(\rho=\operatorname{rank}(x)&lt;\kappa\). For \(a,b\in x\), the ordered pair \(\langle a,b\rangle=\{\{a\},\{a,b\}\}\) has rank \(\max(\operatorname{rank}(a),\operatorname{rank}(b))+2\), hence rank at most \(\rho+2\). The rank equation consequently gives \(\operatorname{rank}(R)\le\rho+3\). Every finite successor of an ordinal below a limit remains below that limit, so \(\rho+3&lt;\kappa\). The <a href="cumulative-hierarchy#rank-characterizes-stages">rank criterion</a> puts \(R\) in \(V_\kappa\). The bound is deliberately sufficient rather than sharp.</p>
+</div>
+</section>
+
+<section data-formal="inacc-set-well-order inacc-well-order-formula inacc-well-order-formula-correct inacc-well-order-transfer inacc-well-order-graph inacc-well-order-graph-correct inacc-well-order-graph-in-stage inacc-internal-well-order inacc-choice-inference-schema fgen-ordered-pair-test fgen-relation-test fgen-ordered-pair-correct fgen-relation-correct" id="choice-in-rank-model" data-kind="theorem">
+<h2>An ambient well-order is an internal witness to Choice</h2>
+<p>For inaccessible \(\kappa\), the structure on \(V_\kappa\) satisfies the well-ordering principle and hence Choice.</p>
+<div class="proof">
+<p>Take \(x\in V_\kappa\). Ambient Choice provides a strict well-order \(R\subseteq x\times x\). The <a href="#finite-rank-overhead">relation-rank bound</a> gives \(R\in V_\kappa\). Its ordered pairs and their membership tests have the same meanings internally: their constituents have rank below \(\kappa\), and the defining bounded membership conditions are absolute.</p>
+<p>Irreflexivity, transitivity and linear comparison therefore hold internally. Any internally considered nonempty subset \(A\subseteq x\) is an actual nonempty subset of \(x\). The ambient well-order has a least element \(a\in A\), and transitivity puts \(a\) in the domain. Its leastness against every element of \(A\) is unchanged. Thus \(R\) is an internal well-order of \(x\). Indeed <a href="#full-power-sets">every actual subset of \(x\)</a> is available, though only the stated direction is needed.</p>
+<p>We have already verified all the ZF axioms in this structure, including each Replacement and Separation instance. The <a href="axiom-of-choice#three-equivalent-principles">ZF proof from well-ordering to Choice</a> consequently applies inside it. This use of ambient Choice has been explicit from the start.</p>
+</div>
+</section>
+
+<section data-formal="inacc-rank-model-zfc inacc-ordinal-height" id="inaccessible-rank-model" data-kind="theorem">
+<h2>An inaccessible height gives a transitive model of ZFC</h2>
+<div class="statement-box">
+<p>In ambient ZFC, if \(\kappa\) is strongly inaccessible, then the nonempty transitive actual-membership structure \((V_\kappa,\in)\) satisfies ZFC, including every instance of Separation and Replacement.</p>
+</div>
+<div class="proof">
+<p>The rank hierarchy gives a transitive set, and the empty set makes it nonempty. The preceding axiom checks establish Extensionality, Foundation, Empty Set, Pairing, Union, Infinity, Power Set and Choice. For each fixed formula the Separation and Replacement constructions establish its corresponding instance with arbitrary parameters in the domain. These are exactly the asserted axioms and schemas.</p>
+</div>
+<p>This is a conditional model construction from the supplied inaccessible cardinal. It does not produce such a cardinal from the axioms used in the proof, and it asserts no converse characterization of all heights whose rank stages satisfy ZFC.</p>
+</section>
+
+<section data-formal="inacc-stages-small inacc-members-small inacc-small-family-range inacc-ordinal-height inacc-aleph-zero-strong-limit aleph-zero-regular rrefl-no-infinity-at-omega" id="hypothesis-jobs-question" data-kind="question">
+<h2>Where do the three parts of inaccessibility enter?</h2>
+<p>Why are uncountability, regularity and the strong-limit condition all visible in the proof? Would the regular strong-limit cardinal \(\aleph_0\) suffice?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+<div class="answer-body">
+<p>The strong-limit condition bounds the cardinality of a successor rank stage. Regularity bounds limit-stage unions and then the set of output ranks in Replacement. The stage-size induction combines these facts to show that every object of \(V_\kappa\) has size below \(\kappa\).</p>
+<p>Uncountability ensures \(\omega&lt;\kappa\), so the stage contains \(\omega\) itself as an Infinity witness. At \(\kappa=\omega\), the domain is \(V_\omega\), the hereditarily finite sets. Every internally inductive member would contain all finite ordinals, hence would be infinite; no member of this domain can do that. Thus dropping uncountability already loses Infinity, despite regularity and the strong-limit property.</p>
+</div>
+</details>
+</section>
+
+<section data-formal="inacc-fixed-height-schema rrefl-finite-zfc-fragment-schema" id="reflection-versus-inaccessible-question" data-kind="question">
+<h2>How does this differ from finite-family reflection?</h2>
+<p><a href="rank-reflection#finite-fragment-transitive-models">Reflection produced a rank model of each fixed finite axiom fragment</a>. What additional conclusion is supplied by a given inaccessible height?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+<div class="answer-body">
+<p>At the single supplied height \(\kappa\), the same cardinal and rank estimates verify each Separation and Replacement instance, whatever its fixed formula and parameters. Thus every axiom of the full theory holds in this one set structure. The height does not change with the instance.</p>
+<p>The earlier reflection construction starts from a finite list and selects a height appropriate to that list. It supplies no single common height from those separate choices. Inaccessibility is an additional hypothesis that makes the uniform choice of the one height possible in the present argument. Neither proof justifies exchanging the quantifiers in the other, and no existence theorem for inaccessible cardinals has been supplied.</p>
+</div>
+</details>
+</section>

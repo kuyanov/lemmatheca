@@ -1,0 +1,151 @@
+<section data-formal="linner-inner-model-convention lhier-constructible rrefl-union-satisfaction" id="inner-model-convention" data-kind="definition">
+<h2>Verify the axioms in the constructible class</h2>
+<p>The <a href="constructible-hierarchy#constructible-recursion">constructible hierarchy</a> gives a definable transitive proper class \(L\) containing every ordinal. We now work in ambient ZF and prove that its actual-membership structure satisfies ZF and Choice.</p>
+<p>An <strong>inner model of ZF</strong> is a transitive proper class containing every ordinal and satisfying each ZF axiom, including each fixed instance of Separation and Replacement. For a definable class, satisfaction is the <a href="membership-models#class-model-convention">formula-by-formula relativization convention</a>. Thus \(L\models\varphi[\bar a]\) abbreviates the particular formula \(\varphi^L(\bar a)\). An axiom-schema assertion here means a corresponding proof for each fixed formula, not a global truth predicate for a proper class.</p>
+<p>The construction will first verify ZF. Only then will it use the hierarchy's absoluteness to prove that \(L\) internally satisfies “every set is constructible,” written \(V=L\). An explicit recursion of well-orders will derive Choice inside that model.</p>
+</section>
+
+<section data-formal="linner-reflection linner-finite-tuple-stage lhier-hierarchy lhier-hierarchy-nonempty rrefl-native-constructed-reflection" id="reflection-before-modelhood" data-kind="lemma">
+<h2>Reflect fixed formulas before assuming any axioms in the union</h2>
+<p>For every fixed finite family of formulas, arbitrarily large levels \(L_\alpha\) agree with \(L\) on those formulas at every parameter tuple from \(L_\alpha\).</p>
+<div class="proof">
+<p>The levels are definable transitive sets, increasing at successors and continuous at nonzero limits. Their union is nonempty. These are exactly the hypotheses of <a href="rank-reflection#hierarchy-reflection">general hierarchy reflection</a>. Apply that theorem to this hierarchy. Its witness-bound construction uses ambient ZF and does not require the union class to model ZF.</p>
+</div>
+<p>In particular, finitely many already chosen parameters can be included by starting above levels containing them. Agreement then holds for every additional parameter tuple present in the reflecting level.</p>
+</section>
+
+<section data-formal="linner-pair-code linner-pair-code-correct linner-union-code linner-union-code-correct linner-basic-witnesses linner-basic-axioms rrefl-empty-axiom rrefl-pairing-axiom rrefl-union-axiom rrefl-infinity-axiom" id="basic-inner-model-axioms" data-kind="lemma">
+<h2>Transitivity and definability supply the elementary witnesses</h2>
+<p>The class \(L\) satisfies Extensionality, Foundation, Empty Set, Pairing, Union and Infinity.</p>
+<div class="proof">
+<p>Transitivity ensures that every actual member of an object in \(L\) remains in \(L\). Equal internal member collections are therefore equal actual member collections, so ambient Extensionality identifies the objects. For an internally nonempty set \(x\in L\), ambient Foundation gives \(y\in x\) with no member in common with \(x\). Transitivity puts \(y\) in \(L\), where the same exclusion still holds. This proves internal Foundation.</p>
+<p>The empty set belongs to \(L_1\). Given \(x,y\in L\), choose a level \(L_\alpha\) containing both. The formula \(z=x\lor z=y\), with those two parameters, defines their actual pair as a subset of \(L_\alpha\). Thus \(\{x,y\}\in L_{\alpha+1}\).</p>
+<p>If \(x\in L_\alpha\), every member of every member of \(x\) lies in \(L_\alpha\). The bounded formula \(\exists u\in x\,(z\in u)\) consequently defines the actual union of \(x\) over that level: every possible witness \(u\in x\) is present. Its defining subset lies in \(L_{\alpha+1}\). Finally \(\omega\) belongs to \(L\), since <a href="constructible-hierarchy#ordinals-at-each-level">every ordinal does</a>. Its zero and all finite successors have their actual meanings in this transitive class, so it witnesses Infinity.</p>
+</div>
+</section>
+
+<section data-formal="linner-reindex linner-reindex-truth linner-separation-index linner-separation-code linner-separation-subset linner-separation-reflecting-code linner-separation linner-separation-schema" id="separation-in-l" data-kind="theorem">
+<h2>Reflection converts class Separation into definability over one level</h2>
+<p>The class \(L\) satisfies every instance of Separation.</p>
+<div class="proof">
+<p>Fix a formula \(\varphi(z,\bar p)\), parameters \(\bar p\in L\), and \(x\in L\). The desired subset in the ambient universe is</p>
+<div class="math-display">\[A=\{z\in x:L\models\varphi(z,\bar p)\}.\]</div>
+<p>This is a set by ambient Separation applied to the fixed relativized formula. Choose a reflecting \(L_\alpha\) containing \(x\) and all parameters and agreeing with \(L\) on \(\varphi\). Every member of \(x\) lies in the level by transitivity. At each such member, reflection identifies class truth with truth over that level.</p>
+<p>Consequently \(A\) is exactly the subset of \(L_\alpha\) defined there by \(z\in x\land\varphi(z,\bar p)\). This uses only parameters in \(L_\alpha\), so \(A\in\operatorname{Def}(L_\alpha)=L_{\alpha+1}\). Its defining membership condition is the requested internal Separation instance. The same construction works for each fixed formula.</p>
+</div>
+</section>
+
+<section data-formal="linner-least-stage linner-least-stage-correct linner-stage-bound linner-stage-bound-correct linner-empty-stage-bound linner-stage-bound-zf-schema" id="bounding-construction-stages" data-kind="lemma">
+<h2>A set of constructible objects has one stage bound</h2>
+<p>If \(A\) is an ambient set and \(A\subseteq L\), then \(A\subseteq L_\delta\) for some ordinal \(\delta\).</p>
+<div class="proof">
+<p>For each \(a\in A\), choose no arbitrary witness: take the least ordinal \(\beta_a\) with \(a\in L_{\beta_a}\). Such a stage exists by membership in \(L\), and a least one exists among ordinals below any witnessing stage. This is a uniquely defined function on the set \(A\). Ambient Replacement collects its ordinal values.</p>
+<p>Let \(\delta=\sup\{\beta_a:a\in A\}+1\). Then \(\beta_a&lt;\delta\) for each \(a\), and increasing levels give \(a\in L_\delta\). The same rule gives \(\delta=1\) when \(A\) is empty, where the assertion is vacuous. No Choice or size restriction on \(A\) is needed.</p>
+</div>
+</section>
+
+<section data-formal="linner-functional linner-output linner-range linner-output-correct linner-replacement-index linner-replacement-code linner-replacement-code-correct linner-replacement-reflecting-code linner-replacement linner-replacement-schema linner-reindex-truth" id="replacement-in-l" data-kind="theorem">
+<h2>Collect outputs externally, then define their exact range at a reflecting level</h2>
+<p>The class \(L\) satisfies every instance of Replacement.</p>
+<div class="proof">
+<p>Fix \(\varphi(a,b,\bar p)\), its parameters in \(L\), and \(x\in L\). Suppose \(L\) satisfies that each \(a\in x\) has exactly one output \(b\) satisfying this formula. Ambient Replacement applied to the fixed condition \(b\in L\land\varphi^L(a,b,\bar p)\) collects the actual outputs into a set \(Y\subseteq L\). This use of Replacement is legitimate before knowing any Replacement axiom inside \(L\).</p>
+<p>Apply <a href="#bounding-construction-stages"></a> to bound all of \(Y\) in one level. Choose a larger reflecting level \(L_\alpha\) that also contains \(x\) and \(\bar p\), and agrees with \(L\) on \(\varphi\). For every \(b\in L_\alpha\),</p>
+<div class="math-display">\[b\in Y\quad\Longleftrightarrow\quad L_\alpha\models\exists a\in x\,\varphi(a,b,\bar p).\]</div>
+<p>Indeed all members of \(x\) are present, and reflection transfers the matrix for every such \(a\) and every candidate \(b\) in the level. The externally collected set consists of exactly these outputs, and none of them lies above the level by its chosen bound.</p>
+<p>This equivalence defines \(Y\) as a subset of \(L_\alpha\) using the available parameters. Hence \(Y\in L_{\alpha+1}\subseteq L\). Its actual output condition, which holds against every \(b\in L\), gives the required internal Replacement instance. The formula and parameters were arbitrary within the fixed-instance convention.</p>
+</div>
+</section>
+
+<section data-formal="linner-power-set linner-power-subset-code linner-power-reflecting-code linner-internal-power-set abs-subset-test abs-bounded-to-universe" id="internal-power-set-in-l" data-kind="theorem">
+<h2>Collect exactly the constructible subsets of the given object</h2>
+<p>For every \(x\in L\), its internal power set in \(L\) is</p>
+<div class="math-display">\[\mathcal P^L(x)=\{z\in\mathcal P(x):z\in L\},\]</div>
+<p>and this set belongs to \(L\).</p>
+<div class="proof">
+<p>Ambient Power Set and Separation first form the displayed set \(A\). It is an ambient set of constructible objects, so <a href="#bounding-construction-stages"></a> gives a bound on all its members. Choose \(\beta\) large enough that \(A\subseteq L_\beta\) and \(x\in L_\beta\).</p>
+<p>For a candidate \(z\in L_\beta\), its bounded subset test agrees with actual \(z\subseteq x\), by <a href="absoluteness#bounded-set-tests">bounded absoluteness</a>. Since all candidates are constructible and every member of \(A\) is present, \(A\) is exactly the subset defined over \(L_\beta\) by that test. Thus \(A\in\operatorname{Def}(L_\beta)=L_{\beta+1}\).</p>
+<p>The class \(L\) is transitive too, so its internal subset test also agrees with actual inclusion at its candidates. The members of \(A\) are therefore exactly the objects that its Power Set axiom requests. This proves that axiom without asserting that \(L\) contains every ambient subset of \(x\).</p>
+</div>
+</section>
+
+<section data-formal="linner-zf-inner-model linner-basic-axioms linner-separation linner-replacement linner-internal-power-set" id="l-is-inner-model" data-kind="theorem">
+<h2>The constructible class satisfies all ZF axioms</h2>
+<div class="statement-box"><p>In ambient ZF, the constructible class \(L\) is an inner model of ZF: it is transitive, contains every ordinal, and satisfies every axiom, including each instance of Separation and Replacement.</p></div>
+<div class="proof">
+<p>Transitivity and the presence of every ordinal were proved from the hierarchy construction. The elementary axiom checks give Extensionality, Foundation, Empty Set, Pairing, Union and Infinity. The preceding three constructions give every Separation and Replacement instance and the internal Power Set. These exhaust ZF. Every argument uses a particular finite formula or particular axiom; none invokes truth for all formulas of a proper class at once.</p>
+</div>
+</section>
+
+<section data-formal="linner-idempotence lhier-internal-recursion-schema" id="idempotence-and-v-equals-l" data-kind="theorem">
+<h2>Constructing inside L gives L again</h2>
+<p>The hierarchy computed inside \(L\) agrees with the ambient hierarchy at every ordinal. Consequently \(L^L=L\), and \(L\) satisfies \(V=L\).</p>
+<div class="proof">
+<p>We now know that \(L\) is a transitive ZF model. It contains every ordinal, so <a href="constructible-hierarchy#constructible-recursion-absoluteness">absoluteness of the hierarchy recursion</a> applies at each ordinal \(\alpha\): its internal level \(L_\alpha^L\) is the actual \(L_\alpha\). Both constructions use all the same ordinal indices, hence their union classes agree.</p>
+<p>Given \(x\in L\), some ambient level contains it. That same level is internally constructible in \(L\), so the assertion that \(x\) is constructible is true inside \(L\). This holds for every object in its domain, which is precisely its assertion \(V=L\).</p>
+</div>
+</section>
+
+<section data-formal="linner-minimality lhier-internal-recursion-schema" id="minimal-inner-model" data-kind="theorem">
+<h2>Every inner ZF model contains the constructible class</h2>
+<p>If \(N\) is an inner model of ZF, then \(L\subseteq N\).</p>
+<div class="proof">
+<p>Every ordinal \(\alpha\) belongs to \(N\). Its ZF recursion therefore constructs its internal level \(L_\alpha^N\) as an object of \(N\), and hierarchy absoluteness identifies that level with the actual \(L_\alpha\). By transitivity of \(N\), all members of this level also belong to \(N\). Every member of \(L\) belongs to such a level, proving the inclusion.</p>
+</div>
+<p>Thus “smallest” refers to inclusion among transitive ZF inner models containing every ordinal. It makes no assertion here about arbitrary non-well-founded first-order models of ZF.</p>
+</section>
+
+<section data-formal="linner-formula-shape linner-formula-number linner-formula-number-injective linner-tuple-lex linner-tuple-lex-well-order linner-code-shape linner-code-order linner-code-well-order linner-least-code linner-least-code-correct linner-least-code-injective linner-def-order linner-def-well-order" id="ordered-definition-codes" data-kind="lemma">
+<h2>A well-ordered level gives a well-order of its definition codes</h2>
+<p>Let \(M\) have a specified well-order \(r\). There is a specified well-order of the formula-and-parameter codes defining subsets of \(M\).</p>
+<div class="proof">
+<p>Fix once and for all an enumeration of membership formulas together with their finite parameter arities by natural-number codes. Order codes first by that natural number. For a fixed formula code of arity \(k\), order its parameter tuples in \(M^k\) lexicographically using \(r\), with the first coordinate compared first.</p>
+<p>A finite lexicographic product of a well-order is a well-order: for a nonempty set of tuples, minimize the first coordinate attained, then the second among tuples retaining that coordinate, and continue through the fixed finite length. At length zero there is one empty tuple. For a nonempty set of complete codes, first minimize the attained formula number, then minimize the tuple within that one fixed arity. This gives its least code. All these are set constructions from \(M\) and \(r\).</p>
+<p>Each definable subset has at least one such code, so it has a unique least one. Distinct subsets have distinct least codes, because a fixed code defines exactly one subset. Transporting the code order therefore well-orders the definable subsets and any chosen subcollection of them.</p>
+</div>
+</section>
+
+<section data-formal="linner-graph-relation linner-successor-comparison linner-successor-graph linner-successor-graph-members linner-initial-segment linner-successor-graph-correct linner-order-graph-recursion linner-order-graph-zero linner-order-graph-limit linner-coherent-well-orders linner-order-graph-successor linner-order-graph-unique linner-parent-stage linner-parent-stage-correct linner-first-code linner-first-code-correct linner-first-membership-parent linner-definable-orders-zf-schema" id="coherent-constructible-well-orders" data-kind="theorem">
+<h2>Extend the old well-order before adding newly definable objects</h2>
+<p>ZF constructs a definable family \((r_\alpha)\) such that each \(r_\alpha\) well-orders \(L_\alpha\), and earlier levels are initial segments with their orders unchanged.</p>
+<div class="proof">
+<p>At zero use the empty order. Suppose \(r_\alpha\) has been defined. For each new object in \(L_{\alpha+1}\setminus L_\alpha\), take its least definition code over the already well-ordered \(L_\alpha\), as in <a href="#ordered-definition-codes"></a>. Put all old objects first in their old order, then put the new objects in the order of their least codes. The concatenation is a well-order and extends the old order as an initial segment. The new ordering never requires a well-order of the new objects as an input.</p>
+<p>At a nonzero limit \(\lambda\), take \(r_\lambda=\bigcup_{\alpha&lt;\lambda}r_\alpha\). Coherence makes this a linear order on the union level. If \(A\subseteq L_\lambda\) is nonempty, some earlier level meets it. The least point of that intersection in the earlier well-order precedes every point outside that level, since it is an initial segment. It is therefore least in all of \(A\). This proves the well-order property at limits.</p>
+<p>The rule uniquely determines a set relation from the earlier history. Least-code selection is definable, uses the fixed set satisfaction construction, and chooses no arbitrary family of objects. <a href="cumulative-hierarchy#set-valued-ordinal-recursion">Set-valued recursion</a> and Replacement therefore construct this definable family in ZF.</p>
+</div>
+<p>An object's first <em>definability parent stage</em> is the least \(\delta\) for which it belongs to \(\operatorname{Def}(L_\delta)\). A new object at \(\delta+1\) is coded using parameters from \(L_\delta\). Using its first membership stage and allowing parameters from that very new stage would destroy the recursive order of this construction.</p>
+</section>
+
+<section data-formal="linner-restricted-order linner-restricted-order-correct linner-v-equals-l-choice choice-equivalent-well-ordering" id="v-equals-l-implies-choice" data-kind="theorem">
+<h2>The well-orders exist inside a ZF universe satisfying V equals L</h2>
+<p>ZF together with \(V=L\) proves Choice.</p>
+<div class="proof">
+<p>Perform the preceding definable recursion inside a universe satisfying those axioms. For any set \(x\), the assumption \(V=L\) gives a level containing \(x\); transitivity then gives \(x\subseteq L_\alpha\) for that index \(\alpha\). Its recursion produces the relation \(r_\alpha\) as an actual set of that universe.</p>
+<p>Separation restricts this relation to \(x\times x\). The restriction is a well-order of \(x\), so every set in this universe has a well-order. The <a href="axiom-of-choice#three-equivalent-principles">ZF equivalence of well-ordering and Choice</a> gives Choice there. In particular, this argument produces a set relation available internally; it is not merely an external ordering of the universe's objects.</p>
+</div>
+</section>
+
+<section data-formal="linner-l-zfc linner-idempotence linner-v-equals-l-choice" id="l-satisfies-choice" data-kind="theorem">
+<h2>The constructible inner model satisfies Choice</h2>
+<div class="statement-box"><p>In ambient ZF, the constructible class \(L\) is an inner model of ZFC and internally satisfies \(V=L\).</p></div>
+<div class="proof">
+<p>The earlier checks established ZF in \(L\), and idempotence established its internal assertion \(V=L\). Apply the ZF argument from <a href="#v-equals-l-implies-choice"></a> within that model. Its own recursion and Separation produce the required well-orders of its sets, and hence Choice. Together with its ZF axioms this gives ZFC in the stated schematic class-model sense.</p>
+</div>
+</section>
+
+<section data-formal="linner-power-set linner-stage-bound-correct linner-internal-power-set" id="power-set-comparison-question" data-kind="question">
+<h2>Why does the Power Set proof use construction stages?</h2>
+<p>Why not use the full ambient \(\mathcal P(x)\) directly, as in an <a href="inaccessible-cardinals#full-power-sets">inaccessible rank model</a>?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+<p>The rank-model proof placed every ambient subset below a rank bound. The constructible hierarchy instead iterates definable subsets, and we have not assumed that every ambient subset of \(x\) is constructible. Its internal Power Set axiom quantifies only over candidates that belong to \(L\).</p>
+<p>Ambient Separation selects those constructible subsets from \(\mathcal P(x)\). Because this is a set, their least construction stages have an ordinal bound; this lets one later level define exactly that collection. If all ambient subsets happen to be constructible, the two power sets coincide, but that equality is not needed by the proof.</p>
+</div></details>
+</section>
+
+<section data-formal="linner-parent-stage linner-parent-stage-correct linner-first-code linner-first-code-correct linner-first-membership-parent linner-successor-comparison" id="well-order-stage-question" data-kind="question">
+<h2>Which stage supplies the parameters for a new object?</h2>
+<p>Suppose \(x\) first belongs to \(L_{\delta+1}\). When constructing its least definition code, which level's parameters and well-order may be used?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+<p>The parameters come from \(L_\delta\), and their tuples are ordered using the already constructed \(r_\delta\). Indeed \(x\in L_{\delta+1}=\operatorname{Def}(L_\delta)\), while no earlier definability parent can contain a code for \(x\), or \(x\) would have appeared earlier.</p>
+<p>The new level may itself contain \(x\), so using arbitrary parameters from \(L_{\delta+1}\) would make the intended coding depend on the new objects whose order is still being constructed. Placing the old level first and using its order to compare codes avoids that circularity.</p>
+</div></details>
+</section>

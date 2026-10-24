@@ -35,6 +35,7 @@
   <div class="math-display">\[E_n(A,x_1,\ldots,x_n)\quad\Longleftrightarrow\quad (x_1,\ldots,x_n)\in A.\]</div>
   <p>Keep the original language's function and fixed relation symbols on the individual sort. A general structure gives this sorted structure directly: the individual carrier is \(M\), the \(n\)-ary relation carrier is \(\mathcal D_n\), and application is membership. Relation quantification has become ordinary quantification over another carrier. This is the same idea as <a href="many-sorted-logic#ambient-models">many-sorted ambient presentations</a>, now including the original functions on the individual carrier.</p>
   <p>To use the existing one-sorted first-order calculus, take a common ambient domain \(U\), with unary predicates \(I\) and \(R_n\) distinguishing the sorts. Require each of these predicates to be nonempty. Require every original \(k\)-ary function to send individual tuples to individuals; this includes constants as the case \(k=0\). Original relations need no closure axiom: their values on nonindividual tuples are never used. Pairwise disjointness and coverage of \(U\) are unnecessary.</p>
+  <p>This is the <a href="many-sorted-functions#typing-axioms">function-closure condition for many-sorted translation</a>, specialized to operations on the individual sort.</p>
 </section>
 
 <section id="translation" data-formal="hs-first-order-translation hs-translation hs-background-theory hs-background-models hs-theory-translation" data-kind="definition">
@@ -103,4 +104,9 @@
     <p>Its element \(c\) is not a numeral. Externally, the subset consisting of the values of all numerals contains zero and is closed under successor, but omits \(c\). It cannot be an available unary relation, because the second-order induction axiom would then force it to be the whole individual domain. This is exactly where the <a href="second-order-arithmetic#categoricity">full-semantics categoricity proof</a> used a subset that general semantics can omit.</p>
 </div>
   <p>The distinction is already visible in the <a href="arithmetic-theories#induction-schema">first-order induction scheme</a>: PA gives induction for every first-order definable subset with individual parameters. Nevertheless, in a nonstandard PA model the external subset of standard numeral values is <a href="arithmetic-theories#external-standard-copy">not definable even with parameters</a>. These earlier results explain how all the definable induction instances can hold while one external inductive subset is missing; they make no claim that a family of first-order definitions satisfies full second-order comprehension.</p>
+
+  <figure id="henkin-missing-standard-copy" class="proof-figure">
+    <div class="figure-image"><img src="assets/henkin-missing-standard-copy.svg" width="760" height="455" alt="The standard numeral chain A sits inside M, with c outside it. As an external subset A is a point of P(M), but it lies outside the chosen available relation family D1."></div>
+    <figcaption>The externally defined standard copy is a legitimate subset of \(M\), but it cannot be an available unary relation in this model: it would contradict the second-order induction axiom. Full comprehension inside the general model does not assert that every external subset is available.</figcaption>
+  </figure>
 </section>

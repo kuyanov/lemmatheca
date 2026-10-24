@@ -1,0 +1,131 @@
+<section data-formal="abs-native-satisfaction lhier-satisfaction-set-schema" id="set-structure-satisfaction" data-kind="definition">
+<h2>Truth over a set can be computed from finite formulas</h2>
+<p>The rank hierarchy uses every subset at a successor stage. The constructible hierarchy uses only subsets definable over the preceding stage. We work in ambient ZF for the construction; the countability comparison below uses ambient ZFC. Every structure in this entry uses actual membership.</p>
+<p>Fix a set \(M\). A <strong>formula over \(M\)</strong> is an ordinary finite formula in the membership language, evaluated with all quantifiers restricted to \(M\). Its atomic clauses are actual equality and membership; its Boolean clauses are the usual truth conditions. For example,</p>
+<div class="math-display">\[M\models\exists y\,\psi(y,\bar a)\quad\Longleftrightarrow\quad \exists b\in M\;M\models\psi(b,\bar a).\]</div>
+<p>This semantic recursion is allowed even when \(M=\varnothing\): universal quantifiers are vacuous and existential quantifiers have no witnesses. A formula with free variables is evaluated only at a tuple of the required length from \(M\). Thus a nonempty tuple has no assignment in an empty domain. For nonempty \(M\), these clauses are exactly <a href="membership-models#membership-structures">ordinary membership-structure satisfaction</a>.</p>
+<p>For a set domain this is a uniform set construction. Code the finitely written formulas by finite strings or trees, and recurse on their proper subformulas. For each formula, its satisfying finite assignments form a subset of a finite power of \(M\). Separation forms each atomic set; Boolean operations and projections or their complements give the connective and quantifier steps. Well-founded recursion on the finite syntax trees and Replacement collect these sets for all formula codes. This gives a satisfaction relation for the set \(M\), not a truth predicate for the proper class of all sets.</p>
+</section>
+
+<section data-formal="lhier-definition-code lhier-defined-subset lhier-defined-subset-members lhier-def lhier-def-members lhier-def-subsets lhier-satisfaction-set-schema" id="definable-subsets" data-kind="definition">
+<h2>Keep the subsets definable with finitely many parameters</h2>
+<p>Let \(\operatorname{Def}(M)\) be the collection of sets</p>
+<div class="math-display">\[\{x\in M:M\models\varphi(x,a_0,\ldots,a_{k-1})\},\]</div>
+<p>where \(k\) is a natural number, \(\varphi\) has its indicated free-variable slots, and \((a_0,\ldots,a_{k-1})\in M^k\). Parameters may be any elements of \(M\), and a formula may ignore some of its slots. No parameters from outside \(M\) are admitted. The empty tuple is allowed.</p>
+<p>This collection is a set. The index collection consisting of formula codes paired with finite parameter tuples is a set: it is a union over \(k\in\omega\) of a set of codes times \(M^k\). Each index determines exactly one subset by Separation and set-structure satisfaction. Replacement collects the image of this index set. In particular \(\operatorname{Def}(M)\subseteq\mathcal P(M)\).</p>
+<p>The two collections may be different. Being a subset imposes no definability condition; belonging to \(\operatorname{Def}(M)\) requires a finite formula and finitely many available parameters.</p>
+</section>
+
+<section data-formal="lhier-full-code lhier-empty-code lhier-full-empty-codes-correct lhier-whole-empty-members lhier-def-empty" id="empty-domain-and-universe-subset" data-kind="lemma">
+<h2>The empty level has one definable subset</h2>
+<p>For every set \(M\), both \(M\) and \(\varnothing\) belong to \(\operatorname{Def}(M)\). Moreover \(\operatorname{Def}(\varnothing)=\{\varnothing\}\).</p>
+<div class="proof">
+<p>The formula \(x=x\) defines all of \(M\), with no parameters. The formula \(x\ne x\) defines its empty subset. These assertions apply to the empty domain too: there are no candidate elements to test. Every subset of \(\varnothing\) is empty, and the empty subset has just been defined, giving the final equality.</p>
+</div>
+<p>Thus the starting successor step will not require a nonempty carrier or a selected point from the preceding level.</p>
+</section>
+
+<section data-formal="lhier-member-code lhier-member-code-correct lhier-def-transitive" id="def-preserves-transitivity" data-kind="lemma">
+<h2>Definable subsets extend a transitive domain</h2>
+<p>If \(M\) is transitive, then \(M\subseteq\operatorname{Def}(M)\), and \(\operatorname{Def}(M)\) is transitive.</p>
+<div class="proof">
+<p>For \(a\in M\), transitivity gives \(a\subseteq M\). Using \(a\) as a parameter, the formula \(x\in a\) therefore defines exactly \(a\) as a subset of \(M\). This proves the inclusion.</p>
+<p>If \(b\in\operatorname{Def}(M)\) and \(a\in b\), then \(b\subseteq M\), so \(a\in M\). The inclusion just proved puts \(a\) in \(\operatorname{Def}(M)\). This is the transitivity condition for that collection.</p>
+</div>
+</section>
+
+<section data-formal="lhier-level lhier-level-zero lhier-level-successor lhier-level-limit lhier-level-limit-members lhier-level-unique lhier-constructible lhier-definable-class-schema ordinal-three-case-recursion zf-set-valued-recursion-schema" id="constructible-recursion" data-kind="definition">
+<h2>Iterate definability at successors and unions at limits</h2>
+<p>The <strong>constructible hierarchy</strong> is defined by</p>
+<div class="math-display">\[\begin{aligned}L_0&amp;=\varnothing,\\L_{\alpha+1}&amp;=\operatorname{Def}(L_\alpha),\\L_\lambda&amp;=\bigcup_{\beta&lt;\lambda}L_\beta\qquad(\lambda\text{ a nonzero limit}).\end{aligned}\]</div>
+<p>Its existence and uniqueness follow from <a href="cumulative-hierarchy#set-valued-ordinal-recursion">set-valued ordinal recursion</a>, because \(\operatorname{Def}(M)\) is a uniquely specified set for every set \(M\). For each ordinal, the earlier levels and their union form sets by Replacement and Union. The resulting class function is definable from the fixed formula coding and satisfaction construction.</p>
+<p>The <strong>constructible class</strong> \(L\) consists of the sets belonging to some \(L_\alpha\). This is a formula defining a class. At this point no axioms of set theory are being asserted true in that class.</p>
+</section>
+
+<section data-formal="lhier-level-transitive lhier-level-monotone lhier-level-member-successor" id="transitive-increasing-levels" data-kind="theorem">
+<h2>The levels are transitive and never lose earlier objects</h2>
+<p>Every \(L_\alpha\) is transitive, and \(L_\alpha\subseteq L_\beta\) whenever \(\alpha\le\beta\). Also \(L_\alpha\in L_{\alpha+1}\).</p>
+<div class="proof">
+<p>Induct on the levels. The empty set is transitive. A transitive level is contained in its successor, and that successor is transitive, by <a href="#def-preserves-transitivity"></a>. At a limit, the union of the increasing transitive earlier levels is transitive: an element and then any of its members already lie in one earlier transitive level. These adjacent inclusions and the union clause imply inclusion between any two ordered stages, by induction on the larger index.</p>
+<p>Finally the whole preceding level is a definable subset of itself, by <a href="#empty-domain-and-universe-subset"></a>. Hence \(L_\alpha\in\operatorname{Def}(L_\alpha)=L_{\alpha+1}\). All three claims hold at the empty starting level as well.</p>
+</div>
+</section>
+
+<section data-formal="lhier-level-rank-bound" id="rank-stage-bound" data-kind="theorem">
+<h2>Constructibility stays within the corresponding rank stage</h2>
+<p>For every ordinal \(\alpha\), \(L_\alpha\subseteq V_\alpha\).</p>
+<div class="proof">
+<p>Use transfinite induction. Both stages at zero are empty. At a successor, every member of \(L_{\alpha+1}\) is a subset of \(L_\alpha\), hence a subset of \(V_\alpha\) by induction. It therefore belongs to \(\mathcal P(V_\alpha)=V_{\alpha+1}\). At a limit, take the union of the earlier inclusions and use the two hierarchies' union clauses.</p>
+</div>
+</section>
+
+<section data-formal="lhier-ordinal-code lhier-ordinal-code-correct lhier-level-ordinal-code lhier-level-ordinal-part lhier-level-ordinals lhier-class-transitive lhier-class-ordinals lhier-class-not-set" id="ordinals-at-each-level" data-kind="theorem">
+<h2>The ordinal part of a level is exactly its index</h2>
+<p>For every ordinal \(\alpha\),</p>
+<div class="math-display">\[L_\alpha\cap\mathrm{Ord}=\alpha.\]</div>
+<div class="proof">
+<p>The <a href="#rank-stage-bound">rank-stage bound</a> gives one inclusion: an ordinal \(\beta\in L_\alpha\) belongs to \(V_\alpha\), so \(\beta=\operatorname{rank}(\beta)&lt;\alpha\).</p>
+<p>For the other inclusion, induct on \(\alpha\). At a successor step, the induction hypothesis says that the ordinals in \(L_\alpha\) form exactly \(\alpha\). The <a href="absoluteness#bounded-ordinal-test">bounded ordinal test</a> defines this subset over the transitive domain \(L_\alpha\): for each candidate object present in that domain it agrees with actual ordinalhood. Thus \(\alpha\) itself belongs to \(\operatorname{Def}(L_\alpha)=L_{\alpha+1}\). For \(\alpha=0\), this also follows directly from \(\operatorname{Def}(\varnothing)=\{\varnothing\}\). All earlier ordinals stay present by the increasing-level property.</p>
+<p>At a nonzero limit \(\lambda\), if \(\beta&lt;\lambda\), then \(\beta+1&lt;\lambda\), and induction puts \(\beta\) in \(L_{\beta+1}\subseteq L_\lambda\). At zero there is no ordinal to include. This completes the induction and the equality.</p>
+</div>
+<p>It follows that \(L\) contains every ordinal. It is transitive as a union of transitive levels, and it cannot be a set, because there is no set containing every ordinal.</p>
+</section>
+
+<section data-formal="lhier-finite-disjunction lhier-finite-subset-code lhier-finite-subset-code-correct lhier-finite-def lhier-finite-levels lhier-omega-level lhier-first-levels lhier-omega-hf hierarchy-finite-stages" id="finite-levels" data-kind="lemma">
+<h2>The finite stages agree with the rank hierarchy</h2>
+<p>For every natural number \(n\), \(L_n=V_n\), and consequently \(L_\omega=V_\omega\).</p>
+<div class="proof">
+<p>If \(M\) is finite, every subset \(A\subseteq M\) is definable over \(M\). For nonempty \(A\), list its finitely many members \(a_0,\ldots,a_{k-1}\) and use the formula \(x=a_0\lor\cdots\lor x=a_{k-1}\). These are all allowed parameters. For empty \(A\), use \(x\ne x\). Therefore \(\operatorname{Def}(M)=\mathcal P(M)\) for finite \(M\), including the empty case.</p>
+<p>Now induct on \(n\). The two initial levels are empty. Each \(V_n\) is finite, since the power set of a finite set is finite. If \(L_n=V_n\), the finite-domain equality gives \(L_{n+1}=\operatorname{Def}(V_n)=\mathcal P(V_n)=V_{n+1}\). At \(\omega\), both hierarchies take the union of these same finite levels.</p>
+</div>
+<p>In particular their first three levels are \(\varnothing\), \(\{\varnothing\}\) and \(\{\varnothing,\{\varnothing\}\}\). Both first limit stages consist of the <a href="cumulative-hierarchy#hereditarily-finite-sets">hereditarily finite sets</a>.</p>
+</section>
+
+<section data-formal="lhier-countable-codes lhier-countable-def lhier-singleton-code lhier-singleton-code-correct lhier-singleton-map lhier-singleton-map-injective lhier-infinite-def lhier-countable-proper-def" id="counting-definable-subsets" data-kind="theorem">
+<h2>A countable domain has only countably many definable subsets</h2>
+<p>In ambient ZFC, if \(M\) is countably infinite, then \(\operatorname{Def}(M)\) is countably infinite, while \(\mathcal P(M)\) is uncountable. Thus \(\operatorname{Def}(M)\) is a proper subcollection of \(\mathcal P(M)\).</p>
+<div class="proof">
+<p>The pure membership language has countably many finite formula codes. For each finite \(k\), the tuples in \(M^k\) form a countable set. A countable union over \(k\) of the code-and-tuple pairs is countable, using the usual <a href="weaker-forms-of-choice#countable-unions">countable coding bounds</a>. Its image under the defining-subset construction is therefore at most countable.</p>
+<p>For each \(a\in M\), the formula \(x=a\) defines the singleton \(\{a\}\). These are distinct, so they give an injection from \(M\) into \(\operatorname{Def}(M)\), making the latter infinite. Finally <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a> gives \(|\mathcal P(M)|&gt;|M|=\aleph_0\). This proves the strict comparison.</p>
+</div>
+<p>This counts all finite parameter choices. Allowing such parameters does not turn definability into an arbitrary-subset operation.</p>
+</section>
+
+<section data-formal="lhier-nested-domain lhier-nested-membership lhier-nested-equiv lhier-nested-equiv-values lhier-nested-truth lhier-inside-code lhier-code-into-nested lhier-code-out-of-nested lhier-nested-code-bijection lhier-inside-subset lhier-inside-def lhier-specified-inside-subset lhier-inside-def-agreement lhier-internal-def-schema" id="set-satisfaction-absoluteness" data-kind="theorem">
+<h2>Containing a set domain makes its truth and definable subsets absolute</h2>
+<p>Let \(N\) be a transitive model of ZF and let \(M\in N\). The satisfaction construction for \((M,\in)\), and therefore \(\operatorname{Def}(M)\), is the same when computed inside \(N\) as in the ambient universe. The assertion applies to set models; for a proper-class model it is read formula by formula under the <a href="membership-models#class-model-convention">class-model convention</a>.</p>
+<div class="proof">
+<p>Transitivity makes every actual member of \(M\) available in \(N\). Its natural numbers and finite membership-language formula codes are the actual ones: the finite ordinals and finite coding operations are present, and its \(\omega\) is the least nonzero limit ordinal. Ordinalhood and being a nonzero limit are bounded properties, so that characterization agrees with the ambient one. Every actual finite tuple from \(M\) also belongs to \(N\), by its Pairing and Union axioms iterated finitely, and its tuple families contain exactly these tuples.</p>
+<p>Induct on a finite formula. Equality and membership agree. Boolean operations agree. At a quantifier over \(M\), the witnesses or universally tested objects are exactly the same actual members of \(M\) in both calculations; apply induction at each extended tuple. This also handles \(M=\varnothing\), when that range is empty. Hence the two satisfaction calculations agree for every code and assignment.</p>
+<p>Both constructions of \(\operatorname{Def}(M)\) range over the same formulas and finite parameter tuples, and each index gives the same subset. For such an index, Separation inside \(N\) supplies its actual defining subset of \(M\); no ambient subset is implicitly added. Replacement inside \(N\) collects the same indexed image. Thus the two definability collections coincide, and this common set belongs to \(N\).</p>
+</div>
+</section>
+
+<section data-formal="lhier-history-agreement lhier-supplied-history-agreement lhier-internal-recursion-schema" id="constructible-recursion-absoluteness" data-kind="theorem">
+<h2>Transitive models compute the same levels they can index</h2>
+<p>If \(N\) is a transitive model of ZF and \(\alpha\in N\) is an ordinal, then its internal construction gives \(L_\alpha^N=L_\alpha\).</p>
+<div class="proof">
+<p>Induct on \(\alpha\), including all its earlier indices. Transitivity ensures that the ordinals below \(\alpha\) are the same actual ordinals in both calculations. The initial level is empty in each. At a successor, the earlier internally constructed level is a set in \(N\) and equals the ambient level by induction. Apply <a href="#set-satisfaction-absoluteness">absoluteness of its definable-subset collection</a> to obtain the same next level.</p>
+<p>At a limit, the internal recursion has its earlier-level sequence as a set in \(N\). All indices below that limit are present, and all their levels agree by induction. Taking the actual union therefore gives the same limit level. This proves agreement at the supplied index.</p>
+</div>
+<p>The argument assumes that \(N\) is already a transitive ZF model. It does not assume that the class \(L\) satisfies ZF; proving that will require separate axiom checks.</p>
+<p>After the <a href="constructible-inner-model#l-is-inner-model">axioms in L</a> are established separately, this absoluteness proves <a href="constructible-inner-model#idempotence-and-v-equals-l">idempotence of its internal construction</a>.</p>
+</section>
+
+<section data-formal="lhier-omega-def-proper lhier-countable-proper-def" id="all-subsets-question" data-kind="question">
+<h2>Does adding all available parameters give every subset?</h2>
+<p>Take the transitive set \(M=\omega\), and allow every finite tuple of natural-number parameters. Must \(\operatorname{Def}(\omega)=\mathcal P(\omega)\)?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+<p>No. There are only countably many formula-and-finite-tuple pairs, whereas \(\mathcal P(\omega)\) is uncountable by <a href="#counting-definable-subsets"></a>. Parameters must occur as a finite tuple in one finite formula. This does not allow an arbitrary infinite list encoding a desired subset.</p>
+<p>The finite stages agreed with the rank hierarchy because every subset there could be named by finitely many members. That argument no longer applies to all subsets of an infinite domain.</p>
+</div></details>
+</section>
+
+<section data-formal="lhier-hierarchy lhier-hierarchy-nonempty lhier-model-boundary rrefl-native-constructed-reflection" id="hierarchy-versus-model-question" data-kind="question">
+<h2>Do the stage properties already establish an inner model?</h2>
+<p>We have a definable transitive proper class containing every ordinal, with transitive increasing set levels. Does that alone prove that it satisfies ZF?</p>
+<details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+<p>It does not establish the axiom claims. One must show that the specific witnesses required by each axiom belong to the class. For example, Separation must collect a subset defined using truth in the whole class, rather than only in one preceding level. Replacement must bound the construction stages of a set of outputs. An internal power set must collect exactly the subsets of the given object that belong to the class.</p>
+<p>The <a href="rank-reflection#hierarchy-reflection">general finite-family reflection argument</a> applies to this continuous transitive hierarchy without first assuming ZF in its union. The <a href="constructible-inner-model#l-is-inner-model">inner-model axiom proof</a> uses it to construct the required witnesses; a later <a href="constructible-inner-model#l-satisfies-choice">internal well-order construction</a> also establishes Choice.</p>
+</div></details>
+</section>

@@ -1,0 +1,127 @@
+<section id="homomorphisms" data-formal="hp-homomorphism diag-embedding" data-kind="definition">
+  <h2>Maps that retain positive atomic facts</h2>
+  <p>Fix an arbitrary set-sized first-order language \(L\) with equality. All structures here are nonempty, and we work classically with choice. A <strong>homomorphism</strong> \(h:M\to N\) is a function between \(L\)-structures such that, for every function symbol \(f\) of arity \(k\) and every tuple \(\bar a\in M^k\),</p>
+  <div class="math-display">\[h\bigl(f^M(\bar a)\bigr)=f^N\bigl(h(\bar a)\bigr),\]</div>
+  <p>and, for every relation symbol \(R\) of arity \(k\),</p>
+  <div class="math-display">\[M\models R[\bar a]\quad\Longrightarrow\quad N\models R[h(\bar a)].\]</div>
+  <p>Constants are nullary function symbols, so their condition is \(h(c^M)=c^N\). A nullary relation, if present, is a sentence whose truth must pass forward. No injectivity or reflection of relations is required. By comparison, an <a href="elementary-submodels#embeddings">embedding</a> is an injective homomorphism that also reflects every relation.</p>
+  <p>For a language with one binary relation \(E\), think of structures as directed graphs in which loops are allowed. A homomorphism sends every directed edge to an edge; vertices may merge, and the target can have additional edges.</p>
+</section>
+
+<section id="terms-and-atoms" data-formal="fo-term-isomorphism-invariance hp-atomic-preservation" data-kind="lemma">
+  <h2>Every term commutes with the specified map</h2>
+  <p>If \(h:M\to N\) is a homomorphism, \(t(\bar x)\) is an \(L\)-term, and \(\bar a\) assigns its variables in \(M\), then</p>
+  <div class="math-display">\[h\bigl(t^M(\bar a)\bigr)=t^N\bigl(h(\bar a)\bigr).\]</div>
+  <p>Consequently, every atomic formula true at \(\bar a\) in \(M\) is true at \(h(\bar a)\) in \(N\).</p>
+  <div class="proof"><p>Induct on the term. For a variable this is the definition of the transported assignment. For \(t=f(t_0,\ldots,t_{k-1})\), apply the homomorphism identity for \(f\) to the values of the subterms, then substitute the induction hypotheses for those values. The same argument includes \(k=0\), with no subterm hypotheses.</p><p>For an equality \(s=t\), equal values in \(M\) have equal images under the function \(h\); the term identities identify those images with the target values. For \(R(t_0,\ldots,t_{k-1})\), use the relation-preservation condition and then the term identities. Thus equality passes forward without requiring that \(h\) be injective.</p></div>
+</section>
+
+<section id="maps-question" data-formal="hp-graph-edge-collapse hp-graph-injective-nonreflection" data-kind="question">
+  <h2>Can an edge map lose inequalities and negative facts?</h2>
+  <p>Let \(A\) have vertices \(0,1\) and just the edge \(0\to1\). Let \(B\) have one vertex \(*\) with a loop. Is the map sending both vertices to \(*\) a homomorphism? Which of \(x=y\), \(x\ne y\), and \(\neg E(x,y)\) does this example allow to fail under transport?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The only source edge goes to the loop, so the map is a homomorphism. At \((0,1)\), the true inequality becomes false. At \((0,0)\), the true assertion \(\neg E(x,y)\) also becomes false, since its image is the loop. An equality that is true in the source remains true, as any function sends equal inputs to equal outputs.</p><p>Failure of reflection does not require collapsing vertices. The identity map from a one-vertex graph without a loop to a one-vertex graph with a loop is injective and preserves every source edge vacuously. It is a homomorphism, but the target loop has no source counterpart. Thus even an injective homomorphism need not be an embedding.</p></div></details>
+</section>
+
+<section id="existential-positive" data-formal="hp-positive-formula hp-positive-finite-conjunction hp-positive-finite-disjunction hp-existential-closure hp-existential-closure-positive hp-walk-formula hp-walk-formula-truth" data-kind="definition">
+  <h2>Positive formulas with witnesses</h2>
+  <p>An <strong>existential-positive formula</strong> is built from atomic \(L\)-formulas, including equalities, and the constants \(\top,\bot\), using finite conjunction, finite disjunction, and existential quantification. The notation includes formulas with free variables and sentences with none. It excludes negation, implication and universal quantification as construction rules.</p>
+  <p>Empty conjunction means \(\top\), and empty disjunction means \(\bot\). Finite conjunctions and disjunctions of existential-positive formulas stay in this class simply by its definition. So does an existential closure, meaning the result of existentially quantifying all variables in a given finite list.</p>
+  <p>For example, \(\exists z\,(E(x,z)\land E(z,y))\) asks for a directed walk of length two from \(x\) to \(y\). It does not require the three vertices to be distinct. Adding inequalities to demand distinctness would leave the displayed syntactic class.</p>
+  <p>This definition concerns how a formula is written. A formula with other connectives may still be equivalent to an existential-positive one; equivalence asks for identical truth values in every nonempty structure at every assignment.</p>
+</section>
+
+<section id="positive-preservation" data-formal="hp-positive-preservation" data-kind="theorem">
+  <h2>Transport the actual existential witnesses</h2>
+  <p>Let \(h:M\to N\) be a homomorphism and let \(\theta(\bar x)\) be existential-positive. For every tuple \(\bar a\) in \(M\),</p>
+  <div class="math-display">\[M\models\theta[\bar a]\quad\Longrightarrow\quad N\models\theta[h(\bar a)].\]</div>
+  <div class="proof"><p>Induct on the construction of \(\theta\), allowing any assignment of all its free variables. Atomic formulas are handled by <a href="#terms-and-atoms"></a>. The assertion for \(\top\) is immediate; there is no source assignment satisfying \(\bot\).</p><p>For a conjunction, both source formulas hold, so both target formulas hold by induction. For a disjunction, choose a disjunct that holds in the source and apply its induction hypothesis; this gives the target disjunction.</p><p>If \(M\models\exists y\,\psi[\bar a]\), choose its particular witness \(b\in M\). Induction gives \(N\models\psi[h(\bar a),h(b)]\). The element \(h(b)\), rather than a newly chosen unrelated point, is the required target witness. This proves the quantified case and completes the induction.</p></div>
+</section>
+
+<section id="function-question" data-formal="hp-successor-constant-counterexample" data-kind="question">
+  <h2>Why must original constants be preserved?</h2>
+  <p>In the language with a constant \(0\) and unary function \(s\), interpret both structures by \(\mathbb N\), with \(s(n)=n+1\). The map \(h(n)=n+1\) commutes with \(s\). Is it a homomorphism? What fails if the constant condition is omitted?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>It is not a homomorphism in this language, because \(h(0)=1\ne0\). Although \(h(s(n))=n+2=s(h(n))\), commuting with the positive-arity functions alone is insufficient.</p><p>The atomic formula \(x=0\) is true at \(x=0\) in the source and false at its image \(1\). The missing nullary-function condition is exactly what breaks the atomic preservation proof. If the constant symbol is removed from the language, this same map is a homomorphism of the remaining successor structures.</p></div></details>
+</section>
+
+<section id="positive-diagram" data-formal="diag-positive-diagram diag-canonical-map hp-positive-function-facts hp-positive-relation-facts" data-kind="definition">
+  <h2>Name just the true atomic facts</h2>
+  <p>Use the <a href="diagrams-and-extensions#names-and-reducts">language \(L(M)\)</a> with a fresh name \(c_a\) for every \(a\in M\), and its canonical expansion \(M_M\). The <strong>positive atomic diagram</strong> is</p>
+  <div class="math-display">\[\operatorname{Diag}^{+}(M)=\{\alpha:\alpha\text{ is an atomic }L(M)\text{-sentence and }M_M\models\alpha\}.\]</div>
+  <p>This is the positive diagram from <a href="diagrams-and-extensions#negative-facts-question">the question about omitting negative facts</a>. It contains the true function identities \(f(c_{\bar a})=c_{f^M(\bar a)}\), including \(c=c_{c^M}\) for original constants, and every true relation instance. It contains no inequalities and no negated relation instances.</p>
+  <p>For an \(L(M)\)-structure \(N^*\), write \(N\) for its reduct to \(L\) and \(h_{N^*}(a)=c_a^{N^*}\) for its canonical map. Different names can have the same interpretation.</p>
+</section>
+
+<section id="homomorphism-diagram-lemma" data-formal="hp-positive-canonical-map hp-positive-specified-map" data-kind="theorem">
+  <h2>The positive diagram specifies homomorphisms</h2>
+  <p>An \(L(M)\)-structure \(N^*\) satisfies \(\operatorname{Diag}^{+}(M)\) if and only if its particular canonical map \(h_{N^*}:M\to N\) is a homomorphism. Equivalently, a specified function \(h:M\to N\) is a homomorphism if and only if interpreting every \(c_a\) by \(h(a)\) makes \(N\) a model of that diagram.</p>
+  <div class="proof"><p>Suppose the diagram holds. Its function identity for \(f\) and \(\bar a\), interpreted in \(N^*\), says \(f^N(h_{N^*}(\bar a))=h_{N^*}(f^M(\bar a))\). This includes original constants. Whenever \(R^M(\bar a)\) holds, its named atomic sentence belongs to the diagram, so \(R^N(h_{N^*}(\bar a))\) holds. These are precisely the homomorphism conditions.</p><p>Conversely, every atomic sentence of the diagram can be obtained from an atomic \(L\)-formula by substituting finitely many old-element names. Repeated appearances of the same name use the same variable. Truth in \(M_M\) is truth of that formula at the named tuple in \(M\). Atomic preservation along \(h_{N^*}\) gives its truth at the image tuple in \(N\); the <a href="first-order-structures#semantic-substitution">substitution rule</a> gives truth of the named sentence in \(N^*\). Thus every diagram sentence holds.</p><p>When the interpretation of each \(c_a\) is prescribed as \(h(a)\), the canonical map is exactly the supplied \(h\). This proves the last equivalence without imposing injectivity.</p></div>
+</section>
+
+<section id="finite-positive-pattern" data-formal="hp-diagram-pattern hp-pattern-source-tuple hp-diagram-pattern-truth hp-finite-positive-pattern hp-existential-closure-truth" data-kind="lemma">
+  <h2>A finite part of the diagram is one positive witness condition</h2>
+  <p>Let \(\Delta\subseteq\operatorname{Diag}^{+}(A)\) be finite. List the distinct added names occurring in it as \(c_{a_0},\ldots,c_{a_{r-1}}\). There is a positive quantifier-free \(L\)-formula \(\delta(\bar y)\), a finite conjunction of atoms, such that \(\exists\bar y\,\delta(\bar y)\) is true in \(A\). A nonempty \(L\)-structure \(B\) satisfies this existential-positive sentence exactly when these finitely many added names can be interpreted in \(B\) so that all of \(\Delta\) holds.</p>
+  <div class="proof"><p>Conjoin the atomic sentences of \(\Delta\) and replace each distinct added name by its own fresh variable. Original language symbols, including original constants, stay unchanged. The resulting \(\delta\) is a conjunction of atomic \(L\)-formulas. The tuple \(\bar a\) witnesses it in \(A\).</p><p>If a tuple \(\bar b\) satisfies \(\delta\) in \(B\), interpret \(c_{a_i}\) by \(b_i\). Substitution makes all the selected sentences true. Conversely, interpretations making the selected sentences true give just such a tuple. Any names not occurring in \(\Delta\) can be assigned an arbitrary fixed element of \(B\).</p><p>If \(\Delta\) is empty, use \(\delta=\top\) and the empty tuple. If its sentences use no added names, leave their atoms unchanged and use an empty quantifier list. These cases give the same equivalence.</p></div>
+</section>
+
+<section id="positive-information" data-formal="hp-positive-theory hp-positive-preservation" data-kind="definition">
+  <h2>Collect the positive witness sentences true in a structure</h2>
+  <p>The <strong>existential-positive theory</strong> of a structure \(A\), written \(\operatorname{EP}(A)\), is the set of existential-positive \(L\)-sentences true in \(A\). Thus</p>
+  <div class="math-display">\[\operatorname{EP}(A)\subseteq\operatorname{EP}(B)\]</div>
+  <p>means that every such sentence true in \(A\) is true in \(B\). The direction is intentional: a homomorphism \(A\to B\) gives this inclusion by <a href="#positive-preservation"></a>. Equality of the full theories of \(A\) and \(B\) is a much stronger requirement.</p>
+</section>
+
+<section id="compatible-positive-diagrams" data-formal="hp-mixed-diagram-theory hp-mixed-finite-realization hp-mixed-diagram-satisfiable hp-mixed-canonical-maps hp-positive-compatibility diag-copy-elementarity" data-kind="lemma">
+  <h2>Positive information gives a homomorphism into an elementary extension</h2>
+  <p>For nonempty \(L\)-structures \(A,B\), the inclusion \(\operatorname{EP}(A)\subseteq\operatorname{EP}(B)\) holds if and only if there are a nonempty structure \(C\), an elementary embedding \(j:B\to C\), and a homomorphism \(g:A\to C\).</p>
+  <div class="proof"><p>For the forward direction, give \(A\) names \(c_a\) and \(B\) names \(d_b\), using disjoint families even if the carriers overlap. In the common expanded language form</p>
+  <div class="math-display">\[\operatorname{Diag}^{+}(A)\ \cup\ \operatorname{ElDiag}(B).\]</div>
+  <p>Each diagram is carried into that common language, and no equation identifies names from the two families. Consider a finite fragment. Let \(\Delta\) be its selected positive \(A\)-diagram sentences, and retain its finitely many \(B\)-diagram sentences. By <a href="#finite-positive-pattern"></a>, the first selection is described by a sentence \(\exists\bar y\,\delta(\bar y)\) in \(\operatorname{EP}(A)\). It therefore holds in \(B\). Choose a witnessing tuple in \(B\).</p><p>Expand the original structure \(B\): interpret every \(d_b\) by \(b\), and the finitely many mentioned \(c_a\) by the chosen tuple. Interpret the remaining \(A\)-names arbitrarily. The canonical \(B\)-names satisfy every selected elementary-diagram sentence, while the witnesses satisfy \(\Delta\). Disjointness of the name families lets these interpretations coexist. This proves finite satisfiability, including fragments in which either selection is empty.</p><p><a href="ultraproducts#compactness">Compactness in arbitrary set-sized languages</a> supplies a model of the whole union. Let \(C\) be its \(L\)-reduct. Define \(g(a)=c_a^C\) and \(j(b)=d_b^C\), reading constants in the expanded model. The <a href="#homomorphism-diagram-lemma"></a> makes this \(g\) a homomorphism; the <a href="diagrams-and-extensions#elementary-diagram-lemma">elementary diagram lemma</a> makes this \(j\) elementary. The expanded language is set-sized but need not be countable.</p><p>Conversely, an existential-positive sentence true in \(A\) passes along \(g\) to \(C\). Elementarity of \(j\) reflects that sentence to \(B\). This proves exactly the stated inclusion.</p></div>
+  <p>After <a href="diagrams-and-extensions#renaming-the-copy">renaming the elementary copy</a>, one may regard \(C\) as an elementary extension of \(B\). The lemma asks for a homomorphism into that extension, not necessarily into \(B\) itself.</p>
+</section>
+
+<section id="homomorphism-preserved" data-formal="hp-homomorphism-preserved hp-positive-preservation" data-kind="definition">
+  <h2>Preservation is a property across all structures</h2>
+  <p>An \(L\)-sentence \(\varphi\) is <strong>preserved under homomorphisms</strong> if, for every homomorphism \(h:A\to B\) between nonempty \(L\)-structures,</p>
+  <div class="math-display">\[A\models\varphi\quad\Longrightarrow\quad B\models\varphi.\]</div>
+  <p>The quantifiers include infinite structures and nonsurjective maps. No background theory restricts the source or target. Every existential-positive sentence has this property by <a href="#positive-preservation"></a>.</p>
+</section>
+
+<section id="positive-consequences" data-formal="hp-positive-consequences hp-positive-finite-conjunction hp-positive-finite-disjunction" data-kind="definition">
+  <h2>The positive consequences of one sentence</h2>
+  <p>For an \(L\)-sentence \(\varphi\), its <strong>existential-positive consequences</strong> form the set</p>
+  <div class="math-display">\[\Gamma_\varphi=\{\theta:\theta\text{ is existential-positive and }\varphi\models\theta\}.\]</div>
+  <p>Semantic consequence here ranges over all nonempty \(L\)-structures. Every model of \(\varphi\) satisfies all of \(\Gamma_\varphi\). A finite disjunction of its possible positive consequences is existential-positive, as is a finite conjunction; the empty cases are \(\bot\) and \(\top\).</p>
+</section>
+
+<section id="consequences-suffice" data-formal="hp-avoidance-theory hp-avoidance-satisfiable hp-avoidance-model hp-positive-consequences-entail" data-kind="lemma">
+  <h2>All positive consequences recover a preserved sentence</h2>
+  <p>If \(\varphi\) is preserved under homomorphisms, then every nonempty \(B\models\Gamma_\varphi\) satisfies \(\varphi\).</p>
+  <div class="proof"><p>Form the theory</p>
+  <div class="math-display">\[V=\{\varphi\}\ \cup\ \{\neg\theta:\theta\text{ is existential-positive and }B\not\models\theta\}.\]</div>
+  <p>It is satisfiable. Otherwise compactness gives finitely many excluded sentences \(\theta_1,\ldots,\theta_r\) for which \(\{\varphi,\neg\theta_1,\ldots,\neg\theta_r\}\) has no model. Thus</p>
+  <div class="math-display">\[\varphi\models\theta_1\lor\cdots\lor\theta_r.\]</div>
+  <p>The displayed disjunction is existential-positive and belongs to \(\Gamma_\varphi\). Since \(B\models\Gamma_\varphi\), it is true in \(B\); yet every selected disjunct is false there. If \(r=0\), the same contradiction uses \(\bot\in\Gamma_\varphi\). This proves satisfiability of \(V\).</p><p>Choose \(A\models V\). Then \(A\models\varphi\), and \(\operatorname{EP}(A)\subseteq\operatorname{EP}(B)\): whenever an existential-positive sentence is false in \(B\), its negation was imposed on \(A\), so it cannot be true there.</p><p>Apply <a href="#compatible-positive-diagrams"></a> to obtain a homomorphism \(g:A\to C\) and an elementary embedding \(j:B\to C\). Preservation of \(\varphi\) along \(g\) gives \(C\models\varphi\). Elementarity of \(j\) then gives \(B\models\varphi\), as required. The homomorphism goes from the model where \(\varphi\) is already known to the elementary extension of the model where it must be proved.</p></div>
+  <figure id="positive-span-picture" class="proof-figure">
+    <div class="figure-image"><img src="assets/positive-span.svg" width="760" height="495" alt="A homomorphism g goes from A to C and an elementary embedding j from B to C. The compactness theory combines the positive diagram of A and elementary diagram of B. Truth of phi passes A to C and reflects to B." /></div>
+    <figcaption>The positive diagram gives \(g:A\to C\), while the elementary diagram gives \(j:B\to C\). A homomorphism-preserved sentence moves from \(A\) to \(C\), and elementary reflection returns it to \(B\). There need not be a homomorphism from \(A\) directly to \(B\).</figcaption>
+  </figure>
+</section>
+
+<section id="homomorphism-preservation" data-formal="hp-finite-positive-equivalent hp-preservation-characterization hp-preservation-of-equivalent" data-kind="theorem">
+  <h2>Homomorphism preservation is exactly positive existential definability</h2>
+  <div class="statement-box"><p>For a sentence \(\varphi\) in any set-sized first-order language with equality, the following are equivalent: \(\varphi\) is preserved under all homomorphisms between nonempty structures; and \(\varphi\) is equivalent, in all nonempty structures, to an existential-positive sentence.</p></div>
+  <div class="proof"><p>If \(\varphi\) is equivalent to an existential-positive sentence, transport truth of that sentence by <a href="#positive-preservation"></a> and use the equivalence in both structures.</p><p>Conversely, suppose \(\varphi\) is preserved. By <a href="#consequences-suffice"></a>, the theory \(\Gamma_\varphi\cup\{\neg\varphi\}\) has no nonempty model. Compactness yields a finite \(\Gamma_0\subseteq\Gamma_\varphi\) with \(\Gamma_0\models\varphi\). Let \(\theta\) be the conjunction of its members, taking \(\theta=\top\) if \(\Gamma_0\) is empty. This is an existential-positive sentence.</p><p>Its construction gives \(\theta\models\varphi\). Conversely, the definition of \(\Gamma_\varphi\) gives \(\varphi\models\theta\), since \(\varphi\) implies every selected conjunct. Therefore \(\varphi\) and \(\theta\) have the same nonempty models. An unsatisfiable \(\varphi\) causes no exception: \(\bot\) is an allowed existential-positive sentence.</p></div>
+  <p>The result characterizes a property of the models, rather than requiring the original written sentence to use only positive connectives. The <a href="preservation-converses#existential-preservation">extension-preservation theorem</a> allows arbitrary quantifier-free matrices; preservation under the larger class of homomorphisms forces positivity as well.</p>
+</section>
+
+<section id="sentence-tests" data-formal="hp-walk-sentence hp-walk-sentence-truth hp-graph-positive-walk hp-two-vertices-sentence hp-outgoing-edge-sentence hp-graph-cardinality-counterexample hp-graph-outgoing-counterexample" data-kind="question">
+  <h2>Which graph properties can have such a description?</h2>
+  <p>For nonempty directed graphs with loops allowed, consider: having a directed walk of length two; having at least two vertices; and every vertex having an outgoing edge. Which properties are preserved under homomorphisms?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The first is preserved. It is expressed by \(\exists x\,\exists y\,\exists z\,(E(x,y)\land E(y,z))\), and a witnessing triple maps to a witnessing triple. A one-vertex loop can satisfy it, since witnesses need not be distinct.</p><p>The second is not preserved. Any map from a two-vertex edgeless graph to a one-vertex edgeless graph is a homomorphism, while the property changes from true to false. Consequently \(\exists x\,\exists y\,(x\ne y)\) has no existential-positive equivalent on all these graphs.</p><p>The third is not preserved either. Include the one-vertex loop graph into a two-vertex graph consisting of that loop and one isolated vertex. This is a homomorphism; every source vertex has an outgoing edge, but the isolated target vertex does not. Thus the universal-existential sentence \(\forall x\,\exists y\,E(x,y)\) also has no existential-positive equivalent. The definition permits target vertices outside the image of the map, so it does not protect a requirement about every target vertex.</p></div></details>
+</section>
+
+<section id="finite-boundary" data-formal="compact-finite-size-fragments compact-infinite-theory-characterization hp-homomorphism-preserved" data-kind="question">
+  <h2>Does the compactness argument keep its intermediate models finite?</h2>
+  <p>Can the proof above use the rule “if every finite part has a finite model, then the whole theory has a finite model”?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. In the equality-only language, take the <a href="logical-compactness#size-sentences">sentences requiring at least \(n\) elements</a> for all positive integers \(n\). Every finite selection has a finite model, with size at least the largest requested bound. No finite structure satisfies the entire theory, because its own size is smaller than some requested bound.</p><p>The compactness steps can therefore produce infinite intermediate structures. The preservation hypothesis in <a href="#homomorphism-preservation"></a> ranges over all nonempty structures, so it applies to those homomorphisms too. Restricting that hypothesis to finite structures gives a different problem; the argument here does not prove its converse by a finite-model compactness principle.</p></div></details>
+</section>

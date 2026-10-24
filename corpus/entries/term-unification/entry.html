@@ -105,7 +105,12 @@
       <p>Decompose the first equation into \(x_0\doteq g(x_2)\) and \(g(x_1)\doteq x_3\). Eliminate \(x_0\), then \(x_3\), and finally \(x_2\). Compose the replacements in that order, so the last replacement also acts inside the earlier image \(g(x_2)\). The resulting substitution is</p>
       <div class="math-display">\[\mu(x_0)=g(a),\quad\mu(x_1)=x_1,\quad\mu(x_2)=a,\quad\mu(x_3)=g(x_1),\]</div>
       <p>and \(\mu(x_j)=x_j\) for all other indices. Direct substitution gives \(f(g(a),g(x_1))\) on both sides of the first equation and \(a\) on both sides of the second. Any unifier \(\sigma\) must satisfy \(\sigma(x_2)=a\), then \(\sigma(x_0)=g(a)\) and \(\sigma(x_3)=g(\sigma(x_1))\). Hence \(\sigma=\sigma\star\mu\), so this displayed answer is most general. The value of \(x_3\) is tied to the freely chosen value of \(x_1\); choosing their images independently need not satisfy the equation.</p>
-    </div>
+
+  <figure id="unification-propagation-states" class="proof-figure">
+    <div class="figure-image"><img src="assets/unification-propagation-states.svg" width="760" height="510" alt="Four solver states show decomposition and elimination. The final x2-to-a substitution changes the earlier image x0-to-g(x2) into x0-to-g(a)."></div>
+    <figcaption>The final replacement acts on earlier images as well as the remaining equations. This is composition of substitutions; the freely chosen image of \(x_1\) still determines the image of \(x_3\).</figcaption>
+  </figure>
+</div>
   </details>
 </section>
 
@@ -116,7 +121,12 @@
     <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
     <div class="answer-body">
       <p>Eliminating \(x_0\) replaces the second equation by \(x_1\doteq f(f(x_1))\). It now fails the occurs check. The elimination lemma proves that this failure rules out an original unifier as well. Equivalently any original solution would imply \(\sigma(x_1)=f(f(\sigma(x_1)))\), impossible for a finite term by node count. An occurs check confined to the unchanged original equations would miss this obstruction.</p>
-    </div>
+
+  <figure id="unification-occurs-cycle" class="proof-figure">
+    <div class="figure-image"><img src="assets/unification-occurs-cycle.svg" width="760" height="425" alt="Elimination turns the two-equation cycle into x1≐f(f(x1)); the finite right-hand tree has two f nodes above the entire substituted term σ(x1)."></div>
+    <figcaption>The cycle becomes visible after the first elimination. Any proposed finite substitution would make its own image a proper subtree of an equal term, contradicting node count.</figcaption>
+  </figure>
+</div>
   </details>
 </section>
 
