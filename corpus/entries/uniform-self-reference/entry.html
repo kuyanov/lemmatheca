@@ -1,0 +1,133 @@
+<section id="uniform-selectors" data-kind="definition" data-formal="uniform-rec-selector-property univ-indexed-evaluation univ-specialization partrec-partial-equality">
+  <h2>One selector must work for every parameter</h2>
+  <p>Use the <a href="universal-computation#numbering-programs">fixed program numbering</a> \(\varphi_e\) and its primitive-recursive <a href="universal-computation#parameter-theorem">specialization function</a> \(s(e,a)\). Write \(U(e,x)\simeq\varphi_e(x)\) for the <a href="universal-computation#universal-evaluation">universal partial evaluator</a>. For a total recursive function \(F(e,a)\) producing program indices, a <strong>uniform fixed-point selector</strong> is a total recursive function \(h(a)\) such that</p>
+  <div class="math-display">\[\varphi_{h(a)}(x)\simeq\varphi_{F(h(a),a)}(x)\qquad\text{for every }a,x.\]</div>
+  <p>The relation \(\simeq\) is <a href="partial-recursive-functions#partial-equality">equality of partial values</a>, including divergence. The requirement is \(\exists h\,\forall a,x\), with one algorithm computing the chosen index from \(a\). Applying the <a href="recursion-theorem#transformer-fixed-points">ordinary fixed-point theorem</a> separately at each \(a\) gives only \(\forall a\,\exists e\). That statement alone does not provide a computable way to choose those indices.</p>
+</section>
+
+<section id="parameterized-recursion" data-kind="theorem" data-formal="uniform-rec-auxiliary uniform-rec-auxiliary-index uniform-rec-selector uniform-rec-selector-primitive uniform-rec-auxiliary-recursive uniform-rec-specified-selector uniform-rec-parameterized rec-thm-self-specialization rec-thm-recursion-theorem">
+  <h2>A fixed-point index can be selected effectively from the parameter</h2>
+  <div class="statement-box"><p>For every total recursive \(F:\mathbb N^2\to\mathbb N\), there is one primitive-recursive \(h:\mathbb N\to\mathbb N\) satisfying</p>
+    <div class="math-display">\[\forall a,x\qquad\varphi_{h(a)}(x)\simeq\varphi_{F(h(a),a)}(x).\]</div>
+    <p>More precisely, one fixed index \(q\) suffices, and the selector is \(h(a)=s(q,a)\).</p>
+  </div>
+  <div class="proof">
+    <p>Decode \(y=\langle a,x\rangle\) and define the binary partial function</p>
+    <div class="math-display">\[G(e,y)\simeq U\bigl(F(s(e,a),a),x\bigr),\qquad a=\operatorname{left}(y),\quad x=\operatorname{right}(y).\]</div>
+    <p>Pair decoding and specialization are primitive recursive, \(F\) is total recursive, and the universal evaluator \(U\) is partial recursive. Their <a href="partial-recursive-functions#strict-composition">strict composition</a> makes \(G\) partial recursive. The index calculation always finishes; the final evaluation may diverge.</p>
+    <p>Apply the <a href="recursion-theorem#recursion-theorem">ordinary recursion theorem</a> once, to \(G\). It gives a single \(q\) with \(\varphi_q(y)\simeq G(q,y)\) for every \(y\). Using the explicit <a href="recursion-theorem#self-specialization">self-specialization</a> construction \(d(b)=s(b,b)\), one may take \(q=d(r)\), where one chooses an index \(r\) with \(\varphi_r(\langle b,y\rangle)\simeq G(d(b),y)\). Now put \(h(a)=s(q,a)\). Since \(q\) is fixed and \(s\) is primitive recursive, this whole selector is primitive recursive. For every \(a,x\),</p>
+    <div class="math-display">\[\varphi_{h(a)}(x)\simeq\varphi_q(\langle a,x\rangle)\simeq G(q,\langle a,x\rangle)\simeq\varphi_{F(s(q,a),a)}(x)\simeq\varphi_{F(h(a),a)}(x).\]</div>
+    <p>All equalities concern partial values, so both defined outputs and divergence agree. The same \(q\) was chosen before \(a\) varied. This proves the selector assertion, rather than merely a separate existence statement for each parameter.</p>
+  </div>
+</section>
+
+<section id="partial-families" data-kind="lemma" data-formal="uniform-rec-partial-compiler uniform-rec-partial-compiler-primitive uniform-rec-partial-compiler-evaluation uniform-rec-partial-family-index uniform-rec-specified-partial-family uniform-rec-partial-families">
+  <h2>The parameterized theorem also handles partial output rules</h2>
+  <p>If \(g(e,a,x)\) is partial recursive jointly in its three arguments, there is one primitive-recursive \(h(a)\) such that \(\varphi_{h(a)}(x)\simeq g(h(a),a,x)\) for every \(a,x\). A specified construction chooses an index \(p\) with \(\varphi_p(\langle e,\langle a,x\rangle\rangle)\simeq g(e,a,x)\), defines \(F(e,a)=s(s(p,e),a)\), and uses the selector from <a href="#parameterized-recursion"></a> for this \(F\).</p>
+  <div class="proof">
+    <p>Joint partial recursiveness supplies the single paired-input index \(p\). Two applications of specialization give \(\varphi_{F(e,a)}(x)\simeq g(e,a,x)\). The map \(F\) is total primitive recursive, because it transforms indices without running the indexed functions. The parameterized theorem therefore yields \(\varphi_{h(a)}(x)\simeq\varphi_{F(h(a),a)}(x)\simeq g(h(a),a,x)\). No totality assumption on \(g\) is used.</p>
+  </div>
+</section>
+
+<section id="indexed-output-question" data-kind="question" data-formal="uniform-rec-indexed-output uniform-rec-successor-selector">
+  <h2>Can the selected programs reveal both their index and their parameter?</h2>
+  <p>Apply <a href="#partial-families"></a> to the total rule \(g(e,a,x)=e+a+x\). Show that the selector can be primitive recursive and injective. Explain why this does not assert that \(h(a)=F(h(a),a)\) numerically.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The specified compiler for this \(g\) is total primitive recursive. Thus the construction gives a primitive-recursive \(h\) with \(\varphi_{h(a)}(x)\downarrow=h(a)+a+x\) for every \(a,x\). Every selected program is total. If \(h(a)=h(b)=j\), evaluating the same program at \(0\) gives both \(j+a\) and \(j+b\). A partial function has only one output at a given input, so cancellation gives \(a=b\). Hence this particular selector is injective.</p>
+    <p>The fixed-point assertion compares the functions computed by two indices. It need not make the index numbers equal. For example, \(F(e,a)=e+1\) is a total recursive index transformation for which numerical equality would be impossible, while <a href="#parameterized-recursion"></a> still supplies semantic fixed points simultaneously for all parameters.</p>
+  </div></details>
+</section>
+
+<section id="program-numberings" data-kind="definition" data-formal="numbering-definition numbering-computable numbering-standard univ-universal-recursive univ-universal-complete">
+  <h2>A numbering lists functions through numerical program names</h2>
+  <p>A <strong>numbering</strong> \(\psi=(\psi_n)_{n\in\mathbb N}\) of the unary partial recursive functions is a sequence of such functions containing every one of them. Repetitions are allowed. It is a <strong>computable numbering</strong> if the joint partial evaluation \(\Psi(n,x)\simeq\psi_n(x)\) is partial recursive.</p>
+  <p>The standard \(\varphi\) is a computable numbering by <a href="universal-computation#universal-evaluation"></a>. A numbering's surjectivity is an existence assertion about program names. It does not itself supply an algorithm translating a name from another numbering.</p>
+</section>
+
+<section id="compiler-to-standard" data-kind="lemma" data-formal="numbering-compiler-to-standard">
+  <h2>A joint evaluator supplies a compiler into the standard numbering</h2>
+  <p>If \(\Psi(n,x)\simeq\psi_n(x)\) is partial recursive jointly, choose one index \(p\) with \(\varphi_p(\langle n,x\rangle)\simeq\psi_n(x)\). Then the specified primitive-recursive compiler \(c(n)=s(p,n)\) satisfies \(\varphi_{c(n)}(x)\simeq\psi_n(x)\) for every \(n,x\).</p>
+  <div class="proof">
+    <p>The universal enumeration supplies \(p\) for the unary function of the pair code. Specialization gives \(\varphi_{s(p,n)}(x)\simeq\varphi_p(\langle n,x\rangle)\simeq\psi_n(x)\). The index \(p\) is fixed before \(n\) varies, so \(c\) is primitive recursive. This direction needs no assumption that \(\psi\) contains all partial recursive functions.</p>
+  </div>
+</section>
+
+<section id="acceptable-numberings" data-kind="definition" data-formal="numbering-compilers numbering-acceptable numbering-compilers-cover numbering-semantic-round-trips">
+  <h2>Acceptability requires effective translation in both directions</h2>
+  <p>A numbering \(\psi\) is <strong>acceptable</strong> when there are total recursive compilers \(c,b:\mathbb N\to\mathbb N\) satisfying</p>
+  <div class="math-display">\[\varphi_{c(n)}(x)\simeq\psi_n(x),\qquad\psi_{b(e)}(x)\simeq\varphi_e(x)\qquad(n,e,x\in\mathbb N).\]</div>
+  <p>Thus \(c\) sends a \(\psi\)-index to a standard index, while \(b\) sends a standard index to a \(\psi\)-index. These are translations of behavior; neither compiler is required to be injective or to be the numerical inverse of the other. For instance, the identities imply \(\psi_{b(c(n))}\simeq\psi_n\), but not necessarily \(b(c(n))=n\).</p>
+</section>
+
+<section id="acceptable-specialization" data-kind="theorem" data-formal="numbering-joint-evaluation numbering-specialization numbering-specialization-correct">
+  <h2>The compilers transport evaluation and fixed-parameter insertion</h2>
+  <p>For an acceptable numbering with supplied compilers \(c,b\), the evaluator \(\Psi(n,x)\simeq\psi_n(x)\) is partial recursive jointly. The specified total recursive specialization function</p>
+  <div class="math-display">\[s_\psi(n,a)=b\bigl(s(c(n),a)\bigr)\]</div>
+  <p>satisfies \(\psi_{s_\psi(n,a)}(x)\simeq\psi_n(\langle a,x\rangle)\) for every \(n,a,x\).</p>
+  <div class="proof">
+    <p>Joint evaluation is \(U(c(n),x)\), a partial recursive composition with the total compiler \(c\). For specialization, first compile the original \(\psi\)-index into a standard index, insert \(a\) using the standard \(s\), and compile back with \(b\). These index operations all terminate. The behavioral calculation is</p>
+    <div class="math-display">\[\psi_{b(s(c(n),a))}(x)\simeq\varphi_{s(c(n),a)}(x)\simeq\varphi_{c(n)}(\langle a,x\rangle)\simeq\psi_n(\langle a,x\rangle).\]</div>
+    <p>The compiler orientation matters: \(s\) receives a standard index, not the untranslated \(\psi\)-index. The calculation includes divergence, and gives the claimed specialization for this same numbering.</p>
+  </div>
+  <figure id="specialization-compilers" class="proof-figure">
+    <div class="figure-image"><img src="assets/specialization-compilers.svg" width="760" height="350" alt="A psi index n passes through compiler c to a standard phi index, through specialization at a, and through compiler b back to a psi index. That final program at x has the behavior of the original psi program on the pair of a and x." /></div>
+    <figcaption>The specified composite is \(s_\psi(n,a)=b(s(c(n),a))\). The middle specialization receives a standard index; the first and last boxes contain indices for \(\psi\). The equality includes divergence.</figcaption>
+  </figure>
+</section>
+
+<section id="numbering-transfer" data-kind="theorem" data-formal="numbering-translated-transformation numbering-translated-selector numbering-transformation-computable numbering-specified-selector numbering-uniform-recursion">
+  <h2>Uniform self-reference survives acceptable changes of numbering</h2>
+  <div class="statement-box"><p>Let \(\psi\) be acceptable with supplied compilers \(c,b\), and let \(F(e,a)\) be total recursive, now returning \(\psi\)-indices from \(\psi\)-indices and parameters. There is one total recursive \(H(a)\) such that</p>
+    <div class="math-display">\[\forall a,x\qquad\psi_{H(a)}(x)\simeq\psi_{F(H(a),a)}(x).\]</div>
+  </div>
+  <div class="proof">
+    <p>Define a transformation of standard indices by \(\widehat F(e,a)=c(F(b(e),a))\). Its input \(e\) is first translated by \(b\), so \(F\) receives a \(\psi\)-index; the resulting \(\psi\)-index is translated back by \(c\). The composite is total recursive. Apply <a href="#parameterized-recursion"></a> to obtain a single primitive-recursive standard selector \(h\) for \(\widehat F\), and set \(H(a)=b(h(a))\). This \(H\) is total recursive.</p>
+    <div class="math-display">\[\psi_{H(a)}(x)\simeq\varphi_{h(a)}(x)\simeq\varphi_{c(F(b(h(a)),a))}(x)\simeq\psi_{F(H(a),a)}(x).\]</div>
+    <p>Every translation has been used in its stated direction. No numerical equality between translated indices was needed. Because \(b\) was assumed total recursive rather than primitive recursive, this argument claims a total recursive selector in the new numbering.</p>
+  </div>
+</section>
+
+<section id="repeated-indices-question" data-kind="question" data-formal="numbering-repeated numbering-repeated-compilers numbering-repeated-facts">
+  <h2>Must acceptable compilers be bijections?</h2>
+  <p>Define \(\psi_{\langle u,v\rangle}(x)\simeq\varphi_v(x)\). Find two effective compilers showing that this is an acceptable numbering, and test whether the two composites are numerical identities.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Take \(c(n)=\operatorname{right}(n)\) and \(b(e)=\langle0,e\rangle\). Both are primitive recursive, and the defining equations give \(\varphi_{c(n)}\simeq\psi_n\) and \(\psi_{b(e)}\simeq\varphi_e\). In particular every standard program appears, and joint evaluation is \(U(\operatorname{right}(n),x)\).</p>
+    <p>The composite \(c(b(e))=e\) is the identity. In the other direction, \(b(c(\langle u,v\rangle))=\langle0,v\rangle\), which differs from \(\langle u,v\rangle\) whenever \(u\ne0\), by injectivity of the pairing. The two indices still compute the same partial function. These explicit computable translations establish acceptability; a bare bijection between sets of names would not supply the required algorithms.</p>
+  </div></details>
+</section>
+
+<section id="halting-at-zero" data-kind="lemma" data-formal="numbering-diagonal-to-zero rice-halts-zero rice-halts-zero-facts univ-diagonal-halting-set univ-diagonal-halting-undecidable">
+  <h2>Fixing the runtime input does not make halting decidable</h2>
+  <p>The set \(H_0=\{e:\varphi_e(0)\downarrow\}\) is undecidable. More precisely, there is a primitive-recursive \(t(e)\) such that \(\varphi_{t(e)}(z)\simeq\varphi_e(e)\) for every \(e,z\), so \(e\in K\) if and only if \(t(e)\in H_0\).</p>
+  <div class="proof">
+    <p>The binary partial function \((e,z)\mapsto U(e,e)\), ignoring \(z\), is partial recursive. Choose one index \(p\) satisfying \(\varphi_p(\langle e,z\rangle)\simeq U(e,e)\), and put \(t(e)=s(p,e)\). Specialization proves the claimed equality at every \(z\). A total recursive decision test for \(H_0\), composed with the primitive-recursive \(t\), would decide the <a href="universal-computation#halting-problem">undecidable diagonal halting set</a> \(K\). Thus no such test exists.</p>
+  </div>
+</section>
+
+<section id="nonacceptable-numbering" data-kind="definition" data-formal="numbering-flagged numbering-flagged-zero-domain numbering-flagged-zero-decidable">
+  <h2>A computable listing can build a halting flag into its names</h2>
+  <p>For \(n=\langle u,v\rangle\), define a partial function \(\theta_n\) by</p>
+  <div class="math-display">\[\theta_{\langle u,v\rangle}(x)\simeq\begin{cases}\text{undefined}&amp;x=0\text{ and }u=0,\\u-1&amp;x=0\text{ and }u&gt;0,\\\varphi_v(x)&amp;x&gt;0.\end{cases}\]</div>
+  <p>Subtraction is ordinary natural subtraction; it is used only in the case \(u&gt;0\). The positive-input branch uses the same input \(x\), without shifting it. Consequently</p>
+  <div class="math-display">\[\theta_n(0)\downarrow\quad\Longleftrightarrow\quad\operatorname{left}(n)&gt;0.\]</div>
+  <p>This is a decidable property of the index. The next result shows why that convenience obstructs an effective translation of arbitrary standard indices.</p>
+</section>
+
+<section id="nonacceptability-proof" data-kind="theorem" data-formal="numbering-flagged-evaluation numbering-flagged-represents numbering-flagged-numbering numbering-flagged-not-acceptable numbering-compiler-to-standard">
+  <h2>Joint computability and surjectivity do not imply acceptability</h2>
+  <p>The family \(\theta\) is a computable numbering of all unary partial recursive functions, and it has a primitive-recursive compiler into \(\varphi\). There is no total recursive \(b\) with \(\theta_{b(e)}\simeq\varphi_e\) for every \(e\); hence this numbering is not acceptable.</p>
+  <div class="proof">
+    <p>To evaluate \(\theta_n(x)\), decode \(n=\langle u,v\rangle\) and test whether \(x=0\). At positive inputs run \(U(v,x)\). At zero, return \(u-1\) when \(u&gt;0\); otherwise search for a natural number satisfying \(0=1\), which never succeeds. Total tests and these partial branches give a jointly partial recursive evaluator. <a href="#compiler-to-standard"></a> therefore supplies the specified form of a primitive-recursive compiler into the standard numbering.</p>
+    <p>For surjectivity, let \(f\simeq\varphi_v\) be any unary partial recursive function. If \(f(0)\) is undefined, choose \(u=0\); if \(f(0)\downarrow=y\), choose \(u=y+1\). Then \(\theta_{\langle u,v\rangle}\simeq f\): the zero-input behaviors agree by the choice of \(u\), and every positive-input behavior agrees by the definition. This is an existence proof, not an effective test selecting between the two cases.</p>
+    <p>Suppose the reverse compiler \(b\) existed. Its total computable output could be decoded, and the decidable test \(\operatorname{left}(b(e))&gt;0\) would determine whether \(\theta_{b(e)}(0)\) halts. The compiler identity would make that exactly a decision test for \(\varphi_e(0)\downarrow\), contrary to <a href="#halting-at-zero"></a>. Thus the reverse compiler cannot exist, even though the listing is computable and includes every required function.</p>
+  </div>
+</section>
+
+<section id="rice-boundary-question" data-kind="question" data-formal="numbering-flagged-nontrivial numbering-flagged-zero-domain numbering-flagged-zero-decidable numbering-flagged-not-acceptable">
+  <h2>Does the zero-input flag contradict Rice’s theorem?</h2>
+  <p>For the numbering \(\theta\), “halts at input zero” is a property of the computed partial function, and its index set is decidable. Why does this not contradict <a href="rices-theorem#rice-theorem">Rice’s theorem</a>?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The property is genuinely nontrivial: \(\theta_{\langle0,0\rangle}(0)\) is undefined, whereas \(\theta_{\langle1,0\rangle}(0)\downarrow=0\). Nevertheless its \(\theta\)-index set is exactly the decidable set of names whose first coordinate is positive.</p>
+    <p>The earlier Rice theorem concerns the fixed standard numbering, with its universal evaluation and effective index constructions. Those conclusions cannot be transferred using surjectivity of a list alone. If a computable compiler from standard indices into \(\theta\)-indices existed, the zero-input flag would decide standard halting at zero, precisely the contradiction already proved. The example therefore shows why the effective translation requirement matters.</p>
+  </div></details>
+</section>

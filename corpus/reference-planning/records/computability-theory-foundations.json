@@ -7,16 +7,22 @@
   ],
   "entry_refs": [
     "finite-descriptions-and-decision-problems",
+    "turing-machines",
     "primitive-recursion",
     "coding-finite-sequences",
     "partial-recursive-functions",
     "machines-and-computation-histories",
+    "coding-turing-computations",
     "universal-computation",
+    "effective-enumerations",
     "effective-theories",
     "arithmetic-definability",
     "computable-reductions",
     "rices-theorem",
-    "recursion-theorem"
+    "recursion-theorem",
+    "computably-inseparable-sets",
+    "uniform-self-reference",
+    "productive-and-creative-sets"
   ],
   "urls": [
     "https://www.andrew.cmu.edu/user/avigad/Teaching/candi_notes.pdf",
@@ -26,12 +32,7 @@
     "https://math.colorado.edu/~mayr/teaching/math6010fall23/class27.pdf"
   ],
   "planned_entry_ids": [
-    "turing-machines",
     "turing-computation-and-recursion",
-    "effective-enumerations",
-    "computably-inseparable-sets",
-    "uniform-self-reference",
-    "productive-and-creative-sets",
     "simple-sets",
     "oracle-computation",
     "turing-degrees",
@@ -42,109 +43,44 @@
     "incomparable-turing-degrees",
     "finite-injury-and-posts-problem"
   ],
-  "area_fit": "The area studies computable functions, undecidable problems and relative computational power. Its existing numerical-recursion and logic applications remain the baseline; the pending program makes the mechanical model explicit and develops enumerable-set constructions before relative computability. The introductory finite-description treatment gives a smooth entrance and a model-independent obstruction; it does not replace the later effective halting proof. Existing c.e./parameter/normal-form coverage is reused. Effective theories and arithmetic definability supply the logic branch, while the new enumerable-set and oracle branches add computability mathematics rather than repeating proof theory.",
+  "area_fit": "The area studies computable functions, undecidable problems and relative computational power. Its numerical-recursion and finite-tape models, explicit tape-to-arithmetic coding, and logic applications form the baseline. The remaining compiler completes the model comparison; constructive enumerable-set and oracle arguments develop relative computational power. Existing c.e., parameter and normal-form results are reused. Effective theories and arithmetic definability supply the logic branch; the pending constructions add computability mathematics rather than repeating proof theory.",
   "existing_prerequisite_sequence": [
     "finite-descriptions-and-decision-problems",
+    "turing-machines",
     "primitive-recursion",
     "coding-finite-sequences",
     "partial-recursive-functions",
     "machines-and-computation-histories",
+    "coding-turing-computations",
     "universal-computation",
+    "effective-enumerations",
     "effective-theories",
     "arithmetic-definability",
     "computable-reductions",
     "rices-theorem",
-    "recursion-theorem"
+    "recursion-theorem",
+    "computably-inseparable-sets",
+    "uniform-self-reference",
+    "productive-and-creative-sets"
   ],
-  "reading_order_rule": "Preserve the relative order of the existing prerequisite sequence above; insert the missing model and enumeration entries at their specified anchors. After recursion-theorem, use the remaining_entries order below, except that oracle work can be developed independently once its exact interfaces exist. Scheduling does not create additional prerequisites. An entry may depend on a named block from another area rather than on every earlier listed entry. Effective-theories needs actual first-order syntax/proof/completeness coverage; arithmetic-definability uses arithmetic representations; computable-reductions needs effective-theories and first-incompleteness only for its logic applications. Rice and recursion use numerical program results, not those logic applications. Optional forward comparison links are not prerequisites.",
+  "reading_order_rule": "Preserve the relative order of the existing prerequisite sequence above. Insert the outstanding converse tape compiler after coding-turing-computations and before universal-computation. After productive-and-creative-sets, follow the remaining enumerable-set and oracle tasks in their listed order, respecting the exact placement and prerequisites of each row; oracle work can be developed independently once its interfaces exist. Scheduling does not create additional prerequisites. An entry may depend on a named block from another area rather than on every earlier listed entry. Effective-theories needs actual first-order syntax/proof/completeness coverage; arithmetic-definability uses arithmetic representations; computable-reductions needs effective-theories and first-incompleteness only for its logic applications. Rice and recursion use numerical program results, not those logic applications. Optional forward comparison links are not prerequisites.",
   "remaining_entries": [
-    {
-      "id": "turing-machines",
-      "title": "Turing machines: finite rules and unbounded tape",
-      "reading_time": 35,
-      "placement": "After finite-descriptions-and-decision-problems, before primitive-recursion.",
-      "prerequisites": [
-        "finite-descriptions-and-decision-problems#program-behavior"
-      ],
-      "scope_and_outline": "Define a finite alphabet with blank, finite control, two-way tape with finite nonblank support, configurations, one step, halting and unary input/output conventions. Work a successor machine and a deliberately divergent machine. Prove determinism, uniqueness of halting output and finite visited region for every finite run. Do not claim equivalence with recursive functions here. This supplies a concrete mechanical reading of the opening abstract program family.",
-      "source_to_outline": [
-        "Avigad §§2.1–2.2, printed14–20: transition tables/configurations and explicit elementary machine examples. Previously assessed passages; detailed implementation audit before drafting."
-      ]
-    },
     {
       "id": "turing-computation-and-recursion",
       "title": "Turing computation and recursive functions",
-      "reading_time": 45,
-      "placement": "After machines-and-computation-histories, before universal-computation.",
+      "reading_time": 50,
+      "placement": "After coding-turing-computations, before universal-computation.",
       "prerequisites": [
-        "turing-machines: transition and input/output definitions",
-        "machines-and-computation-histories#machine-equivalence",
+        "turing-machines#one-step",
+        "turing-machines#unary-input-output",
+        "coding-turing-computations#turing-functions-are-recursive",
+        "machines-and-computation-histories#paired-programs",
         "coding-finite-sequences#list-code",
         "partial-recursive-functions#partial-recursive-functions"
       ],
-      "scope_and_outline": "Prove both simulations: encode tape configurations and a primitive-recursive step/history check; compile initial functions, composition, primitive recursion and sequential minimization into machines with explicit tape invariants and scratch-space conventions. State equality of partial functions with the specified input/output encodings. Separate a proved equivalence of models from the Church–Turing thesis about informal algorithms. Existing arithmetic macro machines are not already a tape simulation; retain their useful certificate perspective. Split compilation into a second entry if the actual argument exceeds45–50 minutes.",
+      "scope_and_outline": "Construct the converse tape compiler for initial functions, composition, primitive recursion and sequential minimization. Supply actual finite tape subroutines, scratch-space conventions, protected input/output regions, cleanup and return-head invariants, preserving divergence and the current n-mark input/readout conventions. State equality of the computed partial functions with the specified argument encodings. Use the existing coded tape-to-arithmetic theorem for the other implication, without repeating its construction. Separate the resulting proved model equivalence from the Church–Turing thesis. Split finite subroutines from closure compilation into further coherent entries if the actual constructions exceed50 minutes; do not turn the source sketches into assumed simulation lemmas.",
       "source_to_outline": [
-        "Avigad §2.6, printed35–41, source plan for both simulations; selected passages already assessed, complete tape/compiler construction still needs inspection. Carneiro introduction,12:1–12:2, explains the recursive-function approach but is not evidence for a tape compiler."
-      ]
-    },
-    {
-      "id": "effective-enumerations",
-      "title": "Finite stages of enumerable sets",
-      "reading_time": 35,
-      "placement": "After universal-computation, before effective-theories.",
-      "prerequisites": [
-        "universal-computation#finite-certificates",
-        "universal-computation#enumerating-ranges",
-        "universal-computation#dovetailing"
-      ],
-      "scope_and_outline": "Define a uniform computable finite-stage approximation W(e,s), prove monotonicity and union W_e, and explain why finite absence is inconclusive. Prove that an infinite c.e. set has an infinite decidable subset, that an infinite set is decidable iff it has a strictly increasing total computable enumeration, and relate computable settling bounds to decidability. Preserve finite and empty exceptions and the distinction between a separately chosen procedure and uniform index transformations. Reuse the existing c.e. equivalences rather than redrafting them.",
-      "source_to_outline": [
-        "Marks §4.1–4.2, printed25–27, especially Proposition4.11 and Exercises4.12–4.13. Root inspected increasing enumeration and settling-bound arguments; full uniform finite-stage details need entry audit."
-      ]
-    },
-    {
-      "id": "computably-inseparable-sets",
-      "title": "Disjoint enumerable sets that cannot be computably separated",
-      "reading_time": 35,
-      "placement": "After recursion-theorem and effective-enumerations; before productive-and-creative-sets.",
-      "prerequisites": [
-        "universal-computation#universal-evaluation",
-        "effective-enumerations: uniform finite stages",
-        "universal-computation#two-sided-recognition"
-      ],
-      "scope_and_outline": "Define a separator, construct disjoint c.e. sets A={e:phi_e(e)=0} and B={e:phi_e(e)=1}, and diagonalize against every decidable separator with the correct characteristic-function orientation. Derive a partial recursive function with no total recursive extension. Prove the contrast that disjoint co-c.e. sets have a decidable separator by two searches. Keep applications to nonstandard arithmetic optional links rather than importing model theory as a prerequisite.",
-      "source_to_outline": [
-        "Marks §4.3, printed28, Theorem4.14 and Exercises4.15–4.17. Root inspected definitions and argument. The later Lemma14.6 has a duplicated-set slip, recorded separately and not needed here."
-      ]
-    },
-    {
-      "id": "uniform-self-reference",
-      "title": "Uniform self-reference and program numberings",
-      "reading_time": 35,
-      "placement": "After recursion-theorem, before productive-and-creative-sets.",
-      "prerequisites": [
-        "recursion-theorem#self-specialization",
-        "recursion-theorem#recursion-theorem",
-        "universal-computation#parameter-theorem"
-      ],
-      "scope_and_outline": "Prove a parameterized recursion theorem with a total computable fixed-point selector, not merely one existential index per parameter. Explain acceptable numberings via effective universality and parameterization, give translations between admitted enumerations, and prove a padding lemma for the actual constructor coding if needed by later isomorphism claims. Do not assume arbitrary bijections preserve computability. Narrow or split numbering invariance/padding if they obscure the uniform self-reference construction; Myhill isomorphism is an optional later extension.",
-      "source_to_outline": [
-        "Mayr class20, PDF3–4: recursion and uniform recursion theorem (2023-10-13); root inspected the full diagonal construction. Avigad §§3.4–3.5 supplies the ordinary fixed point already covered. Marks §6.2, printed33–35, acceptable numberings located only; detailed proof audit remains."
-      ]
-    },
-    {
-      "id": "productive-and-creative-sets",
-      "title": "Productive sets and complete enumerable problems",
-      "reading_time": 40,
-      "placement": "After uniform-self-reference, before simple-sets.",
-      "prerequisites": [
-        "uniform-self-reference: uniform fixed-point selector",
-        "computable-reductions#halting-completeness",
-        "universal-computation#decidable-and-enumerable"
-      ],
-      "scope_and_outline": "Define productivity with a total computable productive function and creativity as c.e. with productive complement. Show complement K is productive via the identity; prove productive sets are not c.e. and contain infinite c.e. subsets. Prove creative iff many-one complete among c.e. sets using the uniform recursion theorem, supplying the exact reduction. This is stronger than ordinary undecidability and does not classify Turing degrees.",
-      "source_to_outline": [
-        "Mayr class20, PDF5–9: definitions, productive complement of K and the complete/creative equivalence; class21 PDF6–7: iterative construction of an infinite c.e. subset. Root inspected these selected arguments. Class20 final isomorphism theorem is stated without proof and is excluded."
+        "Avigad §2.6 printed35–37 outlines the converse closure constructions but omits primitive-recursion bookkeeping and finite subroutine details. Root inspected the full selected outline2026-10-25; a detailed compiler/subroutine source and proof audit is still required before drafting. Carneiro introduction12:1–12:2 motivates the recursive approach but is not evidence for a concrete tape compiler."
       ]
     },
     {
@@ -153,8 +89,8 @@
       "reading_time": 35,
       "placement": "After productive-and-creative-sets, before oracle-computation.",
       "prerequisites": [
-        "effective-enumerations: uniform finite stages",
-        "productive-and-creative-sets: productive sets contain infinite c.e. subsets"
+        "effective-enumerations#uniform-finite-approximation",
+        "productive-and-creative-sets#productive-infinite-subset"
       ],
       "scope_and_outline": "Define immune sets and simple c.e. sets. Construct a simple set by meeting each infinite W_e with at most one selected witness above2e; give an effective dovetail/selector and explicit coinfiniteness counting bound. Prove nondecidability and failure of many-one completeness using productivity. Explain that many-one incompleteness does not solve Post’s problem about Turing reducibility.",
       "source_to_outline": [
@@ -169,7 +105,7 @@
       "prerequisites": [
         "universal-computation#universal-evaluation",
         "universal-computation#parameter-theorem",
-        "turing-machines: concrete configurations, or an explicitly constructed oracle recursive syntax"
+        "turing-machines#tapes-and-configurations"
       ],
       "scope_and_outline": "Define an oracle program with a membership-query instruction and precise partial evaluation. Prove finite use/continuity for a terminating run, substitution of a computable oracle, a uniform oracle enumeration and oracle parameter theorem, and the relative domain/certificate/two-sided-recognition results. Supply the oracle model and uniformity bridges before later proofs use them; “the same proof relativizes” alone is not enough. Split oracle enumeration/closure into a second entry if needed.",
       "source_to_outline": [
@@ -227,7 +163,8 @@
       "reading_time": 35,
       "placement": "After arithmetical-hierarchy; before index-set-completeness.",
       "prerequisites": [
-        "effective-enumerations: finite stages and settling bounds",
+        "effective-enumerations#uniform-finite-approximation",
+        "effective-enumerations#computable-settling-equivalence",
         "oracle-computation: finite-use theorem",
         "turing-jump: halting oracle",
         "arithmetical-hierarchy: Delta2 characterization"
@@ -245,7 +182,7 @@
       "prerequisites": [
         "rices-theorem#totality",
         "arithmetic-definability#totality-pattern",
-        "effective-enumerations: uniform W(e,s)",
+        "effective-enumerations#uniform-finite-approximation",
         "arithmetical-hierarchy: normal forms and completeness"
       ],
       "scope_and_outline": "Prove TOT and INF Pi2-complete and FIN Sigma2-complete, with uniform index maps and both membership directions. Explain why Rice alone proves only undecidability. Keep finite/infinite c.e. domains distinct from total/partial functions; prove bounded-stage tests and exact reductions rather than inferring optimality from displayed formulas. Defer COF/REC Sigma3 completeness to a later dedicated movable-marker entry.",
@@ -276,7 +213,7 @@
       "placement": "After incomparable-turing-degrees and simple-sets.",
       "prerequisites": [
         "incomparable-turing-degrees: requirements and finite extensions",
-        "effective-enumerations: finite-stage enumerations",
+        "effective-enumerations#uniform-finite-approximation",
         "oracle-computation: bounded simulation and use",
         "turing-degrees: Turing incomparability",
         "turing-jump: all c.e. sets reduce to K",
@@ -288,8 +225,8 @@
       ]
     }
   ],
-  "coverage_boundary": "Core endpoint: finite-injury solution of Post’s problem. Alternative lambda-calculus/register-machine presentations, Myhill isomorphism, Rice–Shapiro, computable trees with no computable paths, effective model theory/Tennenbaum, and standard undecidable word/tiling/Post correspondence problems are useful later branches. A later index-set entry can supply COF/REC Sigma3 completeness. Low-basis, density, jump inversion, minimal degrees, randomness, algorithmic information, hyperarithmetic theory and reverse mathematics are advanced extensions, not silently assumed basics. Resource complexity belongs in its own area; Hilbert’s tenth problem needs substantial number theory and its own source/bridge plan, not an unproved corollary of representability.",
-  "execution_and_ownership": "The introductory decision-problem entry, Rice’s theorem and ordinary recursion theorem above supply prerequisites for the outstanding tasks, rather than another drafting outline. Future entry owners execute prompts 02–06 and own entry HTML/JSON/assets, new nodes and per-entry PascalCase Lean directories. Root owns reading order, shared imports, existing consumer integration, registries/checkpoints and final integrated verification. Each future handoff must select exact result-level prerequisites and source passages and must independently review the human argument and formal correspondence.",
+  "coverage_boundary": "Core endpoint: finite-injury solution of Post’s problem. Alternative lambda-calculus/register-machine presentations, Myhill and Rogers computable isomorphism, explicit padding, Rice–Shapiro, computable trees with no computable paths, effective model theory/Tennenbaum, and standard undecidable word/tiling/Post correspondence problems are useful later branches. A later index-set entry can supply COF/REC Sigma3 completeness. Low-basis, density, jump inversion, minimal degrees, randomness, algorithmic information, hyperarithmetic theory and reverse mathematics are advanced extensions, not silently assumed basics. Resource complexity belongs in its own area; Hilbert’s tenth problem needs substantial number theory and its own source/bridge plan, not an unproved corollary of representability.",
+  "execution_and_ownership": "Existing entries in the prerequisite sequence supply the established interfaces for the outstanding tasks, rather than further drafting outlines. Future entry owners execute prompts 02–06 and own entry HTML/JSON/assets, new nodes and per-entry PascalCase Lean directories. Root owns reading order, shared imports, existing consumer integration, registries/checkpoints and final integrated verification. Each future handoff must select exact result-level prerequisites and source passages and must independently review the human argument and formal correspondence.",
   "source_limits": "Avigad edition2007-01-09 and Marks edition2024-02-25 inspected directly; see source records for scoped dates and confirmed repairs. Selected Mayr2023 slide arguments inspected as specified above, with omitted isomorphism proof not treated as evidence. Located or sketch-only source support is explicitly marked and requires the indicated focused audit before drafting; no whole-book/source completeness audit is claimed. A roadmap source is not a proved corpus prerequisite. No target block anchors are invented for planned IDs.",
   "source_citations": [
     {

@@ -380,3 +380,9 @@ import Lemmatheca.OrderPatternsAndStability.Examples
 import Lemmatheca.StronglyMinimalSets.Examples
 import Lemmatheca.ForcingTheorem.ForcingTheorem
 import Lemmatheca.ForcingExtensions.ForcingExtensions
+import Lemmatheca.ComputablyInseparableSets.Examples
+import Lemmatheca.TuringMachines.Examples
+import Lemmatheca.EffectiveEnumerations.Examples
+import Lemmatheca.UniformSelfReference.Examples
+import Lemmatheca.ProductiveAndCreativeSets.Examples
+import Lemmatheca.CodingTuringComputations.Examples

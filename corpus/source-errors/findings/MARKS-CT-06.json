@@ -1,0 +1,14 @@
+{
+  "id": "MARKS-CT-06",
+  "source_ids": [
+    "marks-computability"
+  ],
+  "severity": "local",
+  "title": "Serialization of finite sets subtracts the preceding set instead of the accumulated union.",
+  "details": "Marks, dated 2024-02-25, Proposition 4.5, implication (2) to (3), printed p. 26 (PDF page 26, zero-based index 25). The input sequence of finite sets A_n need not be increasing. The proof correctly defines k=|A_(n+1) \\ B_s| with B_s=union_(i<=n) A_i, but then lists A_(n+1) \\ A_n as {m_1,...,m_k}. These differences can have different sizes: take A_0=empty, A_1={1}, A_2=empty and A_3={1,2}. At n=2 the accumulated set is {1}, so k=1, while A_3 \\ A_2 has two elements. Replace the listed difference by A_(n+1) \\ B_s and advance n after each finite batch, including an idle stage when the batch is empty. This yields an increasing enumeration with at most one new element per stage and the same union. The finite-stage entry uses its own bounded uniform monotone approximation and does not rely on the faulty displayed difference.",
+  "entry_refs": [
+    "effective-enumerations#finite-stages",
+    "effective-enumerations#stream-from-stages"
+  ],
+  "related_findings": []
+}

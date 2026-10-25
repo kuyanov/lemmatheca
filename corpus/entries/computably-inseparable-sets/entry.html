@@ -1,0 +1,120 @@
+<section id="separators" data-formal="separator-condition separator-computably-separable inseparable-pair separator-set-theoretic-existence univ-decidable-predicate univ-indicator univ-decidable-characteristic-equivalence" data-kind="definition">
+  <h2>A decision may separate two sets without deciding either one</h2>
+  <p>Let \(A,B\subseteq\mathbb N\). A <strong>separator of \(A\) from \(B\)</strong> is a set \(C\subseteq\mathbb N\) satisfying</p>
+  <div class="math-display">\[A\subseteq C,\qquad C\cap B=\varnothing.\]</div>
+  <p>Thus \(C\) must contain every member of \(A\) and no member of \(B\). For a number outside \(A\cup B\), either membership decision is allowed. A separator can exist only if \(A\cap B=\varnothing\); conversely, disjoint sets always have the set-theoretic separator \(C=A\).</p>
+  <p>The pair is <strong>computably separable</strong> if it has a decidable separator. Disjoint sets are <strong>computably inseparable</strong> if no decidable separator exists. We use the established <a href="universal-computation#decidable-and-enumerable">characteristic-function convention</a>: \(\chi_C(x)=1\) means \(x\in C\), while \(\chi_C(x)=0\) means \(x\notin C\). A computable separator must return one of these two answers on every input.</p>
+</section>
+
+<section id="free-choices" data-formal="separator-residue-description separator-residue-separator separator-even-counterexample separator-all-residue-separators separator-decidable-odd-choices" data-kind="question">
+  <h2>Which decisions are actually constrained?</h2>
+  <p>Take \(A=\{4n:n\in\mathbb N\}\) and \(B=\{4n+2:n\in\mathbb N\}\). Does the set of even numbers separate them? Give a decidable separator, and describe all the freedom left on odd inputs.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The even numbers contain both sets, so they fail the exclusion requirement. The set \(C=A\) is a decidable separator: divide by four and test whether the remainder is zero. More generally, every separator has the form \(A\cup D\), where \(D\) is an arbitrary subset of the odd numbers. Indeed, all multiples of four must be included and all numbers of remainder two must be excluded; these account for every even number.</p>
+    <p>For the separator to be decidable, \(D\) must be decidable as well. One direction follows by computing the union of two decidable sets. In the other direction, \(D=C\cap\{2n+1:n\in\mathbb N\}\), so membership in \(D\) can be decided by testing oddness and then membership in \(C\). Even when the required decisions are simple, arbitrary choices on the remaining inputs can make a separator noncomputable.</p>
+  </div></details>
+</section>
+
+<section id="diagonal-pair" data-formal="inseparable-diagonal-output-sets univ-indexed-evaluation univ-bounded-value univ-evaluation-output-certificate inseparable-constant-two-outside inseparable-divergent-outside" data-kind="definition">
+  <h2>Divide self-computations by their successful output</h2>
+  <p>Keep the <a href="universal-computation#numbering-programs">fixed enumeration of programs</a> \(\varphi_e\), including all unary partial recursive functions. Define the <strong>diagonal output sets</strong></p>
+  <div class="math-display">\[A=\{e:\varphi_e(e)\downarrow=0\},\qquad B=\{e:\varphi_e(e)\downarrow=1\}.\]</div>
+  <p>Here \(\downarrow=y\) asserts both termination and output \(y\). In particular, a self-computation that returns two belongs to neither set, just as a divergent self-computation belongs to neither. Membership is a statement about the complete run, rather than what has happened by a chosen resource bound.</p>
+  <p>The encoded bounded evaluator \(b(k,e,x)\) from <a href="universal-computation#universal-evaluation">universal evaluation</a> satisfies \(\varphi_e(x)\downarrow=y\) exactly when some \(k\) has \(b(k,e,x)=y+1\). Its value zero denotes failure to obtain an output at that bound; its value one certifies actual output zero. This shift will keep a failed finite test distinct from a successful zero output.</p>
+</section>
+
+<section id="enumerable-and-disjoint" data-formal="inseparable-diagonal-certificate-primitive inseparable-diagonal-enumerable inseparable-diagonal-disjoint univ-enumerable-primitive-certificate" data-kind="lemma">
+  <h2>Both sets can be recognized, and they never overlap</h2>
+  <p>The diagonal output sets \(A,B\) are disjoint computably enumerable sets.</p>
+  <div class="proof">
+    <p>Substituting the same input into the program and input positions gives primitive-recursive tests \(b(k,e,e)=1\) and \(b(k,e,e)=2\). Their existential closures define \(A\) and \(B\), respectively. The <a href="universal-computation#finite-certificates">finite-certificate characterization</a> therefore makes both sets c.e. Explicitly, search successive bounds until a certificate for the specified output appears, and stop exactly then.</p>
+    <p>If \(e\) were in both sets, the single partial value \(\varphi_e(e)\) would equal both zero and one. A partial function has at most one output, so this is impossible. The searches for the two kinds of certificate can therefore never both succeed on the same input.</p>
+  </div>
+</section>
+
+<section id="inseparability" data-formal="inseparable-diagonal-pair univ-decidable-characteristic-equivalence univ-universal-complete" data-kind="theorem">
+  <h2>No computable decision can put the two sets on opposite sides</h2>
+  <div class="statement-box">
+    <p>The sets \(A=\{e:\varphi_e(e)\downarrow=0\}\) and \(B=\{e:\varphi_e(e)\downarrow=1\}\) are computably inseparable.</p>
+  </div>
+  <div class="proof">
+    <p>Suppose \(C\) were a decidable separator. Its total recursive characteristic function has an index \(j\), so \(\varphi_j(x)\downarrow=\chi_C(x)\) for every \(x\). Evaluate this program on its own index. Totality guarantees one of the following two cases.</p>
+    <p>If \(j\in C\), then \(\varphi_j(j)=1\), so \(j\in B\). But \(C\cap B=\varnothing\), contradicting \(j\in C\). If \(j\notin C\), then \(\varphi_j(j)=0\), so \(j\in A\). But \(A\subseteq C\), contradicting \(j\notin C\).</p>
+    <p>The orientation matters: \(A\) records output zero, even though its members must receive the separator's answer one. Likewise, \(B\) records output one but its members must receive answer zero. The program deciding a proposed separator supplies its own incorrectly classified input. No test for divergence is used, since this particular program is total.</p>
+  </div>
+</section>
+
+<section id="individual-obstructions" data-formal="inseparable-components-undecidable inseparable-components-infinite inseparable-component-complements-not-enumerable univ-two-sided-recognition" data-kind="lemma">
+  <h2>Each component is infinite and undecidable</h2>
+  <p>Each of the two diagonal output sets is infinite and undecidable. Neither has a computably enumerable complement.</p>
+  <div class="proof">
+    <p>If \(A\) were decidable, it would itself be a decidable separator. If \(B\) were decidable, its decidable complement would contain \(A\) and avoid \(B\). Either possibility contradicts <a href="#inseparability"></a>. Every finite set is decidable by comparison with its finitely many members, so each component is infinite.</p>
+    <p>Both components are c.e. If the complement of either were c.e. too, <a href="universal-computation#two-sided-recognition">two-sided recognition</a> would make that component decidable. Thus neither complement is c.e., as claimed.</p>
+  </div>
+</section>
+
+<section id="positive-search-gap" data-formal="separator-positive-attempt separator-positive-attempt-spec inseparable-constant-two-outside inseparable-divergent-outside univ-bounded-value univ-two-sided-recognition" data-kind="question">
+  <h2>Why not wait until one of the two recognizers succeeds?</h2>
+  <p>On input \(e\), run the recognizers for \(A\) and \(B\) in parallel, returning one if the first succeeds and zero if the second succeeds. Does this decide a separator? What if neither recognizer has succeeded after a large finite number of tests?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The answers are correct whenever they occur, but the procedure need not terminate. Choose an index \(q\) of the constant-two function. Then \(\varphi_q(q)=2\), so \(q\notin A\cup B\). Neither recognizer ever succeeds at this input, although the self-computation itself terminates. There are also indices of the nowhere-defined function; these too lie outside the union.</p>
+    <p>A failed bounded test says only that the required successful output was not certified at that bound. It does not establish divergence. Nor is a known terminating output other than zero or one a positive certificate for either set. In the <a href="universal-computation#two-sided-recognition">decision theorem for complementary c.e. sets</a>, every input belongs to exactly one recognized side. Here disjointness supplies at most one success, while total decision would require at least one usable answer on every input.</p>
+  </div></details>
+</section>
+
+<section id="partial-bit-function" data-formal="inseparable-binary-diagonal inseparable-binary-diagonal-partial inseparable-binary-diagonal-spec inseparable-binary-diagonal-domain separator-partial-extension separator-total-computable-extension mach-unary-recursive-bridge" data-kind="definition">
+  <h2>Keep only the binary self-computations</h2>
+  <p>Define the <strong>partial binary diagonal function</strong> \(f:\mathbb N\rightharpoonup\mathbb N\) by</p>
+  <div class="math-display">\[f(e)\simeq\begin{cases}0&amp;e\in A,\\1&amp;e\in B,\\\text{undefined}&amp;e\notin A\cup B.\end{cases}\]</div>
+  <p>This is well-defined because \(A\cap B=\varnothing\). It is partial recursive: search for the least \(k\) satisfying \(b(k,e,e)=1\) or \(b(k,e,e)=2\), then return \(b(k,e,e)-1\). The search test is total primitive recursive. It succeeds precisely on \(A\cup B\), and uniqueness of the evaluated output makes every successful bound give the specified value.</p>
+  <p>A <strong>total computable extension</strong> of a partial function \(f\) is a total recursive function \(g:\mathbb N\to\mathbb N\) such that \(g(x)=f(x)\) whenever \(f(x)\) is defined. No condition is imposed at inputs where \(f\) is undefined. In particular, an extension of the displayed function need not be binary-valued outside its domain.</p>
+</section>
+
+<section id="no-total-extension" data-formal="separator-zero-fiber separator-extension-gives-separator inseparable-no-total-extension" data-kind="theorem">
+  <h2>Some partial computations cannot be completed computably</h2>
+  <div class="statement-box">
+    <p>The partial recursive function \(f\) just defined has no total computable extension.</p>
+  </div>
+  <div class="proof">
+    <p>Suppose a total recursive \(g\) extended \(f\). Put \(C=\{x:g(x)=0\}\). This set is decidable: compute \(g(x)\), then test equality with zero. For \(x\in A\), extension gives \(g(x)=f(x)=0\), so \(x\in C\). For \(x\in B\), it gives \(g(x)=1\), so \(x\notin C\). Thus \(C\) would be a decidable separator, contradicting <a href="#inseparability"></a>.</p>
+    <p>The equality test works even if \(g\) takes other natural-number values away from \(A\cup B\). The obstruction is preserving the already specified values, rather than making arbitrary choices at the remaining inputs. This strengthens the <a href="universal-computation#partial-diagonal-question">partial diagonal example</a> by ruling out every total computable completion of one fixed partial function.</p>
+  </div>
+</section>
+
+<section id="binary-normalization" data-formal="separator-binary-normalization separator-normalization-computable separator-normalization-preserves-extension separator-binary-extension-equivalence separator-characteristic-gives-extension separator-extension-gives-separator" data-kind="question">
+  <h2>Would allowing extra output values help an extension?</h2>
+  <p>Let \(h:\mathbb N\rightharpoonup\{0,1\}\) be any partial binary-valued function. Show that it has a total recursive extension with natural-number outputs if and only if it has one with only zero-one outputs.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Only the forward direction needs work. If \(g\) is a total recursive extension, define \(\widehat g(x)=0\) when \(g(x)=0\), and \(\widehat g(x)=1\) otherwise. Computing \(g\) and testing zero gives a total recursive binary function. At a defined input of \(h\), its value is zero or one, so \(\widehat g(x)=g(x)=h(x)\). The reverse implication is immediate because zero and one are natural numbers.</p>
+    <p>For the particular diagonal function, a binary extension would have its zero-set as a separator. Conversely, a decidable separator \(C\) would give the binary extension \(g(x)=1-\chi_C(x)\). Thus in this example the two impossible constructions are equivalent, with the output convention explicitly reversed.</p>
+  </div></details>
+</section>
+
+<section id="coenumerable-sets" data-formal="separator-coenumerable univ-enumerable-primitive-certificate" data-kind="definition">
+  <h2>Recognize exclusion instead of inclusion</h2>
+  <p>A set \(P\subseteq\mathbb N\) is <strong>co-computably enumerable</strong>, or <strong>co-c.e.</strong>, when \(\mathbb N\setminus P\) is c.e. Equivalently, there is a primitive-recursive relation \(R(x,t)\) such that</p>
+  <div class="math-display">\[x\notin P\quad\Longleftrightarrow\quad\exists t\,R(x,t).\]</div>
+  <p>The equivalence is the <a href="universal-computation#finite-certificates">certificate theorem</a> applied to the complement. Thus a co-c.e. set has a search that stops exactly when the input is outside it. This definition alone does not give a decision procedure; a member may wait forever for a negative certificate.</p>
+</section>
+
+<section id="coenumerable-separation" data-formal="separator-negative-stage separator-negative-race separator-negative-stage-spec separator-negative-race-partial separator-negative-race-domain separator-negative-race-value separator-negative-total-function separator-negative-total-bridge separator-negative-total-computable separator-negative-separator separator-negative-separator-spec separator-disjoint-negative-cover separator-coenumerable-separation" data-kind="theorem">
+  <h2>Disjoint co-enumerable sets always have a computable separator</h2>
+  <div class="statement-box">
+    <p>If \(P,Q\subseteq\mathbb N\) are disjoint co-c.e. sets, there is a decidable \(C\) satisfying</p>
+    <div class="math-display">\[P\subseteq C,\qquad C\cap Q=\varnothing.\]</div>
+  </div>
+  <div class="proof">
+    <p>Choose primitive-recursive certificate tests \(R(x,t)\) for \(x\notin P\), and \(S(x,t)\) for \(x\notin Q\). On input \(x\), test \(R(x,t)\) and \(S(x,t)\) at stages \(t=0,1,2,\ldots\). Stop at the least stage where either test succeeds. Return zero if \(R\) succeeds at that stage; otherwise return one, since \(S\) then succeeds. In a tie the specified rule returns zero.</p>
+    <p>Disjointness implies \(x\notin P\) or \(x\notin Q\) for every input. At least one certificate therefore exists, and the search always terminates. The least-stage search is partial recursive by the search theorem; the existence of a successful stage on every input makes the resulting zero-one function total recursive.</p>
+    <p>Let \(C\) be its one-set. If \(x\in P\), no \(R\)-certificate exists, so the eventual success comes only from \(S\) and the output is one. Hence \(P\subseteq C\). If \(x\in Q\), no \(S\)-certificate exists, so \(R\) succeeds and the output is zero. Hence \(C\cap Q=\varnothing\). Outside \(P\cup Q\), both kinds of certificate exist, but either answer is permitted. These observations prove exactly the separator conditions.</p>
+  </div>
+</section>
+
+<section id="negative-search-choices" data-formal="separator-fixture-certificates separator-fixture-values separator-negative-race-domain separator-disjoint-negative-cover separator-coenumerable-separation" data-kind="question">
+  <h2>What happens when both negative searches can succeed?</h2>
+  <p>Suppose \(P=\{0\}\) and \(Q=\{2\}\). Can the preceding construction return either value on input one, depending on the certificate tests? Why does this not compromise correctness? Explain also why the theorem includes the empty-set cases.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>For a construction returning zero at one, use \(R(x,t)\) iff \(x\ne0\), and \(S(x,t)\) iff \(x\ne2\), independently of \(t\). Both tests succeed at stage zero on input one, and the tie rule returns zero. For a construction returning one there, retain \(S\) and replace \(R\) by \(x\ne0\) and \(t\ge1\). The existentially certified sets are unchanged, but now \(S\) succeeds first on input one. In both constructions the output at zero is one and the output at two is zero, which are the only required decisions.</p>
+    <p>If \(P=\varnothing\), every input has an \(R\)-certificate; if \(Q=\varnothing\), every input has an \(S\)-certificate. The termination argument therefore still applies, even if both sets are empty. The crucial guarantee is that every input has at least one negative certificate. For disjoint c.e. sets there may instead be inputs with neither positive certificate, which is exactly why the superficially similar search can fail.</p>
+  </div></details>
+</section>

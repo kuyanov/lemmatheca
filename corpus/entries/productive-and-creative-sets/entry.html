@@ -1,0 +1,156 @@
+<section id="productive-sets" data-kind="definition" data-formal="effective-stage-index-set productive-function productive-set">
+  <h2>An escape rule takes an index for an enumerable subset</h2>
+  <p>Use the fixed <a href="universal-computation#decidable-and-enumerable">domain enumeration</a> \(W_e=\{x:\varphi_e(x)\downarrow\}\) of the c.e. subsets of \(\mathbb N\). A total recursive function \(p:\mathbb N\to\mathbb N\) is a <strong>productive function for \(B\subseteq\mathbb N\)</strong> if</p>
+  <div class="math-display">\[W_e\subseteq B\quad\Longrightarrow\quad p(e)\in B\setminus W_e\qquad(e\in\mathbb N).\]</div>
+  <p>The set \(B\) is <strong>productive</strong> if it has a productive function. The input is an index for the recognized set, rather than a finite list of its currently observed members. The output must escape the entire set \(W_e\), including members recognized much later.</p>
+  <p>The condition constrains the output only when \(W_e\subseteq B\), but the function \(p\) must terminate on every input. No algorithm for testing that inclusion is part of the definition. Different indices for the same enumerable set may lead to different escape points.</p>
+</section>
+
+<section id="productive-obstructions" data-kind="lemma" data-formal="productive-nonempty productive-not-enumerable productive-infinite">
+  <h2>A productive set cannot finish enumerating itself</h2>
+  <p>Every productive set is nonempty, infinite, and not computably enumerable.</p>
+  <div class="proof">
+    <p>Fix a productive function \(p\) for \(B\). Choose an index \(e_0\) of the nowhere-defined function, so \(W_{e_0}=\varnothing\). The inclusion \(W_{e_0}\subseteq B\) always holds, and productivity gives \(p(e_0)\in B\). Thus \(B\) is nonempty.</p>
+    <p>If \(B\) were c.e., some index \(b\) would satisfy \(W_b=B\). Productivity at that index would require \(p(b)\in B\setminus B\), a contradiction. Finally, every finite set is c.e.: a finite list of its members gives a terminating membership test and hence a recognizer. Therefore \(B\) is infinite.</p>
+  </div>
+</section>
+
+<section id="creative-sets" data-kind="definition" data-formal="creative-set creative-undecidable">
+  <h2>Creativity puts the escape rule on the nonmembers</h2>
+  <p>A set \(C\subseteq\mathbb N\) is <strong>creative</strong> if \(C\) is c.e. and its complement \(\overline C=\mathbb N\setminus C\) is productive. Thus there is a total recursive \(p\) such that every index satisfying \(W_e\subseteq\overline C\) yields \(p(e)\notin C\cup W_e\).</p>
+  <p>Every creative set is undecidable. Indeed, if \(C\) were decidable, its complement would be decidable and therefore c.e., contradicting <a href="#productive-obstructions"></a>. A recognizer for \(C\) and an escape algorithm for enumerable subsets of its complement have different jobs; neither supplies a negative membership decision for arbitrary inputs.</p>
+</section>
+
+<section id="diagonal-complement" data-kind="theorem" data-formal="univ-diagonal-halting-set univ-diagonal-halting-enumerable productive-diagonal-identity creative-diagonal">
+  <h2>The nonhalting diagonal has the identity escape rule</h2>
+  <p>Let \(K=\{e:\varphi_e(e)\downarrow\}\). The identity function \(p(e)=e\) is productive for \(\overline K\). Consequently \(K\) is creative.</p>
+  <div class="proof">
+    <p>Suppose \(W_e\subseteq\overline K\). If \(e\in W_e\), then \(\varphi_e(e)\downarrow\), so \(e\in K\). But the assumed inclusion would also put \(e\) outside \(K\). Hence \(e\notin W_e\).</p>
+    <p>The equivalence \(e\in W_e\Longleftrightarrow e\in K\) now also gives \(e\notin K\). Therefore \(e\in\overline K\setminus W_e\), exactly the required escape point. The identity function is total recursive, and \(K\) is c.e. by the <a href="universal-computation#halting-sets">halting-set theorem</a>, so \(K\) is creative.</p>
+  </div>
+</section>
+
+<section id="outputs-without-inclusion" data-kind="question" data-formal="productive-invalid-constant-zero">
+  <h2>Must every output of a productive function belong to its set?</h2>
+  <p>For the identity productive function of \(\overline K\), choose an index \(q\) of the total constant-zero function. Does productivity assert that \(p(q)\in\overline K\)? Explain which hypothesis fails.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The program halts on every input, so \(W_q=\mathbb N\). In particular \(q\in K\), and the identity rule returns \(p(q)=q\notin\overline K\). There is no contradiction: \(W_q\subseteq\overline K\) is false. A productive function must still return an answer at this index, but its escape guarantee does not apply.</p>
+    <p>The rule is therefore an algorithm with a conditional correctness guarantee, not an algorithm that verifies its own input condition. When the input really is an index for an enumerable subset of \(\overline K\), the preceding theorem proves the required membership and escape assertions.</p>
+  </div></details>
+</section>
+
+<section id="diagonal-completeness" data-kind="lemma" data-formal="univ-pair-halting-set univ-specialization univ-specialization-primitive univ-specialization-evaluation red-halting-complete productive-constant-run productive-constant-run-map productive-constant-run-partial productive-constant-run-index productive-constant-run-evaluation productive-constant-run-reduction productive-paired-to-diagonal productive-diagonal-complete">
+  <h2>Paired halting reduces to diagonal halting by a constant-run program</h2>
+  <p>The paired halting set \(K_0=\{\langle e,x\rangle:\varphi_e(x)\downarrow\}\) reduces to \(K\) by a primitive-recursive map. In particular, every c.e. set reduces many-one to \(K\).</p>
+  <div class="proof">
+    <p>For a pair code \(w\) and an unused input \(z\), let \(V(w,z)\simeq U(\operatorname{left}(w),\operatorname{right}(w))\). This is partial recursive jointly in its two arguments by <a href="universal-computation#universal-evaluation">universal evaluation</a> and computable pair decoding. Choose one index \(v\) such that \(\varphi_v(\langle w,z\rangle)\simeq V(w,z)\), and put \(c(w)=s(v,w)\) using the <a href="universal-computation#parameter-theorem">parameter theorem</a>. Then \(c\) is primitive recursive and</p>
+    <div class="math-display">\[\varphi_{c(\langle e,x\rangle)}(z)\simeq\varphi_e(x)\qquad\text{for every }e,x,z.\]</div>
+    <p>The transformed program ignores its own input and runs the specified old computation. In particular, it halts on its own index precisely when that old computation halts. Hence \(w\in K_0\Longleftrightarrow c(w)\in K\). Composing this map with the <a href="computable-reductions#halting-completeness">existing reductions of c.e. sets to \(K_0\)</a> proves the second assertion. This supplies the bridge between the two halting conventions.</p>
+  </div>
+</section>
+
+<section id="preimage-indices" data-kind="lemma" data-formal="univ-specialization-primitive productive-preimage-program productive-preimage-map productive-preimage-partial productive-preimage-index productive-preimage-evaluation productive-preimage-domain">
+  <h2>A computable preimage has an index chosen uniformly</h2>
+  <p>For every total recursive \(f:\mathbb N\to\mathbb N\), there is a primitive-recursive index transformation \(g\) such that, for every \(e,x\),</p>
+  <div class="math-display">\[\varphi_{g(e)}(x)\simeq\varphi_e(f(x)),\qquad W_{g(e)}=f^{-1}(W_e).\]</div>
+  <div class="proof">
+    <p>Compute \(f(x)\), then run \(\varphi_e\) on the result. This is partial recursive jointly in \(e,x\). Choose a single paired-input index \(a\) for that procedure and set \(g(e)=s(a,e)\). The parameter theorem proves the displayed partial-value identity, including divergence, and therefore the domain identity.</p>
+    <p>Although the input transformation \(f\) need only be total recursive, \(g\) is primitive recursive: the code \(a\) is fixed, and \(g\) inserts \(e\) into that code without executing it. The runtime computation of \(f(x)\) remains inside the resulting program.</p>
+  </div>
+</section>
+
+<section id="complete-implies-creative" data-kind="theorem" data-formal="productive-transferred-escape productive-transferred-escape-correct creative-from-complete">
+  <h2>An enumerable problem receiving diagonal halting is creative</h2>
+  <p>Suppose \(C\) is c.e. and a total recursive \(f\) satisfies \(x\in K\Longleftrightarrow f(x)\in C\). Choose \(g\) from <a href="#preimage-indices"></a>. Then the specified function \(r(e)=f(g(e))\) is productive for \(\overline C\), so \(C\) is creative.</p>
+  <div class="proof">
+    <p>The function \(r\) is total recursive by composition. Suppose \(W_e\subseteq\overline C\). If \(x\in W_{g(e)}\), then \(f(x)\in W_e\), hence \(f(x)\notin C\). The reduction equivalence gives \(x\notin K\). Thus \(W_{g(e)}\subseteq\overline K\).</p>
+    <p>The identity productive function for \(\overline K\), applied to this very index \(g(e)\), gives \(g(e)\notin K\) and \(g(e)\notin W_{g(e)}\). The reduction makes \(f(g(e))\notin C\). The preimage identity makes \(f(g(e))\notin W_e\): otherwise \(g(e)\) would belong to \(W_{g(e)}\). Therefore \(r(e)\in\overline C\setminus W_e\), as required.</p>
+  </div>
+</section>
+
+<section id="singleton-fixed-points" data-kind="lemma" data-formal="productive-singleton-program productive-singleton-selector productive-singleton-partial productive-singleton-program-domain productive-singleton-certificates productive-singleton-index productive-specified-singleton-selector productive-singleton-selector-exists productive-singleton-domains uniform-rec-partial-family-index uniform-rec-partial-compiler uniform-rec-partial-compiler-primitive uniform-rec-partial-compiler-evaluation uniform-rec-specified-partial-family">
+  <h2>Make one possible domain element depend on the selected index</h2>
+  <p>Let \(A\) be c.e. and let \(p:\mathbb N\to\mathbb N\) be total recursive. There is one total recursive \(h:\mathbb N\to\mathbb N\) such that</p>
+  <div class="math-display">\[W_{h(y)}=\begin{cases}\{p(h(y))\}&amp;y\in A,\\\varnothing&amp;y\notin A.\end{cases}\]</div>
+  <div class="proof">
+    <p>Choose an index \(a\) with \(W_a=A\). Define a jointly partial recursive procedure \(G(e,y,x)\) as follows. First compute \(p(e)\). If \(x\ne p(e)\), run forever. If \(x=p(e)\), run \(\varphi_a(y)\); if that computation terminates, return zero. Equivalently, the equal-input branch searches for a positive certificate \(T(a,y,k)\). Consequently \(G(e,y,x)\downarrow\) exactly when \(x=p(e)\) and \(y\in A\). The test involving \(p\) always finishes, and the final wait is an ordinary semidecision for \(A\).</p>
+    <p>Apply <a href="uniform-self-reference#partial-families">uniform self-reference for partial families</a>. More explicitly, choose one index \(v\) with \(\varphi_v(\langle e,\langle y,x\rangle\rangle)\simeq G(e,y,x)\), and form the total primitive-recursive index builder \(F(e,y)=s(s(v,e),y)\). The <a href="uniform-self-reference#parameterized-recursion">parameterized recursion theorem</a> gives one selector \(h(y)=s(q,y)\), with fixed \(q\), satisfying</p>
+    <div class="math-display">\[\varphi_{h(y)}(x)\simeq G(h(y),y,x).\]</div>
+    <p>Taking domains gives the stated two cases. Building the program text requires no negative membership test for the parameter. The index computation terminates, while the program it produces may wait forever. The same computable selector works for all \(y\); separate, uncoordinated choices of fixed points would not suffice for the reduction below.</p>
+  </div>
+</section>
+
+<section id="creative-implies-complete" data-kind="theorem" data-formal="red-many-one creative-reduction-map creative-specified-reduction creative-complete">
+  <h2>A productive complement supplies reductions of every enumerable set</h2>
+  <p>Let \(C\) be creative, with productive function \(p\) for \(\overline C\), and let \(A\) be any c.e. set. Choose the selector \(h\) from <a href="#singleton-fixed-points"></a>. The specified map \(r(y)=p(h(y))\) is a many-one reduction of \(A\) to \(C\).</p>
+  <div class="proof">
+    <p>Both \(h\) and \(p\) are total recursive, so \(r\) is total recursive. If \(y\notin A\), then \(W_{h(y)}=\varnothing\subseteq\overline C\). Productivity gives \(p(h(y))\in\overline C\), so \(r(y)\notin C\).</p>
+    <p>If \(y\in A\), then \(W_{h(y)}=\{r(y)\}\). Suppose for a contradiction that \(r(y)\notin C\). This would put \(W_{h(y)}\) inside \(\overline C\), allowing productivity at \(h(y)\). Its conclusion would say that \(p(h(y))=r(y)\) is outside \(W_{h(y)}\), contradicting the singleton-domain identity. Therefore \(r(y)\in C\).</p>
+    <p>Together the cases prove \(y\in A\Longleftrightarrow r(y)\in C\), preserving both answers as required for a <a href="computable-reductions#many-one-reductions">many-one reduction</a>. The algorithm computing \(r\) calls neither a decision procedure for \(A\) nor a membership oracle for \(C\).</p>
+  </div>
+</section>
+
+<section id="creative-complete-equivalence" data-kind="theorem" data-formal="creative-complete-equivalence creative-diagonal-equivalence">
+  <h2>Creativity characterizes the complete enumerable problems</h2>
+  <div class="statement-box">
+    <p>For every c.e. set \(C\subseteq\mathbb N\), the following are equivalent:</p>
+    <ul>
+      <li>\(C\) is creative.</li>
+      <li>Every c.e. set \(A\) satisfies \(A\le_m C\).</li>
+      <li>\(K\le_m C\), for the diagonal halting set \(K\).</li>
+    </ul>
+  </div>
+  <div class="proof">
+    <p>Creativity gives every reduction by <a href="#creative-implies-complete"></a>. Applying this conclusion to the c.e. set \(K\) gives the third condition. Conversely, the third condition and the standing c.e. hypothesis give creativity by <a href="#complete-implies-creative"></a>. Thus this is exactly <a href="computable-reductions#halting-completeness">many-one completeness among c.e. sets</a>, now characterized by an escape algorithm on the complement.</p>
+  </div>
+</section>
+
+<section id="enumerability-hypothesis" data-kind="question" data-formal="creative-hard-nonenumerable-set creative-hard-parity-maps creative-hard-receives-enumerable creative-hard-not-enumerable creative-hard-not-creative univ-enumerable-preimage">
+  <h2>Does receiving every enumerable problem force enumerability?</h2>
+  <p>Can the c.e. hypothesis on \(C\) be dropped from the characterization? Consider</p>
+  <div class="math-display">\[D=\{2n:n\in K\}\cup\{2n+1:n\notin K\}.\]</div>
+  <p>Show that every c.e. set reduces to \(D\), but \(D\) is not creative.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The total recursive map \(n\mapsto2n\) reduces \(K\) to \(D\): an even number can enter only through the first displayed component, so \(2n\in D\Longleftrightarrow n\in K\). By <a href="#diagonal-completeness"></a> and composition, every c.e. set therefore reduces to \(D\).</p>
+    <p>On the other hand, \(2n+1\in D\) holds exactly when \(n\notin K\) holds. If \(D\) were c.e., its <a href="computable-reductions#composition-and-pullback">computable preimage</a> under \(n\mapsto2n+1\) would make \(\overline K\) c.e., contradicting <a href="#productive-obstructions"></a> and the productivity of \(\overline K\). Thus \(D\) is not c.e. and fails the first requirement in the definition of creativity. Receiving all c.e. problems is a hardness condition; creativity additionally requires that the target itself be c.e.</p>
+  </div></details>
+</section>
+
+<section id="finite-extension-indices" data-kind="lemma" data-formal="univ-specialization-primitive productive-extension-program productive-extension-map productive-extension-partial productive-extension-program-domain productive-extension-index productive-extension-evaluation productive-extension-domain">
+  <h2>Adjoin the next escape point without waiting for an old computation</h2>
+  <p>For every total recursive \(p:\mathbb N\to\mathbb N\), there is a primitive-recursive map \(f\) of indices satisfying</p>
+  <div class="math-display">\[W_{f(e)}=W_e\cup\{p(e)\}\qquad(e\in\mathbb N).\]</div>
+  <div class="proof">
+    <p>Use the partial recursive procedure \(V(e,x)\) that first computes \(p(e)\). If \(x=p(e)\), return zero immediately. Otherwise run \(\varphi_e(x)\), returning its output if it terminates. The domain of this procedure at \(e\) is exactly \(W_e\cup\{p(e)\}\). In particular, the special input \(p(e)\) succeeds even if the old computation diverges there.</p>
+    <p>Choose one index \(v\) with \(\varphi_v(\langle e,x\rangle)\simeq V(e,x)\), and put \(f(e)=s(v,e)\). Specialization gives the displayed identity and makes \(f\) primitive recursive. No productivity assumption or inclusion test is needed to construct this map; those assumptions will establish freshness when it is iterated.</p>
+  </div>
+</section>
+
+<section id="productive-infinite-subset" data-kind="theorem" data-formal="productive-index-iteration productive-escape-sequence productive-iteration-primitive productive-sequence-computable productive-prefix-invariant productive-sequence-fresh productive-sequence-injective productive-range-properties productive-infinite-enumerable-subset productive-infinite-decidable-subset univ-enumerable-total-range effective-stage-infinite-enumerable-subset">
+  <h2>Iterating productivity builds an infinite enumerable subset</h2>
+  <div class="statement-box">
+    <p>Every productive set \(B\subseteq\mathbb N\) contains an infinite c.e. subset. More precisely, for a productive function \(p\) for \(B\), choose \(W_{e_0}=\varnothing\) and \(f\) as in <a href="#finite-extension-indices"></a>, and define</p>
+    <div class="math-display">\[e_{n+1}=f(e_n),\qquad x_n=p(e_n).\]</div>
+    <p>The sequence \(n\mapsto x_n\) is total recursive and injective, every \(x_n\) lies in \(B\), and \(W_{e_n}=\{x_i:i&lt;n\}\) for every \(n\).</p>
+  </div>
+  <div class="proof">
+    <p>The initial index is a fixed natural number and \(f\) is total recursive, so primitive recursion computes \(e_n\). Composing with \(p\) computes \(x_n\), with all computations terminating.</p>
+    <p>Inductively maintain the full invariant \(W_{e_n}=\{x_i:i&lt;n\}\subseteq B\). At \(n=0\), the domain is empty. If the invariant holds at \(n\), productivity gives \(x_n=p(e_n)\in B\setminus W_{e_n}\). Thus the new value belongs to \(B\) and differs from every previous value. The index transformation gives</p>
+    <div class="math-display">\[W_{e_{n+1}}=W_{f(e_n)}=W_{e_n}\cup\{x_n\}=\{x_i:i&lt;n+1\}.\]</div>
+    <p>This establishes the invariant at the next stage, including the required inclusion. It follows for all \(n\) that the computed values belong to \(B\) and are pairwise distinct.</p>
+    <p>The range \(X=\{x_n:n\in\mathbb N\}\) is infinite by injectivity and is c.e. by the <a href="universal-computation#enumerating-ranges">computable-range characterization</a>. Hence \(X\subseteq B\) is the promised infinite c.e. subset. Applying the <a href="effective-enumerations#infinite-decidable-subset">infinite decidable subset theorem</a> to \(X\) also shows that every productive set contains an infinite decidable subset, although the displayed sequence need not itself be increasing.</p>
+  </div>
+  <figure id="productive-finite-extension" class="proof-figure">
+    <div class="figure-image"><img src="assets/productive-finite-extension.svg" width="760" height="430" alt="Three snapshots of the same productive set B. The domain at e zero is empty, the next contains x zero, and the third contains x zero and x one. Each panel shows the new point p(e n)=x n inside B and outside the current domain; arrows apply the index transformation f." /></div>
+    <figcaption>The same ambient set \(B\) appears in all three panels. At step \(n\), productivity puts \(x_n\) outside the whole current domain \(W_{e_n}\); the index transformation makes that point part of the next domain. The construction retains every earlier point, but does not assert that these are all members of \(B\).</figcaption>
+  </figure>
+</section>
+
+<section id="domain-versus-output-range" data-kind="question" data-formal="productive-range-recognizer productive-range-recognizer-partial productive-range-recognizer-domain productive-range-recognizer-index productive-total-domain-invalid productive-range-index-escape productive-range-proper">
+  <h2>Which index lets the escape rule get beyond the entire sequence?</h2>
+  <p>Let \(x_n\) be the sequence just constructed and let \(q\) be an index computing the total function \(n\mapsto x_n\). Can productivity at \(q\) be invoked to produce a point outside \(X=\{x_n:n\in\mathbb N\}\)? Give the appropriate index and show that \(X\) is a proper subset of \(B\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The domain of program \(q\) is \(W_q=\mathbb N\), not its output range \(X\). A productive set is not c.e., so it cannot be all of \(\mathbb N\); therefore \(W_q\subseteq B\) is false. Productivity gives no escape guarantee at this index.</p>
+    <p>Instead, choose a recognizer of \(X\) and let \(b\) be its index. On input \(y\), the recognizer searches successive \(n\) for \(x_n=y\). Each test terminates because the sequence is total recursive, and the search stops exactly on its range. Thus \(W_b=X\subseteq B\). Productivity at this index gives \(p(b)\in B\setminus X\), proving that the infinite enumerable subset is proper and identifying an escape point from the whole sequence.</p>
+  </div></details>
+</section>

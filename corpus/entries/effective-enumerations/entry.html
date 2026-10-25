@@ -1,0 +1,137 @@
+<section id="finite-stages" data-kind="definition" data-formal="effective-stage-index-set effective-stage-finite-stage effective-stage-test effective-stage-bounds univ-computation-certificate">
+  <h2>A stage inspects only finitely many inputs and certificates</h2>
+  <p>Use the <a href="universal-computation#numbering-programs">fixed program numbering</a> \(\varphi_e\), and write \(W_e=\{x:\varphi_e(x)\downarrow\}\). Let \(T(e,x,k)\) be the primitive-recursive <a href="universal-computation#universal-evaluation">successful-computation test</a>. Define the <strong>finite stage</strong> of \(W_e\) at \(s\) by</p>
+  <div class="math-display">\[W_{e,s}=\{x&lt;s:\exists k&lt;s\;T(e,x,k)\}.\]</div>
+  <p>Both cutoffs are part of the definition. The stage is a subset of \(\{0,\ldots,s-1\}\), and \(W_{e,0}=\varnothing\). To compute it, test the finitely many pairs \((x,k)\) with both coordinates below \(s\). A stage can add several members at once, and consecutive stages can be equal.</p>
+</section>
+
+<section id="uniform-finite-approximation" data-kind="theorem" data-formal="effective-stage-primitive-test effective-stage-test-spec effective-stage-monotone effective-stage-certificate-witness effective-stage-union univ-certificate-primitive univ-evaluation-domain-certificate">
+  <h2>The stages are uniform, increasing, and exhaustive</h2>
+  <p>The zero-one test for \(x\in W_{e,s}\) is primitive recursive jointly in \(e,s,x\). For every \(e\),</p>
+  <div class="math-display">\[W_{e,s}\subseteq W_{e,s+1},\qquad W_e=\bigcup_{s\in\mathbb N}W_{e,s}.\]</div>
+  <div class="proof">
+    <p>The stage test combines \(x&lt;s\) with a <a href="primitive-recursion#bounded-quantifiers">bounded existential test</a> of the primitive-recursive relation \(T\). This gives joint primitive recursiveness, including when \(s=0\). Larger stages retain both inequalities, so every old successful pair remains available.</p>
+    <p>If \(x\in W_{e,s}\), a successful certificate gives \(\varphi_e(x)\downarrow\). Conversely, if \(x\in W_e\), some certificate \(k\) exists. At \(s=\max(x,k)+1\), both \(x\) and \(k\) are below \(s\), so \(x\in W_{e,s}\). Thus every member appears, although no stage is required to contain all members.</p>
+  </div>
+</section>
+
+<section id="computable-approximations" data-kind="definition" data-formal="effective-stage-approximation effective-stage-approximation-stage effective-stage-approximation-properties effective-stage-canonical-approximation effective-stage-canonical-stages effective-stage-approximation-enumerable univ-binary-total-recursive-convention">
+  <h2>Other effective snapshots can describe the same set</h2>
+  <p>A <strong>computable finite approximation</strong> to \(A\subseteq\mathbb N\) consists of a total recursive bound \(c(s)\) and a total recursive zero-one test \(d(s,x)\). Put \(F_s=\{x:d(s,x)=1\}\), and require</p>
+  <div class="math-display">\[F_s\subseteq\{0,\ldots,c(s)-1\},\qquad F_s\subseteq F_{s+1},\qquad A=\bigcup_s F_s.\]</div>
+  <p>The test is recursive jointly in its two arguments, using the fixed coding of pairs. Hence a program can list the whole finite stage by testing \(x&lt;c(s)\). Each \(F_s\) lies in \(A\); once a number enters, it stays. The preceding construction supplies such data uniformly for every \(W_e\), with \(c(s)=s\). The <a href="universal-computation#finite-certificates">certificate characterization</a> also shows that the union of any such approximation is c.e., since membership means \(\exists s\,[d(s,x)=1]\).</p>
+</section>
+
+<section id="finite-absence" data-kind="question" data-formal="effective-stage-empty-history effective-stage-late-history effective-stage-quiet-history-counterexample">
+  <h2>Can a finite quiet history certify permanent absence?</h2>
+  <p>Fix \(N\in\mathbb N\). Suppose the first \(N+1\) stages \(F_0,\ldots,F_N\) are empty. Do these observations alone imply that \(0\notin\bigcup_s F_s\), even if the approximation is computable and increasing?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Compare the two explicit approximations \(E_s=\varnothing\) for every \(s\), and</p>
+    <div class="math-display">\[L_s=\begin{cases}\varnothing&amp;s\le N,\\\{0\}&amp;s&gt;N.\end{cases}\]</div>
+    <p>Both have the constant finite bound \(c(s)=1\), computable membership tests, and increasing stages. Their observed stages agree through \(N\), but their unions are respectively \(\varnothing\) and \(\{0\}\). This concerns what follows from the finite observations alone. Additional information about a particular approximation can of course certify that it will never add anything.</p>
+  </div></details>
+</section>
+
+<section id="increasing-enumerations" data-kind="definition" data-formal="effective-stage-increasing-enumeration effective-stage-successive-increase effective-stage-infinite-injective-range well-order-increasing-map-not-decreasing">
+  <h2>An increasing list never returns to a smaller value</h2>
+  <p>A <strong>strictly increasing enumeration</strong> of \(A\subseteq\mathbb N\) is a total function \(f:\mathbb N\to\mathbb N\) with range exactly \(A\) and \(f(n)&lt;f(n+1)\) for every \(n\). A <strong>computable increasing enumeration</strong> additionally requires \(f\) to be total recursive. Such a range is infinite: different inputs have different outputs. The empty set and nonempty finite sets therefore have no strictly increasing enumeration with domain all of \(\mathbb N\).</p>
+  <p>For every strictly increasing \(f\), induction gives \(f(n)\ge n\): the starting value is nonnegative, and each step increases by at least one. This numerical bound will turn a range-membership question into a finite computation.</p>
+</section>
+
+<section id="increasing-range-decidable" data-kind="lemma" data-formal="effective-stage-increasing-range-test effective-stage-bounded-range effective-stage-increasing-range-decidable univ-decidable-predicate">
+  <h2>A computable increasing list decides its range</h2>
+  <p>If \(f:\mathbb N\to\mathbb N\) is total recursive and strictly increasing, its range is decidable. More precisely,</p>
+  <div class="math-display">\[x\in\operatorname{range}(f)\quad\Longleftrightarrow\quad\exists n\le x\;[f(n)=x].\]</div>
+  <div class="proof">
+    <p>A witness with \(n\le x\) certainly gives range membership. Conversely, \(f(n)=x\) and \(f(n)\ge n\) imply \(n\le x\). Compute the finite list \(f(0),\ldots,f(x)\) and compare each entry with \(x\). Every call terminates because \(f\) is total. Recursion through a prescribed finite number of calls, followed by the zero-one equality test, gives a total recursive characteristic function.</p>
+    <p>This argument does not decide membership in the range of an arbitrary total enumeration: without increasingness, a small value can first occur at an arbitrarily large input.</p>
+  </div>
+</section>
+
+<section id="decidable-increasing-equivalence" data-kind="theorem" data-formal="effective-stage-least-members effective-stage-increasing-list effective-stage-next-member-computable effective-stage-increasing-list-correct effective-stage-increasing-list-computable effective-stage-decidable-increasing-equivalence">
+  <h2>Infinite decidable sets are exactly the computably increasing ranges</h2>
+  <div class="statement-box"><p>For an infinite \(A\subseteq\mathbb N\), \(A\) is decidable if and only if it has a computable strictly increasing enumeration.</p></div>
+  <div class="proof">
+    <p>One direction is <a href="#increasing-range-decidable"></a>. For the other, let a total recursive characteristic function decide \(A\), and define</p>
+    <div class="math-display">\[f(0)=\min A,\qquad f(n+1)=\min\{x\in A:x&gt;f(n)\}.\]</div>
+    <p>An infinite subset of \(\mathbb N\) is unbounded, since a bounded subset is finite. Thus the initial search and every subsequent search have witnesses. Their predicates are total recursive, so <a href="partial-recursive-functions#search-correctness">least-witness search</a> computes the minima. The successor operation \(y\mapsto\min\{x\in A:x&gt;y\}\) is total recursive on every \(y\), and <a href="partial-recursive-functions#partial-recursive-functions">recursive closure under primitive recursion</a> makes the displayed sequence total recursive.</p>
+    <p>The construction puts every value in \(A\) and increases strictly. It misses no member: inductively, every member of \(A\) at most \(f(n)\) occurs among \(f(0),\ldots,f(n)\). This holds initially by minimality. At the next step there is no member of \(A\) strictly between \(f(n)\) and its chosen successor, so the invariant persists. For \(x\in A\), the bound \(f(x)\ge x\) puts \(x\) in that finite initial range. Hence the range is exactly \(A\).</p>
+  </div>
+</section>
+
+<section id="stream-from-stages" data-kind="lemma" data-formal="effective-stage-stream effective-stage-stream-correct">
+  <h2>A finite batch can be read through an ordinary output stream</h2>
+  <p>Let \((F_s)\) be a computable finite approximation to a nonempty set \(A\), and fix \(a_0\in A\). The following specified total recursive function has range exactly \(A\):</p>
+  <div class="math-display">\[q(\langle s,x\rangle)=\begin{cases}x&amp;x\in F_s,\\a_0&amp;x\notin F_s.\end{cases}\]</div>
+  <div class="proof">
+    <p>Decode the pair, run the supplied total stage-membership test, and return the indicated value. Pair decoding and selection between two total computed answers are recursive. Every output belongs to \(A\), because \(F_s\subseteq A\) and \(a_0\in A\). Every \(x\in A\) appears in some stage \(F_s\), and then the input \(\langle s,x\rangle\) outputs \(x\).</p>
+    <p>The stream can repeat numbers and need not increase. No assumption that a stage introduces at most one number is needed. The fixed choice of \(a_0\) describes a procedure for this nonempty set; it is not a test of whether a presented c.e. set is empty. The <a href="universal-computation#enumerating-ranges">range characterization</a> gives the same existence conclusion directly.</p>
+  </div>
+</section>
+
+<section id="infinite-decidable-subset" data-kind="theorem" data-formal="effective-stage-record-index effective-stage-record-high effective-stage-record-sequence effective-stage-record-index-spec effective-stage-record-algorithms-computable effective-stage-record-sequence-correct effective-stage-specified-index-records effective-stage-infinite-enumerable-subset univ-enumerable-index-equivalence productive-infinite-enumerable-subset productive-infinite-decidable-subset">
+  <h2>Record highs leave an infinite decidable subset</h2>
+  <div class="statement-box"><p>Every infinite c.e. set contains an infinite decidable subset.</p></div>
+  <p>More explicitly, let \(q\) be any total recursive function with infinite range \(A\). For each \(y\), define \(k(y)=\min\{j:q(j)&gt;y\}\), put \(H(y)=q(k(y))\), and define</p>
+  <div class="math-display">\[r(0)=q(0),\qquad r(n+1)=H(r(n)).\]</div>
+  <p>Then this specified \(r\) is total recursive and strictly increasing, and \(B=\operatorname{range}(r)\) is an infinite decidable subset of \(A\).</p>
+  <div class="proof">
+    <p>The infinite range of \(q\) is unbounded, so every search defining \(k(y)\) terminates. The test \(q(j)&gt;y\) is total recursive jointly in \(y,j\); least-witness search therefore makes \(k\), and then \(H\), total recursive. Primitive recursion computes \(r\) using only these total procedures. Its recurrence gives \(r(n+1)&gt;r(n)\), and every value is a value of \(q\).</p>
+    <p>Thus \(B\subseteq A\), strict increase makes \(B\) infinite, and <a href="#increasing-range-decidable"></a> decides membership in \(B\). For an infinite c.e. \(A=W_e\), <a href="#uniform-finite-approximation"></a> and <a href="#stream-from-stages"></a> supply the required stream \(q\). These are algorithms built from the given stage test or stream; the termination assertions use infinitude. They do not turn the original semidecision procedure for \(A\) into a decision procedure for all of \(A\).</p>
+  </div>
+  <p>Some non-enumerable sets also contain infinite decidable subsets. For a <a href="productive-and-creative-sets#productive-infinite-subset">productive set</a>, iterating its escape rule first constructs an infinite c.e. subset, to which the present theorem applies.</p>
+</section>
+
+<section id="record-high-example" data-kind="question" data-formal="effective-stage-sample-stream effective-stage-sample-stream-computable effective-stage-sample-stream-range effective-stage-sample-records effective-stage-sample-record-indices effective-stage-sample-record-values effective-stage-sample-record-range">
+  <h2>Which early arrivals survive record-high selection?</h2>
+  <p>Let \(q(0),\ldots,q(6)=4,1,4,7,2,7,9\), and let \(q(j)=j+3\) for \(j\ge7\). Use the recurrence in <a href="#infinite-decidable-subset"></a> to find \(r(0),r(1),r(2)\). Which members of the range of \(q\) does the selected range omit?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The first value is \(r(0)=4\). The least index with output above \(4\) is \(3\), giving \(r(1)=7\). The least index with output above \(7\) is \(6\), giving \(r(2)=9\). Thereafter \(r(n)=n+7\) for \(n\ge2\), since \(q(7)=10,q(8)=11,\ldots\). Hence</p>
+    <div class="math-display">\[\operatorname{range}(q)=\{1,2,4,7\}\cup\{9,10,11,\ldots\},\]</div>
+    <div class="math-display">\[\operatorname{range}(r)=\{4,7\}\cup\{9,10,11,\ldots\}.\]</div>
+    <p>The selected set omits exactly \(1\) and \(2\). Selection is by larger numerical values, rather than by taking every distinct arrival.</p>
+  </div></details>
+</section>
+
+<section id="settling-moduli" data-kind="definition" data-formal="effective-stage-settles effective-stage-settling-modulus effective-stage-settling-persists">
+  <h2>A settling bound refers to an entire finite input prefix</h2>
+  <p>Fix a computable finite approximation \((F_s)\) to \(A\). A <strong>settling modulus</strong> is a total function \(m:\mathbb N\to\mathbb N\) such that</p>
+  <div class="math-display">\[A\cap\{0,\ldots,n-1\}=F_{m(n)}\cap\{0,\ldots,n-1\}\quad\text{for every }n.\]</div>
+  <p>Thus every member below \(n\) has entered by stage \(m(n)\). Because the approximation is increasing and remains inside \(A\), the same agreement holds at every later stage. A <strong>computable settling modulus</strong> is one that is total recursive. The definition does not require \(m\) itself to increase. At \(n=0\), both prefixes are empty regardless of the stage chosen.</p>
+</section>
+
+<section id="classical-settling" data-kind="lemma" data-formal="effective-stage-prefix-settles effective-stage-least-settling-stage effective-stage-least-settling-spec effective-stage-finite-global-stage effective-stage-arrival-test effective-stage-arrival-data effective-stage-arrival-approximation effective-stage-arrival-stages effective-stage-arrival-modulus effective-stage-arrival-least-modulus">
+  <h2>A settling modulus exists even when it cannot be computed</h2>
+  <p>Every increasing finite approximation with union \(A\) has a settling modulus. If \(A\) is finite, some single stage contains all of \(A\), so a constant settling modulus exists.</p>
+  <div class="proof">
+    <p>For fixed \(n\), only finitely many \(x&lt;n\) lie in \(A\). Each enters at some stage. The maximum of those finitely many stages, or zero if there are no such members, settles the prefix. Equivalently, define \(m_A(n)\) to be the least stage at which the displayed prefix equality holds. The preceding existence argument makes this a well-defined total function.</p>
+    <p>If \(A\) is finite, apply the same argument to all its members at once. Every later stage equals \(A\). Knowing that a maximum exists does not supply an effective way to locate it from an arbitrary enumeration: the argument selected the members of \(A\) before collecting their arrival stages.</p>
+  </div>
+  <p>For a concrete example, take \(F_s=\{1:3\le s\}\cup\{4:6\le s\}\), meaning that \(1\) enters at stage \(3\), \(4\) enters at stage \(6\), and nothing else enters. This is an increasing computable finite approximation to \(\{1,4\}\), with constant input bound \(5\). The least settling stages are \(m_A(n)=0\) for \(n\le1\), \(m_A(n)=3\) for \(2\le n\le4\), and \(m_A(n)=6\) for \(n\ge5\).</p>
+  <figure id="settling-prefix-grid" class="proof-figure">
+    <div class="figure-image"><img src="assets/settling-prefix-grid.svg" width="760" height="420" alt="Rows zero through four meet stages zero through seven. Row one becomes green at stage three and row four at stage six; all other rows stay empty. Column six is marked as the first stage settling all inputs below five." /></div>
+    <figcaption>For this specified approximation, the first stage settling all inputs below \(5\) is \(6\). Quiet columns before a later arrival illustrate why observing a pause does not by itself provide a settling bound.</figcaption>
+  </figure>
+</section>
+
+<section id="computable-settling-equivalence" data-kind="theorem" data-formal="effective-stage-modulus-decider effective-stage-modulus-decider-correct effective-stage-positive-condition effective-stage-positive-condition-computable effective-stage-decider-modulus effective-stage-decider-modulus-correct effective-stage-computable-settling-equivalence univ-decidable-characteristic-equivalence">
+  <h2>A computable settling modulus is exactly enough to decide membership</h2>
+  <div class="statement-box"><p>For any fixed computable finite approximation \((F_s)\) to \(A\), the set \(A\) is decidable if and only if this approximation has a computable settling modulus. No infinitude assumption is needed.</p></div>
+  <div class="proof">
+    <p>Given a computable modulus \(m\), decide \(x\in A\) by testing \(x\in F_{m(x+1)}\). The modulus settles all inputs below \(x+1\), including \(x\). The stage test and \(m\) are total recursive, so their composition is a total recursive characteristic function.</p>
+    <p>Conversely, suppose a total recursive characteristic function \(\chi_A\) decides \(A\). For \(n,s\), test the bounded condition</p>
+    <div class="math-display">\[P(n,s)\quad\Longleftrightarrow\quad\forall x&lt;n\;[\chi_A(x)=0\ \lor\ x\in F_s].\]</div>
+    <p>This is a total recursive test: compute the finitely many membership decisions and stage tests. Some stage passes, since all finitely many positive inputs below \(n\) eventually enter. Define \(m(n)\) as the least passing stage. Least-witness search is total here, so \(m\) is total recursive. Every member of \(A\) below \(n\) belongs to \(F_{m(n)}\), while \(F_{m(n)}\subseteq A\) gives the converse. Hence \(m\) is a settling modulus for this very approximation.</p>
+  </div>
+</section>
+
+<section id="uniform-bound-question" data-kind="question" data-formal="effective-stage-uniform-halting-test effective-stage-uniform-halting-test-correct effective-stage-no-uniform-modulus effective-stage-finite-index-modulus univ-pair-halting-undecidable">
+  <h2>Can one algorithm supply settling bounds for every program index?</h2>
+  <p>Could a total recursive function \(M(e,n)\) give a settling modulus \(n\mapsto M(e,n)\) for \(W_{e,s}\), simultaneously for every \(e\)? Does the existence of a constant modulus when \(W_e\) is finite provide such an algorithm?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No such \(M\) exists. If it did, the jointly computable test</p>
+    <div class="math-display">\[x\in W_e\quad\Longleftrightarrow\quad x\in W_{e,M(e,x+1)}\]</div>
+    <p>would decide whether \(\varphi_e(x)\) halts, contradicting the <a href="universal-computation#halting-problem">undecidability of the halting relation</a>. This is a uniform contradiction in \(e,x\), not a failure of the modulus for one particular finite set.</p>
+    <p>For a fixed finite \(W_e\), its elements and a final arrival stage can be built into separate programs, yielding a decider and a constant modulus. These are separately chosen existence witnesses for this fixed set; the hypothetical function \(M\) was required to work for every index. More generally, the constructive equivalence above converts a supplied decider into a modulus, or a supplied modulus into a decider; it does not provide either input from an arbitrary semidecision procedure.</p>
+  </div></details>
+</section>

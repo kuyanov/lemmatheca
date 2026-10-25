@@ -32,7 +32,7 @@
   <p>We will use the stronger output form too: \(\varphi_e(x)\downarrow=y\) if and only if \(\exists k\,[b(k,e,x)=y+1]\). A resource bound records a finite successful computation; it is not an upper bound that can be predicted for every terminating program.</p>
 </section>
 
-<section id="parameter-theorem" data-formal="rec-thm-recursion-theorem univ-constant-program univ-constant-program-primitive univ-constant-program-evaluation univ-identity-program univ-identity-evaluation univ-specialization univ-specialization-primitive univ-specialization-evaluation univ-tuple-specialization" data-kind="theorem">
+<section id="parameter-theorem" data-formal="rec-thm-recursion-theorem univ-constant-program univ-constant-program-primitive univ-constant-program-evaluation univ-identity-program univ-identity-evaluation univ-specialization univ-specialization-primitive univ-specialization-evaluation univ-tuple-specialization numbering-specialization-correct numbering-semantic-round-trips" data-kind="theorem">
   <h2>Fixed inputs can be inserted into program text</h2>
   <div class="statement-box">
     <p>There is a primitive-recursive numerical function \(s(e,a)\) such that</p>
@@ -47,6 +47,7 @@
     <p>The inner program always returns \(\langle a,x\rangle\), and the outer one runs \(c_e\) on it. The displayed numerical construction uses only primitive recursion for constant codes and the primitive-recursive constructor operations; it does not run \(c_e\). This proves the exact partial-value identity even when the original program diverges. For fixed larger arities, encode the whole argument tuple by the list code from <a href="coding-finite-sequences#list-code">finite-sequence coding</a>; fixed-arity tuple formation and extraction are primitive recursive. Use a program for <a href="coding-finite-sequences#concatenation">coded concatenation</a> to prepend the fixed tuple to the remaining tuple before running the original program. Its code is fixed; specialize its fixed-tuple input by the same construction and compose with \(c_e\).</p>
 </div>
   <p>Self-specialization \(s(a,a)\) gives the <a href="recursion-theorem#recursion-theorem">recursion theorem</a>: a program can use its own index as an extra input.</p>
+  <p>For another numbering with computable translations in both directions, <a href="uniform-self-reference#acceptable-specialization">the explicit composite of compilers and specialization</a> inserts a fixed parameter in that same numbering. The two translations need only preserve computed partial functions; they need not be inverse maps on numerical indices.</p>
 </section>
 
 <section id="specialization-question" data-formal="univ-specialization-primitive univ-specialization-evaluation" data-kind="question">
@@ -87,11 +88,12 @@
   <p>The <a href="finite-descriptions-and-decision-problems#diagonal-obstruction">general diagonal obstruction</a> shows why some problem escapes any fixed numbering. Here the particular halting problem is identified using the effective operations of this model.</p>
 </section>
 
-<section id="partial-diagonal-question" data-formal="univ-partial-diagonal-divergence" data-kind="question">
+<section id="partial-diagonal-question" data-formal="univ-partial-diagonal-divergence inseparable-binary-diagonal-partial inseparable-no-total-extension" data-kind="question">
   <h2>Why does a universal partial evaluator survive diagonalization?</h2>
   <p>The function \(g(x)\simeq U(x,x)+1\) is partial recursive. If \(g\simeq\varphi_j\), why does \(g(j)\simeq g(j)+1\) fail to contradict arithmetic?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>It implies that \(g(j)\) is undefined. If it had a natural-number value \(n\), partial-value equality would force \(n=n+1\). But applying successor to an undefined partial value is also undefined, so the two sides can agree by both being undefined. The earlier contradiction for a total evaluator ruled out exactly this escape.</p>
+    <p>A related obstruction is a <a href="computably-inseparable-sets#no-total-extension">partial recursive function with no total computable extension</a>, even though new values would be allowed freely outside its domain.</p>
   </div></details>
 </section>
 
@@ -130,7 +132,7 @@
 </div>
 </section>
 
-<section id="dovetailing" data-formal="univ-dovetail-two univ-dovetail-countable" data-kind="lemma">
+<section id="dovetailing" data-formal="univ-dovetail-two univ-dovetail-countable effective-stage-bounds effective-stage-primitive-test effective-stage-monotone effective-stage-union" data-kind="lemma">
   <h2>Parallel search avoids getting trapped in one failed computation</h2>
   <p>Given indices \(e,d\), there is a partial recursive procedure which, on input \(x\), returns an output from \(\varphi_e(x)\) or \(\varphi_d(x)\), and stops exactly when at least one of those computations stops.</p>
   <div class="proof">
@@ -142,6 +144,7 @@
 
 
 
+  <p>Keeping the successful inputs below an explicit stage cutoff gives <a href="effective-enumerations#uniform-finite-approximation">uniform finite approximations to enumerable sets</a>. Each stage is finite even when the eventual set is infinite.</p>
   <figure id="dovetailing-grid" class="proof-figure">
     <div class="figure-image"><img src="assets/dovetailing-grid.svg" width="760" height="465" alt="A triangular program-by-allowance grid. Stage three checks programs zero to three, and a successful call for program two at allowance three is included with sufficient resources thereafter." /></div>
     <figcaption>Each column is one finite stage, rather than a run waited on until completion. The starred example first succeeds at \((i_0,k_0)=(2,3)\) and is available at every later stage.</figcaption>
@@ -157,7 +160,7 @@
 </div>
 </section>
 
-<section id="two-sided-recognition" data-formal="univ-two-sided-recognition" data-kind="theorem">
+<section id="two-sided-recognition" data-formal="univ-two-sided-recognition inseparable-diagonal-enumerable inseparable-diagonal-pair separator-positive-attempt-spec inseparable-constant-two-outside" data-kind="theorem">
   <h2>A set is decidable exactly when both sides can be recognized</h2>
   <div class="statement-box">
     <p>A set \(A\subseteq\mathbb N\) is decidable if and only if both \(A\) and its complement \(\mathbb N\setminus A\) are c.e.</p>
@@ -166,20 +169,23 @@
     <p>If its characteristic function \(\chi_A\) is total recursive, search using the constant-in-stage tests \(\chi_A(x)=1\) and \(\chi_A(x)=0\). The resulting domains are \(A\) and its complement.</p>
     <p>Conversely, choose primitive-recursive certificate relations \(R,S\) for \(A\) and its complement. Search for a code \(\langle i,t\rangle\) witnessing either \(i=0\wedge R(x,t)\) or \(i=1\wedge S(x,t)\). Exactly one of the two kinds of witnesses exists for each \(x\), so this search is total recursive. Return one for a witness of the first kind and zero for the second. The result is the total recursive characteristic function of \(A\). Equivalently, dovetail the two semidecision procedures and report whichever one halts.</p>
 </div>
+  <p>For disjoint c.e. sets, an input outside both sets activates neither recognizer, so the same search need not terminate. Some such pairs admit no <a href="computably-inseparable-sets#inseparability">decidable separator</a>.</p>
 </section>
 
-<section id="halting-sets" data-formal="univ-diagonal-halting-enumerable univ-pair-halting-enumerable univ-diagonal-nonhalting-not-enumerable univ-pair-nonhalting-not-enumerable univ-diagonal-halting-undecidable univ-pair-halting-undecidable" data-kind="theorem">
+<section id="halting-sets" data-formal="univ-diagonal-halting-enumerable univ-pair-halting-enumerable univ-diagonal-nonhalting-not-enumerable univ-pair-nonhalting-not-enumerable univ-diagonal-halting-undecidable univ-pair-halting-undecidable productive-diagonal-identity" data-kind="theorem">
   <h2>Halting is enumerable, but nonhalting is not</h2>
   <p>The sets \(K=\{e:\varphi_e(e)\downarrow\}\) and \(K_0=\{\langle e,x\rangle:\varphi_e(x)\downarrow\}\) are c.e. and undecidable. Their complements are not c.e.</p>
   <div class="proof">
     <p>They have the primitive-recursive certificate descriptions \(e\in K\Longleftrightarrow\exists k\,T(e,e,k)\) and \(\langle e,x\rangle\in K_0\Longleftrightarrow\exists k\,T(e,x,k)\). Hence they are c.e. by <a href="#finite-certificates"></a>. Their undecidability is <a href="#halting-problem"></a>, using pairing and unpairing for \(K_0\). If either complement were c.e., <a href="#two-sided-recognition"></a> would make the corresponding halting set decidable, a contradiction.</p>
 </div>
+  <p>The non-enumerability of \(\overline K\) has a constructive strengthening: <a href="productive-and-creative-sets#diagonal-complement">the identity function supplies an escape point</a> outside every c.e. subset of \(\overline K\) presented by an index.</p>
 </section>
 
-<section id="enumeration-question" data-formal="nonempty-domain-range-nonempty univ-singleton-range-not-injective constant-map-range-singleton univ-pair-halting-undecidable" data-kind="question">
+<section id="enumeration-question" data-formal="nonempty-domain-range-nonempty univ-singleton-range-not-injective constant-map-range-singleton univ-pair-halting-undecidable effective-stage-computable-settling-equivalence" data-kind="question">
   <h2>Why allow repetitions and a separate empty case?</h2>
   <p>Can the empty set be the range of a total function \(\mathbb N\to\mathbb N\)? Can a singleton be enumerated by an injective total function? If the enumeration has not yet produced a number, have we learned that it is absent?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>No total function has empty range: its value at zero already belongs to its range. A singleton cannot be the range of an injective total function either, since the outputs at zero and one would have to agree. Constant functions enumerate singletons once repetitions are allowed. Finally, failure to have appeared in a finite initial segment does not establish absence. A c.e. enumeration need not be increasing, and there is generally no computable stage after which absence is settled; if there were a membership decision procedure for every c.e. set, it would decide the halting sets.</p>
+    <p>For any fixed computable approximation by growing finite stages, <a href="effective-enumerations#computable-settling-equivalence">computable bounds settling every finite input prefix</a> exist exactly when the set is decidable. This distinguishes a bound supplied for one set from a uniform procedure for arbitrary program indices.</p>
   </div></details>
 </section>
