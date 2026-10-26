@@ -1,0 +1,167 @@
+<section id="turing-reducibility" data-kind="definition" data-formal="turing-red-program turing-red-reducible oracle-code-relative-computable">
+  <h2>Use one membership problem to decide another</h2>
+  <p>For sets \(A,B\subseteq\mathbb N\), a <strong>Turing reduction</strong> of \(A\) to \(B\) is a finite <a href="oracle-computation#oracle-programs">oracle program</a> \(c\) satisfying</p>
+  <div class="math-display">\[E_B(c,x)\downarrow=\chi_A(x)\qquad\text{for every }x\in\mathbb N.\]</div>
+  <p>Write \(A\le_T B\) when such a program exists. The program is fixed before the input is supplied, and it must terminate with the correct zero-one answer on every input. It may ask several questions about \(B\), use negative as well as positive answers, and let later calculations depend on earlier answers. Thus \(B\) supplies enough information to decide membership in \(A\).</p>
+  <p>A procedure that runs forever on some nonmember of \(A\) cannot witness this reduction. Each no answer must also be returned after a finite computation. The finite <a href="oracle-computation#relative-closure">query-program model</a> fixes what computations are allowed; existence of an arbitrary set-theoretic function with the right values would say nothing about reducibility.</p>
+</section>
+
+<section id="substitution-preorder" data-kind="theorem" data-formal="turing-red-reflexive oracle-code-initial-evaluations turing-red-substitution turing-red-transitive oracle-subst-program">
+  <h2>Actual query substitution makes reducibility transitive</h2>
+  <p>Turing reducibility is reflexive and transitive. More precisely, \(\mathbf Q\) witnesses \(A\le_T A\), and if \(c\) witnesses \(A\le_T B\) while \(d\) witnesses \(B\le_T C\), then the specified program \(\operatorname{subst}(d,c)\) witnesses \(A\le_T C\).</p>
+  <div class="proof">
+    <p>The query leaf returns \(E_A(\mathbf Q,x)=\chi_A(x)\), proving reflexivity. For transitivity, the hypothesis on \(d\) gives \(E_C(d,q)=\chi_B(q)\) at every numerical query. The <a href="oracle-computation#substitution-correctness">substitution theorem</a> therefore gives</p>
+    <div class="math-display">\[E_C(\operatorname{subst}(d,c),x)\simeq E_B(c,x)=\chi_A(x).\]</div>
+    <p>The right side is defined for every input because \(c\) is a reduction. Consequently the substituted program terminates with that same bit on every input. Its finite syntax is obtained by replacing each query leaf of \(c\) by \(d\), so this is a particular reduction program, rather than a separate choice of a computation for each input.</p>
+  </div>
+</section>
+
+<section id="computable-oracles" data-kind="lemma" data-formal="turing-red-computable-uniform turing-red-computable-oracle turing-red-empty-characterization oracle-code-ordinary-embedding-correct oracle-subst-erasure-correct">
+  <h2>Computable information gives exactly the ordinary decidable problems</h2>
+  <p>If \(A\) is computable, then \(A\le_T B\) for every \(B\). If \(A\le_T B\) and \(B\) is computable, then \(A\) is computable. In particular,</p>
+  <div class="math-display">\[A\le_T\varnothing\quad\Longleftrightarrow\quad A\text{ is computable}.\]</div>
+  <div class="proof">
+    <p>Choose one ordinary program \(r\) for the total characteristic function of a computable \(A\). Its <a href="oracle-computation#ordinary-programs-and-queries">ordinary embedding</a> \(\iota(r)\) ignores the oracle and still returns \(\chi_A(x)\), under every \(B\).</p>
+    <p>Conversely, let \(c\) witness \(A\le_T B\), and choose an ordinary program \(r\) for \(\chi_B\). The actual <a href="oracle-computation#computable-oracle-elimination">query-erasing compiler</a> produces \(\operatorname{erase}_r(c)\), with ordinary evaluation equal to \(E_B(c,x)=\chi_A(x)\). This is an ordinary total decision procedure for \(A\). Finally, \(\varnothing\) is computable by the constant-zero program, giving the displayed special case.</p>
+  </div>
+</section>
+
+<section id="many-one-comparison" data-kind="theorem" data-formal="red-many-one turing-red-preprocess turing-red-preprocess-correct turing-red-many-one">
+  <h2>A computable translation followed by one query is a Turing reduction</h2>
+  <p>Every <a href="computable-reductions#many-one-reductions">many-one reduction</a> gives a Turing reduction. If a total computable map \(f\) witnesses \(A\le_m B\), choose an ordinary program \(r_f\) computing \(f\). Then the specified program \(\operatorname{comp}(\mathbf Q,\iota(r_f))\) witnesses \(A\le_T B\).</p>
+  <div class="proof">
+    <p>Composition evaluates its second program first. On input \(x\), the ordinary inner program terminates with \(f(x)\), and the outer query returns \(\chi_B(f(x))\). The many-one equivalence says precisely that this bit equals \(\chi_A(x)\). Both stages terminate on every input. A many-one reduction therefore uses one query with unchanged answer, whereas the definition of Turing reduction permits other uses of the answers.</p>
+  </div>
+</section>
+
+<section id="complements" data-kind="theorem" data-formal="oracle-code-complement-query oracle-code-complement-query-correct oracle-code-zero-test-correct turing-red-complement-equivalence">
+  <h2>A membership problem and its complement have the same oracle information</h2>
+  <p>For every \(A\subseteq\mathbb N\), writing \(\overline A=\mathbb N\setminus A\), both \(\overline A\le_T A\) and \(A\le_T\overline A\) hold. Fix an ordinary program \(z\) for the zero test, which returns one at zero and zero at every positive input. The same finite program \(\operatorname{comp}(\iota(z),\mathbf Q)\) witnesses the first reduction for every \(A\).</p>
+  <div class="proof">
+    <p>The <a href="primitive-recursion#boolean-closure">zero test</a> reverses a Boolean answer. Under oracle \(A\), the program first receives \(\chi_A(x)\), then returns \(1-\chi_A(x)=\chi_{\overline A}(x)\). Each stage is total, proving \(\overline A\le_T A\). Apply this statement to \(\overline A\). Its complement is \(A\), giving the reverse reduction by the same program.</p>
+  </div>
+</section>
+
+<section id="strict-comparison" data-kind="lemma" data-formal="turing-red-complement-equivalence turing-red-ce-complement-nonreduction univ-diagonal-halting-set univ-diagonal-halting-enumerable univ-diagonal-halting-undecidable">
+  <h2>Reversing answers can go beyond a many-one reduction</h2>
+  <p>If \(B\) is c.e. and undecidable, then</p>
+  <div class="math-display">\[\overline B\le_T B\qquad\text{but}\qquad\overline B\not\le_m B.\]</div>
+  <p>In particular this holds for the diagonal halting set \(K=\{e:\varphi_e(e)\downarrow\}\).</p>
+  <div class="proof">
+    <p>The Turing reduction is <a href="#complements"></a>. If \(\overline B\le_m B\), the <a href="computable-reductions#composition-and-pullback">computable-preimage property</a> would make \(\overline B\) c.e. Both sides would then be c.e., so <a href="universal-computation#two-sided-recognition">two-sided recognition</a> would make \(B\) decidable, a contradiction. The <a href="universal-computation#halting-sets">halting-set theorem</a> says that \(K\) has precisely these hypotheses.</p>
+    <p>Thus Turing reducibility is strictly more permissive than many-one reducibility. The same input query, followed by Boolean negation, already exhibits the difference.</p>
+  </div>
+</section>
+
+<section id="recognizer-question" data-kind="question" data-formal="univ-diagonal-halting-enumerable turing-red-halting-recognizer-function turing-red-halting-recognizer-code turing-red-halting-recognizer-correct turing-red-recognizer-replacement-fails turing-red-empty-characterization univ-diagonal-halting-undecidable">
+  <h2>Can a recognizer stand in for an oracle?</h2>
+  <p>The set \(K\) has an ordinary recognizer. Does this show \(K\le_T\varnothing\)? If a program asks a question about \(K\), why can we not simply run that recognizer until it supplies the oracle answer?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Even if the recognizer returns one whenever it stops, it need not stop on nonmembers of \(K\). It does not compute the total characteristic function required by a Turing reduction. Substituting it for a query can turn a negative answer into a computation that never finishes. The <a href="oracle-computation#substitution-correctness">totality hypothesis for query replacement</a> is therefore absent.</p>
+    <p>If \(K\le_T\varnothing\) did hold, <a href="#computable-oracles"></a> would make \(K\) ordinary computable, contrary to halting undecidability. Enumerability permits positive recognition; an oracle must supply both membership answers.</p>
+  </div></details>
+</section>
+
+<section id="equivalence-and-degrees" data-kind="definition" data-formal="turing-red-equivalence turing-degree-problem-preorder ordered-quotient-equivalence turing-degree-quotient turing-degree-map turing-degree-surjective turing-degree-literal-class turing-degree-class-interpretation turing-degree-class-correct turing-degree-class-injective turing-degree-class-equality quotient-projection-equality">
+  <h2>Group sets that can answer one another's membership questions</h2>
+  <p>Sets \(A,B\subseteq\mathbb N\) are <strong>Turing equivalent</strong>, written \(A\equiv_T B\), if \(A\le_T B\) and \(B\le_T A\). This is an equivalence relation: reflexivity follows from the query program, symmetry exchanges the two conditions, and transitivity applies <a href="#substitution-preorder"></a> in each direction.</p>
+  <p>The <strong>Turing degree</strong> of \(A\) is its equivalence class</p>
+  <div class="math-display">\[\deg_T(A)=[A]=\{B\subseteq\mathbb N:B\equiv_T A\}.\]</div>
+  <p>Two sets have the same degree exactly when they are Turing equivalent. For one direction, transitivity and symmetry identify their classes. For the other, \(A\in[A]\) by reflexivity, so equality \([A]=[B]\) implies \(A\equiv_T B\). A degree records the information needed for membership decisions, rather than the particular numerical set carrying that information.</p>
+</section>
+
+<section id="degree-order" data-kind="theorem" data-formal="turing-degree-problem-preorder ordered-quotient-representatives ordered-quotient-partial-order ordered-quotient-comparison turing-degree-map quotient-projection-equality">
+  <h2>Reducibility gives a well-defined partial order on degrees</h2>
+  <p>The rule</p>
+  <div class="math-display">\[[A]\le[B]\quad\Longleftrightarrow\quad A\le_T B\]</div>
+  <p>is independent of the chosen representatives and defines a partial order on Turing degrees.</p>
+  <div class="proof">
+    <p>Suppose \(A'\equiv_T A\) and \(B'\equiv_T B\). From \(A\le_T B\), transitivity gives the chain</p>
+    <div class="math-display">\[A'\le_T A\le_T B\le_T B'.\]</div>
+    <p>Exchanging primed and unprimed representatives proves the converse, so the rule is well defined. Reflexivity and transitivity descend from set reducibility. If \([A]\le[B]\) and \([B]\le[A]\), then \(A\equiv_T B\), so their degrees are equal. This is antisymmetry. Reducibility on sets need not be antisymmetric; passing to the equivalence classes is the step that supplies it.</p>
+  </div>
+</section>
+
+<section id="least-degree" data-kind="theorem" data-formal="turing-degree-zero turing-degree-zero-least turing-degree-zero-characterization turing-degree-halting-positive">
+  <h2>The computable sets form the least degree</h2>
+  <div class="statement-box">
+    <p>The <strong>computable degree</strong> \(\mathbf0=[\varnothing]\) is the least Turing degree, and</p>
+    <div class="math-display">\[[A]=\mathbf0\quad\Longleftrightarrow\quad A\text{ is computable}.\]</div>
+    <p>The halting degree is nonzero: \(\mathbf0&lt;[K]\).</p>
+  </div>
+  <div class="proof">
+    <p>The empty set is computable, so <a href="#computable-oracles"></a> gives \(\varnothing\le_T A\) for every \(A\). Thus \(\mathbf0\le[A]\). If \(A\) is computable, that same lemma also gives \(A\le_T\varnothing\), proving \([A]=\mathbf0\). Conversely, equality of these degrees implies \(A\le_T\varnothing\), and the lemma makes \(A\) computable. Since \(K\) is undecidable, its degree cannot be \(\mathbf0\). Leastness then gives the displayed strict inequality.</p>
+  </div>
+</section>
+
+<section id="finite-use-question" data-kind="question" data-formal="turing-red-reflexive turing-red-halting-query-use turing-red-flip-halting-bit turing-red-halting-use-no-common-bound turing-degree-zero-least ordered-quotient-comparison univ-diagonal-halting-undecidable">
+  <h2>Does a finite number of oracle answers make the problem computable?</h2>
+  <p>The query program witnesses \(K\le_T K\) and asks only one question on each input. Why does the <a href="oracle-computation#finite-use">finite-use theorem</a> not make \(K\) computable? Does \(A\le_T K\), by itself, show that \(A\) is undecidable?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>On input \(x\), the query program asks exactly whether \(x\in K\). It uses one bit, but computing that bit by an ordinary algorithm is the original membership problem. Finite use supplies a finite set of relevant positions for each halting computation; it supplies no ordinary procedure for their answers. Its convenient bound here is \(u=x+1\), which varies with the input.</p>
+    <p>There is no single initial-segment bound stabilizing this query program on every input and every oracle change. For any proposed \(u\), choose \(x\ge u\) and change just the oracle bit at \(x\). The new oracle agrees with \(K\) below \(u\), but the query output at \(x\) changes.</p>
+    <p>Nor does \(A\le_T K\) force \(A\) to be undecidable. For example, \(\varnothing\le_T K\), although the empty set is computable. A reduction bounds the information required by the lower problem; it does not force the lower problem to use all the information available from its oracle.</p>
+  </div></details>
+</section>
+
+<section id="finite-join" data-kind="definition" data-formal="turing-join-set turing-join-characteristic">
+  <h2>Store two membership problems in even and odd positions</h2>
+  <p>The <strong>join</strong> of sets \(A,B\subseteq\mathbb N\) is</p>
+  <div class="math-display">\[A\oplus B=\{2n:n\in A\}\cup\{2n+1:n\in B\}.\]</div>
+  <p>Every natural number is uniquely either \(2n\) or \(2n+1\). Therefore</p>
+  <div class="math-display">\[\chi_{A\oplus B}(x)=\begin{cases}\chi_A(x/2)&amp;x\bmod2=0,\\\chi_B(x/2)&amp;x\bmod2=1,\end{cases}\]</div>
+  <p>where \(x/2=\lfloor x/2\rfloor\) is natural-number division. The <a href="primitive-recursion#division-and-remainders">quotient and parity functions</a> are primitive recursive. The tag, even or odd, identifies which problem the remaining quotient asks about.</p>
+</section>
+
+<section id="join-lower-bounds" data-kind="lemma" data-formal="turing-join-even-map turing-join-odd-map turing-red-many-one turing-red-preprocess-correct">
+  <h2>Each original problem reduces to the joined problem</h2>
+  <p>The specified maps \(f_0(n)=2n\) and \(f_1(n)=2n+1\) witness, respectively,</p>
+  <div class="math-display">\[A\le_m A\oplus B,\qquad B\le_m A\oplus B.\]</div>
+  <p>Consequently \(A\le_T A\oplus B\) and \(B\le_T A\oplus B\).</p>
+  <div class="proof">
+    <p>Both maps are total primitive recursive. By the even and odd parts of the definition, \(n\in A\) exactly when \(2n\in A\oplus B\), and \(n\in B\) exactly when \(2n+1\in A\oplus B\). These are the required many-one identities. Apply <a href="#many-one-comparison"></a> to obtain actual oracle programs: compute the specified tagged input, then query its membership in the join.</p>
+  </div>
+</section>
+
+<section id="join-upper-bound" data-kind="theorem" data-formal="turing-join-half-code turing-join-half-correct turing-join-selector-value turing-join-selector-code turing-join-selector-correct turing-join-both-program turing-join-program turing-join-both-correct turing-join-program-correct turing-join-universal-property univ-identity-program univ-identity-evaluation">
+  <h2>A common oracle decides exactly the combined information</h2>
+  <div class="statement-box">
+    <p>For every \(A,B,C\subseteq\mathbb N\),</p>
+    <div class="math-display">\[A\oplus B\le_T C\quad\Longleftrightarrow\quad(A\le_T C\ \land\ B\le_T C).\]</div>
+  </div>
+  <div class="proof">
+    <p>If the join reduces to \(C\), compose that reduction with the two reductions in <a href="#join-lower-bounds"></a>. For the reverse implication, let \(c,d\) be fixed programs computing \(\chi_A,\chi_B\) under \(C\). We construct one finite program that computes the join under this same oracle.</p>
+    <p>Fix ordinary programs \(r_h\) and \(r_v\), independently of the sets and of \(c,d\), for the total primitive-recursive functions</p>
+    <div class="math-display">\[h(x)=x/2,\qquad v(\langle x,\langle a,b\rangle\rangle)=\begin{cases}a&amp;x\bmod2=0,\\b&amp;x\bmod2=1.\end{cases}\]</div>
+    <p>They exist by primitive-recursive arithmetic and <a href="primitive-recursion#definitions-by-cases">definitions by cases</a>, followed by <a href="machines-and-computation-histories#change-of-basis">ordinary program completeness</a>. Let \(I=\operatorname{pair}(\mathbf L,\mathbf R)\), which returns its input by the inverse pairing identity. Define the actual oracle-program trees</p>
+    <div class="math-display">\[D(c,d)=\operatorname{pair}\bigl(\operatorname{comp}(c,\iota(r_h)),\operatorname{comp}(d,\iota(r_h))\bigr),\]</div>
+    <div class="math-display">\[J(c,d)=\operatorname{comp}\bigl(\iota(r_v),\operatorname{pair}(I,D(c,d))\bigr).\]</div>
+    <p>On input \(x\), the program \(D(c,d)\) returns \(\langle\chi_A(x/2),\chi_B(x/2)\rangle\). Both constituent computations terminate, because reduction programs return characteristic values on every input. Strict pairing may therefore compute both before the selector chooses one. Pairing with \(I\) preserves \(x\) as well, and \(v\) selects the bit matching its parity. Thus</p>
+    <div class="math-display">\[E_C(J(c,d),x)\downarrow=\chi_{A\oplus B}(x)\qquad\text{for every }x.\]</div>
+    <p>This proves the reverse reduction using the displayed program. The construction uses the same common oracle \(C\) throughout and does not need an oracle for the two sets separately.</p>
+  </div>
+  <figure id="join-information" class="proof-figure">
+    <div class="figure-image"><img src="assets/join-information.svg" width="760" height="510" alt="Arrows lead from A and B to their join and from the join to a common oracle C. The lower reductions tag inputs by even and odd numbers. The upper reduction uses the constructed program for the join. The arrows indicate reducibility, without asserting that the displayed sets have distinct or incomparable degrees." /></div>
+    <figcaption>The join is an upper bound for both problems and reduces to every common upper bound. Arrows show proved Turing reductions; the placement does not assume that the degrees are distinct or that \(A\) and \(B\) are incomparable.</figcaption>
+  </figure>
+</section>
+
+<section id="degree-join" data-kind="theorem" data-formal="turing-join-representative-invariance turing-join-degrees turing-join-degree-computation turing-join-degree-upper-bounds turing-join-degree-semilattice turing-degree-order-bottom turing-join-idempotent turing-join-commutative turing-join-associative turing-join-zero-unit">
+  <h2>The binary join is well defined on degrees</h2>
+  <p>The rule \([A]\vee[B]=[A\oplus B]\) is independent of representatives and gives the least upper bound of the two degrees. For degrees \(\mathbf a,\mathbf b,\mathbf c\), it satisfies</p>
+  <div class="math-display">\[\mathbf a\vee\mathbf a=\mathbf a,\qquad\mathbf a\vee\mathbf b=\mathbf b\vee\mathbf a,\qquad\mathbf0\vee\mathbf a=\mathbf a,\]</div>
+  <div class="math-display">\[(\mathbf a\vee\mathbf b)\vee\mathbf c=\mathbf a\vee(\mathbf b\vee\mathbf c).\]</div>
+  <div class="proof">
+    <p>Suppose \(A\equiv_T A'\) and \(B\equiv_T B'\). Then \(A\le_T A'\le_T A'\oplus B'\), and similarly \(B\le_T A'\oplus B'\). The <a href="#join-upper-bound">universal property of the join</a> gives \(A\oplus B\le_T A'\oplus B'\). Reversing the primed and unprimed sets gives equivalence of the joins, so their degrees agree. The same universal property says that their degree is precisely a least upper bound in the <a href="#degree-order">quotient order</a>.</p>
+    <p>Least upper bounds are unique by antisymmetry. The degree \(\mathbf a\) itself is the least upper bound of \(\mathbf a,\mathbf a\), proving idempotence. The upper-bound conditions are symmetric in two arguments, proving commutativity. Since \(\mathbf0\) is least, the upper bounds of \(\mathbf0,\mathbf a\) are exactly the upper bounds of \(\mathbf a\), proving the unit identity. Finally, either parenthesized triple join is below a degree exactly when all three of \(\mathbf a,\mathbf b,\mathbf c\) are below it. Hence the two parenthesizations are the same least upper bound of those three degrees, proving associativity.</p>
+  </div>
+</section>
+
+<section id="join-complement-question" data-kind="question" data-formal="turing-join-complement-equivalence turing-red-complement-equivalence quotient-projection-equality turing-join-degree-computation turing-join-idempotent turing-red-complement-distinct">
+  <h2>Does joining a problem with its opposite add information?</h2>
+  <p>For an arbitrary \(A\subseteq\mathbb N\), compare the degrees of \(A\) and \(A\oplus\overline A\). Must a join always be strictly above both component degrees?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The two degrees are equal. The first lower-bound reduction gives \(A\le_T A\oplus\overline A\). Conversely, both \(A\le_T A\) and \(\overline A\le_T A\) hold, so <a href="#join-upper-bound"></a> gives \(A\oplus\overline A\le_T A\). Together these are Turing equivalence.</p>
+    <p>In degree notation, <a href="#complements"></a> gives \([\overline A]=[A]\), and the calculation is \([A]\vee[A]=[A]\). Thus a join need not be strictly larger. Even the two distinct sets \(A\) and \(\overline A\) carry the same oracle information; taking both as tagged components adds no new degree.</p>
+  </div></details>
+</section>

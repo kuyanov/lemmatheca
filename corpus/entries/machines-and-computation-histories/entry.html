@@ -1,10 +1,11 @@
-<section id="arithmetic-machines" data-formal="mach-machine mach-primitive-machine tape-code-representation tape-code-encode-represents tape-code-step-simulation" data-kind="definition">
+<section id="arithmetic-machines" data-formal="mach-machine mach-primitive-machine tape-code-representation tape-code-encode-represents tape-code-step-simulation counter-program-table counter-program-step counter-tape-instruction-simulation" data-kind="definition">
   <h2>A machine with a numbered state</h2>
   <p>A computation changes a finite amount of recorded information according to a fixed rule. We represent its whole <strong>configuration</strong> by a natural number. A pair, a finite list, a counter and a list of pending tasks can all be stored using the <a href="coding-finite-sequences#list-code">codes for finite data</a>.</p>
   <p>An <strong>arithmetic machine</strong> is a quadruple \(M=(I,D,H,O)\). Its <strong>initialization</strong> \(I:\mathbb N\to\mathbb N\), <strong>transition</strong> \(D:\mathbb N\to\mathbb N\), <strong>halt test</strong> \(H:\mathbb N\to\{0,1\}\), and <strong>output</strong> \(O:\mathbb N\to\mathbb N\) are all <a href="primitive-recursion#primitive-recursive-functions">primitive recursive</a>. A program includes a finite primitive-recursive construction of these four functions. Thus it is a finite recipe, rather than an arbitrary choice of four functions.</p>
   <p>At input \(x\), start in \(I(x)\). If \(H(c)=1\), halt with output \(O(c)\); otherwise replace \(c\) by \(D(c)\). A transition is a <strong>macro step</strong>: it may perform a bounded loop or decode a list. We are measuring which outputs eventually exist, not the time taken by elementary instructions. This is a specific model of computation; no tape, register instruction set or informal notion of algorithm is hidden in its definition.</p>
   <p>For a model in which one transition reads and writes a single tape cell, see <a href="turing-machines#one-step">Turing machines</a>. The macro-step definition here is different and does not assume a simulation of that tape model.</p>
   <p>An <a href="coding-turing-computations#one-step-simulation">explicit tape-to-arithmetic simulation</a> encodes a tape head and its two sides as finite data, with one numerical update preserving each actual tape transition.</p>
+  <p>The <a href="counter-programs-on-tape#counter-programs">finite counter-program model</a> fixes an elementary instruction set. Its <a href="counter-programs-on-tape#instruction-simulation">tape compiler</a> expands one register instruction into a positive finite sequence of actual tape transitions.</p>
 </section>
 
 <section id="doubling-machine" data-formal="mach-doubling-machine mach-doubling-primitive mach-doubling-run mach-doubling-output mach-doubling-trace" data-kind="question">
@@ -121,7 +122,7 @@
 </div>
 </section>
 
-<section id="machine-equivalence" data-formal="mach-machine-computable mach-machine-equivalence mach-finite-arity-machine" data-kind="theorem">
+<section id="machine-equivalence" data-formal="mach-machine-computable mach-machine-equivalence mach-finite-arity-machine counter-compile-finite-arity-compiler recursive-tape-recursive-equivalence" data-kind="theorem">
   <h2>Arithmetic machines compute exactly the partial recursive functions</h2>
   <div class="statement-box">
     <p>A unary partial function \(f:\mathbb N\rightharpoonup\mathbb N\) is computed by an arithmetic machine if and only if it is partial recursive under the finite-arity closure rules. A finite tuple of inputs can be packed first, giving the same conclusion at every finite arity.</p>
@@ -130,6 +131,7 @@
     <p>A machine's function is partial recursive by <a href="#machines-are-recursive"></a>. Conversely, <a href="#change-of-basis"></a> supplies a paired program for any unary partial recursive function, and <a href="#evaluation-machine"></a> supplies its arithmetic machine. Packing and decoding a fixed number of inputs are primitive recursive, so composition handles finite arities, including the unique empty input tuple.</p>
 </div>
   <p>This is an equivalence between two mathematical definitions. The broader assertion that either definition captures every effectively executable procedure is the <strong>Church–Turing thesis</strong>. The equivalence just proved neither defines that informal phrase nor proves the thesis. Nor does it compare the running times of our macro steps with another machine model.</p>
+  <p>The <a href="turing-computation-and-recursion#unary-model-equivalence">native tape-machine equivalence</a> gives the same unary class using elementary read–write transitions: its converse construction compiles the finite-arity closure rules into increment/decrement programs before applying the explicit tape simulation.</p>
 </section>
 
 <section id="normal-form" data-formal="mach-normal-form mach-normal-form-converse mach-extract mach-extract-primitive" data-kind="theorem">

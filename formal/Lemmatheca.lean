@@ -386,3 +386,9 @@ import Lemmatheca.EffectiveEnumerations.Examples
 import Lemmatheca.UniformSelfReference.Examples
 import Lemmatheca.ProductiveAndCreativeSets.Examples
 import Lemmatheca.CodingTuringComputations.Examples
+import Lemmatheca.SimpleSets.Examples
+import Lemmatheca.CounterProgramsOnTape.Examples
+import Lemmatheca.OracleComputation.Examples
+import Lemmatheca.OracleProgramNumberings.Examples
+import Lemmatheca.TuringComputationAndRecursion.Examples
+import Lemmatheca.TuringDegrees.Examples

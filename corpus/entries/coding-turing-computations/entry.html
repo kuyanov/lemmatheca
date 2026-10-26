@@ -163,10 +163,11 @@
   </details>
 </section>
 
-<section id="turing-functions-are-recursive" data-formal="tape-code-arithmetic-machine tape-code-machine-primitive tape-code-compute-native tape-code-certificate-test tape-code-certificate-test-primitive tape-code-certificate-search tape-code-certificate-search-native tape-code-turing-recursive mach-machine-recursive" data-kind="theorem">
+<section id="turing-functions-are-recursive" data-formal="tape-code-arithmetic-machine tape-code-machine-primitive tape-code-compute-native tape-code-certificate-test tape-code-certificate-test-primitive tape-code-certificate-search tape-code-certificate-search-native tape-code-turing-recursive mach-machine-recursive recursive-tape-specified-compiler recursive-tape-recursive-equivalence" data-kind="theorem">
   <h2>Every Turing-computed partial function is partial recursive</h2>
   <div class="statement-box"><p>For every Turing machine \(T\) over arbitrary finite \(\Gamma,Q\) with the specified blank, mark and initial state, its unary partial function \(F_T\) is partial recursive. More precisely, the constructed arithmetic machine \(M_T\), with its fixed labeling, has exactly the same output graph and divergence behavior.</p></div>
   <div class="proof">
     <p>Choose the labeling from <a href="#finite-labels"></a> and construct \(I,D,H,O\) as above. They are primitive recursive, so \(M_T\) is an arithmetic machine. By <a href="#run-simulation"></a>, its partial function is exactly \(F_T\). Apply the established theorem that <a href="machines-and-computation-histories#machines-are-recursive">every arithmetic-machine function is partial recursive</a>. Equivalently, search for the least numerical code passing \(\operatorname{Cert}_T(n,w)\) and extract its first pairing coordinate. The test is total primitive recursive, and all successful certificates have the same output. If no certificate exists, that search and the tape computation are both undefined. This establishes the assertion on every input.</p>
   </div>
+  <p>Conversely, the <a href="turing-computation-and-recursion#recursive-functions-on-tape">finite counter-program compiler</a> builds one native tape machine for every unary partial recursive function, preserving undefined inputs and this same unary input/output convention. Together these constructions give the <a href="turing-computation-and-recursion#unary-model-equivalence">equivalence of the two models</a>.</p>
 </section>

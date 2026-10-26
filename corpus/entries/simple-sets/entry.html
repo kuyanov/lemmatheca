@@ -1,0 +1,157 @@
+<section id="immune-sets" data-formal="effective-stage-index-set immune-set immune-index-equivalence simple-finite-decidable" data-kind="definition">
+  <h2>An infinite set may contain no infinite enumerable part</h2>
+  <p>A set \(B\subseteq\mathbb N\) is <strong>immune</strong> if it is infinite and every computably enumerable subset of \(B\) is finite. Equivalently, using the fixed <a href="universal-computation#decidable-and-enumerable">domain sets</a> \(W_e=\{x:\varphi_e(x)\downarrow\}\),</p>
+  <div class="math-display">\[B\text{ is infinite},\qquad \forall e\,[W_e\subseteq B\Longrightarrow W_e\text{ is finite}].\]</div>
+  <p>The infinitude condition matters. A finite set also has no infinite subset, but it is not immune. Immunity says that an infinite collection of numbers has no infinite part that can be recognized by a program. It allows finite enumerable subsets, including every singleton of one of its members.</p>
+</section>
+
+<section id="immune-obstructions" data-formal="immune-not-enumerable immune-not-productive productive-infinite-enumerable-subset" data-kind="lemma">
+  <h2>Immunity excludes enumeration and productive escape</h2>
+  <p>No immune set is computably enumerable, and no immune set is productive.</p>
+  <div class="proof">
+    <p>If an immune set \(B\) were c.e., the set \(B\) itself would be an infinite c.e. subset of \(B\), contradicting the definition.</p>
+    <p>If \(B\) were productive, the <a href="productive-and-creative-sets#productive-infinite-subset">escape iteration</a> would construct an infinite c.e. subset of \(B\), again contradicting immunity. Thus failure of enumerability by itself does not guarantee the effective escape property: an immune set fails to be enumerable, but it cannot support a productive function.</p>
+  </div>
+</section>
+
+<section id="simple-sets" data-formal="simple-set" data-kind="definition">
+  <h2>A simple set leaves an immune complement</h2>
+  <p>A set \(S\subseteq\mathbb N\) is <strong>simple</strong> if \(S\) is c.e. and its complement \(\overline S=\mathbb N\setminus S\) is immune. In particular, \(\overline S\) must be infinite. The adjective refers to this precise combination of enumerability and a restriction on the omitted numbers; it does not mean that membership is easy to decide.</p>
+  <p>It is useful to express the restriction without quantifying over subsets of the complement. An infinite enumerable set cannot be entirely omitted from a simple set. The next criterion makes that requirement exact.</p>
+</section>
+
+<section id="meeting-infinite-enumerable" data-formal="simple-meeting-equivalence univ-enumerable-index-equivalence" data-kind="lemma">
+  <h2>Meet every infinite enumerable set while retaining infinitely many omissions</h2>
+  <p>For a c.e. set \(S\) with infinite complement, simplicity is equivalent to</p>
+  <div class="math-display">\[\forall e\,[W_e\text{ is infinite}\Longrightarrow W_e\cap S\ne\varnothing].\]</div>
+  <div class="proof">
+    <p>If \(S\) is simple and an infinite \(W_e\) were disjoint from \(S\), then \(W_e\subseteq\overline S\) would be an infinite c.e. subset of an immune set. This is impossible.</p>
+    <p>Conversely, suppose the displayed condition holds. Let \(D\subseteq\overline S\) be c.e., and choose an index \(e\) with \(W_e=D\). If \(D\) were infinite, the condition would make \(D\cap S\) nonempty, contrary to the inclusion in the complement. Hence every such \(D\) is finite. Together with the assumed infinitude of \(\overline S\), this proves immunity and therefore simplicity.</p>
+  </div>
+</section>
+
+<section id="simple-undecidable" data-formal="simple-undecidable simple-infinite-coinfinite simple-finite-decidable" data-kind="theorem">
+  <h2>A simple set is infinite, coinfinite, and undecidable</h2>
+  <p>Every simple set is undecidable. Both the set and its complement are infinite.</p>
+  <div class="proof">
+    <p>The complement is infinite by definition. If \(S\) were decidable, its complement would be decidable and hence c.e. But an immune set cannot be c.e., by <a href="#immune-obstructions"></a>. Thus \(S\) is undecidable.</p>
+    <p>Every finite set is decidable: compare an input with its finitely many listed members. Therefore \(S\) cannot be finite. This proves both infinitude assertions without giving a procedure to enumerate the omitted numbers.</p>
+  </div>
+</section>
+
+<section id="threshold-search" data-formal="univ-computation-certificate simple-threshold-test simple-search-stage simple-selector simple-search-least simple-search-domain" data-kind="definition">
+  <h2>Select one certified member beyond an index-dependent threshold</h2>
+  <p>Use the primitive-recursive <a href="universal-computation#finite-certificates">successful-computation relation</a> \(T(e,x,k)\), with \(x\in W_e\Longleftrightarrow\exists k\,T(e,x,k)\). For each index \(e\), search increasing pair codes \(w\) for the condition</p>
+  <div class="math-display">\[Q(e,w)\quad\Longleftrightarrow\quad 2e&lt;\operatorname{left}(w)\ \land\ T(e,\operatorname{left}(w),\operatorname{right}(w)).\]</div>
+  <p>Define the <strong>threshold selector</strong> \(\psi\) by</p>
+  <div class="math-display">\[\rho(e)=\mu w\,Q(e,w),\qquad \psi(e)\simeq\operatorname{left}(\rho(e)).\]</div>
+  <p>If no pair passes the test, the search runs forever and \(\psi(e)\) is undefined. If a pair passes, the procedure returns its first component. Each index can contribute only one selected number, because the partial function \(\psi\) has at most one value at any input.</p>
+</section>
+
+<section id="selector-correctness" data-formal="simple-threshold-primitive simple-search-partial simple-selector-partial simple-selector-domain simple-selector-sound" data-kind="lemma">
+  <h2>The selector waits only for positive evidence</h2>
+  <p>The function \(\psi\) is partial recursive and satisfies</p>
+  <div class="math-display">\[\psi(e)\downarrow\quad\Longleftrightarrow\quad\exists x\,[2e&lt;x\ \land\ x\in W_e].\]</div>
+  <p>Whenever \(\psi(e)\downarrow=x\), the selected value satisfies \(2e&lt;x\) and \(x\in W_e\).</p>
+  <div class="proof">
+    <p>Pair decoding, multiplication by two, and comparison are primitive recursive. Since \(T\) is primitive recursive jointly in its arguments, so is the test \(Q\). Unbounded minimization followed by pair projection therefore defines a partial recursive function.</p>
+    <p>If the search stops at \(w\), its successful test gives \(2e&lt;\operatorname{left}(w)\) and a certificate for membership of that number in \(W_e\). Conversely, if \(x&gt;2e\) belongs to \(W_e\), choose a certificate \(k\). The pair \(\langle x,k\rangle\) passes the test, so the increasing search for a passing code eventually stops. It may stop at an earlier passing pair, but that pair has the same required threshold and membership properties.</p>
+    <p>The procedure never asks whether \(W_e\) is infinite or whether a computation will fail forever. Such facts are used in the proof that some searches terminate, not tested by the selector.</p>
+  </div>
+</section>
+
+<section id="least-certificate-question" data-formal="simple-total-index-selection simple-search-least" data-kind="question">
+  <h2>What is the search choosing least?</h2>
+  <p>Choose an index \(q\) of a total program, so \(W_q=\mathbb N\). Does \(\psi(q)\) choose the least member of this domain? What object does the minimization actually make least?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The set \(W_q\) has members above \(2q\), so \(\psi(q)\) is defined. Its value is positive because it is strictly greater than \(2q\). It therefore differs from the least member zero of \(W_q\).</p>
+    <p>The least object is the pair code \(w\) satisfying \(Q(q,w)\). This orders whole certificate codes. It does not first order candidate members \(x\) and wait to settle each candidate. The construction needs one eligible certified member and does not assert that its value is least among eligible members.</p>
+  </div></details>
+</section>
+
+<section id="post-set" data-formal="simple-post-set simple-post-enumerable simple-post-member-witness simple-zero-excluded univ-enumerable-partial-range" data-kind="lemma">
+  <h2>The selected values form an enumerable set</h2>
+  <p>Put</p>
+  <div class="math-display">\[A=\operatorname{range}(\psi)=\{x:\exists e\,(\psi(e)\downarrow=x)\}.\]</div>
+  <p>The set \(A\) is c.e. Every member \(x\in A\) has a producing index \(e\) with \(2e&lt;x\) and \(x\in W_e\). In particular, \(0\notin A\).</p>
+  <div class="proof">
+    <p>The <a href="universal-computation#enumerating-ranges">partial-range characterization</a> makes the range of the partial recursive function \(\psi\) c.e., including any undefined inputs. If \(x\in A\), choose \(e\) with \(\psi(e)\downarrow=x\) and apply <a href="#selector-correctness"></a>. The inequality excludes zero.</p>
+    <p>Positive discoveries can be organized by the <a href="effective-enumerations#uniform-finite-approximation">uniform finite-stage procedure</a>. One must not wait for the search at index zero to finish before starting the search at index one: an individual search may diverge. Enumerating the range recognizes successful outputs while allowing those unsuccessful searches to continue.</p>
+  </div>
+</section>
+
+<section id="counting-bound" data-formal="simple-small-selected simple-small-producer simple-least-producer simple-least-producer-spec simple-counting-map simple-counting-injective simple-counting-bound simple-empty-zero-prefix" data-kind="lemma">
+  <h2>Small selected values can come from only a few indices</h2>
+  <p>For every \(n\in\mathbb N\), let \(I_n=\{0,\ldots,2n\}\). Then</p>
+  <div class="math-display">\[\lvert A\cap I_n\rvert\le n.\]</div>
+  <div class="proof">
+    <p>Let \(x\in A\cap I_n\), and choose a producing index \(e\) with \(\psi(e)\downarrow=x\). The threshold gives \(2e&lt;x\le2n\), so \(e&lt;n\). Thus every selected number in this interval comes from one of the \(n\) indices \(0,\ldots,n-1\). An index \(e\ge n\) cannot contribute inside \(I_n\), regardless of when its search terminates.</p>
+    <p>For an explicit finite counting map, assign to each \(x\in A\cap I_n\) the least producing index below \(n\):</p>
+    <div class="math-display">\[\nu_n(x)=\min\{e&lt;n:\psi(e)\downarrow=x\}.\]</div>
+    <p>The preceding argument makes this a well-defined map into \(\{0,\ldots,n-1\}\). It is injective: if \(\nu_n(x)=\nu_n(y)=e\), the one partial value \(\psi(e)\) equals both \(x\) and \(y\), so \(x=y\). Hence \(\lvert A\cap I_n\rvert\le n\). Different indices are allowed to select the same number; such repetitions only reduce the size of the range. The map \(\nu_n\) is used for a mathematical counting argument, with no claim that it is a total computable function on arbitrary inputs.</p>
+    <p>At \(n=0\), the target of this injection is empty and \(I_0=\{0\}\). The conclusion agrees with \(0\notin A\). The strict inequality in the threshold is exactly what gives \(e&lt;n\) for every contribution to \(I_n\).</p>
+  </div>
+  <figure id="simple-threshold-count" class="proof-figure">
+    <div class="figure-image"><img src="assets/threshold-count.svg" width="760" height="460" alt="Two distinct selected values x and y in the interval from zero to two n are mapped to their least producing indices nu n of x and nu n of y among the n indices below n. These indices must differ because one partial-function input has only one output. The threshold inequality forces every producing index for a value in this interval to be below n." /></div>
+    <figcaption>Whenever \(x,y\in A\cap I_n\) are distinct, their assigned indices are distinct. The two arrows show the counting map \(\nu_n\), not the time order of enumeration. The threshold excludes every index \(e\ge n\) from contributing a value at most \(2n\).</figcaption>
+  </figure>
+</section>
+
+<section id="infinite-complement" data-formal="simple-omission-bound simple-post-coinfinite" data-kind="lemma">
+  <h2>The counting bound leaves infinitely many omissions</h2>
+  <p>For every \(n\in\mathbb N\),</p>
+  <div class="math-display">\[\lvert\overline A\cap I_n\rvert\ge n+1.\]</div>
+  <p>Consequently \(\overline A\) is infinite.</p>
+  <div class="proof">
+    <p>The interval \(I_n\) has \(2n+1\) members and is the disjoint union of \(A\cap I_n\) and \(\overline A\cap I_n\). By <a href="#counting-bound"></a>, at most \(n\) of those members lie in \(A\). At least \(2n+1-n=n+1\) therefore lie in its complement.</p>
+    <p>If \(\overline A\) were finite with \(r\) members, apply this bound at \(n=r\). Its intersection with \(I_r\) would contain at least \(r+1\) members, although the whole complement has only \(r\). This contradiction proves infinitude. The estimate counts omissions without recognizing which numbers will remain omitted forever.</p>
+  </div>
+</section>
+
+<section id="infinite-requirements" data-formal="simple-infinite-requirement" data-kind="lemma">
+  <h2>Every infinite enumerable set supplies an eligible witness</h2>
+  <p>For every index \(e\), if \(W_e\) is infinite, then \(\psi(e)\) is defined and its value belongs to \(A\cap W_e\). In particular, every infinite \(W_e\) meets \(A\).</p>
+  <div class="proof">
+    <p>An infinite subset of \(\mathbb N\) cannot be contained in the finite interval \(\{0,\ldots,2e\}\). Therefore some \(x\in W_e\) satisfies \(x&gt;2e\). The domain equivalence in <a href="#selector-correctness"></a> shows that \(\psi(e)\) terminates.</p>
+    <p>Its selected value belongs to \(W_e\) by selector correctness, and it belongs to \(A\) by the definition of the range. This proves the requirement for the particular index \(e\), and the same argument applies to every infinite indexed set. Finite sets may or may not contribute; the proof does not need to distinguish them effectively.</p>
+  </div>
+</section>
+
+<section id="post-simple" data-formal="simple-post-simple simple-post-enumerable simple-post-coinfinite simple-infinite-requirement simple-undecidable simple-set" data-kind="theorem">
+  <h2>The threshold selector constructs a simple set</h2>
+  <div class="statement-box">
+    <p>For the specified partial selector \(\psi\), the set \(A=\operatorname{range}(\psi)\) is simple. It is c.e., its complement is infinite, and every infinite c.e. set meets \(A\). Thus \(\overline A\) is immune and \(A\) is undecidable.</p>
+  </div>
+  <div class="proof">
+    <p>The range is c.e. by <a href="#post-set"></a>, and <a href="#infinite-complement"></a> proves that its complement is infinite. By <a href="#infinite-requirements"></a>, every infinite \(W_e\) meets \(A\). The criterion in <a href="#meeting-infinite-enumerable"></a> therefore makes \(A\) simple, and <a href="#simple-undecidable"></a> gives undecidability.</p>
+  </div>
+</section>
+
+<section id="reserved-numbers-question" data-formal="simple-even-numbers simple-even-properties simple-no-enumerable-reserve" data-kind="question">
+  <h2>Could all the even numbers be reserved outside the set?</h2>
+  <p>The counting proof leaves many omissions in each finite interval. Could a simple set omit every even number, so that the even numbers give a known infinite collection of omissions?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. The even numbers form an infinite decidable, hence c.e., set. If all were outside a simple set \(S\), they would be an infinite c.e. subset of the immune complement \(\overline S\). Equivalently, they would violate the requirement that every infinite enumerable set meet \(S\).</p>
+    <p>The same argument applies to any specified infinite c.e. set of proposed permanent omissions. The counting bound establishes that infinitely many omissions exist; it does not provide an infinite enumerable list consisting entirely of them.</p>
+  </div></details>
+</section>
+
+<section id="simple-incomplete" data-formal="simple-not-creative simple-not-complete simple-not-diagonal-reducible creative-complete-equivalence creative-diagonal-equivalence" data-kind="theorem">
+  <h2>A simple set is not a complete enumerable problem</h2>
+  <div class="statement-box">
+    <p>No simple set is creative or many-one complete among the c.e. sets. In particular, the constructed set \(A\) is c.e. and undecidable, but \(K\not\le_m A\) for the diagonal halting set \(K\).</p>
+  </div>
+  <div class="proof">
+    <p>Let \(S\) be simple. Its complement is immune and hence not productive by <a href="#immune-obstructions"></a>. Therefore \(S\) is not creative. Since \(S\) is c.e., the <a href="productive-and-creative-sets#creative-complete-equivalence">creativity characterization of completeness</a> implies that \(S\) is not many-one complete and that \(K\not\le_m S\).</p>
+    <p>Apply this conclusion to \(A\), which is simple by <a href="#post-simple"></a>. Its construction supplies an undecidable enumerable problem that does not receive diagonal halting by a total computable transformation preserving both membership answers.</p>
+  </div>
+</section>
+
+<section id="many-one-boundary-question" data-formal="productive-diagonal-complete simple-post-enumerable simple-not-diagonal-reducible simple-post-simple" data-kind="question">
+  <h2>Which reduction to halting still exists?</h2>
+  <p>For the constructed simple set \(A\), determine which of \(A\le_m K\) and \(K\le_m A\) holds. What has been ruled out for a program trying to decide halting with the help of \(A\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The set \(A\) is c.e., so <a href="productive-and-creative-sets#diagonal-completeness">diagonal halting completeness</a> gives \(A\le_m K\). The reverse reduction fails by <a href="#simple-incomplete"></a>.</p>
+    <p>What fails is one particular form of assistance: there is no total computable map \(f\) for which \(x\in K\Longleftrightarrow f(x)\in A\) on every input. This translates the input once and uses the membership answer without changing its sign. The argument has not ruled out procedures that ask several membership questions, choose later questions based on earlier answers, or otherwise use such answers in a computation. Consequently the proved many-one incompleteness is not a claim of <a href="turing-degrees#turing-reducibility">Turing incompleteness</a> and does not solve Post’s problem about that stronger form of reducibility.</p>
+  </div></details>
+</section>

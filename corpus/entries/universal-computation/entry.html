@@ -18,7 +18,7 @@
 </div>
 </section>
 
-<section id="universal-evaluation" data-formal="mach-unary-recursive-bridge mach-finite-arity-recursive-bridge univ-bounded-value univ-bounded-value-primitive univ-bounded-value-output univ-evaluation-output-certificate univ-computation-certificate univ-certificate-primitive univ-evaluation-domain-certificate univ-universal-recursive univ-universal-complete" data-kind="theorem">
+<section id="universal-evaluation" data-formal="mach-unary-recursive-bridge mach-finite-arity-recursive-bridge univ-bounded-value univ-bounded-value-primitive univ-bounded-value-output univ-evaluation-output-certificate univ-computation-certificate univ-certificate-primitive univ-evaluation-domain-certificate univ-universal-recursive univ-universal-complete oracle-code-program oracle-code-evaluation oracle-use-finite-use oracle-univ-universal-correct oracle-univ-bounded-program-correct" data-kind="theorem">
   <h2>One partial recursive function evaluates all programs</h2>
   <div class="statement-box">
     <p>The function \(U(e,x)\simeq\varphi_e(x)\) is partial recursive jointly in \(e,x\). Every unary partial recursive function is \(\varphi_e\) for some index \(e\). There is also a primitive-recursive relation \(T(e,x,k)\) such that</p>
@@ -30,9 +30,11 @@
     <p>Put \(T(e,x,k)\) iff \(b(k,e,x)&gt;0\). Search for its least witness using <a href="partial-recursive-functions#search-correctness">unbounded search over a total test</a>, and return \(b(k,e,x)-1\). If evaluation halts, some witness exists and correctness gives its output; if no witness exists, the search diverges. This proves joint partial recursiveness and the displayed equivalence. Finally, <a href="machines-and-computation-histories#change-of-basis">program equivalence</a> supplies a program for every partial recursive function, and the bijective coding supplies its index.</p>
 </div>
   <p>We will use the stronger output form too: \(\varphi_e(x)\downarrow=y\) if and only if \(\exists k\,[b(k,e,x)=y+1]\). A resource bound records a finite successful computation; it is not an upper bound that can be predicted for every terminating program.</p>
+  <p>An <a href="oracle-computation#oracle-programs">oracle program</a> adds a membership-query instruction to the finite language. Its evaluation also depends on the supplied oracle. The <a href="oracle-computation#finite-use">finite-use theorem</a> explains why each halting result nevertheless depends on only finitely many of those answers.</p>
+  <p>The query language also has a <a href="oracle-program-numberings#uniform-universality">single universal oracle program</a> whose finite text is independent of the supplied set. Its <a href="oracle-program-numberings#uniform-table-evaluator">bounded table construction</a> establishes this uniformity explicitly.</p>
 </section>
 
-<section id="parameter-theorem" data-formal="rec-thm-recursion-theorem univ-constant-program univ-constant-program-primitive univ-constant-program-evaluation univ-identity-program univ-identity-evaluation univ-specialization univ-specialization-primitive univ-specialization-evaluation univ-tuple-specialization numbering-specialization-correct numbering-semantic-round-trips" data-kind="theorem">
+<section id="parameter-theorem" data-formal="rec-thm-recursion-theorem univ-constant-program univ-constant-program-primitive univ-constant-program-evaluation univ-identity-program univ-identity-evaluation univ-specialization univ-specialization-primitive univ-specialization-evaluation univ-tuple-specialization numbering-specialization-correct numbering-semantic-round-trips oracle-numbering-specialization-primitive oracle-numbering-specialization-correct" data-kind="theorem">
   <h2>Fixed inputs can be inserted into program text</h2>
   <div class="statement-box">
     <p>There is a primitive-recursive numerical function \(s(e,a)\) such that</p>
@@ -48,6 +50,7 @@
 </div>
   <p>Self-specialization \(s(a,a)\) gives the <a href="recursion-theorem#recursion-theorem">recursion theorem</a>: a program can use its own index as an extra input.</p>
   <p>For another numbering with computable translations in both directions, <a href="uniform-self-reference#acceptable-specialization">the explicit composite of compilers and specialization</a> inserts a fixed parameter in that same numbering. The two translations need only preserve computed partial functions; they need not be inverse maps on numerical indices.</p>
+  <p>The <a href="oracle-program-numberings#oracle-parameter-theorem">oracle parameter theorem</a> supplies one ordinary primitive-recursive parameter map with the same partial-value identity simultaneously for every oracle.</p>
 </section>
 
 <section id="specialization-question" data-formal="univ-specialization-primitive univ-specialization-evaluation" data-kind="question">
@@ -160,7 +163,7 @@
 </div>
 </section>
 
-<section id="two-sided-recognition" data-formal="univ-two-sided-recognition inseparable-diagonal-enumerable inseparable-diagonal-pair separator-positive-attempt-spec inseparable-constant-two-outside" data-kind="theorem">
+<section id="two-sided-recognition" data-formal="univ-two-sided-recognition inseparable-diagonal-enumerable inseparable-diagonal-pair separator-positive-attempt-spec inseparable-constant-two-outside oracle-ce-two-sided-recognition" data-kind="theorem">
   <h2>A set is decidable exactly when both sides can be recognized</h2>
   <div class="statement-box">
     <p>A set \(A\subseteq\mathbb N\) is decidable if and only if both \(A\) and its complement \(\mathbb N\setminus A\) are c.e.</p>
@@ -170,6 +173,7 @@
     <p>Conversely, choose primitive-recursive certificate relations \(R,S\) for \(A\) and its complement. Search for a code \(\langle i,t\rangle\) witnessing either \(i=0\wedge R(x,t)\) or \(i=1\wedge S(x,t)\). Exactly one of the two kinds of witnesses exists for each \(x\), so this search is total recursive. Return one for a witness of the first kind and zero for the second. The result is the total recursive characteristic function of \(A\). Equivalently, dovetail the two semidecision procedures and report whichever one halts.</p>
 </div>
   <p>For disjoint c.e. sets, an input outside both sets activates neither recognizer, so the same search need not terminate. Some such pairs admit no <a href="computably-inseparable-sets#inseparability">decidable separator</a>.</p>
+  <p>The <a href="oracle-program-numberings#relative-two-sided-recognition">relative two-sided recognition theorem</a> proves the corresponding statement with a fixed membership oracle, using an explicit race of total bounded oracle calculations.</p>
 </section>
 
 <section id="halting-sets" data-formal="univ-diagonal-halting-enumerable univ-pair-halting-enumerable univ-diagonal-nonhalting-not-enumerable univ-pair-nonhalting-not-enumerable univ-diagonal-halting-undecidable univ-pair-halting-undecidable productive-diagonal-identity" data-kind="theorem">

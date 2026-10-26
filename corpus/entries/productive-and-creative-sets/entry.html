@@ -86,11 +86,11 @@
   <div class="proof">
     <p>Both \(h\) and \(p\) are total recursive, so \(r\) is total recursive. If \(y\notin A\), then \(W_{h(y)}=\varnothing\subseteq\overline C\). Productivity gives \(p(h(y))\in\overline C\), so \(r(y)\notin C\).</p>
     <p>If \(y\in A\), then \(W_{h(y)}=\{r(y)\}\). Suppose for a contradiction that \(r(y)\notin C\). This would put \(W_{h(y)}\) inside \(\overline C\), allowing productivity at \(h(y)\). Its conclusion would say that \(p(h(y))=r(y)\) is outside \(W_{h(y)}\), contradicting the singleton-domain identity. Therefore \(r(y)\in C\).</p>
-    <p>Together the cases prove \(y\in A\Longleftrightarrow r(y)\in C\), preserving both answers as required for a <a href="computable-reductions#many-one-reductions">many-one reduction</a>. The algorithm computing \(r\) calls neither a decision procedure for \(A\) nor a membership oracle for \(C\).</p>
+    <p>Together the cases prove \(y\in A\Longleftrightarrow r(y)\in C\), preserving both answers as required for a <a href="computable-reductions#many-one-reductions">many-one reduction</a>. The algorithm computing \(r\) calls neither a decision procedure for \(A\) nor a <a href="oracle-computation#oracle-answers">membership oracle</a> for \(C\).</p>
   </div>
 </section>
 
-<section id="creative-complete-equivalence" data-kind="theorem" data-formal="creative-complete-equivalence creative-diagonal-equivalence">
+<section id="creative-complete-equivalence" data-kind="theorem" data-formal="creative-complete-equivalence creative-diagonal-equivalence simple-set simple-not-creative simple-not-complete">
   <h2>Creativity characterizes the complete enumerable problems</h2>
   <div class="statement-box">
     <p>For every c.e. set \(C\subseteq\mathbb N\), the following are equivalent:</p>
@@ -103,6 +103,7 @@
   <div class="proof">
     <p>Creativity gives every reduction by <a href="#creative-implies-complete"></a>. Applying this conclusion to the c.e. set \(K\) gives the third condition. Conversely, the third condition and the standing c.e. hypothesis give creativity by <a href="#complete-implies-creative"></a>. Thus this is exactly <a href="computable-reductions#halting-completeness">many-one completeness among c.e. sets</a>, now characterized by an escape algorithm on the complement.</p>
   </div>
+  <p>This characterization also detects <a href="simple-sets#simple-incomplete">incomplete enumerable sets</a>: a simple set has an immune complement, which cannot be productive, so it is not many-one complete.</p>
 </section>
 
 <section id="enumerability-hypothesis" data-kind="question" data-formal="creative-hard-nonenumerable-set creative-hard-parity-maps creative-hard-receives-enumerable creative-hard-not-enumerable creative-hard-not-creative univ-enumerable-preimage">
@@ -126,7 +127,7 @@
   </div>
 </section>
 
-<section id="productive-infinite-subset" data-kind="theorem" data-formal="productive-index-iteration productive-escape-sequence productive-iteration-primitive productive-sequence-computable productive-prefix-invariant productive-sequence-fresh productive-sequence-injective productive-range-properties productive-infinite-enumerable-subset productive-infinite-decidable-subset univ-enumerable-total-range effective-stage-infinite-enumerable-subset">
+<section id="productive-infinite-subset" data-kind="theorem" data-formal="productive-index-iteration productive-escape-sequence productive-iteration-primitive productive-sequence-computable productive-prefix-invariant productive-sequence-fresh productive-sequence-injective productive-range-properties productive-infinite-enumerable-subset productive-infinite-decidable-subset univ-enumerable-total-range effective-stage-infinite-enumerable-subset immune-set immune-not-productive">
   <h2>Iterating productivity builds an infinite enumerable subset</h2>
   <div class="statement-box">
     <p>Every productive set \(B\subseteq\mathbb N\) contains an infinite c.e. subset. More precisely, for a productive function \(p\) for \(B\), choose \(W_{e_0}=\varnothing\) and \(f\) as in <a href="#finite-extension-indices"></a>, and define</p>
@@ -144,6 +145,7 @@
     <div class="figure-image"><img src="assets/productive-finite-extension.svg" width="760" height="430" alt="Three snapshots of the same productive set B. The domain at e zero is empty, the next contains x zero, and the third contains x zero and x one. Each panel shows the new point p(e n)=x n inside B and outside the current domain; arrows apply the index transformation f." /></div>
     <figcaption>The same ambient set \(B\) appears in all three panels. At step \(n\), productivity puts \(x_n\) outside the whole current domain \(W_{e_n}\); the index transformation makes that point part of the next domain. The construction retains every earlier point, but does not assert that these are all members of \(B\).</figcaption>
   </figure>
+  <p>In contrast, an <a href="simple-sets#immune-sets">immune set</a> is infinite and contains no infinite c.e. subset. The theorem therefore excludes <a href="simple-sets#immune-obstructions">immunity for every productive set</a>.</p>
 </section>
 
 <section id="domain-versus-output-range" data-kind="question" data-formal="productive-range-recognizer productive-range-recognizer-partial productive-range-recognizer-domain productive-range-recognizer-index productive-total-domain-invalid productive-range-index-escape productive-range-proper">

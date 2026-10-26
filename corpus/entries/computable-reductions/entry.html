@@ -60,13 +60,13 @@
 </div>
 </section>
 
-<section id="church-theorem" data-formal="red-theoremhood-to-validity red-validity-undecidable" data-kind="theorem">
+<section id="church-theorem" data-formal="red-theoremhood-to-validity red-validity-undecidable recursive-tape-recursive-equivalence recursive-tape-total-equivalence" data-kind="theorem">
   <h2>First-order validity is undecidable</h2>
   <div class="statement-box"><p>There is no total computable test for validity of first-order sentences in the arithmetic language. More precisely, \(\mathrm{Thm}(Q)\le_m\mathrm{Val}\), and \(\mathrm{Val}\) is undecidable. Consequently, a procedure deciding validity for arbitrary finite first-order languages is impossible as well.</p></div>
   <div class="proof">
     <p>The function in <a href="#effective-antecedent">the translation lemma</a> is the reduction. Robinson arithmetic is consistent, as witnessed by the standard natural numbers. The <a href="first-incompleteness#essential-undecidability">essential-undecidability theorem</a>, applied to \(Q\) itself, says that \(\mathrm{Thm}(Q)\) is undecidable. A decider for \(\mathrm{Val}\), composed with \(f\), would contradict that theorem. A decider for arbitrary finite languages would in particular decide this fixed language.</p>
 </div>
-  <p>This is a form of <strong>Church’s theorem</strong>. The statement concerns validity in all structures, rather than truth in the intended arithmetic structure or consequence of a complete arithmetic theory. By the established machine correspondence, the same impossibility holds for the specified machine model.</p>
+  <p>This is a form of <strong>Church’s theorem</strong>. The statement concerns validity in all structures, rather than truth in the intended arithmetic structure or consequence of a complete arithmetic theory. By the <a href="turing-computation-and-recursion#unary-model-equivalence">unary tape-machine correspondence</a>, the same impossibility holds for the native Turing model.</p>
 
 
 
@@ -99,10 +99,11 @@
   <p>Restricted languages can admit such a search: <a href="monadic-logic#decision-correctness">monadic logic with equality</a> has a computable finite model bound, so finite-table search decides satisfiability there.</p>
 </section>
 
-<section id="complement-question" data-formal="red-nonhalting-not-reducible" data-kind="question">
+<section id="complement-question" data-formal="red-nonhalting-not-reducible turing-red-reducible turing-red-complement-equivalence" data-kind="question">
   <h2>Does taking the opposite answer give a many-one reduction?</h2>
   <p>Given membership answers for \(K_0\), we can decide membership in its complement by reversing the answer. Does this show \(\mathbb N\setminus K_0\le_m K_0\)?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>No. A many-one reduction must preserve the yes answer as well as the no answer; it cannot reverse the response. If this reduction existed, enumerability of \(K_0\) would imply enumerability of its complement by <a href="#composition-and-pullback">pullback</a>. The <a href="universal-computation#halting-sets">nonhalting theorem</a> rules that out. The ability to use membership answers with arbitrary subsequent computation is a different notion, not the one defined here.</p>
   </div></details>
+  <p>Reversing an oracle answer is allowed by <a href="turing-degrees#turing-reducibility">Turing reducibility</a>. In that sense every set and its complement have <a href="turing-degrees#complements">the same oracle information</a>, even when the many-one reduction discussed here fails.</p>
 </section>

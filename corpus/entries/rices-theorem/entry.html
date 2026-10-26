@@ -36,7 +36,7 @@
     <div class="math-display">\[e\in K\quad\Longleftrightarrow\quad f_g(e)\in I(\mathcal C).\]</div>
     <p>Now suppose \(\bot\in\mathcal C\). Choose a partial recursive \(g\notin\mathcal C\), again using nontriviality. A halting input now produces a function outside \(\mathcal C\), while a nonhalting input produces a function inside it. Hence</p>
     <div class="math-display">\[e\in K\quad\Longleftrightarrow\quad f_g(e)\notin I(\mathcal C).\]</div>
-    <p>Both maps are total computable, as required by the <a href="computable-reductions#many-one-reductions">definition of many-one reduction</a>. The second case reduces to the complement; reversing the final membership answer is not part of a many-one reduction to \(I(\mathcal C)\) itself.</p>
+    <p>Both maps are total computable, as required by the <a href="computable-reductions#many-one-reductions">definition of many-one reduction</a>. The second case reduces to the complement; <a href="turing-degrees#complements">reversing the final membership answer</a> is not part of a many-one reduction to \(I(\mathcal C)\) itself.</p>
   </div>
 
 
@@ -49,13 +49,14 @@
   </figure>
 </section>
 
-<section id="rice-theorem" data-formal="rice-undecidable rice-extensional-decidable" data-kind="theorem">
+<section id="rice-theorem" data-formal="rice-undecidable rice-extensional-decidable oracle-code-program oracle-subst-erasure-correct oracle-subst-computable-elimination" data-kind="theorem">
   <h2>Rice’s theorem</h2>
   <div class="statement-box"><p>For every nontrivial behavioral property \(\mathcal C\subseteq\mathcal R\), the index set \(I(\mathcal C)\) is undecidable. Equivalently, an extensional set of program indices is decidable if and only if it is empty or all of \(\mathbb N\).</p></div>
   <div class="proof">
     <p>If \(I(\mathcal C)\) were decidable, so would its complement: interchange the two values of a characteristic function. The appropriate reduction in <a href="#rice-reductions">the preceding theorem</a>, together with <a href="computable-reductions#composition-and-pullback">decidable pullback</a>, would decide \(K\). This contradicts <a href="universal-computation#halting-problem">halting undecidability</a>.</p>
     <p>For the equivalent formulation, an extensional set is the index set of a behavioral property by <a href="#behavior-and-indices">the first definition</a>. If it is neither empty nor universal, that property is nontrivial and the result just proved rules out decidability. Empty and universal sets have constant characteristic functions, so both are decidable. This proves both directions.</p>
   </div>
+  <p>This theorem concerns ordinary programs, with no membership oracle supplied. The <a href="oracle-computation#oracle-programs">oracle program model</a> gives a precise meaning to computation with such additional answers. For a <a href="oracle-computation#computable-oracle-elimination">computable oracle</a>, an explicit compiler removes the queries while preserving the computed partial function.</p>
 </section>
 
 <section id="halts-at-zero" data-formal="rice-halts-zero rice-halts-zero-facts" data-kind="theorem">

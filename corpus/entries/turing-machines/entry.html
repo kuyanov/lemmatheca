@@ -65,12 +65,13 @@
   <p>The least \(r\) exists. A finite support is contained in some interval \([-B,B]\) with \(B\in\mathbb N\), using \(B=0\) if the support is empty and otherwise taking a bound on the finitely many absolute coordinates. For \(r=B+|h|+1\), we have \(h+r&gt;B\), so this cell is blank and therefore is not a mark. The natural numbers among the possible stopping positions have a least one. On the input configuration itself, the first \(n\) cells are marks and cell \(n\) is blank, so \(\operatorname{out}(I_T(n))=n\).</p>
 </section>
 
-<section id="computed-output" data-formal="tm-output tm-output-unique tm-computed tm-computed-spec tape-code-machine-primitive tape-code-compute-native" data-kind="definition">
+<section id="computed-output" data-formal="tm-output tm-output-unique tm-computed tm-computed-spec tape-code-machine-primitive tape-code-compute-native counter-tape-machine counter-tape-partial-equivalence" data-kind="definition">
   <h2>An output counts only when the run halts</h2>
   <p>The machine's <strong>computed partial function</strong> is described by</p>
   <div class="math-display">\[F_T(n)\downarrow=m\quad\Longleftrightarrow\quad\exists k\in\mathbb N\;\bigl(C_k\text{ is halting and }\operatorname{out}(C_k)=m\bigr),\]</div>
   <p>where the run starts at \(I_T(n)\). If no such \(k,m\) exist, write \(F_T(n)\uparrow\). The next result verifies that this is a partial function in the <a href="finite-descriptions-and-decision-problems#program-behavior">previously specified sense of unique numerical outputs</a>. The readout is defined for every configuration; it is accepted as the program's output only at a halting configuration.</p>
   <p>The <a href="coding-turing-computations#run-simulation">numerical simulation of tape runs</a> realizes this same partial function with primitive-recursive initialization, transition, halt test and readout.</p>
+  <p>A <a href="counter-programs-on-tape#exact-simulation">compiler for finite counter programs</a> realizes increment and consuming conditional decrement on this same native tape model, including the final tape cleanup needed for its readout.</p>
 </section>
 
 <section id="unique-halting-output" data-formal="tm-output-unique tm-halting-config-unique" data-kind="theorem">
