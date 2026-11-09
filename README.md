@@ -1,11 +1,5 @@
 # Lemmatheca
 
-See the [build guide](docs/build.md) for corpus builds, validation, flags, and
-generated files.
-
-Entry and node metadata are authored content; builds store proof results, entry
-progress counts and Lean line counts in `corpus/index.json`.
-
 Lemmatheca aims to bring mathematics together in a connected library of readable
 explanations and computer-checked results. An **entry** develops a topic through
 definitions, theorems, proofs, examples, and questions. A **node** records one
@@ -13,7 +7,7 @@ reusable mathematical definition or claim and connects it to a declaration in
 [Lean](https://lean-lang.org/), a language that checks formal mathematical proofs.
 Different entries can share the same nodes.
 
-The website lets readers browse mathematical areas, follow references between
+The [website](https://130.162.179.30) lets readers browse mathematical areas, follow references between
 entries, and inspect the formal statements and proofs behind an entry's blocks.
 The content lives in HTML and JSON files, so writing, reviewing, and changing it
 uses the same Git workflow as the application code.

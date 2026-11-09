@@ -1,0 +1,133 @@
+<section id="binary-prefixes" data-formal="incomp-word incomp-binary-word incomp-word-interpretation incomp-word-recovery incomp-prefix incomp-prefix-native incomp-realizes incomp-append-bit incomp-append-bit-spec incomp-append-bit-word incomp-prefix-primitive incomp-append-bit-primitive seq-length-primitive-recursive post-finite-bit-values post-finite-bit-primitive ctree-valid-code ctree-binary-tree" data-kind="definition">
+  <h2>A finite word commits both positive and negative answers</h2>
+  <p>A <strong>binary word</strong> is a finite list \(\sigma\) of zeros and ones. Its length is \(|\sigma|\), and its positions start at zero. Write \(\sigma\preceq\rho\) when \(|\sigma|\le|\rho|\) and \(\sigma(q)=\rho(q)\) for every \(q&lt;|\sigma|\). Write \(\sigma\preceq A\), for \(A\subseteq\mathbb N\), when \(\sigma(q)=\chi_A(q)\) at these positions. Thus a zero is a commitment to nonmembership, rather than an unanswered question.</p>
+  <p>The word \(\sigma b\) appends the bit \(b\). Let \(u_\sigma\) be its established <a href="coding-finite-sequences#list-code">list code</a>, and let \(F_\sigma=\{q&lt;|\sigma|:\sigma(q)=1\}\). The <a href="posts-theorem#finite-oracle-codes">finite-oracle bit function</a> satisfies \(\beta(u_\sigma,q)=\sigma(q)\) inside the word and is zero outside it. Prefix comparison, length, append, and bit access are ordinary primitive-recursive operations on these codes.</p>
+  <p>The same numerical word codes describe <a href="computable-trees-and-paths#binary-trees">computable binary trees</a>. There, deciding each finite allowed word is separated from computing a whole infinite sequence of compatible words.</p>
+</section>
+
+<section id="growing-unions" data-formal="incomp-union-set incomp-coherent-union incomp-union-bit" data-kind="lemma">
+  <h2>Growing compatible words determine a total membership problem</h2>
+  <p>Suppose \(\sigma_n\preceq\sigma_{n+1}\) and \(|\sigma_n|\ge n\). There is a unique set \(A\) extending every \(\sigma_n\). Its membership bit at \(x\) is \(\sigma_{x+1}(x)\).</p>
+  <div class="proof">
+    <p>The displayed bit is defined because \(|\sigma_{x+1}|\ge x+1\). For any \(n\) and \(x&lt;|\sigma_n|\), compare \(\sigma_n\) and \(\sigma_{x+1}\) inside the later word \(\sigma_{\max(n,x+1)}\). Both have the same bit at \(x\). Thus the displayed set extends each word. Conversely any such set has the forced bit from \(\sigma_{x+1}\) at every \(x\), proving uniqueness.</p>
+  </div>
+</section>
+
+<section id="prefix-certificates" data-formal="incomp-certificate-value incomp-certificate-primitive post-bounded-query-dependence oracle-univ-bounded-input" data-kind="definition">
+  <h2>Use a bounded computation whose queries stay inside the word</h2>
+  <p>Use the fixed ordinary primitive-recursive checker \(V(u,k,e,x)\) from <a href="posts-theorem#finite-checker"></a>. Zero means that its guarded bounded computation fails; \(y+1\) means success with output \(y\). Define</p>
+  <div class="math-display">\[D(\sigma,e,x)=V(u_\sigma,|\sigma|,e,x).\]</div>
+  <p>We say that \(\sigma\) <strong>certifies output \(y\)</strong> when \(D(\sigma,e,x)=y+1\). The word length is also the evaluator's allowance. Every query of this calculation is therefore below \(|\sigma|\); an out-of-range input is rejected before any oracle answer is supplied. This is a bounded certificate, and failure may only mean that the allowance was insufficient. Extending the word also makes a larger allowance available.</p>
+</section>
+
+<section id="certificate-persistence" data-formal="incomp-certificate-sound incomp-certificate-persists oracle-univ-bounded-monotone" data-kind="lemma">
+  <h2>A certified value survives every compatible extension</h2>
+  <p>If \(\sigma\) certifies output \(y\), then every \(A\) extending \(\sigma\) satisfies \(\varphi_e^A(x)\downarrow=y\). Every longer word \(\rho\) extending \(\sigma\) also certifies that same output.</p>
+  <div class="proof">
+    <p>All queried bits are below \(|\sigma|\). The oracle \(A\), and also \(F_\rho\), agree there with \(F_\sigma\). The <a href="posts-theorem#bounded-query-agreement">bounded-query agreement lemma</a> transfers the successful calculation at its old allowance to either oracle. Bounded soundness gives the actual output for \(A\). For \(\rho\), <a href="oracle-program-numberings#bounded-correctness">resource monotonicity</a> preserves the successful calculation when the allowance increases from \(|\sigma|\) to \(|\rho|\), proving the asserted certificate.</p>
+  </div>
+</section>
+
+<section id="prefix-adequacy" data-formal="incomp-prefix-adequacy incomp-prefix-output post-prefix-agreement oracle-univ-bounded-complete" data-kind="theorem">
+  <h2>Every genuine halting computation has a certifying prefix</h2>
+  <p>For every \(A,e,x,y\),</p>
+  <div class="math-display">\[\varphi_e^A(x)\downarrow=y\quad\Longleftrightarrow\quad\exists\sigma\preceq A\;[D(\sigma,e,x)=y+1].\]</div>
+  <p>Moreover, the prefix on the right can be required to extend any prescribed finite prefix of \(A\).</p>
+  <div class="proof">
+    <p>For a halting computation choose an allowance \(k\) large enough for the <a href="oracle-program-numberings#bounded-correctness">bounded evaluator to succeed</a>. Increase it if needed to exceed the length of the prescribed prefix. Take \(\sigma=A\mathbin{\upharpoonright}k\), the first \(k\) actual membership bits. The finite-oracle agreement lemma identifies its checked value with the successful calculation using \(A\). This produces the required certificate. The reverse implication is <a href="#certificate-persistence"></a>.</p>
+  </div>
+</section>
+
+<section id="unanswered-query-question" data-formal="incomp-unanswered-query" data-kind="question">
+  <h2>Why not supply zero for an unanswered query?</h2>
+  <p>Let \(\sigma=[0]\), let \(e\) name the query program, and take input \(1\). The finite set \(F_\sigma\) is empty. Does its answer zero already force the answer of every set extending \(\sigma\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Both \(A=\varnothing\) and \(B=\{1\}\) extend this word, but the query returns zero for \(A\) and one for \(B\). With allowance \(|\sigma|=1\), the bounded certificate rejects input \(1\), so \(D(\sigma,e,1)=0\). A prefix containing position one can certify the appropriate answer. Treating the missing bit as an already committed zero would invalidate persistence.</p>
+  </div></details>
+</section>
+
+<section id="diagonal-requirements" data-formal="incomp-requirement incomp-requirement-witness incomp-requirements-exclude-reduction turing-red-reducible" data-kind="definition">
+  <h2>Defeat every proposed reduction in both directions</h2>
+  <p>For each oracle-program index \(e\), impose the <strong>diagonal requirements</strong></p>
+  <div class="math-display">\[R_e:\varphi_e^A\ne\chi_B,\qquad Q_e:\varphi_e^B\ne\chi_A.\]</div>
+  <p>An equality here means equality of partial functions, viewing the characteristic function as total. To satisfy \(R_e\), it suffices to find an input at which the computation diverges or returns a value different from \(\chi_B\). Outputs other than zero and one also count as disagreements. Since the <a href="oracle-program-numberings#oracle-numbering">numbering contains every finite oracle program</a>, all \(R_e\) imply \(B\not\le_T A\), and all \(Q_e\) imply \(A\not\le_T B\).</p>
+</section>
+
+<section id="finite-extension-lemma" data-formal="incomp-opposite-output incomp-opposite-output-spec incomp-selected-word incomp-selected-spec incomp-finish incomp-extend-state incomp-extend incomp-extend-success incomp-extend-failure incomp-extend-growth incomp-extend-correct" data-kind="theorem">
+  <h2>One finite extension can settle a whole requirement</h2>
+  <p>Given \(e\) and words \(\sigma,\tau\), there are proper extensions \(\sigma',\tau'\) such that \(\varphi_e^A\ne\chi_B\) for every \(A,B\) extending \(\sigma',\tau'\), respectively.</p>
+  <div class="proof">
+    <p>Set \(m=|\tau|\), a position not yet committed in the target word. Ask whether some \(\rho\succeq\sigma\) has \(D(\rho,e,m)>0\).</p>
+    <p>If there is such a word, choose one and write its output as \(y\), so \(D(\rho,e,m)=y+1\). Put \(\sigma'=\rho0\), and append to \(\tau\) the bit \(b=1\) if \(y=0\), and \(b=0\) otherwise. Thus \(\tau'=\tau b\) and \(b\ne y\), including when \(y&gt;1\). Persistence gives \(\varphi_e^A(m)=y\ne b=\chi_B(m)\). Appending zero to \(\rho\) ensures proper growth even if \(\rho=\sigma\).</p>
+    <p>If there is no such word, put \(\sigma'=\sigma0\) and \(\tau'=\tau0\). For any \(A\) extending \(\sigma'\), a halting value at \(m\) would have a certifying prefix extending \(\sigma\), by <a href="#prefix-adequacy"></a>. This contradicts the case assumption. Thus the computation diverges at \(m\), while \(\chi_B(m)\) is defined. Both cases satisfy the requirement for all later extensions.</p>
+  </div>
+  <figure id="extension-cases" class="proof-figure">
+    <div class="figure-image"><img src="assets/extension-cases.svg" width="760" height="430" alt="From the current words sigma and tau, search for an extending oracle word that certifies a value at the next undecided target position. If one exists, preserve the certificate and append the opposite target bit. If none exists, append zero to both words and every later oracle computation remains undefined at that target position." /></div>
+    <figcaption>Both branches preserve all old bits and lengthen both words. A successful finite computation is kept by extension; the other branch uses the stronger fact that no compatible finite certificate exists.</figcaption>
+  </figure>
+</section>
+
+<section id="alternating-construction" data-formal="incomp-parameters incomp-round incomp-stage incomp-left-word incomp-right-word incomp-left-set incomp-right-set incomp-round-growth incomp-round-requirements incomp-stage-prefixes incomp-stage-lengths incomp-stage-realizes" data-kind="definition">
+  <h2>At each round settle the two requirements with one index</h2>
+  <p>The <strong>alternating finite-extension construction</strong> starts with \(\sigma_0=\tau_0=[]\). At round \(n\), apply <a href="#finite-extension-lemma"></a> to \((n,\sigma_n,\tau_n)\) to obtain \((\widehat\sigma_n,\widehat\tau_n)\), settling \(R_n\). Apply the same operation with the roles exchanged to \((n,\widehat\tau_n,\widehat\sigma_n)\). Reverse the resulting pair to call it \((\sigma_{n+1},\tau_{n+1})\); this settles \(Q_n\).</p>
+  <p>Make the choices definite: enumerate candidate words by decoding numerical list codes and reducing their entries modulo two, and take the first candidate passing the test. This enumeration includes every binary word. Both words extend their earlier versions properly at each of the two operations. In particular \(|\sigma_n|,|\tau_n|\ge n\). Define \(A\) and \(B\) by their compatible unions, as in <a href="#growing-unions"></a>.</p>
+</section>
+
+<section id="kleene-post" data-formal="incomp-incomparable incomp-constructed-requirements incomp-requirements-exclude-reduction" data-kind="theorem">
+  <h2>The order of Turing degrees contains incomparable elements</h2>
+  <div class="statement-box">
+    <p>There are sets \(A,B\subseteq\mathbb N\) such that \(A\not\le_T B\) and \(B\not\le_T A\).</p>
+  </div>
+  <div class="proof">
+    <p>Take the two unions from <a href="#alternating-construction"></a>. Fix \(e\). The first operation of round \(e\) settles \(R_e\) for every pair extending its output words. The second operation and every later round preserve these words, and the final unions extend them. Therefore \(R_e\) holds. The second operation settles \(Q_e\), which is preserved for the same reason. This works for every \(e\), so <a href="#diagonal-requirements"></a> excludes every oracle program in either direction.</p>
+  </div>
+</section>
+
+<section id="extension-test" data-formal="incomp-candidate incomp-extension-exists incomp-search incomp-search-program incomp-search-index incomp-search-evaluation incomp-search-domain incomp-search-least incomp-prefix-primitive incomp-certificate-primitive" data-kind="lemma">
+  <h2>The existence of a successful extension is an enumerable question</h2>
+  <p>Given numerical codes for \(e,\sigma,\tau\), the predicate</p>
+  <div class="math-display">\[H(e,\sigma,\tau)\quad\Longleftrightarrow\quad\exists\rho\succeq\sigma\;[D(\rho,e,|\tau|)>0]\]</div>
+  <p>is c.e., uniformly in all three parameters. One fixed ordinary search program halts exactly on these inputs, returning the least successful word code.</p>
+  <div class="proof">
+    <p>Decode a candidate number into a finite list and reduce each entry modulo two; this lists all binary words. Length and prefix comparison are primitive recursive: compare the lengths, then compare the finitely many bits at positions below \(|\sigma|\). The value \(D\) is jointly primitive recursive by its fixed checker. Consequently the conjunction “extends \(\sigma\) and certifies a value at \(|\tau|\)” is a total computable candidate test. Search candidate codes in order until it is true. The search halts exactly when such a word exists, and then returns the first code that passes. The <a href="universal-computation#parameter-theorem">parameter theorem</a> supplies a total computable index map for freezing the three parameters.</p>
+  </div>
+</section>
+
+<section id="halting-choice" data-formal="incomp-test-map incomp-test-map-primitive incomp-test-map-correct incomp-decision-program incomp-decision-evaluation incomp-selector-search incomp-extension-partial incomp-extension-partial-evaluation incomp-extension-partial-program incomp-extension-program incomp-extension-program-evaluation" data-kind="lemma">
+  <h2>A halting oracle decides which extension to make</h2>
+  <p>The definite extension operation in <a href="#alternating-construction"></a> is total computable relative to \(0'=J(\varnothing)\), jointly in its finite inputs.</p>
+  <div class="proof">
+    <p>Use <a href="#extension-test"></a> to obtain the ordinary search program with the given parameters. The <a href="turing-jump#empty-oracle-jump">ordinary-to-empty-jump recoding</a> turns its halting question into one membership query to \(0'\). If the answer is no, append zero to both old words. If the answer is yes, run the ordinary search until its first successful candidate appears, read its certified output, and perform the opposite-bit extension. The search is run only in the branch in which its termination has been established.</p>
+    <p>This can be expressed using the established relative closure rules without evaluating a divergent unused branch. For example, after obtaining the answer bit, search for the least candidate satisfying “the answer is zero and this candidate is zero, or this candidate passes the extension test.” In the negative case the dummy candidate zero succeeds; in the positive case a real candidate succeeds. This search always terminates. Ordinary coded-list operations then select and construct the corresponding output pair. The resulting relative program is total on every finite input.</p>
+  </div>
+</section>
+
+<section id="halting-bounds" data-formal="incomp-round-computable incomp-stage-computable incomp-characteristic-computable incomp-constructed-bounds incomp-incomparable incomp-union-bit" data-kind="theorem">
+  <h2>Both constructed sets are decidable from the halting oracle</h2>
+  <div class="statement-box">
+    <p>The definite construction gives incomparable sets satisfying \(A\le_T0'\) and \(B\le_T0'\).</p>
+  </div>
+  <div class="proof">
+    <p>Encode each pair of words by one natural number. A round consists of two applications of the total relative extension operation, with an exchange of coordinates between them. Primitive recursion in the established <a href="oracle-computation#relative-closure">relative computability class</a> therefore computes the pair \((\sigma_n,\tau_n)\) from \(n\), using only \(0'\). The numerical stage state retains both words, so the recursion has no access to an already completed infinite set.</p>
+    <p>On input \(x\), compute round \(x+1\), then return \(\sigma_{x+1}(x)\) or \(\tau_{x+1}(x)\). Length growth makes these accesses defined. The union lemma identifies them with \(\chi_A(x)\) and \(\chi_B(x)\). These are total characteristic programs using oracle \(0'\), which proves the two reductions. Incomparability is the already proved requirement argument for these same choices.</p>
+  </div>
+</section>
+
+<section id="intermediate-degrees" data-formal="incomp-incomparable-noncomputable incomp-incomparable-between incomp-incomparable incomp-constructed-bounds post-delta-decision jump-zero-jump-halting" data-kind="theorem">
+  <h2>There are incomparable degrees strictly between zero and its jump</h2>
+  <p>For the constructed sets,</p>
+  <div class="math-display">\[\mathbf0&lt;[A]&lt;\mathbf0',\qquad\mathbf0&lt;[B]&lt;\mathbf0'.\]</div>
+  <p>Here \(\mathbf0'=[J(\varnothing)]\). Both sets are also \(\Delta_2\), by <a href="posts-theorem#decision-and-many-one">Post’s decision characterization</a>.</p>
+  <div class="proof">
+    <p>If \(A\) were computable, it would reduce to every oracle, in particular to \(B\), contradicting incomparability. The same applies to \(B\); the <a href="turing-degrees#least-degree">least-degree characterization</a> makes both degrees positive. The halting bounds give the upper comparisons. If \(0'\le_T A\), transitivity with \(B\le_T0'\) would give \(B\le_T A\), again a contradiction. Exchanging the sets proves strictness of the other upper comparison. Post’s theorem gives the last classification for these same sets.</p>
+  </div>
+</section>
+
+<section id="enumerability-boundary-question" data-formal="univ-diagonal-nonhalting-not-enumerable turing-red-complement-equivalence jump-empty-jump-equiv-halting turing-red-many-one turing-red-transitive incomp-extension-program-evaluation incomp-constructed-bounds fip-stage-primitive fip-all-requirements fip-friedberg-muchnik" data-kind="question">
+  <h2>Does this already solve Post’s problem for enumerable sets?</h2>
+  <p>Must a set computable from \(0'\) be c.e.? Does the finite-extension construction supply ordinary enumerations of its sets, or construct c.e. representatives of their degrees?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>A set computable from \(0'\) need not be c.e.: the <a href="universal-computation#halting-sets">complement of the ordinary halting set</a> is not c.e., although <a href="turing-degrees#complements">reversing the halting answer</a> decides it from \(K\), hence from \(0'\). This is a counterexample about sets; its degree does have the c.e. representative \(K\).</p>
+    <p>For the particular constructed \(A,B\), the argument supplies relative decision procedures and does not establish ordinary enumerations or c.e. representatives. The choice to follow the divergence branch uses a negative answer to an ordinary halting question, and finite words commit permanent zero bits as well as one bits. The <a href="finite-injury-and-posts-problem#friedberg-muchnik">finite-injury construction</a> solves the <a href="simple-sets#many-one-boundary-question">c.e. version of Post’s problem</a> by effective finite stages and a proof that every oracle requirement eventually succeeds. Nothing here asserts that these degrees cannot have c.e. representatives.</p>
+  </div></details>
+</section>

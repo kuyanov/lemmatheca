@@ -1,0 +1,184 @@
+<section id="post-correspondence" data-formal="post-sigma-recognition post-sigma-many-one post-delta-decision post-finite-sigma-recognition post-finite-sigma-many-one post-finite-delta-decision ah-sigma-class ah-pi-class ah-delta-class" data-kind="theorem">
+  <h2>Count alternations and count jumps from the same base</h2>
+  <p>Fix an oracle \(B\subseteq\mathbb N\). The <a href="arithmetical-hierarchy#alternating-prefixes">classes \(\Sigma_n^B,\Pi_n^B,\Delta_n^B\)</a> are defined by alternating numerical quantifiers over total \(B\)-computable matrices. Independently, the <a href="turing-jump#jump-on-degrees">finite jumps</a> satisfy \(B^{(0)}=B\) and \(B^{(n+1)}=J(B^{(n)})\). The following is <strong>Post’s theorem</strong>.</p>
+  <div class="statement-box">
+    <p>For every \(n\ge0\) and every set \(S\subseteq\mathbb N\),</p>
+    <div class="math-display">\[S\in\Sigma_{n+1}^B\quad\Longleftrightarrow\quad S\text{ is }B^{(n)}\text{-c.e.}\quad\Longleftrightarrow\quad S\le_m B^{(n+1)}.\]</div>
+    <div class="math-display">\[S\in\Delta_{n+1}^B\quad\Longleftrightarrow\quad S\le_T B^{(n)}.\]</div>
+    <p>The many-one maps here are ordinary total computable functions. The first equivalence, and the corresponding decision assertion, also hold for relations of every fixed finite arity after the specified tuple coding.</p>
+  </div>
+  <p>Both the superscript oracle and the jump count matter. For example, \(\Sigma_1^B\) means recognition with \(B\), while \(\Sigma_2^B\) means recognition with \(J(B)\). A \(\Delta_1^B\) set is already decidable with \(B\). We prove the correspondence below, starting with the finite information used in a successful calculation.</p>
+</section>
+
+<section id="finite-oracle-codes" data-formal="post-finite-oracle-bit post-finite-oracle post-bounded-agreement post-prefix-code post-finite-bit-primitive post-finite-bit-values post-finite-oracle-finite post-finite-oracle-characteristic post-prefix-agreement" data-kind="definition">
+  <h2>Supply every guessed bit by a finite numerical object</h2>
+  <p>Use the established <a href="coding-finite-sequences#list-code">list code</a> and its total entry function \((u)_q\), which is zero beyond the decoded list. Define</p>
+  <div class="math-display">\[\beta(u,q)=(u)_q\bmod2,\qquad F_u=\{q:\beta(u,q)=1\}.\]</div>
+  <p>Every number \(u\) describes a finite oracle, even when its list entries were not bits. The function \(\beta\) is ordinary primitive recursive, and it is exactly \(\chi_{F_u}\). For any oracle \(A\) and bound \(k\), the list \([\chi_A(0),\ldots,\chi_A(k-1)]\) has a code \(u\) agreeing with \(A\) below \(k\). This is a finite existence assertion; it does not give an ordinary algorithm for finding that prefix of an arbitrary oracle.</p>
+  <p>Write \(u\equiv_k A\) for the <strong>bounded agreement</strong> condition</p>
+  <div class="math-display">\[\forall q&lt;k\;[\beta(u,q)=\chi_A(q)].\]</div>
+  <p>At \(k=0\) this condition is vacuous. Agreement on a few listed answers will not by itself certify that a program halts: the next construction also checks the entire bounded calculation.</p>
+</section>
+
+<section id="finite-checker" data-formal="post-finite-table-value post-finite-checker post-finite-value-primitive post-finite-checker-primitive post-finite-value-program post-finite-checker-program post-finite-value-program-correct post-finite-checker-program-correct post-finite-table-identity post-finite-table-input-guard oracle-univ-table-value oracle-univ-table-scheme oracle-code-ordinary-embedding-correct" data-kind="lemma">
+  <h2>Replace the oracle in the fixed bounded table algorithm</h2>
+  <p>There is one ordinary primitive-recursive function \(V\), jointly in its four numerical inputs, with</p>
+  <div class="math-display">\[V(u,k,e,x)=b^{F_u}(k,e,x).\]</div>
+  <p>Thus \(C(u,k,e,x)\), defined to mean \(V(u,k,e,x)&gt;0\), is an ordinary primitive-recursive computation certificate. Its allowance \(k\) is part of the certificate. The finite program computing this test is fixed before \(u,k,e,x\) and before any genuine oracle.</p>
+  <div class="proof">
+    <p>Use exactly the <a href="oracle-program-numberings#uniform-table-evaluator">guarded finite-table algorithm</a>. At allowance \(j\), its table \(H_j(e)\) has rows \(p\le e\) and entries at inputs \(z&lt;j\). Start with empty rows at \(j=0\). To build \(H_{j+1}(e)\), construct rows in increasing code order, and within each row construct entries at \(z=0,\ldots,j\). A proper child program reads its completed row in the current table. A recursive call at the same program reads the old table. A lookup outside the relevant input range returns failure, encoded by zero.</p>
+    <p>Retain every ordinary clause of that algorithm and replace its query-row instruction by “write \(\beta(u,z)+1\).” For example, a composition entry first looks up the inner program. If it is zero, write zero. Otherwise subtract one to recover its value \(v\), look up the outer program at input \(v\), and copy that entry, including failure if \(v\) is outside its row. Recursion and search use the same old-table and current-table clauses as before. No output is bounded by the allowance.</p>
+    <p>The loops over allowance, code and input are primitive recursions on coded finite accumulators. Their arithmetic, case tests, list access and new bit instruction are all ordinary primitive recursive jointly with the retained parameter \(u\). This specifies a fixed finite primitive-recursive scheme, and hence a fixed ordinary program for \(V\) and its positivity test. Induction on the allowance and then the row proves the invariant: every completed entry is the original bounded value with oracle \(F_u\). Finally return row \(e\) at \(x\), or zero when \(x\ge k\). This is the asserted identity.</p>
+  </div>
+</section>
+
+<section id="bounded-query-agreement" data-formal="post-bounded-query-dependence post-finite-table-agreement post-finite-value-agreement" data-kind="lemma">
+  <h2>The allowance bounds every oracle argument in the table</h2>
+  <p>If \(u\equiv_k A\), then for every \(e,x\),</p>
+  <div class="math-display">\[V(u,k,e,x)=b^A(k,e,x).\]</div>
+  <div class="proof">
+    <p>More generally compare the two tables at every allowance \(j\le k\), for the same maximum code \(e\). Induct on \(j\) and then on the current row. Empty tables agree. In a new query row the input is \(z&lt;j+1\le k\), so the two written bits agree. Ordinary leaves do not consult either oracle. At every compound clause, the old-table lookups agree by the allowance induction and the current-table lookups agree by the row induction. Guards and subsequent arithmetic therefore agree too.</p>
+    <p>In particular, an intermediate output that becomes a new input is checked by the guard at its own call. If it is too large, both lookups fail; the evaluator does not query that large number first. Even constructing the full table for all rows introduces only queries at the current row inputs, all below \(k\). Its final lookup proves the equality, including the immediate failure when \(x\ge k\).</p>
+  </div>
+</section>
+
+<section id="finite-certificate-equivalence" data-formal="post-finite-certificate-domain post-finite-certificate-output post-finite-table-input-guard post-prefix-agreement" data-kind="theorem">
+  <h2>A successful real run is exactly a consistent finite certificate</h2>
+  <p>For every oracle \(A\), program index \(e\), and input \(x\),</p>
+  <div class="math-display">\[\varphi_e^A(x)\downarrow\quad\Longleftrightarrow\quad
+    \exists u\,\exists k\;[C(u,k,e,x)\land u\equiv_k A].\]</div>
+  <div class="proof">
+    <p>If the run halts, <a href="oracle-program-numberings#bounded-correctness">bounded completeness</a> gives an allowance \(k\) with positive bounded value. Code the first \(k\) actual bits of \(A\) by \(u\). Agreement and <a href="#bounded-query-agreement"></a> make \(V(u,k,e,x)\) positive, giving the certificate. A successful allowance cannot be zero, but the formula need not impose this separately because its checker already rejects zero.</p>
+    <p>Conversely, the agreement lemma transfers a positive checked value to \(b^A(k,e,x)\). Bounded soundness then gives an actual halting run. If an exact output \(y\) is required, replace positivity by \(V(u,k,e,x)=y+1\); the same two directions give exactly \(\varphi_e^A(x)\downarrow=y\). Thus the certificate contains finite computation, not just a proposed transcript of oracle answers.</p>
+  </div>
+</section>
+
+<section id="consistency-complexity" data-formal="post-agreement-complexity post-agreement-base-decision" data-kind="lemma">
+  <h2>Checking the guessed bits costs at most one more level</h2>
+  <p>Suppose \(A\in\Sigma_n^B\), where \(n\ge0\). The joint relation \((u,k)\mapsto u\equiv_k A\) belongs to \(\Delta_{n+1}^B\).</p>
+  <div class="proof">
+    <p>The complement of \(A\) is \(\Pi_n^B\). By <a href="arithmetical-hierarchy#padding-and-inclusions">padding</a>, both membership predicates belong to \(\Delta_{n+1}^B\). For each \(q\), equality of a guessed bit with the real bit is equivalent to</p>
+    <div class="math-display">\[(\beta(u,q)=1\land q\in A)\ \lor\ (\beta(u,q)=0\land q\notin A).\]</div>
+    <p>The bit tests are ordinary decidable, hence belong to both polarities at that level. Computable preimages and <a href="arithmetical-hierarchy#finite-boolean-closure">finite Boolean closure</a> put this joint relation of \(u,q\) in \(\Delta_{n+1}^B\). Its bounded universal quantification over \(q&lt;k\) stays there by <a href="arithmetical-hierarchy#bounded-quantifiers">bounded closure</a>, with \(u,k\) retained as free parameters. Both positive and negative oracle answers are checked. At \(n=0\), one can do better: a \(B\)-decider for \(A\) checks the finitely many bits directly, so the agreement relation is already \(\Delta_0^B\).</p>
+  </div>
+</section>
+
+<section id="oracle-absorption" data-formal="post-oracle-absorption post-finite-oracle-absorption post-finite-certificate-domain" data-kind="theorem">
+  <h2>Absorb an enumerable computation over a definable oracle</h2>
+  <p>For every \(n\ge0\), if \(A\in\Sigma_n^B\) and \(S\) is \(A\)-c.e., then \(S\in\Sigma_{n+1}^B\). The assertion holds at every fixed finite arity.</p>
+  <div class="proof">
+    <p>Choose one recognizing index \(e\), so \(x\in S\) exactly when \(\varphi_e^A(x)\) halts. This is an \(A\)-oracle recognizer: its finite-oracle simulation must replace queries to \(A\), the oracle actually used by that program. By <a href="#finite-certificate-equivalence"></a>,</p>
+    <div class="math-display">\[x\in S\quad\Longleftrightarrow\quad
+      \exists u\,\exists k\;[C(u,k,e,x)\land u\equiv_k A].\]</div>
+    <p>For \(n\ge1\), the bracketed joint relation is \(\Sigma_{n+1}^B\): the checker is ordinary decidable and agreement is \(\Delta_{n+1}^B\). Its two initial existential variables merge into that class’s existing first existential block, using <a href="arithmetical-hierarchy#positive-quantifier-closure">positive-level existential closure</a> and pair coding. Therefore the whole description is \(\Sigma_{n+1}^B\).</p>
+    <p>At \(n=0\), both parts of the bracket are \(B\)-decidable by the stronger base case of <a href="#consistency-complexity"></a>. Pairing \(u,k\) gives one existential quantifier over a \(B\)-computable matrix, so the result is \(\Sigma_1^B\). This treats the base without asserting that unbounded search preserves decidability. For a relation on \(r\) inputs, replace \(x\) throughout by its tuple code; all \(r\) coordinates remain free in the resulting matrix.</p>
+  </div>
+</section>
+
+<section id="tuple-recognition-bridge" data-formal="post-tuple-normalizer post-tuple-normalizer-primitive post-tuple-normalizer-program post-tuple-normalizer-correct post-finite-recognition-bridge ah-tuple-code ah-tuple-decoder ah-tuple-recovery ah-tuple-code-primitive ah-tuple-decoder-primitive ah-empty-tuple-code ah-finite-decision-program ah-finite-arity-level ah-finite-arity-delta" data-kind="lemma">
+  <h2>Carry the induction through relations, not only unary sets</h2>
+  <p>For a relation \(P\subseteq\mathbb N^r\), let \(d_r(c)=((c)_0,\ldots,(c)_{r-1})\) and \(P^\#(c)\leftrightarrow P(d_r(c))\). At each relative hierarchy level, classification of \(P\) and \(P^\#\) agrees. Recognition and decision with any fixed oracle \(D\) also transfer in both directions.</p>
+  <div class="proof">
+    <p>The hierarchy assertion is the <a href="arithmetical-hierarchy#tuple-blocks">free-tuple coding theorem</a>. For oracle algorithms, an input \(c\) can be decoded to \(d_r(c)\) and then re-encoded by \(L\) before running a recognizer for tuple-coded \(P\). Conversely use \(L(\bar x)\) on the original tuple, since \(d_r(L(\bar x))=\bar x\). Both input transformations are ordinary primitive recursive and preserve the truth of membership. Compose a recognizer with these total transformations; for a decider the same compositions preserve both characteristic bits and termination.</p>
+    <p>This defines the recognizer on every numerical input, including codes of lists of the wrong length. At \(r=0\), the decoder always gives the unique empty tuple and its re-encoding is the empty-list code. In particular, a binary tail \(T(x,y)\) in the induction below can be replaced by the genuine unary set \(\{c:T((c)_0,(c)_1)\}\), and its oracle test can then be applied to \(L([x,y])\). The induction hypothesis is never silently applied to a two-variable predicate as if it were unary.</p>
+  </div>
+</section>
+
+<section id="post-induction" data-formal="post-sigma-recognition post-iterate-level post-finite-sigma-recognition ah-sigma-successor ah-unary-tuple-bridge jump-jump-ce" data-kind="theorem">
+  <h2>Prove the recognition correspondence by induction</h2>
+  <p>For every \(n\ge0\), \(S\in\Sigma_{n+1}^B\) if and only if \(S\) is \(B^{(n)}\)-c.e., simultaneously for all fixed finite arities.</p>
+  <div class="proof">
+    <p>At \(n=0\), this is the existing <a href="arithmetical-hierarchy#first-level-enumerability">first-level recognition theorem</a>, including its tuple bridge. Suppose the equivalence holds at \(n\). Because \(B^{(n+1)}=J(B^{(n)})\) is \(B^{(n)}\)-c.e., the induction hypothesis first gives</p>
+    <div class="math-display">\[B^{(n+1)}\in\Sigma_{n+1}^B.\]</div>
+    <p>Now let \(S\in\Sigma_{n+2}^B\). Remove its first existential position: \(x\in S\Longleftrightarrow\exists y\,T(x,y)\), where the joint tail \(T\) is \(\Pi_{n+1}^B\). Its complement is \(\Sigma_{n+1}^B\). Apply the induction hypothesis to the coded binary relation from <a href="#tuple-recognition-bridge"></a>. That complement is \(B^{(n)}\)-c.e., so <a href="turing-jump#relative-completeness">jump completeness</a> gives an ordinary total many-one map reducing it to \(B^{(n+1)}\).</p>
+    <p>A \(B^{(n+1)}\)-program can compute that map, ask its one membership question, and reverse the answer. On input \(L([x,y])\) this gives a total characteristic test for \(T(x,y)\). Search \(y=0,1,\ldots\) using that test. Every failed test finishes, and the resulting program halts exactly on \(S\). Thus \(S\) is \(B^{(n+1)}\)-c.e.</p>
+    <p>Conversely, let \(S\) be \(B^{(n+1)}\)-c.e. The membership assertion for \(B^{(n+1)}\) already obtained above and <a href="#oracle-absorption"></a>, at level \(n+1\), give \(S\in\Sigma_{n+2}^B\). For more than one free input, code the entire tuple before this argument and decode it afterwards, using the bridge in both directions. Its ordinary transformations leave all free coordinates available. This completes the simultaneous finite-arity induction.</p>
+  </div>
+</section>
+
+<section id="decision-and-many-one" data-formal="post-sigma-many-one post-delta-decision post-finite-sigma-many-one post-finite-delta-decision jump-freeze-membership jump-freeze-primitive jump-relative-ce-iff-jump oracle-ce-two-sided-recognition jump-relative-decidable-iff-reducible limit-lemma limit-delta-two" data-kind="theorem">
+  <h2>Obtain decision power and ordinary many-one completeness</h2>
+  <p>For all \(n\ge0\), the remaining equivalences in <a href="#post-correspondence"></a> hold:</p>
+  <div class="math-display">\[S\in\Sigma_{n+1}^B\Longleftrightarrow S\le_m B^{(n+1)},\qquad
+    S\in\Delta_{n+1}^B\Longleftrightarrow S\le_T B^{(n)}.\]</div>
+  <div class="proof">
+    <p>Apply jump completeness with oracle exactly \(B^{(n)}\). If \(e\) recognizes \(S\) with that oracle, the specified ordinary primitive-recursive input-freezing map \(x\mapsto f(e,x)\) reduces \(S\) to \(J(B^{(n)})=B^{(n+1)}\). Conversely every ordinary computable preimage of that relative jump is \(B^{(n)}\)-c.e. Combining with <a href="#post-induction"></a> gives the many-one assertion. An oracle is used by the recognizer, but not to compute this numerical reduction map.</p>
+    <p>A \(\Delta_{n+1}^B\) set and its complement are both \(\Sigma_{n+1}^B\), so both are \(B^{(n)}\)-c.e. by the recognition correspondence. <a href="oracle-program-numberings#relative-two-sided-recognition">Relative two-sided recognition</a> gives the required total characteristic program. Conversely a \(B^{(n)}\)-decider recognizes both signs, hence both are \(\Sigma_{n+1}^B\). Complement duality puts the set in their intersection. Composing with the tuple transformations gives the same decision characterization in every finite arity.</p>
+  </div>
+<p>For the ordinary second ambiguous level, the <a href="limit-computability#limit-lemma">limit lemma</a> gives another characterization: these are exactly the membership problems admitting computable guesses that eventually settle correctly on every input.</p>
+</section>
+
+<section id="base-and-first-jumps" data-formal="post-delta-decision post-iterate-level post-iterate-not-pi post-complement-iterate-level ah-zero-level ah-delta-one-decision jump-empty-jump-equiv-halting jump-relative-decidable-iff-reducible" data-kind="lemma">
+  <h2>The computable base equals the first ambiguous level</h2>
+  <p>For the algorithmic hierarchy used here,</p>
+  <div class="math-display">\[\Sigma_0^B=\Pi_0^B=\Delta_0^B=\Delta_1^B
+    =\{S:S\le_T B\}.\]</div>
+  <p>The zero-level equality follows from the empty-prefix definition; the first-level equality follows from Post’s theorem at \(n=0\). In contrast, \(B'\in\Sigma_1^B\setminus\Pi_1^B\), and \(B''\in\Sigma_2^B\setminus\Pi_2^B\). Both are consequences of the strictness argument next. Without a superscript take \(B=\varnothing\); the first jump is <a href="turing-jump#empty-oracle-jump">many-one equivalent to the ordinary halting set</a>, with the two numberings kept distinct.</p>
+</section>
+
+<section id="hierarchy-properness" data-formal="post-iterate-level post-iterate-not-pi post-complement-iterate-level post-polarity-incomparable post-delta-proper-polarities post-sigma-proper-increase post-pi-proper-increase post-delta-proper-increase ah-complement-duality jump-jump-strict" data-kind="theorem">
+  <h2>Each positive level has witnesses separating its two polarities</h2>
+  <div class="statement-box">
+    <p>For every \(n\ge1\),</p>
+    <div class="math-display">\[B^{(n)}\in\Sigma_n^B\setminus\Pi_n^B,\qquad
+      \overline{B^{(n)}}\in\Pi_n^B\setminus\Sigma_n^B.\]</div>
+    <p>Hence \(\Sigma_n^B\) and \(\Pi_n^B\) are incomparable, and \(\Delta_n^B\) is a proper subclass of each. The individual \(\Sigma\) and \(\Pi\) sequences increase properly at every step from level zero. The \(\Delta\) sequence increases properly from level one onward, with \(\Delta_0^B=\Delta_1^B\).</p>
+  </div>
+  <div class="proof">
+    <p>The jump \(B^{(n)}\) is c.e. in \(B^{(n-1)}\), so Post’s theorem puts it in \(\Sigma_n^B\). If it were also \(\Pi_n^B\), it would be \(\Delta_n^B\), hence computable in \(B^{(n-1)}\). This contradicts <a href="turing-jump#jump-strictness">strictness of that very jump</a>. Complement duality gives the second witness and the assertions about the intersection.</p>
+    <p>For \(n\ge0\), the witness \(B^{(n+1)}\) lies in \(\Sigma_{n+1}^B\) but not \(\Pi_{n+1}^B\). Since padding puts \(\Sigma_n^B\) inside \(\Pi_{n+1}^B\), it cannot lie in \(\Sigma_n^B\). This proves proper increase of \(\Sigma\), and complementation gives the \(\Pi\) assertion. Finally, for \(n\ge1\), the set \(B^{(n)}\) belongs to \(\Delta_{n+1}^B\) by padding but not \(\Delta_n^B\). The base equality has already been checked.</p>
+  </div>
+  <figure id="finite-hierarchy" class="proof-figure">
+    <div class="figure-image"><img src="assets/finite-hierarchy.svg" width="760" height="680" alt="The computable base Sigma zero, Pi zero and Delta zero equals Delta one. Two strict inclusion arrows lead to Sigma one and Pi one, then to Delta two, then to Sigma two and Pi two, and then to Delta three. The two polarity classes at each positive level are incomparable." /></div>
+    <figcaption>Every arrow is a proper inclusion for the fixed oracle \(B\). The two branches at each positive level are incomparable; their intersection is the corresponding \(\Delta\) class. The common base includes \(\Delta_1^B\). The diagram does not identify the union of the branches with the following \(\Delta\) class; <a href="#union-gap-question"></a> gives a set in the gap.</figcaption>
+  </figure>
+</section>
+
+<section id="relative-complete-sets" data-formal="post-sigma-completeness post-complete-iterate-equivalence post-complete-level-boundaries" data-kind="definition">
+  <h2>Completeness must use the same hierarchy oracle</h2>
+  <p>For \(n\ge1\), a set \(H\) is <strong>\(\Sigma_n^B\)-complete</strong> if \(H\in\Sigma_n^B\) and every \(S\in\Sigma_n^B\) satisfies \(S\le_m H\), using ordinary total computable maps. Post’s theorem shows that \(B^{(n)}\) is \(\Sigma_n^B\)-complete. More precisely,</p>
+  <div class="math-display">\[H\text{ is }\Sigma_n^B\text{-complete}\quad\Longleftrightarrow\quad H\equiv_m B^{(n)}.\]</div>
+  <div class="proof">
+    <p>If \(H\) is complete, membership in the class gives \(H\le_m B^{(n)}\), and completeness applied to \(B^{(n)}\) gives the reverse reduction. Conversely suppose both reductions hold. Computable preimages preserve \(\Sigma_n^B\), so the reduction of \(H\) to \(B^{(n)}\) puts \(H\) in the class. Every set in the class reduces first to \(B^{(n)}\) and then to \(H\), proving completeness.</p>
+    <p>Such an \(H\) is not \(\Pi_n^B\), because otherwise its computable preimage \(B^{(n)}\) would be \(\Pi_n^B\), contradicting <a href="#hierarchy-properness"></a>. In particular it is not \(\Delta_n^B\), although padding puts it in \(\Delta_{n+1}^B\). With \(B=\varnothing\) these are ordinary completeness statements. An arbitrary extra oracle is not inserted into either side: completeness for one base does not make the set complete for the hierarchy over a different base.</p>
+  </div>
+</section>
+
+<section id="relative-halting-question" data-formal="post-halting-jump-equivalence post-halting-jump-levels jump-empty-jump-equiv-halting jump-jump-characterization jump-jump-strict" data-kind="question">
+  <h2>Does the ordinary halting oracle decide its own halting problem?</h2>
+  <p>Let \(K\) be the ordinary diagonal halting set. Is \(J(K)\) in \(\Delta_2\)? Which of \(\Sigma_2\) and \(\Pi_2\) contains it?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Post’s theorem says that \(\Delta_2\) consists exactly of the sets computable in \(J(\varnothing)\), equivalently in \(K\). Jump strictness gives \(J(K)\not\le_T K\), so it is not \(\Delta_2\).</p>
+    <p>Applying the <a href="turing-jump#jump-characterization">jump characterization</a> in both directions to \(K\equiv_T J(\varnothing)\) shows that \(J(K)\) and \(J^2(\varnothing)\) are many-one equivalent. Thus it is \(\Sigma_2\)-complete by <a href="#relative-complete-sets"></a>, and is not \(\Pi_2\). The second-level existential class contains sets that the first halting oracle can recognize without being able to decide.</p>
+  </div></details>
+</section>
+
+<section id="nonoptimal-level-question" data-formal="post-padded-jump-levels jump-jump-ce" data-kind="question">
+  <h2>Does an available second-level description force second-level complexity?</h2>
+  <p>Padding gives \(J(B)\in\Sigma_2^B\). Does this imply \(J(B)\notin\Delta_2^B\), or that recognizing it requires the oracle \(J(B)\) rather than \(B\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Neither conclusion follows. The set \(J(B)\) is already \(B\)-c.e., so its first existential level suffices for recognition. It is also decidable with oracle \(J(B)\) by one membership query, hence belongs to \(\Delta_2^B\) by Post’s theorem. It does not belong to \(\Delta_1^B\), because that would mean a \(B\)-decider for its own jump. Thus its exact lowest existential level is one, while its lowest ambiguous level is two. A padded formula supplies an upper bound, not an exclusion of smaller classes.</p>
+  </div></details>
+</section>
+
+<section id="union-gap-question" data-formal="post-union-gap-witness post-union-gap turing-join-complement-equivalence turing-join-even-map turing-join-odd-map ah-zero-level ah-delta-one-decision" data-kind="question">
+  <h2>Is the next ambiguous class just the union of the two old branches?</h2>
+  <p>For \(n\ge1\), put \(H=B^{(n)}\) and let \(D=H\oplus\overline H\), with the established even/odd join. Is \(D\) in \(\Delta_{n+1}^B\)? Does it belong to \(\Sigma_n^B\cup\Pi_n^B\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The <a href="turing-degrees#join-complement-question">join with a complement</a> is Turing equivalent to \(H\), so it is computable in \(B^{(n)}\). Post’s theorem puts \(D\) in \(\Delta_{n+1}^B\).</p>
+    <p>If \(D\) were \(\Sigma_n^B\), its ordinary computable odd-position preimage \(x\mapsto2x+1\) would put \(\overline H\) in \(\Sigma_n^B\), contrary to <a href="#hierarchy-properness"></a>. If \(D\) were \(\Pi_n^B\), the even-position preimage \(x\mapsto2x\) would put \(H\) in \(\Pi_n^B\), again a contradiction. Therefore</p>
+    <div class="math-display">\[\Sigma_n^B\cup\Pi_n^B\ \subsetneq\ \Delta_{n+1}^B\qquad(n\ge1).\]</div>
+    <p>At level zero this strict assertion fails: both old branches and \(\Delta_1^B\) are exactly the \(B\)-computable sets. The witness proves the positive-level gap without assuming any incomparable Turing degrees.</p>
+  </div></details>
+</section>
+
+<section id="finite-jump-arithmetical" data-formal="post-arithmetical-set post-arithmetical-finite-jump post-arithmetical-prefix-bridge post-finite-arithmetical-jump post-finite-arithmetic-prefix post-no-common-finite-jump ah-positive-arithmetic-equivalence" data-kind="theorem">
+  <h2>Arithmetical membership needs some finite jump</h2>
+  <p>Call a set <strong>arithmetical</strong> if it belongs to some finite ordinary hierarchy level. By the <a href="arithmetical-hierarchy#positive-level-arithmetic-bridge">arithmetic prefix comparison</a>, these are exactly the sets with a finite alternating arithmetic prefix over a bounded arithmetic matrix. Then</p>
+  <div class="math-display">\[S\text{ is arithmetical}\quad\Longleftrightarrow\quad
+    \exists m\ge0\;[S\le_T J^m(\varnothing)].\]</div>
+  <div class="proof">
+    <p>If \(S\in\Sigma_n\) or \(S\in\Pi_n\), padding gives \(S\in\Delta_{n+1}\). Post’s theorem makes it computable in \(J^n(\varnothing)\). Conversely, computation in \(J^m(\varnothing)\) gives \(S\in\Delta_{m+1}\), hence a finite-level definition. A computable set is included with \(m=0\), and it has a positive-level arithmetic definition even though the algorithmic and bounded-formula conventions at level zero differ.</p>
+    <p>The existential quantifier chooses a finite jump for the entire membership problem. It does not supply one finite jump that decides every arithmetical set: for each \(m\), the next jump \(J^{m+1}(\varnothing)\) is itself arithmetical and is not computable in \(J^m(\varnothing)\), by jump strictness.</p>
+  </div>
+</section>

@@ -1,0 +1,181 @@
+<section id="finite-fragments" data-kind="definition" data-formal="rs-consistent-fragment rs-table-function rs-table-function-values rs-graph-inclusion">
+  <h2>A finite observation records outputs, without prescribing the other inputs</h2>
+  <p>A <strong>finite fragment</strong> is a finite list \(D\) of pairs \((x,y)\) of natural numbers, with the consistency condition that two pairs having the same first coordinate also have the same second coordinate. Identical repeated pairs are allowed. Its associated partial function \(\delta_D\) returns the recorded \(y\) on a listed input \(x\), and is undefined on every unlisted input.</p>
+  <p>For partial functions \(f,g\), write <strong>\(f\sqsubseteq g\)</strong> when every defined value of \(f\) is the same defined value of \(g\):</p>
+  <div class="math-display">\[f\sqsubseteq g\quad\Longleftrightarrow\quad
+    \forall x,y\;[f(x)\downarrow=y\ \Longrightarrow\ g(x)\downarrow=y].\]</div>
+  <p>Thus \(\delta_D\sqsubseteq g\) requires the listed observations, but places no condition on \(g\) at an unlisted input. This is graph inclusion, rather than the equality of partial functions used in <a href="rices-theorem#behavior-and-indices">extensional index properties</a>.</p>
+  <figure id="finite-evidence-figure" class="proof-figure">
+    <div class="figure-image" style="max-width: 420px; margin: 0 auto;"><img src="assets/finite-evidence.svg" width="420" height="370" alt="The fragment records input two returning seven and input five returning seventeen. Two larger tables retain both observations and give different additional answers at input zero; unlisted inputs remain unconstrained." /></div>
+    <figcaption>Both larger partial functions extend the same observations, although their additional values differ. The fragment imposes no requirement at an unlisted input.</figcaption>
+  </figure>
+</section>
+
+<section id="fragment-codes" data-kind="definition" data-formal="rs-fragment-pair-list rs-fragment-list-coding rs-valid-fragment rs-validity-primitive rs-coded-fragment rs-fragment-finite rs-fragment-partial rs-fragment-compiler rs-fragment-compiler-primitive rs-fragment-compiler-evaluation rs-empty-fragment">
+  <h2>Finite fragments have uniform program indices</h2>
+  <p>Use the established <a href="coding-finite-sequences#list-code">finite-list coding</a>. For a natural code \(d\), decode its list of natural numbers and unpair each entry, obtaining the finite pair-list \(D_d\). Every finite pair-list has such a code. Let <strong>\(\operatorname{Valid}(d)\)</strong> say that \(D_d\) is consistent. Comparing every two entries is a finite test, so validity is decidable.</p>
+  <p>Define \(\delta_d(x)\) by looking for the first pair in \(D_d\) with first coordinate \(x\), returning its second coordinate if found, and otherwise remaining undefined. This definition works even on invalid codes; on valid codes it represents every pair in the fragment. A single paired-input procedure performs these finite scans and then either returns the found value or runs forever. The <a href="universal-computation#parameter-theorem">parameter theorem</a> therefore supplies one fixed index \(v\) and a <strong>fragment compiler</strong></p>
+  <div class="math-display">\[u(d)=s(v,d),\qquad \varphi_{u(d)}(x)\simeq\delta_d(x)\qquad(d,x\in\mathbb N).\]</div>
+  <p>The map \(u\) is primitive recursive: it inserts a finite numerical parameter into program text. It does not wait for any other program to terminate. In particular, every finite fragment is a partial computable function. The empty list represents the nowhere-defined function.</p>
+</section>
+
+<section id="unlisted-input-question" data-kind="question" data-formal="rs-unlisted-input-answer rs-fragment-compiler-evaluation">
+  <h2>Does a finite certificate require divergence outside its table?</h2>
+  <p>Take \(D=[(2,7)]\). If \(D\) is accepted as positive evidence for a program computing \(g\), must \(g(0)\) be undefined? Distinguish this from what the fragment program \(u(d)\) does at zero.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Both the fragment \([(2,7)]\) itself and the larger fragment \([(2,7),(0,17)]\) extend the observation. Their associated partial functions differ at zero. Positive evidence \(\delta_D\sqsubseteq g\) permits either possibility there.</p>
+    <p>The particular program \(u(d)\) computes exactly \(\delta_D\), so it is undefined at zero. That fact about the chosen representative is not an additional condition imposed on every extension of its table.</p>
+  </div></details>
+</section>
+
+<section id="finite-match-test" data-kind="lemma" data-formal="rs-finite-match rs-finite-match-primitive rs-finite-match-correct rs-empty-match">
+  <h2>Matching a finite table can be recognized from finite computation certificates</h2>
+  <p>Let \(b(k,e,x)\) be the <a href="universal-computation#universal-evaluation">bounded evaluator</a>, with \(b(k,e,x)=y+1\) certifying \(\varphi_e(x)\downarrow=y\). Define the <strong>finite match test</strong></p>
+  <div class="math-display">\[\operatorname{Match}(e,d,t)\quad\Longleftrightarrow\quad
+    \forall(x,y)\text{ in }D_d\;\exists k&lt;t\;[b(k,e,x)=y+1].\]</div>
+  <p>This is a total computable test. For every valid \(d\),</p>
+  <div class="math-display">\[\delta_d\sqsubseteq\varphi_e
+    \quad\Longleftrightarrow\quad\exists t\;\operatorname{Match}(e,d,t).\]</div>
+  <div class="proof">
+    <p>The decoded list and all searches below \(t\) are finite, so each test finishes. A successful test certifies the required value at every listed input. Conversely, graph inclusion supplies a computation certificate for each of the finitely many pairs. Choose \(t\) greater than all their resource bounds. That common finite bound makes the test succeed. Consistency ensures that the listed pairs are exactly the graph of \(\delta_d\).</p>
+    <p>For the empty list the test is already true at \(t=0\), as it should be: the empty graph is included in every partial function. This argument uses <a href="universal-computation#finite-certificates">finite certificates</a>, without deciding divergence at an unlisted input.</p>
+  </div>
+</section>
+
+<section id="recognized-extensional-properties" data-kind="definition" data-formal="effective-stage-index-set rs-recognition-stage effective-stage-bounds effective-stage-primitive-test effective-stage-test-spec effective-stage-monotone effective-stage-union rice-extensional">
+  <h2>Keep a recognizer and the extensionality assumption separate</h2>
+  <p>Fix a set \(A\subseteq\mathbb N\) of program indices. Assume that \(A\) is c.e., and choose one recognizer index \(r\) with \(A=W_r\). Write</p>
+  <div class="math-display">\[H_r(j,t)\quad\Longleftrightarrow\quad j\in W_{r,t},\]</div>
+  <p>using the <a href="effective-enumerations#uniform-finite-approximation">uniform finite stages</a>. The test \(H_r\) is computable, it is monotone in \(t\), \(H_r(j,0)\) is false, and \(\exists t\,H_r(j,t)\) is equivalent to \(j\in A\).</p>
+  <p>Also assume that \(A\) is <strong>extensional</strong>: if \(\varphi_e\simeq\varphi_d\), then \(e\in A\) exactly when \(d\in A\). The recognizer may inspect numerical indices; extensionality restricts which answers it can ultimately give. It says nothing about how quickly those answers appear.</p>
+</section>
+
+<section id="switch-procedure" data-kind="definition" data-formal="rs-switch-procedure rs-switch-partial">
+  <h2>Offer the old computation, and offer the extension after acceptance</h2>
+  <p>For proposed self-index \(j\), old index \(e\), extension index \(d\), and input \(x\), define the <strong>switch procedure</strong> \(S(r,j,e,d,x)\) as follows. Search codes \(\langle a,\langle t,k\rangle\rangle\) of triples \((a,t,k)\) in increasing numerical order. A triple is successful if either</p>
+  <div class="math-display">\[a=0\ \text{ and }\ b(k,e,x)>0,\]</div>
+  <p>or</p>
+  <div class="math-display">\[a=1,\quad H_r(j,t),\quad\text{and}\quad b(k,d,x)>0.\]</div>
+  <p>At the first successful code, return \(b(k,e,x)-1\) in the first case and \(b(k,d,x)-1\) in the second. If no code succeeds, remain undefined. Each candidate test terminates; the search therefore gives a jointly partial recursive procedure. The two tags make its output rule unambiguous.</p>
+  <p>The first kind of certificate offers a value of \(\varphi_e(x)\) immediately. The second offers a value of \(\varphi_d(x)\) only after the recognizer accepts \(j\). This is a <a href="universal-computation#dovetailing">dovetailed search</a>, so a divergent old computation cannot prevent the second offer.</p>
+</section>
+
+<section id="switch-selector" data-kind="lemma" data-formal="rs-switch-index rs-switch-index-primitive rs-switch-index-evaluation rs-switch-cases">
+  <h2>One self-reference selector supplies all switch indices</h2>
+  <p>Fix once a selector supplied by <a href="uniform-self-reference#partial-families">self-reference for partial families</a>. It gives a fixed program index \(q_S\), and the primitive-recursive <strong>switch index</strong></p>
+  <div class="math-display">\[\sigma(r,e,d)=s(q_S,\langle r,\langle e,d\rangle\rangle),\qquad
+    \varphi_{\sigma(r,e,d)}(x)\simeq S(r,\sigma(r,e,d),e,d,x).\]</div>
+  <p>If \(\varphi_e\sqsubseteq\varphi_d\), its behavior satisfies:</p>
+  <div class="math-display">\[\sigma(r,e,d)\notin W_r\ \Longrightarrow\
+    \varphi_{\sigma(r,e,d)}\simeq\varphi_e,\]</div>
+  <div class="math-display">\[\sigma(r,e,d)\in W_r\ \Longrightarrow\
+    \varphi_{\sigma(r,e,d)}\simeq\varphi_d.\]</div>
+  <div class="proof">
+    <p>The procedure just defined is jointly partial recursive in the self-index, the coded parameters, and the runtime input. The partial-family theorem thus chooses a single \(q_S\) before \(r,e,d,x\) vary. Its selector has the displayed specialization form and is primitive recursive.</p>
+    <p>If the self-index is never accepted, no triple with tag one succeeds. A tag-zero certificate exists exactly on the domain of \(\varphi_e\), and returns its correct output. Thus the first equality includes divergence.</p>
+    <p>If the self-index is accepted, a finite stage witnesses that event. A tag-one certificate then exists at every input where \(\varphi_d\) is defined. Any successful tag-zero certificate returns the same output, since the old graph is included in the new one. At an input where \(\varphi_d\) is undefined, inclusion also makes \(\varphi_e\) undefined, so neither tag can succeed. This proves the second equality of entire partial functions.</p>
+  </div>
+</section>
+
+<section id="upward-closure" data-kind="theorem" data-formal="rs-upward-closure">
+  <h2>A recognized extensional property survives every partial computable extension</h2>
+  <p>If \(A=W_r\) is extensional, \(e\in A\), and \(\varphi_e\sqsubseteq\varphi_d\), then \(d\in A\).</p>
+  <div class="proof">
+    <p>Put \(j=\sigma(r,e,d)\). Suppose first that \(j\notin A\). The first case of <a href="#switch-selector"></a> makes \(\varphi_j\simeq\varphi_e\). Extensionality and \(e\in A\) then imply \(j\in A\), a contradiction. Hence \(j\in A\).</p>
+    <p>The second switch case now gives \(\varphi_j\simeq\varphi_d\). Extensionality transfers \(j\in A\) to \(d\in A\). The argument does not test whether \(j\) will be accepted: the two alternatives occur in the proof of the already specified program.</p>
+  </div>
+</section>
+
+<section id="cutoff-selector" data-kind="lemma" data-formal="rs-cutoff-procedure rs-cutoff-partial rs-cutoff-index rs-cutoff-index-primitive rs-cutoff-index-evaluation">
+  <h2>A second self-reference selector cuts off the domain after acceptance</h2>
+  <p>The <strong>cutoff procedure</strong> on parameters \(r,j,e\) and input \(x\) is</p>
+  <div class="math-display">\[C(r,j,e,x)\simeq
+    \begin{cases}
+      \text{undefined},&amp;H_r(j,x),\\
+      \varphi_e(x),&amp;\neg H_r(j,x).
+    \end{cases}\]</div>
+  <p>The first operation is the terminating stage-\(x\) test. There is a fixed index \(q_C\), selected once by the same partial-family theorem, for which the <strong>cutoff index</strong></p>
+  <div class="math-display">\[\kappa(r,e)=s(q_C,\langle r,e\rangle),\qquad
+    \varphi_{\kappa(r,e)}(x)\simeq C(r,\kappa(r,e),e,x)\]</div>
+  <p>is primitive recursive jointly in \(r,e\).</p>
+  <div class="proof">
+    <p>The stage test is computable in all its numerical inputs. If it fails, universal evaluation runs the old program; if it succeeds, a fixed nowhere-defined program is used. These rules are jointly partial recursive, so the partial-family theorem supplies the displayed uniform selector. The index constructor does not run the program whose text it produces.</p>
+  </div>
+</section>
+
+<section id="finite-accepted-subfunction" data-kind="theorem" data-formal="rs-cutoff-cases rs-finite-accepted-subfunction">
+  <h2>Every accepted program has an accepted finite subfunction</h2>
+  <p>Suppose \(A=W_r\) is extensional and \(e\in A\). Then \(j=\kappa(r,e)\) belongs to \(A\), and \(\varphi_j\sqsubseteq\varphi_e\). Moreover, there is a bound \(t\) such that</p>
+  <div class="math-display">\[\varphi_j(x)\simeq
+    \begin{cases}
+      \varphi_e(x),&amp;x&lt;t,\\
+      \text{undefined},&amp;x\ge t.
+    \end{cases}\]</div>
+  <p>Consequently the graph of \(\varphi_j\) is finite.</p>
+  <div class="proof">
+    <p>If \(j\notin A\), no finite stage contains it. Every input therefore takes the old-computation branch, giving \(\varphi_j\simeq\varphi_e\). Extensionality contradicts \(e\in A\). Thus \(j\in A\).</p>
+    <p>Let \(t\) be the first stage with \(H_r(j,t)\). For \(x&lt;t\), that stage-\(x\) test fails, so the cutoff program runs exactly \(\varphi_e(x)\). For \(x\ge t\), stage monotonicity makes the test succeed, so the program remains undefined. This proves the exact displayed restriction. Its graph is included in the old graph and has at most \(t\) pairs, one for each possible input below \(t\). Some of those old inputs may themselves be undefined; no decision about them is needed.</p>
+  </div>
+</section>
+
+<section id="finite-index-question" data-kind="question" data-formal="rs-finite-waiting-index rs-finite-waiting-spec rs-no-finite-graph-extractor">
+  <h2>Does an index of a finite partial function reveal its complete table?</h2>
+  <p>The cutoff map uniformly supplies an index of an accepted finite partial function. Does this mean that one can computably recover the complete finite graph from every index known to compute a finite partial function?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Consider the uniform partial programs \(h_e\) which, on input zero, wait for \(\varphi_e(e)\) to halt and then return zero, and which remain undefined on all other inputs. Each graph is finite: it is either empty or the singleton \(\{(0,0)\}\). These are the <a href="rices-theorem#waiting-construction">waiting programs</a> for the fixed partial function \(g\) returning zero only at input zero. Universal evaluation, the finite input test, and specialization give their specified total computable index map \(\eta(e)\), with \(\varphi_{\eta(e)}\simeq h_e\).</p>
+    <p>If an algorithm returned a code for the entire graph from every finite-function index, apply it to \(\eta(e)\). Allowing that algorithm to diverge on infinite-function indices would not help: every program in this family is finite. Testing whether its finite output table contains \((0,0)\) would decide the diagonal halting set. That contradicts its <a href="universal-computation#halting-problem">undecidability</a>. The cutoff theorem supplies a finite program, without supplying a terminating method for deciding which of its finitely many possible inputs actually halt.</p>
+  </div></details>
+</section>
+
+<section id="effective-basis" data-kind="definition" data-formal="rs-effective-basis">
+  <h2>A family of finite certificates must itself be effectively enumerable</h2>
+  <p>An <strong>effective finite-fragment basis</strong> for \(A\subseteq\mathbb N\) is a c.e. set \(B\) of valid fragment codes satisfying</p>
+  <div class="math-display">\[e\in A\quad\Longleftrightarrow\quad
+    \exists d\in B\;[\delta_d\sqsubseteq\varphi_e]\qquad(e\in\mathbb N).\]</div>
+  <p>The enumeration requirement concerns the allowed tables, before any particular candidate program is examined. Merely saying that every accepted program contains some finite evidence would omit this effective requirement.</p>
+</section>
+
+<section id="canonical-basis" data-kind="lemma" data-formal="rs-canonical-basis rs-canonical-basis-enumerable rs-canonical-basis-correct rs-finite-graph-code">
+  <h2>Accepted finite-fragment programs provide such a basis</h2>
+  <p>For an extensional c.e. set \(A\), define the <strong>canonical fragment family</strong></p>
+  <div class="math-display">\[B_A=\{d:\operatorname{Valid}(d)\text{ and }u(d)\in A\}.\]</div>
+  <p>This family is c.e., and it is an effective finite-fragment basis for \(A\).</p>
+  <div class="proof">
+    <p>Validity is decidable and \(u\) is total computable, so <a href="universal-computation#enumerable-closure">computable preimages and intersection</a> show that \(B_A\) is c.e.</p>
+    <p>If \(e\in A\), <a href="#finite-accepted-subfunction"></a> gives an accepted finite partial function \(\varphi_j\sqsubseteq\varphi_e\). Its finite graph can be written as a consistent finite list, with some valid code \(d\). The fragment compiler computes exactly that graph, so \(\varphi_{u(d)}\simeq\varphi_j\). Extensionality gives \(u(d)\in A\), hence \(d\in B_A\).</p>
+    <p>Conversely, if \(d\in B_A\) and \(\delta_d\sqsubseteq\varphi_e\), the accepted program \(u(d)\) has graph included in \(\varphi_e\). <a href="#upward-closure"></a> implies \(e\in A\). Choosing a code for an already known finite graph in this mathematical argument is an existence claim; the previous question explains why it is not a uniform graph-extraction algorithm.</p>
+  </div>
+</section>
+
+<section id="rice-shapiro" data-kind="theorem" data-formal="rs-characterization rs-basis-search rs-basis-search-partial rs-basis-search-correct rs-basis-extensional rs-trivial-bases">
+  <h2>Recognizable extensional properties are exactly those with effective finite evidence</h2>
+  <div class="statement-box">
+    <p>A set \(A\subseteq\mathbb N\) is c.e. and extensional if and only if it has an effective finite-fragment basis. Equivalently, a property of partial computable functions can be recognized from program indices precisely when an effectively enumerable family of finite positive tables certifies all and only its positive instances.</p>
+  </div>
+  <div class="proof">
+    <p>The forward implication is <a href="#canonical-basis"></a>. For the converse, let \(B\) be a c.e. basis and choose a recognizer index \(r_B\) for it. On input \(e\), search codes of triples \((d,s,t)\) for</p>
+    <div class="math-display">\[\operatorname{Valid}(d),\qquad d\in W_{r_B,s},\qquad
+      \operatorname{Match}(e,d,t).\]</div>
+    <p>Every candidate test is total computable. If \(e\in A\), a basis fragment \(d\) exists; its membership in \(B\) appears at some stage \(s\), and <a href="#finite-match-test"></a> supplies a common computation bound \(t\). The search reaches a successful triple and halts. Conversely, a successful triple gives \(d\in B\) and \(\delta_d\sqsubseteq\varphi_e\), so the basis equivalence implies \(e\in A\). This is a recognizer for \(A\).</p>
+    <p>Finally, equality of the partial functions computed by \(e\) and \(e'\) preserves every graph-inclusion test \(\delta_d\sqsubseteq\varphi_e\). The basis equivalence therefore gives extensionality. Both implications include the empty property and the property containing all partial computable functions; no nontriviality assumption is needed.</p>
+  </div>
+</section>
+
+<section id="positive-output-properties" data-kind="lemma" data-formal="rs-halts-zero-basis-family rs-ever-outputs-basis-family rs-halts-zero-basis rs-ever-outputs-basis rs-fixed-fragment-extension rs-fixed-fragment-basis rs-characterization rice-extensional-decidable">
+  <h2>A specified successful output supplies finite evidence</h2>
+  <p>The index sets of programs halting at zero, and of programs returning seventeen on some input, are c.e. More generally, for any fixed valid finite fragment \(D\), the property \(\delta_D\sqsubseteq\varphi_e\) has a c.e. index set.</p>
+  <div class="proof">
+    <p>For the property that \(\varphi_e(0)\) is defined, use all singleton fragments \([(0,y)]\), with \(y\in\mathbb N\). For the property that some input returns seventeen, use all singleton fragments \([(x,17)]\), with \(x\in\mathbb N\). Each family is effectively enumerable, and a program extends one of its fragments exactly when it has the required property. <a href="#rice-shapiro"></a> thus recovers the recognizers in <a href="rices-theorem#halts-at-zero">halting at zero</a> and <a href="rices-theorem#ever-outputs">ever producing seventeen</a>.</p>
+    <p>For a fixed valid fragment \(D\), use the family consisting of that one fragment; equivalently, apply <a href="#finite-match-test"></a> directly. Requiring several specified successful computations still asks only for finitely many positive certificates. Their existence gives recognition, while Rice’s theorem still forbids deciding every nontrivial such behavioral property.</p>
+  </div>
+</section>
+
+<section id="negative-information-obstructions" data-kind="theorem" data-formal="rs-exact-singleton-domain rs-singleton-domain-extension rs-totality-finite-obstruction isc-totality-not-re rs-singleton-domain-not-enumerable">
+  <h2>Totality and an exact singleton domain have no such recognizers</h2>
+  <p>The extensional index sets of total partial computable functions and of partial computable functions whose domain has exactly one element are not c.e.</p>
+  <div class="proof">
+    <p>The constant-zero function is total. If totality had a c.e. index set, it would have an accepted finite subfunction by <a href="#finite-accepted-subfunction"></a>. That subfunction would itself have to be total, but its finite domain cannot be all of \(\mathbb N\). This contradiction gives another explanation of the <a href="rices-theorem#totality">totality obstruction</a>.</p>
+    <p>For the singleton-domain property, take the partial function which returns zero only at input zero. It has an index by the fragment compiler and satisfies the property. Its extension returning zero at inputs zero and one is also partial computable, but has a two-element domain. If the property were c.e., <a href="#upward-closure"></a> would preserve membership under this extension, a contradiction.</p>
+    <p>The two failures differ: totality is upward closed among partial computable extensions, but no finite subfunction is total. An exact singleton domain already fails upward closure. Neither argument restricts the program inputs to a promise that they are total; the theorem concerns indices of arbitrary partial computable functions.</p>
+  </div>
+</section>

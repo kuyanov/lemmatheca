@@ -52,11 +52,12 @@
   </div>
 </section>
 
-<section id="acceptable-numberings" data-kind="definition" data-formal="numbering-compilers numbering-acceptable numbering-compilers-cover numbering-semantic-round-trips">
+<section id="acceptable-numberings" data-kind="definition" data-formal="numbering-compilers numbering-acceptable numbering-compilers-cover numbering-semantic-round-trips rogers-acceptable-isomorphism">
   <h2>Acceptability requires effective translation in both directions</h2>
   <p>A numbering \(\psi\) is <strong>acceptable</strong> when there are total recursive compilers \(c,b:\mathbb N\to\mathbb N\) satisfying</p>
   <div class="math-display">\[\varphi_{c(n)}(x)\simeq\psi_n(x),\qquad\psi_{b(e)}(x)\simeq\varphi_e(x)\qquad(n,e,x\in\mathbb N).\]</div>
   <p>Thus \(c\) sends a \(\psi\)-index to a standard index, while \(b\) sends a standard index to a \(\psi\)-index. These are translations of behavior; neither compiler is required to be injective or to be the numerical inverse of the other. For instance, the identities imply \(\psi_{b(c(n))}\simeq\psi_n\), but not necessarily \(b(c(n))=n\).</p>
+  <p>For every acceptable numbering, <a href="rogers-isomorphism-theorem#rogers-theorem">Rogers’s isomorphism theorem</a> constructs a computable permutation of indices preserving the entire computed partial function, together with its computable inverse. The construction starts from the two supplied compilers and obtains the required injective translations by effective index constructions.</p>
 </section>
 
 <section id="acceptable-specialization" data-kind="theorem" data-formal="numbering-joint-evaluation numbering-specialization numbering-specialization-correct">
@@ -87,12 +88,16 @@
   </div>
 </section>
 
-<section id="repeated-indices-question" data-kind="question" data-formal="numbering-repeated numbering-repeated-compilers numbering-repeated-facts">
+<section id="repeated-indices-question" data-kind="question" data-formal="numbering-repeated numbering-repeated-compilers numbering-repeated-facts myhill-labelled-bijection rogers-acceptable-isomorphism">
   <h2>Must acceptable compilers be bijections?</h2>
   <p>Define \(\psi_{\langle u,v\rangle}(x)\simeq\varphi_v(x)\). Find two effective compilers showing that this is an acceptable numbering, and test whether the two composites are numerical identities.</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>Take \(c(n)=\operatorname{right}(n)\) and \(b(e)=\langle0,e\rangle\). Both are primitive recursive, and the defining equations give \(\varphi_{c(n)}\simeq\psi_n\) and \(\psi_{b(e)}\simeq\varphi_e\). In particular every standard program appears, and joint evaluation is \(U(\operatorname{right}(n),x)\).</p>
     <p>The composite \(c(b(e))=e\) is the identity. In the other direction, \(b(c(\langle u,v\rangle))=\langle0,v\rangle\), which differs from \(\langle u,v\rangle\) whenever \(u\ne0\), by injectivity of the pairing. The two indices still compute the same partial function. These explicit computable translations establish acceptability; a bare bijection between sets of names would not supply the required algorithms.</p>
+  
+    <p>When two computable injections preserve the same labels in the two directions, the <a href="myhills-isomorphism-theorem#labelled-bijection">effective matching construction</a> replaces them by a computable bijection preserving those labels. For program numberings the labels can be entire computed partial functions. This criterion requires injective translations, whereas the definition of acceptability supplies effective translations in both directions.</p>
+  
+    <p>The <a href="rogers-isomorphism-theorem#rogers-theorem">bijective compiler theorem</a> supplies a separately constructed permutation for this acceptable numbering too. It asserts the existence of a stronger translation, rather than numerical inverse identities for the particular compilers displayed in this answer.</p>
   </div></details>
 </section>
 

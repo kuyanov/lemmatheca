@@ -59,40 +59,47 @@
   <p>This theorem concerns ordinary programs, with no membership oracle supplied. The <a href="oracle-computation#oracle-programs">oracle program model</a> gives a precise meaning to computation with such additional answers. For a <a href="oracle-computation#computable-oracle-elimination">computable oracle</a>, an explicit compiler removes the queries while preserving the computed partial function.</p>
 </section>
 
-<section id="halts-at-zero" data-formal="rice-halts-zero rice-halts-zero-facts" data-kind="theorem">
+<section id="halts-at-zero" data-formal="rice-halts-zero rice-halts-zero-facts rs-halts-zero-basis-family rs-halts-zero-basis rs-characterization" data-kind="theorem">
   <h2>A fixed input already gives an undecidable property</h2>
   <p>The set \(D_0=\{e:\varphi_e(0)\downarrow\}\) is c.e. and undecidable. In fact \(K\le_m D_0\), with the waiting construction using the constant-zero function.</p>
   <div class="proof">
     <p>The behavioral property is \(\mathcal C_0=\{g\in\mathcal R:g(0)\downarrow\}\). The nowhere-defined function fails it and the constant-zero function satisfies it. Thus the first case of <a href="#rice-reductions">the reduction theorem</a> applies. Its map produces a constant-zero function when the original diagonal computation halts, and a nowhere-defined function otherwise; its new program therefore halts at zero exactly in the first case. <a href="#rice-theorem">Rice’s theorem</a> gives undecidability.</p>
     <p>For enumerability, the procedure on input \(e\) simply simulates \(\varphi_e(0)\). It halts exactly on \(D_0\), so its domain is \(D_0\). This is a partial recursive function by specialization of the universal evaluator. The example shows that Rice’s theorem does not assert failure of computable enumerability: a positive answer here can be recognized by waiting for the finite successful computation.</p>
   </div>
+  <p>A successful computation at zero is also a finite positive witness: the observed pair \((0,y)\) suffices, regardless of the program’s other values. <a href="rice-shapiro-theorem#positive-output-properties">Rice–Shapiro’s finite-evidence characterization</a> explains this recognition directly.</p>
 </section>
 
-<section id="ever-outputs" data-formal="rice-ever-outputs rice-ever-outputs-facts" data-kind="theorem">
+<section id="ever-outputs" data-formal="rice-ever-outputs rice-ever-outputs-facts rs-ever-outputs-basis-family rs-ever-outputs-basis rs-characterization" data-kind="theorem">
   <h2>Does the program ever output a specified number?</h2>
   <p>The set \(O_{17}=\{e:\exists x\,[\varphi_e(x)\downarrow=17]\}\) is c.e. and undecidable.</p>
   <div class="proof">
     <p>The property of a partial function is that its range contains \(17\). It holds for the constant-\(17\) function and fails for \(\bot\). Both are partial recursive, so <a href="#rice-theorem">Rice’s theorem</a> proves undecidability; the first case of <a href="#rice-reductions">the reduction theorem</a> also gives a reduction using the constant-\(17\) function as the waiting program’s second stage.</p>
     <p>To recognize the positive answers, search for a pair \(\langle x,k\rangle\) such that the <a href="universal-computation#universal-evaluation">bounded evaluator</a> has returned \(17\) for program \(e\) on input \(x\) within resource \(k\). This is a primitive-recursive certificate test. Such a pair exists exactly when \(e\in O_{17}\), so the <a href="universal-computation#finite-certificates">certificate characterization</a> makes \(O_{17}\) c.e. Running input zero to completion, then input one, would not work: a divergent earlier input might prevent reaching an input that returns \(17\). The certificate search gives all inputs a chance.</p>
   </div>
+  <p>One observed return of seventeen, at any input \(x\), supplies the singleton certificate \([(x,17)]\). The <a href="rice-shapiro-theorem#positive-output-properties">finite-fragment basis</a> makes explicit why recognition needs only this positive evidence.</p>
 </section>
 
-<section id="totality" data-formal="rice-totality rice-totality-facts" data-kind="theorem">
+<section id="totality" data-formal="rice-totality rice-totality-facts ah-totality-pi-two ah-totality-normal-form isc-totality-complete rs-finite-accepted-subfunction rs-totality-finite-obstruction isc-totality-not-re" data-kind="theorem">
   <h2>Does the program halt on every input?</h2>
   <p>The <strong>totality index set</strong> \(\mathrm{Tot}=\{e:\forall x\,\varphi_e(x)\downarrow\}\) is undecidable. The waiting construction with \(g(x)=0\) gives \(K\le_m\mathrm{Tot}\).</p>
   <div class="proof">
     <p>Totality depends only on the partial function, including its domain. The constant-zero function is total, whereas \(\bot\) is not total, since it is undefined at zero. These are the two nontriviality witnesses required by <a href="#rice-theorem">Rice’s theorem</a>.</p>
     <p>More explicitly, the map from <a href="#waiting-construction">the waiting lemma</a> produces a program computing the total function \(g\) when \(e\in K\), and the nowhere-defined function otherwise. Therefore \(e\in K\) if and only if \(f_g(e)\in\mathrm{Tot}\). This proves the claimed reduction. The quantifier pattern for this property was expressed arithmetically in <a href="arithmetic-definability#totality-pattern">the totality formula</a>; the present argument proves undecidability from its behavior as a property of functions.</p>
   </div>
+
+  <p>A <a href="arithmetical-hierarchy#totality-and-finiteness">\(\Pi_2\) description by computable tests</a> records the separate halting witness required for each input. This classification and the present undecidability argument have different conclusions: displaying that prefix gives an upper bound, while the reduction excludes an ordinary decision procedure.</p>
+<p>The <a href="index-set-completeness#totality-complete">complete classification of totality</a> proves a matching lower bound: every \(\Pi_2\) set reduces to this index set.</p>
+  <p><a href="rice-shapiro-theorem#negative-information-obstructions">Rice–Shapiro gives a finite-evidence obstruction</a> as well: a recognizer for totality would force every accepted total function to have an accepted finite subfunction, but no finite-domain partial function is total.</p>
 </section>
 
-<section id="fixed-function" data-formal="rice-equivalent-to rice-fixed-function-undecidable rice-equivalent-programs rice-program-equivalence-undecidable" data-kind="theorem">
+<section id="fixed-function" data-formal="rice-equivalent-to rice-fixed-function-undecidable rice-equivalent-programs rice-program-equivalence-undecidable ces-comparison-completeness ces-constant-domains-answer" data-kind="theorem">
   <h2>Agreement with a fixed computable function is undecidable</h2>
   <p>Fix any unary partial recursive function \(h\). Then \(E_h=\{e:\varphi_e\simeq h\}\) is undecidable. Consequently there is no total computable decision procedure which, on every pair of indices \(e,d\), decides whether \(\varphi_e\simeq\varphi_d\).</p>
   <div class="proof">
     <p>The class \(\{h\}\) is a behavioral property. It contains a partial recursive function, namely \(h\). It also excludes one: if \(h\not\simeq\bot\), take \(\bot\); if \(h\simeq\bot\), take the constant-zero function, which differs from it at input zero. Thus the property is nontrivial, and <a href="#rice-theorem">Rice’s theorem</a> makes \(E_h\) undecidable, including the case where \(h\) is nowhere defined.</p>
     <p>For the second assertion, choose once an index \(d\) for \(h\). A decision procedure for pairs, with this second input fixed, would decide \(E_h\). Fixing a numerical input preserves total computability by <a href="universal-computation#parameter-theorem">specialization</a>, so this would contradict the first assertion.</p>
   </div>
+  <p>Equality of domains is a different comparison: programs may halt on the same inputs and return different values. <a href="comparing-enumerable-sets#comparison-completeness">Inclusion and equality of enumerable domains</a> have complete universal second-level classifications; the <a href="comparing-enumerable-sets#outputs-question">constant-program example</a> makes the distinction explicit.</p>
 </section>
 
 <section id="syntax-question" data-formal="rice-syntax-counterexample numbering-flagged-numbering numbering-flagged-zero-decidable numbering-flagged-nontrivial numbering-flagged-not-acceptable" data-kind="question">

@@ -1,0 +1,182 @@
+<section id="halting-reductions" data-formal="rice-halts-zero red-many-one creative-iso-zero-reduction" data-kind="definition">
+  <h2>Start with a reduction that may identify different queries</h2>
+  <p>The <a href="productive-and-creative-sets#creative-complete-equivalence">many-one characterization of creativity</a> says that every creative set receives a computable reduction of halting. To apply <a href="myhills-isomorphism-theorem#myhill-theorem">Myhill’s theorem</a>, we need an injective reduction. Merely padding the source programs does not prove that their images under a given reduction are distinct.</p>
+  <p>Use the <strong>zero-input halting set</strong> \(K_z=\{e:\varphi_e(0)\downarrow\}\), with the <a href="padding-and-injective-reductions#halting-conventions">established halting conventions</a>. Throughout the construction, fix a set \(C\subseteq\mathbb N\) and a total computable function \(g:\mathbb N\to\mathbb N\) satisfying</p>
+  <div class="math-display">\[e\in K_z\quad\Longleftrightarrow\quad g(e)\in C\qquad(e\in\mathbb N).\]</div>
+  <p>No enumerability assumption on \(C\) is needed for this construction. The programs below execute \(g\) and compare finitely many natural numbers. They never test membership in \(C\).</p>
+</section>
+
+<section id="finite-image-record" data-formal="creative-iso-image-values creative-iso-image-values-membership creative-iso-image-values-computable creative-iso-compatible" data-kind="definition">
+  <h2>Keep a finite record of equivalent halting queries</h2>
+  <p>For a finite list \(L\) of indices, let \(B_g(L)=\{g(j):j\text{ occurs in }L\}\), its <strong>finite image set</strong>. Membership in \(B_g(L)\) is computable: evaluate \(g\) at each entry of the finite list and compare the results. The numerical <a href="coding-finite-sequences#list-code">list coding</a> lets a program accept \(L\) as a parameter.</p>
+  <p>The list \(L\) is <strong>compatible with \(e\)</strong> if</p>
+  <div class="math-display">\[j\text{ occurs in }L\quad\Longrightarrow\quad\bigl(j\in K_z\Longleftrightarrow e\in K_z\bigr).\]</div>
+  <p>Compatibility is a mathematical invariant, rather than a test performed by our algorithm. We will maintain it while adding indices whose images escape the finite image set.</p>
+</section>
+
+<section id="first-fixed-point" data-formal="creative-iso-first-rule creative-iso-first-selector creative-iso-first-selector-contract creative-iso-selectors-primitive creative-iso-first-family-partial creative-iso-first-selector-exists" data-kind="lemma">
+  <h2>The first program copies the old computation only if its image is fresh</h2>
+  <p>There is a primitive-recursive selector \(n(e,L)\), using the code of \(L\), such that for every input \(z\),</p>
+  <div class="math-display">\[\varphi_{n(e,L)}(z)\simeq
+    \begin{cases}\varphi_e(z),&amp;g(n(e,L))\notin B_g(L),\\
+    \text{undefined},&amp;g(n(e,L))\in B_g(L).
+    \end{cases}\]</div>
+  <div class="proof">
+    <p>With a proposed self-index \(a\) and parameters \(e,L\), first compute \(g(a)\) and the finitely many values forming \(B_g(L)\). If the image is fresh, simulate \(\varphi_e(z)\). Otherwise run forever. This is a jointly partial recursive procedure: all preliminary numerical tests terminate, and the simulation is <a href="universal-computation#universal-evaluation">universal evaluation</a>.</p>
+    <p>Apply <a href="uniform-self-reference#partial-families">self-reference for partial families</a> with the paired parameter \(\langle e,\operatorname{code}(L)\rangle\). In the <a href="uniform-self-reference#parameterized-recursion">specified parameterized construction</a>, one fixed program index \(q_n\) gives \(n(e,L)=s(q_n,\langle e,\operatorname{code}(L)\rangle)\). Thus a single primitive-recursive selector serves all parameters. The program for the given \(g\) is fixed when this family is chosen; the algorithm does not choose a new fixed point during each later finite scan.</p>
+  </div>
+</section>
+
+<section id="collision-forces-divergence" data-formal="creative-iso-first-cases" data-kind="lemma">
+  <h2>A collision tells us that the old query does not halt</h2>
+  <p>Suppose \(L\) is compatible with \(e\). Put \(n=n(e,L)\). If \(g(n)\notin B_g(L)\), then \(n\in K_z\Longleftrightarrow e\in K_z\). If \(g(n)\in B_g(L)\), then \(e\notin K_z\).</p>
+  <div class="proof">
+    <p>In the fresh case, the first fixed-point identity gives \(\varphi_n(z)\simeq\varphi_e(z)\) on every input, including zero. In the collision case, the identity instead says that \(\varphi_n(0)\) diverges, so \(n\notin K_z\). Choose \(j\) in \(L\) with \(g(n)=g(j)\). The reduction equivalence implies \(j\notin K_z\), since both indices have the same image. Compatibility now implies \(e\notin K_z\).</p>
+    <p>The algorithm did not decide that \(e\) diverges by simulating it. The conclusion follows from the verified reduction property of \(g\), the collision, and the invariant on the stored list.</p>
+  </div>
+</section>
+
+<section id="second-fixed-point" data-formal="creative-iso-second-rule creative-iso-second-selector creative-iso-second-selector-contract creative-iso-selectors-primitive creative-iso-second-family-partial creative-iso-second-selector-exists" data-kind="lemma">
+  <h2>The second program halts precisely if its image is forbidden</h2>
+  <p>There is a primitive-recursive selector \(m(L)\) such that, for every \(z\),</p>
+  <div class="math-display">\[\varphi_{m(L)}(z)\simeq
+    \begin{cases}1,&amp;g(m(L))\in B_g(L),\\
+    \text{undefined},&amp;g(m(L))\notin B_g(L).
+    \end{cases}\]</div>
+  <div class="proof">
+    <p>For proposed self-index \(a\), compute the finite test \(g(a)\in B_g(L)\). Return one if it succeeds, and run forever if it fails. This procedure is jointly partial recursive and ignores \(z\). Apply the same partial-family theorem, now with parameter \(\operatorname{code}(L)\), to get one fixed index \(q_m\) and the selector \(m(L)=s(q_m,\operatorname{code}(L))\). Again the selector is primitive recursive even though executing the program for \(g\) may require a general total computable computation.</p>
+  </div>
+</section>
+
+<section id="collision-escape" data-formal="creative-iso-second-escapes" data-kind="lemma">
+  <h2>The second program must escape in the collision case</h2>
+  <p>If \(L\) is compatible with \(e\) and \(g(n(e,L))\in B_g(L)\), then</p>
+  <div class="math-display">\[g(m(L))\notin B_g(L),\qquad m(L)\notin K_z,\qquad e\notin K_z.\]</div>
+  <div class="proof">
+    <p>The preceding collision lemma gives \(e\notin K_z\), and compatibility gives \(j\notin K_z\) for every \(j\) in \(L\). Suppose \(g(m(L))\in B_g(L)\). The second fixed-point identity then makes \(\varphi_{m(L)}(0)\) halt. Hence \(g(m(L))\in C\) by the reduction property.</p>
+    <p>But some \(j\) in \(L\) has \(g(j)=g(m(L))\). The same reduction property would give \(j\in K_z\), contradicting the previous paragraph. Thus the second image is fresh. Its defining program consequently diverges, giving \(m(L)\notin K_z\) as well.</p>
+  </div>
+</section>
+
+<section id="escape-step" data-formal="creative-iso-escape-step creative-iso-escape-step-computable creative-iso-escape-step-spec" data-kind="definition">
+  <h2>Choose between the two specified fixed points by a finite test</h2>
+  <p>The <strong>escape step</strong> is the actual numerical function</p>
+  <div class="math-display">\[T(e,L)=\begin{cases}
+    n(e,L),&amp;g(n(e,L))\notin B_g(L),\\
+    m(L),&amp;g(n(e,L))\in B_g(L).
+    \end{cases}\]</div>
+  <p>It is total computable: compute the two index selectors as needed, execute the finitely many terminating evaluations of \(g\), and select the indicated index. For a compatible list, <a href="#collision-forces-divergence"></a> and <a href="#collision-escape"></a> give</p>
+  <div class="math-display">\[g(T(e,L))\notin B_g(L),\qquad T(e,L)\in K_z\Longleftrightarrow e\in K_z.\]</div>
+  <figure id="finite-image-escape-figure" class="proof-figure">
+    <div class="figure-image" style="max-width: 420px; margin: 0 auto;">
+      <img src="assets/finite-image-escape.svg" width="420" height="620" alt="From an old query e and a compatible finite list L, build n. If g of n is outside the old image set B, return n. If it collides, e diverges at zero; build m, which halts if its image is in B. A collision for m is impossible, so return m with a fresh image.">
+    </div>
+    <figcaption>Here \(B=B_g(L)\). Both exits have a fresh image and the same halting answer as \(e\) at input zero. The right branch uses the proved divergence of \(e\); it does not promise to copy the whole partial function computed by \(e\).</figcaption>
+  </figure>
+</section>
+
+<section id="same-halting-answer-question" data-formal="creative-iso-only-at-one creative-iso-zero-answer-not-function creative-iso-first-cases creative-iso-second-rule creative-iso-second-escapes" data-kind="question">
+  <h2>Does preserving one halting answer preserve the partial function?</h2>
+  <p>The escape step guarantees \(T(e,L)\in K_z\Longleftrightarrow e\in K_z\) on compatible lists. Does this guarantee \(\varphi_{T(e,L)}(z)\simeq\varphi_e(z)\) on every input? Explain what the collision branch actually proves.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Agreement about definedness at zero is weaker than equality of partial functions. For example, the nowhere-defined function and the partial computable function that returns zero at input one and diverges elsewhere both diverge at zero, but differ at one.</p>
+    <p>The fresh branch of the first selector does copy \(\varphi_e\) on every input. In the collision branch, the proof establishes that \(e\) diverges at zero and that the returned second program diverges everywhere. This preserves exactly the membership answer required for reducing \(K_z\), regardless of any other inputs on which \(e\) might halt.</p>
+  </div></details>
+</section>
+
+<section id="equivalent-query-family" data-formal="creative-iso-query-history creative-iso-query creative-iso-query-history-identity" data-kind="definition">
+  <h2>Iterate the escape step while retaining every previous query</h2>
+  <p>For each \(e\), define its <strong>query history</strong> by</p>
+  <div class="math-display">\[L_{e,0}=[e],\qquad L_{e,k+1}=L_{e,k}\mathbin{+\!+}[T(e,L_{e,k})].\]</div>
+  <p>Here \(+\!+\) denotes list concatenation. Define the <strong>equivalent-query family</strong> by</p>
+  <div class="math-display">\[h(e,0)=e,\qquad h(e,k+1)=T(e,L_{e,k}).\]</div>
+  <p>Consequently \(L_{e,k}=[h(e,0),\ldots,h(e,k)]\). Each step retains the entire old list because freshness must hold against every previous image.</p>
+</section>
+
+<section id="family-invariants" data-formal="creative-iso-query-computable creative-iso-query-invariants" data-kind="lemma">
+  <h2>The family has distinct images and one common halting answer</h2>
+  <p>The function \((e,k)\mapsto h(e,k)\) is total computable. For all \(e,k\),</p>
+  <div class="math-display">\[h(e,k)\in K_z\Longleftrightarrow e\in K_z,\]</div>
+  <p>and, for each fixed \(e\), the values \(g(h(e,k))\) are pairwise distinct as \(k\) varies.</p>
+  <div class="proof">
+    <p>To compute \(h(e,k)\), start with the list \([e]\) and perform the stated finite number of escape steps, using the numerical code of the growing list. The escape step is total computable, so finite recursion computes this history and its last entry. This is the ordinary computable version of <a href="coding-finite-sequences#history-recursion">recursion retaining earlier values</a>; it does not require the computations \(\varphi_{h(e,i)}(0)\) to terminate.</p>
+    <p>Inductively, \(L_{e,k}\) is compatible with \(e\), and its entries have pairwise distinct \(g\)-images. Both assertions hold for the initial singleton. At the next step, the escape-step guarantee puts the new image outside all old images and makes the new query agree with \(e\) about halting at zero. Appending this index preserves compatibility and pairwise distinctness. The assertions therefore hold at every finite stage.</p>
+  </div>
+</section>
+
+<section id="finite-image-avoidance" data-formal="creative-iso-avoidance-position creative-iso-avoid-image creative-iso-avoidance-computable creative-iso-avoidance-spec" data-kind="lemma">
+  <h2>A bounded scan avoids any finite list of forbidden target values</h2>
+  <p>Let \(F\) be any finite list of natural numbers, with repetitions allowed. Define</p>
+  <div class="math-display">\[a(e,F)=\min\{k\le |F|:g(h(e,k))\notin F\},\qquad r(e,F)=g(h(e,a(e,F))).\]</div>
+  <p>The minimum exists. The map \((e,F)\mapsto r(e,F)\) is total computable and satisfies</p>
+  <div class="math-display">\[r(e,F)\notin F,\qquad e\in K_z\Longleftrightarrow r(e,F)\in C.\]</div>
+  <div class="proof">
+    <p>The \(|F|+1\) numbers \(g(h(e,0)),\ldots,g(h(e,|F|))\) are distinct by <a href="#family-invariants"></a>. A list of length \(|F|\) cannot contain all of them. Thus at least one of the bounded candidates is outside \(F\), so the least such position exists.</p>
+    <p>Compute the candidates in order and stop at the first one outside the finite list. There are at most \(|F|+1\) candidates, and every evaluation and comparison terminates. This proves total computability, without asserting primitive recursiveness of computations involving the given \(g\). The chosen image is fresh by its defining test. The family invariant followed by the reduction property gives \(e\in K_z\Longleftrightarrow h(e,a(e,F))\in K_z\Longleftrightarrow r(e,F)\in C\).</p>
+  </div>
+</section>
+
+<section id="injective-map" data-formal="creative-iso-output-history creative-iso-replacement creative-iso-output-history-identity" data-kind="definition">
+  <h2>Choose the next output outside the complete previous output history</h2>
+  <p>Define the <strong>output history</strong> and the <strong>specified injective replacement</strong> \(b\) simultaneously by</p>
+  <div class="math-display">\[F_0=[],\qquad b(e)=r(e,F_e),\qquad F_{e+1}=F_e\mathbin{+\!+}[b(e)].\]</div>
+  <p>Thus \(F_e=[b(0),\ldots,b(e-1)]\). This is an ordinary recursion on the input \(e\). The algorithm computes the earlier outputs first; it does not search for an arbitrary unspecified one-one reduction.</p>
+</section>
+
+<section id="injective-upgrade" data-formal="creative-iso-replacement-computable creative-iso-replacement-spec creative-iso-injective-upgrade" data-kind="theorem">
+  <h2>A many-one reduction of zero-input halting has an injective replacement</h2>
+  <div class="statement-box">
+    <p>For every set \(C\subseteq\mathbb N\) and every total computable \(g\) reducing \(K_z\) to \(C\), the specified map \(b\) is total computable and injective, and</p>
+    <div class="math-display">\[e\in K_z\quad\Longleftrightarrow\quad b(e)\in C.\]</div>
+    <p>In particular, \(K_z\le_m C\) implies \(K_z\le_1 C\).</p>
+  </div>
+  <div class="proof">
+    <p>The map \(r\) is total computable on every input and every finite forbidden list, so finite recursion computes \(F_e\) and then \(b(e)\). The avoidance lemma gives \(b(e)\notin F_e\). If \(i&lt;e\), the definition of the history puts \(b(i)\) in \(F_e\), so \(b(e)\ne b(i)\). This proves injectivity. The same avoidance lemma gives the required membership equivalence for each \(e\).</p>
+    <p>The construction uses a supplied program for \(g\), the two fixed family-program indices \(q_n,q_m\), the established self-reference selector, and finite numerical histories. With these choices fixed, the displayed recurrences specify one ordinary computable map \(b\). No recognizer, decision procedure, or oracle for \(C\) enters its computation.</p>
+  </div>
+</section>
+
+<section id="creative-one-one-completeness" data-formal="creative-iso-zero-to-diagonal creative-iso-diagonal-to-zero creative-iso-halting-recodings creative-iso-reverse-injection creative-iso-reverse-injection-spec creative-iso-oneone-completeness creative-iso-diagonal-oneone" data-kind="theorem">
+  <h2>Creative sets receive injective reductions of every enumerable set</h2>
+  <p>For a c.e. set \(C\), the following are equivalent: \(C\) is creative; every c.e. set \(A\) satisfies \(A\le_1 C\); and \(K\le_1 C\), where \(K=\{e:\varphi_e(e)\downarrow\}\).</p>
+  <div class="proof">
+    <p>Suppose \(C\) is creative. Its existing characterization supplies a total computable reduction \(q:K\to C\). Recall the <a href="padding-and-injective-reductions#injective-halting-recodings">specified injective halting recodings</a>, using the same constant-run map \(c\) established there:</p>
+    <div class="math-display">\[\alpha(e)=c(\langle e,0\rangle):K_z\le_1K,\qquad
+      \beta(e)=c(\langle e,e\rangle):K\le_1K_z.\]</div>
+    <p>Apply <a href="#injective-upgrade"></a> to \(g=q\circ\alpha\), obtaining the specified injective reduction \(b:K_z\to C\). Then \(b\circ\beta\) witnesses \(K\le_1 C\). Every c.e. \(A\) has the <a href="padding-and-injective-reductions#injective-halting-completeness">specified injective reduction to \(K\)</a>; composing it with \(b\circ\beta\) gives \(A\le_1C\).</p>
+    <p>Conversely, receiving every c.e. set injectively includes receiving the c.e. set \(K\). A one-one reduction is also a many-one reduction. Thus \(K\le_1C\), together with the stated c.e. hypothesis, implies creativity by the existing characterization. This completes all implications.</p>
+  </div>
+</section>
+
+<section id="creative-isomorphism" data-formal="creative-iso-permutation creative-iso-inverse-permutation creative-iso-specified-isomorphism creative-iso-isomorphism-equivalence" data-kind="theorem">
+  <h2>Creative sets are exactly the computable permutations of halting</h2>
+  <div class="statement-box">
+    <p>A set \(C\subseteq\mathbb N\) is creative if and only if it is computably isomorphic to \(K\). More explicitly, if \(C\) is creative, the specified finite-matching construction of Myhill gives total computable functions \(H,J\) satisfying</p>
+    <div class="math-display">\[J(H(x))=x,\qquad H(J(y))=y,\qquad
+      x\in C\Longleftrightarrow H(x)\in K.\]</div>
+    <p>Thus \(H\) is a computable permutation taking \(C\) to \(K\), and \(J\) is its computable inverse.</p>
+  </div>
+  <div class="proof">
+    <p>If \(C\) is creative, choose a c.e. index \(a\) with \(W_a=C\). The actual map \(i_a(x)=c(\langle a,x\rangle)\) from <a href="padding-and-injective-reductions#injective-halting-completeness">injective halting completeness</a> reduces \(C\) injectively to \(K\). The preceding proof supplies the reverse injective reduction \(b\circ\beta:K\to C\).</p>
+    <p>Use these two maps, in this order, as the input injections for <a href="myhills-isomorphism-theorem#labelled-bijection">Myhill’s specified alternating finite-matching algorithm</a>, with the membership labels for \(C\) on the left and \(K\) on the right. It computes the permutation \(H\) and the reverse map \(J\). Label preservation gives the displayed membership equivalence, and the <a href="myhills-isomorphism-theorem#inverse-identities">two established inverse identities</a> give the other displayed assertions. In particular, these are computable maps produced from the injections, rather than an appeal to an arbitrary set-theoretic bijection.</p>
+    <p>Conversely, let \(H\) be a computable permutation with \(x\in C\Longleftrightarrow H(x)\in K\). Since \(K\) is c.e., its <a href="computable-reductions#composition-and-pullback">computable preimage</a> \(C\) is c.e. The <a href="myhills-isomorphism-theorem#inverse-search">computable inverse</a> \(J\) reduces \(K\) to \(C\): substitute \(x=J(y)\) in the membership equivalence. Hence \(C\) is c.e. and receives \(K\) many-one, so the creative-set characterization applies.</p>
+  </div>
+</section>
+
+<section id="creative-class" data-formal="creative-iso-compose-isomorphisms creative-iso-creative-class" data-kind="lemma">
+  <h2>Any two creative sets differ by a computable renaming</h2>
+  <p>If \(C,D\subseteq\mathbb N\) are creative, there is a computable permutation taking \(C\) to \(D\), with computable inverse.</p>
+  <div class="proof">
+    <p>Apply the preceding theorem to obtain \(H_C:C\to K\) and \(H_D:D\to K\), together with their total computable inverses \(J_C,J_D\). Here the arrows describe the preserved membership predicates; all four maps have domain \(\mathbb N\). The composition \(P=J_D\circ H_C\) is total computable, and \(Q=J_C\circ H_D\) is its inverse by the two inverse identities. The membership equivalences give \(x\in C\Longleftrightarrow H_C(x)\in K\Longleftrightarrow P(x)\in D\). Thus \(P\) is the required permutation and \(Q\) computes its inverse.</p>
+  </div>
+</section>
+
+<section id="enumerability-question" data-formal="creative-hard-nonenumerable-set creative-hard-parity-maps creative-hard-not-enumerable creative-hard-not-creative creative-iso-parity-injective creative-iso-parity-not-isomorphic" data-kind="question">
+  <h2>Can an injective halting reduction replace the enumerability hypothesis?</h2>
+  <p>Suppose only that \(K\le_1D\). Must \(D\) be creative, or computably isomorphic to \(K\)? Revisit the <a href="productive-and-creative-sets#enumerability-hypothesis">parity example</a></p>
+  <div class="math-display">\[D=\{2n:n\in K\}\cup\{2n+1:n\notin K\}.\]</div>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The total computable map \(n\mapsto2n\) is injective and satisfies \(n\in K\Longleftrightarrow2n\in D\). Thus \(K\le_1D\). Nevertheless \(D\) is not c.e.: its preimage under the total computable map \(n\mapsto2n+1\) is \(\overline K\), which is not c.e. Therefore \(D\) is not creative.</p>
+    <p>It also cannot be computably isomorphic to \(K\), since any such isomorphism would express \(D\) as a computable preimage of the c.e. set \(K\). The injective upgrade proved above makes no claim that its target is enumerable. Enumerability enters when we also need a reduction in the reverse direction to obtain an isomorphism.</p>
+  </div></details>
+</section>

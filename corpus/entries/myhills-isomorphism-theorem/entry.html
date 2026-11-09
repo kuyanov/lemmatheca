@@ -1,0 +1,157 @@
+<section id="computable-isomorphisms" data-formal="myhill-computable-permutation myhill-computable-isomorphism pad-one-one-reducible" data-kind="definition">
+  <h2>A computable permutation renames every input exactly once</h2>
+  <p>A <strong>computable permutation</strong> is a total computable bijection \(h:\mathbb N\to\mathbb N\). Sets \(A,B\subseteq\mathbb N\) are <strong>computably isomorphic</strong> if some computable permutation satisfies</p>
+  <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad h(x)\in B\qquad(x\in\mathbb N).\]</div>
+  <p>A <a href="padding-and-injective-reductions#one-one-reductions">one-one reduction</a> need only be an injection; its range may omit inputs. An isomorphism must also reach every input on the other side. The sets themselves need not be decidable.</p>
+</section>
+
+<section id="inverse-search" data-formal="myhill-inverse-search" data-kind="lemma">
+  <h2>The inverse of a computable permutation is computable</h2>
+  <p>If \(h:\mathbb N\to\mathbb N\) is a computable permutation, its inverse is the total computable function</p>
+  <div class="math-display">\[h^{-1}(y)=\min\{x:h(x)=y\}.\]</div>
+  <div class="proof">
+    <p>On input \(y\), compute \(h(0),h(1),\ldots\) in order until a value equals \(y\), and return its input. Every test terminates because \(h\) is total. Surjectivity ensures that a successful test exists, so <a href="partial-recursive-functions#search-correctness">search over this total computable test</a> terminates. Injectivity makes the returned input unique and gives both inverse identities.</p>
+  </div>
+</section>
+
+<section id="finite-matchings" data-formal="myhill-finite-matching myhill-domain myhill-range myhill-matching-lookups myhill-transpose myhill-transpose-laws myhill-matching-extension myhill-least-unused myhill-least-unused-output myhill-matching-code" data-kind="definition">
+  <h2>Store a finite matching as a list of pairs</h2>
+  <p>A <strong>finite partial matching</strong> \(M\) is a finite list of pairs \((x,y)\in\mathbb N^2\) with no repeated first coordinate and no repeated second coordinate. Write \(|M|\) for its length, \(\operatorname{dom}M\) for its first coordinates, and \(\operatorname{ran}M\) for its second coordinates. If \((x,y)\) occurs, write \(M(x)=y\) and \(M^{-1}(y)=x\). These values are unique on the indicated domain and range.</p>
+  <p>The <strong>transpose</strong> \(M^{\mathsf t}\) swaps the coordinates of every pair, keeping their list order. It is again a matching, and transposing twice returns \(M\). A <strong>matching extension</strong> retains every old pair; the constructions below append one new pair to the list.</p>
+  <p>Put \(a(M)=\min(\mathbb N\setminus\operatorname{dom}M)\), the <strong>least unused input</strong>. This number is at most \(|M|\): a list of length \(|M|\) cannot contain all \(|M|+1\) distinct inputs from zero through \(|M|\). Define the <strong>least unused output</strong> by \(b(M)=a(M^{\mathsf t})\). Finite scans find these numbers and all defined lookups. The existing <a href="coding-finite-sequences#list-code">sequence coding</a> represents the finite lists numerically.</p>
+</section>
+
+<section id="extension-walk" data-formal="myhill-inverse-lookup myhill-extension-walk" data-kind="definition">
+  <h2>Follow an injection through the pairs already chosen</h2>
+  <p>Let \(f:\mathbb N\to\mathbb N\) be an injection and let \(x\notin\operatorname{dom}M\). The <strong>extension walk</strong> starts at \(x_0=x\). At position \(i\), compute \(y_i=f(x_i)\). If \(y_i\notin\operatorname{ran}M\), stop. Otherwise put \(x_{i+1}=M^{-1}(y_i)\) and continue. Only the numerical matching is searched; deciding whether an input belongs to either set is unnecessary.</p>
+  <p>For a total recurrence, let \(q_M(y)\) be the first coordinate of the pair ending at \(y\), with default zero if no such pair exists. Define</p>
+  <div class="math-display">\[x_0=x,\qquad x_{i+1}=q_M(f(x_i)).\]</div>
+  <p>The stopping test is still \(f(x_i)\notin\operatorname{ran}M\). Before it succeeds, the lookup is defined and its default is never used. Values of this recurrence after the first stopping position play no role.</p>
+  <figure id="alternating-chain-figure" class="proof-figure">
+    <div class="figure-image" style="max-width: 420px; margin: 0 auto;">
+      <img src="assets/alternating-chain.svg" width="420" height="540" alt="A zigzag starts at the unused input x zero. Arrows labelled f go to outputs; dashed arrows labelled M inverse return along existing pairs. The last f arrow reaches an unused output y two.">
+    </div>
+    <figcaption>Follow \(f\), then the inverse of the existing matching, until an unused output is reached. Append the pair joining the initial input to that final output; the intermediate pairs remain unchanged.</figcaption>
+  </figure>
+</section>
+
+<section id="walk-escapes" data-formal="myhill-walk-escapes" data-kind="lemma">
+  <h2>A finite matching cannot trap the walk</h2>
+  <p>For a matching \(M\), an injective \(f\), and \(x\notin\operatorname{dom}M\), the extension walk reaches an unused output at some position \(n\le |M|\).</p>
+  <div class="proof">
+    <p>As long as the walk continues, every \(x_j\) with \(j&gt;0\) lies in \(\operatorname{dom}M\), so it differs from \(x_0\). No other repetition is possible either. If \(x_i=x_j\) with \(0&lt;i&lt;j\), applying \(M\) gives \(f(x_{i-1})=f(x_{j-1})\). Injectivity of \(f\) gives \(x_{i-1}=x_{j-1}\). Repeating this argument would give \(x_0=x_{j-i}\), contradicting the first observation.</p>
+    <p>If none of the positions zero through \(|M|\) stopped, the \(|M|+1\) distinct points \(x_1,\ldots,x_{|M|+1}\) would all belong to the domain of a matching with only \(|M|\) pairs. This is impossible. Thus a stopping position exists within the stated finite bound.</p>
+  </div>
+</section>
+
+<section id="forward-extension" data-formal="myhill-forward-extension myhill-walk-escapes" data-kind="definition">
+  <h2>Append the endpoint found by the bounded walk</h2>
+  <p>Under the hypotheses of <a href="#walk-escapes"></a>, let \(n\) be the least position at most \(|M|\) with \(f(x_n)\notin\operatorname{ran}M\). The <strong>forward extension</strong> is the specified list</p>
+  <div class="math-display">\[E_f(M,x)=M\mathbin{+\!+}[(x,f(x_n))],\]</div>
+  <p>where \(+\!+\) means list concatenation. The finite minimum exists by the preceding lemma. The procedure computes the walk for at most \(|M|+1\) positions and uses bounded tests on the finite graph; it does not search an infinite range for an unproved eventual escape.</p>
+</section>
+
+<section id="extension-preserves-matching" data-formal="myhill-extension-matching" data-kind="lemma">
+  <h2>The new pair preserves the whole old matching</h2>
+  <p>For a finite partial matching \(M\), an injection \(f\), and \(x\notin\operatorname{dom}M\), the list \(E_f(M,x)\) is a matching extension of \(M\), has length \(|M|+1\), and contains the new input \(x\). Its range adds exactly one previously unused output.</p>
+  <div class="proof">
+    <p>The appended pair has first coordinate \(x\), which was absent from the old domain. Its second coordinate \(f(x_n)\) was absent from the old range by the stopping condition. Thus it conflicts with no old pair in either coordinate. Every old pair remains, and exactly one pair has been appended, proving all the assertions.</p>
+  </div>
+</section>
+
+<section id="labels-survive" data-formal="myhill-respects-labels myhill-extension-labels" data-kind="lemma">
+  <h2>The walk preserves labels without computing them</h2>
+  <p>Let \(M\) be a finite partial matching, let \(f\) be an injection, and let \(x\notin\operatorname{dom}M\), as in <a href="#forward-extension"></a>. Let \(L\) be any set of labels and let \(\ell_X,\ell_Y:\mathbb N\to L\) be any functions. A matching <strong>respects these labels</strong> when \(\ell_X(u)=\ell_Y(v)\) for every pair \((u,v)\) it contains. Suppose \(M\) respects the labels and</p>
+  <div class="math-display">\[\ell_X(u)=\ell_Y(f(u))\qquad(u\in\mathbb N).\]</div>
+  <p>Then \(E_f(M,x)\) respects the labels too. No computability or numerical coding of \(L\), \(\ell_X\), or \(\ell_Y\) is assumed.</p>
+  <div class="proof">
+    <p>At every continuing step, \(M(x_{i+1})=f(x_i)\). The old matching invariant and the hypothesis on \(f\) therefore give</p>
+    <div class="math-display">\[\ell_X(x_{i+1})=\ell_Y(f(x_i))=\ell_X(x_i).\]</div>
+    <p>Induction along the finite walk gives \(\ell_X(x)=\ell_X(x_n)=\ell_Y(f(x_n))\). This is precisely the required equality for the appended pair. The old pairs already satisfy the invariant, so the extended matching respects all labels.</p>
+  </div>
+</section>
+
+<section id="alternating-stages" data-formal="myhill-left-completion myhill-right-completion myhill-alternating-stages" data-kind="definition">
+  <h2>Alternate the least unused input and output</h2>
+  <p>Fix injections \(f,g:\mathbb N\to\mathbb N\), directed from the left side to the right side and from the right side to the left side respectively. Define the <strong>left completion</strong> and <strong>right completion</strong> by</p>
+  <div class="math-display">\[L_f(M)=E_f(M,a(M)),\qquad R_g(M)=\bigl(E_g(M^{\mathsf t},b(M))\bigr)^{\mathsf t}.\]</div>
+  <p>The right completion is the identical forward-extension algorithm with the two sides swapped. It appends a pair whose second coordinate was the least unused output of \(M\). The <strong>alternating matching sequence</strong> is</p>
+  <div class="math-display">\[M_0=[],\qquad M_{s+1}=\begin{cases}L_f(M_s),&amp;s\text{ even},\\R_g(M_s),&amp;s\text{ odd}.\end{cases}\]</div>
+  <p>The sequence is determined by \(f,g\). It contains no membership tests for the sets eventually related, and it does not inspect any labels.</p>
+</section>
+
+<section id="stage-coverage" data-formal="myhill-stage-coverage" data-kind="theorem">
+  <h2>Each round covers one more input and output</h2>
+  <p>Every \(M_s\) is a matching of length \(s\), and every later matching retains all its pairs. Moreover, for every \(n\),</p>
+  <div class="math-display">\[\{0,\ldots,n-1\}\subseteq\operatorname{dom}M_{2n}\cap\operatorname{ran}M_{2n}.\]</div>
+  <div class="proof">
+    <p>The empty list is a matching. Applying <a href="#extension-preserves-matching"></a> at an even stage adds exactly one pair. At an odd stage apply that lemma to the transposed matching, then transpose back. This proves by induction that every stage is a matching, its length is its stage number, and each step preserves every old pair. Repeated preservation proves the assertion for arbitrary later stages.</p>
+    <p>For the displayed bound, use induction on \(n\). The case zero is empty. Assume that \(M_{2n}\) covers every input and output below \(n\). If input \(n\) is not already matched, it is the least unused input, so the even step puts it into the domain of \(M_{2n+1}\). If it was already matched, it remains. Thus that domain contains every input through \(n\).</p>
+    <p>The odd step preserves this domain and addresses the least unused output. If output \(n\) is still absent, all smaller outputs are present, so it is selected at this step. Hence \(M_{2n+2}\) covers every input and output through \(n\), completing the induction.</p>
+  </div>
+</section>
+
+<section id="reading-the-permutation" data-formal="myhill-forward-map myhill-reverse-map myhill-finite-stage-readings myhill-stage-coverage" data-kind="definition">
+  <h2>Read each direction from a specified finite stage</h2>
+  <p>The <strong>forward map</strong> and <strong>reverse map</strong> produced by \(f,g\) are</p>
+  <div class="math-display">\[h(x)=M_{2(x+1)}(x),\qquad k(y)=M_{2(y+1)}^{-1}(y).\]</div>
+  <p>Both indicated lookups are defined by <a href="#stage-coverage"></a>. They read a fixed stage determined by their input, rather than an unspecified limiting matching. Later stages retain the same pair, so these values also agree with the union of the finite graphs.</p>
+</section>
+
+<section id="inverse-identities" data-formal="myhill-inverse-identities" data-kind="theorem">
+  <h2>The two finite-stage readings are numerical inverses</h2>
+  <p>The specified maps satisfy \(k(h(x))=x\) and \(h(k(y))=y\) for all natural numbers \(x,y\). In particular, \(h\) is a bijection and \(k=h^{-1}\).</p>
+  <div class="proof">
+    <p>Put \(y=h(x)\). The pair \((x,y)\) occurs in \(M_{2(x+1)}\). The pair \((k(y),y)\) occurs in \(M_{2(y+1)}\). Take a stage at least both these stage numbers. It contains both pairs and has no repeated second coordinate. Therefore \(k(y)=x\), proving \(k(h(x))=x\).</p>
+    <p>In the other direction, the pairs \((k(y),y)\) and \((k(y),h(k(y)))\) both occur in a common later matching. Uniqueness of the first coordinate gives \(h(k(y))=y\). These identities imply injectivity and surjectivity of \(h\), and identify the reverse map with its inverse.</p>
+  </div>
+</section>
+
+<section id="effective-construction" data-formal="myhill-construction-computable" data-kind="theorem">
+  <h2>Total computable injections give two actual computable maps</h2>
+  <p>If \(f,g\) are total computable injections, the specified stage sequence and both maps \(h,k\) are computable. The computations use only programs for \(f\) and \(g\), ordinary finite-list operations, and finite iteration.</p>
+  <div class="proof">
+    <p>For a coded finite matching, membership in its domain or range and coordinate lookup are finite scans. The least unused coordinate can be found among zero through the list length. An extension computes at most \(|M|+1\) walk positions and scans that same finite range for its first stopping position. Each call to \(f\) or \(g\) terminates. The escape lemma guarantees that a stopping position is found on every matching reached by the construction.</p>
+    <p>Starting with the empty list, a prescribed number of these finite operations computes \(M_s\). The <a href="partial-recursive-functions#partial-recursive-functions">partial-recursion closure rules</a> build the required iterations from the given total recursive functions and finite-list operations, and the <a href="partial-recursive-functions#recursion-domain">finite-chain criterion</a> proves that each iteration is total. The stage bound \(2(x+1)\) or \(2(y+1)\) is computable. Computing that many stages and performing the final finite lookup therefore gives total computable \(h\) and \(k\), with the values defined in <a href="#reading-the-permutation"></a>. This argument provides algorithms for those maps themselves.</p>
+  </div>
+</section>
+
+<section id="labelled-bijection" data-formal="myhill-labelled-bijection myhill-stage-labels" data-kind="theorem">
+  <h2>The same computable bijection preserves arbitrary labels</h2>
+  <div class="statement-box"><p>Let \(f,g\) be total computable injections. Suppose arbitrary label maps \(\ell_X,\ell_Y:\mathbb N\to L\) satisfy</p>
+    <div class="math-display">\[\ell_X(x)=\ell_Y(f(x)),\qquad \ell_Y(y)=\ell_X(g(y))\qquad(x,y\in\mathbb N).\]</div>
+    <p>Then the specified \(h,k\) are total computable numerical inverses and satisfy</p>
+    <div class="math-display">\[\ell_X(x)=\ell_Y(h(x))\qquad(x\in\mathbb N).\]</div>
+  </div>
+  <div class="proof">
+    <p>The empty matching respects all labels. At an even step apply <a href="#labels-survive"></a> using the first displayed hypothesis. At an odd step swap the two label maps and use the second hypothesis on the transposed matching. Induction shows that every \(M_s\) respects the labels.</p>
+    <p>The pair \((x,h(x))\) belongs to its specified finite stage, so it has equal labels. Computability and both inverse identities were proved for this very construction. No step asks for a label value or tests equality in \(L\); these equalities are invariants of the proof, rather than operations of the algorithm.</p>
+  </div>
+</section>
+
+<section id="myhill-theorem" data-formal="myhill-isomorphism-theorem" data-kind="theorem">
+  <h2>Mutual one-one reducibility is exactly computable isomorphism</h2>
+  <div class="statement-box"><p>For all sets \(A,B\subseteq\mathbb N\),</p>
+    <div class="math-display">\[A\equiv_1B\quad\Longleftrightarrow\quad A\text{ and }B\text{ are computably isomorphic}.\]</div>
+  </div>
+  <div class="proof">
+    <p>Suppose \(f\) witnesses \(A\le_1B\) and \(g\) witnesses \(B\le_1A\). Use the label maps \(\ell_X(x)=\chi_A(x)\) and \(\ell_Y(y)=\chi_B(y)\). Membership preservation gives both label hypotheses in <a href="#labelled-bijection"></a>, even when neither characteristic function is computable. The resulting computable permutation satisfies \(x\in A\Longleftrightarrow h(x)\in B\).</p>
+    <p>Conversely, a computable isomorphism \(h\) is itself an injective reduction from \(A\) to \(B\). Its inverse is computable by <a href="#inverse-search"></a>, is injective, and satisfies \(y\in B\Longleftrightarrow h^{-1}(y)\in A\). Thus both one-one reductions exist. This proves Myhill’s theorem by an effective construction, with no decidability assumption on the sets.</p>
+  </div>
+</section>
+
+<section id="does-isomorphism-decide-question" data-formal="myhill-halting-identity-isomorphism univ-diagonal-halting-undecidable" data-kind="question">
+  <h2>Does a computable renaming decide either membership problem?</h2>
+  <p>If \(A\) and \(B\) are computably isomorphic, must they be decidable? Give a counterexample using a set already known to be undecidable.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Take both sets to be the <a href="universal-computation#halting-sets">diagonal halting set</a> \(K\). The identity permutation is computable and preserves membership in \(K\), so it is a computable isomorphism of \(K\) with itself. But \(K\) is undecidable. Computing a new name for an input does not compute its membership answer.</p>
+  </div></details>
+</section>
+
+<section id="many-one-question" data-formal="pad-collapse-map-contract pad-double-map-contract myhill-two-point-not-isomorphic" data-kind="question">
+  <h2>Would mutual many-one reductions be enough?</h2>
+  <p>Can \(A\equiv_1B\) be replaced by \(A\equiv_mB\) in Myhill’s theorem?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. The sets \(A=\{0,1\}\), \(B=\{0\}\) are <a href="padding-and-injective-reductions#finite-reduction-question">many-one equivalent</a>. A bijection carrying \(A\) to \(B\) would send both zero and one to the sole member zero of \(B\), contradicting injectivity. The finite chain argument specifically needs injectivity of the supplied reductions when it rules out repeated walk vertices.</p>
+  </div></details>
+</section>

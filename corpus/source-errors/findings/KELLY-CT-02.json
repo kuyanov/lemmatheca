@@ -1,0 +1,17 @@
+{
+  "id": "KELLY-CT-02",
+  "source_ids": [
+    "kelly-cubbyhole-mathematics"
+  ],
+  "severity": "serious",
+  "title": "The REC marker sketch needs fair discoveries and a decoder that handles simultaneous triggers.",
+  "details": "Kelly, 13. Cubbyhole Mathematics, Proposition4, stage s+1 instructions and the paragraph deciding K from terminal pointers, checked2026-11-08. The stage tests only labels y<=s and asks whether K(y) halts in exactly s steps. A computation that halts in k<y steps is never detected: stage k does not inspect its label, and no later exact-time test succeeds. The row tests with y,w<=s have the same issue for short computations first inspected later. Use monotone bounded c.e. approximations with input/stage bounds and process each newly discovered event once, or retain pending/processed flags, so every genuine discovery is eventually handled. Also, the proposed decoder tests whether the pointer moved for a K-event when nothing new appeared in the corresponding row. This loses a halting event that occurs simultaneously with a row discovery; absence of an exclusive K-trigger does not imply nonhalting. A repaired decoder, when all rows are finite, uses the final output set S as oracle to search for a stage s where every current complement marker of rank j<=y is outside S. Such a stage exists after that finite prefix stabilizes. Any later trigger at one of these labels would enumerate its currently certified absent marker, a contradiction; hence no later K(y)-discovery is possible. Replay the correctly scheduled K(y) observation through s, without requiring that its trigger was exclusive. The least-infinite-row/cofinite case and all-finite-row/halting-complete case then give the intended classification. This is a checked mathematical repair for a future handoff, not a completed corpus stage algorithm. No current entry consumes the sketch. Current adoption2026-11-09: the REC entry gives the actual fair tagged finite schedule and a complete whole-prefix certificate/decoder proof. Simultaneous row and halting reasons remain distinct, and all later low-label events are ruled out by the first-event argument. The previous planning-only assessment is retained as historical evidence.",
+  "entry_refs": [
+    "indices-of-computable-enumerable-sets#tagged-discoveries",
+    "indices-of-computable-enumerable-sets#tagged-event-fairness",
+    "indices-of-computable-enumerable-sets#two-triggers-question",
+    "indices-of-computable-enumerable-sets#certificate-permanence",
+    "indices-of-computable-enumerable-sets#decoder-correctness"
+  ],
+  "related_findings": []
+}

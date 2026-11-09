@@ -32,7 +32,7 @@
   </div>
 </section>
 
-<section id="inseparability" data-formal="inseparable-diagonal-pair univ-decidable-characteristic-equivalence univ-universal-complete" data-kind="theorem">
+<section id="inseparability" data-formal="inseparable-diagonal-pair univ-decidable-characteristic-equivalence univ-universal-complete ctree-kleene-tree" data-kind="theorem">
   <h2>No computable decision can put the two sets on opposite sides</h2>
   <div class="statement-box">
     <p>The sets \(A=\{e:\varphi_e(e)\downarrow=0\}\) and \(B=\{e:\varphi_e(e)\downarrow=1\}\) are computably inseparable.</p>
@@ -42,6 +42,7 @@
     <p>If \(j\in C\), then \(\varphi_j(j)=1\), so \(j\in B\). But \(C\cap B=\varnothing\), contradicting \(j\in C\). If \(j\notin C\), then \(\varphi_j(j)=0\), so \(j\in A\). But \(A\subseteq C\), contradicting \(j\notin C\).</p>
     <p>The orientation matters: \(A\) records output zero, even though its members must receive the separator's answer one. Likewise, \(B\) records output one but its members must receive answer zero. The program deciding a proposed separator supplies its own incorrectly classified input. No test for divergence is used, since this particular program is total.</p>
   </div>
+  <p>The same pair yields a computational obstruction to choosing infinite branches. Its <a href="computable-trees-and-paths#separator-tree">finite-stage separator tree</a> has a decidable membership test and nodes at every length, but <a href="computable-trees-and-paths#kleene-tree">no computable path</a>: such a path would decide a separator of these two sets.</p>
 </section>
 
 <section id="individual-obstructions" data-formal="inseparable-components-undecidable inseparable-components-infinite inseparable-component-complements-not-enumerable univ-two-sided-recognition" data-kind="lemma">
@@ -70,7 +71,7 @@
   <p>A <strong>total computable extension</strong> of a partial function \(f\) is a total recursive function \(g:\mathbb N\to\mathbb N\) such that \(g(x)=f(x)\) whenever \(f(x)\) is defined. No condition is imposed at inputs where \(f\) is undefined. In particular, an extension of the displayed function need not be binary-valued outside its domain.</p>
 </section>
 
-<section id="no-total-extension" data-formal="separator-zero-fiber separator-extension-gives-separator inseparable-no-total-extension" data-kind="theorem">
+<section id="no-total-extension" data-formal="separator-zero-fiber separator-extension-gives-separator inseparable-no-total-extension dnc-separator-equivalence dnc-binary-example dnc-binary-not-computable" data-kind="theorem">
   <h2>Some partial computations cannot be completed computably</h2>
   <div class="statement-box">
     <p>The partial recursive function \(f\) just defined has no total computable extension.</p>
@@ -79,6 +80,7 @@
     <p>Suppose a total recursive \(g\) extended \(f\). Put \(C=\{x:g(x)=0\}\). This set is decidable: compute \(g(x)\), then test equality with zero. For \(x\in A\), extension gives \(g(x)=f(x)=0\), so \(x\in C\). For \(x\in B\), it gives \(g(x)=1\), so \(x\notin C\). Thus \(C\) would be a decidable separator, contradicting <a href="#inseparability"></a>.</p>
     <p>The equality test works even if \(g\) takes other natural-number values away from \(A\cup B\). The obstruction is preserving the already specified values, rather than making arbitrary choices at the remaining inputs. This strengthens the <a href="universal-computation#partial-diagonal-question">partial diagonal example</a> by ruling out every total computable completion of one fixed partial function.</p>
   </div>
+  <p>The same separator condition also describes <a href="effectively-closed-classes-and-dnc#dnc-separators">binary diagonal avoidance</a>, whose values are one on \(A\) and zero on \(B\). These bits are reversed from the partial diagonal function here. <a href="effectively-closed-classes-and-dnc#binary-dnc-exists">Such total binary functions exist</a>, but none is computable.</p>
 </section>
 
 <section id="binary-normalization" data-formal="separator-binary-normalization separator-normalization-computable separator-normalization-preserves-extension separator-binary-extension-equivalence separator-characteristic-gives-extension separator-extension-gives-separator" data-kind="question">

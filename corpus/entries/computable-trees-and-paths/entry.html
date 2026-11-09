@@ -1,0 +1,168 @@
+<section id="binary-trees" data-formal="incomp-word incomp-binary-word incomp-word-recovery incomp-prefix incomp-prefix-native incomp-append-bit ctree-valid-code ctree-valid-code-primitive ctree-valid-code-interpretation ctree-binary-tree ctree-level ctree-native-tree-correspondence univ-decidable-predicate" data-kind="definition">
+  <h2>A tree decides which finite binary words are allowed</h2>
+  <p>Use the existing <a href="incomparable-turing-degrees#binary-prefixes">binary words and prefix relation</a>. A word \(\sigma\) is a finite list of zeros and ones, with length \(|\sigma|\); \(\sigma\preceq\tau\) means that \(\sigma\) is an initial segment of \(\tau\). Write \(\sigma b\) for appending the bit \(b\). The <a href="coding-finite-sequences#list-code">numerical list code</a> \(u_\sigma\) records the word, and binary validity, length, prefix comparison and append are computable operations.</p>
+  <p>A <strong>binary tree</strong> is a collection \(T\) of binary words closed under taking prefixes. Its <strong>level \(n\)</strong> is \(T_n=\{\sigma\in T:|\sigma|=n\}\). A <strong>computable binary tree</strong> has a total computable test for membership of a numerical word code in \(T\), rejecting codes that do not describe binary words. Neither nonemptiness nor the existence of extensions of every node is part of this definition.</p>
+</section>
+
+<section id="paths" data-formal="ctree-path ctree-prefix-code-valid post-prefix-code post-prefix-agreement univ-decidable-characteristic-equivalence" data-kind="definition">
+  <h2>A path makes compatible choices at every length</h2>
+  <p>Record an infinite binary sequence by its set \(X\subseteq\mathbb N\) of positions carrying one. Its prefix \(X\mathbin{\upharpoonright}n\) is the word \([\chi_X(0),\ldots,\chi_X(n-1)]\). A <strong>path through \(T\)</strong> is such an \(X\) with every prefix in \(T\). Write</p>
+  <div class="math-display">\[[T]=\{X\subseteq\mathbb N:\forall n\;(X\mathbin{\upharpoonright}n\in T)\}.\]</div>
+  <p>A <strong>computable path</strong> has a total computable bit function \(\chi_X\), equivalently a decidable set \(X\). A path computable from an oracle \(A\) has \(X\le_T A\). This is the same sequence-and-branch correspondence used in the ordinary <a href="infinite-trees#sequence-trees">binary function tree</a>.</p>
+</section>
+
+<section id="branch-existence" data-formal="ctree-binary-level ctree-binary-level-spec ctree-binary-level-primitive ctree-branch-existence" data-kind="lemma">
+  <h2>Nodes at every length guarantee an infinite path</h2>
+  <p>For a binary tree \(T\), the following are equivalent: \(T_n\ne\varnothing\) for every \(n\), and \([T]\ne\varnothing\).</p>
+  <div class="proof">
+    <p>A path supplies its own prefix at each length. Conversely, level \(n\) contains at most the \(2^n\) binary words of that length. Nodes at every length make the prefix tree have height \(\omega\) with finite levels. The ordinary <a href="infinite-trees#konigs-lemma">König lemma</a> therefore supplies a branch meeting every level; its compatible words determine the required set of one-positions. This existence argument supplies no algorithm deciding which child has arbitrarily long extensions.</p>
+  </div>
+</section>
+
+<section id="separator-tree" data-formal="ctree-separator-tree effective-stage-finite-stage effective-stage-test effective-stage-monotone" data-kind="definition">
+  <h2>Finite enumerations impose finite bit constraints</h2>
+  <p>Fix disjoint c.e. sets \(A=W_a\) and \(B=W_b\), with their <a href="effective-enumerations#uniform-finite-approximation">uniform increasing finite stages</a> \(A_s=W_{a,s}\) and \(B_s=W_{b,s}\). A binary word \(\sigma\) belongs to their <strong>separator tree</strong> \(T_{a,b}\) exactly when, for every \(q&lt;|\sigma|\), both implications hold:</p>
+  <div class="math-display">\[q\in A_{|\sigma|}\Rightarrow\sigma(q)=1,\qquad q\in B_{|\sigma|}\Rightarrow\sigma(q)=0.\]</div>
+  <p>Every test for a word of length \(n\) uses stage \(n\). The bit convention agrees with a <a href="computably-inseparable-sets#separators">separator</a>: a one includes a member of \(A\), and a zero excludes a member of \(B\). Positions not yet constrained by either stage allow either bit.</p>
+  <figure id="separator-pruning-figure" class="proof-figure">
+    <div class="figure-image" style="max-width: 420px; margin: 0 auto;"><img src="assets/separator-pruning.svg" width="420" height="405" alt="A binary tree through length three. Both first bits and all length-two words remain allowed. At length three, a new constraint puts position zero into A, so the four candidates beginning with zero are excluded, while the four beginning with one remain tree nodes." /></div>
+    <figcaption>Suppose the only constraint through stage three is that zero first appears in \(A_3\). Length-three words must now begin with one. The shorter words beginning with zero remain nodes of the tree, although they have no sufficiently long extensions.</figcaption>
+  </figure>
+</section>
+
+<section id="separator-tree-computable" data-formal="ctree-separator-tree-primitive ctree-separator-tree-closed" data-kind="lemma">
+  <h2>The separator tree is computable and closed under prefixes</h2>
+  <p>The specified \(T_{a,b}\) is a computable binary tree.</p>
+  <div class="proof">
+    <p>Decode the candidate word, check that each entry is zero or one, and put \(n=|\sigma|\). For each of its finitely many positions, the two finite-stage membership tests terminate and decide the displayed implications. The <a href="effective-enumerations#uniform-finite-approximation">joint primitive recursiveness of the stage tests</a> and finite word operations justify this finite algorithm.</p>
+    <p>If \(\rho\preceq\sigma\in T_{a,b}\), put \(m=|\rho|\le n=|\sigma|\). A constraint in \(A_m\) or \(B_m\) also holds at stage \(n\), by stage monotonicity. At positions below \(m\), the words have the same bits. Thus every constraint tested for \(\rho\) is satisfied. Its entries are binary as well, proving prefix closure.</p>
+  </div>
+</section>
+
+<section id="separator-tree-levels" data-formal="ctree-level-witness ctree-level-witness-primitive ctree-level-witness-spec ctree-separator-levels" data-kind="lemma">
+  <h2>There is an effectively chosen node at every length</h2>
+  <p>For each \(n\), define the length-\(n\) word \(\eta_n\) by \(\eta_n(q)=1\) when \(q\in A_n\), and \(\eta_n(q)=0\) otherwise. Then \(\eta_n\in T_{a,b}\), and the numerical code of \(\eta_n\) is computable from \(n\).</p>
+  <div class="proof">
+    <p>The rule assigns one bit to each of the finitely many positions. It meets every \(A_n\)-constraint by definition. Since \(A_n\subseteq A\), \(B_n\subseteq B\), and \(A\cap B=\varnothing\), a member of \(B_n\) is absent from \(A_n\) and receives zero. Thus \(\eta_n\) is a tree node. A bounded loop using the stage test computes all its bits and its list code.</p>
+    <p>In particular every level is nonempty, so <a href="#branch-existence"></a> gives at least one path. The computable list of level witnesses has not been asserted to be a compatible sequence of words.</p>
+  </div>
+</section>
+
+<section id="paths-are-separators" data-formal="ctree-paths-separators" data-kind="theorem">
+  <h2>The paths are exactly the separators of the two sets</h2>
+  <p>For every \(X\subseteq\mathbb N\),</p>
+  <div class="math-display">\[X\in[T_{a,b}]\quad\Longleftrightarrow\quad A\subseteq X\ \text{ and }\ X\cap B=\varnothing.\]</div>
+  <div class="proof">
+    <p>Suppose \(X\) is a path and \(q\in A\). Some stage \(s\) contains \(q\). Choose \(n\ge s\) with \(q&lt;n\). The prefix \(X\mathbin{\upharpoonright}n\) satisfies the stage-\(n\) constraint, so \(\chi_X(q)=1\) and \(q\in X\). The same argument for \(q\in B\) forces \(\chi_X(q)=0\), giving \(X\cap B=\varnothing\).</p>
+    <p>Conversely, a separator's characteristic bits satisfy every constraint coming from \(A_n\subseteq A\) and \(B_n\subseteq B\). Each of its prefixes is therefore in \(T_{a,b}\). The equality concerns all paths, without a computability assumption on the separator.</p>
+  </div>
+</section>
+
+<section id="kleene-tree" data-formal="ctree-diagonal-a-index ctree-diagonal-b-index ctree-diagonal-indices ctree-kleene-tree-set ctree-kleene-tree" data-kind="theorem">
+  <h2>A computable binary tree can have no computable path</h2>
+  <div class="statement-box"><p>There is a computable binary tree with a node at every length and at least one infinite path, but with no computable path.</p></div>
+  <div class="proof">
+    <p>Take the <a href="computably-inseparable-sets#inseparability">established disjoint inseparable c.e. pair</a> and form the specified separator tree. The preceding lemmas prove computability, prefix closure and nodes at every length, hence existence of a path. A computable path would be a decidable separator by <a href="#paths-are-separators"></a>, contradicting inseparability.</p>
+    <p>This is a binary version of the Kleene-tree phenomenon. Deciding any one finite word is a terminating calculation; choosing an infinite compatible sequence can still require a noncomputable set.</p>
+  </div>
+</section>
+
+<section id="level-witnesses-question" data-formal="ctree-witness-incompatibility ctree-kleene-tree" data-kind="question">
+  <h2>Why not join the computable level witnesses?</h2>
+  <p>The code of \(\eta_n\) is computable from \(n\), and \(|\eta_n|=n\). Why does this not already construct a computable path through the separator tree?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The words need not extend one another. If a position \(q\) first enters \(A\) at a stage \(s&gt;q+1\), then \(\eta_{q+1}(q)=0\), whereas \(\eta_s(q)=1\). Both finite words pass their own length-stage tests. Their incompatible bits cannot be joined into one path. In particular the tree from the preceding theorem has computable level witnesses and still has no computable path.</p>
+  </div></details>
+</section>
+
+<section id="finite-cones" data-formal="ctree-empty-extension ctree-extendible ctree-empty-extension-spec ctree-empty-test-computable" data-kind="definition">
+  <h2>A finite level can certify that a subtree dies</h2>
+  <p>Fix a computable binary tree \(T\) and one of its deciders. For a binary word \(\sigma\) and \(m\in\mathbb N\), define the <strong>empty-extension test</strong></p>
+  <div class="math-display">\[E_T(\sigma,m)\quad\Longleftrightarrow\quad\{\tau\in T_{|\sigma|+m}:\sigma\preceq\tau\}=\varnothing.\]</div>
+  <p>This is a total computable test: list the finitely many binary words of the indicated length, compare prefixes, and run the fixed decider. The word \(\sigma\) is <strong>extendible</strong> if \(\neg E_T(\sigma,m)\) for every \(m\). Its cone <strong>dies</strong> if some \(m\) passes the empty-extension test. The test at \(m=0\) detects a word outside \(T\).</p>
+</section>
+
+<section id="dead-cone-query" data-formal="ctree-dead-search ctree-dead-search-recursive ctree-dead-index ctree-dead-code-eval ctree-dead-search-domain ctree-dead-query ctree-dead-query-primitive ctree-dead-query-correct ctree-empty-persistence" data-kind="lemma">
+  <h2>One halting query decides whether a fixed cone dies</h2>
+  <p>There is a total computable numerical map \(\delta_T\), fixed once the decider for \(T\) has been chosen, such that for every binary word \(\sigma\),</p>
+  <div class="math-display">\[\delta_T(u_\sigma)\in K\quad\Longleftrightarrow\quad\exists m\;E_T(\sigma,m),\]</div>
+  <p>where \(K=\{e:\varphi_e(e)\downarrow\}\) is ordinary diagonal halting.</p>
+  <div class="proof">
+    <p>On a word code, first check binary validity, and otherwise remain undefined. For a binary word, search \(m=0,1,\ldots\) for a successful empty-extension test and halt with output zero when one is found. This is a partial recursive procedure whose domain is exactly the codes of dying binary cones. Fix one index \(a_T\) for it, before any word varies.</p>
+    <p>The established <a href="padding-and-injective-reductions#injective-halting-completeness">constant-run translation into diagonal halting</a> gives the particular map \(\delta_T(u)=c(\langle a_T,u\rangle)\). Its correctness is the displayed equivalence; the map is even primitive recursive for this fixed \(a_T\). Constructing the index does not execute the cone search.</p>
+    <p>Also, if a cone has an empty extension level, every deeper level is empty: any longer node would have a prefix at the earlier length. Thus failure to have arbitrarily long extensions has a finite certificate.</p>
+  </div>
+</section>
+
+<section id="one-child-survives" data-formal="ctree-child-survives" data-kind="lemma">
+  <h2>An extendible node has an extendible child</h2>
+  <p>If \(\sigma\) is extendible, at least one of \(\sigma0\) and \(\sigma1\) is extendible.</p>
+  <div class="proof">
+    <p>Otherwise choose empty extension levels for both children. Increase their lengths to one common level, using persistence of emptiness. Every word extending \(\sigma\) at that level must extend one of its two children, so no such word is in \(T\). This contradicts extendibility of \(\sigma\). The finiteness of the two choices is essential to this common-level argument.</p>
+  </div>
+</section>
+
+<section id="halting-path" data-formal="ctree-selected-word ctree-selected-bit ctree-selected-path" data-kind="definition">
+  <h2>Use the halting oracle to choose a surviving child</h2>
+  <p>Suppose \(T\) has a node at every length. Define the <strong>halting-selected words</strong> and their bits by</p>
+  <div class="math-display">\[\sigma_0=[],\qquad \sigma_{n+1}=\sigma_n b_n,\]</div>
+  <div class="math-display">\[b_n=\begin{cases}0,&amp;\delta_T(u_{\sigma_n0})\notin K,\\1,&amp;\delta_T(u_{\sigma_n0})\in K.\end{cases}\]</div>
+  <p>The <strong>selected path set</strong> is \(X_T=\{n:b_n=1\}\). These recurrences specify the choices using the fixed map \(\delta_T\). A step asks whether the left child's cone dies; it chooses the right child precisely when that answer is yes.</p>
+</section>
+
+<section id="halting-oracle-path" data-formal="ctree-path-code ctree-selected-words-correct ctree-path-code-eval ctree-path-code-reduces ctree-halting-oracle-path" data-kind="theorem">
+  <h2>Some path is computable from the ordinary halting oracle</h2>
+  <div class="statement-box"><p>For every computable binary tree \(T\) with nodes at every length, the specified \(X_T\) is a path and \(X_T\le_T K\).</p></div>
+  <div class="proof">
+    <p>The empty word is extendible because every level is nonempty. Suppose \(\sigma_n\) is extendible. If the query says that its left cone does not die, the chosen child \(\sigma_n0\) is extendible by definition. Otherwise the left cone dies, and <a href="#one-child-survives"></a> makes the right child extendible. Induction gives an extendible word of length \(n\) at every stage. The words extend one another, so their bit set has exactly these prefixes and belongs to \([T]\).</p>
+    <p>To decide membership of \(n\) in \(X_T\), an oracle program starts with the empty word and performs the first \(n+1\) stated steps. Each step computes one ordinary index, asks the \(K\)-oracle one membership question, and appends a bit. All those finite operations terminate. The final bit is \(b_n=\chi_{X_T}(n)\), giving a total \(K\)-oracle decision procedure for this very path. The decider for \(T\) and its query compiler were fixed before \(n\) varied.</p>
+  </div>
+</section>
+
+<section id="all-paths-question" data-formal="ctree-full-tree ctree-full-tree-properties jump-jump-strict" data-kind="question">
+  <h2>Does the same bound hold for every path?</h2>
+  <p>Must every path through a computable binary tree be computable from \(K\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. The full binary tree \(2^{&lt;\omega}\) is computable and every set of natural numbers gives a path through it. In particular \(J(K)\), the jump of the halting oracle, is a path but is not Turing reducible to \(K\), by <a href="turing-jump#jump-strictness">jump strictness</a>. The preceding theorem selects one path with a bound; it puts no bound on all other paths of the same tree.</p>
+  </div></details>
+</section>
+
+<section id="surviving-prefixes" data-formal="ctree-take-code ctree-take-code-primitive ctree-survivors ctree-survivors-spec ctree-survivors-computable ctree-survivor-path-prefix ctree-survivors-decreasing" data-kind="definition">
+  <h2>List the short prefixes still visible at a deeper level</h2>
+  <p>For \(m\ge n+1\), let the <strong>surviving prefixes</strong> be the finite set</p>
+  <div class="math-display">\[V_T(n,m)=\{\tau\mathbin{\upharpoonright}(n+1):\tau\in T_m\}.\]</div>
+  <p>Compute it by listing level \(m\), restricting its words, and removing repetitions. Several longer words with the same prefix count as one candidate. If \(X\) is a path, its prefix \(X\mathbin{\upharpoonright}(n+1)\) is in this set for every such \(m\). Prefix closure also makes the sets decrease as \(m\) increases.</p>
+</section>
+
+<section id="unique-survivor" data-formal="ctree-unique-survivor" data-kind="lemma">
+  <h2>A unique path eventually leaves one candidate at each fixed length</h2>
+  <p>If \([T]=\{X\}\), then for every \(n\) some \(m\ge n+1\) has</p>
+  <div class="math-display">\[V_T(n,m)=\{X\mathbin{\upharpoonright}(n+1)\}.\]</div>
+  <div class="proof">
+    <p>Fix a different word \(\rho\) of length \(n+1\). If it had extensions in \(T\) at every longer length, the binary tree of tails extending \(\rho\) would have nodes at every length. König's lemma would give a path through that cone. Combining its tail with \(\rho\) gives a path of \(T\) different from \(X\), a contradiction. Thus some finite level has no extension of \(\rho\).</p>
+    <p>There are only finitely many competing words of this length. Take a common deeper level beyond their empty levels; persistence of emptiness excludes every competitor there. The genuine path prefix still occurs. Hence precisely that one candidate survives. This proof establishes existence of a successful search level, without giving an ordinary computable bound on when it first occurs.</p>
+  </div>
+</section>
+
+<section id="unique-path-search" data-formal="ctree-unique-search ctree-unique-search-recursive" data-kind="definition">
+  <h2>Search for one survivor before returning the requested bit</h2>
+  <p>The <strong>unique-path bit search</strong> \(U_T(n)\) tests \(m=n+1,n+2,\ldots\) in order until \(V_T(n,m)\) has exactly one member. It then returns the bit at position \(n\) of that sole word. Each individual test and the final bit lookup is a terminating finite calculation. If no test succeeds, the search remains undefined.</p>
+  <p>The procedure uses the fixed decider for \(T\). It neither tests whether the tree has a unique path nor uses a decision about infinite extendibility.</p>
+</section>
+
+<section id="unique-path-computable" data-formal="ctree-unique-search-correct ctree-unique-path-computable" data-kind="theorem">
+  <h2>A computable binary tree with exactly one path has a computable path</h2>
+  <div class="statement-box"><p>If \(T\) is a computable binary tree and \([T]=\{X\}\), the specified search \(U_T\) is total and \(U_T(n)=\chi_X(n)\) for every \(n\). In particular \(X\) is computable.</p></div>
+  <div class="proof">
+    <p>For any input \(n\), <a href="#unique-survivor"></a> guarantees a successful level, so sequential search over the total finite test terminates. At the first successful level, the genuine prefix of \(X\) is among the candidates, and there is only one candidate. The word returned by the algorithm must therefore be \(X\mathbin{\upharpoonright}(n+1)\), whose final bit is \(\chi_X(n)\).</p>
+    <p>Listing finite levels and their distinct prefixes uses ordinary computable finite operations, and search over a total computable test is partial recursive. Termination on every \(n\) makes this a total computable bit function. No description of \(X\) was provided to the program; its uniqueness proves that the finite search finds the correct bit.</p>
+  </div>
+</section>
+
+<section id="uniqueness-promise-question" data-formal="ctree-root-tree ctree-root-tree-properties" data-kind="question">
+  <h2>Would at most one path be enough?</h2>
+  <p>Can the last theorem replace “exactly one path” by “at most one path” and still assert a computable path? What happens to the specified search on \(T=\{[]\}\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. This finite tree is computable and prefix closed, and it has no path. For input zero, every tested level has length at least one and is empty, so \(V_T(0,m)\) never has a single member. Thus \(U_T(0)\) diverges. The existence part of the promise ensures that the true prefix is always present; uniqueness ensures that all its competitors eventually disappear.</p>
+  </div></details>
+</section>

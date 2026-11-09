@@ -1,0 +1,127 @@
+<section id="pointwise-approximation" data-formal="limit-binary limit-convergence limit-computable limit-finite-changes" data-kind="definition">
+  <h2>Each input may change its answer finitely often</h2>
+  <p>A <strong>computable binary approximation</strong> is a total computable function \(a:\mathbb N^2\to\{0,1\}\), written \(a(s,x)\). It <strong>converges pointwise to</strong> a set \(A\subseteq\mathbb N\) if</p>
+  <div class="math-display">\[\forall x\;\exists s_0\;\forall s\ge s_0\qquad a(s,x)=\chi_A(x).\]</div>
+  <p>A set admitting such an approximation is <strong>limit computable</strong>. The stage \(s_0\) can depend on \(x\), and need not be computable from \(x\). Both changes \(0\to1\) and \(1\to0\) are allowed. For each fixed input, convergence means that only finitely many changes occur; the final answer still has to be the specified membership bit.</p>
+</section>
+
+<section id="finite-stage-truncation" data-formal="limit-truncate limit-truncate-computable limit-truncate-binary limit-truncate-finite limit-truncate-converges limit-finite-snapshot-characterization" data-kind="lemma">
+  <h2>Requiring finite snapshots does not change the notion</h2>
+  <p>A set \(A\) is limit computable if and only if there is a computable binary test \(b(s,x)\) converging to \(\chi_A(x)\) such that \(b(s,x)=1\) implies \(x&lt;s\). Thus the snapshots \(A_s=\{x:b(s,x)=1\}\) can be required finite with a computable bound.</p>
+  <div class="proof">
+    <p>Given \(a\), set \(b(s,x)=a(s,x)\) for \(x&lt;s\), and set it to zero otherwise. The test is computable and \(A_s\subseteq\{0,\ldots,s-1\}\). For fixed \(x\), once \(s\) exceeds both \(x\) and a convergence stage for \(a(s,x)\), the truncated answer is the correct answer. Conversely the supplied test \(b\) is itself a computable binary approximation. A merely computable membership test for each separately chosen finite set would not supply the required joint algorithm in \((s,x)\).</p>
+  </div>
+</section>
+
+<section id="finite-prefix-stabilization" data-formal="limit-finite-prefix-stabilization" data-kind="lemma">
+  <h2>A finite collection of inputs eventually settles together</h2>
+  <p>If \(a(s,x)\to\chi_A(x)\), then for every \(n\) there is a stage \(s_0\) such that</p>
+  <div class="math-display">\[\forall s\ge s_0\;\forall x&lt;n\qquad a(s,x)=\chi_A(x).\]</div>
+  <div class="proof">
+    <p>For each of the finitely many \(x&lt;n\), choose a pointwise convergence stage. Their maximum works for all these inputs; for \(n=0\), take zero. This is an existence argument. It does not compute a suitable maximum from \(n\), because the individual convergence stages were not given by a computable function.</p>
+  </div>
+</section>
+
+<section id="enumerable-examples" data-formal="limit-canonical-stage-convergence limit-enumerable limit-coenumerable limit-complement-approximation limit-complement-approximation-correct limit-halting-examples" data-kind="theorem">
+  <h2>Positive and negative recognition both give limit approximations</h2>
+  <p>Every c.e. set and every co-c.e. set is limit computable. In particular, let \(K=\{e:\varphi_e(e)\downarrow\}\) be the ordinary diagonal halting set. Both \(K\) and its complement are limit computable, although neither is decidable and the complement is not c.e.</p>
+  <div class="proof">
+    <p>For a c.e. set \(W_e\), use the jointly computable finite stages from <a href="effective-enumerations#uniform-finite-approximation"></a>. Their membership bits increase and converge to \(\chi_{W_e}\): a member eventually enters and remains, while a nonmember never enters. For the complement use \(a(s,x)=1-\chi_{W_{e,s}}(x)\). This computable binary test converges to \(\chi_{\overline{W_e}}\); if finite snapshots are wanted, truncate it as in <a href="#finite-stage-truncation"></a>. Apply these observations to the <a href="universal-computation#halting-sets">c.e. undecidable halting set</a> and its <a href="universal-computation#halting-sets">non-c.e. complement</a>. Limit computability therefore permits sets beyond positive recognition.</p>
+  </div>
+</section>
+
+<section id="changes-question" data-formal="limit-delayed-approximation limit-delayed-approximation-correct limit-drifting-cutoff limit-drifting-cutoff-correct" data-kind="question">
+  <h2>Does a long quiet interval certify the final answer?</h2>
+  <p>Suppose a computable approximation has given the same answer on an input for a million stages. Does pointwise convergence imply that its answer can no longer change? Is there necessarily one stage after which every input has its final answer?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No to both. An approximation may be zero on one input until any specified later stage and then be permanently one. For the second question, \(a(s,x)=1\) exactly when \(x&lt;s\) converges to the whole of \(\mathbb N\), yet every stage still gives the wrong answer at \(x=s\). Convergence concerns each fixed input separately, with the order \(\forall x\exists s_0\forall s\ge s_0\).</p>
+  </div></details>
+  <figure id="settling-grid" class="proof-figure">
+    <div class="figure-image"><img src="assets/settling-grid.svg" width="760" height="390" alt="Rows for three inputs show binary guesses at successive stages. Each row changes several times and then stays fixed. The marked settling stages differ between rows." /></div>
+    <figcaption>Each row eventually has a constant tail. Neither a common stage for all inputs nor an effective rule finding a row’s final change is part of pointwise convergence.</figcaption>
+  </figure>
+</section>
+
+<section id="future-change" data-formal="limit-future-change limit-future-change-set" data-kind="definition">
+  <h2>Encode the question whether an answer will change again</h2>
+  <p>For a fixed computable binary approximation \(a\), define its <strong>future-change relation</strong> by</p>
+  <div class="math-display">\[C_a(x,s)\quad\Longleftrightarrow\quad\exists r>s\;[a(r,x)\ne a(s,x)].\]</div>
+  <p>Pairs \((x,s)\) are represented by the fixed <a href="coding-finite-sequences#square-pairing">computable pairing code</a>. The relation asks about disagreement with the current answer, rather than about any earlier change.</p>
+</section>
+
+<section id="future-change-index" data-formal="limit-future-change-enumerable limit-change-recognizer-index limit-change-recognizer-correct limit-change-index-input limit-change-index limit-change-index-primitive limit-change-index-correct jump-ordinary-freeze jump-ordinary-freeze-primitive jump-ordinary-freeze-eval" data-kind="lemma">
+  <h2>One ordinary program turns future change into a halting query</h2>
+  <p>For every supplied computable \(a\), there is a total computable map \(f_a(x,s)\), with no oracle, such that</p>
+  <div class="math-display">\[C_a(x,s)\quad\Longleftrightarrow\quad f_a(x,s)\in K.\]</div>
+  <div class="proof">
+    <p>On input \((x,s)\), run the successive tests \(r=s+1,s+2,\ldots\), computing both bits each time, and halt at the first disagreement. Each individual test terminates. This ordinary partial computation has domain exactly the coded future-change relation. Fix its program index \(d\). Freezing the coded input into that program gives an index which ignores its own input and runs \(\varphi_d(\langle x,s\rangle)\). The <a href="turing-jump#empty-oracle-jump">ordinary input-freezing map</a> is primitive recursive once \(d\) is fixed, and the frozen index belongs to \(K\) exactly when that computation halts. Take this index as \(f_a(x,s)\). The construction is made once from the supplied algorithm for \(a\), independently of the set to which it might converge.</p>
+  </div>
+</section>
+
+<section id="stable-stage-search" data-formal="limit-future-query-program limit-stable-search-program limit-stable-search limit-stable-search-evaluation limit-stable-stage-exists limit-stable-stage limit-stable-stage-correct limit-stable-search-total limit-stable-decision-program limit-stable-decision-correct limit-limit-reducible" data-kind="theorem">
+  <h2>A halting oracle finds a stage after the final change</h2>
+  <p>If \(a(s,x)\to\chi_A(x)\), the following \(K\)-oracle algorithm is total and decides \(A\):</p>
+  <div class="statement-box">
+    <p>Given \(x\), test \(s=0,1,2,\ldots\). Ask whether \(f_a(x,s)\in K\). At the first negative answer, return \(a(s,x)\).</p>
+  </div>
+  <div class="proof">
+    <p>A negative answer says exactly that \(a(r,x)=a(s,x)\) for every \(r>s\). Some negative answer exists: any stage at or beyond a convergence stage has no later disagreement. Thus the successive oracle tests find a stage and terminate. The returned value equals the limiting value, since the constant tail and the correct tail have an overlapping stage. The ordinary map \(f_a\), oracle query, least-stage search and final ordinary evaluation of \(a\) are operations of the <a href="oracle-computation#relative-closure">oracle computation model</a>. Hence this is an actual oracle program, and \(A\le_T K\).</p>
+  </div>
+</section>
+
+<section id="halting-stages" data-formal="limit-halting-recognizer-index limit-halting-recognizer-correct limit-halting-stage limit-halting-test limit-halting-stage-data limit-halting-stage-convergence limit-halting-prefix-agreement" data-kind="definition">
+  <h2>Replace the halting oracle by finite discoveries</h2>
+  <p>Fix an ordinary recognizer index \(d\) with \(W_d=K\), and write \(K_s=W_{d,s}\). These are the <strong>finite halting approximations</strong>. Their binary tests are primitive recursive jointly in \((s,q)\), they increase, and \(K=\bigcup_s K_s\). In particular, for each fixed bound \(u\), some stage has the correct answers to every halting question below \(u\), and every later stage retains them.</p>
+  <p>The last assertion follows from <a href="#finite-prefix-stabilization"></a> applied to this increasing approximation. Negative answers in \(K_s\) may be wrong at an early stage; they are guesses made by an ordinary terminating test.</p>
+</section>
+
+<section id="bounded-guesses" data-formal="limit-stage-value limit-stage-value-primitive limit-stage-value-identity limit-bounded-guess limit-bounded-guess-primitive limit-bounded-guess-computable limit-bounded-guess-bounds oracle-univ-table-scheme oracle-univ-table-value-correct" data-kind="definition">
+  <h2>Use each finite oracle only for a bounded calculation</h2>
+  <p>Suppose an oracle program of index \(e\) computes \(\chi_A\) with oracle \(K\). Let \(B^S(k,e,x)\) be the <a href="oracle-program-numberings#bounded-oracle-evaluation">bounded oracle evaluator</a>: zero means no successful result within allowance \(k\), and \(y+1\) encodes a successful output \(y\). Define the <strong>bounded guess</strong></p>
+  <div class="math-display">\[a_e(s,x)=\begin{cases}1,&x&lt;s\text{ and }B^{K_s}(s,e,x)=2,\\0,&\text{otherwise}.\end{cases}\]</div>
+  <p>This is a total computable binary function, with finite positive snapshots. To compute it, run the finite-table evaluator with allowance \(s\); every oracle query in that finite calculation is answered by the ordinary test for membership in \(K_s\). The table’s recursion is bounded and its entries use only primitive-recursive operations and this uniformly primitive-recursive stage test. Consequently the whole calculation is primitive recursive jointly in \((s,e,x)\). Failure to see an output is assigned the provisional answer zero, even if the actual oracle program would eventually output one.</p>
+</section>
+
+<section id="replay-at-fixed-allowance" data-formal="limit-fixed-allowance-replay post-bounded-query-dependence oracle-univ-bounded-monotone" data-kind="lemma">
+  <h2>A fixed successful bounded run eventually reappears in every snapshot</h2>
+  <p>Suppose \(B^K(k,e,x)=y+1\). There is a stage \(s_0\) such that for every \(s\ge s_0\),</p>
+  <div class="math-display">\[B^{K_s}(k,e,x)=y+1,\qquad B^{K_s}(s,e,x)=y+1.\]</div>
+  <div class="proof">
+    <p>The bounded evaluator with allowance \(k\) only asks questions below \(k\), as established in its <a href="posts-theorem#bounded-query-agreement">query-agreement argument</a>. Choose a stage \(t\) after which \(K_s\) agrees with \(K\) below \(k\). Substitution of those equal answers leaves every entry of the bounded calculation unchanged, so its result is still \(y+1\). For \(s\ge\max(t,k)\), increasing the allowance from \(k\) to \(s\), with the same oracle \(K_s\) fixed, preserves this successful result by <a href="oracle-program-numberings#bounded-correctness">monotonicity of bounded evaluation</a>. This uses a fixed successful allowance before increasing the stage; agreement on an ever-growing prefix was not assumed.</p>
+  </div>
+</section>
+
+<section id="bounded-guesses-converge" data-formal="limit-bounded-guesses-converge limit-reducible-limit oracle-univ-bounded-complete" data-kind="theorem">
+  <h2>The bounded guesses converge to the oracle program’s answer</h2>
+  <p>If \(\varphi_e^K(x)=\chi_A(x)\) for every \(x\), then \(a_e(s,x)\to\chi_A(x)\) pointwise. Thus \(A\le_T K\) implies that \(A\) is limit computable.</p>
+  <div class="proof">
+    <p>Fix \(x\). The true oracle computation halts with output \(y=\chi_A(x)\). Completeness of bounded evaluation supplies an allowance \(k\) with \(B^K(k,e,x)=y+1\). By <a href="#replay-at-fixed-allowance"></a>, all sufficiently late finite-oracle calculations with allowance \(s\) have this same output. Increase the threshold further so that \(x&lt;s\). If \(y=1\), their coded result is two and the guess is one. If \(y=0\), it is one and the guess is zero. This proves convergence for the fixed input and therefore for every input. The early computations may follow incorrect oracle branches; only their eventual agreement with this fixed true computation is used.</p>
+  </div>
+</section>
+
+<section id="limit-lemma" data-formal="limit-lemma limit-delta-two jump-empty-jump-equiv-halting post-delta-decision" data-kind="theorem">
+  <h2>The limit lemma characterizes the sets below the halting problem</h2>
+  <div class="statement-box">
+    <p>For every \(A\subseteq\mathbb N\),</p>
+    <div class="math-display">\[A\text{ is limit computable}\quad\Longleftrightarrow\quad A\le_T K\quad\Longleftrightarrow\quad A\in\Delta_2.\]</div>
+  </div>
+  <div class="proof">
+    <p>The two algorithms in <a href="#stable-stage-search"></a> and <a href="#bounded-guesses-converge"></a> prove the first equivalence. The ordinary halting set \(K\) and \(J(\varnothing)\) are <a href="turing-jump#empty-oracle-jump">many-one equivalent</a>, hence Turing equivalent. <a href="posts-theorem#decision-and-many-one">Post’s decision characterization</a> identifies \(\Delta_2\) with the sets computable in \(J(\varnothing)\). Transitivity gives the second equivalence. This is the Shoenfield limit lemma for sets; all approximating algorithms are ordinary algorithms.</p>
+  </div>
+</section>
+
+<section id="convergence-modulus" data-formal="limit-convergence-modulus limit-convergence-modulus-exists limit-modulus-decider limit-modulus-decider-correct limit-computable-modulus-decides limit-halting-no-computable-modulus recidx-prefix-certificate recidx-certificate-permanence recidx-decoder-correct" data-kind="definition">
+  <h2>A modulus supplies information that mere convergence omits</h2>
+  <p>For an approximation \(a\) converging to \(A\), a <strong>convergence modulus</strong> is a function \(m:\mathbb N\to\mathbb N\) satisfying</p>
+  <div class="math-display">\[\forall x\;\forall s\ge m(x)\qquad a(s,x)=\chi_A(x).\]</div>
+  <p>Classically such a function exists by selecting a convergence stage for each input. If a computable modulus is supplied, then \(A\) is decidable: compute \(a(m(x),x)\), which is its characteristic bit. In particular, no computable approximation to the undecidable set \(K\) can have a computable convergence modulus. The limit lemma promises an eventually correct answer without an effective certificate that the final change has occurred.</p>
+  <p>In a <a href="indices-of-computable-enumerable-sets#decoder-correctness">tagged marker construction</a>, the final output set itself serves as an oracle certifying a permanent finite marker prefix. The resulting halting decoder uses those final-set queries; the construction does not supply an ordinary computable settling bound.</p>
+</section>
+
+<section id="decidable-limit-question" data-formal="limit-halting-pulse limit-halting-pulse-primitive limit-halting-pulse-converges limit-halting-pulse-at-most-once limit-pulse-modulus-membership limit-pulse-no-computable-modulus effective-stage-computable-settling-equivalence" data-kind="question">
+  <h2>Does a decidable limit force a computable convergence modulus?</h2>
+  <p>For increasing c.e. approximations, <a href="effective-enumerations#computable-settling-equivalence">decidability gives a computable settling modulus</a>. Does every computable binary approximation to the empty set have a computable convergence modulus?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Use the fixed increasing finite halting approximations \(K_s\), with \(K_0=\varnothing\), and set \(p(s,x)=1\) exactly when \(x\in K_{s+1}\setminus K_s\). Each row has at most one pulse, so \(p(s,x)\to0\) for every \(x\). Suppose a computable \(m\) were a convergence modulus for this approximation. No entry into \(K\) could happen at a transition indexed by \(s\ge m(x)\). Therefore \(x\in K\) if and only if \(x\in K_{m(x)}\): a later entry would produce a forbidden pulse, while an earlier entry persists. Testing that finite stage would decide \(K\), a contradiction. The increasing approximation theorem concerns its particular monotone hypotheses; arbitrary changes of mind do not satisfy them.</p>
+  </div></details>
+</section>

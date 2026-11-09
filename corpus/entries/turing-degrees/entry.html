@@ -82,7 +82,7 @@
   </div>
 </section>
 
-<section id="least-degree" data-kind="theorem" data-formal="turing-degree-zero turing-degree-zero-least turing-degree-zero-characterization turing-degree-halting-positive">
+<section id="least-degree" data-kind="theorem" data-formal="turing-degree-zero turing-degree-zero-least turing-degree-zero-characterization turing-degree-halting-positive jump-empty-jump-equiv-halting jump-zero-jump-halting jump-degree-lt-jump jump-no-greatest-degree post-arithmetical-finite-jump post-no-common-finite-jump">
   <h2>The computable sets form the least degree</h2>
   <div class="statement-box">
     <p>The <strong>computable degree</strong> \(\mathbf0=[\varnothing]\) is the least Turing degree, and</p>
@@ -92,16 +92,21 @@
   <div class="proof">
     <p>The empty set is computable, so <a href="#computable-oracles"></a> gives \(\varnothing\le_T A\) for every \(A\). Thus \(\mathbf0\le[A]\). If \(A\) is computable, that same lemma also gives \(A\le_T\varnothing\), proving \([A]=\mathbf0\). Conversely, equality of these degrees implies \(A\le_T\varnothing\), and the lemma makes \(A\) computable. Since \(K\) is undecidable, its degree cannot be \(\mathbf0\). Leastness then gives the displayed strict inequality.</p>
   </div>
+
+  <p>The <a href="turing-jump#empty-oracle-jump">empty-oracle jump</a> has the same Turing degree as \(K\). More generally, <a href="turing-jump#finite-iterates">finite jump iteration</a> gives a strictly larger degree above every degree, so there is no greatest Turing degree.</p>
+
+  <p><a href="posts-theorem#finite-jump-arithmetical">Finite jumps of the computable degree</a> account for exactly the arithmetical sets: each such set is computable from some finite empty-oracle jump. There is no one finite jump sufficient for them all.</p>
 </section>
 
-<section id="finite-use-question" data-kind="question" data-formal="turing-red-reflexive turing-red-halting-query-use turing-red-flip-halting-bit turing-red-halting-use-no-common-bound turing-degree-zero-least ordered-quotient-comparison univ-diagonal-halting-undecidable">
+<section id="finite-use-question" data-kind="question" data-formal="turing-red-reflexive turing-red-halting-query-use turing-red-flip-halting-bit turing-red-halting-use-no-common-bound turing-degree-zero-least ordered-quotient-comparison univ-diagonal-halting-undecidable jump-jump-strict">
   <h2>Does a finite number of oracle answers make the problem computable?</h2>
   <p>The query program witnesses \(K\le_T K\) and asks only one question on each input. Why does the <a href="oracle-computation#finite-use">finite-use theorem</a> not make \(K\) computable? Does \(A\le_T K\), by itself, show that \(A\) is undecidable?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>On input \(x\), the query program asks exactly whether \(x\in K\). It uses one bit, but computing that bit by an ordinary algorithm is the original membership problem. Finite use supplies a finite set of relevant positions for each halting computation; it supplies no ordinary procedure for their answers. Its convenient bound here is \(u=x+1\), which varies with the input.</p>
     <p>There is no single initial-segment bound stabilizing this query program on every input and every oracle change. For any proposed \(u\), choose \(x\ge u\) and change just the oracle bit at \(x\). The new oracle agrees with \(K\) below \(u\), but the query output at \(x\) changes.</p>
     <p>Nor does \(A\le_T K\) force \(A\) to be undecidable. For example, \(\varnothing\le_T K\), although the empty set is computable. A reduction bounds the information required by the lower problem; it does not force the lower problem to use all the information available from its oracle.</p>
-  </div></details>
+  <p>Even the full oracle \(K\) cannot decide whether arbitrary programs using \(K\) halt on their own codes: <a href="turing-jump#jump-strictness">jump strictness</a> gives \(K&lt;_T J(K)\). This is a stronger membership problem than the individual oracle queries made by the program in this question.</p>
+</div></details>
 </section>
 
 <section id="finite-join" data-kind="definition" data-formal="turing-join-set turing-join-characteristic">
@@ -123,7 +128,7 @@
   </div>
 </section>
 
-<section id="join-upper-bound" data-kind="theorem" data-formal="turing-join-half-code turing-join-half-correct turing-join-selector-value turing-join-selector-code turing-join-selector-correct turing-join-both-program turing-join-program turing-join-both-correct turing-join-program-correct turing-join-universal-property univ-identity-program univ-identity-evaluation">
+<section id="join-upper-bound" data-kind="theorem" data-formal="turing-join-half-code turing-join-half-correct turing-join-selector-value turing-join-selector-code turing-join-selector-correct turing-join-both-program turing-join-program turing-join-both-correct turing-join-program-correct turing-join-universal-property univ-identity-program univ-identity-evaluation incomp-incomparable incomp-left-set incomp-right-set incomp-constructed-bounds">
   <h2>A common oracle decides exactly the combined information</h2>
   <div class="statement-box">
     <p>For every \(A,B,C\subseteq\mathbb N\),</p>
@@ -144,6 +149,7 @@
     <div class="figure-image"><img src="assets/join-information.svg" width="760" height="510" alt="Arrows lead from A and B to their join and from the join to a common oracle C. The lower reductions tag inputs by even and odd numbers. The upper reduction uses the constructed program for the join. The arrows indicate reducibility, without asserting that the displayed sets have distinct or incomparable degrees." /></div>
     <figcaption>The join is an upper bound for both problems and reduces to every common upper bound. Arrows show proved Turing reductions; the placement does not assume that the degrees are distinct or that \(A\) and \(B\) are incomparable.</figcaption>
   </figure>
+  <p>There are also <a href="incomparable-turing-degrees#kleene-post">incomparable Turing degrees</a>: neither input problem need be decidable from the other. They can even be chosen <a href="incomparable-turing-degrees#halting-bounds">below the halting degree</a>.</p>
 </section>
 
 <section id="degree-join" data-kind="theorem" data-formal="turing-join-representative-invariance turing-join-degrees turing-join-degree-computation turing-join-degree-upper-bounds turing-join-degree-semilattice turing-degree-order-bottom turing-join-idempotent turing-join-commutative turing-join-associative turing-join-zero-unit">

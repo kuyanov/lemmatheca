@@ -1,0 +1,156 @@
+<section id="cofinite-index-sets" data-formal="strong-min-cofinite tli-coinfinite-set tli-cofinite-indices tli-coinfinite-indices tli-index-complements" data-kind="definition">
+  <h2>Ask whether only finitely many inputs are omitted</h2>
+  <p>A set \(D\subseteq\mathbb N\) is <strong>cofinite</strong> if \(\mathbb N\setminus D\) is finite, and <strong>coinfinite</strong> if that complement is infinite. With the fixed <a href="universal-computation#numbering-programs">ordinary program numbering</a> and \(W_e=\operatorname{dom}(\varphi_e)\), define the <strong>cofinite-domain index set</strong> and the <strong>coinfinite-domain index set</strong> by</p>
+  <div class="math-display">\[\mathrm{COF}=\{e:W_e\text{ is cofinite}\},\qquad \mathrm{COINF}=\{e:W_e\text{ is coinfinite}\}.\]</div>
+  <p>Every subset of \(\mathbb N\) has either a finite or an infinite complement. Thus \(\mathrm{COINF}=\mathbb N\setminus\mathrm{COF}\). This complement is taken among indices; it does not assert that the complement of each c.e. domain is c.e.</p>
+</section>
+
+<section id="cofinite-normal-form" data-formal="tli-cofinite-matrix tli-cofinite-matrix-primitive tli-cofinite-normal-form tli-cofinite-sigma-three tli-coinfinite-pi-three" data-kind="lemma">
+  <h2>A tail of successful computations gives the third-level upper bound</h2>
+  <p>Using the <a href="effective-enumerations#uniform-finite-approximation">uniform finite stages</a>, for every \(e\),</p>
+  <div class="math-display">\[e\in\mathrm{COF}\quad\Longleftrightarrow\quad\exists a\;\forall n\;\exists s\;[n&lt;a\ \lor\ n\in W_{e,s}].\]</div>
+  <p>Consequently \(\mathrm{COF}\in\Sigma_3\) and \(\mathrm{COINF}\in\Pi_3\).</p>
+  <div class="proof">
+    <p>A finite complement has a bound \(a\): every omitted number is smaller than \(a\). For \(n\ge a\), domain membership has a finite witnessing stage; for \(n&lt;a\), any stage suffices. Conversely, the displayed condition puts every \(n\ge a\) in the domain, so its complement is contained in the finite set \(\{0,\ldots,a-1\}\). The bound \(a=0\) includes the whole domain.</p>
+    <p>The matrix is primitive recursive. The <a href="arithmetical-hierarchy#tuple-blocks">computable-matrix hierarchy form</a> has prefix \(\exists\forall\exists\), giving the first bound; <a href="arithmetical-hierarchy#complement-duality">complement duality</a> gives the second.</p>
+  </div>
+</section>
+
+<section id="infinite-is-not-cofinite" data-formal="tli-domain-examples isc-even-index-domain isc-even-index-facts" data-kind="question">
+  <h2>Does an infinite domain leave only finitely many omissions?</h2>
+  <p>Compare programs whose domains are \(\varnothing\), the even numbers, and \(\mathbb N\). Which domain is cofinite? Which are coinfinite? Which are infinite?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Only \(\mathbb N\) is cofinite; its complement is empty. The empty domain is coinfinite because its complement is all of \(\mathbb N\). The even domain is also coinfinite, because it omits every odd number. The even domain and \(\mathbb N\) are infinite; the empty domain is finite. All three occur as program domains, using an always-divergent program, the <a href="index-set-completeness#infinite-domain-question">parity program</a>, and a constant total program.</p>
+    <p>In particular, infinitude and cofinitude ask different questions. The <a href="index-set-completeness#infinitude-complete">second-level classification of infinitude</a> does not supply the third-level lower bound for cofinitude.</p>
+  </div></details>
+</section>
+
+<section id="uniform-infinite-rows" data-formal="tli-uniform-infinite-rows" data-kind="lemma">
+  <h2>One joint translation represents all the candidate rows</h2>
+  <p>For every \(A\in\Sigma_3\), there is one primitive-recursive map \(g:\mathbb N^2\to\mathbb N\) such that</p>
+  <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad\exists y\;[W_{g(x,y)}\text{ is infinite}].\]</div>
+  <div class="proof">
+    <p>Write \(x\in A\) as \(\exists y\,\forall u\,\exists v\,R(x,y,u,v)\), with \(R\) computable. On a paired parameter \(w=\langle x,y\rangle\), the relation \(\forall u\,\exists v\,R(x,y,u,v)\) defines one \(\Pi_2\) set of codes \(w\). Apply <a href="index-set-completeness#infinitude-complete">infinitude completeness</a> once to this joint set. It supplies a primitive-recursive reduction \(g_0(w)\).</p>
+    <p>Put \(g(x,y)=g_0(\langle x,y\rangle)\). For every pair, the corresponding row \(W_{g(x,y)}\) is infinite exactly when the displayed universal-existential tail holds. Taking \(\exists y\) proves the assertion. The one reduction \(g_0\) is chosen before \(x,y\) vary; independently chosen reductions for separate rows would not establish this uniformity.</p>
+  </div>
+</section>
+
+<section id="complement-markers" data-formal="tli-marker tli-marker-primitive tli-marker-spec tli-marker-unique tli-marker-bound tli-marker-ordered" data-kind="definition">
+  <h2>Give every currently missing number an ordered marker</h2>
+  <p>For a finite set \(B\subseteq\mathbb N\), its <strong>rank-\(n\) complement marker</strong> \(m_n(B)\) is the \(n\)-th smallest number outside \(B\), counting from rank zero. Equivalently, it is the unique \(k\notin B\) with exactly \(n\) numbers below \(k\) outside \(B\).</p>
+  <p>The markers exist at every rank, satisfy \(m_0(B)&lt;m_1(B)&lt;\cdots\), and obey</p>
+  <div class="math-display">\[m_n(B)\le n+|B|.\]</div>
+  <p>Indeed, among the \(n+|B|+1\) numbers from zero through \(n+|B|\), at most \(|B|\) belong to \(B\), leaving at least \(n+1\) omissions. Scan this bounded interval and count omissions until reaching rank \(n\). With <a href="coding-finite-sequences#list-code">coded finite lists</a> representing finite sets without repetitions, this is a primitive-recursive numerical operation. No infinite complement is supplied as input.</p>
+</section>
+
+<section id="one-marker-bump" data-formal="tli-marker-bump tli-bump-shift tli-marker-ordered" data-kind="lemma">
+  <h2>Enumerating one marker shifts exactly the later ranks</h2>
+  <p>For finite \(B\), let \(B'=B\cup\{m_y(B)\}\). Then</p>
+  <div class="math-display">\[m_i(B')=\begin{cases}m_i(B),&amp;i&lt;y,\\m_{i+1}(B),&amp;i\ge y.\end{cases}\]</div>
+  <p>Thus no marker decreases, the rank-\(y\) marker strictly increases, and every rank below \(y\) stays fixed.</p>
+  <div class="proof">
+    <p>The missing numbers before the insertion are precisely the increasing list \(m_0(B),m_1(B),\ldots\). The insertion removes its entry of rank \(y\) and no other entry. The first \(y\) positions are unchanged, and every later position is filled by its old successor. This proves the formula, including \(y=0\), when every rank shifts. Strict ordering of the old list gives all the asserted inequalities.</p>
+  </div>
+  <figure id="marker-shift-figure" class="proof-figure">
+    <div class="figure-image" style="max-width: 420px; margin: 0 auto;"><img src="assets/marker-shift.svg" width="420" height="340" alt="The missing numbers for B equal to one and four begin zero, two, three, five, six. Enumerating the rank-one marker two leaves zero in rank zero and shifts three, five, and six to ranks one, two, and three. The next missing number seven takes rank four." /></div>
+    <figcaption>Enumerating the current rank-one marker removes its value from the complement. The arrows track retained values into their new ranks; later ranks continue in the same way.</figcaption>
+  </figure>
+</section>
+
+<section id="fresh-marker-question" data-formal="tli-current-bumps-answer" data-kind="question">
+  <h2>Should two events use the old marker or the recomputed marker?</h2>
+  <p>Start with \(B=\{1,4\}\). Two successive events both request removal of the current rank-one marker. What is the resulting finite set? Would removing the original marker twice have the same effect?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The initial omissions begin \(0,2,3,5,\ldots\), so the first event inserts \(2\). They then begin \(0,3,5,6,\ldots\), so the second inserts \(3\). The resulting set is \(\{1,2,3,4\}\). Inserting the original value \(2\) twice would instead leave \(\{1,2,4\}\). Sets ignore repeated insertions, so that second instruction would not move the marker again. Each genuine event must use the current finite set.</p>
+  </div></details>
+</section>
+
+<section id="event-schedules" data-formal="tli-event-schedule tli-fresh-events tli-finite-event-scan tli-marker-stages tli-marker-output" data-kind="definition">
+  <h2>Separate the supply of events from the marker updates</h2>
+  <p>A <strong>cumulative event schedule</strong> consists of finite sets \(E_{x,s}\subseteq\{c:c&lt;s\}\), with a primitive-recursive membership test jointly in \(x,s,c\), such that \(E_{x,s}\subseteq E_{x,s+1}\). A fixed primitive-recursive <strong>event label</strong> \(\ell(c)\) specifies which marker an event requests. The <strong>fresh events</strong> at the step from \(s\) to \(s+1\) are \(F_{x,s}=E_{x,s+1}\setminus E_{x,s}\).</p>
+  <p>The <strong>marker construction</strong> for this schedule starts with \(B_{x,0}=\varnothing\). To form the next stage, begin with \(B_{x,s,0}=B_{x,s}\), and for \(c=0,\ldots,s\) put</p>
+  <div class="math-display">\[B_{x,s,c+1}=\begin{cases}B_{x,s,c}\cup\{m_{\ell(c)}(B_{x,s,c})\},&amp;c\in F_{x,s},\\B_{x,s,c},&amp;c\notin F_{x,s}.\end{cases}\]</div>
+  <p>Set \(B_{x,s+1}=B_{x,s,s+1}\), and call \(B_x=\bigcup_s B_{x,s}\) the <strong>output set</strong>. This is an ascending-code scan of the fresh batch, with markers recomputed after every insertion. The intermediate index \(c\) counts inspected codes, including codes that are not fresh. Since every fresh code is at most \(s\), none is skipped.</p>
+</section>
+
+<section id="effective-marker-stages" data-formal="tli-stage-code tli-stages-primitive tli-stage-code-decode tli-stage-nodup tli-stage-increasing tli-event-once tli-stage-marker-monotone" data-kind="lemma">
+  <h2>Every stage is a finite effective computation, and every event acts once</h2>
+  <p>For a cumulative event schedule, the coded finite sets \(B_{x,s}\) are primitive recursive jointly in \(x,s\), and \(B_{x,s}\subseteq B_{x,s+1}\). Every event \(c\in\bigcup_s E_{x,s}\) is processed exactly once. For every rank \(n\), \(m_n(B_{x,s})\) is nondecreasing with \(s\).</p>
+  <div class="proof">
+    <p>At a supplied stage, the scan has the finite bound \(s+1\). The fresh-event test terminates; computing a requested marker uses the bounded scan of <a href="#complement-markers"></a>; inserting its new number into the coded finite set is a finite list operation. Primitive recursion on stages, with this finite inner recursion, therefore computes the stage codes. The invariant through the inner scan is that the state is a finite extension of its preceding state, with exactly the earlier fresh-code insertions performed. It gives both finiteness and the stage inclusion.</p>
+    <p>Since \(E_{x,0}=\varnothing\), every event in the union has a first successful stage. It belongs to precisely the fresh difference preceding that stage. Monotonicity excludes it from every later fresh difference, so it acts once. Finally, <a href="#one-marker-bump"></a> makes every individual insertion nondecreasing at every marker rank. Induction through each batch and then through stages proves the marker monotonicity.</p>
+  </div>
+</section>
+
+<section id="bounded-label-stabilization" data-formal="tli-bounded-label-stabilization tli-finite-low-coinfinite tli-marker-ordered" data-kind="lemma">
+  <h2>Finitely many events at low ranks leave a permanent prefix</h2>
+  <p>Fix \(x,n\). If only finitely many events \(c\in\bigcup_s E_{x,s}\) have \(\ell(c)\le n\), there is a stage \(S\) such that every marker of rank \(i\le n\) remains equal to \(m_i(B_{x,S})\) at all later stages. Each of these \(n+1\) distinct values lies outside the final output \(B_x\). Consequently, if this finiteness condition holds at every bound \(n\), then \(B_x\) is coinfinite.</p>
+  <div class="proof">
+    <p>Each of the finitely many relevant events has a processing stage by <a href="#effective-marker-stages"></a>. Choose \(S\) after all of them. Every insertion thereafter has label greater than \(n\), and <a href="#one-marker-bump"></a> says that it preserves all the first \(n+1\) markers. Induction through subsequent batches proves their permanence.</p>
+    <p>Each permanent marker is absent from every stage at or after \(S\), by its definition as an omission. It is absent from earlier stages too, since stages only increase. Thus it is absent from their union. The strictly increasing marker prefix supplies \(n+1\) distinct final omissions. If the final complement were finite of size \(r\), the prefix through rank \(r\) would give \(r+1\) omissions, a contradiction. The existence of \(S\) does not provide a computable settling bound.</p>
+  </div>
+</section>
+
+<section id="infinite-label-escape" data-formal="tli-infinite-label-unbounded tli-complement-card-bound tli-infinite-label-cofinite" data-kind="lemma">
+  <h2>Infinitely many events at one rank force a finite complement</h2>
+  <p>Fix \(x,y\). If infinitely many events in \(\bigcup_s E_{x,s}\) have label \(y\), the sequence \(m_y(B_{x,s})\) is unbounded, and \(\mathbb N\setminus B_x\) has at most \(y\) members. In particular \(B_x\) is cofinite.</p>
+  <div class="proof">
+    <p>Every such event acts once, each batch is finite, and removing the current rank-\(y\) marker strictly raises that marker. Other insertions never decrease it. If the stage markers were bounded by \(N\), their nondecreasing natural-number values could undergo at most \(N\) strict increases. Infinitely many label-\(y\) events contradict this. Thus the marker is unbounded.</p>
+    <p>If \(y+1\) distinct numbers remained outside \(B_x\), let \(M\) be their maximum. They would be absent at every stage. At each stage there would then be at least \(y+1\) omissions at most \(M\), implying \(m_y(B_{x,s})\le M\), a contradiction. Hence at most \(y\) final omissions survive. This proof permits arbitrary additional events at other labels; they cannot undo an insertion or decrease a marker.</p>
+  </div>
+</section>
+
+<section id="fair-row-discoveries" data-formal="tli-row-event tli-row-label tli-row-schedule tli-row-event-primitive tli-row-event-spec tli-row-event-union tli-row-label-events tli-row-finite-events" data-kind="definition">
+  <h2>Turn each new row member into exactly one event</h2>
+  <p>Fix the joint row map \(g\) of <a href="#uniform-infinite-rows"></a>. For a paired code \(c=\langle y,z\rangle\), use the <strong>row-discovery schedule</strong> and <strong>row label</strong></p>
+  <div class="math-display">\[E_{x,s}=\{\langle y,z\rangle&lt;s:z\in W_{g(x,y),s}\},\qquad \ell(\langle y,z\rangle)=y.\]</div>
+  <p>This is a cumulative event schedule: its membership test is primitive recursive, because \(g\), unpairing and stage membership are; increasing stages retain both the code bound and the discovered membership. An event \(\langle y,z\rangle\) eventually appears exactly when \(z\in W_{g(x,y)}\). For the forward implication use stage soundness. For the reverse, enlarge a witnessing stage until it also exceeds the event code.</p>
+  <p>Thus the events with label \(y\) correspond bijectively to the members of row \(W_{g(x,y)}\). A computation discovered before its event code is first inspected is still caught at a later stage. Reobserving it at more stages creates no extra event, because the construction acts only on fresh differences.</p>
+</section>
+
+<section id="row-outcomes" data-formal="tli-row-output-cofinite tli-row-output-coinfinite" data-kind="theorem">
+  <h2>Infinite rows and finite rows produce opposite complement sizes</h2>
+  <p>For the marker construction with the row-discovery schedule, every \(x\) satisfies</p>
+  <div class="math-display">\[B_x\text{ is cofinite}\quad\Longleftrightarrow\quad\exists y\;[W_{g(x,y)}\text{ is infinite}].\]</div>
+  <p>If all rows are finite, \(B_x\) is coinfinite.</p>
+  <div class="proof">
+    <p>If row \(y\) is infinite, the corresponding infinitely many distinct events have label \(y\). <a href="#infinite-label-escape"></a> makes \(B_x\) cofinite, with at most \(y\) final omissions.</p>
+    <p>If every row is finite, fix a rank bound \(n\). The finitely many rows with labels \(0,\ldots,n\) contain only finitely many members in total, so only finitely many events have labels at most \(n\). <a href="#bounded-label-stabilization"></a> gives coinfinitude. This excludes cofinitude and proves the reverse implication as well.</p>
+  </div>
+</section>
+
+<section id="ordinary-marker-index" data-formal="tli-marker-recognizer tli-recognizer-partial tli-recognizer-output tli-marker-program tli-marker-program-eval tli-marker-index tli-marker-index-primitive tli-marker-index-eval tli-marker-index-domain tli-row-index" data-kind="definition">
+  <h2>Compile the stage enumeration into one ordinary program family</h2>
+  <p>For the fixed schedule and row map, define the <strong>marker recognition program</strong> on paired input \(\langle x,z\rangle\) by inspecting stages \(s=0,1,2,\ldots\), returning zero as soon as \(z\in B_{x,s}\), and remaining undefined if no such stage exists. The stage test is primitive recursive by <a href="#effective-marker-stages"></a>, so sequential search gives a jointly partial-recursive program.</p>
+  <p>Choose one program index \(p_g\) for this paired-input program, before \(x,z\) vary. The <a href="universal-computation#parameter-theorem">parameter theorem</a> supplies the specified <strong>marker index map</strong></p>
+  <div class="math-display">\[h_g(x)=s(p_g,x),\qquad \varphi_{h_g(x)}(z)\simeq\begin{cases}0,&amp;z\in B_x,\\\text{undefined},&amp;z\notin B_x.\end{cases}\]</div>
+  <p>In particular \(h_g\) is primitive recursive, and \(W_{h_g(x)}=B_x\) for every \(x\). The code map does not wait to learn which rows are infinite. All infinite behavior occurs only when the resulting program runs.</p>
+</section>
+
+<section id="cofinite-completeness" data-formal="tli-cofinite-primitive-hardness tli-cofinite-complete recidx-two-outcome-reduction recidx-computable-complete" data-kind="theorem">
+  <h2>Cofinite domains are complete for the third existential level</h2>
+  <div class="statement-box"><p>The index set \(\mathrm{COF}\) is \(\Sigma_3\)-complete under ordinary computable many-one reductions. For every \(A\in\Sigma_3\), such a reduction can be chosen primitive recursive.</p></div>
+  <div class="proof">
+    <p>The upper bound is <a href="#cofinite-normal-form"></a>. Given an arbitrary \(A\in\Sigma_3\), choose the one joint row map \(g\) of <a href="#uniform-infinite-rows"></a> and then the marker index map \(h_g\). Its construction and <a href="#row-outcomes"></a> give, for every \(x\),</p>
+    <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad\exists y\;[W_{g(x,y)}\text{ is infinite}]\quad\Longleftrightarrow\quad h_g(x)\in\mathrm{COF}.\]</div>
+    <p>The actual map \(h_g\) is primitive recursive. It is therefore a total computable many-one reduction, proving the lower bound and the stated strengthening.</p>
+  </div>
+  <p>Keeping the same marker engine and adding separately tagged halting discoveries gives a <a href="indices-of-computable-enumerable-sets#two-outcome-reduction">stronger two-outcome construction</a>: positive inputs still give cofinite domains, while negative inputs give domains of the halting degree. This also <a href="indices-of-computable-enumerable-sets#computable-domain-completeness">classifies the indices of computable enumerable domains</a>.</p>
+</section>
+
+<section id="coinfinite-completeness" data-formal="tli-coinfinite-primitive-hardness tli-coinfinite-complete" data-kind="theorem">
+  <h2>Infinite complements give the complementary complete problem</h2>
+  <p>The index set \(\mathrm{COINF}\) is \(\Pi_3\)-complete. Every \(A\in\Pi_3\) has a primitive-recursive many-one reduction to it.</p>
+  <div class="proof">
+    <p>Its upper bound is <a href="#cofinite-normal-form"></a>. The complement of \(A\) is \(\Sigma_3\), so <a href="#cofinite-completeness"></a> supplies a primitive-recursive \(f\) such that \(x\notin A\) exactly when \(f(x)\in\mathrm{COF}\). Negating both sides gives \(x\in A\) exactly when \(f(x)\in\mathrm{COINF}\). The same numerical map proves hardness for the complementary problem.</p>
+  </div>
+</section>
+
+<section id="unbounded-labels-question" data-formal="tli-once-schedule tli-once-fresh tli-once-stages tli-once-output tli-once-events" data-kind="question">
+  <h2>Can infinitely many events still leave infinitely many omissions?</h2>
+  <p>Use the cumulative schedule \(E_{x,s}=\{0,\ldots,s-1\}\), independent of \(x\), and labels \(\ell(c)=c\). Determine \(B_{x,s}\) and its union. Does an infinite total number of events force cofinitude?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Exactly event \(s\) is fresh at the step to stage \(s+1\). Inductively, \(B_{x,s}=\{2j:j&lt;s\}\). The assertion holds for the empty stage. If it holds at \(s\), the omissions below \(2s\) are the \(s\) odd numbers \(1,3,\ldots,2s-1\); the next omission is \(2s\). Hence \(m_s(B_{x,s})=2s\), and event \(s\) produces precisely the next asserted stage.</p>
+    <p>The union is the set of even numbers, whose complement is infinite. There are infinitely many events, but each fixed label occurs once. This satisfies the bounded-label hypothesis of <a href="#bounded-label-stabilization"></a>, not the repeated-fixed-label hypothesis of <a href="#infinite-label-escape"></a>.</p>
+  </div></details>
+</section>

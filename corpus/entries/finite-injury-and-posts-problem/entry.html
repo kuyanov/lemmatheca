@@ -1,0 +1,152 @@
+<section id="opposing-requirements" data-formal="fip-requirement fip-requirement-inequality fip-target-stage fip-oracle-stage fip-target-set fip-oracle-set fip-incomparable" data-kind="definition">
+  <h2>Require disagreement in both oracle directions</h2>
+  <p>For sets \(A,B\subseteq\mathbb N\), use the fixed <a href="oracle-program-numberings#oracle-numbering">oracle program numbering</a>. The <strong>priority requirements</strong> are</p>
+  <div class="math-display">\[R_{2e}:\varphi_e^B\ne\chi_A,\qquad R_{2e+1}:\varphi_e^A\ne\chi_B.\]</div>
+  <p>Equality means equality of partial functions, with each characteristic function total. Divergence or any incorrect numerical output at one input suffices for disagreement. Satisfying every even requirement proves \(A\not\le_T B\); satisfying every odd one proves \(B\not\le_T A\). Smaller requirement indices have higher priority.</p>
+  <p>At finite stages write \(T_{i,s}=A_s\) and \(O_{i,s}=B_s\) for even \(i\), and exchange the sets for odd \(i\). These are the <strong>target</strong> and <strong>oracle</strong> of requirement \(i\). Dropping the stage subscript means the corresponding final set. Put \(e_i=\lfloor i/2\rfloor\). The construction changes target membership to defeat \(\varphi_{e_i}^{O_i}\).</p>
+</section>
+
+<section id="private-reservoirs" data-formal="fip-reservoir fip-reservoir-infinite fip-reservoirs-disjoint fip-private-large-witness fip-reservoir-primitive" data-kind="lemma">
+  <h2>Give each requirement its own infinite supply of witnesses</h2>
+  <p>The sets \(N_i=\{\langle i,n\rangle:n\in\mathbb N\}\) are infinite and pairwise disjoint. Membership in \(N_i\) is primitive recursive jointly in \(i,x\). Only requirement \(i\) will be permitted to enumerate members of \(N_i\).</p>
+  <div class="proof">
+    <p>The <a href="coding-finite-sequences#unpairing">pairing bijection</a> gives \(x\in N_i\) exactly when the first coordinate of the decoded pair is \(i\). This is a primitive-recursive test. The map \(n\mapsto\langle i,n\rangle\) is injective, so its range is infinite; different first coordinates give disjoint ranges. In particular, each reservoir contains a number above any prescribed bound and outside any prescribed finite set.</p>
+  </div>
+</section>
+
+<section id="finite-state" data-formal="fip-state fip-valid-state fip-state-code fip-state-decoder fip-state-left-inverse fip-state-right-inverse fip-left-stage fip-right-stage fip-flag fip-restraint" data-kind="definition">
+  <h2>Store finite memberships, action flags, and restraints</h2>
+  <p>A <strong>stage state</strong> at stage \(s\) consists of four lists \((a_s,b_s,d_s,r_s)\), each of length \(s\). The first three have entries zero or one; the last has natural-number entries. Read an entry outside a list as zero. Define</p>
+  <div class="math-display">\[A_s=\{x&lt;s:a_s(x)=1\},\qquad B_s=\{x&lt;s:b_s(x)=1\}.\]</div>
+  <p>The <strong>acted flag</strong> \(d_s(i)=1\) means that requirement \(i\) has acted since its latest reset. Its <strong>restraint</strong> \(r_s(i)\) asks every lower-priority requirement to enumerate only numbers at least \(r_s(i)\). The restraint will protect the oracle of that requirement; applying the numerical restriction to additions to either set is harmlessly stronger. Flags and restraints are temporary. Membership bits, once one, are never returned to zero.</p>
+  <p>Initially all four lists are empty. Encode lists by the established <a href="coding-finite-sequences#list-code">numerical list coding</a> and pack their four codes with pairing. Thus a state is one natural number, rather than an oracle containing the eventual sets.</p>
+</section>
+
+<section id="bounded-observation" data-formal="post-finite-table-value post-finite-table-identity post-finite-value-agreement post-bounded-query-dependence post-finite-certificate-output" data-kind="lemma">
+  <h2>An observed zero uses only the current finite oracle prefix</h2>
+  <p>Let \(u_S\) code the membership list of a finite set \(S\). Use the fixed <a href="posts-theorem#finite-checker">ordinary checker</a> \(V(u,k,e,x)\). If</p>
+  <div class="math-display">\[V(u_S,k,e,x)=1,\]</div>
+  <p>then \(\varphi_e^S(x)\downarrow=0\). The same bounded value, and hence the same actual output, holds for every oracle agreeing with \(S\) below \(k\).</p>
+  <div class="proof">
+    <p>The numerical checker encodes failure by zero and a successful output \(y\) by \(y+1\), so value one means an actual output zero. Its <a href="posts-theorem#bounded-query-agreement">query-agreement theorem</a> says that allowance \(k\) only asks questions below \(k\). Equal answers there preserve the whole bounded calculation, and <a href="oracle-program-numberings#bounded-correctness">bounded soundness</a> gives the actual output. In particular, at stage \(s\) allowance \(s+1\) is protected by restraint \(s+1\), including a possible query at position \(s\).</p>
+  </div>
+</section>
+
+<section id="eligible-attention" data-formal="fip-eligible fip-witness-selector fip-priority-selector fip-chosen-eligible fip-priority-minimal fip-witness-minimal fip-no-attention fip-attention fip-actual-witness fip-target-code fip-oracle-code" data-kind="definition">
+  <h2>Attention is decided by a bounded test</h2>
+  <p>A pair \((i,x)\) is <strong>eligible at stage \(s\)</strong> when all of the following hold:</p>
+  <ul>
+    <li>\(i\le s\), \(x\le s\), \(x\in N_i\), \(d_s(i)=0\), and \(x\notin T_{i,s}\);</li>
+    <li>\(r_s(j)\le x\) for every \(j&lt;i\);</li>
+    <li>\(V(u_{O_{i,s}},s+1,e_i,x)=1\).</li>
+  </ul>
+  <p>Here \(u_{O_{i,s}}\) is \(b_s\)'s list code for even \(i\), or \(a_s\)'s code for odd \(i\). All these tests terminate using finite numerical data. The witness is fresh in its target, belongs to its private reservoir, respects every higher restraint, and currently receives the answer zero from the proposed oracle decider.</p>
+  <p>If any pair is eligible, choose the least eligible \(i\), then its least eligible \(x\). Call this requirement the one <strong>receiving attention</strong> at the stage. No question whether an unbounded computation will eventually halt is asked.</p>
+</section>
+
+<section id="successor-stage" data-formal="fip-next-state fip-stage fip-left-transition fip-right-transition fip-flag-transition fip-restraint-transition fip-acted-record fip-reset-record fip-preserve-record fip-target-update" data-kind="definition">
+  <h2>Act once, protect the observation, and reset lower priorities</h2>
+  <p>The <strong>successor-stage operation</strong> first appends zero to each of the four lists, making their lengths \(s+1\). If there is no eligible pair, these lists are the next state. Otherwise let \((i,x)\) be the selected pair. Set the target membership bit at \(x\) to one, leaving the other membership bits unchanged. For all \(j\le s\), put</p>
+  <div class="math-display">\[(d_{s+1}(j),r_{s+1}(j))=\begin{cases}(d_s(j),r_s(j)),&amp;j&lt;i,\\(1,s+1),&amp;j=i,\\(0,0),&amp;j&gt;i.\end{cases}\]</div>
+  <p>This is a <strong>reset</strong> of every lower-priority strategy. It discards their action flags and restraints, but removes no member from either set. The acting strategy records that it has acted and protects every query of its observed computation. The next fresh witness, if a reset strategy later acts again, must still lie outside its current target set. Distinct reservoirs keep it separate from every other strategy's additions.</p>
+</section>
+
+<section id="stage-effectivity" data-formal="fip-numeric-stage fip-numeric-successor fip-numeric-recursion fip-successor-primitive fip-stage-primitive fip-stage-tests-primitive fip-stage-program fip-stage-program-eval prim-bounded-search-closure" data-kind="theorem">
+  <h2>The whole stage sequence is an ordinary computable construction</h2>
+  <p>The specified successor operation and the resulting map from \(s\) to the coded state at stage \(s\) are primitive recursive. The membership tests for \(A_s\) and \(B_s\) are primitive recursive jointly in stage and input.</p>
+  <div class="proof">
+    <p>For a supplied state and stage, scan \(i=0,\ldots,s\). For each \(i\), scan \(x=0,\ldots,s\), checking the bounded list of restraints \(j&lt;i\). The reservoir test, list entries, arithmetic, flags, and the fixed finite checker are primitive recursive. Keep the first successful witness and then the first successful priority; equivalently apply the <a href="primitive-recursion#bounded-search">bounded least-search construction</a> first to witnesses and then to priorities, using the bound itself for failure. This implements precisely the stated choices.</p>
+    <p>Copying, extending, and updating a list are bounded loops on coded finite data. Form each new list by a loop over \(j=0,\ldots,s\), using the displayed cases, and pack its four codes. These are composition and primitive recursion, so the successor operation is primitive recursive in both supplied numbers. Primitive recursion from the empty initial state computes the stage sequence. Composing with bounded entry lookup gives its membership tests. The ordinary model-equivalence and numbering results therefore provide actual finite programs for these maps. The eventual sets are not inputs to any of these programs.</p>
+  </div>
+</section>
+
+<section id="stage-invariants" data-formal="fip-state-lengths fip-state-binary fip-stage-bounds fip-monotone fip-attention-data fip-target-update fip-private-stage-source fip-restraint-bound fip-zero-flag-restraint fip-flag-provenance post-finite-oracle-finite" data-kind="lemma">
+  <h2>Only attention adds a member, and every addition has an owner</h2>
+  <p>For every \(s\), the four lists have length \(s\), their membership and flag entries are binary, and \(A_s,B_s\subseteq\{0,\ldots,s-1\}\). Both set sequences increase. Each transition adds at most one number to one set. An addition at a stage where requirement \(i\) acts lies in \(N_i\), and no requirement other than \(i\) ever adds a member of \(N_i\).</p>
+  <p>Each restraint is at most \(s\). A zero acted flag has restraint zero. A flag \(d_s(i)=1\) records an action of \(i\) at some \(t&lt;s\) with no intervening higher-priority action; its restraint is \(t+1\).</p>
+  <div class="proof">
+    <p>Induct on \(s\). Empty lists give the base case. Appending zero preserves old entries and lengthens each list by one; setting one target bit cannot destroy binary values or membership. The selected witness is at most \(s\), so the new sets are bounded by \(s+1\). The eligibility conditions place it in \(N_i\), and disjointness of reservoirs excludes every other owner. No other instruction changes a membership bit.</p>
+    <p>For strategy data, a higher-priority coordinate is preserved, the acting coordinate receives flag one and restraint \(s+1\), and a lower coordinate receives two zeros. These three cases preserve the asserted bounds and give exactly the stated provenance of a nonzero flag. A stage with no attention only appends zero. This proves all the invariants.</p>
+  </div>
+</section>
+
+<section id="enumerable-unions" data-formal="fip-left-set fip-right-set fip-left-recognizer fip-right-recognizer fip-left-recognizer-recursive fip-right-recognizer-recursive fip-recognizer-domains fip-enumerable fip-eventual-oracle effective-stage-prefix-settles" data-kind="theorem">
+  <h2>The two unions are computably enumerable</h2>
+  <p>Define \(A=\bigcup_s A_s\) and \(B=\bigcup_s B_s\). Both sets are c.e.; their finite stages are increasing, and for every finite bound \(k\) there is a stage after which both finite stages agree with their unions below \(k\).</p>
+  <div class="proof">
+    <p>On input \(x\), compute successive states until its target membership bit becomes one. <a href="#stage-effectivity"></a> gives an ordinary program for each finite test, so the search recognizes exactly the union. The equivalence with an ordinary domain index also follows from the <a href="effective-enumerations#computable-approximations">computable increasing approximation theorem</a>, using the bound \(s\). Thus these are actual c.e. sets.</p>
+    <p>For each member below \(k\), choose a stage at which it enters; a nonmember never enters. A common stage for the finitely many members below \(k\) works thereafter by monotonicity. Do this for both sets and take the larger stage. This is an existence statement about finitely many bits, not an algorithm computing a stabilization stage.</p>
+  </div>
+</section>
+
+<section id="injury-question" data-formal="fip-query-example fip-query-injury fip-protected-oracle fip-reset-record" data-kind="question">
+  <h2>What can destroy an earlier successful diagonalization?</h2>
+  <p>A computation queries the bit \(q\) of an oracle, receives zero, and returns that answer. A strategy puts its witness \(x\) into its target set, making the target bit one. If a higher strategy later puts \(q\) into the oracle, is the old disagreement necessarily preserved?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. The same query program now returns one, equal to the target bit. Its earlier output zero supplied no information about an oracle differing at the queried position. Restraint \(r&gt;q\) prevents this change by a lower-priority strategy, since that strategy may only add numbers at least \(r\). A higher strategy is allowed to ignore the restraint; its action resets the lower strategy. This explains both why a reset is needed and why mere convergence of finite oracles does not preserve an arbitrarily selected earlier run.</p>
+  </div></details>
+  <figure id="injury-and-restraint" class="proof-figure">
+    <div class="figure-image"><img src="assets/injury-and-restraint.svg" width="460" height="535" alt="A lower strategy observes a zero, adds its target witness and restrains the oracle. A higher strategy may change a queried bit and reset that lower strategy. A later action must use a fresh private witness and establish a new restraint." /></div>
+    <figcaption>A conditional injury pattern: a higher-priority action changes a queried oracle bit. The old run then has no persistence guarantee. Resets discard temporary strategy data, while every target enumeration remains permanent.</figcaption>
+  </figure>
+</section>
+
+<section id="finite-injury" data-formal="fip-finite-injury fip-eventual-record tli-bounded-label-stabilization" data-kind="theorem">
+  <h2>Every requirement receives attention only finitely often</h2>
+  <p>For every \(i\), there is a stage \(v\) such that no \(j\le i\) receives attention at any stage \(s\ge v\). In particular every strategy is reset only finitely often, and its flag and restraint eventually stop changing.</p>
+  <div class="proof">
+    <p>Induct on \(i\). Requirement zero is never reset. Once it acts, its flag is one forever and blocks another action, so it acts at most once.</p>
+    <p>For the induction step, choose \(v\) after every action of indices \(j&lt;i\); the induction hypothesis supplies such a stage. After \(v\), no instruction resets the flag of \(i\). If the flag is already one, it never acts again. Otherwise it can act at most once: that action sets its flag to one, and lower actions preserve it. Thus there is a later stage after every action of \(i\) too. This proves the induction. Only higher actions reset a given strategy; after all those actions and its possible last own action, its flag and restraint are fixed.</p>
+  </div>
+  <p>The <a href="third-level-index-sets#bounded-label-stabilization">complement-marker stabilization lemma</a> gives another finite stabilization argument: finitely many events at each bounded family of ranks eventually leave that entire marker prefix fixed.</p>
+</section>
+
+<section id="restraint-preservation" data-formal="fip-uninjured-record fip-protected-oracle" data-kind="lemma">
+  <h2>An uninjured action preserves every queried oracle bit</h2>
+  <p>Suppose requirement \(i\) acts at stage \(s\), and no requirement \(j&lt;i\) acts at any stage \(t&gt;s\). Its restraint then remains \(s+1\), and its oracle set at every later stage, and in the union, agrees with \(O_{i,s}\) below \(s+1\).</p>
+  <div class="proof">
+    <p>The action changes only its target, leaving its oracle unchanged. It sets its flag to one, so it cannot act again unless reset; the hypothesis excludes such a reset. Every subsequent action has index \(j&gt;i\). Its eligibility test requires its new number to be at least the unchanged restraint \(s+1\). Hence it changes no oracle bit below that bound. Induction on subsequent stages gives agreement at every finite stage; the increasing union has the same bits there. The bounded observation is therefore preserved for the final oracle.</p>
+  </div>
+</section>
+
+<section id="acted-requirement" data-formal="fip-acted-requirement post-finite-certificate-output fip-target-update" data-kind="lemma">
+  <h2>A final action makes the required answers different</h2>
+  <p>If requirement \(i\) acts at stage \(s\) and is never reset later, then \(R_i\) holds for the final sets.</p>
+  <div class="proof">
+    <p>Its selected witness \(x\) was outside its target, and its bounded computation with the stage oracle returned zero. The action puts \(x\) into the target forever, so its final characteristic bit is one. By <a href="#restraint-preservation"></a> and <a href="#bounded-observation"></a>, the actual final-oracle computation still returns zero. The two functions therefore disagree at \(x\), as required.</p>
+  </div>
+</section>
+
+<section id="waiting-requirement" data-formal="fip-private-waiting fip-waiting-record fip-eventual-zero fip-waiting-requirement fip-private-union-source" data-kind="lemma">
+  <h2>A permanently waiting requirement is satisfied too</h2>
+  <p>Fix \(i\). Suppose \(d_v(i)=0\), and at every stage \(s\ge v\) neither \(i\) nor any \(j&lt;i\) acts. Then \(R_i\) holds.</p>
+  <div class="proof">
+    <p>All higher restraints are now fixed. Choose \(x\in N_i\) outside the finite target \(T_{i,v}\), above every higher restraint. Such an \(x\) exists by <a href="#private-reservoirs"></a>. Only \(i\) can add this private number, and \(i\) never acts after \(v\), so \(x\) stays out of its final target. Its final target bit is zero.</p>
+    <p>Suppose the final-oracle computation at \(x\) returned zero. Bounded completeness supplies a fixed allowance \(k\) giving encoded value one for that oracle. By <a href="#enumerable-unions"></a>, at every sufficiently late stage its finite oracle agrees with the final oracle below \(k\). Query agreement replays this successful calculation at allowance \(k\). Increasing the allowance to \(s+1\) then preserves success for the same finite oracle. Choose such a stage \(s\ge v,i,x\) with \(s+1\ge k\). All eligibility conditions for \((i,x)\) now hold.</p>
+    <p>The stage must select some eligible requirement of index at most \(i\). A smaller selected index contradicts the absence of higher actions after \(v\); selecting \(i\) contradicts the assumed permanent wait. Thus the final computation does not return zero. It either diverges or returns a positive value, including a nonbinary one. In either case it disagrees with the final target bit zero, proving the requirement.</p>
+  </div>
+</section>
+
+<section id="friedberg-muchnik" data-formal="fip-friedberg-muchnik fip-all-requirements" data-kind="theorem">
+  <h2>There are incomparable computably enumerable degrees</h2>
+  <div class="statement-box"><p>The specified effective construction gives c.e. sets \(A,B\subseteq\mathbb N\) satisfying \(A\not\le_T B\) and \(B\not\le_T A\).</p></div>
+  <div class="proof">
+    <p>The two sets are c.e. by <a href="#enumerable-unions"></a>. Fix \(i\) and go beyond all higher-priority actions, using <a href="#finite-injury"></a>. If its flag is one, it records an earlier action not followed by a reset, so <a href="#acted-requirement"></a> applies. If its flag is zero and it later acts, that action is never reset and the same lemma applies. If it never acts thereafter, <a href="#waiting-requirement"></a> applies. Thus every requirement is satisfied. The even and odd requirements exclude every proposed reduction in the two respective directions, proving the theorem.</p>
+  </div>
+</section>
+
+<section id="posts-problem" data-formal="fip-enumerable fip-halting-bounds fip-posts-solution fip-undecidable fip-no-halting-turing incomp-incomparable-between productive-diagonal-complete jump-empty-jump-equiv-halting" data-kind="theorem">
+  <h2>Both enumerable degrees lie strictly between zero and the halting degree</h2>
+  <div class="statement-box"><p>For these same c.e. sets,</p><div class="math-display">\[\mathbf0&lt;[A]&lt;\mathbf0',\qquad\mathbf0&lt;[B]&lt;\mathbf0'.\]</div><p>In particular there is an undecidable c.e. set which does not decide the halting problem. This solves Post’s problem.</p></div>
+  <div class="proof">
+    <p>Every ordinary c.e. set reduces to the ordinary halting set, hence to <a href="turing-jump#empty-oracle-jump">\(0'=J(\varnothing)\)</a>, by <a href="turing-jump#relative-completeness">jump completeness</a> at the empty oracle. This gives both upper comparisons. If one set were computable it would reduce to the other, contradicting incomparability. If \(0'\le_T A\), then \(B\le_T0'\le_T A\), again a contradiction; exchange the sets for the other strict upper bound. This is the same degree-order argument as in <a href="incomparable-turing-degrees#intermediate-degrees"></a>, now with actual ordinary enumerations of the constructed sets.</p>
+  </div>
+</section>
+
+<section id="many-one-question" data-formal="fip-many-one-incomparable fip-no-halting-many-one fip-not-ce-complete turing-red-many-one univ-diagonal-halting-enumerable" data-kind="question">
+  <h2>What do the constructions imply for many-one reductions?</h2>
+  <p>Can either constructed set many-one reduce to the other? Can either be many-one complete among c.e. sets?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No in both cases. Every <a href="turing-degrees#many-one-comparison">many-one reduction gives a Turing reduction</a>, so a reduction in either direction would contradict incomparability. If either set were many-one complete for c.e. sets, the halting set would many-one reduce to it, hence Turing reduce to it. That contradicts the strict upper bound just proved. The earlier <a href="simple-sets#many-one-boundary-question">simple-set construction</a> ruled out many-one completeness without proving Turing incompleteness; here the Turing-degree conclusion supplies the stronger result.</p>
+  </div></details>
+</section>

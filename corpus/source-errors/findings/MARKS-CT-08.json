@@ -1,0 +1,16 @@
+{
+  "id": "MARKS-CT-08",
+  "source_ids": [
+    "marks-computability"
+  ],
+  "severity": "local",
+  "title": "The oracle-absorption proof starts with the predicate computable in the wrong oracle.",
+  "details": "Marks, Computability theory, version 2024-02-25, Lemma 16.5(5), proof on printed/PDF p. 68. The text and rendered page were checked on 2026-10-26. The hypotheses say that A is Sigma_1^X and X is Sigma_n^Y, but the proof begins with a predicate R computable in Y and an index satisfying R(x,y) iff phi_e^Y(x,y)=1. The first hypothesis instead supplies a predicate computable in X. For Y empty, X=K and A=K-prime, an ordinary computable R here would incorrectly make K-prime ordinarily c.e.\n\nRepair: replace Y by X in those two introductory occurrences. The later finite-oracle program phi_e^F then simulates that X-program. Check every queried bit against X, using its Sigma_n^Y description and its complement\u2019s Pi_n^Y description, promoted to Sigma_(n+1)^Y. A finite evaluation allowance and checked agreement on all possible queries give the intended oracle-absorption argument. The theorem statement survives. The posts-theorem entry uses this repair, with finite bounded evaluation and agreement checked on every possible query below its allowance.",
+  "entry_refs": [
+    "posts-theorem#finite-checker",
+    "posts-theorem#oracle-absorption"
+  ],
+  "related_findings": [
+    "MARKS-CT-02"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "MARKS-CT-13",
+  "source_ids": [
+    "marks-computability"
+  ],
+  "severity": "serious",
+  "title": "The co-c.e.-tree conversion bounds enumeration time by prefix length instead of current word length.",
+  "details": "Marks, version 2024-02-25, §23.2 Lemma 23.4, p.86, definition of T-prime, read and visually confirmed on 2026-11-08. For a candidate word s, the printed algorithm checks each prefix s restricted to n using only n enumeration steps. This need not preserve infinite paths. Let T consist of all zero-only binary words, and enumerate every word outside T only at a stage strictly larger than its length. This is a valid effective enumeration of the complement; the printed test accepts every binary word, so its T-prime has all binary paths whereas T has only the all-zero path. At a word of length m, instead inspect all its prefixes using the same first m stages of a monotone complement enumeration. The resulting predicate is computable and prefix closed: an accepted word has prefixes whose shorter time windows see no additional forbidden prefixes. Every T-path remains, and if a forbidden prefix t appears at stage k, every extension of length at least max(k,length(t)) is rejected. Thus the repaired construction has exactly the original paths. The theorem remains correct. This also repairs its use in Theorem 23.5. Planning only for effectively closed classes; no current entry adopts either construction. Current adoption2026-11-09: the effectively closed classes entry implements the repaired common current-word-length bound, proves exact path equality including the empty-prefix case, and gives the delayed-enumeration counterexample. The earlier planning-only status is historical.",
+  "entry_refs": [
+    "effectively-closed-classes-and-dnc#common-stage-tree",
+    "effectively-closed-classes-and-dnc#same-paths",
+    "effectively-closed-classes-and-dnc#coenumerable-conversion",
+    "effectively-closed-classes-and-dnc#late-enumeration-question"
+  ],
+  "related_findings": []
+}

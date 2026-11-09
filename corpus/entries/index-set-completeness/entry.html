@@ -1,0 +1,157 @@
+<section id="three-index-sets" data-formal="ah-totality-set ah-finite-domain-set effective-stage-index-set isc-infinitude isc-infinitude-complement isc-totality-subset-infinitude" data-kind="definition">
+  <h2>Three properties of the same numbered programs</h2>
+  <p>Use the fixed <a href="universal-computation#numbering-programs">ordinary program numbering</a> \(\varphi_e\), and write \(W_e=\operatorname{dom}(\varphi_e)\). The <strong>totality</strong>, <strong>finiteness</strong>, and <strong>infinitude</strong> index sets are</p>
+  <div class="math-display">\[\mathrm{TOT}=\{e:\forall y\;\varphi_e(y)\downarrow\}.\]</div>
+  <div class="math-display">\[\mathrm{FIN}=\{e:W_e\text{ is finite}\},\qquad \mathrm{INF}=\{e:W_e\text{ is infinite}\}.\]</div>
+  <p>Thus \(\mathrm{INF}=\mathbb N\setminus\mathrm{FIN}\). Infinitude concerns the set of inputs on which the program halts. It does not require infinitely many different output values. Totality requires that every input be in the domain, so \(\mathrm{TOT}\subseteq\mathrm{INF}\), but an infinite domain may omit inputs.</p>
+</section>
+
+<section id="pi-completeness" data-formal="isc-pi-complete post-sigma-completeness" data-kind="definition">
+  <h2>Completeness includes a reduction from every set at the level</h2>
+  <p>A set \(H\) is <strong>\(\Pi_2\)-complete</strong> when \(H\in\Pi_2\) and every \(A\in\Pi_2\) has an <a href="computable-reductions#many-one-reductions">ordinary many-one reduction</a> to \(H\). Equivalently, for each such \(A\) there is a total computable \(f:\mathbb N\to\mathbb N\) satisfying</p>
+  <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad f(x)\in H\qquad\text{for every }x.\]</div>
+  <p>Use the corresponding definition with \(\Sigma_2\) for \(\Sigma_2\)-completeness, as in <a href="posts-theorem#relative-complete-sets">the hierarchy completeness definition</a> with empty background oracle. The input \(x\) is translated into finite program text. The translator must halt even when the resulting program does not.</p>
+</section>
+
+<section id="membership-bounds" data-formal="ah-totality-normal-form ah-totality-pi-two ah-finiteness-normal-form ah-finiteness-sigma-two isc-infinitude-pi-two" data-kind="lemma">
+  <h2>Totality and infinitude are universal second-level properties</h2>
+  <p>We have \(\mathrm{TOT},\mathrm{INF}\in\Pi_2\) and \(\mathrm{FIN}\in\Sigma_2\).</p>
+  <div class="proof">
+    <p>The <a href="arithmetical-hierarchy#totality-and-finiteness">existing descriptions of totality and finiteness</a> give</p>
+    <div class="math-display">\[e\in\mathrm{TOT}\ \Longleftrightarrow\ \forall y\;\exists k\;[b(k,e,y)>0],\]</div>
+    <div class="math-display">\[e\in\mathrm{FIN}\ \Longleftrightarrow\ \exists a\;\forall s\;\forall u&lt;s\;[u\in W_{e,s}\Rightarrow u&lt;a].\]</div>
+    <p>Here \(b\) is the ordinary bounded evaluator's encoded output, and \(W_{e,s}\) are the <a href="effective-enumerations#uniform-finite-approximation">uniform finite stages</a>. Both displayed matrices are primitive recursive after the bounded quantifier is absorbed. Taking the complement of \(\mathrm{FIN}\) gives \(\mathrm{INF}\in\Pi_2\) by <a href="arithmetical-hierarchy#complement-duality">complement duality</a>. The bound \(a=0\) allows an empty domain. These upper bounds alone do not establish completeness.</p>
+  </div>
+</section>
+
+<section id="totality-search" data-formal="isc-computable-matrix isc-total-search isc-total-search-partial isc-total-search-domain isc-total-search-least isc-total-program isc-total-program-eval isc-total-map isc-total-map-primitive isc-total-map-eval" data-kind="definition">
+  <h2>Search separately for each requested witness</h2>
+  <p>Fix an ordinary computable relation \(R(x,y,z)\). For paired input \(\langle x,y\rangle\), define the <strong>witness-search program</strong></p>
+  <div class="math-display">\[P_R(x,y)\simeq\mu z\;R(x,y,z).\]</div>
+  <p>It tests \(z=0,1,2,\ldots\) in order and returns the first successful \(z\). Each individual test terminates because \(R\) is computable. If no test succeeds, this computation is undefined. This is <a href="partial-recursive-functions#sequential-minimization">sequential minimization</a> of a total test, so \(P_R\) is partial recursive jointly in \(x,y\).</p>
+  <p>Choose one index \(p_R\) for its paired-input program. The <a href="universal-computation#parameter-theorem">parameter theorem</a> supplies the specified map</p>
+  <div class="math-display">\[f_R(x)=s(p_R,x),\qquad \varphi_{f_R(x)}(y)\simeq P_R(x,y).\]</div>
+  <p>For this fixed \(R\), \(p_R\) is a constant and \(f_R\) is primitive recursive. Choosing this constant does not assert that the original matrix is primitive recursive. The code map inserts \(x\) into the program before any witness search is run.</p>
+</section>
+
+<section id="totality-search-correct" data-formal="isc-total-map-correct" data-kind="lemma">
+  <h2>The search program is total exactly when every witness exists</h2>
+  <p>For every \(x\),</p>
+  <div class="math-display">\[f_R(x)\in\mathrm{TOT}\quad\Longleftrightarrow\quad\forall y\;\exists z\;R(x,y,z).\]</div>
+  <div class="proof">
+    <p>If every \(y\) has a witness, the search on input \(y\) reaches its least witness after finitely many terminating tests. Consequently the specialized program halts on every input. The number of tests may depend on \(y\).</p>
+    <p>If the right-hand side fails, some input \(y_0\) has no witness. Every test on that input returns a negative answer, so \(P_R(x,y_0)\) never halts. The specialized program is therefore not total. This proves both directions for the actual index map \(f_R\).</p>
+  </div>
+</section>
+
+<section id="totality-complete" data-formal="isc-pi-two-matrix isc-totality-primitive-hardness isc-totality-complete ces-whole-domain-comparisons ces-comparison-completeness" data-kind="theorem">
+  <h2>Totality is complete for the universal second level</h2>
+  <div class="statement-box"><p>The index set \(\mathrm{TOT}\) is \(\Pi_2\)-complete. For every \(A\in\Pi_2\), a reduction \(A\le_m\mathrm{TOT}\) can be chosen primitive recursive.</p></div>
+  <div class="proof">
+    <p>Membership in \(\Pi_2\) was proved in <a href="#membership-bounds"></a>. By the <a href="arithmetical-hierarchy#tuple-blocks">computable-matrix normal form</a>, any \(A\in\Pi_2\) has a computable relation \(R\) with</p>
+    <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad\forall y\;\exists z\;R(x,y,z).\]</div>
+    <p>The map in <a href="#totality-search"></a> is primitive recursive, and <a href="#totality-search-correct"></a> identifies this right-hand side with \(f_R(x)\in\mathrm{TOT}\). It therefore gives a reduction of the arbitrary set \(A\), proving completeness.</p>
+  </div>
+  <p>The same fixed-whole-domain comparison map transfers this lower bound to <a href="comparing-enumerable-sets#comparison-completeness">inclusion and equality of enumerable domains</a>. In both comparisons, one side is an index for all natural numbers.</p>
+</section>
+
+<section id="infinite-domain-question" data-formal="isc-even-matrix isc-even-matrix-computable isc-even-index isc-even-index-domain isc-even-index-output isc-even-index-facts" data-kind="question">
+  <h2>Does an infinite domain make a program total?</h2>
+  <p>A program halts with output zero exactly on the even inputs. Is its index in \(\mathrm{TOT}\), \(\mathrm{FIN}\), or \(\mathrm{INF}\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Its domain is the infinite set of even numbers. Thus the index belongs to \(\mathrm{INF}\), does not belong to \(\mathrm{FIN}\), and does not belong to \(\mathrm{TOT}\), since the computation on input one diverges. Such a partial recursive program exists: test parity, return zero on an even input, and otherwise perform a search for a witness to \(1=0\).</p>
+    <p>The range of this partial function is only \(\{0\}\). The classification concerns the domain, so a finite range has no bearing on membership in \(\mathrm{FIN}\).</p>
+  </div></details>
+</section>
+
+<section id="finite-refutations" data-formal="isc-permanent isc-refutations isc-refutations-spec isc-refutations-computable" data-kind="definition">
+  <h2>A finite test collects refutations of the first candidates</h2>
+  <p>Now fix a computable relation \(R(x,y,z)\) used in an existential-universal description. Call \(y\) a <strong>permanent candidate</strong> at \(x\) when \(\forall z\;R(x,y,z)\). To refute all candidates through \(n\), use the <strong>bounded refutation test</strong></p>
+  <div class="math-display">\[H_R(x,n,t)\quad\Longleftrightarrow\quad\forall y\le n\;\exists z&lt;t\;\neg R(x,y,z).\]</div>
+  <p>This is a total computable relation jointly in \(x,n,t\): run the finitely many tests \(R(x,y,z)\) for \(y\le n\) and \(z&lt;t\). The <a href="arithmetical-hierarchy#bounded-quantifiers">bounded quantifiers</a> preserve decidability. Different candidates may have different refutations; \(t\) is only a common upper bound on their witnesses.</p>
+</section>
+
+<section id="finite-witness-collection" data-formal="isc-refutations-bound" data-kind="lemma">
+  <h2>One finite bound exists exactly when each candidate is refutable</h2>
+  <p>For every \(x,n\),</p>
+  <div class="math-display">\[\exists t\;H_R(x,n,t)\quad\Longleftrightarrow\quad\forall y\le n\;\exists z\;\neg R(x,y,z).\]</div>
+  <div class="proof">
+    <p>A successful bounded test already supplies every required refutation. Conversely, choose a refutation \(z_y\) for each of the finitely many \(y=0,\ldots,n\), and take \(t=1+\max\{z_0,\ldots,z_n\}\). Then \(z_y&lt;t\) for each candidate, so the bounded test succeeds. Equivalently, one may prove the common-bound assertion by induction, enlarging the previous bound with the next witness.</p>
+    <p>This is a finite witness collection, not a single refutation that must work for every candidate.</p>
+  </div>
+</section>
+
+<section id="finiteness-program" data-formal="isc-finite-search isc-finite-search-partial isc-finite-search-domain isc-finite-search-output isc-finite-program isc-finite-program-eval isc-finite-map isc-finite-map-primitive isc-finite-map-eval isc-finite-map-domain" data-kind="definition">
+  <h2>Halt when a whole initial list has been refuted</h2>
+  <p>On paired input \(\langle x,n\rangle\), define the <strong>prefix-refutation program</strong> \(Q_R(x,n)\) by searching \(t=0,1,2,\ldots\) for \(H_R(x,n,t)\). If a test succeeds, return zero; if none succeeds, remain undefined. The total computability of \(H_R\), sequential minimization, and strict composition make \(Q_R\) partial recursive jointly in both inputs.</p>
+  <p>Choose an index \(q_R\) for this paired-input program and define</p>
+  <div class="math-display">\[g_R(x)=s(q_R,x),\qquad \varphi_{g_R(x)}(n)\simeq Q_R(x,n).\]</div>
+  <p>The map \(g_R\) is primitive recursive. By <a href="#finite-witness-collection"></a>, its exact domain is</p>
+  <div class="math-display">\[W_{g_R(x)}=\{n:\forall y\le n\;\exists z\;\neg R(x,y,z)\}.\]</div>
+  <p>Membership is discovered by a finite search when true. The program does not ask whether a candidate is permanent, nor wait for a negative answer from an infinite universal test.</p>
+</section>
+
+<section id="finiteness-positive-case" data-formal="isc-finite-map-initial-segment isc-finite-map-empty" data-kind="lemma">
+  <h2>A permanent candidate cuts the domain to a finite initial segment</h2>
+  <p>If \(a\) is the least permanent candidate at \(x\), then</p>
+  <div class="math-display">\[W_{g_R(x)}=\{n:n&lt;a\}.\]</div>
+  <div class="proof">
+    <p>For \(n&lt;a\), every \(y\le n\) is smaller than the least permanent candidate. Hence it fails permanence, so \(\exists z\;\neg R(x,y,z)\). The domain description in <a href="#finiteness-program"></a> puts \(n\) in the domain.</p>
+    <p>For \(n\ge a\), the bounded list includes \(a\), which has no refutation. The bounded test can never succeed, so \(n\) is outside the domain. This proves the equality. In particular the domain is finite; if \(a=0\), it is empty.</p>
+  </div>
+  <figure id="refutation-prefix" class="proof-figure">
+    <div class="figure-image"><img src="assets/refutation-prefix.svg" width="760" height="390" alt="The first permanent candidate is y equals two. Inputs zero and one need only refutations of earlier candidates and halt. Inputs two and all later inputs include candidate two, whose refutation never arrives, and remain undefined." /></div>
+    <figcaption>If candidate \(a=2\) is the first permanent one, exactly inputs \(n&lt;2\) halt. Each input asks for all refutations through its own bound; one missing refutation blocks every longer list.</figcaption>
+  </figure>
+</section>
+
+<section id="finiteness-negative-case" data-formal="isc-finite-map-universal" data-kind="lemma">
+  <h2>Without a permanent candidate the domain is all natural numbers</h2>
+  <p>If \(\neg\exists y\;\forall z\;R(x,y,z)\), then \(W_{g_R(x)}=\mathbb N\).</p>
+  <div class="proof">
+    <p>Every candidate \(y\) has a refutation \(z\) with \(\neg R(x,y,z)\). Fix any input \(n\). The finitely many candidates through \(n\) have a common witness bound by <a href="#finite-witness-collection"></a>, so the search defining \(Q_R(x,n)\) halts. Since \(n\) was arbitrary, the domain is all of \(\mathbb N\), and is therefore infinite.</p>
+    <p>The conclusion does not require one bound that refutes every candidate at once: the bound can increase with \(n\).</p>
+  </div>
+</section>
+
+<section id="finiteness-complete" data-formal="isc-sigma-two-matrix isc-finite-map-correct isc-finiteness-primitive-hardness isc-finiteness-complete tli-cofinite-complete" data-kind="theorem">
+  <h2>Finiteness is complete for the existential second level</h2>
+  <div class="statement-box"><p>The index set \(\mathrm{FIN}\) is \(\Sigma_2\)-complete. For every \(A\in\Sigma_2\), a reduction \(A\le_m\mathrm{FIN}\) can be chosen primitive recursive.</p></div>
+  <div class="proof">
+    <p>Membership was established in <a href="#membership-bounds"></a>. Write the arbitrary \(\Sigma_2\) set in computable-matrix normal form as</p>
+    <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad\exists y\;\forall z\;R(x,y,z).\]</div>
+    <p>If \(x\in A\), there is a least permanent candidate, and <a href="#finiteness-positive-case"></a> makes \(W_{g_R(x)}\) finite. If \(x\notin A\), <a href="#finiteness-negative-case"></a> makes this domain all of \(\mathbb N\), hence not finite. Therefore</p>
+    <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad g_R(x)\in\mathrm{FIN}.\]</div>
+    <p>The particular map \(g_R\) is primitive recursive by its parameter construction, proving the required reduction in both directions.</p>
+  </div>
+  <p>Finite domains and finite complements have different index classifications. The <a href="third-level-index-sets#cofinite-completeness">cofinite-domain index set</a> is complete for the third existential level; its proof uses movable complement markers rather than the initial-segment domain above.</p>
+</section>
+
+<section id="infinitude-complete" data-formal="isc-infinitude-primitive-hardness isc-infinitude-complete" data-kind="theorem">
+  <h2>Infinitude is complete for the universal second level</h2>
+  <div class="statement-box"><p>The index set \(\mathrm{INF}\) is \(\Pi_2\)-complete. For every \(A\in\Pi_2\), a reduction \(A\le_m\mathrm{INF}\) can be chosen primitive recursive.</p></div>
+  <div class="proof">
+    <p>Its upper bound is in <a href="#membership-bounds"></a>. If \(A\in\Pi_2\), its complement is \(\Sigma_2\). Apply the specified construction in <a href="#finiteness-complete"></a> to obtain a primitive-recursive \(g\) with</p>
+    <div class="math-display">\[x\notin A\quad\Longleftrightarrow\quad g(x)\in\mathrm{FIN}.\]</div>
+    <p>Negating both sides gives \(x\in A\Longleftrightarrow g(x)\in\mathrm{INF}\). The numerical map has not changed. This is complementing both source and target of a many-one reduction, rather than reversing the target answer alone.</p>
+  </div>
+</section>
+
+<section id="exact-complexity" data-formal="isc-totality-not-sigma-two isc-finiteness-not-pi-two isc-infinitude-not-sigma-two isc-totality-not-re isc-totality-not-co-re isc-totality-undecidable isc-finiteness-not-re isc-finiteness-not-co-re isc-finiteness-undecidable isc-infinitude-not-re isc-infinitude-not-co-re isc-infinitude-undecidable recidx-computable-indices recidx-computable-complete" data-kind="theorem">
+  <h2>The complete classifications exclude the opposite polarity</h2>
+  <p>We have \(\mathrm{TOT},\mathrm{INF}\notin\Sigma_2\) and \(\mathrm{FIN}\notin\Pi_2\). In particular none of these three index sets is c.e., co-c.e., or decidable.</p>
+  <div class="proof">
+    <p>By <a href="posts-theorem#hierarchy-properness">properness of the hierarchy</a>, some \(\Pi_2\) set is not \(\Sigma_2\). If \(\mathrm{TOT}\) were \(\Sigma_2\), reducing that set to \(\mathrm{TOT}\) and using <a href="arithmetical-hierarchy#computable-preimages">computable-preimage closure</a> would put it in \(\Sigma_2\), a contradiction. The same argument applies to \(\mathrm{INF}\). Dually a \(\Sigma_2\) set outside \(\Pi_2\) reduces to \(\mathrm{FIN}\), proving its exclusion.</p>
+    <p>Every c.e. or co-c.e. set is respectively \(\Sigma_1\) or \(\Pi_1\); <a href="arithmetical-hierarchy#padding-and-inclusions">padding</a> puts both first-level classes inside both second-level classes. A decidable set lies in both first-level classes. The exclusions just proved therefore rule out all three possibilities for each index set. This is stronger than the undecidability given by <a href="rices-theorem#totality">Rice's theorem for totality</a>.</p>
+  </div>
+  <p>Requiring an enumerable domain to admit a decision procedure leads to the <a href="indices-of-computable-enumerable-sets#computable-domain-completeness">complete third-level computable-domain index problem</a>. The condition asks for some decision procedure for the domain, rather than totality of its original enumerating program.</p>
+</section>
+
+<section id="reduction-direction-question" data-formal="isc-totality-equiv-infinitude isc-totality-ne-infinitude isc-totality-not-reduce-finiteness isc-finiteness-not-reduce-totality isc-infinitude-not-reduce-finiteness isc-finiteness-not-reduce-infinitude" data-kind="question">
+  <h2>Which of these complete problems reduce to one another?</h2>
+  <p>Are \(\mathrm{TOT}\) and \(\mathrm{INF}\) many-one equivalent? Can either reduce to \(\mathrm{FIN}\), or can \(\mathrm{FIN}\) reduce to either?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Since \(\mathrm{TOT}\) and \(\mathrm{INF}\) are both \(\Pi_2\)-complete, each reduces to the other by applying completeness to the other's \(\Pi_2\) membership. Thus \(\mathrm{TOT}\equiv_m\mathrm{INF}\), even though they are different sets of indices.</p>
+    <p>If either reduced to \(\mathrm{FIN}\), the \(\Sigma_2\) upper bound for \(\mathrm{FIN}\) would pull back to a \(\Sigma_2\) upper bound for that source, contradicting <a href="#exact-complexity"></a>. If \(\mathrm{FIN}\) reduced to either, its source would be \(\Pi_2\), contradicting the same theorem. Hence each universal complete set is many-one incomparable with \(\mathrm{FIN}\).</p>
+  </div></details>
+</section>

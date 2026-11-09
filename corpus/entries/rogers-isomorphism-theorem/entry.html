@@ -1,0 +1,154 @@
+<section id="forward-injection" data-formal="numbering-compilers rogers-forward-compiler rogers-forward-injection" data-kind="lemma">
+  <h2>Padding makes the compiler into standard programs injective</h2>
+  <p>Let \(\psi\) be an <a href="uniform-self-reference#acceptable-numberings">acceptable numbering</a>, with supplied total computable compilers \(c,b\) satisfying</p>
+  <div class="math-display">\[\varphi_{c(n)}(x)\simeq\psi_n(x),\qquad \psi_{b(e)}(x)\simeq\varphi_e(x).\]</div>
+  <p>Keep this numbering and these compiler directions fixed throughout the construction. Using the <a href="padding-and-injective-reductions#padding-theorem">jointly injective padding map</a> \(p\), put \(F(n)=p(c(n),n)\). Then \(F\) is a total computable injection from \(\psi\)-indices to standard indices, and \(\varphi_{F(n)}\simeq\psi_n\).</p>
+  <div class="proof">
+    <p>The map is a composition of total computable functions. Padding preserves the entire partial function of \(c(n)\), so \(\varphi_{F(n)}\simeq\varphi_{c(n)}\simeq\psi_n\), including divergence. If \(F(n)=F(m)\), joint injectivity of \(p\) recovers its second coordinate and gives \(n=m\). Thus this compiler is injective even if the supplied \(c\) was not.</p>
+  </div>
+</section>
+
+<section id="padding-through-compiler-question" data-formal="numbering-standard rogers-collapsing-compiler rogers-padding-collapse" data-kind="question">
+  <h2>Can padding simply pass through the reverse compiler?</h2>
+  <p>Does the injectivity of \(t\mapsto p(e,t)\) force \(t\mapsto b(p(e,t))\) to be injective for every acceptable reverse compiler \(b\)? Give a counterexample.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Fix \(e\), and let \(a=p(e,0)\), \(d=p(e,1)\). These numbers are different but compute the same partial function. Take the alternative numbering to be the standard numbering itself, take \(c\) to be the identity, and define \(b(j)=a\) if \(j=d\), and \(b(j)=j\) otherwise. This finite conditional is total computable.</p>
+    <p>For \(j=d\), padding gives \(\varphi_{b(j)}\simeq\varphi_a\simeq\varphi_d\); for every other \(j\), the compiler preserves the index itself. Thus \(b\) is a valid reverse compiler. Nevertheless \(b(p(e,0))=a=b(p(e,1))\). Fresh standard names can collapse after translation, so the required freshness must be tested in the translated names.</p>
+  </div></details>
+</section>
+
+<section id="probe-programs" data-formal="rogers-forbidden-list rogers-first-probe rogers-rescue-probe rogers-uniform-probes" data-kind="definition">
+  <h2>Make two programs refer to their translated names</h2>
+  <p>For a finite list \(H\) of standard indices, let its <strong>translated forbidden list</strong> be \(B(H)=[b(i):i\text{ occurs in }H]\), with the same order and repetitions. Membership in this finite list is decidable by computing the finitely many values of \(b\).</p>
+  <p>The <a href="uniform-self-reference#partial-families">uniform partial-family theorem</a> supplies one <strong>first-probe index</strong> \(n(e,H)\) and one <strong>rescue-probe index</strong> \(m(H)\) with the following partial-value identities, for every \(e,H,z\):</p>
+  <div class="math-display">\[\varphi_{n(e,H)}(z)\simeq\begin{cases}\varphi_e(z),&amp;b(n(e,H))\notin B(H),\\\text{undefined},&amp;b(n(e,H))\in B(H),\end{cases}\]</div>
+  <div class="math-display">\[\varphi_{m(H)}(z)\simeq\begin{cases}1,&amp;b(m(H))\in B(H),\\\text{undefined},&amp;b(m(H))\notin B(H).\end{cases}\]</div>
+  <p>The numbers being tested are \(b(n(e,H))\) and \(b(m(H))\), both \(\psi\)-indices. The probes themselves are standard indices. They inspect their translated names, not an undecidable property of the functions those names compute.</p>
+  <figure id="translated-freshness-figure" class="proof-figure">
+    <div class="figure-image" style="max-width: 420px; margin: 0 auto;"><img src="assets/translated-freshness.svg" width="420" height="430" alt="Standard indices on the left are translated by compiler b to psi indices on the right. The old translated images form a finite forbidden list B. A new equivalent standard index must have its translated image outside that list." /></div>
+    <figcaption>Distinct standard indices do not ensure distinct compiled names. The construction makes the images under \(b\) fresh; \(r\) is the <a href="#translated-padding-family">translated padding family defined below</a>.</figcaption>
+  </figure>
+</section>
+
+<section id="uniform-probe-selection" data-formal="rogers-uniform-probes" data-kind="lemma">
+  <h2>One effective selector builds every probe</h2>
+  <p>For the fixed compiler \(b\), the probe indices can be selected primitive recursively in \(e\) and the <a href="coding-finite-sequences#list-code">code of \(H\)</a>. Their displayed behavior holds simultaneously for all parameters.</p>
+  <div class="proof">
+    <p>Given a proposed self-index \(j\), the parameter \((e,H)\), and runtime input \(z\), compute \(b(j)\) and the finite list \(B(H)\). In the first rule, run \(\varphi_e(z)\) if the membership test fails, and otherwise run a fixed <a href="rices-theorem#nowhere-defined">nowhere-defined program</a>. In the second rule, return one if the test succeeds and otherwise use that nowhere-defined program. Total computable tests and partial recursive branches make each rule jointly partial recursive.</p>
+    <p>Apply the uniform partial-family theorem once to each rule. It chooses fixed indices \(q_N,q_M\) before any \(e,H\) varies, and gives selectors of the form \(n(e,H)=s(q_N,\langle e,\operatorname{code}(H)\rangle)\), \(m(H)=s(q_M,\operatorname{code}(H))\). These numerical selectors are primitive recursive. Their index construction does not evaluate \(b\); the selected programs evaluate it when they run. Their behavior identities concern the programs' own selected indices and all runtime inputs, as required.</p>
+  </div>
+</section>
+
+<section id="first-probe-escapes" data-formal="rogers-first-probe-escapes" data-kind="lemma">
+  <h2>An escaping first probe already computes the required function</h2>
+  <p>If \(b(n(e,H))\notin B(H)\), then \(\varphi_{n(e,H)}\simeq\varphi_e\), and its translated name avoids every entry of \(B(H)\).</p>
+  <div class="proof">
+    <p>The membership test selects the first branch of the first-probe identity for every runtime input \(z\). That branch is exactly \(\varphi_e(z)\). The freshness statement is the assumed failure of membership in the finite list.</p>
+  </div>
+</section>
+
+<section id="collision-forces-bottom" data-formal="rogers-collision-forces-bottom" data-kind="lemma">
+  <h2>A collision forces every old represented function to be undefined</h2>
+  <p>Suppose \(H\) is nonempty and every \(i\) in \(H\) satisfies \(\varphi_i\simeq\varphi_e\). If \(b(n(e,H))\in B(H)\), then \(\varphi_e\) is nowhere defined, and \(\psi_j\) is nowhere defined for every \(j\) in \(B(H)\).</p>
+  <div class="proof">
+    <p>The collision selects the nowhere-defined branch, so \(\varphi_{n(e,H)}\) is nowhere defined. Some \(i\) in \(H\) has \(b(n(e,H))=b(i)\). For every runtime input \(z\), the compiler identities and the hypothesis on \(H\) give</p>
+    <div class="math-display">\[\varphi_{n(e,H)}(z)\simeq\psi_{b(n(e,H))}(z)\simeq\psi_{b(i)}(z)\simeq\varphi_i(z)\simeq\varphi_e(z).\]</div>
+    <p>Consequently \(\varphi_e\) is nowhere defined. Each \(j\) in \(B(H)\) equals \(b(i)\) for some \(i\) in \(H\), and then \(\psi_j\simeq\varphi_i\simeq\varphi_e\). This proves the second conclusion. The conclusion concerns functions represented by translated indices, not the standard functions with those same index numbers.</p>
+  </div>
+</section>
+
+<section id="rescue-probe-escapes" data-formal="rogers-rescue-probe-escapes" data-kind="lemma">
+  <h2>The rescue probe must escape the translated list</h2>
+  <p>Under the hypotheses of <a href="#collision-forces-bottom"></a>, write \(m=m(H)\). Then \(b(m)\notin B(H)\) and \(\varphi_m\simeq\varphi_e\).</p>
+  <div class="proof">
+    <p>Suppose \(b(m)\in B(H)\). The rescue identity makes \(\varphi_m(0)\downarrow=1\). On the other hand, the compiler identity gives \(\varphi_m\simeq\psi_{b(m)}\), and the collision lemma says that this last function is nowhere defined. A partial function cannot both return one and be undefined at zero. Thus \(b(m)\notin B(H)\).</p>
+    <p>The other rescue branch now makes \(\varphi_m\) nowhere defined. The collision lemma also made \(\varphi_e\) nowhere defined, so the two partial functions agree on every input. The rescue index \(m\) is a standard index; it is its image \(b(m)\) that has been kept out of the forbidden list.</p>
+  </div>
+</section>
+
+<section id="next-equivalent-index" data-formal="rogers-next-equivalent-index rogers-next-equivalent-computable rogers-next-equivalent-spec" data-kind="definition">
+  <h2>Choose the successful probe by a terminating finite test</h2>
+  <p>The <strong>next equivalent-index operator</strong> is</p>
+  <div class="math-display">\[u(e,H)=\begin{cases}n(e,H),&amp;b(n(e,H))\notin B(H),\\m(H),&amp;b(n(e,H))\in B(H).\end{cases}\]</div>
+  <p>This is total computable jointly in \(e\) and the code of \(H\): compute the first index, evaluate the total compiler \(b\), compute the finitely many old translated names, and select a branch. If \(H\) is nonempty and all its entries compute \(\varphi_e\), the two preceding cases show</p>
+  <div class="math-display">\[\varphi_{u(e,H)}\simeq\varphi_e,\qquad b(u(e,H))\notin B(H).\]</div>
+  <p>No test deciding whether \(\varphi_e\) is nowhere defined occurs in this algorithm. That fact was only a consequence used to justify the collision branch.</p>
+</section>
+
+<section id="translated-padding-family" data-formal="rogers-history rogers-translated-padding-family rogers-history-length" data-kind="definition">
+  <h2>Iterate fresh translated images within one behavior class</h2>
+  <p>Define the <strong>equivalent-index histories</strong> and their <strong>translated padding family</strong> by</p>
+  <div class="math-display">\[H_e(0)=[e],\qquad H_e(k+1)=H_e(k)\mathbin{+\!+}[u(e,H_e(k))],\qquad r(e,k)=H_e(k)[k].\]</div>
+  <p>Here \(+\!+\) is list concatenation. The history has length \(k+1\), by induction, so its indicated entry exists. At each stage the finite forbidden list is \(B(H_e(k))\): it contains the translated images of earlier standard indices computing the same original function.</p>
+</section>
+
+<section id="translated-padding" data-formal="rogers-history-invariants rogers-history-computable rogers-translated-padding" data-kind="theorem">
+  <h2>Equivalent programs can have arbitrarily many distinct translated names</h2>
+  <p>The family \(r\) is total computable jointly in \(e,k\), satisfies \(\varphi_{r(e,k)}\simeq\varphi_e\), and has</p>
+  <div class="math-display">\[k\ne l\quad\Longrightarrow\quad b(r(e,k))\ne b(r(e,l))\qquad(e,k,l\in\mathbb N).\]</div>
+  <div class="proof">
+    <p>At stage zero, the sole history entry is \(e\). Suppose all old entries compute \(\varphi_e\) and their translated images are distinct. The history is nonempty, so <a href="#next-equivalent-index"></a> appends an equivalent index whose translated image is absent from every old image. Both invariants are preserved. Induction proves equivalence of every history entry and distinctness of all its translated images. Each earlier history is a prefix of every later one, so the conclusions hold for any two stages \(k,l\).</p>
+    <p>The update \((e,H)\mapsto H\mathbin{+\!+}[u(e,H)]\) is total computable on coded lists, using finite-list operations and the total operator \(u\). The <a href="partial-recursive-functions#recursion-domain">finite-chain criterion for recursion</a> makes the prescribed number of these updates total computable jointly in \(e,k\). A final finite lookup computes \(r(e,k)\). This argument claims ordinary computability: selecting a branch actually runs the supplied compiler \(b\).</p>
+  </div>
+</section>
+
+<section id="translated-escape" data-formal="rogers-escape-position rogers-escaping-index rogers-translated-escape" data-kind="lemma">
+  <h2>A bounded part of the family avoids any finite translated list</h2>
+  <p>Let \(L\) be any finite list of \(\psi\)-indices, with length \(m\). Let \(a(e,L)\) be the least \(k\le m\) such that \(b(r(e,k))\notin L\), and put \(q(e,L)=r(e,a(e,L))\). Then these choices exist, are total computable jointly in their coded inputs, and satisfy</p>
+  <div class="math-display">\[b(q(e,L))\notin L,\qquad \varphi_{q(e,L)}\simeq\varphi_e.\]</div>
+  <div class="proof">
+    <p>The first \(m+1\) translated values \(b(r(e,0)),\ldots,b(r(e,m))\) are distinct by <a href="#translated-padding"></a>. They cannot all occur in a list with only \(m\) positions. Each candidate can be computed and membership in \(L\) can be tested by a finite scan. Searching this fixed finite range therefore terminates with the first escape. Computing the selected family member gives \(q\), and its evaluation identity is the family identity.</p>
+    <p>Unlike the special list \(B(H_e(k))\), this list \(L\) may contain indices of unrelated functions. No semantic claim about those functions is required. The family was constructed first, and its distinct translated images now guarantee escape from every finite list.</p>
+  </div>
+</section>
+
+<section id="backward-injection" data-formal="rogers-chosen-history rogers-reverse-compiler rogers-chosen-history-spec" data-kind="definition">
+  <h2>Choose one new translated name for each standard input index</h2>
+  <p>Define a list of <strong>chosen translated names</strong> by</p>
+  <div class="math-display">\[J(0)=[],\qquad J(e+1)=J(e)\mathbin{+\!+}[b(q(e,J(e)))].\]</div>
+  <p>The list \(J(e)\) has length \(e\). The <strong>injective reverse compiler</strong> is \(G(e)=J(e+1)[e]=b(q(e,J(e)))\). These histories use all earlier chosen translated names, even when they represent different partial functions. Both the histories and \(G\) are computed by the displayed finite recurrence and finite lookups.</p>
+</section>
+
+<section id="backward-injection-correct" data-formal="rogers-reverse-injection" data-kind="theorem">
+  <h2>The new reverse compiler is injective and preserves every partial value</h2>
+  <p>The specified \(G\) is total computable and injective, and \(\psi_{G(e)}(x)\simeq\varphi_e(x)\) for every \(e,x\).</p>
+  <div class="proof">
+    <p>The update for \(J\) is total computable by <a href="#translated-escape"></a> and the totality of \(b\). Finite recursion computes \(J(e)\), and hence its appended entry \(G(e)\). Each new entry avoids every entry already in the history. If \(i&lt;e\), then \(G(i)\) occurs in \(J(e)\), so \(G(e)\ne G(i)\). This proves injectivity.</p>
+    <p>Finally, the compiler identity and the chosen equivalent index give \(\psi_{G(e)}\simeq\psi_{b(q(e,J(e)))}\simeq\varphi_{q(e,J(e))}\simeq\varphi_e\). Thus the entire partial function, including its divergence, is preserved.</p>
+  </div>
+</section>
+
+<section id="rogers-theorem" data-formal="rogers-permutation rogers-inverse-permutation rogers-isomorphism rogers-acceptable-isomorphism" data-kind="theorem">
+  <h2>A computable permutation preserves the whole program numbering</h2>
+  <div class="statement-box"><p>For every acceptable numbering \(\psi\) with supplied compilers \(c,b\), there are total computable maps \(\pi,\kappa:\mathbb N\to\mathbb N\) such that</p>
+    <div class="math-display">\[\kappa(\pi(e))=e,\qquad \pi(\kappa(n))=n,\qquad \psi_{\pi(e)}(x)\simeq\varphi_e(x)\qquad(e,n,x\in\mathbb N).\]</div>
+    <p>More precisely, take \(\pi=h_{G,F}\) and \(\kappa=k_{G,F}\), the <a href="myhills-isomorphism-theorem#reading-the-permutation">specified finite-stage maps</a> of the effective matching construction for the injections \(G,F\). In particular \(\pi\) is a computable permutation and \(\kappa\) is its computable inverse.</p>
+  </div>
+  <div class="proof">
+    <p>The two injections have directions \(G:\text{standard names}\to\psi\text{-names}\) and \(F:\psi\text{-names}\to\text{standard names}\). Use labels \(\ell_X(e)=\varphi_e\) and \(\ell_Y(n)=\psi_n\), which are entire partial functions. The forward compiler result and <a href="#backward-injection-correct"></a> give exactly the two preservation hypotheses of the <a href="myhills-isomorphism-theorem#labelled-bijection">labelled matching theorem</a>.</p>
+    <p>That theorem applies without deciding equality of partial functions or giving their label space a numerical coding. It makes these very maps \(\pi,\kappa\) total computable numerical inverses and preserves the labels. This proves Rogers’s isomorphism theorem with both the bijection and its inverse supplied by effective constructions.</p>
+  </div>
+</section>
+
+<section id="two-numberings" data-formal="rogers-recode rogers-two-numberings" data-kind="theorem">
+  <h2>Any two acceptable numberings have an effective bijective translation</h2>
+  <p>Let \(\psi,\theta\) be acceptable numberings. Apply <a href="#rogers-theorem"></a> to obtain maps \(\pi_\psi,\kappa_\psi\) and \(\pi_\theta,\kappa_\theta\). Then the total computable maps</p>
+  <div class="math-display">\[T=\pi_\theta\circ\kappa_\psi,\qquad S=\pi_\psi\circ\kappa_\theta\]</div>
+  <p>are numerical inverses and satisfy \(\theta_{T(n)}\simeq\psi_n\) for every \(n\).</p>
+  <div class="proof">
+    <p>Composition preserves total computability. The inverse identities for each pair reduce \(S(T(n))\) to \(n\) and \(T(S(n))\) to \(n\). At every runtime input \(x\),</p>
+    <div class="math-display">\[\theta_{T(n)}(x)\simeq\varphi_{\kappa_\psi(n)}(x)\simeq\psi_{\pi_\psi(\kappa_\psi(n))}(x)\simeq\psi_n(x).\]</div>
+    <p>The same argument gives the reverse behavioral translation. Thus the result concerns arbitrary acceptable numberings through ordinary computations on their indices.</p>
+  </div>
+</section>
+
+<section id="halting-input-question" data-formal="rogers-halting-inputs" data-kind="question">
+  <h2>Which runtime input does the permutation identity preserve?</h2>
+  <p>For \(\pi\) as in <a href="#rogers-theorem"></a>, compute the effect on zero-input halting. Then write the exact additional condition for this same \(\pi\) to carry the standard diagonal halting set onto the diagonal halting set for \(\psi\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>At the fixed runtime input zero, the identity says \(\psi_{\pi(e)}(0)\downarrow\Longleftrightarrow\varphi_e(0)\downarrow\). Thus this same permutation carries the standard zero-input halting set to the corresponding \(\psi\)-set.</p>
+    <p>For diagonal halting, substituting runtime input \(\pi(e)\) instead gives \(\psi_{\pi(e)}(\pi(e))\downarrow\Longleftrightarrow\varphi_e(\pi(e))\downarrow\). Consequently \(\pi\) carries the diagonal sets precisely when</p>
+    <div class="math-display">\[\forall e\quad\bigl[\varphi_e(e)\downarrow\Longleftrightarrow\varphi_e(\pi(e))\downarrow\bigr].\]</div>
+    <p>The fixed-runtime compiler identity and this changed-runtime condition are different assertions. The existing <a href="padding-and-injective-reductions#injective-frozen-runs">frozen-run recodings</a> keep a chosen old computation fixed before changing its program name; that behavioral identity licenses substituting the new index as runtime input. Mere equality of computed functions does not perform that additional freezing.</p>
+  </div></details>
+</section>

@@ -39,7 +39,7 @@
   </div></details>
 </section>
 
-<section id="diagonal-completeness" data-kind="lemma" data-formal="univ-pair-halting-set univ-specialization univ-specialization-primitive univ-specialization-evaluation red-halting-complete productive-constant-run productive-constant-run-map productive-constant-run-partial productive-constant-run-index productive-constant-run-evaluation productive-constant-run-reduction productive-paired-to-diagonal productive-diagonal-complete">
+<section id="diagonal-completeness" data-kind="lemma" data-formal="univ-pair-halting-set univ-specialization univ-specialization-primitive univ-specialization-evaluation red-halting-complete productive-constant-run productive-constant-run-map productive-constant-run-partial productive-constant-run-index productive-constant-run-evaluation productive-constant-run-reduction productive-paired-to-diagonal productive-diagonal-complete pad-constant-run-primitive pad-constant-run-injective pad-diagonal-pair-contract pad-zero-pair-contract pad-constant-run-zero-membership pad-one-one-reducible pad-one-one-equivalent pad-one-one-transitive">
   <h2>Paired halting reduces to diagonal halting by a constant-run program</h2>
   <p>The paired halting set \(K_0=\{\langle e,x\rangle:\varphi_e(x)\downarrow\}\) reduces to \(K\) by a primitive-recursive map. In particular, every c.e. set reduces many-one to \(K\).</p>
   <div class="proof">
@@ -47,6 +47,7 @@
     <div class="math-display">\[\varphi_{c(\langle e,x\rangle)}(z)\simeq\varphi_e(x)\qquad\text{for every }e,x,z.\]</div>
     <p>The transformed program ignores its own input and runs the specified old computation. In particular, it halts on its own index precisely when that old computation halts. Hence \(w\in K_0\Longleftrightarrow c(w)\in K\). Composing this map with the <a href="computable-reductions#halting-completeness">existing reductions of c.e. sets to \(K_0\)</a> proves the second assertion. This supplies the bridge between the two halting conventions.</p>
   </div>
+  <p>The same specified constant-run map \(c(w)=s(v,w)\) is <a href="padding-and-injective-reductions#injective-frozen-runs">injective</a>, so this particular reduction is a one-one reduction. Together with the explicit pair encodings, it gives <a href="padding-and-injective-reductions#injective-halting-recodings">one-one equivalence of the standard halting conventions</a>.</p>
 </section>
 
 <section id="preimage-indices" data-kind="lemma" data-formal="univ-specialization-primitive productive-preimage-program productive-preimage-map productive-preimage-partial productive-preimage-index productive-preimage-evaluation productive-preimage-domain">
@@ -90,7 +91,7 @@
   </div>
 </section>
 
-<section id="creative-complete-equivalence" data-kind="theorem" data-formal="creative-complete-equivalence creative-diagonal-equivalence simple-set simple-not-creative simple-not-complete">
+<section id="creative-complete-equivalence" data-kind="theorem" data-formal="creative-complete-equivalence creative-diagonal-equivalence simple-set simple-not-creative simple-not-complete creative-iso-oneone-completeness creative-iso-isomorphism-equivalence">
   <h2>Creativity characterizes the complete enumerable problems</h2>
   <div class="statement-box">
     <p>For every c.e. set \(C\subseteq\mathbb N\), the following are equivalent:</p>
@@ -104,6 +105,7 @@
     <p>Creativity gives every reduction by <a href="#creative-implies-complete"></a>. Applying this conclusion to the c.e. set \(K\) gives the third condition. Conversely, the third condition and the standing c.e. hypothesis give creativity by <a href="#complete-implies-creative"></a>. Thus this is exactly <a href="computable-reductions#halting-completeness">many-one completeness among c.e. sets</a>, now characterized by an escape algorithm on the complement.</p>
   </div>
   <p>This characterization also detects <a href="simple-sets#simple-incomplete">incomplete enumerable sets</a>: a simple set has an immune complement, which cannot be productive, so it is not many-one complete.</p>
+  <p>The classification can be sharpened: <a href="creative-sets-and-computable-isomorphism#creative-one-one-completeness">creative sets receive every c.e. problem injectively</a>, and they are exactly the <a href="creative-sets-and-computable-isomorphism#creative-isomorphism">computable permutations of the diagonal halting set</a>. The additional step makes an arbitrary halting reduction injective before applying Myhill’s theorem.</p>
 </section>
 
 <section id="enumerability-hypothesis" data-kind="question" data-formal="creative-hard-nonenumerable-set creative-hard-parity-maps creative-hard-receives-enumerable creative-hard-not-enumerable creative-hard-not-creative univ-enumerable-preimage">

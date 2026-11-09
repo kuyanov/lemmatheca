@@ -1,0 +1,132 @@
+<section id="forbidden-prefixes" data-formal="dnc-forbidden-family dnc-avoidance dnc-effectively-closed dnc-avoidance-boundary post-prefix-code" data-kind="definition">
+  <h2>Specify an infinite binary sequence by the prefixes it must avoid</h2>
+  <p>Use the <a href="computable-trees-and-paths#binary-trees">coded finite binary words</a> and record an infinite sequence by its set \(X\subseteq\mathbb N\) of one-positions. Write \(X\mathbin{\upharpoonright}n\) for its length-\(n\) prefix. A <strong>forbidden family</strong> is a collection \(F\) of finite binary words whose numerical code set is c.e. Its <strong>avoidance class</strong> is</p>
+  <div class="math-display">\[\mathcal P(F)=\{X\subseteq\mathbb N:\forall n\;(X\mathbin{\upharpoonright}n\notin F)\}.\]</div>
+  <p>A collection of binary sequences is <strong>effectively closed</strong> if it equals \(\mathcal P(F)\) for some forbidden family. Listing one forbidden word excludes every sequence extending it. The empty forbidden family permits every sequence; a family containing the empty word permits none. No enumeration of the surviving infinite sequences is part of this definition.</p>
+</section>
+
+<section id="common-stage-tree" data-formal="dnc-common-stage-tree effective-stage-finite-stage effective-stage-monotone effective-stage-union" data-kind="definition">
+  <h2>Use the current word length as one common time bound</h2>
+  <p>Fix an index \(r\) enumerating the codes of \(F\). Let \(F_s=\{\rho:u_\rho\in W_{r,s}\}\), restricting to binary words, using the <a href="effective-enumerations#uniform-finite-approximation">uniform increasing finite stages</a>. Thus \(F_s\subseteq F_{s+1}\) and \(F=\bigcup_sF_s\). Define the <strong>common-stage tree</strong> \(T_r\) by the following test on a binary word \(\sigma\), with \(m=|\sigma|\):</p>
+  <div class="math-display">\[\sigma\in T_r\quad\Longleftrightarrow\quad\forall i\le m\;(\sigma\mathbin{\upharpoonright}i\notin F_m).\]</div>
+  <p>Every prefix, including the empty prefix and the entire word, is checked through the same stage \(m\). In particular a short prefix is examined for more enumeration time when it occurs inside a longer candidate word.</p>
+  <figure id="late-prefix-figure" class="proof-figure">
+    <div class="figure-image" style="max-width: 420px; margin: 0 auto;"><img src="assets/late-forbidden-prefix.svg" width="420" height="365" alt="Columns are candidate lengths two through six. Each column tests every prefix length up to that column's length at that common stage. The prefix rho of length two is first forbidden at stage five. It is therefore detected in columns five and six, excluding those longer extensions, although shorter words passed their earlier tests." /></div>
+    <figcaption>Follow the candidate words \(10,100,1000,\ldots\), and suppose \(\rho=10\) is the only forbidden word and first appears at stage five. Each filled cell is a prefix test. Rechecking the length-two prefix excludes every candidate of length at least five.</figcaption>
+  </figure>
+</section>
+
+<section id="tree-decider" data-formal="dnc-common-stage-test dnc-common-stage-primitive dnc-joint-decider-index dnc-tree-decider-index dnc-tree-decider-primitive dnc-tree-decider-eval dnc-common-stage-test-spec dnc-common-stage-computable dnc-common-stage-closed" data-kind="lemma">
+  <h2>The test gives a computable tree uniformly from the enumeration index</h2>
+  <p>For every \(r\), \(T_r\) is a computable binary tree. Moreover one primitive-recursive numerical map \(q\) supplies a decider index \(q(r)\) for this specified tree, rejecting invalid binary-word codes.</p>
+  <div class="proof">
+    <p>On a candidate code, decode its finite list and reject it unless every entry is a bit. For a valid word of length \(m\), form its \(m+1\) prefix codes and test membership in \(W_{r,m}\). These stage tests and finite word operations are primitive recursive. A bounded loop returns one exactly when none succeeds, and zero otherwise. This is a single jointly computable procedure in \(r\) and the word code. Choose its program index \(v\) once; the <a href="universal-computation#parameter-theorem">parameter theorem</a> gives the particular primitive-recursive index map \(q(r)=s(v,r)\). Every resulting test terminates.</p>
+    <p>For prefix closure, suppose \(\tau\preceq\sigma\in T_r\), with \(|\tau|=n\le m=|\sigma|\). If some prefix \(\tau\mathbin{\upharpoonright}i\), \(i\le n\), belonged to \(F_n\), it would belong to \(F_m\) by monotonicity. It is the same word as \(\sigma\mathbin{\upharpoonright}i\), contradicting the successful test for \(\sigma\). Thus \(\tau\in T_r\), as required.</p>
+  </div>
+</section>
+
+<section id="same-paths" data-formal="dnc-common-stage-paths dnc-missing-words dnc-missing-computable dnc-missing-paths dnc-tree-representation" data-kind="theorem">
+  <h2>The common-stage tree has exactly the required infinite paths</h2>
+  <div class="statement-box"><p>For the specified tree \(T_r\) and forbidden family \(F\),</p>
+    <div class="math-display">\[[T_r]=\mathcal P(F).\]</div>
+    <p>Consequently a collection of binary sequences is effectively closed if and only if it is the path class of a computable binary tree.</p>
+  </div>
+  <div class="proof">
+    <p>If \(X\) avoids every word of \(F\), no prefix of \(X\mathbin{\upharpoonright}m\) belongs to \(F_m\subseteq F\). Hence each length-\(m\) prefix lies in \(T_r\), so \(X\in[T_r]\).</p>
+    <p>Conversely, suppose \(X\in[T_r]\), but \(\rho=X\mathbin{\upharpoonright}i\in F\). Choose a stage \(k\) with \(\rho\in F_k\), and put \(m=\max(i,k)\). The length-\(m\) prefix of \(X\) tests \(\rho\) through stage \(m\). Since \(F_k\subseteq F_m\), that test fails, contradicting the path assumption. This also handles \(i=0\), when the empty word is forbidden.</p>
+    <p>This proves the forward representation. In the other direction, if \(T\) is a computable binary tree, let \(F\) consist of its missing binary words. Their codes form a decidable, hence c.e., set: check binary validity and then the tree decider. Avoiding \(F\) says precisely that every prefix belongs to \(T\). Thus \(\mathcal P(F)=[T]\), completing the equivalence.</p>
+  </div>
+</section>
+
+<section id="coenumerable-tree" data-formal="dnc-co-ce-tree dnc-co-ce-complement" data-kind="definition">
+  <h2>A tree may reveal excluded words without deciding its nodes</h2>
+  <p>A binary tree \(S\) is a <strong>co-c.e. binary tree</strong> if its missing binary words form a forbidden family. Equivalently, its set of numerical word codes is <a href="computably-inseparable-sets#coenumerable-sets">co-c.e.</a>: invalid binary-word codes can be rejected by a decidable test, so including them in the complement does not change enumerability.</p>
+  <p>The prefix-closure requirement belongs to being a tree. It is separate from the effective ability to enumerate the complement. A co-c.e. tree need not have a decision procedure for membership.</p>
+</section>
+
+<section id="coenumerable-conversion" data-formal="dnc-co-ce-conversion dnc-tree-decider-eval" data-kind="lemma">
+  <h2>A co-enumerable tree has a computable tree with the same paths</h2>
+  <p>Let \(S\) be a co-c.e. binary tree, and let \(r\) enumerate its missing binary words. The specified computable tree \(T_r\) satisfies \([T_r]=[S]\), with its decider supplied uniformly by \(q(r)\).</p>
+  <div class="proof">
+    <p>Put \(F=2^{&lt;\omega}\setminus S\). A sequence belongs to \(\mathcal P(F)\) exactly when every prefix belongs to \(S\), which is the definition of membership in \([S]\). Apply <a href="#same-paths"></a> and <a href="#tree-decider"></a> to this very complement enumeration. The conclusion is equality of path classes; it does not assert equality of the two collections of finite words.</p>
+  </div>
+</section>
+
+<section id="late-enumeration-question" data-formal="dnc-one-containing-words dnc-zero-tree dnc-delayed-stage dnc-wrong-tree dnc-delayed-tree dnc-delayed-stage-properties dnc-one-containing-complement dnc-wrong-tree-full dnc-zero-tree-paths dnc-zero-tree-properties dnc-delayed-tree-paths" data-kind="question">
+  <h2>Why can each prefix not use only its own length as a time bound?</h2>
+  <p>Let \(S\) consist of the all-zero finite words. For each stage \(s\), enumerate the finite family</p>
+  <div class="math-display">\[F_s=\{\rho:u_\rho&lt;s,\ |\rho|&lt;s,\ \rho\text{ contains a one}\}.\]</div>
+  <p>It is an increasing computable sequence of finite sets enumerating all missing words of \(S\). What tree would the alternative rule \(\forall i\le|\sigma|\;(\sigma\mathbin{\upharpoonright}i\notin F_i)\) produce? Compare its paths with those of \(S\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>A word of length \(i\) is never in \(F_i\), because the defining condition requires its length to be strictly less than the stage. Every tested prefix therefore passes the alternative rule, for every binary word. That rule produces the full binary tree, with every binary sequence as a path. The tree \(S\) has just the all-zero path, so the path classes differ.</p>
+    <p>The enumeration is legitimate: only the finitely many codes below \(s\) are considered, the displayed tests terminate, and both bounds persist at later stages. Every word containing one appears once \(s\) exceeds its code and length. The common-stage rule detects such a forbidden prefix in every sufficiently long extension, by the maximum-stage argument in <a href="#same-paths"></a>. A late discovery must remain visible when its short prefix is reconsidered.</p>
+  </div></details>
+</section>
+
+<section id="closed-class-halting-member" data-formal="dnc-closed-selected-path dnc-closed-path-code dnc-closed-halting-member" data-kind="theorem">
+  <h2>A nonempty effectively closed binary class has a halting-computable member</h2>
+  <p>If \(\mathcal P(F)\ne\varnothing\), the common-stage tree \(T_r\) has nodes at every length, and its <a href="computable-trees-and-paths#halting-path">specified halting-selected path</a> \(X_{T_r}\) belongs to \(\mathcal P(F)\) and satisfies \(X_{T_r}\le_T K\).</p>
+  <div class="proof">
+    <p>A member of the class is a path through \(T_r\) by <a href="#same-paths"></a>; its prefixes witness all the nonempty levels. The tree is computable by <a href="#tree-decider"></a>. Apply the <a href="computable-trees-and-paths#halting-oracle-path">halting-oracle path theorem</a> to obtain the stated path and reduction, then use the same path equality again. No computable member is asserted, and the nonemptiness assumption is essential.</p>
+  </div>
+</section>
+
+<section id="dnc-functions" data-formal="dnc-function dnc-binary-class univ-indicator" data-kind="definition">
+  <h2>Avoid the value of each defined self-computation</h2>
+  <p>Use the fixed <a href="universal-computation#numbering-programs">ordinary numbering</a> \(\varphi_e\). A total function \(f:\mathbb N\to\mathbb N\) is <strong>diagonally noncomputable</strong>, or <strong>DNC</strong>, if</p>
+  <div class="math-display">\[\forall e,y\;\bigl(\varphi_e(e)\downarrow=y\ \Longrightarrow\ f(e)\ne y\bigr).\]</div>
+  <p>It must disagree whenever the diagonal computation is defined. A divergent diagonal computation imposes no restriction at that position, but \(f\) is still required to have a value there. The <strong>binary DNC class</strong> is \(\mathcal D_2=\{X\subseteq\mathbb N:\chi_X\text{ is DNC}\}\), using the total characteristic function with value one on \(X\) and zero outside \(X\).</p>
+</section>
+
+<section id="dnc-noncomputable" data-formal="dnc-not-computable dnc-binary-not-computable" data-kind="theorem">
+  <h2>No total computable function can avoid the whole diagonal</h2>
+  <p>Every DNC function is noncomputable. In particular no member of \(\mathcal D_2\) is a decidable set.</p>
+  <div class="proof">
+    <p>If a total computable \(f\) were DNC, program completeness would give an index \(j\) with \(\varphi_j(x)\downarrow=f(x)\) for every \(x\). At \(x=j\), this defined self-computation has output \(f(j)\). The DNC requirement would then say \(f(j)\ne f(j)\), a contradiction. A decidable \(X\) would have a total computable \(\chi_X\), so the same argument excludes it from \(\mathcal D_2\).</p>
+  </div>
+</section>
+
+<section id="diagonal-forbidden-words" data-formal="dnc-diagonal-forbidden dnc-nonbinary-output-free" data-kind="definition">
+  <h2>A single diagonal agreement forbids a finite word</h2>
+  <p>Define the <strong>diagonal forbidden family</strong></p>
+  <div class="math-display">\[F_{\mathrm{DNC}}=\{\sigma:\exists e&lt;|\sigma|\;\varphi_e(e)\downarrow=\sigma(e)\}.\]</div>
+  <p>Only binary words are included. A word is forbidden once some diagonal computation agrees with one of its already specified bits. An output other than zero or one cannot agree with a bit and therefore creates no such prohibition.</p>
+</section>
+
+<section id="dnc-effectively-closed" data-formal="dnc-diagonal-search dnc-diagonal-test-primitive dnc-diagonal-search-recursive dnc-diagonal-search-domain dnc-diagonal-recognizer-index dnc-diagonal-recognizer-eval dnc-diagonal-recognizer-domain dnc-diagonal-forbidden-family dnc-binary-closed" data-kind="lemma">
+  <h2>The binary diagonal-avoidance class is effectively closed</h2>
+  <p>The family \(F_{\mathrm{DNC}}\) is c.e., and \(\mathcal P(F_{\mathrm{DNC}})=\mathcal D_2\).</p>
+  <div class="proof">
+    <p>For a binary-word code, search pairs \((e,k)\) with \(e&lt;|\sigma|\) and \(b(k,e,e)=\sigma(e)+1\), using the <a href="universal-computation#universal-evaluation">bounded evaluator</a>. Each candidate is a terminating finite test; the search halts exactly on the forbidden words. On an invalid binary-word code, remain undefined. The <a href="universal-computation#finite-certificates">finite-certificate characterization</a> makes the family c.e.</p>
+    <p>If \(\chi_X\) is DNC, no prefix can contain a diagonal agreement, so \(X\) avoids this family. Conversely, if the total function \(\chi_X\) fails the DNC condition, some \(e\) has \(\varphi_e(e)\downarrow=\chi_X(e)\). The prefix of length \(e+1\) is then forbidden. Thus avoidance is exactly the DNC requirement, proving the equality.</p>
+  </div>
+</section>
+
+<section id="dnc-separators" data-formal="dnc-separator-equivalence dnc-separator-tree dnc-nonbinary-output-free ctree-diagonal-indices ctree-paths-separators" data-kind="theorem">
+  <h2>Binary diagonal avoidance is exactly the earlier separation condition</h2>
+  <p>Let \(A=\{e:\varphi_e(e)\downarrow=0\}\) and \(B=\{e:\varphi_e(e)\downarrow=1\}\) be the <a href="computably-inseparable-sets#diagonal-pair">diagonal output sets</a>. For every \(X\subseteq\mathbb N\),</p>
+  <div class="math-display">\[X\in\mathcal D_2\quad\Longleftrightarrow\quad A\subseteq X\ \text{ and }\ X\cap B=\varnothing.\]</div>
+  <p>Hence \(\mathcal D_2=[T_{a,b}]\) for the already constructed <a href="computable-trees-and-paths#separator-tree">separator tree</a> of fixed indices \(A=W_a\), \(B=W_b\).</p>
+  <div class="proof">
+    <p>If \(e\in A\), avoiding the output zero forces the binary value \(\chi_X(e)=1\), so \(e\in X\). If \(e\in B\), avoiding one forces \(\chi_X(e)=0\), so \(e\notin X\). These are precisely the two separator requirements.</p>
+    <p>Conversely a separator has those forced bits. A defined diagonal output zero or one is therefore avoided. A defined output at least two differs from either bit automatically; divergence imposes no condition. This covers every diagonal computation and proves that \(\chi_X\) is DNC. The equality with the separator-tree paths now follows from <a href="computable-trees-and-paths#paths-are-separators">the established path characterization</a>. The bit convention is one on \(A\) and zero on \(B\).</p>
+  </div>
+</section>
+
+<section id="binary-dnc-exists" data-formal="dnc-binary-path dnc-binary-path-code dnc-binary-example dnc-binary-not-computable dnc-binary-closed" data-kind="theorem">
+  <h2>Binary diagonal avoidance exists, with a halting-oracle example</h2>
+  <div class="statement-box"><p>The effectively closed class \(\mathcal D_2\) is nonempty and has no computable member. In particular the specified halting-selected path \(X_{T_{a,b}}\) is a binary DNC set and \(X_{T_{a,b}}\le_T K\).</p></div>
+  <div class="proof">
+    <p>The diagonal sets are <a href="computably-inseparable-sets#enumerable-and-disjoint">disjoint and c.e.</a>, so their separator tree is computable and has <a href="computable-trees-and-paths#separator-tree-levels">nodes at every length</a>. Its halting-selected path exists and is computable from \(K\) by <a href="computable-trees-and-paths#halting-oracle-path">the specified path theorem</a>. The equality in <a href="#dnc-separators"></a> puts this very set in \(\mathcal D_2\). Effective closedness is <a href="#dnc-effectively-closed"></a>, and <a href="#dnc-noncomputable"></a> excludes every computable member.</p>
+    <p>The tree from the common-stage forbidden-family conversion also has this path class. It need not have the same finite nodes as the separator tree. Either representation describes the same infinite binary choices.</p>
+  </div>
+</section>
+
+<section id="partial-diagonal-question" data-formal="dnc-partial-diagonal dnc-partial-diagonal-properties dnc-nonbinary-output-free inseparable-divergent-outside inseparable-constant-two-outside" data-kind="question">
+  <h2>Does adding one to the universal diagonal already give a computable DNC function?</h2>
+  <p>The partial function \(g(e)\simeq\varphi_e(e)+1\) differs from every defined diagonal output where it is defined. Why does this not contradict <a href="#dnc-noncomputable"></a>? Also, at an index whose self-computation returns two, which bits are allowed for a binary DNC function?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The function \(g\) is partial recursive by universal evaluation and successor, but it is not total. Take an index of the nowhere-defined function; its diagonal run diverges, so \(g\) is undefined there too. DNC requires a value at every input, including such indices. This is the same <a href="universal-computation#partial-diagonal-question">partial diagonal calculation</a> that survives the usual total-function diagonal argument.</p>
+    <p>If the diagonal output is two, both zero and one differ from it. Both bits are therefore permitted at that position. Such an index lies in neither \(A\) nor \(B\), in agreement with the separator characterization. The binary condition does not require the diagonal computation itself to have binary output.</p>
+  </div></details>
+</section>

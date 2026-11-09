@@ -1,0 +1,127 @@
+<section id="domain-comparisons" data-formal="ces-inclusion ces-equality effective-stage-index-set seq-unpair-pair seq-pair-unpair" data-kind="definition">
+  <h2>Compare the inputs on which two programs halt</h2>
+  <p>Use the fixed <a href="universal-computation#numbering-programs">ordinary program numbering</a> and write \(W_e=\operatorname{dom}(\varphi_e)\). The <strong>domain-inclusion index set</strong> and <strong>domain-equality index set</strong> are</p>
+  <div class="math-display">\[\mathrm{SUB}=\{\langle d,e\rangle:W_d\subseteq W_e\},\qquad \mathrm{EQ}=\{\langle d,e\rangle:W_d=W_e\}.\]</div>
+  <p>The <a href="coding-finite-sequences#unpairing">fixed pairing bijection</a> represents a pair by one natural number. Every natural number has a unique decoded pair, so these are subsets of all of \(\mathbb N\), with no promise about well-formed inputs. The comparison ignores output values: a successful computation contributes its input to the domain, whatever value it returns.</p>
+</section>
+
+<section id="stage-obligations" data-formal="ces-inclusion-test ces-inclusion-test-primitive effective-stage-monotone effective-stage-union" data-kind="definition">
+  <h2>Every observed member creates an eventual obligation</h2>
+  <p>Let \(W_{e,s}\) be the established <a href="effective-enumerations#uniform-finite-approximation">uniform increasing finite stages</a>, with \(W_e=\bigcup_s W_{e,s}\). Define the <strong>inclusion test</strong></p>
+  <div class="math-display">\[R(d,e,x,s,t)\quad\Longleftrightarrow\quad t\ge s\ \land\bigl(x\notin W_{d,s}\ \lor\ x\in W_{e,t}\bigr).\]</div>
+  <p>This relation is primitive recursive in all five numerical inputs. Stage membership has a primitive-recursive zero-one test, and the remaining operations are comparison and finite Boolean combinations. If \(x\) has appeared on the left at stage \(s\), a successful test must find it on the right. Otherwise \(t=s\) already succeeds. The test asks only a finite question at its supplied stages.</p>
+</section>
+
+<section id="inclusion-normal-form" data-formal="ces-inclusion-normal-form ces-inclusion-pi-two" data-kind="lemma">
+  <h2>Inclusion has a universal second-level description</h2>
+  <p>For every \(d,e\),</p>
+  <div class="math-display">\[W_d\subseteq W_e\quad\Longleftrightarrow\quad\forall x\;\forall s\;\exists t\;R(d,e,x,s,t).\]</div>
+  <p>Consequently \(\mathrm{SUB}\in\Pi_2\).</p>
+  <div class="proof">
+    <p>Suppose inclusion holds, and fix \(x,s\). If \(x\notin W_{d,s}\), choose \(t=s\). Otherwise \(x\in W_d\subseteq W_e\), so some stage \(v\) contains \(x\) on the right. With \(t=\max(s,v)\), monotonicity retains that membership and gives \(R(d,e,x,s,t)\).</p>
+    <p>Conversely, suppose every displayed obligation has an answer. For \(x\in W_d\), choose a stage \(s\) with \(x\in W_{d,s}\). An answering \(t\) cannot use the nonmembership disjunct, so \(x\in W_{e,t}\subseteq W_e\). This proves inclusion.</p>
+    <p>For the hierarchy statement, decode \(d,e\) from the input code, and replace the two universal variables \(x,s\) by their pair code. The resulting matrix is primitive recursive and the prefix is \(\forall p\,\exists t\). The existing <a href="arithmetical-hierarchy#tuple-blocks">tuple-block normal form</a> therefore puts this particular coded index set in \(\Pi_2\).</p>
+  </div>
+</section>
+
+<section id="temporary-disagreement-question" data-formal="ces-toy-d ces-toy-e ces-toy-f ces-toy-stream-contract ces-temporary-disagreement-answer" data-kind="question">
+  <h2>Can a missing current answer settle inclusion?</h2>
+  <p>Consider illustrative increasing finite approximations \(D_s,E_s,F_s\): \(D_s=\{0\}\) for \(s\ge1\), \(E_s=\{0\}\) for \(s\ge4\), and each is empty at earlier stages; \(F_s=\varnothing\) at every stage. At stage two, both \(E_s\) and \(F_s\) omit an observed member of \(D_s\). Compute the three unions. Which of the two eventual inclusions holds?</p>
+  <figure id="finite-obligation-figure" class="proof-figure">
+    <div class="figure-image" style="max-width: 420px; margin: 0 auto;"><img src="assets/finite-obligation.svg" width="420" height="280" alt="At stage two D contains zero while E and F are empty. At stage four E also contains zero, but F stays empty. The two comparisons share their earlier finite observations and have different eventual inclusion answers." /></div>
+    <figcaption>The later stage answers the obligation for \(E\); \(F\) leaves it unanswered forever. These are illustrative finite-stage streams, rather than a claim that two different futures belong to one fixed program index.</figcaption>
+  </figure>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The unions are \(D=E=\{0\}\) and \(F=\varnothing\). Hence \(D\subseteq E\), while \(D\not\subseteq F\). Both comparisons have the same observed membership facts at stage two. The difference is whether the missing value ever appears. This explains why the inclusion formula quantifies over a later answering stage instead of requiring the current stages to be included in one another.</p>
+  </div></details>
+</section>
+
+<section id="whole-domain-map" data-formal="ces-whole-index univ-constant-program univ-constant-program-evaluation ces-whole-index-domain ces-whole-domain-map ces-whole-domain-map-primitive" data-kind="definition">
+  <h2>Fix one side of every comparison to the whole domain</h2>
+  <p>Let \(C_0\) be the <a href="padding-and-injective-reductions#constant-programs">constant-zero program</a>, and fix its numerical index \(u=\#C_0\). Then \(\varphi_u(x)=0\) for every \(x\), so \(W_u=\mathbb N\). Define the <strong>whole-domain comparison map</strong></p>
+  <div class="math-display">\[H(e)=\langle u,e\rangle.\]</div>
+  <p>This particular map is primitive recursive: pairing is primitive recursive and its first argument is fixed. It produces a comparison code without running the program at \(e\).</p>
+</section>
+
+<section id="whole-domain-comparisons" data-formal="ces-whole-domain-comparisons" data-kind="lemma">
+  <h2>The same map tests totality by inclusion or equality</h2>
+  <p>For every \(e\), the specified map \(H\) satisfies</p>
+  <div class="math-display">\[H(e)\in\mathrm{SUB}\quad\Longleftrightarrow\quad e\in\mathrm{TOT}\quad\Longleftrightarrow\quad H(e)\in\mathrm{EQ}.\]</div>
+  <div class="proof">
+    <p>By construction \(W_u=\mathbb N\). Thus \(W_u\subseteq W_e\) holds exactly when \(W_e=\mathbb N\), since every domain is already a subset of \(\mathbb N\). That is precisely the definition of the <a href="index-set-completeness#three-index-sets">totality index set</a>. Also \(W_u=W_e\) is the very same condition. These equivalences prove both claims for this one map, including when \(W_e\) is empty or an infinite proper subset.</p>
+  </div>
+</section>
+
+<section id="equality-upper-bound" data-formal="ces-equality-normal-form ces-equality-pi-two" data-kind="lemma">
+  <h2>Equality asks for both directions of inclusion</h2>
+  <p>We have \(\mathrm{EQ}\in\Pi_2\). More explicitly, with the test \(R\) of <a href="#stage-obligations"></a>,</p>
+  <div class="math-display">\[W_d=W_e\quad\Longleftrightarrow\quad\forall x\;\forall s\;\exists t\;\bigl(R(d,e,x,s,t)\land R(e,d,x,s,t)\bigr).\]</div>
+  <div class="proof">
+    <p>Equality is the conjunction of the two inclusions. If both hold, apply <a href="#inclusion-normal-form"></a> in each direction at the given \(x,s\), obtaining answering stages \(t_0,t_1\). Their maximum still answers both tests, since all stage memberships persist and both lower bounds on the stage persist. Thus a single existential stage suffices.</p>
+    <p>Conversely, each conjunct supplies the corresponding inclusion formula, so each domain is contained in the other. Equality follows. Pairing the universal variables again gives a computable-matrix \(\forall\exists\) description, and hence the asserted upper bound.</p>
+  </div>
+</section>
+
+<section id="comparison-completeness" data-formal="ces-comparison-map ces-comparison-map-primitive ces-comparison-primitive-hardness ces-comparison-completeness" data-kind="theorem">
+  <h2>Inclusion and equality are complete for the universal second level</h2>
+  <div class="statement-box"><p>The index sets \(\mathrm{SUB}\) and \(\mathrm{EQ}\) are both \(\Pi_2\)-complete under ordinary computable many-one reductions. For every \(A\in\Pi_2\), one primitive-recursive map can reduce \(A\) to both of them.</p></div>
+  <div class="proof">
+    <p>The upper bounds were proved in <a href="#inclusion-normal-form"></a> and <a href="#equality-upper-bound"></a>. By <a href="index-set-completeness#totality-complete">totality completeness</a>, a fixed \(\Pi_2\) set \(A\) has a primitive-recursive reduction \(f_A\) to \(\mathrm{TOT}\). Use the specified composite</p>
+    <div class="math-display">\[F_A(x)=H(f_A(x))=\langle u,f_A(x)\rangle.\]</div>
+    <p>It is primitive recursive by composition. The reduction property of \(f_A\) and <a href="#whole-domain-comparisons"></a> give \(x\in A\Longleftrightarrow F_A(x)\in\mathrm{SUB}\) and \(x\in A\Longleftrightarrow F_A(x)\in\mathrm{EQ}\). Every \(\Pi_2\) set therefore reduces to either target, proving both completeness statements.</p>
+  </div>
+</section>
+
+<section id="negative-comparisons" data-formal="ces-noninclusion ces-inequality ces-negative-domain-witnesses" data-kind="definition">
+  <h2>Failure of inclusion and inequality are complementary comparisons</h2>
+  <p>The <strong>noninclusion index set</strong> and <strong>inequality index set</strong> are</p>
+  <div class="math-display">\[\mathrm{NSUB}=\mathbb N\setminus\mathrm{SUB},\qquad \mathrm{NEQ}=\mathbb N\setminus\mathrm{EQ}.\]</div>
+  <p>Thus \(\langle d,e\rangle\in\mathrm{NSUB}\) means that some input belongs to \(W_d\) but not to \(W_e\). Inequality allows a witness in either direction. The order of the indices matters for noninclusion, even though it does not matter for inequality.</p>
+</section>
+
+<section id="negative-normal-forms" data-formal="ces-noninclusion-normal-form ces-noninclusion-matrix-primitive ces-negative-sigma-two" data-kind="lemma">
+  <h2>A permanent counterexample gives an existential second-level description</h2>
+  <p>For every \(d,e\),</p>
+  <div class="math-display">\[\langle d,e\rangle\in\mathrm{NSUB}\quad\Longleftrightarrow\quad\exists x\;\exists s\;\forall t\;\bigl(x\in W_{d,s}\land x\notin W_{e,t}\bigr).\]</div>
+  <p>Consequently \(\mathrm{NSUB},\mathrm{NEQ}\in\Sigma_2\).</p>
+  <div class="proof">
+    <p>A witness to noninclusion is some \(x\in W_d\setminus W_e\). Choose a stage \(s\) witnessing its left membership. Its absence from the right domain means absence from every right stage, giving the displayed formula. Conversely, the formula gives left membership in the union and exclusion from the entire right union, so it witnesses noninclusion.</p>
+    <p>The matrix is primitive recursive, and pairing \(x,s\) gives an \(\exists\forall\) prefix. Alternatively, <a href="arithmetical-hierarchy#complement-duality">complement duality</a> applied to each of the two \(\Pi_2\) upper bounds puts both complementary sets in \(\Sigma_2\). The universal demand in the displayed counterexample formula is essential: one currently missing value is not yet a permanent counterexample.</p>
+  </div>
+</section>
+
+<section id="negative-completeness" data-formal="ces-negative-primitive-hardness ces-negative-completeness" data-kind="theorem">
+  <h2>The complementary comparisons are complete at the existential level</h2>
+  <p>The sets \(\mathrm{NSUB}\) and \(\mathrm{NEQ}\) are \(\Sigma_2\)-complete. For every \(A\in\Sigma_2\), one primitive-recursive map reduces \(A\) to both.</p>
+  <div class="proof">
+    <p>The upper bounds are in <a href="#negative-normal-forms"></a>. The complement \(\overline A\) of a \(\Sigma_2\) set is \(\Pi_2\). Apply <a href="#comparison-completeness"></a> to it, obtaining a primitive-recursive \(F\) with \(x\notin A\Longleftrightarrow F(x)\in\mathrm{SUB}\) and \(x\notin A\Longleftrightarrow F(x)\in\mathrm{EQ}\).</p>
+    <p>Negating both sides of each equivalence gives \(x\in A\Longleftrightarrow F(x)\in\mathrm{NSUB}\) and \(x\in A\Longleftrightarrow F(x)\in\mathrm{NEQ}\). The numerical map is unchanged. This complements both the source condition and the target condition; it does not reverse just one answer of a reduction.</p>
+  </div>
+</section>
+
+<section id="exact-complexity" data-formal="ces-exact-levels ces-first-level-exclusions" data-kind="theorem">
+  <h2>None of the four comparisons can be recognized on either side</h2>
+  <p>We have \(\mathrm{SUB},\mathrm{EQ}\notin\Sigma_2\) and \(\mathrm{NSUB},\mathrm{NEQ}\notin\Pi_2\). In particular, none of these four sets is c.e., co-c.e., or decidable.</p>
+  <div class="proof">
+    <p>By <a href="posts-theorem#hierarchy-properness">properness of the hierarchy</a>, choose a \(\Pi_2\) set outside \(\Sigma_2\). It reduces to either of the complete \(\Pi_2\) comparisons. If such a target were \(\Sigma_2\), <a href="arithmetical-hierarchy#computable-preimages">computable-preimage closure</a> would put the chosen source in \(\Sigma_2\), a contradiction. Dually, a \(\Sigma_2\) set outside \(\Pi_2\) reduces to each complementary comparison, proving its exclusion.</p>
+    <p>Every c.e. set is \(\Sigma_1\), and every co-c.e. set is \(\Pi_1\). The <a href="arithmetical-hierarchy#padding-and-inclusions">level inclusions</a> put both first-level classes inside both second-level classes. A decidable set lies in both first-level classes. The exclusions therefore rule out all three possibilities for each comparison, giving more information than undecidability alone.</p>
+  </div>
+</section>
+
+<section id="finite-proper-inclusion" data-formal="ces-singleton-procedure ces-doubleton-procedure ces-singleton-procedure-partial ces-doubleton-procedure-partial ces-singleton-index ces-doubleton-index ces-finite-indices-evaluation ces-finite-indices-domains ces-finite-proper-inclusion ces-first-level-exclusions" data-kind="lemma">
+  <h2>Finite domains already separate the four relations</h2>
+  <p>There are indices \(a,b\) with \(W_a=\{0\}\) and \(W_b=\{0,1\}\). For any such indices,</p>
+  <div class="math-display">\[\langle a,b\rangle\in\mathrm{SUB}\setminus\mathrm{EQ},\qquad \langle b,a\rangle\in\mathrm{NSUB}\cap\mathrm{NEQ}.\]</div>
+  <div class="proof">
+    <p>For \(a\), take a program which returns zero on input zero and otherwise searches forever for \(1=0\). For \(b\), return zero on inputs at most one, using the same divergent computation otherwise. Finite numerical tests and partial-recursive branches give programs for both procedures, so the <a href="universal-computation#universal-evaluation">fixed numbering</a> supplies the required indices.</p>
+    <p>The set \(\{0\}\) is a proper subset of \(\{0,1\}\), since one belongs only to the latter. Thus the forward pair satisfies inclusion but not equality, while the reverse pair fails inclusion and also has unequal domains. All of these particular comparisons are elementary to settle, even though no uniform recognition procedure works for all program pairs.</p>
+  </div>
+</section>
+
+<section id="outputs-question" data-formal="ces-whole-index ces-one-index univ-constant-program-evaluation ces-constant-domains-answer" data-kind="question">
+  <h2>Does domain equality imply equality of the computed functions?</h2>
+  <p>Let \(u=\#C_0\) and \(v=\#C_1\) be indices of the constant-zero and constant-one programs. Decide whether \(\langle u,v\rangle\) and \(\langle v,u\rangle\) belong to \(\mathrm{SUB}\) and \(\mathrm{EQ}\). Do the two partial functions agree?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Both programs halt on every input, so both domains are \(\mathbb N\). Both ordered pairs therefore belong to \(\mathrm{SUB}\) and \(\mathrm{EQ}\). Nevertheless \(\varphi_u(0)=0\) and \(\varphi_v(0)=1\), so the functions differ. Equality of partial functions requires equality of outputs as well as domains. The earlier <a href="rices-theorem#fixed-function">function-equality obstruction</a> concerns that stronger relation; the completeness results here concern domains alone.</p>
+  </div></details>
+</section>

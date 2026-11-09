@@ -5,7 +5,7 @@
   <p>Both cutoffs are part of the definition. The stage is a subset of \(\{0,\ldots,s-1\}\), and \(W_{e,0}=\varnothing\). To compute it, test the finitely many pairs \((x,k)\) with both coordinates below \(s\). A stage can add several members at once, and consecutive stages can be equal.</p>
 </section>
 
-<section id="uniform-finite-approximation" data-kind="theorem" data-formal="effective-stage-primitive-test effective-stage-test-spec effective-stage-monotone effective-stage-certificate-witness effective-stage-union univ-certificate-primitive univ-evaluation-domain-certificate">
+<section id="uniform-finite-approximation" data-kind="theorem" data-formal="effective-stage-primitive-test effective-stage-test-spec effective-stage-monotone effective-stage-certificate-witness effective-stage-union univ-certificate-primitive univ-evaluation-domain-certificate ah-finiteness-sigma-two ah-finiteness-normal-form ah-finite-stage-matrix-primitive isc-finiteness-complete">
   <h2>The stages are uniform, increasing, and exhaustive</h2>
   <p>The zero-one test for \(x\in W_{e,s}\) is primitive recursive jointly in \(e,s,x\). For every \(e\),</p>
   <div class="math-display">\[W_{e,s}\subseteq W_{e,s+1},\qquad W_e=\bigcup_{s\in\mathbb N}W_{e,s}.\]</div>
@@ -13,13 +13,17 @@
     <p>The stage test combines \(x&lt;s\) with a <a href="primitive-recursion#bounded-quantifiers">bounded existential test</a> of the primitive-recursive relation \(T\). This gives joint primitive recursiveness, including when \(s=0\). Larger stages retain both inequalities, so every old successful pair remains available.</p>
     <p>If \(x\in W_{e,s}\), a successful certificate gives \(\varphi_e(x)\downarrow\). Conversely, if \(x\in W_e\), some certificate \(k\) exists. At \(s=\max(x,k)+1\), both \(x\) and \(k\) are below \(s\), so \(x\in W_{e,s}\). Thus every member appears, although no stage is required to contain all members.</p>
   </div>
+
+  <p>These same uniform finite stages give a <a href="arithmetical-hierarchy#totality-and-finiteness">\(\Sigma_2\) description of finite domains</a>: some numerical bound contains every member of every stage. The bounded stage test stays computable while only the outer bound and stage quantifiers are unbounded.</p>
+<p>The <a href="index-set-completeness#finiteness-complete">complete classification of finite domains</a> supplies a matching lower bound for their second-level description.</p>
 </section>
 
-<section id="computable-approximations" data-kind="definition" data-formal="effective-stage-approximation effective-stage-approximation-stage effective-stage-approximation-properties effective-stage-canonical-approximation effective-stage-canonical-stages effective-stage-approximation-enumerable univ-binary-total-recursive-convention">
+<section id="computable-approximations" data-kind="definition" data-formal="effective-stage-approximation effective-stage-approximation-stage effective-stage-approximation-properties effective-stage-canonical-approximation effective-stage-canonical-stages effective-stage-approximation-enumerable univ-binary-total-recursive-convention limit-computable limit-halting-examples">
   <h2>Other effective snapshots can describe the same set</h2>
   <p>A <strong>computable finite approximation</strong> to \(A\subseteq\mathbb N\) consists of a total recursive bound \(c(s)\) and a total recursive zero-one test \(d(s,x)\). Put \(F_s=\{x:d(s,x)=1\}\), and require</p>
   <div class="math-display">\[F_s\subseteq\{0,\ldots,c(s)-1\},\qquad F_s\subseteq F_{s+1},\qquad A=\bigcup_s F_s.\]</div>
   <p>The test is recursive jointly in its two arguments, using the fixed coding of pairs. Hence a program can list the whole finite stage by testing \(x&lt;c(s)\). Each \(F_s\) lies in \(A\); once a number enters, it stays. The preceding construction supplies such data uniformly for every \(W_e\), with \(c(s)=s\). The <a href="universal-computation#finite-certificates">certificate characterization</a> also shows that the union of any such approximation is c.e., since membership means \(\exists s\,[d(s,x)=1]\).</p>
+<p>Allowing membership bits to change in both directions gives a <a href="limit-computability#pointwise-approximation">pointwise computable approximation</a>; its limit need not be c.e. The increasing approximations defined here retain their stronger hypotheses.</p>
 </section>
 
 <section id="finite-absence" data-kind="question" data-formal="effective-stage-empty-history effective-stage-late-history effective-stage-quiet-history-counterexample">
@@ -114,7 +118,7 @@
   </figure>
 </section>
 
-<section id="computable-settling-equivalence" data-kind="theorem" data-formal="effective-stage-modulus-decider effective-stage-modulus-decider-correct effective-stage-positive-condition effective-stage-positive-condition-computable effective-stage-decider-modulus effective-stage-decider-modulus-correct effective-stage-computable-settling-equivalence univ-decidable-characteristic-equivalence">
+<section id="computable-settling-equivalence" data-kind="theorem" data-formal="effective-stage-modulus-decider effective-stage-modulus-decider-correct effective-stage-positive-condition effective-stage-positive-condition-computable effective-stage-decider-modulus effective-stage-decider-modulus-correct effective-stage-computable-settling-equivalence univ-decidable-characteristic-equivalence limit-halting-pulse limit-halting-pulse-primitive limit-halting-pulse-converges limit-halting-pulse-at-most-once limit-pulse-modulus-membership limit-pulse-no-computable-modulus">
   <h2>A computable settling modulus is exactly enough to decide membership</h2>
   <div class="statement-box"><p>For any fixed computable finite approximation \((F_s)\) to \(A\), the set \(A\) is decidable if and only if this approximation has a computable settling modulus. No infinitude assumption is needed.</p></div>
   <div class="proof">
@@ -123,6 +127,7 @@
     <div class="math-display">\[P(n,s)\quad\Longleftrightarrow\quad\forall x&lt;n\;[\chi_A(x)=0\ \lor\ x\in F_s].\]</div>
     <p>This is a total recursive test: compute the finitely many membership decisions and stage tests. Some stage passes, since all finitely many positive inputs below \(n\) eventually enter. Define \(m(n)\) as the least passing stage. Least-witness search is total here, so \(m\) is total recursive. Every member of \(A\) below \(n\) belongs to \(F_{m(n)}\), while \(F_{m(n)}\subseteq A\) gives the converse. Hence \(m\) is a settling modulus for this very approximation.</p>
   </div>
+<p>With arbitrary changes of mind, a decidable limit need not supply a computable bound on the final change: the <a href="limit-computability#decidable-limit-question">halting-pulse example</a> shows why the increasing hypothesis matters.</p>
 </section>
 
 <section id="uniform-bound-question" data-kind="question" data-formal="effective-stage-uniform-halting-test effective-stage-uniform-halting-test-correct effective-stage-no-uniform-modulus effective-stage-finite-index-modulus univ-pair-halting-undecidable">

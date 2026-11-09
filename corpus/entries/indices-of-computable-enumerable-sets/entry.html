@@ -1,0 +1,156 @@
+<section id="computable-domain-indices" data-formal="recidx-computable-indices recidx-noncomputable-indices" data-kind="definition">
+  <h2>Ask whether an enumerable domain has some decision procedure</h2>
+  <p>With the fixed <a href="universal-computation#numbering-programs">ordinary numbering</a>, write \(W_e=\operatorname{dom}(\varphi_e)\). The <strong>computable-domain index set</strong> and its <strong>noncomputable-domain complement</strong> are</p>
+  <div class="math-display">\[\mathrm{REC}=\{e:W_e\text{ is computable}\},\qquad \overline{\mathrm{REC}}=\mathbb N\setminus\mathrm{REC}.\]</div>
+  <p>The condition asks whether a decision program exists for the domain. It does not say that \(\varphi_e\) itself is total or that its output values are characteristic bits. Every \(W_e\) is c.e.; some have decision procedures and some do not.</p>
+</section>
+
+<section id="complement-index-certificate" data-formal="recidx-complement-certificate" data-kind="lemma">
+  <h2>A second enumerable domain can certify computability</h2>
+  <p>For every \(e\),</p>
+  <div class="math-display">\[e\in\mathrm{REC}\quad\Longleftrightarrow\quad\exists d\;[W_e\cap W_d=\varnothing\ \land\ W_e\cup W_d=\mathbb N].\]</div>
+  <div class="proof">
+    <p>If \(W_e\) is computable, its complement is c.e. by <a href="universal-computation#two-sided-recognition">two-sided recognition</a>. Choose one index \(d\) for that complement. The domains are disjoint and cover all inputs.</p>
+    <p>Conversely, disjointness and coverage force \(W_d=\mathbb N\setminus W_e\). Both sides are c.e., so two-sided recognition gives a decision procedure. Explicitly, dovetail the two domain recognizers on an input. Coverage makes one halt, and disjointness ensures that the answer of whichever halts is correct. This proves existence of a decider; the statement does not compute a suitable complement index from \(e\).</p>
+  </div>
+</section>
+
+<section id="computability-upper-bound" data-formal="recidx-complement-matrix recidx-matrix-primitive recidx-normal-form recidx-sigma-three recidx-pi-three" data-kind="lemma">
+  <h2>Disjointness and coverage give three quantifier blocks</h2>
+  <p>Using the <a href="effective-enumerations#uniform-finite-approximation">uniform increasing finite stages</a>, for every \(e\),</p>
+  <div class="math-display">\[e\in\mathrm{REC}\quad\Longleftrightarrow\quad\exists d\;\forall x\;\forall s\;\exists t\;\bigl[(x\in W_{e,t}\lor x\in W_{d,t})\land\neg(x\in W_{e,s}\land x\in W_{d,s})\bigr].\]</div>
+  <p>Consequently \(\mathrm{REC}\in\Sigma_3\) and \(\overline{\mathrm{REC}}\in\Pi_3\).</p>
+  <div class="proof">
+    <p>If \(d\) indexes the complement, the disjointness conjunct holds at every stage. Coverage supplies a stage \(t\) at which the supplied \(x\) appears on one side. Thus it supplies the required witness for every \(x,s\).</p>
+    <p>Conversely, use the formula with \(s=0\) to see that every \(x\) belongs to one of the two domains. If an \(x\) belonged to both, choose witnessing stages for its two memberships and take their maximum \(s\). Monotonicity would make both stage memberships true, contradicting the second conjunct for every possible \(t\). The domains are therefore disjoint and cover \(\mathbb N\), so <a href="#complement-index-certificate"></a> applies.</p>
+    <p>The matrix is primitive recursive. Pairing \(x,s\) combines the universal block, giving an \(\exists\forall\exists\) <a href="arithmetical-hierarchy#tuple-blocks">computable-matrix description</a>. Complement duality gives the other upper bound.</p>
+  </div>
+</section>
+
+<section id="tagged-discoveries" data-formal="recidx-row-code recidx-halting-code recidx-label recidx-tag-labels recidx-tags-disjoint recidx-event recidx-label-primitive recidx-schedule tli-fresh-events tli-finite-event-scan tli-marker-stages tli-marker-output" data-kind="definition">
+  <h2>Give row discoveries and halting discoveries different event codes</h2>
+  <p>Fix a primitive-recursive row map \(g(x,y)\), and let \(K=\{y:\varphi_y(y)\downarrow\}\). Use the <a href="third-level-index-sets#event-schedules">cumulative event construction</a>, with <strong>row-event codes</strong> \(2\langle y,z\rangle\) and <strong>halting-event codes</strong> \(k_y=2y+1\). Define the <strong>tagged discovery schedule</strong></p>
+  <div class="math-display">\[E_{x,s}=\{2\langle y,z\rangle&lt;s:z\in W_{g(x,y),s}\}\ \cup\ \{2y+1&lt;s:y\in W_{y,s}\}.\]</div>
+  <p>The <strong>tagged event label</strong> is specified by</p>
+  <div class="math-display">\[\ell(2\langle y,z\rangle)=y,\qquad \ell(2y+1)=y.\]</div>
+  <p>Parity and unpairing define this one primitive-recursive function on every natural number. Write \(S_{x,s}\) and \(S_x=\bigcup_s S_{x,s}\) for the resulting finite stages and output. In particular, each fresh code in \(E_{x,s+1}\setminus E_{x,s}\) is processed in ascending code order, inserting the <em>current</em> marker \(m_{\ell(c)}\) and recomputing markers before the next code. No two different event reasons are merged.</p>
+</section>
+
+<section id="tagged-event-fairness" data-formal="recidx-event-primitive recidx-row-event-spec recidx-halting-event-spec recidx-row-code-injective recidx-row-event-union recidx-halting-event-union recidx-processed-through-stage recidx-label-events tli-event-once" data-kind="lemma">
+  <h2>Every genuine discovery is eventually processed exactly once</h2>
+  <p>The tagged schedule is a cumulative event schedule. Its row events with label \(y\) correspond bijectively to \(W_{g(x,y)}\), and its only possible halting event with that label is \(k_y\). This event appears exactly when \(y\in K\). Every appearing event has been processed by stage \(s\) exactly when it belongs to \(E_{x,s}\).</p>
+  <div class="proof">
+    <p>Both event tests are primitive recursive, and each code is bounded by \(s\). Increasing \(s\) preserves the code bound and every positive stage membership, so the finite sets increase. For a row member, enlarge its witnessing stage until it also exceeds its even event code. That event then appears. Conversely, its appearance witnesses row membership. The same argument for \(y\in W_y\) proves the halting assertion.</p>
+    <p>The <a href="third-level-index-sets#effective-marker-stages">event-processing lemma</a> processes each appearing event once, in the fresh difference immediately before its first stage of membership. Consequently the processed events through the construction of \(S_{x,s}\) are precisely \(E_{x,s}\). A short computation whose event code is first inspected later is still discovered; seeing it at more stages does not produce further events.</p>
+  </div>
+</section>
+
+<section id="two-triggers-question" data-formal="recidx-simultaneous-answer recidx-processed-through-stage" data-kind="question">
+  <h2>What if a row event and a halting event arrive together?</h2>
+  <p>Suppose an otherwise empty finite batch has two fresh codes, one a row event and the other a halting event, both with label zero. If the current finite set is empty, which numbers are inserted? Could a record which keeps halting events only when no row event arrives at that stage recover the halting discovery?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The first event inserts \(m_0(\varnothing)=0\). Recomputing the marker gives \(m_0(\{0\})=1\), so the second inserts one. The new finite set is \(\{0,1\}\), regardless of which tagged event has the smaller numerical code. Both event reasons remain in the processed-event set.</p>
+    <p>The proposed exclusive record would discard the halting discovery in this batch. A later decoder could then falsely report nonhalting. The actual construction and decoder use the tagged halting event itself, including stages with simultaneous row discoveries.</p>
+  </div></details>
+</section>
+
+<section id="tagged-output-cases" data-formal="recidx-finite-low-events recidx-infinite-row-events recidx-output-cofinite recidx-prefix-stabilization recidx-output-coinfinite" data-kind="lemma">
+  <h2>Extra halting events preserve the two marker outcomes</h2>
+  <p>For the tagged construction, if some row \(W_{g(x,y)}\) is infinite, then \(S_x\) is cofinite. If every row is finite, then every finite marker prefix eventually stays fixed, and \(S_x\) is coinfinite.</p>
+  <div class="proof">
+    <p>An infinite row gives infinitely many distinct even events of one label \(y\). The <a href="third-level-index-sets#infinite-label-escape">infinite-label lemma</a> makes the corresponding marker unbounded and leaves at most \(y\) final omissions. It explicitly permits additional events at any labels, so the halting events do not invalidate it.</p>
+    <p>If all rows are finite, fix a rank bound \(n\). The finitely many rows with labels at most \(n\) contribute finitely many row events in total. At most one halting event occurs at each of these \(n+1\) labels. There are therefore only finitely many events with labels at most \(n\). The <a href="third-level-index-sets#bounded-label-stabilization">bounded-label stabilization lemma</a> makes this entire marker prefix permanent, with all its values outside \(S_x\). Applying it at every \(n\) gives coinfinitude.</p>
+  </div>
+</section>
+
+<section id="prefix-certificates" data-formal="recidx-prefix-certificate recidx-certificate-program recidx-certificate-eval" data-kind="definition">
+  <h2>The final-set oracle can test a whole current marker prefix</h2>
+  <p>For an oracle set \(O\subseteq\mathbb N\), define the <strong>prefix certificate test</strong></p>
+  <div class="math-display">\[\operatorname{Cert}^{O}_g(x,y,s)\quad\Longleftrightarrow\quad\forall i\le y\;[m_i(S_{x,s})\notin O].\]</div>
+  <p>At a supplied \(x,y,s\), compute the finite stage and its first \(y+1\) markers, then ask the oracle about those finitely many numbers. This test always terminates. It has no ordinary test for whether the stage is final; its certification property below uses the specific oracle \(O=S_x\).</p>
+  <figure id="tagged-prefix-figure" class="proof-figure">
+    <div class="figure-image" style="max-width: 420px; margin: 0 auto;"><img src="assets/tagged-prefix.svg" width="420" height="420" alt="A row-discovery event and a halting-discovery event have distinct codes and each requests a separate removal of the current marker with its label. Below, a query at rank two checks all three current markers, illustrated by one, four and seven, and receives outside-the-final-set answers for all three. This certifies the whole prefix against later low-label events." /></div>
+    <figcaption>Distinct tags retain both reasons for a marker update. At a certifying stage, all current markers through the queried rank must be outside the final output, rather than merely absent from its current finite approximation.</figcaption>
+  </figure>
+</section>
+
+<section id="certificate-permanence" data-formal="recidx-certificate-permanence" data-kind="lemma">
+  <h2>A successful prefix certificate rules out every later low-label event</h2>
+  <p>If \(\operatorname{Cert}^{S_x}_g(x,y,s)\) holds, no event with label at most \(y\) is processed after stage \(s\). All the first \(y+1\) markers consequently keep their stage-\(s\) values forever.</p>
+  <div class="proof">
+    <p>Suppose a later low-label event exists, and take the first one in the stage-and-code processing order. Every intervening event has label greater than \(y\). The <a href="third-level-index-sets#one-marker-bump">exact marker-shift formula</a> shows that all these earlier insertions leave the prefix through rank \(y\) unchanged, including intermediate states inside its finite batch.</p>
+    <p>Let \(i\le y\) be the first low event’s label. It therefore inserts precisely \(m_i(S_{x,s})\). The inserted value belongs to a later stage and hence to \(S_x\), contradicting the successful certificate’s negative oracle answer for this value. No such event exists. Every subsequent insertion has label greater than \(y\), so the same shift formula proves permanence of the whole prefix.</p>
+  </div>
+</section>
+
+<section id="halting-decoder" data-formal="recidx-certificate-search recidx-event-replay recidx-replay-primitive recidx-decoder-program recidx-decoder-partial recidx-decoder-eval" data-kind="definition">
+  <h2>Search for a certificate, then replay the halting-event record</h2>
+  <p>For fixed \(g,x\), the <strong>output-oracle halting decoder</strong> \(D_{g,x}^{O}\) is the following program on input \(y\). Search stages \(s=0,1,2,\ldots\) for the first successful \(\operatorname{Cert}^{O}_g(x,y,s)\). When one is found, return one if \(k_y\in E_{x,s}\), and return zero otherwise. If no certificate occurs, the search remains undefined.</p>
+  <p>Finite stage computation, the bounded marker-prefix loop, the oracle queries, and the final numerical event test are all effective. Thus this specifies one ordinary oracle program for each fixed \(g,x\). Searching sequentially is legitimate because each supplied-stage test terminates, even if the entire search does not.</p>
+</section>
+
+<section id="decoder-correctness" data-formal="recidx-certificate-exists recidx-decoder-correct recidx-decoder-reduces" data-kind="theorem">
+  <h2>When every row is finite, the output decides halting</h2>
+  <p>If every row \(W_{g(x,i)}\) is finite, the specified decoder is total with oracle \(S_x\), and</p>
+  <div class="math-display">\[D_{g,x}^{S_x}(y)=\chi_K(y)\qquad(y\in\mathbb N).\]</div>
+  <p>In particular, \(K\le_T S_x\).</p>
+  <div class="proof">
+    <p>Fix \(y\). By <a href="#tagged-output-cases"></a>, some stage has all the first \(y+1\) markers permanent and outside \(S_x\). That stage passes the certificate test. Sequential search therefore terminates, perhaps at an earlier successful stage \(s\). The choice of a first such stage is part of the specified program, not a supplied settling bound.</p>
+    <p>If the decoder returns one, \(k_y\in E_{x,s}\), so <a href="#tagged-event-fairness"></a> gives \(y\in K\). Conversely, suppose \(y\in K\). Its tagged event eventually appears and is processed. If it were absent from \(E_{x,s}\), it would have to be processed after stage \(s\). Its label is \(y\), contradicting <a href="#certificate-permanence"></a>. Thus it is already in \(E_{x,s}\), and the decoder returns one. A zero answer therefore implies \(y\notin K\). This proves the displayed bit identity and the claimed reduction.</p>
+    <p>The replay does not ask whether a halting event was the only reason for movement at its stage. Its tag remains available even when a row event acted in the same batch. Nor does the argument provide a computable settling time: the search uses membership information from the final output oracle.</p>
+  </div>
+</section>
+
+<section id="single-marker-question" data-formal="recidx-single-marker-answer" data-kind="question">
+  <h2>Why certify the lower markers as well?</h2>
+  <p>Start with the empty finite set, so the current rank-one marker is one. Suppose two subsequent events have labels zero and one, in that order, and no others occur. Compute the final set and its first two complement markers. Does the original value one being outside the final set certify that the rank-one marker never moved?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The label-zero event inserts zero. The rank-one marker is then two, so the following label-one event inserts two. The final set is \(\{0,2\}\), whose first two complement markers are one and three. The original rank-one value one is still outside the final set, but its rank has changed to zero; the rank-one marker has moved from one to two to three.</p>
+    <p>Thus checking only the old value at the queried rank cannot rule out a later event at that label. The full prefix test would already fail at the initial stage, because the original rank-zero value zero belongs to the final set. This is why the decoder certifies all ranks through \(y\).</p>
+  </div></details>
+</section>
+
+<section id="ordinary-tagged-index" data-formal="recidx-tagged-index tli-marker-recognizer tli-recognizer-partial tli-recognizer-output tli-marker-program tli-marker-program-eval tli-marker-index tli-marker-index-primitive tli-marker-index-eval tli-marker-index-domain" data-kind="definition">
+  <h2>The tagged enumeration has an ordinary uniform index map</h2>
+  <p>The <strong>tagged recognition program</strong> on paired input \(\langle x,z\rangle\) searches \(s=0,1,2,\ldots\) and returns zero at the first stage with \(z\in S_{x,s}\). The <a href="third-level-index-sets#effective-marker-stages">generic finite-stage computation</a> applies to the tagged schedule, so this is one jointly partial-recursive procedure for the fixed \(g\).</p>
+  <p>Choose one index \(p_g^*\) for that paired-input program, before \(x,z\) vary. Define the <strong>tagged index map</strong> by the established specialization function:</p>
+  <div class="math-display">\[q_g(x)=s(p_g^*,x),\qquad \varphi_{q_g(x)}(z)\simeq\begin{cases}0,&amp;z\in S_x,\\\text{undefined},&amp;z\notin S_x.\end{cases}\]</div>
+  <p>The <a href="universal-computation#parameter-theorem">parameter theorem</a> makes this particular map primitive recursive, and its exact domain is \(W_{q_g(x)}=S_x\). Producing the index does not run the final-set oracle decoder or decide which rows are infinite.</p>
+</section>
+
+<section id="two-outcome-reduction" data-formal="tli-uniform-infinite-rows recidx-two-outcome-reduction recidx-output-degree recidx-output-noncomputable recidx-cofinite-subset simple-finite-decidable" data-kind="theorem">
+  <h2>One index map separates cofinite outputs from halting-complete outputs</h2>
+  <p>Let \(A\in\Sigma_3\), and choose one joint row map \(g\) from <a href="third-level-index-sets#uniform-infinite-rows">the row representation</a>, so \(x\in A\) exactly when some \(W_{g(x,y)}\) is infinite. The specified map \(q_g\) then satisfies</p>
+  <div class="math-display">\[x\in A\ \Longrightarrow\ W_{q_g(x)}\text{ is cofinite},\qquad x\notin A\ \Longrightarrow\ W_{q_g(x)}\equiv_T K.\]</div>
+  <div class="proof">
+    <p>In the positive case, an infinite row exists, so <a href="#tagged-output-cases"></a> gives cofinitude. In the negative case, all rows are finite. The specified decoder gives \(K\le_T S_x\). The set \(S_x=W_{q_g(x)}\) is c.e., so <a href="computable-reductions#halting-completeness">halting completeness</a>, including its paired-to-diagonal translation, gives \(S_x\le_m K\). The <a href="turing-degrees#many-one-comparison">one-query simulation</a> yields \(S_x\le_T K\). Both reductions establish the asserted degree equivalence.</p>
+    <p>A cofinite set is computable: fix its finite complement and test membership in that finite list. This is existence of a decider for each positive output, not a uniform procedure extracting the finite complement from \(x\). A set computing \(K\) cannot be computable, since a computable oracle can be eliminated and \(K\) is <a href="universal-computation#halting-sets">undecidable</a>. Thus the two outcomes also distinguish computable from noncomputable domains.</p>
+  </div>
+</section>
+
+<section id="computable-domain-completeness" data-formal="recidx-index-reduction recidx-computable-primitive-hardness recidx-computable-complete" data-kind="theorem">
+  <h2>Computable enumerable domains form a complete third-level index problem</h2>
+  <div class="statement-box"><p>The index set \(\mathrm{REC}\) is \(\Sigma_3\)-complete under ordinary computable many-one reductions. For every \(A\in\Sigma_3\), a primitive-recursive reduction is supplied by the tagged index map \(q_g\) for a single joint row representation of \(A\).</p></div>
+  <div class="proof">
+    <p>The upper bound is <a href="#computability-upper-bound"></a>. For any \(A\in\Sigma_3\), choose its joint row map once and use \(q_g\). By <a href="#two-outcome-reduction"></a>, a positive input gives a computable cofinite domain, while a negative input gives a noncomputable halting-complete domain. Hence, for every \(x\),</p>
+    <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad q_g(x)\in\mathrm{REC}.\]</div>
+    <p>The map \(q_g\) is primitive recursive by its actual specialization construction. This proves hardness and therefore completeness, with the stated stronger choice of reduction maps.</p>
+  </div>
+</section>
+
+<section id="noncomputable-domain-completeness" data-formal="recidx-noncomputable-primitive-hardness recidx-noncomputable-complete" data-kind="theorem">
+  <h2>Noncomputable enumerable domains give the complementary classification</h2>
+  <p>The index set \(\overline{\mathrm{REC}}\) is \(\Pi_3\)-complete, and every \(\Pi_3\) set has a primitive-recursive many-one reduction to it.</p>
+  <div class="proof">
+    <p>The upper bound is <a href="#computability-upper-bound"></a>. If \(A\in\Pi_3\), its complement is \(\Sigma_3\). Apply <a href="#computable-domain-completeness"></a> to that complement, obtaining a primitive-recursive \(f\) with \(x\notin A\) exactly when \(f(x)\in\mathrm{REC}\). Negating both sides gives \(x\in A\) exactly when \(f(x)\in\overline{\mathrm{REC}}\). The numerical map remains unchanged, and proves the required hardness.</p>
+  </div>
+</section>
+
+<section id="cofinite-promise-question" data-formal="recidx-cofinite-promise-answer recidx-cofinite-subset isc-even-index-domain" data-kind="question">
+  <h2>Does every computable enumerable domain have finite complement?</h2>
+  <p>The constructed outputs are cofinite on positive inputs and halting-complete on negative inputs. Does this imply \(e\in\mathrm{COF}\) exactly when \(e\in\mathrm{REC}\) for every ordinary program index \(e\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. A program halting exactly on even inputs has a computable domain, but its complement contains every odd number and is infinite. Such an index belongs to \(\mathrm{REC}\) and not to \(\mathrm{COF}\). Its existence and domain were established by the <a href="index-set-completeness#infinite-domain-question">parity example</a>.</p>
+    <p>The proof constructs a special range of output indices with the two stated alternatives. On that range, cofinitude and computability give the same answer because the negative alternative computes the undecidable halting set. This does not make the identity map a reduction from \(\mathrm{COF}\) to \(\mathrm{REC}\) on unrestricted input indices.</p>
+  </div></details>
+</section>
