@@ -73,6 +73,31 @@
   </div>
 </section>
 
+<section id="injective-enumerations" data-kind="theorem" data-formal="effective-stage-fresh-index effective-stage-fresh-index-spec effective-stage-fresh-index-computable effective-stage-fresh-history effective-stage-injective-stream effective-stage-fresh-history-computable effective-stage-fresh-history-invariant effective-stage-injective-stream-correct effective-stage-infinite-ce-injective-enumeration">
+  <h2>Removing repetitions enumerates the whole infinite set</h2>
+  <p>Every infinite c.e. set \(A\subseteq\mathbb N\) has a total computable injective enumeration: there is a total recursive \(g:\mathbb N\to\mathbb N\) whose outputs are pairwise distinct and whose range is exactly \(A\).</p>
+  <div class="proof">
+    <p>Choose a total recursive stream \(q\) with range \(A\), using <a href="#stream-from-stages"></a>. For any finite list \(L\) of numbers, define</p>
+    <div class="math-display">\[j(L)=\min\{t:q(t)\notin L\}.\]</div>
+    <p>This search always terminates. Otherwise the entire infinite range of \(q\) would lie in the finite set of entries of \(L\). Its test is computable from the finite list and \(t\), so <a href="partial-recursive-functions#search-correctness">least-witness search</a> makes \(j\) a total computable function on all finite lists. Define</p>
+    <div class="math-display">\[L_0=[],\qquad g(n)=q(j(L_n)),\qquad L_{n+1}=L_n\mathbin{{}^\frown}[g(n)].\]</div>
+    <p>The effective list operations and recursion give one total computable sequence of lists and one total computable \(g\). Induction proves the invariant: \(L_n\) has length \(n\), consists of \(g(0),\ldots,g(n-1)\), has no repeated entry, and contains only members of \(A\). The successor appends a value of \(q\) expressly chosen outside the old list. In particular, \(g\) is injective and has range contained in \(A\).</p>
+    <p>To prove exhaustiveness, fix \(y=q(t)\). Suppose \(y\) were missing from the first \(t+1\) outputs. At each of these steps, \(t\) would be an eligible index in the search for \(j(L_n)\), so \(j(L_n)\le t\). Equality would output \(y\), contrary to the supposition; hence all \(t+1\) chosen indices would be below \(t\). They are distinct, since repeating an index would repeat its output. This is impossible: there are only \(t\) natural numbers below \(t\). Thus \(y\) appears. Since every member of \(A\) has the form \(q(t)\), the range of \(g\) is exactly \(A\).</p>
+  </div>
+  <p>The construction removes repeated arrivals without sorting the values. It differs from <a href="#infinite-decidable-subset">record-high selection</a>, which may discard members permanently.</p>
+</section>
+
+<section id="injective-enumeration-question" data-kind="question" data-formal="effective-stage-infinite-injective-range effective-stage-infinite-ce-injective-enumeration effective-stage-halting-infinite univ-diagonal-halting-enumerable univ-diagonal-halting-undecidable effective-stage-increasing-range-decidable fnum-existence fnum-unique-ce">
+  <h2>Does an injective computable enumeration decide its range?</h2>
+  <p>For a c.e. set \(A\), is infinitude exactly the condition for a total computable injective enumeration? Does having such an enumeration imply that \(A\) is decidable?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Infinitude is necessary: an injective function from \(\mathbb N\) has infinite range. It is sufficient for c.e. sets by <a href="#injective-enumerations"></a>. This includes the finite obstruction: neither the empty set nor a nonempty finite set has such a total injective enumeration.</p>
+    <p>Decidability does not follow. The <a href="universal-computation#halting-sets">ordinary halting set</a> is c.e. and undecidable. It is infinite, since every fixed finite set of natural numbers can be decided by comparing the input with its finitely many members. It therefore has a total computable injective enumeration by the preceding theorem, while remaining undecidable.</p>
+    <p>A <a href="#increasing-range-decidable">computable strictly increasing enumeration</a> does decide its range: its numerical order gives a bound on where an input could occur. Injectivity merely prevents repetitions and supplies no such bound.</p>
+      <p>Here injectivity concerns the numbers output while enumerating one set. A <a href="friedberg-numberings#friedberg-theorem">Friedberg numbering</a> instead gives a uniform family containing every c.e. set exactly once.</p>
+</div></details>
+</section>
+
 <section id="infinite-decidable-subset" data-kind="theorem" data-formal="effective-stage-record-index effective-stage-record-high effective-stage-record-sequence effective-stage-record-index-spec effective-stage-record-algorithms-computable effective-stage-record-sequence-correct effective-stage-specified-index-records effective-stage-infinite-enumerable-subset univ-enumerable-index-equivalence productive-infinite-enumerable-subset productive-infinite-decidable-subset">
   <h2>Record highs leave an infinite decidable subset</h2>
   <div class="statement-box"><p>Every infinite c.e. set contains an infinite decidable subset.</p></div>
@@ -130,7 +155,7 @@
 <p>With arbitrary changes of mind, a decidable limit need not supply a computable bound on the final change: the <a href="limit-computability#decidable-limit-question">halting-pulse example</a> shows why the increasing hypothesis matters.</p>
 </section>
 
-<section id="uniform-bound-question" data-kind="question" data-formal="effective-stage-uniform-halting-test effective-stage-uniform-halting-test-correct effective-stage-no-uniform-modulus effective-stage-finite-index-modulus univ-pair-halting-undecidable">
+<section id="uniform-bound-question" data-kind="question" data-formal="effective-stage-uniform-halting-test effective-stage-uniform-halting-test-correct effective-stage-no-uniform-modulus effective-stage-finite-index-modulus univ-pair-halting-undecidable bbfn-stages-computable bbfn-stages-exact bbfn-no-computable-final-stage">
   <h2>Can one algorithm supply settling bounds for every program index?</h2>
   <p>Could a total recursive function \(M(e,n)\) give a settling modulus \(n\mapsto M(e,n)\) for \(W_{e,s}\), simultaneously for every \(e\)? Does the existence of a constant modulus when \(W_e\) is finite provide such an algorithm?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
@@ -138,5 +163,6 @@
     <div class="math-display">\[x\in W_e\quad\Longleftrightarrow\quad x\in W_{e,M(e,x+1)}\]</div>
     <p>would decide whether \(\varphi_e(x)\) halts, contradicting the <a href="universal-computation#halting-problem">undecidability of the halting relation</a>. This is a uniform contradiction in \(e,x\), not a failure of the modulus for one particular finite set.</p>
     <p>For a fixed finite \(W_e\), its elements and a final arrival stage can be built into separate programs, yielding a decider and a constant modulus. These are separately chosen existence witnesses for this fixed set; the hypothetical function \(M\) was required to work for every index. More generally, the constructive equivalence above converts a supplied decider into a modulus, or a supplied modulus into a decider; it does not provide either input from an arbitrary semidecision procedure.</p>
+    <p>Size-bounded programs give another finite-maximum problem: the <a href="busy-beaver-functions#finite-stage-convergence">Busy Beaver lower estimates eventually stabilize at every budget</a>, but <a href="busy-beaver-functions#finite-information-question">no computable choice of a final stage works uniformly</a>.</p>
   </div></details>
 </section>

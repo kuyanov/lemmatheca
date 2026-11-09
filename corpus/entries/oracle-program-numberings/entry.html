@@ -26,7 +26,7 @@
 <div class="math-display">\[b^A(k,e,x)=\begin{cases}0&amp;B_k^A(c_e,x)=\operatorname{none},\\y+1&amp;B_k^A(c_e,x)=\operatorname{some}(y).\end{cases}\]</div>
 <p>A successful output zero is encoded by one. The allowance bounds admissible inputs and recursive calls, not the numerical output.</p>
 </section>
-<section data-formal="oracle-univ-bounded-sound oracle-univ-bounded-monotone oracle-univ-bounded-complete" data-kind="theorem" id="bounded-correctness">
+<section data-formal="oracle-univ-bounded-sound oracle-univ-bounded-monotone oracle-univ-bounded-complete ttwtt-bounded-allowance-characterization" data-kind="theorem" id="bounded-correctness">
 <h2>Successful allowances recover exactly the partial evaluation</h2>
 <p>For all \(A,c,x,y,k,j\), a successful bounded result is sound and remains successful at larger allowances:</p>
 <div class="math-display">\[B_k^A(c,x)=\operatorname{some}(y)\Longrightarrow B_{k+j}^A(c,x)=\operatorname{some}(y).\]</div>
@@ -35,6 +35,7 @@
 <p>For soundness and one-step increase of the allowance, induct on the allowance and then on the finite program. A successful leaf gives its prescribed value, including the actual answer \(\chi_A(x)\) at a query. Pairing and composition supply exactly their required child outputs. Recursion supplies its earlier value and next step; search supplies either its current zero or a positive test followed by the next search. These are the <a href="oracle-computation#trace-correctness">successful-evaluation rules</a>. Enlarging the allowance preserves the input guard and all successful child calls by the induction hypotheses. Iterating proves the displayed monotonicity.</p>
 <p>For completeness, induct on a finite successful derivation. Leaves succeed once the allowance exceeds their input. Pairing and composition use finitely many child successes; enlarge their allowances to a common maximum and beyond every input used. At recursion, proceed along its finite value chain, adding one unit for each previous-value call at the same program. At search, start from its final zero test and work backwards through the finitely many positive tests, adding one unit whenever the same search program is called again. Monotonicity preserves successes already obtained. This gives one sufficient allowance for the entire derivation. Conversely, soundness prevents any allowance from producing an output when evaluation is undefined.</p>
 </div>
+  <p>For a fixed oracle, a characteristic-function computation with an ordinary computable successful allowance at every input gives a <a href="truth-table-and-weak-truth-table-reductions#total-functional-characterization">truth-table reduction</a>; conversely, every truth-table reduction has a witnessing program with such an allowance. This controls the bounded calculation itself, beyond a bound on query positions alone.</p>
 </section>
 <section data-formal="oracle-univ-primitive-schemes oracle-univ-uniform-primitive-compilation" data-kind="lemma" id="uniform-finite-constructions">
 <h2>A fixed finite recursive construction gives one program for all oracles</h2>
@@ -78,6 +79,8 @@
 <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
 <p>No. Separate existence allows the finite program text to depend on the whole set \(A\), without providing any way to obtain it or reuse it when the oracle changes. The asserted theorem supplies the same syntax \(\mathsf u\) for all oracles. In its construction, table operations and the allowance search are fixed, and only calls to \(\mathbf Q\) obtain oracle-dependent values.</p>
 <p>For example, the code four always denotes \(\mathbf Q\): the same evaluator at \(\langle4,x\rangle\) returns \(\chi_A(x)\) for each \(A\). The numerical pair \(\langle4,x\rangle\) and the evaluator's finite text need no description of all of \(A\).</p>
+
+  <p>The same distinction is essential for <a href="uniform-oracle-fixed-points#common-fixed-point-identity">uniform oracle self-reference</a>: one ordinary primitive-recursive numerical compiler supplies its own output index to a common oracle program, with the evaluation identity valid under every oracle.</p>
 </div></details>
 </section>
 <section data-formal="oracle-numbering-constant-program oracle-numbering-identity-program oracle-numbering-constant-evaluation oracle-numbering-identity-evaluation oracle-numbering-constant-code-primitive oracle-numbering-parameters-query-free" data-kind="definition" id="parameter-programs">
@@ -86,7 +89,7 @@
 <div class="math-display">\[E_A(\mathsf{const}(a),x)\downarrow=a,\qquad E_A(\mathsf{id},x)\downarrow=x.\]</div>
 <p>Induction on \(a\) proves the first equation. The inverse pairing identity proves the second. Both programs contain no query leaves. The numerical code of \(\mathsf{const}(a)\) is primitive recursive by its displayed recurrence and the numerical composition constructor.</p>
 </section>
-<section data-formal="oracle-numbering-specialization oracle-numbering-specialization-primitive oracle-numbering-specialization-correct oracle-numbering-tuple-specialization oracle-numbering-tuple-specialization-primitive oracle-numbering-tuple-specialization-correct" data-kind="theorem" id="oracle-parameter-theorem">
+<section data-formal="opad-specialize-injective oracle-numbering-specialization oracle-numbering-specialization-primitive oracle-numbering-specialization-correct oracle-numbering-tuple-specialization oracle-numbering-tuple-specialization-primitive oracle-numbering-tuple-specialization-correct" data-kind="theorem" id="oracle-parameter-theorem">
 <h2>The same computable parameter map works for every oracle</h2>
 <p>Define the specified numerical map</p>
 <div class="math-display">\[s(e,a)=\#\operatorname{comp}\bigl(c_e,\operatorname{pair}(\mathsf{const}(a),\mathsf{id})\bigr).\]</div>
@@ -100,6 +103,8 @@
 <div class="math-display">\[\varphi_{s_{m,n}(e,\bar a)}^A(L(\bar x))\simeq\varphi_e^A(L(\bar a\mathbin{{}^\frown}\bar x)).\]</div>
 <p>The construction includes empty tuples: their list code is supplied by the same total list operations. All these maps are chosen independently of \(A\).</p>
 </div>
+  <p>The same specified \(s\) is <a href="oracle-padding#specialization-injective">jointly injective in its program and inserted parameter</a>; its syntax retains both numbers.</p>
+
 </section>
 <section data-formal="oracle-numbering-query-left-index oracle-numbering-specialized-query oracle-numbering-specialization-primitive oracle-numbering-specialization-correct" data-kind="question" id="specialization-query-question">
 <h2>Does specializing a query require knowing its answer?</h2>

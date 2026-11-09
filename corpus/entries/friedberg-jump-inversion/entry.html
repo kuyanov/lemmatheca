@@ -1,0 +1,151 @@
+<section id="necessary-lower-bound" data-formal="lowsimple-halting-below-jump" data-kind="lemma">
+  <h2>Every jump can decide ordinary halting</h2>
+  <p>For every set \(X\subseteq\mathbb N\), the ordinary diagonal halting set \(K\) satisfies \(K\le_T X'\). Consequently, if \(X'\equiv_T B\), then \(K\le_T B\).</p>
+  <div class="proof">
+    <p>The empty set reduces to \(X\) by the constant-zero program. <a href="turing-jump#jump-monotonicity">Jump monotonicity</a> therefore gives \(J(\varnothing)\le_T X'\). The <a href="turing-jump#empty-oracle-jump">ordinary halting recoding</a> gives \(K\equiv_T J(\varnothing)\). Composing these actual reductions proves the first assertion; composing once more with \(X'\le_T B\) proves the consequence.</p>
+  </div>
+</section>
+
+<section id="coding-history" data-formal="jinv-coding-state jinv-coding-word jinv-coding-extension jinv-coded-set jinv-coding-recurrence jinv-coded-characteristic ogen-h ogen-normalize ogen-normalize-valid" data-kind="definition">
+  <h2>Append one chosen bit after each deterministic generic extension</h2>
+  <p>Fix a set \(B\subseteq\mathbb N\) and a finite binary word \(\rho\). Use exactly the <a href="one-generic-sets#halting-extension-selector">deterministic selector \(H\)</a>: it chooses the word coordinate of the least successful numerical pair candidate, or keeps the current word if no extension belongs to the designated c.e. collection. Define the <strong>coding history</strong> by</p>
+  <div class="math-display">\[\sigma_0=\rho,\qquad\tau_n=H(n,\sigma_n),\qquad\sigma_{n+1}=\tau_n\chi_B(n).\]</div>
+  <p>The last expression appends one bit. The construction itself depends on \(B,\rho\), and the fixed \(H\); a program witnessing \(K\le_T B\) will be needed to compute it from \(B\). Define the <strong>coded set</strong> \(G_{B,\rho}\) by</p>
+  <div class="math-display">\[\chi_{G_{B,\rho}}(x)=\sigma_{x+1}(x).\]</div>
+  <p>The length and compatibility assertions below justify this bit and identify the set with the union of the stage words. A numerical initial input is normalized by the established map \(N\); for the supplied valid word code \(u_\rho\), normalization leaves that code unchanged.</p>
+</section>
+
+<section id="coding-invariant" data-formal="jinv-coding-invariant jinv-coded-prefixes jinv-coding-bit" data-kind="lemma">
+  <h2>Each stage preserves the old prefix and records its coding bit</h2>
+  <p>Every stage word is binary, and for all \(n\),</p>
+  <div class="math-display">\[\sigma_n\preceq\tau_n\preceq\sigma_{n+1},\qquad|\sigma_{n+1}|=|\tau_n|+1,\qquad|\sigma_n|\ge|\rho|+n.\]</div>
+  <p>The set \(G_{B,\rho}\) extends every \(\sigma_n\), is the unique such set, and satisfies</p>
+  <div class="math-display">\[\chi_{G_{B,\rho}}(|\tau_n|)=\chi_B(n).\]</div>
+  <div class="proof">
+    <p>Begin with the supplied binary word. The selector returns a binary extension; appending a characteristic bit preserves validity and increases length by one. These facts inductively prove the prefix and length assertions. In particular \(|\sigma_{x+1}|&gt;x\), so the bit defining the union exists. The <a href="incomparable-turing-degrees#growing-unions">compatible-union lemma</a> gives existence, extension of every stage word and uniqueness.</p>
+    <p>Position \(|\tau_n|\) is the new last position of \(\sigma_{n+1}\). Its bit is exactly the appended \(\chi_B(n)\), and the union preserves it. This proves the coding identity for the same set defined above.</p>
+  </div>
+</section>
+
+<section id="coded-generic" data-formal="jinv-coded-generic jinv-coded-extends ogen-one-generic ogen-h-spec" data-kind="theorem">
+  <h2>The coding bits do not disrupt genericity</h2>
+  <p>For every \(B\) and finite binary \(\rho\), the set \(G_{B,\rho}\) is 1-generic and extends \(\rho\).</p>
+  <div class="proof">
+    <p>At stage \(e\), \(\tau_e\) belongs to the <a href="one-generic-sets#dense-completion">densification</a> \(S_e^*\). If \(\tau_e\in S_e\), the union meets \(S_e\). Otherwise no extension of \(\tau_e\) belongs to \(S_e\), so the union avoids it above that prefix. Appending either bit preserves the selected word, and all later stages preserve it as well. Every c.e. collection occurs as some \(S_e\), so these permanent alternatives give <a href="one-generic-sets#meet-or-avoid">1-genericity</a>. The initial word is preserved by the same prefix invariant.</p>
+  </div>
+</section>
+
+<section id="transport-selector" data-formal="jinv-transported-selector jinv-transported-eval oracle-subst-correct ogen-selector-correct" data-kind="lemma">
+  <h2>A supplied halting decider replaces the selector's oracle queries</h2>
+  <p>Suppose an actual finite oracle program \(d\) witnesses \(K\le_T B\), so</p>
+  <div class="math-display">\[E_B(d,q)\downarrow=\chi_K(q)\qquad\text{for every }q.\]</div>
+  <p>For the already fixed selector program \(h\), define \(h[d]=\operatorname{subst}(d,h)\). Then</p>
+  <div class="math-display">\[E_B(h[d],\langle e,u\rangle)\downarrow=H(e,u)\qquad\text{for every }e,u.\]</div>
+  <div class="proof">
+    <p>The <a href="oracle-computation#substitution-correctness">actual query-substitution theorem</a> identifies this evaluation with \(E_K(h,\langle e,u\rangle)\), including all intermediate query answers. The <a href="one-generic-sets#halting-extension-selector">specified selector identity</a> identifies that value with \(H(e,u)\). Forming \(h[d]\) is an ordinary effective operation on the supplied finite program; it uses neither \(B\) nor an oracle to find a reduction witness.</p>
+  </div>
+</section>
+
+<section id="coding-stage-program" data-formal="jinv-coding-finish jinv-coding-finish-primitive jinv-coding-program jinv-coding-eval" data-kind="lemma">
+  <h2>One program family computes the exact coding history</h2>
+  <p>From the supplied program \(d\), one can form an actual program \(C_d\), independently of \(B\) and \(\rho\), such that whenever \(d\) computes \(\chi_K\) under \(B\),</p>
+  <div class="math-display">\[E_B(C_d,\langle u_\rho,n\rangle)\downarrow=\langle n,u_{\sigma_n}\rangle\qquad\text{for every valid }\rho\text{ and }n.\]</div>
+  <div class="proof">
+    <p>Keep both the stage counter and current word in the recursion state. Let \(f\) be a fixed ordinary program for the total finite operation</p>
+    <div class="math-display">\[F(\langle n,\langle v,b\rangle\rangle)=\langle n+1,\operatorname{appendBit}(v,b)\rangle.\]</div>
+    <p>The established <a href="incomparable-turing-degrees#binary-prefixes">coded append operation</a> reduces an arbitrary numerical \(b\) modulo two; an actual query answer already is a bit. Let \(I\) be the identity program, and let \(\iota\) embed an ordinary program into the oracle syntax. The base program \(b_0=\operatorname{pair}(\mathbf0,\iota(N))\) returns the state \(\langle0,N(u_\rho)\rangle\). Here and below an embedded numerical function denotes one fixed ordinary program computing that function.</p>
+    <p>A primitive-recursion step receives \(\langle u_\rho,\langle n,s\rangle\rangle\), where \(s\) is the previous state. Define the actual projection programs</p>
+    <div class="math-display">\[S=\operatorname{comp}(\mathbf R,\mathbf R),\qquad J=\operatorname{comp}(\mathbf L,\mathbf R).\]</div>
+    <p>Thus \(S\) returns \(s\), while \(J\) returns \(n\). Form</p>
+    <div class="math-display">\[T_d=\operatorname{comp}(h[d],S),\qquad M_d=\operatorname{pair}(T_d,\operatorname{comp}(\mathbf Q,J)),\]</div>
+    <div class="math-display">\[V_d=\operatorname{comp}(\iota(f),\operatorname{pair}(J,M_d)),\qquad C_d=\operatorname{prec}(b_0,V_d).\]</div>
+    <p>Induct on \(n\), with the stated evaluation as the induction invariant. Initially normalization fixes the valid input word. If the old state is \(\langle n,u_{\sigma_n}\rangle\), the transported selector returns exactly \(u_{\tau_n}\), and the direct query at \(n\) returns \(\chi_B(n)\). The finisher therefore returns \(\langle n+1,u_{\tau_n\chi_B(n)}\rangle\), exactly the next state. Every call terminates by the supplied reduction hypothesis and selector totality. This proves the identity for this finite program family.</p>
+  </div>
+</section>
+
+<section id="coded-set-program" data-formal="jinv-characteristic-program jinv-characteristic-eval jinv-fixed-characteristic jinv-characteristic-reduces" data-kind="lemma">
+  <h2>The same history gives a characteristic program under B</h2>
+  <p>There is an actual program family \(A_d\) such that, under the same reduction hypothesis,</p>
+  <div class="math-display">\[E_B(A_d,\langle u_\rho,x\rangle)\downarrow=\chi_{G_{B,\rho}}(x).\]</div>
+  <p>Consequently \(G_{B,\rho}\le_T B\).</p>
+  <div class="proof">
+    <p>Use the ordinary maps \(a(\langle u,x\rangle)=\langle u,x+1\rangle\) and \(v(\langle\langle u,x\rangle,\langle n,w\rangle\rangle)=\beta(w,x)\), where \(\beta\) is the established finite-word bit function. Define</p>
+    <div class="math-display">\[A_d=\operatorname{comp}\bigl(\iota(v),\operatorname{pair}(I,\operatorname{comp}(C_d,\iota(a)))\bigr).\]</div>
+    <p>The inner call computes precisely the stage-\(x+1\) state. The output map reads its word at \(x\); the length invariant makes that position available. The union's defining bit identity therefore gives the claimed total characteristic evaluation. Hard-code the finite initial word \(u_\rho\) to obtain a unary reduction program.</p>
+  </div>
+</section>
+
+<section id="recovery-history" data-formal="jinv-recovery-state jinv-recovery-word jinv-recovery-extension jinv-recovery-bit jinv-recovery-invariant" data-kind="definition">
+  <h2>Reconstruct a history by reading the bit after each selected extension</h2>
+  <p>For any set \(X\) and supplied binary word \(\rho\), define the <strong>recovery history</strong> by</p>
+  <div class="math-display">\[\eta_0=\rho,\qquad\theta_n=H(n,\eta_n),\qquad b_n=\chi_X(|\theta_n|),\qquad\eta_{n+1}=\theta_nb_n.\]</div>
+  <p>Every \(\eta_n\) and \(\theta_n\) is a binary word, by selector validity and the bit-valued query. These equations give a total history from \(X\oplus K\): the halting component computes the fixed \(H\), and the other component supplies the indicated bit. The recovery history is defined even when \(X\) is not one of the coded sets.</p>
+</section>
+
+<section id="recovery-invariant" data-formal="jinv-recovery-exact" data-kind="lemma">
+  <h2>For the coded union, recovery follows the same words exactly</h2>
+  <p>Take \(X=G_{B,\rho}\). At every stage the recovery history satisfies</p>
+  <div class="math-display">\[\eta_n=\sigma_n,\qquad\theta_n=\tau_n,\qquad b_n=\chi_B(n).\]</div>
+  <div class="proof">
+    <p>The initial words agree. Suppose \(\eta_n=\sigma_n\). Both constructions now apply the identical deterministic function \(H\) at the same index to that same word, so \(\theta_n=\tau_n\). The <a href="#coding-invariant">coding-bit identity</a> gives \(\chi_{G_{B,\rho}}(|\theta_n|)=\chi_B(n)\). Appending that bit gives \(\eta_{n+1}=\sigma_{n+1}\), completing the induction.</p>
+    <p>This argument uses the fixed first-candidate rule. Merely choosing some word in the same densification in each computation would not identify the coding position.</p>
+  </div>
+</section>
+
+<section id="recovery-program" data-formal="jinv-odd-query jinv-join-queries-eval jinv-recovery-selector jinv-recovery-read jinv-recovery-program jinv-decoder-program jinv-recovery-eval jinv-decoder-eval jinv-fixed-decoder jinv-decoder-reduces" data-kind="lemma">
+  <h2>A fixed actual decoder reads B from the coded set joined with K</h2>
+  <p>There are fixed actual programs \(D,R\), independent of \(B\) and its reduction witness, with the following evaluations. For every \(X\), the program \(D\) under \(X\oplus K\) returns \(\langle n,u_{\eta_n}\rangle\) on \(\langle u_\rho,n\rangle\). The program \(R\) returns the bit \(b_n\) from that recovery history. In particular,</p>
+  <div class="math-display">\[E_{G_{B,\rho}\oplus K}(R,\langle u_\rho,n\rangle)\downarrow=\chi_B(n).\]</div>
+  <div class="proof">
+    <p>Use the <a href="turing-degrees#finite-join">even/odd join</a>. Let \(Q_0,Q_1\) query positions \(2x,2x+1\), respectively, on input \(x\). These are actual programs obtained by ordinary preprocessing followed by \(\mathbf Q\). Under \(X\oplus K\), their outputs are \(\chi_X(x),\chi_K(x)\). Put \(h_1=\operatorname{subst}(Q_1,h)\), so the substitution identity makes it compute exactly \(H\) using the odd component.</p>
+    <p>Let \(\ell\) be a fixed ordinary program computing word-code length. Define a state-reading program and the step helpers</p>
+    <div class="math-display">\[P=\operatorname{comp}\bigl(Q_0,\operatorname{comp}(\iota(\ell),h_1)\bigr),\qquad T=\operatorname{comp}(h_1,S),\]</div>
+    <div class="math-display">\[M=\operatorname{pair}(T,\operatorname{comp}(P,S)),\qquad V=\operatorname{comp}(\iota(f),\operatorname{pair}(J,M)).\]</div>
+    <p>Use the same base \(b_0\), finisher \(f\), and projections \(S,J\) as in the coding program, and set \(D=\operatorname{prec}(b_0,V)\), \(R=\operatorname{comp}(P,D)\). Inductively, the old state is \(\langle n,u_{\eta_n}\rangle\). The two occurrences of \(h_1\) compute the same \(\theta_n\); \(P\) reads the even-component bit at its length. The finisher appends that bit and increments the counter, exactly implementing the recovery recurrence. Both selector calls terminate for every \(X\), because the odd component is \(K\). The final composition reads \(b_n\) from the stage-\(n\) state.</p>
+    <p>Thus the decoder has the asserted complete evaluations under every \(X\oplus K\). For the particular coded union, <a href="#recovery-invariant"></a> identifies its output with \(\chi_B(n)\). Hard-coding \(u_\rho\) gives the required reduction of \(B\) to \(G_{B,\rho}\oplus K\).</p>
+  </div>
+</section>
+
+<section id="exact-join" data-formal="jinv-exact-join" data-kind="theorem">
+  <h2>The coded set together with halting recovers exactly B</h2>
+  <p>If \(d\) witnesses \(K\le_T B\), then the specified set satisfies</p>
+  <div class="math-display">\[B\equiv_T G_{B,\rho}\oplus K.\]</div>
+  <div class="proof">
+    <p>The fixed decoder gives \(B\le_T G_{B,\rho}\oplus K\). Conversely, the characteristic program gives \(G_{B,\rho}\le_T B\), and the supplied \(d\) gives \(K\le_T B\). The <a href="turing-degrees#join-upper-bound">common-upper-bound program for the join</a> combines these reductions into \(G_{B,\rho}\oplus K\le_T B\). These comparisons concern the same constructed set, coding history and decoder.</p>
+  </div>
+</section>
+
+<section id="jump-inversion" data-formal="jinv-jump-inversion jinv-coded-generic jinv-coded-extends ogen-generalized-low jump-jump-strict" data-kind="theorem">
+  <h2>Every problem above halting is a jump of a strictly weaker oracle</h2>
+  <div class="statement-box"><p>For every set \(B\) with \(K\le_T B\) and every finite binary word \(\rho\), the specified set \(G_{B,\rho}\) is 1-generic, extends \(\rho\), and satisfies</p><div class="math-display">\[G_{B,\rho}'\equiv_T B,\qquad G_{B,\rho}&lt;_T B.\]</div></div>
+  <div class="proof">
+    <p>Choose an actual finite program \(d\) witnessing the given reduction. Genericity and the <a href="one-generic-sets#generalized-low">generalized-low identity</a> give \(G_{B,\rho}'\equiv_T G_{B,\rho}\oplus K\). The exact-join theorem identifies the latter degree with that of \(B\), proving jump inversion for this constructed set.</p>
+    <p>The stage program already gives \(G_{B,\rho}\le_T B\). If \(B\le_T G_{B,\rho}\), then \(G_{B,\rho}'\le_T B\le_T G_{B,\rho}\), contradicting <a href="turing-jump#jump-strictness">jump strictness</a>. Hence the upper comparison is strict. The construction's set is chosen from \(B,\rho\); its computation uses the supplied program \(d\), while the decoder is fixed independently of that witness.</p>
+  </div>
+</section>
+
+<section id="jump-range" data-formal="jinv-degree-jump-range lowsimple-halting-below-jump jump-degree-jump jump-degree-jump-degree jump-zero-jump-halting" data-kind="theorem">
+  <h2>The range of the degree jump is exactly the cone above zero-prime</h2>
+  <p>For every Turing degree \(\mathbf b\),</p>
+  <div class="math-display">\[\exists\mathbf a\;(\mathbf a'=\mathbf b)\quad\Longleftrightarrow\quad\mathbf0'\le\mathbf b.\]</div>
+  <div class="proof">
+    <p>For the forward implication choose a representative \(X\) of \(\mathbf a\). The necessary lower bound gives \(K\le_T X'\), so \(\mathbf0'\le\mathbf a'=\mathbf b\). Conversely choose a representative \(B\) of \(\mathbf b\). The <a href="turing-degrees#degree-order">representative interpretation of the degree order</a> turns \(\mathbf0'\le\mathbf b\) into \(K\le_T B\). Jump inversion with the empty initial word yields a set \(G\) whose jump is Turing equivalent to \(B\); the <a href="turing-jump#jump-on-degrees">well-defined degree jump</a> therefore sends \([G]\) to \(\mathbf b\).</p>
+    <p>The effective program construction takes a supplied reduction witness. This degree statement makes an existence assertion and does not supply numerical program data merely from an unnamed degree.</p>
+  </div>
+</section>
+
+<section id="endpoint-question" data-formal="jinv-jump-inversion jinv-coded-generic jinv-coded-extends ogen-noncomputable" data-kind="question">
+  <h2>Does inversion require B to be strictly above ordinary halting?</h2>
+  <p>Can the construction be applied at \(B=K\), with any supplied finite binary word? What does it give?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The query program witnesses \(K\le_T K\), so the hypotheses include this endpoint. The constructed set is 1-generic and extends the prescribed word, with \(G_{K,\rho}'\equiv_T K\) and \(G_{K,\rho}&lt;_T K\). It is noncomputable by <a href="one-generic-sets#generic-noncomputable">generic noncomputability</a>, and its displayed jump identity says it is low. Thus the result does not require a strict inequality in its hypothesis.</p>
+  </div></details>
+</section>
+
+<section id="nonuniqueness-question" data-formal="jinv-degree-jump-collision ogen-constructed-low ogen-constructed-strict-bounds turing-degree-zero-characterization" data-kind="question">
+  <h2>Can two different degrees have the same jump?</h2>
+  <p>If \(A'\equiv_T C'\), must \(A\equiv_T C\)? Is an inverse degree in jump inversion uniquely determined?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Take \(A=\varnothing\), and let \(C\) be a <a href="one-generic-sets#low-generic-existence">specified noncomputable low generic</a>. Then \(A'\equiv_T K\equiv_T C'\). But \(A\) is computable and \(C\) is not, so the <a href="turing-degrees#least-degree">computable-degree characterization</a> excludes \(A\equiv_T C\). The degree jump is therefore not injective, and even the jump degree \(\mathbf0'\) has distinct inverse degrees.</p>
+  </div></details>
+</section>

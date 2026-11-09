@@ -1,0 +1,159 @@
+<section id="prefix-tables" data-formal="ttwtt-prefix-scheme ttwtt-truth-table-reducible ttwtt-binary-rows ttwtt-binary-rows-spec ttwtt-finite-row-representation ttwtt-row-presentation-scheme" data-kind="definition">
+  <h2>Choose a finite table before receiving oracle answers</h2>
+  <p>A <strong>prefix truth-table scheme</strong> consists of total computable numerical functions \(u(x)\) and \(t(x,w)\), with \(t(x,w)\in\{0,1\}\) for all inputs. On input \(x\), it uses the first \(u(x)\) membership bits of its oracle. If \(\sigma\) is that binary word and \(u_\sigma\) is its <a href="coding-finite-sequences#list-code">list code</a>, the answer is \(t(x,u_\sigma)\). For sets \(A,B\subseteq\mathbb N\), write \(A\le_{\mathrm{tt}}B\), or say that \(A\) is <strong>truth-table reducible</strong> to \(B\), if one such scheme satisfies</p>
+  <div class="math-display">\[\chi_A(x)=t\bigl(x,u_{B\upharpoonright u(x)}\bigr)\qquad(x\in\mathbb N).\]</div>
+  <p>For fixed \(x\), only the \(2^{u(x)}\) binary words of length \(u(x)\) are used. The values of \(t\) on these words are the finite truth table. They can all be computed before any oracle answer is supplied: start with the list containing the empty word, and at each step append zero and one to every listed word. After \(u(x)\) steps this lists exactly the required rows. Apply \(t\) to each code. Conversely, a computable procedure producing the bound and these finitely coded rows gives such a total lookup function: compare a supplied word with the listed rows, return its listed bit when present, and zero otherwise.</p>
+  <p>This prefix convention permits unused bits. A table that depends only on a few specified positions is represented by a prefix ending after the largest of those positions and ignoring the other coordinates. A bound of zero permits one row, the empty word, and no oracle questions.</p>
+</section>
+
+<section id="two-bit-example" data-formal="ttwtt-exclusive-or-scheme ttwtt-exclusive-or-bits" data-kind="lemma">
+  <h2>A table may combine answers instead of copying one</h2>
+  <p>For every \(B\subseteq\mathbb N\), the set</p>
+  <div class="math-display">\[X_B=\{x:\text{exactly one of }x,x+1\text{ belongs to }B\}\]</div>
+  <p>is truth-table reducible to \(B\). One scheme has \(u(x)=x+2\) and \(t(x,u_\sigma)=(\sigma(x)+\sigma(x+1))\bmod2\) on words of that length; put zero on other supplied word codes.</p>
+  <div class="proof">
+    <p>The bound and finite bit tests are computable. The four relevant pairs of answers give precisely the following table, regardless of the unused earlier bits.</p>
+    <div class="table-scroll"><table id="xor-membership-table"><caption>Exclusive-or of the membership bits at \(x\) and \(x+1\).</caption><thead><tr><th scope="col">\(\chi_B(x)\)</th><th scope="col">\(\chi_B(x+1)\)</th><th scope="col">\(\chi_{X_B}(x)\)</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></tbody></table></div>
+    <p>Thus the table outputs one exactly for the defining condition of \(X_B\). The two relevant questions and the rule combining their answers are fixed from \(x\); no later question has to be chosen after seeing an earlier answer.</p>
+  </div>
+</section>
+
+<section id="record-use" data-formal="oracle-use-query-set oracle-use-bound oracle-use-bound-spec ttwtt-use-bound-iff ttwtt-bounded-reduction" data-kind="definition">
+  <h2>A use bound limits positions, including negative answers</h2>
+  <p>Use the <a href="oracle-computation#successful-traces">successful derivations and query records</a> \(c;x\Downarrow_\tau y\). For a finite record \(\tau\), let \(Q(\tau)\) be its set of queried positions. Its <strong>use</strong> is the already specified bound</p>
+  <div class="math-display">\[\operatorname{use}(\tau)=\max\bigl(\{0\}\cup\{q+1:q\in Q(\tau)\}\bigr).\]</div>
+  <p>Thus \(\operatorname{use}(\tau)\le m\) means that every recorded query has position strictly below \(m\). An empty record has use zero. A negative answer at a position still counts as a query at that position; repetitions do not increase the maximum.</p>
+  <p>For a fixed oracle \(B\), program \(c\), and total numerical function \(u\), say that a successful computation has <strong>use bounded by \(u\)</strong> on input \(x\) if it has a record consistent with \(B\) whose use is at most \(u(x)\). This bounds oracle positions, rather than the number of ordinary computational steps.</p>
+</section>
+
+<section id="weak-truth-table-reductions" data-formal="ttwtt-bounded-reduction ttwtt-weak-truth-table-reducible oracle-code-trace-sound" data-kind="definition">
+  <h2>Require a computable bound for the successful computations</h2>
+  <p>A <strong>weak truth-table reduction</strong> of \(A\) to \(B\) consists of one actual <a href="oracle-computation#oracle-programs">oracle program</a> \(c\) and a total computable \(u:\mathbb N\to\mathbb N\) such that, for every \(x\), there is a finite record \(\tau\) satisfying</p>
+  <div class="math-display">\[c;x\Downarrow_\tau\chi_A(x),\qquad\tau\text{ is consistent with }B,\qquad\operatorname{use}(\tau)\le u(x).\]</div>
+  <p>Write \(A\le_{\mathrm{wtt}}B\) when such a program and bound exist. By <a href="oracle-computation#trace-correctness">trace correctness</a>, the program terminates with \(\chi_A(x)\) under \(B\) for every input. The same computable function bounds all these successful uses. There is no requirement that this program terminate under every other oracle.</p>
+</section>
+
+<section id="bounded-replay" data-formal="ttwtt-bounded-replay" data-kind="lemma">
+  <h2>The bound identifies a whole cylinder of unchanged answers</h2>
+  <p>Suppose \(c,u\) witness \(A\le_{\mathrm{wtt}}B\). If an oracle \(C\) agrees with \(B\) below \(u(x)\), then \(E_C(c,x)\downarrow=\chi_A(x)\).</p>
+  <div class="proof">
+    <p>Choose the successful record from the definition. Every query position in it is below \(u(x)\), and agreement preserves its recorded zero or one answer. The same derivation is consequently consistent with \(C\). <a href="oracle-computation#trace-correctness">Soundness</a> gives the claimed output. This is the <a href="oracle-computation#finite-use">finite-use replay argument</a> with a supplied computable bound; it proves nothing about an oracle with a different prefix at these positions.</p>
+  </div>
+</section>
+
+<section id="table-program" data-formal="ttwtt-table-program ttwtt-prefix-program-trace ttwtt-table-program-correct" data-kind="lemma">
+  <h2>One query program evaluates every row of a truth-table scheme</h2>
+  <p>Given a prefix truth-table scheme \(u,t\), there is one oracle program \(c_{u,t}\) such that, for every oracle \(C\) and input \(x\),</p>
+  <div class="math-display">\[E_C(c_{u,t},x)\downarrow=t\bigl(x,u_{C\upharpoonright u(x)}\bigr).\]</div>
+  <p>It has a successful record using only positions below \(u(x)\). In particular it terminates for every oracle, and a scheme witnessing \(A\le_{\mathrm{tt}}B\) gives a weak truth-table reduction with that same bound.</p>
+  <div class="proof">
+    <p>First compute \(u(x)\) by an ordinary total program. Retain \(x\), start with the empty word code, and perform the finite recursion</p>
+    <div class="math-display">\[r_C(x,0)=u_{[]},\qquad r_C(x,j+1)=\operatorname{append}\bigl(r_C(x,j),\chi_C(j)\bigr).\]</div>
+    <p>The step is an ordinary effective append operation and one query at \(j\). The <a href="oracle-computation#relative-closure">closure of the actual query-program language</a> under primitive recursion therefore supplies a fixed program for this recurrence. Induction on \(j\) gives its invariant: the stored code is exactly \(u_{C\upharpoonright j}\), and every query so far has position below \(j\). The base record is empty. A successor concatenates the preceding record with the single query \((j,\chi_C(j))\), proving the record assertion too.</p>
+    <p>At \(j=u(x)\), run an ordinary total program for \(t\) on \(x,r_C(x,u(x))\). Its ordinary embedding adds no queries. Composition gives the specified \(c_{u,t}\). Every finite recursion and lookup terminates under every \(C\), and the invariant proves both the evaluation identity and the use bound, including \(u(x)=0\).</p>
+  </div>
+</section>
+
+<section id="implication-chain" data-formal="ttwtt-many-one-scheme ttwtt-many-one-program-trace ttwtt-many-one-implies-tt ttwtt-tt-implies-wtt ttwtt-wtt-implies-turing" data-kind="theorem">
+  <h2>Stronger restrictions still give ordinary oracle reductions</h2>
+  <div class="statement-box"><p>For all sets \(A,B\subseteq\mathbb N\),</p>
+    <div class="math-display">\[A\le_m B\quad\Longrightarrow\quad A\le_{\mathrm{tt}}B\quad\Longrightarrow\quad A\le_{\mathrm{wtt}}B\quad\Longrightarrow\quad A\le_T B.\]</div>
+  </div>
+  <div class="proof">
+    <p>If a total computable \(f\) gives \(x\in A\Longleftrightarrow f(x)\in B\), take \(u(x)=f(x)+1\) and let the table return the bit at position \(f(x)\). Bit lookup on a finite word is computable, with zero as default on an invalid position. The actual program can simply compute \(f(x)\) and ask that one question. This proves the first implication. The second is <a href="#table-program"></a>. For the last implication, the successful consistent derivation in the weak truth-table definition gives \(E_B(c,x)=\chi_A(x)\) by trace soundness, exactly the definition of <a href="turing-degrees#turing-reducibility">Turing reducibility</a>.</p>
+  </div>
+</section>
+
+<section id="uniform-halting-level" data-formal="ttwtt-uniform-halting-level" data-kind="lemma">
+  <h2>All-oracle termination supplies a computable uniform allowance</h2>
+  <p>Fix an oracle-program index \(e\) whose program terminates on every input under every oracle. There is a total computable \(h:\mathbb N\to\mathbb N\) such that every binary word \(\sigma\) of length \(h(x)\) has</p>
+  <div class="math-display">\[D(\sigma,e,x)&gt;0.\]</div>
+  <p>Here \(D\) is the <a href="incomparable-turing-degrees#prefix-certificates">fixed bounded prefix certificate</a>: its word length is also its evaluation allowance.</p>
+  <div class="proof">
+    <p>For a fixed \(x\), consider the binary tree</p>
+    <div class="math-display">\[T_x=\{\sigma:D(\sigma,e,x)=0\}.\]</div>
+    <p>It is closed under prefixes: a successful certificate at a shorter word would persist to the longer word by <a href="incomparable-turing-degrees#certificate-persistence"></a>. Membership is decidable, uniformly in the word and \(x\), because the certificate checker is primitive recursive. If this tree had a node at every length, the ordinary <a href="infinite-trees#konigs-lemma">König lemma</a> would give an infinite binary path \(C\) all of whose prefixes fail the test. But the program terminates under \(C\), so <a href="incomparable-turing-degrees#prefix-adequacy">prefix adequacy</a> gives a successful prefix, a contradiction. Hence some level of \(T_x\) is empty.</p>
+    <p>To compute \(h(x)\), test levels \(n=0,1,2,\ldots\). List all \(2^n\) binary words by the finite append construction in <a href="#prefix-tables"></a>, compute their certificate values, and stop at the first level where all are positive. Each level test finishes, and the preceding argument guarantees a successful level. Thus this one ordinary search is total for the fixed \(e\), uniformly in \(x\). Its totality uses the all-oracle hypothesis; it does not decide which arbitrary indices satisfy that hypothesis.</p>
+  </div>
+</section>
+
+<section id="total-functional-characterization" data-formal="ttwtt-all-oracle-total ttwtt-bounded-allowance ttwtt-bounded-allowance-scheme ttwtt-total-functional-characterization ttwtt-bounded-allowance-characterization hdeg-hyperimmune-free hdeg-least-allowance-relative hdeg-free-allowance-bound hdeg-free-truth-table-scheme hdeg-free-truth-table" data-kind="theorem">
+  <h2>Truth tables are exactly reductions total for every oracle</h2>
+  <div class="statement-box"><p>For sets \(A,B\subseteq\mathbb N\), the following are equivalent:</p>
+    <ul><li>\(A\le_{\mathrm{tt}}B\).</li><li>There is one oracle program \(c\) that terminates under every oracle on every input, and satisfies \(E_B(c,x)\downarrow=\chi_A(x)\) for every \(x\).</li><li>There are an oracle-program index \(e\) and a total computable \(h\) such that \(b_B(h(x),e,x)=\chi_A(x)+1\) for every \(x\), where \(b\) is the <a href="oracle-program-numberings#bounded-oracle-evaluation">fixed bounded output code</a>.</li></ul>
+  </div>
+  <div class="proof">
+    <p>The first condition gives the second by <a href="#table-program"></a>. For the second, take an index \(e\) for \(c\) and the computable \(h\) from <a href="#uniform-halting-level"></a>. The prefix \(B\upharpoonright h(x)\) certifies a value. Soundness identifies that value with \(\chi_A(x)\), and <a href="posts-theorem#bounded-query-agreement">agreement below the allowance</a> identifies its certificate with \(b_B(h(x),e,x)\). This gives the third condition.</p>
+    <p>For the converse, use prefix bound \(h(x)\). On a supplied word of that length, run the <a href="posts-theorem#finite-checker">ordinary finite checker</a> at allowance \(h(x)\), index \(e\), and input \(x\). Give the table value one exactly when this checker returns code two, meaning output one; otherwise give zero. This defines a total computable Boolean lookup, even at a word where the bounded computation fails or produces another number. At the actual prefix of \(B\), the checker equals \(b_B(h(x),e,x)=\chi_A(x)+1\). The table therefore returns exactly \(\chi_A(x)\), proving the first condition.</p>
+    <p>Outputs of \(c\) under other oracles need not be Boolean. The finite lookup just described keeps the distinction “output one” versus “any other result”; only its agreement with the characteristic function under \(B\) is required. The third condition bounds an allowance of this evaluator, not the number of tape-machine transitions.</p>
+  </div>
+  <p>The bounded-allowance condition applies to every Turing reduction below a <a href="domination-and-hyperimmune-degrees#hyperimmune-functions">hyperimmune-free oracle</a>: that oracle computes its own first successful allowance function, which has a computable majorant. Hence <a href="domination-and-hyperimmune-degrees#hyperimmune-free-truth-table">Turing reducibility collapses to truth-table reducibility below such an oracle</a>.</p>
+</section>
+
+<section id="truth-table-composition" data-formal="ttwtt-table-composition ttwtt-tt-reflexive" data-kind="theorem">
+  <h2>Compose finite tables by evaluating the inner rows first</h2>
+  <p>Truth-table reducibility is reflexive and transitive. More precisely, let \(u,t\) witness \(A\le_{\mathrm{tt}}B\), and let \(v,s\) witness \(B\le_{\mathrm{tt}}C\). A scheme for \(A\le_{\mathrm{tt}}C\) has bound</p>
+  <div class="math-display">\[w(x)=\max\bigl(\{0\}\cup\{v(i):i&lt;u(x)\}\bigr).\]</div>
+  <div class="proof">
+    <p>Given a binary word \(\sigma\) of length \(w(x)\), construct a word \(\rho\) of length \(u(x)\) by</p>
+    <div class="math-display">\[\rho(i)=s\bigl(i,u_{\sigma\upharpoonright v(i)}\bigr)\qquad(i&lt;u(x)).\]</div>
+    <p>Every required prefix is available because \(v(i)\le w(x)\). Let the new lookup return \(t(x,u_\rho)\). On other supplied word lengths return zero. The maximum, finite list of prefixes, calls to the total lookup \(s\), and call to \(t\) are all computable; the generated entries are Boolean. If \(\sigma=C\upharpoonright w(x)\), every inner-table identity gives \(\rho(i)=\chi_B(i)\). Thus \(\rho=B\upharpoonright u(x)\), and the outer identity gives \(\chi_A(x)\). This proves transitivity for the specified composite table. If \(u(x)=0\), then \(w(x)=0\), \(\rho=[]\), and the same calculation uses its single empty row.</p>
+    <p>For reflexivity, take bound \(x+1\) and return the bit at position \(x\). This is the one-query scheme for the identity many-one map.</p>
+  </div>
+</section>
+
+<section id="substituted-records" data-formal="ttwtt-substituted-records" data-kind="lemma">
+  <h2>Replacing a query replaces its record by the answering computation</h2>
+  <p>Suppose \(c;x\Downarrow_\tau y\) is consistent with \(B\), and \(d,v\) witness \(B\le_{\mathrm{wtt}}C\). Then the specified <a href="oracle-computation#query-substitution">query substitution</a> has a successful derivation</p>
+  <div class="math-display">\[\operatorname{subst}(d,c);x\Downarrow_\rho y\]</div>
+  <p>consistent with \(C\). Every query position \(r\) in \(\rho\) is below \(v(q)\) for some position \(q\) queried in the original \(\tau\).</p>
+  <div class="proof">
+    <p>At each original query \((q,b)\), consistency gives \(b=\chi_B(q)\). Choose the successful \(C\)-consistent derivation of \(d\) at \(q\) supplied by its reduction, with use at most \(v(q)\). Replace that query leaf by this derivation; its final numerical value is the same bit \(b\), so it leaves every intermediate value of the original calculation unchanged.</p>
+    <p>Induct on the finite original derivation tree. Ordinary leaves keep their empty records. A query leaf uses the chosen replacement. Pairing and composition concatenate the transformed child records in the original order. A primitive recursion keeps its counter and successive numerical values and transforms each derivation in its finite chain. A successful search likewise keeps its final witness and all earlier positive test values, transforming the test derivations in order. These are exactly the rules for the substituted program, and all resulting records are consistent with \(C\).</p>
+    <p>Every query in the new record belongs to one of the replacement records. That record came from an original position \(q\), and all its positions are below \(v(q)\). This proves the final assertion. In particular an original empty query record remains empty. The chosen replacement derivations justify the execution of the one fixed syntactic substitution; they do not define a different program for each input.</p>
+  </div>
+</section>
+
+<section id="weak-truth-table-composition" data-formal="ttwtt-wtt-composition ttwtt-wtt-reflexive-program" data-kind="theorem">
+  <h2>A computable use bound survives query substitution</h2>
+  <p>Weak truth-table reducibility is reflexive and transitive. If \(c,u\) witness \(A\le_{\mathrm{wtt}}B\) and \(d,v\) witness \(B\le_{\mathrm{wtt}}C\), then \(\operatorname{subst}(d,c)\), with the computable bound</p>
+  <div class="math-display">\[w(x)=\max\bigl(\{0\}\cup\{v(i):i&lt;u(x)\}\bigr),\]</div>
+  <p>witnesses \(A\le_{\mathrm{wtt}}C\).</p>
+  <div class="proof">
+    <p>For each input take the original successful record \(\tau\), with every queried \(q&lt;u(x)\). The <a href="#substituted-records">record-substitution lemma</a> produces a consistent successful record for the specified new program, with the same final output \(\chi_A(x)\). Its every position \(r\) satisfies \(r&lt;v(q)\le w(x)\) for some such \(q\). Thus its use is at most \(w(x)\). The finite maximum is computable uniformly in \(x\), proving the claimed reduction.</p>
+    <p>If \(u(x)=0\), the original record is empty, the replacement record is empty, and \(w(x)=0\), so the boundary case is included. Reflexivity uses the query program and bound \(u(x)=x+1\); its record is \([(x,\chi_A(x))]\).</p>
+  </div>
+</section>
+
+<section id="boolean-closure" data-formal="ttwtt-computable-scheme ttwtt-complement-scheme ttwtt-boolean-scheme ttwtt-wtt-complement-program ttwtt-wtt-boolean-program ttwtt-tt-boolean-closed ttwtt-wtt-boolean-closed" data-kind="theorem">
+  <h2>Finite Boolean combinations preserve either reduction</h2>
+  <p>For a fixed oracle \(B\), each of the two families</p>
+  <div class="math-display">\[\{A:A\le_{\mathrm{tt}}B\},\qquad\{A:A\le_{\mathrm{wtt}}B\}\]</div>
+  <p>contains every computable set and is closed under finite Boolean combinations, including complements, unions, and intersections.</p>
+  <div class="proof">
+    <p>A computable characteristic function gives a truth-table scheme of bound zero whose one row returns that bit. The implication chain gives its weak truth-table reduction as well. This includes both constant sets.</p>
+    <p>For truth tables, complement the lookup bit to obtain a table for the complement. Given tables with bounds \(u_0,u_1\), use \(\max(u_0(x),u_1(x))\), take the two required prefixes, and apply Boolean disjunction or conjunction to their two lookup bits. These are total computable tables and have exactly the desired membership identities.</p>
+    <p>For weak truth-table reductions, an ordinary Boolean-negation program after the given program adds no oracle queries. For a union or intersection, run the two given programs by the actual pairing constructor, then apply the ordinary two-bit Boolean operation to their paired outputs. Both computations terminate under \(B\). Their records concatenate; all queried positions lie below \(\max(u_0(x),u_1(x))\). Hence this maximum bounds the use of the composite program. Induction on a finite Boolean expression proves the general assertion, with constant sets as the empty-expression cases.</p>
+  </div>
+</section>
+
+<section id="many-one-boundary" data-formal="ttwtt-many-one-scheme ttwtt-complement-scheme turing-red-ce-complement-nonreduction univ-diagonal-halting-enumerable univ-diagonal-halting-undecidable" data-kind="theorem">
+  <h2>Reversing one answer already goes beyond many-one reducibility</h2>
+  <p>If \(B\) is c.e. and undecidable, then</p>
+  <div class="math-display">\[\overline B\le_{\mathrm{tt}}B\qquad\text{and}\qquad\overline B\not\le_m B.\]</div>
+  <p>In particular \(\overline K\le_{\mathrm{tt}}K\) and \(\overline K\not\le_m K\) for ordinary diagonal halting \(K\).</p>
+  <div class="proof">
+    <p>Use bound \(x+1\) and let the table return one minus the bit at position \(x\). This computes \(\chi_{\overline B}(x)\) for every oracle \(B\), so proves the first assertion. The <a href="turing-degrees#strict-comparison">previous preimage argument</a> proves the second: a many-one reduction to the c.e. set \(B\) would make \(\overline B\) c.e.; then both sides would be c.e., making \(B\) decidable. The <a href="universal-computation#halting-sets">ordinary halting set</a> has the required enumerability and undecidability.</p>
+  </div>
+</section>
+
+<section id="use-versus-totality-question" data-formal="ttwtt-partial-one-query-program ttwtt-partial-one-query-evaluation ttwtt-partial-one-query-trace ttwtt-partial-one-query-reduction ttwtt-partial-one-query-not-total ttwtt-computable-scheme" data-kind="question">
+  <h2>Does a computable use bound force this program to halt for every oracle?</h2>
+  <p>Construct a weak truth-table reduction that asks only about position zero, yet whose particular program fails to terminate under some other oracle. Does this show that the two reducibility relations differ on the sets in your example?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Let \(N=\mathsf{find}'(\mathsf{comp}(\mathsf{succ},\mathsf{zero}))\), the ordinary divergent program whose every search test returns one. Use the actual oracle program</p>
+    <div class="math-display">\[c=\mathsf{comp}\!\left(\mathsf{prec}(\mathsf{zero},N),\mathsf{pair}(\mathsf{zero},\mathsf{comp}(\mathbf Q,\mathsf{zero}))\right).\]</div>
+    <p>On any input it queries position zero and forms \(\langle0,\chi_C(0)\rangle\). If \(0\notin C\), the primitive recursion has counter zero and its base returns zero. If \(0\in C\), its first step runs \(N\), which diverges. Under \(B=\varnothing\), this therefore decides \(A=\varnothing\) with record \([(0,0)]\) and the constant computable use bound one. Under \(C=\{0\}\), it never returns.</p>
+    <p>This program is a valid weak truth-table witness and is not total for every oracle. The two sets in the example nevertheless have a truth-table reduction too: the constant-zero table has bound zero. A property of one supplied program is distinct from the existence of some program witnessing a reduction. Bounding positions also does not bound arbitrary ordinary work after those queries; the separate bounded-allowance criterion in <a href="#total-functional-characterization"></a> is stronger information.</p>
+  </div></details>
+</section>

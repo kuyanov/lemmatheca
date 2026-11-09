@@ -1,0 +1,82 @@
+<section id="difference-sets" data-formal="dce-definition" data-kind="definition">
+  <h2>Membership may be proposed and then cancelled</h2>
+  <p>A set \(A\subseteq\mathbb N\) is <strong>difference enumerable</strong>, or <strong>d.c.e.</strong>, if there are computably enumerable sets \(U,V\subseteq\mathbb N\) such that \(A=U\setminus V\). Equivalently, \(x\in A\) means \(x\in U\) and \(x\notin V\). The two sets come with independent recognizing algorithms, in the sense of <a href="universal-computation#decidable-and-enumerable">enumerability</a>; no algorithm deciding their difference is required.</p>
+  <p>The order in which the recognizers succeed matters to a temporary guess, but not to final membership. A number enumerated into \(V\) before it enters \(U\) is excluded permanently. A number entering \(U\) first remains a candidate until it enters \(V\), if that ever happens.</p>
+</section>
+
+<section id="nested-difference" data-formal="dce-nested dce-normalized-subset univ-enumerable-intersection" data-kind="lemma">
+  <h2>The cancellation set can be kept inside the proposal set</h2>
+  <p>Every d.c.e. presentation \(A=U\setminus V\) has the normalized presentation \(A=U\setminus(U\cap V)\), in which both sets are enumerable and the second is contained in the first.</p>
+  <div class="proof"><p>The intersection \(U\cap V\) is enumerable by <a href="universal-computation#enumerable-closure">parallel positive search</a>. For each \(x\), belonging to \(U\) but not to \(U\cap V\) is equivalent to belonging to \(U\) but not to \(V\). This proves the claimed identity without deciding any negative membership question.</p></div>
+</section>
+
+<section id="change-counter" data-formal="dce-change-count dce-starts-zero dce-change-bound dce-count-computable" data-kind="definition">
+  <h2>Count revisions rather than stages</h2>
+  <p>For a <a href="limit-computability#pointwise-approximation">binary approximation</a> \(a(s,x)\), its <strong>prefix change counter</strong> is the function \(c_a(s,x)\) defined by</p>
+  <div class="math-display">\[c_a(0,x)=0,\qquad c_a(s+1,x)=c_a(s,x)+[a(s+1,x)\ne a(s,x)].\]</div>
+  <p>Here a bracket is one if its assertion holds and zero otherwise. Thus \(c_a(s,x)\) counts transitions indexed by \(0,\ldots,s-1\). Say that \(a\) <strong>starts at zero</strong> if \(a(0,x)=0\) for every \(x\), and that it has <strong>at most \(n\) changes</strong> if \(c_a(s,x)\le n\) for every \(s,x\). This is a bound for all inputs together, although their change stages may be different. When \(a\) is jointly computable, so is \(c_a\): compute the row up to the requested stage, keeping this running integer counter.</p>
+</section>
+
+<section id="counter-invariant" data-formal="dce-count-monotone dce-count-strict" data-kind="lemma">
+  <h2>Different answers force an increase in the counter</h2>
+  <p>For every approximation \(a\), input \(x\), and stages \(r\le t\), we have \(c_a(r,x)\le c_a(t,x)\). If also \(a(r,x)\ne a(t,x)\), then \(c_a(r,x)&lt;c_a(t,x)\).</p>
+  <div class="proof"><p>Every successor step adds either zero or one, proving monotonicity by induction on the number of steps. If the endpoint counters were equal, monotonicity would make the counters equal at every intermediate stage. The recurrence would then add zero at each transition, so every adjacent pair of answers would agree. Induction from \(r\) to \(t\) would give equal endpoint answers, a contradiction. In particular, a row starting at zero that later takes the successive values one, zero, one has accumulated at least three changes, even if long constant intervals separate these observations.</p></div>
+</section>
+
+<section id="difference-approximation" data-formal="dce-difference-guess dce-stage-difference dce-difference-count-bound dce-stage-difference-data" data-kind="lemma">
+  <h2>Two increasing discoveries give at most two revisions</h2>
+  <p>Let \(U,V\) be enumerable, and choose their <a href="effective-enumerations#uniform-finite-approximation">canonical finite stages</a> \(U_s,V_s\), both empty at stage zero. Define the <strong>difference approximation</strong> by</p>
+  <div class="math-display">\[d(s,x)=[x\in U_s]\,[x\notin V_s].\]</div>
+  <p>This is a jointly computable binary function starting at zero, converging to \(U\setminus V\), and having at most two changes on every input.</p>
+  <div class="proof"><p>Each stage membership test terminates, so the displayed arithmetic gives an algorithm for \(d\). The positive membership bits \(u(s,x)=[x\in U_s]\) and \(v(s,x)=[x\in V_s]\) can each increase only once. At any transition changing \(d\), at least one of these two bits changes. An induction using the recurrence therefore gives the stronger invariant \(c_d(s,x)\le u(s,x)+v(s,x)\le2\). At stage zero all three quantities are zero. In a successor step with unchanged \(d\), use monotonicity of \(u,v\); if \(d\) changes, the sum of their bits has increased by at least one.</p><p>For convergence, fix \(x\). A positive answer in either enumeration is permanent. If \(x\) belongs to both sets, wait until both discoveries have happened; if it belongs only to \(U\), wait for that discovery; if it does not belong to \(U\), every guess is zero. These cases show that the eventual answer is exactly \([x\in U\setminus V]\). Discovery in \(V\) before discovery in \(U\) produces an always-zero row, and simultaneous discovery also produces no temporary one. Neither case causes a third revision.</p></div>
+</section>
+
+<section id="event-lists" data-formal="dce-positive-events dce-cancellation-events dce-event-sets-enumerable" data-kind="definition">
+  <h2>Recover two positive event lists from a row of guesses</h2>
+  <p>Given a jointly computable binary approximation \(a\), define its <strong>positive-event set</strong> \(P_a\) and <strong>cancellation-event set</strong> \(N_a\) by</p>
+  <div class="math-display">\[P_a=\{x:\exists r\;a(r,x)=1\},\qquad N_a=\{x:\exists r&lt;t\;a(r,x)=1\text{ and }a(t,x)=0\}.\]</div>
+  <p>Both sets are enumerable and \(N_a\subseteq P_a\). To recognize \(P_a\), test stages in order and accept the first one. To recognize \(N_a\), inspect all pairs of stages in successive finite squares, accepting a pair with the displayed properties. Repeating pairs is harmless. A successful witness is finite and is eventually tested; each individual test terminates. This is <a href="universal-computation#enumerable-closure">existential search over a computable test</a>, and requires no bound on when the row stabilizes.</p>
+</section>
+
+<section id="two-change-reconstruction" data-formal="dce-reconstruction" data-kind="lemma">
+  <h2>With two revisions a cancelled proposal cannot return</h2>
+  <p>If \(a\) starts at zero, has at most two changes, and converges pointwise to \(\chi_A\), then \(A=P_a\setminus N_a\).</p>
+  <div class="proof"><p>Fix \(x\in A\). A sufficiently late answer is one, so \(x\in P_a\). Suppose there were stages \(r&lt;t\) with answers one and zero. Choose a later stage \(q\ge t\) after convergence, whose answer is one. Applying <a href="#counter-invariant"></a> successively to stages \(0,r,t,q\) forces counter increases from at least zero to at least one, then two, then three. Unequal answer values ensure that the needed adjacent stages are distinct. This contradicts the bound two, so \(x\notin N_a\).</p><p>Conversely, let \(x\in P_a\setminus N_a\), and choose \(r\) with \(a(r,x)=1\). No later answer can be zero, since it would witness membership in \(N_a\). Binary values force every later answer to be one. Its constant tail overlaps the tail converging to \(\chi_A(x)\), so \(\chi_A(x)=1\), proving \(x\in A\). Both inclusions concern the explicitly specified event lists, rather than merely some difference presentation.</p></div>
+</section>
+
+<section id="two-change-characterization" data-formal="dce-two-change dce-characterization dce-limit-computable" data-kind="theorem">
+  <h2>Differences are exactly the two-revision limits</h2>
+  <div class="statement-box"><p>A set \(A\subseteq\mathbb N\) is d.c.e. if and only if there is a jointly computable binary approximation starting at zero, converging to \(\chi_A\), and having at most two changes on each input.</p></div>
+  <div class="proof"><p>For a difference presentation, use <a href="#difference-approximation"></a>. For a supplied two-change approximation, <a href="#event-lists"></a> gives enumerable sets and <a href="#two-change-reconstruction"></a> gives their exact difference. Thus the two algorithms establish both directions with the same initial-bit convention. In particular every d.c.e. set is <a href="limit-computability#pointwise-approximation">limit computable</a>.</p></div>
+</section>
+
+<section id="one-change-characterization" data-formal="dce-canonical-one-change dce-one-change-reconstruction dce-one-change-characterization" data-kind="theorem">
+  <h2>One revision recovers ordinary enumerability</h2>
+  <p>A set \(A\) is enumerable if and only if it has a jointly computable binary approximation starting at zero, converging to \(\chi_A\), and having at most one change per input.</p>
+  <div class="proof"><p>The canonical stage approximation of an enumerable set starts at zero and can change only from zero to one. Its counter at stage \(s\) is precisely its bit at that stage, as induction on \(s\) shows. Conversely, in an initial-zero row with at most one change, an observed one cannot be followed by zero: the observations zero, one, zero would force two counter increases. Therefore \(A=P_a\). The positive-event search recognizes exactly \(A\), establishing enumerability.</p></div>
+</section>
+
+<section id="positive-and-negative-examples" data-formal="dce-enumerable dce-coenumerable dce-decidable separator-coenumerable" data-kind="lemma">
+  <h2>Positive and negative recognition both fit a difference</h2>
+  <p>Every enumerable set and every co-enumerable set is d.c.e. Here <strong>co-enumerable</strong> means that the complement is enumerable. Every decidable set is therefore d.c.e. as well.</p>
+  <div class="proof"><p>If \(A\) is enumerable, write \(A=A\setminus\varnothing\). If \(A^c\) is enumerable, write \(A=\mathbb N\setminus A^c\); the full set has an immediate accepting recognizer. Decidability implies enumerability by simply accepting positive answers. For a co-enumerable set the two-change approximation starts with a provisional zero, can move to one when its input first appears in the finite full-set stages, and can later return to zero when the exclusion is discovered. Starting at one instead would conceal this initial revision.</p></div>
+</section>
+
+<section id="intersection-and-preimages" data-formal="dce-intersection dce-preimage" data-kind="lemma">
+  <h2>Intersections and computable translations preserve differences</h2>
+  <p>If \(A,B\) are d.c.e., then \(A\cap B\) is d.c.e. If \(f:\mathbb N\to\mathbb N\) is total computable and \(A\) is d.c.e., then \(f^{-1}(A)\) is d.c.e.</p>
+  <div class="proof"><p>Write \(A=U\setminus V\) and \(B=R\setminus S\). The identity \((U\setminus V)\cap(R\setminus S)=(U\cap R)\setminus(V\cup S)\) gives a difference presentation, since enumerable sets are closed under intersections and unions. For the second assertion use \(f^{-1}(U\setminus V)=f^{-1}(U)\setminus f^{-1}(V)\). Each preimage is enumerable: compute \(f(x)\), then run the appropriate recognizer. Totality of \(f\) ensures that the translation itself does not lose an accepting computation.</p></div>
+</section>
+
+<section id="neither-side-enumerable" data-formal="creative-hard-nonenumerable-set dce-tagged-proposal dce-tagged-cancellation dce-tagged-difference creative-hard-parity-maps dce-neither-enumerable" data-kind="question">
+  <h2>Must one side of a difference be recognizable?</h2>
+  <p>Does every d.c.e. set have to be enumerable or co-enumerable? Use the ordinary diagonal halting set \(K\) and the <a href="productive-and-creative-sets#enumerability-hypothesis">tagged example that distinguishes hardness from enumerability</a>,</p>
+  <div class="math-display">\[D=\{2x:x\in K\}\cup\{2x+1:x\notin K\}.\]</div>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Let \(U=\{2x:x\in K\}\cup\{2x+1:x\in\mathbb N\}\) and \(V=\{2x+1:x\in K\}\). Both are enumerable: recognize parity, then run the halting recognizer when required. Their difference is exactly \(D\). If \(D\) were enumerable, its preimage under \(x\mapsto2x+1\) would enumerate \(K^c\). If \(D^c\) were enumerable, its preimage under \(x\mapsto2x\) would do the same. Both contradict <a href="universal-computation#halting-sets">non-enumerability of nonhalting</a>. Thus this explicit difference lies on neither side of ordinary recognition.</p></div></details>
+</section>
+
+<section id="revision-bound-question" data-formal="dce-canonical-one-change limit-halting-test limit-halting-stage-data limit-halting-stage-convergence limit-halting-no-computable-modulus" data-kind="question">
+  <h2>Does one allowed revision reveal a deadline?</h2>
+  <p>If a computable approximation starts at zero and changes at most once, must there be a computable function giving a stage after its last change on each input?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The canonical approximation to \(K\) has exactly these properties. A computable settling function \(m(x)\) would decide membership by reading the bit at stage \(m(x)\), contradicting undecidability of \(K\). This is the <a href="limit-computability#convergence-modulus">modulus argument</a>. The numerical bound one limits how often the answer can change; it gives no computable deadline for the permitted change. A million stages of silence cannot certify that it will never occur.</p></div></details>
+</section>

@@ -1,0 +1,194 @@
+<section id="program-size" data-formal="bbfn-program-size bbfn-program-size-computable bbfn-program-size-positive" data-kind="definition">
+  <h2>Measure the amount of program text</h2>
+  <p>Use the <a href="universal-computation#numbering-programs">ordinary paired-input programs</a>, their evaluation \(E(c,x)\), and their numerical indices \(\#c\). The <strong>size</strong> \(|c|\) of a program is its number of syntax nodes:</p>
+  <div class="math-display">\[|\mathsf{zero}|=|\mathsf{succ}|=|\mathsf{left}|=|\mathsf{right}|=1.\]</div>
+  <div class="math-display">\[|\mathsf{pair}(c,d)|=|\mathsf{comp}(c,d)|=|\mathsf{prec}(c,d)|=1+|c|+|d|,\qquad |\mathsf{find}'(c)|=1+|c|.\]</div>
+  <p>This is a total computable function of \(\#c\), by <a href="universal-computation#coding-is-effective">structural recursion on program codes</a>. Every program has positive size. Repeated subprograms count each time they occur: the syntax is a tree, without shared subroutines. This convention fixes the meaning of the size parameter in all the maxima below.</p>
+</section>
+
+<section id="finite-contestants" data-formal="bbfn-contestants bbfn-contestants-specification bbfn-contestants-computable bbfn-contestants-monotone" data-kind="lemma">
+  <h2>A size bound gives an effectively known finite list</h2>
+  <p>For every \(n\), the set \(\mathcal C_n=\{c:|c|\le n\}\) is finite. There is one total computable procedure producing a finite list with exactly these programs, and \(\mathcal C_n\subseteq\mathcal C_{n+1}\).</p>
+  <div class="proof">
+    <p>Start with the empty list at \(n=0\). From a list for \(\mathcal C_n\), form the four leaves, all programs \(\mathsf{find}'(c)\) with \(c\) in that list, and all programs \(\mathsf{pair}(c,d),\mathsf{comp}(c,d),\mathsf{prec}(c,d)\) with both children in that list. Retain exactly those whose computed size is at most \(n+1\). This finite operation produces a list for \(\mathcal C_{n+1}\); repetitions, if any, can be removed by comparing numerical codes.</p>
+    <p>The induction assertion is equality with the specified set. Every generated program passes the size test. Conversely, a nonleaf of size at most \(n+1\) has each child of size at most \(n\), so the induction hypothesis places its children on the preceding list, and the corresponding constructor generates it. The four leaves cover the remaining case. Coded finite lists, their finite products and the constructor operations are computable, so recursion on \(n\) gives the claimed uniform procedure. Inclusion follows directly from the size inequality.</p>
+  </div>
+</section>
+
+<section id="successful-resources" data-formal="bbfn-least-resource bbfn-least-resource-specification bbfn-least-resource-domain univ-bounded-value univ-bounded-value-primitive mach-bounded-monotone" data-kind="definition">
+  <h2>Use the least successful evaluation allowance</h2>
+  <p>Write \(b(k,e,x)\) for the <a href="universal-computation#universal-evaluation">primitive-recursive bounded output code</a>: zero means no result at allowance \(k\), and \(y+1\) means output \(y\). Thus \(\varphi_e(x)\downarrow\) exactly when \(b(k,e,x)&gt;0\) for some \(k\), and increasing \(k\) preserves a successful output. The <strong>least successful resource</strong> of a halting program \(c\), at input zero, is</p>
+  <div class="math-display">\[\lambda(c)=\min\{k:b(k,\#c,0)&gt;0\}.\]</div>
+  <p>The minimum exists under the stated halting hypothesis. We leave \(\lambda(c)\) undefined when \(E(c,0)\) is undefined. The allowance belongs to this bounded evaluator; it is not a count of tape-machine transitions.</p>
+</section>
+
+<section id="busy-beaver-bounds" data-formal="bbfn-output-maximum bbfn-resource-maximum bbfn-output-maximum-specification bbfn-resource-maximum-specification" data-kind="definition">
+  <h2>Maximize outputs and successful resources</h2>
+  <p>The <strong>output Busy Beaver function</strong> \(B:\mathbb N\to\mathbb N\) and the <strong>resource Busy Beaver function</strong> \(S:\mathbb N\to\mathbb N\), for the present program-size convention, are</p>
+  <div class="math-display">\[B(n)=\max\bigl(\{0\}\cup\{y:\exists c\in\mathcal C_n\;E(c,0)\downarrow=y\}\bigr).\]</div>
+  <div class="math-display">\[S(n)=\max\bigl(\{0\}\cup\{\lambda(c):c\in\mathcal C_n,\ E(c,0)\downarrow\}\bigr).\]</div>
+  <p>Both maxima exist: <a href="#finite-contestants"></a> gives finitely many candidates, each halting candidate has one output and one least successful resource, and the included zero makes each set nonempty. This defines total mathematical functions without claiming an algorithm for their values. Other programming languages and size conventions give different numerical functions; the present definitions use the previously fixed syntax throughout.</p>
+</section>
+
+<section id="basic-bounds" data-formal="bbfn-maxima-monotone bbfn-maxima-zero bbfn-contestant-bounds" data-kind="lemma">
+  <h2>Every halting contestant is bounded by the maximum</h2>
+  <p>The functions \(B\) and \(S\) are nondecreasing, \(B(0)=S(0)=0\), and for every program \(c\) with \(|c|\le n\) and \(E(c,0)\downarrow=y\),</p>
+  <div class="math-display">\[y\le B(n),\qquad \lambda(c)\le S(n),\qquad b(S(n),\#c,0)=y+1.\]</div>
+  <div class="proof">
+    <p>Enlarging \(n\) retains every old contestant, proving both monotonicity assertions. There are no size-zero programs, so the two sets defining the maxima at zero consist just of zero. The first two displayed inequalities follow because the indicated values occur in the finite sets being maximized. At allowance \(\lambda(c)\), bounded evaluation succeeds with output \(y\); since \(\lambda(c)\le S(n)\), preservation of successful bounded evaluations gives the last equality.</p>
+  </div>
+</section>
+
+<section id="finite-stage-maxima" data-formal="bbfn-first-visible-resource bbfn-first-visible-resource-specification bbfn-output-stage bbfn-resource-stage" data-kind="definition">
+  <h2>Collect the successes visible by a finite stage</h2>
+  <p>The <strong>finite-stage output maximum</strong> and <strong>finite-stage resource maximum</strong> are</p>
+  <div class="math-display">\[B_s(n)=\max\bigl(\{0\}\cup\{b(s,\#c,0)-1:c\in\mathcal C_n,\ b(s,\#c,0)&gt;0\}\bigr),\]</div>
+  <div class="math-display">\[S_s(n)=\max\bigl(\{0\}\cup\{\min\{k\le s:b(k,\#c,0)&gt;0\}:c\in\mathcal C_n,\ b(s,\#c,0)&gt;0\}\bigr).\]</div>
+  <p>Every inner minimum is taken only for a candidate already successful at \(s\), so its finite search is nonempty. The subtractions occur only on positive output codes, including code one for numerical output zero.</p>
+</section>
+
+<section id="finite-stage-convergence" data-formal="bbfn-stages-computable bbfn-stages-monotone bbfn-stages-bounded bbfn-stages-exact" data-kind="theorem">
+  <h2>Computable lower estimates eventually give the exact answer</h2>
+  <p>The functions \((s,n)\mapsto B_s(n)\) and \((s,n)\mapsto S_s(n)\) are jointly total computable. For fixed \(n\), each is nondecreasing in \(s\), bounded by its corresponding Busy Beaver value, and eventually equal to it.</p>
+  <div class="proof">
+    <p>Compute the finite candidate list, carry out bounded evaluation, and take finite maxima. For \(S_s\), the additional search is bounded by \(s\). These are terminating procedures uniform in \(s,n\). Once a candidate succeeds, all later stages give the same output. Its first successful resource is then already among the searched values, so that resource also stays fixed. Thus later stages retain every previously contributing value; neither maximum decreases or exceeds its unrestricted maximum.</p>
+    <p>For fixed \(n\), take the maximum of the least successful resources of its finitely many halting contestants, including zero. At that stage every halting contestant has appeared. No other contestant ever contributes. Both finite-stage maxima therefore equal \(B(n)\) and \(S(n)\), respectively, at every later stage. This is an existence proof of a final stage, using knowledge of which contestants halt.</p>
+  </div>
+</section>
+
+<section id="binary-length" data-formal="bbfn-binary-length bbfn-binary-length-zero bbfn-binary-length-step bbfn-binary-length-lower bbfn-binary-length-upper bbfn-binary-length-computable" data-kind="definition">
+  <h2>Count the digits needed for a constant</h2>
+  <p>The <strong>binary length</strong> \(L(n)\) is specified by \(L(0)=0\) and</p>
+  <div class="math-display">\[L(n)=1+L(\lfloor n/2\rfloor)\qquad(n&gt;0).\]</div>
+  <p>Each recursive argument is smaller than its positive input, so the definition terminates and is computable. For \(n&gt;0\), induction on successive division by two gives</p>
+  <div class="math-display">\[2^{L(n)-1}\le n&lt;2^{L(n)}.\]</div>
+  <p>Indeed, division writes \(n=2k+r\) with \(r\in\{0,1\}\). When \(k=0\), positivity forces \(n=1\). Otherwise doubling the bounds for \(k\), and allowing the last digit \(r\), gives the displayed bounds for \(n\). These inequalities also show that binary length tends to infinity with \(n\).</p>
+</section>
+
+<section id="short-constant-programs" data-formal="bbfn-binary-constant bbfn-binary-constant-step bbfn-binary-constant-computable bbfn-binary-constant-evaluation bbfn-binary-constant-size" data-kind="lemma">
+  <h2>Construct a numeral with only linearly many nodes in its binary length</h2>
+  <p>There is a total computable map \(n\mapsto C(n)\) into the existing program syntax and a fixed positive integer \(a\) such that, for every \(n,x\),</p>
+  <div class="math-display">\[E(C(n),x)=n,\qquad |C(n)|\le 1+aL(n).\]</div>
+  <div class="proof">
+    <p>Fix a program \(D\) computing \(z\mapsto2z\); one exists by <a href="primitive-recursion#arithmetic-examples">primitive-recursive addition</a> and <a href="universal-computation#universal-evaluation">program completeness</a>. Write \(d=|D|\). Define actual program trees by</p>
+    <div class="math-display">\[C(0)=\mathsf{zero},\qquad C(2k)=\mathsf{comp}(D,C(k))\quad(k&gt;0),\]</div>
+    <div class="math-display">\[C(2k+1)=\mathsf{comp}(\mathsf{succ},\mathsf{comp}(D,C(k))).\]</div>
+    <p>The second and third rules cover the positive even and odd inputs, respectively. Strong induction on \(n\) proves the asserted evaluation identity for every runtime input \(x\): the recursive program first returns \(k\), doubling returns \(2k\), and the outer successor, when present, returns \(2k+1\). Every intermediate computation terminates.</p>
+    <p>The even rule adds \(d+1\) nodes and the odd rule adds \(d+3\). Taking \(a=d+3\), the induction hypothesis and \(L(n)=1+L(k)\) give \(|C(n)|\le1+aL(n)\); at zero this is equality. To compute the numerical code, successively divide \(n\) by two, retain the remainders, and rebuild the tree from zero using the corresponding rule in reverse order. The list of quotients strictly decreases until zero. Finite-list processing and the effective constructor operations prove total computability of this specified compiler.</p>
+    <p>For example, the digits of five are \(101\). Beginning with zero, the rules successively form the constant programs for \(1\), \(2\), and \(5\); each new digit inserts one copy of \(D\) and at most one successor. The ordinary unary constant compiler from the parameter theorem is correct as well, but its repeated successors do not give the binary-length bound proved here.</p>
+  </div>
+</section>
+
+<section id="eventual-size-budget" data-formal="bbfn-eventual-size-budget" data-kind="lemma">
+  <h2>A fixed program and a binary constant eventually fit the input budget</h2>
+  <p>For any fixed natural numbers \(u,v\), there is \(N\) such that \(u+vL(n)\le n\) whenever \(n\ge N\).</p>
+  <div class="proof">
+    <p>For every \(j\ge4\), \(2^j\ge j^2\). The case \(j=4\) is equality, and the induction step follows from \(2j^2\ge(j+1)^2\) for \(j\ge3\). Choose \(\ell_0\ge5\) and \(\ell_0\ge2(u+v+1)\). When \(\ell\ge\ell_0\), elementary multiplication gives \(u+v\ell\le(u+v)\ell\le(\ell-1)^2\). Taking \(N=2^{\ell_0-1}\), the binary-length bounds give \(L(n)\ge\ell_0\) for \(n\ge N\). Consequently</p>
+    <div class="math-display">\[u+vL(n)\le(L(n)-1)^2\le2^{L(n)-1}\le n.\]</div>
+    <p>This proves the budget estimate using only the displayed elementary inequalities.</p>
+  </div>
+</section>
+
+<section id="dominates-computable-functions" data-formal="bbfn-output-domination" data-kind="theorem">
+  <h2>The output maximum eventually exceeds every computable function</h2>
+  <div class="statement-box">
+    <p>For every total computable \(f:\mathbb N\to\mathbb N\), there is \(N\) such that</p>
+    <div class="math-display">\[B(n)&gt;f(n)\qquad\text{for every }n\ge N.\]</div>
+  </div>
+  <div class="proof">
+    <p>Fix a program \(p\) computing \(x\mapsto f(x)+1\), using computable composition and program completeness. The specified program \(P_n=\mathsf{comp}(p,C(n))\) halts at input zero with output \(f(n)+1\). Its size satisfies</p>
+    <div class="math-display">\[|P_n|=1+|p|+|C(n)|\le |p|+2+aL(n).\]</div>
+    <p>By <a href="#eventual-size-budget"></a>, this is at most \(n\) for all sufficiently large \(n\). For each such \(n\), \(P_n\) is one of the contestants defining \(B(n)\), so \(f(n)+1\le B(n)\). This proves the strict inequality, with the one fixed program \(p\) and the single constant compiler working for every \(n\).</p>
+  </div>
+</section>
+
+<section id="no-computable-output-bound" data-formal="bbfn-no-computable-output-bound bbfn-output-not-computable" data-kind="theorem">
+  <h2>No computable function is even an eventual upper bound</h2>
+  <p>The function \(B\) is not computable. There is no total computable \(g\) and no \(N\) with \(B(n)\le g(n)\) for every \(n\ge N\).</p>
+  <div class="proof">
+    <p>Such a \(g\) is eventually strictly smaller than \(B\), by <a href="#dominates-computable-functions"></a>, contradicting the proposed eventual upper bound. If \(B\) itself were computable, take \(g=B\) to obtain the same contradiction.</p>
+  </div>
+</section>
+
+<section id="finite-information-question" data-formal="bbfn-no-computable-final-stage bbfn-output-one bbfn-maxima-zero bbfn-stages-computable bbfn-output-not-computable" data-kind="question">
+  <h2>Does a long pause certify that the finite-stage maximum is final?</h2>
+  <p>For each fixed budget the lower estimates eventually stop changing. Is there a total computable function \(t(n)\) guaranteeing that \(B_{t(n)}(n)=B(n)\) for every \(n\)? Does the ability to compute a few individual values provide such a function?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No such \(t\) exists: joint computability of \(B_s(n)\) would then compute \(B\) by substituting \(s=t(n)\), contrary to <a href="#no-computable-output-bound"></a>. In particular, an effective rule recognizing a final stage from a finite history and always eventually recognizing one would yield a forbidden \(t\) by search.</p>
+    <p>Individual values can still be proved. At size zero there are no programs, so \(B(0)=0\). At size one there are just the four leaves, whose values at input zero are \(0,1,0,0\); hence \(B(1)=1\). Any fixed finite list of values can be built into a separate finite program once those values are known. These separate existence statements supply no uniform procedure for every budget.</p>
+  </div></details>
+</section>
+
+<section id="function-graph-oracles" data-formal="bbfn-function-graph oracle-code-relative-computable turing-degree-map" data-kind="definition">
+  <h2>Represent a natural-valued oracle by its graph</h2>
+  <p>For a total function \(f:\mathbb N\to\mathbb N\), its <strong>graph oracle</strong> is the set</p>
+  <div class="math-display">\[G_f=\{\langle x,y\rangle:f(x)=y\}\subseteq\mathbb N.\]</div>
+  <p>To say that \(f\) is <strong>computable from an oracle</strong> \(A\) means that one of the <a href="oracle-computation#oracle-programs">actual oracle programs</a> evaluates under \(A\) to \(f(x)\) for every \(x\). The <strong>Turing degree of \(f\)</strong> is the degree of \(G_f\), using the established <a href="turing-degrees#equivalence-and-degrees">degree convention for sets</a>. The following bridges connect these two formulations.</p>
+</section>
+
+<section id="graph-oracle-bridges" data-formal="bbfn-graph-lookup-program bbfn-graph-lookup-evaluation bbfn-graph-decision-program bbfn-graph-decision-evaluation bbfn-function-graph-equivalence oracle-subst-correct" data-kind="lemma">
+  <h2>A graph query and function evaluation compute each other</h2>
+  <p>For every total \(f\), one fixed oracle program, independent of \(f\), computes \(f(x)\) under the graph oracle \(G_f\). For every oracle \(A\),</p>
+  <div class="math-display">\[f\text{ is computable from }A\quad\Longleftrightarrow\quad G_f\le_T A.\]</div>
+  <div class="proof">
+    <p>On input \(x\), query \(\langle x,0\rangle,\langle x,1\rangle,\ldots\) and return the first \(y\) answered yes. Exactly one query is positive, namely \(y=f(x)\); all earlier queries terminate, and the search therefore returns exactly \(f(x)\). In the existing oracle syntax this is \(\mathsf{find}'(\mathsf{comp}(\mathsf{not},\mathsf{query}))\) on input \(\langle x,0\rangle\), where \(\mathsf{not}\) is the ordinary zero-test program: it returns zero on a positive membership answer and one on a negative answer. Prepending the ordinary map \(x\mapsto\langle x,0\rangle\) gives the one fixed lookup program.</p>
+    <p>If an \(A\)-oracle program \(c\) computes \(f\), a graph decider on input \(z=\langle x,y\rangle\) runs \(c\) at \(x\), compares its output with \(y\), and returns the resulting zero-one equality bit. Ordinary projections, pairing and equality tests are computable, and <a href="oracle-computation#relative-closure">oracle composition</a> builds this actual oracle program from \(c\). It terminates because \(f\) is total and returns the characteristic bit of the same set \(G_f\).</p>
+    <p>Conversely, given an actual reduction program for \(G_f\le_T A\), substitute that total membership program for every query in the fixed lookup program. The <a href="oracle-computation#substitution-correctness">substitution identity</a> gives an \(A\)-oracle program returning \(f(x)\). Thus both directions refer to programs in the established language and to this specified graph encoding.</p>
+  </div>
+</section>
+
+<section id="halting-computes-maxima" data-formal="bbfn-freeze-compiler bbfn-freeze-compiler-computable bbfn-freeze-compiler-evaluation bbfn-freeze-compiler-halting bbfn-maxima-program bbfn-maxima-program-fold bbfn-maxima-program-halting bbfn-function-graph-equivalence" data-kind="theorem">
+  <h2>A halting oracle computes both finite maxima</h2>
+  <p>The graph sets satisfy \(G_B\le_T K\) and \(G_S\le_T K\), where \(K=\{e:\varphi_e(e)\downarrow\}\).</p>
+  <div class="proof">
+    <p>Define the ordinary input-freezing compiler</p>
+    <div class="math-display">\[F(e,x)=\#\mathsf{comp}(c_e,C(x)).\]</div>
+    <p>It is total computable and \(\varphi_{F(e,x)}(z)\simeq\varphi_e(x)\) for every runtime input \(z\), by the constant-program identity. In particular, \(F(e,x)\in K\) if and only if \(\varphi_e(x)\downarrow\).</p>
+    <p>On input \(n\), compute the finite list \(\mathcal C_n\). For each candidate \(c\), query whether \(F(\#c,0)\in K\). If the answer is negative, contribute zero. If it is positive, search the total bounded test \(b(k,\#c,0)&gt;0\) for its least successful \(k\). This search terminates exactly in the positive case. Its value is \(\lambda(c)\), and \(b(k,\#c,0)-1\) is the output. Fold the list, retaining the largest resource and largest output seen so far, starting both accumulators at zero.</p>
+    <p>The fold invariant is that the accumulators are the two maxima over the processed candidates, together with zero. The negative branch omits precisely the divergent candidate; the positive branch inserts precisely its unique output and least resource. Induction through the finite list therefore gives exactly \(B(n),S(n)\). All branches terminate under \(K\). The operations are ordinary computable operations, one total oracle membership call, a conditional least-witness search and finite recursion; <a href="oracle-computation#relative-closure">the established closure theorem</a> yields actual \(K\)-oracle programs for the two functions. Applying <a href="#graph-oracle-bridges"></a> gives the stated graph reductions.</p>
+  </div>
+</section>
+
+<section id="resource-decides-halting" data-formal="bbfn-resource-bound-decides-full-halting bbfn-resource-bound-program bbfn-resource-bound-decides-halting bbfn-graph-lookup-evaluation" data-kind="theorem">
+  <h2>A resource upper bound decides whether a computation halts</h2>
+  <p>For every total function \(h\) with \(S(n)\le h(n)\) for all \(n\), one has \(K\le_T G_h\). In particular \(K\le_T G_S\).</p>
+  <div class="proof">
+    <p>Given \(e,x\), compute the frozen program \(p=\mathsf{comp}(c_e,C(x))\) from <a href="#halting-computes-maxima"></a>, and its size \(n=|p|\). Retrieve \(h(n)\) using the fixed graph lookup program, then test \(b(h(n),\#p,0)&gt;0\). If \(\varphi_e(x)\) halts, then \(p\) halts and its least successful resource is at most \(S(n)\le h(n)\); monotonicity makes the test positive. If the test is positive, bounded-evaluation correctness makes \(p\) halt, hence makes \(\varphi_e(x)\) halt. Thus this terminating test decides the full halting relation. Supplying \(x=e\) decides \(K\).</p>
+    <p>The numerical compiler, size calculation and bounded test are ordinary total computable functions. Compose their ordinary programs with the one graph lookup program, and take the positive-test bit. Oracle composition gives an actual reduction program for \(K\le_T G_h\), without needing an effective procedure to verify the upper-bound hypothesis.</p>
+  </div>
+</section>
+
+<section id="resource-witness-compiler" data-formal="univ-binary-recursive-convention bbfn-least-resource-recursive bbfn-witness-compiler bbfn-witness-compiler-computable bbfn-witness-compiler-evaluation bbfn-least-resource-domain" data-kind="lemma">
+  <h2>A program can output the first certificate for another computation</h2>
+  <p>There is one total computable compiler \((e,x)\mapsto q(e,x)\) into ordinary program indices such that, for every runtime input \(z\),</p>
+  <div class="math-display">\[\varphi_{q(e,x)}(z)\simeq\min\{k:b(k,e,x)&gt;0\}.\]</div>
+  <p>The right side is undefined when no such \(k\) exists. In particular, the compiled program halts exactly when \(\varphi_e(x)\) does, and in that case outputs its least successful resource.</p>
+  <div class="proof">
+    <p>The bounded test is total computable jointly in \(k,e,x\). Least-witness search makes the right side partial recursive jointly in \(e,x\), by <a href="partial-recursive-functions#search-correctness">the search rule</a>. Choose one ordinary program \(r\) whose input \(\langle e,x\rangle\) computes this partial function. Using <a href="#short-constant-programs"></a>, set</p>
+    <div class="math-display">\[q(e,x)=\#\mathsf{comp}(r,C(\langle e,x\rangle)).\]</div>
+    <p>The compiler merely constructs this finite syntax, so is total computable even for a divergent original computation. The inner program returns the specified pair on every \(z\); the outer program then performs the stated least-witness search. This proves the exact partial-value identity, including divergence.</p>
+  </div>
+</section>
+
+<section id="output-decides-halting" data-formal="bbfn-output-bound-decides-full-halting bbfn-output-bound-program bbfn-output-bound-decides-halting bbfn-witness-compiler-evaluation mach-bounded-monotone" data-kind="theorem">
+  <h2>An output upper bound also supplies a halting deadline</h2>
+  <p>For every total function \(h\) with \(B(n)\le h(n)\) for all \(n\), one has \(K\le_T G_h\). In particular \(K\le_T G_B\).</p>
+  <div class="proof">
+    <p>Given \(e,x\), compute \(q=q(e,x)\), its decoded program \(c_q\), and \(n=|c_q|\). Retrieve \(h(n)\) from its graph oracle and test the original computation by \(b(h(n),e,x)&gt;0\). If \(\varphi_e(x)\) halts, let \(k\) be its least successful resource. The compiler lemma says that \(c_q\), at input zero, outputs exactly \(k\). Therefore</p>
+    <div class="math-display">\[k\le B(|c_q|)\le h(n).\]</div>
+    <p>Preservation of successful bounded evaluations makes the test positive. Conversely, a positive bounded test is already a certificate that \(\varphi_e(x)\) halts. Again \(x=e\) gives the characteristic bit of \(K\). The same ordinary-preprocessing, graph-lookup and bounded-test composition used for <a href="#resource-decides-halting"></a> is an actual oracle program for this reduction.</p>
+    <p>The argument does not identify outputs with running resources. It uses a program deliberately compiled to output the resource witness; its size determines which value of the output bound is queried.</p>
+  </div>
+</section>
+
+<section id="halting-equivalence" data-formal="bbfn-halting-equivalence bbfn-no-computable-output-bound bbfn-no-computable-resource-bound bbfn-computable-graph turing-red-computable-oracle univ-diagonal-halting-undecidable" data-kind="theorem">
+  <h2>Both Busy Beaver functions have exactly the halting degree</h2>
+  <div class="statement-box">
+    <p>With the specified graph encoding,</p>
+    <div class="math-display">\[G_B\equiv_T K\equiv_T G_S.\]</div>
+    <p>Neither \(B\) nor \(S\) has a total computable eventual upper bound.</p>
+  </div>
+  <div class="proof">
+    <p>The four reductions are <a href="#halting-computes-maxima"></a>, <a href="#resource-decides-halting"></a> and <a href="#output-decides-halting"></a>. The assertion for \(B\) was proved in <a href="#no-computable-output-bound"></a>. Suppose a total computable \(g\) eventually bounds \(S\), starting at \(N\). Choose a natural number \(M\) at least all the finitely many values \(S(0),\ldots,S(N-1)\), taking zero when \(N=0\). Then \(h(n)=\max(M,g(n))\) is a total computable upper bound on \(S\) at every input. By <a href="#resource-decides-halting"></a>, \(K\le_T G_h\), while the graph of a total computable function is decidable. <a href="turing-degrees#computable-oracles">Eliminating a computable oracle</a> would make \(K\) decidable, contradicting <a href="universal-computation#halting-problem">halting undecidability</a>. Thus no such \(g\) exists; in particular \(S\) itself is not computable.</p>
+  </div>
+</section>

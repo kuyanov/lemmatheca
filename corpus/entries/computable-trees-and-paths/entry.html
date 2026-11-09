@@ -58,13 +58,14 @@
   </div>
 </section>
 
-<section id="kleene-tree" data-formal="ctree-diagonal-a-index ctree-diagonal-b-index ctree-diagonal-indices ctree-kleene-tree-set ctree-kleene-tree" data-kind="theorem">
+<section id="kleene-tree" data-formal="ctree-diagonal-a-index ctree-diagonal-b-index ctree-diagonal-indices ctree-kleene-tree-set ctree-kleene-tree hfb-free-pa-outside-halting" data-kind="theorem">
   <h2>A computable binary tree can have no computable path</h2>
   <div class="statement-box"><p>There is a computable binary tree with a node at every length and at least one infinite path, but with no computable path.</p></div>
   <div class="proof">
     <p>Take the <a href="computably-inseparable-sets#inseparability">established disjoint inseparable c.e. pair</a> and form the specified separator tree. The preceding lemmas prove computability, prefix closure and nodes at every length, hence existence of a path. A computable path would be a decidable separator by <a href="#paths-are-separators"></a>, contradicting inseparability.</p>
     <p>This is a binary version of the Kleene-tree phenomenon. Deciding any one finite word is a terminating calculation; choosing an infinite compatible sequence can still require a noncomputable set.</p>
   </div>
+  <p>This same tree has a <a href="hyperimmune-free-basis-theorem#hyperimmune-free-pa">noncomputable hyperimmune-free path</a>: every total numerical function computed from that path has a computable bound. Such a member <a href="hyperimmune-free-basis-theorem#outside-halting">is not computable from ordinary halting</a>.</p>
 </section>
 
 <section id="level-witnesses-question" data-formal="ctree-witness-incompatibility ctree-kleene-tree" data-kind="question">
@@ -110,13 +111,15 @@
   <p>The <strong>selected path set</strong> is \(X_T=\{n:b_n=1\}\). These recurrences specify the choices using the fixed map \(\delta_T\). A step asks whether the left child's cone dies; it chooses the right child precisely when that answer is yes.</p>
 </section>
 
-<section id="halting-oracle-path" data-formal="ctree-path-code ctree-selected-words-correct ctree-path-code-eval ctree-path-code-reduces ctree-halting-oracle-path" data-kind="theorem">
+<section id="halting-oracle-path" data-formal="lbt-low-basis ctree-path-code ctree-selected-words-correct ctree-path-code-eval ctree-path-code-reduces ctree-halting-oracle-path padeg-dnc-iff-paths padeg-branch-selector-correct" data-kind="theorem">
   <h2>Some path is computable from the ordinary halting oracle</h2>
   <div class="statement-box"><p>For every computable binary tree \(T\) with nodes at every length, the specified \(X_T\) is a path and \(X_T\le_T K\).</p></div>
   <div class="proof">
     <p>The empty word is extendible because every level is nonempty. Suppose \(\sigma_n\) is extendible. If the query says that its left cone does not die, the chosen child \(\sigma_n0\) is extendible by definition. Otherwise the left cone dies, and <a href="#one-child-survives"></a> makes the right child extendible. Induction gives an extendible word of length \(n\) at every stage. The words extend one another, so their bit set has exactly these prefixes and belongs to \([T]\).</p>
     <p>To decide membership of \(n\) in \(X_T\), an oracle program starts with the empty word and performs the first \(n+1\) stated steps. Each step computes one ordinary index, asks the \(K\)-oracle one membership question, and appends a bit. All those finite operations terminate. The final bit is \(b_n=\chi_{X_T}(n)\), giving a total \(K\)-oracle decision procedure for this very path. The decider for \(T\) and its query compiler were fixed before \(n\) varied.</p>
+    <p>The <a href="low-basis-theorem#low-basis">low basis theorem</a> strengthens the existence conclusion: some path has its own jump computable from ordinary halting.</p>
   </div>
+  <p>The full class of oracles that compute some path through every nonempty-path computable binary tree is characterized by <a href="pa-degrees#pa-characterization">PA degrees</a>. A <a href="pa-degrees#branch-selector">binary DNC child selector</a> supplies a path program for each supplied tree decider.</p>
 </section>
 
 <section id="all-paths-question" data-formal="ctree-full-tree ctree-full-tree-properties jump-jump-strict" data-kind="question">

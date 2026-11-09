@@ -1,12 +1,11 @@
 import Lemmatheca.ComputablyInseparableSets.Separation
+import Lemmatheca.ComputableReductions.Complement
 
 /-! The specified least-stage race of two negative certificate searches. -/
 
 namespace Lemmatheca.ComputabilityTheory.ComputableSeparation
 
 open UniversalComputation
-
-def CoEnumerable (P : Set ℕ) : Prop := REPred (fun x => x ∉ P)
 
 noncomputable def raceStage (R S : ℕ → ℕ → Prop) (x : ℕ) : Part ℕ := by
   classical

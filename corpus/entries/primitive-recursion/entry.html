@@ -15,7 +15,7 @@
   <p>Totality of the starting and step functions matters: each step must produce a natural number. The recursion prescribes how many steps to perform, rather than asking us to continue until a possibly unattainable condition is met.</p>
 </section>
 
-<section id="primitive-recursive-functions" data-formal="prim-class prim-constants prim-successor prim-projections prim-composition prim-last-recursion-closure prim-last-recursion-generation prim-arity-equivalence prim-recursion-closure" data-kind="definition">
+<section id="primitive-recursive-functions" data-formal="prim-class prim-constants prim-successor prim-projections prim-composition prim-last-recursion-closure prim-last-recursion-generation prim-arity-equivalence prim-recursion-closure ackf-proper-inclusion ackf-diagonal-total ackf-diagonal-not-primitive ackf-eventual-domination" data-kind="definition">
   <h2>The functions built from the initial functions</h2>
   <p>The <strong>initial functions</strong> are the <strong>constant-zero functions</strong> \(Z_k:\mathbb N^k\to\mathbb N\), for every \(k\ge0\); <strong>successor</strong> \(S(n)=n+1\); and the <strong>projections</strong></p>
   <div class="math-display">\[P_i^k(x_0,\ldots,x_{k-1})=x_i\qquad(i&lt;k).\]</div>
@@ -24,6 +24,7 @@
   <p>The <strong>primitive-recursive functions</strong> are the smallest collection of numerical functions of finite arities containing the initial functions and closed under composition and primitive recursion. Equivalently, a function belongs to this collection exactly when it has a finite construction from these rules. Two constructions may give the same function: membership concerns the resulting values, not a chosen expression for them.</p>
   <p>Every such function is total. This follows by induction on a construction: the initial functions are total; a composition of total functions is total; and <a href="#recursion-existence"></a> supplies totality at a recursion step. Every natural-number constant is primitive recursive, by applying successor finitely often to zero.</p>
   <p>Projections allow inputs to be reordered, repeated or ignored. For example, if \(f\) has three inputs, then \(f(y,x,y)\) is obtained by composing \(f\) with \(P_1^2,P_0^2,P_1^2\). Thus a change in argument order does not change whether a function is primitive recursive. If \(m=0\), the composition has no inner functions and is simply the chosen constant on \(\mathbb N^k\).</p>
+  <p>These closure rules do not produce every total computable function. The <a href="ackermann-function#proper-inclusion">Ackermann diagonal</a> gives a concrete counterexample whose growth can be compared with every primitive-recursive function.</p>
 </section>
 
 <section id="arithmetic-examples" data-formal="prim-addition prim-multiplication prim-powers prim-factorial prim-power-zero prim-power-successor prim-factorial-zero factorial-recursion addition-zero-right natural-add-successor natural-multiply-zero natural-multiply-successor prim-power-trace" data-kind="lemma">

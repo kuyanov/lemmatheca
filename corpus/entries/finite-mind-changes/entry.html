@@ -1,0 +1,112 @@
+<section id="bounded-change-classes" data-formal="dce-change-count dce-starts-zero dce-change-bound fmchange-nce fmchange-co-nce dce-canonical-one-change limit-halting-test limit-halting-stage-data limit-halting-stage-convergence limit-halting-no-computable-modulus" data-kind="definition">
+  <h2>Put one finite allowance on every input</h2>
+  <p>Let \(a(s,x)\) be a computable binary approximation, and let \(c_a(s,x)\) count its changes before stage \(s\): \(c_a(0,x)=0\), and \(c_a(s+1,x)=c_a(s,x)+[a(s+1,x)\ne a(s,x)]\). The bracket is one when its condition holds and zero otherwise. This is the <a href="differences-of-enumerable-sets#change-counter">prefix change counter</a>.</p>
+  <p>For \(n\in\mathbb N\), a set \(A\subseteq\mathbb N\) is <strong>\(n\)-computably enumerable</strong>, or <strong>\(n\)-c.e.</strong>, if there is such an approximation satisfying</p>
+  <div class="math-display">\[a(0,x)=0,\qquad a(s,x)\longrightarrow\chi_A(x),\qquad c_a(s,x)\le n\quad\text{for all }s,x.\]</div>
+  <p>Write \(\mathcal E_n\) for this class. A set is <strong>co-\(n\)-c.e.</strong> when its complement is \(n\)-c.e. The bound is on the total number of revisions for each input, with the same number \(n\) working for every input. It bounds neither the stages of these revisions nor the time needed to compute a stage. The prescribed initial answer zero is part of the definition, including when \(n=0\). Even the allowance one gives no computable deadline for the last revision, as the <a href="differences-of-enumerable-sets#revision-bound-question">halting-set example</a> shows.</p>
+</section>
+
+<section id="bounded-counts-stabilize" data-formal="fmchange-bounded-convergence" data-kind="lemma">
+  <h2>A bounded change counter forces eventual constancy</h2>
+  <p>If \(a\) is binary and \(c_a(s,x)\le n\) for every \(s,x\), then there is a set \(A\) to which \(a\) converges pointwise. Thus, once a computable binary approximation with a finite change bound is supplied, convergence to some set follows automatically.</p>
+  <div class="proof">
+    <p>Fix \(x\). The nondecreasing integer sequence \(c_a(s,x)\) takes values in the finite set \(\{0,\ldots,n\}\). Its range therefore has a maximum \(k\), and some stage \(t\) attains it. At every \(s\ge t\), monotonicity and maximality give \(c_a(s,x)=k\). A change at the transition \(s\to s+1\) would raise the count to \(k+1\), a contradiction. Induction on the number of transitions after \(t\) shows that \(a(s,x)=a(t,x)\) for every \(s\ge t\).</p>
+    <p>Define \(A\) to contain exactly those inputs whose eventual constant value is one. Binary values ensure that an input outside \(A\) has eventual value zero. Hence \(a(s,x)\to\chi_A(x)\) for every \(x\). The maximum and its attaining stage were chosen separately for each input; the proof supplies \(\forall x\exists t\), without an algorithm finding \(t\) from \(x\).</p>
+  </div>
+</section>
+
+<section id="first-three-levels" data-formal="fmchange-nce fmchange-zero-class dce-one-change-characterization dce-characterization" data-kind="theorem">
+  <h2>The first allowances recover familiar classes</h2>
+  <p>The class \(\mathcal E_0\) consists exactly of the empty set, \(\mathcal E_1\) consists exactly of the c.e. sets, and \(\mathcal E_2\) consists exactly of the differences of two c.e. sets.</p>
+  <div class="proof">
+    <p>With no permitted change and initial value zero, induction gives \(a(s,x)=0\) at every stage, so the limit set is empty. The constantly zero approximation supplies the converse. With one permitted change, a row can only stay zero or change once from zero to one. Membership can therefore be recognized by waiting for one, and the increasing <a href="effective-enumerations#uniform-finite-approximation">finite-stage approximation</a> supplies a one-change approximation to every c.e. set. This is also the <a href="differences-of-enumerable-sets#one-change-characterization">one-change characterization</a>.</p>
+    <p>The two-change case is the <a href="differences-of-enumerable-sets#two-change-characterization">difference characterization</a>: a row can enter a c.e. positive set and later enter a c.e. cancellation set, giving the possible sequence \(0,1,0\). Conversely, a computable row with at most two changes records its first positive answer and its subsequent cancellation by two enumerable events. These are statements about membership classes, rather than requirements to decide when a presented approximation has finished changing.</p>
+  </div>
+</section>
+
+<section id="initial-bit" data-formal="fmchange-unrestricted-zero fmchange-even-approximation fmchange-even-zero-change fmchange-zero-class" data-kind="question">
+  <h2>What happens if the initial answer can be chosen freely?</h2>
+  <p>Suppose the initial-zero condition is removed but computability, binary values and a change bound of zero are retained. Which sets can be limits?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Exactly the decidable sets. A row with no changes is constant, so its limit is already \(a(0,x)\). Computing this value decides membership. Conversely, if \(A\) is decidable, set \(a(s,x)=\chi_A(x)\) at every stage. This is a computable binary approximation with zero changes. For instance, the constant-in-stage approximation to the even numbers is allowed under this convention, whereas the initial-zero convention permits only the empty set at level zero. Counting the initial answer as a change would be another convention; here only transitions between successive stages are counted.</p>
+  </div></details>
+</section>
+
+<section id="widening-bounds" data-formal="cbchange-finite-inclusion cbchange-join-omega cbchange-join-not-nce cbchange-omega-ce ufc-diagonal-data ufc-diagonal-computable ufc-diagonal-not-nce fmchange-nce fmchange-monotone fmchange-limit-computable" data-kind="lemma">
+  <h2>A larger allowance preserves a valid approximation</h2>
+  <p>If \(m\le n\), then \(\mathcal E_m\subseteq\mathcal E_n\). Every \(n\)-c.e. set is limit computable.</p>
+  <div class="proof">
+    <p>A witness with \(c_a(s,x)\le m\) also has \(c_a(s,x)\le n\); the algorithm, initial bits and limit do not change. Forgetting the numerical bound gives precisely a <a href="limit-computability#pointwise-approximation">computable pointwise approximation</a>. These observations prove inclusion. They do not by themselves show that a larger allowance is necessary for any particular set.</p>
+  </div>
+  <p>The inclusions are strict: the <a href="universal-finite-change-sets#strict-hierarchy">diagonal construction with a revision cap</a> gives an \((n+1)\)-c.e. set outside the \(n\)-c.e. class for every \(n\).</p>
+  <p>Allowing a <a href="computably-bounded-changes#input-bounds">computable allowance depending on the input</a> gives a class containing a <a href="computably-bounded-changes#beyond-every-finite-level">single set outside every fixed finite level</a>.</p>
+</section>
+
+<section id="delayed-complement" data-formal="fmchange-delayed-complement fmchange-delayed-complement-data" data-kind="definition">
+  <h2>Negate the answers after one initial stage</h2>
+  <p>For an initial-zero binary approximation \(a\), its <strong>delayed complement approximation</strong> is</p>
+  <div class="math-display">\[b(0,x)=0,\qquad b(s+1,x)=1-a(s,x).\]</div>
+  <p>The algorithm tests whether the stage is zero. At a positive stage it computes the predecessor, evaluates \(a\), and subtracts the resulting bit from one. It is therefore jointly computable and binary, and it starts at zero. If \(a(s,x)\to\chi_A(x)\), then \(b(s,x)\to\chi_{\overline A}(x)\): a convergence stage \(t\) for the original row gives stage \(t+1\) for the new row. The delay is needed because simply using \(1-a(s,x)\) would start at one.</p>
+</section>
+
+<section id="complement-bound" data-formal="fmchange-delayed-complement-count fmchange-complement-closure dce-one-change-characterization fmchange-nce fmchange-co-nce" data-kind="theorem">
+  <h2>Taking a complement costs at most one additional change</h2>
+  <div class="statement-box"><p>If \(A\in\mathcal E_n\), then \(\overline A\in\mathcal E_{n+1}\). More precisely, the specified delayed complement satisfies \(c_b(s+1,x)=1+c_a(s,x)\) for every \(s,x\).</p></div>
+  <div class="proof">
+    <p>The first transition is from \(b(0,x)=0\) to \(b(1,x)=1-a(0,x)=1\), so it contributes exactly one change. For every later transition,</p>
+    <div class="math-display">\[b(s+2,x)\ne b(s+1,x)\quad\Longleftrightarrow\quad a(s+1,x)\ne a(s,x).\]</div>
+    <p>Indeed, negation exchanges the two bits and preserves whether they are equal. Induction on \(s\), using the defining recurrence for the counters, gives the stated identity. It bounds every positive-stage count by \(n+1\), while the count at stage zero is zero. The delayed approximation is computable, binary, initial zero and convergent to the complement by <a href="#delayed-complement"></a>, so it is the required witness. For a co-c.e. set this recovers a two-change approximation from a one-change approximation of its complement.</p>
+  </div>
+</section>
+
+<section id="computable-preimages" data-formal="fmchange-pullback fmchange-pullback-data fmchange-preimage-closure" data-kind="lemma">
+  <h2>A computable change of input preserves the allowance</h2>
+  <p>If \(A\in\mathcal E_n\) and \(f:\mathbb N\to\mathbb N\) is total computable, then \(f^{-1}(A)\in\mathcal E_n\). For the specified approximation \(b(s,x)=a(s,f(x))\), one has \(c_b(s,x)=c_a(s,f(x))\).</p>
+  <div class="proof">
+    <p>Composition makes \(b\) jointly computable. Its row on input \(x\) is exactly the original row on input \(f(x)\); it is binary, begins at zero and converges to \(\chi_A(f(x))=\chi_{f^{-1}(A)}(x)\). The counters agree at stage zero, and at each successor stage their increments test the same two values. Induction proves the displayed identity, which transfers the bound \(n\) unchanged. This is the approximation version of the <a href="computable-reductions#composition-and-pullback">pullback principle</a> for computable reductions.</p>
+  </div>
+</section>
+
+<section id="combining-approximations" data-formal="fmchange-union-approximation fmchange-intersection-approximation fmchange-combination-data" data-kind="definition">
+  <h2>Combine membership bits by maximum and minimum</h2>
+  <p>For binary approximations \(a\) and \(b\), define their <strong>union approximation</strong> \(u\) and <strong>intersection approximation</strong> \(v\) by</p>
+  <div class="math-display">\[u(s,x)=\max(a(s,x),b(s,x)),\qquad v(s,x)=\min(a(s,x),b(s,x)).\]</div>
+  <p>Maximum and minimum are computable numerical operations. Thus these approximations are jointly computable whenever \(a,b\) are, are binary, and begin at zero when both inputs do. If the original rows converge to \(\chi_A(x)\) and \(\chi_B(x)\), choose a stage after both rows have settled. Thereafter their maximum is the bit of \(A\cup B\), and their minimum is the bit of \(A\cap B\). This proves pointwise convergence of both specified approximations.</p>
+</section>
+
+<section id="sum-of-bounds" data-formal="fmchange-combination-count fmchange-combination-closure fmchange-nce dce-characterization" data-kind="theorem">
+  <h2>Add the allowances when combining two approximations</h2>
+  <div class="statement-box"><p>If \(A\in\mathcal E_m\) and \(B\in\mathcal E_n\), then \(A\cup B\) and \(A\cap B\) belong to \(\mathcal E_{m+n}\). For the maximum and minimum approximations, each prefix change count is at most \(c_a(s,x)+c_b(s,x)\).</p></div>
+  <div class="proof">
+    <p>If neither input bit changes at a transition, neither its maximum nor its minimum can change. Hence, for \(w=u\) and separately for \(w=v\),</p>
+    <div class="math-display">\[[w(s+1,x)\ne w(s,x)]\le [a(s+1,x)\ne a(s,x)]+[b(s+1,x)\ne b(s,x)].\]</div>
+    <p>For a representative case, suppose the maximum changes from zero to one. Both original bits were zero, and at least one becomes one, so the right side is at least one. If the maximum changes from one to zero, a bit which was one becomes zero. The same reasoning for minimum uses a bit which witnesses the loss or acquisition of the value one. Alternatively, the contrapositive “both unchanged implies output unchanged” proves all four cases at once. If both inputs change simultaneously, the right side may be two, which remains a valid bound for a single output change.</p>
+    <p>At stage zero all three counters are zero. Add the transition inequality to the induction hypothesis at each successor stage. This gives \(c_w(s,x)\le c_a(s,x)+c_b(s,x)\le m+n\). The algorithms and their convergence were established in <a href="#combining-approximations"></a>, so the bound completes the required witnesses. In particular, combining two differences of c.e. sets gives an allowance of four by this argument; it does not give an allowance of two.</p>
+  </div>
+</section>
+
+<section id="boolean-expressions" data-formal="fmchange-expression fmchange-expression-value fmchange-expression-budget" data-kind="definition">
+  <h2>Assign an allowance to each finite Boolean expression</h2>
+  <p>Fix c.e. sets \(U_0,U_1,\ldots\). A <strong>finite Boolean expression over these sets</strong> is built from symbols \(X_i\), unary complementation, binary union and binary intersection by finitely many applications. Its <strong>value</strong> replaces \(X_i\) by \(U_i\) and applies those set operations. Define its <strong>change budget</strong> \(B(F)\) recursively by</p>
+  <div class="math-display">\[B(X_i)=1,\qquad B(\overline F)=B(F)+1,\]</div>
+  <div class="math-display">\[B(F\cup G)=B(F)+B(G),\qquad B(F\cap G)=B(F)+B(G).\]</div>
+  <p>The expression is finite, so this recursion gives a natural number. It describes a budget for the chosen expression; different expressions with the same value may receive different budgets.</p>
+</section>
+
+<section id="boolean-bound" data-formal="fdnf-characterization fmchange-expression-bound fmchange-limit-computable fmchange-difference-union-expression fmchange-difference-union-budget fmchange-difference-union-improved" data-kind="theorem">
+  <h2>Every finite Boolean combination has a finite change bound</h2>
+  <p>The value of each finite Boolean expression \(F\) in c.e. sets is \(B(F)\)-c.e. Consequently every such value is limit computable.</p>
+  <div class="proof">
+    <p>Induct on the construction of \(F\). At a variable, its c.e. value has a one-change approximation by <a href="#first-three-levels"></a>. At a complement, apply <a href="#complement-bound"></a> to the approximation already supplied for its immediate subexpression. At a union or intersection, apply <a href="#sum-of-bounds"></a> to the two supplied approximations. The recursive budgets are exactly the bounds in these three steps. Every induction step supplies an actual jointly computable approximation with the required initial value and limit, so the induction proves the assertion for the whole finite expression.</p>
+    <p>For example, \((U_0\setminus U_1)\cup U_2\) can be written as \((X_0\cap\overline{X_1})\cup X_2\), whose budget is \((1+(1+1))+1=4\). This budget is sufficient; the more direct difference construction uses at most two changes for the difference, and then combining with \(U_2\) gives three. The budget rule does not claim an optimal bound. Finally, <a href="#widening-bounds"></a> makes every resulting value limit computable. Only finitely many leaf sets occur in one expression, so the proof needs their individual enumeration algorithms; it asserts no uniform enumeration of an arbitrary infinite family of c.e. sets.</p>
+  </div>
+  <p>The <a href="finite-difference-normal-forms#finite-difference-characterization">finite difference normal form</a> gives an exact representation of each finite change class by a descending chain of enumerable sets.</p>
+</section>
+
+<section id="budget-question" data-formal="fmchange-duplicate-expression fmchange-duplicate-budget fmchange-duplicate-empty-zero" data-kind="question">
+  <h2>Is the recursively assigned budget always the smallest possible?</h2>
+  <p>Take the expression \(F=X_0\cup X_0\). Its structural budget is \(B(F)=2\). Must its value require two changes? What if the supplied set \(U_0\) is empty?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. The value is \(U_0\cup U_0=U_0\), which has a one-change approximation because \(U_0\) is c.e. The recursion adds the two leaf budgets without recognizing that the same membership question was repeated. If \(U_0=\varnothing\), the constantly zero approximation even gives a zero-change witness. These examples show that \(B(F)\) is an upper bound supplied by the displayed construction, rather than a lower bound on every approximation to its value. Using an identity to simplify the set expression, or exploiting a special property of its supplied sets, may lower the required allowance.</p>
+  </div></details>
+</section>

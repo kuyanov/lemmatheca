@@ -1,0 +1,185 @@
+<section id="friedberg-numbering" data-formal="fnum-uniform-ce fnum-numbering fnum-unique-ce fnum-standard-uniform fnum-standard-repeats effective-stage-index-set" data-kind="definition">
+  <h2>A uniform list with exactly one name for each enumerable set</h2>
+  <p>A family \((U_n)_{n\in\mathbb N}\) of subsets of \(\mathbb N\) is <strong>uniformly computably enumerable</strong> if</p>
+  <div class="math-display">\[\{\langle n,y\rangle:y\in U_n\}\]</div>
+  <p>is c.e., using the fixed numerical pairing. A <strong>Friedberg numbering of the c.e. sets</strong> is such a family for which every c.e. set occurs as exactly one row. Equivalently, all rows are distinct and, for every standard domain \(W_e\), there is an \(n\) with \(U_n=W_e\).</p>
+  <p>The <a href="effective-enumerations#finite-stages">standard family</a> \(W_e=\{y:\varphi_e(y)\downarrow\}\) is uniform and contains every c.e. set, but its rows repeat. Here uniqueness concerns equality of sets, even when the programs enumerating those sets have different numerical indices. The objects to be listed in this entry are sets of natural numbers.</p>
+</section>
+
+<section id="initial-segments" data-formal="initial-segment-definition fnum-initial-row fnum-initial-classification fnum-noninitial-witness fnum-finite-initial-test fnum-finite-initial-test-spec fnum-finite-initial-test-computable" data-kind="definition">
+  <h2>Separate the initial segments from the other rows</h2>
+  <p>An <strong>initial segment</strong> of \(\mathbb N\) is a set \(A\) such that \(b\in A\) and \(a&lt;b\) imply \(a\in A\). Write</p>
+  <div class="math-display">\[I_k=\{0,1,\ldots,k\}\qquad(k\in\mathbb N).\]</div>
+  <p>The initial segments are precisely \(\varnothing\), \(\mathbb N\), and the finite sets \(I_k\). Consequently a set is not an initial segment exactly when there are \(a&lt;b\) with \(a\notin A\) and \(b\in A\).</p>
+  <div class="proof">
+    <p>The listed sets are downward closed. Conversely, if an initial segment is proper, let \(c\) be its least missing number. Every number below \(c\) belongs to it, and no number above \(c\) can belong to it, since downward closure would then include \(c\). For \(c=0\) the set is empty; otherwise it is \(I_{c-1}\). Negating downward closure gives the stated two-number witness for a noninitial set.</p>
+  </div>
+  <p>For a finite set \(B\subseteq I_x\), being an initial segment is a finite test: check whether \(a&lt;b\le x\), \(b\in B\), and \(a\notin B\) ever occur. Thus the test does not decide whether an infinite c.e. set is an initial segment.</p>
+</section>
+
+<section id="fair-visits" data-formal="fnum-visit fnum-fair-visits" data-kind="lemma">
+  <h2>Every standard index receives arbitrarily late visits</h2>
+  <p>At stage \(s\), visit the requirement with index</p>
+  <div class="math-display">\[e(s)=\operatorname{left}(s),\]</div>
+  <p>where \(\operatorname{left}\) is the first coordinate of the inverse pairing. For every \(e,S\in\mathbb N\), some stage \(s\ge S\) visits \(e\).</p>
+  <div class="proof">
+    <p>The stage \(s=\langle e,k\rangle\) visits \(e\). The <a href="coding-finite-sequences#pairing-bounds">pairing lower bound</a> gives \(s\ge e+k\), so choosing \(k\ge S\) makes the visit at least as late as \(S\). Each requirement therefore has infinitely many visits, with no assumption about whether its set is finite or empty.</p>
+  </div>
+</section>
+
+<section id="follower-construction" data-formal="fnum-state fnum-active fnum-retired fnum-finite-tests fnum-finite-tests-spec fnum-observed-row fnum-endpoint-choice fnum-successor-stage fnum-stage fnum-row-stage" data-kind="definition">
+  <h2>Allocate a follower, copy its set, or retire its row</h2>
+  <p>Use the increasing finite sets \(W_{e,s}\) from <a href="effective-enumerations#finite-stages">the standard stage construction</a>. A <strong>follower</strong> for requirement \(e\) is an allocated row label \(x\) temporarily assigned to copy \(W_e\). The finite state at the start of stage \(s\) records the following data: the number \(N_s\) of allocated rows; a finite table assigning at most one active follower to each visited requirement; the finite contents \(V_{x,s}\) of each allocated row; which rows have been retired; and the latest retirement endpoint \(g_s\).</p>
+  <p>Initially \(N_0=0\), there are no followers or retired rows, and \(g_0=0\). Put \(V_{x,s}=\varnothing\) for unallocated labels \(x\ge N_s\). At stage \(s\), visit \(e=e(s)\) and perform exactly one of these actions.</p>
+  <ol>
+    <li>If \(e\) has no active follower, allocate the fresh label \(x=N_s\), give its row empty contents, assign it to \(e\), and increase the allocated count by one.</li>
+    <li>If \(e\) has follower \(x\), test whether \(W_{e,s}\cap I_x\) is noninitial and differs from \(W_{j,s}\cap I_x\) for every \(j&lt;e\). If both tests hold, retain \(x\) and put \(V_{x,s+1}=W_{e,s}\).</li>
+    <li>If \(e\) has follower \(x\) and either test fails, retire \(x\) permanently and remove it from the follower table. Let \(m\) be the largest number in its entire current row \(V_{x,s}\), with \(m=0\) when that row is empty. Choose the endpoint</li>
+  </ol>
+  <div class="math-display">\[g_{s+1}=2\bigl(\max(g_s,m)+1\bigr),\qquad V_{x,s+1}=I_{g_{s+1}}.\]</div>
+  <p>In the first two cases leave the latest endpoint unchanged. In every case leave all other row contents, followers and retirement records unchanged. A retired row is never assigned again and is never modified. The endpoint formula makes each newly retired row contain its whole old contents, including numbers above its label \(x\).</p>
+</section>
+
+<section id="stage-invariants" data-formal="fnum-allocated-partition fnum-one-follower fnum-allocations-monotone fnum-rows-monotone fnum-active-subset fnum-retired-frozen fnum-record-correct fnum-retirements-increase fnum-latest-record fnum-retirements-even fnum-successor-computable fnum-stage-computable fnum-row-stage-computable fnum-state-code fnum-state-roundtrip fnum-numeric-recursion fnum-numeric-decoding fnum-numeric-stage-computable fnum-stage-program" data-kind="lemma">
+  <h2>Every update preserves the finite enumeration already made</h2>
+  <p>All stages of <a href="#follower-construction"></a> are total computable finite operations. For every \(s,x\), the construction satisfies:</p>
+  <ul>
+    <li>The allocated labels are exactly \(0,\ldots,N_s-1\). Each allocated row is either retired or is the follower of exactly one requirement, and no requirement has two followers.</li>
+    <li>Rows increase: \(V_{x,s}\subseteq V_{x,s+1}\). If \(x\) currently follows \(e\), then \(V_{x,s}\subseteq W_{e,s}\).</li>
+    <li>Each retired row is a fixed finite \(I_k\). Its assigned endpoint \(k\) is positive and even. Successive retirement endpoints strictly increase, and \(g_s\) records the latest one, or zero before the first retirement.</li>
+  </ul>
+  <div class="proof">
+    <p>Induct on the stage. A fresh allocation uses exactly the next label, starts empty, and is made only when that requirement has no follower. For a retained follower, its old contents came from an earlier stage of the same increasing approximation \(W_{e,s}\); replacing them by \(W_{e,s}\) keeps every old member. The new row is still contained in \(W_{e,s+1}\). Other active rows retain their contents, which remain contained in their own increasing source approximations.</p>
+    <p>On retirement, put \(M=\max(g_s,m)\). The endpoint \(2(M+1)\) is even, positive, greater than \(g_s\), and at least every element of \(V_{x,s}\). Thus replacement by its initial segment preserves all old members. Removing the sole follower assignment leaves the row retired, and later stages cannot alter it. These are all possible updates, so the invariants persist.</p>
+    <p>Every test concerns finitely many indices \(j&lt;e\), numbers at most \(x\), and computable finite approximations. Maximum, table lookup and finite set updates are effective operations on <a href="coding-finite-sequences#list-code">coded finite data</a>. Iterating this total update computes the complete finite state at any requested stage, and hence computes \(V_{x,s}\) uniformly in \(x,s\).</p>
+  </div>
+</section>
+
+<section id="finite-prefix-stabilization" data-formal="fnum-prefix-stabilization" data-kind="lemma">
+  <h2>A fixed finite observation eventually stops changing</h2>
+  <p>For each \(e,b\in\mathbb N\), there is an \(S\) such that</p>
+  <div class="math-display">\[W_{e,s}\cap I_b=W_e\cap I_b\qquad(s\ge S).\]</div>
+  <p>The same stage can be chosen for any specified finite list of indices and bounds.</p>
+  <div class="proof">
+    <p>For every \(y\in W_e\cap I_b\), choose a stage at which \(y\) appears. There are only finitely many such \(y\), so a maximum of their appearance stages exists; if there are none, use zero. At later stages all required members are present. No number outside \(W_e\) ever appears, since every stage is a subset of \(W_e\). This proves equality. Taking one more finite maximum handles finitely many observations simultaneously.</p>
+  </div>
+  <p>This is an existence argument for a settling stage on a fixed finite window. It gives no algorithm for recognizing that stage from \(e,b\), in agreement with the earlier <a href="effective-enumerations#settling-moduli">settling-bound distinction</a>.</p>
+</section>
+
+<section id="permanent-followers" data-formal="fnum-permanent fnum-preliminary-row fnum-permanent-row fnum-permanent-least" data-kind="lemma">
+  <h2>A permanent follower represents a new noninitial set</h2>
+  <p>Call a follower <strong>permanent</strong> if, once allocated, it is never retired. If \(x\) is a permanent follower for \(e\), then</p>
+  <div class="math-display">\[V_x:=\bigcup_s V_{x,s}=W_e,\]</div>
+  <p>the set \(W_e\) is noninitial, and \(W_e\ne W_j\) for every \(j&lt;e\). Thus \(e\) is the least standard index for its set.</p>
+  <div class="proof">
+    <p>The active-row invariant puts every member of \(V_x\) in \(W_e\). Conversely, if \(y\in W_e\), it belongs to \(W_{e,s}\) at all sufficiently large stages. There is a later visit to \(e\). Its follower is still \(x\), so the tests pass and that visit copies the whole current \(W_{e,s}\) into row \(x\), including \(y\). Hence \(V_x=W_e\).</p>
+    <p>Apply <a href="#finite-prefix-stabilization"></a> to the fixed window \(I_x\) for \(e\) and every \(j&lt;e\). At a visit after their common settling stage, the successful tests say that \(W_e\cap I_x\) is noninitial and differs from each \(W_j\cap I_x\). A missing smaller number and present larger number in that window witness that \(W_e\) is noninitial. Each finite-window difference also witnesses \(W_e\ne W_j\). This proves every asserted property.</p>
+  </div>
+</section>
+
+<section id="least-indices-permanent" data-formal="fnum-least-permanent" data-kind="theorem">
+  <h2>Every least index for a noninitial set gets a permanent follower</h2>
+  <p>Suppose \(W_e\) is noninitial and \(W_e\ne W_j\) for every \(j&lt;e\). Then requirement \(e\) eventually has a permanent follower.</p>
+  <div class="proof">
+    <p>Choose \(a&lt;b\) with \(a\notin W_e\) and \(b\in W_e\). For each of the finitely many \(j&lt;e\), choose a number witnessing \(W_e\ne W_j\). Let \(B\) bound all these numbers, including \(a,b\). There is a stage \(S\) after which every source approximation with index at most \(e\) has settled on \(I_B\).</p>
+    <p>At any later visit, a follower with label \(x\ge B\) passes both tests. The window \(I_x\) contains the stable missing/present witness \(a,b\), so it is noninitial, and contains every stable difference witness against earlier indices. Changes outside \(I_B\) cannot remove these witnesses. Such a follower can therefore never be retired.</p>
+    <p>Suppose no follower of \(e\) were permanent. Every allocated follower would eventually retire; a later visit would then allocate another fresh one. Fair visits would produce infinitely many followers for \(e\). Their labels are distinct, so are unbounded, and infinitely many of their allocation stages occur after \(S\). In particular some follower allocated after \(S\) has label at least \(B\). The preceding argument makes it permanent, a contradiction. Hence the required permanent follower exists.</p>
+  </div>
+</section>
+
+<section id="all-rows-allocated" data-formal="fnum-infinite-actions fnum-all-allocated fnum-endpoints-unbounded" data-kind="lemma">
+  <h2>The empty-set requirement forces every label to be used</h2>
+  <p>There are infinitely many allocations and infinitely many retirements. Every natural-number row label is eventually allocated, and the retirement endpoints are unbounded.</p>
+  <div class="proof">
+    <p>Fix an index \(e_\varnothing\) for the <a href="rices-theorem#nowhere-defined">nowhere-defined program</a>, so \(W_{e_\varnothing}=\varnothing\). Every finite stage of that set is empty. Whenever this requirement is visited with an active follower, its noninitiality test fails and that follower retires. Whenever it is visited without one, it obtains a fresh follower. Its infinitely many visits therefore alternate between allocation and retirement, regardless of what other requirements do.</p>
+    <p>The allocated count increases by one on each allocation, and the labels used are an initial segment. Infinitely many allocations thus force the count beyond every fixed label. Likewise the positive integer endpoints strictly increase at each retirement, so infinitely many retirements make them unbounded. In particular there are no permanently unallocated rows whose empty limits could accidentally repeat.</p>
+  </div>
+</section>
+
+<section id="preliminary-rows" data-formal="fnum-preliminary-row fnum-retirement-endpoints fnum-row-classified fnum-preliminary-recognizer fnum-preliminary-partial fnum-preliminary-identity fnum-preliminary-uniform fnum-preliminary-injective fnum-preliminary-range fnum-preliminary-exceptions univ-binary-recursive-convention" data-kind="theorem">
+  <h2>The preliminary rows are distinct and contain every noninitial enumerable set</h2>
+  <p>Let \(V_x=\bigcup_s V_{x,s}\), and let the <strong>retirement endpoint set</strong> be</p>
+  <div class="math-display">\[G=\{k:\text{some row is actually retired with endpoint }k\}.\]</div>
+  <p>The family \((V_x)\) is uniformly c.e. and has no repeated rows. Its rows are exactly all noninitial c.e. sets together with the finite initial segments \(I_k\) for \(k\in G\). Neither \(\varnothing\) nor \(\mathbb N\) occurs among these rows.</p>
+  <div class="proof">
+    <p>To recognize \(y\in V_x\), simulate successive finite states until \(y\in V_{x,s}\). Each stage test is total computable, so this is a joint recognizer in \(x,y\). Every label is eventually allocated. Once allocated, it either retires at some finite stage or remains a permanent follower; there is no third possibility.</p>
+    <p>A retired row is exactly its assigned \(I_k\). Distinct retirements use distinct endpoints, hence distinct finite initial segments. A permanent row is noninitial by <a href="#permanent-followers"></a>, so cannot equal a retired row. Two permanent rows cannot belong to the same requirement, which has at most one follower at a time; if one permanent row follows \(e\) and another follows \(f&gt;e\), their source sets differ because the permanent follower of \(f\) witnesses inequality against every earlier index. Thus all rows are distinct.</p>
+    <p>Every noninitial c.e. set has a least standard index. By <a href="#least-indices-permanent"></a>, that index gets a permanent row equal to the set. Conversely permanent rows are noninitial and retired rows are precisely the \(I_k\) assigned on actual retirements. These finite rows are nonempty, and neither a finite row nor a noninitial row is \(\mathbb N\). This proves the complete range description.</p>
+  </div>
+</section>
+
+<section id="deciding-retirement-endpoints" data-formal="fnum-endpoint-stop fnum-endpoint-stop-spec fnum-endpoint-stop-computable fnum-endpoint-test fnum-endpoint-test-computable fnum-endpoint-test-spec fnum-endpoints-decidable fnum-endpoints-even fnum-omitted-infinite" data-kind="lemma">
+  <h2>The actual retirement endpoints form a decidable set</h2>
+  <p>The set \(G\) is decidable. It consists of positive even numbers, and its complement is infinite.</p>
+  <div class="proof">
+    <p>On input \(n\), simulate the construction until the latest endpoint \(g_s\) is at least \(n\). This eventually happens by <a href="#all-rows-allocated"></a>. Inspect the finite record of endpoints assigned on retirements up to that stage. The number \(n\) belongs to \(G\) exactly when it occurs in that record: every future endpoint will be strictly larger than \(g_s\ge n\).</p>
+    <p>For \(n=0\), the simulation may stop immediately at \(g_0=0\), but the retirement record is then empty. The placeholder zero is not an assigned endpoint. Similarly, idle stages introduce no endpoints into \(G\). Every actual endpoint is positive and even by the invariant, so zero and every odd number lie outside \(G\). This gives an infinite complement and completes the decision procedure.</p>
+  </div>
+</section>
+
+<section id="omitted-endpoints" data-formal="fnum-omitted-enumerator fnum-omitted-equations fnum-omitted-computable fnum-omitted-enumerates" data-kind="lemma">
+  <h2>List all initial-segment endpoints omitted by retirement</h2>
+  <p>There is a total computable strictly increasing function \(h:\mathbb N\to\mathbb N\) whose range is \(\mathbb N\setminus G\). Specify it by</p>
+  <div class="math-display">\[h(0)=0,\qquad h(n+1)=\min\{k&gt;h(n):k\notin G\}.\]</div>
+  <div class="proof">
+    <p>Zero is the least omitted endpoint. The complement of \(G\) is decidable and infinite, so it is unbounded, and each successor search has a witness. These are total searches over a computable predicate. The <a href="effective-enumerations#decidable-increasing-equivalence">increasing-enumeration theorem</a> proves that the specified recursion is total computable, strictly increasing, and exhaustive for the complement. Thus every omitted finite initial segment has exactly one endpoint name \(h(n)\).</p>
+  </div>
+</section>
+
+<section id="completed-numbering" data-formal="fnum-completed-family fnum-completed-equations fnum-joint-recognizer fnum-joint-partial fnum-joint-identity univ-binary-recursive-convention" data-kind="definition">
+  <h2>Complete the family with the missing initial segments</h2>
+  <p>Define the <strong>completed family</strong> \((U_e)\) by</p>
+  <div class="math-display">\[U_0=\mathbb N,\qquad U_2=\varnothing,\]</div>
+  <div class="math-display">\[U_{2n+1}=V_n,\qquad U_{2n+4}=I_{h(n)}\qquad(n\in\mathbb N).\]</div>
+  <p>These cases cover every natural row label exactly once. Define its <strong>joint recognizer</strong> \(R(e,y)\) by the following single partial procedure, always returning zero when it halts. At row zero return immediately; at row two run forever. At an odd row \(2n+1\), simulate the follower construction until \(y\in V_{n,s}\). At an even row \(2n+4\), compute \(h(n)\), return zero if \(y\le h(n)\), and otherwise run forever.</p>
+  <p>This procedure is partial recursive jointly in \(e,y\), and its behavior is exactly</p>
+  <div class="math-display">\[R(e,y)\simeq\begin{cases}0&amp;y\in U_e,\\\text{undefined}&amp;y\notin U_e.\end{cases}\]</div>
+  <div class="proof">
+    <p>Parity, the exceptional labels zero and two, and the corresponding value of \(n\) are computed by total arithmetic operations. The odd-row search uses a total computable finite-stage test; it halts exactly on the union defining \(V_n\). The even-row branch uses the total computable \(h\) and a finite comparison. The two perpetual branches can use the nowhere-defined program. Strict composition and unbounded search therefore give one jointly partial recursive procedure with the displayed behavior.</p>
+  </div>
+</section>
+
+<section id="friedberg-theorem" data-formal="fnum-existence fnum-unique-ce fnum-completed-uniform fnum-completed-injective fnum-completed-surjective" data-kind="theorem">
+  <h2>Every computably enumerable set occurs exactly once</h2>
+  <div class="statement-box">
+    <p>The completed family \((U_e)\) is a Friedberg numbering of all c.e. subsets of \(\mathbb N\): it is uniformly c.e., its rows are pairwise distinct, and every c.e. set equals one row.</p>
+  </div>
+  <div class="proof">
+    <p>The joint recognizer proves that the flattened set \(\{\langle e,y\rangle:y\in U_e\}\) is c.e. For uniqueness, odd rows are distinct by <a href="#preliminary-rows"></a>. Among the added finite rows, strict increase of \(h\) makes the sets \(I_{h(n)}\) distinct. Their endpoints lie outside \(G\), so none equals a retired odd row, whose endpoint belongs to \(G\); none equals a noninitial odd row either. All these rows are nonempty proper subsets of \(\mathbb N\), so they are distinct from rows two and zero. Those two exceptional rows are also distinct.</p>
+    <p>For exhaustiveness, a noninitial c.e. set occurs among the \(V_n\), hence at an odd label. The two initial segments \(\mathbb N\) and \(\varnothing\) occur at their exceptional labels. Every other initial segment is \(I_k\). If \(k\in G\), it occurs as a retired odd row. If \(k\notin G\), exactly one \(n\) has \(h(n)=k\), and it occurs at label \(2n+4\). These cases include every c.e. set and show that each has exactly one name.</p>
+  </div>
+</section>
+
+<section id="standard-index-compiler" data-formal="fnum-recognizer-index-exists fnum-compiler fnum-compiler-primitive fnum-compiler-evaluation fnum-compiler-domain pad-specialize-injective univ-unary-primitive-equivalence" data-kind="theorem">
+  <h2>Each new row name compiles to a standard program index</h2>
+  <p>Choose one standard index \(r\) for the actual joint recognizer, so \(\varphi_r(\langle e,y\rangle)\simeq R(e,y)\) for every \(e,y\). Let \(s\) be the fixed numerical specialization function and define</p>
+  <div class="math-display">\[t(e)=s(r,e).\]</div>
+  <p>This specified map \(t\) is primitive recursive and injective, and for every \(e,y\),</p>
+  <div class="math-display">\[\varphi_{t(e)}(y)\simeq R(e,y),\qquad W_{t(e)}=U_e.\]</div>
+  <div class="proof">
+    <p>Joint partial recursiveness of \(R\) and <a href="universal-computation#universal-evaluation">completeness of the program numbering</a> supply one fixed \(r\). The <a href="universal-computation#parameter-theorem">parameter theorem</a> makes \(e\mapsto s(r,e)\) primitive recursive and gives its exact evaluation identity on every runtime input, including divergence. Taking domains gives the row equality. If \(t(e)=t(f)\), those two standard programs have the same domain, so \(U_e=U_f\). The uniqueness theorem then gives \(e=f\), proving injectivity of this very compiler.</p>
+  </div>
+</section>
+
+<section id="no-reverse-translator" data-formal="fnum-no-translator fnum-joint-identity" data-kind="theorem">
+  <h2>No computable translator selects the unique name of every standard domain</h2>
+  <div class="statement-box">
+    <p>There is no total computable function \(q:\mathbb N\to\mathbb N\) satisfying</p>
+    <div class="math-display">\[U_{q(e)}=W_e\qquad\text{for every }e\in\mathbb N.\]</div>
+  </div>
+  <div class="proof">
+    <p>Fix an ordinary index \(e_\varnothing\) with empty domain. If such a total computable \(q\) existed, unique row names would give</p>
+    <div class="math-display">\[W_e=\varnothing\quad\Longleftrightarrow\quad q(e)=q(e_\varnothing).\]</div>
+    <p>The right side is decidable: compute \(q(e)\) and compare it with the fixed number \(q(e_\varnothing)\). The left side is a nontrivial extensional property of programs. A nowhere-defined program has it, whereas a constant-zero program does not. <a href="rices-theorem#rice-theorem">Rice’s theorem</a> rules out its decidability. This contradiction proves that no such translator exists.</p>
+  </div>
+  <p>The conclusion concerns names for c.e. domains. The chosen recognizers all return zero on their domains; this construction makes no assertion that those recognizers enumerate every partial recursive function.</p>
+</section>
+
+<section id="one-set-question" data-formal="fnum-numbering fnum-compiler-domain pad-specialize-injective fnum-no-translator effective-stage-infinite-ce-injective-enumeration" data-kind="question">
+  <h2>How do these two uses of injectivity differ?</h2>
+  <p>Why does an <a href="effective-enumerations#injective-enumerations">injective enumeration of one infinite c.e. set</a> not already give a Friedberg numbering? Why does the injective compiler \(t\) not provide a total reverse translator?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>An enumeration \(g:\mathbb N\to\mathbb N\) of one set has distinct numerical outputs and range equal to that chosen set. A Friedberg family instead has distinct sets as rows, includes every c.e. set, and has a single joint membership recognizer. Suppressing repeated numbers in one stream does not test equality of different c.e. rows or coordinate their eventual contents. The follower construction supplies precisely that additional coordination.</p>
+    <p>The compiler \(t\) sends a row name to a standard program with the same domain. A reverse translator would have to take every standard index \(e\) and find the unique \(n\) with \(W_e=U_n\). This asks for equality of represented domains, rather than equality of numerical program names. Searching for a literal equality \(t(n)=e\) can succeed only when \(e\) is one of the compiler's numerical outputs. Having some program \(t(n)\) for the same domain does not make its index equal to the given \(e\). The <a href="#no-reverse-translator">preceding theorem</a> rules out any total computable solution to the domain-name problem.</p>
+  </div></details>
+</section>

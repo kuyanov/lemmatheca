@@ -1,0 +1,101 @@
+<section id="input-bounds" data-formal="cbchange-bounded-by cbchange-computable-bound cbchange-omega-ce dce-change-count dce-starts-zero" data-kind="definition">
+  <h2>Let the permitted number of revisions depend on the input</h2>
+  <p>Use the <a href="differences-of-enumerable-sets#change-counter">prefix change counter</a> \(c_a(s,x)\) for a binary approximation \(a(s,x)\). A <strong>computable change bound</strong> for \(a\) is a total computable function \(b:\mathbb N\to\mathbb N\) such that</p>
+  <div class="math-display">\[c_a(s,x)\le b(x)\qquad\text{for every }s,x.\]</div>
+  <p>A set \(A\subseteq\mathbb N\) is <strong>\(\omega\)-computably enumerable</strong>, or <strong>\(\omega\)-c.e.</strong>, if it has a jointly computable binary approximation \(a\) and a computable change bound \(b\) with \(a(0,x)=0\) and \(a(s,x)\to\chi_A(x)\). Write \(\mathcal E_\omega\) for this class. As in the <a href="finite-mind-changes#bounded-change-classes">finite change classes</a>, only transitions between successive stages count as revisions.</p>
+  <p>The value \(b(x)\) is available effectively from the input. It may grow with \(x\), whereas an \(n\)-c.e. approximation uses the same allowance \(n\) for all inputs. A bound counts possible revisions; it does not say when they occur.</p>
+</section>
+
+<section id="pointwise-stability" data-formal="cbchange-bounded-convergence" data-kind="lemma">
+  <h2>An input-dependent finite bound still forces convergence</h2>
+  <p>If a binary approximation \(a\) satisfies \(c_a(s,x)\le b(x)\) for every \(s,x\), then it converges pointwise to the characteristic function of some set. Neither computability nor a common constant bound is needed for this conclusion.</p>
+  <div class="proof"><p>Fix \(x\). The nondecreasing counter takes its values in the finite set \(\{0,\ldots,b(x)\}\). Choose a stage \(t\) attaining its largest value. At every later stage it has that same value. If \(a(u,x)\ne a(t,x)\) for some \(u\ge t\), the <a href="differences-of-enumerable-sets#counter-invariant">endpoint counter lemma</a> would force a strictly larger counter value at \(u\). Thus the bit is constant from \(t\) onward. Collect the inputs with eventual bit one into a set \(A\); the other inputs have eventual bit zero, giving convergence to \(\chi_A\).</p><p>The choice of \(t\) was made separately for each input. Even when \(a\) and \(b\) are computable, this argument supplies no computable function choosing such a stage.</p></div>
+</section>
+
+<section id="countdowns" data-formal="cbchange-countdown cbchange-computable-countdown" data-kind="definition">
+  <h2>Keep a natural-number reserve that decreases at each revision</h2>
+  <p>A <strong>natural-number countdown</strong> for an approximation \(a\) is a total function \(r:\mathbb N\times\mathbb N\to\mathbb N\) satisfying</p>
+  <div class="math-display">\[r(s+1,x)\le r(s,x),\qquad a(s+1,x)\ne a(s,x)\Longrightarrow r(s+1,x)&lt;r(s,x).\]</div>
+  <p>It is a <strong>computable countdown</strong> when the function is jointly computable in the stage and input. A countdown may decrease even when the guess stays the same. Its values are ordinary natural numbers, and no reserve below zero is available. There is no requirement that the reserve be exhausted: the final guess can retain unused units.</p>
+</section>
+
+<section id="bound-to-countdown" data-formal="cbchange-reserve cbchange-reserve-data" data-kind="lemma">
+  <h2>Subtract the number of spent revisions from the supplied bound</h2>
+  <p>If \(a\) is jointly computable and \(b\) is a computable change bound for it, the specified function</p>
+  <div class="math-display">\[r_b(s,x)=b(x)-c_a(s,x)\]</div>
+  <p>is a computable countdown. Here subtraction is truncated at zero, and \(r_b(0,x)=b(x)\).</p>
+  <div class="proof"><p>The <a href="differences-of-enumerable-sets#change-counter">counter is computable</a>, so subtraction gives joint computability of \(r_b\). The counter never decreases, hence the reserve never increases. If the bit changes at \(s\to s+1\), then \(c_a(s+1,x)=c_a(s,x)+1\le b(x)\). In this case the earlier count is strictly below \(b(x)\), and ordinary subtraction gives \(r_b(s+1,x)=r_b(s,x)-1&lt;r_b(s,x)\). If the bit stays fixed, the counts and reserves agree. Finally the initial count is zero, giving the initial-reserve identity.</p></div>
+</section>
+
+<section id="countdown-to-bound" data-formal="cbchange-countdown-pays cbchange-initial-bound" data-kind="lemma">
+  <h2>Every revision must be paid for from the initial reserve</h2>
+  <p>For any natural-valued countdown \(r\) for \(a\), whether computable or not,</p>
+  <div class="math-display">\[c_a(s,x)+r(s,x)\le r(0,x)\qquad\text{for every }s,x.\]</div>
+  <p>Consequently \(c_a(s,x)\le r(0,x)\). A computable countdown therefore supplies the computable change bound \(b_r(x)=r(0,x)\).</p>
+  <div class="proof"><p>Induct on \(s\), with \(x\) fixed. At stage zero the counter is zero. If the next guess agrees with the current one, the counter is unchanged and the reserve does not increase, preserving the inequality. If the guess changes, the counter increases by one, while strict decrease of natural numbers gives \(r(s+1,x)+1\le r(s,x)\). Adding these two inequalities proves the induction step. Dropping the nonnegative final reserve yields the counter bound. Evaluating a jointly computable \(r\) at stage zero computes \(b_r\).</p></div>
+</section>
+
+<section id="countdown-characterization" data-formal="cbchange-characterization cbchange-reserve-data cbchange-initial-bound cbchange-bounded-convergence" data-kind="theorem">
+  <h2>Computable change bounds and computable countdowns describe the same class</h2>
+  <div class="statement-box"><p>A set \(A\) is \(\omega\)-c.e. if and only if some jointly computable binary approximation \(a\), starting at zero and converging to \(\chi_A\), has a computable natural-number countdown.</p></div>
+  <div class="proof"><p>Given a computable change bound, use exactly \(r_b=b-c_a\) from <a href="#bound-to-countdown"></a>. Given a computable countdown, use exactly its initial reserve \(b_r(x)=r(0,x)\), as proved in <a href="#countdown-to-bound"></a>. Neither direction changes the approximation or its limit. Convergence to some binary limit is automatic from either form of bound by <a href="#pointwise-stability"></a>; convergence to the specified \(A\) identifies which set is represented.</p></div>
+</section>
+
+<section id="class-inclusions" data-formal="bcb-diagonal-data bcb-diagonal-not-omega limit-computable cbchange-finite-inclusion cbchange-limit-inclusion" data-kind="theorem">
+  <h2>Every finite change class lies inside the computably bounded class</h2>
+  <p>For every \(n\in\mathbb N\), \(\mathcal E_n\subseteq\mathcal E_\omega\), and every \(\omega\)-c.e. set is limit computable.</p>
+  <div class="proof"><p>For an \(n\)-c.e. approximation take the constant computable bound \(b(x)=n\). Its computability, initial value and limit already have the required properties. For the second assertion, forget the change bound: the same computable binary approximation is a <a href="limit-computability#pointwise-approximation">limit-computable presentation</a>. These inclusions alone do not say whether every set in \(\mathcal E_\omega\) has some approximation with a constant change bound.</p></div>
+  <p>The second inclusion is strict: a <a href="beyond-computable-change-bounds#strict-containment">diagonal construction against all proposed computable bounds</a> gives a limit-computable set outside \(\mathcal E_\omega\).</p>
+
+</section>
+
+<section id="complements" data-formal="cbchange-complement-bound cbchange-complement-closure fmchange-delayed-complement fmchange-delayed-complement-data fmchange-delayed-complement-count" data-kind="theorem">
+  <h2>A delayed complement adds one unit to the input's allowance</h2>
+  <p>If \(a\) witnesses that \(A\) is \(\omega\)-c.e. with computable bound \(b\), then the <a href="finite-mind-changes#delayed-complement">delayed complement</a> \(\bar a(0,x)=0\), \(\bar a(s+1,x)=1-a(s,x)\) witnesses that \(A^c\) is \(\omega\)-c.e. with bound \(b(x)+1\).</p>
+  <div class="proof"><p>The established delayed-complement construction is jointly computable, binary, initial zero and converges to \(\chi_{A^c}\). Its exact count identity is \(c_{\bar a}(s+1,x)=1+c_a(s,x)\), since the original initial bit is zero. This is at most \(b(x)+1\), while its count at stage zero is zero. The new bound is total computable, so it supplies all the required data.</p></div>
+</section>
+
+<section id="preimages" data-formal="cbchange-preimage-bound cbchange-preimage-closure fmchange-pullback fmchange-pullback-data" data-kind="lemma">
+  <h2>A computable translation transports the input-dependent allowance</h2>
+  <p>If \(a\) witnesses that \(A\) is \(\omega\)-c.e. with computable bound \(b\), and \(f:\mathbb N\to\mathbb N\) is total computable, then \(f^{-1}(A)\) has the specified approximation \(a_f(s,x)=a(s,f(x))\) and computable bound \(b(f(x))\). Thus \(\mathcal E_\omega\) is closed under computable preimages.</p>
+  <div class="proof"><p>The <a href="finite-mind-changes#computable-preimages">pullback construction</a> preserves joint computability, binary values, the initial bit and convergence to the indicated preimage. Its counter is exactly \(c_{a_f}(s,x)=c_a(s,f(x))\), by induction on the stage. Applying the original bound at \(f(x)\) gives the asserted allowance. Composition computes \(b\circ f\).</p></div>
+</section>
+
+<section id="finite-combinations" data-formal="cbchange-combination-bounds cbchange-combination-closure cbchange-boolean-closure fmchange-union-approximation fmchange-intersection-approximation fmchange-combination-data fmchange-combination-count" data-kind="theorem">
+  <h2>Unions and intersections add the two input-dependent bounds</h2>
+  <p>If \(a,d\) witness \(\omega\)-c.e. sets \(A,B\) with computable bounds \(b,c\), respectively, then \(\max(a,d)\) and \(\min(a,d)\), taken pointwise, witness \(A\cup B\) and \(A\cap B\) with computable bound \(b(x)+c(x)\).</p>
+  <div class="proof"><p>The <a href="finite-mind-changes#combining-approximations">binary combination construction</a> gives the stated limits and preserves computability and the initial zero. If an output bit changes, at least one of its two input bits changes at that transition. Thus each output counter is at most \(c_a(s,x)+c_d(s,x)\), as in the <a href="finite-mind-changes#sum-of-bounds">sum-of-counts estimate</a>. Apply the two input-dependent bounds and compute their sum. Along with complements this gives closure under every fixed finite Boolean combination, by induction on that combination.</p></div>
+</section>
+
+<section id="diagonal-join" data-formal="cbchange-diagonal-join cbchange-join-approximation cbchange-join-bound ufc-diagonal-computable" data-kind="definition">
+  <h2>Join the diagonal escape sets into one membership problem</h2>
+  <p>Use the <a href="universal-finite-change-sets#diagonal-approximation">uniform diagonal escape sets</a> \(D_n\) and their specified approximations \(d_n(s,e)\). The <strong>diagonal join</strong> is</p>
+  <div class="math-display">\[E=\{\langle n,e\rangle:e\in D_n\}.\]</div>
+  <p>With \(\pi_1,\pi_2\) denoting the two computable decoding maps for the fixed pairing bijection, define its <strong>join approximation</strong> and <strong>join bound</strong> by</p>
+  <div class="math-display">\[h(s,z)=d_{\pi_1(z)}(s,\pi_2(z)),\qquad b_E(z)=\pi_1(z)+1.\]</div>
+  <p>The first coordinate determines the column and its permitted allowance. The preceding uniform construction provides a single jointly computable function of \(n,s,e\), so the displayed rule is one algorithm for \(h\).</p>
+</section>
+
+<section id="join-data" data-formal="cbchange-join-data cbchange-join-omega" data-kind="lemma">
+  <h2>The displayed join has a computable bound on every input</h2>
+  <p>The specified \(h\) is jointly computable, binary and initial zero, has \(c_h(s,z)\le b_E(z)\) for all \(s,z\), and converges to \(\chi_E\). In particular \(E\in\mathcal E_\omega\).</p>
+  <div class="proof"><p>Decode \(z=\langle n,e\rangle\). Its row is exactly \(d_n(s,e)\), so induction on the stage identifies its counter with \(c_{d_n}(s,e)\). The diagonal construction bounds that counter by \(n+1=b_E(z)\), starts at zero, and converges to the bit for \(e\in D_n\), which is the bit for \(z\in E\). Computable decoding and the joint computability of \((n,s,e)\mapsto d_n(s,e)\) compute \(h\). Decoding and successor compute \(b_E\). Every assertion concerns the displayed approximation and bound, rather than an unspecified replacement.</p></div>
+</section>
+
+<section id="beyond-every-finite-level" data-formal="cbchange-join-omega cbchange-join-column cbchange-join-not-nce cbchange-finite-inclusion fmchange-preimage-closure" data-kind="theorem">
+  <h2>One computably bounded set escapes every fixed finite allowance</h2>
+  <div class="statement-box"><p>The specified set \(E\) is \(\omega\)-c.e. and is not \(n\)-c.e. for any \(n\in\mathbb N\). Hence \(\bigcup_{n&lt;\omega}\mathcal E_n\) is a proper subclass of \(\mathcal E_\omega\).</p></div>
+  <div class="proof"><p>Membership of \(E\) follows from <a href="#join-data"></a>. Fix \(n\), and consider the total computable map \(f_n(e)=\langle n,e\rangle\). The definition of the join gives \(f_n^{-1}(E)=D_n\). If \(E\) had an \(n\)-c.e. approximation, <a href="finite-mind-changes#computable-preimages">finite-level preimage closure</a> would make \(D_n\) \(n\)-c.e., contrary to <a href="universal-finite-change-sets#diagonal-disagreement">diagonal disagreement</a>. This works for each fixed \(n\), proving exclusion from their union. The reverse inclusion follows from <a href="#class-inclusions"></a>.</p><p>The availability of an \((n+1)\)-change approximation separately for each \(D_n\) would not by itself supply an algorithm for their join. Here joint computability was proved for the specified diagonal family before forming \(E\), so it justifies the actual join approximation.</p></div>
+</section>
+
+<section id="loose-bound-question" data-formal="cbchange-loose-example" data-kind="question">
+  <h2>Does an unbounded displayed allowance force escape from every finite level?</h2>
+  <p>Suppose a computable change bound \(b(x)\) is unbounded as \(x\) varies. Must the limit set of the supplied approximation lie outside every finite change class?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Take \(a(s,x)=0\) and \(b(x)=x\). The bound is computable and unbounded, but the counter is always zero and the limit is the empty set, already in \(\mathcal E_0\). A bound is an upper estimate and may waste arbitrarily many units. The join's exclusion from finite levels was proved by its diagonal columns; it does not follow merely from the unboundedness of \(b_E\).</p></div></details>
+</section>
+
+<section id="deadline-question" data-formal="dce-canonical-one-change limit-halting-test limit-halting-stage-data limit-halting-stage-convergence limit-halting-no-computable-modulus limit-convergence-modulus limit-computable-modulus-decides" data-kind="question">
+  <h2>Can the computed allowance reveal a computable final stage?</h2>
+  <p>Does a computable change bound, or even a constant bound of one, provide a computable convergence modulus for a supplied approximation?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The <a href="effective-enumerations#uniform-finite-approximation">canonical increasing approximation</a> to the halting set starts at zero and changes at most once on each input, so the constant bound one is computable. If it had a computable final-stage function \(m(x)\), evaluating that approximation at \(m(x)\) would decide the halting set. This contradicts <a href="universal-computation#halting-problem">halting undecidability</a>, exactly as in the <a href="limit-computability#convergence-modulus">modulus argument</a>. A countdown can remain positive forever when an input never enters the set; its unused units do not certify that no future revision will occur.</p></div></details>
+</section>

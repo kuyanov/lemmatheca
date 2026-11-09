@@ -1,0 +1,129 @@
+<section id="hyperimmune-free-paths" data-formal="hfb-path hdeg-hyperimmune-free hdeg-bound-equivalence bbfn-function-graph-equivalence" data-kind="definition">
+  <h2>A path may have computably bounded numerical computations</h2>
+  <p>Use the <a href="computable-trees-and-paths#binary-trees">coded binary trees</a> \(T\subseteq2^{&lt;\omega}\), with \([T]=\{A:\forall n\;(A\mathbin{\upharpoonright}n\in T)\}\). A <strong>hyperimmune-free path</strong> is \(A\in[T]\) such that every total \(f:\mathbb N\to\mathbb N\) computed by an actual finite \(A\)-oracle program has a total computable eventual bound. This is exactly <a href="domination-and-hyperimmune-degrees#hyperimmune-functions">hyperimmune-freeness</a> of the path's set of one-positions.</p>
+  <p>By the <a href="domination-and-hyperimmune-degrees#finite-exception-patch">finite-exception patch</a>, eventual bounds can equivalently be replaced by pointwise majorants. The <a href="domination-and-hyperimmune-degrees#relative-functions">function-graph bridge</a> identifies these numerical computations with their coded graph oracles. Write \(\Phi_e^A(x)\) for evaluation in the fixed <a href="oracle-program-numberings#oracle-numbering">oracle-program numbering</a>.</p>
+</section>
+
+<section id="freeze-the-input" data-formal="jump-freeze jump-freeze-primitive jump-freeze-eval" data-kind="lemma">
+  <h2>Turn one arbitrary-input computation into a diagonal computation</h2>
+  <p>There is an ordinary primitive-recursive numerical map \(j(e,x)\), fixed before the oracle varies, with</p>
+  <div class="math-display">\[\Phi_{j(e,x)}^A(z)\simeq\Phi_e^A(x)\qquad\text{for all }A,e,x,z.\]</div>
+  <p>In particular the diagonal computation at \(z=j(e,x)\) has the same output, or diverges, together with \(\Phi_e^A(x)\).</p>
+  <div class="proof"><p>Use the existing <a href="turing-jump#input-freezing">input-freezing compiler</a>: form the actual program \(\operatorname{comp}(c_e,\mathsf{const}(x))\) and take its index. The constant subprogram ignores \(z\) and returns \(x\); strict composition then performs exactly the specified \(e\)-computation. The numerical constructors and constant-code map are primitive recursive, proving both uniformity and the entire partial-value identity.</p></div>
+</section>
+
+<section id="divergence-subtree" data-formal="hfb-divergence-tree hfb-divergence-membership incomp-certificate-value lbt-restricted" data-kind="definition">
+  <h2>Keep the nodes that have not yet certified a chosen computation</h2>
+  <p>Let \(C(\sigma,d,y)\) be the <a href="incomparable-turing-degrees#prefix-certificates">finite-prefix certificate value</a>: zero means no successful certificate at allowance \(|\sigma|\), while \(v+1\) certifies output \(v\). This allowance bounds the actual finite evaluation as well as the available oracle prefix.</p>
+  <p>For a binary tree \(S\), define its <strong>divergence subtree at \((e,x)\)</strong> by</p>
+  <div class="math-display">\[D(S,e,x)=\{\sigma\in S:C(\sigma,j(e,x),j(e,x))=0\}.\]</div>
+  <p>This is precisely the existing <a href="low-basis-theorem#finite-divergence">divergence restriction</a> with the singleton list \([j(e,x)]\). More generally retain the notation \(T_L=\{\sigma\in T:\forall d\in L\;C(\sigma,d,d)=0\}\) for any finite list \(L\).</p>
+</section>
+
+<section id="divergence-paths" data-formal="hfb-divergence-paths hfb-frozen-output-certificate lbt-restricted-tree lbt-restricted-computable incomp-certificate-sound incomp-certificate-persists" data-kind="lemma">
+  <h2>The computable subtree represents exactly divergence on the original input</h2>
+  <p>For a binary tree \(S\), \(D(S,e,x)\) is a binary subtree of \(S\), and</p>
+  <div class="math-display">\[[D(S,e,x)]=\{A\in[S]:\Phi_e^A(x)\uparrow\}.\]</div>
+  <p>If \(S\) is computable, this subtree is computable as well.</p>
+  <div class="proof">
+    <p>If a prefix \(\tau\preceq\sigma\) of a retained node had a positive certificate, <a href="incomparable-turing-degrees#certificate-persistence">persistence of successful certificates</a> would make the certificate at \(\sigma\) positive too. Prefix closure of \(S\) also puts \(\tau\) in \(S\), so the set is a binary subtree. When a decider for \(S\) is supplied, run it and the one primitive-recursive certificate test to decide membership in the subtree.</p>
+    <p>For a path \(A\) through this subtree, every prefix has zero certificate. If \(\Phi_e^A(x)\) halted, the frozen diagonal computation would halt with the same value, and <a href="incomparable-turing-degrees#prefix-adequacy">finite-prefix completeness</a> would give a positive certificate at a prefix of \(A\), a contradiction. Conversely a positive certificate at a prefix of \(A\in[S]\) is sound for \(A\); the frozen identity would then make \(\Phi_e^A(x)\) halt. If that computation diverges, all prefixes therefore remain in the subtree. This proves the exact equality for the original input \(x\).</p>
+  </div>
+</section>
+
+<section id="successful-level" data-formal="hfb-successful-level hfb-success-test hfb-success-test-computable ctree-binary-level ctree-binary-level-spec" data-kind="definition">
+  <h2>Test one finite level for successful certificates everywhere</h2>
+  <p>For a binary tree \(S\), define the <strong>successful-level test</strong></p>
+  <div class="math-display">\[G_S(e,x,m)\quad\Longleftrightarrow\quad\forall\sigma\in S\cap2^m\;C(\sigma,j(e,x),j(e,x))&gt;0.\]</div>
+  <p>When \(S\) is computable, this is a total computable Boolean test jointly in \((e,x,m)\), using its supplied decider. List the finitely many <a href="computable-trees-and-paths#branch-existence">binary words of length \(m\)</a>, discard those outside \(S\), and inspect the remaining certificate values. The empty level passes the test vacuously.</p>
+</section>
+
+<section id="successful-level-exists" data-formal="hfb-successful-level-iff hfb-successful-level-exists ctree-branch-existence" data-kind="lemma">
+  <h2>Halting on every path supplies a successful finite level</h2>
+  <p>If \(S\) is a binary tree and \(\Phi_e^A(x)\) halts for every \(A\in[S]\), then \(G_S(e,x,m)\) holds for some \(m\).</p>
+  <div class="proof">
+    <p>The <a href="#divergence-paths"></a> characterization says that \(D(S,e,x)\) has no path. If every one of its levels were nonempty, <a href="computable-trees-and-paths#branch-existence">binary branch existence</a> would give a path. Hence it has an empty level \(m\).</p>
+    <p>A word \(\sigma\in S\cap2^m\) with zero certificate would lie in that supposedly empty level of \(D(S,e,x)\). Therefore every such certificate is positive, exactly \(G_S(e,x,m)\). If \([S]\) itself is empty, the same argument still works; an empty level of \(S\) is already a successful level.</p>
+  </div>
+</section>
+
+<section id="finite-level-bound-search" data-formal="hfb-indexed-level-info hfb-level-maximum hfb-bound-search hfb-indexed-level-partial hfb-indexed-level-evaluation hfb-bound-search-partial hfb-bound-master-exists hfb-bound-master hfb-bound-index hfb-bound-index-primitive hfb-bound-index-evaluation hfb-bound-search-value hfb-bound-search-domain padeg-tree-decider-index" data-kind="definition">
+  <h2>Search a level and maximize its certified outputs</h2>
+  <p>Fix an ordinary decider index \(t\) for \(S\), so \(\varphi_t(u)\downarrow=\chi_S(u)\) on every word code. The <strong>finite-level bound search</strong> \(V(t,e,x)\) tests \(m=0,1,2,\ldots\) until \(G_S(e,x,m)\) first holds. At that level it returns</p>
+  <div class="math-display">\[\max\Bigl(\{0\}\cup\{C(\sigma,j(e,x),j(e,x))-1:\sigma\in S\cap2^m\}\Bigr).\]</div>
+  <p>This is one ordinary partial-recursive algorithm: every finite level test terminates, and sequential search waits for a successful one. Its finite maximum is zero when the level is empty. Fix one ordinary index \(v\) for the joint algorithm on input \(\langle\langle t,e\rangle,x\rangle\). The actual <a href="universal-computation#parameter-theorem">specialization map</a> gives the primitive-recursive compiler \(q(t,e)=s(v,\langle t,e\rangle)\), with</p>
+  <div class="math-display">\[\varphi_{q(t,e)}(x)\simeq V(t,e,x).\]</div>
+  <p>The program index is formed from the supplied decider and \(e\) before \(x\) or a path varies. It asks no infinite-path questions. When the search terminates for every \(x\), denote its resulting total function by \(h_{S,e}\).</p>
+</section>
+
+<section id="uniform-output-bound" data-formal="hfb-class-bound hfb-uniform-output-bound hfb-successful-level-output-bound" data-kind="theorem">
+  <h2>Totality on a computable path class gives one computable output bound</h2>
+  <p>Let \(S\) be a computable binary tree with a supplied decider \(t\). If \(\Phi_e^A(x)\) is defined for every \(A\in[S]\) and every \(x\), then the specified program \(q(t,e)\) is total. Its total computable function \(h_{S,e}\) satisfies</p>
+  <div class="math-display">\[A\in[S]\text{ and }\Phi_e^A(x)\downarrow=y\quad\Longrightarrow\quad y\le h_{S,e}(x).\]</div>
+  <div class="proof">
+    <p>For each input \(x\), <a href="#successful-level-exists"></a> supplies a successful level, so the ordinary sequential search terminates. This proves totality of the one program \(q(t,e)\), rather than choosing an unrelated bound separately for each input.</p>
+    <p>Let \(m\) be its first successful level at \(x\). A path \(A\in[S]\) has prefix \(\sigma=A\mathbin{\upharpoonright}m\) in the finite maximum. Its certificate is positive; write it as \(v+1\). Soundness gives \(\Phi_{j(e,x)}^A(j(e,x))\downarrow=v\), and the frozen identity gives \(\Phi_e^A(x)\downarrow=v\). Uniqueness of the output gives \(v=y\). That value is one of the maximized numbers, proving the bound simultaneously for every path. For an empty path class totality still follows from the finite-level argument, while the asserted pathwise bound is vacuous.</p>
+  </div>
+</section>
+
+<section id="restriction-history" data-formal="hfb-has-divergence-extension hfb-selected-input hfb-restriction-history hfb-stage-tree hfb-selected-input-spec hfb-restriction-addition lbt-restricted-zero" data-kind="definition">
+  <h2>At each functional, force a divergence if some path permits it</h2>
+  <p>Fix a computable binary tree \(T\) with \([T]\ne\varnothing\). Define its <strong>hyperimmune-free restriction history</strong> \(L_e\) and trees \(T_e=T_{L_e}\) by \(L_0=[]\) and the following rule. At stage \(e\), ask the mathematical question</p>
+  <div class="math-display">\[\exists x\quad[T_{j(e,x)::L_e}]\ne\varnothing.\]</div>
+  <p>If it holds, let \(x_e\) be the least such \(x\), and put \(L_{e+1}=j(e,x_e)::L_e\). If it fails, put \(L_{e+1}=L_e\). Here \(T_{j(e,x)::L_e}=D(T_e,e,x)\), since its tests retain every old restriction and add that one frozen computation.</p>
+  <p>The choice of the least \(x\) specifies a sequence mathematically; no computable procedure for answering the displayed question is asserted. Each particular \(L_e\) is nevertheless a finite list of natural numbers.</p>
+</section>
+
+<section id="stage-alternatives" data-formal="hfb-restricted-decision hfb-restricted-decision-partial hfb-restriction-master-exists hfb-restriction-master hfb-restricted-index hfb-restricted-index-primitive hfb-restricted-index-evaluation hfb-restricted-index-decides hfb-history-survival hfb-stage-alternatives lbt-restricted-subsets" data-kind="lemma">
+  <h2>The trees remain computable and nonempty, and each stage resolves one functional</h2>
+  <p>For every \(e\), \(T_e\) is a computable binary tree with a nonempty path class, and \(T_{e+1}\subseteq T_e\). Moreover at stage \(e\) exactly the rule's following alternative is obtained: either some \(x_e\) satisfies \(\Phi_e^A(x_e)\uparrow\) for every \(A\in[T_{e+1}]\), or \(T_{e+1}=T_e\) and the function \(h_{T_e,e}\) is a computable bound on \(\Phi_e\)'s outputs on every path of \(T_e\).</p>
+  <div class="proof">
+    <p>Induct on \(e\), starting with \(T_0=T\). Every finite restriction is a <a href="low-basis-theorem#restricted-trees">computable binary subtree</a>. In the first branch the selected class is nonempty by its defining choice. Its <a href="#divergence-paths"></a> characterization gives divergence at \(x_e\) on every retained path. Adding one restriction gives the inclusion into the old tree.</p>
+    <p>In the second branch no input permits a divergent path. Thus for each \(A\in[T_e]\) and each \(x\), \(\Phi_e^A(x)\) is defined. The <a href="#uniform-output-bound">uniform output-bound theorem</a> supplies the specified total computable \(h_{T_e,e}\), while the tree is unchanged and remains nonempty. This proves the whole induction invariant. A fixed stage has a decider obtained from the initial decider and its finite list \(L_e\); the induction does not make these lists or deciders computable uniformly in \(e\).</p>
+  </div>
+</section>
+
+<section id="common-path" data-formal="hfb-common-path lbt-nested-levels" data-kind="lemma">
+  <h2>All the selected restrictions have a common infinite path</h2>
+  <p>There is a set \(A\) that belongs to \([T_e]\) at every stage.</p>
+  <div class="proof">
+    <p>For a fixed length \(n\), the sets \(T_e\cap2^n\) are nonempty and decrease inside the same finite set \(2^n\). Their intersection is nonempty: otherwise each word in the initial finite level would disappear at some stage, and taking the maximum of those finitely many stages would produce an empty later level.</p>
+    <p>Consequently \(T_\infty=\bigcap_eT_e\) is a binary tree with a node at every length. Binary branch existence gives a path through it, hence through every \(T_e\). This is exactly the earlier <a href="low-basis-theorem#nested-levels">descending-level compactness lemma</a>; it requires neither a computable intersection tree nor an effective sequence of the trees.</p>
+  </div>
+</section>
+
+<section id="hyperimmune-free-basis" data-formal="hfb-common-path-free hfb-basis oracle-numbering-index-exhaustion hdeg-bound-equivalence" data-kind="theorem">
+  <h2>Every infinite computable binary tree has a hyperimmune-free path</h2>
+  <div class="statement-box"><p>If \(T\) is a computable binary tree with a node at every length, then some \(A\in[T]\) is hyperimmune-free.</p></div>
+  <div class="proof">
+    <p>Binary branch existence makes \([T]\) nonempty, so form the histories and take a <a href="#common-path">common path</a> \(A\). It belongs to \(T_0=T\). Suppose an actual \(A\)-oracle program \(c\) computes a total numerical function \(f\). The <a href="oracle-program-numberings#uniform-universality">fixed numbering</a> supplies its actual index \(e=\#c\), with \(\Phi_e^A(x)\downarrow=f(x)\) for every \(x\).</p>
+    <p>Stage \(e\) cannot have taken the divergence branch: since \(A\in[T_{e+1}]\), that branch would make this same computation diverge at \(x_e\), contradicting totality. It therefore took the second branch. Its ordinary computable function \(h_{T_e,e}\) bounds the outputs on every path of \(T_e\), in particular \(f(x)\le h_{T_e,e}(x)\) for all \(x\). Every total numerical function computed from \(A\) thus has a computable majorant, proving hyperimmune-freeness. The bounding function is allowed to depend on the program.</p>
+  </div>
+</section>
+
+<section id="closed-class-basis" data-formal="hfb-closed-basis hfb-co-ce-basis dnc-tree-representation dnc-co-ce-conversion" data-kind="theorem">
+  <h2>Every nonempty effectively closed binary class has a hyperimmune-free member</h2>
+  <p>Every nonempty <a href="effectively-closed-classes-and-dnc#forbidden-prefixes">effectively closed</a> class of binary sequences has a hyperimmune-free member. The same holds for the nonempty path class of a co-c.e. binary tree.</p>
+  <div class="proof"><p>The established <a href="effectively-closed-classes-and-dnc#same-paths">computable-tree representation</a> gives a computable binary tree with exactly the specified class of paths. Nonemptiness supplies a node at every length, so <a href="#hyperimmune-free-basis"></a> applies, preserving membership in that same class. For a co-c.e. tree, first use the <a href="effectively-closed-classes-and-dnc#coenumerable-conversion">same-path conversion</a> to a computable tree. Both transfers concern infinite paths; the finite trees need not be equal.</p></div>
+</section>
+
+<section id="hyperimmune-free-pa" data-formal="hfb-free-pa ctree-kleene-tree dnc-separator-tree dnc-binary-not-computable padeg-pa-oracle padeg-pa-iff-dnc" data-kind="theorem">
+  <h2>There are noncomputable hyperimmune-free paths of PA degree</h2>
+  <div class="statement-box"><p>There is a noncomputable hyperimmune-free set \(A\) whose characteristic function is binary diagonally noncomputable. This same \(A\) has PA degree: it computes the coded theorem set of a complete consistent deductively closed extension of actual Peano arithmetic.</p></div>
+  <div class="proof"><p>Use the existing <a href="computable-trees-and-paths#kleene-tree">computable separator tree</a> for the canonical disjoint diagonal pair. It has a node at every length, and its paths are exactly the <a href="effectively-closed-classes-and-dnc#dnc-separators">binary DNC sets</a>. Apply the hyperimmune-free basis theorem to this very tree. The resulting path \(A\) is binary DNC and hyperimmune-free. The <a href="effectively-closed-classes-and-dnc#dnc-noncomputable">diagonal argument</a> makes it noncomputable. Since it computes itself, the established <a href="pa-degrees#pa-characterization">PA-degree characterization</a> says that it computes such a complete consistent arithmetic extension. This uses the already specified set-of-sentence-codes interpretation of PA degree.</p></div>
+</section>
+
+<section id="outside-halting" data-formal="hfb-free-not-low hfb-free-pa-outside-halting hdeg-free-below-halting-computable lowsimple-low-incomplete" data-kind="theorem">
+  <h2>A noncomputable hyperimmune-free set is not below ordinary halting</h2>
+  <p>If \(A\) is noncomputable and hyperimmune-free, then \(A\not\le_TK\), and \(A\) is not low. In particular the hyperimmune-free binary DNC and PA set from <a href="#hyperimmune-free-pa"></a> has both properties.</p>
+  <div class="proof"><p>Every noncomputable set below \(K\) has <a href="domination-and-hyperimmune-degrees#delta-two-hyperimmune">hyperimmune degree</a>, which excludes hyperimmune-freeness. Therefore \(A\not\le_TK\). A low set satisfies \(A'\equiv_TK\) and <a href="turing-jump#membership-to-jump">\(A\le_TA'\)</a>, hence \(A\le_TK\); this is impossible for the present \(A\). Thus a noncomputable set cannot be both low and hyperimmune-free. The low basis theorem and the hyperimmune-free basis theorem need not select the same member of a path class.</p></div>
+</section>
+
+<section id="finite-search-question" data-formal="hfb-halting-selected-not-free hfb-free-pa-outside-halting dnc-binary-example" data-kind="question">
+  <h2>Do the computable finite searches make the common path computable?</h2>
+  <p>Every retained finite tree restriction has a computable decider, and each totality branch uses an ordinary computable level search. Does this make the final hyperimmune-free path computable, or at least computable from \(K\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. On the canonical binary DNC tree, the constructed member is noncomputable and is not below \(K\), by <a href="#hyperimmune-free-pa"></a> and <a href="#outside-halting"></a>. Thus the claimed conclusion would contradict established properties of this application.</p>
+    <p>The stage choice asks whether some input still admits a divergent path, and no effective procedure for those choices was supplied. Knowing that every fixed history is a finite list does not give an algorithm producing the history at a requested stage. The compactness step then finds a common infinite path without asserting its computability. The <a href="computable-trees-and-paths#halting-oracle-path">halting-selected path</a> through the same DNC tree is a different possible selection: being below \(K\) and noncomputable, it cannot be hyperimmune-free.</p>
+  </div></details>
+</section>

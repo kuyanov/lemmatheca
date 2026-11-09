@@ -64,12 +64,13 @@
   <p>The <strong>full induction schema</strong> is the set of these sentences as \(\varphi\) and its finite parameter list vary. It is a family of first-order axioms, not a quantifier over formulas inside the language. Equivalently, in a model satisfying this schema, every subset defined by a formula with finitely many parameters satisfies induction: if it contains zero and is closed under successor, it is the whole domain.</p>
 </section>
 
-<section id="peano-arithmetic" data-formal="arith-peano-theory arith-PA-induction arith-PA-models-Q arith-predecessor-from-induction arith-standard-model-PA arith-Q-consistent arith-PA-consistent" data-kind="definition">
+<section id="peano-arithmetic" data-formal="arith-peano-theory arith-PA-induction arith-PA-models-Q arith-predecessor-from-induction arith-standard-model-PA arith-Q-consistent arith-PA-consistent padeg-pa-iff-dnc padeg-dnc-iff-paths" data-kind="definition">
   <h2>Peano arithmetic adds every induction instance</h2>
   <p><strong>First-order Peano arithmetic</strong>, written \(\mathrm{PA}\), is \(Q\) together with the full induction schema. We retain all seven \(Q\)-axioms for a uniform presentation, even though axiom 3 becomes redundant.</p>
   <p>To see that redundancy, apply induction to \(\varphi(x)\equiv(x=0\lor\exists y\,x=Sy)\). The base case holds because \(0=0\). For any \(x\), the successor \(Sx\) satisfies the second disjunct, witnessed by \(x\), so the induction step holds regardless of its premise. The conclusion says that every element is either zero or a successor, giving axiom 3.</p>
   <p>The standard structure \(\mathbb N_A\) satisfies \(\mathrm{PA}\). We already checked \(Q\). For an induction axiom and any fixed standard parameter tuple \(\bar a\), let \(A=\{n\in\mathbb N:\mathbb N_A\models\varphi(n,\bar a)\}\). If the antecedent is true, \(0\in A\) and \(n\in A\) implies \(n+1\in A\). Ordinary <a href="natural-numbers-as-sets#induction-on-omega">induction on the natural numbers</a> gives \(A=\mathbb N\), exactly the conclusion. If the antecedent is false, the implication is true automatically. This proves every instance for every parameter tuple.</p>
   <p>In particular, \(Q\) and \(\mathrm{PA}\) are consistent in the external sense: their standard model and <a href="first-order-proofs#soundness">soundness</a> exclude a derivation of contradiction. This uses our surrounding mathematics; it is not a claim that either theory proves a sentence expressing its own consistency.</p>
+  <p>The <a href="pa-degrees#pa-characterization">PA-degree characterization</a> identifies exactly which membership oracles can compute a complete consistent deductively closed extension of this axiom set. It connects such arithmetic completions with binary diagonal avoidance and paths through computable binary trees.</p>
 </section>
 
 <section id="induction-examples" data-formal="arith-PA-zero-left arith-PA-no-fixed-point" data-kind="lemma">

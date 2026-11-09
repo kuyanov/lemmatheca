@@ -42,7 +42,7 @@
   </div>
 </section>
 
-<section id="strict-comparison" data-kind="lemma" data-formal="turing-red-complement-equivalence turing-red-ce-complement-nonreduction univ-diagonal-halting-set univ-diagonal-halting-enumerable univ-diagonal-halting-undecidable">
+<section id="strict-comparison" data-kind="lemma" data-formal="turing-red-complement-equivalence turing-red-ce-complement-nonreduction univ-diagonal-halting-set univ-diagonal-halting-enumerable univ-diagonal-halting-undecidable ttwtt-many-one-scheme ttwtt-complement-scheme">
   <h2>Reversing answers can go beyond a many-one reduction</h2>
   <p>If \(B\) is c.e. and undecidable, then</p>
   <div class="math-display">\[\overline B\le_T B\qquad\text{but}\qquad\overline B\not\le_m B.\]</div>
@@ -51,6 +51,7 @@
     <p>The Turing reduction is <a href="#complements"></a>. If \(\overline B\le_m B\), the <a href="computable-reductions#composition-and-pullback">computable-preimage property</a> would make \(\overline B\) c.e. Both sides would then be c.e., so <a href="universal-computation#two-sided-recognition">two-sided recognition</a> would make \(B\) decidable, a contradiction. The <a href="universal-computation#halting-sets">halting-set theorem</a> says that \(K\) has precisely these hypotheses.</p>
     <p>Thus Turing reducibility is strictly more permissive than many-one reducibility. The same input query, followed by Boolean negation, already exhibits the difference.</p>
   </div>
+  <p>The same reversed-answer example already has a <a href="truth-table-and-weak-truth-table-reductions#many-one-boundary">truth-table reduction</a>: its single question and the Boolean rule reversing the answer are determined before the oracle is consulted.</p>
 </section>
 
 <section id="recognizer-question" data-kind="question" data-formal="univ-diagonal-halting-enumerable turing-red-halting-recognizer-function turing-red-halting-recognizer-code turing-red-halting-recognizer-correct turing-red-recognizer-replacement-fails turing-red-empty-characterization univ-diagonal-halting-undecidable">
@@ -128,7 +129,7 @@
   </div>
 </section>
 
-<section id="join-upper-bound" data-kind="theorem" data-formal="turing-join-half-code turing-join-half-correct turing-join-selector-value turing-join-selector-code turing-join-selector-correct turing-join-both-program turing-join-program turing-join-both-correct turing-join-program-correct turing-join-universal-property univ-identity-program univ-identity-evaluation incomp-incomparable incomp-left-set incomp-right-set incomp-constructed-bounds">
+<section id="join-upper-bound" data-kind="theorem" data-formal="fsplt-union-join turing-join-half-code turing-join-half-correct turing-join-selector-value turing-join-selector-code turing-join-selector-correct turing-join-both-program turing-join-program turing-join-both-correct turing-join-program-correct turing-join-universal-property univ-identity-program univ-identity-evaluation incomp-incomparable incomp-left-set incomp-right-set incomp-constructed-bounds">
   <h2>A common oracle decides exactly the combined information</h2>
   <div class="statement-box">
     <p>For every \(A,B,C\subseteq\mathbb N\),</p>
@@ -150,6 +151,8 @@
     <figcaption>The join is an upper bound for both problems and reduces to every common upper bound. Arrows show proved Turing reductions; the placement does not assume that the degrees are distinct or that \(A\) and \(B\) are incomparable.</figcaption>
   </figure>
   <p>There are also <a href="incomparable-turing-degrees#kleene-post">incomparable Turing degrees</a>: neither input problem need be decidable from the other. They can even be chosen <a href="incomparable-turing-degrees#halting-bounds">below the halting degree</a>.</p>
+  <p>For <a href="friedberg-splitting#split-join">disjoint c.e. pieces</a>, their ordinary union has the same Turing degree as this tagged join; a guarded search supplies the reductions back to each piece.</p>
+
 </section>
 
 <section id="degree-join" data-kind="theorem" data-formal="turing-join-representative-invariance turing-join-degrees turing-join-degree-computation turing-join-degree-upper-bounds turing-join-degree-semilattice turing-degree-order-bottom turing-join-idempotent turing-join-commutative turing-join-associative turing-join-zero-unit">

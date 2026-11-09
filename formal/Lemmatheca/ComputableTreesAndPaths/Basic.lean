@@ -8,8 +8,6 @@ open IncomparableTuringDegrees PostsTheorem UniversalComputation
 
 noncomputable section
 
-def ValidCode (u : ℕ) : Prop := BinaryWord (FiniteSequenceCoding.decode u)
-
 def IsBinaryTree (T : Set ℕ) : Prop :=
   (∀ u ∈ T, ValidCode u) ∧
     ∀ u v, ValidCode u → v ∈ T → Prefix u v → u ∈ T
@@ -26,35 +24,6 @@ def binaryLevel : ℕ → List ℕ
 
 def takeCode (n u : ℕ) : ℕ :=
   FiniteSequenceCoding.code ((FiniteSequenceCoding.decode u).take n)
-
-theorem valid_code_primitive : PrimrecPred ValidCode := by
-  have hb : PrimrecPred (fun b : ℕ => b = 0 ∨ b = 1) :=
-    (Primrec.eq.comp Primrec.id (Primrec.const 0)).or
-      (Primrec.eq.comp Primrec.id (Primrec.const 1))
-  exact hb.forall_mem_list.comp (Primrec.ofNat (List ℕ))
-
-theorem valid_code_interpretation (u : ℕ) (hu : ValidCode u) :
-    word u = FiniteSequenceCoding.decode u := by
-  simpa only [FiniteSequenceCoding.code_decode] using binary_word_recovery
-    (FiniteSequenceCoding.decode u) hu
-
-theorem prefix_code_valid (X : Set ℕ) (n : ℕ) :
-    ValidCode (prefixCode X n) := by
-  classical
-  intro b hb
-  simp only [prefixCode, FiniteSequenceCoding.decode_code, List.mem_map,
-    List.mem_range] at hb
-  obtain ⟨q, _, rfl⟩ := hb
-  by_cases h : q ∈ X <;> simp [indicator, h]
-
-theorem append_valid (u b : ℕ) (hu : ValidCode u) : ValidCode (appendBit u b) := by
-  intro a ha
-  simp only [appendBit, FiniteSequenceCoding.append, FiniteSequenceCoding.decode_code,
-    List.mem_append, List.mem_singleton] at ha
-  rcases ha with ha | rfl
-  · exact hu a ha
-  · have h := Nat.mod_lt b (by decide : 0 < 2)
-    omega
 
 theorem take_valid (n u : ℕ) (hu : ValidCode u) : ValidCode (takeCode n u) := by
   intro b hb

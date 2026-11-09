@@ -33,7 +33,7 @@
 <p>On input \(z\), the search starts at zero and repeats the same test \(t_b(z)\). It returns zero if \(z=b\), and otherwise all tests are one and it never returns. This uses the actual <a href="oracle-computation#sequential-search">sequential-search convention</a>; it introduces no extra instruction. Set \(a_b=\#\operatorname{comp}(G_b,\mathbf Q)\) and \(q_b(x)=f(a_b,x)\). The resulting program, on any input, queries \(x\) and halts exactly when its answer equals \(b\). The input-freezing identity proves both displayed equivalences. Since \(a_0,a_1\) are fixed numbers and \(f\) is primitive recursive, both reduction maps have the stated ordinary effectiveness.</p></div>
 </section>
 
-<section id="jump-strictness" data-kind="theorem" data-formal="jump-diagonal-against-program jump-diagonal-against jump-relative-decidable-iff-reducible jump-jump-not-decidable jump-jump-strict jump-jump-complement-not-ce jump-jump-ce turing-red-many-one oracle-ce-two-sided-recognition">
+<section id="jump-strictness" data-kind="theorem" data-formal="jump-diagonal-against-program jump-diagonal-against jump-relative-decidable-iff-reducible jump-jump-not-decidable jump-jump-strict jump-jump-complement-not-ce jump-jump-ce turing-red-many-one oracle-ce-two-sided-recognition jinv-jump-inversion lowsimple-halting-below-jump">
 <h2>No oracle decides its own relative halting problem</h2>
 <div class="statement-box"><p>For every set \(A\subseteq\mathbb N\), the jump is \(A\)-c.e. but is not \(A\)-computable. Moreover</p>
 <div class="math-display">\[A&lt;_T J(A),\]</div>
@@ -41,15 +41,18 @@
 <div class="proof"><p>The fixed recognizer proves relative enumerability. Suppose a program \(h\) computed the total characteristic function \(\chi_{J(A)}\) using oracle \(A\). Form the finite program \(P=\operatorname{comp}(G_0,h)\), using the zero gate constructed above, and put \(p=\#P\). On input \(z\), this program halts exactly when \(h\) returns zero, which is exactly when \(z\notin J(A)\). But at its own index this says</p>
 <div class="math-display">\[p\in J(A)\Longleftrightarrow\varphi_p^A(p)\downarrow\Longleftrightarrow p\notin J(A).\]</div>
 <p>This contradiction rules out every such decider. The argument fixes \(A\) and a proposed finite decider before constructing one finite diagonal program; no different program is chosen for each numerical input. Since \(A\le_m J(A)\), the <a href="turing-degrees#many-one-comparison">comparison of reducibilities</a> gives the lower Turing reduction. Finally, if the complement of the jump were also \(A\)-c.e., <a href="oracle-program-numberings#relative-two-sided-recognition">relative two-sided recognition</a> would make the jump \(A\)-computable, contradicting the diagonal argument.</p></div>
+  <p>Conversely, every degree at least as large as ordinary halting is the jump of a smaller degree: <a href="friedberg-jump-inversion#jump-inversion">Friedberg jump inversion</a> constructs a generic oracle with that prescribed jump degree, even with any finite binary beginning specified. The <a href="friedberg-jump-inversion#necessary-lower-bound">ordinary-halting lower bound</a> is exactly the necessary restriction.</p>
 </section>
 
-<section id="relative-completeness" data-kind="theorem" data-formal="jump-relative-ce-iff-jump jump-freeze-primitive jump-freeze-membership jump-relative-ce-preimage oracle-ce-enumerable oracle-ce-index-characterization">
+<section id="relative-completeness" data-kind="theorem" data-formal="opad-relative-oneone-complete opad-freeze-injective opad-diagonal-to-zero-primitive opad-diagonal-to-zero-injective opad-diagonal-to-zero-membership opad-zero-to-diagonal-primitive opad-zero-to-diagonal-injective opad-zero-to-diagonal-membership jump-relative-ce-iff-jump jump-freeze-primitive jump-freeze-membership jump-relative-ce-preimage oracle-ce-enumerable oracle-ce-index-characterization">
 <h2>The jump is complete for the sets its oracle can recognize</h2>
 <div class="statement-box"><p>For every oracle \(A\) and set \(S\subseteq\mathbb N\),</p>
 <div class="math-display">\[S\text{ is }A\text{-c.e.}\quad\Longleftrightarrow\quad S\le_m J(A).\]</div>
 <p>For every domain index \(e\), the specified map \(x\mapsto f(e,x)\) witnesses \(W_e^A\le_m J(A)\), with the same numerical construction for all oracles.</p></div>
 <div class="proof"><p>If \(S=W_e^A\), the input-freezing equivalence gives this exact reduction, including when the domain is empty or finite. Its function is total ordinary primitive recursive; using the oracle to recognize \(S\) does not make the map an oracle computation.</p>
 <p>Conversely, let a total ordinary computable function \(g\) satisfy \(x\in S\Longleftrightarrow g(x)\in J(A)\). Choose a query-free program computing \(g\) and compose it with the fixed jump recognizer \(\mathsf d\). On input \(x\), the first calculation always finishes with \(g(x)\); the second halts exactly on members of \(J(A)\). This program's domain is \(S\). The same argument shows that the preimage of any \(A\)-c.e. set under an ordinary total computable map is \(A\)-c.e.; no negative membership answer is needed for recognition.</p></div>
+  <p>The input-freezing map is also injective, giving <a href="oracle-padding#relative-one-one-completeness">one-one completeness with ordinary maps</a>. <a href="oracle-padding#zero-diagonal-equivalence">Uniform injective recodings</a> relate diagonal halting to halting on input zero for every oracle.</p>
+
 </section>
 
 <section id="two-reductions-question" data-kind="question" data-formal="jump-two-reductions-decide jump-jump-not-decidable jump-jump-complement-not-ce jump-relative-ce-iff-jump oracle-ce-two-sided-recognition red-reflexive">
@@ -112,7 +115,7 @@
 <p>Freezing the original inputs yields \(i\in K\Longleftrightarrow u(i)\in J(\varnothing)\) and \(e\in J(\varnothing)\Longleftrightarrow v(e)\in K\). Thus both maps are actual ordinary primitive-recursive many-one reductions. Merely embedding or erasing a program would not preserve its diagonal input, and nothing here claims that these maps are injective.</p></div>
 </section>
 
-<section id="computable-oracle-question" data-kind="question" data-formal="jump-even-oracle jump-even-oracle-computable jump-even-oracle-equiv-empty jump-computable-jump-equiv-empty jump-computable-jump-equiv-halting jump-jump-undecidable univ-diagonal-halting-undecidable">
+<section id="computable-oracle-question" data-kind="question" data-formal="lowsimple-simple lowsimple-theorem simple-undecidable jump-even-oracle jump-even-oracle-computable jump-even-oracle-equiv-empty jump-computable-jump-equiv-empty jump-computable-jump-equiv-halting jump-jump-undecidable univ-diagonal-halting-undecidable">
 <h2>Does a decidable oracle have a decidable jump?</h2>
 <p>Let \(A=\{2n:n\in\mathbb N\}\). Is \(J(A)\) ordinarily decidable? Are \(J(A)\) and the ordinary halting set \(K\) many-one equivalent?</p>
 <details class="question-answer">
@@ -120,14 +123,15 @@
 <div class="answer-body"><p>The even numbers are decidable by an ordinary parity test, so \(A\equiv_T\varnothing\). Applying <a href="#jump-characterization"></a> in both directions gives \(J(A)\equiv_m J(\varnothing)\); combining with <a href="#empty-oracle-jump"></a> gives \(J(A)\equiv_m K\).</p>
 <p>Therefore \(J(A)\) is not ordinarily decidable, since a decider together with the reduction from \(K\) would decide \(K\). Equally, an ordinary decider would be an \(A\)-oracle decider by ignoring its oracle, contradicting jump strictness. A decidable oracle does not supply its own halting answers. The argument works for every fixed computable oracle, though its reduction to the empty oracle uses a chosen ordinary characteristic program for that set.</p></div>
 </details>
+  <p>The equality of jump degrees also occurs for some noncomputable oracles, as the <a href="low-simple-sets#low-simple-theorem">low simple construction</a> shows.</p>
 </section>
 
-<section id="jump-on-degrees" data-kind="definition" data-formal="jump-jump-degree-congr jump-degree-jump jump-degree-jump-degree jump-degree-jump-monotone jump-iterate jump-degree-iterate jump-iterate-degree jump-iterate-representative jump-zero-jump-halting turing-degree-map turing-degree-quotient post-sigma-recognition post-delta-decision">
+<section id="jump-on-degrees" data-kind="definition" data-formal="jump-jump-degree-congr jump-degree-jump jump-degree-jump-degree jump-degree-jump-monotone jump-iterate jump-degree-iterate jump-iterate-degree jump-iterate-representative jump-zero-jump-halting turing-degree-map turing-degree-quotient post-sigma-recognition post-delta-decision jinv-degree-jump-range jinv-degree-jump-collision">
 <h2>Apply the jump to degrees and iterate it finitely</h2>
 <p>For a <a href="turing-degrees#equivalence-and-degrees">Turing degree</a> \(\mathbf a=[A]\), define its <strong>degree jump</strong> by \(\mathbf a'=[J(A)]\). This is independent of the representative: if \(A\equiv_T B\), jump monotonicity gives many-one reductions in both directions between their jumps, hence Turing equivalence. It is an order-preserving operation on degrees, because \(A\le_T B\) implies \(J(A)\le_m J(B)\), hence \([J(A)]\le[J(B)]\).</p>
 <p>The <strong>finite jump iterates</strong> are defined by</p>
 <div class="math-display">\[A^{(0)}=A,\qquad A^{(n+1)}=J(A^{(n)}),\qquad \mathbf a^{(0)}=\mathbf a,\qquad\mathbf a^{(n+1)}=(\mathbf a^{(n)})'.\]</div>
-<p>Induction gives \(\mathbf a^{(n)}=[A^{(n)}]\), independently of the chosen representative. In particular \(\mathbf0'=[J(\varnothing)]=[K]\) by the recoding theorem. Well-definedness and monotonicity use the forward implication proved above; no converse from Turing equivalence of jumps to equivalence of their original oracles is asserted.</p>
+<p>Induction gives \(\mathbf a^{(n)}=[A^{(n)}]\), independently of the chosen representative. In particular \(\mathbf0'=[J(\varnothing)]=[K]\) by the recoding theorem. Well-definedness and monotonicity use the forward implication proved above. The degree jump is <a href="friedberg-jump-inversion#nonuniqueness-question">not injective</a>, and its <a href="friedberg-jump-inversion#jump-range">range is exactly the degrees above \(\mathbf0^{\prime}\)</a>.</p>
 
   <p><a href="posts-theorem#post-correspondence">Post’s theorem</a> gives the precise quantifier classification of these finite iterates: for every \(n\ge0\), the \(A^{(n)}\)-c.e. sets are exactly \(\Sigma_{n+1}^A\), and the sets computable in \(A^{(n)}\) are exactly \(\Delta_{n+1}^A\). The quantifier classes are defined independently, using \(A\)-computable matrices.</p>
 </section>
@@ -141,11 +145,15 @@
   <p>These strict chains do not exhaust the order: a <a href="incomparable-turing-degrees#intermediate-degrees">finite-extension construction gives incomparable degrees strictly between the computable degree and its first jump</a>.</p>
 </section>
 
-<section id="join-jump-question" data-kind="question" data-formal="jump-halting-join-self jump-halting-jump-not-join jump-jump-strict">
+<section id="join-jump-question" data-kind="question" data-formal="jump-halting-join-self jump-halting-jump-not-join jump-jump-strict sacks-low-join-counterexample ogen-generalized-low ogen-jump-correct">
 <h2>Can one ordinary halting oracle account for every jump?</h2>
 <p>Is \(J(A)\equiv_T A\oplus K\) true for every oracle \(A\), where \(\oplus\) is the established even/odd join?</p>
 <details class="question-answer">
 <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
-<div class="answer-body"><p>No. Take \(A=K\). The <a href="turing-degrees#degree-join">idempotence of the join</a> gives \(K\oplus K\equiv_T K\), whereas <a href="#jump-strictness"></a> gives \(J(K)\not\le_T K\). Hence \(J(K)\) cannot be Turing equivalent to \(K\oplus K\). The jump asks about programs that may themselves use the full oracle \(A\); adding only the ordinary halting set does not universally answer those stronger questions.</p></div>
+<div class="answer-body"><p>No. Take \(A=K\). The <a href="turing-degrees#degree-join">idempotence of the join</a> gives \(K\oplus K\equiv_T K\), whereas <a href="#jump-strictness"></a> gives \(J(K)\not\le_T K\). Hence \(J(K)\) cannot be Turing equivalent to \(K\oplus K\). The jump asks about programs that may themselves use the full oracle \(A\); adding only the ordinary halting set does not universally answer those stronger questions.</p>
+    <p>The identity does hold for every <a href="one-generic-sets#meet-or-avoid">1-generic set</a>: its <a href="one-generic-sets#generalized-low">jump is equivalent to its join with ordinary halting</a>. The finite-prefix decision property supplies a total jump program for this class of oracles.</p>
+
+  <p>A different failure concerns joins of two oracles: <a href="sacks-splitting#low-join-question">splitting the ordinary halting set into low pieces</a> gives low c.e. sets whose join is nonlow. Thus the jump of a join need not have the degree of the join of the individual jumps.</p>
+</div>
 </details>
 </section>

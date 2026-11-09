@@ -1,0 +1,124 @@
+<section id="lowness" data-formal="lowsimple-low lowsimple-halting-below-jump lowsimple-low-iff jump-computable-jump-equiv-halting hdeg-low-degree-hyperimmune" data-kind="definition">
+  <h2>An oracle can leave the first halting degree unchanged</h2>
+  <p>Write \(K\) for the ordinary diagonal halting set, and \(A'=\{e:\varphi_e^A(e)\downarrow\}\) for the <a href="turing-jump#jump">jump</a> in the fixed oracle-program numbering. A set \(A\subseteq\mathbb N\) is <strong>low</strong> if \(A'\equiv_T K\). This compares the halting problem for programs using \(A\) with ordinary halting; it does not assert that \(A\) itself is computable.</p>
+  <p>Every computable set is low. Indeed \(A\equiv_T\varnothing\), so <a href="turing-jump#jump-monotonicity">jump monotonicity</a> in both directions gives \(A'\equiv_T\varnothing'\), and <a href="turing-jump#empty-oracle-jump">\(\varnothing'\equiv_T K\)</a>. For every set, \(K\le_T A'\): apply the same monotonicity to \(\varnothing\le_T A\). Consequently proving lowness requires only the other comparison \(A'\le_T K\).</p>
+  <p>Every noncomputable low set has <a href="domination-and-hyperimmune-degrees#delta-two-hyperimmune">hyperimmune degree</a>, because it lies below \(K\). Thus preserving the first jump degree does not make a noncomputable oracle hyperimmune-free.</p>
+</section>
+
+<section id="low-incomplete" data-formal="lowsimple-low-incomplete" data-kind="lemma">
+  <h2>A noncomputable low set is strictly below ordinary halting</h2>
+  <p>If \(A\) is low, then \(A\le_T K\) and \(K\not\le_T A\). Hence a noncomputable low set has degree strictly between the computable degree and the halting degree.</p>
+  <div class="proof"><p>The reduction \(A\le_T A'\) from <a href="turing-jump#membership-to-jump">membership queries to halting queries</a>, followed by lowness, gives \(A\le_T K\). If \(K\le_T A\), then \(A'\le_T K\le_T A\), contradicting <a href="turing-jump#jump-strictness">strictness of the jump</a>. If \(A\) is additionally noncomputable, its degree is nonzero, proving both strict comparisons. Enumerability is not needed for this argument.</p></div>
+</section>
+
+<section id="requirements" data-formal="lowsimple-positive-requirement lowsimple-jump-requirement" data-kind="definition">
+  <h2>Combine positive enumeration requirements with jump protection</h2>
+  <p>We construct one c.e. set \(A\) and a binary function \(g(s,e)\) guessing its jump. Its <strong>positive requirements</strong> and <strong>jump requirements</strong>, indexed by \(e\in\mathbb N\), are</p>
+  <div class="math-display">\[P_e:\quad W_e\text{ infinite}\ \Longrightarrow\ W_e\cap A\ne\varnothing,\]</div>
+  <div class="math-display">\[N_e(g):\quad\exists t\;\forall s\ge t\quad g(s,e)=\chi_{A'}(e).\]</div>
+  <p>Here \(W_{e,s}\) denotes the <a href="effective-enumerations#uniform-finite-approximation">canonical finite approximation</a> to the ordinary c.e. set \(W_e\). We will give a particular binary guess for each \(N_e\). Meeting all \(P_e\), while keeping the complement infinite, makes \(A\) <a href="simple-sets#meeting-infinite-enumerable">simple</a>. A converging computable approximation to \(A'\) will establish \(A'\le_T K\) by the <a href="limit-computability#limit-lemma">limit lemma</a>.</p>
+  <p>Positive requirement \(P_e\) must respect the protected computations for \(N_i\) with \(i&lt;e\). It may destroy protection at indices \(i\ge e\), whose records are then discarded. No private reservoir is assigned to \(P_e\): an arbitrary infinite \(W_e\) need not contain a number from a prescribed reservoir.</p>
+</section>
+
+<section id="finite-records" data-formal="lowsimple-state lowsimple-record post-finite-table-value post-bounded-query-dependence" data-kind="definition">
+  <h2>A record stores a successful allowance rather than the current stage</h2>
+  <p>At stage \(s\), the <strong>construction state</strong> consists of a binary list describing a finite set \(A_s\subseteq\{0,\ldots,s-1\}\), together with a list \(r_s(0),\ldots,r_s(s-1)\) of natural numbers. Missing entries are zero. The empty lists are the state at stage zero. A positive value \(r_s(i)=k\) is a <strong>protected certificate</strong>: it records that the <a href="oracle-program-numberings#bounded-oracle-evaluation">bounded evaluator</a> satisfies</p>
+  <div class="math-display">\[0&lt;B^{A_s}(k,i,i).\]</div>
+  <p>Encoded output zero means that no successful result was found within allowance \(k\); any positive encoded output certifies halting. Such a calculation only queries oracle positions below \(k\), by <a href="posts-theorem#bounded-query-agreement">bounded query agreement</a>. We therefore also use \(k\) as its restraint: enumerating numbers at least \(k\) preserves the whole calculation. Record zero means that no certificate is currently protected.</p>
+  <p>Once captured, a certificate is kept at its fixed allowance until an authorized injury discards it. Replacing it at every stage by the current stage number would give an unnecessarily growing restraint and would not establish stabilization of these records.</p>
+</section>
+
+<section id="eligible-attention" data-formal="lowsimple-eligible lowsimple-witness lowsimple-priority lowsimple-attention lowsimple-acts" data-kind="definition">
+  <h2>Find a new positive witness by a bounded search</h2>
+  <p>At the transition from \(s\) to \(s+1\), call \((e,x)\) an <strong>eligible pair</strong> if</p>
+  <div class="math-display">\[e\le s,\quad x\le s,\quad x\in W_{e,s+1},\quad 2e&lt;x,\]</div>
+  <div class="math-display">\[A_s\cap W_{e,s+1}=\varnothing,\qquad \forall i&lt;e\quad r_s(i)\le x.\]</div>
+  <p>All these tests are bounded finite computations. The intersection test scans inputs at most \(s\); the restraint test scans indices below \(e\). If eligible pairs exist, choose the least eligible \(e\), and then the least eligible \(x\) for it. Say that \(P_e\) <strong>acts</strong> at stage \(s\). If no pair exists, there is no positive action. The strict threshold \(2e&lt;x\) will keep enough numbers outside the final set.</p>
+</section>
+
+<section id="successor-stage" data-formal="lowsimple-next-membership lowsimple-temporary-record lowsimple-fill lowsimple-next lowsimple-stages lowsimple-record-update" data-kind="definition">
+  <h2>Enumerate once, discard injured records, and capture new certificates</h2>
+  <p>The <strong>successor state</strong> is given by the following three finite operations. First, if \((e,x)\) is selected, put \(A_{s+1}=A_s\cup\{x\}\); otherwise put \(A_{s+1}=A_s\). Extend the membership list to length \(s+1\).</p>
+  <p>Second, form the temporary records \(q(i)\), for \(i\le s\). If \(P_e\) acted, set \(q(i)=r_s(i)\) for \(i&lt;e\) and \(q(i)=0\) for \(i\ge e\). With no action, keep every old record. The newly appended coordinate initially has value zero.</p>
+  <p>Third, for each \(i\le s\), define</p>
+  <div class="math-display">\[r_{s+1}(i)=\begin{cases}q(i),&amp;q(i)&gt;0,\\s+1,&amp;q(i)=0\text{ and }B^{A_{s+1}}(s+1,i,i)&gt;0,\\0,&amp;\text{otherwise}.\end{cases}\]</div>
+  <p>The oracle in this last test is the new finite set \(A_{s+1}\). All tests in this filling phase use that same set; writing a record does not alter the oracle. This specifies the entire recurrence, including stages with no eligible positive witness.</p>
+</section>
+
+<section id="stage-effectivity" data-formal="lowsimple-stage-primitive lowsimple-stage-data-primitive lowsimple-selection-primitive" data-kind="lemma">
+  <h2>The complete sequence of finite states is computable</h2>
+  <p>The state at stage \(s\), the selected positive index and witness when present, each membership bit \([x\in A_s]\), and each record \(r_s(i)\) are ordinary computable functions of their numerical inputs.</p>
+  <div class="proof"><p>Encode the two finite lists by the established <a href="coding-finite-sequences#list-code">list coding</a> and pair their codes. Membership bits, record lookups and appending zero are computable list operations. The finite \(W\)-stage test is uniform in its index, stage and input. The bounded evaluator with a supplied finite oracle has an ordinary finite-table algorithm. Every search in <a href="#eligible-attention"></a> has an explicit finite bound, and the filling phase performs exactly \(s+1\) bounded evaluations. Consequently the successor map is a total computable numerical function. Primitive recursion on \(s\), starting with the empty state, computes every state and its projections. No test asks whether an unrestricted computation eventually halts.</p></div>
+</section>
+
+<section id="stage-invariants" data-formal="lowsimple-invariants lowsimple-monotone lowsimple-action-data lowsimple-no-action" data-kind="lemma">
+  <h2>Every protected record certifies a genuine current computation</h2>
+  <p>For every \(s\), both lists have length \(s\), all membership entries are binary, and \(A_s\subseteq\{0,\ldots,s-1\}\). The sets increase, and each stage adds at most one new number. Moreover</p>
+  <div class="math-display">\[r_s(i)\le s,\qquad r_s(i)&gt;0\ \Longrightarrow\ B^{A_s}(r_s(i),i,i)&gt;0.\]</div>
+  <div class="proof"><p>Induct on \(s\). The empty state satisfies every assertion. An eligible witness has \(x\le s\), and the failed-intersection test ensures \(x\notin A_s\); setting that one bit therefore preserves the membership assertions. Old records above the acting positive index are discarded, and fresh certificates equal \(s+1\), preserving the record bound.</p><p>Consider an old positive record that survives a positive action of index \(e\). Its index \(i\) is below \(e\). Eligibility gives \(r_s(i)\le x\), so adding \(x\) changes no oracle position below its allowance. Bounded query agreement preserves its successful calculation in \(A_{s+1}\). A surviving record at a stage without action has the same oracle. A newly captured record is successful by the filling test itself. These are all cases, so every positive record retains the stated meaning.</p></div>
+</section>
+
+<section id="enumerable-union" data-formal="lowsimple-constructed-set lowsimple-stage-set lowsimple-enumerable lowsimple-prefix-settles" data-kind="theorem">
+  <h2>The increasing union is an enumerable set with settling finite prefixes</h2>
+  <p>Define the <strong>constructed set</strong> by \(A=\bigcup_s A_s\). It is c.e. For every \(u\), some stage \(t\) satisfies \(A_s\cap[0,u)=A\cap[0,u)\) at every \(s\ge t\).</p>
+  <div class="proof"><p>To recognize \(x\in A\), compute successive states and accept when its membership bit is one. The stage algorithm is total, and acceptance occurs exactly for members of the union. Monotonicity makes every discovery permanent.</p><p>For each member of \(A\cap[0,u)\), choose an entry stage. There are finitely many such members, so one stage exceeds all their entry stages. Later finite sets contain them all. A nonmember of \(A\) never appears in a finite set. Thus all positions below \(u\) are correct thereafter. This is an existence proof of a settling stage, not a computable rule producing one.</p></div>
+</section>
+
+<section id="single-actions" data-formal="lowsimple-single-actions lowsimple-finite-injury" data-kind="lemma">
+  <h2>Each positive requirement acts at most once</h2>
+  <p>For each \(e\), there is at most one stage at which \(P_e\) acts. Consequently, for every \(e\) there is a stage after which no \(P_i\) with \(i\le e\) acts.</p>
+  <div class="proof"><p>If \(P_e\) acts, its selected \(x\) belongs to both \(A_{s+1}\) and \(W_{e,s+1}\). Both approximations increase, so their intersection remains nonempty at every later test. Eligibility for another action of \(P_e\) is then impossible. This argument does not depend on whether its negative records are subsequently reset.</p><p>For a fixed finite family \(i\le e\), each index has at most one action stage. Choose a stage beyond all the actions that actually occur in this finite family. After that stage none of them acts. No uniform effective bound on these last action stages is asserted.</p></div>
+</section>
+
+<section id="stable-records" data-formal="lowsimple-stable-records" data-kind="lemma">
+  <h2>After the last injury a record can be filled only once</h2>
+  <p>For every \(i\), the sequence \(r_s(i)\) is eventually constant. After the last positive action of an index at most \(i\), it is either permanently zero or eventually a fixed positive certificate.</p>
+  <div class="proof"><p>Choose a stage \(t&gt;i\) beyond all positive actions at indices at most \(i\), using <a href="#single-actions"></a>. Every later positive action has index greater than \(i\), so it preserves this coordinate in the temporary records. The filling rule keeps an already positive coordinate unchanged. If \(r_t(i)&gt;0\), it is fixed from this point. If \(r_t(i)=0\) and it is ever later filled, its first filling is permanent. If it is never filled, it remains zero. These cases prove eventual constancy without needing satisfaction of any positive requirement.</p></div>
+</section>
+
+<section id="meeting-requirements" data-formal="lowsimple-meets" data-kind="theorem">
+  <h2>Every infinite enumerable set meets the constructed set</h2>
+  <p>If \(W_e\) is infinite, then \(W_e\cap A\ne\varnothing\).</p>
+  <div class="proof"><p>Choose a stage beyond all actions of indices below \(e\), and beyond stabilization of all records \(r_s(i)\) with \(i&lt;e\). Write \(R\) for a common bound on these finitely many fixed records. Infinitude supplies \(x\in W_e\) with \(x&gt;\max(2e,R)\). At sufficiently late stages, \(e\le s\), \(x\le s\), and \(x\in W_{e,s+1}\).</p><p>Suppose \(W_e\cap A\) were empty. Then the finite-intersection test is still negative, and this same \(x\) makes \((e,x)\) eligible. The least-priority search must select some index at most \(e\). Selecting a smaller index contradicts the chosen stage bound on higher actions. Selecting \(e\) puts a member of \(W_e\) into \(A\), contradicting the assumed disjointness. Therefore the intersection is nonempty. The witness may lie anywhere in the sufficiently large tail of \(W_e\), which is why private reservoirs were unnecessary.</p></div>
+</section>
+
+<section id="coinfinite" data-formal="lowsimple-counting-bound lowsimple-coinfinite lowsimple-simple simple-set simple-undecidable" data-kind="lemma">
+  <h2>The positive threshold leaves infinitely many omissions</h2>
+  <p>For every \(n\), at most \(n\) elements of \(A\) lie in \(\{0,\ldots,2n\}\). Consequently \(A^c\) is infinite.</p>
+  <div class="proof"><p>Every enumerated number \(x\le2n\) was added by some acting \(P_e\), and its threshold gives \(2e&lt;x\le2n\), hence \(e&lt;n\). Assign \(x\) to this producing index. One positive requirement acts at most once and adds only one number, so different enumerated numbers have different producers. This injects \(A\cap\{0,\ldots,2n\}\) into the \(n\) indices below \(n\), proving the bound.</p><p>The interval has \(2n+1\) elements, so at least \(n+1\) remain outside \(A\). A finite complement of cardinality \(m\) would violate this conclusion at \(n=m\). Thus the complement is infinite. Together with <a href="#enumerable-union"></a> and <a href="#meeting-requirements"></a>, the <a href="simple-sets#meeting-infinite-enumerable">characterization of simplicity</a> proves that this same \(A\) is simple and therefore noncomputable.</p></div>
+</section>
+
+<section id="persistent-certificates" data-formal="lowsimple-persistent-certificate" data-kind="lemma">
+  <h2>An uninjured positive record certifies final-oracle halting</h2>
+  <p>Fix \(i\). Suppose \(r_t(i)=k&gt;0\), with \(t&gt;i\), and no positive requirement of index at most \(i\) acts at any stage \(s\ge t\). Then \(r_s(i)=k\) for all \(s\ge t\), and \(\varphi_i^A(i)\downarrow\).</p>
+  <div class="proof"><p>The record is preserved by the update rule. At each later stage, a positive action has index \(e&gt;i\), and eligibility requires its new number to be at least \(r_s(i)=k\). Thus no later addition changes an oracle bit below \(k\). Induction gives agreement between \(A_t\) and every later finite oracle on this prefix; the union agrees there as well.</p><p>The invariant supplies \(B^{A_t}(k,i,i)&gt;0\). Bounded query agreement gives the same positive value for \(B^A(k,i,i)\). The <a href="oracle-program-numberings#bounded-correctness">correctness of bounded evaluation</a> turns this certificate into halting for the final oracle. The argument preserves a fixed successful calculation, rather than trying to make an ever-growing finite prefix correct at once.</p></div>
+</section>
+
+<section id="jump-approximation" data-formal="lowsimple-jump-guess lowsimple-jump-approximation limit-computable" data-kind="theorem">
+  <h2>The protected-record guesses converge to the jump</h2>
+  <p>The specified <strong>jump approximation</strong></p>
+  <div class="math-display">\[g(s,i)=[r_s(i)&gt;0]\]</div>
+  <p>is jointly computable, binary, and converges pointwise to \(\chi_{A'}\). Hence \(A'\) is limit computable.</p>
+  <div class="proof"><p>Computability follows from the state algorithm and a numerical comparison. Fix \(i\), and go beyond its last possible injury and the stabilization of its record. If its fixed record is positive, <a href="#persistent-certificates"></a> proves \(i\in A'\), and all sufficiently late guesses are one.</p><p>Suppose instead its record is permanently zero. If \(\varphi_i^A(i)\) halted, bounded completeness would supply a fixed allowance \(k\) with \(B^A(k,i,i)&gt;0\). By <a href="#enumerable-union"></a>, the finite oracles eventually agree with \(A\) below \(k\). Query agreement then reproduces this successful calculation in \(A_{s+1}\) at allowance \(k\). Choose \(s\) late enough that also \(s+1\ge k\) and \(i\le s\). Increasing the allowance preserves success with this same finite oracle, so \(B^{A_{s+1}}(s+1,i,i)&gt;0\). The filling rule must set \(r_{s+1}(i)=s+1\), contradicting permanent zero. Thus \(i\notin A'\), and every sufficiently late guess is zero.</p><p>These two cases prove the pointwise convergence, with a possibly different stabilization stage for each input. They supply precisely an ordinary computable limit approximation to the actual jump of the constructed set.</p></div>
+</section>
+
+<section id="low-simple-theorem" data-formal="lowsimple-simple lowsimple-theorem simple-undecidable lowsimple-low-incomplete sacks-theorem ogen-constructed-low ogen-noncomputable ogen-ce-below-computable ogen-no-ce-degree" data-kind="theorem">
+  <h2>The construction gives a low simple enumerable set</h2>
+  <div class="statement-box"><p>The specified computable stages produce a simple c.e. set \(A\) such that \(A'\equiv_T K\). In particular, \(A\) is noncomputable and \(A&lt;_T K\).</p></div>
+  <div class="proof"><p>Simplicity was established in <a href="#coinfinite"></a>. The approximation in <a href="#jump-approximation"></a>, together with the limit lemma, gives \(A'\le_T K\). The reverse reduction holds for every oracle by <a href="#lowness"></a>. Thus \(A\) is low. A simple set is noncomputable, and <a href="#low-incomplete"></a> gives the strict upper bound. The same set satisfies all conclusions; no separate choice of a low oracle replaces the set produced by the stage recurrence.</p></div>
+  <p>Lowness can also be imposed while partitioning a prescribed enumerable set: <a href="sacks-splitting#sacks-theorem">Sacks splitting</a> gives two low c.e. pieces whose union is the input, with simultaneous avoidance of a supplied noncomputable limit-computable set.</p>
+
+    <p>There are also <a href="one-generic-sets#low-generic-existence">noncomputable low 1-generic sets</a>. A generic computes <a href="one-generic-sets#ce-below-generic">no noncomputable c.e. set</a>, so its degree cannot be the degree of a noncomputable c.e. set.</p>
+</section>
+
+<section id="injury-question" data-formal="jump-query-gate-index jump-query-map jump-query-map-correct" data-kind="question">
+  <h2>Why discard a record after a higher-priority enumeration?</h2>
+  <p>A program asks whether \(q\) belongs to its oracle, halts if the answer is zero, and runs forever if the answer is one. A finite oracle omits \(q\), so the program has a successful bounded certificate. What happens if an unrestricted later enumeration adds \(q\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The final oracle now makes the program diverge. The earlier certificate therefore cannot certify its final-oracle halting. Protecting a prefix that contains \(q\) prevents this injury by lower-priority positive requirements. A higher-priority action is allowed to change such a bit, and resetting the affected records prevents their stale certificates from being used as permanent evidence. The filling phase may immediately find another valid current certificate; the convergence proof requires only that injuries to each fixed coordinate eventually cease.</p></div></details>
+</section>
+
+<section id="low-versus-computable" data-formal="lowsimple-simple lowsimple-theorem simple-undecidable jump-jump-undecidable lowsimple-jump-approximation" data-kind="question">
+  <h2>Does a low jump make its original oracle computable?</h2>
+  <p>If \(A'\equiv_T K\), must \(A\) be computable? Does the construction provide an ordinary algorithm for its final jump bits?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No to both. The set in <a href="#low-simple-theorem"></a> is low and noncomputable. Its jump is Turing equivalent to the undecidable set \(K\), so it too is undecidable. The ordinary construction computes stage guesses for its jump, and those guesses converge; it does not compute a stage after the last injury or after the final successful capture. The limit lemma explains exactly why a halting oracle can decide their limits.</p></div></details>
+</section>

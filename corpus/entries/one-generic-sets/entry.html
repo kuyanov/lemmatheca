@@ -1,0 +1,174 @@
+<section id="meet-or-avoid" data-formal="ctree-valid-code ctree-valid-code-primitive incomp-word incomp-prefix incomp-prefix-native incomp-realizes ogen-normalize ogen-normalize-primitive ogen-normalize-spec ogen-normalize-valid ogen-word-set ogen-word-set-enumerable ogen-meets ogen-avoids ogen-dense ogen-one-generic ogen-generic-ce-characterization ogen-word-condition-order ogen-density-bridge" data-kind="definition">
+  <h2>Meet an enumerable collection of words, or avoid it permanently</h2>
+  <p>Use the <a href="incomparable-turing-degrees#binary-prefixes">finite binary words</a> \(\sigma\in2^{&lt;\mathbb N}\), their list codes \(u_\sigma\), and prefix notation \(\sigma\preceq\rho\) and \(\sigma\preceq A\). A <strong>valid word code</strong> is a number whose decoded list contains only zeros and ones. For every numerical input \(u\), its <strong>normalization</strong> \(N(u)\) is the code obtained by reducing every decoded entry modulo two. Thus \(N(u_\sigma)=u_\sigma\); length, normalization and validity are ordinary computable finite-list operations.</p>
+  <p>A set \(A\subseteq\mathbb N\) <strong>meets</strong> \(S\subseteq2^{&lt;\mathbb N}\) if some prefix of \(A\) belongs to \(S\). It <strong>avoids</strong> \(S\) above \(\sigma\preceq A\) if no extension \(\rho\succeq\sigma\) belongs to \(S\). The collection \(S\) is <strong>dense</strong> if every word has an extension in \(S\). This is <a href="forcing-and-generic-filters#dense-requirements">forcing-order density</a> for finite words ordered by reverse extension.</p>
+  <p>A set \(G\) is <strong>1-generic</strong> if, for every c.e. collection \(S\) of binary words, it either meets \(S\) or avoids it above some prefix. Here c.e. means that the set of valid codes of members is c.e. For the fixed <a href="effective-enumerations#finite-stages">domain numbering</a> \(W_e\), put \(S_e=\{\sigma:u_\sigma\in W_e\}\). Malformed word codes in \(W_e\) are discarded. These \(S_e\) include every c.e. collection of words.</p>
+</section>
+
+<section id="dense-completion" data-formal="ogen-densification ogen-densification-dense ogen-generic-dense-completions" data-kind="lemma">
+  <h2>Adding the avoidance words makes every collection dense</h2>
+  <p>For any collection \(S\) of binary words, its <strong>densification</strong></p>
+  <div class="math-display">\[S^*=S\cup\{\sigma:\text{no extension of }\sigma\text{ belongs to }S\}\]</div>
+  <p>is dense. A set is 1-generic exactly when it meets \(S_e^*\) for every \(e\).</p>
+  <div class="proof">
+    <p>Fix a word \(\sigma\). If it has an extension in \(S\), that extension belongs to \(S^*\). Otherwise \(\sigma\) itself belongs to the second part of \(S^*\). This proves density, including for \(S=\varnothing\). Meeting the first part means meeting \(S\); meeting the second means having a prefix above which \(S\) is avoided. These are precisely the two alternatives in the definition.</p>
+    <p>The avoidance part is defined by a negative extension-existence question. Density is an existence statement here; the effective selector below will decide that question with the halting oracle.</p>
+  </div>
+</section>
+
+<section id="extension-search" data-formal="ogen-candidate ogen-extension-exists ogen-search ogen-search-recursive ogen-search-code ogen-search-eval ogen-test-index ogen-test-index-primitive ogen-test-index-eval ogen-search-domain ogen-test-index-correct ogen-selected-candidate ogen-selected-candidate-spec" data-kind="lemma">
+  <h2>One ordinary program searches for an enumerable extension</h2>
+  <p>There are a fixed ordinary search program and a total computable index map \(q(e,u)\) with the following exact behavior. Write \(t=\langle v,s\rangle\), and let \(C(e,u,t)\) be the decidable test</p>
+  <div class="math-display">\[v\text{ is valid},\qquad N(u)\preceq v,\qquad v\in W_{e,s}.\]</div>
+  <p>Prefix notation between codes means prefix comparison of their decoded binary words. The search tests \(t=0,1,2,\ldots\), returns the least successful \(t\), and diverges if none exists. The program with ordinary index \(q(e,u)\) ignores its runtime input and performs exactly this search. Consequently, for the ordinary diagonal halting set \(K\),</p>
+  <div class="math-display">\[q(e,u)\in K\quad\Longleftrightarrow\quad\exists\rho\succeq\operatorname{decode}(N(u))\;[\rho\in S_e].\]</div>
+  <div class="proof">
+    <p>Validity and prefix comparison inspect finite lists. The <a href="effective-enumerations#uniform-finite-approximation">uniform finite-stage membership test</a> decides the last condition, so \(C\) is a total computable test in all its numerical arguments. Unbounded search is an ordinary partial-recursive program. The <a href="universal-computation#parameter-theorem">parameter theorem</a> freezes the pair \(\langle e,u\rangle\) into a program that ignores its remaining input; this specified compiler gives \(q\). Its diagonal input therefore makes no difference to its evaluation.</p>
+    <p>A successful candidate supplies an extension in \(S_e\). Conversely any such word has a valid code \(v\) appearing in some \(W_{e,s}\), so \(\langle v,s\rangle\) eventually passes. We order candidate pairs by their numerical pair code, rather than by an unspecified enumeration arrival. This fixes all ties and will fix the same extension in every later use.</p>
+  </div>
+</section>
+
+<section id="halting-extension-selector" data-formal="ogen-h ogen-selector-code ogen-selector-eval ogen-selector-correct ogen-h-spec ogen-h-positive ogen-h-negative jinv-coding-state jinv-recovery-exact" data-kind="lemma">
+  <h2>Fix a deterministic extension program using the halting oracle</h2>
+  <p>Define \(H(e,u)\) to return \(N(u)\) if \(q(e,u)\notin K\), and otherwise to return the word coordinate \(v\) of the least \(t=\langle v,s\rangle\) passing \(C(e,u,t)\). There is one fixed actual oracle program \(\mathsf h\), called the <strong>extension selector</strong>, satisfying</p>
+  <div class="math-display">\[E_K(\mathsf h,\langle e,u\rangle)\downarrow=H(e,u)\qquad\text{for every }e,u.\]</div>
+  <p>Its output is valid, extends \(N(u)\), and belongs to \(S_e^*\). For a word \(\sigma\), write \(H(e,\sigma)\) for the decoded output on \(u_\sigma\).</p>
+  <div class="proof">
+    <p>Here is an actual finite-program construction, including its behavior with a different oracle. On input \(z=\langle e,u\rangle\), form \(a=\langle z,b\rangle\), where \(b\) is the query answer at \(q(e,u)\). Let \(r_{\mathrm{test}}\) be an ordinary program whose value on \(\langle a,t\rangle\) is zero exactly when</p>
+    <div class="math-display">\[(b=0\land t=0)\ \lor\ (b=1\land C(e,u,t)),\]</div>
+    <p>and is one otherwise. Let \(r_{\mathrm{out}}\) return \(N(u)\) when \(b=0\), and the first coordinate of \(t\) otherwise. Both are ordinary total computable programs, with all projections and finite tests just specified. Write \(I\) for the identity program and \(\iota\) for the <a href="oracle-computation#ordinary-programs-and-queries">ordinary-program embedding</a>. Form</p>
+    <div class="math-display">\[R=\operatorname{pair}\bigl(I,\operatorname{comp}(\mathbf Q,\iota(q))\bigr),\]</div>
+    <div class="math-display">\[L=\operatorname{comp}\bigl(\operatorname{find}'(\iota(r_{\mathrm{test}})),\operatorname{pair}(R,\mathbf0)\bigr),\]</div>
+    <div class="math-display">\[\mathsf h=\operatorname{comp}\bigl(\iota(r_{\mathrm{out}}),\operatorname{pair}(R,L)\bigr).\]</div>
+    <p>Here \(\iota(q)\) means the embedding of a fixed ordinary program computing \(z\mapsto q(z_0,z_1)\). The <a href="oracle-computation#sequential-search">search constructor</a> starts at zero and retains \(a\) as its parameter. Under any oracle \(A\), a negative query answer makes its first test succeed at \(t=0\); its output is \(N(u)\). A positive answer makes it perform exactly the ordinary least-candidate search, returning its word coordinate if successful, and diverging if no candidate exists. This is an evaluation identity for the displayed program, not an assumption that arbitrary oracle answers are correct.</p>
+    <p>Under \(K\) the positive branch always has a witness, by <a href="#extension-search"></a>. Its output is an extension in \(S_e\). In the negative branch no such extension exists, so the unchanged normalized word lies in the avoidance part of \(S_e^*\). Both branches prove all the stated conclusions. No potentially divergent branch is evaluated when the answer is negative.</p>
+  </div>
+  <p>The <a href="friedberg-jump-inversion#coding-history">jump-inversion construction</a> reuses this exact selector and records one target-oracle bit immediately after each selected word. Its <a href="friedberg-jump-inversion#recovery-invariant">recovery induction</a> depends on making the same first-candidate choice again, so that the appended bit is read at the same position.</p>
+</section>
+
+<section id="generic-history" data-formal="ogen-history ogen-history-word ogen-constructed-set ogen-history-recurrence ogen-history-invariants ogen-constructed-prefixes ogen-constructed-bit" data-kind="definition">
+  <h2>Lengthen the selected word at every stage</h2>
+  <p>For a supplied binary word \(\rho\), define its <strong>generic history</strong> by the exact recurrence</p>
+  <div class="math-display">\[\sigma_0=\rho,\qquad\tau_n=H(n,\sigma_n),\qquad\sigma_{n+1}=\tau_n0.\]</div>
+  <p>The selector returns a word extending \(\sigma_n\), and the appended zero makes \(|\sigma_{n+1}|\ge|\sigma_n|+1\). Thus \(\sigma_n\preceq\sigma_{n+1}\) and \(|\sigma_n|\ge|\rho|+n\) by induction. Define the <strong>constructed set</strong> \(G_\rho\) by</p>
+  <div class="math-display">\[\chi_{G_\rho}(x)=\sigma_{x+1}(x).\]</div>
+  <p>The indicated bit exists by the length bound. The <a href="incomparable-turing-degrees#growing-unions">compatible-union lemma</a> proves that \(G_\rho\) is exactly the unique set extending every \(\sigma_n\), in particular the supplied \(\rho\).</p>
+</section>
+
+<section id="generic-existence" data-formal="ogen-constructed-generic ogen-history-code ogen-history-code-eval ogen-characteristic-code ogen-characteristic-code-eval ogen-constructed-bound ogen-constructed-extends" data-kind="theorem">
+  <h2>Every finite word extends to a specified generic below the halting set</h2>
+  <div class="statement-box"><p>For every binary word \(\rho\), the same specified construction yields a 1-generic set \(G_\rho\) extending \(\rho\), with \(G_\rho\le_T K\).</p></div>
+  <div class="proof">
+    <p>At stage \(e\), the selected word \(\tau_e\) belongs to \(S_e^*\). If it belongs to \(S_e\), the union meets that collection. In the other case it has no \(S_e\)-extension, and the union avoids the collection above \(\tau_e\). Every subsequent word extends \(\tau_e\), so the chosen alternative is permanent. This works for every index \(e\), proving genericity.</p>
+    <p>To compute the union, retain a numerical state \(\langle n,u_{\sigma_n}\rangle\). Starting at \(\langle0,u_\rho\rangle\), one transition applies the fixed program \(\mathsf h\) to \(\langle n,u_{\sigma_n}\rangle\), appends zero by ordinary list-code operations, and increments \(n\). Each transition is total under \(K\). The <a href="oracle-computation#relative-closure">relative primitive-recursion rules</a> therefore give one actual oracle program for the stage state, uniform in the supplied initial code and stage number.</p>
+    <p>On input \(x\), iterate exactly \(x+1\) transitions and return bit \(x\) of the retained word. The history induction identifies this state with \(\sigma_{x+1}\), and the length bound makes the bit access valid. The output is precisely the displayed definition of \(\chi_{G_\rho}(x)\). This is a total characteristic program for that same union, establishing the reduction.</p>
+  </div>
+</section>
+
+<section id="generic-noncomputable" data-formal="ogen-noncomputable" data-kind="theorem">
+  <h2>No computable set can be 1-generic</h2>
+  <p>Every 1-generic set is noncomputable.</p>
+  <div class="proof">
+    <p>Suppose \(G\) were computable. The collection \(S=\{\sigma:\sigma\not\preceq G\}\) would then be computable: compare each of the finitely many bits with the corresponding computed bit of \(G\). It is dense. A word already incompatible with \(G\) itself belongs to \(S\); a prefix \(\sigma\preceq G\) has an extension obtained by appending the opposite of \(\chi_G(|\sigma|)\), and this extension belongs to \(S\).</p>
+    <p>No prefix of \(G\) belongs to \(S\), so \(G\) does not meet it. Density also prevents any prefix from avoiding it. This contradicts 1-genericity for the c.e. collection \(S\).</p>
+  </div>
+</section>
+
+<section id="finite-halting-conditions" data-formal="incomp-certificate-value ogen-forces-halting ogen-forces-divergence" data-kind="definition">
+  <h2>A prefix can certify convergence or exclude every convergence certificate</h2>
+  <p>Use the established <a href="incomparable-turing-degrees#prefix-certificates">bounded checker</a> \(D(\sigma,e,x)\). It is positive exactly when \(\sigma\) certifies some output of \(\varphi_e(x)\), using only positions below \(|\sigma|\). Define <strong>forcing convergence</strong> and <strong>forcing divergence</strong> by</p>
+  <div class="math-display">\[\sigma\Vdash\varphi_e(x)\downarrow\quad\Longleftrightarrow\quad D(\sigma,e,x)>0,\]</div>
+  <div class="math-display">\[\sigma\Vdash\varphi_e(x)\uparrow\quad\Longleftrightarrow\quad\forall\rho\succeq\sigma\;[D(\rho,e,x)=0].\]</div>
+  <p>The symbol \(\Vdash\) here has only these two defined meanings. For convergence, \(\sigma\) already contains a successful bounded computation. For divergence, the assertion excludes successful computations throughout the entire cone of extensions; failure of the current bounded checker alone does not suffice.</p>
+</section>
+
+<section id="halting-prefix-collections" data-formal="ogen-halting-words ogen-halting-index ogen-halting-index-primitive ogen-halting-index-eval ogen-halting-index-words ogen-halting-words-enumerable ogen-halting-sound ogen-divergence-sound ogen-forcing-persists ogen-forcing-exclusive" data-kind="lemma">
+  <h2>Convergence prefixes form a uniformly enumerable collection</h2>
+  <p>The collections \(B_{e,x}=\{\sigma:D(\sigma,e,x)>0\}\) are c.e. uniformly in \(e,x\). Fix a total computable index compiler \(a(e,x)\) satisfying \(S_{a(e,x)}=B_{e,x}\). Every word forcing convergence gives actual convergence for all sets extending it; every word forcing divergence gives actual divergence for all such sets. Both forcing relations persist under extension and cannot hold simultaneously.</p>
+  <div class="proof">
+    <p>The bounded checker and validity test are ordinary computable. An ordinary program returns zero exactly when its input is a valid word code with positive checker value, and otherwise searches forever. The parameter theorem freezes \(e,x\) in this fixed program; choose this compiler as \(a\). This specifies its domain, including rejection of all malformed codes.</p>
+    <p><a href="incomparable-turing-degrees#certificate-persistence">Certificate persistence</a> transfers a positive checker value to every longer word and every infinite extension. If a set extending a divergence-forcing word had a halting computation, <a href="incomparable-turing-degrees#prefix-adequacy">prefix adequacy</a> would supply a positive certificate extending that word, a contradiction. Divergence forcing persists because a smaller cone still has no positive certificate. Convergence and divergence cannot coexist since the original word is one of its own extensions.</p>
+  </div>
+</section>
+
+<section id="divergence-question" data-formal="oracle-code-first-missing oracle-use-full-oracle-divergence oracle-use-truncated-search ogen-no-divergence-prefix" data-kind="question">
+  <h2>Must every divergent computation have a divergence-forcing prefix?</h2>
+  <p>Consider the program that queries successive natural numbers and stops at the first negative answer. It diverges with oracle \(\mathbb N\). Can any prefix of that oracle force its divergence?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. A prefix of length \(k\) consists of \(k\) ones. Extend it by a zero and then complete it to an infinite set. The program halts at position \(k\). Prefix adequacy supplies a finite successful certificate extending the original word, increasing the allowance further if necessary. Thus the original prefix does not force divergence. This is the same <a href="oracle-computation#divergent-prefix-question">failure of finite-use stability for divergence</a>. The stronger conclusion below requires genericity of the actual oracle.</p>
+  </div></details>
+</section>
+
+<section id="prefix-recognizer" data-formal="ogen-prefix-recognizer-code ogen-prefix-recognizer-index ogen-prefix-recognizer-index-primitive ogen-prefix-recognizer-eval ogen-prefix-recognizer-domain ttwtt-prefix-program-trace" data-kind="lemma">
+  <h2>A single program recognizes when its oracle meets an indexed collection</h2>
+  <p>There is an ordinary total computable map \(p(e)\) to actual oracle-program indices such that, for every oracle \(A\) and runtime input \(x\),</p>
+  <div class="math-display">\[\varphi_{p(e)}^A(x)\downarrow\quad\Longleftrightarrow\quad\exists\sigma\preceq A\;[\sigma\in S_e].\]</div>
+  <div class="proof">
+    <p>For stage \(k\), scan the finitely many numbers \(v&lt;k\). Test validity and \(v\in W_{e,k}\). For each passing code, query the finitely many bits below its word length and check agreement with \(A\). Let a fixed oracle program \(r\) on \(\langle e,k\rangle\) return zero if any such word is a prefix of \(A\), and one otherwise. These are finite loops through total tests and queries, so the relative closure rules construct this actual total program. Define</p>
+    <div class="math-display">\[P=\operatorname{comp}\bigl(\operatorname{find}'(r),\operatorname{pair}(I,\mathbf0)\bigr),\qquad p(e)=\#\operatorname{comp}(P,\mathsf{const}(e)).\]</div>
+    <p>The code map is ordinary computable and independent of \(A\). Its evaluation is the least successful stage \(k\), independently of \(x\), and diverges if no stage succeeds. A successful stage displays a prefix in \(S_e\). Conversely any such prefix has a code \(v\) in some finite stage, and hence in \(W_{e,k}\) for all sufficiently large \(k&gt;v\). Its finite agreement test then succeeds. This proves the identity for every oracle.</p>
+  </div>
+</section>
+
+<section id="generic-halting-decisions" data-formal="ogen-generic-halting-decisions" data-kind="theorem">
+  <h2>Genericity is exactly the existence of finite halting decisions</h2>
+  <p>A set \(G\) is 1-generic if and only if, for every oracle-program index \(e\) and input \(x\), some \(\sigma\preceq G\) forces convergence or forces divergence of \(\varphi_e(x)\).</p>
+  <div class="proof">
+    <p>If \(G\) is generic, apply its definition to the c.e. collection \(B_{e,x}\). Meeting that collection gives a convergence-forcing prefix. Avoiding it above a prefix is precisely forcing divergence.</p>
+    <p>Conversely assume the stated decision property and fix \(S_e\). Apply it to the actual program of index \(p(e)\) at input zero. If a prefix forces convergence, the program really halts under \(G\), so its evaluation identity proves that \(G\) meets \(S_e\). If a prefix \(\sigma\) forces divergence, no \(\rho\succeq\sigma\) can belong to \(S_e\). Indeed complete such a \(\rho\) to any infinite oracle \(A\). The program would halt under \(A\); adequacy would then give a successful certifying prefix extending \(\rho\), contrary to divergence forcing at \(\sigma\). Thus \(G\) avoids \(S_e\). These alternatives prove genericity.</p>
+  </div>
+</section>
+
+<section id="generic-forcing-truth" data-formal="ogen-convergence-iff-prefix ogen-generic-divergence-iff-prefix" data-kind="theorem">
+  <h2>For a generic oracle, convergence and divergence each have a finite witness</h2>
+  <p>If \(G\) is 1-generic, then for every \(e,x\),</p>
+  <div class="math-display">\[\varphi_e^G(x)\downarrow\quad\Longleftrightarrow\quad\exists\sigma\preceq G\;[\sigma\Vdash\varphi_e(x)\downarrow],\]</div>
+  <div class="math-display">\[\varphi_e^G(x)\uparrow\quad\Longleftrightarrow\quad\exists\sigma\preceq G\;[\sigma\Vdash\varphi_e(x)\uparrow].\]</div>
+  <div class="proof">
+    <p>The convergence equivalence is prefix adequacy and certificate soundness; it holds for every oracle. For divergence, a forcing prefix always gives actual divergence by the cone argument above. In the other direction, genericity supplies one of the two finite decisions. Actual divergence excludes a convergence certificate by soundness, so the supplied decision must force divergence. The two alternatives therefore agree with the actual computation.</p>
+  </div>
+</section>
+
+<section id="generic-jump-program" data-formal="ogen-even-prefix ogen-even-prefix-eval ogen-jump-decision ogen-jump-test-eval ogen-jump-code ogen-jump-eval ogen-jump-correct" data-kind="lemma">
+  <h2>Search along the oracle until a halting decision appears</h2>
+  <p>There is a fixed actual oracle program \(\mathsf j\) such that, for every 1-generic \(G\),</p>
+  <div class="math-display">\[E_{G\oplus K}(\mathsf j,e)\downarrow=\chi_{G'}(e)\qquad\text{for every }e.\]</div>
+  <div class="proof">
+    <p>We specify this program on an arbitrary oracle \(A\) first. On parameters \(e,n\), use the even-position answers \(\chi_A(2i)\), \(i&lt;n\), to build a finite word \(\sigma_{A,n}\). Compute its checker value \(D(\sigma_{A,n},e,e)\) and the ordinary number \(q(a(e,e),u_{\sigma_{A,n}})\). A fixed total oracle program \(T\) returns zero exactly when</p>
+    <div class="math-display">\[D(\sigma_{A,n},e,e)>0\quad\lor\quad\chi_A\bigl(2q(a(e,e),u_{\sigma_{A,n}})+1\bigr)=0,\]</div>
+    <p>and one otherwise. All loops in this test have the supplied finite bound \(n\); the ordinary maps terminate and oracle queries return bits. A second fixed total oracle program \(V\) on \(\langle e,n\rangle\) returns one if that checker value is positive, and zero otherwise. The relative closure rules construct both programs from the stated finite operations. Set</p>
+    <div class="math-display">\[U=\operatorname{comp}\bigl(\operatorname{find}'(T),\operatorname{pair}(I,\mathbf0)\bigr),\qquad\mathsf j=\operatorname{comp}\bigl(V,\operatorname{pair}(I,U)\bigr).\]</div>
+    <p>Thus under any \(A\), \(U\) searches for the least successful \(n\), and \(\mathsf j\) returns the specified Boolean checker result there. If no such \(n\) exists it diverges. This describes its complete evaluation, without supposing the arbitrary odd-position answers decide halting.</p>
+    <p>Now take \(A=G\oplus K\), with the <a href="turing-degrees#finite-join">even/odd join convention</a>. The word \(\sigma_{A,n}\) is exactly \(G\upharpoonright n\). By the specified index maps \(a\) and \(q\), the negative odd-position answer says that this word has no extension in \(B_{e,e}\), precisely the divergence alternative. The positive-checker test is the convergence alternative. Genericity ensures that at least one prefix has one of them, so this search terminates. Their forced-truth properties and mutual exclusion say that \(V\) returns one exactly when \(\varphi_e^G(e)\downarrow\). This is exactly the characteristic function of the <a href="turing-jump#jump">jump</a>.</p>
+  </div>
+</section>
+
+<section id="generalized-low" data-formal="ogen-generalized-low jinv-exact-join jinv-jump-inversion" data-kind="theorem">
+  <h2>The jump of a generic is its join with ordinary halting</h2>
+  <div class="statement-box"><p>Every 1-generic set \(G\) satisfies the generalized-low identity</p><div class="math-display">\[G'\equiv_T G\oplus K.\]</div></div>
+  <div class="proof">
+    <p>The fixed program in <a href="#generic-jump-program"></a> proves \(G'\le_T G\oplus K\). For the reverse reduction, <a href="turing-jump#membership-to-jump">membership reduces to the jump</a>, so \(G\le_T G'\). Also \(\varnothing\le_T G\), so <a href="turing-jump#jump-monotonicity">jump monotonicity</a> gives \(J(\varnothing)\le_T G'\). The <a href="turing-jump#empty-oracle-jump">ordinary halting equivalence</a> gives \(K\le_T G'\). The <a href="turing-degrees#join-upper-bound">universal property of the join</a> combines these two actual reductions into \(G\oplus K\le_T G'\), completing the equivalence.</p>
+  </div>
+  <p>If \(K\le_T B\), one can choose the generic so that <a href="friedberg-jump-inversion#exact-join">\(B\equiv_T G\oplus K\)</a>. The identity above then gives <a href="friedberg-jump-inversion#jump-inversion">\(G^{\prime}\equiv_T B\)</a>, realizing the prescribed degree as a jump.</p>
+</section>
+
+<section id="low-generic-existence" data-formal="ogen-constructed-low ogen-constructed-strict-bounds" data-kind="theorem">
+  <h2>The constructed generics are noncomputable and low</h2>
+  <p>For every supplied binary word \(\rho\), the constructed set is <strong>low</strong>, meaning that its jump is Turing equivalent to \(K\), and satisfies</p>
+  <div class="math-display">\[G_\rho'\equiv_T K,\qquad\varnothing&lt;_T G_\rho&lt;_T K.\]</div>
+  <div class="proof">
+    <p>We proved genericity and \(G_\rho\le_T K\). The join universal property gives \(G_\rho\oplus K\equiv_T K\), so the generalized-low identity makes \(G_\rho'\equiv_T K\), the stated lowness condition. The same definition is used in the <a href="low-simple-sets#lowness">construction of low simple sets</a>. Generic noncomputability makes its degree positive. If \(K\le_T G_\rho\), then \(G_\rho'\le_T K\le_T G_\rho\), contradicting <a href="turing-jump#jump-strictness">jump strictness</a>. The upper comparison is therefore also strict.</p>
+  </div>
+</section>
+
+<section id="ce-below-generic" data-formal="ogen-zero-mistakes ogen-zero-mistakes-enumerable ogen-ce-decider ogen-ce-decider-recursive ogen-ce-decider-code ogen-ce-decider-code-eval ogen-ce-decider-correct ogen-ce-below-computable ogen-no-ce-degree" data-kind="theorem">
+  <h2>A generic cannot compute a noncomputable enumerable set</h2>
+  <p>If \(G\) is 1-generic, \(X\) is c.e., and \(X\le_T G\), then \(X\) is computable. In particular no 1-generic has a noncomputable c.e. degree.</p>
+  <div class="proof">
+    <p>Fix an actual program \(\varphi_e^G=\chi_X\). The collection</p>
+    <div class="math-display">\[S=\{\sigma:\exists x\in X\;[D(\sigma,e,x)=1]\}\]</div>
+    <p>is c.e.: dovetail the enumeration of \(X\) with the decidable finite certificate tests. Here checker value one means output zero. The set \(G\) cannot meet \(S\), since soundness would give \(\varphi_e^G(x)=0\) for a member \(x\in X\), contrary to the characteristic-function identity. Genericity therefore supplies a fixed prefix \(\tau\preceq G\) above which \(S\) is avoided.</p>
+    <p>Build an ordinary decision program with this finite word \(\tau\) hard-coded. On input \(x\), dovetail two searches: look for \(x\) entering the c.e. enumeration of \(X\), and look through all valid words \(\sigma\succeq\tau\) for one with \(D(\sigma,e,x)=1\). Return one if the first search succeeds and zero if the second does. The searches have decidable finite stages, so this is an ordinary partial-recursive program.</p>
+    <p>If \(x\in X\), its enumeration eventually succeeds and avoidance excludes every certificate sought by the second search. If \(x\notin X\), totality of the given reduction gives output zero under \(G\); adequacy supplies a certifying prefix extending \(\tau\), so the second search succeeds, while the first never does. Exactly the correct search thus succeeds on each input, making the program a total decider. Finally, a c.e. set Turing equivalent to a generic would be computable by this result, making the generic computable as well, a contradiction.</p>
+  </div>
+</section>

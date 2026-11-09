@@ -1,0 +1,187 @@
+<section id="pa-completions" data-kind="definition" data-formal="padeg-completion padeg-completion-codes padeg-codes-faithful padeg-codes-malformed padeg-completion-closure padeg-completion-decides theory-closure-derivability theory-closure-same-models">
+  <h2>Complete the actual arithmetic axiom set</h2>
+  <p>Work in the fixed <a href="arithmetic-theories#arithmetic-language">first-order arithmetic language</a>, with <a href="arithmetic-theories#peano-arithmetic">Peano arithmetic</a> \(\mathrm{PA}\), the actual <a href="first-order-proofs#derivations-and-theories">proof calculus</a>, and the <a href="coding-formal-proofs#coding-is-faithful">sentence codes</a> already constructed. A <strong>PA completion</strong> is a consistent, complete, deductively closed theory \(T\) in that same language with \(\mathrm{PA}\subseteq T\). Thus it contains exactly one of \(\theta,\neg\theta\) for each sentence \(\theta\), and \(\theta\in T\) exactly when \(T\vdash\theta\). These are the established conventions for <a href="theories-and-axiomatization#axioms-and-consequences">deductive closure</a> and <a href="theories-and-axiomatization#complete-theories">complete theories</a>.</p>
+  <p>The <strong>code set of the completion</strong> is</p>
+  <div class="math-display">\[C_T=\{\ulcorner\theta\urcorner:\theta\text{ is an arithmetic sentence and }\theta\in T\}.\]</div>
+  <p>Malformed sentence codes are outside \(C_T\). No effective enumeration of \(T\) is assumed. Its consistency is syntactic consistency in the stated calculus; the <a href="henkin-completeness#deductive-completeness">completeness theorem</a> also makes it satisfiable.</p>
+</section>
+
+<section id="pa-oracles" data-kind="definition" data-formal="padeg-pa-oracle padeg-pa-degree padeg-computes-dnc padeg-binary-function-set dnc-binary-class dnc-separator-equivalence">
+  <h2>Ask which oracles can compute a completion</h2>
+  <p>An oracle \(A\subseteq\mathbb N\) has <strong>PA degree</strong> if \(C_T\le_T A\) for some PA completion \(T\). A <strong>PA degree</strong> is the Turing degree of such an oracle. Here \(\le_T\) requires an <a href="turing-degrees#turing-reducibility">actual oracle program deciding the indicated code set</a>.</p>
+  <p>A <strong>binary DNC set</strong> is a set \(D\subseteq\mathbb N\) whose characteristic function \(f=\chi_D\) is <a href="effectively-closed-classes-and-dnc#dnc-functions">diagonally noncomputable</a>:</p>
+  <div class="math-display">\[\forall e,y\qquad \varphi_e(e)\downarrow=y\quad\Longrightarrow\quad f(e)\ne y.\]</div>
+  <p>The fixed bit convention is membership equals one. The <a href="effectively-closed-classes-and-dnc#dnc-separators">separator characterization</a> says exactly that \(f=1\) on \(D_0=\{e:\varphi_e(e)\downarrow=0\}\) and \(f=0\) on \(D_1=\{e:\varphi_e(e)\downarrow=1\}\). Computing such a function and computing its one-set are equivalent: evaluate the function and test for one in one direction, and ask one membership query in the other.</p>
+</section>
+
+<section id="comparison-sentences" data-kind="lemma" data-formal="padeg-output-certificate padeg-output-certificate-primitive padeg-certificate-formula padeg-certificate-formula-signed padeg-comparison-formula padeg-comparison-sentence padeg-comparison-code padeg-comparison-realization padeg-certificate-numerals padeg-comparison-code-primitive padeg-comparison-positive padeg-comparison-negative repr-signed-relation-representation repr-finite-numeral-bound repr-numeral-cut">
+  <h2>Turn opposite computation certificates into provable opposite sentences</h2>
+  <p>There is a fixed arithmetic formula \(\Theta(z)\) such that the map \(e\mapsto\ulcorner\Theta(\overline e)\urcorner\) is primitive recursive and</p>
+  <div class="math-display">\[e\in D_0\Longrightarrow Q\vdash\Theta(\overline e),\qquad e\in D_1\Longrightarrow Q\vdash\neg\Theta(\overline e).\]</div>
+  <div class="proof">
+    <p>The tests \(C_i(e,s)\Longleftrightarrow b(s,e,e)=i+1\), for \(i=0,1\), are primitive recursive, using the fixed <a href="universal-computation#universal-evaluation">bounded evaluator</a>. Choose formulas \(R_i(z,w)\) that <a href="arithmetic-representability#recursive-relations">represent them with positive and negative numeral proofs in \(Q\)</a>. Using the particular arithmetic order abbreviation from <a href="arithmetic-representability#finite-numeral-cuts">finite numeral cuts</a>, set</p>
+    <div class="math-display">\[\Theta(z)\;:\!\Longleftrightarrow\;\exists s\,\bigl(R_0(z,s)\land\forall t\le s\,\neg R_1(z,t)\bigr).\]</div>
+    <p>This is a formula of the existing arithmetic language, with one free variable. The two representing formulas are fixed. <a href="coding-formal-proofs#coded-substitution">Numeral substitution on codes</a> therefore makes the stated sentence-code map primitive recursive.</p>
+    <p>If \(e\in D_0\), choose a standard certificate \(s\) for output zero. There is no certificate for output one, by uniqueness of the partial output. Thus \(Q\) proves \(R_0(\overline e,\overline s)\) and each of the finitely many sentences \(\neg R_1(\overline e,\overline t)\), \(t\le s\). In every model of \(Q\), an element at most \(\overline s\) is one of these numerals, so these proofs establish the bounded universal condition. The witness \(\overline s\) gives \(\Theta(\overline e)\) in every such model, hence a \(Q\)-proof by completeness.</p>
+    <p>If \(e\in D_1\), fix a standard certificate \(t\) for output one. Then \(Q\) proves \(R_1(\overline e,\overline t)\), and it proves \(\neg R_0(\overline e,\overline j)\) for every standard \(j\). Work in any model of \(Q\) and consider a possible witness \(s\) for \(\Theta(\overline e)\). If \(t&gt;0\), the numeral-cut theorem at \(t-1\) says that either \(s=\overline j\) for some \(j&lt;t\), or \(\overline t\le s\). The first case contradicts the relevant negative \(R_0\)-instance. In the second case the positive \(R_1\)-instance contradicts the required bounded universal. If \(t=0\), one always has \(\overline0\le s\): in the abbreviation \(\exists z\,(z+0=s)\), take \(z=s\). The second contradiction therefore applies to every \(s\). No witness exists in any model of \(Q\), giving \(Q\vdash\neg\Theta(\overline e)\).</p>
+    <p>This argument uses finite cuts at external numeral bounds. It requires neither a global order law for arbitrary elements of \(Q\)-models nor a soundness assumption about a completion.</p>
+  </div>
+</section>
+
+<section id="completion-to-dnc" data-kind="theorem" data-formal="padeg-completion-dnc padeg-completion-dnc-program padeg-completion-dnc-eval padeg-consistent-q-dnc">
+  <h2>A completion computes binary diagonal avoidance</h2>
+  <p>Every PA completion \(T\) computes a binary DNC set. More precisely, the specified computable preimage</p>
+  <div class="math-display">\[D_T=\{e:\ulcorner\Theta(\overline e)\urcorner\in C_T\}\]</div>
+  <p>is binary DNC, and \(D_T\le_T C_T\).</p>
+  <div class="proof">
+    <p>The formula-code map is primitive recursive. An ordinary program computes that code and makes one \(C_T\)-membership query, giving an actual total oracle program for the displayed preimage. If \(e\in D_0\), the preceding lemma and \(Q\subseteq\mathrm{PA}\subseteq T\) give \(T\vdash\Theta(\overline e)\); deductive closure puts its code in \(C_T\). If \(e\in D_1\), the lemma gives \(T\vdash\neg\Theta(\overline e)\), and consistency excludes \(\Theta(\overline e)\) from \(T\). Thus \(D_T\) separates \(D_0,D_1\), so is binary DNC. Substituting any supplied \(A\)-oracle decider for \(C_T\) into the one-query program also gives \(D_T\le_T A\).</p>
+  </div>
+</section>
+
+<section id="finite-extension-checker" data-kind="lemma" data-formal="padeg-valid-sentence-list padeg-finite-theory padeg-finite-axiom-certificate padeg-finite-axiom-primitive padeg-finite-axiom-presentation padeg-bad-proof padeg-bad-proof-primitive padeg-bad-proof-correct ap-pa-axiom-primitive ap-pa-axiom-presentation proofcode-certificate-derivability">
+  <h2>Contradictions from finitely many extra sentences have a uniform check</h2>
+  <p>For a finite list \(L\) of arithmetic sentence codes, let \(\Gamma_L\) be \(\mathrm{PA}\) together with the sentences on \(L\). There is one primitive-recursive Boolean test \(\operatorname{Bad}(L,p)\) such that</p>
+  <div class="math-display">\[\exists p\,\operatorname{Bad}(L,p)=1\quad\Longleftrightarrow\quad\Gamma_L\vdash\bot.\]</div>
+  <div class="proof">
+    <p>Use the <a href="pa-proof-checkers#pa-axiom-certificates">actual PA axiom certificates</a>. For a proposed axiom code \(a\), let a certificate \(\langle0,s\rangle\) invoke the PA test \(E_{\mathrm{PA}}(a,s)\). A certificate \(\langle1,j\rangle\) is accepted when \(j\) is within the finite list and its \(j\)-th entry is \(a\). Reject other tags and malformed sentence codes. This is one primitive-recursive axiom test jointly in the finite-list code, \(a\), and the certificate. For a valid list it presents exactly \(\Gamma_L\).</p>
+    <p>Run the <a href="coding-formal-proofs#certified-proofs">existing certified proof checker</a> with that axiom test and conclusion \(\bot\). Its finite syntax, rule and axiom scans are primitive recursive jointly in the extra list parameter, giving \(\operatorname{Bad}\). The <a href="coding-formal-proofs#proof-certificate-theorem">certificate theorem for the same calculus</a> proves the equivalence. The construction also supplies a total test on arbitrary numerical list codes, rejecting invalid entries when they are offered as axioms.</p>
+  </div>
+</section>
+
+<section id="contradiction-race" data-kind="lemma" data-formal="padeg-contradiction-race padeg-contradiction-race-partial padeg-contradiction-program-index padeg-contradiction-index-exists padeg-contradiction-index padeg-contradiction-index-primitive padeg-contradiction-index-eval padeg-contradiction-race-stage padeg-contradiction-race-domain">
+  <h2>Compile the two possible failures before choosing a side</h2>
+  <p>There is a primitive-recursive index compiler \(q(L,a)\), defined for every numerical list code \(L\) and sentence code \(a\), with this behavior at every runtime input: search successive \(p\) for</p>
+  <div class="math-display">\[\operatorname{Bad}(L^\frown[a],p)=1\quad\text{or}\quad\operatorname{Bad}(L^\frown[\operatorname{neg}(a)],p)=1.\]</div>
+  <p>Return zero if the first successful stage passes the first test, and one otherwise; a tie returns zero. Here \(\operatorname{neg}\) is the <a href="coding-formal-proofs#coded-substitution">fixed negation-code operation</a>. If neither search succeeds, the program is undefined.</p>
+  <div class="proof">
+    <p>The displayed tests are total primitive recursive. Least-success search and the indicated output rule therefore give a jointly partial recursive function \(V(\langle L,a\rangle,z)\), ignoring runtime input \(z\). Fix one ordinary index \(v\) for it and put \(q(L,a)=s(v,\langle L,a\rangle)\). <a href="universal-computation#parameter-theorem">Specialization</a> proves</p>
+    <div class="math-display">\[\varphi_{q(L,a)}(z)\simeq V(\langle L,a\rangle,z)\qquad\text{for all }L,a,z.\]</div>
+    <p>The numerical compiler terminates before either proof search is run. This exact identity includes both divergent cases and the fixed tie behavior.</p>
+  </div>
+</section>
+
+<section id="safe-choice" data-kind="lemma" data-formal="padeg-signed-choice padeg-safe-choice">
+  <h2>A diagonal-avoiding bit selects a consistent extension</h2>
+  <p>Suppose \(\Gamma_L\) is consistent, \(a=\ulcorner\theta\urcorner\), and \(D\) is binary DNC with \(f=\chi_D\). Append \(a\) if \(f(q(L,a))=0\), and append \(\operatorname{neg}(a)\) if \(f(q(L,a))=1\). The resulting finite extension of PA is consistent.</p>
+  <div class="proof">
+    <p>The two extensions cannot both be inconsistent. By the deduction theorem, a contradiction from \(\Gamma_L+\theta\) would give \(\Gamma_L\vdash\neg\theta\), while a contradiction from \(\Gamma_L+\neg\theta\) would give \(\Gamma_L\vdash\neg\neg\theta\). Together these contradict consistency of \(\Gamma_L\). Equivalently, a model of \(\Gamma_L\) satisfies one of the two sentences.</p>
+    <p>If the positive extension is inconsistent, only its contradiction search can succeed, so \(\varphi_{q(L,a)}(q(L,a))=0\). Diagonal avoidance forces \(f(q(L,a))=1\), selecting the consistent negative extension. If the negative extension is inconsistent, the program instead returns one, forcing bit zero and the positive extension. If neither extension is inconsistent, either bit is safe. This proves the assertion for all possibilities; in particular the construction uses bit zero for the positive choice and bit one for the negative choice.</p>
+  </div>
+</section>
+
+<section id="greedy-history" data-kind="definition" data-formal="padeg-stage-sentence padeg-stage-code padeg-stage-code-primitive padeg-stage-code-faithful padeg-stage-at-sentence padeg-choice-bit padeg-completion-history padeg-chosen-theory padeg-completed-theory">
+  <h2>Make one signed choice for every sentence code</h2>
+  <p>Let \(\alpha_n\) be the arithmetic sentence with code \(n\) when \(n\) is a valid sentence code, and the fixed tautology \(\top\) otherwise. The map \(n\mapsto a_n=\ulcorner\alpha_n\urcorner\) is primitive recursive by <a href="coding-formal-proofs#syntax-recognition">sentence recognition</a>. For a binary DNC set \(D\), define its <strong>completion history</strong> by</p>
+  <div class="math-display">\[L_0=[],\qquad b_n=\chi_D(q(L_n,a_n)).\]</div>
+  <div class="math-display">\[L_{n+1}=\begin{cases}L_n^\frown[a_n]&amp;b_n=0,\\L_n^\frown[\operatorname{neg}(a_n)]&amp;b_n=1.\end{cases}\]</div>
+  <p>Every \(L_n\) is a finite list of actual sentence codes. Define the <strong>chosen axiom set</strong> and its <strong>completion</strong> by</p>
+  <div class="math-display">\[\Gamma_D=\mathrm{PA}\cup\{\theta:\ulcorner\theta\urcorner\text{ occurs on some }L_n\},\qquad T_D=\operatorname{Cn}(\Gamma_D).\]</div>
+  <p>The recurrence specifies a single choice history for the supplied oracle, including every malformed-code stage. At such a stage it processes \(\top\); it does not try to decode an invalid expression.</p>
+</section>
+
+<section id="greedy-completion" data-kind="theorem" data-formal="padeg-history-invariant padeg-chosen-consistent padeg-chosen-decides padeg-greedy-completion theory-closure-contains-axioms theory-closure-idempotent theory-closure-same-models">
+  <h2>The union of the finite choices gives a PA completion</h2>
+  <p>For every binary DNC set \(D\), all theories \(\Gamma_{L_n}\) in its completion history are consistent, and \(T_D\) is a PA completion.</p>
+  <div class="proof">
+    <p>Inductively maintain three assertions: \(L_n\) contains only sentence codes, \(L_n\) is a prefix of \(L_{n+1}\), and \(\Gamma_{L_n}\) is consistent. The empty list has these properties because PA has its <a href="arithmetic-theories#peano-arithmetic">standard model</a>. At the next stage, the selected sentence is valid by construction, appending retains all previous choices, and <a href="#safe-choice"></a> preserves consistency. This proves the invariant.</p>
+    <p>If \(\Gamma_D\) proved a contradiction, that finite derivation would use only finitely many chosen axioms. Every such choice appears on some list, and the lists increase; one sufficiently late \(L_n\) contains them all. The same derivation would contradict consistency of \(\Gamma_{L_n}\). Hence \(\Gamma_D\) is consistent.</p>
+    <p>Every arithmetic sentence \(\theta\) is processed at stage \(n=\ulcorner\theta\urcorner\), so one of \(\theta,\neg\theta\) belongs to \(\Gamma_D\). Its deductive closure \(T_D\) is therefore complete, contains PA and is consistent: the closure has the same models as \(\Gamma_D\). Closure is idempotent, so \(T_D\) is deductively closed as well. These facts establish all parts of the definition.</p>
+  </div>
+</section>
+
+<section id="completion-program" data-kind="theorem" data-formal="padeg-completed-choice padeg-history-program padeg-completion-program padeg-history-program-eval padeg-completion-program-eval padeg-completion-program-reduces">
+  <h2>The same oracle computes membership in the chosen completion</h2>
+  <p>There is one actual oracle program \(P\), independent of the binary DNC set \(D\), that decides \(C_{T_D}\) under \(D\). For every input \(n\), its output is</p>
+  <div class="math-display">\[\chi_{C_{T_D}}(n)=\begin{cases}1-b_n&amp;n\text{ is a valid sentence code},\\0&amp;n\text{ is malformed}.\end{cases}\]</div>
+  <div class="proof">
+    <p>Reject a malformed code by the total syntax test. Otherwise compute the finite recurrence through \(L_n\), evaluate the primitive-recursive compiler \(q(L_n,a_n)\), and make the indicated \(D\)-membership query to obtain \(b_n\). Code the whole current list as the state of a primitive recursion. Its successor operation computes \(a_i\) and \(q\), asks one query, and appends the appropriate signed code. All other operations are ordinary total computable functions. <a href="oracle-computation#relative-closure">The actual oracle-program closure theorem</a> therefore constructs one finite program for this recurrence and final output. Its text contains the fixed checker and compiler, rather than the oracle's answers. Induction on the number of steps proves that its state is precisely \(L_i\) for every \(i\); each query terminates, so every run described here is total.</p>
+    <p>For a valid input \(n=\ulcorner\theta\urcorner\), bit zero at stage \(n\) puts \(\theta\) into the chosen axioms and therefore into \(T_D\). Bit one puts \(\neg\theta\) into the chosen axioms, and consistency excludes \(\theta\) from \(T_D\). This proves the exact output formula for the same deductive closure, even if the sentence or its negation appeared at an earlier stage. Consequently \(C_{T_D}\le_T D\). By <a href="oracle-computation#substitution-correctness">oracle substitution</a>, any oracle computing a binary DNC set also computes this completion.</p>
+  </div>
+</section>
+
+<section id="dead-child-race" data-kind="definition" data-formal="padeg-tree-decider-index padeg-indexed-empty padeg-indexed-empty-partial padeg-indexed-empty-eval padeg-indexed-tree-race padeg-indexed-tree-race-partial padeg-tree-race padeg-indexed-tree-race-eval padeg-tree-race-stage padeg-left-dead padeg-right-dead">
+  <h2>Record which child cone is first seen to die</h2>
+  <p>Fix a <a href="computable-trees-and-paths#binary-trees">computable binary tree</a> \(T\), with a supplied ordinary program deciding its coded nodes. For a finite binary word \(\sigma\), let \(E_j(\sigma,m)\), \(j=0,1\), say that no node in \(T\) of length \(|\sigma|+1+m\) extends \(\sigma^\frown j\). These are total computable finite-level tests by <a href="computable-trees-and-paths#finite-cones">the dead-cone criterion</a>.</p>
+  <p>If either test ever succeeds, search the least stage \(m\) at which one does. Put \(\sigma\) into the <strong>left-dead set</strong> \(L_T\) if \(E_0(\sigma,m)\) holds at that stage, and into the <strong>right-dead set</strong> \(R_T\) otherwise. A tie goes only into \(L_T\). If neither test succeeds, put \(\sigma\) in neither set. Invalid binary-word codes are excluded from both sets.</p>
+</section>
+
+<section id="dead-pair" data-kind="lemma" data-formal="padeg-tree-side-index padeg-tree-side-index-primitive padeg-tree-side-index-eval padeg-dead-pair-indices padeg-dead-pair padeg-extendible-dead-children">
+  <h2>The two finite-failure lists are enumerable and disjoint</h2>
+  <p>The sets \(L_T,R_T\) are disjoint c.e. sets, with recognizer indices obtained effectively from the supplied tree-decider index. If \(\sigma\) has an infinite cone in \(T\), at most one child cone dies, and a dying left child puts \(\sigma\) into \(L_T\), while a dying right child puts it into \(R_T\).</p>
+  <div class="proof">
+    <p>On a valid word code, perform the specified least-stage race and accept precisely the chosen side. The finite tests terminate, so both side recognizers are ordinary partial recursive procedures. A single success stage has only one chosen side; hence no word enters both sets, even when both child cones eventually die. Invalid codes are rejected before the race. Fixing one joint program with the tree-decider index as an inserted parameter gives the two recognizer indices by specialization.</p>
+    <p>At an extendible node, the <a href="computable-trees-and-paths#one-child-survives">surviving-child lemma</a> prevents both children from dying. If the left child dies, the right one never passes a dead-cone test, so the first success is necessarily on the left. The right-child case is symmetric. If neither dies, both cones have nodes arbitrarily far above the child.</p>
+  </div>
+</section>
+
+<section id="branch-selector" data-kind="lemma" data-formal="padeg-tree-pair-map padeg-tree-pair-map-primitive padeg-tree-pair-reduction padeg-branch-selector padeg-branch-selector-correct">
+  <h2>A binary DNC oracle selects a surviving child</h2>
+  <p>For the supplied computable tree \(T\), there is a specified ordinary total computable map \(g_T\) such that, for every binary DNC set \(D\),</p>
+  <div class="math-display">\[s_D(\sigma)=\chi_D(g_T(\sigma))\]</div>
+  <p>selects an extendible child \(\sigma^\frown s_D(\sigma)\) whenever \(\sigma\) is an extendible binary node. The numerical map is fixed before \(D\) varies.</p>
+  <div class="proof">
+    <p>Use the two recognizer indices from <a href="#dead-pair"></a> in the <a href="effective-inseparability#canonical-universality">specified reduction of any disjoint c.e. pair to \((D_0,D_1)\)</a>. Write \(a_T,b_T\) for the two recognizer indices and \(r_0\) for a fixed paired-input race-program index from that construction. Take the specified map \(g_T(\sigma)=s(r_0,\langle a_T,\langle b_T,\sigma\rangle\rangle)\). It is total computable, and \(\sigma\in L_T\Longleftrightarrow g_T(\sigma)\in D_0\), while \(\sigma\in R_T\Longleftrightarrow g_T(\sigma)\in D_1\). The <a href="effectively-closed-classes-and-dnc#dnc-separators">DNC separator condition</a> therefore forces \(s_D=1\) on \(L_T\) and \(s_D=0\) on \(R_T\).</p>
+    <p>If the left child dies, the selected bit is one and the right child survives. If the right child dies, the selected bit is zero and the left child survives. If neither dies, either bit selects an extendible child. These cases exhaust extendible parent nodes. The same numerical map works for all binary DNC oracles; its program is built from the supplied tree recognizers and the fixed canonical-pair compiler.</p>
+  </div>
+</section>
+
+<section id="dnc-path" data-kind="theorem" data-formal="padeg-path-property padeg-selected-tree-word padeg-selected-tree-bit padeg-selected-tree-path padeg-tree-words-program padeg-tree-path-program padeg-tree-words-eval padeg-tree-path-eval padeg-tree-path-reduces padeg-selected-tree-words-correct padeg-dnc-path-uniform padeg-dnc-path-property">
+  <h2>Iterating the selector computes a path through the original tree</h2>
+  <p>If \(T\) is a nonempty-path computable binary tree and \(D\) is binary DNC, define</p>
+  <div class="math-display">\[\sigma_0=\varnothing,\qquad \sigma_{n+1}=\sigma_n^\frown s_D(\sigma_n),\qquad X_D=\{n:s_D(\sigma_n)=1\}.\]</div>
+  <p>Then \(X_D\) is a path through \(T\) and \(X_D\le_T D\). For a supplied tree decider, one actual oracle program computes these bits for every binary DNC oracle; it does not depend on which such oracle is supplied.</p>
+  <div class="proof">
+    <p>A path in \(T\) makes the empty word extendible. Induction, using <a href="#branch-selector"></a>, gives that \(\sigma_n\) is valid, has length \(n\), and is extendible, and that \(\sigma_n\) is a prefix of \(\sigma_{n+1}\). Extendibility in particular gives \(\sigma_n\in T\), by the length-\(n\) test. The bits are binary, so \(\chi_{X_D}(n)=s_D(\sigma_n)\). The successive words are therefore precisely the prefixes of \(X_D\), proving the path assertion.</p>
+    <p>Here is the oracle program. Starting at the empty-word code, repeat \(n\) times: compute \(g_T\) at the current word, query the supplied set, and append that bit using the fixed binary-word code operation. At the resulting word \(\sigma_n\), compute \(g_T\) once more and return its membership answer. The state update is ordinary computable code followed by one query and a computable append; <a href="oracle-computation#relative-closure">oracle primitive recursion</a> constructs its finite text. The state invariant above also proves its exact evaluation identity \(E_D(P_T,n)=\chi_D(g_T(\sigma_n))=\chi_{X_D}(n)\). All finite recursions and queries terminate. Thus this is a reduction for the same path in the same coded tree, with one program \(P_T\) fixed before \(D\) varies.</p>
+    <p>If \(D\le_T A\), substitute its supplied characteristic-function program into \(P_T\). The substitution identity gives an \(A\)-oracle program for this path, preserving every computed bit.</p>
+  </div>
+</section>
+
+<section id="path-property-to-dnc" data-kind="lemma" data-formal="padeg-path-property padeg-paths-compute-dnc dnc-separator-tree">
+  <h2>The ability to choose paths includes a binary DNC path</h2>
+  <p>If an oracle \(A\) computes a path through every computable binary tree having a path, then it computes a binary DNC set.</p>
+  <div class="proof">
+    <p>Apply the hypothesis to the <a href="effectively-closed-classes-and-dnc#dnc-separators">fixed diagonal separator tree</a>. It is computable and <a href="effectively-closed-classes-and-dnc#binary-dnc-exists">has a path</a>, and its paths are exactly the binary DNC sets. The path supplied by the hypothesis is therefore the required \(A\)-computable set.</p>
+  </div>
+</section>
+
+<section id="pa-characterization" data-kind="theorem" data-formal="padeg-path-property padeg-pa-iff-dnc padeg-dnc-iff-paths">
+  <h2>Arithmetic completions, diagonal avoidance and path selection coincide</h2>
+  <div class="statement-box"><p>For every oracle \(A\subseteq\mathbb N\), the following are equivalent:</p>
+    <ul>
+      <li>\(A\) has PA degree.</li>
+      <li>\(A\) computes a binary DNC set.</li>
+      <li>For every computable binary tree \(T\) with at least one infinite path, \(A\) computes some path through \(T\).</li>
+    </ul>
+  </div>
+  <div class="proof">
+    <p>A computed PA completion yields a computed binary DNC set by <a href="#completion-to-dnc"></a> and oracle substitution. Conversely a computed binary DNC set yields the particular computed PA completion \(T_D\) by <a href="#greedy-completion"></a> and <a href="#completion-program"></a>. Binary DNC computes paths through every indicated tree by <a href="#dnc-path"></a>, and the path property yields binary DNC by <a href="#path-property-to-dnc"></a>. These prove all three equivalences with actual oracle programs.</p>
+  </div>
+</section>
+
+<section id="degree-closure" data-kind="theorem" data-formal="padeg-pa-upward padeg-pa-degree-invariant padeg-pa-degree-interpretation padeg-halting-above-pa padeg-pa-not-computable">
+  <h2>The property belongs to a degree and is preserved above it</h2>
+  <p>If \(A\) has PA degree and \(A\le_T B\), then \(B\) has PA degree. Thus the definition is invariant under Turing equivalence. Every oracle \(A\) with \(K\le_T A\) has PA degree, and no computable oracle has PA degree.</p>
+  <div class="proof">
+    <p>Choose a completion with \(C_T\le_T A\). Transitivity gives \(C_T\le_T B\), proving upward closure; two applications give degree invariance. The <a href="effectively-closed-classes-and-dnc#binary-dnc-exists">existing halting-computable binary DNC example</a> and the characterization show that \(K\), and hence every oracle above it, has PA degree. If a computable oracle had PA degree, eliminating that oracle from its DNC reduction would give a computable binary DNC function, contrary to <a href="effectively-closed-classes-and-dnc#dnc-noncomputable">diagonal noncomputability</a>. This also explains why the computable degree is excluded.</p>
+  </div>
+</section>
+
+<section id="low-pa-degrees" data-kind="theorem" data-formal="padeg-low-pa-degree lbt-low-dnc hfb-free-pa-outside-halting">
+  <h2>Some PA degrees lie strictly below the halting degree</h2>
+  <p>There is a binary DNC set \(D\) of PA degree such that \(D'\equiv_T K\) and</p>
+  <div class="math-display">\[\mathbf0&lt;\deg_T(D)&lt;\mathbf0'.\]</div>
+  <div class="proof">
+    <p>The <a href="low-basis-theorem#low-dnc">low binary DNC theorem</a> supplies a noncomputable \(D\) with \(D'\le_T K\). The ordinary halting lower bound gives \(K\le_T D'\), so its jump is equivalent to \(K\). The characterization makes \(D\) a PA oracle. Since \(D\le_T D'\le_T K\), its degree is at most \(\mathbf0'\). If \(K\le_T D\), <a href="turing-jump#jump-monotonicity">jump monotonicity</a> would give \(K'\le_T D'\le_T K\), contradicting <a href="turing-jump#jump-strictness">strictness of the jump</a>. Thus the upper comparison is strict, and noncomputability gives the strict lower comparison.</p>
+  </div>
+  <p>There are also <a href="hyperimmune-free-basis-theorem#hyperimmune-free-pa">hyperimmune-free PA oracles</a>, obtained by applying the corresponding basis theorem to the same binary DNC tree. These noncomputable oracles <a href="hyperimmune-free-basis-theorem#outside-halting">are not computable from ordinary halting</a>.</p>
+</section>
+
+<section id="consistency-question" data-kind="question" data-formal="padeg-completion-dnc padeg-completion-dnc-program padeg-completion-dnc-eval padeg-consistent-q-dnc">
+  <h2>Which properties of the completion did the arithmetic reduction use?</h2>
+  <p>Let \(T\) be any consistent, deductively closed extension of \(Q\), and let \(C_T\) be its set of sentence codes. Prove that the same preimage \(D_T=\{e:\ulcorner\Theta(\overline e)\urcorner\in C_T\}\) is binary DNC. Is completeness of \(T\) needed for this assertion?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Completeness is not needed here. If \(e\in D_0\), the explicit comparison lemma gives \(Q\vdash\Theta(\overline e)\). Extension and deductive closure put this sentence into \(T\). If \(e\in D_1\), it gives \(Q\vdash\neg\Theta(\overline e)\); extension and consistency exclude \(\Theta(\overline e)\) from \(T\). Thus \(D_T\) is the required separator, exactly as before. The same one-query program computes it from \(C_T\).</p>
+    <p>Both conclusions rest on checked standard computation certificates and finitely many positive or negative numeral instances, combined with the finite-cut theorem. The argument never infers a standard witness merely from a sentence's membership in \(T\). Completeness of the first-order proof calculus turns statements about every model of \(Q\) into proofs; this supplies the two specific derivability assertions used in the reduction.</p>
+  </div></details>
+</section>

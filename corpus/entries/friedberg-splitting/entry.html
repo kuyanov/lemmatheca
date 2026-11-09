@@ -1,0 +1,104 @@
+<section id="split-problem" data-formal="fsplt-split univ-enumerable-index-equivalence" data-kind="definition">
+  <h2>Partition an enumerable set while keeping both pieces undecidable</h2>
+  <p>A <strong>computably enumerable split</strong> of \(A\subseteq\mathbb N\) is a pair of c.e. sets \(A_0,A_1\) with \(A_0\cap A_1=\varnothing\) and \(A_0\cup A_1=A\). Every positive answer for \(A\) must eventually be assigned to exactly one side. The challenge is to prevent either side from becoming computable when \(A\) is not computable.</p>
+  <p>Fix an ordinary index \(a\) with \(A=W_a\), using the <a href="universal-computation#decidable-and-enumerable">enumerable-index characterization</a>. We use the <a href="effective-enumerations#uniform-finite-approximation">canonical finite stages</a> \(W_{e,s}\), including \(W_{e,0}=\varnothing\), increasing in \(s\) and exhausting \(W_e\). The construction below works for every index, even if its set is finite; noncomputability enters only in the final verification.</p>
+</section>
+
+<section id="fresh-arrivals" data-formal="fsplt-pending-selection fsplt-processed-list fsplt-processed-set fsplt-processed-test fsplt-arrival fsplt-has-arrival fsplt-scheduler-primitive fsplt-arrival-data" data-kind="definition">
+  <h2>Read a finite batch through one fresh arrival at a time</h2>
+  <p>Let \(P_0=\varnothing\). At stage \(s\), form the finite pending set \(W_{a,s+1}\setminus P_s\). If it is nonempty, let \(b_s\) be its least element and set \(P_{s+1}=P_s\cup\{b_s\}\). Otherwise the stage is <strong>idle</strong> and \(P_{s+1}=P_s\). Thus an arrival always satisfies \(b_s&lt;s+1\). Idle stages have no arrival value; in numerical storage we use \(s+1\) as a sentinel, distinguished by this strict bound.</p>
+  <p>This <strong>fresh-arrival scheduler</strong> is one specified algorithm. Its least pending search checks only \(x&lt;s+1\), using the canonical stage test and the finite record of earlier arrivals. Finite-set insertion and this bounded search compute the whole sequence by recursion. No test of infinitude or undecidability is used.</p>
+</section>
+
+<section id="scheduler-fairness" data-formal="fsplt-scheduler-invariants fsplt-scheduler-transition fsplt-scheduler-monotone fsplt-arrivals-distinct fsplt-scheduler-exhaustive" data-kind="lemma">
+  <h2>No arrival repeats, and no input member is left behind</h2>
+  <p>The sets \(P_s\) increase, lie inside \(A\), and satisfy \(P_s\subseteq\{0,\ldots,s-1\}\). Each member is selected at most once, and \(A=\bigcup_sP_s\).</p>
+  <div class="proof"><p>Insertion proves monotonicity and the stage bound. A selected element belongs to \(W_{a,s+1}\subseteq A\), proving inclusion. Once selected it stays in every later processed set, so it is never pending again.</p><p>Conversely, fix \(x\in A\), and choose a stage after which \(x\in W_{a,s+1}\). If \(x\) were never selected, it would remain pending at every later stage. Each such stage would therefore select a fresh element at most \(x\). Only \(x+1\) natural numbers have that bound, whereas the stages continue indefinitely. This contradiction proves that \(x\) is eventually processed.</p></div>
+</section>
+
+<section id="fresh-values-escape" data-formal="fsplt-arrival-escape" data-kind="lemma">
+  <h2>Late arrivals escape every fixed finite initial segment</h2>
+  <p>For every \(u\), some stage \(t\) has the property that every arrival \(b_s\) at a stage \(s\ge t\) satisfies \(u\le b_s\).</p>
+  <div class="proof"><p>There are finitely many input members below \(u\). By scheduler fairness, each is selected at some stage. Choose a stage after all these selections. No later fresh arrival can be one of those members, and every arrival belongs to the input set. Thus no later arrival is below \(u\). If there are no later arrivals, the assertion holds vacuously.</p></div>
+</section>
+
+<section id="complement-requirements" data-formal="fsplt-requirement univ-two-sided-recognition univ-enumerable-index-equivalence" data-kind="definition">
+  <h2>Make each proposed enumerable complement fail</h2>
+  <p>For \(q=2e+i\), where \(i\in\{0,1\}\), the requirement is</p>
+  <div class="math-display">\[R_{2e+i}:\qquad W_e\ne\mathbb N\setminus A_i.\]</div>
+  <p>It is enough to satisfy all these requirements: if \(A_i\) were computable, its complement would be c.e. and hence equal to some \(W_e\). To oppose that equality, a requirement tries to put one element of \(W_e\) into its side \(A_i\). It can use only an element that actually arrives from \(A\); we cannot enumerate an arbitrary private witness into the input.</p>
+</section>
+
+<section id="routing-stage" data-formal="fsplt-routing-invariants fsplt-scheduler-invariants fsplt-eligible fsplt-priority fsplt-chosen-side fsplt-next-stage fsplt-route-stage fsplt-piece-stage fsplt-piece-test fsplt-acts fsplt-priority-data fsplt-routing-primitive" data-kind="definition">
+  <h2>Give a fresh arrival to the earliest eligible requirement</h2>
+  <p>Begin with \(A_{0,0}=A_{1,0}=\varnothing\). An idle stage leaves both sides unchanged. At a nonidle stage \(s\), with arrival \(b_s\), say that \(q=2e+i\le s\) is <strong>eligible</strong> when</p>
+  <div class="math-display">\[A_{i,s}\cap W_{e,s+1}=\varnothing\qquad\text{and}\qquad b_s\in W_{e,s+1}.\]</div>
+  <p>If any eligible requirement exists, choose the least \(q\), put \(b_s\) into its side \(i\), and say that \(R_q\) <strong>acts</strong>. If none exists, put \(b_s\) into side zero. The other side remains unchanged. Default placement is not an action by a requirement.</p>
+  <p>These are bounded tests. Both current sides lie below \(s\); stage \(s+1\) of every canonical enumeration is finite and computable; only \(q\le s\) are examined. Store the two finite membership lists and use numerical recursion, as in the <a href="finite-injury-and-posts-problem#stage-effectivity">effective finite-state construction</a>. This gives specified ordinary computable stage tests, rather than a construction consulting the final sets.</p>
+</section>
+
+<section id="effective-partition" data-formal="fsplt-piece fsplt-routing-transition fsplt-routing-invariants fsplt-monotone fsplt-partition" data-kind="lemma">
+  <h2>The routed finite sets form an enumerable partition</h2>
+  <p>For every stage \(s\), the sides increase, are disjoint, and have union \(P_s\). Their limits \(A_i=\bigcup_s A_{i,s}\) are c.e., disjoint, and have union \(A\).</p>
+  <div class="proof"><p>Induct on the stage. Idle stages preserve all assertions. A nonidle stage adds exactly the one fresh arrival to exactly one side. It was in neither side, because their old union was \(P_s\); thus disjointness is preserved and the new union is \(P_{s+1}\). Earlier members are never removed.</p><p>The computable increasing finite stages enumerate both limits, by the <a href="effective-enumerations#computable-approximations">finite-approximation characterization</a>. If an element belonged to both limits, monotonicity would put it in both sides at one sufficiently late finite stage, contradicting finite-stage disjointness. Their union is \(\bigcup_sP_s=A\) by scheduler fairness.</p></div>
+</section>
+
+<section id="single-attention" data-formal="fsplt-single-action fsplt-higher-actions-stop" data-kind="lemma">
+  <h2>A requirement acts at most once</h2>
+  <p>For every \(q\), there is at most one stage at which \(R_q\) acts. In particular, some stage \(t\) lies after every action by a requirement of index below any fixed \(q\).</p>
+  <div class="proof"><p>If \(R_{2e+i}\) acts at stage \(s\), its arrival enters \(A_{i,s+1}\cap W_{e,s+1}\). Both enumerations are increasing, so this intersection remains nonempty at all later stages. Its requirement can never again pass the empty-intersection test. There are only finitely many indices below \(q\); choose a stage after their finitely many possible action stages.</p><p>No restraint or injury argument is needed here. The increasing intersection itself records permanent success.</p></div>
+</section>
+
+<section id="complement-decoder" data-formal="fsplt-complement-search fsplt-complement-decoder fsplt-decoder-recursive" data-kind="definition">
+  <h2>An alleged complement supplies a terminating search for the input set</h2>
+  <p>Fix \(q=2e+i\), and choose \(t\ge q\) after every action by a requirement below \(q\). Define the ordinary partial procedure \(D_{a,e,t}\) on input \(x\): search stages \(s=t,t+1,\ldots\) for the first one satisfying</p>
+  <div class="math-display">\[x\in P_s\cup W_{e,s}.\]</div>
+  <p>At that stage return one if \(x\in P_s\), and zero otherwise. The search and return test are computable from the fixed numerical parameters \(a,e,t\). They do not query membership in the final input set or in a final piece. The procedure may be partial for arbitrary parameters.</p>
+</section>
+
+<section id="decoder-correctness" data-formal="fsplt-decoder-correct" data-kind="lemma">
+  <h2>If a proposed complement were correct, the search would decide the input</h2>
+  <p>If \(W_e=\mathbb N\setminus A_i\), the specified \(D_{a,e,t}\) terminates on every input and equals \(\chi_A\).</p>
+  <div class="proof"><p>Since \(A_i\subseteq A\), the assumed complement identity gives \(A\cup W_e=\mathbb N\). Scheduler fairness and exhaustion of \(W_e\) therefore make the search terminate. If the chosen stage has \(x\in P_s\), its answer one is correct because \(P_s\subseteq A\).</p><p>Otherwise \(x\in W_{e,s}\setminus P_s\). Suppose for contradiction that \(x\in A\). It has a later arrival stage \(v\ge s\). At stage \(v\), it is in \(W_{e,v+1}\), and \(A_{i,v}\cap W_{e,v+1}\) is empty because the final sets \(A_i,W_e\) are disjoint. Also \(q\le t\le v\), so \(R_q\) is eligible. A smaller eligible index would act at that stage, contradicting the choice of \(t\). Thus the routing rule chooses \(q\), and puts \(x\) into \(A_i\cap W_e\), again impossible. Hence \(x\notin A\), and the answer zero is correct.</p></div>
+</section>
+
+<section id="friedberg-theorem" data-formal="fsplt-all-requirements fsplt-noncomputable-pieces fsplt-theorem" data-kind="theorem">
+  <h2>Every undecidable enumerable set splits into two undecidable enumerable pieces</h2>
+  <div class="statement-box"><p>If \(A\) is c.e. and noncomputable, then the specified routing construction gives c.e. noncomputable sets \(A_0,A_1\) with \(A=A_0\mathbin{\dot\cup}A_1\).</p></div>
+  <div class="proof"><p>The partition and enumerability assertions were proved in <a href="#effective-partition"></a>. If a side \(A_i\) were computable, its complement would be c.e. by <a href="universal-computation#two-sided-recognition">two-sided recognition</a>. Choose an index \(e\) for that complement, and the finite cutoff \(t\) from <a href="#single-attention"></a>. The specified decoder would be a total computable characteristic function for \(A\), contradicting its noncomputability. Therefore both pieces are noncomputable.</p></div>
+</section>
+
+<section id="guarded-piece-search" data-formal="fsplt-first-union-stage fsplt-guarded-piece fsplt-guarded-recursive fsplt-guarded-code fsplt-piece-program fsplt-guarded-eval" data-kind="definition">
+  <h2>Use the union oracle before searching for a piece</h2>
+  <p>Now let \(B_0=W_{e_0}\) and \(B_1=W_{e_1}\) be any disjoint c.e. sets, and put \(B=B_0\cup B_1\). For \(i\in\{0,1\}\), define an ordinary partial procedure \(H_i(b,x)\): if \(b=0\), return zero immediately; otherwise search for the first stage at which \(x\in W_{e_0,s}\cup W_{e_1,s}\), then return the membership bit for \(W_{e_i,s}\).</p>
+  <p>Choose an ordinary code \(h_i\) for this specified partial procedure. With \(I\) the identity program, the <strong>piece program</strong> is the actual oracle-program tree</p>
+  <div class="math-display">\[P_i=\operatorname{comp}\bigl(\iota(h_i),\operatorname{pair}(\mathbf Q,I)\bigr).\]</div>
+  <p>It first obtains \((\chi_B(x),x)\), then runs \(H_i\) on that pair. The ordinary branch on \(b\) occurs before any unbounded search. The <a href="oracle-computation#ordinary-programs-and-queries">ordinary embedding</a> \(\iota\) lets this search operate within the fixed oracle-program language.</p>
+</section>
+
+<section id="split-reductions" data-formal="fsplt-piece-reduction" data-kind="theorem">
+  <h2>The specified piece programs reduce each side to its disjoint union</h2>
+  <p>For every \(x\), the displayed \(P_i\), using oracle \(B\), terminates with output \(\chi_{B_i}(x)\). Thus \(B_i\le_TB\) for both sides.</p>
+  <div class="proof"><p>If \(x\notin B\), the query returns zero, and \(H_i\) returns zero without starting the search. If \(x\in B\), some stage witnesses its membership in one of the two enumerations, so the search terminates. Disjointness ensures that exactly one of the final pieces contains it. Its membership in the other finite stage is impossible, and its first observed membership identifies that unique piece. The returned bit is therefore \(\chi_{B_i}(x)\).</p><p>This proves correctness for this very program on members and nonmembers. Merely enumerating a piece with the union oracle available would not give a decision procedure.</p></div>
+</section>
+
+<section id="split-join" data-formal="fsplt-union-program fsplt-union-reduction fsplt-union-join turing-join-universal-property" data-kind="theorem">
+  <h2>The disjoint union carries exactly the information in the two pieces together</h2>
+  <p>For disjoint c.e. \(B_0,B_1\), their ordinary union and their <a href="turing-degrees#finite-join">even–odd join</a> satisfy</p>
+  <div class="math-display">\[B_0\cup B_1\equiv_T B_0\oplus B_1.\]</div>
+  <div class="proof"><p>The displayed piece reductions and the <a href="turing-degrees#join-upper-bound">join universal property</a> give \(B_0\oplus B_1\le_T B_0\cup B_1\). Conversely, an oracle for the join decides both pieces by their even and odd tags. On input \(x\), ask about \(2x\) and \(2x+1\), then return one exactly when at least one answer is one. This total two-query program decides \(B_0\cup B_1\). The two reductions prove the claimed equivalence.</p></div>
+</section>
+
+<section id="finite-input-question" data-formal="fsplt-finite-input fsplt-empty-input" data-kind="question">
+  <h2>What happens for a finite input?</h2>
+  <p>Does the construction fail when the input set is finite? Could both pieces then still be noncomputable?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The scheduler and routing still run at every stage. They eventually process every input member and then become idle, giving a disjoint c.e. partition. Both pieces are subsets of a finite set, hence finite and computable. This is why the theorem assumes that its input is noncomputable. For the empty input, every stage is idle and both pieces remain empty.</p></div></details>
+</section>
+
+<section id="incomparability-question" data-formal="fsplt-tag-copy fsplt-equal-degree-example fsplt-union-join fip-friedberg-muchnik sacks-strict-incomparable" data-kind="question">
+  <h2>Does this theorem already give incomparable degrees?</h2>
+  <p>The constructed pieces are disjoint and noncomputable. Has the proof shown that neither is computable from the other?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No such conclusion has been established. The requirements defeat ordinary enumerable complements; they do not diagonalize against oracle programs using the other piece. Disjointness is a statement about membership, and noncomputability excludes only the computable degree.</p><p>For a concrete reason that disjointness and noncomputability alone do not imply incomparability, take any noncomputable c.e. set \(H\), and put \(B_0=\{2x:x\in H\}\), \(B_1=\{2x+1:x\in H\}\). Tagging an enumeration makes both sets c.e., and parity makes them disjoint. Each tagged set computes \(H\) by querying its corresponding tag. Conversely, test the tag's parity and, when it matches, halve it and ask the \(H\)-oracle; return zero for the other parity. Thus both pieces have exactly the degree of \(H\), so both are noncomputable but their degrees are equal. They illustrate the insufficiency of those properties; they are not asserted to be the output of the routing algorithm above.</p><p>The join equivalence shows what is known about the constructed pieces: each lies below the input, and together they recover it. It does not make either reduction strict or rule out a reduction between them. The <a href="finite-injury-and-posts-problem#friedberg-muchnik">Friedberg–Muchnik construction</a> establishes incomparability for a separately constructed pair; it does not assert that those sets split an arbitrary prescribed input.</p>
+  <p>The <a href="sacks-splitting#strict-incomparable-pieces">Sacks splitting construction</a> supplies this stronger control for every prescribed noncomputable c.e. input: its two pieces are incomparable, low, and strictly below that input.</p>
+</div></details>
+</section>

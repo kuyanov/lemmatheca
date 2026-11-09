@@ -1,3 +1,4 @@
+import Lemmatheca.ComputableReductions.Complement
 import Mathlib.Computability.Reduce
 import Lemmatheca.FirstIncompleteness.FirstIncompleteness
 
@@ -132,6 +133,44 @@ theorem complement_validity_not_enumerable : ¬ REPred (fun n => ¬ ValidCodes n
   intro h
   exact validity_undecidable
     (ComputablePred.computable_iff_re_compl_re'.mpr ⟨validity_enumerable, h⟩)
+
+theorem complement_satisfiability_iff (n : ℕ) :
+    ¬ SatisfiableCodes n ↔
+      ¬ isSentence arithmeticSignature n = true ∨ ValidCodes (negCode n) := by
+  by_cases hn : isSentence arithmeticSignature n = true
+  · obtain ⟨A, rfl⟩ := (sentence_recognition_iff arithmeticSignature n).mp hn
+    simp only [hn, not_true_eq_false, false_or, negation_code, valid_code, satisfiable_code]
+    constructor
+    · intro hu
+      apply Theory.models_sentence_iff.mpr
+      intro M
+      rw [Sentence.realize_not]
+      intro hA
+      let : M ⊨ ({A} : language.Theory) := ⟨by
+        intro φ hφ
+        rcases Set.mem_singleton_iff.mp hφ with rfl
+        exact hA⟩
+      exact hu (Theory.Model.isSatisfiable M)
+    · intro hv hs
+      let M := hs.some
+      have hA : M ⊨ A := Theory.realize_sentence_of_mem ({A} : language.Theory) (by simp)
+      let : M ⊨ (∅ : language.Theory) := inferInstance
+      have hNot := Theory.models_sentence_iff.mp hv (Theory.ModelType.of (∅ : language.Theory) M)
+      exact (Sentence.realize_not M).mp hNot hA
+  · have hSat : ¬ SatisfiableCodes n := by
+      rintro ⟨A, hcode, _⟩
+      exact hn ((sentence_recognition_iff arithmeticSignature n).mpr ⟨A, hcode⟩)
+    exact ⟨fun _ => Or.inl hn, fun _ => hSat⟩
+
+theorem satisfiability_coenumerable :
+    ComputableSeparation.CoEnumerable SatisfiableCodes := by
+  have hBad : ComputablePred (fun n => ¬ isSentence arithmeticSignature n = true) :=
+    (Primrec.eq.comp (primrec_isSentence arithmeticSignature) (Primrec.const true)).computablePred.not
+  have hNeg : Primrec negCode := by unfold negCode impCode; fun_prop
+  change REPred (fun n => ¬ SatisfiableCodes n)
+  exact (UniversalComputation.enumerable_union hBad.to_re
+    (UniversalComputation.enumerable_preimage validity_enumerable hNeg.to_comp)).of_eq
+      (fun n => (complement_satisfiability_iff n).symm)
 
 def guardedNegation (n : ℕ) : ℕ :=
   if isSentence arithmeticSignature n then negCode n else negCode botCode

@@ -1,0 +1,97 @@
+<section id="nested-chains" data-formal="fdnf-nested fdnf-enumerable-chain fdnf-alternating-difference fdnf-empty-chain" data-kind="definition">
+  <h2>Alternate along a finite descending chain</h2>
+  <p>A <strong>nested enumerable chain of length \(n\)</strong> is a finite family of c.e. sets \(U_0,\ldots,U_{n-1}\subseteq\mathbb N\) with \(U_{i+1}\subseteq U_i\) whenever \(i+1&lt;n\). Extend its notation by \(U_n=\varnothing\). Its <strong>alternating difference</strong> is</p>
+  <div class="math-display">\[D_n(U)=\bigcup_{\substack{i&lt;n\\i\text{ even}}}(U_i\setminus U_{i+1}).\]</div>
+  <p>For odd \(n\), the last term is \(U_{n-1}\); for positive even \(n\), the last term is \(U_{n-2}\setminus U_{n-1}\). The length-zero family has value \(D_0(U)=\varnothing\). The sets need not be distinct or nonempty. The union is finite, and its notation does not assert that the differences themselves are enumerable.</p>
+</section>
+
+<section id="membership-rank" data-formal="fdnf-rank fdnf-rank-bound fdnf-initial-membership" data-kind="definition">
+  <h2>Count how far an input reaches down the chain</h2>
+  <p>The <strong>membership rank</strong> of \(x\) in the first \(n\) sets of a family \(U\) is</p>
+  <div class="math-display">\[r_n(U,x)=\sum_{i&lt;n}[x\in U_i].\]</div>
+  <p>A bracket is one when its condition holds and zero otherwise. This defines a numerical function even when no membership algorithm for \(U_i\) is available. For a nested chain, its membership indices form the initial segment \(0,\ldots,r_n(U,x)-1\): membership at index \(i\) forces membership at every smaller index. Thus \(0\le r_n(U,x)\le n\), and \(x\in U_i\) exactly when \(i&lt;r_n(U,x)\), for \(i&lt;n\).</p>
+</section>
+
+<section id="rank-parity" data-formal="fdnf-rank-parity" data-kind="lemma">
+  <h2>An odd membership rank gives exactly the alternating difference</h2>
+  <p>For every nested chain \(U\) of length \(n\) and every input \(x\),</p>
+  <div class="math-display">\[x\in D_n(U)\quad\Longleftrightarrow\quad r_n(U,x)\bmod2=1.\]</div>
+  <div class="proof"><p>Write \(r=r_n(U,x)\). If \(r=0\), the input is in none of the sets and in none of the differences. If \(r&gt;0\), its only possible departure from the chain is at index \(r-1\): it belongs to \(U_{r-1}\) and not to \(U_r\), with the sentinel \(U_n=\varnothing\) handling \(r=n\). For smaller indices it belongs to both consecutive sets; for larger ones it belongs to neither. Therefore the union includes \(x\) exactly when \(r-1\) is even, which is equivalent to \(r\) being odd. This proves the equivalence at the two boundaries as well as at an interior departure.</p></div>
+</section>
+
+<section id="count-parity" data-formal="fdnf-count-parity" data-kind="lemma">
+  <h2>The parity of a revision count is the current answer</h2>
+  <p>If a binary approximation \(a(s,x)\) <a href="differences-of-enumerable-sets#change-counter">starts at zero</a>, its prefix change counter satisfies</p>
+  <div class="math-display">\[a(s,x)=c_a(s,x)\bmod2\qquad\text{for every }s,x.\]</div>
+  <div class="proof"><p>Induct on \(s\), keeping \(x\) fixed. At stage zero both sides are zero. If the next answer agrees with the old one, the counter is unchanged, so the induction hypothesis remains true. If the answers differ, binary values force a switch from zero to one or from one to zero. The counter increases by exactly one; its parity switches in the same way. These two cases establish the successor step. The initial-bit assumption supplies the base case and cannot be omitted.</p></div>
+</section>
+
+<section id="change-thresholds" data-formal="fdnf-threshold fdnf-threshold-family fdnf-threshold-uniform-enumerable fdnf-threshold-enumerable fdnf-threshold-nested fdnf-threshold-empty" data-kind="definition">
+  <h2>Enumerate the inputs which reach each revision threshold</h2>
+  <p>For a jointly computable approximation \(a\), its <strong>change-threshold sets</strong> are</p>
+  <div class="math-display">\[C_i(a)=\{x:\exists s\;i+1\le c_a(s,x)\}\qquad(i\in\mathbb N).\]</div>
+  <p>These sets are uniformly c.e.: on the supplied pair \((i,x)\), compute the counter at successive stages and accept when it is at least \(i+1\). The counter is <a href="differences-of-enumerable-sets#change-counter">jointly computable</a>, so every individual test terminates. This is one recognizer with \(i\) as an input, rather than a separate unconnected existence claim for each threshold. They are nested, since reaching \(i+2\) changes entails reaching at least \(i+1\). If \(a\) has at most \(n\) changes, then \(C_i(a)=\varnothing\) for \(i\ge n\).</p>
+</section>
+
+<section id="attained-final-count" data-formal="fdnf-counter-maximum fdnf-threshold-membership" data-kind="lemma">
+  <h2>A bounded counter has an attained largest value</h2>
+  <p>Suppose \(c_a(s,x)\le n\) for all \(s,x\). For each fixed \(x\), there are \(r\le n\) and a stage \(t\) such that \(c_a(t,x)=r\), every counter value is at most \(r\), and \(c_a(s,x)=r\) for all \(s\ge t\). Moreover,</p>
+  <div class="math-display">\[x\in C_i(a)\quad\Longleftrightarrow\quad i&lt;r.\]</div>
+  <div class="proof"><p>The range of the counter on this input is a nonempty subset of the finite set \(\{0,\ldots,n\}\). Choose its largest value \(r\), and a stage \(t\) attaining it. The <a href="differences-of-enumerable-sets#counter-invariant">counter is nondecreasing</a>, so maximality forces every later value to equal \(r\). A witnessed threshold has \(i+1\le r\). Conversely, if \(i&lt;r\), the attaining stage itself witnesses the threshold. The stage \(t\) may depend on \(x\); this finite-range argument does not supply a computable settling function.</p></div>
+</section>
+
+<section id="threshold-reconstruction" data-formal="fdnf-threshold-reconstruction" data-kind="theorem">
+  <h2>The threshold chain reconstructs the limit set</h2>
+  <p>If \(a\) is a computable binary approximation starting at zero, converging to \(\chi_A\), and having at most \(n\) changes, then its first \(n\) threshold sets form a nested enumerable chain and</p>
+  <div class="math-display">\[A=D_n(C(a)).\]</div>
+  <div class="proof"><p>The enumerability and nesting were established in <a href="#change-thresholds"></a>. Fix \(x\), and take its attained final count \(r\) from <a href="#attained-final-count"></a>. Exactly the first \(r\) threshold sets contain \(x\), so their membership rank is \(r\). Choose a stage after both the counter has attained \(r\) and the approximation has reached its final answer. At that stage <a href="#count-parity"></a> gives \(\chi_A(x)=r\bmod2\). By <a href="#rank-parity"></a>, this bit is one exactly when \(x\in D_n(C(a))\). This proves equality for the specified threshold chain. If \(n=0\), no thresholds occur and the same argument yields the empty set.</p></div>
+</section>
+
+<section id="stage-rank" data-formal="fdnf-stage-rank fdnf-parity-guess fdnf-chain-guess fdnf-stage-rank-data" data-kind="definition">
+  <h2>Add the discoveries in the supplied enumerations</h2>
+  <p>Choose program-domain indices \(e_0,\ldots,e_{n-1}\), so \(U_i=W_{e_i}\). Let \(W_{e_i,s}\) be their <a href="effective-enumerations#uniform-finite-approximation">canonical finite stages</a>. Define the <strong>stage rank</strong> and its <strong>parity approximation</strong> by</p>
+  <div class="math-display">\[R(s,x)=\sum_{i&lt;n}[x\in W_{e_i,s}],\qquad b(s,x)=R(s,x)\bmod2.\]</div>
+  <p>This is a specified ordinary algorithm. Set an accumulator to zero; for each of the finitely many stored indices, compute its stage-membership bit and add it. Then take the remainder modulo two. Each test is uniformly computable, so \(R\) and \(b\) are jointly computable in \((s,x)\) for the supplied finite list of indices. The starting rank is zero, since every canonical stage at time zero is empty. Each summand is nondecreasing in \(s\), so \(R(s,x)\le R(s+1,x)\) and \(R(s,x)\le n\). The finite snapshots need not be nested; these numerical facts use only the separate increasing enumerations.</p>
+</section>
+
+<section id="rank-controls-changes" data-formal="fdnf-rank-controls-changes" data-kind="lemma">
+  <h2>Each parity revision spends at least one discovery</h2>
+  <p>Let \(R(s,x)\) be a jointly computable numerical function with \(R(0,x)=0\), nondecreasing in \(s\), and bounded by \(n\). Then \(b(s,x)=R(s,x)\bmod2\) is computable, binary, starts at zero, and satisfies</p>
+  <div class="math-display">\[c_b(s,x)\le R(s,x)\le n.\]</div>
+  <div class="proof"><p>Computability follows by numerical composition; a remainder modulo two is zero or one. Prove the counter inequality by induction on \(s\). At stage zero both sides are zero. If the parity stays fixed at the next stage, its counter does not increase, and monotonicity of \(R\) preserves the inequality. If the parity changes, the two rank values differ. Their monotonicity makes the new rank at least the old rank plus one, which pays for the single new revision. This also handles a stage at which several enumeration bits change together: the rank may jump by several units, while its parity still changes at most once. The invariant proves the bound for every finite prefix.</p></div>
+</section>
+
+<section id="stage-rank-convergence" data-formal="fdnf-rank-convergence" data-kind="lemma">
+  <h2>A finite list of stage bits eventually has its final sum</h2>
+  <p>For the indices in <a href="#stage-rank"></a> and every fixed \(x\), some stage \(t\) satisfies</p>
+  <div class="math-display">\[R(s,x)=r_n(U,x)\qquad\text{for every }s\ge t.\]</div>
+  <div class="proof"><p>For each of the finitely many indices, its stage bit converges to \([x\in U_i]\). If \(x\in U_i\), choose a stage at which its accepting computation has been discovered; every later stage retains that discovery. If \(x\notin U_i\), its bit is zero at all stages. The maximum of these finitely many thresholds works for all summands, and therefore for their sum. With an empty index list take \(t=0\). This argument again supplies a threshold for each fixed input, without making that threshold computable.</p></div>
+</section>
+
+<section id="chain-approximation" data-formal="fdnf-chain-approximation fmchange-nce" data-kind="theorem">
+  <h2>The stage-rank parity realizes the supplied alternating difference</h2>
+  <p>If \(U_i=W_{e_i}\), for \(i&lt;n\), form a nested enumerable chain, then the specified parity approximation \(b\) starts at zero, has at most \(n\) changes, and converges to \(\chi_{D_n(U)}\). In particular \(D_n(U)\) is \(n\)-c.e.</p>
+  <div class="proof"><p>The stage-rank construction and <a href="#rank-controls-changes"></a> supply computability, binary values, the starting bit and the bound. For convergence on \(x\), <a href="#stage-rank-convergence"></a> makes all later ranks equal \(r_n(U,x)\). Their parity is exactly the characteristic bit of \(D_n(U)\) by <a href="#rank-parity"></a>. Nesting is used for this final identification, and was not silently imposed on the finite snapshots. Thus the argument realizes the actual supplied sets and indices, rather than selecting an unrelated chain with the same kind of value.</p></div>
+</section>
+
+<section id="finite-difference-characterization" data-formal="fdnf-characterization fmchange-zero-class dce-one-change-characterization dce-characterization" data-kind="theorem">
+  <h2>A finite revision allowance is exactly a finite nested difference</h2>
+  <div class="statement-box"><p>For every \(n\in\mathbb N\) and \(A\subseteq\mathbb N\), \(A\) is \(n\)-c.e. if and only if it is the alternating difference of some nested enumerable chain of length \(n\).</p></div>
+  <div class="proof"><p>For a supplied \(n\)-change approximation, use its exact threshold chain and <a href="#threshold-reconstruction"></a>. Conversely, choose recognizer indices for the finitely many sets in the chain, and use <a href="#chain-approximation"></a>. These choices are finite and do not require a uniform enumeration of every total computable function. At levels zero, one and two the statement recovers the <a href="finite-mind-changes#first-three-levels">empty-set, enumerable-set and difference-set characterizations</a>. At larger levels it gives an exact representation bound in terms of the number of chain sets; it does not assert that every presentation requires all of its allowed revisions.</p></div>
+</section>
+
+<section id="three-and-four-levels" data-formal="fdnf-multiples-chain fdnf-multiples-nested fdnf-multiples-values fdnf-multiples-ranks fdnf-multiples-decidable" data-kind="question">
+  <h2>What do three and four nested cancellation levels describe?</h2>
+  <p>Take \(U_0=\mathbb N\), \(U_1=2\mathbb N\), \(U_2=4\mathbb N\), and \(U_3=8\mathbb N\), where \(d\mathbb N\) is the set of multiples of \(d\). Determine the length-three and length-four alternating differences. Must these examples need three or four changes? For each length, use only that initial segment, with its own empty sentinel.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The first is the odd numbers together with the multiples of four: \(D_3=(\mathbb N\setminus2\mathbb N)\cup4\mathbb N\). The second is the odd numbers together with multiples of four that are not multiples of eight: \(D_4=(\mathbb N\setminus2\mathbb N)\cup(4\mathbb N\setminus8\mathbb N)\). Their ranks explain the successive cancellations.</p>
+    <table id="rank-examples"><caption>Membership ranks and parity in the two finite chains.</caption><thead><tr><th scope="col">Input type</th><th scope="col">Rank for three sets</th><th scope="col">Rank for four sets</th><th scope="col">In \(D_3\)?</th><th scope="col">In \(D_4\)?</th></tr></thead><tbody><tr><th scope="row">Odd</th><td>1</td><td>1</td><td>Yes</td><td>Yes</td></tr><tr><th scope="row">\(2\bmod4\)</th><td>2</td><td>2</td><td>No</td><td>No</td></tr><tr><th scope="row">\(4\bmod8\)</th><td>3</td><td>3</td><td>Yes</td><td>Yes</td></tr><tr><th scope="row">\(0\bmod8\)</th><td>3</td><td>4</td><td>Yes</td><td>No</td></tr></tbody></table>
+    <p>Both sets are decidable by taking a remainder. Hence both have one-change approximations by <a href="differences-of-enumerable-sets#one-change-characterization">ordinary enumerability</a>. A chain length gives an available bound, not a proof that the bound is minimal.</p>
+  </div></details>
+</section>
+
+<section id="nesting-question" data-formal="fdnf-nonnested-chain fdnf-nonnested-counterexample" data-kind="question">
+  <h2>Can the parity formula ignore the nesting hypothesis?</h2>
+  <p>For two arbitrary c.e. sets, does the parity of their membership rank necessarily describe \(U_0\setminus U_1\)? Test \(U_0=\varnothing\) and \(U_1=\mathbb N\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Every input has rank one in this family, so the odd-rank set is all of \(\mathbb N\), whereas \(U_0\setminus U_1=\varnothing\). The family is not nested. The stage-rank algorithm always computes the parity of its membership bits; the nesting hypothesis is what identifies that parity with an alternating chain difference. It is a hypothesis on the final sets, not an assumption that every temporary snapshot already respects all inclusions.</p></div></details>
+</section>

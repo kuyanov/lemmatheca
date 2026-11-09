@@ -1,0 +1,124 @@
+<section id="effective-pairs" data-formal="einf-effective-witness einf-effective-pair einf-outside-point" data-kind="definition">
+  <h2>An algorithm can escape every proposed disjoint enlargement</h2>
+  <p>Use the fixed program numbering \(\varphi_e\) and its domains \(W_e=\{x:\varphi_e(x)\downarrow\}\). A disjoint pair of c.e. sets \((A,B)\) is <strong>effectively inseparable</strong> if there is a total recursive function \(p:\mathbb N^2\to\mathbb N\) such that</p>
+  <div class="math-display">\[A\subseteq W_u,\quad B\subseteq W_v,\quad W_u\cap W_v=\varnothing\quad\Longrightarrow\quad p(u,v)\notin W_u\cup W_v.\]</div>
+  <p>Call such a \(p\) an <strong>effective inseparability witness</strong>. The indices \(u,v\), rather than membership oracles for their domains, are its inputs. It must terminate at every pair of indices; its conclusion is required only when the displayed hypotheses hold. In particular, taking indices for \(A,B\) themselves produces an element outside \(A\cup B\).</p>
+</section>
+
+<section id="ordinary-inseparability" data-formal="einf-ordinary-inseparability" data-kind="lemma">
+  <h2>The escape rule rules out a computable separator</h2>
+  <p>Every effectively inseparable pair is <a href="computably-inseparable-sets#separators">computably inseparable</a>.</p>
+  <div class="proof">
+    <p>Suppose a decidable set \(C\) contained \(A\) and avoided \(B\). Both \(C\) and its complement are c.e., so choose \(W_u=C\) and \(W_v=\mathbb N\setminus C\). These domains are disjoint supersets of the required components. The witness would give \(p(u,v)\notin C\cup(\mathbb N\setminus C)=\mathbb N\), an impossibility. This proves the claim without needing an algorithm that recognizes valid pairs of enlargement indices.</p>
+  </div>
+</section>
+
+<section id="opposite-output-program" data-formal="einf-certificate-race einf-certificate-race-partial einf-certificate-race-stage einf-certificate-race-domain einf-opposite-program einf-opposite-selector einf-opposite-program-partial einf-opposite-selector-exists" data-kind="lemma">
+  <h2>Select a program that gives the opposite answer if it is enumerated</h2>
+  <p>There is one primitive-recursive function \(d(u,v)\) whose program ignores its runtime input and behaves as follows: it waits for its own index \(d(u,v)\) to enter \(W_u\) or \(W_v\), returning one if the first successful finite stage certifies entry into \(W_u\), and zero otherwise. In a tie it returns one.</p>
+  <div class="proof">
+    <p>Let \(b(k,e,x)\) be the <a href="universal-computation#universal-evaluation">bounded evaluator</a>, where a positive value certifies termination. With a prospective self-index \(z\), parameter \(a=\langle u,v\rangle\), and unused runtime input \(x\), search the least \(k\) for which</p>
+    <div class="math-display">\[b(k,u,z)&gt;0\quad\text{or}\quad b(k,v,z)&gt;0.\]</div>
+    <p>At a successful stage return one when the first test is positive, and zero otherwise. This gives a partial recursive function \(G(z,a,x)\) jointly in all three arguments: pair decoding and each finite test are primitive recursive, followed by unbounded search. It is undefined exactly when neither computation terminates.</p>
+    <p><a href="uniform-self-reference#partial-families">Uniform self-reference for partial families</a> supplies one primitive-recursive selector \(h(a)\) satisfying \(\varphi_{h(a)}(x)\simeq G(h(a),a,x)\). Put \(d(u,v)=h(\langle u,v\rangle)\). This computes a finite index without running either membership search. The displayed identity proves the stated behavior on every runtime input, including divergence.</p>
+  </div>
+</section>
+
+<section id="diagonal-effective-pair" data-formal="einf-specified-diagonal-witness einf-diagonal-effective-pair inseparable-diagonal-output-sets inseparable-diagonal-enumerable inseparable-diagonal-disjoint" data-kind="theorem">
+  <h2>The diagonal output pair has a uniform escape witness</h2>
+  <div class="statement-box"><p>The <a href="computably-inseparable-sets#diagonal-pair">diagonal output sets</a></p>
+    <div class="math-display">\[D_0=\{e:\varphi_e(e)\downarrow=0\},\qquad D_1=\{e:\varphi_e(e)\downarrow=1\}\]</div>
+    <p>are effectively inseparable, witnessed by the specified function \(d\) above.</p>
+  </div>
+  <div class="proof">
+    <p>The sets are already known to be <a href="computably-inseparable-sets#enumerable-and-disjoint">c.e. and disjoint</a>. Suppose \(D_0\subseteq W_u\), \(D_1\subseteq W_v\), and \(W_u\cap W_v=\varnothing\). Write \(z=d(u,v)\).</p>
+    <p>If \(z\in W_u\), disjointness gives \(z\notin W_v\). The selected program therefore eventually returns one, so its self-computation puts \(z\in D_1\subseteq W_v\), a contradiction. If \(z\in W_v\), the same argument gives output zero and hence \(z\in D_0\subseteq W_u\), again a contradiction. Thus \(z\) belongs to neither domain, exactly as required.</p>
+    <p>The tie convention is irrelevant under the disjointness hypothesis, but fixes the program's behavior at arbitrary input indices. Totality of \(d\) concerns constructing an index; the self-computation at a valid pair of enlargements necessarily diverges.</p>
+  </div>
+</section>
+
+<section id="pair-reductions" data-formal="einf-pair-reduction einf-pair-reducible einf-universal-pair einf-outside-preserved" data-kind="definition">
+  <h2>One computable map must preserve both sides</h2>
+  <p>For disjoint pairs \((C,D)\) and \((A,B)\), a <strong>many-one reduction of pairs</strong> is a total recursive \(f:\mathbb N\to\mathbb N\) satisfying</p>
+  <div class="math-display">\[x\in C\Longleftrightarrow f(x)\in A,\qquad x\in D\Longleftrightarrow f(x)\in B\qquad(x\in\mathbb N).\]</div>
+  <p>Thus the same \(f\) is a <a href="computable-reductions#many-one-reductions">many-one reduction</a> for each component, and it also sends numbers outside \(C\cup D\) outside \(A\cup B\). A disjoint c.e. pair \((A,B)\) is <strong>universal for disjoint c.e. pairs</strong> if every disjoint c.e. pair has such a reduction to it. Separate component reductions need not provide one map with these simultaneous properties.</p>
+</section>
+
+<section id="canonical-universality" data-formal="einf-canonical-index einf-canonical-program-exists einf-canonical-index-primitive einf-canonical-index-evaluation einf-certificate-race-left einf-certificate-race-right einf-canonical-pair-reduction einf-canonical-empty-source" data-kind="lemma">
+  <h2>The diagonal pair already encodes every disjoint enumerable pair</h2>
+  <p>For all indices \(c,d\) with \(W_c\cap W_d=\varnothing\), there is a primitive-recursive map \(f_{c,d}\) reducing \((W_c,W_d)\) to \((D_0,D_1)\). The index construction is uniform in \(c,d,x\).</p>
+  <div class="proof">
+    <p>Given \(c,d,x\), construct a program that ignores its runtime input, searches successive \(k\) until \(b(k,c,x)&gt;0\) or \(b(k,d,x)&gt;0\), and then returns zero if the first test succeeds and one otherwise. Fix the first branch in a tie. This is a jointly partial recursive procedure. Choose one index for it, using nested pairing of the parameters, and apply the <a href="universal-computation#parameter-theorem">parameter theorem</a> to insert \(c,d,x\). Let \(f_{c,d}(x)\) be the resulting index. Repeated specialization makes this numerical map primitive recursive jointly in its three parameters.</p>
+    <p>For disjoint input domains there is at most one successful side. If \(x\in W_c\), the produced program returns zero at every input, including its own index; hence \(f_{c,d}(x)\in D_0\). If \(x\in W_d\), it returns one and lies in \(D_1\). If \(x\) lies in neither domain, the produced program diverges at every input and its index lies in neither diagonal set. These three exhaustive cases give both required equivalences, including the converse directions.</p>
+    <p>No infinitude or nonemptiness assumption was used. For example, when both source sets are empty, every produced program is nowhere defined; a reduction need not be injective.</p>
+  </div>
+</section>
+
+<section id="uniform-preimages" data-formal="productive-preimage-program productive-preimage-map productive-preimage-partial productive-preimage-index productive-preimage-evaluation productive-preimage-domain univ-specialization-primitive" data-kind="lemma">
+  <h2>Take preimages without deciding the target domains</h2>
+  <p>For any total recursive \(f:\mathbb N\to\mathbb N\), there is a primitive-recursive map \(q\) of indices such that</p>
+  <div class="math-display">\[\varphi_{q(u)}(x)\simeq\varphi_u(f(x)),\qquad W_{q(u)}=f^{-1}(W_u)\qquad(u,x\in\mathbb N).\]</div>
+  <div class="proof">
+    <p>The procedure first computes \(f(x)\), which always terminates, and then runs the universal evaluator on \(u,f(x)\). It is partial recursive jointly in \(u,x\). Choose a fixed index \(r\) for that paired-input procedure and set \(q(u)=s(r,u)\), where \(s\) is the fixed specialization function. Its evaluation identity gives the first equality, including undefined values, and taking domains gives the second. The map \(q\) is primitive recursive because it inserts a parameter into fixed program text; it does not execute \(f\) while producing that text.</p>
+  </div>
+</section>
+
+<section id="upward-transfer" data-formal="einf-transferred-witness einf-transferred-witness-correct einf-upward-transfer" data-kind="theorem">
+  <h2>A pair receiving an effectively inseparable pair is effectively inseparable</h2>
+  <p>Suppose \((C,D)\) is effectively inseparable with witness \(p\), \((A,B)\) is a disjoint c.e. pair, and \(f\) reduces \((C,D)\) to \((A,B)\). Choose \(q\) from <a href="#uniform-preimages"></a>. Then the specified total recursive function</p>
+  <div class="math-display">\[r(u,v)=f\bigl(p(q(u),q(v))\bigr)\]</div>
+  <p>is an effective inseparability witness for \((A,B)\).</p>
+  <div class="proof">
+    <p>Suppose \(A\subseteq W_u\), \(B\subseteq W_v\), and \(W_u\cap W_v=\varnothing\). Pulling back along \(f\) gives \(C\subseteq W_{q(u)}\), \(D\subseteq W_{q(v)}\), and disjointness of those two domains. Let \(z=p(q(u),q(v))\). Effective inseparability gives \(z\notin W_{q(u)}\cup W_{q(v)}\). The preimage identities say exactly that \(f(z)\notin W_u\cup W_v\). This is the escape conclusion for the displayed function, and its total recursiveness follows by composition.</p>
+  </div>
+</section>
+
+<section id="simultaneous-self-reference" data-formal="einf-simultaneous-master einf-simultaneous-master-partial einf-master-selector-exists einf-left-selector einf-right-selector einf-specified-simultaneous-selectors einf-simultaneous-recursion" data-kind="lemma">
+  <h2>Two recognizers can use their two selected indices together</h2>
+  <p>Let \(R_0(u,v,a,x)\) and \(R_1(u,v,a,x)\) be c.e. relations jointly in all four natural-number arguments. There are primitive-recursive functions \(u(a),v(a)\) such that</p>
+  <div class="math-display">\[W_{u(a)}=\{x:R_0(u(a),v(a),a,x)\},\qquad W_{v(a)}=\{x:R_1(u(a),v(a),a,x)\}.\]</div>
+  <div class="proof">
+    <p>For a prospective master index \(z\), let \(z_0=s(z,0)\) and \(z_1=s(z,1)\). These are indices for the two sections \(x\mapsto\varphi_z(\langle0,x\rangle)\) and \(x\mapsto\varphi_z(\langle1,x\rangle)\). Their dependence on \(z\) is primitive recursive.</p>
+    <p>Define a partial recursive master procedure \(G(z,a,y)\). Decode \(y=\langle i,x\rangle\). If \(i=0\), search for a c.e. certificate of \(R_0(z_0,z_1,a,x)\), returning zero on success. If \(i\ne0\), do the same for \(R_1(z_0,z_1,a,x)\). Joint enumerability and the total numerical section maps make this one jointly partial recursive procedure. The behavior at tags other than zero and one is harmless and has nevertheless been specified.</p>
+    <p>Apply <a href="uniform-self-reference#partial-families">the partial-family recursion theorem</a> once to obtain a primitive-recursive \(h(a)\) with \(\varphi_{h(a)}(y)\simeq G(h(a),a,y)\). Put \(u(a)=s(h(a),0)\) and \(v(a)=s(h(a),1)\). At input \(\langle0,x\rangle\), the master now recognizes precisely \(R_0(u(a),v(a),a,x)\), and specialization makes this the domain test of \(u(a)\). The tag-one calculation gives the other identity. Both functions are primitive recursive compositions, so the same two selectors work for every parameter.</p>
+  </div>
+</section>
+
+<section id="universal-effective-pairs" data-formal="einf-collision-left einf-collision-right einf-collision-map einf-collision-relations-enumerable einf-collision-domain-identities einf-specified-universal-reduction einf-universal-reduction-exists einf-effective-universal" data-kind="theorem">
+  <h2>Every effectively inseparable pair encodes every disjoint enumerable pair</h2>
+  <p>Let \((A,B)\) be effectively inseparable with witness \(p\), and let \((C,D)\) be any disjoint c.e. pair. There is a total recursive reduction \(h\) of \((C,D)\) to \((A,B)\). More precisely, one can choose primitive-recursive \(u,v\) so that the specified \(h(x)=p(u(x),v(x))\) satisfies</p>
+  <div class="math-display">\[W_{u(x)}=A\cup\{h(x):x\in D\},\qquad W_{v(x)}=B\cup\{h(x):x\in C\}.\]</div>
+  <p>Here \(\{h(x):x\in D\}\) denotes the singleton \(\{h(x)\}\) if the fixed parameter \(x\) lies in \(D\), and the empty set otherwise.</p>
+  <div class="proof">
+    <p>Apply <a href="#simultaneous-self-reference"></a> to the two relations</p>
+    <div class="math-display">\[R_0(u,v,x,y)\ \Longleftrightarrow\ y\in A\ \text{or}\ (x\in D\ \text{and}\ y=p(u,v)),\]</div>
+    <div class="math-display">\[R_1(u,v,x,y)\ \Longleftrightarrow\ y\in B\ \text{or}\ (x\in C\ \text{and}\ y=p(u,v)).\]</div>
+    <p>They are jointly c.e.: compute \(p(u,v)\), compare it with \(y\), and dovetail the relevant fixed recognizers for \(A,D\) or \(B,C\). All numerical tests finish, and acceptance requires only positive certificates. The two domain identities supplied by the lemma are exactly those in the statement. Composition makes \(h\) total recursive. We now check all three possible locations of \(x\).</p>
+    <p>If \(x\in C\), disjointness gives \(x\notin D\), so \(W_{u(x)}=A\) and \(W_{v(x)}=B\cup\{h(x)\}\). Suppose \(h(x)\notin A\). The two domains would then be disjoint supersets of \(A,B\). The escape guarantee at their very indices would imply \(h(x)=p(u(x),v(x))\notin W_{v(x)}\), contrary to the adjoined singleton. Therefore \(h(x)\in A\), and disjointness of \(A,B\) also gives \(h(x)\notin B\).</p>
+    <p>If \(x\in D\), the roles reverse: the domains are \(A\cup\{h(x)\}\) and \(B\). Assuming \(h(x)\notin B\) would make them disjoint and yield the same contradiction to the singleton in the first domain. Thus \(h(x)\in B\) and \(h(x)\notin A\).</p>
+    <p>If \(x\notin C\cup D\), the domains are exactly \(A,B\), hence disjoint. Effective inseparability gives \(h(x)\notin A\cup B\). These exhaustive cases prove \(x\in C\Longleftrightarrow h(x)\in A\) and \(x\in D\Longleftrightarrow h(x)\in B\), with the same constructed map on both sides.</p>
+  </div>
+</section>
+
+<section id="characterization" data-formal="einf-characterization" data-kind="theorem">
+  <h2>Effective inseparability is exactly universality for disjoint enumerable pairs</h2>
+  <div class="statement-box"><p>For every disjoint c.e. pair \((A,B)\), the following are equivalent:</p>
+    <ul>
+      <li>\((A,B)\) is effectively inseparable.</li>
+      <li>Every disjoint c.e. pair has a many-one reduction of pairs to \((A,B)\).</li>
+      <li>The diagonal pair \((D_0,D_1)\) has a many-one reduction of pairs to \((A,B)\).</li>
+    </ul>
+  </div>
+  <div class="proof">
+    <p>The first condition gives the second by <a href="#universal-effective-pairs"></a>. The second applies in particular to the disjoint c.e. diagonal pair, giving the third. The diagonal pair is <a href="#diagonal-effective-pair">effectively inseparable</a>, and <a href="#upward-transfer"></a> carries this property through the reduction in the third condition. Thus the three conditions are equivalent, with the standing c.e. and disjointness assumptions retained throughout.</p>
+  </div>
+</section>
+
+<section id="separator-translation" data-formal="einf-separator-preimage einf-empty-source-counterexample" data-kind="question">
+  <h2>What does a separator of a universal pair let us decide?</h2>
+  <p>Suppose \(S\) separates an effectively inseparable pair \((A,B)\), and \(f\) reduces a disjoint c.e. pair \((C,D)\) to it. Give a separator of \(C\) from \(D\) that can be computed using membership answers for \(S\). Does it have to decide membership in \(C\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Take \(T=f^{-1}(S)\), so its characteristic function satisfies \(\chi_T(x)=\chi_S(f(x))\). On input \(x\), compute \(f(x)\) and ask whether it lies in \(S\). If \(x\in C\), the reduction puts \(f(x)\in A\subseteq S\), so \(x\in T\). If \(x\in D\), it puts \(f(x)\in B\), which the separator excludes, so \(x\notin T\). This proves that \(T\) separates the source pair. When \(S\) is decidable, the same procedure is a total recursive decision for \(T\).</p>
+    <p>There need be no correct membership answer for \(C\) outside \(C\cup D\). For an explicit counterexample to that requirement, let \(C=D=\varnothing\). Choose \(z\notin A\cup B\), which exists by <a href="#effective-pairs"></a>, use the valid constant reduction \(f(x)=z\), and take the separator \(S=A\cup\{z\}\). Then \(T=\mathbb N\), although \(C=\varnothing\). Separation leaves these unassigned inputs free; universality does not remove that freedom.</p>
+  </div></details>
+</section>

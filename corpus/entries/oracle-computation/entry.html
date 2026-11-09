@@ -98,7 +98,7 @@
   </figure>
 </section>
 
-<section id="finite-use" data-kind="theorem" data-formal="oracle-use-query-set oracle-use-bound oracle-use-bound-spec oracle-use-replay oracle-use-finite-use oracle-use-no-common-bound">
+<section id="finite-use" data-kind="theorem" data-formal="oracle-use-query-set oracle-use-bound oracle-use-bound-spec oracle-use-replay oracle-use-finite-use oracle-use-no-common-bound ttwtt-weak-truth-table-reducible ttwtt-total-functional-characterization">
   <h2>A halting result depends on finitely many oracle answers</h2>
   <div class="statement-box">
     <p>If \(E_A(c,x)\downarrow=y\), there is a finite query set \(F\subseteq\mathbb N\) such that every \(B\) with \(B\cap F=A\cap F\) satisfies \(E_B(c,x)\downarrow=y\). In particular, there is \(u\in\mathbb N\) such that</p>
@@ -111,6 +111,7 @@
     <p>For the bound take \(u=0\) when \(F=\varnothing\), and \(u=1+\max F\) otherwise. Every queried number is less than \(u\). Agreement below \(u\) therefore implies agreement on \(F\), proving the last assertion too.</p>
   </div>
   <p>The finite set and bound may depend on the program, oracle, input and successful computation. This is a statement about a defined value. It does not assert stability of divergence or one bound valid for all inputs. For example, the query program on input \(x\) can distinguish two oracles differing only at \(x\), however large \(x\) is.</p>
+  <p>Requiring one ordinary computable function of the input to bound the successful query positions of a whole reduction gives <a href="truth-table-and-weak-truth-table-reductions#weak-truth-table-reductions">weak truth-table reducibility</a>. Requiring a suitable program to terminate for every oracle gives the equivalent <a href="truth-table-and-weak-truth-table-reductions#total-functional-characterization">truth-table formulation</a>.</p>
 </section>
 
 <section id="finite-oracle-truncation" data-kind="lemma" data-formal="oracle-use-truncation oracle-use-finite-oracle-truncation">
@@ -132,13 +133,14 @@
   </div></details>
 </section>
 
-<section id="divergent-prefix-question" data-kind="question" data-formal="oracle-code-first-missing oracle-code-positive-prefix oracle-use-full-oracle-divergence oracle-use-truncated-search oracle-use-incomplete-prefixes oracle-use-divergence-not-stable">
+<section id="divergent-prefix-question" data-kind="question" data-formal="oracle-code-first-missing oracle-code-positive-prefix oracle-use-full-oracle-divergence oracle-use-truncated-search oracle-use-incomplete-prefixes oracle-use-divergence-not-stable ogen-generic-divergence-iff-prefix">
   <h2>Does every finite consistent beginning certify a halting result?</h2>
   <p>Let \(s=\operatorname{find}'(\operatorname{comp}(\mathbf Q,\mathbf R))\) and start it at \(\langle0,0\rangle\) using \(A=\mathbb N\). What does it do? Is its divergence preserved by agreement with \(A\) below some finite bound?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>At test \(j\), the right projection extracts \(j\), so the query is exactly \(j\). Every answer is one. The search has no zero test and never returns, even though every finite beginning has a finite query record consistent with \(A\). Such a beginning is not a successful derivation of an output: it lacks the final zero test required by the search rule.</p>
     <p>For any proposed bound \(u\), take \(B=\{q:q&lt;u\}\). It agrees with \(\mathbb N\) below \(u\), but this search returns \(u\): the first \(u\) answers are one, and the answer at \(u\) is zero. This includes \(u=0\), when the first test already returns zero. Thus no finite bound here stabilizes divergence. The successful-value hypothesis in finite use cannot be removed.</p>
-  </div></details>
+      <p>For a <a href="one-generic-sets#meet-or-avoid">1-generic oracle</a>, every true divergence does have a <a href="one-generic-sets#generic-forcing-truth">prefix excluding all successful compatible certificates</a>. The exclusion concerns every extension of that prefix, rather than just failure of one bounded calculation.</p>
+</div></details>
 </section>
 
 <section id="query-substitution" data-kind="definition" data-formal="oracle-subst-program">

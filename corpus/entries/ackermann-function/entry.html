@@ -1,0 +1,181 @@
+<section id="ackermann-recursion" data-formal="ackf-function ackf-zero-row ackf-successor-row-zero ackf-successor-row-step ackf-uniqueness" data-kind="definition">
+  <h2>Define one row from the preceding row</h2>
+  <p>The <strong>Ackermann function</strong> is the function \(A:\mathbb N^2\to\mathbb N\) specified by</p>
+  <div class="math-display">\[A(0,n)=n+1,\qquad A(m+1,0)=A(m,1),\]</div>
+  <div class="math-display">\[A(m+1,n+1)=A(m,A(m+1,n)).\]</div>
+  <p>Write \(A_m(n)=A(m,n)\) for its <strong>row of index \(m\)</strong>. There exists exactly one total function satisfying these equations.</p>
+  <div class="proof">
+    <p>Start with the total function \(A_0(n)=n+1\). Once the entire total function \(A_m\) has been defined, ordinary recursion on \(n\) defines a total next row by starting at \(A_m(1)\) and repeatedly applying \(A_m\). Thus natural-number recursion, now with whole functions as its values, constructs every row. Every call within a row either uses an earlier value in that row or calls the preceding row, whose values are already defined. Equivalently, the pairs of arguments decrease in lexicographic order, with the row index compared first.</p>
+    <p>For uniqueness, use induction on \(m\). The first row is prescribed. If two candidate functions agree throughout row \(m\), their values in row \(m+1\) agree at zero, and agreement at \(n\) implies agreement at \(n+1\) by the third equation. Inner induction gives agreement throughout that row. This establishes both existence and uniqueness on all pairs of natural numbers.</p>
+  </div>
+  <p>The <a href="primitive-recursion#recursion-existence">ordinary recursion theorem</a> justifies each fixed-row construction. It does not yet assert that the two-input function belongs to the primitive-recursive class: its step would itself need to access a row whose index is an input.</p>
+</section>
+
+<section id="first-rows" data-formal="ackf-zero-row ackf-first-row ackf-second-row ackf-third-row" data-kind="lemma">
+  <h2>The first four rows have familiar formulas</h2>
+  <p>For every \(n\in\mathbb N\),</p>
+  <div class="math-display">\[A(0,n)=n+1,\qquad A(1,n)=n+2,\qquad A(2,n)=2n+3,\]</div>
+  <div class="math-display">\[A(3,n)=2^{n+3}-3.\]</div>
+  <div class="proof">
+    <p>The first formula is a defining equation. Row one starts at \(A(0,1)=2\) and adds one at each step. Row two starts at \(A(1,1)=3\) and adds two at each step. Induction gives the second and third formulas.</p>
+    <p>Row three starts at \(A(2,1)=5=2^3-3\). Its recursion is \(A(3,n+1)=2A(3,n)+3\). Substituting the induction hypothesis gives \(2(2^{n+3}-3)+3=2^{n+4}-3\). All these subtractions are ordinary nonnegative differences, since \(2^{n+3}\ge8\). In particular the formula includes \(n=0\).</p>
+  </div>
+</section>
+
+<section id="monotonicity" data-formal="ackf-beyond-input ackf-strict-input ackf-strict-rows ackf-additive-lower-bound ackf-monotone" data-kind="lemma">
+  <h2>Each argument strictly increases the value</h2>
+  <p>For every \(m,n\in\mathbb N\), we have \(n&lt;A(m,n)\). Each row is strictly increasing in its input, and for each fixed input \(n\) the value is strictly increasing in \(m\). In particular,</p>
+  <div class="math-display">\[m+n+1\le A(m,n),\qquad n+2\le A(m+1,n).\]</div>
+  <div class="proof">
+    <p>Induct on the row index. Row zero is successor. If \(x&lt;A(m,x)\) for every \(x\), row \(m+1\) starts at \(A(m,1)\ge2\), and each next value is strictly larger than the preceding one. Hence \(A(m+1,n)\ge n+2\), and that row is strictly increasing. This proves the first claim and strict increase in the second argument for all rows.</p>
+    <p>For adjacent rows, at input zero we have \(A(m,0)&lt;A(m,1)=A(m+1,0)\). At input \(n+1\), the bound \(n+2\le A(m+1,n)\) and strict increase in row \(m\) give</p>
+    <div class="math-display">\[A(m,n+1)&lt;A(m,A(m+1,n))=A(m+1,n+1).\]</div>
+    <p>Iterating adjacent-row inequalities proves strict increase in the first argument. Starting from \(A(0,n)=n+1\), each of \(m\) row increases adds at least one, yielding \(m+n+1\le A(m,n)\). These arguments also give ordinary monotonicity in both arguments.</p>
+  </div>
+</section>
+
+<section id="fixed-rows" data-formal="ackf-fixed-row-primitive univ-unary-primitive-equivalence" data-kind="theorem">
+  <h2>Every fixed row is primitive recursive</h2>
+  <p>For each fixed \(m\in\mathbb N\), the unary function \(n\mapsto A(m,n)\) is primitive recursive.</p>
+  <div class="proof">
+    <p>Induct on \(m\). Row zero is successor. If row \(m\) is primitive recursive, then its value \(A(m,1)\) is a natural-number constant, and the step function \((n,z)\mapsto A(m,z)\) is primitive recursive by composition with a projection. The recursion</p>
+    <div class="math-display">\[A(m+1,0)=A(m,1),\qquad A(m+1,n+1)=A(m,A(m+1,n))\]</div>
+    <p>is therefore an instance of <a href="primitive-recursion#primitive-recursive-functions">primitive-recursive closure</a>. This gives a finite construction for the next fixed row and completes the induction.</p>
+  </div>
+</section>
+
+<section id="paired-primitive-recursion" data-formal="ackf-paired-class univ-unary-primitive-equivalence seq-square-pairing seq-unpairing seq-pair-lower-bound seq-pair-upper-bound seq-unpair-bound" data-kind="lemma">
+  <h2>Use one numerical input for the growth induction</h2>
+  <p>Let \(p(a,b)=\langle a,b\rangle\) be the <a href="coding-finite-sequences#square-pairing">square pairing</a>, and let \(u,v\) be its two inverse-coordinate functions. The unary primitive-recursive functions are exactly the class generated by zero, successor, \(u,v\), pairing of functions, composition, and the following paired form of primitive recursion. From unary functions \(f,g\), form</p>
+  <div class="math-display">\[H(a,0)=f(a),\qquad H(a,t+1)=g(p(a,p(t,H(a,t)))),\]</div>
+  <div class="math-display">\[F(q)=H(u(q),v(q)).\]</div>
+  <div class="proof">
+    <p>This is the <a href="universal-computation#beyond-primitive-recursion">paired presentation of the same primitive-recursive class</a>, not an enlargement of it. In one direction, \(p,u,v\) are <a href="coding-finite-sequences#primitive-recursive-pairing">primitive recursive</a>, pairing is composition with \(p\), and the displayed \(H\) is ordinary primitive recursion with parameter \(a\). Composing with \(u,v\) gives \(F\). Thus every operation listed preserves the original finite-arity class.</p>
+    <p>Conversely, package a fixed finite list of arguments by nested pairs. Its coordinate functions are iterated unpairing projections; constants, successor and every fixed-arity projection therefore have unary paired implementations. For composition, form the code of the required tuple of intermediate values by repeated pairing and apply the encoded outer function. For a primitive-recursion step, keep the code of all parameters in \(a\); the old recursion counter and old result are the two coordinates of the inner pair. The step function then receives exactly the original parameters, counter and result. Induction on a finite construction gives an encoded implementation. Encoding or decoding a single input, and ignoring the empty parameter tuple, uses only the same primitive-recursive functions. This proves the claimed equality for unary functions.</p>
+  </div>
+  <p>The useful numerical bounds, already established for this pairing, are</p>
+  <div class="math-display">\[a+b\le p(a,b)&lt;(\max(a,b)+1)^2,\qquad u(q)+v(q)\le q.\]</div>
+</section>
+
+<section id="row-shift" data-formal="ackf-row-shift" data-kind="lemma">
+  <h2>A higher row absorbs one more input step</h2>
+  <p>For all \(m,n\in\mathbb N\),</p>
+  <div class="math-display">\[A(m,n+1)\le A(m+1,n).\]</div>
+  <div class="proof">
+    <p>For \(n=0\) this is the second defining equation. At input \(n+1\), the bound \(n+2\le A(m+1,n)\) from <a href="#monotonicity"></a> gives</p>
+    <div class="math-display">\[A(m,n+2)\le A(m,A(m+1,n))=A(m+1,n+1).\]</div>
+    <p>Thus the inequality holds at zero and at every successor input.</p>
+  </div>
+</section>
+
+<section id="square-growth" data-formal="ackf-square-growth" data-kind="lemma">
+  <h2>Three higher rows absorb a square</h2>
+  <p>For all \(m,n\in\mathbb N\),</p>
+  <div class="math-display">\[(A(m,n)+1)^2\le A(m+3,n).\]</div>
+  <div class="proof">
+    <p>First, \(t^2+3\le2^{t+1}\) for \(t\ge1\). At \(t=1\) there is equality. The induction step follows by adding \(2t+1\le2^{t+1}\), whose own elementary induction starts at \(t=1\). Apply this estimate with \(t=n+2\), and use <a href="#first-rows"></a>, to obtain the claim for \(m=0\).</p>
+    <p>Induct on \(m\), with the estimate available at every input for the preceding row. At input zero, the estimate for \((m+1,0)\) is exactly the preceding-row estimate at input one. At input \(n+1\), apply that same estimate at \(A(m+1,n)\):</p>
+    <div class="math-display">\[(A(m+1,n+1)+1)^2\le A(m+3,A(m+1,n)).\]</div>
+    <p>Monotonicity in the row index bounds the right side by \(A(m+3,A(m+4,n))=A(m+4,n+1)\). This is the required next-row estimate, so the induction is complete.</p>
+  </div>
+</section>
+
+<section id="composition-growth" data-formal="ackf-composition-growth" data-kind="lemma">
+  <h2>Two higher rows absorb a nested evaluation</h2>
+  <p>For all \(a,b,n\in\mathbb N\),</p>
+  <div class="math-display">\[A(a,A(b,n))&lt;A(\max(a,b)+2,n).\]</div>
+  <div class="proof">
+    <p>Put \(c=\max(a,b)\). Monotonicity in both arguments, including strict increase from row \(b\) to row \(c+1\), gives</p>
+    <div class="math-display">\[A(a,A(b,n))&lt;A(c,A(c+1,n))=A(c+1,n+1).\]</div>
+    <p>Apply <a href="#row-shift"></a> to bound the last value by \(A(c+2,n)\). The strict inequality is preserved.</p>
+  </div>
+</section>
+
+<section id="pairing-growth" data-formal="ackf-pairing-growth ackf-square-input-growth" data-kind="lemma">
+  <h2>Four higher rows absorb a paired input</h2>
+  <p>For every \(m,a,b\in\mathbb N\),</p>
+  <div class="math-display">\[A(m,p(a,b))&lt;A(m+4,\max(a,b)).\]</div>
+  <div class="proof">
+    <p>We first prove \(A(m,(n+1)^2)&lt;A(m+4,n)\). Since \(n&lt;A(m,n)\), <a href="#square-growth"></a> gives</p>
+    <div class="math-display">\[(n+1)^2&lt;(A(m,n)+1)^2\le A(m+3,n).\]</div>
+    <p>Strict increase in the second argument therefore bounds \(A(m,(n+1)^2)\) strictly below \(A(m,A(m+3,n))\). Increase its outer row to \(m+2\); the resulting value is</p>
+    <div class="math-display">\[A(m+2,A(m+3,n))=A(m+3,n+1)\le A(m+4,n).\]</div>
+    <p>This proves the intermediate estimate. Finally put \(n=\max(a,b)\) and use \(p(a,b)&lt;(n+1)^2\) and strict monotonicity. The displayed paired-input inequality follows.</p>
+  </div>
+</section>
+
+<section id="recursion-growth" data-formal="ackf-recursion-growth" data-kind="lemma">
+  <h2>One row controls an entire primitive recursion</h2>
+  <p>Suppose unary functions \(f,g\) satisfy \(f(x)&lt;A(a,x)\) and \(g(x)&lt;A(b,x)\) for every \(x\). Let \(H\) be the recursion in <a href="#paired-primitive-recursion"></a>. With \(M=\max(a,b)\) and \(R=M+9\), we have</p>
+  <div class="math-display">\[H(s,t)&lt;A(R,s+t)\qquad\text{for all }s,t\in\mathbb N.\]</div>
+  <div class="proof">
+    <p>Fix the parameter \(s\) and induct on \(t\). At zero, \(H(s,0)=f(s)&lt;A(a,s)\le A(R,s)\). For the step, write \(z=H(s,t)\) and \(q=p(t,z)\). The bound on \(g\) and <a href="#pairing-growth"></a> give</p>
+    <div class="math-display">\[H(s,t+1)&lt;A(b,p(s,q))&lt;A(b+4,\max(s,q)).\]</div>
+    <p>If \(q\le s\), the last value is \(A(b+4,s)\le A(R,s+t+1)\), proving the desired bound. If \(s\le q\), apply the pairing estimate again to obtain a bound by \(A(b+8,\max(t,z))\). When \(z\le t\), monotonicity bounds this by \(A(R,s+t+1)\).</p>
+    <p>It remains to consider \(s\le q\) and \(t\le z\). The induction hypothesis is \(z&lt;A(R,s+t)\). Because \(b+8\le M+8=R-1\), we obtain</p>
+    <div class="math-display">\[A(b+8,z)&lt;A(b+8,A(R,s+t))\le A(R-1,A(R,s+t)).\]</div>
+    <p>The final expression is \(A(R,s+t+1)\), by the defining equation and \(R=(M+8)+1\). These cases exhaust all possibilities. The same fixed row \(R\) therefore bounds every stage and every parameter, with \(s+t\) as its input.</p>
+  </div>
+</section>
+
+<section id="row-domination" data-formal="ackf-row-domination univ-unary-primitive-equivalence" data-kind="theorem">
+  <h2>Every primitive-recursive unary function lies below one row</h2>
+  <div class="statement-box">
+    <p>For every primitive-recursive function \(f:\mathbb N\to\mathbb N\), there is a fixed \(m\in\mathbb N\) such that</p>
+    <div class="math-display">\[\forall n\in\mathbb N\quad f(n)&lt;A(m,n).\]</div>
+    <p>The row index may depend on the finite construction of \(f\), but it is independent of \(n\).</p>
+  </div>
+  <div class="proof">
+    <p>Use induction on a construction in the equivalent unary presentation of <a href="#paired-primitive-recursion"></a>. Zero, \(u\), and \(v\) lie below row zero, since \(u(n),v(n)\le n&lt;n+1\). Successor lies below row one because \(n+1&lt;n+2\).</p>
+    <p>Suppose \(f(n)&lt;A(a,n)\) and \(g(n)&lt;A(b,n)\), and put \(M=\max(a,b)\). The paired function satisfies</p>
+    <div class="math-display">\[p(f(n),g(n))&lt;(\max(f(n),g(n))+1)^2\le A(M+3,n),\]</div>
+    <p>using the pairing bound, monotonicity and <a href="#square-growth"></a>. For composition,</p>
+    <div class="math-display">\[g(f(n))&lt;A(b,f(n))&lt;A(b,A(a,n))&lt;A(M+2,n),\]</div>
+    <p>where <a href="#composition-growth"></a> supplies the last inequality. At the paired primitive-recursion step, <a href="#recursion-growth"></a> gives</p>
+    <div class="math-display">\[H(u(n),v(n))&lt;A(M+9,u(n)+v(n))\le A(M+9,n).\]</div>
+    <p>The last inequality uses the sum bound for unpairing. Every generating operation has therefore preserved domination by one fixed row. Induction proves the theorem for every unary primitive-recursive function.</p>
+  </div>
+</section>
+
+<section id="row-programs" data-formal="ackf-row-program ackf-row-program-step ackf-row-program-primitive ackf-row-program-evaluation ackf-row-index ackf-row-index-primitive ackf-row-index-evaluation" data-kind="definition">
+  <h2>Compile the row index into a program</h2>
+  <p>Use the <a href="universal-computation#numbering-programs">shared recursive-program language and its numerical coding</a>. The <strong>row program \(C_m\)</strong> is given by \(C_0=\mathsf{succ}\) and</p>
+  <div class="math-display">\[C_{m+1}=\mathsf{curry}\!\left(\mathsf{prec}(\mathsf{comp}(C_m,\mathsf{const}(1)),\mathsf{comp}(C_m,\mathsf{comp}(\mathsf{right},\mathsf{right}))),0\right).\]</div>
+  <p>Here \(\mathsf{const}(1)\) is the constant-one program. The macro \(\mathsf{curry}(c,a)\) inserts the fixed first input \(a\), so its value on \(n\) is the value of \(c\) on \(p(a,n)\). These are the <a href="universal-computation#parameter-theorem">same effective specialization operations</a> used in the parameter theorem. The <strong>numerical row compiler</strong> is \(c(m)=\#C_m\).</p>
+  <p>The function \(c\) is primitive recursive, and for every \(m,n\),</p>
+  <div class="math-display">\[\varphi_{c(m)}(n)\downarrow=A(m,n).\]</div>
+  <div class="proof">
+    <p>All program constructors and fixed-input specialization act primitively recursively on numerical codes. Thus the displayed recursion for \(C_m\), read as a recursion for \(\#C_m\), is ordinary primitive recursion with one fixed code-building step. This proves primitive recursiveness of \(c\).</p>
+    <p>For the evaluation identity, row zero is successor. Given a program \(C_m\) for the preceding row, the base program \(\mathsf{comp}(C_m,\mathsf{const}(1))\) returns \(A(m,1)\). In a primitive-recursion step, the input to the step program is \(p(a,p(t,z))\), where \(a=0\) is the fixed parameter, \(t\) is the counter, and \(z\) is the preceding result. Applying \(\mathsf{right}\) twice extracts \(z\); applying \(C_m\) then returns \(A(m,z)\). Consequently the compiled next-row program starts at \(A(m,1)\) and iterates \(A_m\). Induction on the input, using the defining equations, proves that it halts with \(A(m+1,n)\). Outer induction establishes the identity for every row and every input.</p>
+  </div>
+</section>
+
+<section id="joint-computability" data-formal="ackf-joint-computable ackf-finite-arity-total" data-kind="theorem">
+  <h2>One total algorithm computes both inputs</h2>
+  <p>The two-input function \((m,n)\mapsto A(m,n)\) is total recursive.</p>
+  <div class="proof">
+    <p>On input \((m,n)\), compute the number \(c(m)\) by <a href="#row-programs"></a>, then use the <a href="universal-computation#universal-evaluation">universal evaluator</a> to run program \(c(m)\) on \(n\). This is partial recursive jointly in the two inputs, since the compiler is primitive recursive and universal evaluation is jointly partial recursive. The evaluation identity proves that this computation halts on every pair, with exactly the value \(A(m,n)\). Hence it is total recursive.</p>
+  </div>
+  <p>The argument supplies one algorithm with the row index among its inputs. Merely knowing that every fixed row has some program would not, without an effective choice of those programs, establish this joint conclusion.</p>
+</section>
+
+<section id="proper-inclusion" data-formal="ackf-diagonal-total ackf-diagonal-not-primitive ackf-binary-not-primitive ackf-binary-primitive-equivalence ackf-proper-inclusion ackf-eventual-domination univ-unary-primitive-equivalence partrec-primitive-inclusion" data-kind="theorem">
+  <h2>The diagonal is total computable and is not primitive recursive</h2>
+  <div class="statement-box">
+    <p>The function \(d(n)=A(n,n)\) is total recursive and is not primitive recursive. The binary Ackermann function is not primitive recursive either. Therefore the primitive-recursive functions form a proper subclass of the total recursive functions, already for unary functions.</p>
+  </div>
+  <div class="proof">
+    <p>By <a href="#joint-computability"></a> and composition, \(d\) is total recursive. If it were primitive recursive, <a href="#row-domination"></a> would give one \(m\) with \(d(n)&lt;A(m,n)\) for every \(n\). Setting \(n=m\) would give \(A(m,m)&lt;A(m,m)\), a contradiction.</p>
+    <p>If the binary function \(A\) were primitive recursive, substitution of the same input into both coordinates would make \(d\) primitive recursive. Thus \(A\) is not primitive recursive. Finally, every primitive-recursive function is <a href="partial-recursive-functions#primitive-recursive-inclusion">total recursive</a>, whereas \(d\) belongs only to the larger class. This proves proper inclusion.</p>
+  </div>
+  <p>More precisely, if \(f(n)&lt;A(m,n)\) witnesses row domination, then for every \(n\ge m\), monotonicity gives \(f(n)&lt;A(m,n)\le A(n,n)=d(n)\). Thus the diagonal eventually exceeds every primitive-recursive unary function.</p>
+</section>
+
+<section id="fixed-row-question" data-formal="ackf-fixed-row-primitive ackf-row-index-primitive ackf-no-primitive-evaluator" data-kind="question">
+  <h2>Why do primitive-recursive rows not give a primitive-recursive table?</h2>
+  <p>Every \(A_m\) is primitive recursive, and the numerical compiler \(c(m)\) is primitive recursive. Why do these facts not imply that \(A(m,n)\) is primitive recursive jointly in \(m,n\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The fixed-row statement has the form “for every \(m\), there is a finite primitive-recursive construction for \(A_m\).” Its construction may have increasing depth as \(m\) increases. The compiler computes that construction's description, but computing the description and evaluating it are different operations. Here evaluation uses the partial-recursive universal evaluator; totality is then supplied by the row-program correctness proof.</p>
+    <p>There cannot be a primitive-recursive evaluator that correctly evaluates all these row programs on all inputs: composing it with \(c\) would make the binary function \(A\) primitive recursive and hence make its diagonal primitive recursive, contradicting <a href="#proper-inclusion"></a>. Each row's finite construction and a uniform construction of program descriptions are therefore compatible with the failure of joint primitive recursiveness.</p>
+  </div></details>
+</section>

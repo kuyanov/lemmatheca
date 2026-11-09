@@ -1,0 +1,108 @@
+<section id="low-paths" data-formal="lowsimple-halting-below-jump lbt-low-path lowsimple-low lowsimple-low-iff" data-kind="definition">
+  <h2>Ask for a path whose own halting problem stays low</h2>
+  <p>Use the <a href="computable-trees-and-paths#binary-trees">coded binary trees</a> \(T\subseteq2^{&lt;\omega}\), with path class \([T]=\{X:\forall n\;(X\mathbin{\upharpoonright}n\in T)\}\). An infinite binary sequence is identified with its set of one-positions. A <strong>low path</strong> through \(T\) is a set \(X\in[T]\) such that \(X'\equiv_TK\), where \(X'=\{e:\Phi_e^X(e)\downarrow\}\) is its <a href="turing-jump#jump">jump</a> and \(K=\{e:\varphi_e(e)\downarrow\}\) is ordinary diagonal halting.</p>
+  <p>This uses precisely <a href="low-simple-sets#lowness">lowness</a> for the set of bits. Every jump computes \(K\), so it suffices to arrange \(X'\le_TK\). Controlling a path's bits from \(K\) alone does not establish this stronger upper bound on its jump.</p>
+</section>
+
+<section id="finite-divergence" data-formal="incomp-certificate-value incomp-certificate-primitive lbt-restricted lbt-restricted-zero" data-kind="definition">
+  <h2>Keep finite evidence of divergence rather than testing actual divergence</h2>
+  <p>Fix a computable binary tree \(T\), including one fixed decision procedure for its nodes. Write \(C(\sigma,e,x)\) for the <a href="incomparable-turing-degrees#prefix-certificates">finite-oracle certificate value</a>: simulate program \(e\) on input \(x\) for the bound supplied by \(|\sigma|\), answering only oracle questions below \(|\sigma|\) with bits of \(\sigma\). The value is \(y+1\) if this bounded computation certifies output \(y\), and zero if it supplies no successful certificate. This function is primitive recursive in the word code and the two program parameters.</p>
+  <p>For a finite list \(L\) of program numbers, define the <strong>divergence-restricted tree</strong></p>
+  <div class="math-display">\[T_L=\{\sigma\in T:\forall j\in L\;C(\sigma,j,j)=0\}.\]</div>
+  <p>Repeated list entries have no effect. The empty list gives \(T_{[]}=T\). A zero certificate at a short word is only absence of bounded evidence; divergence will follow by requiring zero at every prefix of a path.</p>
+</section>
+
+<section id="restricted-trees" data-formal="lbt-restricted-tree lbt-restricted-computable lbt-restricted-subsets" data-kind="lemma">
+  <h2>Every finite restriction gives a computable subtree</h2>
+  <p>For every finite \(L\), \(T_L\) is a computable binary tree. Its membership test is jointly computable in \(L\) and the word code, for the fixed decider for \(T\). Also \(T_{e::L}\subseteq T_L\subseteq T\).</p>
+  <div class="proof"><p>First run the fixed decider for \(T\), then run the finitely many certificate tests indexed by \(L\). These computations all terminate. If \(\tau\preceq\sigma\in T_L\), prefix closure puts \(\tau\) in \(T\). A positive certificate at \(\tau\) would persist at \(\sigma\), because extending the oracle prefix preserves an already certified computation. Thus every required certificate at \(\tau\) is zero. This proves prefix closure. The inclusions follow directly from retaining the old tests and possibly adding one more.</p></div>
+</section>
+
+<section id="restricted-paths" data-formal="lbt-restricted-paths" data-kind="lemma">
+  <h2>The restriction has exactly the paths on which the listed programs diverge</h2>
+  <p>For every finite list \(L\) and every set \(X\subseteq\mathbb N\),</p>
+  <div class="math-display">\[X\in[T_L]\quad\Longleftrightarrow\quad X\in[T]\ \text{ and }\ \forall j\in L\;(j\notin X').\]</div>
+  <div class="proof"><p>A path in \(T_L\) is a path in \(T\). If \(\Phi_j^X(j)\) halted, finite-oracle completeness would supply a sufficiently long prefix of \(X\) with a positive certificate, contradicting its membership in \(T_L\). Conversely, a positive certificate at any prefix of \(X\) is sound for the real oracle \(X\), so it is impossible when \(j\notin X'\). Every prefix therefore passes all the tests for \(T_L\).</p></div>
+</section>
+
+<section id="empty-levels" data-formal="lbt-empty-level lbt-failed lbt-empty-test lbt-empty-test-computable lbt-empty-level-iff lbt-failed-iff" data-kind="definition">
+  <h2>A failed restriction has a finite witness</h2>
+  <p>The <strong>empty-level predicate</strong> for the fixed initial tree is</p>
+  <div class="math-display">\[E_T(L,m)\quad\Longleftrightarrow\quad\forall\sigma\in2^m\;(\sigma\notin T_L).\]</div>
+  <p>The <strong>failure predicate</strong> is \(D_T(L)\Longleftrightarrow\exists m\;E_T(L,m)\). One computes \(E_T\) by listing the \(2^m\) binary words of length \(m\) and applying the test for \(T_L\). Thus this is one total computable Boolean test in both finite parameters \(L,m\). By <a href="computable-trees-and-paths#branch-existence">binary branch existence</a>, \(D_T(L)\) holds exactly when \([T_L]=\varnothing\).</p>
+</section>
+
+<section id="uniform-query" data-formal="lbt-failure-search lbt-failure-search-recursive lbt-failure-search-domain lbt-failure-index lbt-failure-code-eval lbt-failure-query lbt-failure-query-primitive lbt-failure-query-correct" data-kind="lemma">
+  <h2>One fixed search program turns every history into an ordinary halting query</h2>
+  <p>There is a specified primitive-recursive map \(\delta_T\) on numerical list codes such that, for every finite list \(L\),</p>
+  <div class="math-display">\[\delta_T(\ulcorner L\urcorner)\in K\quad\Longleftrightarrow\quad D_T(L).\]</div>
+  <div class="proof"><p>Choose one ordinary program \(a_T\) that, on an input coding \(L\), searches \(m=0,1,\ldots\) and halts with output zero at the first successful \(E_T(L,m)\) test. The preceding joint computability makes this a single partial recursive procedure; its index is fixed before \(L\) varies.</p>
+  <p>Use the established <a href="padding-and-injective-reductions#injective-halting-completeness">constant-run translation</a>: from \(a_T\) and the input code, produce an ordinary program that ignores its own input and runs that fixed computation. Its diagonal-halting index is \(\delta_T(\ulcorner L\urcorner)\). This numerical translation is primitive recursive and has the displayed equivalence. Choosing unrelated indexes separately for the changing trees would not prove this uniformity. No answer to the unbounded search is needed when constructing its index.</p></div>
+</section>
+
+<section id="history" data-formal="lbt-history lbt-recorded-bit" data-kind="definition">
+  <h2>At each stage force divergence whenever any path still permits it</h2>
+  <p>Define the <strong>restriction history</strong> \(L_e\), and its <strong>recorded jump bit</strong> \(b(e)\), by finite recursion using the fixed map \(\delta_T\):</p>
+  <div class="math-display">\[L_0=[] ,\qquad b(e)=\chi_K\bigl(\delta_T(\ulcorner e::L_e\urcorner)\bigr),\qquad L_{e+1}=\begin{cases}L_e,&amp;b(e)=1,\\e::L_e,&amp;b(e)=0.\end{cases}\]</div>
+  <p>The candidate tree is \(T_{e::L_e}\). A positive oracle answer says it has an empty level, so we retain \(T_{L_e}\). A negative answer says every level survives, so we impose the new divergence restriction. No bit of the eventual path is chosen at this stage.</p>
+</section>
+
+<section id="survival" data-formal="lbt-history-survival" data-kind="lemma">
+  <h2>The chosen trees stay nested and retain every level</h2>
+  <p>Assume \(T\) has nodes at every length. For every \(e,n\in\mathbb N\), \(T_{L_e}\) has a node of length \(n\), and \(T_{L_{e+1}}\subseteq T_{L_e}\).</p>
+  <div class="proof"><p>At stage zero these assertions hold for \(T\). If \(b(e)=1\), the tree is unchanged. If \(b(e)=0\), the exact query equivalence says there is no empty level in the candidate, so it has nodes at every length; its defining extra test makes it a subtree of the old tree. Induction proves both claims, and iteration gives \(T_{L_j}\subseteq T_{L_i}\) whenever \(i\le j\).</p></div>
+</section>
+
+<section id="nested-levels" data-formal="lbt-intersection-tree lbt-nested-levels" data-kind="lemma">
+  <h2>A descending sequence of nonempty finite levels has a common node</h2>
+  <p>If \(S_0\supseteq S_1\supseteq\cdots\) are binary trees having nodes at every length, then \(S_\infty=\bigcap_e S_e\) is a binary tree having nodes at every length. Consequently some \(X\) belongs to every \([S_e]\).</p>
+  <div class="proof"><p>Prefix closure and binary validity are preserved by intersection. Fix a length \(n\). Each \(A_e=S_e\cap2^n\) is a nonempty subset of the same finite set \(2^n\), and the sets decrease. If their intersection were empty, each word in the finite set \(A_0\) would be excluded at some stage. Choose the maximum of these finitely many stages. At that stage every member of \(A_0\) has disappeared, contradicting nonemptiness. Thus the intersection has a node of length \(n\).</p>
+  <p>Apply binary branch existence to \(S_\infty\). Each prefix of its path lies in every \(S_e\), as required. This argument does not assert that \(S_\infty\) is computable: only its finite-level and tree properties are used.</p></div>
+</section>
+
+<section id="exact-jump" data-formal="lbt-exact-jump" data-kind="lemma">
+  <h2>Every common path has exactly the recorded jump</h2>
+  <p>Assume \(T\) has nodes at every length. If \(X\in[T_{L_e}]\) for every \(e\), then, for every \(e\),</p>
+  <div class="math-display">\[\chi_{X'}(e)=b(e).\]</div>
+  <div class="proof"><p>If \(b(e)=0\), the next history contains \(e\), and the path characterization of \(T_{L_{e+1}}\) gives \(e\notin X'\). If \(b(e)=1\), the candidate \(T_{e::L_e}\) has an empty level. Were \(e\notin X'\), the path characterization and \(X\in[T_{L_e}]\) would put \(X\) through that candidate, supplying a node at its allegedly empty level. Thus \(e\in X'\).</p>
+  <p>More concretely in the second case, choose an empty candidate level \(m\). The prefix \(X\mathbin{\upharpoonright}m\) lies in the old tree and passes all old history tests. Its only possible failure in the candidate is a positive \(e\)-certificate, which certifies the actual halting computation with oracle \(X\). Both outcomes are therefore statements about this same common path.</p></div>
+</section>
+
+<section id="jump-program" data-formal="lbt-history-code lbt-history-code-eval lbt-jump-code lbt-jump-code-eval lbt-jump-code-reduces" data-kind="lemma">
+  <h2>The recorded bits are decided by one total halting-oracle program</h2>
+  <p>For the fixed initial decider, there is a specified oracle program \(J_T\) such that, on every input \(e\), its computation with oracle \(K\) terminates and returns \(b(e)\). Hence every common path \(X\) satisfies \(X'\le_TK\), using this very program.</p>
+  <div class="proof"><p>Start with the code of the empty list. For \(i=0,\ldots,e-1\), compute the code of \(i::L_i\), apply the ordinary total map \(\delta_T\), ask the \(K\)-oracle whether that index halts on itself, and retain or replace the history according to the displayed recursion. After these \(e\) steps, compute the candidate for \(e\) and return its oracle answer. All list operations and index computations terminate, and only finitely many oracle questions are made.</p>
+  <p>Induction on the loop counter shows the stored list is exactly \(L_i\). Thus the final query is exactly the defining query for \(b(e)\), not merely a query with the same intended interpretation. The exact-jump lemma turns its answer into \(\chi_{X'}(e)\). The program was chosen before \(e\) and before the common path \(X\); it decides the jump of every common path produced by these histories.</p></div>
+</section>
+
+<section id="low-basis" data-formal="lbt-low-basis hfb-basis hfb-free-not-low" data-kind="theorem">
+  <h2>Every infinite computable binary tree has a low path</h2>
+  <div class="statement-box"><p>If \(T\) is a computable binary tree with a node at every length, then there exists \(X\in[T]\) such that \(X'\equiv_TK\).</p></div>
+  <div class="proof"><p>Construct the histories using the fixed decider for \(T\). Survival and the descending-level lemma give a path common to all \(T_{L_e}\). It lies in \(T_{L_0}=T\). The specified jump program shows \(X'\le_TK\), and <a href="low-simple-sets#lowness">the universal lower bound</a> \(K\le_TX'\) gives lowness. This is the low basis theorem: a nonempty computable binary path class contains a low member.</p></div>
+  <p>The <a href="hyperimmune-free-basis-theorem#hyperimmune-free-basis">hyperimmune-free basis theorem</a> also puts a hyperimmune-free member in every such path class. If the class has no computable member, one path cannot witness both conclusions: a noncomputable hyperimmune-free set <a href="hyperimmune-free-basis-theorem#outside-halting">cannot be low</a>.</p>
+</section>
+
+<section id="closed-low-basis" data-formal="lbt-closed-low-basis lbt-co-ce-low-basis" data-kind="theorem">
+  <h2>Every nonempty effectively closed binary class has a low member</h2>
+  <p>If \(\mathcal P\subseteq2^\mathbb N\) is nonempty and <a href="effectively-closed-classes-and-dnc#forbidden-prefixes">effectively closed</a>, there is \(X\in\mathcal P\) with \(X'\equiv_TK\). The same conclusion holds for the path class of a co-c.e. binary tree whenever that path class is nonempty.</p>
+  <div class="proof"><p>The <a href="effectively-closed-classes-and-dnc#same-paths">computable-tree representation</a> gives a computable binary tree \(T\) with \([T]=\mathcal P\). A member of \(\mathcal P\) witnesses every nonempty level of \(T\). Apply the low basis theorem and transfer the resulting path through this exact equality of classes. For a co-c.e. tree, use the <a href="effectively-closed-classes-and-dnc#coenumerable-conversion">same-path computable-tree conversion</a> first. These arguments preserve the infinite paths, not necessarily the finite trees.</p></div>
+</section>
+
+<section id="low-dnc" data-formal="lbt-low-dnc padeg-low-pa-degree" data-kind="theorem">
+  <h2>There is a noncomputable low binary diagonal-avoiding set</h2>
+  <p>There exists a low set \(X\subseteq\mathbb N\) whose characteristic function is diagonally noncomputable: for every \(e,y\in\mathbb N\), if \(\varphi_e(e)=y\), then \(\chi_X(e)\ne y\). This \(X\) is noncomputable and satisfies \(X&lt;_TK\).</p>
+  <div class="proof"><p>The binary DNC class is <a href="effectively-closed-classes-and-dnc#dnc-effectively-closed">effectively closed</a> and <a href="effectively-closed-classes-and-dnc#binary-dnc-exists">nonempty</a>. The closed-class low basis theorem gives a low member. No member is computable, by the <a href="effectively-closed-classes-and-dnc#dnc-noncomputable">diagonal argument</a>. Finally <a href="low-simple-sets#low-incomplete">lowness implies</a> \(X\le_TK\) and \(K\not\le_TX\), yielding the asserted strict inequality.</p></div>
+  <p>This same low binary DNC set has <a href="pa-degrees#low-pa-degrees">PA degree strictly between the computable degree and the halting degree</a>: it computes a complete consistent PA extension, while its own jump remains equivalent to ordinary halting.</p>
+</section>
+
+<section id="bounded-does-not-low" data-formal="turing-red-reflexive jump-jump-strict lowsimple-low lowsimple-low-iff" data-kind="question">
+  <h2>Does computing the chosen path from halting already prove lowness?</h2>
+  <p>Does \(X\le_TK\) imply that \(X\) is low? Explain why the low basis theorem supplies more than the halting-oracle path theorem.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Take \(X=K\). Reflexivity gives \(K\le_TK\), while jump strictness gives \(K'\not\le_TK\), so \(K\) is not low. A procedure deciding path bits from \(K\) need not decide halting for programs that ask those bits as oracle questions.</p><p>The construction here arranges \(X'\le_TK\) directly by recording decisions about every diagonal oracle computation and proving those records correct. Its output is a possibly different path from the <a href="computable-trees-and-paths#halting-oracle-path">halting-selected path</a>; no claim that the earlier selection is low is needed.</p></div></details>
+</section>
+
+<section id="nonempty-needed" data-formal="lbt-empty-tree lbt-inherited-empty-level" data-kind="question">
+  <h2>Where is nonemptiness used?</h2>
+  <p>What fails if the initial computable binary tree has an empty level? Can the history rule manufacture a low path anyway?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Every restricted tree is a subtree of the initial tree, so it retains that empty level. No infinite sequence can have a prefix at every length in the initial tree. In particular, the empty tree is computable and binary, yet has no path at all. The first stage of the survival induction needs every initial level to be nonempty; the rule can preserve that property but cannot create it.</p></div></details>
+</section>

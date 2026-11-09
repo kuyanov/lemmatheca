@@ -28,7 +28,7 @@
   </div>
 </section>
 
-<section id="prefix-adequacy" data-formal="incomp-prefix-adequacy incomp-prefix-output post-prefix-agreement oracle-univ-bounded-complete" data-kind="theorem">
+<section id="prefix-adequacy" data-formal="incomp-prefix-adequacy incomp-prefix-output post-prefix-agreement oracle-univ-bounded-complete ttwtt-uniform-halting-level ttwtt-total-functional-characterization" data-kind="theorem">
   <h2>Every genuine halting computation has a certifying prefix</h2>
   <p>For every \(A,e,x,y\),</p>
   <div class="math-display">\[\varphi_e^A(x)\downarrow=y\quad\Longleftrightarrow\quad\exists\sigma\preceq A\;[D(\sigma,e,x)=y+1].\]</div>
@@ -36,6 +36,7 @@
   <div class="proof">
     <p>For a halting computation choose an allowance \(k\) large enough for the <a href="oracle-program-numberings#bounded-correctness">bounded evaluator to succeed</a>. Increase it if needed to exceed the length of the prescribed prefix. Take \(\sigma=A\mathbin{\upharpoonright}k\), the first \(k\) actual membership bits. The finite-oracle agreement lemma identifies its checked value with the successful calculation using \(A\). This produces the required certificate. The reverse implication is <a href="#certificate-persistence"></a>.</p>
   </div>
+  <p>If one fixed program halts for every oracle on every input, these certificates give a <a href="truth-table-and-weak-truth-table-reductions#uniform-halting-level">computable uniform successful level</a>: otherwise the tree of failing prefixes would have an infinite path. This is the compactness step in the <a href="truth-table-and-weak-truth-table-reductions#total-functional-characterization">truth-table characterization</a>.</p>
 </section>
 
 <section id="unanswered-query-question" data-formal="incomp-unanswered-query" data-kind="question">
@@ -93,13 +94,14 @@
   </div>
 </section>
 
-<section id="halting-choice" data-formal="incomp-test-map incomp-test-map-primitive incomp-test-map-correct incomp-decision-program incomp-decision-evaluation incomp-selector-search incomp-extension-partial incomp-extension-partial-evaluation incomp-extension-partial-program incomp-extension-program incomp-extension-program-evaluation" data-kind="lemma">
+<section id="halting-choice" data-formal="incomp-test-map incomp-test-map-primitive incomp-test-map-correct incomp-decision-program incomp-decision-evaluation incomp-selector-search incomp-extension-partial incomp-extension-partial-evaluation incomp-extension-partial-program incomp-extension-program incomp-extension-program-evaluation ogen-selector-correct ogen-h-spec ogen-constructed-generic ogen-constructed-bound" data-kind="lemma">
   <h2>A halting oracle decides which extension to make</h2>
   <p>The definite extension operation in <a href="#alternating-construction"></a> is total computable relative to \(0'=J(\varnothing)\), jointly in its finite inputs.</p>
   <div class="proof">
     <p>Use <a href="#extension-test"></a> to obtain the ordinary search program with the given parameters. The <a href="turing-jump#empty-oracle-jump">ordinary-to-empty-jump recoding</a> turns its halting question into one membership query to \(0'\). If the answer is no, append zero to both old words. If the answer is yes, run the ordinary search until its first successful candidate appears, read its certified output, and perform the opposite-bit extension. The search is run only in the branch in which its termination has been established.</p>
     <p>This can be expressed using the established relative closure rules without evaluating a divergent unused branch. For example, after obtaining the answer bit, search for the least candidate satisfying “the answer is zero and this candidate is zero, or this candidate passes the extension test.” In the negative case the dummy candidate zero succeeds; in the positive case a real candidate succeeds. This search always terminates. Ordinary coded-list operations then select and construct the corresponding output pair. The resulting relative program is total on every finite input.</p>
   </div>
+    <p>The same halting-oracle search method gives a <a href="one-generic-sets#halting-extension-selector">fixed deterministic selector for arbitrary c.e. collections of binary words</a>. It either chooses an extending member or certifies that no such extension exists; iterating these choices constructs <a href="one-generic-sets#generic-existence">1-generic sets</a>.</p>
 </section>
 
 <section id="halting-bounds" data-formal="incomp-round-computable incomp-stage-computable incomp-characteristic-computable incomp-constructed-bounds incomp-incomparable incomp-union-bit" data-kind="theorem">

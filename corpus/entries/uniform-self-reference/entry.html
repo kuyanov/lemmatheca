@@ -19,14 +19,19 @@
     <div class="math-display">\[\varphi_{h(a)}(x)\simeq\varphi_q(\langle a,x\rangle)\simeq G(q,\langle a,x\rangle)\simeq\varphi_{F(s(q,a),a)}(x)\simeq\varphi_{F(h(a),a)}(x).\]</div>
     <p>All equalities concern partial values, so both defined outputs and divergence agree. The same \(q\) was chosen before \(a\) varied. This proves the selector assertion, rather than merely a separate existence statement for each parameter.</p>
   </div>
+  <p>The <a href="uniform-oracle-fixed-points#all-oracle-recursion">all-oracle parameterized theorem</a> strengthens this construction for the oracle program numbering: an ordinary total computable index transformer has one primitive-recursive selector whose semantic fixed-point identities hold under every oracle.</p>
+
 </section>
 
-<section id="partial-families" data-kind="lemma" data-formal="uniform-rec-partial-compiler uniform-rec-partial-compiler-primitive uniform-rec-partial-compiler-evaluation uniform-rec-partial-family-index uniform-rec-specified-partial-family uniform-rec-partial-families">
+<section id="partial-families" data-kind="lemma" data-formal="uniform-rec-partial-compiler uniform-rec-partial-compiler-primitive uniform-rec-partial-compiler-evaluation uniform-rec-partial-family-index uniform-rec-specified-partial-family uniform-rec-partial-families einf-simultaneous-recursion">
   <h2>The parameterized theorem also handles partial output rules</h2>
   <p>If \(g(e,a,x)\) is partial recursive jointly in its three arguments, there is one primitive-recursive \(h(a)\) such that \(\varphi_{h(a)}(x)\simeq g(h(a),a,x)\) for every \(a,x\). A specified construction chooses an index \(p\) with \(\varphi_p(\langle e,\langle a,x\rangle\rangle)\simeq g(e,a,x)\), defines \(F(e,a)=s(s(p,e),a)\), and uses the selector from <a href="#parameterized-recursion"></a> for this \(F\).</p>
   <div class="proof">
     <p>Joint partial recursiveness supplies the single paired-input index \(p\). Two applications of specialization give \(\varphi_{F(e,a)}(x)\simeq g(e,a,x)\). The map \(F\) is total primitive recursive, because it transforms indices without running the indexed functions. The parameterized theorem therefore yields \(\varphi_{h(a)}(x)\simeq\varphi_{F(h(a),a)}(x)\simeq g(h(a),a,x)\). No totality assumption on \(g\) is used.</p>
   </div>
+  <p>For a family varying with an oracle, the <a href="uniform-oracle-fixed-points#common-partial-families">common partial-family interface</a> requires one supplied oracle program representing the family simultaneously for all oracles. It then gives one ordinary primitive-recursive selector before the oracle varies.</p>
+
+  <p>A <a href="effective-inseparability#simultaneous-self-reference">tagged master program</a> applies this same one-program theorem to select two recognizers whose domains can depend on both selected indices. This supplies simultaneous self-reference without assuming a second fixed-point principle.</p>
 </section>
 
 <section id="indexed-output-question" data-kind="question" data-formal="uniform-rec-indexed-output uniform-rec-successor-selector">
@@ -118,7 +123,7 @@
   <p>This is a decidable property of the index. The next result shows why that convenience obstructs an effective translation of arbitrary standard indices.</p>
 </section>
 
-<section id="nonacceptability-proof" data-kind="theorem" data-formal="numbering-flagged-evaluation numbering-flagged-represents numbering-flagged-numbering numbering-flagged-not-acceptable numbering-compiler-to-standard">
+<section id="nonacceptability-proof" data-kind="theorem" data-formal="numbering-flagged-evaluation numbering-flagged-represents numbering-flagged-numbering numbering-flagged-not-acceptable numbering-compiler-to-standard fnum-existence fnum-unique-ce fnum-no-translator">
   <h2>Joint computability and surjectivity do not imply acceptability</h2>
   <p>The family \(\theta\) is a computable numbering of all unary partial recursive functions, and it has a primitive-recursive compiler into \(\varphi\). There is no total recursive \(b\) with \(\theta_{b(e)}\simeq\varphi_e\) for every \(e\); hence this numbering is not acceptable.</p>
   <div class="proof">
@@ -126,6 +131,7 @@
     <p>For surjectivity, let \(f\simeq\varphi_v\) be any unary partial recursive function. If \(f(0)\) is undefined, choose \(u=0\); if \(f(0)\downarrow=y\), choose \(u=y+1\). Then \(\theta_{\langle u,v\rangle}\simeq f\): the zero-input behaviors agree by the choice of \(u\), and every positive-input behavior agrees by the definition. This is an existence proof, not an effective test selecting between the two cases.</p>
     <p>Suppose the reverse compiler \(b\) existed. Its total computable output could be decoded, and the decidable test \(\operatorname{left}(b(e))&gt;0\) would determine whether \(\theta_{b(e)}(0)\) halts. The compiler identity would make that exactly a decision test for \(\varphi_e(0)\downarrow\), contrary to <a href="#halting-at-zero"></a>. Thus the reverse compiler cannot exist, even though the listing is computable and includes every required function.</p>
   </div>
+  <p>For listings of c.e. sets, a <a href="friedberg-numberings#friedberg-theorem">Friedberg numbering</a> can eliminate repeated sets entirely. It admits <a href="friedberg-numberings#no-reverse-translator">no total computable translation of all standard domain indices into its row names</a>.</p>
 </section>
 
 <section id="rice-boundary-question" data-kind="question" data-formal="numbering-flagged-nontrivial numbering-flagged-zero-domain numbering-flagged-zero-decidable numbering-flagged-not-acceptable">

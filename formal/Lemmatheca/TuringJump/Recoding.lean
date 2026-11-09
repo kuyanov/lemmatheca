@@ -140,3 +140,16 @@ theorem jump_undecidable (A : Set ℕ) :
 
 end
 end Lemmatheca.ComputabilityTheory.TuringJump
+
+/-! The ordinary-halting lower bound is available before lowness is introduced. -/
+namespace Lemmatheca.ComputabilityTheory.LowSimpleSets
+
+open TuringDegrees UniversalComputation TuringJump
+
+theorem halting_below_jump (A : Set ℕ) : Reducible haltingDiagonal (jump A) := by
+  have h0 : Reducible ∅ A := ⟨OracleComputation.Code.zero, fun x => by
+    simp [OracleComputation.eval, indicator]⟩
+  exact reducible_trans (manyOne_imp_reducible empty_jump_equiv_halting.2)
+    (manyOne_imp_reducible (jump_monotone h0))
+
+end Lemmatheca.ComputabilityTheory.LowSimpleSets

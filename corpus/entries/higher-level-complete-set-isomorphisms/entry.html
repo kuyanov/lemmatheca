@@ -1,0 +1,200 @@
+<section id="ordinary-maps" data-formal="opad-zero-halting jump-jump opad-zero-to-diagonal opad-diagonal-to-zero opad-halting-oneone-equivalence red-many-one pad-one-one-reducible myhill-computable-permutation myhill-computable-isomorphism myhill-inverse-search opad-zero-to-diagonal-primitive opad-zero-to-diagonal-injective opad-zero-to-diagonal-membership opad-diagonal-to-zero-primitive opad-diagonal-to-zero-injective opad-diagonal-to-zero-membership" data-kind="definition">
+  <h2>Compare relative halting sets using ordinary maps</h2>
+  <p>For an oracle \(A\subseteq\mathbb N\), use the established <a href="oracle-program-numberings#oracle-numbering">oracle program numbering</a> \(\varphi_e^A\). Its <strong>zero-input halting set</strong> is</p>
+  <div class="math-display">\[K_A=\{e:\varphi_e^A(0)\downarrow\}.\]</div>
+  <p>The <a href="turing-jump#jump">diagonal jump</a> is \(J(A)=\{e:\varphi_e^A(e)\downarrow\}\). The <a href="oracle-padding#zero-diagonal-equivalence">fixed injective recodings</a> \(\alpha:K_A\le_1J(A)\) and \(\beta:J(A)\le_1K_A\) work for every oracle. Write \(S\le_mT\) and \(S\le_1T\) for ordinary total computable reductions, the latter also injective. Thus the translating map has no oracle, even when \(S,T\) are relative halting sets.</p>
+  <p>A <a href="myhills-isomorphism-theorem#computable-isomorphisms">computable isomorphism</a> from \(S\) to \(T\) is a total computable permutation \(P\) with \(x\in S\Longleftrightarrow P(x)\in T\). Its inverse is total computable as well. Write \(S\cong_{\mathrm{comp}}T\) for this relation.</p>
+</section>
+
+<section id="finite-history" data-formal="creative-iso-image-values creative-iso-image-values-computable creative-iso-image-values-membership hiso-compatible hiso-zero-reduction" data-kind="definition">
+  <h2>Record finitely many equivalent halting queries</h2>
+  <p>Fix an ordinary total computable map \(g:\mathbb N\to\mathbb N\). For a finite list \(L\) of indices, its <strong>image list</strong> is \(B_g(L)=L.\operatorname{map}(g)\); the notation \(y\in B_g(L)\) means that \(y=g(j)\) for some entry \(j\) of \(L\). Repetitions are allowed. The <a href="coding-finite-sequences#list-code">numerical list coding</a> makes computing this list and testing its membership ordinary finite algorithms.</p>
+  <p>Relative to \(A\), a list \(L\) is <strong>compatible with \(e\)</strong> when</p>
+  <div class="math-display">\[\forall j\in L\quad(j\in K_A\Longleftrightarrow e\in K_A).\]</div>
+  <p>Compatibility is a mathematical invariant; the construction will not decide it. In the escape argument assume that \(g\) reduces \(K_A\) to a set \(C\), meaning \(j\in K_A\Longleftrightarrow g(j)\in C\) for every \(j\).</p>
+</section>
+
+<section id="numerical-transformers" data-formal="hiso-divergence-index hiso-fixed-programs hiso-first-transformer hiso-second-transformer hiso-transformers-computable" data-kind="definition">
+  <h2>Two transformers inspect only finite numerical data</h2>
+  <p>Let \(d\) be the fixed oracle index of a program that searches the constant sequence of ones for a zero. This program diverges on every input under every oracle. Let \(u\) be the fixed index of the constant-one program. These use the existing <a href="oracle-computation#sequential-search">search operation</a> and <a href="oracle-program-numberings#parameter-programs">constant programs</a>.</p>
+  <p>Define the <strong>first numerical transformer</strong> \(F_1(t,p)\) by decoding \(p=\langle e,\operatorname{code}(L)\rangle\) and setting</p>
+  <div class="math-display">\[F_1(t,p)=\begin{cases}e,&amp;g(t)\notin B_g(L),\\d,&amp;g(t)\in B_g(L).\end{cases}\]</div>
+  <p>Define the <strong>rescue transformer</strong> \(F_2(t,c)\), with \(L=\operatorname{decode}(c)\), by</p>
+  <div class="math-display">\[F_2(t,c)=\begin{cases}u,&amp;g(t)\in B_g(L),\\d,&amp;g(t)\notin B_g(L).\end{cases}\]</div>
+  <p>Both transformers are ordinary total computable functions of their numerical inputs. They run \(g\) on finitely many numbers and compare numbers; neither uses an oracle nor tests membership in \(C\). List decoding is total, so these rules specify transformers on every input.</p>
+</section>
+
+<section id="common-selectors" data-formal="hiso-first-selector hiso-second-selector hiso-first-contract hiso-second-contract hiso-common-selectors hiso-selectors-primitive" data-kind="lemma">
+  <h2>Choose both selectors before choosing an oracle</h2>
+  <p>For the fixed computable \(g\), there are ordinary primitive-recursive selectors \(N,M:\mathbb N\to\mathbb N\). Put</p>
+  <div class="math-display">\[\begin{aligned}n(e,L)&amp;=N(\langle e,\operatorname{code}(L)\rangle),\\m(L)&amp;=M(\operatorname{code}(L)).\end{aligned}\]</div>
+  <p>For every oracle \(Z\), every \(e,L,x\), write \(n=n(e,L)\) and \(m=m(L)\). These same selectors satisfy</p>
+  <div class="math-display">\[\varphi_n^Z(x)\simeq
+    \begin{cases}\varphi_e^Z(x),&amp;g(n)\notin B_g(L),\\\uparrow,&amp;g(n)\in B_g(L),\end{cases}\]</div>
+  <div class="math-display">\[\varphi_m^Z(x)\simeq
+    \begin{cases}1,&amp;g(m)\in B_g(L),\\\uparrow,&amp;g(m)\notin B_g(L).\end{cases}\]</div>
+  <p>Here \(\simeq\) is equality of partial computations, including divergence.</p>
+  <div class="proof">
+    <p>Apply the <a href="uniform-oracle-fixed-points#all-oracle-recursion">common parameterized recursion theorem</a> to each of the ordinary numerical transformers \(F_1,F_2\). It supplies \(N\) with \(\varphi_{N(p)}^Z(x)\simeq\varphi_{F_1(N(p),p)}^Z(x)\), simultaneously for every \(Z,p,x\), and similarly supplies \(M\) for \(F_2\). Substitute the transformer definitions and the two fixed programs' behavior.</p>
+    <p>The order of choices matters: first fix a program for \(g\), then the two transformers and their common selectors; only afterwards choose \(A,C\) for which \(g\) has the required reduction property. No separate choice of a selector for each oracle is used.</p>
+  </div>
+</section>
+
+<section id="first-cases" data-formal="hiso-first-cases" data-kind="lemma">
+  <h2>A collision in the first selector forces divergence</h2>
+  <p>Suppose \(g:K_A\le_m C\), and \(L\) is compatible with \(e\). If \(g(n(e,L))\notin B_g(L)\), then \(\varphi_{n(e,L)}^A\simeq\varphi_e^A\). If \(g(n(e,L))\in B_g(L)\), then \(e\notin K_A\).</p>
+  <div class="proof">
+    <p>The fresh case is the first selector identity. In the collision case choose \(j\in L\) with \(g(n(e,L))=g(j)\). Since \(g\) is a reduction and \(L\) is compatible,</p>
+    <div class="math-display">\[\begin{aligned}n(e,L)\in K_A&amp;\Longleftrightarrow g(n(e,L))\in C\\
+      &amp;\Longleftrightarrow g(j)\in C\Longleftrightarrow e\in K_A.\end{aligned}\]</div>
+    <p>The selector identity also says that \(n(e,L)\notin K_A\), because its program diverges. Therefore \(e\notin K_A\). This inference uses the reduction property in the proof, without asking the algorithm to decide it.</p>
+  </div>
+</section>
+
+<section id="rescue-escapes" data-formal="hiso-second-escapes" data-kind="lemma">
+  <h2>The rescue selector must escape a compatible record</h2>
+  <p>Under the hypotheses of <a href="#first-cases"></a>, if the first selector collides, then \(g(m(L))\notin B_g(L)\), and \(m(L)\notin K_A\). Consequently \(m(L)\in K_A\Longleftrightarrow e\in K_A\).</p>
+  <div class="proof">
+    <p>The first collision gives \(e\notin K_A\). Hence every \(j\in L\) lies outside \(K_A\). If \(g(m(L))\in B_g(L)\), choose an old \(j\) with the same image. The rescue identity makes \(m(L)\) halt with output one, while the reduction gives</p>
+    <div class="math-display">\[\begin{aligned}m(L)\in K_A&amp;\Longleftrightarrow g(m(L))\in C\\
+      &amp;\Longleftrightarrow g(j)\in C\Longleftrightarrow j\in K_A.\end{aligned}\]</div>
+    <p>The right side is false, a contradiction. Thus the rescue image is fresh. Its selector identity now makes it diverge. Both \(m(L)\) and \(e\) lie outside \(K_A\), proving the equivalence.</p>
+  </div>
+</section>
+
+<section id="escape-step" data-formal="hiso-escape-step hiso-escape-computable hiso-escape-spec" data-kind="definition">
+  <h2>Make one effective escape step</h2>
+  <p>The <strong>escape step</strong> is the ordinary numerical function</p>
+  <div class="math-display">\[E_g(e,L)=\begin{cases}n(e,L),&amp;g(n(e,L))\notin B_g(L),\\m(L),&amp;g(n(e,L))\in B_g(L).\end{cases}\]</div>
+  <p>It is total computable on all inputs, since the selectors, \(g\), and the finite test are total computable. Whenever \(g:K_A\le_m C\) and \(L\) is compatible with \(e\), the two cases just proved give</p>
+  <div class="math-display">\[E_g(e,L)\in K_A\Longleftrightarrow e\in K_A,\qquad
+    g(E_g(e,L))\notin B_g(L).\]</div>
+  <p>The choice between the selectors uses the first image's collision test only. It does not wait for either oracle computation to halt.</p>
+</section>
+
+<section id="query-history" data-formal="hiso-query-history hiso-query hiso-history-identity hiso-query-computable" data-kind="definition">
+  <h2>Append one new equivalent query at each stage</h2>
+  <p>For each \(e\), define its <strong>query history</strong> \(Q_{e,k}\) and <strong>query sequence</strong> \(h(e,k)\) by</p>
+  <div class="math-display">\[Q_{e,0}=[e],\qquad h(e,0)=e,\]</div>
+  <div class="math-display">\[h(e,k+1)=E_g(e,Q_{e,k}),\qquad
+    Q_{e,k+1}=Q_{e,k}\mathbin{+\!+}[h(e,k+1)].\]</div>
+  <p>Thus \(Q_{e,k}=[h(e,0),\ldots,h(e,k)]\). These recurrences are ordinary total computable operations on coded lists; a prescribed \(k\) requires exactly \(k\) escape steps.</p>
+</section>
+
+<section id="history-invariant" data-formal="hiso-query-invariants" data-kind="lemma">
+  <h2>The history keeps its status and gains a distinct image</h2>
+  <p>If \(g:K_A\le_m C\), then for every \(e,k\), the history \(Q_{e,k}\) has length \(k+1\), is compatible with \(e\), and its image list \(B_g(Q_{e,k})\) has no repetitions. In particular, \(h(e,k)\in K_A\Longleftrightarrow e\in K_A\), and \(k\mapsto g(h(e,k))\) is injective.</p>
+  <div class="proof">
+    <p>Use induction on \(k\), for each fixed \(e\). At zero the history contains just \(e\), so all three assertions hold. Assume them at \(k\). The escape-step assertion gives a new query with the same halting status as \(e\), so appending it preserves compatibility. Its image is absent from the whole old image list, so appending that image preserves the absence of repetitions. Appending one element increases the length by one.</p>
+    <p>For distinct positions \(r&lt;s\), the query at position \(r\) is already present in \(Q_{e,s-1}\), whereas the image of the new query \(h(e,s)\) avoids that history. Their images differ. This proves the asserted injectivity across arbitrary stages.</p>
+  </div>
+</section>
+
+<section id="finite-avoidance" data-formal="hiso-avoidance-position hiso-avoid-image hiso-avoidance-computable hiso-avoidance-spec" data-kind="definition">
+  <h2>A bounded scan avoids any finite list of target values</h2>
+  <p>For a finite forbidden list \(F\), let the <strong>avoidance position</strong> \(k(e,F)\) be the least \(k\le |F|\) with \(g(h(e,k))\notin F\). To define a total numerical function without assuming a valid reduction, use the bounded scan with sentinel \(|F|+1\) when no such position exists. The <strong>avoiding image</strong> is</p>
+  <div class="math-display">\[r(e,F)=g(h(e,k(e,F))).\]</div>
+  <p>Both functions are ordinary total computable on every \(e,F\). If \(g:K_A\le_m C\), the sentinel is never reached: the first \(|F|+1\) image values are distinct by <a href="#history-invariant"></a>, whereas \(F\) has at most \(|F|\) distinct entries. Thus some tested image is absent from \(F\). For a valid reduction,</p>
+  <div class="math-display">\[r(e,F)\notin F,\qquad e\in K_A\Longleftrightarrow r(e,F)\in C.\]</div>
+  <p>The membership equivalence follows first from the query's compatibility and then from the reduction property of \(g\).</p>
+</section>
+
+<section id="output-history" data-formal="hiso-output-history hiso-replacement hiso-output-history-identity hiso-replacement-computable" data-kind="definition">
+  <h2>Keep a second history of previously chosen outputs</h2>
+  <p>Define the <strong>output history</strong> \(F_e\) and <strong>injective replacement</strong> \(b\) simultaneously by</p>
+  <div class="math-display">\[F_0=[],\qquad b(e)=r(e,F_e),\qquad
+    F_{e+1}=F_e\mathbin{+\!+}[b(e)].\]</div>
+  <p>Thus \(F_e=[b(0),\ldots,b(e-1)]\). This is ordinary finite recursion: on input \(e\), compute the earlier outputs, then the bounded avoiding image. The function is total computable even when no oracle makes \(g\) a reduction; correctness requires that reduction hypothesis.</p>
+</section>
+
+<section id="injective-upgrade" data-formal="hiso-replacement-spec hiso-injective-upgrade" data-kind="theorem">
+  <h2>Every ordinary reduction out of relative halting has an injective replacement</h2>
+  <div class="statement-box"><p>Fix an ordinary total computable \(g\), and common selectors as above. The specified \(b\) is ordinary total computable. For every \(A,C\) such that \(g:K_A\le_m C\), it is injective and</p>
+  <div class="math-display">\[e\in K_A\quad\Longleftrightarrow\quad b(e)\in C.\]</div>
+  <p>In particular, \(K_A\le_m C\) implies \(K_A\le_1C\).</p></div>
+  <div class="proof">
+    <p>The preceding recurrences prove total computability independently of \(A,C\). Under the reduction hypothesis, finite avoidance gives \(b(e)\notin F_e\). If \(j&lt;e\), then \(b(j)\) belongs to \(F_e\), so \(b(e)\ne b(j)\). Thus \(b\) is injective. Finite avoidance also gives the displayed membership equivalence for every input.</p>
+    <p>Computing \(b\) uses a fixed ordinary program for \(g\), the two common selectors and finite histories. The oracle computations occur in the correctness proof; their membership answers are never used by the algorithm.</p>
+  </div>
+</section>
+
+<section id="reverse-injection" data-formal="hiso-padded-reduction hiso-padded-reduction-spec" data-kind="lemma">
+  <h2>Padding makes a reduction into relative halting injective</h2>
+  <p>If an ordinary total computable \(f\) reduces \(C\) to \(K_A\), then</p>
+  <div class="math-display">\[i_0(x)=\operatorname{pad}(f(x),x)\]</div>
+  <p>is an ordinary total computable injective reduction of \(C\) to \(K_A\).</p>
+  <div class="proof">
+    <p>The <a href="oracle-padding#padding-data">actual padding map</a> is jointly primitive recursive and jointly injective, and preserves evaluation under every oracle. Hence \(\varphi_{i_0(x)}^A(0)\simeq\varphi_{f(x)}^A(0)\), proving membership preservation. If \(i_0(x)=i_0(y)\), joint injectivity gives equality of the second arguments, so \(x=y\). Composition proves ordinary total computability.</p>
+  </div>
+</section>
+
+<section id="jump-isomorphism" data-formal="hiso-isomorphism-pair hiso-pair-isomorphic hiso-forward-injection hiso-backward-injection hiso-permutation hiso-inverse-permutation hiso-specified-isomorphism hiso-jump-oneone hiso-jump-isomorphism" data-kind="theorem">
+  <h2>Many-one equivalence to a jump determines a computable permutation</h2>
+  <div class="statement-box"><p>For every oracle \(A\) and every set \(C\), the following are equivalent:</p>
+  <div class="math-display">\[\begin{aligned}C\equiv_mJ(A)&amp;\Longleftrightarrow C\equiv_1J(A)\\
+      &amp;\Longleftrightarrow C\cong_{\mathrm{comp}}J(A).\end{aligned}\]</div></div>
+  <p>More explicitly, supplied ordinary reductions \(f:C\le_mK_A\) and \(g:K_A\le_mC\) determine the injections</p>
+  <div class="math-display">\[i(x)=\alpha(\operatorname{pad}(f(x),x)),\qquad
+    j(y)=b(\beta(y)),\]</div>
+  <p>directed from \(C\) to \(J(A)\) and back. Let \(P=\operatorname{forward}(i,j)\) and \(Q=\operatorname{backward}(i,j)\) be the <a href="myhills-isomorphism-theorem#reading-the-permutation">specified finite-stage Myhill maps</a>. They are ordinary total computable and satisfy</p>
+  <div class="math-display">\[Q(P(x))=x,\qquad P(Q(y))=y,\]</div>
+  <div class="math-display">\[x\in C\quad\Longleftrightarrow\quad P(x)\in J(A).\]</div>
+  <div class="proof">
+    <p>If \(C\equiv_mJ(A)\), compose the given reductions with the fixed recodings \(\alpha,\beta\) to obtain \(f,g\) as stated. The reverse-injection lemma and injective-upgrade theorem give \(i,j\), with their indicated membership equivalences. Myhill's <a href="myhills-isomorphism-theorem#effective-construction">computability theorem</a>, <a href="myhills-isomorphism-theorem#inverse-identities">inverse identities</a>, and <a href="myhills-isomorphism-theorem#labelled-bijection">membership-label preservation</a> give exactly the asserted properties of these same \(P,Q\). Thus many-one equivalence yields one-one equivalence and a computable isomorphism.</p>
+    <p>Conversely a computable isomorphism and its computable inverse give the two injective reductions; forgetting injectivity gives many-one equivalence. No enumerability assumption on \(C\) is needed. Programs witnessing the reductions may be chosen using facts about \(A,C\), but running the resulting permutation queries neither set. This construction does not decide whether arbitrary proposed programs are valid reductions.</p>
+  </div>
+</section>
+
+<section id="positive-levels" data-formal="hiso-sigma-isomorphism hiso-sigma-class-maps hiso-compose-pairs" data-kind="theorem">
+  <h2>Every positive existential level has one complete isomorphism type</h2>
+  <div class="statement-box"><p>For every base oracle \(B\), every \(n&gt;0\), and every \(H\subseteq\mathbb N\),</p>
+  <div class="math-display">\[H\text{ is }\Sigma_n^B\text{-complete}
+    \quad\Longleftrightarrow\quad H\cong_{\mathrm{comp}}B^{(n)}.\]</div>
+  <p>Any two \(\Sigma_n^B\)-complete sets are therefore computably isomorphic, using ordinary computable permutations and inverses.</p></div>
+  <div class="proof">
+    <p>Use the <a href="posts-theorem#relative-complete-sets">existing completeness characterization</a>, with its ordinary many-one maps: completeness is equivalent to \(H\equiv_m B^{(n)}\). Since \(n&gt;0\), write \(n=k+1\). The canonical iterate is \(B^{(n)}=J(B^{(k)})\), so <a href="#jump-isomorphism"></a> applies with oracle \(A=B^{(k)}\). Conversely a computable isomorphism gives both ordinary many-one reductions, and the same characterization proves completeness.</p>
+    <p>For two complete sets \(H,D\), let \(P_H,Q_H\) and \(P_D,Q_D\) be the constructed maps to and from \(B^{(n)}\). The ordinary computable maps \(Q_D\circ P_H\) and \(Q_H\circ P_D\) are inverse by their two identities. Their membership equivalences show that the first maps \(H\) onto \(D\). These are explicit compositions of the supplied constructions.</p>
+  </div>
+</section>
+
+<section id="pi-completeness" data-formal="hiso-pi-complete" data-kind="definition">
+  <h2>Use the same ordinary reduction convention for universal levels</h2>
+  <p>For a base \(B\) and a positive \(n\), a set \(H\) is <strong>\(\Pi_n^B\)-complete</strong> if \(H\in\Pi_n^B\) and every \(S\in\Pi_n^B\) has an ordinary total computable many-one reduction to \(H\). The hierarchy classes have the <a href="arithmetical-hierarchy#alternating-prefixes">existing quantifier definitions</a>; completeness adds the stated universality property.</p>
+</section>
+
+<section id="complement-completeness" data-formal="hiso-complement-pairs hiso-complement-complete" data-kind="lemma">
+  <h2>Complementing both sides preserves the reduction map</h2>
+  <p>For \(n&gt;0\), a set \(H\) is \(\Pi_n^B\)-complete if and only if \(\overline H\) is \(\Sigma_n^B\)-complete. Moreover every computable isomorphism from \(S\) to \(T\), with its same inverse, is an isomorphism from \(\overline S\) to \(\overline T\).</p>
+  <div class="proof">
+    <p>A numerical \(f\) satisfies \(x\in S\Longleftrightarrow f(x)\in T\) exactly when it satisfies \(x\notin S\Longleftrightarrow f(x)\notin T\): negate both sides. Thus the same ordinary map reduces the two complements, and all computability or injectivity properties are retained. <a href="arithmetical-hierarchy#complement-duality">Complement duality</a> exchanges \(\Sigma_n^B\) with \(\Pi_n^B\).</p>
+    <p>If \(H\) is \(\Pi_n^B\)-complete and \(S\in\Sigma_n^B\), then \(\overline S\in\Pi_n^B\) reduces to \(H\); the same map reduces \(S\) to \(\overline H\). Membership of \(\overline H\) in \(\Sigma_n^B\) follows from duality, so it is complete. Conversely apply this argument with the polarities exchanged and complement twice. For an isomorphism, complementing the membership equivalence leaves the two numerical inverse identities unchanged, proving the final assertion.</p>
+  </div>
+</section>
+
+<section id="pi-isomorphisms" data-formal="hiso-pi-isomorphism hiso-pi-complete-maps hiso-pi-class-maps hiso-ordinary-classification" data-kind="theorem">
+  <h2>Universal complete sets have the complementary canonical type</h2>
+  <p>For every base \(B\), every \(n&gt;0\), and every \(H\),</p>
+  <div class="math-display">\[H\text{ is }\Pi_n^B\text{-complete}
+    \quad\Longleftrightarrow\quad H\cong_{\mathrm{comp}}\overline{B^{(n)}}.\]</div>
+  <p>Any two \(\Pi_n^B\)-complete sets are computably isomorphic. In particular, with \(B=\varnothing\), each positive ordinary \(\Sigma_n\) level has the canonical complete type \(\varnothing^{(n)}\), and each positive ordinary \(\Pi_n\) level has its complement as canonical complete type.</p>
+  <div class="proof">
+    <p>The complement-completeness lemma reduces the first assertion to <a href="#positive-levels"></a>. If \(P,Q\) relate \(\overline H\) and \(B^{(n)}\), those exact maps relate \(H\) and \(\overline{B^{(n)}}\). Conversely complement any isomorphism in the displayed statement and use the existential-level classification. Compose the two specified pairs of inverse maps through the common canonical set to compare any two universal complete sets, exactly as in the existential case. Taking the empty base gives the ordinary specializations.</p>
+  </div>
+</section>
+
+<section id="totality-infinitude" data-formal="hiso-totality-infinitude isc-totality-complete isc-infinitude-complete isc-pi-complete isc-totality-ne-infinitude isc-even-index-facts" data-kind="lemma">
+  <h2>Totality and infinite domain differ by a computable renaming</h2>
+  <p>The index sets \(\mathrm{TOT}=\{e:\varphi_e\text{ is total}\}\) and \(\mathrm{INF}=\{e:\operatorname{dom}\varphi_e\text{ is infinite}\}\) are computably isomorphic.</p>
+  <div class="proof">
+    <p>They are respectively <a href="index-set-completeness#totality-complete">\(\Pi_2\)-complete</a> and <a href="index-set-completeness#infinitude-complete">\(\Pi_2\)-complete</a>, so apply <a href="#pi-isomorphisms"></a> with the empty base and \(n=2\). This gives ordinary total computable inverse permutations preserving the two membership predicates. The sets need not be equal: the <a href="index-set-completeness#infinite-domain-question">specified index of the program that halts exactly on even inputs</a> belongs to \(\mathrm{INF}\) but not \(\mathrm{TOT}\).</p>
+  </div>
+</section>
+
+<section id="level-zero-question" data-formal="hiso-zero-level-map hiso-zero-level-map-spec hiso-zero-complete hiso-finite-no-permutation pad-collapse-map-contract pad-double-map-contract myhill-two-point-not-isomorphic" data-kind="question">
+  <h2>Can the positive-level hypothesis be dropped?</h2>
+  <p>If the completeness definition is extended to \(n=0\), must two ordinary \(\Sigma_0\)-complete sets be computably isomorphic? More generally, does arbitrary many-one equivalence force a computable isomorphism?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No to both questions. Let \(S=\{0,1\}\) and \(T=\{0\}\). The ordinary level \(\Sigma_0\) consists of computable sets. Both \(S,T\) are computable and nontrivial. For any computable \(D\), the total computable function returning zero on members of \(D\) and two on nonmembers reduces \(D\) to either set. Thus both are complete for this extended level-zero definition, and they are many-one equivalent.</p>
+    <p>They cannot be computably isomorphic, or even isomorphic by an arbitrary permutation preserving membership. Such a permutation would send both zero and one into the singleton \(T\), contradicting injectivity, as in the <a href="myhills-isomorphism-theorem#many-one-question">existing finite counterexample</a>. The proof at positive levels uses \(n=k+1\) to exhibit the canonical complete set as a jump; that step is unavailable at zero.</p>
+  </div></details>
+</section>

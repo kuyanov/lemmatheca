@@ -88,6 +88,17 @@
 </div>
 </section>
 
+<section id="coenumerable-satisfiability" data-kind="lemma" data-formal="separator-coenumerable red-satisfiability-codes red-satisfiability-complement-characterization red-satisfiability-coenumerable">
+  <h2>Negation proofs recognize the complement of satisfiability</h2>
+  <p>A set of numerical codes is <strong>co-c.e.</strong> if its complement is c.e. The set \(\mathrm{Sat}\) of satisfiable arithmetic sentence codes is co-c.e. Satisfiability here allows structures of arbitrary cardinality and imposes no arithmetic axioms.</p>
+  <div class="proof">
+    <p>On input \(n\), run the effective sentence-code test. If it fails, accept immediately, since malformed codes are outside \(\mathrm{Sat}\). If it succeeds, compute the negation code and enumerate proofs from the empty theory until a proof of that negation appears. By <a href="henkin-completeness#deductive-completeness">first-order completeness</a>, the search succeeds exactly when the negation is valid, equivalently when the original sentence has no model.</p>
+    <p>Thus this one procedure recognizes precisely the complement, including malformed inputs. More explicitly, if \(\operatorname{Sent}(n)\) is the decidable sentence-code predicate and \(\operatorname{neg}(n)\) is the total numerical negation constructor, then</p>
+    <div class="math-display">\[n\notin\mathrm{Sat}\quad\Longleftrightarrow\quad\neg\operatorname{Sent}(n)\ \lor\ \operatorname{neg}(n)\in\mathrm{Val}.\]</div>
+    <p>The malformed-code condition is decidable, and validity is <a href="#enumeration-without-decision">c.e.</a>; their computable preimage and union are c.e. This proves the same conclusion directly from the displayed characterization.</p>
+  </div>
+</section>
+
 <section id="satisfiability" data-formal="red-guarded-negation red-guarded-negation-primitive red-negation-satisfiable red-guarded-negation-correct red-satisfiability-not-enumerable red-satisfiability-undecidable mon-decision-correct" data-kind="theorem">
   <h2>Satisfiable sentences cannot be enumerated</h2>
   <div class="statement-box"><p>The set \(\mathrm{Sat}\) of satisfiable arithmetic sentence codes is not c.e. In particular, it is undecidable.</p></div>

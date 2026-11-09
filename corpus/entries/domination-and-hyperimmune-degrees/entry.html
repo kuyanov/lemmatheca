@@ -1,0 +1,170 @@
+<section id="computable-bounds" data-formal="hdeg-majorizes hdeg-computably-dominated eventual-domination eventual-natural-threshold" data-kind="definition">
+  <h2>Bounds with and without finitely many exceptions</h2>
+  <p>For total functions \(f,g:\mathbb N\to\mathbb N\), say that \(g\) <strong>majorizes</strong> \(f\) if \(f(n)\le g(n)\) for every \(n\). Write \(f\le^*g\) when \(g\) <strong>eventually dominates</strong> \(f\):</p>
+  <div class="math-display">\[f\le^*g\quad\Longleftrightarrow\quad\exists N\;\forall n\ge N\quad f(n)\le g(n).\]</div>
+  <p>This is the same <a href="finite-errors-and-countable-diagonalization#eventual-domination">eventual order</a> used for arbitrary families of functions. Here the proposed bound \(g\) will be required to be ordinary total computable. The threshold may depend on both functions.</p>
+</section>
+
+<section id="finite-exception-patch" data-formal="hdeg-finite-patch hdeg-bound-equivalence" data-kind="lemma">
+  <h2>A finite patch turns an eventual computable bound into a pointwise bound</h2>
+  <p>A total \(f:\mathbb N\to\mathbb N\) has a total computable eventual bound if and only if it has a total computable majorant.</p>
+  <div class="proof">
+    <p>Suppose \(g\) is computable and \(f(n)\le g(n)\) for \(n\ge N\). Put</p>
+    <div class="math-display">\[M=\max\bigl(\{0\}\cup\{f(i):i&lt;N\}\bigr),\qquad h(n)=\max(M,g(n)).\]</div>
+    <p>The fixed natural number \(M\) can be built into a program, so \(h\) is computable. For \(n&lt;N\), its constant part bounds \(f(n)\); for \(n\ge N\), its other part does. Conversely a pointwise bound is an eventual bound with threshold zero. This proves an existence equivalence even when the finitely many exceptional values were not supplied effectively from \(f\).</p>
+  </div>
+</section>
+
+<section id="relative-functions" data-formal="oracle-code-relative-computable bbfn-function-graph bbfn-function-graph-equivalence bbfn-graph-lookup-program bbfn-graph-lookup-evaluation bbfn-graph-decision-program bbfn-graph-decision-evaluation oracle-subst-correct" data-kind="definition">
+  <h2>Natural-valued oracle computations and their graphs</h2>
+  <p>A total function \(f:\mathbb N\to\mathbb N\) is <strong>computable from \(A\)</strong>, written \(f\le_T A\), if one finite <a href="oracle-computation#oracle-programs">oracle program</a> \(c\) satisfies \(E_A(c,n)\downarrow=f(n)\) for every \(n\). Define its <strong>coded graph</strong> by \(G_f=\{\langle n,y\rangle:f(n)=y\}\). The established <a href="busy-beaver-functions#graph-oracle-bridges">graph-oracle bridge</a> gives</p>
+  <div class="math-display">\[f\le_T A\quad\Longleftrightarrow\quad G_f\le_T A.\]</div>
+  <p>The bridge uses actual programs: a common graph-search program retrieves the unique \(y\), and a program computing \(f\) decides \(G_f\) by computing \(f(n)\) and comparing it with \(y\). Given a set reduction \(A\le_T B\), substituting its characteristic program into \(c\) computes the same \(f\) from \(B\), by <a href="oracle-computation#substitution-correctness">query substitution</a>. These facts fix the meaning of the function notation; it does not introduce a second reducibility unrelated to the set model.</p>
+</section>
+
+<section id="hyperimmune-functions" data-formal="hdeg-hyperimmune-function hdeg-hyperimmune-oracle hdeg-hyperimmune-free hdeg-escape-characterization hdeg-no-majorant hdeg-exclusive-alternatives hfb-basis hfb-free-pa-outside-halting" data-kind="definition">
+  <h2>Functions that escape all computable bounds</h2>
+  <p>A total \(f:\mathbb N\to\mathbb N\) is <strong>hyperimmune</strong> if no total computable function eventually dominates it. Equivalently, by <a href="#finite-exception-patch"></a>, it has no total computable majorant. In explicit quantifiers,</p>
+  <div class="math-display">\[\forall g\text{ total computable}\;\forall N\;\exists n\ge N\quad g(n)&lt;f(n).\]</div>
+  <p>An oracle \(A\) has <strong>hyperimmune degree</strong> if it computes a hyperimmune function. It is <strong>hyperimmune-free</strong> if every total \(f\le_T A\) has a total computable eventual bound. Thus exactly one of these alternatives holds for each oracle. The bound may depend on the particular total function; no one computable function is required to bound them all.</p>
+  <p>Noncomputable hyperimmune-free oracles exist: the <a href="hyperimmune-free-basis-theorem#hyperimmune-free-basis">hyperimmune-free basis theorem</a> gives such a path in a computable binary tree with no computable paths. Every noncomputable member with this property lies <a href="hyperimmune-free-basis-theorem#outside-halting">outside the sets computable from ordinary halting</a>.</p>
+</section>
+
+<section id="degree-invariance" data-formal="hdeg-upward-closure hdeg-downward-closure hdeg-degree-invariance hdeg-computable-degree-free" data-kind="theorem">
+  <h2>These properties depend only on the Turing degree</h2>
+  <p>Hyperimmune degree is upward closed under \(\le_T\), and hyperimmune-freeness is downward closed. In particular both are invariant under \(\equiv_T\), and the computable degree is hyperimmune-free.</p>
+  <div class="proof">
+    <p>If \(A\le_T B\) and \(A\) computes a hyperimmune \(f\), the substituted program from <a href="#relative-functions"></a> computes that same \(f\) from \(B\). If \(B\) is hyperimmune-free and \(f\le_T A\), that substitution gives \(f\le_T B\), so a computable bound exists. Mutual reducibility gives both invariance assertions and hence properties of the <a href="turing-degrees#equivalence-and-degrees">Turing degrees</a>.</p>
+    <p>When \(A\) is computable, <a href="oracle-computation#computable-oracle-elimination">oracle elimination</a> converts every total \(A\)-program into an ordinary program for the same function. That function bounds itself, proving hyperimmune-freeness of the computable degree.</p>
+  </div>
+</section>
+
+<section id="principal-function" data-formal="hdeg-hyperimmune-set effective-stage-increasing-list effective-stage-increasing-list-correct effective-stage-least-members well-order-increasing-map-not-decreasing" data-kind="definition">
+  <h2>Enumerate an infinite set in increasing order</h2>
+  <p>For an infinite \(X\subseteq\mathbb N\), its <strong>principal function</strong> \(p_X\) is the increasing enumeration starting at index zero:</p>
+  <div class="math-display">\[p_X(0)=\min X,\qquad p_X(n+1)=\min\{m\in X:p_X(n)&lt;m\}.\]</div>
+  <p>Every required minimum exists because an infinite subset of \(\mathbb N\) is unbounded. This gives a strictly increasing function with range \(X\), and \(n\le p_X(n)\). Indeed the recurrence chooses each next member with no omitted member in between; every \(x\in X\) occurs by index at most \(x\). A <strong>hyperimmune set</strong> is an infinite set whose principal function is hyperimmune.</p>
+</section>
+
+<section id="principal-program" data-formal="hdeg-principal-program hdeg-principal-evaluation hdeg-bounded-range-program hdeg-bounded-range-evaluation hdeg-increasing-range-reduction hdeg-principal-inverse-program hdeg-principal-inverse-evaluation hdeg-principal-graph-equivalence effective-stage-bounded-range bbfn-function-graph-equivalence" data-kind="lemma">
+  <h2>One common oracle program computes every infinite set's principal function</h2>
+  <p>There is one oracle program \(P\), chosen independently of \(X\), such that \(E_X(P,n)\downarrow=p_X(n)\) whenever \(X\) is infinite. Conversely one common program with oracle \(G_{p_X}\) decides \(X\). Hence \(G_{p_X}\equiv_T X\).</p>
+  <div class="proof">
+    <p>To compute the first value, query \(0,1,2,\ldots\) until a yes answer appears. To compute a successor value from \(v=p_X(n)\), query \(v+1,v+2,\ldots\) until the next yes answer. Least search and primitive recursion are constructors of the <a href="oracle-computation#relative-closure">oracle program model</a>, so these instructions specify one finite program \(P\). Induction on \(n\) proves both termination, by unboundedness of \(X\), and the displayed evaluation identity.</p>
+    <p>For the reverse reduction, on input \(x\) use the fixed <a href="busy-beaver-functions#graph-oracle-bridges">graph lookup program</a> to compute \(p_X(0),\ldots,p_X(x)\), and answer one exactly when one of them equals \(x\). These are finitely many terminating calls. Since \(p_X(n)\ge n\), a later value cannot equal \(x\), and since the range is \(X\), this is exactly \(\chi_X(x)\). Composing \(P\) with a supplied reduction for \(X\) likewise computes \(p_X\) from any oracle computing \(X\).</p>
+  </div>
+</section>
+
+<section id="strong-arrays" data-formal="hdeg-array-finite-set hdeg-strong-array hdeg-array-hits" data-kind="definition">
+  <h2>Disjoint finite tests supplied effectively</h2>
+  <p>A <strong>strong array</strong> is a sequence \((D_n)_{n\in\mathbb N}\) of pairwise disjoint finite subsets of \(\mathbb N\), supplied by a total computable function returning a <a href="coding-finite-sequences#list-code">finite list code</a> for \(D_n\). Repeated entries in an individual list do not change its set. The array <strong>hits</strong> \(X\) if \(D_n\cap X\ne\varnothing\) for every \(n\).</p>
+  <p>Having finite sets is not enough: their full finite descriptions must be computable uniformly in \(n\). In a hitting array every \(D_n\) is nonempty.</p>
+</section>
+
+<section id="array-characterization" data-formal="hdeg-array-maximum hdeg-array-maximum-computable hdeg-array-bounds-principal hdeg-interval-endpoints hdeg-interval-array hdeg-interval-array-correct hdeg-interval-array-hits hdeg-array-characterization hdeg-no-array-characterization" data-kind="theorem">
+  <h2>Hyperimmunity is equivalent to escaping every strong array</h2>
+  <p>For an infinite set \(X\), the principal function \(p_X\) has a computable majorant if and only if some strong array hits \(X\). Consequently \(X\) is hyperimmune exactly when no strong array hits it.</p>
+  <div class="proof">
+    <p>Suppose \((D_n)\) hits \(X\). The union \(D_0\cup\cdots\cup D_n\) contains at least \(n+1\) distinct members of \(X\), since one can select a member in each intersection and the finite sets are disjoint. Define</p>
+    <div class="math-display">\[H(n)=\max\bigl(\{0\}\cup D_0\cup\cdots\cup D_n\bigr).\]</div>
+    <p>Computing the first \(n+1\) list codes and their maximum is an ordinary terminating procedure. At least \(n+1\) members of \(X\) are at most \(H(n)\), so its member of index \(n\) satisfies \(p_X(n)\le H(n)\).</p>
+    <p>Conversely let a total computable \(h\) majorize \(p_X\). Define the computable increasing endpoints</p>
+    <div class="math-display">\[b_0=0,\qquad b_{n+1}=1+\max\bigl(b_n,h(b_n)\bigr),\qquad D_n=[b_n,b_{n+1})\cap\mathbb N.\]</div>
+    <p>The displayed interval has a computable finite list and successive intervals are disjoint. Moreover \(b_n\le p_X(b_n)\le h(b_n)&lt;b_{n+1}\). Thus \(p_X(b_n)\) is an explicit member of \(D_n\cap X\) for every \(n\). These two constructions establish the equivalence; <a href="#finite-exception-patch"></a> also covers a majorant originally supplied only eventually.</p>
+  </div>
+</section>
+
+<section id="hyperimmune-implies-immune" data-formal="hdeg-hyperimmune-implies-immune immune-set effective-stage-infinite-enumerable-subset" data-kind="theorem">
+  <h2>A hyperimmune set has no infinite enumerable subset</h2>
+  <p>Every hyperimmune set is <a href="simple-sets#immune-sets">immune</a>.</p>
+  <div class="proof">
+    <p>Suppose an infinite c.e. set \(W\) were contained in \(X\). Its enumeration computes a strictly increasing sequence \(w_0,w_1,\ldots\) of elements of \(W\): wait for a first discovered element, and after choosing \(w_n\), wait for a discovered element greater than it. Each wait terminates because \(W\) is unbounded. Fixing the enumeration and its order makes this an ordinary total computable sequence.</p>
+    <p>The singleton sets \(D_n=\{w_n\}\) are a strong array hitting \(X\), contrary to <a href="#array-characterization"></a>. Thus no infinite c.e. subset exists; infinitude is already part of hyperimmunity.</p>
+  </div>
+</section>
+
+<section id="parity-growth" data-formal="hdeg-parity-growth hdeg-parity-growth-properties hdeg-parity-range-infinite hdeg-parity-principal well-order-increasing-map-not-decreasing" data-kind="lemma">
+  <h2>A growing sequence can preserve every oracle bit</h2>
+  <p>Given a total \(f:\mathbb N\to\mathbb N\) and a set \(A\), define the <strong>parity growth sequence</strong> \(g=g_{A,f}\) by</p>
+  <div class="math-display">\[g(0)=2f(0)+\chi_A(0),\qquad g(n+1)=2\bigl(g(n)+f(n+1)+1\bigr)+\chi_A(n+1).\]</div>
+  <p>It is strictly increasing, \(f(n)\le g(n)\), and \(g(n)\bmod2=\chi_A(n)\). Its range \(X_g\) is infinite and has principal function \(p_{X_g}=g\).</p>
+  <div class="proof">
+    <p>The two possible bits are zero and one, so each displayed value has the asserted parity. The base value is at least \(f(0)\). At a successor, the expression exceeds \(g(n)\) and is at least \(f(n+1)\). These statements prove the inequalities by induction and show that the range is infinite. A strictly increasing sequence already lists its range in order, so it is precisely that range's principal function.</p>
+  </div>
+</section>
+
+<section id="parity-programs" data-formal="hdeg-growth-program hdeg-range-program hdeg-parity-program hdeg-growth-program-evaluation hdeg-range-program-evaluation hdeg-parity-program-evaluation hdeg-parity-degree-equivalence hdeg-parity-range-hyperimmune" data-kind="lemma">
+  <h2>The range and the original oracle compute one another</h2>
+  <p>For every actual oracle program \(c\) computing a total \(f\) from \(A\), there are programs \(C_c,R_c\) with</p>
+  <div class="math-display">\[E_A(C_c,n)\downarrow=g_{A,f}(n),\qquad E_A(R_c,x)\downarrow=\chi_{X_g}(x).\]</div>
+  <p>There is also one common program \(D\), independent of \(A,f,c\), with \(E_{X_g}(D,n)\downarrow=\chi_A(n)\). Thus \(X_g\equiv_T A\); if \(f\) is hyperimmune, then \(X_g\) is hyperimmune.</p>
+  <div class="proof">
+    <p>Build \(C_c\) by the recurrence in <a href="#parity-growth"></a>. Its base calls \(c\) at zero and queries zero; its successor at \(n\) calls \(c\) at \(n+1\), queries \(n+1\), and combines those answers with the preceding numerical value. Composition, pairing, ordinary arithmetic programs and oracle primitive recursion give one finite syntax from \(c\). Induction on the counter proves exactly the asserted identity for \(C_c\).</p>
+    <p>The program \(R_c\), on input \(x\), computes this recurrence through index \(x\) and tests whether one of those values equals \(x\). Since the sequence is increasing and \(g(n)\ge n\), no larger index can equal \(x\). The test therefore returns exactly its range's characteristic bit. Both constructions use the same supplied program \(c\), rather than asking for an index of the set-theoretic function \(f\) by some separate oracle.</p>
+    <p>For \(D\), compute the principal function by the common program \(P\) of <a href="#principal-program"></a> and return its parity. On \(X_g\), that principal value is \(g(n)\), whose parity is \(\chi_A(n)\). This specifies the inverse reduction by a fixed program. Finally a computable eventual bound for \(p_{X_g}=g\) would also bound \(f\), because \(f\le g\), proving the last assertion.</p>
+  </div>
+</section>
+
+<section id="degree-characterization" data-formal="hdeg-degree-characterization hdeg-free-degree-characterization" data-kind="theorem">
+  <h2>A hyperimmune degree contains a hyperimmune set</h2>
+  <div class="statement-box"><p>An oracle \(A\) has hyperimmune degree if and only if there is a hyperimmune set \(X\) with \(X\equiv_T A\). Equivalently, a Turing degree is hyperimmune-free exactly when none of its representatives is a hyperimmune set.</p></div>
+  <div class="proof">
+    <p>If \(A\) computes a hyperimmune function \(f\), <a href="#parity-programs"></a> gives the hyperimmune set \(X_g\) of exactly the same degree. Conversely, if \(X\equiv_T A\) is hyperimmune, its principal function is hyperimmune and is computed from \(X\) by \(P\). Substituting the supplied reduction \(X\le_T A\) into \(P\) computes that function from \(A\). The two alternatives in <a href="#hyperimmune-functions"></a> give the final equivalence.</p>
+  </div>
+</section>
+
+<section id="first-correct-prefix" data-formal="hdeg-first-correct-prefix hdeg-first-correct-prefix-specification hdeg-correct-prefix-program hdeg-correct-prefix-program-evaluation hdeg-first-correct-prefix-relative hdeg-first-correct-not-settling limit-binary limit-convergence limit-finite-prefix-stabilization" data-kind="definition">
+  <h2>The first correct prefix need not remain correct forever</h2>
+  <p>Let \(a(s,x)\) be a total computable binary approximation converging pointwise to \(\chi_A(x)\), in the sense of <a href="limit-computability#pointwise-approximation">limit computability</a>. Its <strong>first correct prefix time</strong> is</p>
+  <div class="math-display">\[r(n)=\min\{s&gt;n:\forall x\le n\quad a(s,x)=\chi_A(x)\}.\]</div>
+  <p>The minimum exists by <a href="limit-computability#finite-prefix-stabilization">finite-prefix convergence</a>. There is an actual \(A\)-oracle program \(Q_a\), built once from a supplied ordinary program for \(a\), with \(E_A(Q_a,n)\downarrow=r(n)\): search \(s=n+1,n+2,\ldots\), and at each stage compare the finitely many computed bits \(a(s,0),\ldots,a(s,n)\) with direct membership queries to \(A\). Each test terminates, and convergence guarantees a successful test.</p>
+  <p>This is a first agreement time. An approximation can later disagree again. No <a href="limit-computability#convergence-modulus">settling modulus</a> or oracle test for all later stages is used.</p>
+</section>
+
+<section id="correct-prefix-bound" data-formal="hdeg-recovery-program hdeg-recovery-program-evaluation hdeg-correct-prefix-bound-decides" data-kind="theorem">
+  <h2>A computable bound on the first correct times decides the limit</h2>
+  <p>If a total computable \(h\) majorizes the first correct prefix time \(r\), then \(A\) is computable. More precisely, the following ordinary program, constructed from the programs for \(a,h\), is total and returns \(\chi_A(x)\): search \(n=x,x+1,\ldots\) until the bits \(a(s,x)\), for \(n&lt;s\le h(n)\), are all equal, then return that common bit.</p>
+  <div class="proof">
+    <p>For every \(n\), the bound gives \(n&lt;r(n)\le h(n)\), so the tested interval is nonempty. Its test is an ordinary finite computation: compute \(h(n)\), use \(a(n+1,x)\) as the candidate bit, and compare the remaining stages through \(h(n)\).</p>
+    <p>If a test succeeds at \(n\ge x\), its interval includes \(r(n)\). At that stage the first \(n+1\) bits agree with \(A\), so in particular \(a(r(n),x)=\chi_A(x)\). The interval's common bit is therefore correct. For termination, choose a convergence stage \(t\) for this one input \(x\). Any \(n\ge\max(x,t)\) has only correct stages in the tested interval, so its test succeeds. Least search followed by evaluation of \(a(n+1,x)\) is thus an ordinary total program for \(\chi_A\), with the claimed identity.</p>
+  </div>
+</section>
+
+<section id="delta-two-hyperimmune" data-formal="hdeg-first-correct-prefix-hyperimmune hdeg-below-halting-hyperimmune hdeg-delta-two-hyperimmune hdeg-enumerable-degree-hyperimmune hdeg-free-below-halting-computable hdeg-low-degree-hyperimmune limit-lemma limit-delta-two limit-enumerable jump-oracle-many-one-jump" data-kind="theorem">
+  <h2>Every nonzero degree below halting is hyperimmune</h2>
+  <div class="statement-box"><p>Every noncomputable \(A\le_T K\), equivalently every noncomputable \(\Delta_2\) set, has hyperimmune degree. Consequently every noncomputable c.e. set has hyperimmune degree, and a hyperimmune-free set below \(K\) is computable. Every noncomputable low set, meaning \(A'\equiv_T K\), also has hyperimmune degree.</p></div>
+  <div class="proof">
+    <p>The <a href="limit-computability#limit-lemma">limit lemma</a> supplies a computable approximation \(a\) to \(A\). Its first correct prefix time \(r\) is total and \(A\)-computable by <a href="#first-correct-prefix"></a>. A computable eventual bound for \(r\) could be patched to a computable majorant by <a href="#finite-exception-patch"></a>. Then <a href="#correct-prefix-bound"></a> would make \(A\) computable, a contradiction. Thus \(r\) is a hyperimmune function witnessing the degree assertion. A c.e. set is <a href="limit-computability#enumerable-examples">limit computable</a>, giving the stated c.e. consequence. The last conclusion is the contrapositive.</p>
+    <p>For the low-set assertion, the established reduction \(A\le_T A'\) gives \(A\le_T K\). Thus lowness does not imply hyperimmune-freeness for a noncomputable oracle.</p>
+  </div>
+</section>
+
+<section id="successful-allowance" data-formal="hdeg-allowance-program hdeg-least-allowance hdeg-least-allowance-specification hdeg-allowance-program-evaluation hdeg-least-allowance-relative hdeg-bounded-after-least oracle-univ-bounded-complete oracle-univ-bounded-monotone oracle-ce-output-certificates" data-kind="lemma">
+  <h2>A total oracle computation can find its own first successful allowance</h2>
+  <p>Fix an actual oracle-program index \(e\) such that \(\varphi_e^A(x)\) is defined for every \(x\). Write \(b_A(k,e,x)\) for the <a href="oracle-program-numberings#bounded-oracle-evaluation">bounded evaluator's output code</a>, with zero for failure and \(y+1\) for output \(y\). Then</p>
+  <div class="math-display">\[u_e^A(x)=\min\{k:0&lt;b_A(k,e,x)\}\]</div>
+  <p>is a total \(A\)-computable function. A single program \(U_e\), selected before \(A\), satisfies \(E_A(U_e,x)\downarrow=u_e^A(x)\) whenever the supplied program is total relative to \(A\). Moreover, if \(u_e^A(x)\le k\) and \(\varphi_e^A(x)\downarrow=y\), then \(b_A(k,e,x)=y+1\).</p>
+  <div class="proof">
+    <p>The <a href="oracle-program-numberings#uniform-universality">common allowance-search program</a> on input \(\langle e,x\rangle\) runs the bounded evaluator for \(k=0,1,2,\ldots\) and returns the first positive allowance. Freezing the first parameter to \(e\) gives \(U_e\). Each bounded evaluation is itself a terminating oracle computation, so this is actual program syntax with the stated search identity. <a href="oracle-program-numberings#relative-certificates">Completeness</a> supplies a successful allowance because \(\varphi_e^A(x)\) halts. At the least successful one, soundness identifies the output with \(y\); <a href="oracle-program-numberings#bounded-correctness">monotonicity</a> preserves that output at every larger allowance. This proves all assertions using the resource of the fixed evaluator.</p>
+  </div>
+</section>
+
+<section id="hyperimmune-free-truth-table" data-formal="hdeg-free-allowance-bound hdeg-free-truth-table-scheme hdeg-free-truth-table ttwtt-bounded-allowance-scheme ttwtt-bounded-allowance-characterization post-bounded-query-dependence" data-kind="theorem">
+  <h2>Below a hyperimmune-free oracle, Turing computation has a truth table</h2>
+  <div class="statement-box"><p>If \(A\) is hyperimmune-free and \(B\le_T A\), then \(B\le_{\mathrm{tt}}A\).</p></div>
+  <div class="proof">
+    <p>Choose the actual index \(e\) for a total reduction, so \(\varphi_e^A(x)\downarrow=\chi_B(x)\). The function \(u_e^A\) in <a href="#successful-allowance"></a> is total and \(A\)-computable. Hyperimmune-freeness and the finite patch supply a total computable \(h\) with \(u_e^A(x)\le h(x)\) for all \(x\). The evaluator identity is therefore</p>
+    <div class="math-display">\[b_A(h(x),e,x)=\chi_B(x)+1.\]</div>
+    <p>This is exactly the <a href="truth-table-and-weak-truth-table-reductions#total-functional-characterization">bounded-allowance criterion for truth-table reducibility</a>. Explicitly, give the table prefix bound \(h(x)\). On a supplied finite-word code for \(\sigma\), run the fixed finite checker with allowance \(h(x)\), program \(e\), input \(x\), and those oracle bits. Return one if its output code is two, and return zero otherwise. This is a total computable Boolean lookup for every finite word. On the actual prefix \(A\upharpoonright h(x)\), <a href="posts-theorem#bounded-query-agreement">bounded query agreement</a> makes its result exactly the displayed code, so its Boolean output is \(\chi_B(x)\).</p>
+    <p>The bound applies to a successful evaluation allowance, which also controls the finite check. A bound only on queried positions would not justify a terminating computation for the other rows of a truth table. Here every row terminates because the calculation itself is bounded.</p>
+  </div>
+</section>
+
+<section id="set-versus-degree" data-formal="hdeg-enumerable-not-hyperimmune hdeg-halting-representative hdeg-halting-hyperimmune-representative univ-diagonal-halting-enumerable univ-diagonal-halting-undecidable" data-kind="question">
+  <h2>Can an enumerable set be hyperimmune, or have hyperimmune degree?</h2>
+  <p>Can an infinite c.e. set itself be hyperimmune? Can its Turing degree nevertheless contain a hyperimmune set? Give an established example for the second question.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>An infinite c.e. set is not immune, because it contains itself as an infinite c.e. subset. Hence it is not hyperimmune by <a href="#hyperimmune-implies-immune"></a>. The property of a particular set is different from the property of its degree.</p>
+    <p>The ordinary halting set \(K\) is c.e. and noncomputable, so <a href="#delta-two-hyperimmune"></a> gives it hyperimmune degree. The <a href="#degree-characterization">parity construction</a> consequently produces a hyperimmune set \(X\equiv_T K\). This \(X\) cannot itself be c.e. The example satisfies both requirements without identifying the hyperimmune representative with the original c.e. representative.</p>
+  </div></details>
+</section>

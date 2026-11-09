@@ -1,0 +1,144 @@
+<section id="candidate-programs" data-formal="univ-universal-recursive univ-bounded-value univ-bounded-value-primitive univ-bounded-value-output univ-evaluation-output-certificate mach-bounded-monotone mach-bounded-sound" data-kind="definition">
+  <h2>Read an arbitrary program as a proposed sequence of guesses</h2>
+  <p>Use the fixed <a href="universal-computation#numbering-programs">ordinary program numbering</a>. A <strong>candidate approximation of index \(e\)</strong> proposes the value \(\varphi_e(\langle k,x\rangle)\) at stage \(k\) and input \(x\), with the fixed <a href="coding-finite-sequences#square-pairing">pairing code</a>. A candidate may fail to halt, return a number other than zero or one, begin with one, or change its answers too often. All indices are admitted to the construction.</p>
+  <p>Write \(V(s,e,z)\) for the <strong>bounded output code</strong> of the existing <a href="universal-computation#universal-evaluation">bounded evaluator</a>: zero means that no output was found with allowance \(s\), and \(y+1\) means that output \(y\) was found. This is a total computable numerical function. A positive code supplies the actual output of \(\varphi_e(z)\); every actual output is found at some allowance and at every larger allowance. Increasing the allowance never changes a successful output. Thus codes one and two represent the binary outputs zero and one.</p>
+</section>
+
+<section id="bounded-state" data-formal="ufc-simulation ufc-guess" data-kind="definition">
+  <h2>Store a cursor, a bit, and a spent allowance</h2>
+  <p>Fix \(n,e,x\in\mathbb N\). The <strong>clipped simulation state</strong> at global stage \(s\) is a triple \(S_s=(k_s,b_s,c_s)\): the cursor \(k_s\) names the next candidate stage to inspect, \(b_s\) is the current binary answer, and \(c_s\) counts accepted revisions. Start with \(S_0=(0,0,0)\). The <strong>universal clipped guess</strong> is</p>
+  <div class="math-display">\[Q(n,e,s,x)=b_s.\]</div>
+  <p>The parameter \(n\) is the permitted number of changes. The global stage \(s\), which controls the simulation allowance, is separate from the candidate stage \(k_s\). The same finite update rule below defines \(Q\) for all four parameters together.</p>
+</section>
+
+<section id="successor-stage" data-formal="ufc-step" data-kind="definition">
+  <h2>Accept the next binary value while revisions remain available</h2>
+  <p>The <strong>successor update</strong> from \(S_s=(k,b,c)\) is as follows. If \(c\ge n\), keep the state fixed. Otherwise compute \(v=V(s,e,\langle k,x\rangle)\). If \(v=1\) or \(v=2\), put \(y=v-1\) and set</p>
+  <div class="math-display">\[S_{s+1}=(k+1,\;y,\;c+[y\ne b]).\]</div>
+  <p>If \(v\) is neither one nor two, keep the state fixed. The bracket is one when its assertion holds and zero otherwise. A zero output code leaves the computation pending; it does not certify divergence. A nonbinary output cannot later become a different binary output of the same candidate computation, so leaving that cursor fixed is harmless. No unbounded search occurs within one successor stage.</p>
+  <p>Even if the next accepted value equals \(b\), the cursor advances: this value has been processed, while the count remains unchanged. If a revision spends the last available unit, all later states remain fixed. With \(n=0\), the initial state already has this property.</p>
+</section>
+
+<section id="machine-invariants" data-formal="ufc-invariants" data-kind="lemma">
+  <h2>Every generated row remains binary and within its allowance</h2>
+  <p>For every \(n,e,s,x\), the state satisfies \(b_s\in\{0,1\}\), \(c_s\le n\), and \(k_s\le k_{s+1}\). Its count is exactly the <a href="differences-of-enumerable-sets#change-counter">prefix change counter</a> of the generated row:</p>
+  <div class="math-display">\[c_s=c_{Q(n,e,\cdot,x)}(s).\]</div>
+  <div class="proof">
+    <p>At stage zero the bit and both counts are zero. A fixed-state update preserves every assertion. In an accepting update the output code is one or two, so the new bit is zero or one. Acceptance occurs only when \(c&lt;n\); adding at most one therefore leaves the new count at most \(n\). The cursor increases by exactly one. Finally, the stored count adds one exactly when the generated bit changes, which is the defining recurrence of the prefix counter. Induction on \(s\) proves all the claims.</p>
+  </div>
+</section>
+
+<section id="effectivity" data-formal="ufc-guess-computable ufc-invariants ufc-guess" data-kind="lemma">
+  <h2>One total computable function implements all allowances and indices</h2>
+  <p>The function \((n,e,s,x)\mapsto Q(n,e,s,x)\) is jointly computable. For every fixed \(n,e\), its row is binary, starts at zero and changes at most \(n\) times per input.</p>
+  <div class="proof">
+    <p>Encode the state triple by the fixed pairing operations. Each update uses a bounded evaluation, comparisons, subtraction of one from a positive output code, and additions. All of these operations are total computable jointly in the numerical parameters and the stored state. Iterate this update for exactly \(s\) steps, carrying \(n,e,x\) as fixed parameters, and project its bit component. This finite recursion is an algorithm for the displayed four-variable function. The bound and initial value follow from <a href="#machine-invariants"></a>. No test of totality of the candidate program was used.</p>
+  </div>
+</section>
+
+<section id="eventual-row" data-formal="ufc-row-set ufc-row-converges ufc-guess-computable ufc-invariants fmchange-nce" data-kind="definition">
+  <h2>Define the set represented by each clipped row</h2>
+  <p>The <strong>row set</strong> represented by \(n,e\) is</p>
+  <div class="math-display">\[R_{n,e}=\{x:\exists t\;\forall s\ge t\;Q(n,e,s,x)=1\}.\]</div>
+  <p>The <a href="finite-mind-changes#bounded-counts-stabilize">bounded-count convergence lemma</a> shows that each row eventually has a constant bit, separately for each input. Therefore \(Q(n,e,s,x)\to\chi_{R_{n,e}}(x)\), and \(R_{n,e}\) is \(n\)-c.e. This defines a set for every candidate index, including indices of partial programs. No algorithm deciding its eventual bit is asserted.</p>
+</section>
+
+<section id="total-candidates" data-formal="ufc-presents ufc-presents-exists" data-kind="definition">
+  <h2>State precisely when a candidate is faithful</h2>
+  <p>A candidate index \(e\) <strong>presents an approximation</strong> \(a(k,x)\) when</p>
+  <div class="math-display">\[\forall k,x\qquad\varphi_e(\langle k,x\rangle)=a(k,x).\]</div>
+  <p>The equality means that the partial computation is defined and has the indicated numerical value. Every jointly computable numerical approximation has such an index by <a href="universal-computation#universal-evaluation">universality</a>, after decoding the input pair. For the following three arguments, assume that \(e\) presents a binary approximation \(a\), that \(a(0,x)=0\), and that every row of \(a\) has at most \(n\) changes. These are hypotheses for the coverage proof, not tests performed by the simulation.</p>
+</section>
+
+<section id="prefix-invariant" data-formal="ufc-faithful-prefix" data-kind="lemma">
+  <h2>A faithful state records a processed candidate prefix</h2>
+  <p>Under the hypotheses of <a href="#total-candidates"></a>, the state \((k_s,b_s,c_s)\) satisfies</p>
+  <div class="math-display">\[b_s=a(k_s-1,x),\qquad c_s=c_a(k_s-1,x),\]</div>
+  <p>where subtraction is truncated at zero. In particular, if \(c_s=n\), then \(b_s\) equals every sufficiently late candidate answer.</p>
+  <div class="proof">
+    <p>At the initial state, \(k_s=0\), the bit equality uses \(a(0,x)=0\), and both counters are zero. A waiting update preserves the invariant. In an accepting update, soundness of bounded evaluation identifies the accepted output with \(a(k_s,x)\). If the old cursor is zero, the accepted bit is again \(a(0,x)=0\), so no revision is charged. If it is positive, the stored count increases by exactly the transition from candidate stage \(k_s-1\) to stage \(k_s\). In both cases the new cursor is \(k_s+1\), giving the displayed invariant at the successor stage.</p>
+    <p>If the counter has reached \(n\), a later candidate answer different from \(a(k_s-1,x)\) would force a strict counter increase by the <a href="differences-of-enumerable-sets#counter-invariant">endpoint counter lemma</a>. This would exceed \(n\). Hence all candidate answers from that processed stage onward are the stored bit. The fixed-state rule then retains that final answer.</p>
+  </div>
+</section>
+
+<section id="progress-or-exhaustion" data-formal="ufc-progress" data-kind="lemma">
+  <h2>Every finite candidate prefix is processed unless the final answer is fixed</h2>
+  <p>Under the hypotheses of <a href="#total-candidates"></a>, for every input \(x\) and every requested cursor value \(m\), some global stage satisfies \(k_s\ge m\) or \(c_s=n\).</p>
+  <div class="proof">
+    <p>If the allowance is ever exhausted, that stage proves the assertion for every \(m\). Otherwise \(c_s&lt;n\) at all stages. We prove that the cursor eventually reaches each \(m\) by induction. It starts at zero. Suppose it has reached \(m\). If it ever becomes larger, the next induction step is done. If it never becomes larger, monotonicity makes it constantly \(m\) from that point onward. The total computation \(\varphi_e(\langle m,x\rangle)\) has a binary output, so some allowance \(u\) finds it and every larger allowance finds that same output. At a global stage at least \(u\), the update must therefore accept it and increase the cursor to \(m+1\), a contradiction. Thus every finite cursor bound is eventually reached.</p>
+    <p>The argument does not seek a stage at which totality has been established. For each fixed candidate input, its assumed halting supplies the finite allowance needed in this proof.</p>
+  </div>
+</section>
+
+<section id="faithful-limits" data-formal="bcb-pointwise-faithfulness ufc-faithful-limits" data-kind="theorem">
+  <h2>Clipping preserves every valid finite-change limit</h2>
+  <p>If \(e\) presents an initial-zero binary approximation \(a\) with at most \(n\) changes and \(a(k,x)\to\chi_A(x)\), then \(R_{n,e}=A\).</p>
+  <div class="proof">
+    <p>Fix \(x\) and a candidate convergence stage \(t\). If the simulation ever exhausts its allowance, <a href="#prefix-invariant"></a> identifies its permanently stored bit with the candidate limit. Otherwise <a href="#progress-or-exhaustion"></a> gives a global stage with cursor at least \(t+1\). The prefix invariant then identifies its bit with \(a(k_s-1,x)=\chi_A(x)\). The cursor never decreases, so the same argument applies at every later global stage. Thus the clipped row converges to the same characteristic bit on every input, proving equality with its row set.</p>
+    <p>The simulation can repeat a guess while waiting for a candidate computation. Equality of the limit sets is what is preserved; the candidate's stage numbers need not be reproduced.</p>
+  </div>
+  <p>The <a href="beyond-computable-change-bounds#pointwise-faithfulness">pointwise version</a> needs an allowance only at the chosen input and therefore permits bounds that vary with the input.</p>
+
+</section>
+
+<section id="universal-set" data-formal="ufc-tagging-identity ufc-universal-set ufc-universal-approximation ufc-universal-data fmchange-nce" data-kind="definition">
+  <h2>Put every row into one coded membership problem</h2>
+  <p>The <strong>universal \(n\)-change set</strong> is</p>
+  <div class="math-display">\[U_n=\{\langle e,x\rangle:x\in R_{n,e}\}.\]</div>
+  <p>Its specified approximation is \(u_n(s,z)=Q(n,\pi_1(z),s,\pi_2(z))\), where \(\pi_1,\pi_2\) decode the fixed pairing bijection. Joint computability and the row bound show that \(u_n\) is computable, binary, initial zero and has at most \(n\) changes per input. Its limit is exactly the characteristic function of \(U_n\), so \(U_n\) is \(n\)-c.e.</p>
+</section>
+
+<section id="tagging-reductions" data-formal="ufc-universal-complete ufc-universal-data fmchange-nce" data-kind="theorem">
+  <h2>The universal set receives every problem with the same allowance</h2>
+  <div class="statement-box"><p>For every \(n\), the set \(U_n\) is \(n\)-c.e., and every \(n\)-c.e. set \(A\) has an injective total computable reduction to \(U_n\).</p></div>
+  <div class="proof">
+    <p>Choose a witnessing approximation \(a\) for \(A\), and choose its ordinary candidate index \(e\). The hypotheses of <a href="#faithful-limits"></a> hold, so \(R_{n,e}=A\). The specified reduction \(f_e(x)=\langle e,x\rangle\) is total computable and injective, and</p>
+    <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad\langle e,x\rangle\in U_n.\]</div>
+    <p>This is an ordinary numerical translation, with no oracle. Membership in \(U_n\) is not required to be decidable. Its own approximation was supplied in <a href="#universal-set"></a>.</p>
+  </div>
+</section>
+
+<section id="diagonal-approximation" data-formal="ufc-diagonal-set ufc-diagonal-guess ufc-diagonal-computable ufc-diagonal-data fmchange-nce" data-kind="definition">
+  <h2>Reverse the diagonal answer after one initial stage</h2>
+  <p>Define the <strong>diagonal escape set</strong> and its <strong>delayed diagonal approximation</strong> by</p>
+  <div class="math-display">\[D_n=\{e:e\notin R_{n,e}\},\qquad d_n(0,e)=0,\qquad d_n(s+1,e)=1-Q(n,e,s,e).\]</div>
+  <p>The diagonal row \(Q(n,e,s,e)\) is jointly computable in \(n,s,e\), binary and initial zero. The <a href="finite-mind-changes#delayed-complement">delayed-complement construction</a> therefore gives \(d_n\to\chi_{D_n}\) and</p>
+  <div class="math-display">\[c_{d_n}(s+1,e)=1+c_{Q(n,e,\cdot,e)}(s)\le n+1.\]</div>
+  <p>Consequently \(D_n\) is \((n+1)\)-c.e. The construction is jointly computable in \(n\) as well as the input and stage. The delay keeps the prescribed initial bit zero.</p>
+</section>
+
+<section id="diagonal-disagreement" data-formal="ufc-diagonal-not-nce" data-kind="theorem">
+  <h2>The diagonal escape cannot have the original allowance</h2>
+  <p>For every \(n\), the set \(D_n\) is not \(n\)-c.e.</p>
+  <div class="proof">
+    <p>Suppose that \(D_n\) were \(n\)-c.e. By <a href="#faithful-limits"></a> and the existence of a candidate index, there would be an \(e\) with \(R_{n,e}=D_n\). At its own input this gives</p>
+    <div class="math-display">\[e\in D_n\quad\Longleftrightarrow\quad e\notin R_{n,e}\quad\Longleftrightarrow\quad e\notin D_n,\]</div>
+    <p>which is impossible. The diagonal argument uses the limits of the clipped rows; it never waits for a computational certificate that one of those rows has settled.</p>
+  </div>
+</section>
+
+<section id="universal-polarity" data-formal="ufc-not-co-nce fmchange-co-nce" data-kind="lemma">
+  <h2>The universal set does not belong to the opposite class</h2>
+  <p>The complement of \(U_n\) is not \(n\)-c.e.; equivalently, \(U_n\) is not co-\(n\)-c.e.</p>
+  <div class="proof">
+    <p>The map \(g(e)=\langle e,e\rangle\) is total computable. By the definitions, \(D_n=g^{-1}(U_n^c)\). If \(U_n^c\) were \(n\)-c.e., <a href="finite-mind-changes#computable-preimages">closure under computable preimages</a> would make \(D_n\) \(n\)-c.e., contradicting <a href="#diagonal-disagreement"></a>. The same witnesses apply when \(n=0\).</p>
+  </div>
+</section>
+
+<section id="strict-hierarchy" data-formal="fmchange-monotone ufc-diagonal-data ufc-diagonal-computable ufc-diagonal-not-nce fmchange-nce" data-kind="theorem">
+  <h2>Every additional permitted revision enlarges the class</h2>
+  <div class="statement-box"><p>For every \(n\ge0\), \(\mathcal E_n\) is a proper subclass of \(\mathcal E_{n+1}\). The specified witness is \(D_n\in\mathcal E_{n+1}\setminus\mathcal E_n\).</p></div>
+  <div class="proof"><p>The <a href="finite-mind-changes#widening-bounds">allowance inclusion</a> gives \(\mathcal E_n\subseteq\mathcal E_{n+1}\). The delayed diagonal construction gives the asserted membership of \(D_n\), and diagonal disagreement excludes its membership at level \(n\). Iterating these inclusions also separates every pair of finite levels \(m&lt;n\). These are classes of sets equipped with bounded-revision approximations; no assertion about strictness of their Turing-degree classes is part of the conclusion.</p></div>
+</section>
+
+<section id="zero-budget-question" data-formal="ufc-zero-simulation ufc-zero-sets fmchange-zero-class" data-kind="question">
+  <h2>Does the construction work when no revision is allowed?</h2>
+  <p>Determine \(Q(0,e,s,x)\), \(U_0\) and \(D_0\). Does the strictness proof still give a witness?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The initial count is already zero, so every state is fixed and \(Q(0,e,s,x)=0\). Hence every row set is empty, \(U_0=\varnothing\), and \(D_0=\mathbb N\). Its delayed approximation is zero at stage zero and one at every positive stage, so it makes exactly one change on every input. It is therefore a one-change witness outside the <a href="finite-mind-changes#first-three-levels">zero-change class</a>, which contains only the empty set.</p></div></details>
+</section>
+
+<section id="partial-candidate-question" data-formal="ufc-partial-first ufc-invariants" data-kind="question">
+  <h2>Can a stalled first computation destroy the construction?</h2>
+  <p>Suppose \(\varphi_e(\langle0,x\rangle)\) is undefined for one input \(x\), while later candidate-stage inputs may halt. What does the generated row do on \(x\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>It stays zero forever on this input. Soundness of the bounded evaluator makes every attempted output code zero at cursor zero. Thus no accepting transition occurs and \((k_s,b_s,c_s)=(0,0,0)\) at every stage, by induction. The generated row is still a valid bounded-change approximation. It need not reproduce the values at later candidate stages, because this candidate does not satisfy the totality hypothesis of the coverage theorem. Partial computations were allowed from the start; no stage decides that this one will remain pending forever.</p></div></details>
+</section>

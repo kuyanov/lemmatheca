@@ -25,7 +25,7 @@
   </div>
 </section>
 
-<section id="same-paths" data-formal="dnc-common-stage-paths dnc-missing-words dnc-missing-computable dnc-missing-paths dnc-tree-representation" data-kind="theorem">
+<section id="same-paths" data-formal="dnc-common-stage-paths dnc-missing-words dnc-missing-computable dnc-missing-paths dnc-tree-representation hfb-closed-basis" data-kind="theorem">
   <h2>The common-stage tree has exactly the required infinite paths</h2>
   <div class="statement-box"><p>For the specified tree \(T_r\) and forbidden family \(F\),</p>
     <div class="math-display">\[[T_r]=\mathcal P(F).\]</div>
@@ -36,6 +36,7 @@
     <p>Conversely, suppose \(X\in[T_r]\), but \(\rho=X\mathbin{\upharpoonright}i\in F\). Choose a stage \(k\) with \(\rho\in F_k\), and put \(m=\max(i,k)\). The length-\(m\) prefix of \(X\) tests \(\rho\) through stage \(m\). Since \(F_k\subseteq F_m\), that test fails, contradicting the path assumption. This also handles \(i=0\), when the empty word is forbidden.</p>
     <p>This proves the forward representation. In the other direction, if \(T\) is a computable binary tree, let \(F\) consist of its missing binary words. Their codes form a decidable, hence c.e., set: check binary validity and then the tree decider. Avoiding \(F\) says precisely that every prefix belongs to \(T\). Thus \(\mathcal P(F)=[T]\), completing the equivalence.</p>
   </div>
+  <p>The exact equality of path classes also transfers the <a href="hyperimmune-free-basis-theorem#closed-class-basis">hyperimmune-free basis theorem</a>: every nonempty effectively closed binary class contains a member whose total numerical oracle computations each have an ordinary computable bound.</p>
 </section>
 
 <section id="coenumerable-tree" data-formal="dnc-co-ce-tree dnc-co-ce-complement" data-kind="definition">
@@ -63,11 +64,12 @@
   </div></details>
 </section>
 
-<section id="closed-class-halting-member" data-formal="dnc-closed-selected-path dnc-closed-path-code dnc-closed-halting-member" data-kind="theorem">
+<section id="closed-class-halting-member" data-formal="lbt-closed-low-basis dnc-closed-selected-path dnc-closed-path-code dnc-closed-halting-member" data-kind="theorem">
   <h2>A nonempty effectively closed binary class has a halting-computable member</h2>
   <p>If \(\mathcal P(F)\ne\varnothing\), the common-stage tree \(T_r\) has nodes at every length, and its <a href="computable-trees-and-paths#halting-path">specified halting-selected path</a> \(X_{T_r}\) belongs to \(\mathcal P(F)\) and satisfies \(X_{T_r}\le_T K\).</p>
   <div class="proof">
     <p>A member of the class is a path through \(T_r\) by <a href="#same-paths"></a>; its prefixes witness all the nonempty levels. The tree is computable by <a href="#tree-decider"></a>. Apply the <a href="computable-trees-and-paths#halting-oracle-path">halting-oracle path theorem</a> to obtain the stated path and reduction, then use the same path equality again. No computable member is asserted, and the nonemptiness assumption is essential.</p>
+    <p>The <a href="low-basis-theorem#closed-low-basis">low basis theorem</a> gives a low member of every nonempty effectively closed binary class.</p>
   </div>
 </section>
 
@@ -102,7 +104,7 @@
   </div>
 </section>
 
-<section id="dnc-separators" data-formal="dnc-separator-equivalence dnc-separator-tree dnc-nonbinary-output-free ctree-diagonal-indices ctree-paths-separators" data-kind="theorem">
+<section id="dnc-separators" data-formal="dnc-separator-equivalence dnc-separator-tree dnc-nonbinary-output-free ctree-diagonal-indices ctree-paths-separators einf-canonical-pair-reduction einf-separator-preimage" data-kind="theorem">
   <h2>Binary diagonal avoidance is exactly the earlier separation condition</h2>
   <p>Let \(A=\{e:\varphi_e(e)\downarrow=0\}\) and \(B=\{e:\varphi_e(e)\downarrow=1\}\) be the <a href="computably-inseparable-sets#diagonal-pair">diagonal output sets</a>. For every \(X\subseteq\mathbb N\),</p>
   <div class="math-display">\[X\in\mathcal D_2\quad\Longleftrightarrow\quad A\subseteq X\ \text{ and }\ X\cap B=\varnothing.\]</div>
@@ -111,15 +113,18 @@
     <p>If \(e\in A\), avoiding the output zero forces the binary value \(\chi_X(e)=1\), so \(e\in X\). If \(e\in B\), avoiding one forces \(\chi_X(e)=0\), so \(e\notin X\). These are precisely the two separator requirements.</p>
     <p>Conversely a separator has those forced bits. A defined diagonal output zero or one is therefore avoided. A defined output at least two differs from either bit automatically; divergence imposes no condition. This covers every diagonal computation and proves that \(\chi_X\) is DNC. The equality with the separator-tree paths now follows from <a href="computable-trees-and-paths#paths-are-separators">the established path characterization</a>. The bit convention is one on \(A\) and zero on \(B\).</p>
   </div>
+  <p>The diagonal pair is <a href="effective-inseparability#canonical-universality">universal for disjoint c.e. pairs</a>. Thus, for any such pair, a computable preimage of a separator here gives a separator there; the <a href="effective-inseparability#separator-translation">preimage construction</a> retains the freedom on numbers outside the two required sides.</p>
 </section>
 
-<section id="binary-dnc-exists" data-formal="dnc-binary-path dnc-binary-path-code dnc-binary-example dnc-binary-not-computable dnc-binary-closed" data-kind="theorem">
+<section id="binary-dnc-exists" data-formal="lbt-low-dnc dnc-binary-path dnc-binary-path-code dnc-binary-example dnc-binary-not-computable dnc-binary-closed padeg-pa-iff-dnc padeg-dnc-iff-paths" data-kind="theorem">
   <h2>Binary diagonal avoidance exists, with a halting-oracle example</h2>
   <div class="statement-box"><p>The effectively closed class \(\mathcal D_2\) is nonempty and has no computable member. In particular the specified halting-selected path \(X_{T_{a,b}}\) is a binary DNC set and \(X_{T_{a,b}}\le_T K\).</p></div>
   <div class="proof">
     <p>The diagonal sets are <a href="computably-inseparable-sets#enumerable-and-disjoint">disjoint and c.e.</a>, so their separator tree is computable and has <a href="computable-trees-and-paths#separator-tree-levels">nodes at every length</a>. Its halting-selected path exists and is computable from \(K\) by <a href="computable-trees-and-paths#halting-oracle-path">the specified path theorem</a>. The equality in <a href="#dnc-separators"></a> puts this very set in \(\mathcal D_2\). Effective closedness is <a href="#dnc-effectively-closed"></a>, and <a href="#dnc-noncomputable"></a> excludes every computable member.</p>
     <p>The tree from the common-stage forbidden-family conversion also has this path class. It need not have the same finite nodes as the separator tree. Either representation describes the same infinite binary choices.</p>
+    <p>There is also a <a href="low-basis-theorem#low-dnc">noncomputable low binary DNC member</a>.</p>
   </div>
+  <p>Computing a binary DNC set is equivalent to <a href="pa-degrees#pa-characterization">computing a PA completion and selecting a path through every computable binary tree with an infinite path</a>. The equivalence uses an explicit contradiction-search completion procedure and a computable reduction of two dead-child lists to the diagonal separator pair.</p>
 </section>
 
 <section id="partial-diagonal-question" data-formal="dnc-partial-diagonal dnc-partial-diagonal-properties dnc-nonbinary-output-free inseparable-divergent-outside inseparable-constant-two-outside" data-kind="question">

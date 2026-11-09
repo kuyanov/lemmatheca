@@ -1,0 +1,104 @@
+<section id="common-selectors" data-formal="ofix-selector-property partrec-partial-equality" data-kind="definition">
+  <h2>Choose a program before choosing its oracle</h2>
+  <p>Use the <a href="oracle-program-numberings#oracle-numbering">oracle program numbering</a> \(\varphi_e^A\) and its specified <a href="oracle-program-numberings#oracle-parameter-theorem">parameter map</a> \(s\). For an ordinary total computable numerical map \(F:\mathbb N^2\to\mathbb N\), an <strong>all-oracle fixed-point selector</strong> is an ordinary total computable map \(h:\mathbb N\to\mathbb N\) such that</p>
+  <div class="math-display">\[\varphi_{h(a)}^A(x)\simeq\varphi_{F(h(a),a)}^A(x)\qquad\text{for every }A,a,x.\]</div>
+  <p>Here \(\simeq\) is <a href="partial-recursive-functions#partial-equality">equality of partial values</a>: both sides diverge, or both terminate with the same value. The order of choice is \(\exists h\,\forall A,a,x\). The index transformer \(F\), the algorithm for \(h\), and its numerical outputs do not receive the oracle as an input. Their resulting programs may ask oracle questions when run.</p>
+</section>
+
+<section id="driver-input" data-formal="ofix-driver-input ofix-driver-input-primitive ofix-driver-ordinary-code ofix-driver-ordinary-evaluation oracle-code-ordinary-embedding-correct" data-kind="definition">
+  <h2>Prepare the numerical input of one common driver</h2>
+  <p>The <strong>driver input map</strong> \(T:\mathbb N\to\mathbb N\) is specified by</p>
+  <div class="math-display">\[T(\langle p,\langle b,y\rangle\rangle)=\left\langle p,\left\langle s(s(b,b),\pi_1(y)),y\right\rangle\right\rangle.\]</div>
+  <p>Pairing is the fixed <a href="coding-finite-sequences#primitive-recursive-pairing">primitive-recursive pairing</a>, with inverse projections \(\pi_1,\pi_2\); hence this rule defines \(T\) on every natural number. It is ordinary primitive recursive, since every operation displayed, including \(s\), is ordinary primitive recursive. Choose once an ordinary program \(t\) computing \(T\) totally, then embed it as a query-free oracle program. This chosen finite syntax works for every oracle by the <a href="oracle-computation#ordinary-programs-and-queries">ordinary-program embedding</a>.</p>
+</section>
+
+<section id="common-driver" data-formal="ofix-driver-index ofix-driver-evaluation" data-kind="definition">
+  <h2>Run the prepared input through the universal oracle program</h2>
+  <p>Let \(\mathsf u\) be the specified <a href="oracle-program-numberings#uniform-universality">common universal oracle program</a>. The <strong>common driver index</strong> is</p>
+  <div class="math-display">\[R=\#\operatorname{comp}(\mathsf u,\operatorname{embed}(t)).\]</div>
+  <p>For every oracle \(A\) and every \(p,b,y\), it obeys</p>
+  <div class="math-display">\[\varphi_R^A(\langle p,\langle b,y\rangle\rangle)\simeq\varphi_p^A(\langle s(s(b,b),\pi_1(y)),y\rangle).\]</div>
+  <div class="proof"><p>The embedded ordinary program first returns exactly \(T(\langle p,\langle b,y\rangle\rangle)\). Universality then runs index \(p\) on the second component of that pair. The preliminary calculation always terminates, so strict composition preserves divergence of this final computation as well as every output. Both program texts were chosen before \(A\), making this one identity for all oracles.</p></div>
+</section>
+
+<section id="fixed-point-compiler" data-formal="ofix-driver-specialization ofix-self-specialized-index ofix-compiler" data-kind="definition">
+  <h2>Apply the parameter map three times</h2>
+  <p>Define the <strong>driver specialization</strong> \(r\), <strong>self-specialized index</strong> \(q\), and <strong>fixed-point compiler</strong> \(H\) by</p>
+  <div class="math-display">\[r(p)=s(R,p),\qquad q(p)=s(r(p),r(p)),\qquad H(p,a)=s(q(p),a).\]</div>
+  <p>These are numerical functions, independent of every oracle. In particular the same number \(H(p,a)\) can be used under any oracle; the theorem below will identify its behavior there.</p>
+</section>
+
+<section id="compiler-arithmetic" data-formal="ofix-compiler-primitive ofix-compiler-injective" data-kind="lemma">
+  <h2>The compiler is primitive recursive and retains its two inputs</h2>
+  <p>The specified map \(H\) is ordinary primitive recursive jointly in \((p,a)\), and is jointly injective:</p>
+  <div class="math-display">\[H(p,a)=H(p',a')\quad\Longrightarrow\quad p=p'\ \text{ and }\ a=a'.\]</div>
+  <div class="proof"><p>Each defining operation is the specified primitive-recursive map \(s\), with constants, projections or previous outputs as arguments; composition therefore gives the primitive-recursive assertion. For injectivity, use the actual <a href="oracle-padding#specialization-injective">joint injectivity of parameter insertion</a>. Equality of the final specialized codes first gives \(a=a'\) and \(q(p)=q(p')\). Decoding this second specialization gives \(r(p)=r(p')\); decoding the first gives \(p=p'\). This recovers numerical inputs from syntax, without asserting that different inputs produce different partial functions.</p></div>
+</section>
+
+<section id="driver-specialization" data-formal="ofix-specialized-driver-evaluation" data-kind="lemma">
+  <h2>The specialized driver receives its own code as an argument</h2>
+  <p>For every oracle \(A\) and all \(p,b,y\),</p>
+  <div class="math-display">\[\varphi_{r(p)}^A(\langle b,y\rangle)\simeq\varphi_p^A(\langle s(s(b,b),\pi_1(y)),y\rangle).\]</div>
+  <div class="proof"><p>Parameter insertion replaces the left side by \(\varphi_R^A(\langle p,\langle b,y\rangle\rangle)\). The identity in <a href="#common-driver"></a> gives the asserted right side. This is a computation of the specified driver, rather than a new choice of an index depending on \(A\).</p></div>
+</section>
+
+<section id="common-fixed-point-identity" data-formal="ofix-compiler-primitive ofix-compiler-evaluation" data-kind="theorem">
+  <h2>One compiler supplies self-reference for every oracle</h2>
+  <div class="statement-box"><p>The specified ordinary primitive-recursive compiler \(H\) satisfies, for every oracle \(A\) and every \(p,a,x\),</p>
+  <div class="math-display">\[\varphi_{H(p,a)}^A(x)\simeq\varphi_p^A(\langle H(p,a),\langle a,x\rangle\rangle).\]</div></div>
+  <div class="proof"><p>Insert the parameter \(a\), then unfold \(q(p)=s(r(p),r(p))\):</p>
+  <div class="math-display">\[\varphi_{H(p,a)}^A(x)\simeq\varphi_{q(p)}^A(\langle a,x\rangle)\simeq\varphi_{r(p)}^A(\langle r(p),\langle a,x\rangle\rangle).\]</div>
+  <p>Apply <a href="#driver-specialization"></a> with \(b=r(p)\) and \(y=\langle a,x\rangle\). Since \(\pi_1(y)=a\), the first component of the resulting input to \(p\) is \(s(s(r(p),r(p)),a)=H(p,a)\). Its second component is exactly \(\langle a,x\rangle\). This is the displayed conclusion, including simultaneous divergence. The argument used no special fact about \(A\), and every numerical code in it was already fixed.</p></div>
+</section>
+
+<section id="common-partial-families" data-formal="ofix-partial-family-selector" data-kind="lemma">
+  <h2>A supplied common program gives a partial-family interface</h2>
+  <p>Suppose a family of partial values \(g^A(n,a,x)\) is represented by one supplied oracle index \(p\), with</p>
+  <div class="math-display">\[\varphi_p^A(\langle n,\langle a,x\rangle\rangle)\simeq g^A(n,a,x)\qquad\text{for every }A,n,a,x.\]</div>
+  <p>Then the specified map \(a\mapsto H(p,a)\) is ordinary primitive recursive and satisfies</p>
+  <div class="math-display">\[\varphi_{H(p,a)}^A(x)\simeq g^A(H(p,a),a,x)\qquad\text{for every }A,a,x.\]</div>
+  <div class="proof"><p>Fixing \(p\) in the jointly primitive-recursive compiler gives the numerical claim. Substitute the supplied representation into <a href="#common-fixed-point-identity"></a>. No totality of \(g^A\) is assumed. The hypothesis retains one common index before \(A\) varies; separate representations chosen for unrelated families at each oracle do not supply this hypothesis.</p></div>
+</section>
+
+<section id="ordinary-dispatcher" data-formal="ofix-dispatch-input ofix-dispatch-code-property ofix-dispatch-input-computable ofix-dispatch-code-exists ofix-dispatch-index" data-kind="definition">
+  <h2>Compile an ordinary computable index transformer once</h2>
+  <p>For an ordinary total computable \(F:\mathbb N^2\to\mathbb N\), define its <strong>dispatch input map</strong> by</p>
+  <div class="math-display">\[D_F(\langle n,\langle a,x\rangle\rangle)=\langle F(n,a),x\rangle.\]</div>
+  <p>A <strong>dispatch code for \(F\)</strong> is an ordinary program \(c\) satisfying \(E(c,w)\simeq D_F(w)\) for every \(w\). Such a code exists by ordinary <a href="universal-computation#universal-evaluation">program completeness</a>: projections, \(F\), and pairing make \(D_F\) total computable. Choose this code once. The <strong>dispatcher index supplied by \(c\)</strong> is</p>
+  <div class="math-display">\[P_c=\#\operatorname{comp}(\mathsf u,\operatorname{embed}(c)).\]</div>
+  <p>Only computability of \(F\) is required; \(F\) may take arbitrarily long to return an index and need not be primitive recursive. Its totality ensures that the numerical index calculation always finishes.</p>
+</section>
+
+<section id="dispatcher-evaluation" data-formal="ofix-dispatch-evaluation" data-kind="lemma">
+  <h2>The supplied dispatcher has the same interpretation under all oracles</h2>
+  <p>For any dispatch code \(c\) for \(F\), every oracle \(A\), and all \(n,a,x\),</p>
+  <div class="math-display">\[\varphi_{P_c}^A(\langle n,\langle a,x\rangle\rangle)\simeq\varphi_{F(n,a)}^A(x).\]</div>
+  <div class="proof"><p>The embedding identity says that \(\operatorname{embed}(c)\) returns exactly the ordinary result \(\langle F(n,a),x\rangle\), regardless of \(A\). The same universal program \(\mathsf u\) then runs that index on \(x\) under \(A\). Its divergence or output is the entire result of the composition. Thus the ordinary code is chosen before the oracle, while the computation it dispatches can depend on that oracle.</p></div>
+</section>
+
+<section id="all-oracle-recursion" data-formal="ofix-specified-selector ofix-parameterized-recursion" data-kind="theorem">
+  <h2>Every ordinary computable transformer has one selector for all oracles</h2>
+  <div class="statement-box"><p>For every ordinary total computable \(F:\mathbb N^2\to\mathbb N\), there is one ordinary primitive-recursive map \(h:\mathbb N\to\mathbb N\) with</p>
+  <div class="math-display">\[\varphi_{h(a)}^A(x)\simeq\varphi_{F(h(a),a)}^A(x)\qquad\text{for every }A,a,x.\]</div></div>
+  <p>More precisely, for any supplied dispatch code \(c\), take \(h(a)=H(P_c,a)\).</p>
+  <div class="proof"><p>Fix a dispatch code before choosing \(A\), using <a href="#ordinary-dispatcher"></a>. The map \(h\) is primitive recursive by <a href="#compiler-arithmetic"></a> with its first input fixed. The common fixed-point identity gives \(\varphi_{h(a)}^A(x)\simeq\varphi_{P_c}^A(\langle h(a),\langle a,x\rangle\rangle)\). Apply <a href="#dispatcher-evaluation"></a> to obtain the asserted identity. The possibly slow computation of \(F\) is part of the fixed dispatcher program; computing the selector's numerical output only inserts a parameter into fixed program text.</p></div>
+</section>
+
+<section id="unparameterized-recursion" data-formal="ofix-recursion" data-kind="lemma">
+  <h2>A single fixed-point index works under every oracle</h2>
+  <p>For every ordinary total computable \(f:\mathbb N\to\mathbb N\), there is an index \(e\), chosen before the oracle, with</p>
+  <div class="math-display">\[\varphi_e^A(x)\simeq\varphi_{f(e)}^A(x)\qquad\text{for every }A,x.\]</div>
+  <div class="proof"><p>Apply <a href="#all-oracle-recursion"></a> to the ordinary computable map \(F(n,a)=f(n)\), then take \(e=h(0)\). Its identity for parameter zero is exactly the assertion. This strengthens a separate existence statement at each fixed oracle by retaining the same number \(e\).</p></div>
+</section>
+
+<section id="numerical-fixed-point-question" data-formal="ofix-successor-transformer-primitive ofix-successor-selector" data-kind="question">
+  <h2>Must the chosen program number equal its transformed number?</h2>
+  <p>For \(F(n,a)=n+1\), can an all-oracle selector satisfy \(h(a)=F(h(a),a)\)? Does a selector still exist?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No natural number equals its successor, so numerical equality is impossible at every parameter. This transformer is ordinary primitive recursive and hence total computable. The theorem nevertheless supplies a primitive-recursive \(h\) for which \(\varphi_{h(a)}^A\) and \(\varphi_{h(a)+1}^A\) are equal partial functions for every oracle \(A\). Equal computations can have different indices, exactly as in <a href="oracle-padding#different-names-question">oracle padding</a>.</p></div></details>
+</section>
+
+<section id="quantifier-order-question" data-formal="ofix-separate-oracle-bits" data-kind="question">
+  <h2>Why does a separate witness for each oracle not suffice?</h2>
+  <p>Does \(\forall A\,\exists h_A\) by itself justify \(\exists h\,\forall A\)? Compare the simpler condition that a numerical bit \(b\) equal \(\chi_A(0)\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>For each \(A\), the bit \(b=\chi_A(0)\) exists, so \(\forall A\,\exists b\;(b=\chi_A(0))\) holds. But no single numerical bit works for all \(A\): the empty oracle requires zero and the oracle \(\{0\}\) requires one. Thus exchanging the quantifiers is not a valid logical inference. This example concerns the logical inference alone; it does not refute the fixed-point theorem.</p><p>In our proof the driver, the ordinary dispatch code, and every application of the parameter map are fixed before the oracle varies. Their all-oracle evaluation identities establish the stronger quantifier order directly.</p></div></details>
+</section>

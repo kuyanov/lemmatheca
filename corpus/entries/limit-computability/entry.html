@@ -1,8 +1,11 @@
-<section id="pointwise-approximation" data-formal="limit-binary limit-convergence limit-computable limit-finite-changes" data-kind="definition">
+<section id="pointwise-approximation" data-formal="bcb-diagonal-data bcb-diagonal-not-omega cbchange-omega-ce limit-binary limit-convergence limit-computable limit-finite-changes" data-kind="definition">
   <h2>Each input may change its answer finitely often</h2>
   <p>A <strong>computable binary approximation</strong> is a total computable function \(a:\mathbb N^2\to\{0,1\}\), written \(a(s,x)\). It <strong>converges pointwise to</strong> a set \(A\subseteq\mathbb N\) if</p>
   <div class="math-display">\[\forall x\;\exists s_0\;\forall s\ge s_0\qquad a(s,x)=\chi_A(x).\]</div>
   <p>A set admitting such an approximation is <strong>limit computable</strong>. The stage \(s_0\) can depend on \(x\), and need not be computable from \(x\). Both changes \(0\to1\) and \(1\to0\) are allowed. For each fixed input, convergence means that only finitely many changes occur; the final answer still has to be the specified membership bit.</p>
+  <p>Prescribed finite allowances on the number of revisions give the <a href="finite-mind-changes#bounded-change-classes">finite change classes</a>. These impose one bound for every input, strengthening pointwise convergence.</p>
+  <p>Even among approximations starting at zero, there need not be a computable bound on the number of revisions, even after replacing the approximation: the <a href="beyond-computable-change-bounds#strict-containment">computable-bound separation</a> gives such a limit-computable set.</p>
+
 </section>
 
 <section id="finite-stage-truncation" data-formal="limit-truncate limit-truncate-computable limit-truncate-binary limit-truncate-finite limit-truncate-converges limit-finite-snapshot-characterization" data-kind="lemma">
@@ -28,6 +31,7 @@
   <div class="proof">
     <p>For a c.e. set \(W_e\), use the jointly computable finite stages from <a href="effective-enumerations#uniform-finite-approximation"></a>. Their membership bits increase and converge to \(\chi_{W_e}\): a member eventually enters and remains, while a nonmember never enters. For the complement use \(a(s,x)=1-\chi_{W_{e,s}}(x)\). This computable binary test converges to \(\chi_{\overline{W_e}}\); if finite snapshots are wanted, truncate it as in <a href="#finite-stage-truncation"></a>. Apply these observations to the <a href="universal-computation#halting-sets">c.e. undecidable halting set</a> and its <a href="universal-computation#halting-sets">non-c.e. complement</a>. Limit computability therefore permits sets beyond positive recognition.</p>
   </div>
+  <p>The <a href="differences-of-enumerable-sets#two-change-characterization">two-change characterization</a> identifies exactly the limits obtained by removing one enumerable set from another, with guesses starting at zero. A bound on the number of changes is distinct from a bound on their stages.</p>
 </section>
 
 <section id="changes-question" data-formal="limit-delayed-approximation limit-delayed-approximation-correct limit-drifting-cutoff limit-drifting-cutoff-correct" data-kind="question">
@@ -110,12 +114,14 @@
   </div>
 </section>
 
-<section id="convergence-modulus" data-formal="limit-convergence-modulus limit-convergence-modulus-exists limit-modulus-decider limit-modulus-decider-correct limit-computable-modulus-decides limit-halting-no-computable-modulus recidx-prefix-certificate recidx-certificate-permanence recidx-decoder-correct" data-kind="definition">
+<section id="convergence-modulus" data-formal="dce-canonical-one-change limit-halting-test limit-halting-stage-data limit-halting-stage-convergence limit-convergence-modulus limit-convergence-modulus-exists limit-modulus-decider limit-modulus-decider-correct limit-computable-modulus-decides limit-halting-no-computable-modulus recidx-prefix-certificate recidx-certificate-permanence recidx-decoder-correct hdeg-first-correct-prefix hdeg-first-correct-prefix-relative hdeg-correct-prefix-bound-decides hdeg-below-halting-hyperimmune" data-kind="definition">
   <h2>A modulus supplies information that mere convergence omits</h2>
   <p>For an approximation \(a\) converging to \(A\), a <strong>convergence modulus</strong> is a function \(m:\mathbb N\to\mathbb N\) satisfying</p>
   <div class="math-display">\[\forall x\;\forall s\ge m(x)\qquad a(s,x)=\chi_A(x).\]</div>
   <p>Classically such a function exists by selecting a convergence stage for each input. If a computable modulus is supplied, then \(A\) is decidable: compute \(a(m(x),x)\), which is its characteristic bit. In particular, no computable approximation to the undecidable set \(K\) can have a computable convergence modulus. The limit lemma promises an eventually correct answer without an effective certificate that the final change has occurred.</p>
   <p>In a <a href="indices-of-computable-enumerable-sets#decoder-correctness">tagged marker construction</a>, the final output set itself serves as an oracle certifying a permanent finite marker prefix. The resulting halting decoder uses those final-set queries; the construction does not supply an ordinary computable settling bound.</p>
+  <p>A <a href="computably-bounded-changes#deadline-question">computable bound on the number of revisions</a> does not provide such a settling stage, even when the bound is one.</p>
+  <p>A different oracle-computable function records the <a href="domination-and-hyperimmune-degrees#first-correct-prefix">first stage with a correct finite prefix</a>, allowing later mistakes. A computable bound on these first agreement times already <a href="domination-and-hyperimmune-degrees#correct-prefix-bound">decides the limit set</a>. This gives hyperimmune degree to every noncomputable limit-computable set.</p>
 </section>
 
 <section id="decidable-limit-question" data-formal="limit-halting-pulse limit-halting-pulse-primitive limit-halting-pulse-converges limit-halting-pulse-at-most-once limit-pulse-modulus-membership limit-pulse-no-computable-modulus effective-stage-computable-settling-equivalence" data-kind="question">

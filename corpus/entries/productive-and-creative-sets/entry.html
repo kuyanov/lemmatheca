@@ -58,6 +58,7 @@
     <p>Compute \(f(x)\), then run \(\varphi_e\) on the result. This is partial recursive jointly in \(e,x\). Choose a single paired-input index \(a\) for that procedure and set \(g(e)=s(a,e)\). The parameter theorem proves the displayed partial-value identity, including divergence, and therefore the domain identity.</p>
     <p>Although the input transformation \(f\) need only be total recursive, \(g\) is primitive recursive: the code \(a\) is fixed, and \(g\) inserts \(e\) into that code without executing it. The runtime computation of \(f(x)\) remains inside the resulting program.</p>
   </div>
+  <p>This is the same <a href="effective-inseparability#uniform-preimages">uniform preimage-index construction</a> used to transfer effective inseparability along a computable reduction.</p>
 </section>
 
 <section id="complete-implies-creative" data-kind="theorem" data-formal="productive-transferred-escape productive-transferred-escape-correct creative-from-complete">
@@ -108,7 +109,7 @@
   <p>The classification can be sharpened: <a href="creative-sets-and-computable-isomorphism#creative-one-one-completeness">creative sets receive every c.e. problem injectively</a>, and they are exactly the <a href="creative-sets-and-computable-isomorphism#creative-isomorphism">computable permutations of the diagonal halting set</a>. The additional step makes an arbitrary halting reduction injective before applying Myhill’s theorem.</p>
 </section>
 
-<section id="enumerability-hypothesis" data-kind="question" data-formal="creative-hard-nonenumerable-set creative-hard-parity-maps creative-hard-receives-enumerable creative-hard-not-enumerable creative-hard-not-creative univ-enumerable-preimage">
+<section id="enumerability-hypothesis" data-kind="question" data-formal="dce-tagged-difference dce-neither-enumerable creative-hard-nonenumerable-set creative-hard-parity-maps creative-hard-receives-enumerable creative-hard-not-enumerable creative-hard-not-creative univ-enumerable-preimage">
   <h2>Does receiving every enumerable problem force enumerability?</h2>
   <p>Can the c.e. hypothesis on \(C\) be dropped from the characterization? Consider</p>
   <div class="math-display">\[D=\{2n:n\in K\}\cup\{2n+1:n\notin K\}.\]</div>
@@ -116,6 +117,7 @@
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>The total recursive map \(n\mapsto2n\) reduces \(K\) to \(D\): an even number can enter only through the first displayed component, so \(2n\in D\Longleftrightarrow n\in K\). By <a href="#diagonal-completeness"></a> and composition, every c.e. set therefore reduces to \(D\).</p>
     <p>On the other hand, \(2n+1\in D\) holds exactly when \(n\notin K\) holds. If \(D\) were c.e., its <a href="computable-reductions#composition-and-pullback">computable preimage</a> under \(n\mapsto2n+1\) would make \(\overline K\) c.e., contradicting <a href="#productive-obstructions"></a> and the productivity of \(\overline K\). Thus \(D\) is not c.e. and fails the first requirement in the definition of creativity. Receiving all c.e. problems is a hardness condition; creativity additionally requires that the target itself be c.e.</p>
+    <p>The same set has an explicit <a href="differences-of-enumerable-sets#neither-side-enumerable">presentation as a difference of enumerable sets</a>, and its complement is not enumerable either.</p>
   </div></details>
 </section>
 

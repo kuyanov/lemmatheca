@@ -32,7 +32,7 @@
   </div>
 </section>
 
-<section id="inseparability" data-formal="inseparable-diagonal-pair univ-decidable-characteristic-equivalence univ-universal-complete ctree-kleene-tree" data-kind="theorem">
+<section id="inseparability" data-formal="inseparable-diagonal-pair univ-decidable-characteristic-equivalence univ-universal-complete ctree-kleene-tree einf-diagonal-effective-pair einf-canonical-pair-reduction" data-kind="theorem">
   <h2>No computable decision can put the two sets on opposite sides</h2>
   <div class="statement-box">
     <p>The sets \(A=\{e:\varphi_e(e)\downarrow=0\}\) and \(B=\{e:\varphi_e(e)\downarrow=1\}\) are computably inseparable.</p>
@@ -43,6 +43,7 @@
     <p>The orientation matters: \(A\) records output zero, even though its members must receive the separator's answer one. Likewise, \(B\) records output one but its members must receive answer zero. The program deciding a proposed separator supplies its own incorrectly classified input. No test for divergence is used, since this particular program is total.</p>
   </div>
   <p>The same pair yields a computational obstruction to choosing infinite branches. Its <a href="computable-trees-and-paths#separator-tree">finite-stage separator tree</a> has a decidable membership test and nodes at every length, but <a href="computable-trees-and-paths#kleene-tree">no computable path</a>: such a path would decide a separator of these two sets.</p>
+  <p>The same diagonal pair has a stronger uniform property: <a href="effective-inseparability#diagonal-effective-pair">effective inseparability</a> computes an escape point from any proposed disjoint c.e. enlargements. It is also <a href="effective-inseparability#canonical-universality">universal for disjoint c.e. pairs</a>, with one computable map preserving both component membership answers.</p>
 </section>
 
 <section id="individual-obstructions" data-formal="inseparable-components-undecidable inseparable-components-infinite inseparable-component-complements-not-enumerable univ-two-sided-recognition" data-kind="lemma">
@@ -54,13 +55,15 @@
   </div>
 </section>
 
-<section id="positive-search-gap" data-formal="separator-positive-attempt separator-positive-attempt-spec inseparable-constant-two-outside inseparable-divergent-outside univ-bounded-value univ-two-sided-recognition" data-kind="question">
+<section id="positive-search-gap" data-formal="fsplt-piece-reduction separator-positive-attempt separator-positive-attempt-spec inseparable-constant-two-outside inseparable-divergent-outside univ-bounded-value univ-two-sided-recognition" data-kind="question">
   <h2>Why not wait until one of the two recognizers succeeds?</h2>
   <p>On input \(e\), run the recognizers for \(A\) and \(B\) in parallel, returning one if the first succeeds and zero if the second succeeds. Does this decide a separator? What if neither recognizer has succeeded after a large finite number of tests?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>The answers are correct whenever they occur, but the procedure need not terminate. Choose an index \(q\) of the constant-two function. Then \(\varphi_q(q)=2\), so \(q\notin A\cup B\). Neither recognizer ever succeeds at this input, although the self-computation itself terminates. There are also indices of the nowhere-defined function; these too lie outside the union.</p>
     <p>A failed bounded test says only that the required successful output was not certified at that bound. It does not establish divergence. Nor is a known terminating output other than zero or one a positive certificate for either set. In the <a href="universal-computation#two-sided-recognition">decision theorem for complementary c.e. sets</a>, every input belongs to exactly one recognized side. Here disjointness supplies at most one success, while total decision would require at least one usable answer on every input.</p>
-  </div></details>
+
+  <p>An oracle for the union can supply the missing guard: <a href="friedberg-splitting#split-reductions">querying the union before the search</a> decides each of two disjoint c.e. pieces.</p>
+</div></details>
 </section>
 
 <section id="partial-bit-function" data-formal="inseparable-binary-diagonal inseparable-binary-diagonal-partial inseparable-binary-diagonal-spec inseparable-binary-diagonal-domain separator-partial-extension separator-total-computable-extension mach-unary-recursive-bridge" data-kind="definition">

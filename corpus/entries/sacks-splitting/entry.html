@@ -1,0 +1,136 @@
+<section id="split-data" data-formal="sacks-piece limit-computable limit-lemma fsplt-scheduler-exhaustive lowsimple-low" data-kind="definition">
+  <h2>Fix an enumerable input and computable guesses for a forbidden set</h2>
+  <p>Fix \(A=W_a\), a c.e. set, and a noncomputable <a href="limit-computability#pointwise-approximation">limit-computable set</a> \(C\). Supply one jointly computable binary function \(h(s,x)\) with \(\lim_s h(s,x)=\chi_C(x)\). The <strong>forbidden set</strong> is \(C\): we seek a c.e. split \(A=A_0\mathbin{\dot\cup}A_1\) for which \(C\not\le_T A_i\), while both pieces are <a href="low-simple-sets#lowness">low</a>.</p>
+  <p>Use the <a href="friedberg-splitting#fresh-arrivals">fresh-arrival scheduler</a> for \(W_a\). Its processed set is \(P_s\), its possible arrival is \(b_s&lt;s+1\), and idle stages add nothing. Every input member arrives exactly once. By the <a href="limit-computability#limit-lemma">limit lemma</a>, the hypothesis on \(C\) is equivalently \(C\le_T K\), where \(K\) is ordinary diagonal halting. The construction uses the given algorithm for \(h\); it never asks the final \(C\)-oracle.</p>
+</section>
+
+<section id="requirements" data-formal="sacks-computes sacks-avoids sacks-diagonal-preserved" data-kind="definition">
+  <h2>Pair avoidance with protection of diagonal computations</h2>
+  <p>Write \(\varphi_e^B\) for the existing <a href="oracle-program-numberings#oracle-numbering">indexed oracle-program evaluation</a>. At priority \(q=2e+i\), with \(i&lt;2\), the <strong>avoidance requirement</strong> is</p>
+  <div class="math-display">\[R_q:\qquad \neg\bigl(\forall x\;\varphi_e^{A_i}(x)=\chi_C(x)\bigr).\]</div>
+  <p>Here equality includes termination: a divergent computation disagrees with the total characteristic function. The accompanying <strong>lowness requirement</strong> \(N_q\) says that sufficiently late successful finite diagonal observations for program \(e\) persist to the final oracle \(A_i\). If all \(R_q\) hold, no ordinary oracle-program index computes \(C\) from either side.</p>
+</section>
+
+<section id="finite-records" data-formal="sacks-state sacks-side-code sacks-length-record sacks-restraint-record sacks-length-at sacks-restraint-at post-finite-table-value post-bounded-query-dependence sacks-invariants sacks-stage-monotone sacks-records-monotone post-finite-value-primitive post-finite-table-identity" data-kind="definition">
+  <h2>Keep lengths and restraints that only increase</h2>
+  <p>At stage \(s\), the <strong>agreement record</strong> \(l_q^s\) and <strong>restraint record</strong> \(u_q^s\) are natural numbers, initially zero. Records with \(q\ge s\) are zero. Store the two finite sets \(A_{i,s}\subseteq\{0,\ldots,s-1\}\) and the finite lists of records. No member is removed and no record is reset.</p>
+  <p>Use the <a href="posts-theorem#finite-checker">finite oracle table</a> in its supplied numerical coding. Write \(V(B,k,e,x)\) for its value on a finite oracle \(B\): zero means no successful bounded computation; \(y+1\) means a successful computation with output \(y\). It is computable from the finite membership code and the numbers \(k,e,x\). A successful observation at allowance \(k\) uses only oracle bits below \(k\), and is unchanged by replacing the oracle with another agreeing below \(k\).</p>
+</section>
+
+<section id="least-observation" data-formal="sacks-least-observation sacks-observation-data" data-kind="definition">
+  <h2>Record the least successful diagonal allowance</h2>
+  <p>At stage \(s\), for each \(q=2e+i\le s\), define its <strong>diagonal allowance</strong> \(d_q^s\) as the least \(k\le s+1\) such that \(V(A_{i,s},k,e,e)&gt;0\), if one exists, and zero otherwise. Replace \(u_q^s\) temporarily by \(\max(u_q^s,d_q^s)\).</p>
+  <p>This is a bounded search through \(0,\ldots,s+1\). The allowance zero cannot succeed, so the default zero is unambiguous. Taking the least successful allowance matters: after its oracle bits are protected, that same allowance remains least. Replacing it repeatedly by the growing stage number would not have this property.</p>
+</section>
+
+<section id="agreement-stage" data-formal="sacks-expands sacks-next-length sacks-next-restraint sacks-expanded" data-kind="definition">
+  <h2>Increase agreement only after checking the entire current prefix</h2>
+  <p>The <strong>expansion test</strong> for \(q=2e+i\le s\) is</p>
+  <div class="math-display">\[E_q(s)\quad\Longleftrightarrow\quad
+    \forall x\le l_q^s\quad V(A_{i,s},s+1,e,x)=h(s,x)+1.\]</div>
+  <p>If it succeeds, put \(\widehat l_q^s=l_q^s+1\) and \(\widehat u_q^s=\max(u_q^s,d_q^s,s+1)\). Otherwise put \(\widehat l_q^s=l_q^s\) and \(\widehat u_q^s=\max(u_q^s,d_q^s)\). For \(q&gt;s\), both updated records are zero. The hats denote the records after these tests, before any arrival is routed.</p>
+  <p>The test includes the endpoint \(x=l_q^s\). Thus an expansion producing new length \(l_q^s+1\) has checked every \(x\) below that new length. Its updated restraint protects the allowance \(s+1\) of all those computations at once.</p>
+</section>
+
+<section id="routing-stage" data-formal="sacks-priority sacks-chosen-side sacks-next sacks-stage sacks-record-update sacks-priority-data" data-kind="definition">
+  <h2>Send an arrival away from the earliest threatened side</h2>
+  <p>The <strong>routing rule</strong> first performs all tests above using the old finite sides. If an arrival \(b_s\) exists, find the least \(q\le s\) for which \(b_s&lt;\widehat u_q^s\). If it is \(q=2e+i\), send \(b_s\) to the opposite side \(1-i\). If no such priority exists, send it to side zero. The unchosen side stays unchanged. At an idle stage both sides stay unchanged.</p>
+  <p>Finally set \(l_q^{s+1}=\widehat l_q^s\) and \(u_q^{s+1}=\widehat u_q^s\). In particular, idle stages still test computations and can increase records. All comparisons use the updated restraints; protecting the previous values alone would leave a just-observed computation exposed to the current arrival.</p>
+</section>
+
+<section id="effective-partition" data-formal="sacks-stage-set sacks-piece sacks-stage-computable sacks-stage-transition sacks-invariants sacks-stage-monotone sacks-records-monotone sacks-partition" data-kind="lemma">
+  <h2>The numerical stages give a disjoint enumerable split</h2>
+  <p>The specified stage sequence is ordinary computable from \(a\) and the supplied algorithm for \(h\). For every \(s\), the finite sides are disjoint and increasing, have union \(P_s\), and lie below \(s\). Their limits \(A_i=\bigcup_sA_{i,s}\) are disjoint c.e. sets with union \(A\). Both record sequences are nondecreasing, with \(l_q^s,u_q^s\le s\).</p>
+  <div class="proof"><p>Each stage performs finitely many bounded searches and table tests, evaluates the total computable \(h\) finitely many times, and inserts at most one number into a finite set. Numerical recursion computes every finite state. The record updates take maxima and at most one successor, so preserve monotonicity and the stage bounds, including the zero values before a priority is introduced.</p><p>For the finite partition assertions, induct on \(s\). Idle stages do not alter the sides. An arrival is outside \(P_s\), their old union, and enters exactly one side. Thus no intersection is introduced and the new union is \(P_{s+1}\). Computable finite stages enumerate both limits. Their disjointness follows by comparing any two purported membership stages at a common later stage, and scheduler fairness gives their union \(A\).</p></div>
+</section>
+
+<section id="prefix-settling" data-formal="sacks-prefix-settles" data-kind="lemma">
+  <h2>Each finite part of a final side eventually appears correctly</h2>
+  <p>For each \(i&lt;2\) and \(k\), some stage \(t\) has \(A_{i,s}\cap[0,k)=A_i\cap[0,k)\) for every \(s\ge t\).</p>
+  <div class="proof"><p>Every final member below \(k\) appears at a finite stage; take the maximum of those finitely many stages. Nonmembers never enter. Monotonicity then preserves the agreement. This is the existing <a href="effective-enumerations#classical-settling">finite-prefix settling argument</a>; the cutoff need not be computable from \(k\).</p></div>
+</section>
+
+<section id="priority-cutoff" data-formal="sacks-higher-stable sacks-cutoff sacks-higher-cutoff" data-kind="lemma">
+  <h2>Settled higher restraints eventually stop interfering</h2>
+  <p>Fix \(q\). Suppose each \(u_p^s\), for \(p&lt;q\), is eventually constant. There is a stage \(T\ge q\) such that for every \(s\ge T\) and every actual arrival at \(s\), \(b_s\ge\widehat u_p^s\) for all \(p&lt;q\).</p>
+  <div class="proof"><p>Choose a stage after these finitely many records have settled, and let \(U\) be the maximum of their final values, using zero when \(q=0\). Their updated values are the same final values, since \(\widehat u_p^s=u_p^{s+1}\). The <a href="friedberg-splitting#fresh-values-escape">escape of fresh arrivals</a> gives a later stage after which all arrivals are at least \(U\). Enlarge the stage to include \(q\). This supplies \(T\), including when there are no further arrivals.</p></div>
+</section>
+
+<section id="permanent-protection" data-formal="sacks-permanent-protection post-finite-value-agreement" data-kind="lemma">
+  <h2>A late restraint protects the same final oracle bits forever</h2>
+  <p>Under the cutoff hypothesis of <a href="#priority-cutoff"></a>, let \(s\ge T\), \(q=2e+i\), and \(k\le\widehat u_q^s\). Then \(A_{i,s}\) and the final \(A_i\) agree below \(k\). Consequently every successful table computation at allowance \(k\) on \(A_{i,s}\) has the same output on \(A_i\).</p>
+  <div class="proof"><p>At stage \(s\), an arrival below \(k\) is also below \(\widehat u_q^s\). No earlier priority threatens it, by the cutoff property. Hence \(q\) is the least threatening priority and the arrival is sent away from side \(i\). An arrival at least \(k\), or an idle stage, cannot change that prefix.</p><p>The same argument works at every later stage: the restraint for \(q\) never decreases and the higher-priority cutoff persists. Induction shows that the old finite prefix never changes again. Taking the increasing union gives agreement with the final side. The <a href="posts-theorem#bounded-query-agreement">bounded-query preservation theorem</a> then transfers the computation to that final oracle. This proof does not assume that \(q\)'s own restraint has already settled.</p></div>
+</section>
+
+<section id="expansion-decoder" data-formal="sacks-expansion-search sacks-expansion-decoder sacks-decoder-recursive" data-kind="definition">
+  <h2>Turn late expansions into an ordinary partial decision procedure</h2>
+  <p>For fixed numerical parameters \(a,q,T\), the <strong>expansion decoder</strong> \(D_{a,h,q,T}(x)\) searches \(s=T,T+1,\ldots\) for the first stage with \(q\le s\), \(E_q(s)\), and \(x\le l_q^s\). It returns \(h(s,x)\) at that stage.</p>
+  <p>The search uses the specified computable stages and their finite expansion tests. Its stopping predicate is decidable, so this is one ordinary partial computable function. The cutoff \(T\) is a fixed constant in its program, not an oracle or an effectively extracted convergence modulus. The decoder is permitted to diverge for arbitrary parameters.</p>
+</section>
+
+<section id="unbounded-agreement" data-formal="sacks-unbounded-agreement" data-kind="lemma">
+  <h2>If a side computed the forbidden set, agreement would grow without bound</h2>
+  <p>Fix \(q=2e+i\). If \(\varphi_e^{A_i}=\chi_C\), then for every \(n\) some stage has \(n&lt;l_q^s\). For every cutoff \(T\), the expansion decoder for \(q,T\) therefore terminates on every input.</p>
+  <div class="proof"><p>For a fixed \(n\), all final computations on \(x\le n\) terminate. Each has a successful finite allowance. Choose a common upper allowance and wait until the finite sides agree with the final side below it. Increase the stage again to be at least \(q\), to make its allowance \(s+1\) large enough, and to ensure all \(h(s,x)\), \(x\le n\), have settled. Completeness and monotonicity of bounded evaluation show that every such computation now appears with its correct output at every later stage.</p><p>As long as \(l_q^s\le n\), the whole expansion test succeeds, so the record increases by one at each subsequent stage until it exceeds \(n\). This proves unboundedness. Because the record never decreases and increases only by successful expansions, after any fixed \(T\) there must be an expansion whose old length is at least a specified input \(x\). That stage makes the decoder stop.</p></div>
+</section>
+
+<section id="avoidance" data-formal="sacks-decoder-correct sacks-avoidance" data-kind="lemma">
+  <h2>Permanent agreement would compute the forbidden set without an oracle</h2>
+  <p>If the higher restraints below \(q\) settle, then \(R_q\) holds.</p>
+  <div class="proof"><p>Write \(q=2e+i\), and assume instead that \(\varphi_e^{A_i}=\chi_C\). Choose \(T\) from <a href="#priority-cutoff"></a>. The specified decoder terminates on every input by <a href="#unbounded-agreement"></a>. If its search stops at \(s\), then \(x\le l_q^s\), and expansion gives \(V(A_{i,s},s+1,e,x)=h(s,x)+1\). Its updated restraint is at least \(s+1\), so <a href="#permanent-protection"></a> preserves that output on the final oracle.</p><p>By the assumed equality, that final output is \(\chi_C(x)\). Hence the very ordinary partial computable decoder is total and returns \(\chi_C\) on every input. This makes \(C\) computable, contrary to hypothesis. The argument uses no effective method for finding \(T\); the existence of this one fixed constant already supplies a forbidden ordinary program.</p></div>
+</section>
+
+<section id="length-settles" data-formal="sacks-length-settles" data-kind="lemma">
+  <h2>After avoidance succeeds, the agreement length stops growing</h2>
+  <p>If the higher restraints below \(q\) settle, then \(l_q^s\) is eventually constant.</p>
+  <div class="proof"><p>By <a href="#avoidance"></a>, choose \(x\) witnessing failure of \(\varphi_e^{A_i}=\chi_C\): either the computation diverges, or it terminates with a different value. Choose \(T\) satisfying the higher-priority cutoff and large enough that \(h(s,x)=\chi_C(x)\) for all \(s\ge T\).</p><p>No expansion at such a stage can have \(x\le l_q^s\). It would observe the correct value at \(x\) and protect it forever, forcing \(\varphi_e^{A_i}(x)=\chi_C(x)\), a contradiction in either case. Thus, after \(T\), the length can increase only while its old value is below \(x\). It is bounded by \(\max(l_q^T,x)\) thereafter. A nondecreasing bounded natural-number sequence is eventually constant, proving the assertion.</p></div>
+</section>
+
+<section id="restraint-settles" data-formal="sacks-restraint-settles" data-kind="lemma">
+  <h2>The least successful diagonal allowance also stops growing</h2>
+  <p>If the higher restraints below \(q\) settle, then \(u_q^s\) is eventually constant.</p>
+  <div class="proof"><p>Choose \(T\) after the higher cutoff and after \(l_q^s\) has settled. No agreement expansion occurs after \(T\), so only diagonal observations can increase \(u_q^s\). If none occurs, the restraint is constant. Otherwise choose its first later successful observation, at stage \(s\), with least allowance \(k=d_q^s\).</p><p>The update makes \(\widehat u_q^s\ge k\), and permanent protection fixes side \(i\) below \(k\). The successful allowance \(k\) therefore remains successful at every later stage. Every allowance \(j&lt;k\) depends on still fewer bits, which have also been fixed, so it remains unsuccessful. Thus the least successful allowance is always this same \(k\), and the update \(u\mapsto\max(u,k)\) makes no further increase. There is at most one restraint increase after \(T\), proving eventual constancy.</p></div>
+</section>
+
+<section id="priority-induction" data-formal="sacks-priority-induction sacks-pieces-avoid" data-kind="theorem">
+  <h2>Every avoidance requirement succeeds and every record settles</h2>
+  <p>For every \(q\), \(R_q\) holds, and both \(l_q^s\) and \(u_q^s\) are eventually constant. In particular, \(C\not\le_T A_0\) and \(C\not\le_T A_1\).</p>
+  <div class="proof"><p>Induct on \(q\), with the conjunction of these three assertions as induction hypothesis. The finitely many higher restraint sequences have settled by the earlier induction steps. Apply, in order, <a href="#avoidance"></a>, <a href="#length-settles"></a>, and <a href="#restraint-settles"></a>. For \(q=0\), the higher-priority hypothesis is empty and fresh-arrival escape applies to bound zero. This completes the induction. Any proposed computation of the characteristic function of \(C\) using a side as oracle has a numerical index \(e\), so its corresponding \(R_{2e+i}\) rules it out.</p></div>
+</section>
+
+<section id="jump-guesses" data-formal="sacks-jump-guess sacks-jump-approximation" data-kind="definition">
+  <h2>Observe diagonal success with the current finite side</h2>
+  <p>For \(i&lt;2\), the <strong>jump guess</strong> is the binary function</p>
+  <div class="math-display">\[g_i(s,e)=\begin{cases}1,&amp;V(A_{i,s},s+1,e,e)&gt;0,\\0,&amp;\text{otherwise}.\end{cases}\]</div>
+  <p>The stage algorithm and finite table test make it jointly computable in \(s,e\). It tests a diagonal computation itself, rather than whether a restraint is positive: agreement expansions may raise a restraint even when the diagonal computation diverges.</p>
+</section>
+
+<section id="lowness" data-formal="sacks-diagonal-persistence sacks-jump-approximation sacks-pieces-low" data-kind="theorem">
+  <h2>The same constructed pieces are both low</h2>
+  <p>For \(i&lt;2\), \(g_i(s,e)\to\chi_{A_i'}(e)\) for every \(e\), so \(A_i'\equiv_T K\).</p>
+  <div class="proof"><p>Fix \(q=2e+i\) and choose a stage after its higher restraints have settled and their arrivals escape. A later positive guess has a least successful allowance \(k\le s+1\). The diagonal update protects \(k\), so permanent protection makes the final diagonal computation terminate. Therefore, if \(e\notin A_i'\), all guesses past that cutoff are zero.</p><p>If \(e\in A_i'\), its final computation has a finite successful allowance. Prefix settling and bounded-evaluation monotonicity make it visible on \(A_{i,s}\) at every sufficiently large allowance \(s+1\). Hence the guesses are eventually one. These two cases prove convergence. The <a href="limit-computability#limit-lemma">limit lemma</a> gives \(A_i'\le_T K\), and <a href="low-simple-sets#lowness">ordinary halting below every jump</a> gives the reverse reduction. These are the very pieces used in the avoidance proof, not a separately chosen low split.</p></div>
+</section>
+
+<section id="sacks-theorem" data-formal="sacks-constructed-theorem sacks-theorem" data-kind="theorem">
+  <h2>Split a prescribed enumerable set into low pieces avoiding a given set</h2>
+  <div class="statement-box"><p>If \(A\) is c.e. and \(C\) is noncomputable and limit computable, the specified construction gives c.e. low sets \(A_0,A_1\) such that</p><div class="math-display">\[A=A_0\mathbin{\dot\cup}A_1,\qquad C\not\le_T A_0,\qquad C\not\le_T A_1.\]</div></div>
+  <div class="proof"><p>Choose an index \(a\) for \(A\) and one computable convergent binary approximation \(h\) for \(C\). Run the defined stages. The effective partition lemma gives a c.e. split, the priority induction gives both nonreductions, and the jump guesses prove both pieces low. These choices depend on the supplied presentations; the theorem does not claim an algorithm deciding whether arbitrary input indices satisfy its hypotheses.</p></div>
+</section>
+
+<section id="strict-incomparable-pieces" data-formal="sacks-strict-incomparable fsplt-union-join" data-kind="theorem">
+  <h2>Every noncomputable enumerable set has incomparable low pieces strictly below it</h2>
+  <div class="statement-box"><p>Every noncomputable c.e. \(A\) has a split into noncomputable low c.e. sets \(A_0,A_1\) satisfying</p><div class="math-display">\[A_0&lt;_T A,\qquad A_1&lt;_T A,\qquad A_0\not\le_T A_1,\qquad A_1\not\le_T A_0,\qquad A_0\oplus A_1\equiv_T A.\]</div></div>
+  <div class="proof"><p>Take \(C=A\), using <a href="limit-computability#enumerable-examples">limit computability of every c.e. set</a>. Sacks splitting gives \(A\not\le_T A_i\). The <a href="friedberg-splitting#split-reductions">guarded piece reductions</a> give \(A_i\le_T A\), and the <a href="friedberg-splitting#split-join">disjoint-union join equivalence</a> gives \(A_0\oplus A_1\equiv_T A\). These establish the strict inequalities in the displayed direction.</p><p>If, for example, \(A_0\le_T A_1\), the join universal property would give \(A\le_T A_0\oplus A_1\le_T A_1\), a contradiction. Interchanging the sides proves incomparability. If one piece were computable, it would be reducible to the other by an oracle-ignoring program, giving that same contradiction. Thus both are noncomputable as well as low.</p></div>
+</section>
+
+<section id="no-minimal-ce-degree" data-formal="sacks-nonminimal" data-kind="theorem">
+  <h2>No nonzero enumerable degree is minimal</h2>
+  <p>For every noncomputable c.e. set \(A\), there is a noncomputable low c.e. set \(B\) with \(B&lt;_T A\). Consequently no nonzero c.e. degree is minimal among all Turing degrees.</p>
+  <div class="proof"><p>Take either piece from <a href="#strict-incomparable-pieces"></a>. Its degree lies strictly between the computable degree and the degree of \(A\), by noncomputability and the strict reduction. This exhibits the required intervening degree, even with an enumerable low representative.</p></div>
+</section>
+
+<section id="low-join-question" data-formal="sacks-low-join-counterexample" data-kind="question">
+  <h2>Must the join of two low sets be low?</h2>
+  <p>Each constructed piece is low. Does it follow that their join is low, or that the jump preserves joins?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Split \(A=K\) by the preceding theorem, obtaining low pieces with \(A_0\oplus A_1\equiv_T K\). Their jumps both have degree \(K\), so \(A_0'\oplus A_1'\equiv_T K\), using the join universal property. But jump invariance gives \((A_0\oplus A_1)'\equiv_T K'\), and <a href="turing-jump#jump-strictness">jump strictness</a> says \(K&lt;_T K'\). Therefore the join is nonlow, and its jump is strictly above the join of the individual jumps.</p><p>Thus even the class of enumerable low sets is not closed under joins. The contradiction depends on the pieces being chosen together so their join recovers \(K\); two unrelated examples of low sets would not establish it.</p></div></details>
+</section>
