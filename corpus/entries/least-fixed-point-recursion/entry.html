@@ -1,0 +1,116 @@
+<section id="increasing-chains" data-kind="definition" data-formal="lfp-increasing lfp-chain-union rs-graph-inclusion rice-bottom">
+  <h2>Let each approximation retain every earlier answer</h2>
+  <p>Use unary partial functions and <a href="effective-operators#partial-graphs">graph inclusion</a> \(f\sqsubseteq g\): every defined answer of \(f\) is the same answer of \(g\). Write \(\bot\) for the nowhere-defined function. An <strong>increasing chain</strong> is a sequence \((f_n)_{n\in\mathbb N}\) with \(f_n\sqsubseteq f_{n+1}\) for every \(n\).</p>
+  <p>Its <strong>union graph</strong> consists of every input–output pair appearing at some finite stage. Thus its intended partial function \(h=\bigcup_n f_n\) satisfies</p>
+  <div class="math-display">\[h(x)\downarrow=y\quad\Longleftrightarrow\quad\exists n\;f_n(x)\downarrow=y.\]</div>
+  <p>The next result proves that these observations define one partial function, including at inputs for which no stage returns a value.</p>
+</section>
+
+<section id="chain-union" data-kind="lemma" data-formal="lfp-chain-union-membership lfp-chain-union-unique lfp-stage-below-union lfp-union-below">
+  <h2>The union of an increasing chain is a partial function</h2>
+  <p>Every increasing chain has a unique union partial function with the displayed output condition. It extends each \(f_n\); if every \(f_n\sqsubseteq g\), then its union also satisfies \(h\sqsubseteq g\).</p>
+  <div class="proof"><p>First, \(f_m\sqsubseteq f_n\) whenever \(m\le n\), by induction on the difference, using transitivity of graph inclusion. If stage \(m\) returns \(y\) at \(x\) and stage \(n\) returns \(z\) there, both values occur at stage \(\max(m,n)\). That stage is a partial function, so \(y=z\). The union graph is therefore single-valued. Give \(h(x)\) this common value when some stage supplies one, and leave it undefined otherwise. The output condition uniquely specifies every partial value.</p><p>Any stage output is a union output, proving \(f_n\sqsubseteq h\). If all stage outputs belong to \(g\), every union output does too, which is the asserted least-upper-bound property. No computability hypothesis on the chain or on \(g\) was used.</p></div>
+</section>
+
+<section id="finite-capture" data-kind="lemma" data-formal="lfp-finite-capture">
+  <h2>One finite stage contains any finite piece of the union</h2>
+  <p>If \(h=\bigcup_n f_n\) is the union of an increasing chain and \(d\) is a valid <a href="rice-shapiro-theorem#fragment-codes">finite-fragment code</a>, then</p>
+  <div class="math-display">\[\delta_d\sqsubseteq h\quad\Longleftrightarrow\quad\exists n\;\delta_d\sqsubseteq f_n.\]</div>
+  <div class="proof"><p>For each pair in the finite table \(D_d\), inclusion in \(h\) supplies a stage at which that very output appears. Choose a stage for each of these finitely many observations, and let \(N\) be their maximum. All observations persist to \(N\), so the <a href="rice-shapiro-theorem#finite-fragments">finite-table lookup identity</a> gives \(\delta_d\sqsubseteq f_N\). An empty table needs no observations: take \(N=0\). Repeated identical pairs cause no problem. Conversely, inclusion in one stage implies inclusion in its union.</p></div>
+</section>
+
+<section id="chain-continuity" data-kind="theorem" data-formal="lfp-chain-continuity eop-effective-monotone">
+  <h2>Finite positive rules commute with increasing unions</h2>
+  <p>Let \(\Phi\) be an <a href="effective-operators#rule-operator">effective operator</a> on unary partial numerical functions. For every increasing chain \((f_n)\),</p>
+  <div class="math-display">\[\Phi\left(\bigcup_n f_n\right)=\bigcup_n\Phi(f_n).\]</div>
+  <p>The chain on the right is increasing by monotonicity. This preservation of increasing unions is the <strong>chain-continuity</strong> property used here.</p>
+  <div class="proof"><p>If \(\Phi(h)(x)\downarrow=y\), <a href="effective-operators#finite-information">finite information</a> gives a valid fragment \(\delta_d\sqsubseteq h\) already producing that output. By <a href="#finite-capture"></a>, this fragment is included in some \(f_N\). Monotonicity transfers the output from \(\Phi(\delta_d)\) to \(\Phi(f_N)\), placing it in the right-hand union. Conversely each \(f_n\sqsubseteq h\), so every output of \(\Phi(f_n)\) is an output of \(\Phi(h)\). The two implications identify all defined values and also the undefined inputs. Neither the chain nor its union needs to be computable.</p></div>
+</section>
+
+<section id="bottom-iteration" data-kind="definition" data-formal="lfp-bottom-iterates lfp-limit lfp-least-fixed-point fixed-point-definition rice-bottom">
+  <h2>Start recursive approximation with no defined answers</h2>
+  <p>Fix one effective <strong>endofunction</strong> \(\Phi\): it takes unary partial functions to unary partial functions. The same input and output type is required to form repeated applications and the equation \(\Phi(f)=f\). Its <strong>bottom iterates</strong> and their candidate limit are</p>
+  <div class="math-display">\[f_0=\bot,\qquad f_{n+1}=\Phi(f_n),\qquad f_\infty=\bigcup_n f_n.\]</div>
+  <p>A <strong>fixed point</strong> is a partial function \(g\) with \(\Phi(g)=g\). A <strong>least fixed point</strong> is a fixed point included in every other fixed point under \(\sqsubseteq\), including fixed points that are not computable.</p>
+</section>
+
+<section id="iterates-increase" data-kind="lemma" data-formal="lfp-iterates-increase lfp-chain-union-membership">
+  <h2>Iteration from bottom produces an increasing chain</h2>
+  <p>For the specified bottom iterates, \(f_n\sqsubseteq f_{n+1}\) for all \(n\). Consequently \(f_\infty\) is a well-defined partial function.</p>
+  <div class="proof"><p>There is no output of \(\bot\) to check, so \(f_0\sqsubseteq f_1\). If \(f_n\sqsubseteq f_{n+1}\), monotonicity gives \(\Phi(f_n)\sqsubseteq\Phi(f_{n+1})\), which is precisely \(f_{n+1}\sqsubseteq f_{n+2}\). Induction proves the chain condition; <a href="#chain-union"></a> then supplies its union.</p></div>
+</section>
+
+<section id="index-iteration" data-kind="definition" data-formal="lfp-bottom-index lfp-index-iteration lfp-index-iteration-primitive rs-fragment-compiler eop-compiler">
+  <h2>Iterate program indices without waiting for their programs</h2>
+  <p>Suppose \(r\) enumerates coherent positive rules \(R\) representing \(\Phi=\Phi_R\). Use the actual <a href="effective-operators#joint-rule-search">primitive-recursive compiler</a> \(q(r,e)\), and fix the bottom index \(b=u(d_\varnothing)\), where \(d_\varnothing\) is the empty-table code and \(u\) is the existing finite-fragment compiler. Define the <strong>iterate-index sequence</strong> by</p>
+  <div class="math-display">\[i(r,0)=b,\qquad i(r,n+1)=q(r,i(r,n)).\]</div>
+  <p>This is <a href="coding-finite-sequences#simultaneous-recursion">primitive recursion with an unchanged parameter</a> on numerical indices. Hence \(i\) is primitive recursive jointly in \(r,n\). Computing the next index changes program text; it does not require any computation of the previous program to finish.</p>
+</section>
+
+<section id="index-iteration-correct" data-kind="lemma" data-formal="lfp-index-iteration-correct rs-fragment-compiler-evaluation">
+  <h2>The same numerical sequence names the specified function iterates</h2>
+  <p>For every coherent positive rule index \(r\) and all \(n,x\), \(\varphi_{i(r,n)}(x)\simeq f_n(x)\), where \(f_n\) are the bottom iterates of the operator represented by \(r\).</p>
+  <div class="proof"><p>At stage zero, the <a href="rice-shapiro-theorem#fragment-codes">empty-fragment compiler identity</a> says \(\varphi_b=\bot=f_0\). If \(\varphi_{i(r,n)}=f_n\), the actual <a href="effective-operators#compiler-correctness">compiler correctness theorem</a> gives</p><div class="math-display">\[\varphi_{i(r,n+1)}=\varphi_{q(r,i(r,n))}=\Phi_R(\varphi_{i(r,n)})=\Phi_R(f_n)=f_{n+1}.\]</div><p>This induction identifies the entire partial function at every stage. The same numerical sequence works before the runtime input varies.</p></div>
+</section>
+
+<section id="union-search" data-kind="definition" data-formal="lfp-union-search lfp-union-search-partial lfp-union-master-evaluation lfp-compiler lfp-compiler-primitive lfp-compiler-search-evaluation lfp-index-iteration-primitive univ-bounded-value-primitive">
+  <h2>Search all finite approximations through bounded certificates</h2>
+  <p>The <strong>union search</strong> \(L(r,x)\) scans natural pair codes \(w=\langle n,k\rangle\) in increasing order. It accepts when the existing <a href="universal-computation#finite-certificates">bounded output code</a> satisfies \(b(k,i(r,n),x)>0\), and returns \(b(k,i(r,n),x)-1\). If no candidate succeeds, it remains undefined.</p>
+  <p>Every test is total primitive recursive jointly in \(r,x,w\), because the index iteration and bounded evaluator are primitive recursive. Consequently \(L\) is jointly partial recursive. This search does not wait for \(\varphi_{i(r,0)}(x)\) to terminate before inspecting later indices; the zeroth program never terminates.</p>
+  <p>Choose one fixed program index \(z\) satisfying \(\varphi_z(\langle r,x\rangle)\simeq L(r,x)\) for all \(r,x\), and define the <strong>least-fixed-point compiler</strong> \(\ell(r)=s(z,r)\). The actual <a href="universal-computation#parameter-theorem">specialization operation</a> makes \(\ell\) primitive recursive on every numerical input, whether or not its supplied rules satisfy the hypotheses.</p>
+</section>
+
+<section id="union-program" data-kind="theorem" data-formal="lfp-union-search-correct lfp-compiler-correct">
+  <h2>The specified union program computes exactly the increasing union</h2>
+  <p>For every \(r\) enumerating coherent positive rules, the same program index \(\ell(r)\) satisfies</p>
+  <div class="math-display">\[\varphi_{\ell(r)}(x)\simeq L(r,x)\simeq f_\infty(x)\qquad(x\in\mathbb N).\]</div>
+  <div class="proof"><p>The first equality is the exact specialization identity for the fixed master \(z\). If candidate \(\langle n,k\rangle\) succeeds with returned value \(y\), bounded-evaluation correctness gives \(\varphi_{i(r,n)}(x)\downarrow=y\). By <a href="#index-iteration-correct"></a>, this is an output of \(f_n\), hence of its union.</p><p>Conversely, an output \(f_\infty(x)\downarrow=y\) occurs at some stage \(n\). The index identity supplies that output for \(\varphi_{i(r,n)}(x)\), so a successful bounded allowance \(k\) exists. The numerical search eventually reaches this pair. An earlier successful candidate can name a different stage, but the increasing-chain property forces its output to be the same \(y\). With no union output, the first implication excludes every successful candidate and the program diverges. Thus it computes the whole union partial function.</p></div>
+</section>
+
+<section id="limit-fixed-point" data-kind="theorem" data-formal="lfp-fixed-point-equation">
+  <h2>The union solves the recursive equation</h2>
+  <p>The union \(f_\infty\) of the bottom iterates satisfies \(\Phi(f_\infty)=f_\infty\).</p>
+  <div class="proof"><p>Apply <a href="#chain-continuity"></a> to the increasing iterates:</p><div class="math-display">\[\Phi(f_\infty)=\bigcup_n\Phi(f_n)=\bigcup_n f_{n+1}=\bigcup_n f_n=f_\infty.\]</div><p>The third equality drops only the zeroth stage, which has no outputs. Every later stage still occurs in both unions, so this equality also covers an empty union of outputs. The calculation proves the fixed-point equation on all inputs.</p></div>
+</section>
+
+<section id="leastness" data-kind="lemma" data-formal="lfp-leastness">
+  <h2>Every fixed point contains all the finite approximations</h2>
+  <p>If an arbitrary partial function \(g\) satisfies \(\Phi(g)=g\), then \(f_\infty\sqsubseteq g\). There is no computability assumption on \(g\).</p>
+  <div class="proof"><p>Induct on \(n\) to prove \(f_n\sqsubseteq g\). The base case is the empty graph. From \(f_n\sqsubseteq g\), monotonicity gives \(f_{n+1}=\Phi(f_n)\sqsubseteq\Phi(g)=g\). Thus every finite approximation is included in \(g\). The union property in <a href="#chain-union"></a> gives \(f_\infty\sqsubseteq g\), as asserted.</p></div>
+</section>
+
+<section id="first-recursion-theorem" data-kind="theorem" data-formal="lfp-first-recursion-theorem lfp-specified-first-recursion-theorem lfp-compiler-primitive">
+  <h2>Every effective endofunction has a computable least fixed point</h2>
+  <div class="statement-box"><p>Every effective operator \(\Phi\) from unary partial numerical functions to unary partial numerical functions has a least fixed point</p><div class="math-display">\[f_\Phi=\bigcup_{n\in\mathbb N}\Phi^n(\bot).\]</div><p>This partial function is computable. More precisely, for any coherent positive rule index \(r\) representing \(\Phi\), the specified primitive-recursive compiler \(\ell\) satisfies \(\varphi_{\ell(r)}=f_\Phi\). Leastness is with respect to all partial-function fixed points. This is <strong>Kleene's first recursion theorem</strong> in the finite-information representation.</p></div>
+  <div class="proof"><p>The iterates form an increasing chain by <a href="#iterates-increase"></a>. Its union is a fixed point by <a href="#limit-fixed-point"></a>, and <a href="#leastness"></a> proves its leastness. An effective operator has one jointly enumerable positive coherent rule relation, hence an ordinary index \(r\) for that coded relation. The actual program in <a href="#union-program"></a> computes precisely this union. These facts prove all parts of the theorem without assuming that any fixed point is total.</p></div>
+</section>
+
+<section id="successor-equation" data-kind="lemma" data-formal="lfp-successor-rules lfp-successor-operator lfp-successor-rules-effective lfp-successor-operator-correct">
+  <h2>A recursive equation can add one answer per approximation</h2>
+  <p>The operator \(\Gamma\) given by</p>
+  <div class="math-display">\[\Gamma(f)(0)=0,\qquad \Gamma(f)(n+1)\simeq f(n)+1\]</div>
+  <p>is effective, where successor is applied by <a href="partial-recursive-functions#strict-composition">strict composition</a> to a partial value. Thus the second expression is undefined when \(f(n)\) is undefined.</p>
+  <div class="proof"><p>Use all valid tables as possible evidence. At input zero allow exactly output zero, with empty evidence already sufficient. At input \(n+1\), allow output \(y+1\) exactly when the table contains \((n,y)\). Finite inspection decides this one joint rule relation. Compatible tables agree at \(n\), so their output successors agree; the zero-input case is also coherent. An applicable rule gives the displayed partial value, and any such value supplies the corresponding singleton table. These rules give the stated effective operator.</p></div>
+</section>
+
+<section id="successor-iterates" data-kind="lemma" data-formal="lfp-successor-iterates lfp-successor-least-point">
+  <h2>The finite initial segments converge to the identity function</h2>
+  <p>Let \(g_n=\Gamma^n(\bot)\). Then, for every \(n,x,y\),</p>
+  <div class="math-display">\[g_n(x)\downarrow=y\quad\Longleftrightarrow\quad x&lt;n\text{ and }y=x.\]</div>
+  <p>Consequently the least fixed point of \(\Gamma\) is the total identity function \(x\mapsto x\).</p>
+  <div class="proof"><p>At \(n=0\), both sides are false. For the successor stage, input zero has output zero. At input \(x=m+1\), the defining rule returns \(m+1\) exactly when \(g_n(m)\) returns \(m\). By induction this is equivalent to \(m&lt;n\), or \(x&lt;n+1\). No other output is possible. This proves the formula at every finite stage. For each fixed \(x\), stage \(x+1\) includes its answer \(x\); the union therefore gives the identity function, and <a href="#first-recursion-theorem"></a> identifies this union as the least fixed point.</p></div>
+</section>
+
+<section id="nonunique-partial-fixed-point" data-kind="theorem" data-formal="lfp-shift-rules lfp-shift-operator lfp-singleton-zero lfp-constant-tail lfp-shift-rules-effective lfp-shift-operator-correct lfp-shift-iterates lfp-shift-least-point lfp-constant-tail-fixed-points lfp-constant-tails-distinct">
+  <h2>A least fixed point may be partial and have other fixed points</h2>
+  <p>The effective operator \(\Psi\) defined by</p>
+  <div class="math-display">\[\Psi(f)(0)=0,\qquad \Psi(f)(x)\simeq f(x+1)\quad(x>0)\]</div>
+  <p>has least fixed point \(h\) defined only at zero, with \(h(0)=0\). For each \(k\in\mathbb N\), the total function \(h_k\) given by \(h_k(0)=0\) and \(h_k(x)=k\) for \(x>0\) is another fixed point. Thus leastness implies neither totality nor uniqueness.</p>
+  <div class="proof"><p>Positive rules at input zero require no observation and return zero. At positive input \(x\), accept exactly an observed pair \((x+1,y)\) and return \(y\). These rules are jointly decidable and coherent, so they define an effective operator with the stated values. Starting from bottom gives the singleton graph \(\{(0,0)\}\) after one application. A further application gives no positive-input answer, because \(x+1>0\) and that singleton is undefined there. Hence every later iterate is the same singleton. Its union is \(h\), and the first recursion theorem proves that it is least.</p><p>For \(x=0\), \(\Psi(h_k)(x)=0=h_k(x)\). For \(x>0\), both \(h_k(x+1)\) and \(h_k(x)\) equal \(k\), proving the fixed-point equation. The value at input one distinguishes the different \(h_k\), and each properly extends the partial least fixed point.</p></div>
+</section>
+
+<section id="index-fixed-point-question" data-kind="question" data-formal="lfp-index-question lfp-extensional-index-fixed-point eop-myhill-shepherdson">
+  <h2>Does an index fixed point automatically give the least solution?</h2>
+  <p>For the identity operator \(I(f)=f\), the total computable index map \(H(e)=e\) realizes its action. Does the <a href="recursion-theorem#transformer-fixed-points">semantic fixed-point equation</a> \(\varphi_e=\varphi_{H(e)}\) force \(\varphi_e\) to be the least fixed point of \(I\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The <a href="effective-operators#composition-operator">precomposition example</a> with \(k(x)=x\) shows that \(I\) is effective. Every partial function is a fixed point of \(I\), and its least fixed point is bottom: iteration from bottom never adds any output. Every numerical index satisfies \(\varphi_e=\varphi_{H(e)}\), including an index for the total constant-zero function, which is not bottom.</p><p>The index recursion theorem establishes equality of the two indexed partial functions. For an <a href="effective-operators#extensional-transformations">extensional computable transformation</a>, Myhill–Shepherdson supplies an effective operator extending its action, and the first recursion theorem additionally selects its least solution. The stronger leastness conclusion comes from the bottom iteration and finite-information argument; it is not part of an arbitrary semantic index fixed-point equation.</p></div></details>
+</section>

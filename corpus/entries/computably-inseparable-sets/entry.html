@@ -123,3 +123,37 @@
     <p>If \(P=\varnothing\), every input has an \(R\)-certificate; if \(Q=\varnothing\), every input has an \(S\)-certificate. The termination argument therefore still applies, even if both sets are empty. The crucial guarantee is that every input has at least one negative certificate. For disjoint c.e. sets there may instead be inputs with neither positive certificate, which is exactly why the superficially similar search can fail.</p>
   </div></details>
 </section>
+
+
+<section id="positive-refinements" data-kind="definition" data-formal="separator-disjoint-refinement">
+  <h2>Refine overlapping positive information into disjoint alternatives</h2>
+  <p>For c.e. sets \(A,B\), a <strong>disjoint refinement</strong> is a pair of c.e. sets \(A_0,B_0\) satisfying</p>
+  <div class="math-display">\[\begin{gathered}A_0\subseteq A,\qquad B_0\subseteq B,\\ A_0\cap B_0=\varnothing,\qquad A_0\cup B_0=A\cup B.\end{gathered}\]</div>
+  <p>Elements known only on one side must stay on that side. An element in both sets may be assigned to either side. Outside the union neither recognizer needs to halt. This asks for two new positive recognizers, rather than a total separator.</p>
+</section>
+
+<section id="ce-reduction-property" data-kind="theorem" data-formal="separator-left-refinement separator-right-refinement separator-positive-race separator-refinement-recognizer separator-refinement-index separator-refinement-index-primitive separator-refinement-index-eval separator-refinement-index-domains separator-specified-disjoint-refinement separator-ce-reduction-property">
+  <h2>Every two enumerable sets have uniform disjoint refinements</h2>
+  <p>The c.e. sets have the <strong>reduction property</strong>: every c.e. pair \(A,B\) admits a disjoint refinement. Given indices \(e,d\) for \(A=W_e,B=W_d\), indices for both refinements can be chosen by fixed primitive-recursive maps.</p>
+  <div class="proof">
+    <p>Use the <a href="effective-enumerations#uniform-finite-approximation">canonical increasing stage sets</a> \(A_s,B_s\). At input \(x\), scan \(s=0,1,\ldots\) until \(x\in A_s\cup B_s\). If \(x\in A_s\) at this first successful stage, assign the element to \(A_0\); otherwise assign it to \(B_0\). A simultaneous arrival is assigned to \(A_0\). The two recognizers run this same scan, and halt only when their own side is assigned.</p>
+    <p>Equivalently, the positive certificate conditions are</p>
+    <div class="math-display">\[
+      \begin{aligned}
+      x\in A_0&\ \Longleftrightarrow\ \exists s\bigl(x\in A_s\ \land\ \forall t&lt;s\;x\notin B_t\bigr),\\
+      x\in B_0&\ \Longleftrightarrow\ \exists s\bigl(x\in B_s\ \land\ \forall t\le s\;x\notin A_t\bigr).
+      \end{aligned}
+    \]</div>
+    <p>Each matrix is a bounded test of finite computable stages, so both sets are c.e. The first formula permits an \(A\)-arrival no later than the first \(B\)-arrival; the second requires the \(B\)-arrival to be strictly earlier. They cannot both hold: compare their two witnessing stages and use monotonicity. Each formula also certifies membership in its original set, proving the two inclusions.</p>
+    <p>If \(x\in A\cup B\), there is a least successful stage. Its specified choice satisfies one of the two formulas, proving that the refinements retain the entire union. The reverse union inclusion follows from the two subset claims. All tests depend uniformly on \(e,d,s,x\). Fix each recognizer's joint program and insert the two original indices by <a href="universal-computation#parameter-theorem">specialization</a>; this gives the asserted primitive-recursive index maps without deciding either original set.</p>
+  </div>
+</section>
+
+<section id="refinement-versus-separation" data-kind="question" data-formal="separator-refinement-disjoint-inputs separator-refinement-full-union separator-refinement-empty inseparable-diagonal-pair">
+  <h2>Does disjointification give a computable separator?</h2>
+  <p>Why does the reduction property not contradict the inseparable pair above? What does the construction do when \(A=B=\mathbb N\), or when both sets are empty?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>When \(A,B\) are already disjoint, the subset and union conditions force \(A_0=A\) and \(B_0=B\). This gives the same two recognizers and no total decision outside their union. Thus it supplies no separator for the <a href="#inseparability">inseparable pair</a>.</p>
+    <p>When both original sets are all of \(\mathbb N\), each input is assigned to whichever recognizer succeeds first in the supplied stage presentations, with ties assigned to \(A_0\). The refinements form a c.e. partition of \(\mathbb N\); <a href="universal-computation#two-sided-recognition">two-sided recognition</a> then makes each part decidable. When both sets are empty, the scan never succeeds and both refinements are empty. A total answer is required only when the union is known to cover every input.</p>
+  </div></details>
+</section>

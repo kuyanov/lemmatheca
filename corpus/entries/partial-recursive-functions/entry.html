@@ -28,11 +28,12 @@
   </div></details>
 </section>
 
-<section id="partial-primitive-recursion" data-formal="partrec-partial-recursion partrec-recursion-equations" data-kind="definition">
+<section id="partial-primitive-recursion" data-kind="definition" data-formal="partrec-partial-recursion partrec-recursion-equations lfp-successor-operator lfp-successor-iterates lfp-successor-least-point">
   <h2>Recursion can stop producing values</h2>
   <p>Let \(g:\mathbb N^k\rightharpoonup\mathbb N\) and \(h:\mathbb N^{k+2}\rightharpoonup\mathbb N\). Their <strong>partial primitive recursion</strong> is the partial function \(r:\mathbb N^{k+1}\rightharpoonup\mathbb N\) satisfying</p>
   <div class="math-display">\[r(\bar x,0)\simeq g(\bar x),\qquad r(\bar x,n+1)\simeq h(\bar x,n,r(\bar x,n)),\]</div>
   <p>with strict evaluation on the right. Thus a missing initial value prevents every later value, and a missing step prevents the next value and all subsequent values. The order of arguments agrees with <a href="primitive-recursion#primitive-recursion">primitive recursion for total functions</a>: the parameters come first, followed by the recursion index and the previous output.</p>
+<p>The parameter-free equations starting with zero and taking the successor of the preceding value have an <a href="least-fixed-point-recursion#successor-equation">effective-operator interpretation</a>. Its successive approximations are defined exactly on longer finite initial segments, and their union gives the identity function as the least solution.</p>
 </section>
 
 <section id="recursion-domain" data-formal="partrec-recursion-chain partrec-recursion-unique partrec-recursion-initial-domain partrec-recursion-total" data-kind="lemma">

@@ -1,0 +1,111 @@
+<section id="superlow-sets" data-formal="slbasis-superlow ttwtt-truth-table-reducible jump-jump" data-kind="definition">
+  <h2>Require a finite table for the jump</h2>
+  <p>A set \(X\subseteq\mathbb N\) is <strong>superlow</strong> if \(X'\le_{\mathrm{tt}}K\), where \(X'=\{e:\Phi_e^X(e)\downarrow\}\) is its jump and \(K\) is ordinary diagonal halting. This uses the existing <a href="truth-table-and-weak-truth-table-reductions#prefix-tables">prefix truth-table convention</a>: the whole finite table is selected before its halting answers are received.</p>
+</section>
+
+<section id="bounded-change-jump" data-formal="slbasis-implies-low bcstrong-halting-cone lowsimple-low" data-kind="lemma">
+  <h2>Superlowness is a computable change bound on the jump</h2>
+  <p>For every set \(X\), superlowness is equivalent to \(X'\) being \(\omega\)-c.e., and also to \(X'\le_{\mathrm{wtt}}K\). Every superlow set is low.</p>
+  <div class="proof">
+    <p>Apply the <a href="bounded-changes-and-strong-reductions#three-characterizations">bounded-change characterization</a> to the set \(X'\). A truth-table reduction is a <a href="truth-table-and-weak-truth-table-reductions#implication-chain">Turing reduction</a>, so \(X'\le_TK\); the universal lower bound \(K\le_TX'\) gives \(X'\equiv_TK\).</p>
+  </div>
+</section>
+
+<section id="downward-closure" data-formal="slbasis-precompose-data slbasis-precompose-scheme slbasis-precompose-presents slbasis-downward slbasis-degree-invariant jump-jump-map jump-jump-map-membership jump-jump-monotone" data-kind="theorem">
+  <h2>Every weaker oracle inherits superlowness</h2>
+  <p>If \(X\le_TY\) and \(Y\) is superlow, then \(X\) is superlow. Consequently superlowness depends only on Turing degree.</p>
+  <div class="proof">
+    <p>The actual <a href="turing-jump#jump-monotonicity">jump translation</a> supplies an ordinary total computable map \(f\) reducing \(X'\) many-one to \(Y'\). Let \((u,t)\) be a table presenting \(Y'\) from \(K\). The width \(u(f(e))\) and lookup \(t(f(e),w)\) are total computable and binary, and at the true halting prefix they return \(\chi_{Y'}(f(e))=\chi_{X'}(e)\). Thus these specified data present \(X'\) from \(K\). Apply this argument in both directions for Turing-equivalent sets.</p>
+  </div>
+</section>
+
+<section id="answer-histories" data-formal="slbasis-answer-history slbasis-answer-bit slbasis-halting-histories lbt-restricted lbt-history lbt-recorded-bit lbt-failure-query lbt-failure-query-primitive lbt-failure-query-correct" data-kind="definition">
+  <h2>Run the same history rule with any answer oracle</h2>
+  <p>Fix the computable binary tree \(T\) and its fixed node decider from the <a href="low-basis-theorem#finite-divergence">low-basis construction</a>. Its divergence restrictions are \(T_L\), and its ordinary primitive-recursive map \(\delta_T\) satisfies \(\delta_T(\ulcorner L\urcorner)\in K\) exactly when \(T_L\) has an empty level.</p>
+  <p>For an arbitrary set \(C\), define the <strong>answer-oracle histories</strong> by</p>
+  <div class="math-display">\[\begin{aligned}L^C_0&amp;=[],\\ \gamma_C(i)&amp;=\chi_C\bigl(\delta_T(\ulcorner i::L^C_i\urcorner)\bigr),\\ L^C_{i+1}&amp;=\begin{cases}L^C_i,&amp;\gamma_C(i)=1,\\ i::L^C_i,&amp;\gamma_C(i)=0.\end{cases}\end{aligned}\]</div>
+  <p>At \(C=K\) these are exactly the earlier histories \(L_i\) and recorded bits \(b(i)\). No correctness of an arbitrary oracle's answers is assumed.</p>
+</section>
+
+<section id="all-oracle-termination" data-formal="slbasis-history-program-all-oracles slbasis-jump-program-all-oracles slbasis-jump-program-total slbasis-answer-trace slbasis-jump-trace slbasis-jump-trace-unique lbt-history-code lbt-jump-code ttwtt-all-oracle-total" data-kind="lemma">
+  <h2>The existing jump program terminates for every answer oracle</h2>
+  <p>The very same <a href="low-basis-theorem#jump-program">oracle program \(J_T\)</a> satisfies \(J_T^C(e)\downarrow=\gamma_C(e)\) for every oracle \(C\) and input \(e\). In particular it is total under all oracles and always returns a bit.</p>
+  <div class="proof">
+    <p>Its loop makes exactly \(e\) history updates, followed by one final query. Every list operation terminates, and \(\delta_T\) is an ordinary total numerical map on <em>every</em> list code. Computing that number does not run the empty-level search whose halting it encodes. Each oracle query returns either zero or one, and either update branch is a terminating list operation.</p>
+    <p>Induct on the loop counter. Starting from the empty list, after \(i\) updates its stored code is exactly \(\ulcorner L^C_i\urcorner\). The next query and branch therefore give exactly the displayed recursion. At the final query the returned bit is \(\gamma_C(e)\). This argument does not use the special equivalence between \(K\)-answers and failed restrictions.</p>
+  </div>
+</section>
+
+<section id="finite-query-tree" data-formal="slbasis-forced-history slbasis-query-list slbasis-query-set slbasis-history-width slbasis-query-set-correct ttwtt-binary-rows ttwtt-binary-rows-spec" data-kind="definition">
+  <h2>List the questions from every possible finite history</h2>
+  <p>For a binary word \(\eta\) of length \(e+1\), form histories \(L^\eta_i\) for \(i\le e\) by the same list update, using \(\eta(i)\) as the answer at step \(i\). Define the <strong>finite history-query set</strong> and its <strong>history width</strong> by</p>
+  <div class="math-display">\[Q_T(e)=\{\delta_T(\ulcorner i::L^\eta_i\urcorner):\eta\in2^{e+1},\ i\le e\}.\]</div>
+  <div class="math-display">\[U_T(e)=\max\bigl(\{q+1:q\in Q_T(e)\}\cup\{0\}\bigr).\]</div>
+  <p>Different words may repeat a query or describe answers inconsistent with one oracle. Keeping all these histories is harmless: a bound may include questions that are never asked in a real run.</p>
+</section>
+
+<section id="history-width" data-formal="slbasis-answer-word slbasis-answer-word-correct slbasis-forced-history-primitive slbasis-width-computable slbasis-query-below-width slbasis-actual-queries slbasis-bounded-trace" data-kind="lemma">
+  <h2>A computable width bounds every actual run</h2>
+  <p>The function \(U_T\) is ordinary total computable. On input \(e\), every query made by \(J_T\) under any oracle lies below \(U_T(e)\).</p>
+  <div class="proof">
+    <p>List the \(2^{e+1}\) binary words of the specified length. For each word, carry out its finitely many list updates and compute the \(e+1\) candidate query numbers. The fixed total map \(\delta_T\) makes every step terminate. Take the finite maximum, with zero as default. This is one ordinary algorithm in \(e\).</p>
+    <p>In any actual run, record the \(e+1\) answers as a word \(\eta\). Induction through the updates identifies its stored histories with \(L^\eta_i\). Each actual question consequently belongs to \(Q_T(e)\), and its successor is at most the defining maximum. No oracle is used to compute that maximum.</p>
+  </div>
+</section>
+
+<section id="history-table" data-formal="slbasis-replay-history slbasis-history-lookup slbasis-history-data slbasis-replay-finite-oracle post-finite-oracle-bit" data-kind="definition">
+  <h2>Replay the history against a finite word</h2>
+  <p>The <strong>history lookup</strong> \(t_T(e,w)\) starts with the empty list, makes the same \(e\) updates as \(J_T\), and answers each candidate query \(q\) by the existing total word bit \(\beta(w,q)\). It then returns the last candidate answer. Together with \(U_T\), this gives the <strong>history table data</strong> \((U_T,t_T)\).</p>
+  <p>This rule is defined on every numerical word code \(w\), with zero beyond the decoded word. It does not search for an empty tree level or for an infinite path.</p>
+</section>
+
+<section id="history-table-correct" data-formal="slbasis-lookup-computable slbasis-history-scheme slbasis-prefix-replay slbasis-recorded-bit-table ttwtt-prefix-scheme" data-kind="lemma">
+  <h2>The finite table returns the exact recorded jump bit</h2>
+  <p>The specified history data form a total computable binary prefix scheme, and for every \(e\),</p>
+  <div class="math-display">\[t_T\bigl(e,\operatorname{code}(K\upharpoonright U_T(e))\bigr)=b(e).\]</div>
+  <div class="proof">
+    <p>The replay has a fixed finite number of updates. Ordinary total list operations, \(\delta_T\), and word lookup compute it jointly in \(e,w\); its returned answer is always a bit. The width is computable by <a href="#history-width"></a>.</p>
+    <p>Give the replay the true prefix of \(K\) of length \(U_T(e)\). Every possible candidate query during a replay is in the finite history-query set, by recording the answers just used. Thus each question is within that prefix and its lookup is the true \(K\)-answer. Induction on the update counter makes the stored list equal to the earlier \(L_i\). The final lookup is exactly the defining query for \(b(e)\), proving the identity.</p>
+  </div>
+</section>
+
+<section id="same-common-path" data-formal="slbasis-common-path-table slbasis-same-common-path lbt-exact-jump lbt-jump-code-reduces ttwtt-total-functional-characterization" data-kind="theorem">
+  <h2>Every common path of the original construction is superlow</h2>
+  <p>Assume \(T\) has a node at every length. If \(X\in[T_{L_i}]\) for every \(i\), then the specified history table presents \(X'\) from \(K\). Hence this very \(X\) is superlow.</p>
+  <div class="proof">
+    <p>The earlier <a href="low-basis-theorem#exact-jump">exact-jump theorem</a> gives \(\chi_{X'}(e)=b(e)\) at every input. Substitute that identity into <a href="#history-table-correct"></a>. All scheme data were fixed from the original tree decider, before this common path was chosen. The <a href="#all-oracle-termination">same program's all-oracle termination</a> also proves the reduction through the general <a href="truth-table-and-weak-truth-table-reductions#total-functional-characterization">total-functional characterization</a>.</p>
+  </div>
+</section>
+
+<section id="superlow-basis" data-formal="slbasis-superlow-basis lbt-history-survival lbt-restricted-tree lbt-restricted-zero lbt-nested-levels" data-kind="theorem">
+  <h2>Every infinite computable binary tree has a superlow path</h2>
+  <div class="statement-box"><p>If \(T\subseteq2^{&lt;\omega}\) is a computable binary tree with a node at every length, then some \(X\in[T]\) satisfies \(X'\le_{\mathrm{tt}}K\).</p></div>
+  <div class="proof">
+    <p>Use the original \(K\)-guided restriction histories. Their <a href="low-basis-theorem#survival">survival proof</a> makes the trees nested with every level nonempty. The <a href="low-basis-theorem#nested-levels">descending finite-level argument</a> gives a path common to all their path classes. Since \(L_0=[]\), this path belongs to \([T]\), and <a href="#same-common-path"></a> makes it superlow. This strengthens the low basis theorem using its own construction.</p>
+  </div>
+</section>
+
+<section id="closed-superlow-basis" data-formal="slbasis-closed-basis slbasis-co-ce-basis dnc-effectively-closed dnc-tree-representation dnc-co-ce-tree dnc-co-ce-conversion" data-kind="theorem">
+  <h2>Every nonempty effectively closed binary class has a superlow member</h2>
+  <p>Every nonempty effectively closed \(\mathcal P\subseteq2^{\mathbb N}\) contains a superlow set. The same holds for a nonempty path class of a co-c.e. binary tree.</p>
+  <div class="proof">
+    <p>The <a href="effectively-closed-classes-and-dnc#same-paths">computable-tree representation</a> gives a computable binary tree with exactly the paths in \(\mathcal P\). Nonemptiness witnesses a node at every length. Apply <a href="#superlow-basis"></a> and transfer its member through that equality of classes. For a co-c.e. tree, first use its <a href="effectively-closed-classes-and-dnc#coenumerable-conversion">same-path computable conversion</a>.</p>
+  </div>
+</section>
+
+<section id="superlow-dnc" data-formal="slbasis-superlow-dnc dnc-binary-class dnc-binary-closed dnc-binary-example dnc-binary-not-computable" data-kind="theorem">
+  <h2>A noncomputable diagonal-avoiding set can have a bounded-change jump</h2>
+  <p>There exists a superlow set \(X\) with binary diagonally noncomputable characteristic function. It is noncomputable and satisfies \(X&lt;_TK\).</p>
+  <div class="proof">
+    <p>The binary DNC class is <a href="effectively-closed-classes-and-dnc#dnc-effectively-closed">effectively closed</a> and <a href="effectively-closed-classes-and-dnc#binary-dnc-exists">nonempty</a>. Apply <a href="#closed-superlow-basis"></a>. The <a href="effectively-closed-classes-and-dnc#dnc-noncomputable">diagonal argument</a> excludes computable members. Superlowness gives \(X'\le_TK\), and \(X\le_TX'\) gives \(X\le_TK\). If \(K\le_TX\), jump monotonicity would give \(K'\le_TX'\le_TK\), contrary to jump strictness. Thus the upper comparison is strict.</p>
+  </div>
+</section>
+
+<section id="correctness-versus-totality" data-formal="slbasis-empty-answer-history slbasis-zero-excludes-level slbasis-wrong-answers slbasis-superlow-free-computable slbasis-no-common-basis-path ctree-full-tree ctree-full-tree-properties hdeg-hyperimmune-free hdeg-free-below-halting-computable" data-kind="question">
+  <h2>Which conclusions need the true halting answers?</h2>
+  <p>Does termination of \(J_T\) under every oracle mean that arbitrary answers preserve a nonempty tree? If \(T\) has no computable path, could one of its paths be both superlow and hyperimmune-free?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. With the empty answer oracle, every decision is zero, so every program is eventually added as a divergence requirement. In particular the index of the always-halting constant-zero oracle program is added. Its positive certificate excludes some whole level even of the full binary tree. The loop still terminates; its artificial restrictions need not survive. Correct preservation and exact identification with a path's jump use the actual \(K\)-answers.</p>
+    <p>The second possibility also fails. A superlow path is low and therefore computable from \(K\). If it is noncomputable, the <a href="domination-and-hyperimmune-degrees#delta-two-hyperimmune">hyperimmunity theorem below halting</a> makes its degree hyperimmune. It is consequently not hyperimmune-free. The two basis theorems need not choose the same member of a class with no computable members.</p>
+  </div></details>
+</section>

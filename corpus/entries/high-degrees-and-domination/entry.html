@@ -1,0 +1,137 @@
+<section id="high-oracles" data-formal="highdom-high highdom-dominates-computable eventual-natural-threshold jump-empty-jump-equiv-halting oracle-code-relative-computable bbfn-function-graph-equivalence" data-kind="definition">
+  <h2>Require the jump to compute the second halting problem</h2>
+  <p>Write \(K\) for ordinary diagonal halting and \(A'\) for the jump in the fixed oracle numbering. A set \(A\subseteq\mathbb N\) is <strong>high</strong> if \(K'\le_T A'\). The comparison \(K\equiv_T\varnothing'\) identifies the lower degree as the second jump of the computable degree. This definition places a requirement on the jump of \(A\), without requiring \(A\) to be c.e. or to lie below \(K\).</p>
+  <p>For total numerical functions use the <a href="domination-and-hyperimmune-degrees#relative-functions">existing actual-program meaning</a> of \(g\le_T A\). Say that \(g\) <strong>dominates all computable functions</strong> if</p>
+  <div class="math-display">\[\forall f\text{ total computable}\quad\exists N\quad\forall n\ge N\quad f(n)\le g(n).\]</div>
+  <p>The threshold may depend on \(f\). The single function \(g\) is fixed before \(f\) varies.</p>
+</section>
+
+<section id="totality-degree" data-formal="highdom-totality-complement-maps highdom-totality-jump-degree ah-totality-set ah-totality-pi-two isc-totality-complete post-complete-iterate-equivalence jump-jump-monotone" data-kind="lemma">
+  <h2>Totality carries the second halting degree</h2>
+  <p>The ordinary totality index set \(\mathrm{TOT}=\{e:\forall x\;\varphi_e(x)\downarrow\}\) satisfies \(\mathrm{TOT}\equiv_T K'\).</p>
+  <div class="proof">
+    <p>The actual ordinary-halting recoding gives many-one reductions between \(K\) and the first empty-oracle jump. The ordinary computable <a href="turing-jump#jump-monotonicity">jump translations</a> therefore give many-one reductions between \(K'\) and the second empty jump. By <a href="posts-theorem#relative-complete-sets">Post’s completeness theorem</a>, \(K'\) is \(\Sigma_2\)-complete and \(\overline{K'}\) is \(\Pi_2\).</p>
+    <p>The complement of \(\mathrm{TOT}\) is \(\Sigma_2\), so it has an ordinary total computable many-one reduction to \(K'\). Query there and reverse the answer to decide \(\mathrm{TOT}\). Conversely the <a href="index-set-completeness#totality-complete">\(\Pi_2\)-completeness of totality</a> gives an ordinary total computable map \(v\) with \(e\notin K'\) exactly when \(v(e)\in\mathrm{TOT}\). Query \(\mathrm{TOT}\) there and reverse the answer to decide \(K'\). The equivalence asserted is Turing equivalence; the two sets have opposite quantifier polarities.</p>
+  </div>
+</section>
+
+<section id="high-totality-approximation" data-formal="highdom-totality-approximation highdom-high-totality-approximation rlim-relative-set-limit rlim-joint-computable rlim-converges limit-binary" data-kind="lemma">
+  <h2>A high oracle can guess which ordinary programs are total</h2>
+  <p>If \(A\) is high, there is a jointly \(A\)-computable binary approximation \(a(s,e)\) converging to \(\chi_{\mathrm{TOT}}(e)\). Fix one actual index \(c\) for it:</p>
+  <div class="math-display">\[\Phi_c^A(\langle s,e\rangle)\downarrow=a(s,e)\quad\text{for all }s,e.\]</div>
+  <div class="proof">
+    <p>By <a href="#totality-degree"></a> and highness, \(\mathrm{TOT}\le_T A'\). The <a href="relativized-limit-computability#relative-set-limit">relative set limit lemma</a>, with base exactly \(A\), supplies the approximation and the actual joint program. Convergence is eventual equality on each fixed index. It supplies no computable settling stage.</p>
+  </div>
+</section>
+
+<section id="candidate-races" data-formal="highdom-race-search highdom-candidate-part highdom-race-first-success highdom-race-test-program highdom-race-core-program highdom-candidate-driver highdom-race-test-evaluation highdom-race-core-evaluation highdom-candidate-driver-evaluation univ-bounded-value univ-bounded-value-output" data-kind="definition">
+  <h2>Wait for a value or for withdrawal of a totality guess</h2>
+  <p>Use the ordinary <a href="universal-computation#universal-evaluation">bounded output code</a> \(b(k,e,x)\): zero means no successful result at allowance \(k\), and output \(y\) has code \(y+1\). At input \(n\), consider only indices \(e\le n\) with \(a(n,e)=1\). For each such index, test stages \(r=n,n+1,\ldots\) in order:</p>
+  <ol>
+    <li>If \(b(r,e,n)=y+1&gt;0\), return \(y\).</li>
+    <li>Otherwise compute \(a(r,e)\). If it is zero, cancel this candidate and return zero; if it is one, try the next stage.</li>
+  </ol>
+  <p>Call the returned value \(v(n,e)\); put \(v(n,e)=0\) when \(e&gt;n\) or the initial guess is zero. A successful computation takes precedence when both conditions occur at one stage. The allowance \(r\) is the resource parameter of the existing checker, rather than a claim about tape steps.</p>
+</section>
+
+<section id="race-termination" data-formal="highdom-candidate-terminates highdom-candidate-value highdom-candidate-value-correct mach-bounded-monotone univ-evaluation-output-certificate" data-kind="lemma">
+  <h2>Every selected candidate eventually finishes</h2>
+  <p>Under the convergent totality approximation, \(v(n,e)\) is defined for every \(n,e\).</p>
+  <div class="proof">
+    <p>If \(e&gt;n\) or the initial guess is zero, the rule immediately returns zero. Otherwise there are two cases. If \(e\in\mathrm{TOT}\), then \(\varphi_e(n)\) converges. <a href="universal-computation#universal-evaluation">Completeness and monotonicity of bounded evaluation</a> give a successful allowance at some tested \(r\ge n\), unless an earlier cancellation has already finished the race. If \(e\notin\mathrm{TOT}\), convergence of its guesses gives some \(S\) with \(a(r,e)=0\) for all \(r\ge S\). The race then cancels at or before a tested stage beyond \(\max(n,S)\), unless it has already returned a successful value.</p>
+    <p>Each individual stage terminates: bounded evaluation is ordinary total computable, and the supplied approximation program is total on every pair. Only the number of stages is unbounded. These arguments justify least search; they do not decide which case a given index belongs to.</p>
+  </div>
+</section>
+
+<section id="dominating-maximum" data-formal="highdom-dominating-maximum" data-kind="definition">
+  <h2>Take one plus the finite maximum of the race values</h2>
+  <div class="math-display">\[g(n)=1+\max\bigl(\{0\}\cup\{v(n,e):e\le n\}\bigr).\]</div>
+  <p>For each \(n\), run the finitely many races in order and take their maximum, using zero as the initial value. All finish by <a href="#race-termination"></a>. The added one will make the eventual comparison strict.</p>
+</section>
+
+<section id="maximum-program" data-formal="highdom-maximum-driver highdom-dominating-compiler highdom-dominating-compiler-primitive highdom-maximum-driver-evaluation highdom-dominating-compiler-evaluation oracle-univ-universal-correct oracle-numbering-specialization-primitive oracle-numbering-specialization-correct bbfn-function-graph-equivalence" data-kind="lemma">
+  <h2>The same finite driver computes the maximum from the supplied approximation</h2>
+  <p>There is an ordinary primitive-recursive index map \(R\), fixed before \(A\) and \(c\) vary, such that every total convergent binary totality approximation with index \(c\) satisfies</p>
+  <div class="math-display">\[\Phi_{R(c)}^A(n)\downarrow=g(n)\quad\text{for all }n.\]</div>
+  <div class="proof">
+    <p>Choose one oracle-program driver with input \(\langle c,n\rangle\). It obtains guesses by calling the existing universal oracle evaluator at index \(c\) on \(\langle r,e\rangle\). It embeds the ordinary bounded checker, uses finite conditionals with the success-first rule, searches the tested stages, and folds a maximum over \(0,\ldots,n\). These are the established <a href="oracle-computation#relative-closure">oracle closure operations</a>, so they give one finite program, independent of the oracle and of the supplied approximation index.</p>
+    <p>Fix its numerical index \(r_0\) and let \(R(c)=s_{\rm or}(r_0,c)\) using the <a href="oracle-program-numberings#oracle-parameter-theorem">actual oracle parameter compiler</a>. Specialization evaluates the same driver with parameter \(c\); induction through the finite loops, together with each race’s first successful test, identifies its output with the displayed \(g(n)\). The compiler is primitive recursive on every index. Its total-output guarantee uses the approximation assumptions proved above. In particular \(g\le_T A\), with the existing function/graph interpretation.</p>
+  </div>
+</section>
+
+<section id="eventual-domination" data-formal="highdom-selected-total-value highdom-maximum-strict-domination highdom-high-computes-dominating" data-kind="theorem">
+  <h2>Every total ordinary program is eventually included without cancellation</h2>
+  <p>The function \(g\) strictly eventually dominates every ordinary total computable function.</p>
+  <div class="proof">
+    <p>Fix a total computable \(f\), and choose an ordinary index \(e\) with \(\varphi_e(n)=f(n)\) for every \(n\). Since \(e\in\mathrm{TOT}\), choose \(S\) such that \(a(r,e)=1\) whenever \(r\ge S\). For every \(n\ge\max(e,S)\), the index \(e\) is among the finitely many candidates and its initial guess is one. Every tested stage \(r\ge n\) also has guess one, so the race cannot cancel. It returns exactly \(f(n)\) when a successful bounded computation first appears. Hence \(f(n)\le\max_{j\le n}v(n,j)&lt;g(n)\).</p>
+    <p>The function \(g\) was chosen from the one approximation before \(f\) or its settling threshold was selected. Thus <a href="#maximum-program"></a> proves the high-to-domination direction.</p>
+  </div>
+</section>
+
+<section id="finite-deadlines" data-formal="highdom-deadline-test highdom-deadline-search highdom-deadline-program highdom-deadline-compiler highdom-deadline-exists highdom-finite-deadline ah-totality-set" data-kind="definition">
+  <h2>A total program has a computable deadline for each finite input interval</h2>
+  <p>For an ordinary index \(e\in\mathrm{TOT}\), define</p>
+  <div class="math-display">\[h_e(n)=\mu k\quad\forall x\le n\quad b(k,e,x)&gt;0.\]</div>
+  <p>This is the least allowance by which all inputs through \(n\) have successful bounded outputs. The definition is used under the stated totality hypothesis; no total deadline function is claimed for a partial index.</p>
+</section>
+
+<section id="deadline-computability" data-formal="highdom-deadline-test-computable highdom-deadline-search-partial highdom-deadline-compiler-primitive highdom-deadline-compiler-evaluation highdom-deadline-correct highdom-deadline-search-value highdom-deadline-computable mach-bounded-monotone univ-specialization-primitive univ-specialization-evaluation" data-kind="lemma">
+  <h2>The finite deadline is ordinary total computable</h2>
+  <p>For each fixed \(e\in\mathrm{TOT}\), the function \(h_e\) is total computable, and \(k\ge h_e(n)\) implies \(b(k,e,x)&gt;0\) for every \(x\le n\).</p>
+  <div class="proof">
+    <p>For each of the finitely many inputs \(x\le n\), totality supplies one successful allowance. Take their maximum. Monotonicity of the checker preserves every success at this common allowance, so a witness to the search exists. The test at any proposed \(k\) is a finite conjunction of ordinary computable comparisons. Least search therefore computes \(h_e(n)\), and its witness property followed by monotonicity proves the last assertion.</p>
+    <p>One ordinary partial two-argument program carries out this search on \(\langle e,n\rangle\). Fixing \(e\) by the ordinary parameter theorem gives a program for its deadline; membership in \(\mathrm{TOT}\) establishes that this particular specialization is total. The procedure itself does not first test totality.</p>
+  </div>
+</section>
+
+<section id="bounded-totality-guesses" data-formal="highdom-bounded-totality-guess highdom-guess-driver highdom-guess-compiler highdom-guess-compiler-primitive highdom-guess-compiler-evaluation highdom-guess-joint-computable oracle-numbering-specialization-correct rlim-joint-computable" data-kind="definition">
+  <h2>Use a dominating function as the allowance in a totality test</h2>
+  <p>Now suppose a total \(g\le_T A\) dominates every ordinary total computable function, and fix an actual index \(d\) with \(\Phi_d^A(s)\downarrow=g(s)\) for all \(s\). Define the binary guesses</p>
+  <div class="math-display">\[z(s,e)=\begin{cases}1,&amp;\forall x\le s\quad b(g(s),e,x)&gt;0,\\0,&amp;\text{otherwise}.\end{cases}\]</div>
+  <p>There is one ordinary primitive-recursive index map \(Q\), fixed before \(A,d\) vary, with \(\Phi_{Q(d)}^A(\langle s,e\rangle)\downarrow=z(s,e)\). A fixed driver calls the supplied oracle index \(d\) on \(s\), then performs the finite ordinary checks. The actual oracle parameter compiler freezes \(d\) into this driver. Totality of the supplied \(g\)-program makes these guesses jointly \(A\)-computable.</p>
+</section>
+
+<section id="guesses-converge" data-formal="highdom-guess-converges highdom-deadline-computable highdom-deadline-correct" data-kind="lemma">
+  <h2>The bounded guesses converge exactly to totality</h2>
+  <p>For every fixed ordinary index \(e\), \(z(s,e)\) is eventually \(\chi_{\mathrm{TOT}}(e)\).</p>
+  <div class="proof">
+    <p>If \(e\in\mathrm{TOT}\), its ordinary total computable deadline \(h_e\) is one of the functions dominated by \(g\). Thus for all sufficiently large \(s\), \(h_e(s)\le g(s)\). The deadline lemma gives a successful bounded output for every \(x\le s\), so the bounded guess is one.</p>
+    <p>If \(e\notin\mathrm{TOT}\), choose an input \(x_0\) on which it diverges. Soundness of bounded evaluation makes \(b(k,e,x_0)=0\) for every \(k\). For all \(s\ge x_0\), this input is included in the bounded conjunction, forcing \(z(s,e)=0\). These two cases prove convergence; no common stage for all indices is asserted.</p>
+  </div>
+</section>
+
+<section id="martin-characterization" data-formal="highdom-martin-characterization highdom-dominating-implies-high highdom-high-computes-dominating rlim-relative-set-limit bbfn-function-graph-equivalence" data-kind="theorem">
+  <h2>Highness is exactly the ability to dominate every computable function</h2>
+  <div class="statement-box"><p>For every oracle \(A\),</p><div class="math-display">\[A\text{ is high}\quad\Longleftrightarrow\quad\exists g\le_T A\;\forall f\text{ total computable}\quad f\le^*g.\]</div></div>
+  <div class="proof">
+    <p>Highness gives a totality approximation by <a href="#high-totality-approximation"></a>. The specified maximum program and <a href="#eventual-domination"></a> produce the required single total \(A\)-computable function.</p>
+    <p>Conversely, from a supplied dominating function and its actual program, <a href="#bounded-totality-guesses"></a> and <a href="#guesses-converge"></a> give a jointly \(A\)-computable binary approximation to \(\mathrm{TOT}\). The relative limit lemma therefore gives \(\mathrm{TOT}\le_T A'\). Composing with \(K'\le_T\mathrm{TOT}\) from <a href="#totality-degree"></a> proves highness. This is Martin’s characterization.</p>
+  </div>
+</section>
+
+<section id="degree-consequences" data-formal="highdom-upward highdom-degree-invariant highdom-high turing-red-reflexive jump-jump-monotone" data-kind="theorem">
+  <h2>Highness is upward closed and independent of the representative</h2>
+  <p>If \(A\le_T B\) and \(A\) is high, then \(B\) is high. Turing-equivalent sets are high simultaneously, and \(K\) is high.</p>
+  <div class="proof">
+    <p>Jump monotonicity gives \(A'\le_T B'\), so compose \(K'\le_T A'\) with this reduction. Apply it in both directions for equivalent oracles. For \(K\), the required comparison is the identity reduction \(K'\le_TK'\).</p>
+  </div>
+</section>
+
+<section id="high-versus-hyperimmune" data-formal="highdom-dominating-function-hyperimmune highdom-high-hyperimmune highdom-low-not-high highdom-low-simple-counterexample lowsimple-constructed-set lowsimple-enumerable lowsimple-simple lowsimple-theorem hdeg-low-degree-hyperimmune hdeg-hyperimmune-function hdeg-hyperimmune-oracle" data-kind="theorem">
+  <h2>Highness implies hyperimmune degree, with a stronger quantifier pattern</h2>
+  <p>Every high oracle has hyperimmune degree. The converse fails, even for noncomputable c.e. sets.</p>
+  <div class="proof">
+    <p>Let \(g\le_T A\) dominate all total computable functions. If a total computable \(h\) eventually bounded \(g\), then the total computable function \(n\mapsto h(n)+1\) would eventually be at most \(g(n)\). Beyond both thresholds we would have \(h(n)+1\le g(n)\le h(n)\), an impossibility. Thus this same \(g\) is a hyperimmune function, witnessing the first assertion.</p>
+    <p>For the converse use the actual simple set \(L\) produced in <a href="low-simple-sets#low-simple-theorem">the low-simple construction</a>. It is c.e., noncomputable, and low. The <a href="domination-and-hyperimmune-degrees#delta-two-hyperimmune">noncomputable-low theorem</a> makes its degree hyperimmune. It cannot be high: lowness gives \(L'\le_TK\), so highness would imply \(K'\le_TK\), contradicting jump strictness.</p>
+    <p>The distinction is quantitative. A hyperimmune function only escapes each proposed computable bound at arbitrarily late inputs. A dominating function is eventually above each computable function at every remaining input. These are different quantifier patterns, and the specified low example separates the degree properties.</p>
+  </div>
+</section>
+
+<section id="inversion-question" data-formal="highdom-inversion-example jinv-coded-set jinv-jump-inversion jinv-coded-generic jump-jump-strict" data-kind="question">
+  <h2>Does ordinary jump inversion already give an incomplete high c.e. set?</h2>
+  <p>Apply <a href="friedberg-jump-inversion#jump-inversion">ordinary jump inversion</a> to \(B=K'\). What does it prove about the resulting oracle \(A\), and which additional properties would still need proof to obtain an incomplete high c.e. set?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Since \(K\le_TK'\), the theorem supplies its specified 1-generic set \(A\) with \(A'\equiv_TK'\) and \(A&lt;_TK'\). Thus \(A\) is high. It is noncomputable, because a computable set has jump equivalent to \(K\), whereas \(K'\not\le_TK\).</p>
+    <p>The strict upper bound is a comparison with the second halting problem. Incompleteness below \(K\) still needs proof, and the construction does not supply c.e. enumerability of \(A\). The further c.e. and incomplete-below-\(K\) assertions require a separate construction. They do not follow by replacing the upper oracle’s name in this inversion theorem.</p>
+  </div></details>
+</section>

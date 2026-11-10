@@ -1,0 +1,135 @@
+<section id="partial-graphs" data-formal="rs-graph-inclusion rs-fragment-pair-list rs-valid-fragment rs-coded-fragment rs-fragment-compiler rs-fragment-compiler-primitive rs-fragment-compiler-evaluation rs-empty-fragment" data-kind="definition">
+  <h2>Order partial functions by the observations they preserve</h2>
+  <p>A <strong>partial numerical function</strong> \(f:\mathbb N\rightharpoonup\mathbb N\) may be undefined at some inputs. Write \(f(x)\downarrow=y\) for a defined value and use the existing <a href="rice-shapiro-theorem#finite-fragments">graph inclusion</a> \(f\sqsubseteq g\): every defined value of \(f\) is the same defined value of \(g\). The functions considered here need not be computable.</p>
+  <p>Keep exactly the earlier <a href="rice-shapiro-theorem#fragment-codes">finite-fragment coding</a>. A valid code \(d\) records a consistent finite list \(D_d\) of input–output pairs and denotes the partial function \(\delta_d\) defined precisely on that table. Its specified primitive-recursive compiler \(u(d)\) satisfies \(\varphi_{u(d)}\simeq\delta_d\). Repeated identical pairs are allowed. The empty table denotes the nowhere-defined function.</p>
+</section>
+
+<section id="compatible-fragments" data-formal="eop-compatible eop-compatible-append eop-common-fragment eop-subfragments-compatible rs-fragment-list-coding rs-table-function-values rs-fragment-compiler-evaluation" data-kind="lemma">
+  <h2>Compatible tables have a common finite extension</h2>
+  <p>Call two valid fragments <strong>compatible</strong> if they never assign different outputs to the same input. They are compatible exactly when their decoded lists can be concatenated to form a consistent table. In that case there is a valid fragment extending both, and hence a partial computable function extending both.</p>
+  <div class="proof"><p>If the concatenated table is consistent, any pair from the first table and any pair from the second agree when their inputs agree. Conversely, consistency within each table and compatibility between the tables check every pair in the concatenation. Its associated partial function therefore extends both original tables. Code the concatenation and apply the fragment compiler. In particular, two fragments included in one arbitrary partial function are compatible, since that function has only one output at each input. The argument also covers either table being empty.</p></div>
+</section>
+
+<section id="positive-rules" data-formal="eop-rule-code eop-jointly-enumerable eop-positive eop-coherent eop-joint-index rs-valid-fragment" data-kind="definition">
+  <h2>Give one enumerable family of finite positive rules</h2>
+  <p>A <strong>positive rule relation</strong> is a jointly c.e. relation \(R(d,x,y)\) on three natural numbers such that every rule has a valid fragment code \(d\). Its meaning is: the observations in \(D_d\) suffice to produce output \(y\) at input \(x\). Joint enumerability means that the single set</p>
+  <div class="math-display">\[\{\langle d,\langle x,y\rangle\rangle:R(d,x,y)\}\]</div>
+  <p>is c.e.; separately choosing a recognizer for each pair \(x,y\) would not supply this condition. The relation is <strong>coherent</strong> when</p>
+  <div class="math-display">\[R(d,x,y)\text{ and }R(c,x,z)\text{ and }d,c\text{ compatible}\quad\Longrightarrow\quad y=z.\]</div>
+  <p>The input \(x\) must be the same in this condition. Rules for different inputs may give different outputs.</p>
+</section>
+
+<section id="rule-operator" data-formal="eop-rule-output eop-rule-operator eop-effective-operator eop-operator-output" data-kind="definition">
+  <h2>A rule succeeds whenever the supplied function contains its evidence</h2>
+  <p>For a coherent positive rule relation \(R\), define its <strong>finite-information operator</strong> \(\Phi_R\) on all partial numerical functions by</p>
+  <div class="math-display">\[\Phi_R(f)(x)\downarrow=y\quad\Longleftrightarrow\quad\exists d\;[\delta_d\sqsubseteq f\text{ and }R(d,x,y)].\]</div>
+  <p>When no rule has its evidence included in \(f\), the value at \(x\) is undefined. An <strong>effective operator</strong> here means an operator represented by some coherent jointly c.e. positive rule relation. This definition gives a mathematical action even on noncomputable \(f\); it does not assert that an ordinary program receives such a function as a finite input.</p>
+</section>
+
+<section id="single-valued-output" data-formal="eop-subfragments-compatible eop-output-unique eop-operator-output eop-empty-rules eop-incoherent-empty-rules" data-kind="lemma">
+  <h2>Coherence makes every resulting output single-valued</h2>
+  <p>For every coherent positive rule relation \(R\), every partial function \(f\) and input \(x\), the rule for \(\Phi_R(f)(x)\) gives at most one output. An empty rule relation gives the nowhere-defined output function for every \(f\).</p>
+  <div class="proof"><p>If two rules produce \(y\) and \(z\), their evidence fragments are both included in \(f\), so they are compatible by <a href="#compatible-fragments"></a>. Coherence gives \(y=z\). Thus the displayed relation is the graph of a partial function. If there are no rules, the existential condition never holds. Coherence cannot be omitted: two rules with empty evidence, the same input and different outputs would otherwise give two values at that input.</p></div>
+</section>
+
+<section id="finite-information" data-kind="lemma" data-formal="eop-rule-monotone eop-finite-information eop-effective-monotone lfp-chain-continuity lfp-first-recursion-theorem">
+  <h2>Defined outputs persist under extension and already occur on finite evidence</h2>
+  <p>Every effective operator is <strong>monotone</strong> for graph inclusion: \(f\sqsubseteq g\) implies \(\Phi_R(f)\sqsubseteq\Phi_R(g)\). Moreover, for arbitrary \(f,x,y\),</p>
+  <div class="math-display">\[\Phi_R(f)(x)\downarrow=y\quad\Longleftrightarrow\quad\exists d\;[\operatorname{Valid}(d),\ \delta_d\sqsubseteq f,\ \Phi_R(\delta_d)(x)\downarrow=y].\]</div>
+  <div class="proof"><p>A rule whose finite evidence is included in \(f\) remains applicable in any extension \(g\), proving monotonicity. For the forward implication of the displayed equivalence, take the fragment from a successful rule. It is valid by the rule-relation assumption and, being included in itself, already triggers that rule on \(\delta_d\). Conversely, a value obtained on \(\delta_d\sqsubseteq f\) persists by monotonicity. This is finite positive evidence: no divergence at an unlisted input is certified.</p></div>
+<p>Finite positive evidence also gives <a href="least-fixed-point-recursion#chain-continuity">preservation of increasing unions</a>. Starting an effective endofunction with no defined answers and repeatedly applying it yields a <a href="least-fixed-point-recursion#first-recursion-theorem">computable least fixed point</a>, with leastness even among noncomputable solutions.</p>
+</section>
+
+<section id="joint-rule-search" data-formal="eop-rule-code eop-enumerates-rules eop-joint-index eop-rule-offer eop-joint-search eop-offer-primitive eop-search-partial eop-search-program eop-search-program-evaluation eop-compiler eop-compiler-search-evaluation rs-finite-match rs-finite-match-primitive effective-stage-primitive-test uniform-rec-partial-compiler-primitive" data-kind="definition">
+  <h2>Compile one ordinary search from the rule index and the input-program index</h2>
+  <p>Fix an ordinary index \(r\) enumerating the coded rule relation \(R\). The <strong>joint rule search</strong> \(V(r,e,x)\) searches natural codes of quadruples \((d,y,s,t)\) in increasing code order. It accepts a candidate when</p>
+  <div class="math-display">\[\operatorname{Valid}(d),\qquad \langle d,\langle x,y\rangle\rangle\in W_{r,s},\qquad \operatorname{Match}(e,d,t).\]</div>
+  <p>Here \(W_{r,s}\) is the existing <a href="effective-enumerations#uniform-finite-approximation">finite stage</a>, and <a href="rice-shapiro-theorem#finite-match-test">the finite match test</a> certifies every recorded output of \(D_d\) in \(\varphi_e\). At the first successful code the search returns its \(y\); if none succeeds, it remains undefined. It does not run one possibly divergent input computation before considering the next.</p>
+  <p>Every candidate test terminates. One fixed ordinary program \(v\), chosen before \(r,e,x\) vary, therefore computes this joint partial-recursive procedure on input \(\langle r,\langle e,x\rangle\rangle\). Define the <strong>operator compiler</strong></p>
+  <div class="math-display">\[q(r,e)=s(s(v,r),e),\qquad \varphi_{q(r,e)}(x)\simeq V(r,e,x).\]</div>
+  <p>The actual <a href="universal-computation#parameter-theorem">specialization map</a> makes \(q\) primitive recursive jointly in \(r,e\). Forming this program index does not require the search to halt.</p>
+</section>
+
+<section id="compiler-correctness" data-formal="eop-compiler-correct rs-finite-match-correct effective-stage-union" data-kind="theorem">
+  <h2>The compiled program computes exactly the operator on the indexed partial function</h2>
+  <p>If \(r\) enumerates a coherent positive rule relation \(R\), then for every \(e,x\),</p>
+  <div class="math-display">\[\varphi_{q(r,e)}(x)\simeq\Phi_R(\varphi_e)(x).\]</div>
+  <p>The same \(q(r,e)\) works on every runtime input \(x\), including inputs where the operator is undefined.</p>
+  <div class="proof"><p>A successful candidate supplies an actual rule \(R(d,x,y)\) and a finite match. The match theorem gives \(\delta_d\sqsubseteq\varphi_e\), so the returned value is an output of \(\Phi_R(\varphi_e)(x)\). Conversely, if this operator has output \(y\), choose its successful fragment \(d\). The rule appears in some stage \(s\), and the finitely many required computations have a common match bound \(t\). The search eventually reaches the corresponding quadruple. An earlier successful quadruple might have different evidence, but coherence forces its returned value to be the same \(y\). If the operator has no value, the first implication rules out every successful candidate, so the program diverges. This establishes equality of entire partial functions, rather than only equality on their halting inputs.</p></div>
+</section>
+
+<section id="extensional-transformations" data-formal="eop-index-extensional eop-extensional-transformation eop-compiler-extensional uniform-rec-partial-compiler-primitive" data-kind="definition">
+  <h2>Require a numerical transformation to respect computed behavior</h2>
+  <p>A total computable map \(H:\mathbb N\to\mathbb N\) is an <strong>extensional index transformation</strong> when</p>
+  <div class="math-display">\[\varphi_e\simeq\varphi_b\quad\Longrightarrow\quad\varphi_{H(e)}\simeq\varphi_{H(b)}.\]</div>
+  <p>Thus its action on programs determines an action on partial computable functions. The outputs \(H(e)\) and \(H(b)\) need not be equal as numbers. The operator compiler above is such a transformation for each coherent rule index \(r\): if two input programs compute the same function, <a href="#compiler-correctness"></a> gives the same output function.</p>
+</section>
+
+<section id="output-properties" data-formal="eop-output-property eop-output-enumerable eop-output-extensional eop-output-joint-enumerable" data-kind="lemma">
+  <h2>Each specified output gives an extensional enumerable index property</h2>
+  <p>For a total computable extensional \(H\), put \(A_{x,y}=\{e:\varphi_{H(e)}(x)\downarrow=y\}\). This property is c.e. and extensional for every \(x,y\), and its recognition is jointly effective in \(e,x,y\).</p>
+  <div class="proof"><p>Compute \(H(e)\), then search bounded computation certificates for its output \(y\) at \(x\). Equivalently, membership means that some bounded evaluator value is \(y+1\). This is a search through total computable tests, jointly in the three variables. If \(\varphi_e\simeq\varphi_b\), extensionality of \(H\) makes their transformed programs agree at \(x\), so either both produce \(y\) or neither does. The statement concerns successful outputs and does not require either transformed program to be total.</p></div>
+</section>
+
+<section id="joint-canonical-rules" data-formal="eop-canonical-rules eop-canonical-recognizer eop-recognizer-partial eop-recognizer-output eop-recognizer-program eop-recognizer-program-evaluation eop-canonical-rule-index eop-rule-index-evaluation eop-canonical-index-correct eop-canonical-positive eop-canonical-enumerable rs-fragment-compiler-primitive univ-specialization-primitive" data-kind="definition">
+  <h2>Use a single canonical rule relation instead of separately chosen bases</h2>
+  <p>For total computable extensional \(H\), define its <strong>canonical rule relation</strong> by</p>
+  <div class="math-display">\[R_H(d,x,y)\quad\Longleftrightarrow\quad\operatorname{Valid}(d)\text{ and }\varphi_{H(u(d))}(x)\downarrow=y.\]</div>
+  <p>This is one jointly c.e. relation: validity is decidable, \(u\) is primitive recursive, \(H\) is total computable, and universal evaluation recognizes the displayed output.</p>
+  <p>More explicitly, if an ordinary index \(a\) computes \(H\), a <strong>canonical-rule recognizer</strong> remains undefined on an invalid \(d\). Otherwise it computes \(\varphi_a(u(d))\), runs the returned program at \(x\), and halts exactly when its output equals \(y\), remaining undefined on a different output. One fixed program \(w\) implements this procedure on \(\langle a,\langle d,\langle x,y\rangle\rangle\rangle\). Its primitive-recursive index map \(r(a)=s(w,a)\) enumerates precisely \(R_H\). The same recognizer construction is defined for every numerical \(a\), even when that index does not compute a total extensional transformation. Coherence is asserted only under the stated hypotheses on \(H\).</p>
+</section>
+
+<section id="canonical-rules-coherent" data-formal="eop-canonical-output-equivalence eop-canonical-coherent rs-canonical-basis-correct rs-upward-closure" data-kind="lemma">
+  <h2>Rice–Shapiro makes the canonical rules coherent</h2>
+  <p>For every total computable extensional \(H\), the canonical relation \(R_H\) is coherent. For all \(e,x,y\), it also satisfies</p>
+  <div class="math-display">\[\varphi_{H(e)}(x)\downarrow=y\quad\Longleftrightarrow\quad\exists d\;[\delta_d\sqsubseteq\varphi_e\text{ and }R_H(d,x,y)].\]</div>
+  <div class="proof"><p>Fix \(x,y\). The <a href="rice-shapiro-theorem#canonical-basis">canonical Rice–Shapiro basis</a> for \(A_{x,y}\) is exactly the set of valid \(d\) for which \(u(d)\in A_{x,y}\), which is \(R_H(d,x,y)\). Its basis equivalence gives the displayed assertion. Although this argument fixes \(x,y\) to invoke Rice–Shapiro, the preceding construction already supplied one joint rule recognizer before those variables varied.</p>
+  <p>To prove coherence, suppose compatible \(d,c\) give rules with the same input \(x\) and outputs \(y,z\). Their common finite extension has some fragment code \(b\). Since \(\delta_d\sqsubseteq\delta_b\), the <a href="rice-shapiro-theorem#upward-closure">upward-closure theorem</a> applied to \(A_{x,y}\) transfers the output from the fragment index \(u(d)\) to \(u(b)\). The rule at \(c\) similarly forces the transformed program at \(u(b)\) to output \(z\). A partial function has only one output at \(x\), so \(y=z\). The common extension was finite and therefore computable; no index of a noncomputable function was used.</p></div>
+</section>
+
+<section id="canonical-extension" data-formal="eop-canonical-effective eop-canonical-extension eop-canonical-compiler eop-canonical-compiler-primitive eop-canonical-compiler-correct" data-kind="theorem">
+  <h2>The canonical operator agrees with the transformation on every computable argument</h2>
+  <p>Let \(H\) be total computable and extensional. Its canonical rules define an effective operator on every partial function and satisfy</p>
+  <div class="math-display">\[\Phi_{R_H}(\varphi_e)\simeq\varphi_{H(e)}\qquad(e\in\mathbb N).\]</div>
+  <p>If \(a\) computes \(H\), the specified primitive-recursive composite \(G(a,e)=q(r(a),e)\) therefore satisfies \(\varphi_{G(a,e)}\simeq\varphi_{H(e)}\) for every \(e\).</p>
+  <div class="proof"><p>Joint enumerability and coherence have been proved for \(R_H\). The operator definition and the output equivalence in <a href="#canonical-rules-coherent"></a> identify every defined output on \(\varphi_e\), in both directions. They also identify undefined inputs, since neither side can have an output unless the other does. Finally apply <a href="#compiler-correctness"></a> using the actual rule recognizer \(r(a)\). Both index constructors are primitive recursive and fixed before \(e\) or its runtime input varies, so their composite has the stated uniformity.</p></div>
+</section>
+
+<section id="extension-uniqueness" data-formal="eop-unique-from-fragments eop-unique-from-computable" data-kind="theorem">
+  <h2>Agreement on finite functions determines the whole finite-information operator</h2>
+  <p>If two effective operators \(\Phi_R,\Phi_S\) agree on every valid finite fragment \(\delta_d\), then they agree on every partial function, including all noncomputable ones. In particular, agreement on all partial computable functions suffices.</p>
+  <div class="proof"><p>Suppose \(\Phi_R(f)(x)\downarrow=y\). By <a href="#finite-information"></a>, some valid \(d\) with \(\delta_d\sqsubseteq f\) already gives \(\Phi_R(\delta_d)(x)\downarrow=y\). The assumed agreement gives the same value for \(\Phi_S(\delta_d)\), and monotonicity of \(\Phi_S\) gives it for \(\Phi_S(f)\). Interchange \(R,S\) for the reverse implication. Thus both operators have exactly the same defined outputs, and their undefined inputs agree too. Every finite fragment is partial computable, so agreement on all computable arguments includes the required finite cases.</p></div>
+</section>
+
+<section id="myhill-shepherdson" data-formal="eop-compiler-extensional eop-myhill-shepherdson eop-effective-compiler uniform-rec-partial-compiler-primitive" data-kind="theorem">
+  <h2>Extensional program transformations are exactly effective finite-information operators</h2>
+  <div class="statement-box"><p>Every total computable extensional index transformation \(H\) has a unique effective operator extension \(\Phi\) to all partial numerical functions, satisfying \(\Phi(\varphi_e)\simeq\varphi_{H(e)}\) for every \(e\). Conversely, every effective operator has a specified primitive-recursive index transformation computing its action on all partial computable arguments. This is the <strong>Myhill–Shepherdson theorem</strong> in the finite-information representation.</p></div>
+  <div class="proof"><p>The canonical operator supplies existence and its actual compiler by <a href="#canonical-extension"></a>. Any other effective extension agrees with it on every \(\varphi_e\), so <a href="#extension-uniqueness"></a> proves uniqueness on all partial functions. Conversely, a coherent rule index \(r\) gives the primitive-recursive transformation \(e\mapsto q(r,e)\), with its entire output function identified by <a href="#compiler-correctness"></a>; it is extensional by <a href="#extensional-transformations"></a>. Uniqueness concerns the operator, not the rule relation or numerical program names used to describe it.</p></div>
+</section>
+
+<section id="composition-operator" data-formal="eop-precomposition-rules eop-precomposition-effective-rules eop-precomposition-output" data-kind="lemma">
+  <h2>Precomposing with a computable input map gives positive finite rules</h2>
+  <p>For any total computable \(k:\mathbb N\to\mathbb N\), the operator \(C_k(f)(x)\simeq f(k(x))\) is effective on arbitrary partial functions.</p>
+  <div class="proof"><p>Use the rules \(R(d,x,y)\) saying that \(d\) is valid and its table contains \((k(x),y)\). This is a jointly decidable, hence c.e., relation. Compatible tables cannot give different values at \(k(x)\), proving coherence. A successful rule gives exactly the specified value of \(f(k(x))\); conversely that value supplies the singleton fragment \([(k(x),y)]\). No other input of \(f\) must be defined. The compiler consequently gives a program with the same strict partial behavior as this composition.</p></div>
+</section>
+
+<section id="parallel-positive-tests" data-formal="eop-parallel-rules eop-parallel-operator eop-parallel-effective-rules eop-parallel-output eop-strict-call-counterexamples" data-kind="lemma">
+  <h2>A positive rule can accept either of two successful observations</h2>
+  <p>The operator \(P\) defined, for every \(x\), by</p>
+  <div class="math-display">\[P(f)(x)\downarrow=0\quad\Longleftrightarrow\quad f(0)\downarrow\text{ or }f(1)\downarrow\]</div>
+  <p>is effective and has no other output values.</p>
+  <div class="proof"><p>Take all valid tables containing a pair with first coordinate zero or one, and allow exactly output zero at every input \(x\). Finite table inspection decides these rules, and coherence holds because all their outputs are zero. A rule is applicable precisely when one of those two computations has a value; a singleton table suffices for the converse. On a computable argument the compiled rule search <a href="universal-computation#dovetailing">dovetails certificates</a> rather than waiting for one chosen call to finish.</p>
+  <p>A sequential implementation that calls \(f(0)\) first would wait forever when \(f(0)\) is undefined but \(f(1)=0\). Reversing those two calls fails when only \(f(0)=0\) is defined. These examples explain why the positive-evidence interface must not be identified with either of those strict sequential implementations.</p></div>
+</section>
+
+<section id="negative-membership" data-formal="eop-effective-monotone eop-coded-partial-graph eop-negative-operator eop-negative-graph-program eop-negative-not-effective ttwtt-partial-one-query-program ttwtt-partial-one-query-evaluation" data-kind="theorem">
+  <h2>A negative answer about the whole graph is a different kind of information</h2>
+  <p>Let \(G_f=\{\langle a,b\rangle:f(a)\downarrow=b\}\). The operator that returns zero on every input exactly when \(\langle0,0\rangle\notin G_f\), and is otherwise nowhere defined, is computable with a membership oracle for \(G_f\), but is not an effective operator in the positive-rule sense.</p>
+  <div class="proof"><p>A membership-oracle program asks the one specified question; on a negative answer it returns zero, and on a positive answer it runs forever. The existing <a href="oracle-computation#ordinary-programs-and-queries">oracle instructions</a> permit both answers to be used. For the nowhere-defined \(f\), the proposed operator returns zero. Extend \(f\) by the single observation \((0,0)\); now the operator returns no value. This violates the monotonicity required by <a href="#finite-information"></a>, so no coherent positive rule relation represents it. A negative graph answer concerns absence, which finite positive tables do not assert.</p></div>
+</section>
+
+<section id="rule-uniqueness-question" data-formal="eop-empty-evidence-rules eop-redundant-evidence-rules eop-redundant-rules-effective eop-redundant-rules-distinct eop-redundant-rules-same-operator" data-kind="question">
+  <h2>Does the unique extension have a unique rule relation?</h2>
+  <p>The Myhill–Shepherdson extension is unique. Must two coherent positive rule relations representing it be equal?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Let \(d_\varnothing\) code the empty table. The relation consisting of the single rule \(R(d_\varnothing,0,0)\) always returns zero at input zero and is undefined at every other input. Add the distinct rule \(R(c,0,0)\), where \(c\) codes \([(0,7)]\). The added evidence can never produce a new output: the empty-evidence rule already applies to every partial function. Both finite rule relations are jointly c.e. and coherent, but they are different relations representing the same operator.</p><p>The uniqueness theorem identifies partial output functions on all arguments. It does not identify their descriptions, just as equal partial computable functions may have different program indices.</p></div></details>
+</section>

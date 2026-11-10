@@ -1,0 +1,105 @@
+<section id="change-thresholds" data-formal="cbchange-omega-ce dce-change-count bcstrong-change-thresholds bcstrong-thresholds-above-bound" data-kind="definition">
+  <h2>Ask whether a specified number of revisions ever occurs</h2>
+  <p>Fix an <a href="computably-bounded-changes#input-bounds">\(\omega\)-c.e. presentation</a> of a set \(A\): a jointly computable binary approximation \(a(s,x)\), initially zero and converging to \(\chi_A(x)\), with a total computable bound \(b(x)\) on its <a href="differences-of-enumerable-sets#change-counter">change counter</a> \(c_a(s,x)\). Its <strong>change-threshold set</strong> is</p>
+  <div class="math-display">\[H_a=\{\langle x,k\rangle:\exists s\;k&lt;c_a(s,x)\}.\]</div>
+  <p>The question indexed by \(k\) asks whether at least \(k+1\) revisions occur. The first possible question has \(k=0\). Questions with \(k\ge b(x)\) always have answer no, since every prefix count is at most \(b(x)\).</p>
+</section>
+
+<section id="threshold-program" data-formal="bcstrong-threshold-search bcstrong-threshold-search-partial bcstrong-threshold-code bcstrong-threshold-index bcstrong-threshold-search-domain bcstrong-threshold-code-evaluation bcstrong-threshold-zero-output bcstrong-thresholds-enumerable bcstrong-threshold-query bcstrong-threshold-query-primitive bcstrong-threshold-query-evaluation bcstrong-threshold-query-halting jump-ordinary-freeze" data-kind="lemma">
+  <h2>One ordinary program recognizes all the change thresholds</h2>
+  <p>The set \(H_a\) is c.e. There is one ordinary program index \(h_a\), fixed before \(x,k\) vary, whose program on input \(\langle x,k\rangle\) halts with output zero exactly when that pair belongs to \(H_a\). Consequently the ordinary primitive-recursive map</p>
+  <div class="math-display">\[r_a(x,k)=f_{\mathrm{ord}}(h_a,\langle x,k\rangle)\]</div>
+  <p>satisfies \(r_a(x,k)\in K\) exactly when \(\langle x,k\rangle\in H_a\), where \(f_{\mathrm{ord}}\) is the <a href="turing-jump#empty-oracle-jump">ordinary input-freezing map</a> and \(K\) is ordinary diagonal halting.</p>
+  <div class="proof"><p>Supply one ordinary code computing the joint function \(a\). On paired input \(\langle x,k\rangle\), start the counter at zero. Compute the successive bits \(a(0,x),a(1,x),\ldots\); at each transition add one precisely when the new bit differs from the previous bit. Halt with output zero at the first count strictly above \(k\). All finite iterations are total, and unbounded search is partial recursive. This gives one recognizer for the entire paired relation, with the prescribed output whenever it halts.</p><p>Freeze that recognizer's input. The freezing identity is \(\varphi_{r_a(x,k)}(y)\simeq\varphi_{h_a}(\langle x,k\rangle)\) for every \(y\), so it also holds at the new program's diagonal input. The numerical map builds a constant-input program; it does not wait for the threshold event. Neither \(b\) nor membership answers about \(A\) are needed to choose \(h_a\).</p></div>
+</section>
+
+<section id="parity" data-formal="fdnf-count-parity bcstrong-counter-maximum bcstrong-threshold-sum bcstrong-final-parity" data-kind="lemma">
+  <h2>The parity of the change count is the current bit</h2>
+  <p>For every \(s,x\),</p>
+  <div class="math-display">\[a(s,x)=c_a(s,x)\bmod2.\]</div>
+  <p>If \(m(x)\) is the largest attained prefix count at input \(x\), then \(m(x)\le b(x)\), \(\chi_A(x)=m(x)\bmod2\), and</p>
+  <div class="math-display">\[m(x)=\sum_{k&lt;b(x)}\chi_K(r_a(x,k)).\]</div>
+  <div class="proof"><p>Induct on \(s\). Both values are zero initially. If the bit stays fixed, the count does not change. If the bit changes, binary values force it to switch between zero and one, while the counter increases by one and changes parity. This proves the identity.</p><p>The nondecreasing counter takes values in the finite set \(\{0,\ldots,b(x)\}\), so it attains a largest value and remains there afterward. The parity identity and convergence identify its parity with \(\chi_A(x)\). Exactly the thresholds \(k=0,\ldots,m(x)-1\) are ever exceeded, which proves the sum identity, including \(m(x)=0\).</p></div>
+</section>
+
+<section id="threshold-table" data-formal="bcstrong-threshold-width bcstrong-threshold-table bcstrong-threshold-data post-finite-oracle-bit ttwtt-prefix-scheme" data-kind="definition">
+  <h2>Put the threshold answers into one finite truth table</h2>
+  <p>The <strong>threshold truth-table scheme</strong> associated with \(a,b\) has width and value function</p>
+  <div class="math-display">\[\begin{aligned}U(x)&amp;=\max\bigl(\{r_a(x,k)+1:k&lt;b(x)\}\cup\{0\}\bigr),\\ T(x,w)&amp;=\left(\sum_{k&lt;b(x)}\beta(w,r_a(x,k))\right)\bmod2.\end{aligned}\]</div>
+  <p>Here \(w\) is a numerical word code and \(\beta(w,q)\) is its <a href="incomparable-turing-degrees#binary-prefixes">total binary entry function</a>, with zero outside the decoded word. These formulas define \(U\) and \(T\) on all inputs, including codes that are not rows of width \(U(x)\). They use the same prefix-table convention as <a href="truth-table-and-weak-truth-table-reductions#prefix-tables">truth-table reducibility</a>.</p>
+</section>
+
+<section id="bounded-changes-give-tables" data-formal="bcstrong-threshold-scheme bcstrong-queries-within-width bcstrong-threshold-presentation bcstrong-zero-width bcstrong-omega-to-tt bcstrong-three-answers" data-kind="theorem">
+  <h2>Computably bounded changes give a truth-table reduction to halting</h2>
+  <p>The specified scheme \((U,T)\) is total computable, always returns a bit, and presents \(A\) from \(K\). In particular \(A\le_{\mathrm{tt}}K\).</p>
+  <div class="proof"><p>Compute \(b(x)\), then the finitely many numbers \(r_a(x,k)\), and take the displayed finite maximum. Given \(w\), finite lookup, addition and remainder compute \(T(x,w)\). The remainder is zero or one. Every queried position \(r_a(x,k)\) lies below \(U(x)\), so the corresponding entry in the actual \(K\)-prefix is exactly \(\chi_K(r_a(x,k))\). The two identities in <a href="#parity"></a> therefore give \(T(x,K\mathbin{\upharpoonright}U(x))=\chi_A(x)\).</p><p>If \(b(x)=0\), the width and empty sum are both zero. No oracle query is made, and the output is zero, as required by an initially zero approximation with no revisions. For example, if \(b(x)=3\) and exactly two revisions occur, the three threshold answers are \(1,1,0\), so the table returns zero. The entire query list is selected from \(x\) before any halting answer is received.</p></div>
+</section>
+
+<section id="fixed-use-snapshots" data-formal="ttwtt-bounded-reduction limit-halting-stage post-finite-table-value bcstrong-snapshot-oracle bcstrong-snapshot-word bcstrong-snapshot-guess bcstrong-snapshot-word-identity" data-kind="definition">
+  <h2>Freeze the use window while the evaluation allowance grows</h2>
+  <p>Now fix an actual <a href="truth-table-and-weak-truth-table-reductions#weak-truth-table-reductions">weak truth-table reduction</a> of \(A\) to \(K\), given by an oracle program \(p\) and a total computable use bound \(u\). Write \(e=\#p\). Use the increasing computable <a href="limit-computability#halting-stages">halting stages</a> \(K_s\), initially empty. Write \(F(w,k,e,x)\) for the <a href="oracle-program-numberings#bounded-correctness">ordinary finite-oracle evaluator</a>: it evaluates program index \(e\) on input \(x\) with allowance \(k\), answering each query \(q\) by \(\beta(w,q)\). It returns zero on failure and \(y+1\) on a successful output \(y\). Define the <strong>fixed-use snapshot</strong> and the <strong>bounded-run approximation</strong> by</p>
+  <div class="math-display">\[\begin{aligned}C_{s,x}&amp;=K_s\cap[0,u(x)),\\ w(s,x)&amp;=\operatorname{code}\bigl([\chi_{K_s}(0),\ldots,\chi_{K_s}(u(x)-1)]\bigr),\\ d(s,x)&amp;=\begin{cases}1,&amp;F(w(s,x),s,e,x)=2,\\0,&amp;\text{otherwise}.\end{cases}\end{aligned}\]</div>
+  <p>The finite evaluator returns zero on failure and \(y+1\) on a successful output \(y\). Thus the test for the bit one is equality with two. Its ordinary finite oracle is \(C_{s,x}\): positions outside the word answer zero. The word always has length \(u(x)\); only the evaluation allowance \(s\) increases.</p>
+</section>
+
+<section id="snapshot-effectivity" data-formal="bcstrong-snapshot-data post-finite-value-primitive" data-kind="lemma">
+  <h2>The bounded-run guesses are computable, binary, and initially zero</h2>
+  <p>The function \(d\) is jointly ordinary computable, has values in \(\{0,1\}\), and satisfies \(d(0,x)=0\) for every \(x\).</p>
+  <div class="proof"><p>The bound \(u(x)\) is computable. Forming the finite list uses only that many values of the joint computable halting-stage test. The <a href="oracle-program-numberings#bounded-correctness">coded finite evaluator</a> is an ordinary total computable function of its word, allowance, program index and input. Its equality test with two is a computable bit. At allowance zero the evaluator fails, so the initial guess is zero. No test here decides whether a program eventually halts.</p></div>
+</section>
+
+<section id="prefix-count" data-formal="bcstrong-discovery-count bcstrong-discovery-data bcstrong-equal-discoveries" data-kind="definition">
+  <h2>Count the halting discoveries inside the fixed window</h2>
+  <p>The <strong>prefix discovery count</strong> is</p>
+  <div class="math-display">\[E(s,x)=\sum_{q&lt;u(x)}\chi_{K_s}(q).\]</div>
+  <p>It is computable, starts at zero, is nondecreasing in \(s\), and is at most \(u(x)\). Moreover, if \(E(s+1,x)=E(s,x)\), then \(C_{s+1,x}=C_{s,x}\). Indeed, each summand is a nondecreasing bit. Any new positive bit would strictly increase their finite sum; equality of the sums means that no bit in the window changed.</p>
+</section>
+
+<section id="fixed-prefix-persistence" data-formal="bcstrong-persistence post-finite-table-identity" data-kind="lemma">
+  <h2>Without a new prefix discovery, a successful bit cannot disappear</h2>
+  <p>If \(E(s+1,x)=E(s,x)\), then \(d(s,x)\le d(s+1,x)\).</p>
+  <div class="proof"><p>The two finite words are identical by <a href="#prefix-count"></a>. If \(d(s,x)=1\), the evaluator with that fixed oracle returned output one at allowance \(s\). <a href="oracle-program-numberings#bounded-correctness">Monotonicity in the evaluation allowance</a> preserves exactly the same successful output at allowance \(s+1\), giving \(d(s+1,x)=1\). If the old bit is zero, the inequality follows from the new bit being nonnegative. An unchanged prefix may therefore allow a transition from zero to one when a computation first finishes, but not a transition from one to zero.</p></div>
+</section>
+
+<section id="revision-ledger" data-formal="bcstrong-revision-ledger" data-kind="lemma">
+  <h2>Each prefix discovery pays for at most two revisions</h2>
+  <p>For every stage and input, the specified approximation satisfies the invariant</p>
+  <div class="math-display">\[c_d(s,x)\le2E(s,x)+d(s,x).\]</div>
+  <div class="proof"><p>Induct on \(s\), keeping \(x\) fixed. At stage zero the counter, discovery count and guess are all zero. Write \(\varepsilon=1\) if the next guess differs and \(\varepsilon=0\) otherwise, so \(c_d(s+1,x)=c_d(s,x)+\varepsilon\).</p><p>If the discovery count is unchanged, <a href="#fixed-prefix-persistence"></a> says the binary guesses cannot decrease. For equal bits, \(d(s,x)+\varepsilon=d(s+1,x)\); for the only possible unequal pair, \(0,1\), this is also true. Adding the new revision to the induction bound proves the invariant at the next stage.</p><p>If the discovery count increases, its natural-number values give \(E(s+1,x)\ge E(s,x)+1\). Both \(d(s,x)\) and \(\varepsilon\) are at most one, so the new counter is at most \(2E(s,x)+2\), hence at most \(2E(s+1,x)\). Adding the nonnegative new bit gives the required bound. These cases exhaust the nondecreasing discovery counts and complete the induction.</p></div>
+</section>
+
+<section id="revision-budget" data-formal="bcstrong-revision-budget bcstrong-budget-bound" data-kind="theorem">
+  <h2>The supplied use bound gives a computable revision budget</h2>
+  <p>The total computable function \(b_p(x)=2u(x)+1\) bounds every prefix change count of \(d\).</p>
+  <div class="proof"><p>Combine <a href="#revision-ledger"></a> with \(E(s,x)\le u(x)\) and \(d(s,x)\le1\). Ordinary multiplication and addition preserve computability of the supplied \(u\).</p><p>The extra one includes a first transition away from the required initial zero, even if no oracle answer changes. In particular, \(u(x)=0\) still allows a query-free computation eventually to return one. A zero query bound therefore does not justify a zero revision allowance for this specified approximation.</p></div>
+</section>
+
+<section id="snapshot-convergence" data-formal="bcstrong-convergence limit-halting-prefix-agreement ttwtt-bounded-replay" data-kind="lemma">
+  <h2>Settling the use window recovers the original successful computation</h2>
+  <p>For every \(x\), \(d(s,x)\) eventually equals \(\chi_A(x)\).</p>
+  <div class="proof"><p>Fix \(x\). The finitely many halting answers below \(u(x)\) eventually settle. Thus there is \(N\) such that, for all \(s\ge N\), \(C_{s,x}\) is the same finite oracle \(C_x=K\cap[0,u(x))\). This oracle agrees with \(K\) at every position used by the supplied successful reduction. The <a href="truth-table-and-weak-truth-table-reductions#bounded-replay">bounded replay theorem</a> gives \(p^{C_x}(x)=\chi_A(x)\), even though answers beyond the use window have been replaced by zero.</p><p>Completeness of the bounded evaluator supplies an allowance \(k\) returning that same output with oracle \(C_x\). For every \(s\ge\max(N,k)\), the snapshot oracle is \(C_x\), and increasing the allowance to \(s\) preserves the successful value \(\chi_A(x)+1\). The test for equality with two therefore gives exactly \(\chi_A(x)\), whether the final bit is zero or one. This proves pointwise convergence without computing \(N\) or \(k\).</p></div>
+</section>
+
+<section id="bounded-use-gives-changes" data-formal="bcstrong-wtt-presentation bcstrong-wtt-to-omega" data-kind="theorem">
+  <h2>A weak truth-table computation from halting has bounded changes</h2>
+  <p>If \(A\le_{\mathrm{wtt}}K\), the specified \(d\), with bound \(b_p(x)=2u(x)+1\), is an \(\omega\)-c.e. presentation of \(A\).</p>
+  <div class="proof"><p>The supplied reduction fixes \(p,u\). The approximation is jointly computable, binary and initially zero by <a href="#snapshot-effectivity"></a>, has the displayed computable change bound by <a href="#revision-budget"></a>, and converges to the specified \(A\) by <a href="#snapshot-convergence"></a>. These are exactly the requirements in the definition of \(\omega\)-c.e.; the argument retains this approximation and this bound throughout.</p></div>
+</section>
+
+<section id="three-characterizations" data-formal="bcstrong-halting-cone ttwtt-tt-implies-wtt" data-kind="theorem">
+  <h2>Bounded changes, truth tables, and bounded use give the same halting cone</h2>
+  <div class="statement-box"><p>For every set \(A\subseteq\mathbb N\),</p><div class="math-display">\[A\text{ is }\omega\text{-c.e.}\quad\Longleftrightarrow\quad A\le_{\mathrm{tt}}K\quad\Longleftrightarrow\quad A\le_{\mathrm{wtt}}K.\]</div></div>
+  <div class="proof"><p>The threshold scheme proves the first implication by <a href="#bounded-changes-give-tables"></a>. Every truth-table reduction is a <a href="truth-table-and-weak-truth-table-reductions#implication-chain">weak truth-table reduction</a>. The reverse implication to bounded changes is <a href="#bounded-use-gives-changes"></a>. These implications establish all three equivalences.</p></div>
+</section>
+
+<section id="strict-bounded-use-boundary" data-formal="bcstrong-diagonal-separation bcb-diagonal-set bcb-diagonal-data bcb-diagonal-not-omega limit-limit-reducible ttwtt-wtt-implies-turing" data-kind="theorem">
+  <h2>The existing diagonal set separates bounded use from Turing computation</h2>
+  <div class="statement-box"><p>Let \(D\) be the <a href="beyond-computable-change-bounds#diagonal">specified diagonal set</a> beyond computable change bounds. Then</p><div class="math-display">\[D\le_TK,\qquad D\nleq_{\mathrm{wtt}}K.\]</div><p>Thus weak truth-table reducibility is a proper restriction of Turing reducibility.</p></div>
+  <div class="proof"><p>The diagonal construction proves that this very \(D\) is <a href="beyond-computable-change-bounds#strict-containment">limit computable and not \(\omega\)-c.e.</a> The <a href="limit-computability#limit-lemma">limit lemma</a> gives \(D\le_TK\). If \(D\le_{\mathrm{wtt}}K\), <a href="#three-characterizations"></a> would make \(D\) \(\omega\)-c.e., a contradiction. Together with the implication from every weak truth-table reduction to a Turing reduction, this gives strictness of the relations, rather than failure of one particular program.</p></div>
+</section>
+
+<section id="scope-question" data-formal="bcstrong-positive-guard bcstrong-positive-guard-evaluation bcstrong-positive-guard-record bcstrong-positive-guard-reduction bcstrong-positive-guard-partial bcstrong-constant-zero-table bcstrong-halting-cone" data-kind="question">
+  <h2>Why does a partial witness not separate truth tables from bounded use?</h2>
+  <p>An oracle program asks only whether zero belongs to its oracle. It returns zero if the answer is yes and otherwise runs forever. With \(B=\{0\}\), does this program prove that \(\varnothing\le_{\mathrm{wtt}}B\) but \(\varnothing\nleq_{\mathrm{tt}}B\)? Does <a href="#three-characterizations"></a> settle the comparison for every target oracle?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The supplied program witnesses a weak truth-table reduction with use bound one and fails to halt for an oracle omitting zero. But the constant-zero truth table, of width zero, also computes \(\varnothing\) from \(B\). A different witness already supplies the truth-table reduction.</p><p>The equivalence proved here concerns sets reducible to the particular oracle \(K\). It does not convert arbitrary bounded-use programs into all-oracle total programs. A separation of truth-table and weak truth-table reducibility would require a pair \(A,B\) for which a bounded-use reduction exists and every truth-table scheme fails. The argument for the specified \(D,K\) proves the distinct wtt-versus-Turing separation.</p></div></details>
+</section>

@@ -147,7 +147,7 @@
   </div>
 </section>
 
-<section id="use-versus-totality-question" data-formal="ttwtt-partial-one-query-program ttwtt-partial-one-query-evaluation ttwtt-partial-one-query-trace ttwtt-partial-one-query-reduction ttwtt-partial-one-query-not-total ttwtt-computable-scheme" data-kind="question">
+<section id="use-versus-totality-question" data-kind="question" data-formal="ttwtt-partial-one-query-program ttwtt-partial-one-query-evaluation ttwtt-partial-one-query-trace ttwtt-partial-one-query-reduction ttwtt-partial-one-query-not-total ttwtt-computable-scheme bcstrong-halting-cone bcstrong-diagonal-separation">
   <h2>Does a computable use bound force this program to halt for every oracle?</h2>
   <p>Construct a weak truth-table reduction that asks only about position zero, yet whose particular program fails to terminate under some other oracle. Does this show that the two reducibility relations differ on the sets in your example?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
@@ -155,5 +155,6 @@
     <div class="math-display">\[c=\mathsf{comp}\!\left(\mathsf{prec}(\mathsf{zero},N),\mathsf{pair}(\mathsf{zero},\mathsf{comp}(\mathbf Q,\mathsf{zero}))\right).\]</div>
     <p>On any input it queries position zero and forms \(\langle0,\chi_C(0)\rangle\). If \(0\notin C\), the primitive recursion has counter zero and its base returns zero. If \(0\in C\), its first step runs \(N\), which diverges. Under \(B=\varnothing\), this therefore decides \(A=\varnothing\) with record \([(0,0)]\) and the constant computable use bound one. Under \(C=\{0\}\), it never returns.</p>
     <p>This program is a valid weak truth-table witness and is not total for every oracle. The two sets in the example nevertheless have a truth-table reduction too: the constant-zero table has bound zero. A property of one supplied program is distinct from the existence of some program witnessing a reduction. Bounding positions also does not bound arbitrary ordinary work after those queries; the separate bounded-allowance criterion in <a href="#total-functional-characterization"></a> is stronger information.</p>
+  <p>The <a href="bounded-changes-and-strong-reductions#three-characterizations">bounded-change characterization</a> shows that truth-table and weak truth-table computation from the particular oracle \(K\) give the same sets. A different argument using the <a href="bounded-changes-and-strong-reductions#strict-bounded-use-boundary">specified diagonal set beyond computable change bounds</a> supplies a genuine separation of weak truth-table from Turing reducibility.</p>
   </div></details>
 </section>

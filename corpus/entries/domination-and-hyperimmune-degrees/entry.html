@@ -22,12 +22,13 @@
   <p>The bridge uses actual programs: a common graph-search program retrieves the unique \(y\), and a program computing \(f\) decides \(G_f\) by computing \(f(n)\) and comparing it with \(y\). Given a set reduction \(A\le_T B\), substituting its characteristic program into \(c\) computes the same \(f\) from \(B\), by <a href="oracle-computation#substitution-correctness">query substitution</a>. These facts fix the meaning of the function notation; it does not introduce a second reducibility unrelated to the set model.</p>
 </section>
 
-<section id="hyperimmune-functions" data-formal="hdeg-hyperimmune-function hdeg-hyperimmune-oracle hdeg-hyperimmune-free hdeg-escape-characterization hdeg-no-majorant hdeg-exclusive-alternatives hfb-basis hfb-free-pa-outside-halting" data-kind="definition">
+<section id="hyperimmune-functions" data-formal="hdeg-hyperimmune-function hdeg-hyperimmune-oracle hdeg-hyperimmune-free hdeg-escape-characterization hdeg-no-majorant hdeg-exclusive-alternatives hfb-basis hfb-free-pa-outside-halting highdom-high highdom-martin-characterization highdom-high-hyperimmune highdom-low-simple-counterexample" data-kind="definition">
   <h2>Functions that escape all computable bounds</h2>
   <p>A total \(f:\mathbb N\to\mathbb N\) is <strong>hyperimmune</strong> if no total computable function eventually dominates it. Equivalently, by <a href="#finite-exception-patch"></a>, it has no total computable majorant. In explicit quantifiers,</p>
   <div class="math-display">\[\forall g\text{ total computable}\;\forall N\;\exists n\ge N\quad g(n)&lt;f(n).\]</div>
   <p>An oracle \(A\) has <strong>hyperimmune degree</strong> if it computes a hyperimmune function. It is <strong>hyperimmune-free</strong> if every total \(f\le_T A\) has a total computable eventual bound. Thus exactly one of these alternatives holds for each oracle. The bound may depend on the particular total function; no one computable function is required to bound them all.</p>
   <p>Noncomputable hyperimmune-free oracles exist: the <a href="hyperimmune-free-basis-theorem#hyperimmune-free-basis">hyperimmune-free basis theorem</a> gives such a path in a computable binary tree with no computable paths. Every noncomputable member with this property lies <a href="hyperimmune-free-basis-theorem#outside-halting">outside the sets computable from ordinary halting</a>.</p>
+<p><a href="high-degrees-and-domination#martin-characterization">Highness</a> has a stronger numerical characterization: one oracle-computed function eventually dominates every ordinary total computable function. It implies hyperimmune degree, while the <a href="high-degrees-and-domination#high-versus-hyperimmune">specified low simple set</a> separates the converse.</p>
 </section>
 
 <section id="degree-invariance" data-formal="hdeg-upward-closure hdeg-downward-closure hdeg-degree-invariance hdeg-computable-degree-free" data-kind="theorem">
@@ -160,11 +161,12 @@
   </div>
 </section>
 
-<section id="set-versus-degree" data-formal="hdeg-enumerable-not-hyperimmune hdeg-halting-representative hdeg-halting-hyperimmune-representative univ-diagonal-halting-enumerable univ-diagonal-halting-undecidable" data-kind="question">
+<section id="set-versus-degree" data-formal="hdeg-enumerable-not-hyperimmune hdeg-halting-representative hdeg-halting-hyperimmune-representative univ-diagonal-halting-enumerable univ-diagonal-halting-undecidable defic-hyperimmune-complement defic-hypersimple-deficiency defic-degree-preservation turing-red-complement-equivalence" data-kind="question">
   <h2>Can an enumerable set be hyperimmune, or have hyperimmune degree?</h2>
   <p>Can an infinite c.e. set itself be hyperimmune? Can its Turing degree nevertheless contain a hyperimmune set? Give an established example for the second question.</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>An infinite c.e. set is not immune, because it contains itself as an infinite c.e. subset. Hence it is not hyperimmune by <a href="#hyperimmune-implies-immune"></a>. The property of a particular set is different from the property of its degree.</p>
     <p>The ordinary halting set \(K\) is c.e. and noncomputable, so <a href="#delta-two-hyperimmune"></a> gives it hyperimmune degree. The <a href="#degree-characterization">parity construction</a> consequently produces a hyperimmune set \(X\equiv_T K\). This \(X\) cannot itself be c.e. The example satisfies both requirements without identifying the hyperimmune representative with the original c.e. representative.</p>
-  </div></details>
+  <p>The <a href="dekker-deficiency-and-hypersimple-sets#set-versus-degree-question">deficiency construction</a> gives a further distinction for every noncomputable c.e. set: its degree contains both a hypersimple c.e. representative and that representative’s hyperimmune complement. The two complementary sets have the same degree, although only the complement is hyperimmune.</p>
+</div></details>
 </section>

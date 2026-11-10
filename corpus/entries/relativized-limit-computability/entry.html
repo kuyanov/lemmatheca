@@ -1,0 +1,145 @@
+<section id="relative-approximations" data-formal="rlim-joint-computable rlim-converges rlim-relative-limit-set limit-binary oracle-code-relative-computable bbfn-function-graph-equivalence" data-kind="definition">
+  <h2>Compute each guess using one fixed base oracle</h2>
+  <p>Fix a set \(B\subseteq\mathbb N\). Use the <a href="oracle-program-numberings#oracle-numbering">established oracle numbering</a> \(\varphi_e^B\), its bounded output code \(b^B(k,e,x)\), and the <a href="turing-jump#jump">jump</a> \(B'=J(B)\). Thus a successful bounded output \(y\) has code \(y+1\), while code zero means that the allowance did not produce an output.</p>
+  <p>A <strong>relative numerical approximation</strong> is a function \(a:\mathbb N^2\to\mathbb N\) with one index \(e\) satisfying</p>
+  <div class="math-display">\[\varphi_e^B(\langle s,x\rangle)\downarrow=a(s,x)\qquad\text{for every }s,x.\]</div>
+  <p>It <strong>converges pointwise</strong> to a total \(f:\mathbb N\to\mathbb N\) when, for every \(x\), some \(S\) satisfies \(a(s,x)=f(x)\) for all \(s\ge S\). Convergence here means eventual equality, with no bound supplied on when it begins. A <strong>relative binary approximation</strong> has only values zero and one. A set \(X\) is <strong>limit computable relative to \(B\)</strong> if such a binary approximation converges to \(\chi_X\).</p>
+  <p>For a total natural-valued function, write \(f\le_T C\) when an actual \(C\)-oracle program returns \(f(x)\) on every input. This agrees with reducibility of its <a href="busy-beaver-functions#graph-oracle-bridges">coded graph to \(C\)</a>. All programs use the fixed numerical pairing; changing the oracle does not change their syntax.</p>
+</section>
+
+<section id="finite-prefix-stability" data-formal="rlim-finite-prefix-stability" data-kind="lemma">
+  <h2>A finite collection of guesses settles together</h2>
+  <p>If \(a(s,x)\to f(x)\) pointwise, then for every \(u\) there is an \(S\) such that</p>
+  <div class="math-display">\[s\ge S\ \Longrightarrow\ \forall x&lt;u\quad a(s,x)=f(x).\]</div>
+  <div class="proof">
+    <p>For each of the finitely many inputs \(x&lt;u\), choose a stage after which its value is fixed. Their maximum works for all of them. At \(u=0\), take \(S=0\), since no input is being tested. The argument does not compute these settling stages from \(B\); it establishes their existence from convergence.</p>
+  </div>
+</section>
+
+<section id="future-change-index" data-formal="rlim-change-index rlim-change-index-primitive rlim-change-program-identity rlim-change-index-correct limit-future-change jump-freeze-eval" data-kind="lemma">
+  <h2>One ordinary compiler asks whether a relative guess will change</h2>
+  <p>There is an ordinary primitive-recursive map \(q(e,x,s)\), chosen before the oracle, with the following property. If \(e\) computes the total relative approximation \(a\), then</p>
+  <div class="math-display">\[q(e,x,s)\in B'\quad\Longleftrightarrow\quad\exists r&gt;s\;a(r,x)\ne a(s,x).\]</div>
+  <div class="proof">
+    <p>Specify one oracle program \(Q\) on the input \(\langle e,\langle x,s\rangle\rangle\). It first runs the <a href="oracle-program-numberings#uniform-universality">fixed universal evaluator</a> on \(e,\langle s,x\rangle\), retaining the returned value \(v\). It then tests \(r=s+1,s+2,\ldots\) in order, evaluating \(\varphi_e^B(\langle r,x\rangle)\) each time, and halts with zero at the first value different from \(v\). Pair decoding, equality, oracle evaluation and sequential search are operations in the existing program language, so this specifies one finite program with a fixed index \(j\), independent of \(B\).</p>
+    <p>Use the established <a href="turing-jump#input-freezing">ordinary input-freezing map</a> \(F\), characterized by \(\varphi_{F(i,z)}^C(y)\simeq\varphi_i^C(z)\) for every oracle \(C\) and runtime input \(y\). Define</p>
+    <div class="math-display">\[q(e,x,s)=F\bigl(j,\langle e,\langle x,s\rangle\rangle\bigr).\]</div>
+    <p>This is primitive recursive. Under the totality assumption every test of \(Q\) finishes, so its run halts exactly when a later different value exists. Freezing makes that same run occur at the new index's own diagonal input, proving the jump-membership identity. No totality test is part of the compiler; on an invalid partial approximation the resulting program is simply allowed to diverge.</p>
+  </div>
+</section>
+
+<section id="stable-value-program" data-formal="rlim-stable-index rlim-stable-index-primitive rlim-stable-index-evaluation jump-membership-maps oracle-numbering-specialization-correct" data-kind="lemma">
+  <h2>A jump oracle finds a stable stage and returns its value</h2>
+  <p>There is an ordinary primitive-recursive map \(d(e)\), independent of \(B\), such that whenever the total \(B\)-approximation indexed by \(e\) converges to \(f\),</p>
+  <div class="math-display">\[\varphi_{d(e)}^{B'}(x)\downarrow=f(x)\qquad\text{for every }x.\]</div>
+  <div class="proof">
+    <p>With oracle \(B'\), try \(s=0,1,2,\ldots\), asking whether \(q(e,x,s)\in B'\). Stop at the first no answer, denoted \(s_0\). Convergence supplies at least one stage after which no later value differs, so this search terminates. The preceding lemma gives \(a(r,x)=a(s_0,x)\) for every \(r&gt;s_0\). Choosing such an \(r\) beyond a convergence threshold shows \(a(s_0,x)=f(x)\).</p>
+    <p>It remains to evaluate this value using the oracle that the program actually has. The fixed primitive-recursive <a href="turing-jump#membership-to-jump">membership map</a> \(m(n)\) satisfies \(n\in B\Longleftrightarrow m(n)\in B'\). Replace every query to \(B\) in the universal evaluation of \(e\) by the query to \(m(n)\) under \(B'\). The established <a href="oracle-computation#substitution-correctness">query-substitution identity</a> makes the result exactly \(\varphi_e^B(\langle s_0,x\rangle)\), including its output.</p>
+    <p>These instructions define a fixed driver taking \(\langle e,x\rangle\): its search uses the numerical map \(q\), and its final universal call uses that one substituted evaluator. Let its index be \(d_0\), and set \(d(e)=s_{\mathrm{or}}(d_0,e)\), using the existing <a href="oracle-program-numberings#oracle-parameter-theorem">oracle parameter map</a>. This formula proves primitive recursiveness of the index map. Both the driver and the parameter map are fixed before \(B\) varies.</p>
+  </div>
+</section>
+
+<section id="relative-jump-stages" data-formal="rlim-jump-snapshots rlim-jump-snapshot-data rlim-snapshot-index rlim-snapshot-index-primitive rlim-snapshot-index-evaluation oracle-univ-bounded-program-correct" data-kind="definition">
+  <h2>Approximate the jump by bounded base-oracle calculations</h2>
+  <p>The <strong>relative jump snapshots</strong> are the finite sets</p>
+  <div class="math-display">\[J_s^B=\{i&lt;s:b^B(s,i,i)&gt;0\}.\]</div>
+  <p>They increase with \(s\), begin with the empty set, and have union \(B'\). There is one total \(B\)-oracle procedure, uniform in \(s,i\), deciding \(i\in J_s^B\).</p>
+  <div class="proof">
+    <p>The test compares \(i\) with \(s\) and runs the existing <a href="oracle-program-numberings#uniform-table-evaluator">total bounded evaluator</a> with those numerical arguments. It uses only \(B\), not its jump. Bounded soundness puts every discovered index in \(B'\). If \(i\in B'\), bounded completeness supplies a successful allowance; all sufficiently large \(s\) exceed \(i\) and retain this success by allowance monotonicity. This also proves monotonicity of the snapshots and their asserted union. In particular every fixed finite prefix of their membership bits eventually agrees with \(B'\), by taking a maximum of finitely many discovery stages.</p>
+    <p>Let \(h_0\) be the fixed index of this procedure on \(\langle s,i\rangle\). Specializing its stage parameter gives \(h(s)=s_{\mathrm{or}}(h_0,s)\), an ordinary primitive-recursive map with</p>
+    <div class="math-display">\[\varphi_{h(s)}^B(i)\downarrow=\chi_{J_s^B}(i)\qquad\text{for every }B,s,i.\]</div>
+    <p>These finite sets need not be ordinarily computable uniformly in \(B\). Their characteristic programs are uniformly computable from the base oracle, which is the information the construction may use.</p>
+  </div>
+</section>
+
+<section id="virtual-bounded-evaluation" data-formal="rlim-virtual-value rlim-virtual-program-evaluation jump-translate-eval oracle-univ-bounded-program-correct" data-kind="lemma">
+  <h2>The base oracle can evaluate a finite jump snapshot</h2>
+  <p>The numerical value</p>
+  <div class="math-display">\[V_B(s,e,x)=b^{J_s^B}(s,e,x)\]</div>
+  <p>is total and jointly \(B\)-computable in \(s,e,x\), by one program independent of \(B\). The superscript on the right describes a virtual oracle; it does not grant the program access to \(B'\).</p>
+  <div class="proof">
+    <p>Run the established bounded table algorithm with allowance \(s\) and program input \(e,x\). Whenever its query clause needs the virtual oracle's answer at \(i\), run the supplied characteristic program \(h(s)\) with the real oracle \(B\). That call always finishes. All the table's loops, code decoding and guarded lookups remain finite, so the complete substituted calculation terminates for every \(B,s,e,x\).</p>
+    <p>Its invariant is that each completed table entry equals the corresponding bounded-evaluation entry for the characteristic function of \(J_s^B\). At a query row this is exactly the identity for \(h(s)\); ordinary leaves are unchanged. In each compound row the constituent table entries already agree, so the same finite arithmetic operation writes the same result. Induction through the finite table therefore proves the displayed formula. Equivalently, it is the actual bounded-evaluator program with its queries replaced by \(h(s)\), using the same query-substitution identity as before.</p>
+    <p>For a single driver taking \(\langle e,\langle s,x\rangle\rangle\), compute the number \(h(s)\), assemble that substitution by the ordinary compiler, and use the common \(B\)-universal evaluator on its numerical arguments. The substituted program is total by the preceding invariant. This supplies a fixed finite driver, rather than selecting a different unexplained program for each finite oracle.</p>
+  </div>
+</section>
+
+<section id="output-approximations" data-formal="rlim-numerical-approximation rlim-binary-approximation rlim-numerical-index rlim-binary-index rlim-numerical-index-primitive rlim-binary-index-primitive rlim-numerical-index-evaluation rlim-binary-index-evaluation" data-kind="definition">
+  <h2>Decode the observed output instead of retaining only success</h2>
+  <p>For every oracle \(B\) and index \(e\), define the <strong>numerical output approximation</strong> and its <strong>binary output approximation</strong> by</p>
+  <div class="math-display">\[a_{B,e}(s,x)=V_B(s,e,x)\mathbin{\dot-}1.\]</div>
+  <div class="math-display">\[\beta_{B,e}(s,x)=\begin{cases}1&amp;V_B(s,e,x)=2,\\0&amp;\text{otherwise.}\end{cases}\]</div>
+  <p>Truncated subtraction makes a failed calculation return the default zero; a successful code \(y+1\) returns its actual output \(y\). Thus a genuine output zero and an early failure have the same guess, without asserting that their computations are the same.</p>
+  <p>There are ordinary primitive-recursive maps \(t(e),u(e)\), independent of \(B\), satisfying</p>
+  <div class="math-display">\[\varphi_{t(e)}^B(\langle s,x\rangle)\downarrow=a_{B,e}(s,x).\]</div>
+  <div class="math-display">\[\varphi_{u(e)}^B(\langle s,x\rangle)\downarrow=\beta_{B,e}(s,x).\]</div>
+  <div class="proof">
+    <p>Compose the fixed driver in <a href="#virtual-bounded-evaluation"></a> with ordinary truncated subtraction for the first output, or the equality-to-two test for the second. Let the two resulting fixed driver indices be \(t_0,u_0\). Then \(t(e)=s_{\mathrm{or}}(t_0,e)\) and \(u(e)=s_{\mathrm{or}}(u_0,e)\). Specialization gives exactly the displayed input and output identities. Both approximations are total; the second is binary at every stage, even when a temporary virtual oracle would make the original program return a number greater than one.</p>
+  </div>
+</section>
+
+<section id="fixed-prefix-replay" data-formal="rlim-fixed-prefix-replay post-bounded-query-dependence" data-kind="lemma">
+  <h2>Replay one successful allowance before increasing the allowance</h2>
+  <p>If \(b^{B'}(k,e,x)=y+1\), there is an \(S\) such that every \(s\ge S\) satisfies</p>
+  <div class="math-display">\[b^{J_s^B}(k,e,x)=y+1,\qquad V_B(s,e,x)=y+1.\]</div>
+  <div class="proof">
+    <p>The <a href="posts-theorem#bounded-query-agreement">finite-query agreement theorem</a> says that a bounded calculation with allowance \(k\) only depends on oracle bits below \(k\). Choose \(S_0\) after which the snapshots \(J_s^B\) agree with \(B'\) on those finitely many positions. At every \(s\ge S_0\), replaying the same allowance \(k\) gives the same successful code \(y+1\).</p>
+    <p>Now require also \(s\ge k\). Keep the particular oracle \(J_s^B\) fixed while applying bounded-evaluation monotonicity from allowance \(k\) to allowance \(s\). It retains that successful output, giving \(V_B(s,e,x)=y+1\). Hence \(S=\max(S_0,k)\) works. The proof first fixes the resource allowance and settles its finite query window; it does not assume that the whole growing snapshot has already become the jump.</p>
+  </div>
+</section>
+
+<section id="value-convergence" data-formal="rlim-numerical-convergence rlim-binary-convergence" data-kind="theorem">
+  <h2>The numerical guesses converge to every total jump-oracle output</h2>
+  <p>If \(\varphi_e^{B'}(x)\downarrow=f(x)\) for every \(x\), then \(a_{B,e}(s,x)\to f(x)\) pointwise. If the computed function is \(\chi_X\), then also \(\beta_{B,e}(s,x)\to\chi_X(x)\).</p>
+  <div class="proof">
+    <p>Fix \(x\), and put \(y=f(x)\). Bounded completeness gives a successful allowance \(k\) with code \(y+1\). By <a href="#fixed-prefix-replay"></a>, all sufficiently late \(V_B(s,e,x)\) equal that same code. Their numerical decodings are therefore exactly \(y\). This proves eventual equality at the fixed input, and hence pointwise convergence.</p>
+    <p>For a characteristic function the final output is zero or one. Its successful code is respectively one or two, so the binary test has eventually the required bit. No assumption is made about the values produced by incorrect early virtual oracles. Totality of the target function ensures that every input eventually has a successful resource to replay.</p>
+  </div>
+</section>
+
+<section id="relative-set-limit" data-formal="rlim-relative-limit-set rlim-relative-set-limit rlim-relative-delta-two post-delta-decision" data-kind="theorem">
+  <h2>The relative limit lemma identifies the second ambiguous level</h2>
+  <div class="statement-box">
+    <p>For every base oracle \(B\) and set \(X\),</p>
+    <div class="math-display">\[X\text{ is limit computable relative to }B\quad\Longleftrightarrow\quad X\le_T B'\quad\Longleftrightarrow\quad X\in\Delta_2^B.\]</div>
+  </div>
+  <div class="proof">
+    <p>A total binary \(B\)-approximation with index \(e\) is converted by <a href="#stable-value-program"></a> into the actual \(B'\)-characteristic program with index \(d(e)\). Conversely, a \(B'\)-characteristic program with index \(e\) is converted by \(u(e)\) into the total binary approximation from <a href="#output-approximations"></a>, and <a href="#value-convergence"></a> proves its limit. Finally <a href="posts-theorem#decision-and-many-one">Post’s relative decision characterization</a>, with one jump above \(B\), identifies \(\Delta_2^B\) with the sets Turing reducible to \(B'\). This establishes all three equivalent conditions using the same base oracle.</p>
+  </div>
+</section>
+
+<section id="relative-function-limit" data-formal="rlim-relative-function-limit rlim-ordinary-function-limit rlim-stable-index-primitive rlim-stable-index-evaluation rlim-numerical-index-primitive rlim-numerical-index-evaluation bbfn-function-graph-equivalence limit-lemma jump-empty-jump-equiv-halting" data-kind="theorem">
+  <h2>The same compilers recover total natural-valued functions</h2>
+  <div class="statement-box">
+    <p>For every \(B\subseteq\mathbb N\) and total \(f:\mathbb N\to\mathbb N\),</p>
+    <div class="math-display">\[f\le_T B'\quad\Longleftrightarrow\quad\exists a\;[a\text{ is jointly }B\text{-computable and }a(s,x)\to f(x)].\]</div>
+  </div>
+  <div class="proof">
+    <p>Given a total \(B'\)-program for \(f\) with index \(e\), the index \(t(e)\) computes the numerical approximation \(a_{B,e}\). Its convergence was proved for arbitrary natural outputs. In the other direction, an index \(e\) for the supplied joint approximation is sent to \(d(e)\), whose program returns its stable value. That argument likewise used only eventual equality, not binary values. These are actual numerical functions with the <a href="busy-beaver-functions#graph-oracle-bridges">established function/graph interpretation</a> of \(\le_T\).</p>
+    <p>The order of uniformity is part of the result: the ordinary primitive-recursive maps \(d,t,u\) are fixed first and then work for every oracle and every suitable program index. Their guarantees assume the stated totality or convergence; they do not decide whether an arbitrary index satisfies those assumptions. At \(B=\varnothing\), the <a href="turing-jump#empty-oracle-jump">ordinary-halting recoding</a> recovers the <a href="limit-computability#limit-lemma">ordinary set limit lemma</a> and its natural-valued counterpart.</p>
+  </div>
+</section>
+
+<section id="halting-bit-question" data-formal="rlim-success-bit rlim-constant-two-success-code rlim-success-bit-counterexample oracle-numbering-constant-evaluation" data-kind="question">
+  <h2>Would a bit reporting success approximate every numerical output?</h2>
+  <p>Replace the numerical decoder by \(c_{B,e}(s,x)=1\) when \(V_B(s,e,x)&gt;0\), and zero otherwise. Does this still approximate every total function computed from \(B'\)? Test a program returning the constant two.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. A constant-two oracle program exists by the ordinary constant construction, with no queries. At each fixed input, sufficiently large allowances return the successful code three. The proposed decoder then stays one, while the required function value is two. In contrast, the numerical decoder returns \(3\mathbin{\dot-}1=2\). Recording whether a computation halts loses its output value; the binary decoder is justified only for a characteristic-function target, and even there it tests specifically for output one rather than for arbitrary halting.</p>
+  </div></details>
+</section>
+
+<section id="uniformity-question" data-formal="rlim-query-approximation-index rlim-query-approximation-evaluation rlim-transformed-query-evaluation jump-membership-maps" data-kind="question">
+  <h2>Does one compiler have to return the same answers for all oracles?</h2>
+  <p>Let a fixed program on input \(\langle s,x\rangle\) ignore \(s\) and query \(x\). Its approximation is already constant in the stage. How can one fixed transformed index compute its limit for every base oracle, although the empty oracle and the full oracle require different answers?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>For oracle \(B\), the approximation is \(a_B(s,x)=\chi_B(x)\), with limit \(\chi_B\). Under the empty oracle the value is zero, and under \(\mathbb N\) it is one. The map \(d\) produces the same numerical program index in both cases, but the resulting program is run with the corresponding jump oracle. It can recover \(\chi_B(x)\) by the fixed membership query \(m(x)\). Uniform syntax therefore permits oracle-dependent answers. It does not supply one oracle-free algorithm for every limit or move a convergence threshold outside its dependence on the input.</p>
+  </div></details>
+</section>
+
+<section id="missing-modulus-question" data-formal="rlim-modulus rlim-pulse rlim-pulse-joint-computable rlim-pulse-convergence rlim-pulse-modulus-decider rlim-no-relative-modulus jump-jump-strict" data-kind="question">
+  <h2>Does a computable limit make a settling deadline available?</h2>
+  <p>For a fixed arbitrary \(B\), must a jointly \(B\)-computable approximation converging to the constant function two have a total \(B\)-computable modulus \(m\), meaning \(a(s,x)=2\) whenever \(s\ge m(x)\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Use the relative jump snapshots and define \(a(s,x)=3\) if \(x\in J_{s+1}^B\setminus J_s^B\), and \(a(s,x)=2\) otherwise. Each input has at most one pulse, so the approximation converges to two and is jointly \(B\)-computable. If the stated \(B\)-computable \(m\) existed, an index could not enter the jump at a transition \(s\ge m(x)\), since that would give a forbidden value three. Consequently \(x\in B'\) exactly when \(x\in J_{m(x)}^B\). Computing \(m(x)\) and testing that snapshot would decide \(B'\) using \(B\), contrary to <a href="turing-jump#jump-strictness">jump strictness</a>. Existence of eventual values, even known constant values, supplies no such effective deadline.</p>
+  </div></details>
+</section>

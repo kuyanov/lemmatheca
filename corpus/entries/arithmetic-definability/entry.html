@@ -84,6 +84,35 @@
 </div>
 </section>
 
+
+<section id="effective-selection" data-kind="theorem" data-formal="adef-certified-selection adef-certified-selection-partial adef-certified-selection-spec adef-effective-selection adef-partial-graph-enumerable">
+  <h2>Choose one certified witness without deciding the whole relation</h2>
+  <p>Let \(R\subseteq\mathbb N^2\) be computably enumerable, using the fixed pairing to code its two inputs. There is a partial recursive \(f:\mathbb N\rightharpoonup\mathbb N\) such that</p>
+  <div class="math-display">\[\begin{aligned}\operatorname{dom}(f)&=\{x:\exists y\;R(x,y)\},\\ f(x)\downarrow=y&\ \Longrightarrow\ R(x,y).\end{aligned}\]</div>
+  <p>The graph of \(f\) is therefore a single-valued c.e. subrelation of \(R\) with the same first-coordinate projection. If every fiber of \(R\) is nonempty, \(f\) is total computable. This is <strong>effective uniformization</strong>, or effective selection.</p>
+  <div class="proof">
+    <p>By the <a href="universal-computation#finite-certificates">certificate theorem</a>, choose a primitive-recursive predicate \(P(x,y,t)\) with \(R(x,y)\) exactly when \(\exists t\,P(x,y,t)\). On input \(x\), scan the numerical pair codes \(w=0,1,\ldots\), test \(P(x,\pi_1(w),\pi_2(w))\), and return \(\pi_1(w)\) at the first success. Each test terminates. Unbounded minimization and strict composition with the first projection give a partial recursive procedure.</p>
+    <p>A successful test certifies its returned witness. Conversely, any \(R(x,y)\) has a certificate \(t\), whose pair code is eventually reached; so the search halts exactly on the stated projection. When no witness exists it diverges. The graph is c.e. by <a href="#partial-graphs"></a>. A nonempty fiber at every input makes the same procedure total; it does not change the search rule.</p>
+  </div>
+</section>
+
+<section id="uniform-selection-indices" data-kind="lemma" data-formal="adef-indexed-selection adef-selector-index adef-selector-master-eval adef-selector-index-primitive adef-selector-index-eval adef-selector-index-spec">
+  <h2>The selector can be compiled uniformly from a relation index</h2>
+  <p>Write \(W_e\) for the domain of the ordinary program at index \(e\), and let \(R_e(x,y)\) mean \(\langle x,y\rangle\in W_e\). One primitive-recursive map \(q\) can choose all the selectors:</p>
+  <div class="math-display">\[\begin{aligned}\operatorname{dom}(\varphi_{q(e)})&=\{x:\exists y\;R_e(x,y)\},\\ \varphi_{q(e)}(x)\downarrow=y&\ \Longrightarrow\ R_e(x,y).\end{aligned}\]</div>
+  <div class="proof">
+    <p>Use the <a href="universal-computation#finite-certificates">uniform bounded evaluator</a> to test whether the program at \(e\) has halted on \(\langle x,\pi_1(w)\rangle\) within allowance \(\pi_2(w)\). Search \(w\) in order and return its first coordinate at the first positive test. This is one partial recursive procedure in the two inputs \(e,x\). Fix its program index once and apply the <a href="universal-computation#parameter-theorem">primitive-recursive specialization map</a> to insert \(e\). The resulting \(q(e)\) runs exactly the specified search. Its domain and witness properties follow as above, uniformly even for empty relations.</p>
+  </div>
+</section>
+
+<section id="least-witness-question" data-kind="question" data-formal="adef-least-witness-relation adef-least-witness-relation-ce adef-least-witness-spec adef-least-witness-noncomputable adef-constant-one-selection">
+  <h2>Must the selected witness be the least numerical witness?</h2>
+  <p>Let \(K\) be the diagonal halting set and put \(R(x,y)\) iff \(y=1\), or \(y=0\) and \(x\in K\). Is \(R\) c.e.? Does it have a total computable selector? Could its least-witness function be computable?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The relation is c.e.: the \(y=1\) alternative is decidable, and the other alternative asks for a halting certificate together with \(y=0\). The constant-one function is a total computable selector. But the least witness is zero exactly on \(K\), and one otherwise; computing it would decide \(K\). The construction selects the first <em>certified pair</em> in its chosen scan. It does not wait for every smaller proposed output to be excluded.</p>
+  </div></details>
+</section>
+
 <section id="complements-and-decision" data-formal="adef-pi-complement adef-coenumerable-pi-one adef-decidable-delta-one" data-kind="theorem">
   <h2>Universal definitions and two-sided decisions</h2>
   <div class="statement-box">

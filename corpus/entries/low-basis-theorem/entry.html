@@ -75,11 +75,12 @@
   <p>Induction on the loop counter shows the stored list is exactly \(L_i\). Thus the final query is exactly the defining query for \(b(e)\), not merely a query with the same intended interpretation. The exact-jump lemma turns its answer into \(\chi_{X'}(e)\). The program was chosen before \(e\) and before the common path \(X\); it decides the jump of every common path produced by these histories.</p></div>
 </section>
 
-<section id="low-basis" data-formal="lbt-low-basis hfb-basis hfb-free-not-low" data-kind="theorem">
+<section id="low-basis" data-formal="lbt-low-basis hfb-basis hfb-free-not-low slbasis-superlow-basis slbasis-jump-program-total slbasis-width-computable slbasis-history-data" data-kind="theorem">
   <h2>Every infinite computable binary tree has a low path</h2>
   <div class="statement-box"><p>If \(T\) is a computable binary tree with a node at every length, then there exists \(X\in[T]\) such that \(X'\equiv_TK\).</p></div>
   <div class="proof"><p>Construct the histories using the fixed decider for \(T\). Survival and the descending-level lemma give a path common to all \(T_{L_e}\). It lies in \(T_{L_0}=T\). The specified jump program shows \(X'\le_TK\), and <a href="low-simple-sets#lowness">the universal lower bound</a> \(K\le_TX'\) gives lowness. This is the low basis theorem: a nonempty computable binary path class contains a low member.</p></div>
   <p>The <a href="hyperimmune-free-basis-theorem#hyperimmune-free-basis">hyperimmune-free basis theorem</a> also puts a hyperimmune-free member in every such path class. If the class has no computable member, one path cannot witness both conclusions: a noncomputable hyperimmune-free set <a href="hyperimmune-free-basis-theorem#outside-halting">cannot be low</a>.</p>
+<p>The <a href="superlow-basis-theorem#superlow-basis">superlow basis strengthening</a> uses these same restriction histories. The recorded-jump program is total under every possible answer oracle, and a finite table anticipates all its finite query histories. Thus the chosen common path has a jump truth-table reducible to ordinary halting.</p>
 </section>
 
 <section id="closed-low-basis" data-formal="lbt-closed-low-basis lbt-co-ce-low-basis" data-kind="theorem">
@@ -88,11 +89,12 @@
   <div class="proof"><p>The <a href="effectively-closed-classes-and-dnc#same-paths">computable-tree representation</a> gives a computable binary tree \(T\) with \([T]=\mathcal P\). A member of \(\mathcal P\) witnesses every nonempty level of \(T\). Apply the low basis theorem and transfer the resulting path through this exact equality of classes. For a co-c.e. tree, use the <a href="effectively-closed-classes-and-dnc#coenumerable-conversion">same-path computable-tree conversion</a> first. These arguments preserve the infinite paths, not necessarily the finite trees.</p></div>
 </section>
 
-<section id="low-dnc" data-formal="lbt-low-dnc padeg-low-pa-degree" data-kind="theorem">
+<section id="low-dnc" data-formal="lbt-low-dnc padeg-low-pa-degree slbasis-superlow-dnc bcstrong-halting-cone" data-kind="theorem">
   <h2>There is a noncomputable low binary diagonal-avoiding set</h2>
   <p>There exists a low set \(X\subseteq\mathbb N\) whose characteristic function is diagonally noncomputable: for every \(e,y\in\mathbb N\), if \(\varphi_e(e)=y\), then \(\chi_X(e)\ne y\). This \(X\) is noncomputable and satisfies \(X&lt;_TK\).</p>
   <div class="proof"><p>The binary DNC class is <a href="effectively-closed-classes-and-dnc#dnc-effectively-closed">effectively closed</a> and <a href="effectively-closed-classes-and-dnc#binary-dnc-exists">nonempty</a>. The closed-class low basis theorem gives a low member. No member is computable, by the <a href="effectively-closed-classes-and-dnc#dnc-noncomputable">diagonal argument</a>. Finally <a href="low-simple-sets#low-incomplete">lowness implies</a> \(X\le_TK\) and \(K\not\le_TX\), yielding the asserted strict inequality.</p></div>
   <p>This same low binary DNC set has <a href="pa-degrees#low-pa-degrees">PA degree strictly between the computable degree and the halting degree</a>: it computes a complete consistent PA extension, while its own jump remains equivalent to ordinary halting.</p>
+<p>The <a href="superlow-basis-theorem#superlow-dnc">superlow version</a> supplies a binary DNC member whose jump has a computable change bound. It strengthens lowness through this same basis construction.</p>
 </section>
 
 <section id="bounded-does-not-low" data-formal="turing-red-reflexive jump-jump-strict lowsimple-low lowsimple-low-iff" data-kind="question">

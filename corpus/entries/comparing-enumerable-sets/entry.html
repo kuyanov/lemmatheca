@@ -122,6 +122,48 @@
   <h2>Does domain equality imply equality of the computed functions?</h2>
   <p>Let \(u=\#C_0\) and \(v=\#C_1\) be indices of the constant-zero and constant-one programs. Decide whether \(\langle u,v\rangle\) and \(\langle v,u\rangle\) belong to \(\mathrm{SUB}\) and \(\mathrm{EQ}\). Do the two partial functions agree?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
-    <p>Both programs halt on every input, so both domains are \(\mathbb N\). Both ordered pairs therefore belong to \(\mathrm{SUB}\) and \(\mathrm{EQ}\). Nevertheless \(\varphi_u(0)=0\) and \(\varphi_v(0)=1\), so the functions differ. Equality of partial functions requires equality of outputs as well as domains. The earlier <a href="rices-theorem#fixed-function">function-equality obstruction</a> concerns that stronger relation; the completeness results here concern domains alone.</p>
+    <p>Both programs halt on every input, so both domains are \(\mathbb N\). Both ordered pairs therefore belong to \(\mathrm{SUB}\) and \(\mathrm{EQ}\). Nevertheless \(\varphi_u(0)=0\) and \(\varphi_v(0)=1\), so the functions differ. Equality of partial functions requires equality of outputs as well as domains. The earlier <a href="rices-theorem#fixed-function">function-equality obstruction</a> concerns that stronger relation; the preceding completeness results concern domains alone. The <a href="#function-equality-complete">following classification</a> treats full computed behavior.</p>
   </div></details>
+</section>
+
+
+<section id="function-equality" data-kind="definition" data-formal="rice-equivalent-programs ces-function-inequality ces-function-equality-domains ces-constant-domains-answer">
+  <h2>Compare the whole partial functions, including their outputs</h2>
+  <p>Define</p>
+  <div class="math-display">\[\begin{aligned}\mathrm{FEQ}&=\{\langle d,e\rangle:\varphi_d\simeq\varphi_e\},\\ \mathrm{FNEQ}&=\mathbb N\setminus\mathrm{FEQ}.\end{aligned}\]</div>
+  <p>Here \(\simeq\) is <a href="partial-recursive-functions#partial-equality">equality of partial values at every input</a>: both computations diverge, or both halt with the same value. It therefore implies domain equality, while <a href="#outputs-question"></a> shows that the converse fails.</p>
+</section>
+
+<section id="function-equality-normal-form" data-kind="lemma" data-formal="ces-output-match-test ces-output-match-primitive ces-function-equality-normal-form ces-function-equality-pi-two ces-function-inequality-sigma-two">
+  <h2>Every observed output creates a matching-output obligation</h2>
+  <p>Let \(b(k,e,x)\) be the <a href="universal-computation#finite-certificates">primitive-recursive bounded output code</a>: zero means no output yet, and \(y+1\) certifies output \(y\). Then</p>
+  <div class="math-display">\[
+  \begin{gathered}
+  \varphi_d\simeq\varphi_e\quad\Longleftrightarrow\quad
+  \forall x\,\forall k\,\exists s\ge k\\
+  \begin{aligned}
+  &[b(k,d,x)=0\ \lor\ b(s,e,x)=b(k,d,x)]\\
+  {}\land{} &[b(k,e,x)=0\ \lor\ b(s,d,x)=b(k,e,x)].
+  \end{aligned}
+  \end{gathered}
+  \]</div>
+  <div class="proof">
+    <p>If the partial functions agree, each positive output code observed at allowance \(k\) has a matching computation on the other side. Choose sufficient allowances for those computations and take their maximum with \(k\). Persistence of a successful bounded evaluation gives both matching equations at that one allowance. A zero observation imposes no obligation.</p>
+    <p>Conversely, any defined value has some positive bounded certificate. Apply the formula at its allowance; the matching positive code certifies the same output on the other side. Interchanging the programs gives the other inclusion of graphs. Thus their domains and values agree, including inputs where both diverge.</p>
+    <p>The matrix is primitive recursive. Pair the two universal variables and retain one existential allowance, so \(\mathrm{FEQ}\in\Pi_2\). Complement duality gives \(\mathrm{FNEQ}\in\Sigma_2\).</p>
+  </div>
+</section>
+
+<section id="function-equality-complete" data-kind="theorem" data-formal="ces-zero-output-index ces-zero-output-index-primitive ces-zero-output-index-eval ces-zero-output-index-spec ces-function-totality-map ces-function-totality-map-primitive ces-function-totality-map-correct ces-function-primitive-hardness ces-function-negative-primitive-hardness ces-function-equality-complete ces-function-inequality-complete ces-function-exact-levels ces-function-first-level-exclusions">
+  <h2>Function equality has the same exact level as domain equality</h2>
+  <p>The sets \(\mathrm{FEQ}\) and \(\mathrm{FNEQ}\) are respectively \(\Pi_2\)-complete and \(\Sigma_2\)-complete under ordinary computable many-one reductions. In fact, every set in the corresponding class has a primitive-recursive reduction.</p>
+  <div class="proof">
+    <p>Fix the same constant-zero index \(u\) as in <a href="#whole-domain-map"></a>. From \(e\), compile \(z(e)\) by running the decoded program at \(e\) and then applying the constant-zero program to its result. Strict composition gives</p>
+    <div class="math-display">\[\begin{aligned}
+      \varphi_{z(e)}(x)\downarrow=0&\quad\Longleftrightarrow\quad\varphi_e(x)\downarrow,\\
+      \varphi_{z(e)}\simeq\varphi_u&\quad\Longleftrightarrow\quad e\in\mathrm{TOT}.
+      \end{aligned}\]</div>
+    <p>The compiler is primitive recursive because it decodes a finite program, forms its composition with a fixed program and encodes the result. It supplies the particular reduction \(e\mapsto\langle z(e),u\rangle\). Every \(\Pi_2\) set has an earlier <a href="index-set-completeness#totality-complete">primitive-recursive reduction to totality</a>; composing the two maps proves \(\Pi_2\)-hardness. Together with the preceding upper bound, this proves completeness of \(\mathrm{FEQ}\).</p>
+    <p>For any \(\Sigma_2\) source, reduce its \(\Pi_2\) complement to \(\mathrm{FEQ}\) and negate both membership conditions, retaining exactly the same numerical map. This proves \(\Sigma_2\)-completeness of \(\mathrm{FNEQ}\). As in <a href="#exact-complexity"></a>, hierarchy properness makes the two classifications exact; neither relation is c.e., co-c.e., or decidable.</p>
+  </div>
 </section>

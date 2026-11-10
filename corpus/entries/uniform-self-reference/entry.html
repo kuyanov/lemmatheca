@@ -5,7 +5,7 @@
   <p>The relation \(\simeq\) is <a href="partial-recursive-functions#partial-equality">equality of partial values</a>, including divergence. The requirement is \(\exists h\,\forall a,x\), with one algorithm computing the chosen index from \(a\). Applying the <a href="recursion-theorem#transformer-fixed-points">ordinary fixed-point theorem</a> separately at each \(a\) gives only \(\forall a\,\exists e\). That statement alone does not provide a computable way to choose those indices.</p>
 </section>
 
-<section id="parameterized-recursion" data-kind="theorem" data-formal="uniform-rec-auxiliary uniform-rec-auxiliary-index uniform-rec-selector uniform-rec-selector-primitive uniform-rec-auxiliary-recursive uniform-rec-specified-selector uniform-rec-parameterized rec-thm-self-specialization rec-thm-recursion-theorem">
+<section id="parameterized-recursion" data-kind="theorem" data-formal="uniform-rec-auxiliary uniform-rec-auxiliary-index uniform-rec-selector uniform-rec-selector-primitive uniform-rec-auxiliary-recursive uniform-rec-specified-selector uniform-rec-parameterized rec-thm-self-specialization rec-thm-recursion-theorem ars-copy-selector ars-copy-selector-primitive ars-copy-selector-evaluation ars-modulus-program-evaluation ars-halting-reduction">
   <h2>A fixed-point index can be selected effectively from the parameter</h2>
   <div class="statement-box"><p>For every total recursive \(F:\mathbb N^2\to\mathbb N\), there is one primitive-recursive \(h:\mathbb N\to\mathbb N\) satisfying</p>
     <div class="math-display">\[\forall a,x\qquad\varphi_{h(a)}(x)\simeq\varphi_{F(h(a),a)}(x).\]</div>
@@ -21,6 +21,7 @@
   </div>
   <p>The <a href="uniform-oracle-fixed-points#all-oracle-recursion">all-oracle parameterized theorem</a> strengthens this construction for the oracle program numbering: an ordinary total computable index transformer has one primitive-recursive selector whose semantic fixed-point identities hold under every oracle.</p>
 
+<p>The <a href="arslanov-completeness-criterion#self-referential-copy">delayed-copy family in Arslanov’s criterion</a> uses this parameterized ordinary construction before the runtime oracle values vary. A <a href="arslanov-completeness-criterion#oracle-modulus">settling modulus computed by the c.e. oracle</a> then turns failure of every domain fixed point into a halting decider.</p>
 </section>
 
 <section id="partial-families" data-kind="lemma" data-formal="uniform-rec-partial-compiler uniform-rec-partial-compiler-primitive uniform-rec-partial-compiler-evaluation uniform-rec-partial-family-index uniform-rec-specified-partial-family uniform-rec-partial-families einf-simultaneous-recursion">
@@ -43,10 +44,11 @@
   </div></details>
 </section>
 
-<section id="program-numberings" data-kind="definition" data-formal="numbering-definition numbering-computable numbering-standard univ-universal-recursive univ-universal-complete">
+<section id="program-numberings" data-kind="definition" data-formal="numbering-definition numbering-computable numbering-standard univ-universal-recursive univ-universal-complete eop-extensional-transformation eop-myhill-shepherdson">
   <h2>A numbering lists functions through numerical program names</h2>
   <p>A <strong>numbering</strong> \(\psi=(\psi_n)_{n\in\mathbb N}\) of the unary partial recursive functions is a sequence of such functions containing every one of them. Repetitions are allowed. It is a <strong>computable numbering</strong> if the joint partial evaluation \(\Psi(n,x)\simeq\psi_n(x)\) is partial recursive.</p>
   <p>The standard \(\varphi\) is a computable numbering by <a href="universal-computation#universal-evaluation"></a>. A numbering's surjectivity is an existence assertion about program names. It does not itself supply an algorithm translating a name from another numbering.</p>
+  <p>A total computable map on program names need not respect the functions those names denote. When it does, the <a href="effective-operators#extensional-transformations">extensional transformation condition</a> leads to the <a href="effective-operators#myhill-shepherdson">finite-information operator characterization</a>: the transformation is determined by jointly enumerable positive rules on finite input–output tables.</p>
 </section>
 
 <section id="compiler-to-standard" data-kind="lemma" data-formal="numbering-compiler-to-standard">

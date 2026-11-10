@@ -35,7 +35,7 @@
   <p>The <a href="busy-beaver-functions#busy-beaver-bounds">Busy Beaver functions</a> maximize output values and least successful evaluation allowances over halting programs of bounded size. Their <a href="busy-beaver-functions#halting-equivalence">halting-degree characterization</a> gives a precise form of the obstruction to computable resource bounds.</p>
 </section>
 
-<section id="parameter-theorem" data-formal="rec-thm-recursion-theorem univ-constant-program univ-constant-program-primitive univ-constant-program-evaluation univ-identity-program univ-identity-evaluation univ-specialization univ-specialization-primitive univ-specialization-evaluation univ-tuple-specialization numbering-specialization-correct numbering-semantic-round-trips oracle-numbering-specialization-primitive oracle-numbering-specialization-correct pad-specialize-injective bbfn-binary-constant bbfn-binary-constant-evaluation bbfn-binary-constant-size bbfn-output-domination" data-kind="theorem">
+<section id="parameter-theorem" data-kind="theorem" data-formal="rec-thm-recursion-theorem univ-constant-program univ-constant-program-primitive univ-constant-program-evaluation univ-identity-program univ-identity-evaluation univ-specialization univ-specialization-primitive univ-specialization-evaluation univ-tuple-specialization numbering-specialization-correct numbering-semantic-round-trips oracle-numbering-specialization-primitive oracle-numbering-specialization-correct pad-specialize-injective bbfn-binary-constant bbfn-binary-constant-evaluation bbfn-binary-constant-size bbfn-output-domination eop-compiler eop-compiler-search-evaluation eop-compiler-correct uniform-rec-partial-compiler-primitive">
   <h2>Fixed inputs can be inserted into program text</h2>
   <div class="statement-box">
     <p>There is a primitive-recursive numerical function \(s(e,a)\) such that</p>
@@ -54,6 +54,7 @@
   <p>The <a href="oracle-program-numberings#oracle-parameter-theorem">oracle parameter theorem</a> supplies one ordinary primitive-recursive parameter map with the same partial-value identity simultaneously for every oracle.</p>
   <p>The particular map \(s(e,a)\) displayed here is also <a href="padding-and-injective-reductions#injective-specialization">jointly injective in the program index and fixed parameter</a>: those two ingredients can be recovered from its finite syntax. This strengthening concerns the specified map, rather than every possible parameter map.</p>
   <p>When program size matters, the <a href="busy-beaver-functions#short-constant-programs">binary constant compiler</a> inserts a natural number using only a fixed number of syntax nodes per binary digit. Its size bound supplies the short programs used in the <a href="busy-beaver-functions#dominates-computable-functions">Busy Beaver growth theorem</a>.</p>
+  <p>The <a href="effective-operators#joint-rule-search">operator compiler</a> provides another uniform use of specialization: one fixed joint search yields a primitive-recursive map from a positive-rule index and an input-program index to the index computing that operator’s action. Its <a href="effective-operators#compiler-correctness">partial-value identity</a> holds on every runtime input, including divergence.</p>
 </section>
 
 <section id="specialization-question" data-formal="univ-specialization-primitive univ-specialization-evaluation" data-kind="question">
@@ -139,7 +140,7 @@
 </div>
 </section>
 
-<section id="dovetailing" data-formal="univ-dovetail-two univ-dovetail-countable effective-stage-bounds effective-stage-primitive-test effective-stage-monotone effective-stage-union" data-kind="lemma">
+<section id="dovetailing" data-kind="lemma" data-formal="univ-dovetail-two univ-dovetail-countable effective-stage-bounds effective-stage-primitive-test effective-stage-monotone effective-stage-union adef-effective-selection adef-selector-index-spec">
   <h2>Parallel search avoids getting trapped in one failed computation</h2>
   <p>Given indices \(e,d\), there is a partial recursive procedure which, on input \(x\), returns an output from \(\varphi_e(x)\) or \(\varphi_d(x)\), and stops exactly when at least one of those computations stops.</p>
   <div class="proof">
@@ -156,15 +157,17 @@
     <div class="figure-image"><img src="assets/dovetailing-grid.svg" width="760" height="465" alt="A triangular program-by-allowance grid. Stage three checks programs zero to three, and a successful call for program two at allowance three is included with sufficient resources thereafter." /></div>
     <figcaption>Each column is one finite stage, rather than a run waited on until completion. The starred example first succeeds at \((i_0,k_0)=(2,3)\) and is available at every later stage.</figcaption>
   </figure>
+  <p>The same scan can <a href="arithmetic-definability#effective-selection">select a certified witness</a> from an enumerable relation. It returns the first witness whose certificate is found; this does not promise the least numerical witness.</p>
 </section>
 
-<section id="enumerable-closure" data-formal="univ-enumerable-union univ-enumerable-intersection univ-enumerable-projection univ-enumerable-preimage univ-enumerable-image" data-kind="theorem">
+<section id="enumerable-closure" data-kind="theorem" data-formal="univ-enumerable-union univ-enumerable-intersection univ-enumerable-projection univ-enumerable-preimage univ-enumerable-image separator-ce-reduction-property">
   <h2>Finite combinations and existential quantification preserve enumerability</h2>
   <p>C.e. sets are closed under union and intersection. C.e. relations are closed under existential quantification over a natural-number variable. The inverse image of a c.e. set under a total recursive function is c.e.; so is its image.</p>
   <div class="proof">
     <p>Write \(x\in A\Longleftrightarrow\exists s\,R(x,s)\) and \(x\in B\Longleftrightarrow\exists t\,S(x,t)\), with primitive-recursive certificate relations. Intersection uses the paired certificate \(\langle s,t\rangle\) and test \(R(x,s)\wedge S(x,t)\). Union uses a tagged certificate saying which of the two tests succeeds. Existential projection \(\exists y\,A(x,y)\) combines \(y\) and its membership certificate into one pair. The tests remain primitive recursive by <a href="primitive-recursion#boolean-closure">Boolean closure</a>, pairing and composition. In operational terms, union can use <a href="#dovetailing"></a>; waiting on one semidecision procedure first could block a positive answer from the other.</p>
     <p>If \(A\) is the domain of a partial recursive \(f\), then \(g^{-1}(A)\) is the domain of \(f\circ g\), for total recursive \(g\). For the image, use <a href="#enumerating-ranges"></a>: if \(A\) is empty its image is empty, and otherwise \(A\) is the range of a total recursive \(h\); then \(g(A)\) is the range of \(g\circ h\).</p>
 </div>
+  <p>When two positive recognizers overlap, their first successful certificates can instead <a href="computably-inseparable-sets#ce-reduction-property">assign disjoint refinements with the same union</a>. This adds no requirement to decide inputs on which neither recognizer succeeds.</p>
 </section>
 
 <section id="two-sided-recognition" data-formal="univ-two-sided-recognition inseparable-diagonal-enumerable inseparable-diagonal-pair separator-positive-attempt-spec inseparable-constant-two-outside oracle-ce-two-sided-recognition" data-kind="theorem">

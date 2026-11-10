@@ -1,0 +1,98 @@
+<section id="axiom-codes" data-formal="craigreax-codes craigreax-decidable-axioms eff-code-enumerable proofcode-effective-signature proofcode-sentence-code fod-derivability theory-consequence-closure theory-closure-derivability" data-kind="definition">
+  <h2>Decide axiom membership in the actual sentence coding</h2>
+  <p>Fix a first-order language \(L\) with an <a href="coding-formal-proofs#effective-symbols">effective signature</a> \(S\), and use its existing original-language sentence code \(\ulcorner A\urcorner\). For an actual set \(T\) of \(L\)-sentences, write</p>
+  <div class="math-display">\[\operatorname{Codes}(T)=\{\ulcorner A\urcorner:A\in T\},\qquad \operatorname{Cn}(T)=\{A:T\vdash A\}.\]</div>
+  <p>The proof relation is the <a href="first-order-proofs#derivations-and-theories">existing sentence natural-deduction calculus</a>. A <strong>code-enumerable axiom set</strong> has c.e. code set; a <strong>code-decidable axiom set</strong> has decidable code set. Decisions are defined on every natural number and reject numbers that code no original-language sentence. The <a href="theories-and-axiomatization#axioms-and-consequences">consequence closure</a> is also the set of semantic consequences by soundness and completeness.</p>
+</section>
+
+<section id="finite-snapshots" data-formal="craigreax-stage-codes craigreax-stage-sentences craigreax-snapshot craigreax-sentence-decoder craigreax-stage-codes-membership craigreax-stage-sentences-membership effective-stage-finite-stage effective-stage-bounds univ-enumerable-index-equivalence" data-kind="definition">
+  <h2>Turn an enumeration into a total stream of finite conjunctions</h2>
+  <p>Let \(T\) be code-enumerable, and choose an ordinary index \(e\) whose domain \(W_e\) is exactly \(\operatorname{Codes}(T)\). Use the <a href="effective-enumerations#uniform-finite-approximation">canonical finite stage sets</a> \(W_{e,s}\). At stage \(s\), list their genuine sentence codes in increasing numerical order, using the decidable <a href="coding-formal-proofs#syntax-recognition">sentencehood test</a>, and decode them as \(A_{s,0},\ldots,A_{s,m_s-1}\). Every listed sentence belongs to \(T\).</p>
+  <p>Fix the tautology \(\tau=(\bot\to\bot)\). The <strong>snapshot sentence</strong> \(F_s\) is the left-associated conjunction starting at \(\tau\) and adjoining that finite list:</p>
+  <div class="math-display">\[C_{s,0}=\tau,\qquad C_{s,j+1}=C_{s,j}\land A_{s,j},\qquad F_s=C_{s,m_s}.\]</div>
+  <p>An empty list gives \(F_s=\tau\). Thus a snapshot is specified at every stage, including when the original enumeration has no outputs at all.</p>
+</section>
+
+<section id="snapshot-computability" data-formal="craigreax-snapshot-code craigreax-snapshot-code-computable craigreax-snapshot-code-correct craigreax-decoder-code craigreax-conjunction-code effective-stage-primitive-test proofcode-sentence-recognition-primitive proofcode-sentence-injective" data-kind="lemma">
+  <h2>Every snapshot code can be computed without waiting for another axiom</h2>
+  <p>The map \(s\mapsto\ulcorner F_s\urcorner\) is total computable, and every returned code is an actual sentence code.</p>
+  <div class="proof"><p>Scan the finite list \(0,\ldots,s-1\), retaining a number exactly when it belongs to \(W_{e,s}\) and passes the sentence test. These are total finite tests. Start the accumulator at \(\ulcorner\tau\urcorner\); for each retained code \(a\), replace accumulator \(c\) by the existing numerical constructor \(\operatorname{andCode}(c,a)\). This constructor expands conjunction by the <a href="coding-formal-proofs#tagged-syntax">fixed syntactic abbreviation</a>, with no logical simplification. Finite recursion computes the final accumulator.</p><p>The <a href="coding-formal-proofs#coding-is-faithful">faithful syntax coding</a> decodes every retained code to its unique sentence. Induction through the accumulator shows that its numerical value is precisely the code of the stated conjunction. No search for a next enumerated axiom occurs, so every stage terminates even for empty or finite input.</p></div>
+</section>
+
+<section id="snapshot-consequences" data-formal="craigreax-snapshot-derivable craigreax-axiom-from-snapshot craigreax-snapshot-derivability craigreax-snapshot-closure craigreax-snapshot-models" data-kind="lemma">
+  <h2>The snapshots and the original axioms have the same consequences</h2>
+  <p>Every \(F_s\) is derivable from \(T\). Conversely, for every \(A\in T\), some single snapshot \(F_s\) proves \(A\). Hence the snapshot family has exactly the same models and deductive closure as \(T\).</p>
+  <div class="proof"><p>The tautology \(\tau\) has an assumption-free derivation. Every other conjunct of \(F_s\) is an axiom of \(T\). Repeated conjunction introduction therefore derives \(F_s\) from \(T\). For \(A\in T\), its code belongs to \(W_e\), so the stage-union property gives some \(s\) with \(\ulcorner A\urcorner\in W_{e,s}\). It is a sentence code and appears in that stage's list. Repeated conjunction elimination along the finite left-associated expression extracts this occurrence of \(A\) from \(F_s\).</p><p>Every model of \(T\) therefore satisfies every snapshot, and every model of all snapshots satisfies each original axiom. They have the same models. The existing soundness and completeness theorem gives the same deductive consequences as well.</p></div>
+</section>
+
+<section id="repeated-conjunction" data-formal="craigreax-repeated-conjunction craigreax-padding-code craigreax-padding-code-computable craigreax-padding-code-correct craigreax-conjunction-code" data-kind="definition">
+  <h2>Record a numerical position by repeating one sentence</h2>
+  <p>The <strong>padding of a sentence</strong> \(A\) by \(n\) is the literal expression</p>
+  <div class="math-display">\[P_0(A)=A,\qquad P_{n+1}(A)=P_n(A)\land A.\]</div>
+  <p>Thus \(P_n(A)\) has \(n+1\) copies with the stated left association. The <strong>padding-code function</strong> uses the same recurrence on natural numbers:</p>
+  <div class="math-display">\[p(0,a)=a,\qquad p(n+1,a)=\operatorname{andCode}(p(n,a),a).\]</div>
+  <p>It is total computable by finite recursion and satisfies \(p(n,\ulcorner A\urcorner)=\ulcorner P_n(A)\urcorner\). Padding keeps the syntax; it does not simplify a conjunction of identical sentences back to one copy.</p>
+</section>
+
+<section id="padding-proofs" data-formal="craigreax-padding-derivability" data-kind="lemma">
+  <h2>Padding preserves every derivable consequence</h2>
+  <p>For every sentence \(A\), natural number \(n\), and set \(\Gamma\) of sentences,</p>
+  <div class="math-display">\[\Gamma\vdash P_n(A)\quad\Longleftrightarrow\quad\Gamma\vdash A.\]</div>
+  <div class="proof"><p>At \(n=0\), the expressions are identical. Given a derivation of \(A\), the induction hypothesis derives \(P_n(A)\) as well. Combining the two derivations by conjunction introduction proves the successor case. Conversely, a derivation of \(P_{n+1}(A)=P_n(A)\land A\) yields \(A\) by conjunction elimination. These are the existing <a href="propositional-proofs#deduction-rules">propositional rules</a> used inside the actual first-order calculus. No new inference rule or change of theory is introduced.</p></div>
+</section>
+
+<section id="padding-bound" data-formal="craigreax-conjunction-code-growth craigreax-padding-bound proofcode-child-bound" data-kind="lemma">
+  <h2>A candidate sentence code bounds its possible padding position</h2>
+  <p>For all natural numbers \(n,a\), \(n\le p(n,a)\). In particular, if \(p(n,\ulcorner F_n\urcorner)=z\), then \(n\le z\).</p>
+  <div class="proof"><p>For any numerical codes \(a,b\),</p><div class="math-display">\[a&lt;\operatorname{andCode}(a,b).\]</div><p>Indeed, conjunction expands to \(\neg(a\to\neg b)\). Its code is the implication code for \((a\to(b\to\bot))\to\bot\). The input code \(a\) is a child of the inner implication code, which is itself a child of the outer implication code. Apply the earlier <a href="coding-formal-proofs#decoding-bounds">strict child-code bounds</a> twice. These bounds hold for raw constructor codes as well as valid formulas.</p><p>Induct on \(n\). The base is \(0\le a\). If \(n\le p(n,a)\), the strict increase gives \(n+1\le p(n+1,a)\). Substituting a candidate equality proves the final bound.</p></div>
+</section>
+
+<section id="padded-axioms" data-formal="craigreax-padded-axioms" data-kind="definition">
+  <h2>Make the new axiom at each position carry that position's padding</h2>
+  <p>The <strong>Craig axiom set</strong> associated to the chosen snapshots is the actual set of sentences</p>
+  <div class="math-display">\[B=\{P_n(F_n):n\in\mathbb N\}.\]</div>
+  <p>Its code set is the range of \(n\mapsto p(n,\ulcorner F_n\urcorner)\). The construction may introduce theorems of \(T\) that were not among its original axioms.</p>
+</section>
+
+<section id="bounded-recognizer" data-formal="craigreax-recognizer craigreax-bounded-membership craigreax-recognizer-computable craigreax-recognizer-correct craigreax-padded-axioms-decidable craigreax-padding-bound" data-kind="theorem">
+  <h2>A finite scan decides the padded axiom set</h2>
+  <p>The code set of \(B\) is decidable. An exact membership test, on every natural-number input \(z\), is</p>
+  <div class="math-display">\[z\in\operatorname{Codes}(B)\quad\Longleftrightarrow\quad\operatorname{Sent}(z)\text{ and }\exists n\le z\;p(n,\ulcorner F_n\urcorner)=z.\]</div>
+  <div class="proof"><p>If the input fails the sentencehood test, reject it. Otherwise run through \(n=0,1,\ldots,z\). For each position, compute its snapshot code, form the specified padding code, and compare it with \(z\). Accept at a match and reject after the last failed comparison. Every snapshot and padding computation terminates, and there are finitely many candidates. This gives a total computable test.</p><p>An accepted candidate is literally the code of a member \(P_n(F_n)\) of \(B\). Conversely, if \(z\) codes a member of \(B\), its defining witness \(n\) satisfies \(n\le z\) by <a href="#padding-bound"></a>, so the scan includes it. Every family member is an actual sentence, giving the stated sentencehood condition too. These implications prove the exact test.</p></div>
+</section>
+
+<section id="axiom-interderivability" data-formal="craigreax-padded-axiom-derivable craigreax-original-axiom-derivable fod-cut" data-kind="lemma">
+  <h2>Each axiom family derives the other one</h2>
+  <p>Every sentence in \(B\) is derivable from \(T\), and every sentence in \(T\) is derivable from \(B\).</p>
+  <div class="proof"><p>A new axiom has the form \(P_n(F_n)\). By <a href="#snapshot-consequences"></a>, \(T\vdash F_n\), and <a href="#padding-proofs"></a> gives \(T\vdash P_n(F_n)\). Conversely, let \(A\in T\). Some snapshot \(F_s\) proves \(A\). The new axiom \(P_s(F_s)\) belongs to \(B\), so conjunction elimination gives \(B\vdash F_s\). Extracting the original conjunct gives \(B\vdash A\). Equivalently, use the existing <a href="first-order-proofs#proof-operations">proof-substitution operation</a> to combine those derivations. All expressions are sentences in the original language.</p></div>
+</section>
+
+<section id="craig-theorem" data-formal="craigreax-craig-theorem craigreax-padded-axioms-decidable craigreax-same-derivability craigreax-same-closure craigreax-same-models theory-equivalence-closure" data-kind="theorem">
+  <h2>Every enumerable axiom set has an equivalent decidable axiom set</h2>
+  <div class="statement-box"><p>For every code-enumerable axiom set \(T\) in the fixed effective first-order language, the specified Craig axiom set \(B\) is code-decidable and satisfies</p><div class="math-display">\[\operatorname{Cn}(B)=\operatorname{Cn}(T).\]</div><p>It has exactly the same models as \(T\), and its semantic consequence closure is the same. No consistency or completeness assumption is required. This is <strong>Craig reaxiomatization</strong>.</p></div>
+  <div class="proof"><p>Decidability is the actual finite algorithm in <a href="#bounded-recognizer"></a>. The two derivability directions in <a href="#axiom-interderivability"></a>, combined with proof substitution, show that either axiom family derives exactly the same sentences. Soundness gives the same models from those directions, and therefore the same semantic consequences. The effective symbol names make the signature countable, so the existing <a href="henkin-completeness#deductive-completeness">completeness theorem</a> also identifies these consequences with the same deductive closure. None of these arguments asked whether a contradiction or every sentence is derivable.</p></div>
+</section>
+
+<section id="closed-theory-form" data-formal="craigreax-closed-theory-form theory-deductively-closed eff-actual-theorems-enumerable" data-kind="lemma">
+  <h2>A closed theory is enumerable exactly when it has decidable axioms</h2>
+  <p>Let \(U\) be deductively closed in the fixed effective language. Its sentence-code set is c.e. if and only if \(U=\operatorname{Cn}(B)\) for some code-decidable axiom set \(B\).</p>
+  <div class="proof"><p>If \(U\) is code-enumerable, apply <a href="#craig-theorem"></a> with \(T=U\). Closedness gives \(\operatorname{Cn}(U)=U\), so its new decidable axioms have closure exactly \(U\). Conversely, decidable axioms are enumerable, and the earlier <a href="effective-theories#theorem-enumeration">theorem-enumeration theorem</a> makes their closure's code set c.e. This is the usual closed-theory formulation of the result.</p></div>
+</section>
+
+<section id="empty-input" data-formal="craigreax-empty-snapshot craigreax-empty-padded-axioms craigreax-padded-axiom-derivable craigreax-same-closure craigreax-padding-derivability theory-closure-derivability" data-kind="lemma">
+  <h2>An empty enumeration still produces a valid axiomatization</h2>
+  <p>If \(T=\varnothing\), every snapshot is \(\tau\), and \(B=\{P_n(\tau):n\in\mathbb N\}\) consists entirely of logical theorems. Its closure is precisely the set of valid sentences.</p>
+  <div class="proof"><p>No stage contains an original axiom code, so each finite conjunction has only its initial tautology. By <a href="#padding-proofs"></a>, every padded copy of that tautology has an assumption-free derivation. Adding these logical theorems changes no derivable consequence of the empty theory, by <a href="#craig-theorem"></a>. Soundness and completeness identify that closure with validity. In particular the construction never needs to wait for an axiom that may not exist.</p></div>
+</section>
+
+<section id="padding-position-question" data-formal="craigreax-two-padding-descriptions craigreax-position-zero-miss craigreax-bounded-membership craigreax-recognizer-correct" data-kind="question">
+  <h2>Does the syntax determine a unique padding position?</h2>
+  <p>Can a sentence's literal syntax determine a unique pair \(n,A\) with that sentence equal to \(P_n(A)\)? Would choosing just one such decomposition suffice for the axiom-membership test?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No: \(A\land A=P_1(A)=P_0(A\land A)\). Unique decoding of a formula determines its syntax tree, but these are two different padding descriptions of that same tree. For empty original axioms, every snapshot is \(\tau\). The sentence \(\tau\land\tau=P_1(F_1)\) belongs to \(B\), but its position-zero description would compare it with \(F_0=\tau\), whose code is strictly smaller by the padding growth bound. Choosing only that description would reject an actual new axiom. The actual recognizer tries every position up to the input code and compares against that position's computed snapshot. The code bound makes all those comparisons finite.</p></div></details>
+</section>
+
+<section id="theoremhood-question" data-formal="craigreax-same-closure craigreax-same-derivability craigreax-codes craigreax-decidable-axioms eff-actual-theorems-enumerable" data-kind="question">
+  <h2>What happens to the decision problem for consequences?</h2>
+  <p>Suppose the code set of \(\operatorname{Cn}(T)\) is undecidable. Can the new decision procedure for membership in \(B\) turn its theoremhood problem into a decidable one?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The code sets of \(\operatorname{Cn}(B)\) and \(\operatorname{Cn}(T)\) are equal, so a decision procedure for either one would be a decision procedure for the other. More generally, their decidability statuses coincide exactly. The new finite test decides which padded sentences are axioms. The earlier enumeration of all proofs still recognizes exactly the same consequence set.</p></div></details>
+</section>

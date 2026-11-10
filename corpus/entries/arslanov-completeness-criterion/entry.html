@@ -1,0 +1,111 @@
+<section id="domain-fixed-point-free" data-kind="definition" data-formal="ars-domain-fpf ars-computes-fpf">
+  <h2>Exclude equality of enumerable domains at every index</h2>
+  <p>Use the fixed ordinary program numbering \(\varphi_e\) and its c.e. domains \(W_e=\{x:\varphi_e(x)\downarrow\}\). A total numerical function \(f:\mathbb N\to\mathbb N\) is <strong>fixed-point-free on domain indices</strong>, abbreviated <strong>FPF</strong>, if</p>
+  <div class="math-display">\[\forall e\quad W_{f(e)}\ne W_e.\]</div>
+  <p>An oracle \(A\) <strong>computes an FPF function</strong> if one actual \(A\)-oracle program computes such a total \(f\). This uses the established <a href="domination-and-hyperimmune-degrees#relative-functions">natural-valued oracle computation</a>. The inequality concerns entire domains. It is stronger than requiring different numerical indices, and does not merely require different output values on a common domain.</p>
+</section>
+
+<section id="computable-obstruction" data-kind="theorem" data-formal="ars-computable-obstruction">
+  <h2>No total computable function is fixed-point-free</h2>
+  <p>No ordinary total computable \(f\) is FPF.</p>
+  <div class="proof"><p>The <a href="recursion-theorem#transformer-fixed-points">ordinary recursion theorem</a> supplies an index \(e\) with \(\varphi_e\simeq\varphi_{f(e)}\). Equal partial functions have equal domains, so \(W_e=W_{f(e)}\), contrary to the FPF requirement.</p></div>
+</section>
+
+<section id="halting-fpf-function" data-kind="theorem" data-formal="ars-halting-fpf-function ars-singleton-index ars-singleton-index-domain ars-halting-fpf-evaluation ars-halting-fpf-avoidance ars-halting-fpf-substitution jump-ordinary-freeze-eval">
+  <h2>Halting information computes a fixed-point-free function</h2>
+  <p>The ordinary diagonal halting set \(K\) computes a total FPF function. Fix ordinary indices \(b,c\) with \(W_b=\varnothing\) and \(W_c=\{0\}\). Using the <a href="turing-jump#empty-oracle-jump">ordinary input-freezing map</a> \(F_{\mathrm{ord}}\), put</p>
+  <div class="math-display">\[v(e)=F_{\mathrm{ord}}(e,0),\qquad f_K(e)=\begin{cases}b,&amp;v(e)\in K,\\c,&amp;v(e)\notin K.\end{cases}\]</div>
+  <div class="proof"><p>The freezing identity gives \(v(e)\in K\) exactly when \(0\in W_e\). In that case \(0\notin W_{f_K(e)}\); otherwise \(0\in W_{f_K(e)}\). Thus zero witnesses unequal domains in both cases. One oracle program computes \(v(e)\), queries \(K\), and returns the indicated fixed index; it is total. If \(K\le_T A\), <a href="oracle-computation#substitution-correctness">query substitution</a> converts this same program into an \(A\)-program for \(f_K\).</p></div>
+</section>
+
+<section id="ce-oracle-approximations" data-kind="definition" data-formal="effective-stage-canonical-approximation ars-approximation ars-approximation-bounded-identity">
+  <h2>Replace a computably enumerable oracle by its finite stages</h2>
+  <p>For the converse, fix a c.e. set \(A=W_a\), its supplied ordinary index \(a\), and an actual oracle-program index \(e\) computing a total \(f\) from \(A\). Put \(A_s=W_{a,s}\), using the increasing <a href="effective-enumerations#finite-stages">finite stages</a>. Define the ordinary numerical approximation</p>
+  <div class="math-display">\[\widehat f(s,n)=b^{A_s}(s,e,n)-1.\]</div>
+  <p>Here \(b^B(k,e,n)\) is the <a href="oracle-program-numberings#bounded-oracle-evaluation">actual bounded output code</a>: zero means failure and \(y+1\) means output \(y\); subtraction is truncated at zero. This definition retains the output value, rather than just recording whether a simulation halted.</p>
+</section>
+
+<section id="ordinary-approximation-program" data-kind="lemma" data-formal="ars-stage-word-oracle ars-approximation-primitive post-finite-value-primitive post-finite-table-identity">
+  <h2>The finite-oracle approximation is jointly ordinary computable</h2>
+  <p>The specified \(\widehat f(s,n)\) is total computable jointly in \(s,n\), with the supplied \(a,e\) fixed.</p>
+  <div class="proof"><p>The stage \(A_s\) lies below \(s\) and has a uniform total computable membership test. Compute its finite word of membership bits at \(0,\ldots,s-1\). The total finite-word oracle for this word is exactly \(A_s\), since every larger input is absent. The established <a href="posts-theorem#bounded-query-agreement">finite-oracle evaluator</a> computes \(b^{A_s}(s,e,n)\) from that word and the numerical parameters. Apply predecessor to decode its output. All these computations terminate. They give one ordinary program for the joint approximation even before a successful allowance is known.</p></div>
+</section>
+
+<section id="prefix-settling-program" data-kind="lemma" data-formal="effective-stage-least-settling-stage effective-stage-least-settling-spec effective-stage-settling-persists ars-positive-prefix-settles ars-prefix-test-evaluation ars-prefix-search-evaluation">
+  <h2>The original oracle can locate a permanently correct finite prefix</h2>
+  <p>There is an actual \(A\)-oracle program, built from the supplied index \(a\), computing</p>
+  <div class="math-display">\[\tau_a(k)=\min\{s:\forall q&lt;k\;[q\notin A\ \lor\ q\in A_s]\}.\]</div>
+  <p>At every \(s\ge\tau_a(k)\), the sets \(A_s\) and \(A\) agree below \(k\).</p>
+  <div class="proof"><p>At a candidate stage, query \(A\) on each of the finitely many inputs below \(k\), and check that each positive answer has appeared in \(A_s\). This is a terminating finite test. All finitely many positive inputs eventually enter, so least search terminates; when \(k=0\), stage zero passes. The resulting instructions use ordinary stage tests, queries, and finite recursion, hence actual <a href="oracle-computation#relative-closure">oracle-program constructors</a>.</p><p>Every stage is contained in \(A\), so negative oracle answers are already correct. Positive answers remain correct afterward because the stages increase. Thus the first passing stage settles this whole prefix permanently. This permanence uses c.e. monotonicity; a <a href="domination-and-hyperimmune-degrees#first-correct-prefix">first correct prefix in an arbitrary changing approximation</a> need not remain correct.</p></div>
+</section>
+
+<section id="oracle-modulus" data-kind="theorem" data-formal="hdeg-least-allowance hdeg-allowance-program hdeg-allowance-program-evaluation ars-modulus ars-modulus-program-evaluation ars-modulus-relative ars-approximation-modulus post-bounded-query-dependence">
+  <h2>Total computation from a c.e. oracle has an oracle-computable modulus</h2>
+  <p>Let \(k_e^A(n)\) be the <a href="domination-and-hyperimmune-degrees#successful-allowance">least successful evaluation allowance</a> for the supplied total program. The specified function</p>
+  <div class="math-display">\[m(n)=\max\bigl(k_e^A(n),\tau_a(k_e^A(n))\bigr)\]</div>
+  <p>is total \(A\)-computable and satisfies</p>
+  <div class="math-display">\[\forall n\;\forall s\ge m(n)\quad\widehat f(s,n)=f(n).\]</div>
+  <div class="proof"><p>One actual program computes the least successful allowance, passes that value to the prefix-settling program, and returns their maximum. Both searches terminate under the supplied totality and c.e. hypotheses.</p><p>Fix \(n\), put \(k=k_e^A(n)\), and let \(s\ge m(n)\). Soundness gives \(b^A(k,e,n)=f(n)+1\). The settled prefix below \(k\) lets <a href="posts-theorem#bounded-query-agreement">bounded query agreement</a> replay this fixed successful allowance with oracle \(A_s\). Now keep \(A_s\) fixed and increase only the allowance from \(k\) to \(s\); <a href="oracle-program-numberings#bounded-correctness">evaluation monotonicity</a> preserves the output. Therefore \(b^{A_s}(s,e,n)=f(n)+1\), and decoding gives the displayed identity. This proves convergence together with a genuine modulus computed from \(A\).</p></div>
+</section>
+
+<section id="delayed-copy-family" data-kind="definition" data-formal="ars-delayed-copy ars-delayed-copy-partial ars-first-entry ars-first-entry-spec">
+  <h2>Wait for a halting event before choosing one approximated index</h2>
+  <p>Use the ordinary increasing <a href="limit-computability#halting-stages">halting stages</a> \(K_s\). Define the ordinary partial procedure \(G(z,n,x)\): search for the first \(s\) with \(n\in K_s\); compute \(j=\widehat f(s,z)\); then simulate \(\varphi_j(x)\). If the event never occurs, the procedure remains undefined.</p>
+  <p>This is jointly partial recursive. Every stage test and approximation value is computed by an ordinary terminating program, and the final simulation is universal evaluation. Once the first event occurs, that single value of \(\widehat f\) is frozen. Later changes in the approximation do not change the copied program.</p>
+</section>
+
+<section id="self-referential-copy" data-kind="lemma" data-formal="ars-delayed-master-evaluation ars-copy-family-evaluation ars-copy-selector ars-copy-selector-primitive ars-copy-selector-evaluation ars-copy-positive-evaluation ars-copy-empty-domain uniform-rec-specified-partial-family">
+  <h2>Compile one self-referential copying family before the oracle values vary</h2>
+  <p>The <a href="uniform-self-reference#partial-families">parameterized theorem for partial output rules</a> supplies one ordinary primitive-recursive \(h\) with</p>
+  <div class="math-display">\[\varphi_{h(n)}(x)\simeq G(h(n),n,x)\qquad(n,x\in\mathbb N).\]</div>
+  <p>For \(n\in K\), let \(\sigma(n)=\min\{s:n\in K_s\}\). Then</p>
+  <div class="math-display">\[W_{h(n)}=\begin{cases}W_{\widehat f(\sigma(n),h(n))},&amp;n\in K,\\\varnothing,&amp;n\notin K.\end{cases}\]</div>
+  <div class="proof"><p>Apply the existing partial-family construction to this one joint procedure \(G\). It chooses a single ordinary master index and specializes it to \(n\), so \(h\) is primitive recursive. The construction depends on the fixed ordinary approximation program; it does not query \(A\) to build its indices. If the event occurs, the defining evaluation identity copies exactly the displayed program on every input. Otherwise its first search diverges on every input, giving the empty domain. The set-theoretic notation \(\sigma(n)\) is used only in the branch where its minimum exists.</p></div>
+</section>
+
+<section id="late-agreement" data-kind="lemma" data-formal="ars-late-fixed-point ars-fpf-entry-bound">
+  <h2>A sufficiently late event forces a domain fixed point</h2>
+  <p>If \(n\in K\) and \(m(h(n))\le\sigma(n)\), then \(W_{h(n)}=W_{f(h(n))}\). Consequently, if \(f\) is FPF,</p>
+  <div class="math-display">\[n\in K\quad\Longrightarrow\quad\sigma(n)&lt;m(h(n)).\]</div>
+  <div class="proof"><p>The modulus gives \(\widehat f(\sigma(n),h(n))=f(h(n))\) under the stated inequality. Substitute this numerical equality into the exact copying identity in <a href="#self-referential-copy"></a>. It makes \(h(n)\) a domain fixed point of \(f\), which an FPF function excludes. Thus the entry stage must be strictly smaller than the modulus bound.</p></div>
+</section>
+
+<section id="halting-decider" data-kind="theorem" data-formal="ars-entry-bound-decides ars-halting-decider-evaluation ars-halting-reduction">
+  <h2>A fixed-point-free function makes the modulus decide halting</h2>
+  <p>If the supplied total \(A\)-computable \(f\) is FPF, then</p>
+  <div class="math-display">\[n\in K\quad\Longleftrightarrow\quad n\in K_{m(h(n))}.\]</div>
+  <p>There is an actual \(A\)-oracle program computing the characteristic bit of the right-hand condition, so \(K\le_T A\).</p>
+  <div class="proof"><p>If \(n\in K\), <a href="#late-agreement"></a> puts its first entry strictly before \(m(h(n))\); increasingness of the stages gives membership in the displayed stage. The reverse direction follows because every halting stage lies in \(K\).</p><p>The deciding program first computes the ordinary primitive-recursive value \(h(n)\), then computes \(m(h(n))\) with the specified \(A\)-program, and finally runs the ordinary total halting-stage test on \(n\) and that stage. It terminates and returns exactly \(\chi_K(n)\). Thus the contradiction to incompleteness is supplied by a concrete reduction, not by an attempt to test equality of two c.e. domains.</p></div>
+</section>
+
+<section id="arslanov-criterion" data-kind="theorem" data-formal="ars-criterion ars-halting-fpf-substitution ars-halting-reduction productive-diagonal-complete turing-red-many-one">
+  <h2>A c.e. oracle computes a fixed-point-free function exactly when it is complete</h2>
+  <div class="statement-box"><p>For every c.e. set \(A\),</p><div class="math-display">\[K\le_T A\quad\Longleftrightarrow\quad A\text{ computes a total FPF function}.\]</div><p>This is <strong>Arslanov’s completeness criterion</strong>. Since a c.e. set is <a href="computable-reductions#halting-completeness">computable from \(K\)</a>, its left side also says \(A\equiv_T K\).</p></div>
+  <div class="proof"><p>The forward implication is the explicit function from <a href="#halting-fpf-function"></a> and query substitution. For the reverse implication, choose the supplied c.e. index and an actual program for the total FPF function. The approximation, modulus and self-referential family constructed above give the actual halting decider in <a href="#halting-decider"></a>. These steps establish both implications with the given oracle and ordinary domain numbering.</p></div>
+</section>
+
+<section id="incomplete-fixed-points" data-kind="theorem" data-formal="ars-incomplete-fixed-point ars-disagreement-entry-bound ars-incomplete-final-guess ars-copy-positive-evaluation">
+  <h2>Every total function computed by an incomplete c.e. oracle has a domain fixed point</h2>
+  <p>If \(A\) is c.e., \(K\nleq_T A\), and a total \(f\) is computable from \(A\), then some \(e\) satisfies \(W_{f(e)}=W_e\).</p>
+  <div class="proof"><p>If there were no such index, \(f\) would be FPF. The criterion would then imply \(K\le_T A\), a contradiction. More concretely, among the halting parameters in <a href="#self-referential-copy"></a>, at least one must have a final approximation value at its first entry; otherwise <a href="#halting-decider"></a> would decide halting from \(A\). Its copying index is a domain fixed point. This assertion concerns domains; it does not assert equality of the programs’ output values.</p></div>
+</section>
+
+<section id="dnc-to-fpf" data-kind="theorem" data-formal="ars-relation-index ars-relation-index-primitive ars-relation-index-evaluation ars-pick-index ars-pick-index-primitive ars-pick-index-spec ars-pick-singleton-diagonal ars-singleton-index ars-singleton-index-primitive ars-singleton-index-domain ars-dnc-fpf-map ars-dnc-fpf ars-dnc-fpf-evaluation ars-computes-fpf-of-dnc adef-selector-index adef-selector-index-spec rs-fragment-compiler rs-fragment-compiler-evaluation">
+  <h2>A diagonally noncomputable function supplies an explicit FPF function</h2>
+  <p>Let \(g:\mathbb N\to\mathbb N\) be total and <a href="effectively-closed-classes-and-dnc#dnc-functions">diagonally noncomputable</a>: whenever \(\varphi_j(j)\) is defined, it differs from \(g(j)\). There are fixed ordinary primitive-recursive index maps \(d,c\) such that</p>
+  <div class="math-display">\[F_g(e)=c(g(d(e)))\]</div>
+  <p>is FPF and is computable with any oracle computing \(g\).</p>
+  <div class="proof"><p>First compile the relation \(R_e(z,y)\) meaning \(y\in W_e\). One fixed ordinary master ignores \(z\), simulates \(\varphi_e(y)\), and returns zero if that simulation finishes. Specialization gives a primitive-recursive relation-index map. Compose it with the actual <a href="arithmetic-definability#uniform-selection-indices">uniform selector compiler</a> to obtain \(d(e)\). Every defined output of this program lies in \(W_e\), and if \(W_e\) is nonempty the selector is total. In particular, if \(W_e=\{v\}\), then \(\varphi_{d(e)}(d(e))=v\). No least numerical member is being computed.</p><p>For \(c(v)\), use the existing <a href="rice-shapiro-theorem#fragment-codes">finite-fragment compiler</a> on the singleton table \([(v,0)]\). This is a primitive-recursive numerical map and \(W_{c(v)}=\{v\}\). If \(W_{F_g(e)}=W_e\), then \(W_e=\{g(d(e))\}\), forcing \(\varphi_{d(e)}(d(e))=g(d(e))\), contrary to DNC. Thus the domains differ for every \(e\). The numerical composition computes \(F_g\) from the same supplied program for \(g\), proving the final assertion.</p></div>
+</section>
+
+<section id="ce-hypothesis-question" data-kind="question" data-formal="lbt-low-dnc ars-low-non-ce-example">
+  <h2>Can the c.e. hypothesis be removed?</h2>
+  <p>Does every oracle computing a total FPF function compute \(K\)? Use an existing incomplete oracle to test the proposed extension.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The <a href="pa-degrees#low-pa-degrees">low binary DNC example</a> supplies a set \(D\) with \(K\nleq_T D\) whose characteristic function is binary DNC. Apply <a href="#dnc-to-fpf"></a> to \(g=\chi_D\). The resulting total FPF function is computed from \(D\), although \(D\) does not compute \(K\).</p><p>The set \(D\) cannot be c.e.: otherwise <a href="#arslanov-criterion"></a> would force \(K\le_T D\). The example therefore explains exactly why the enumerable-oracle hypothesis matters.</p></div></details>
+</section>
+
+<section id="selector-question" data-kind="question" data-formal="ces-whole-index ces-whole-index-domain ars-candidate-failure ars-copy-selector-primitive ars-incomplete-final-guess">
+  <h2>Does the primitive-recursive family select a fixed point at every parameter?</h2>
+  <p>In the incomplete-oracle argument, is every \(h(n)\) from <a href="#self-referential-copy"></a> necessarily a domain fixed point of \(f\)? Does primitive recursiveness of \(h\) by itself supply an algorithm choosing a successful halting parameter?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. For a concrete test, let \(f\) be the constant function returning an index for the total constant-zero program, so every \(W_{f(e)}=\mathbb N\). This is already ordinary computable. If \(n\notin K\), the family has \(W_{h(n)}=\varnothing\), and hence that \(h(n)\) is not a domain fixed point.</p><p>The argument guarantees that at least one halting parameter yields the required agreement when the oracle is incomplete. The construction of \(h\) alone does not identify that parameter, and the proof gives no terminating test for equality of its two domains. Primitive recursiveness of the whole candidate family must therefore be kept separate from an effective choice of a successful member. No computable parameterized fixed-point selector follows from this argument.</p></div></details>
+</section>

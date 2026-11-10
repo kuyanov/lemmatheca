@@ -1,9 +1,10 @@
-<section id="semantic-fixed-points" data-formal="univ-indexed-evaluation univ-specialization-primitive univ-specialization-evaluation partrec-partial-equality fixed-point-definition rec-thm-semantic-fixed-point rec-thm-numerical-implies-semantic" data-kind="definition">
+<section id="semantic-fixed-points" data-kind="definition" data-formal="univ-indexed-evaluation univ-specialization-primitive univ-specialization-evaluation partrec-partial-equality fixed-point-definition rec-thm-semantic-fixed-point rec-thm-numerical-implies-semantic lfp-first-recursion-theorem lfp-extensional-index-fixed-point">
   <h2>A fixed point concerns behavior on every input</h2>
   <p>Use the <a href="universal-computation#numbering-programs">numbered programs</a> \(\varphi_e\), the square pairing \(\langle a,x\rangle\), and the primitive-recursive specialization function \(s(e,a)\) from the <a href="universal-computation#parameter-theorem">parameter theorem</a>. Thus every natural number is a program index and</p>
   <div class="math-display">\[\varphi_{s(e,a)}(x)\simeq\varphi_e(\langle a,x\rangle).\]</div>
   <p>Here \(\simeq\) is <a href="partial-recursive-functions#partial-equality">equality of partial values</a>: both sides are undefined, or both are defined with the same natural-number value. We write \(\varphi_e\simeq\varphi_j\) when this holds at every input. In particular, equal partial functions have the same domain as well as the same outputs there.</p>
   <p>For a total numerical transformation \(f:\mathbb N\to\mathbb N\), a <strong>semantic fixed point</strong> is an index \(e\) such that \(\varphi_e\simeq\varphi_{f(e)}\). The word “semantic” specifies that the fixed object is computed behavior. A <strong>numerical fixed point</strong> would instead satisfy \(e=f(e)\). Numerical equality implies equality of behavior, but the recursion theorem will assert the latter without asserting the former.</p>
+<p>When a total computable index transformation also <a href="effective-operators#extensional-transformations">respects equality of computed functions</a>, its effective operator extension has a <a href="least-fixed-point-recursion#first-recursion-theorem">computable least fixed point</a> for graph inclusion. The resulting program is a semantic fixed point of the transformation. Leastness is an additional claim about partial functions, rather than equality of their numerical indices.</p>
 </section>
 
 <section id="self-specialization" data-formal="rec-thm-self-specialization rec-thm-self-specialization-primitive rec-thm-self-specialization-evaluation" data-kind="lemma">
@@ -42,7 +43,7 @@
   </figure>
 </section>
 
-<section id="transformer-fixed-points" data-formal="mach-unary-recursive-bridge partrec-total-recursive rec-thm-transformer-fixed-point rec-thm-transformer-converse uniform-rec-parameterized" data-kind="theorem">
+<section id="transformer-fixed-points" data-formal="mach-unary-recursive-bridge partrec-total-recursive rec-thm-transformer-fixed-point rec-thm-transformer-converse uniform-rec-parameterized ars-incomplete-fixed-point" data-kind="theorem">
   <h2>Every total computable index transformation has a semantic fixed point</h2>
   <div class="statement-box">
     <p>If \(f:\mathbb N\to\mathbb N\) is total recursive, then some index \(e\) satisfies</p>
@@ -53,6 +54,7 @@
   </div>
   <p>Conversely, this transformer statement yields the preceding theorem. Given partial recursive \(g(e,x)\), choose \(q\) with \(\varphi_q(\langle e,x\rangle)\simeq g(e,x)\) and put \(f(e)=s(q,e)\). This \(f\) is primitive recursive, hence total recursive. A semantic fixed point of \(f\) satisfies \(\varphi_e(x)\simeq\varphi_{s(q,e)}(x)\simeq g(e,x)\). Thus the two forms express the same existence principle.</p>
   <p>When the index transformation also depends on a parameter, the <a href="uniform-self-reference#parameterized-recursion">parameterized recursion theorem</a> supplies one computable selector of fixed-point indices for all parameters. Its specified selector is primitive recursive, rather than an unrelated choice of index for each parameter.</p>
+<p><a href="arslanov-completeness-criterion#incomplete-fixed-points">Arslanov’s criterion</a> extends a domain fixed-point conclusion to every total numerical function computed by an incomplete c.e. oracle: some ordinary index has the same domain as its image. Its proof builds an ordinary self-referential family from computable approximations to the oracle computation.</p>
 </section>
 
 <section id="numerical-fixed-point-question" data-formal="rec-thm-successor-example rec-thm-transformer-fixed-point" data-kind="question">

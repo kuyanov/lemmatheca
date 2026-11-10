@@ -1,0 +1,133 @@
+<section id="enumeration-and-deficiency" data-kind="definition" data-formal="simple-finite-decidable effective-stage-infinite-ce-injective-enumeration defic-deficiency defic-nondeficient">
+  <h2>Record a smaller number arriving later</h2>
+  <p>Fix a noncomputable c.e. set \(A\subseteq\mathbb N\). It is infinite, since every finite set is decidable. The <a href="effective-enumerations#injective-enumerations">repetition-removal construction</a> supplies a total computable injective enumeration \(a:\mathbb N\to\mathbb N\) with range \(A\). Fix this particular enumeration and an ordinary program computing it. Its <strong>deficiency set</strong> is</p>
+  <div class="math-display">\[D_a=\{s:\exists t&gt;s\quad a(t)&lt;a(s)\},\qquad C_a=\mathbb N\setminus D_a.\]</div>
+  <p>The elements of these sets are positions in the enumeration. A position is deficient when a smaller value appears later. A position in \(C_a\) is nondeficient: no later value is smaller. Changing the enumeration can change these sets, so the supplied \(a\) remains fixed throughout the construction.</p>
+</section>
+
+<section id="tail-lower-bounds" data-kind="lemma" data-formal="defic-tail-characterization defic-bounded-range-membership">
+  <h2>A nondeficient position supplies a lower bound on its tail</h2>
+  <p>For every position \(s\),</p>
+  <div class="math-display">\[s\in C_a\quad\Longleftrightarrow\quad\forall t&gt;s\quad a(s)&lt;a(t).\]</div>
+  <p>Consequently, if \(s\in C_a\) and \(x&lt;a(s)\), then</p>
+  <div class="math-display">\[x\in A\quad\Longleftrightarrow\quad\exists i\le s\quad a(i)=x.\]</div>
+  <div class="proof">
+    <p>Nondeficiency excludes \(a(t)&lt;a(s)\) for \(t&gt;s\). Injectivity excludes equality, leaving \(a(s)&lt;a(t)\). The converse follows immediately from that strict inequality. If \(x&lt;a(s)\), no position after \(s\) can output \(x\). Since the range of \(a\) is \(A\), membership of \(x\) is therefore decided by the finite initial segment through \(s\).</p>
+  </div>
+</section>
+
+<section id="enumerable-deficiency" data-kind="lemma" data-formal="defic-enumerable defic-recognizer-domain defic-recognizer-output">
+  <h2>Deficiency has a positive finite witness</h2>
+  <p>The specified set \(D_a\) is computably enumerable. More precisely, the following ordinary partial program has domain exactly \(D_a\): on input \(s\), test \(t=s+1,s+2,\ldots\) in order, and return zero as soon as \(a(t)&lt;a(s)\).</p>
+  <div class="proof">
+    <p>Each test terminates because the supplied program for \(a\) is total. Comparison, composition, and <a href="partial-recursive-functions#search-correctness">least-witness search</a> give an actual partial recursive program. It halts exactly when the defining witness \(t\) exists, so the <a href="universal-computation#decidable-and-enumerable">domain characterization</a> proves enumerability. If no witness exists, the program continues searching; a finite quiet interval does not certify nondeficiency.</p>
+  </div>
+</section>
+
+<section id="nondeficient-positions" data-kind="lemma" data-formal="defic-arbitrarily-late defic-infinite-complement defic-unbounded-values">
+  <h2>There are arbitrarily late nondeficient positions</h2>
+  <p>The set \(C_a\) is infinite. Its values \(\{a(s):s\in C_a\}\) are also unbounded.</p>
+  <div class="proof">
+    <p>Fix any position bound \(N\). The nonempty set of tail values \(\{a(t):N\le t\}\) has a least member. Let \(s\ge N\) be a position attaining it. For every \(t&gt;s\), minimality gives \(a(s)\le a(t)\), and injectivity makes the inequality strict. Thus \(s\in C_a\). This works for every \(N\), proving infinitude.</p>
+    <p>If all values at positions in \(C_a\) were at most \(x\), injectivity would put this infinite set of positions into the finite set \(\{0,\ldots,x\}\). That is impossible. Hence for every \(x\), some \(s\in C_a\) satisfies \(x&lt;a(s)\). These are existence statements; the tail minimum was not claimed to be computable.</p>
+  </div>
+</section>
+
+<section id="recover-original-set" data-kind="theorem" data-formal="defic-recover-search-evaluation defic-finite-range-program defic-recover-evaluation defic-recover-reduction">
+  <h2>Deficiency decisions recover the original set</h2>
+  <p>There is an actual oracle program \(P_a\), built from the supplied ordinary program for \(a\), such that</p>
+  <div class="math-display">\[E_{D_a}(P_a,x)\downarrow=\chi_A(x)\quad\text{for every }x.\]</div>
+  <p>Its instructions are to search for the first position \(s\) satisfying \(s\notin D_a\) and \(x&lt;a(s)\), then return one exactly when \(x\) occurs among \(a(0),\ldots,a(s)\). In particular \(A\le_T D_a\).</p>
+  <div class="proof">
+    <p>At each candidate \(s\), compute \(a(s)\) and query the oracle bit for \(s\). These are terminating computations. The unboundedness in <a href="#nondeficient-positions"></a> guarantees that some candidate passes. The final bounded test uses only the fixed program for \(a\). Its answer is correct by <a href="#tail-lower-bounds"></a>.</p>
+    <p>These instructions are finite <a href="oracle-computation#relative-closure">oracle-program syntax</a>: pair the parameters, compose the embedded ordinary \(a\)-program with projections, use the query constructor for membership, use least search for the passing position, and use finite recursion for the final list of comparisons. Thus \(P_a\) is a program with the displayed identity, not merely a set-theoretic membership equivalence. It uses the same supplied enumeration.</p>
+  </div>
+</section>
+
+<section id="finite-prefix-test" data-kind="theorem" data-formal="defic-finite-prefix-characterization defic-prefix-decision-evaluation defic-prefix-decision-zero defic-deficiency-reduction">
+  <h2>The original oracle decides deficiency by a finite prefix test</h2>
+  <p>For every position \(s\),</p>
+  <div class="math-display">\[s\in D_a\quad\Longleftrightarrow\quad\exists x&lt;a(s)\;\bigl[x\in A\ \land\ \forall i&lt;s\quad a(i)\ne x\bigr].\]</div>
+  <p>There is an actual program \(Q_a\), built from the same ordinary \(a\)-program, with</p>
+  <div class="math-display">\[E_A(Q_a,s)\downarrow=\chi_{D_a}(s).\]</div>
+  <div class="proof">
+    <p>If \(s\) is deficient, choose \(t&gt;s\) with \(x=a(t)&lt;a(s)\). Then \(x\in A\), and injectivity excludes \(a(i)=x\) for all \(i&lt;s\). Conversely, a witness \(x\) belongs to the range of \(a\), so \(a(t)=x\) for some \(t\). It cannot have \(t&lt;s\) by the finite test, or \(t=s\) because \(x&lt;a(s)\). Hence \(s&lt;t\), proving deficiency.</p>
+    <p>To implement \(Q_a\), first compute \(a(s)\). For each \(x&lt;a(s)\), query membership in \(A\) and compare \(x\) with the finitely many values \(a(i)\) for \(i&lt;s\). Return one if any \(x\) passes, and zero otherwise. All loops are bounded after computing \(a(s)\); composition, queries, and finite recursion give the required oracle syntax. At \(a(s)=0\), the search interval is empty and the answer is zero, as it should be. This proves \(D_a\le_T A\).</p>
+  </div>
+</section>
+
+<section id="degree-preservation" data-kind="theorem" data-formal="defic-enumerable defic-infinite-complement defic-degree-preservation defic-noncomputable defic-infinite">
+  <h2>The specified deficiency set has exactly the original degree</h2>
+  <div class="statement-box"><p>For every noncomputable c.e. \(A\) and every supplied total computable injective enumeration \(a\) of \(A\), the specified deficiency set is c.e., has infinite complement, and satisfies \(D_a\equiv_T A\).</p></div>
+  <div class="proof">
+    <p>Enumerability is <a href="#enumerable-deficiency"></a>, and the infinite complement is <a href="#nondeficient-positions"></a>. The actual programs \(P_a\) and \(Q_a\) in <a href="#recover-original-set"></a> and <a href="#finite-prefix-test"></a> witness the two reductions. In particular \(D_a\) is noncomputable: a computable oracle for it could be eliminated from \(P_a\), deciding \(A\). It is therefore infinite as well.</p>
+  </div>
+</section>
+
+<section id="hypersimple-sets" data-kind="definition" data-formal="defic-hypersimple defic-hypersimple-array-characterization hdeg-strong-array hdeg-array-hits hdeg-array-finite-set">
+  <h2>A hypersimple set leaves a hyperimmune complement</h2>
+  <p>A set \(S\subseteq\mathbb N\) is <strong>hypersimple</strong> if it is c.e. and its complement \(\overline S\) is <a href="domination-and-hyperimmune-degrees#principal-function">hyperimmune</a>. In particular the complement must be infinite. By the <a href="domination-and-hyperimmune-degrees#array-characterization">strong-array characterization</a>, this is equivalently the combination of c.e. enumerability, an infinite complement, and</p>
+  <div class="math-display">\[\forall (F_n)\text{ strong array}\quad\exists n\quad F_n\subseteq S.\]</div>
+  <p>Here a <a href="domination-and-hyperimmune-degrees#strong-arrays">strong array</a> is a pairwise disjoint sequence of finite sets with a total computable finite-list description. An array hits \(\overline S\) exactly when every \(F_n\) contains an omitted number. Negating that condition gives one \(F_n\) disjoint from the complement, or equivalently contained in \(S\). Empty members cause no exception: an empty member is already contained in \(S\) and prevents the array from hitting its complement.</p>
+</section>
+
+<section id="finite-array-search" data-kind="lemma" data-formal="defic-bad-positions-bound defic-passing-member-bound defic-first-passing-spec defic-array-pass-evaluation defic-array-search-evaluation defic-single-maximum-spec">
+  <h2>Disjoint finite tests eventually avoid every small enumerated value</h2>
+  <p>Suppose \((F_n)\) is a strong array whose members are all nonempty. For every \(x\), some \(n\) satisfies</p>
+  <div class="math-display">\[\forall s\in F_n\quad x&lt;a(s).\]</div>
+  <p>The first such \(n\) can be found computably from \(x\), the supplied \(a\)-program, and the supplied list-code program for the array.</p>
+  <div class="proof">
+    <p>There are at most \(x+1\) bad positions \(s\) with \(a(s)\le x\), because \(a\) is injective. Pairwise disjointness allows each bad position to occur in at most one array member. Thus among the first \(x+2\) sets, at least one contains no bad position. In particular a passing index exists, even among \(0,\ldots,x+1\).</p>
+    <p>For any proposed \(n\), compute its complete finite list and compute \(a(s)\) for every listed entry. This decides the displayed condition, regardless of repetitions in a list. Least search therefore terminates and gives a total ordinary computation. The list's maximum can then be computed too. Nonemptiness ensures that this maximum is a member and bounds every position in the list.</p>
+  </div>
+</section>
+
+<section id="array-decider" data-kind="theorem" data-formal="defic-array-decider-evaluation defic-array-hits-decides defic-no-hitting-array">
+  <h2>An array hitting all nondeficient positions would decide the range</h2>
+  <p>If a strong array \((F_n)\) hits \(C_a\), there is an ordinary total program deciding \(A\). On input \(x\), find the first \(n\) with \(x&lt;a(s)\) for every \(s\in F_n\), compute \(M=\max F_n\), and return one exactly when</p>
+  <div class="math-display">\[\exists i\le M\quad a(i)=x.\]</div>
+  <div class="proof">
+    <p>Hitting \(C_a\) makes every array member nonempty. Hence the search and maximum computation terminate by <a href="#finite-array-search"></a>. Choose \(t\in F_n\cap C_a\). The search gives \(x&lt;a(t)\), and every position after \(t\) has value greater than \(a(t)\). Since \(t\le M\), no position after \(M\) can output \(x\). The finite test through \(M\) therefore agrees exactly with membership in the range of \(a\).</p>
+    <p>The chosen nondeficient \(t\) is used only to prove correctness. The program never identifies it or queries \(C_a\). It uses just the given computable list descriptions, the given program for \(a\), least search over finite tests, a finite maximum, and a bounded range test. These operations specify an ordinary program whose output is \(\chi_A(x)\). Because \(A\) was assumed noncomputable, no such hitting strong array exists.</p>
+  </div>
+</section>
+
+<section id="deficiency-hypersimple" data-kind="theorem" data-formal="defic-hyperimmune-complement defic-hypersimple-deficiency defic-hypersimple-simple defic-degree-preservation hdeg-hyperimmune-implies-immune">
+  <h2>Deficiency sets are hypersimple</h2>
+  <div class="statement-box"><p>For the specified enumeration of a noncomputable c.e. set \(A\), the complement \(C_a\) is hyperimmune. Thus \(D_a\) is hypersimple and simple, with the same Turing degree as the original set.</p></div>
+  <div class="proof">
+    <p>The complement is infinite by <a href="#nondeficient-positions"></a>. No strong array hits it by <a href="#array-decider"></a>, so the <a href="domination-and-hyperimmune-degrees#array-characterization">array characterization</a> proves hyperimmunity. Since \(D_a\) is c.e., it is hypersimple. Hyperimmune sets are <a href="domination-and-hyperimmune-degrees#hyperimmune-implies-immune">immune</a>, so its complement is immune and \(D_a\) is <a href="simple-sets#simple-sets">simple</a>. Finally <a href="#degree-preservation"></a> gives the stated degree equality.</p>
+  </div>
+</section>
+
+<section id="every-ce-degree" data-kind="theorem" data-formal="defic-every-ce-degree defic-halting-example">
+  <h2>Every nonzero enumerable degree has a hypersimple representative</h2>
+  <p>Every nonzero <a href="turing-degrees#equivalence-and-degrees">Turing degree</a> containing a c.e. set contains a hypersimple set. In particular hypersimple sets exist.</p>
+  <div class="proof">
+    <p>Choose a c.e. representative \(A\) of that degree. The degree is nonzero precisely when this representative is noncomputable. It is then infinite, so <a href="effective-enumerations#injective-enumerations">injective enumeration</a> supplies an \(a\) as required. The set \(D_a\) from <a href="#deficiency-hypersimple"></a> is hypersimple and has the same degree. Applying this to the c.e. noncomputable <a href="universal-computation#halting-sets">ordinary halting set</a> gives an example.</p>
+    <p>The conclusion asserts that a suitable representative exists in each degree. It does not assert that every c.e. representative of that degree has a hyperimmune complement.</p>
+  </div>
+</section>
+
+<section id="computable-range-question" data-kind="question" data-formal="defic-parity-swap defic-parity-swap-primitive defic-parity-swap-equations defic-parity-swap-injective defic-parity-swap-range defic-parity-swap-deficiency defic-odd-singleton-array defic-parity-swap-not-hypersimple">
+  <h2>Does every injective enumeration produce a hypersimple deficiency set?</h2>
+  <p>Remove the assumption that the range is noncomputable. For the computable injective enumeration</p>
+  <div class="math-display">\[a(2n)=2n+1,\qquad a(2n+1)=2n,\]</div>
+  <p>find \(D_a\) and \(C_a\). Is \(D_a\) hypersimple?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The range is \(\mathbb N\). Every even position \(2n\) is deficient, because the next value \(2n\) is smaller than \(2n+1\). An odd position \(2n+1\) outputs \(2n\), and every later value is larger. Therefore</p>
+    <div class="math-display">\[D_a=\{2n:n\in\mathbb N\},\qquad C_a=\{2n+1:n\in\mathbb N\}.\]</div>
+    <p>The singleton sets \(F_n=\{2n+1\}\) form a computable strong array hitting \(C_a\), so \(C_a\) is not hyperimmune. Consequently \(D_a\) is not hypersimple. The earlier existence of infinitely many nondeficient positions remains true; it was the contradiction with noncomputability in <a href="#array-decider"></a> that excluded a hitting array.</p>
+  </div></details>
+</section>
+
+<section id="set-versus-degree-question" data-kind="question" data-formal="defic-enumerable defic-infinite defic-hypersimple-deficiency defic-hyperimmune-complement hdeg-enumerable-not-hyperimmune hdeg-hyperimmune-implies-immune immune-not-enumerable oracle-code-complement-query oracle-code-complement-query-correct turing-red-complement-equivalence defic-degree-preservation">
+  <h2>Which set is hyperimmune, and which one is hypersimple?</h2>
+  <p>For a noncomputable c.e. range, is the deficiency set itself hyperimmune? What are the respective properties and Turing degrees of \(D_a\) and \(C_a\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The set \(D_a\) is c.e., infinite, and hypersimple. It cannot itself be hyperimmune: an infinite c.e. set contains an infinite c.e. subset, namely itself, whereas every hyperimmune set is immune. Its complement \(C_a\) is the hyperimmune set in the construction.</p>
+    <p>A set and its complement have the same Turing degree. One common oracle program queries membership and swaps the two answers zero and one; with oracle \(D_a\) it decides \(C_a\), and with oracle \(C_a\) it decides \(D_a\). Hence</p>
+    <div class="math-display">\[C_a\equiv_T D_a\equiv_T A.\]</div>
+    <p>Thus this construction gives both a hypersimple c.e. representative and a hyperimmune representative of the same nonzero c.e. degree. The hyperimmune representative is not c.e. This is consistent with the distinction between <a href="domination-and-hyperimmune-degrees#set-versus-degree">a set being hyperimmune and its degree being hyperimmune</a>.</p>
+  </div></details>
+</section>
