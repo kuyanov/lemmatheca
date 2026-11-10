@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static catalog_numbers %}
 {% block title %}{{ node.id }} — Lemmatheca{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'vendor/katex/katex.min.css' %}">
@@ -36,7 +36,7 @@
       <a href="#L{{ declaration_line }}">line {{ declaration_line }}</a>{% endif %}
     </p>
     <details class="node-source-browser" id="source-browser">
-      <summary>Browse source file <span class="node-count">{{ source_lines|length }} lines</span></summary>
+      <summary>Browse source file <span class="node-count">{{ source_lines|length|compact_count }} lines</span></summary>
       <pre class="lean-source" tabindex="0" aria-label="Lean source"><code>{% for line in source_lines %}<span class="source-line{% if line.selected %} declaration-line{% endif %}" id="L{{ line.number }}"><a class="line-number" href="#L{{ line.number }}" aria-label="Line {{ line.number }}">{{ line.number }}</a>{{ line.text }}
 </span>{% endfor %}</code></pre>
     </details>
@@ -45,7 +45,7 @@
 
   {% if dependencies %}
   <details class="node-dependencies node-section">
-    <summary>Dependencies <span class="node-count">{{ dependencies|length }}</span></summary>
+    <summary>Dependencies <span class="node-count">{{ dependencies|length|compact_count }}</span></summary>
     {% include "catalog/_node_list.html" with nodes=dependencies list_class="node-prerequisite-list" only %}
   </details>
   {% endif %}

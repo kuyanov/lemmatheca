@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load catalog_numbers %}
 {% block title %}{{ area.title }} — Lemmatheca{% endblock %}
 {% block content %}
 {% include "catalog/_page_navigation.html" %}
@@ -10,7 +11,7 @@
 {% if areas %}
 <section class="browse-section" aria-labelledby="subareas-title">
   <div class="section-heading">
-    <h2 id="subareas-title">Explore subareas</h2><span>{{ areas|length }} subarea{{ areas|length|pluralize }}</span>
+    <h2 id="subareas-title">Explore subareas</h2><span>{{ areas|length|compact_count }} subarea{{ areas|length|pluralize }}</span>
   </div>
   {% include "catalog/_area_list.html" %}
 </section>
@@ -18,7 +19,7 @@
 {% if entries %}
 <section class="entries-section" aria-labelledby="statements-title">
   <div class="section-heading">
-    <h2 id="statements-title">Entries</h2><span>{{ entries|length }} entr{{ entries|length|pluralize:"y,ies" }}</span>
+    <h2 id="statements-title">Entries</h2><span>{{ entries|length|compact_count }} entr{{ entries|length|pluralize:"y,ies" }}</span>
   </div>
   {% for entry in entries %}
   <a class="entry-row" href="{{ entry.url }}"><span class="entry-badges">

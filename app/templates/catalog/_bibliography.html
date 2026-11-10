@@ -1,4 +1,4 @@
-{% if entry.based_on %}
+{% load catalog_numbers %}{% if entry.based_on %}
 <div class="entry-bibliography" aria-label="Sources">
   <p class="bibliography-primary">
     <span class="bibliography-label">Based on:</span>
@@ -7,7 +7,7 @@
   {% with more_sources=entry.based_on|slice:"1:" %}
   {% if more_sources %}
   <details class="bibliography-more">
-    <summary>{{ more_sources|length }} more source{{ more_sources|length|pluralize }}</summary>
+    <summary>{{ more_sources|length|compact_count }} more source{{ more_sources|length|pluralize }}</summary>
     <ul>
       {% for citation in more_sources %}
       <li>{% include "catalog/_citation.html" with citation=citation only %}</li>

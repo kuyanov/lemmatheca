@@ -1,8 +1,8 @@
-<div class="library-metric">
+{% load catalog_numbers %}<div class="library-metric">
   <dt>{{ label }}</dt>
   <dd>
     <div class="metric-visual">
-      <span class="metric-value">{{ value|default_if_none:"—" }}</span>
+      <span class="metric-value" title="{{ value|default_if_none:'—' }}">{{ value|compact_count }}</span>
       <svg class="metric-icon metric-{{ icon }}" viewBox="0 0 56 56" fill="none" aria-hidden="true">
         {% if icon == "entry" %}
         <path class="metric-icon-fill" d="M28 16c-6-5-13-6-21-4v30c8-2 15-1 21 4 6-5 13-6 21-4V12c-8-2-15-1-21 4Z" />
@@ -27,7 +27,7 @@
         {% endif %}
       </svg>
       {% endif %}
-      <span>{% if value != None %}{{ complete }} {{ detail }}{% else %}Awaiting the
+      <span>{% if value != None %}{{ complete|compact_count }} {{ detail }}{% else %}Awaiting the
         first build{% endif %}</span>
     </span>
     {% include "catalog/_metric_history.html" with key=key label=label only %}

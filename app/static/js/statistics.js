@@ -12,7 +12,27 @@
   };
   const dateLabel = new Intl.DateTimeFormat(undefined, { day: "numeric", month: "short", timeZone: "UTC" });
   const fullDate = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
-  const number = new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 });
+  // Match the server-rendered compact_count filter, including boundary rounding.
+  const compactCount = count => {
+    if (count == null) return "—";
+    const magnitude = Math.abs(count);
+    if (magnitude < 1000) return String(count);
+    const suffixes = "kmbt";
+    let unit = 0, scale = 1000;
+    while (magnitude >= scale * 1000 && unit < suffixes.length - 1) {
+      unit += 1;
+      scale *= 1000;
+    }
+    let precision = magnitude < scale * 10 ? 10 : 1;
+    let rounded = Math.floor((magnitude * precision + scale / 2) / scale);
+    if (rounded >= 1000 * precision && unit < suffixes.length - 1) {
+      unit += 1;
+      scale *= 1000;
+      precision = 10;
+      rounded = Math.floor((magnitude * precision + scale / 2) / scale);
+    }
+    return `${count < 0 ? "-" : ""}${rounded / precision}${suffixes[unit]}`;
+  };
   const svgElement = (tag, attrs = {}, text) => {
     const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
     Object.entries(attrs).forEach(([key, value]) => element.setAttribute(key, value));
@@ -79,7 +99,7 @@
         `${point.count} on ${fullDate.format(point.time)} UTC`).join("; ")}`).join(". ")));
       for (const count of [0, maximum]) {
         svg.append(svgElement("line", { x1: left, x2: right, y1: y(count), y2: y(count), class: "metric-chart-grid" }));
-        svg.append(svgElement("text", { x: 0, y: y(count) + 3, class: "metric-chart-axis" }, number.format(count)));
+        svg.append(svgElement("text", { x: 0, y: y(count) + 3, class: "metric-chart-axis" }, compactCount(count)));
       }
       const fills = svgElement("g", { "fill-opacity": 0.12 });
       const lines = svgElement("g", { fill: "none", "stroke-width": 1.6, "stroke-linejoin": "round" });

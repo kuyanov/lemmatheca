@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static catalog_numbers %}
 {% block extra_head %}
-<script src="{% static 'js/statistics.js' %}" defer></script>{% endblock %}
+<script src="{% static 'js/statistics.js' %}?v=compact-counts-1" defer></script>{% endblock %}
 {% block content %}
 {{ statistics|json_script:"statistics-data" }}
 <section class="home-intro">
@@ -27,7 +27,7 @@
         </dt>
         <dd>
           <div class="metric-visual">
-            <span class="metric-value">{{ area_count }}</span>
+            <span class="metric-value" title="{{ area_count }}">{{ area_count|compact_count }}</span>
             <svg class="metric-tree" viewBox="0 0 64 56" fill="none" aria-hidden="true">
               <path d="M32 13v14M12 43V27h40v16M32 27v16" />
               <circle cx="32" cy="10" r="6" />
@@ -36,8 +36,8 @@
               <circle cx="52" cy="46" r="5" />
             </svg>
           </div>
-          <span class="metric-detail">{{ root_area_count }} broad area{{ root_area_count|pluralize }} ·
-            {{ subarea_count }} subarea{{ subarea_count|pluralize }}</span>
+          <span class="metric-detail">{{ root_area_count|compact_count }} broad area{{ root_area_count|pluralize }} ·
+            {{ subarea_count|compact_count }} subarea{{ subarea_count|pluralize }}</span>
           {% include "catalog/_metric_history.html" with key="areas" label="Areas" only %}
         </dd>
       </div>
@@ -50,7 +50,7 @@
         </dt>
         <dd>
           <div class="metric-visual">
-            <span class="metric-value">{{ statistics.contributors|default_if_none:"—" }}</span>
+            <span class="metric-value" title="{{ statistics.contributors|default_if_none:'—' }}">{{ statistics.contributors|compact_count }}</span>
             <svg class="metric-people" viewBox="0 0 64 56" fill="none" aria-hidden="true">
               <circle cx="32" cy="17" r="8" />
               <path d="M17 48v-5a15 15 0 0 1 30 0v5" />

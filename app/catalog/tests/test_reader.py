@@ -254,7 +254,7 @@ class ReaderTests(SimpleTestCase):
             path = corpus / "index.json"
             index = read_json(path)
             for count, label in [(None, None), (0, "0 lines of Lean"),
-                                 (1, "1 line of Lean"), (12345, "12,345 lines of Lean")]:
+                                 (1, "1 line of Lean"), (12345, "12k lines of Lean")]:
                 with self.subTest(count=count):
                     if count is None:
                         path.unlink()
