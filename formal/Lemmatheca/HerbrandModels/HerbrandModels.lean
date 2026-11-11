@@ -1,7 +1,7 @@
 import Lemmatheca.ChangingLanguages.ChangingLanguages
 import Lemmatheca.Skolemization.Skolemization
 import Lemmatheca.PropositionalCompactness.PropositionalCompactness
-import Lemmatheca.Resolution.Resolution
+import Lemmatheca.PropositionalResolution.PropositionalResolution
 
 /-! Ground-instance semantics on actual shared first-order terms and formulas.
 Only relation atoms, falsum and implication are admitted in a relational matrix;

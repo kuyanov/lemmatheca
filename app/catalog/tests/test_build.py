@@ -3,6 +3,7 @@
 from io import StringIO
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 from tempfile import TemporaryDirectory
@@ -347,7 +348,7 @@ class BuildCommandTests(SimpleTestCase):
             "Lemmatheca/multi-word-entry/Main.lean": "wrong folder\n" * 10,
             "Lemmatheca/OtherEntry/Main.lean": "another entry\n" * 10,
             "Lemmatheca/Example.lean": "outside the subfolder\n" * 10,
-            "Lemmatheca.lean": "umbrella\n" * 10,
+            "Outside.lean": "outside entry folders\n" * 10,
         }
         for relative, contents in sources.items():
             path = self.formal / relative
@@ -801,6 +802,47 @@ class BuildCommandTests(SimpleTestCase):
         commands = get_commands()
         self.assertNotIn("validate_corpus", commands)
         self.assertNotIn("index_authoring_records", commands)
+
+
+class LakeModuleDiscoveryTests(SimpleTestCase):
+    def test_default_build_checks_unimported_nested_modules_without_an_umbrella(self):
+        repository_formal = settings.REPOSITORY_DIR / "formal"
+        configuration = (repository_formal / "lakefile.toml").read_text()
+        # Exercise the real library/default-target configuration without fetching
+        # mathlib: these small source files need only the pinned Lean toolchain.
+        configuration = re.sub(
+            r"(?ms)^\[\[require\]\]\n.*?(?=^\[|\Z)", "", configuration)
+        with TemporaryDirectory() as directory:
+            formal = Path(directory)
+            (formal / "lakefile.toml").write_text(configuration)
+            shutil.copyfile(repository_formal / "lean-toolchain", formal / "lean-toolchain")
+            modules = {
+                "Lemmatheca/Top.lean": "theorem topFact : True := True.intro\n",
+                "Lemmatheca/Nested/Unreferenced.lean": "def nestedValue : Nat := 2\n",
+            }
+            for relative, source in modules.items():
+                path = formal / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(source)
+
+            def build():
+                return subprocess.run(["lake", "build"], cwd=formal, text=True,
+                                      stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            result = build()
+            self.assertEqual(result.returncode, 0, result.stdout)
+            self.assertFalse((formal / "Lemmatheca.lean").exists())
+            for relative in modules:
+                artifact = formal / ".lake/build/lib/lean" / Path(relative).with_suffix(".olean")
+                self.assertTrue(artifact.is_file(), result.stdout)
+
+            # No import or corpus binding points here: default builds must still
+            # notice a broken declaration rather than reuse the previous artifact.
+            (formal / "Lemmatheca/Nested/Unreferenced.lean").write_text(
+                "def nestedValue : Nat := True.intro\n")
+            result = build()
+            self.assertNotEqual(result.returncode, 0, result.stdout)
+            self.assertIn("Unreferenced.lean", result.stdout)
 
 
 class ProofStatusLeanTests(SimpleTestCase):

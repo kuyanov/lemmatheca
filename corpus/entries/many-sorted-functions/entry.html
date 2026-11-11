@@ -1,6 +1,6 @@
 <section data-formal="msf-signature msf-list-signature" id="functional-signatures" data-kind="definition">
   <h2>Operations have argument sorts and a result sort</h2>
-  <p>Fix a nonempty set \(S\) of sorts. A <strong>many-sorted signature with functions</strong> specifies relation symbols with finite lists of argument sorts, as in <a href="many-sorted-logic#sorted-signatures">the relational signature</a>, and function symbols with profiles</p>
+  <p>Fix a nonempty set \(S\) of sorts. A <strong>many-sorted signature with functions</strong> specifies relation symbols with finite lists of argument sorts, as in <a href="many-sorted-relational-logic#sorted-signatures">the relational signature</a>, and function symbols with profiles</p>
   <div class="math-display">\[f:(s_0,\ldots,s_{k-1})\longrightarrow s.\]</div>
   <p>The profile requires the \(i\)-th input to have sort \(s_i\) and the result to have sort \(s\). A <strong>constant of sort \(s\)</strong> is a function symbol with no arguments and result sort \(s\). All symbol collections are sets; no countability assumption is made. Equality is available between terms of the same sort. Relations of arity zero are allowed and express truth values.</p>
   <p>For a running example use sorts \(E\) for elements and \(Q\) for lists, with \(\mathsf{nil}:Q\), \(\mathsf{cons}:(E,Q)\to  Q\), and \(\mathsf{head}:Q\to  E\). The signature declares where operations may be used. It does not yet assert any equation about lists or prescribe what \(\mathsf{head}(\mathsf{nil})\) means.</p>
@@ -8,7 +8,7 @@
 
 <section data-formal="msf-term msf-formula msf-list-signature" id="typed-terms-and-formulas" data-kind="definition">
   <h2>Build terms before forming atomic formulas</h2>
-  <p>In a finite <a href="many-sorted-logic#sorted-formulas">sorted context</a> \(\gamma=(s_0,\ldots,s_{n-1})\), a <strong>term of sort \(s\)</strong> is built by two rules. A variable \(z_i\) has its declared sort \(s_i\). If \(f:(r_0,\ldots,r_{k-1})\to  s\) and each \(t_i\) has sort \(r_i\), then \(f(t_0,\ldots,t_{k-1})\) has sort \(s\). The zero-argument case supplies constants. There are no other terms.</p>
+  <p>In a finite <a href="many-sorted-relational-logic#sorted-formulas">sorted context</a> \(\gamma=(s_0,\ldots,s_{n-1})\), a <strong>term of sort \(s\)</strong> is built by two rules. A variable \(z_i\) has its declared sort \(s_i\). If \(f:(r_0,\ldots,r_{k-1})\to  s\) and each \(t_i\) has sort \(r_i\), then \(f(t_0,\ldots,t_{k-1})\) has sort \(s\). The zero-argument case supplies constants. There are no other terms.</p>
   <p>An <strong>atomic sorted formula</strong> is \(t=u\) for terms of the same sort, or \(R(t_0,\ldots,t_{k-1})\) with the required argument sorts. Build <strong>sorted formulas with functions</strong> from these atoms, falsity, implication, and sorted universal quantification. A quantifier appends its placeholder: a body in \((\gamma,s)\) gives \(\forall z_n:s\,A\) in \(\gamma\). Other classical connectives and existence retain their usual abbreviations. A <strong>sentence</strong> has empty context.</p>
   <p>For \(x:E\) and \(q:Q\), the term \(\mathsf{head}(\mathsf{cons}(x,q))\) has sort \(E\), so its equality with \(x\) is a formula. The expression \(\mathsf{head}(x)\) is not a term. Sort checking precedes interpretation.</p>
 </section>
@@ -65,7 +65,7 @@
   <p>The <strong>ordinary language</strong> \(L^\flat\) has an ordinary function symbol \(f^\flat\) of arity \(k\) for each sorted function with \(k\) inputs, and an ordinary relation \(R^\flat\) of the same arity for each sorted relation. Add a distinct unary predicate \(P_s\) for each sort. These predicates are tagged separately from old unary relations. Constants remain nullary functions.</p>
   <p>The <strong>erasure of a term</strong> \(t^\flat\) retains its variable indices and function tree, using these ordinary function symbols. The <strong>guarded translation</strong> \(A^\flat\) retains equality, relations, falsity and implication through the translated terms, and replaces sorted quantifiers by</p>
   <div class="math-display">\[(\forall z_n:s\,A)^\flat=\forall z_n\,(P_s(z_n)\to A^\flat).\]</div>
-  <p>These are ordinary terms and scoped formulas in the <a href="first-order-languages#scoped-formulas">existing first-order syntax</a>. As in <a href="many-sorted-logic#guarded-translation">relational guarded translation</a>, existential quantification becomes classically equivalent to \(\exists z_n(P_s(z_n)\land A^\flat)\).</p>
+  <p>These are ordinary terms and scoped formulas in the <a href="first-order-languages#scoped-formulas">existing first-order syntax</a>. As in <a href="many-sorted-relational-logic#guarded-translation">relational guarded translation</a>, existential quantification becomes classically equivalent to \(\exists z_n(P_s(z_n)\land A^\flat)\).</p>
 </section>
 
 <section data-formal="msf-sort-axiom msf-closure-axiom msf-typing-axioms msf-typed-model msf-sort-axiom-truth msf-closure-axiom-truth msf-typing-theory-truth" id="typing-axioms" data-kind="definition">
@@ -111,7 +111,7 @@
 
 <section data-formal="msf-relational-inclusion msf-relational-truth msf-ordinary-relational-inclusion msf-relational-erasure" id="relational-fragment" data-kind="lemma">
   <h2>The earlier relational formulas form the same fragment</h2>
-  <p>Forget the function symbols of a sorted signature. Every formula in the <a href="many-sorted-logic#sorted-formulas">earlier relational syntax</a> has a canonical reading here: read each variable argument as a variable term, and retain equality, relations, implication, falsity and appended quantifiers. Its truth in every full sorted structure equals its earlier relational truth in the reduct that forgets functions.</p>
+  <p>Forget the function symbols of a sorted signature. Every formula in the <a href="many-sorted-relational-logic#sorted-formulas">earlier relational syntax</a> has a canonical reading here: read each variable argument as a variable term, and retain equality, relations, implication, falsity and appended quantifiers. Its truth in every full sorted structure equals its earlier relational truth in the reduct that forgets functions.</p>
   <div class="proof"><p>Induct on that earlier formula. Variable terms evaluate to the original coordinates, giving equality and relation cases. The connective cases retain their truth clauses, and the quantifier cases retain the same carrier and extended assignment.</p><p>There is also a natural inclusion of the earlier ordinary erased language into the present ordinary language, keeping its relation symbols and sort predicates. Translating the included relational formula agrees with applying this language inclusion to its old guarded translation: the atomic and connective cases are unchanged, and both quantifier clauses add the same guard. Thus the present construction extends the actual earlier syntax and translation.</p></div>
 </section>
 

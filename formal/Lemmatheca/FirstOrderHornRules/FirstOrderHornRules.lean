@@ -1,4 +1,4 @@
-import Lemmatheca.HornClauses.HornClauses
+import Lemmatheca.PropositionalHornClauses.PropositionalHornClauses
 import Lemmatheca.HerbrandModels.HerbrandModels
 import Mathlib.Data.Fintype.Card
 

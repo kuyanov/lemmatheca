@@ -32,12 +32,14 @@
   <div class="proof"><p>If two rules produce \(y\) and \(z\), their evidence fragments are both included in \(f\), so they are compatible by <a href="#compatible-fragments"></a>. Coherence gives \(y=z\). Thus the displayed relation is the graph of a partial function. If there are no rules, the existential condition never holds. Coherence cannot be omitted: two rules with empty evidence, the same input and different outputs would otherwise give two values at that input.</p></div>
 </section>
 
-<section id="finite-information" data-kind="lemma" data-formal="eop-rule-monotone eop-finite-information eop-effective-monotone lfp-chain-continuity lfp-first-recursion-theorem">
+<section id="finite-information" data-kind="lemma" data-formal="eop-rule-monotone eop-finite-information eop-effective-monotone lfp-chain-continuity lfp-first-recursion-theorem enum-operator-of enum-joint-ce enum-composite-rules enum-uniform-composition">
   <h2>Defined outputs persist under extension and already occur on finite evidence</h2>
   <p>Every effective operator is <strong>monotone</strong> for graph inclusion: \(f\sqsubseteq g\) implies \(\Phi_R(f)\sqsubseteq\Phi_R(g)\). Moreover, for arbitrary \(f,x,y\),</p>
   <div class="math-display">\[\Phi_R(f)(x)\downarrow=y\quad\Longleftrightarrow\quad\exists d\;[\operatorname{Valid}(d),\ \delta_d\sqsubseteq f,\ \Phi_R(\delta_d)(x)\downarrow=y].\]</div>
   <div class="proof"><p>A rule whose finite evidence is included in \(f\) remains applicable in any extension \(g\), proving monotonicity. For the forward implication of the displayed equivalence, take the fragment from a successful rule. It is valid by the rule-relation assumption and, being included in itself, already triggers that rule on \(\delta_d\). Conversely, a value obtained on \(\delta_d\sqsubseteq f\) persists by monotonicity. This is finite positive evidence: no divergence at an unlisted input is certified.</p></div>
 <p>Finite positive evidence also gives <a href="least-fixed-point-recursion#chain-continuity">preservation of increasing unions</a>. Starting an effective endofunction with no defined answers and repeatedly applying it yields a <a href="least-fixed-point-recursion#first-recursion-theorem">computable least fixed point</a>, with leastness even among noncomputable solutions.</p>
+
+  <p>The same idea of finite positive evidence gives <a href="enumeration-reducibility#enumeration-operators">enumeration operators on sets</a>. Their outputs are sets, so different outputs on compatible evidence cause no conflict and no single-valued coherence condition is needed. Their rule indices admit an <a href="enumeration-reducibility#uniform-composition">explicit uniform composition</a> by combining finite input witnesses.</p>
 </section>
 
 <section id="joint-rule-search" data-formal="eop-rule-code eop-enumerates-rules eop-joint-index eop-rule-offer eop-joint-search eop-offer-primitive eop-search-partial eop-search-program eop-search-program-evaluation eop-compiler eop-compiler-search-evaluation rs-finite-match rs-finite-match-primitive effective-stage-primitive-test uniform-rec-partial-compiler-primitive" data-kind="definition">

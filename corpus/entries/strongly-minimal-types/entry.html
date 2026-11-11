@@ -1,0 +1,110 @@
+<section id="algebraic-and-generic" data-kind="definition" data-formal="strong-min-theory strong-min-model-minimal mt-type-complete mt-type-parameter-expansion theory-of-structure smtype-solutions smtype-algebraic smtype-nonalgebraic">
+  <h2>Finite choices and the remaining complete description</h2>
+  <p>Fix a complete satisfiable <a href="strongly-minimal-sets#minimal-and-strongly-minimal">strongly minimal theory</a> \(T\) in a set-sized language \(L\), a model \(M\models T\), and any parameter set \(A\subseteq M\). Thus \(M\) is infinite, and every unary definable set with parameters is finite or cofinite in every model of \(T\). We work classically with choice. No countability assumption is in force yet.</p>
+  <p>Use the <a href="types-and-realization#types-over-parameters">parameter language</a> \(L(A)\) and the complete named theory \(\operatorname{Th}(M_A)\). For an \(L(A)\)-formula \(\varphi(x)\), let \(\varphi(M)\) denote its set of solutions in that named structure. A complete one-type \(p\in S_1^M(A)\) is <strong>algebraic</strong> if it contains some formula \(\varphi\) for which \(\varphi(M)\) is finite. It is <strong>nonalgebraic</strong> otherwise.</p>
+  <p>These types must be compatible with the entire theory of \(M_A\), which fixes the first-order behavior of the original parameters. Merely satisfying \(T\) after giving the names arbitrary interpretations would be a different condition. We will construct exactly one nonalgebraic type and count all the algebraic types.</p>
+</section>
+
+<section id="finite-solutions-persist" data-kind="lemma" data-formal="smtype-extension-solutions smtype-finite-solutions smtype-cofinite-transfer mt-closure-elementary-algebraic-image">
+  <h2>A finite definable set gains no points in an elementary extension</h2>
+  <p>Suppose \(M\preccurlyeq N\), and \(\varphi(x)\) uses finitely many parameters from \(M\). If \(\varphi(M)\) is finite, then \(\varphi(N)=\varphi(M)\), with the old elements identified through the elementary inclusion. If \(\varphi(M)\) is cofinite, its complement in \(N\) is the same finite set as its complement in \(M\).</p>
+  <div class="proof"><p>List the finite set as \(\{b_1,\ldots,b_m\}\). The statement</p>
+  <div class="math-display">\[\forall x\,\bigl(\varphi(x)\leftrightarrow(x=b_1\lor\cdots\lor x=b_m)\bigr)\]</div>
+  <p>holds in \(M\), using its original parameters and the displayed \(b_i\) as parameters. Elementarity makes it hold in \(N\). Thus precisely the same elements solve \(\varphi\) there. If \(m=0\), the disjunction is \(\bot\), so this also covers the empty set. Apply the finite-set result to \(\neg\varphi\) to obtain the cofinite conclusion.</p></div>
+  <p>Consequently \(\operatorname{acl}_N(A)=\operatorname{acl}_M(A)\) for every \(A\subseteq M\). Indeed, each finite \(A\)-definable set in \(M\) persists unchanged. Conversely, if \(\varphi(N)\) is finite, its subset \(\varphi(M)\) is finite, so the result makes those solution sets equal. Taking their unions gives the closure equality. This assertion concerns algebraic closure of old parameters, not algebraic closure of the whole larger domain.</p>
+</section>
+
+<section id="cofinite-conditions" data-kind="definition" data-formal="smtype-cofinite-conditions smtype-solutions">
+  <h2>Collect every condition that holds away from finitely many points</h2>
+  <p>Define the <strong>cofinite conditions over \(A\)</strong> by</p>
+  <div class="math-display">\[p_A=\{\varphi(x)\in\operatorname{Form}_1(L(A)):\varphi(M)\text{ is cofinite in }M\}.\]</div>
+  <p>The formula may use no parameters, and may use any finite selection of names from \(A\). The definition concerns all unary formulas, with quantifiers allowed. We have defined a collection of formulas; consistency and completeness still need proof.</p>
+</section>
+
+<section id="cofinite-finite-consistency" data-kind="lemma" data-formal="smtype-cofinite-finitely-realized mt-type-parameters-finite-test">
+  <h2>Every finite list of cofinite conditions has an old witness</h2>
+  <p>Every finite subset of \(p_A\) is realized in \(M\). Hence \(p_A\) is a partial type over \(A\) in \(M\).</p>
+  <div class="proof"><p>Let \(\varphi_1,\ldots,\varphi_k\) belong to \(p_A\). Each complement \(M\setminus\varphi_i(M)\) is finite, so their union is finite. Since \(M\) is infinite, choose a point outside that union. It satisfies every \(\varphi_i\). For \(k=0\), any point of \(M\) witnesses the empty list.</p><p>The <a href="types-and-realization#parameter-finite-test">finite parameter-type test</a> now gives consistency with \(\operatorname{Th}(M_A)\). This is exactly where finite consistency becomes simultaneous consistency in a suitable model; it need not supply a simultaneous witness in \(M\).</p></div>
+</section>
+
+<section id="generic-complete-type" data-kind="theorem" data-formal="smtype-cofinite-complete smtype-generic-type smtype-generic-formulas smtype-generic-nonalgebraic mt-type-complete-bridge mt-type-decides smtype-parameter-dichotomy">
+  <h2>The cofinite conditions form a complete type</h2>
+  <div class="statement-box"><p>The collection \(p_A\) is a complete nonalgebraic one-type over \(A\). We call it the <strong>generic type over \(A\)</strong>.</p></div>
+  <div class="proof"><p>Let \(\varphi(x)\) be any \(L(A)\)-formula. Strong minimality says that \(\varphi(M)\) is finite or cofinite. In the finite case, \(\neg\varphi\in p_A\); in the cofinite case, \(\varphi\in p_A\). The two cases cannot overlap, because an infinite set is not the union of two finite sets. Thus exactly one of \(\varphi\) and \(\neg\varphi\) belongs to \(p_A\).</p><p>We already proved that \(p_A\) is consistent. A <a href="types-and-realization#complete-types">consistent collection deciding every formula</a> is a complete type. Every formula in \(p_A\) has an infinite solution set, so none witnesses algebraicity. Thus the complete type is nonalgebraic.</p></div>
+</section>
+
+<section id="unique-nonalgebraic" data-kind="theorem" data-formal="smtype-unique-nonalgebraic smtype-generic-nonalgebraic">
+  <h2>There is only one nonalgebraic one-type</h2>
+  <div class="statement-box"><p>Every \(p\in S_1^M(A)\) is either algebraic or equal to \(p_A\). In particular, \(p_A\) is the unique nonalgebraic complete one-type over \(A\).</p></div>
+  <div class="proof"><p>Suppose \(p\) is nonalgebraic and \(\varphi\in p_A\). Its complement is finite. Therefore \(\neg\varphi\) cannot belong to \(p\), since that would witness algebraicity. Completeness forces \(\varphi\in p\). We have shown \(p_A\subseteq p\), and maximal consistency of these complete types gives equality.</p><p>Equivalently, a formula belonging to a nonalgebraic type can never have finite solution set, so it must be cofinite. The finite/cofinite alternative leaves no further complete nonalgebraic description.</p></div>
+</section>
+
+<section id="generic-realization" data-kind="theorem" data-formal="smtype-extension-type smtype-extension-type-membership smtype-generic-realization smtype-generic-elementary-realization smtype-generic-old-realization smtype-acl-formula-bridge">
+  <h2>The generic points are precisely the points outside algebraic closure</h2>
+  <div class="statement-box"><p>For every elementary extension \(M\preccurlyeq N\) and \(b\in N\),</p>
+  <div class="math-display">\[\operatorname{tp}^N(b/A)=p_A\quad\Longleftrightarrow\quad b\notin\operatorname{acl}_N(A).\]</div>
+  <p>The generic type is realized in some elementary extension of \(M\). Inside \(M\), its realizations are exactly \(M\setminus\operatorname{acl}_M(A)\).</p></div>
+  <div class="proof"><p>Suppose \(b\) realizes \(p_A\), but lies in a finite \(A\)-definable set \(\varphi(N)\). Its source solution set \(\varphi(M)\) is finite too. Hence \(\neg\varphi\in p_A\), contradicting \(N\models\varphi[b]\). Thus \(b\) is outside algebraic closure.</p><p>Conversely, suppose \(b\notin\operatorname{acl}_N(A)\). If \(\varphi\in p_A\), then \(M\setminus\varphi(M)\) is finite. By <a href="#finite-solutions-persist"></a>, the same complement in \(N\) is finite and \(A\)-definable. It cannot contain \(b\). Therefore \(N\models\varphi[b]\) for every \(\varphi\in p_A\), so \(b\) realizes that complete type. Its whole type equals \(p_A\), by <a href="types-and-realization#tuple-types">maximality of complete types</a>.</p><p>Finally, <a href="types-and-realization#elementary-realization">elementary realization of parameter types</a> applies to the finite consistency already proved. It supplies some elementary extension and a point realizing \(p_A\). Taking \(N=M\) in the equivalence proves the last assertion.</p></div>
+</section>
+
+<section id="algebraic-types-realized" data-kind="lemma" data-formal="smtype-algebraic-realized smtype-algebraic-typeof smtype-algebraic-point-map smtype-algebraic-point-map-surjective smtype-algebraic-formula-finite-types smtype-extension-old-point">
+  <h2>All algebraic types already occur in the original model</h2>
+  <p>Every algebraic \(p\in S_1^M(A)\) equals \(\operatorname{tp}^M(b/A)\) for some \(b\in\operatorname{acl}_M(A)\). Conversely, every such point has an algebraic type. For each formula with finite solution set, only finitely many complete types contain that formula.</p>
+  <div class="proof"><p>Choose \(\varphi\in p\) with \(\varphi(M)\) finite. Realize \(p\) at \(b\) in an elementary extension \(M\preccurlyeq N\). Since \(b\in\varphi(N)\), <a href="#finite-solutions-persist"></a> gives \(b\in\varphi(M)\subseteq\operatorname{acl}_M(A)\). <a href="types-and-realization#realization-transport">Elementarity preserves the parameter type</a> of this old point, so \(p=\operatorname{tp}^M(b/A)\).</p><p>If \(b\in\operatorname{acl}_M(A)\), a finite \(A\)-definable set containing \(b\) supplies an algebraic formula in its type. The argument above also shows that every complete type containing a fixed finite-solution formula \(\varphi\) is the type of one of its finitely many solutions in \(M\). There can therefore be only finitely many such types.</p></div>
+  <p>The map from algebraic points to algebraic types is surjective. Counting types uses this surjectivity: every algebraic type has a representative in algebraic closure.</p>
+</section>
+
+<section id="isolating-algebraic-types" data-kind="lemma" data-formal="smtype-refinement smtype-refinement-isolates smtype-algebraic-isolated mt-isolated-unique">
+  <h2>A finite formula can be refined to isolate one algebraic type</h2>
+  <p>Every algebraic \(p\in S_1^M(A)\) is <a href="isolated-types#isolating-formulas">isolated</a> by an \(L(A)\)-formula with finite solution set. A formula witnessing algebraicity need not itself isolate the type.</p>
+  <div class="proof"><p>Choose a finite-solution \(\varphi\in p\). List the complete types containing \(\varphi\) as \(p,q_1,\ldots,q_k\), with the \(q_i\) distinct from \(p\), using <a href="#algebraic-types-realized"></a>. For each \(i\), choose \(\psi_i\in p\setminus q_i\), which exists because the types differ and are complete. Put</p>
+  <div class="math-display">\[\theta(x)=\varphi(x)\land\bigwedge_{i=1}^k\psi_i(x).\]</div>
+  <p>The formula \(\theta\) belongs to \(p\), since a realization of \(p\) satisfies every conjunct. Its source solution set is a subset of the finite set \(\varphi(M)\). Any complete type containing \(\theta\) contains \(\varphi\) and each \(\psi_i\), so cannot be any \(q_i\). Thus \(p\) is the only complete type containing \(\theta\). By the <a href="isolated-types#unique-completion">unique-completion criterion for isolation</a>, \(\theta\) isolates \(p\). If there are no other types, the conjunction is empty and \(\theta=\varphi\).</p></div>
+</section>
+
+<section id="counting-algebraic-closure" data-kind="lemma" data-formal="smtype-syntax-bound ops-formula-bound smtype-acl-cardinal-bound smtype-definable-formula-bridge">
+  <h2>Finite formulas give a small algebraic closure</h2>
+  <p>Put \(\lambda=\max(|A|,|L|,\aleph_0)\). There are at most \(\lambda\) unary \(L(A)\)-formulas, and</p>
+  <div class="math-display">\[|\operatorname{acl}_M(A)|\le\lambda.\]</div>
+  <div class="proof"><p>The language adds one constant for each member of \(A\). Its symbols, logical symbols and countable stock of variables form an alphabet of size at most \(\lambda\). Formulas are finite strings over this alphabet, so the <a href="larger-models#sizes-and-language">formula-counting bound</a> gives at most \(\lambda\) formulas, including the unary ones. The infinite cardinal \(\lambda\) handles finite or empty parameter sets and finite languages without a separate arithmetic exception.</p><p>By the <a href="definable-and-algebraic-closure#closure-definitions">definition of algebraic closure</a>, \(\operatorname{acl}_M(A)\) is the union of the finite solution sets among these formulas. Index those finite sets by their formulas. Choice permits an enumeration of each finite set, so their disjoint union has size at most \(\lambda\cdot\aleph_0\). The union cannot be larger than that disjoint union. Since \(\lambda\) is infinite, <a href="infinite-cardinal-arithmetic#infinite-sums-and-products">infinite cardinal arithmetic</a> gives \(\lambda\cdot\aleph_0=\lambda\), proving the assertion.</p></div>
+</section>
+
+<section id="one-type-bound" data-kind="theorem" data-formal="smtype-one-type-bound smtype-algebraic-type-bound smtype-algebraic-formula-injection ops-type-bound">
+  <h2>Strong minimality replaces the power-set bound by a linear bound</h2>
+  <div class="statement-box"><p>For every \(M\models T\) and \(A\subseteq M\),</p>
+  <div class="math-display">\[|S_1^M(A)|\le\max(|A|,|L|,\aleph_0).\]</div>
+  <p>More precisely, the algebraic one-types are the image of \(\operatorname{acl}_M(A)\) under \(b\mapsto\operatorname{tp}^M(b/A)\), and there is exactly one further type, the generic type \(p_A\).</p></div>
+  <div class="proof"><p>Let \(\lambda=\max(|A|,|L|,\aleph_0)\). The <a href="#algebraic-types-realized">surjection from algebraic points</a> and <a href="#counting-algebraic-closure">closure bound</a> give at most \(\lambda\) algebraic types. By <a href="#unique-nonalgebraic"></a>, the only remaining type is \(p_A\), and it is not algebraic. Therefore \(|S_1^M(A)|\le\lambda+1=\lambda\).</p><p>There is also a direct count by formulas. Choose a finite-solution isolating formula for each algebraic type, using <a href="#isolating-algebraic-types"></a>. Distinct types cannot have the same isolating formula. This injects the algebraic types into a set of at most \(\lambda\) formulas and gives the same bound.</p></div>
+  <p>For a general theory, the <a href="order-patterns-and-stability#types-over-sets">elementary syntax bound</a> only gives \(2^\lambda\) types, since a type is a set of formulas. Strong minimality makes almost all possible complete choices algebraic, leaving only one generic choice.</p>
+</section>
+
+<section id="omega-stability" data-kind="definition" data-formal="smtype-omega-stability ops-kappa-stable">
+  <h2>Omega-stability uses the one-variable counting convention</h2>
+  <p>Following the <a href="order-patterns-and-stability#types-over-sets">existing cardinal definition</a>, \(T\) is <strong>\(\omega\)-stable</strong>, also called <strong>\(\aleph_0\)-stable</strong>, if for every model \(M\models T\) and every at most countable \(A\subseteq M\), there are at most countably many members of \(S_1^M(A)\).</p>
+  <p>This definition counts complete types in one object variable. All stability conclusions below use precisely that convention. We are not using a general reduction from finite-tuple types to one-types.</p>
+</section>
+
+<section id="strong-minimal-stability" data-kind="theorem" data-formal="smtype-omega-stable smtype-kappa-stable strong-min-model-minimal">
+  <h2>A countable strongly minimal theory is omega-stable</h2>
+  <div class="statement-box"><p>If \(L\) is countable, the complete satisfiable strongly minimal theory \(T\) is \(\omega\)-stable. More generally, \(T\) is \(\kappa\)-stable for every infinite cardinal \(\kappa\ge |L|\), using the one-variable definition.</p></div>
+  <div class="proof"><p>If \(L\) and \(A\) are at most countable, then \(\max(|A|,|L|,\aleph_0)=\aleph_0\). The <a href="#one-type-bound">one-type bound</a> therefore gives \(|S_1^M(A)|\le\aleph_0\) for every such \(M,A\), which is exactly \(\omega\)-stability.</p><p>For the general assertion, if \(|A|\le\kappa\), \(|L|\le\kappa\), and \(\kappa\) is infinite, all three cardinals in the maximum are at most \(\kappa\). Thus the same bound is at most \(\kappa\), as required by \(\kappa\)-stability.</p></div>
+</section>
+
+<section id="equality-example" data-kind="lemma" data-formal="strong-min-equality-theory mt-closure-infinite-equality-closures ops-equality-fresh-type ops-equality-fresh-excludes ops-equality-point-type ops-equality-type-bijection ops-equality-one-type-card smtype-equality-generic">
+  <h2>In pure equality the generic type avoids exactly the named points</h2>
+  <p>For the complete theory of infinite equality structures and any \(A\subseteq M\), algebraic closure is \(A\). The algebraic one-types are exactly the types of the individual points of \(A\), and the remaining generic type is determined by all conditions \(x\ne a\), \(a\in A\). Thus \(|S_1^M(A)|=|A|+1\).</p>
+  <div class="proof"><p>The <a href="strongly-minimal-sets#equality-and-order">equality closure calculation</a> gives \(\operatorname{acl}_M(A)=A\). Each \(a\in A\) has a type containing \(x=a\); these types are distinct, since the parameter names distinguish their points. By <a href="#algebraic-types-realized"></a>, they are all the algebraic types.</p><p>The <a href="order-patterns-and-stability#equality-one-types">equality one-type calculation</a>, using quantifier elimination, says that the inequalities against all named points determine one further complete type. Its realizations in an elementary extension are exactly the points outside \(A\), so <a href="#generic-realization"></a> identifies it with \(p_A\). Counting the distinct algebraic types and that additional type gives the claimed equality, including finite or empty \(A\).</p></div>
+  <p>In a general strongly minimal theory, avoiding the elements of \(A\) alone need not give the generic type. It must avoid every finite \(A\)-definable set, including algebraic points not individually named in \(A\).</p>
+</section>
+
+<section id="realized-generic-question" data-kind="question" data-formal="smtype-equality-empty-generic smtype-generic-model-omitted smtype-generic-model-new smtype-old-generic-large smtype-generic-elementary-realization mt-closure-extensive">
+  <h2>Does a generic type always require a new element?</h2>
+  <p>In an infinite equality structure \(M\), compare the generic type over \(A=\varnothing\) with the generic type over \(A=M\). Which is realized inside \(M\)? What is the corresponding answer for an arbitrary parameter set in a strongly minimal model?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>In pure equality, \(\operatorname{acl}_M(\varnothing)=\varnothing\), so every point of \(M\) realizes the generic type over the empty set. Over \(A=M\), the generic type includes \(x\ne a\) for every \(a\in M\), so none of the original points realizes it. Finite subsets still have witnesses because \(M\) is infinite. The generic type is consequently realized in a proper elementary extension.</p><p>For arbitrary \(A\subseteq M\), <a href="#generic-realization"></a> gives exactly the answer: its realizations in \(M\) are \(M\setminus\operatorname{acl}_M(A)\). In particular, over \(A=M\), every old point is algebraic by its equality formula, so the generic type is omitted in the original model. If \(|M|&gt;\max(|A|,|L|,\aleph_0)\), the <a href="#counting-algebraic-closure">closure cardinal bound</a> guarantees a point outside algebraic closure and hence a generic realization already in \(M\).</p></div></details>
+</section>
+
+<section id="unnamed-algebraic-question" data-kind="question" data-formal="smtype-named-point-equation smtype-named-point-equation-solutions smtype-named-point-algebraic smtype-named-point-generic-excludes smtype-named-empty-not-complete smtype-named-generic-determined strong-min-point-language strong-min-point-value strong-min-point-theory strong-min-point-complete-theory strong-min-point-closure">
+  <h2>Are inequalities against the parameter names enough?</h2>
+  <p>Take the complete theory of an infinite equality structure with one constant symbol \(c\), and let \(A=\varnothing\). Is the empty list of conditions \(\{x\ne a:a\in A\}\) already a complete generic type?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The symbol \(c\) belongs to the original language, even when no parameter names are added. The <a href="strongly-minimal-sets#named-point-question">named-point calculation</a> gives \(\operatorname{acl}_M(\varnothing)=\{c^M\}\). There is an algebraic type containing \(x=c\), and a different generic type containing \(x\ne c\). The empty collection decides neither formula and so is not a complete type.</p><p>Here the generic type is determined by \(x\ne c\), using equality quantifier elimination. In general it is the collection of all cofinite formulas, rather than merely inequalities against additional parameter names.</p></div></details>
+</section>

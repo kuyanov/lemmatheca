@@ -20,7 +20,7 @@
     give equivalent formulas for every formula already in our language.</p>
 </section>
 
-<section id="normal-form-definitions" data-formal="prop-literal prop-finite-conjunction prop-finite-disjunction prop-literal-term prop-literal-clause prop-disjunctive-normal-form prop-conjunctive-normal-form prop-constant-normal-forms prop-xor-normal-forms" data-kind="definition">
+<section id="normal-form-definitions" data-formal="prop-literal prop-finite-conjunction prop-finite-disjunction prop-literal-term prop-literal-clause prop-disjunctive-normal-form prop-conjunctive-normal-form prop-constant-normal-forms prop-xor-normal-forms two-sat-two-cnf two-sat-criterion two-sat-ordered-assignment two-sat-ordered-model" data-kind="definition">
   <h2>Two ways to arrange literals</h2>
   <p>A <strong>literal</strong> is an atom \(p\) or its negation \(\neg p\).
     A <strong>term</strong> is a conjunction of a finite list of literals; a
@@ -40,7 +40,9 @@
     \(\top\) is an empty CNF, and \(\bot\) is a CNF with one empty clause.</p>
   <p>No negation applies to a compound formula inside a literal. This describes the arrangement of
     a formula, rather than requiring that its terms or clauses be shortest or free of repetitions.</p>
-  <p>A clause with at most one positive literal is a <a href="horn-clauses#horn-rules">Horn clause</a>; these clauses admit a <a href="horn-clauses#decision-procedure">decision procedure by forward chaining</a>.</p>
+  <p>A clause with at most one positive literal is a <a href="propositional-horn-clauses#horn-rules">Horn clause</a>; these clauses admit a <a href="propositional-horn-clauses#decision-procedure">decision procedure by forward chaining</a>.</p>
+
+  <p>A <strong>2-CNF</strong> has at most two literals in each clause. For this restriction, an <a href="two-satisfiability#two-sat-criterion">implication-path criterion</a> decides satisfiability and constructs a model by ordering mutual-reachability classes.</p>
 </section>
 
 <section id="row-formulas" data-formal="prop-row-selecting-term prop-row-excluding-clause" data-kind="lemma">
@@ -159,7 +161,7 @@
   </details>
 </section>
 
-<section id="complete-connectives" data-formal="prop-functional-completeness prop-basis-translation prop-standard-complete-bases" data-kind="theorem">
+<section id="complete-connectives" data-formal="prop-functional-completeness prop-basis-translation prop-standard-complete-bases fcomp-post-criterion fcomp-closed-zero fcomp-closed-one fcomp-closed-monotone fcomp-closed-self-dual fcomp-closed-affine" data-kind="theorem">
   <h2>Small sets of connectives still express every table</h2>
   <p>A choice of connectives and constants is <strong>functionally complete</strong> if every
     truth function on every finite list of inputs has a representing formula using only those
@@ -190,9 +192,10 @@
       the same induction proves correctness. The constant true function is represented by
       \(\bot\to\bot\), so this last basis also covers zero inputs.</p>
 </div>
+<p>The <a href="functional-completeness-criterion#post-criterion">general completeness criterion</a> characterizes arbitrary sets of allowed truth functions by five restrictions preserved under composition. It explains both why these familiar bases work and how to detect an incomplete basis without searching through every formula.</p>
 </section>
 
-<section id="nand-nor" data-formal="prop-nand-nor prop-single-gate-identities prop-single-gate-translation prop-single-gate-falsity prop-single-gate-truth-constant prop-single-gate-completeness prop-single-gate-constant-free-completeness prop-no-atomless-gate-formula" data-kind="question">
+<section id="nand-nor" data-formal="prop-nand-nor prop-single-gate-identities prop-single-gate-translation prop-single-gate-falsity prop-single-gate-truth-constant prop-single-gate-completeness prop-single-gate-constant-free-completeness prop-no-atomless-gate-formula fcomp-full-positive-closed fcomp-full-criterion-nullary fcomp-closed-iff-nullary" data-kind="question">
   <h2>Can one binary connective suffice?</h2>
   <p>Define \(A\uparrow B:=\neg(A\land B)\), called <strong>NAND</strong>, and
     \(A\downarrow B:=\neg(A\lor B)\), called <strong>NOR</strong>.
@@ -219,11 +222,12 @@
         formulas. They use an allowed input but introduce no new one.</p>
       <p>With zero inputs and no constants, there are no formulas from which to start a binary
         construction. The constant-free claim is therefore restricted to at least one input.</p>
-    </div>
+    <p>The <a href="functional-completeness-criterion#closed-term-completion">closed-term criterion</a> gives the general reason for the zero-input boundary: completeness for positive arities must be supplemented by a genuine closed term, equivalently an available nullary operation.</p>
+</div>
   </details>
 </section>
 
-<section id="monotone-connectives" data-formal="prop-monotone-truth-function prop-positive-formula-monotone prop-positive-basis-incomplete" data-kind="question">
+<section id="monotone-connectives" data-formal="prop-monotone-truth-function prop-positive-formula-monotone prop-positive-basis-incomplete fcomp-five-escape-conditions fcomp-post-criterion fcomp-closed-zero fcomp-closed-one fcomp-closed-monotone fcomp-closed-self-dual fcomp-closed-affine" data-kind="question">
   <h2>Why do conjunction and disjunction need negation?</h2>
   <p>Even allowing both constants, can formulas built only from \(\land,\lor\) represent
     negation of one input?</p>
@@ -242,6 +246,7 @@
         its output from \(1\) to \(0\). Hence this basis is not functionally complete.
         A restriction preserved by every allowed construction can prove that a desired truth
         function cannot be expressed.</p>
-    </div>
+    <p>Monotonicity is one of the <a href="functional-completeness-criterion#five-properties">five composition-preserved restrictions</a>. The <a href="functional-completeness-criterion#post-criterion">full criterion</a> requires an allowed operation escaping each restriction; different operations may supply different witnesses.</p>
+</div>
   </details>
 </section>

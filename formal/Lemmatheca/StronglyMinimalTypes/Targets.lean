@@ -1,0 +1,3 @@
+import Lemmatheca.StronglyMinimalTypes.Generic
+import Lemmatheca.StronglyMinimalTypes.Bounds
+import Lemmatheca.StronglyMinimalTypes.Examples

@@ -87,7 +87,7 @@
   <p>This variant applies a unit or pure rule when it concerns the current pivot \(p\). It does not first scan all other atoms for units. The separate unit-propagation process in <a href="#unit-rule"></a> can perform that simplification earlier, but is not an extra unstated step in this recurrence. The tests here inspect only literal equality and membership in finite lists.</p>
 </section>
 
-<section id="search-correctness" data-formal="dpll-supported dpll-setting-supported dpll-preferred-safe dpll-solve-sound dpll-solve-complete dpll-solve-failure dpll-solve-outside dpll-depth-bound" data-kind="theorem">
+<section id="search-correctness" data-formal="dpll-supported dpll-setting-supported dpll-preferred-safe dpll-solve-sound dpll-solve-complete dpll-solve-failure dpll-solve-outside dpll-depth-bound two-sat-criterion two-sat-finite-test two-sat-finite-test-correct two-sat-ordered-assignment two-sat-ordered-model" data-kind="theorem">
   <h2>The search constructs a model exactly when one exists</h2>
   <div class="statement-box"><p>Let \(\Gamma\) be a finite CNF, and let \(L\) contain every occurring atom. The ordered search \(D(L,\Gamma)\) terminates. If it returns a valuation \(v\), then \(v\models\Gamma\). It returns failure exactly when \(\Gamma\) is unsatisfiable. Its answer on atoms outside \(L\) is \(0\).</p></div>
   <div class="proof">
@@ -96,6 +96,8 @@
     <p>For completeness, if a unit rule selects one branch, its satisfiability is equivalent to the parent's by <a href="#unit-rule"></a>. If an absent-opposite test selects one branch, use <a href="#pure-rule"></a>. Otherwise the two branches cover satisfiability by <a href="#branching"></a>. The induction hypothesis says that each attempted branch fails exactly when it has no model. Thus a single forced or pure branch fails exactly when the parent has no model, and in the last case both branches fail exactly when the parent has no model.</p>
     <p>The recurrence shortens \(L\) at every call. Finally, the returned valuation is built from the constant-zero valuation by updates at list members. An atom outside \(L\) is never updated, so its value remains zero. This proves every asserted part of the specification.</p>
   </div>
+
+  <p>For CNFs whose clauses have at most two literals, the <a href="two-satisfiability#two-sat-criterion">2-SAT criterion</a> gives a second decision method: check empty clauses and paths between opposite literals, then construct a model from an order of the implication components.</p>
 </section>
 
 <section id="branch-trace" data-formal="dpll-branch-trace" data-kind="question">

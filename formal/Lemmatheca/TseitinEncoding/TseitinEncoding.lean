@@ -1,4 +1,4 @@
-import Lemmatheca.Resolution.Resolution
+import Lemmatheca.PropositionalResolution.PropositionalResolution
 
 /-! Definitional CNF on the corpus's shared propositional syntax.
 Fresh names are tagged subformulas; lists retain occurrence duplicates. -/

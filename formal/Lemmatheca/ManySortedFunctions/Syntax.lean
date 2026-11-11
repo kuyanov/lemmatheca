@@ -1,4 +1,4 @@
-import Lemmatheca.ManySortedLogic.ManySortedLogic
+import Lemmatheca.ManySortedRelationalLogic.ManySortedRelationalLogic
 
 /-! Functional sorted syntax, simultaneous substitution and its semantics. -/
 namespace Lemmatheca.MathematicalLogic.ManySortedFunctions

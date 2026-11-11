@@ -160,8 +160,14 @@ cycles.
 Put mathematical modules in the owning entry's directory under
 `formal/Lemmatheca/`, converting its ID to PascalCase: `arithmetic-theories`
 owns `Lemmatheca/ArithmeticTheories/`. An entry may have several modules; import
-them through `formal/Lemmatheca.lean`. Use the existing Lake project. Build
-infrastructure such as `Lemmatheca/ProofStatus.lean` stays outside entry directories.
+the modules it needs directly. The existing Lake project discovers all `.lean`
+files recursively under `formal/Lemmatheca/`; no umbrella import list is maintained.
+Build infrastructure such as `Lemmatheca/ProofStatus.lean` stays outside entry directories.
+
+Use the entry's [scoped ID](corpus.md#layout-and-navigation) rather than shortening
+it to a broader topic: `countable-random-graph` owns
+`Lemmatheca/CountableRandomGraph/`, not `Lemmatheca/RandomGraph/`. Check this before
+creating a module, including when a broader treatment or dedicated area is planned.
 
 The build records each directory's Lean line count in the corpus index, also in
 `--no-lean` mode; see the [generated entry results](build.md#what-a-normal-build-does).
@@ -193,6 +199,12 @@ putting generic names such as `eval`, `subst`, or `Derives` directly at the area
 root. Related entries may share a topic namespace independently of file ownership.
 Give local instances explicit names unique to their module when sharing a namespace.
 
+An ownership rename does not require narrowing a genuinely shared mathematical
+namespace. For example, propositional and first-order entries may reuse a common
+resolution or Horn-clause namespace. Qualify a namespace when its declarations
+would otherwise conflate distinct subjects or constructions; update consumers and
+node declaration bindings with any such rename.
+
 Keep particular illustrative examples and counterexamples
 in `Examples.lean` or another clearly named example module within the same entry
 directory. Illustrative declarations may use `Lemmatheca.Entry.<EntryName>`
@@ -207,8 +219,12 @@ together, leave routine helpers private where possible, and remove empty modules
 See the [build guide](build.md) for stages, outputs and flags, and the
 [contribution rules](../CONTRIBUTING.md#validation-and-submission) for batching checks.
 The default `uv run python app/manage.py build` validates canonical inputs, builds
-`Lemmatheca` and bound non-core modules, then checks each declaration with
-`formal/Lemmatheca/ProofStatus.lean`. Core modules come from the pinned toolchain.
+the `Lemmatheca` library target and bound non-core modules, then checks each
+declaration with `formal/Lemmatheca/ProofStatus.lean`. The library target discovers
+all local `.lean` modules recursively, including modules without node bindings;
+plain `lake build` from `formal/` compiles them too. The declaration checker imports
+modules directly from node bindings, independently of library discovery. Core
+modules come from the pinned toolchain.
 The checker inspects transitive kernel axioms, including dependencies in types
 and definitions. Only `propext`, `Classical.choice`, and `Quot.sound` are permitted.
 Direct or inherited `sorryAx` or custom axioms produce `verified: false`.
@@ -270,14 +286,16 @@ compiling the relevant modules:
 
 ```sh
 lake env lean --stdin <<'LEAN'
-import Lemmatheca
+import Mathlib.Data.Set.Basic
+import Lemmatheca.ProofStatus
 #print axioms Set.Subset.trans
 #node_status "Set.Subset.trans"
 LEAN
 ```
 
-Replace the declaration name and import its module if it is not included in
-`Lemmatheca`. Lean's `#print axioms` reports actual kernel dependencies;
+Replace the declaration name and `Mathlib.Data.Set.Basic` with its defining module.
+Keep the `Lemmatheca.ProofStatus` import for `#node_status`.
+Lean's `#print axioms` reports actual kernel dependencies;
 `#node_status` reports verification, the signature, and source information.
 Choice is always permitted by the proof checker. These kernel checks do not establish mathematical necessity
 or derivability from first-order ZF; classical logic and library representations

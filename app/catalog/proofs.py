@@ -19,6 +19,8 @@ def prepare_proof_results(corpus, formal):
     # Core modules are already supplied by the toolchain, not Lake targets.
     build_modules = sorted(module for module in modules
                            if module.split(".")[0] not in TOOLCHAIN_MODULES)
+    # The library target discovers every local module; bindings may also name
+    # modules from dependencies that need explicit targets.
     subprocess.run(["lake", "build", "Lemmatheca", *
                    build_modules], cwd=formal, check=True)
     declarations = {node["declaration"] for node in bound}

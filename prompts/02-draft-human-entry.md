@@ -46,6 +46,10 @@ entry, area or kind using the
 2. Save `entry.html`, [authored `entry.json` fields](../docs/corpus.md#entry-metadata)
    and necessary assets. Progress counts and Lean line counts are build outputs in
    the index; do not add them or placeholder summaries to entry metadata.
+   Confirm that the agreed ID and title still match the actual scope under the
+   [entry-naming rule](../docs/corpus.md#layout-and-navigation); report any mismatch
+   between scope and name for correction under the shared ownership rules before
+   publication.
    Make the abstract understandable before reading the entry and reserve accent green statement boxes for main results.
    Use stable links independent of adjacency or area membership. For a standalone
    new entry, save its agreed placement once in `corpus/reading_order.json`; in an

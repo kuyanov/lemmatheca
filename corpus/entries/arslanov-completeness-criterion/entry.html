@@ -1,8 +1,9 @@
-<section id="domain-fixed-point-free" data-kind="definition" data-formal="ars-domain-fpf ars-computes-fpf">
+<section id="domain-fixed-point-free" data-kind="definition" data-formal="ars-domain-fpf ars-computes-fpf adn-partial-fpf adn-theorem">
   <h2>Exclude equality of enumerable domains at every index</h2>
   <p>Use the fixed ordinary program numbering \(\varphi_e\) and its c.e. domains \(W_e=\{x:\varphi_e(x)\downarrow\}\). A total numerical function \(f:\mathbb N\to\mathbb N\) is <strong>fixed-point-free on domain indices</strong>, abbreviated <strong>FPF</strong>, if</p>
   <div class="math-display">\[\forall e\quad W_{f(e)}\ne W_e.\]</div>
   <p>An oracle \(A\) <strong>computes an FPF function</strong> if one actual \(A\)-oracle program computes such a total \(f\). This uses the established <a href="domination-and-hyperimmune-degrees#relative-functions">natural-valued oracle computation</a>. The inequality concerns entire domains. It is stronger than requiring different numerical indices, and does not merely require different output values on a common domain.</p>
+  <p>The <a href="anti-diagonal-normalization#partial-fixed-point-free">partial FPF condition</a> only requires unequal domains when the transformation returns an index. With a partial computable transformation, the <a href="anti-diagonal-normalization#adn-theorem">ADN theorem</a> constructs total numerical selectors that copy every defined request and avoid the transformation on undefined requests.</p>
 </section>
 
 <section id="computable-obstruction" data-kind="theorem" data-formal="ars-computable-obstruction">
@@ -96,6 +97,26 @@
   <div class="math-display">\[F_g(e)=c(g(d(e)))\]</div>
   <p>is FPF and is computable with any oracle computing \(g\).</p>
   <div class="proof"><p>First compile the relation \(R_e(z,y)\) meaning \(y\in W_e\). One fixed ordinary master ignores \(z\), simulates \(\varphi_e(y)\), and returns zero if that simulation finishes. Specialization gives a primitive-recursive relation-index map. Compose it with the actual <a href="arithmetic-definability#uniform-selection-indices">uniform selector compiler</a> to obtain \(d(e)\). Every defined output of this program lies in \(W_e\), and if \(W_e\) is nonempty the selector is total. In particular, if \(W_e=\{v\}\), then \(\varphi_{d(e)}(d(e))=v\). No least numerical member is being computed.</p><p>For \(c(v)\), use the existing <a href="rice-shapiro-theorem#fragment-codes">finite-fragment compiler</a> on the singleton table \([(v,0)]\). This is a primitive-recursive numerical map and \(W_{c(v)}=\{v\}\). If \(W_{F_g(e)}=W_e\), then \(W_e=\{g(d(e))\}\), forcing \(\varphi_{d(e)}(d(e))=g(d(e))\), contrary to DNC. Thus the domains differ for every \(e\). The numerical composition computes \(F_g\) from the same supplied program for \(g\), proving the final assertion.</p></div>
+</section>
+
+
+<section id="diagonal-simulation-index" data-kind="definition" data-formal="ars-diagonal-simulation-input ars-diagonal-simulation-partial ars-diagonal-simulation-master ars-diagonal-simulation-index ars-diagonal-simulation-primitive ars-diagonal-simulation-evaluation ars-diagonal-simulation-copy ars-diagonal-simulation-domain univ-specialization-evaluation">
+  <h2>Compile the index returned by a diagonal computation</h2>
+  <p>Define the joint partial procedure \(J(n,x)\): first run \(\varphi_n(n)\); if it returns \(k\), run \(\varphi_k(x)\) and return its output. Universal evaluation and partial composition make \(J\) jointly partial recursive. Fix one ordinary master index \(r\) for \(J\), using paired inputs, and define the <strong>diagonal simulation index</strong></p>
+  <div class="math-display">\[j(n)=s(r,n),\qquad \varphi_{j(n)}(x)\simeq J(n,x).\]</div>
+  <p>The <a href="universal-computation#parameter-theorem">specialization map</a> makes this specified \(j\) primitive recursive; constructing the index does not run the diagonal computation. If \(\varphi_n(n)\downarrow=k\), then \(\varphi_{j(n)}\simeq\varphi_k\), so \(W_{j(n)}=W_k\).</p>
+</section>
+
+<section id="fpf-to-dnc" data-kind="theorem" data-formal="ars-fpf-dnc-function ars-fpf-dnc ars-fpf-dnc-code ars-fpf-dnc-code-evaluation ars-computes-dnc-of-fpf ars-domain-fpf dnc-function">
+  <h2>A fixed-point-free function supplies diagonal disagreement</h2>
+  <p>If \(f\) is a total FPF function, then the specific total function \(g(n)=f(j(n))\) is diagonally noncomputable. Every oracle computing \(f\) computes this same \(g\).</p>
+  <div class="proof"><p>If \(\varphi_n(n)\downarrow=g(n)=f(j(n))\), the compilation identity gives \(W_{j(n)}=W_{f(j(n))}\), contradicting the FPF requirement at index \(j(n)\). Thus \(g\) disagrees with every defined diagonal value. It is total because \(j\) and \(f\) are total. To compute it with a supplied oracle program for \(f\), first compute the ordinary value \(j(n)\), then run that program at this value. This is actual <a href="oracle-computation#relative-closure">oracle composition</a> with the fixed ordinary compiler.</p></div>
+</section>
+
+<section id="fpf-dnc-equivalence" data-kind="theorem" data-formal="ars-computes-fpf-iff-dnc ars-computes-dnc-of-fpf ars-computes-fpf-of-dnc">
+  <h2>The same oracles compute FPF and DNC functions</h2>
+  <p>For every oracle \(A\), the following are equivalent: \(A\) computes a total FPF function on ordinary domain indices; and \(A\) computes a total DNC numerical function.</p>
+  <div class="proof"><p>The forward implication is the specified composition in <a href="#fpf-to-dnc"></a>. The reverse implication is the singleton-selector compiler in <a href="#dnc-to-fpf"></a>. Both constructions use the original oracle without strengthening it. No binary-range restriction on the DNC function is asserted: <a href="pa-degrees#pa-characterization">binary DNC and PA completions</a> impose an additional requirement.</p></div>
 </section>
 
 <section id="ce-hypothesis-question" data-kind="question" data-formal="lbt-low-dnc ars-low-non-ce-example">

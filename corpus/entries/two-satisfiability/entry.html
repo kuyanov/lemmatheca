@@ -1,0 +1,120 @@
+<section id="two-clauses" data-formal="prop-literal prop-literal-clause dpll-opposite tseitin-clause-list-models dpll-satisfiable dpll-empty-cases dpll-support dpll-support-input prop-eval-locality tseitin-list-formula-bridge two-sat-two-cnf two-sat-opposite-involution two-sat-opposite-truth two-sat-unit-duplicate" data-kind="definition">
+  <h2>Clauses with at most two literals</h2>
+  <p>Fix a finite atom set \(P\). Use the <a href="dpll-satisfiability#partial-assignments">literal and CNF conventions</a>: a literal \(\ell=(p,b)\) is true under \(v:P\to\{0,1\}\) when \(v(p)=b\), and its <strong>opposite</strong> is \(\bar\ell=(p,1-b)\). Thus \(\bar{\bar\ell}=\ell\), and exactly one of \(\ell,\bar\ell\) is true under any valuation.</p>
+  <p>A <strong>2-CNF</strong> is a finite list \(\Gamma\) of clauses, each a list of at most two literals. It is satisfied when every clause has a true literal. Literals and clauses may repeat. A unit clause \([\ell]\) has the same truth condition as \([\ell,\ell]\); the empty clause has no true literal and makes the whole CNF unsatisfiable. The empty CNF is satisfied by every valuation.</p>
+  <p>A finite CNF mentions only finitely many atoms, so we can take \(P\) to be its occurring atoms, or any larger finite stock. A valuation on that stock can be extended arbitrarily to other atoms. The special restriction here concerns the <a href="propositional-normal-forms#normal-form-definitions">sizes of the clauses</a>; arbitrary CNFs remain covered by DPLL.</p>
+</section>
+
+<section id="implication-edges" data-formal="two-sat-edges two-sat-edge two-sat-edge-spec two-sat-literal-count" data-kind="definition">
+  <h2>A binary clause gives two directed implications</h2>
+  <p>The <strong>implication graph</strong> of \(\Gamma\) has the \(2|P|\) literals as vertices. Each binary clause \([\ell,m]\) supplies the edges</p>
+  <div class="math-display">\[\bar\ell\longrightarrow m,\qquad \bar m\longrightarrow\ell.\]</div>
+  <p>A unit clause \([\ell]\) supplies the edge \(\bar\ell\longrightarrow\ell\), obtained by duplicating its literal. Empty clauses supply no edges and will be checked separately. No other edges are added. Duplicate edges have no effect on reachability.</p>
+  <p>The edge \(a\longrightarrow b\) records the constraint that truth of \(a\) requires truth of \(b\). For example, \(\neg p\lor q\) gives \(p\longrightarrow q\) and \(\neg q\longrightarrow\neg p\). Both edges matter: choosing truth values must respect opposite literals as well as the displayed implication.</p>
+</section>
+
+<section id="reachability" data-formal="relation-reflexive-transitive-closure relation-reflexive-transitive-closure-reflexivity relation-reflexive-transitive-closure-transitivity two-sat-edge-truth two-sat-reach-truth" data-kind="lemma">
+  <h2>Truth propagates along finite paths</h2>
+  <p>Write \(a\rightsquigarrow b\) if a finite directed path leads from \(a\) to \(b\), allowing a path of length zero. This is the <a href="equivalence-relations#relation-closures">reflexive transitive closure</a> of the edge relation. It is a preorder: zero-length paths give reflexivity, and concatenation gives transitivity.</p>
+  <p>If \(v\models\Gamma\), \(a\rightsquigarrow b\), and \(a\) is true under \(v\), then \(b\) is true under \(v\).</p>
+  <div class="proof"><p>For an edge \(\bar\ell\longrightarrow m\) from \([\ell,m]\), truth of \(\bar\ell\) means \(\ell\) is false. Satisfaction of the clause then makes \(m\) true. The other edge is symmetric. For a unit edge \(\bar\ell\longrightarrow\ell\), satisfaction of the unit already makes its target true.</p><p>Induct on the number of edges in the path. At length zero the endpoints agree. For a longer path, apply the induction hypothesis up to its last edge, then the edge argument. Thus truth reaches the final vertex.</p></div>
+</section>
+
+<section id="opposite-paths" data-formal="two-sat-edge-opposite two-sat-reach-opposite" data-kind="lemma">
+  <h2>Taking opposites reverses every path</h2>
+  <p>For all literals \(a,b\),</p>
+  <div class="math-display">\[a\longrightarrow b\ \Longleftrightarrow\ \bar b\longrightarrow\bar a,\qquad a\rightsquigarrow b\ \Longleftrightarrow\ \bar b\rightsquigarrow\bar a.\]</div>
+  <div class="proof"><p>The two edges from a binary clause are paired by taking opposites and reversing direction. A unit edge \(\bar\ell\longrightarrow\ell\) becomes itself. Apply this operation twice to obtain the edge equivalence.</p><p>Given a path from \(a\) to \(b\), replace each vertex by its opposite and traverse the vertices in reverse order. The paired edges form a path from \(\bar b\) to \(\bar a\). A zero-length path remains a zero-length path. Applying this reversal twice proves the path equivalence.</p></div>
+</section>
+
+<section id="mutual-components" data-formal="two-sat-mutual two-sat-components two-sat-component-map two-sat-component-equality two-sat-component-comparison ordered-quotient-equivalence ordered-quotient-partial-order two-sat-component-opposite two-sat-component-opposite-evaluation two-sat-component-opposite-involution two-sat-component-opposite-order" data-kind="definition">
+  <h2>Mutual reachability gives the strongly connected components</h2>
+  <p>Define \(a\sim b\) when \(a\rightsquigarrow b\) and \(b\rightsquigarrow a\). A <strong>strongly connected component</strong> is an entire equivalence class for this relation, rather than an arbitrary subset of mutually reachable vertices. The <a href="ordered-sets#quotient-order">quotient of a preorder</a> gives a finite partially ordered set \(Q\) with</p>
+  <div class="math-display">\[[a]\le [b]\quad\Longleftrightarrow\quad a\rightsquigarrow b.\]</div>
+  <p>Here \([a]\) is the component containing \(a\). Define \(\overline{[a]}=[\bar a]\). This is independent of the representative: if \(a\sim b\), reversing the two paths gives \(\bar a\sim\bar b\). It is an involution that reverses the quotient order:</p>
+  <div class="math-display">\[C\le D\quad\Longleftrightarrow\quad\bar D\le\bar C,\qquad\overline{\bar C}=C.\]</div>
+  <p>The classes include isolated vertices, since each literal reaches itself. Working with whole equivalence classes ensures that distinct classes cannot lie below each other in both directions.</p>
+</section>
+
+<section id="contradictory-component" data-formal="two-sat-consistent two-sat-contradictory-component two-sat-consistent-components" data-kind="lemma">
+  <h2>A component containing opposite literals prevents a model</h2>
+  <p>If \(a\sim\bar a\) for some literal \(a\), then \(\Gamma\) is unsatisfiable.</p>
+  <div class="proof"><p>Suppose \(v\models\Gamma\). Exactly one of \(a,\bar a\) is true. If \(a\) is true, the path \(a\rightsquigarrow\bar a\) makes its opposite true too. If \(\bar a\) is true, use the reverse path instead. Either case contradicts the opposite truth values. Hence no model exists.</p></div>
+  <p>In the absence of this obstruction, \(C\ne\bar C\) for every component: choosing \(a\in C\), the equation \(C=\bar C\) would put \(a\) and \(\bar a\) in the same component.</p>
+</section>
+
+<section id="finite-component-order" data-formal="two-sat-rank two-sat-rank-exists two-sat-chosen-rank two-sat-chosen-rank-spec" data-kind="lemma">
+  <h2>Order the components so implications never go backwards</h2>
+  <p>There is a listing \(C_0,\ldots,C_{k-1}\) of all components, each appearing once, such that</p>
+  <div class="math-display">\[C_i\le C_j\quad\Longrightarrow\quad i\le j.\]</div>
+  <p>Write \(r(C_i)=i\). Thus \(r\) is injective and preserves the quotient order. The listing is often called a <strong>topological order</strong>; only this ordering property is needed.</p>
+  <div class="proof"><p>If the component set is empty, take the empty listing. Otherwise choose a minimal component, put it first, remove it, and repeat on the remaining finite poset. A minimal component exists at every nonempty step by <a href="ordered-sets#finite-extrema">finite extrema</a>. The number of remaining components decreases by one, so the construction stops and lists every component exactly once.</p><p>Suppose \(C_i\le C_j\) but \(j&lt;i\). When \(C_j\) was chosen, the distinct component \(C_i\) was still present and lay below it. That contradicts minimality of the chosen component. Hence \(i\le j\), as required. Any choice among minimal components gives a suitable order.</p></div>
+</section>
+
+<section id="ordered-assignment" data-formal="two-sat-ordered-assignment" data-kind="definition">
+  <h2>Make the later of two opposite components true</h2>
+  <p>Assume there is no contradictory component and fix an order from <a href="#finite-component-order"></a>. Define the <strong>ordered assignment</strong></p>
+  <div class="math-display">\[v_r(p)=1\quad\Longleftrightarrow\quad r([\neg p])&lt;r([p]).\]</div>
+  <p>Otherwise set \(v_r(p)=0\). Equivalently, a literal is intended to be true when its component appears later than its opposite component. This defines a value for every atom, including atoms whose two literals are isolated. Distinct opposite components have distinct ranks, so there is no tie to resolve.</p>
+</section>
+
+<section id="truth-invariant" data-formal="two-sat-assignment-truth two-sat-assignment-propagates" data-kind="lemma">
+  <h2>The chosen truth values are consistent and closed under implications</h2>
+  <p>Under the same hypotheses, every literal \(a\) satisfies</p>
+  <div class="math-display">\[a\text{ is true under }v_r\quad\Longleftrightarrow\quad r([\bar a])&lt;r([a]).\]</div>
+  <p>Moreover, if \(a\rightsquigarrow b\) and \(a\) is true, then \(b\) is true. In particular, the true components form an upward closed set in the reachability order.</p>
+  <div class="proof"><p>For a positive literal \(p\), the equivalence is the definition of \(v_r\). For \(a=\neg p\), being true means \(v_r(p)=0\), hence that \(r([\neg p])&lt;r([p])\) fails. The ranks are distinct and linearly ordered, so this is equivalent to \(r([p])&lt;r([\neg p])\), the displayed condition for the negative literal. Thus the definition picks exactly one literal from each opposite pair.</p><p>Now \(a\rightsquigarrow b\) gives \([a]\le[b]\), while path reversal gives \([\bar b]\le[\bar a]\). Order preservation and truth of \(a\) give the chain</p><div class="math-display">\[r([\bar b])\le r([\bar a])&lt;r([a])\le r([b]).\]</div><p>Its endpoints satisfy the truth condition for \(b\). This proves propagation for the constructed assignment, without assuming in advance that it is a model.</p></div>
+</section>
+
+<section id="model-construction" data-formal="two-sat-ordered-model dpll-unit-forced" data-kind="theorem">
+  <h2>The ordered assignment satisfies every nonempty 2-clause</h2>
+  <p>Suppose \(\Gamma\) has no empty clause and no component contains opposite literals. Then the specified valuation \(v_r\) satisfies \(\Gamma\).</p>
+  <div class="proof"><p>Consider a clause. If it is binary, say \([\ell,m]\), then either \(\ell\) is true, and the clause is satisfied, or \(\ell\) is false. In the second case \(\bar\ell\) is true, and its edge to \(m\) makes \(m\) true by <a href="#truth-invariant"></a>. Thus the clause is satisfied in either case.</p><p>If the clause is a unit \([\ell]\) and \(\ell\) were false, its true opposite would propagate along \(\bar\ell\longrightarrow\ell\), a contradiction. Hence its sole literal is true. Every clause is a unit or binary, because empty clauses are excluded and lengths are at most two. This proves that the whole CNF is satisfied. When there are no clauses, the conclusion holds vacuously.</p></div>
+</section>
+
+<section id="two-sat-criterion" data-formal="two-sat-criterion two-sat-ordered-model dpll-empty-cases" data-kind="theorem">
+  <h2>The 2-SAT criterion</h2>
+  <div class="statement-box"><p>A finite 2-CNF \(\Gamma\) is satisfiable exactly when it has no empty clause and no strongly connected component contains both a literal and its opposite. Writing \(\operatorname{Sat}(\Gamma)\) for satisfiability, equivalently,</p><div class="math-display">\[\operatorname{Sat}(\Gamma)\quad\Longleftrightarrow\quad []\notin\Gamma\ \land\ \forall a\;\neg(a\rightsquigarrow\bar a\ \land\ \bar a\rightsquigarrow a).\]</div><p>When these conditions hold, ordering the mutual-reachability classes and using \(v_r\) gives an explicit model.</p></div>
+  <div class="proof"><p>A model rules out an empty clause by its truth definition and rules out contradictory components by <a href="#contradictory-component"></a>. Conversely the two conditions are exactly the hypotheses of <a href="#model-construction"></a>, which supplies the stated model. Thus both directions use the same implication graph, including its unit edges.</p></div>
+</section>
+
+<section id="finite-reachability-test" data-formal="two-sat-path two-sat-bounded-path two-sat-literal-count two-sat-simple-path-bound two-sat-bounded-path-spec two-sat-reach-test two-sat-reach-test-correct two-sat-finite-test two-sat-finite-test-correct two-sat-finite-test-model" data-kind="lemma">
+  <h2>The criterion can be checked by finite searches</h2>
+  <p>If a directed graph has \(N\) vertices, two vertices are reachable exactly when some path between them uses at most \(N\) vertices and repeats none. Here a zero-length path consists of one vertex; if \(N=0\), there are no endpoints to test.</p>
+  <div class="proof"><p>A path with no repeated vertices has at most \(N\) vertices. Conversely, among paths between two reachable vertices choose one with the least number of edges. If its vertex sequence repeats a vertex, delete the portion between two occurrences, keeping that vertex once. The step after the second occurrence, when present, is still an edge after the first because those vertices are equal. Endpoints are preserved even when the repeated portion reaches the end. This gives a shorter path with the same endpoints, a contradiction. Thus a shortest path has no repetition, and the bound follows.</p></div>
+  <p>For a 2-CNF, first test for an empty clause, then inspect the finitely many vertex sequences of length at most \(2|P|\) to decide all reachability questions. Compare each opposite pair using the criterion. On a successful test, group vertices by mutual reachability and successively choose minimal classes to obtain \(v_r\). These are terminating finite searches; no particular component algorithm or running-time bound is asserted.</p>
+</section>
+
+<section id="satisfiable-example" data-formal="two-sat-diamond two-sat-diamond-literal-rank two-sat-diamond-components two-sat-diamond-reach two-sat-diamond-rank two-sat-diamond-alternate-rank two-sat-diamond-ranks two-sat-diamond-assignments" data-kind="lemma">
+  <h2>A four-component graph produces a model</h2>
+  <p>Take</p>
+  <div class="math-display">\[\Gamma=(\neg p\lor q)\land(\neg q\lor r)\land(p\lor q)\land(\neg r\lor q).\]</div>
+  <p>The components are \(N=\{\neg q,\neg r\}\), \(A=\{p\}\), \(B=\{\neg p\}\), and \(T=\{q,r\}\). The order \(N,A,B,T\) produces the model \((p,q,r)=(0,1,1)\); the order \(N,B,A,T\) produces \((1,1,1)\).</p>
+  <div class="proof"><p>The two implications between \(q,r\), and between their opposites, put each displayed pair in one class. The remaining edges form the diamond below. Since all arrows go from left to right and there are no other edges, these four classes cannot merge.</p>
+  <figure id="component-diamond" class="proof-figure"><div class="figure-image"><img src="assets/component-diamond.svg" width="560" height="300" alt="Four components form a directed diamond: N points to A and B, and both A and B point to T. N contains not q and not r, A contains p, B contains not p, T contains q and r." /></div><figcaption>The quotient graph. Opposites pair N with T and A with B; each drawn arrow is an implication between components.</figcaption></figure>
+  <p>Choose the order \(N,A,B,T\), with ranks \(0,1,2,3\). Then \([p]\) comes before \([\neg p]\), while \([q]\) and \([r]\) come after their opposites. The constructed valuation is</p>
+  <div class="math-display">\[v_r(p)=0,\qquad v_r(q)=v_r(r)=1.\]</div>
+  <p>Each of the four clauses is true under this valuation. Choosing the other permitted middle order \(N,B,A,T\) instead gives \(p=q=r=1\), also a model. Incomparable components allow different choices without threatening the invariant.</p></div>
+</section>
+
+<section id="unit-cycle-example" data-formal="two-sat-unit-chain-cycle two-sat-unit-chain-component dpll-unit-trace two-sat-contradictory-component" data-kind="lemma">
+  <h2>A unit-propagation contradiction appears as one component</h2>
+  <p>Consider the earlier <a href="dpll-satisfiability#unit-chain">unit-chain formula</a></p>
+  <div class="math-display">\[\Delta=p\land(\neg p\lor q)\land(\neg q\lor r)\land\neg r.\]</div>
+  <p>The formula is unsatisfiable, and all six literals lie in one strongly connected component.</p>
+  <div class="proof"><p>Its unit and binary edges give the directed cycle</p>
+  <div class="math-display">\[\neg p\longrightarrow p\longrightarrow q\longrightarrow r\longrightarrow\neg r\longrightarrow\neg q\longrightarrow\neg p.\]</div>
+  <p>In particular \(p\) and \(\neg p\) reach one another, so the criterion proves unsatisfiability. The edges \(\neg p\longrightarrow p\) and \(r\longrightarrow\neg r\) come from the two units. Retaining only the binary clauses would lose the contradiction. This graph proof collects the same forced consequences that unit propagation discovers successively.</p></div>
+</section>
+
+<section id="units-and-empty-question" data-formal="two-sat-unit-graph two-sat-unit-reach two-sat-unit-model two-sat-opposite-units two-sat-empty-graphs dpll-empty-cases two-sat-ordered-model dpll-unit-forced" data-kind="question">
+  <h2>Do units and empty clauses really need separate attention?</h2>
+  <p>For one atom \(p\), compare the CNFs \([p]\), \([p]\land[\neg p]\), the empty CNF, and a CNF consisting of one empty clause. What does each implication graph say? Could we omit the empty-clause test?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The single unit gives just \(\neg p\longrightarrow p\). The two components are distinct, in that order, and the constructed valuation makes \(p\) true. Adding the opposite unit gives \(p\longrightarrow\neg p\) too, so the literals lie in one contradictory component and the CNF is unsatisfiable.</p><p>The empty CNF has no edges. Its opposite literals remain in distinct singleton components, and either truth value is a model. A CNF with one empty clause also has no edges, hence exactly the same reachability graph, but it has no model. Therefore the graph alone cannot detect an empty clause. The separate test is essential; duplicating a unit is valid, whereas duplicating the absence of a literal cannot produce an edge.</p></div></details>
+</section>
+
+<section id="order-direction-question" data-formal="two-sat-earlier-assignment two-sat-earlier-fails-unit two-sat-unit-model two-sat-one-way-forces-false" data-kind="question">
+  <h2>Why make the later component true?</h2>
+  <p>Suppose the ordering satisfies \(C\le D\Rightarrow r(C)\le r(D)\). What goes wrong if we make a literal true when its component comes <em>before</em> its opposite? Is one path \(a\rightsquigarrow\bar a\) already an unsatisfiability certificate?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The unit CNF \([p]\) has \([\neg p]&lt;[p]\) in its forced component order. Making the earlier component true would set \(p=0\) and falsify the unit. Truth must move forward along implications, which is exactly what the later-component rule guarantees. One may instead reverse the entire ordering convention and then choose earlier components, but the two directions must be changed together.</p><p>A single path is insufficient. Here \(\neg p\rightsquigarrow p\) holds, but \(p\) does not reach \(\neg p\), and \(p=1\) is a model. More generally, a path \(a\rightsquigarrow\bar a\) forces \(a\) to be false in every model. These two paths yield a contradiction when the reverse path also forces its opposite false.</p></div></details>
+</section>

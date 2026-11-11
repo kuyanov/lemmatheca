@@ -124,14 +124,16 @@
   </div>
 </section>
 
-<section id="negative-answers-question" data-kind="question" data-formal="oracle-use-negative-answer-counterexample oracle-use-unasked-position oracle-use-record-agreement oracle-use-two-query-example eop-coded-partial-graph eop-negative-graph-program eop-negative-not-effective">
+<section id="negative-answers-question" data-kind="question" data-formal="oracle-use-negative-answer-counterexample oracle-use-unasked-position oracle-use-record-agreement oracle-use-two-query-example eop-coded-partial-graph eop-negative-graph-program eop-negative-not-effective enum-tag enum-total-info enum-trace-evidence-consistent enum-certificate-sound enum-certificate-complete enum-turing-to-enumeration">
   <h2>Must a replay preserve negative answers as well?</h2>
   <p>In the two-query example, is it enough that \(B\) contain every positively answered query? Compare \(A\cap F\subseteq B\) with \(A\cap F=B\cap F\). Could changing an unqueried position below the convenient bound \(u=4\) alter this output?</p>
   <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
     <p>Merely preserving positive answers is insufficient. With \(A=\{2\}\), the oracle \(B=\{2,3\}\) still contains the positively queried number two, but changes the answer at three from zero to one. The output becomes \(\langle1,1\rangle\), rather than \(\langle1,0\rangle\).</p>
     <p>The equality \(A\cap F=B\cap F\) says exactly that every queried membership bit agrees, including each negative answer. By contrast, changing only position zero, for instance to \(B=\{0,2\}\), leaves the two answers and the output unchanged. Agreement below \(u\) was a sufficient convenient condition; agreement on the actual query set is the more precise one.</p>
   <p>Using a membership oracle for the whole graph of a partial function is also different from using only its finite positive observations. The <a href="effective-operators#negative-membership">negative graph-membership example</a> gives an oracle operation that fails the monotonicity required of a positive-rule operator.</p>
-  </div></details>
+
+  <p>Both kinds of recorded answer can be turned into positive set information by putting <a href="enumeration-reducibility#total-information">separate tags for yes and no</a> into a total-information set. The resulting <a href="enumeration-reducibility#finite-transcript-rules">finite transcript rules</a> preserve exactly the successful oracle computations and give the Turing-to-enumeration direction of the degree embedding.</p>
+</div></details>
 </section>
 
 <section id="divergent-prefix-question" data-kind="question" data-formal="oracle-code-first-missing oracle-code-positive-prefix oracle-use-full-oracle-divergence oracle-use-truncated-search oracle-use-incomplete-prefixes oracle-use-divergence-not-stable ogen-generic-divergence-iff-prefix">

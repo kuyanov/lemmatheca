@@ -48,6 +48,11 @@ Reuse applicable assessments; inspect selected publications directly.
    the substantive constructions formalization will need under the
    [exposition and formalization rule](../docs/corpus.md#exposition-and-formalization);
    split or narrow compressed material rather than preserving an arbitrary entry count.
+   Choose IDs and titles that name these actual scopes under the
+   [entry-naming rule](../docs/corpus.md#layout-and-navigation). Check sibling
+   entries, taxonomy and relevant plans for broader-topic collisions; retain
+   qualifiers such as countable, propositional or relational where they distinguish
+   this treatment from an existing or planned entry or area.
 4. Establish prerequisites and reading order. Put elementary material before its
    uses and group related topics where dependencies allow. Cite existing
    prerequisites by stable entry/block IDs; identify proposed prerequisites by

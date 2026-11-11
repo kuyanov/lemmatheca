@@ -63,6 +63,14 @@
 </div>
 </section>
 
+
+<section id="categoricity-completeness" data-kind="theorem" data-formal="bf-categoricity bf-countable-categoricity-completeness theory-complete-models bf-empty-theory-categorical model-equality-independence">
+  <h2>Categoricity at one sufficiently large cardinal forces completeness</h2>
+  <div class="statement-box"><p>Let \(L\) be any set-sized language, let \(T\) be a satisfiable theory with no finite models, and let \(\kappa\ge\lambda_L\) be an infinite cardinal. If \(T\) is <a href="back-and-forth#categoricity">\(\kappa\)-categorical</a>, meaning that all its models of size \(\kappa\) are isomorphic, then \(T\) is semantically complete: all its models agree on every \(L\)-sentence. This is the <strong>Łoś–Vaught completeness test</strong>.</p></div>
+  <div class="proof"><p>If two models of \(T\) disagreed on a sentence \(\theta\), one would satisfy \(\theta\) and the other \(\neg\theta\). Both models are infinite because \(T\) has no finite models. Apply <a href="#model-cardinalities"></a> to each separately, obtaining elementarily equivalent models of cardinality exactly \(\kappa\). They still model \(T\), and still give opposite truth values to \(\theta\), since elementary equivalence preserves every sentence.</p><p>Categoricity makes the two size-\(\kappa\) models isomorphic. An isomorphism preserves sentence truth, contradicting their opposite answers. Thus every two models of \(T\) agree on every sentence. Satisfiability ensures that this common truth set exists. The proof uses semantic compactness and the size theorems, and does not assume that \(L\) is countable.</p></div>
+  <p>The <a href="back-and-forth#countable-categoricity-test">countable-language, countable-cardinality case</a> is a special instance. The no-finite-model hypothesis is essential: the empty equality theory has isomorphic models at each fixed infinite cardinal, but its singleton and two-element models disagree on \(\forall x\forall y\,(x=y)\), as in <a href="#independence-witnesses"></a>.</p>
+</section>
+
 <section id="countermodels" data-formal="model-nonderivability-countermodel" data-kind="theorem">
   <h2>What a model proves about nonderivability</h2>
   <p>For this block and the remaining blocks, let \(L\) be countable, and let \(T\) be a theory of \(L\)-sentences. Write \(T\vdash\theta\) for derivability in the <a href="first-order-proofs#derivations-and-theories">first-order proof calculus</a>. Then</p>
@@ -72,12 +80,14 @@
 </div>
 </section>
 
-<section id="independence-witnesses" data-formal="model-independent-sentence model-independence-two-models model-equality-independence fo-singleton-domain-truth qe-equality-theory-complete" data-kind="definition">
+<section id="independence-witnesses" data-formal="model-independent-sentence model-independence-two-models model-equality-independence fo-singleton-domain-truth qe-equality-theory-complete mcoh-failure-ch ccf-forcing-ch" data-kind="definition">
   <h2>Independence requires witnesses on both sides</h2>
   <p>A sentence \(\theta\) is <strong>independent of \(T\)</strong> if neither \(T\vdash\theta\) nor \(T\vdash\neg\theta\). By <a href="#countermodels"></a> and double negation, this is equivalent to both theories</p>
   <div class="math-display">\[T\cup\{\theta\},\qquad T\cup\{\neg\theta\}\]</div>
   <p>having models. The models may have the same cardinality or different cardinalities; the requirement is their opposite answers to \(\theta\).</p>
   <p>For example, let \(T\) be the empty theory in the equality-only language and let \(\theta=\forall x\forall y\,(x=y)\). A one-element structure satisfies \(\theta\), and a two-element structure satisfies \(\neg\theta\). These witnesses show independence. This is stronger evidence than merely having two nonisomorphic models: two infinite equality-only structures of different sizes agree on every sentence, by <a href="quantifier-elimination#complete-examples">completeness of the theory of infinite sets</a>.</p>
+
+  <p>For set theory, <a href="many-cohen-reals#failure-of-ch">many Cohen reals</a> give a concrete model of \(\mathrm{ZFC}+\neg\mathrm{CH}\) from an externally countable transitive ZFC ground model. The ground-model premise is part of the model construction; bare consistency does not by itself supply that transitive model. The <a href="countably-closed-forcing#forcing-ch">countably closed construction</a> gives a model of \(\mathrm{ZFC}+\mathrm{CH}\) from the same transitive-ground-model premise. The two constructions therefore supply opposite CH truth values under that premise.</p>
 </section>
 
 <section id="relative-consistency" data-formal="fod-consistency model-consistency-satisfiability model-relative-consistency" data-kind="lemma">

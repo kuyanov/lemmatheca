@@ -1,0 +1,91 @@
+<section id="partial-fixed-point-free" data-formal="adn-partial-fpf adn-total-fpf-equivalence adn-empty-partial-fpf ars-domain-fpf effective-stage-index-set" data-kind="definition">
+  <h2>A partial transformation may avoid fixed points wherever it returns an index</h2>
+  <p>Use the fixed <a href="universal-computation#numbering-programs">ordinary program numbering</a> \(\varphi_e\), and write \(W_e=\{x:\varphi_e(x)\downarrow\}\). A partial numerical function \(\delta\) is <strong>fixed-point-free on domain indices</strong> if</p>
+  <div class="math-display">\[\delta(e)\downarrow=j\quad\Longrightarrow\quad W_j\ne W_e\qquad(e,j\in\mathbb N).\]</div>
+  <p>The requirement applies only where \(\delta\) is defined. In particular the nowhere-defined function satisfies it. For a total function this is exactly the <a href="arslanov-completeness-criterion#domain-fixed-point-free">earlier FPF condition</a>. Distinct numerical indices are insufficient: they may name the same domain. Throughout the construction below, \(\delta\) and another partial function \(\psi\) are ordinary partial computable functions, with supplied indices \(d,p\) satisfying \(\delta(z)\simeq\varphi_d(z)\) and \(\psi(n)\simeq\varphi_p(n)\).</p>
+</section>
+
+<section id="totalization-and-avoidance" data-formal="adn-totalizes adn-avoids adn-totalizes-avoiding" data-kind="definition">
+  <h2>A total numerical selector can represent a partial transformation</h2>
+  <p>A total computable \(f:\mathbb N\to\mathbb N\) <strong>totalizes</strong> the partial index-valued function \(\psi\) if</p>
+  <div class="math-display">\[\psi(n)\downarrow=j\quad\Longrightarrow\quad W_{f(n)}=W_j.\]</div>
+  <p>It <strong>totalizes \(\psi\) avoiding \(\delta\)</strong> if it also satisfies</p>
+  <div class="math-display">\[\psi(n)\uparrow\quad\Longrightarrow\quad\delta(f(n))\uparrow.\]</div>
+  <p>The selector always returns a program index, even when \(\psi(n)\) never returns one. Its selected program need not be total. The avoidance clause concerns whether \(\delta\) returns an index on the numerical input \(f(n)\), rather than whether that selected program halts on a runtime input.</p>
+</section>
+
+<section id="finite-output-tests" data-formal="univ-bounded-value univ-bounded-value-primitive univ-computation-certificate univ-certificate-primitive univ-bounded-value-output univ-evaluation-output-certificate univ-evaluation-domain-certificate" data-kind="definition">
+  <h2>Finite evaluations record both success and its actual output</h2>
+  <p>Let \(B(s,e,x)\) be the established <a href="universal-computation#universal-evaluation">bounded output code</a>: it is zero if the evaluation with allowance \(s\) has not succeeded, and \(j+1\) if it returns \(j\). Its primitive-recursive dependence on the three arguments gives finite tests for</p>
+  <div class="math-display">\[P(n,s)\;\Longleftrightarrow\;B(s,p,n)&gt;0,\qquad D(z,s)\;\Longleftrightarrow\;B(s,d,z)&gt;0.\]</div>
+  <p>These are the <strong>two race tests</strong>. A positive test certifies the actual output obtained by subtracting one. Conversely a defined computation has a positive test at some allowance. Different successful allowances give the same output because they describe the same partial function. Merely recording a success bit would lose the index that must later be simulated.</p>
+</section>
+
+<section id="first-arrival-race" data-formal="adn-race-stage adn-winning-index adn-race-procedure separator-negative-stage-spec" data-kind="definition">
+  <h2>Freeze the first available index, giving the intended partial transformation ties</h2>
+  <p>For proposed self-index \(z\) and parameter \(n\), the <strong>race stage</strong> is the partial search</p>
+  <div class="math-display">\[t(z,n)\simeq\min\{s:P(n,s)\lor D(z,s)\}.\]</div>
+  <p>If the search succeeds, its <strong>winning index</strong> is</p>
+  <div class="math-display">\[J(z,n,s)=\begin{cases}B(s,p,n)-1,&amp;P(n,s),\\B(s,d,z)-1,&amp;\neg P(n,s).\end{cases}\]</div>
+  <p>Only a successful race stage is used in this formula. In the second branch \(D(z,s)\) therefore holds. If both tests first succeed at the same allowance, the \(\psi\)-branch wins. The <strong>race procedure</strong> on runtime input \(x\) is</p>
+  <div class="math-display">\[G(z,n,x)\simeq\varphi_{J(z,n,t(z,n))}(x).\]</div>
+  <p>Operationally, search until one test succeeds, compute its winning index once, and simulate that program on \(x\). The chosen index is frozen: subsequent discoveries by the losing search do not replace it. If neither search ever succeeds, \(G\) remains undefined on every runtime input.</p>
+</section>
+
+<section id="race-partial-computability" data-formal="adn-race-partial adn-race-domain" data-kind="lemma">
+  <h2>The race is one joint partial computable procedure</h2>
+  <p>With the supplied ordinary indices \(d,p\) fixed, \(G(z,n,x)\) is partial computable jointly in \(z,n,x\). The race stage is defined exactly when \(\psi(n)\) or \(\delta(z)\) is defined.</p>
+  <div class="proof"><p>The two tests are primitive recursive. Their disjunction is a total decidable predicate, so <a href="partial-recursive-functions#search-correctness">unbounded search</a> for its first true instance is partial recursive. The branch test and bounded output decoding compute \(J\) at that stage. Strict composition with the <a href="universal-computation#universal-evaluation">universal partial evaluator</a> supplies the one joint procedure \(G\). Searching and computing an index are separate from executing the program with that index; the last simulation is allowed to diverge.</p><p>If a race stage is found, one positive test certifies one of the two defined computations. Conversely, if either computation is defined, completeness of bounded evaluation supplies a successful allowance, so the minimum search terminates. This proves the exact domain assertion, including the case where both computations diverge.</p></div>
+</section>
+
+<section id="specified-self-reference" data-formal="adn-race-family-index adn-race-family-evaluation adn-selector adn-selector-primitive adn-selector-evaluation uniform-rec-partial-compiler uniform-rec-partial-compiler-primitive uniform-rec-partial-compiler-evaluation" data-kind="lemma">
+  <h2>Compile a single primitive-recursive selector for the self-referential race</h2>
+  <p>The <a href="uniform-self-reference#partial-families">parameterized theorem for partial output rules</a> supplies one primitive-recursive \(f\) with</p>
+  <div class="math-display">\[\varphi_{f(n)}(x)\simeq G(f(n),n,x)\qquad(n,x\in\mathbb N).\]</div>
+  <p>More explicitly, fix one ordinary master index \(q\) for the joint race, so that \(\varphi_q(\langle z,\langle n,x\rangle\rangle)\simeq G(z,n,x)\). Use the supplied partial-family compiler \(F(z,n)=s(s(q,z),n)\) and its fixed-point selector. These index operations choose all values of \(f\) before any runtime race is executed.</p>
+  <div class="proof"><p>The preceding lemma gives the required joint partial computability. The quoted theorem specializes the master index at the proposed self-index and the parameter, then applies parameterized recursion. Its conclusion supplies exactly the displayed identity, with \(f(n)\) inserted into the self-index position. In particular \(f\) is total and primitive recursive even when all selected programs diverge. The asserted equality is between partial computations; it is not numerical equality between an index and the value of another index transformation.</p></div>
+</section>
+
+<section id="forbidden-winning-branch" data-formal="adn-forbidden-winning-branch" data-kind="lemma">
+  <h2>A fixed-point-free transformation can never win the selected race</h2>
+  <p>Suppose \(\delta\) is partial FPF. For every \(n\), if the race at \((f(n),n)\) stops at stage \(s\), then \(P(n,s)\) holds. Thus the selected race never uses its \(\delta\)-branch.</p>
+  <div class="proof"><p>Assume a selected race succeeds but \(P(n,s)\) is false. The definition of the race gives \(D(f(n),s)\), so \(\delta(f(n))\) is defined with value \(j=B(s,d,f(n))-1\). That is the frozen winning index. The self-reference identity therefore says, on every runtime input,</p><div class="math-display">\[\varphi_{f(n)}(x)\simeq\varphi_j(x).\]</div><p>The domains are equal, \(W_{f(n)}=W_j\). But the defined value \(\delta(f(n))=j\) invokes the FPF condition and makes these same domains unequal. This contradiction excludes the branch. The argument does not assume that either of the programs being copied is total or even has a nonempty domain.</p></div>
+</section>
+
+<section id="copying-defined-values" data-formal="adn-copies-partial-functions adn-copies-domains" data-kind="theorem">
+  <h2>Every defined requested index is copied with its full partial behavior</h2>
+  <p>Suppose \(\delta\) is partial FPF and \(\psi(n)\downarrow=j\). Then</p>
+  <div class="math-display">\[\forall x\quad\varphi_{f(n)}(x)\simeq\varphi_j(x),\qquad W_{f(n)}=W_j.\]</div>
+  <div class="proof"><p>The defined value of \(\psi(n)\) makes the race terminate. At its successful stage, <a href="#forbidden-winning-branch"></a> forces the \(\psi\)-test to hold. Soundness of the bounded evaluator gives \(B(s,p,n)-1=j\), because this successful test evaluates the same computation \(\psi(n)\). Hence its frozen winning index is exactly \(j\). Substitute this equality into the race procedure and the self-reference identity. This proves equality of the entire partial functions, including divergence, and taking domains gives the second assertion.</p></div>
+</section>
+
+<section id="avoiding-undefined-values" data-formal="adn-selector-avoids adn-undefined-request-bottom" data-kind="theorem">
+  <h2>An undefined request forces the avoidance computation to remain undefined</h2>
+  <p>Suppose \(\delta\) is partial FPF and \(\psi(n)\uparrow\). Then \(\delta(f(n))\uparrow\). For this specified construction, \(\varphi_{f(n)}\) is also the nowhere-defined function.</p>
+  <div class="proof"><p>If \(\delta(f(n))\) were defined, the race would terminate. The forbidden-branch lemma would then give a positive \(\psi\)-test, certifying that \(\psi(n)\) is defined. This contradicts the hypothesis, so the avoidance computation diverges.</p><p>Now both computations being raced are undefined. By the exact race-domain assertion, its stage search never finishes. Consequently the race procedure is undefined on every runtime input. The self-reference identity transfers that fact to \(\varphi_{f(n)}\). This stronger conclusion describes this construction; the definition of an arbitrary totalizer only requires the avoidance clause.</p></div>
+</section>
+
+<section id="adn-theorem" data-formal="adn-specified-theorem adn-theorem" data-kind="theorem">
+  <h2>Every partial computable transformation can be totalized while avoiding a partial FPF map</h2>
+  <div class="statement-box"><p>Let \(\delta\) be partial computable and FPF on ordinary domain indices. For every partial computable \(\psi\), there is a primitive-recursive \(f\) totalizing \(\psi\) avoiding \(\delta\):</p><div class="math-display">\[\psi(n)\downarrow=j\;\Longrightarrow\;W_{f(n)}=W_j,\qquad \psi(n)\uparrow\;\Longrightarrow\;\delta(f(n))\uparrow.\]</div><p>This is <strong>Visser’s anti-diagonal normalization theorem</strong>, or the <strong>ADN theorem</strong>.</p></div>
+  <div class="proof"><p>Choose the supplied indices \(d,p\), construct their joint race, and take the primitive-recursive selector in <a href="#specified-self-reference"></a>. The copying theorem gives totalization; the avoidance theorem gives the second implication. The same selector supplies both clauses. The construction even preserves full partial functions on defined requests and gives the empty partial function on undefined requests.</p></div>
+</section>
+
+<section id="universal-requests" data-formal="adn-universal-request adn-universal-request-index adn-universal-request-evaluation adn-uniform-selector adn-uniform-selector-primitive adn-uniform-specified adn-uniform-theorem univ-universal-recursive" data-kind="theorem">
+  <h2>For one fixed avoidance map, one selector handles every partial computable request</h2>
+  <p>Fix the partial computable FPF map \(\delta\). There is one primitive-recursive \(H(e,n)\), jointly in \(e,n\), such that</p>
+  <div class="math-display">\[\varphi_e(n)\downarrow=j\;\Longrightarrow\;W_{H(e,n)}=W_j,\qquad \varphi_e(n)\uparrow\;\Longrightarrow\;\delta(H(e,n))\uparrow.\]</div>
+  <div class="proof"><p>Use the one universal request \(\psi(\langle e,n\rangle)\simeq\varphi_e(n)\), which is partial computable jointly by universal evaluation and pair decoding. Apply the ADN construction to this one \(\psi\), obtaining a primitive-recursive selector \(f\) on pair codes. Put \(H(e,n)=f(\langle e,n\rangle)\). Primitive-recursive pairing gives joint primitive recursiveness, and the two clauses follow by substituting the universal request identity. The avoidance map and this whole selector are fixed before \(e,n\) vary.</p></div>
+</section>
+
+<section id="total-avoidance-question" data-formal="adn-no-total-partial-fpf adn-empty-partial-fpf ars-computable-obstruction adn-selector-primitive rec-thm-transformer-fixed-point" data-kind="question">
+  <h2>Could the avoidance map itself be total?</h2>
+  <p>Suppose a partial computable FPF map \(\delta\) were total. Apply ADN to the nowhere-defined request. What contradiction results? Could the total computable selector \(f\) instead be FPF?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Every request is undefined, so avoidance gives \(\delta(f(n))\uparrow\) at every \(n\), contradicting totality of \(\delta\), already at \(n=0\). Thus there is no total computable FPF map, in agreement with the <a href="arslanov-completeness-criterion#computable-obstruction">ordinary recursion-theorem obstruction</a>.</p><p>The selector \(f\) is itself total computable, hence cannot be FPF either. Ordinary recursion supplies an \(i\) with \(W_{f(i)}=W_i\). This does not conflict with avoidance: the clause prohibits a defined value of \(\delta(f(n))\) on undefined requests, not a fixed point of the selector.</p></div></details>
+</section>
+
+<section id="domain-equality-question" data-formal="adn-domain-versus-function univ-constant-program univ-constant-program-evaluation" data-kind="question">
+  <h2>Does every totalizer preserve returned output values?</h2>
+  <p>Our construction copies full partial functions on defined requests. Does the definition of totalization alone imply this? Compare indices for the total constant-zero and total constant-one functions.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Choose fixed indices \(c_0,c_1\) for those two functions. Let \(\delta\) be nowhere defined, \(\psi(n)=c_0\), and \(f(n)=c_1\). The selector is total computable, and \(W_{f(n)}=\mathbb N=W_{\psi(n)}\), so it totalizes \(\psi\). There are no undefined requests, and the avoidance condition holds; in fact \(\delta\) diverges everywhere.</p><p>Nevertheless \(\varphi_{f(n)}(x)=1\) while \(\varphi_{\psi(n)}(x)=0\) for every \(n,x\). Domain equality records where programs halt, not what they return. The stronger copying identity above follows from this particular race construction and must not be inferred from the word “totalizes” alone.</p></div></details>
+</section>

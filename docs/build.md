@@ -16,7 +16,9 @@ these tasks; there is no separate validation command.
    citations, assets, anchors, internal links, node bindings, dependency cycles,
    reading-order listings, and source/planning records. Missing or stale generated
    data is allowed at this stage because the build will regenerate it.
-2. **Run Lean.** Build `Lemmatheca` and all bound non-core modules, then inspect
+2. **Run Lean.** Build the `Lemmatheca` library target, which discovers every
+   `.lean` module recursively under `formal/Lemmatheca/`, and all bound non-core
+   modules. Then import the modules named in node bindings directly and inspect
    each registered declaration and its transitive kernel axioms. Compilation
    errors and missing declarations fail the command. Unfinished proofs or
    unsupported axioms produce `verified: false`; they do not by themselves fail
@@ -26,6 +28,10 @@ these tasks; there is no separate validation command.
    source/planning catalogs.
 4. **Validate the proposed result, then save it.** Authored prose, descriptions,
    mathematical statements, entry metadata, and proof sources are not rewritten.
+
+There is no umbrella module or manually maintained import list. Plain `lake build`
+from `formal/` compiles all local modules, including those without node bindings;
+only the integrated corpus build refreshes verification results in the index.
 
 The generated outputs are:
 

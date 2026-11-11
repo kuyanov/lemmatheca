@@ -1,0 +1,99 @@
+<section id="finite-character-of-independence" data-formal="pgdim-finite-character-independence strong-min-independent" data-kind="lemma">
+  <h2>Independence can be checked on finite subsets</h2>
+  <p>Let \(\operatorname{cl}\) be a <a href="strongly-minimal-sets#pregeometry">pregeometry</a> on a set \(X\). A subset \(I\subseteq X\) is independent if and only if every finite subset of \(I\) is independent.</p>
+  <div class="proof"><p>An independent set has independent subsets by <a href="strongly-minimal-sets#adjoining-independent-point">monotonicity</a>. Conversely, suppose \(I\) is dependent. Some \(a\in I\) belongs to \(\operatorname{cl}(I\setminus\{a\})\). Finite character supplies a finite \(F\subseteq I\setminus\{a\}\) with \(a\in\operatorname{cl}(F)\). The finite set \(F\cup\{a\}\) is dependent, since removing \(a\) leaves exactly \(F\). This contradicts the finite-subset condition.</p></div>
+</section>
+
+<section id="independent-chain-unions" data-formal="pgdim-chain-union" data-kind="lemma">
+  <h2>A chain of independent sets has independent union</h2>
+  <p>If \(\mathcal C\) is a family of independent subsets of \(X\), linearly ordered by inclusion, then \(\bigcup\mathcal C\) is independent. The assertion includes the empty family.</p>
+  <div class="proof"><p>Every finite subset \(F\) of the union lies in one member of \(\mathcal C\) when \(F\ne\varnothing\). For each point choose a member containing it; among finitely many chosen members, one contains all the others because the family is a chain. That member is independent, so \(F\) is independent. The empty finite set is independent without choosing a member. Apply <a href="#finite-character-of-independence"></a>. If the family is empty, its union is empty and the same conclusion holds.</p></div>
+</section>
+
+<section id="basis-extension" data-formal="pgdim-basis-extension pgdim-closed-basis-extension pgdim-generating-basis strong-min-basis" data-kind="theorem">
+  <h2>Every independent set extends to a basis inside the generators</h2>
+  <div class="statement-box"><p>Let \(I\subseteq S\subseteq X\), with \(I\) independent. There is an independent set \(B\) such that</p>
+  <div class="math-display">\[I\subseteq B\subseteq S,\qquad \operatorname{cl}(B)=\operatorname{cl}(S).\]</div>
+  <p>Consequently every closed set has a basis, and every independent subset of a closed set extends to a basis of it.</p></div>
+  <div class="proof"><p>Order by inclusion the family of independent \(J\) satisfying \(I\subseteq J\subseteq S\). It is nonempty because it contains \(I\). The union of a nonempty chain still contains \(I\), lies in \(S\), and is independent by <a href="#independent-chain-unions"></a>. The empty chain has \(I\) as an upper bound. Thus <a href="axiom-of-choice#zorns-lemma">Zorn's lemma</a> gives a maximal member \(B\).</p><p>If \(s\in S\setminus\operatorname{cl}(B)\), the <a href="strongly-minimal-sets#adjoining-independent-point">adjoining lemma</a> makes \(B\cup\{s\}\) an independent member strictly containing \(B\), a contradiction. Hence \(S\subseteq\operatorname{cl}(B)\). Monotonicity and idempotence give \(\operatorname{cl}(S)\subseteq\operatorname{cl}(B)\), and the reverse inclusion follows from \(B\subseteq S\). For closed \(S=C\), the equality becomes \(\operatorname{cl}(B)=C\), exactly the earlier <a href="strongly-minimal-sets#independence-and-finite-bases">basis definition</a>.</p></div>
+</section>
+
+<section id="maximal-independent-spans" data-formal="pgdim-maximal-spanning" data-kind="lemma">
+  <h2>Maximal independence and spanning describe the same subsets</h2>
+  <p>Suppose \(B\subseteq S\) is independent. Then \(B\) is maximal among independent subsets of \(S\) if and only if \(\operatorname{cl}(B)=\operatorname{cl}(S)\).</p>
+  <div class="proof"><p>Maximality implies the equality by the last paragraph of <a href="#basis-extension"></a>. Conversely assume equal closures, and let \(B\subseteq J\subseteq S\) with \(J\) independent. If a point \(a\) belongs to \(J\setminus B\), it lies in \(S\), and hence in \(\operatorname{cl}(B)\). But \(B\subseteq J\setminus\{a\}\), so monotonicity places \(a\) in \(\operatorname{cl}(J\setminus\{a\})\), contradicting independence. Thus \(J=B\).</p></div>
+</section>
+
+<section id="finite-span-bound" data-formal="pgdim-finite-span-bound strong-min-finite-exchange-bound" data-kind="lemma">
+  <h2>A finite spanning set bounds even an initially arbitrary independent set</h2>
+  <p>If \(F\subseteq X\) is finite, \(I\) is independent, and \(I\subseteq\operatorname{cl}(F)\), then \(I\) is finite and \(|I|\le |F|\).</p>
+  <div class="proof"><p>Every finite \(J\subseteq I\) is independent and lies in \(\operatorname{cl}(F)\). The <a href="strongly-minimal-sets#finite-exchange-bound">finite exchange bound</a> gives \(|J|\le |F|\). If \(I\) had more than \(|F|\) points, one could choose \(|F|+1\) distinct points of it, obtaining a finite subset violating this bound. Therefore \(I\) has at most \(|F|\) points. This proves both finiteness and the claimed inequality.</p></div>
+</section>
+
+<section id="finite-support-cover" data-formal="pgdim-support-cover pgdim-supports-exist" data-kind="lemma">
+  <h2>Finite supports cover the other basis</h2>
+  <p>Let \(B,D\) be bases of the same closed set \(C\). For each \(b\in B\), choose a finite \(F_b\subseteq D\) with \(b\in\operatorname{cl}(F_b)\). Such choices exist by finite character. They satisfy</p>
+  <div class="math-display">\[D=\bigcup_{b\in B}F_b.\]</div>
+  <div class="proof"><p>Write \(U\) for the union on the right. Clearly \(U\subseteq D\). Every \(b\in B\) belongs to \(\operatorname{cl}(U)\), so \(C=\operatorname{cl}(B)\subseteq\operatorname{cl}(U)\). In particular \(D\subseteq\operatorname{cl}(U)\).</p><p>If \(d\in D\setminus U\), then \(U\subseteq D\setminus\{d\}\). Monotonicity would put \(d\) in \(\operatorname{cl}(D\setminus\{d\})\), contradicting independence of \(D\). Thus \(D\subseteq U\) as well. When \(B=\varnothing\), the argument forces \(D=\varnothing\); it does not require \(C=\varnothing\).</p></div>
+</section>
+
+<section id="basis-cardinality" data-formal="pgdim-basis-cardinality pgdim-infinite-basis-bound" data-kind="theorem">
+  <h2>All bases of a closed set have the same cardinality</h2>
+  <div class="statement-box"><p>For every closed \(C\subseteq X\) and any bases \(B,D\) of \(C\),</p>
+  <div class="math-display">\[|B|=|D|.\]</div>
+  <p>This includes finite bases, infinite bases and the empty basis.</p></div>
+  <div class="proof"><p>If \(B\) is finite, apply <a href="#finite-span-bound"></a> to \(D\subseteq\operatorname{cl}(B)\). It makes \(D\) finite and gives \(|D|\le |B|\). Reverse the roles of the bases to get the other inequality. The same argument settles any case in which either basis is finite.</p><p>Now suppose both bases are infinite. Use the finite supports in <a href="#finite-support-cover"></a>. A union of \(|B|\) finite sets has cardinality at most \(|B|\cdot\aleph_0=|B|\), by <a href="infinite-cardinal-arithmetic#infinite-sums-and-products">infinite cardinal arithmetic</a>. Explicitly, well-order each finite \(F_b\) using one well-order of \(D\). Its incidence set \(\{(b,d):b\in B,\ d\in F_b\}\) injects into \(B\times\mathbb N\) by the position of \(d\) in that finite order, and projects onto the union. Hence \(|D|\le |B|\). Choosing finite supports in \(B\) for points of \(D\) gives \(|B|\le |D|\). <a href="comparing-sizes#cantor-schroeder-bernstein">Cantor–Schröder–Bernstein</a> yields equality.</p></div>
+</section>
+
+<section id="cardinal-dimension" data-formal="pgdim-chosen-basis pgdim-chosen-basis-spec pgdim-dimension pgdim-dimension-basis-cardinality pgdim-dimension-closure pgdim-finite-dimension-bridge strong-min-dimension" data-kind="definition">
+  <h2>Dimension is a cardinal, including for infinite generating sets</h2>
+  <p>The <strong>dimension</strong> of a subset \(S\subseteq X\) is</p>
+  <div class="math-display">\[\dim(S)=|B|,\]</div>
+  <p>where \(B\subseteq S\) is independent and \(\operatorname{cl}(B)=\operatorname{cl}(S)\). Such a \(B\) exists by <a href="#basis-extension"></a> with \(I=\varnothing\), and its cardinality is independent of the choice by <a href="#basis-cardinality"></a>. In particular \(\dim(S)=\dim(\operatorname{cl}(S))\). For a finitely generated closed set, this cardinal is the finite cardinal corresponding to the <a href="strongly-minimal-sets#finite-dimension">earlier natural-number dimension</a>.</p>
+</section>
+
+<section id="localization" data-formal="pgdim-localization pgdim-independent-over pgdim-relative-basis" data-kind="definition">
+  <h2>Treat a parameter base as already available</h2>
+  <p>For \(A\subseteq X\), the <strong>localization at \(A\)</strong> is the closure operation</p>
+  <div class="math-display">\[\operatorname{cl}_A(S)=\operatorname{cl}(A\cup S).\]</div>
+  <p>A set is <strong>independent over \(A\)</strong> when it is independent for this localized closure. A <strong>basis of \(S\) over \(A\)</strong> is an independent-over-\(A\) subset \(B\subseteq S\) with \(\operatorname{cl}(A\cup B)=\operatorname{cl}(A\cup S)\).</p>
+</section>
+
+<section id="localization-pregeometry" data-formal="pgdim-localization" data-kind="lemma">
+  <h2>Localization retains all the pregeometry laws</h2>
+  <p>For every \(A\subseteq X\), the operation \(\operatorname{cl}_A\) is a pregeometry.</p>
+  <div class="proof"><p>Extensivity and monotonicity follow from those of \(\operatorname{cl}\). For idempotence, \(A\subseteq\operatorname{cl}(A\cup S)\), so adjoining \(A\) again does not change the closure: \(\operatorname{cl}(A\cup\operatorname{cl}(A\cup S))=\operatorname{cl}(A\cup S)\).</p><p>If \(x\in\operatorname{cl}(A\cup S)\), choose a finite \(F\subseteq A\cup S\) with \(x\in\operatorname{cl}(F)\). The finite set \(F\cap S\subseteq S\) is sufficient in the localized closure, because \(F\subseteq A\cup(F\cap S)\). Conversely any finite localized witness is contained in \(\operatorname{cl}(A\cup S)\) by monotonicity. This proves finite character without requiring \(A\) to be finite.</p><p>Finally, apply ordinary exchange with base \(A\cup S\): after reassociating unions, its hypothesis and conclusion are exactly localized exchange. Thus every axiom is retained.</p></div>
+</section>
+
+<section id="relative-dimension" data-formal="pgdim-relative-dimension pgdim-relative-basis-bridge pgdim-relative-extension pgdim-relative-basis-cardinality pgdim-relative-dimension-cardinality" data-kind="theorem">
+  <h2>Bases over any parameter set exist and have a well-defined size</h2>
+  <p>Every independent-over-\(A\) subset \(I\subseteq S\) extends inside \(S\) to a basis over \(A\). All bases of \(S\) over \(A\) have the same cardinality. Their common cardinal is the <strong>relative dimension</strong> \(\dim(S/A)\), equivalently the dimension of \(S\) in \(\operatorname{cl}_A\).</p>
+  <div class="proof"><p>Apply <a href="#basis-extension"></a> and <a href="#basis-cardinality"></a> to the localized pregeometry from <a href="#localization-pregeometry"></a>. Its spanning identity is precisely \(\operatorname{cl}(A\cup B)=\operatorname{cl}(A\cup S)\), so this proves the assertions for the stated definition, rather than for a different closure.</p></div>
+</section>
+
+<section id="base-closure-and-zero" data-formal="pgdim-base-closure pgdim-relative-zero pgdim-relative-disjoint" data-kind="lemma">
+  <h2>Only the closure of the base matters, and a spanned set has dimension zero</h2>
+  <p>For all \(A,S\subseteq X\), localization at \(A\) equals localization at \(\operatorname{cl}(A)\). Moreover</p>
+  <div class="math-display">\[\dim(S/A)=0\quad\Longleftrightarrow\quad S\subseteq\operatorname{cl}(A).\]</div>
+  <p>Every set independent over \(A\) is disjoint from \(\operatorname{cl}(A)\).</p>
+  <div class="proof"><p>The equality \(\operatorname{cl}(A\cup S)=\operatorname{cl}(\operatorname{cl}(A)\cup S)\) follows by monotonicity in one direction, and by \(\operatorname{cl}(A)\cup S\subseteq\operatorname{cl}(A\cup S)\) followed by idempotence in the other.</p><p>If the relative dimension is zero, a basis \(B\) has cardinal zero and hence is empty. Its spanning identity gives \(S\subseteq\operatorname{cl}(A)\). Conversely, if this containment holds, the empty set is a relative basis, proving dimension zero. If \(i\) were both in an independent-over-\(A\) set \(I\) and in \(\operatorname{cl}(A)\), then \(i\in\operatorname{cl}(A\cup(I\setminus\{i\}))\) by monotonicity, contradicting independence.</p></div>
+</section>
+
+<section id="algebraic-dimension" data-formal="strong-min-acl-pregeometry pgdim-acl-basis-extension pgdim-acl-relative-basis-extension pgdim-basis-cardinality pgdim-relative-basis-cardinality" data-kind="theorem">
+  <h2>The general dimension applies to the algebraic closure already constructed</h2>
+  <p>For a model \(M\) of a strongly minimal theory, every algebraically independent \(I\subseteq S\subseteq M\) extends to a basis of \(\operatorname{acl}_M(S)\) inside \(S\). All such bases have equal cardinality. The same extension and cardinality assertions hold over every parameter set \(A\subseteq M\), provided the starting set \(I\) is independent over \(A\). In that case the spanning condition is \(\operatorname{acl}_M(A\cup B)=\operatorname{acl}_M(A\cup S)\).</p>
+  <div class="proof"><p>The earlier <a href="strongly-minimal-sets#algebraic-pregeometry">algebraic pregeometry</a> has exactly \(\operatorname{acl}_M\) as its closure. Apply <a href="#basis-extension"></a> and <a href="#basis-cardinality"></a> to it, and <a href="#relative-dimension"></a> to its localization at \(A\). Thus the new cardinal dimension extends the finite geometry in that same specified model.</p></div>
+</section>
+
+<section id="identity-closure" data-formal="pgdim-identity-pregeometry pgdim-identity-independent pgdim-identity-basis pgdim-identity-dimension pgdim-identity-independent-over pgdim-identity-relative-basis pgdim-identity-relative-dimension pgdim-equality-acl-identity strong-min-equality-independent" data-kind="lemma">
+  <h2>For identity closure, relative dimension counts points outside the base</h2>
+  <p>The <strong>identity pregeometry</strong> on \(X\) has \(\operatorname{cl}(S)=S\). Every subset is independent, its only basis is itself, and</p>
+  <div class="math-display">\[\dim(S)=|S|,\qquad\dim(S/A)=|S\setminus A|.\]</div>
+  <div class="proof"><p>The closure axioms and exchange follow directly from membership; finite character uses the singleton witness \(\{x\}\). Independence says that a point is absent after it is removed. A spanning independent subset of \(S\) must equal \(S\), since closure changes nothing.</p><p>After localization, \(\operatorname{cl}_A(S)=A\cup S\). An independent-over-\(A\) subset cannot contain a point of \(A\), and every subset disjoint from \(A\) is independent over it. Thus \(S\setminus A\) is the unique relative basis of \(S\), proving the second equality. This is also the pregeometry of <a href="strongly-minimal-sets#equality-and-order">algebraic closure in infinite equality structures</a>.</p></div>
+</section>
+
+<section id="infinite-subtraction-question" data-formal="pgdim-even-base pgdim-even-cardinality pgdim-relative-even pgdim-relative-all pgdim-nat-absolute pgdim-aleph0-nonzero bounding-naturals-cardinality infinite-cardinal-sum-maximum addition-zero-right" data-kind="question">
+  <h2>Can relative dimension be recovered by subtracting infinite cardinals?</h2>
+  <p>In identity closure on \(\mathbb N\), compare the parameter sets \(A=\{2n:n\in\mathbb N\}\) and \(A'=\mathbb N\). Their cardinalities are equal. Must \(\dim(\mathbb N/A)=\dim(\mathbb N/A')\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The complement of the even numbers is the odd numbers, which are countably infinite, so <a href="#identity-closure"></a> gives \(\dim(\mathbb N/A)=\aleph_0\). But \(\mathbb N\setminus A'=\varnothing\), giving \(\dim(\mathbb N/A')=0\). Both base cardinalities and the absolute dimension are \(\aleph_0\).</p><p>Infinite cardinal addition has \(\aleph_0+\aleph_0=\aleph_0=\aleph_0+0\). There is no subtraction operation recovering a unique missing summand from these equalities. Relative dimension is defined by a localized basis, rather than by cancelling the cardinality of the base.</p></div></details>
+</section>

@@ -35,6 +35,18 @@ Entry and node file and directory names must match their record's `id`. Their ID
 start with a letter or digit and use letters, digits, hyphens, or underscores. Keep
 them stable when changing titles or subject categories.
 
+Choose an entry ID and title that identify its actual mathematical scope and
+perspective. Qualify a restricted fragment or particular object when the broader
+name would also describe an existing or planned entry or area: for example,
+`countable-random-graph`, `propositional-resolution`, and
+`many-sorted-relational-logic`. Compare existing entries, taxonomy and relevant
+plans before choosing the name. A broad introductory treatment may keep the
+standard topic name; do not add restrictions the mathematics does not assume.
+The owning Lean directory follows this scoped ID. When renaming an existing ID,
+migrate the corpus and owning Lean directories, reading-order slot, links and
+registry references together, preserving block and node IDs unless they also need
+changing.
+
 Entry and node JSON contain authored content only. The build stores node proof
 results, entry progress counts and Lean line counts in `index.json`; see the
 [build guide](build.md#what-a-normal-build-does) for storage and regeneration rules.
