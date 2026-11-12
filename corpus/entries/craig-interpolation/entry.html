@@ -42,6 +42,27 @@
   </div>
 </section>
 
+<section id="arbitrary-language-joint-consistency" data-kind="theorem" data-formal="interp-joint-arbitrary-sublanguage interp-joint-arbitrary-inclusion interp-joint-arbitrary-restriction interp-joint-arbitrary-recovery interp-joint-arbitrary-inclusion-support interp-joint-inseparable-semantics interp-joint-arbitrary-model">
+  <h2>Inseparable theories can be joined in arbitrary signatures</h2>
+  <p>Let \(L_1,L_2\) be arbitrary first-order signatures, put \(L_0=L_1\cap L_2\), and let \(T_i\) be an \(L_i\)-theory. Interpret both theories in \(L_1\cup L_2\) by their language inclusions. Their union has a nonempty model if and only if there is no \(L_0\)-sentence \(\eta\) such that \(T_1\models\eta\) and \(T_2\models\neg\eta\). As usual, a common sentence in a side's consequence means its translation to that side's language. This extends the earlier <a href="joint-consistency#consistent-pairs">inseparability criterion</a> from finite active signatures to arbitrary ones.</p>
+  <div class="proof">
+    <p>A model of the union has a common \(L_0\)-reduct. That reduct cannot satisfy both \(\eta\) and \(\neg\eta\), so any such separator prevents a joint model.</p>
+    <p>Conversely suppose the union has no model. By <a href="logical-compactness#compactness">compactness</a>, finite fragments \(\Delta_1\subseteq T_1\) and \(\Delta_2\subseteq T_2\) already have an unsatisfiable union. Let \(\varphi=\bigwedge\Delta_1\) and \(\psi=\bigwedge\Delta_2\), using \(\top\) for an empty conjunction and viewing both sentences in the union language. Then \(\varphi\models\neg\psi\). By <a href="#sentence-interpolation"></a>, there is a sentence \(\theta\) with</p>
+    <div class="math-display">\[\varphi\models\theta\models\neg\psi,\qquad \operatorname{sym}(\theta)\subseteq\operatorname{sym}(\varphi)\cap\operatorname{sym}(\psi).\]</div>
+    <p>Every symbol of \(\theta\) therefore belongs to \(L_0\). Restrict it to an \(L_0\)-sentence \(\eta\), whose inclusion is exactly \(\theta\), using <a href="changing-languages#restriction-to-support">restriction to symbol support</a> followed by the inclusion of that finite support into \(L_0\).</p>
+    <p>Any \(L_1\)-model of \(T_1\) can be <a href="changing-languages#arbitrary-expansions">expanded to the union language</a> on its same nonempty domain. In that expansion \(\varphi\), hence \(\theta\), is true. Reducing back gives \(T_1\models\eta\). Likewise, an expanded \(L_2\)-model of \(T_2\) satisfies \(\psi\); if it satisfied \(\theta\), it would satisfy \(\neg\psi\) as well. Thus \(T_2\models\neg\eta\). This is the forbidden separator, completing the converse.</p>
+  </div>
+  <p>No enumeration of either signature or theory appears. Compactness selects finite fragments only after a hypothetical failure of joint satisfiability.</p>
+</section>
+
+<section id="robinson-common-theory" data-kind="theorem" data-formal="interp-joint-complete-common">
+  <h2>A complete shared theory makes consistent extensions compatible</h2>
+  <p>Let \(L_0=L_1\cap L_2\), and let \(T_0\) be a complete satisfiable \(L_0\)-theory. If each \(T_i\) is a satisfiable \(L_i\)-theory containing the translated axioms of \(T_0\), then the union of their translations to \(L_1\cup L_2\) is satisfiable. The extensions \(T_1,T_2\) need not themselves be complete.</p>
+  <div class="proof">
+    <p>Suppose a common sentence \(\eta\) separated the two theories. Completeness of \(T_0\) gives \(T_0\models\eta\) or \(T_0\models\neg\eta\). In the first case every model of \(T_2\) satisfies \(\eta\), since its common reduct models \(T_0\), but separation requires it to satisfy \(\neg\eta\). In the second case every model of \(T_1\) satisfies \(\neg\eta\), contrary to separation. Satisfiability of the respective side excludes both contradictions. There is therefore no separator, and <a href="#arbitrary-language-joint-consistency"></a> supplies the joint model.</p>
+  </div>
+</section>
+
 <section id="constants-and-free-variables" data-formal="jc-formulas-as-named-sentences jc-name-sentence-truth ci-name-symbols ci-unname-symbols ci-names-consequence" data-kind="lemma">
   <h2>Turn a finite tuple of free variables into fresh constants</h2>
   <p>Fix distinct free names \(x_0,\ldots,x_{n-1}\). Let \(L[\bar c]\) add distinct new constants \(c_0,\ldots,c_{n-1}\), none belonging to \(L\). For an \(L\)-formula \(A(\bar x)\) with no other free names, let \(A^{\bar c}\) replace each free \(x_i\) by \(c_i\). Every \(L[\bar c]\)-sentence \(B\) conversely determines an \(L\)-formula \(B^{\bar x}\) by replacing those constants by the corresponding free names. These operations are inverse and satisfy</p>

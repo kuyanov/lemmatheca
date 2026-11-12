@@ -78,16 +78,48 @@
   <p>For a general theory, the <a href="order-patterns-and-stability#types-over-sets">elementary syntax bound</a> only gives \(2^\lambda\) types, since a type is a set of formulas. Strong minimality makes almost all possible complete choices algebraic, leaving only one generic choice.</p>
 </section>
 
-<section id="omega-stability" data-kind="definition" data-formal="smtype-omega-stability ops-kappa-stable">
+<section id="prefix-types-and-tails" data-formal="smtype-tuple-prefix smtype-tuple-prefix-membership smtype-tuple-small-realization smtype-tuple-tail-formula smtype-tuple-tail-truth smtype-tuple-tail-conditions smtype-tuple-tail-finite smtype-tuple-selected-tail smtype-tuple-tail-recovery smtype-tuple-tail-injection" data-kind="lemma">
+  <h2>Fix one small realization for each prefix type</h2>
+  <p>Let \(T\) be any complete satisfiable theory, let \(\kappa\) be infinite with \(|L|\le\kappa\), and fix \(M\models T\) and \(A\subseteq M\) with \(|A|\le\kappa\). For every \(r\in S_n^M(A)\), choose a model \(N_r\models T\), interpretations \(\iota_r(a)\) of the names \(a\in A\), and a tuple \(\bar b_r\in N_r^n\) realizing \(r\), with \(|N_r|\le\kappa\). The \((n+1)\)-types whose restriction to their first \(n\) variables is \(r\) inject into \(S_1^{N_r}(N_r)\).</p>
+  <div class="proof">
+    <p>First realize \(r\) in a model of \(\operatorname{Th}(M_A)\). The <a href="elementary-submodels#downward-size-bound">downward Löwenheim–Skolem bound</a> in the language \(L(A)\) gives an elementary submodel containing its realizing tuple and of size at most \(\kappa\). The language has size at most \(\kappa\), and only finitely many further elements must be retained. This is the specified \(N_r\), with its original parameter interpretations. Distinct names from \(A\) remain distinct, since their inequalities belong to \(\operatorname{Th}(M_A)\).</p>
+    <p>Fix a complete \((n+1)\)-type \(p(\bar x,z)\) with prefix type \(r\). Replace each prefix variable \(x_i\) by the name of \(b_{r,i}\), and each old parameter name \(a\) by the name of \(\iota_r(a)\). This turns \(p\) into one-variable conditions over \(N_r\). A finite collection comes from formulas \(\varphi_1(\bar x,z),\ldots,\varphi_k(\bar x,z)\in p\). The formula</p>
+    <div class="math-display">\[\exists z\,\bigwedge_{i=1}^k\varphi_i(\bar x,z)\]</div>
+    <p>belongs to \(r\): realize \(p\), use its last coordinate as witness, and then restrict its complete type to the prefix. Since \(\bar b_r\) realizes \(r\), this existential formula has a witness in \(N_r\). Thus the translated conditions are finitely realized in that same model. The <a href="types-and-realization#parameter-finite-test">finite parameter-type test</a> and <a href="types-and-realization#completing-a-type">completion of partial types</a> extend them to a complete one-type \(q_p\) over all of \(N_r\). Use Choice to select one such extension for each \(p\).</p>
+    <p>This choice loses no information about \(p\). For any \(L(A)\)-formula \(\varphi(\bar x,z)\), its translated one-variable formula belongs to \(q_p\) exactly when \(\varphi\in p\). One implication is the construction. If \(\varphi\notin p\), completeness puts \(\neg\varphi\) in \(p\), so \(q_p\) contains the negation of the translated formula and cannot contain the formula itself. Consequently equal selected one-types recover equal original types. The map \(p\mapsto q_p\) is injective on the specified prefix fiber.</p>
+  </div>
+</section>
+
+<section id="finite-tuple-bound" data-formal="smtype-tuple-fiber-bound smtype-tuple-bound mt-type-zero-unique" data-kind="theorem">
+  <h2>A one-variable stability bound controls every finite tuple</h2>
+  <p>Let \(T\) be complete and satisfiable, and let \(\kappa\ge\max(|L|,\aleph_0)\). Suppose that, in every model \(N\models T\), every parameter set \(B\subseteq N\) of size at most \(\kappa\) has \(|S_1^N(B)|\le\kappa\). Then, for every \(n\in\mathbb N\), every \(M\models T\), and every \(A\subseteq M\) with \(|A|\le\kappa\),</p>
+  <div class="math-display">\[|S_n^M(A)|\le\kappa.\]</div>
+  <div class="proof">
+    <p>Induct on \(n\). There is exactly one zero-type over the complete named theory \(\operatorname{Th}(M_A)\): it has no object variables, and every sentence already has its truth value fixed. Its cardinality is therefore at most the infinite \(\kappa\).</p>
+    <p>For the successor step, restrict each \((n+1)\)-type to its first \(n\) variables. By induction there are at most \(\kappa\) possible prefix types. For each prefix \(r\), <a href="#prefix-types-and-tails"></a> gives a fixed realizing model \(N_r\) of size at most \(\kappa\) and an injection of that fiber into \(S_1^{N_r}(N_r)\). Apply the assumed one-variable bound to the whole parameter set \(N_r\). Each fiber has size at most \(\kappa\).</p>
+    <p>The whole type space is the disjoint union of these fibers. Choice selects the injections simultaneously, and <a href="infinite-cardinal-arithmetic#infinite-sums-and-products">infinite cardinal arithmetic</a> bounds their union by \(\kappa\cdot\kappa=\kappa\). This completes the induction. The uniform hypothesis over all models is essential: the small realizing model chosen for a prefix need not be the original \(M\).</p>
+  </div>
+</section>
+
+<section id="omega-stability" data-kind="definition" data-formal="smtype-omega-stability ops-kappa-stable smtype-tuple-bound">
   <h2>Omega-stability uses the one-variable counting convention</h2>
   <p>Following the <a href="order-patterns-and-stability#types-over-sets">existing cardinal definition</a>, \(T\) is <strong>\(\omega\)-stable</strong>, also called <strong>\(\aleph_0\)-stable</strong>, if for every model \(M\models T\) and every at most countable \(A\subseteq M\), there are at most countably many members of \(S_1^M(A)\).</p>
-  <p>This definition counts complete types in one object variable. All stability conclusions below use precisely that convention. We are not using a general reduction from finite-tuple types to one-types.</p>
+  <p>The definition counts complete types in one object variable. The <a href="#finite-tuple-bound">preceding finite-tuple argument</a> shows that, for infinite bounds at least the language size, the same bound then holds in every fixed finite tuple of variables.</p>
 </section>
 
 <section id="strong-minimal-stability" data-kind="theorem" data-formal="smtype-omega-stable smtype-kappa-stable strong-min-model-minimal">
   <h2>A countable strongly minimal theory is omega-stable</h2>
   <div class="statement-box"><p>If \(L\) is countable, the complete satisfiable strongly minimal theory \(T\) is \(\omega\)-stable. More generally, \(T\) is \(\kappa\)-stable for every infinite cardinal \(\kappa\ge |L|\), using the one-variable definition.</p></div>
   <div class="proof"><p>If \(L\) and \(A\) are at most countable, then \(\max(|A|,|L|,\aleph_0)=\aleph_0\). The <a href="#one-type-bound">one-type bound</a> therefore gives \(|S_1^M(A)|\le\aleph_0\) for every such \(M,A\), which is exactly \(\omega\)-stability.</p><p>For the general assertion, if \(|A|\le\kappa\), \(|L|\le\kappa\), and \(\kappa\) is infinite, all three cardinals in the maximum are at most \(\kappa\). Thus the same bound is at most \(\kappa\), as required by \(\kappa\)-stability.</p></div>
+</section>
+
+<section id="finite-types-and-countable-models" data-formal="smtype-tuple-strong-minimal-bound smtype-tuple-native-empty-injection smtype-finite-small smtype-finite-saturated-model smtype-finite-prime-model" data-kind="theorem">
+  <h2>Strongly minimal theories have small finite type spaces</h2>
+  <p>For the complete satisfiable strongly minimal theory \(T\), every infinite \(\kappa\ge |L|\), every \(M\models T\), and every \(A\subseteq M\) of size at most \(\kappa\), one has \(|S_n^M(A)|\le\kappa\) for every finite \(n\). If \(L\) is countable, \(T\) is <a href="countable-saturated-models#small-theories">small</a>, has a countable \(\omega\)-saturated model, and has a countable prime model.</p>
+  <div class="proof">
+    <p>The <a href="#strong-minimal-stability">one-variable stability theorem</a> supplies exactly the uniform hypothesis of <a href="#finite-tuple-bound"></a>, proving all the stated parameter-type bounds. In a countable language, apply the result with \(\kappa=\aleph_0\) and no additional parameters. Because \(T\) is complete, its finite types are the types over the complete theory of any one of its models. Thus every \(S_n(T)\) is countable, which is smallness.</p>
+    <p>The <a href="countable-saturated-models#existence-criterion">countable saturated-model criterion</a> now supplies a countable \(\omega\)-saturated model, and the <a href="countable-saturated-models#small-prime-model">small-theory prime-model theorem</a> supplies a countable prime model. These are existence conclusions for the theory, not claims that every one of its countable models is saturated or prime.</p>
+  </div>
 </section>
 
 <section id="equality-example" data-kind="lemma" data-formal="strong-min-equality-theory mt-closure-infinite-equality-closures ops-equality-fresh-type ops-equality-fresh-excludes ops-equality-point-type ops-equality-type-bijection ops-equality-one-type-card smtype-equality-generic">

@@ -51,6 +51,18 @@
   <p>For an order countably closed inside a ground model, a descending sequence constructed there also has a lower bound there. Applied to <a href="countably-closed-forcing#whole-sequence-decisions">successive ordinal-coordinate decisions</a>, this gives a single strengthening deciding a whole countable sequence; meeting the resulting dense set prevents new countable ordinal sequences.</p>
 </section>
 
+<section id="arbitrary-order-dense-families" data-kind="theorem" data-formal="forcing-rs-selector forcing-rs-selector-exists forcing-rs-sequence forcing-rs-sequence-spec forcing-rs-upward-closure forcing-rs-filter forcing-rs-filter-spec forcing-rs-countable-family forcing-rs-principal-filter">
+  <h2>Choice removes countability of the forcing order</h2>
+  <p>Assume the <a href="axiom-of-choice#choice-functions">Axiom of Choice</a>. Let \(P\) be any forcing order, let \((D_n)_{n\in\omega}\) be dense subsets of \(P\), and let \(p\in P\). There is a filter \(G\) containing \(p\) which meets every \(D_n\). No countability assumption on \(P\) is needed.</p>
+  <div class="proof">
+    <p>For every pair \((n,q)\in\omega\times P\), the set \(E_{n,q}=\{r\in D_n:r\le q\}\) is nonempty by density. Choice supplies one <strong>refinement selector</strong> \(s:\omega\times P\to P\) with \(s(n,q)\in E_{n,q}\) for all \(n,q\). Fix this selector before constructing the sequence. Define</p>
+    <div class="math-display">\[p_0=p,\qquad p_{n+1}=s(n,p_n),\qquad G=\{q\in P:\exists n\in\omega\ (p_n\le q)\}.\]</div>
+    <p>The selector property gives \(p_{n+1}\le p_n\) and \(p_{n+1}\in D_n\) at every stage. Hence \(G\) contains \(p\) and is upward closed. For \(q,r\in G\), choose witnesses \(i,j\); the condition \(p_{\max(i,j)}\in G\) refines both, so \(G\) is directed towards stronger conditions. Finally \(p_{n+1}\in G\cap D_n\), proving all the requirements.</p>
+    <p>The same conclusion holds for any at most countable family \(\mathcal D\) of dense subsets. If the family is nonempty, list it as a sequence, repeating sets when necessary, and apply the construction. For the empty family, the principal filter \(\{q:p\le q\}\) suffices. Thus it is the family of requirements, rather than the set of conditions, whose countability is used.</p>
+  </div>
+  <p>The preceding countable-order proof finds each refinement by a least natural-number index and needs no choice selector. The present argument uses Choice to select refinements on an arbitrary order. Neither theorem requires a ground model; the later ground-model hypothesis specifies one particular family of dense requirements.</p>
+</section>
+
 <section id="ground-model" data-kind="definition" data-formal="fgen-ground-model-convention mm-class-model-convention fgen-generic-for">
   <h2>The ground model specifies which dense sets must be met</h2>
   <p>For the remaining model-theoretic assertions, work in ambient ZFC. A <strong>ground model</strong> here is a set \(M\) which is externally countable, transitive, and satisfies ZFC with actual membership, using the <a href="membership-models#membership-structures">membership-model convention</a>. Fix \(P,\le,1_P\in M\) which \(M\) regards as a forcing order. Transitivity puts every condition in \(M\). The order axioms and compatibility use only quantifiers over the supplied sets, so they hold externally as well.</p>

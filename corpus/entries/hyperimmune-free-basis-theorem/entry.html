@@ -119,6 +119,17 @@
   <div class="proof"><p>Every noncomputable set below \(K\) has <a href="domination-and-hyperimmune-degrees#delta-two-hyperimmune">hyperimmune degree</a>, which excludes hyperimmune-freeness. Therefore \(A\not\le_TK\). A low set satisfies \(A'\equiv_TK\) and <a href="turing-jump#membership-to-jump">\(A\le_TA'\)</a>, hence \(A\le_TK\); this is impossible for the present \(A\). Thus a noncomputable set cannot be both low and hyperimmune-free. The low basis theorem and the hyperimmune-free basis theorem need not select the same member of a path class.</p></div>
 </section>
 
+<section id="cone-avoidance" data-kind="theorem" data-formal="hfb-cone-above hfb-cone-avoidance hfb-cone-closed hfb-cone-co-ce">
+  <h2>A path can avoid computing any prescribed noncomputable set</h2>
+  <p>Let \(C\subseteq\mathbb N\) be noncomputable. Every computable binary tree \(T\) with a node at every length has a path \(A\in[T]\) such that \(C\not\le_T A\). The same conclusion holds for every nonempty effectively closed binary class and every nonempty path class of a co-c.e. binary tree.</p>
+  <p>The sets \(A\) that compute \(C\) form the <strong>Turing cone above \(C\)</strong>. The assertion is the <strong>cone-avoidance basis theorem</strong> for a single prescribed noncomputable set.</p>
+  <div class="proof">
+    <p>First suppose \(C\not\le_TK\). The <a href="low-basis-theorem#low-basis">low basis theorem</a> supplies a low path \(A\in[T]\). Lowness gives \(A'\le_TK\), while <a href="turing-jump#membership-to-jump">membership reduces to the jump</a>, so \(A\le_TK\). If \(C\le_TA\), transitivity would imply \(C\le_TK\), a contradiction.</p>
+    <p>Now suppose \(C\le_TK\). Choose a hyperimmune-free path \(A\in[T]\) using <a href="#hyperimmune-free-basis"></a>. If \(C\le_TA\), <a href="domination-and-hyperimmune-degrees#degree-invariance">downward closure</a> would make \(C\) hyperimmune-free. But every noncomputable set below \(K\) has <a href="domination-and-hyperimmune-degrees#delta-two-hyperimmune">hyperimmune degree</a>. These properties are incompatible. Thus this choice also satisfies \(C\not\le_TA\).</p>
+    <p>The two cases cover every target \(C\). For an effectively closed class or a co-c.e. tree, use the <a href="effectively-closed-classes-and-dnc#same-paths">computable-tree representation</a> or <a href="effectively-closed-classes-and-dnc#coenumerable-conversion">same-path conversion</a>, then apply the proved result to that very path class. The argument asserts existence for each target; it does not give a computable selector from a code for \(C\).</p>
+  </div>
+</section>
+
 <section id="finite-search-question" data-formal="hfb-halting-selected-not-free hfb-free-pa-outside-halting dnc-binary-example" data-kind="question">
   <h2>Do the computable finite searches make the common path computable?</h2>
   <p>Every retained finite tree restriction has a computable decider, and each totality branch uses an ordinary computable level search. Does this make the final hyperimmune-free path computable, or at least computable from \(K\)?</p>

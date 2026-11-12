@@ -20,6 +20,46 @@
   <p>For another application of finite atomic patterns, see <a href="countable-random-graph#quantifier-elimination">quantifier elimination for the random graph theory</a>, where the patterns record equalities and edges.</p>
 </section>
 
+<section id="quantifier-free-information" data-kind="definition" data-formal="qe-semantic-qf-agreement qe-semantic-full-agreement qe-semantic-description qe-semantic-description-exact">
+  <h2>Compare all quantifier-free information about two tuples</h2>
+  <p>Fix a theory \(T\), a finite context \(\bar x=(x_0,\ldots,x_{n-1})\), and tuples \(\bar a\in M^n\), \(\bar b\in N^n\) in nonempty models of \(T\). They have the <strong>same quantifier-free information</strong> if</p>
+  <div class="math-display">\[M\models\theta[\bar a]\quad\Longleftrightarrow\quad N\models\theta[\bar b]\]</div>
+  <p>for every quantifier-free \(L\)-formula \(\theta(\bar x)\). They have the <strong>same full information</strong> if this holds for every \(L\)-formula in that context. The structures and tuples can be different. When \(n=0\), each tuple is empty, and the comparison concerns sentences.</p>
+  <p>Write \(Q_M(\bar a)\) for the <strong>quantifier-free description</strong> consisting of all quantifier-free formulas true at \(\bar a\). Negations are allowed: for every quantifier-free \(\theta\), this description contains exactly one of \(\theta,\neg\theta\). Consequently a tuple satisfying all of \(Q_M(\bar a)\) has exactly the same quantifier-free information as \(\bar a\).</p>
+</section>
+
+<section id="finite-information-neighborhood" data-kind="lemma" data-formal="qe-semantic-neighborhood">
+  <h2>Compactness replaces one complete description by finitely many conditions</h2>
+  <p>Let \(\varphi(\bar x)\) have the same truth value on any two tuples in models of \(T\) with the same quantifier-free information. If \(M\models T\) and \(M\models\varphi[\bar a]\), there is a finite conjunction \(\delta(\bar x)\) of members of \(Q_M(\bar a)\) such that</p>
+  <div class="math-display">\[M\models\delta[\bar a],\qquad T\models\forall\bar x\,(\delta\to\varphi).\]</div>
+  <p>The empty conjunction is \(\top\).</p>
+  <div class="proof">
+    <p>Replace the available variables by a fixed tuple of fresh constants \(\bar c\). Every model of \(T\cup Q_M(\bar a)(\bar c)\) interprets those constants by a tuple with the same quantifier-free information as \(\bar a\). The hypothesis therefore makes \(\varphi(\bar c)\) true there. By <a href="logical-compactness#finite-consequence">finite consequence</a>, a finite part of this named theory already implies \(\varphi(\bar c)\).</p>
+    <p>Keep all of \(T\), and let \(\delta\) be the conjunction of just the finitely many selected description formulas. Then \(T\cup\{\delta(\bar c)\}\models\varphi(\bar c)\), while \(\delta\) holds at \(\bar a\). The constants were fresh and their interpretations arbitrary, so <a href="changing-languages#conservative-language-inclusions">conservativity of the naming expansion</a> gives the displayed universally quantified implication in the original language. This also works for the empty context, when no fresh constants are needed.</p>
+  </div>
+</section>
+
+<section id="semantic-criterion" data-kind="theorem" data-formal="qe-semantic-formula-criterion qe-semantic-criterion qe-quantifier-elimination">
+  <h2>Quantifier elimination is exactly preservation of full tuple information</h2>
+  <div class="statement-box"><p>A first-order theory \(T\) has quantifier elimination if and only if, for every finite context and any two tuples in nonempty models of \(T\), the same quantifier-free information implies the same full information. No completeness or satisfiability assumption on \(T\) is required.</p></div>
+  <div class="proof">
+    <p>If \(T\) has quantifier elimination, replace any formula by its quantifier-free equivalent. The two tuples agree on that equivalent, so they agree on the original formula.</p>
+    <p>Conversely assume the tuple condition, and fix \(\varphi(\bar x)\). Let \(\mathcal I_\varphi\) consist of all quantifier-free formulas \(\delta(\bar x)\) such that \(T\models\forall\bar x\,(\delta\to\varphi)\). Every tuple satisfying \(\varphi\) in a model of \(T\) satisfies some member of \(\mathcal I_\varphi\), by <a href="#finite-information-neighborhood"></a>. Hence, after replacing \(\bar x\) by fresh constants \(\bar c\),</p>
+    <div class="math-display">\[T\cup\{\varphi(\bar c)\}\cup\{\neg\delta(\bar c):\delta\in\mathcal I_\varphi\}\]</div>
+    <p>has no model. Compactness supplies finitely many members \(\delta_1,\ldots,\delta_k\) whose negations, together with \(T\) and \(\varphi(\bar c)\), still have no model. Their disjunction \(\psi=\delta_1\vee\cdots\vee\delta_k\) is quantifier-free. Every tuple satisfying \(\varphi\) satisfies \(\psi\); every tuple satisfying \(\psi\) satisfies \(\varphi\), because each disjunct implies it modulo \(T\). Thus \(\varphi\equiv_T\psi\), with no new free variables or symbols.</p>
+    <p>If compactness needs none of the negated conditions, take \(\psi=\bot\): then \(\varphi\) has no realization in any model of \(T\). In particular an inconsistent \(T\) causes no exception. The empty context uses the same argument with sentences and the allowed constants \(\top,\bot\). This proves quantifier elimination in every finite context.</p>
+  </div>
+</section>
+
+<section id="empty-context-test" data-kind="question" data-formal="qe-semantic-empty-agreement qe-semantic-two-distinct qe-semantic-one-two-difference qe-semantic-empty-not-qe">
+  <h2>Empty tuples still carry sentence information</h2>
+  <p>In the equality-only language, let \(T=\varnothing\). Do its one-element and two-element models agree on all quantifier-free sentences? Do they agree on every sentence?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>They agree on all quantifier-free sentences. There are no closed terms in this language, hence no closed atomic equalities; such a sentence is a Boolean combination of \(\top,\bot\), with a truth value independent of the model. But \(\exists x\exists y\,(x\ne y)\) is false in the one-element model and true in the two-element model. Their empty tuples therefore have the same quantifier-free information and different full information. By <a href="#semantic-criterion"></a>, the empty theory of equality does not have quantifier elimination.</p>
+    <p>Comparing tuples only inside one chosen model would also miss this obstruction: its unique empty tuple always agrees with itself. The criterion quantifies over every pair of models, not just over one preferred example.</p>
+  </div></details>
+</section>
+
 <section id="infinite-equality" data-formal="compact-infinite-theory compact-infinite-theory-characterization elem-at-least-n-sentence elem-at-least-n-truth" data-kind="definition">
   <h2>Infinite sets with equality alone</h2>
   <p>The <strong>pure equality language</strong> \(L_=\) has no nonlogical symbols: equality is part of the logic. Let the <strong>theory of infinite sets</strong> \(T_\infty\) consist of the <a href="logical-compactness#size-sentences">sentences asserting at least each finite number of distinct elements</a>. For each positive integer \(n\), this sentence is:</p>
