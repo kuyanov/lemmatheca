@@ -1,0 +1,106 @@
+<section id="ground-cardinal-convention" data-formal="fth-context fth-ground-name fth-filter-code fth-value-domain fgen-ground-model-convention fcc-internal-ccc nice-internal-upper-bound" data-kind="definition">
+  <h2>The upper bound must be computed in the ground model</h2>
+  <p>The <a href="many-cohen-reals#family-name">family of Cohen columns</a> gives an injection into the extension's reals. To prove an exact value for the continuum, we must also account for every real in the extension. A real can have many names, of arbitrarily high name rank, so counting all names is not a useful first bound. We will replace them by a controlled set of names.</p>
+  <p>Throughout, let \(M\) be a given externally countable transitive set model of ZFC. Let \(P,\le,1_P\in M\) be nonempty forcing-order data, and let \(G\subseteq P\) be \(M\)-generic, under the <a href="forcing-extensions#extension-hypotheses">standing extension convention</a>. Smaller conditions are stronger. Assume</p>
+  <div class="math-display">\[M\models\text{“}\ P\text{ is ccc and }|P|=\kappa\ge\aleph_0\ \text{”}.\]</div>
+  <p>Write \(N=M[G]\). The <a href="forcing-extensions#zfc-extension">extension theorem</a> makes \(N\) a transitive ZFC-model with the same ordinals and natural numbers as \(M\). Every cardinal count involving names or antichains below is performed <em>inside \(M\)</em>, until we explicitly transfer its resulting map to \(N\). In particular, \(\kappa^{\aleph_0}\) initially means \((\kappa^{\aleph_0})^M\). External countability of \(M\) supplies generics; it cannot replace this internal arithmetic.</p>
+</section>
+
+<section id="nice-names" data-formal="nice-name nice-name-attachments nice-name-valid nice-name-value nice-name-subset-omega nice-empty-value nice-internal-constructions" data-kind="definition">
+  <h2>Nice names attach each natural number along an antichain</h2>
+  <p>A <strong>nice name for a subset of omega</strong> is a name of the form</p>
+  <div class="math-display">\[\dot x_B=\{(\check n,p):n\in\omega,\ p\in B_n\},\]</div>
+  <p>where \(B=(B_n)_{n\in\omega}\in M\) and each \(B_n\subseteq P\) is an antichain. The <a href="forcing-names#check-names">check name</a> \(\check n\) uses \(1_P\). Each \(B_n\) may be empty: the empty antichain is needed when membership of \(n\) is impossible. By internal ccc, every \(B_n\) is countable in \(M\).</p>
+  <p>The displayed set is a \(P\)-name in \(M\), by Replacement and the recursive <a href="forcing-names#name-hierarchy">name definition</a>. Its valuation satisfies</p>
+  <div class="math-display">\[n\in\dot x_B[G]\quad\Longleftrightarrow\quad G\cap B_n\ne\varnothing.\]</div>
+  <p>Indeed, an active attachment has first-component value \(\check n[G]=n\). Conversely, any \(p\in G\cap B_n\) activates that attachment. Thus every value \(\dot x_B[G]\) is a subset of \(\omega\). Antichains make the names small; the valuation identity itself follows directly from their attachments.</p>
+</section>
+
+<section id="deciding-antichains" data-formal="nice-force-member nice-force-not-member nice-deciding nice-deciding-dense nice-deciding-antichains fgen-antichain-dense fcc-antichain-filter-unique nice-internal-constructions" data-kind="lemma">
+  <h2>Maximal deciding antichains are met by the generic filter</h2>
+  <p>For every \(P\)-name \(\tau\in M\) and every \(n\in\omega\), there is an antichain \(A_n\in M\) all of whose members decide \(\check n\in\tau\), and such that every condition is compatible with a member of \(A_n\). Moreover \(G\cap A_n\) has exactly one member.</p>
+  <div class="proof"><p>The <a href="forcing-theorem#forcing-theorem">definability of forcing</a> and Separation inside \(M\) form the set</p>
+  <div class="math-display">\[D_n=\{p\in P:p\Vdash\check n\in\tau\text{ or }p\Vdash\check n\notin\tau\}.\]</div>
+  <p>It is dense. Given \(p\), take a generic filter \(H\) through \(p\). Exactly one of \(n\in\tau[H]\) and \(n\notin\tau[H]\) holds. The <a href="forcing-theorem#forcing-theorem">truth lemma</a> supplies a member of \(H\) forcing that alternative. A common stronger member of \(H\) below it and \(p\) still forces that alternative, and belongs to \(D_n\). Density is a bounded assertion about the given set \(P\), so its absoluteness gives the required density inside \(M\).</p>
+  <p>Inside \(M\), extend an antichain in \(D_n\) to one maximal among such antichains, using <a href="forcing-and-generic-filters#open-and-antichain-tests">the maximal-antichain construction</a>. Call it \(A_n\). If a condition \(q\) were incompatible with every member of \(A_n\), choose \(r\le q\) in \(D_n\). This \(r\) could be added to \(A_n\), a contradiction. Thus \(A_n\) is predense in all of \(P\). Its countability is internal ccc, not the external countability of the universe in which we describe it.</p>
+  <p>The set \(E_n=\{q\in P:\exists a\in A_n\ (q\le a)\}\) belongs to \(M\) and is dense: predensity supplies a common strengthening of any given condition and some \(a\in A_n\). Choose \(q\in G\cap E_n\). Upward closure of \(G\) puts its corresponding \(a\) in \(G\cap A_n\). Two distinct members of that intersection would be incompatible, whereas directedness of a filter makes any two of its members compatible. Hence the intersection is a singleton.</p></div>
+</section>
+
+<section id="nice-replacement" data-formal="nice-positive-rows nice-positive-antichains nice-replacement-value nice-internal-constructions" data-kind="theorem">
+  <h2>Every name has a nice name for its natural-number part</h2>
+  <p>For every \(P\)-name \(\tau\in M\), there is a nice name \(\dot x_B\in M\), chosen independently of the generic filter, such that for every \(M\)-generic \(H\subseteq P\),</p>
+  <div class="math-display">\[\dot x_B[H]=\tau[H]\cap\omega.\]</div>
+  <p>In particular every subset of \(\omega\) in \(N\) is the value of a nice name in \(M\).</p>
+  <div class="proof"><p>For each \(n\), choose a deciding antichain \(A_n\) as in <a href="#deciding-antichains"></a>. Choice and Replacement inside \(M\) collect the whole sequence \((A_n)_{n\in\omega}\) there. Define the <strong>positive antichain</strong></p>
+  <div class="math-display">\[B_n=\{p\in A_n:p\Vdash\check n\in\tau\}.\]</div>
+  <p>Forcing definability and Separation give this sequence in \(M\). Each \(B_n\) is a sub-antichain of \(A_n\). It need not be maximal or nonempty. Build \(\dot x_B\) from these positive antichains.</p>
+  <p>Fix any \(M\)-generic \(H\). If \(n\in\dot x_B[H]\), some \(p\in H\cap B_n\) forces \(\check n\in\tau\), and the forcing theorem gives \(n\in\tau[H]\). Conversely, suppose \(n\in\tau[H]\). The unique \(a\in H\cap A_n\) decides membership. It cannot force nonmembership, since the forcing theorem would give \(n\notin\tau[H]\). Thus it forces membership, belongs to \(B_n\), and activates \(n\) in the nice name. All values of the nice name are natural numbers, so these two implications give the displayed equality.</p>
+  <p>If \(x\subseteq\omega\) belongs to \(N\), the <a href="forcing-names#extension-as-values">definition of the extension</a> gives some \(\tau\in M\) with \(\tau[G]=x\). Apply the construction to this \(\tau\). No condition has been assumed to force globally that \(\tau\subseteq\check\omega\): the construction extracts the natural-number part of any name, and this is \(x\) for the actual generic under consideration.</p></div>
+</section>
+
+<section id="ground-code-set" data-formal="nice-row-code nice-code-row nice-code-set nice-code-name nice-row-code-members nice-row-code-subset nice-code-row-inverse nice-row-code-inverse nice-code-set-members nice-empty-code nice-internal-constructions" data-kind="definition">
+  <h2>All nice codes form one set in the ground model</h2>
+  <p>A <strong>nice code</strong> is the relation \(b_B=\{(n,p):n\in\omega,\ p\in B_n\}\subseteq\omega\times P\). Its \(n\)-th row is \((b_B)_n=B_n\), so the relation and the antichain sequence determine one another. Inside \(M\), let</p>
+  <div class="math-display">\[\mathcal C=\{b\in\mathcal P^M(\omega\times P):\text{each row }b_n\text{ is an antichain}\}.\]</div>
+  <p>Power Set and Separation in \(M\) give \(\mathcal C\in M\). This is its internal power set; we do not include arbitrary external subsets of \(\omega\times P\). Row membership and incompatibility have the same meaning in the transitive model, since a common strengthening is sought in the same set \(P\). By Replacement, \(b\mapsto\dot x_b\) is a function in \(M\), where</p>
+  <div class="math-display">\[\dot x_b=\{(\check n,p):(n,p)\in b\}.\]</div>
+  <p>Its range is exactly the nice names under discussion, allowing different codes to produce the same value after evaluation. The empty relation belongs to \(\mathcal C\) and names the empty real.</p>
+</section>
+
+<section id="counting-codes" data-formal="nice-sequence-range nice-countable-sequence-representation nice-row-enumeration nice-countable-rows nice-family-encoding nice-family-encoding-recovers nice-family-encoding-injective nice-countable-rows-cardinality nice-cover-enumeration nice-cover-right-inverse nice-cover-surjective nice-ground-codes-injective nice-ground-codes-cardinality nice-internal-constructions" data-kind="lemma">
+  <h2>Countable antichain rows give a ground-model cardinal bound</h2>
+  <p>Let \(\lambda=(\kappa^{\aleph_0})^M\). Then \(M\) has a surjection \(e:\lambda\to\mathcal C\); in particular \(M\models|\mathcal C|\le\kappa^{\aleph_0}\).</p>
+  <div class="proof"><p>Work entirely in \(M\). A countable subset of \(P\), including the empty subset, is the set of nonempty outputs of some sequence \(s:\omega\to P\cup\{*\}\), where \(*\notin P\) is a new marker. For an empty set take the constant marker sequence; for a nonempty countable set use an enumeration, allowing repetition. Thus there are at most</p>
+  <div class="math-display">\[(\kappa+1)^{\aleph_0}=\kappa^{\aleph_0}\]</div>
+  <p>countable subsets, since \(\kappa\) is infinite. A code is an \(\omega\)-sequence of countable rows. Choice selects one enumeration for each row; flattening the pair of natural-number indices gives a code by a single sequence of elements of \(P\cup\{*\}\). Equivalently, the number of sequences of rows is bounded by</p>
+  <div class="math-display">\[(\kappa^{\aleph_0})^{\aleph_0}=\kappa^{\aleph_0\cdot\aleph_0}=\kappa^{\aleph_0}.\]</div>
+  <p>The <a href="infinite-cardinal-arithmetic#power-laws">cardinal power laws</a> and \(|\omega\times\omega|=\aleph_0\) justify the flattening. Antichain rows are among countable rows by ccc, so restricting to nice codes cannot increase this bound.</p>
+  <p>Every set in this count and every selected enumeration belongs to \(M\), where Choice is available. The resulting injection \(i:\mathcal C\to\lambda\) has a graph in \(M\). Since \(\mathcal C\ne\varnothing\), define \(e(\xi)\) to be the unique \(b\) with \(i(b)=\xi\), if one exists, and the empty code otherwise. Separation and Replacement in \(M\) form its graph. Then \(e:\lambda\to\mathcal C\) is the required surjection in \(M\). This last passage specifies a map that can be transferred to the extension.</p></div>
+</section>
+
+<section id="named-evaluation" data-formal="nice-evaluation-name nice-evaluation-graph nice-evaluation-name-valid nice-evaluation-name-value nice-evaluation-graph-members nice-evaluation-in-extension nice-evaluation-surjective nice-enumerated-evaluation-name nice-enumerated-evaluation-graph nice-enumerated-evaluation-valid nice-enumerated-evaluation-value nice-enumerated-evaluation-in-extension nice-enumerated-evaluation-surjective nice-enumerated-evaluation-function nice-internal-constructions" data-kind="lemma">
+  <h2>The evaluation map itself belongs to the extension</h2>
+  <p>The function \(E_G:\mathcal C\to\mathcal P^N(\omega)\) given by \(E_G(b)=\dot x_b[G]\) has a graph in \(N\), and is surjective. Consequently the composite \(E_G\circ e:\lambda\to\mathcal P^N(\omega)\) is a surjection belonging to \(N\).</p>
+  <div class="proof"><p>Using the uniform ground-model map \(b\mapsto\dot x_b\), build the explicit name</p>
+  <div class="math-display">\[\dot E=\{(\operatorname{op}(\check b,\dot x_b),1_P):b\in\mathcal C\}.\]</div>
+  <p>Here \(\operatorname{op}\) is the <a href="forcing-names#pair-and-ordered-pair-names">ordered-pair name</a>. Replacement inside \(M\) forms \(\dot E\in M\), and its displayed first components are \(P\)-names. Since \(1_P\in G\), evaluating all attachments gives exactly</p>
+  <div class="math-display">\[\dot E[G]=\{(b,\dot x_b[G]):b\in\mathcal C\}.\]</div>
+  <p>This is the graph of the specified function, so \(E_G\in N\). Its values are subsets of \(\omega\) by <a href="#nice-names"></a>. Conversely, every \(x\in\mathcal P^N(\omega)\) has a nice replacement by <a href="#nice-replacement"></a>, with a code \(b\in\mathcal C\); hence \(E_G(b)=x\). This proves surjectivity. The old set \(\mathcal C\) has the same members in \(N\); its elements are codes, while their evaluations may be new.</p>
+  <p>The ground map \(e\) belongs to \(N\) by ground-model inclusion and remains a surjection onto that same \(\mathcal C\). Its function and surjectivity assertions only quantify over its fixed domain and range. Replacement in \(N\) forms the composite graph, and the two surjectivities give the conclusion. An external assignment of a value to each code would not by itself supply this internal cardinal bound; the name \(\dot E\) supplies the missing graph.</p></div>
+</section>
+
+<section id="continuum-upper-bound" data-formal="nice-extension-real-cardinality nice-internal-upper-bound fcc-cardinal-preservation" data-kind="theorem">
+  <h2>The continuum is bounded by the old countable power</h2>
+  <p>Under the standing hypotheses, with \(\lambda=(\kappa^{\aleph_0})^M\),</p>
+  <div class="math-display">\[N\models 2^{\aleph_0}\le\lambda.\]</div>
+  <p>The ordinal \(\lambda\) remains a cardinal of \(N\); its value here is the ground cardinal power, rather than an unevaluated exponent in \(N\).</p>
+  <div class="proof"><p>The surjection from <a href="#named-evaluation"></a> belongs to \(N\). Inside this ZFC-model, Choice turns a surjection from \(\lambda\) onto its reals into an injection of those reals into \(\lambda\): choose the least preimage in the ordinal \(\lambda\). Thus \(N\models2^{\aleph_0}\le|\lambda|\). Since \(M\) regards \(P\) as ccc, <a href="forcing-chain-conditions#cardinal-preservation">ccc cardinal preservation</a> gives \(|\lambda|^N=\lambda\). This proves the assertion.</p><p>In particular, if \(M\models\kappa^{\aleph_0}=\kappa\), this upper bound is \(\kappa\). We now combine it with a forcing-specific lower bound.</p></div>
+</section>
+
+<section id="exact-cohen-continuum" data-formal="nice-cohen-conditions-cardinality nice-internal-upper-bound nice-exact-cohen-model mcoh-family-in-extension mcoh-family-injective fcc-binary-ccc fcc-cardinal-preservation fcc-cofinality-preservation" data-kind="theorem">
+  <h2>Cohen columns give an exact continuum under an explicit power assumption</h2>
+  <div class="statement-box"><p>Suppose \(M\) is an externally countable transitive ZFC-model and \(M\models\text{“}\kappa\ge\aleph_0\text{ is a cardinal and }\kappa^{\aleph_0}=\kappa\text{”}\). For</p>
+  <div class="math-display">\[P=\operatorname{Fn}(\omega\times\kappa,2,{&lt;}\omega),\]</div>
+  <p>every \(M\)-generic extension \(N=M[G]\) is a transitive ZFC-model with the same cardinals and cofinalities, and satisfies</p>
+  <div class="math-display">\[N\models 2^{\aleph_0}=\kappa.\]</div></div>
+  <div class="proof"><p>All size computations in the next paragraph take place in \(M\). There are \(\kappa\) coordinates because \(\kappa\) is infinite. A condition is coded by a finite sequence of coordinate-bit pairs. For each finite length there are at most \(\kappa\) such sequences by <a href="infinite-cardinal-arithmetic#finite-powers">finite powers</a>; the <a href="infinite-cardinal-arithmetic#countable-unions">countable union bound</a> gives \(|P|\le\kappa\). The singleton assignments \(\{((0,\alpha),0)\}\), for \(\alpha&lt;\kappa\), give an injection \(\kappa\to P\). Hence \(|P|=\kappa\). The <a href="forcing-chain-conditions#finite-binary-maps">delta-system argument</a> makes this order ccc inside \(M\).</p>
+  <p>The proof of the <a href="many-cohen-reals#family-name">named column-family injection</a> works with this arbitrary infinite index \(\kappa\): each column is total, fresh rows separate distinct columns, and the displayed family name places the entire injection \(\kappa\to(2^\omega)^N\) in \(N\). Cardinal preservation identifies the old \(\kappa\) with the same cardinal of \(N\), giving \(N\models\kappa\le2^{\aleph_0}\).</p>
+  <p>Apply <a href="#continuum-upper-bound"></a> using \(|P|^M=\kappa\). Its upper bound is \((\kappa^{\aleph_0})^M=\kappa\) by hypothesis. The two internal inequalities give equality. The extension and preservation theorems give the remaining assertions. Existence of a generic follows from external countability of the given ground model; no existence claim for such a ground model has been assumed beyond the theorem's premise.</p></div>
+</section>
+
+<section id="ch-countable-power" data-formal="nice-ch-aleph-two-power aleph-one-countable-power cardinal-hausdorff-formula nice-exact-cohen-model" data-kind="lemma">
+  <h2>CH already gives the needed countable power at aleph two</h2>
+  <p>In ZFC, CH implies \(\aleph_2^{\aleph_0}=\aleph_2\). Consequently, if the given ground model also satisfies CH, adjoining \(\omega_2^M\) Cohen columns gives \(M[G]\models2^{\aleph_0}=\aleph_2\).</p>
+  <div class="proof"><p>First \(\aleph_1^{\aleph_0}=2^{\aleph_0}\), as proved by <a href="continuum-function#gch-examples">the countable-power calculation</a>. One can see the upper bound directly under CH:</p>
+  <div class="math-display">\[\aleph_1^{\aleph_0}=(2^{\aleph_0})^{\aleph_0}=2^{\aleph_0\cdot\aleph_0}=2^{\aleph_0}=\aleph_1.\]</div>
+  <p>Since \(\aleph_2\) is a <a href="cofinality#successors-are-regular">regular successor cardinal</a>, every sequence \(f:\omega\to\omega_2\) has bounded range: its countable range cannot be cofinal in \(\omega_2\). Thus it is a sequence into some ordinal \(\beta&lt;\omega_2\). Every such \(\beta\) has cardinality at most \(\aleph_1\), so there are at most \(\aleph_1^{\aleph_0}=\aleph_1\) sequences into it. Taking the union over \(\aleph_2\) possible bounds gives at most \(\aleph_2\cdot\aleph_1=\aleph_2\) sequences in total. Constant sequences give the reverse bound. This proves the power identity.</p>
+  <p>Perform this argument inside \(M\), then apply <a href="#exact-cohen-continuum"></a> with \(\kappa=\aleph_2^M\). Ccc preservation makes that same ordinal \(\aleph_2\) in the extension. The argument used CH and regularity of this particular successor, without assuming GCH or a general formula for powers at all regular cardinals.</p></div>
+</section>
+
+<section id="arithmetic-hypothesis-question" data-formal="nice-internal-upper-bound nice-exact-cohen-model nice-ch-aleph-two-power mcoh-family-injective" data-kind="question">
+  <h2>Can CH alone specify the result at every regular cardinal?</h2>
+  <p>Suppose \(M\models\mathrm{CH}\), and let \(\kappa\) be any uncountable regular cardinal of \(M\). Does the preceding proof establish \(2^{\aleph_0}=\kappa\) after adjoining \(\kappa\) Cohen columns? What does it establish without a further arithmetic calculation?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The proof establishes the bounds</p>
+  <div class="math-display">\[N\models\kappa\le2^{\aleph_0}\le(\kappa^{\aleph_0})^M.\]</div>
+  <p>To collapse them to equality it still needs \(M\models\kappa^{\aleph_0}=\kappa\). Regularity bounds every countable sequence below some \(\beta&lt;\kappa\), but CH alone does not supply the required bound on \(|\beta|^{\aleph_0}\) for all these smaller bases. At \(\aleph_2\), every smaller ordinal has cardinality at most \(\aleph_1\), which is exactly why <a href="#ch-countable-power"></a> succeeds. For a general regular \(\kappa\), retain the explicit power hypothesis, or prove it from additional available arithmetic assumptions. The entry asserts no arbitrary-regular-cardinal conclusion from CH alone.</p></div></details>
+</section>

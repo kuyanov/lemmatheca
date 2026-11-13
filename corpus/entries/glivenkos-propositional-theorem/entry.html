@@ -1,0 +1,119 @@
+<section id="proof-relations" data-formal="prop-formula ipnd-derivability nd-derivability" data-kind="definition">
+  <h2>Compare theorems in the fixed propositional language</h2>
+  <p>Use the <a href="intuitionistic-propositional-kripke-completeness#numbered-language">shared formulas with numbered atoms</a> \(p_0,p_1,\ldots\), including \(\bot,\neg,\land,\lor,\to\). Write \(\Gamma\vdash_{\mathrm I}A\) for <strong>intuitionistic derivability</strong> in the specified natural-deduction calculus, and \(\Gamma\vdash_{\mathrm C}A\) for <strong>classical derivability</strong> in the <a href="propositional-proofs#deduction-rules">existing finite-context calculus</a>. Classical contexts in this entry are finite; intuitionistic premise sets may be sets of allowed formulas. A missing context means the empty premise set.</p>
+  <p>The <strong>double-negated formula</strong> associated with \(A\) is the actual native formula \(\neg\neg A\). Primitive negation has not been identified syntactically with implication to falsum. All results below concern this propositional language.</p>
+</section>
+
+<section id="maximal-worlds" data-formal="maximal-element-definition order-partial" data-kind="definition">
+  <h2>Isolate worlds with no proper future extension</h2>
+  <p>In a partially ordered Kripke frame, a world \(t\) is <strong>maximal</strong> when</p>
+  <div class="math-display">\[t\leq u\quad\Longrightarrow\quad u=t\qquad\text{for every world }u.\]</div>
+  <p>A <strong>maximal extension</strong> of \(w\) is a maximal world \(t\) satisfying \(w\leq t\). Maximality is a property of the whole frame, rather than merely a statement that the world is distinct from a chosen predecessor. Partial orders are important here: in a preorder, different worlds may be mutually accessible.</p>
+</section>
+
+<section id="maximal-extensions" data-formal="order-finite-maximal-above order-maximal maximal-element-definition" data-kind="lemma">
+  <h2>Every world in a finite partial order has a maximal extension</h2>
+  <p>If a frame is finite and partially ordered, every world \(w\) has a maximal extension.</p>
+  <div class="proof"><p>Start at \(w\). If the current world is not maximal, move to a strictly larger world. Transitivity makes all later worlds larger than their predecessors, and antisymmetry prevents a repeated world in this strictly increasing sequence. A finite frame with \(n\) worlds admits at most \(n-1\) such moves. Thus a world with no strictly larger extension is reached. It is maximal and still lies above \(w\). This proves the assertion even when \(w\) was maximal already.</p></div>
+</section>
+
+<section id="maximal-boolean-worlds" data-formal="gpt-maximal-boolean-valuation iks-generated-model iks-generated-forcing iks-one-world-valuation" data-kind="lemma">
+  <h2>A maximal world evaluates every formula classically</h2>
+  <p>Let \(M\) be a Kripke model on a partial order and let \(t\) be maximal. There is a Boolean valuation \(b_t\), with \(b_t(p)=1\) exactly when \(M,t\Vdash p\), such that every native formula satisfies</p>
+  <div class="math-display">\[M,t\Vdash B\quad\Longleftrightarrow\quad b_t(B)=1.\]</div>
+  <div class="proof"><p>The <a href="intuitionistic-kripke-semantics#generated-submodel">generated model above \(t\)</a> has just one world: any member of its frame satisfies \(t\leq u\), so maximality gives \(u=t\). Apply the <a href="intuitionistic-kripke-semantics#one-world-models">one-world Boolean valuation lemma</a> to this generated model. Its atom values are the original values at \(t\), and <a href="intuitionistic-kripke-semantics#generated-truth">generated-model truth preservation</a> gives the displayed equivalence back in \(M\).</p><p>In particular, native negation at this world says exactly that its argument is false there: the only future world to test is \(t\) itself. The implication clause likewise reduces to the ordinary implication between the two truth values. Thus this use of the one-world lemma includes primitive negation and every other constructor of the shared syntax.</p></div>
+</section>
+
+<section id="finite-double-negation" data-formal="gpt-finite-double-negation" data-kind="lemma">
+  <h2>A classical theorem is double-negated at every finite world</h2>
+  <p>If \(\vdash_{\mathrm C}A\), every world of every nonempty finite partially ordered Kripke model forces \(\neg\neg A\).</p>
+  <div class="proof"><p>Fix a world \(w\), and then any \(z\geq w\). Choose a maximal extension \(t\geq z\) by <a href="#maximal-extensions"></a>. At \(t\), forcing agrees with a Boolean valuation. <a href="propositional-proofs#soundness">Classical soundness</a> makes \(A\) true under that valuation, so \(M,t\Vdash A\).</p><p>We have proved that every future \(z\) of \(w\) has a further extension forcing \(A\). The <a href="intuitionistic-kripke-semantics#negation-and-failure">double-negation future-world criterion</a> identifies this with \(M,w\Vdash\neg\neg A\). Explicitly, a future world forcing \(\neg A\) could not have such a further extension, by the negation clause. This proves the assertion at every \(w\).</p></div>
+</section>
+
+<section id="glivenko-theorem" data-formal="gpt-glivenko" data-kind="theorem">
+  <h2>Glivenko's theorem identifies classical theorems after double negation</h2>
+  <div class="statement-box"><p>For every shared formula \(A\) with numbered atoms,</p><div class="math-display">\[\vdash_{\mathrm C}A\quad\Longleftrightarrow\quad\vdash_{\mathrm I}\neg\neg A.\]</div></div>
+  <div class="proof"><p>For the forward direction, <a href="#finite-double-negation"></a> makes \(\neg\neg A\) valid in all nonempty finite partially ordered Kripke models. The <a href="intuitionistic-propositional-finite-model-property#finite-model-property">finite model property</a>, applied to that very formula, gives its intuitionistic deduction.</p><p>Conversely, an intuitionistic proof of \(\neg\neg A\) is sound for every Boolean valuation. Boolean double negation has the same value as \(A\), so \(A\) is a tautology. <a href="propositional-proofs#completeness">Classical completeness</a> gives \(\vdash_{\mathrm C}A\). This establishes both implications. The forward proof used only the finite-model theorem, maximal worlds and ordinary classical soundness; it has not assumed any relationship with the negative translation.</p></div>
+</section>
+
+<section id="stable-theorem-transfer" data-formal="pnt-stable gpt-stable-theorem-transfer gpt-stable-implication-transfer" data-kind="theorem">
+  <h2>Stable classical conclusions already have intuitionistic proofs</h2>
+  <p>Recall that \(C\) is <a href="propositional-negative-translation#stable-formulas">stable</a> when \(\vdash_{\mathrm I}\neg\neg C\to C\). For every stable \(C\),</p>
+  <div class="math-display">\[\vdash_{\mathrm C}C\quad\Longleftrightarrow\quad\vdash_{\mathrm I}C.\]</div>
+  <p>In particular, if \(D\) is stable and \(\vdash_{\mathrm C}B\to D\), then \(\vdash_{\mathrm I}B\to D\), with no stability assumption on \(B\).</p>
+  <div class="proof"><p>Glivenko turns a classical theorem \(C\) into an intuitionistic proof of \(\neg\neg C\). Apply the closed stability implication to obtain \(C\). In the reverse direction, Boolean soundness of the intuitionistic proof and classical completeness give the classical proof.</p><p>For the implication assertion, the earlier <a href="propositional-negative-translation#stability-closure">stability closure laws</a> make \(B\to D\) stable whenever \(D\) is stable. Apply the first assertion to this implication. This conclusion concerns stability of a formula, rather than adding unrestricted double-negation elimination to the calculus.</p></div>
+</section>
+
+<section id="translation-double-negation" data-formal="pnt-translation pnt-equivalence gpt-negative-double-negation" data-kind="theorem">
+  <h2>The negative translation is intuitionistically equivalent to double negation</h2>
+  <p>Let \(A^{\mathsf N}\) be the <a href="propositional-negative-translation#negative-translation">specified Gödel–Gentzen translation</a>. Write \(B\simeq_{\mathrm I}C\) for two closed intuitionistic implications, one in each direction, as in <a href="propositional-negative-translation#substitution-compatibility">intuitionistic equivalence</a>. Then</p>
+  <div class="statement-box"><p>For every numbered-atom formula \(A\),</p><div class="math-display">\[A^{\mathsf N}\simeq_{\mathrm I}\neg\neg A.\]</div></div>
+  <div class="proof"><p>Translation preserves Boolean truth, so each of</p><div class="math-display">\[\neg\neg A\to A^{\mathsf N},\qquad A^{\mathsf N}\to\neg\neg A\]</div><p>is a classical tautology and hence has a closed classical proof. The first consequent is stable by <a href="propositional-negative-translation#translated-stability">translated stability</a>. The second is a negation and therefore stable by the <a href="propositional-negative-translation#stability-closure">same closure laws</a>. Consequently both implications have closed intuitionistic proofs by <a href="#stable-theorem-transfer"></a>. These are precisely the two required directions. This proves equivalence of the actual native formulas, without asserting that their parse trees are equal.</p></div>
+</section>
+
+<section id="removing-the-translation" data-formal="gpt-negative-introduction gpt-negative-removal gpt-negative-fixed-iff" data-kind="lemma">
+  <h2>Determine exactly when the translation can be removed</h2>
+  <p>For every numbered-atom formula \(A\), \(\vdash_{\mathrm I}A\to A^{\mathsf N}\). Moreover,</p>
+  <div class="math-display">\[\vdash_{\mathrm I}A^{\mathsf N}\to A\quad\Longleftrightarrow\quad A\text{ is stable}.\]</div>
+  <p>Equivalently, \(A\simeq_{\mathrm I}A^{\mathsf N}\) if and only if \(A\) is stable.</p>
+  <div class="proof"><p>Double-negation introduction gives \(A\to\neg\neg A\), and the preceding equivalence gives \(\neg\neg A\to A^{\mathsf N}\). Compose them to prove the first implication.</p><p>If \(A\) is stable, compose \(A^{\mathsf N}\to\neg\neg A\) with \(\neg\neg A\to A\). Conversely, a proof of \(A^{\mathsf N}\to A\), composed with \(\neg\neg A\to A^{\mathsf N}\), proves \(\neg\neg A\to A\), which is exactly stability. All compositions are <a href="intuitionistic-propositional-deduction#deduction-and-composition">compositions of deductions</a> in the same native calculus.</p></div>
+</section>
+
+<section id="negative-fragment" data-formal="gpt-negative-fragment prop-formula" data-kind="definition">
+  <h2>Give a syntactic family of stable formulas</h2>
+  <p>The <strong>negative fragment</strong> used here is the least family of native formulas generated by</p>
+  <div class="math-display">\[G::=\bot\ \mid\ \neg B\ \mid\ (G\land G)\ \mid\ (B\to G),\]</div>
+  <p>where \(B\) may be any formula of the numbered-atom language. Thus arbitrary formulas may occur below a negation or as an implication's antecedent. There is no positive-atom or disjunction constructor for the family itself. Membership is justified by a finite construction using these four clauses.</p>
+</section>
+
+<section id="negative-fragment-fixed" data-formal="gpt-negative-fragment-stable gpt-negative-translation-fragment gpt-negative-fragment-fixed ipnd-triple-negation ipnd-double-negation-intro pnt-equivalence" data-kind="lemma">
+  <h2>The negative fragment is fixed up to intuitionistic equivalence</h2>
+  <p>Every formula in the negative fragment is stable. Every translated formula \(A^{\mathsf N}\) belongs to that fragment. Consequently every negative-fragment formula satisfies \(A\simeq_{\mathrm I}A^{\mathsf N}\).</p>
+  <p>For a negated formula, stability and double-negation introduction in particular give the familiar triple-negation equivalence \(\neg\neg\neg B\simeq_{\mathrm I}\neg B\), using the <a href="intuitionistic-propositional-deduction#constructive-negation-laws">native triple-negation law</a>.</p>
+  <div class="proof"><p>Induct on a construction in the fragment. Falsum and every negation are stable. Conjunction preserves stability, and an implication with stable consequent is stable regardless of its antecedent. These are exactly the four previously proved closure laws.</p><p>For the translation assertion, induct on the original formula. A translated atom, primitive negation, or disjunction has an outer negation, so belongs by the negation clause. Translated falsum belongs by the first clause. The conjunction and implication cases use the corresponding induction hypotheses and fragment clauses. Finally apply <a href="#removing-the-translation"></a> to the stability of a fragment member. This family gives a sufficient syntactic test for stability; the assertion does not classify all stable formulas.</p></div>
+</section>
+
+<section id="double-negated-contexts" data-formal="gpt-double-negated-context finite-images" data-kind="definition">
+  <h2>Double-negate each allowed premise</h2>
+  <p>For a set of allowed formulas \(\Gamma\), its <strong>double-negated context</strong> is the pointwise image</p>
+  <div class="math-display">\[D\Gamma:=\{\neg\neg B:B\in\Gamma\}.\]</div>
+  <p>This context is finite when \(\Gamma\) is finite. It is an image set, so repeated formulas contribute no extra assumption. The earlier translated context is \(\Gamma^{\mathsf N}=\{B^{\mathsf N}:B\in\Gamma\}\); it has a different defining syntax. The formula equivalence above will connect their deductions.</p>
+</section>
+
+<section id="finite-premise-glivenko" data-formal="gpt-finite-premise-glivenko" data-kind="theorem">
+  <h2>Extend Glivenko to finite classical consequences</h2>
+  <div class="statement-box"><p>For every finite context \(\Gamma\) and formula \(A\) in the numbered-atom language,</p><div class="math-display">\[\Gamma\vdash_{\mathrm C}A\quad\Longleftrightarrow\quad D\Gamma\vdash_{\mathrm I}\neg\neg A.\]</div></div>
+  <div class="proof"><p>Translate a given classical derivation by the <a href="propositional-negative-translation#proof-translation">actual negative-translation theorem</a>, obtaining \(\Gamma^{\mathsf N}\vdash_{\mathrm I}A^{\mathsf N}\). For every \(B\in\Gamma\), the premise \(\neg\neg B\) in \(D\Gamma\), together with the closed implication \(\neg\neg B\to B^{\mathsf N}\), gives a deduction of \(B^{\mathsf N}\) from \(D\Gamma\). <a href="intuitionistic-propositional-deduction#proof-replacement">Replace</a> the translated open premises by these deductions. This yields \(D\Gamma\vdash_{\mathrm I}A^{\mathsf N}\). Apply the other closed implication \(A^{\mathsf N}\to\neg\neg A\) to obtain the required conclusion.</p><p>Conversely, a Boolean valuation satisfying every member of \(\Gamma\) also satisfies every member of \(D\Gamma\), since Boolean double negation preserves values. Soundness of the supplied intuitionistic proof makes \(\neg\neg A\), and hence \(A\), true. Thus \(\Gamma\models A\), and classical finite-context completeness supplies \(\Gamma\vdash_{\mathrm C}A\). This proves the exact correspondence for the same original premise set.</p></div>
+</section>
+
+<section id="unchanged-premises" data-formal="gpt-unchanged-premise-glivenko gpt-stable-consequence" data-kind="lemma">
+  <h2>The original premises also suffice for the double-negated conclusion</h2>
+  <p>For every finite \(\Gamma\) and numbered-atom formula \(A\),</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm C}A\quad\Longleftrightarrow\quad\Gamma\vdash_{\mathrm I}\neg\neg A.\]</div>
+  <p>If \(A\) is stable, these conditions are also equivalent to \(\Gamma\vdash_{\mathrm I}A\).</p>
+  <div class="proof"><p>Each assumption \(B\in\Gamma\) gives \(\neg\neg B\) by double-negation introduction. Replace the allowed premises of the deduction from \(D\Gamma\) in <a href="#finite-premise-glivenko"></a> by these deductions from \(\Gamma\). This proves the forward implication. Boolean soundness and classical completeness give the reverse implication exactly as before.</p><p>For a stable conclusion, its closed stability implication weakens to \(\Gamma\), removing the final double negation. Conversely an intuitionistic deduction of \(A\) gives one of \(\neg\neg A\) by double-negation introduction. Thus stable conclusions have the same classical and intuitionistic consequences from these finite unchanged premises. This does not make an arbitrary classical conclusion intuitionistically derivable.</p></div>
+</section>
+
+<section id="excluded-middle-and-stability" data-formal="ipnd-double-negated-em iks-not-excluded-middle iks-not-dne pnt-stable" data-kind="lemma">
+  <h2>An atom is not stable even though excluded middle is double-negated</h2>
+  <p>For \(p=p_0\), intuitionistic logic proves \(\neg\neg(p\lor\neg p)\), but it proves neither \(p\lor\neg p\) nor \(\neg\neg p\to p\).</p>
+  <div class="proof"><p>Classical excluded middle and Glivenko give the double-negated theorem; the earlier <a href="intuitionistic-propositional-deduction#double-negated-excluded-middle">direct intuitionistic proof</a> gives the same result. In the <a href="intuitionistic-kripke-semantics#excluded-middle-countermodel">two-world chain</a>, the lower world forces neither \(p\) nor \(\neg p\), so excluded middle fails there. That world does force \(\neg\neg p\) while failing \(p\), so the displayed elimination implication fails there as well. Kripke soundness rules out both closed deductions. The latter failure says exactly that this atom is not stable.</p></div>
+</section>
+
+<section id="stable-disjunctions" data-formal="pnt-stable-negation gpt-weak-em-countermodel gpt-weak-em-tautology gpt-stable-disjunction-failure" data-kind="question">
+  <h2>Must a disjunction of stable formulas be stable?</h2>
+  <p>Both \(\neg p_0\) and \(\neg\neg p_0\) are stable. Is \(\neg p_0\lor\neg\neg p_0\) stable too?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Use the <a href="intuitionistic-kripke-semantics#branching-model">three-world fork</a> with one terminal world forcing only \(p_0\) and the other forcing only \(p_1\). At the root, \(\neg p_0\) fails because the first leaf forces \(p_0\). The second leaf forces \(\neg p_0\), since it and all its extensions fail \(p_0\). Therefore the root also fails \(\neg\neg p_0\). The disjunction fails there, and so has no closed intuitionistic proof.</p><p>Classically this disjunction is a tautology: if \(p_0\) is false its first disjunct is true, and if \(p_0\) is true its second is true. If the disjunction were stable, <a href="#stable-theorem-transfer"></a> would make it an intuitionistic theorem, contrary to the fork. Thus stability is preserved by the earlier negation, conjunction and implication constructions, but not by arbitrary disjunction.</p></div></details>
+</section>
+
+<section id="discarding-premises" data-formal="gpt-discarded-premise gpt-double-negated-context" data-kind="question">
+  <h2>Can the finite-premise theorem discard its assumptions entirely?</h2>
+  <p>Does \(\Gamma\vdash_{\mathrm C}A\) imply \(\vdash_{\mathrm I}\neg\neg A\), with no premises left?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Take \(\Gamma=\{p_0\}\) and \(A=p_0\). The classical assumption rule proves the consequence. Its double-negated-context conclusion is \(\{\neg\neg p_0\}\vdash_{\mathrm I}\neg\neg p_0\), which is again an assumption deduction.</p><p>The formula \(\neg\neg p_0\) is false under a Boolean valuation making \(p_0\) false. Boolean soundness therefore excludes an assumption-free intuitionistic proof. The unchanged-premise corollary allows the original assumptions to be used instead of their double negations; it does not allow those assumptions to be deleted.</p></div></details>
+</section>
+
+<section id="empty-premises-and-falsum" data-formal="gpt-double-negated-context gpt-glivenko gpt-finite-premise-glivenko gpt-no-double-negated-falsum ipnd-consistency nd-empty-context-consistent ipnd-identity ipnd-double-negation-intro" data-kind="question">
+  <h2>What do empty premises and an atom-free formula change?</h2>
+  <p>Does the finite-premise theorem include \(\Gamma=\varnothing\)? What happens for \(A=\bot\), or for the atom-free formula \(\bot\to\bot\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The image of the empty premise set is empty, so the finite-premise equivalence becomes precisely Glivenko's theorem. Neither calculus proves \(\bot\) without assumptions. Nor does intuitionistic logic prove \(\neg\neg\bot\): this formula is false under every Boolean valuation, and soundness excludes such a deduction. Its stability implication cannot create a proof without its antecedent.</p><p>The identity formula \(\bot\to\bot\) already has a closed intuitionistic proof by assuming and discharging \(\bot\). Its double negation follows by introduction, in agreement with Glivenko. Atom-free formulas are still members of the fixed propositional language, so no nonempty atom support is required by the argument.</p></div></details>
+</section>

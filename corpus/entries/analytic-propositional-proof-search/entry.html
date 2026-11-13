@@ -1,0 +1,107 @@
+<section id="ordered-inputs" data-formal="aps-input aps-underlying-set cps-formula" data-kind="definition">
+  <h2>Present a finite sequent as an ordered input</h2>
+  <p>Use the <a href="classical-propositional-sequents#signed-formulas">signed negation-normal formulas</a> with atom names in \(\mathbb N\). Thus an atom has the form \(p_i\) or \(\bar p_i\), and formulas also have \(\bot,\top,\land,\lor\). A <strong>search input</strong> is a finite ordered list \(L\) of these formulas. Its <strong>underlying sequent</strong> is the finite set \(\operatorname{set}(L)\), read as a disjunction as in the <a href="classical-propositional-sequents#one-sided-sequents">one-sided calculus</a>.</p>
+  <p>Different orders and repeated occurrences may present the same set. The procedure below is deterministic for its supplied list: it processes the first unprocessed formula. It need not build the same tree for two different presentations of one set. Natural-number atom names have decidable equality, and every operation below is a finite calculation on this syntax.</p>
+</section>
+
+<section id="search-states" data-formal="aps-literal aps-literal-context aps-state-context" data-kind="definition">
+  <h2>Keep processed literals beside the remaining list</h2>
+  <p>A <strong>literal</strong> is \(p_i\) or \(\bar p_i\). A <strong>search state</strong> is a pair \((S,L)\), where \(S\) is a finite set containing only literals and \(L\) is an arbitrary search input. Its <strong>state sequent</strong> is</p>
+  <div class="math-display">\[\Gamma(S,L):=S\cup\operatorname{set}(L).\]</div>
+  <p>The procedure starts at \((\varnothing,L)\). Encountering a literal moves it from the front of \(L\) into \(S\); this leaves the state sequent unchanged. Inserting a repeated literal changes no set. The invariant “every member of \(S\) is a literal” will be preserved at every recursive call.</p>
+</section>
+
+<section id="invertible-decompositions" data-formal="aps-valid-disjunction aps-valid-bottom aps-valid-conjunction" data-kind="lemma">
+  <h2>Expose the alternatives or split a conjunction</h2>
+  <p>For every finite context \(\Gamma\) and formulas \(A,B\), Boolean validity satisfies</p>
+  <div class="math-display">\[\operatorname{Valid}(\Gamma,A\lor B)\ \Longleftrightarrow\ \operatorname{Valid}(\Gamma,A,B),\qquad
+    \operatorname{Valid}(\Gamma,\bot)\ \Longleftrightarrow\ \operatorname{Valid}(\Gamma).\]</div>
+  <div class="math-display">\[\operatorname{Valid}(\Gamma,A\land B)\ \Longleftrightarrow\
+    \operatorname{Valid}(\Gamma,A)\ \land\ \operatorname{Valid}(\Gamma,B).\]</div>
+  <p>These identities include contexts already containing one of the displayed formulas.</p>
+  <div class="proof"><p>Fix a valuation. The first sequent has a true alternative precisely when some member of \(\Gamma\), or \(A\), or \(B\), is true. Falsum supplies no true alternative, giving the second identity. If every valuation satisfies \(\Gamma,A\land B\), then it satisfies both \(\Gamma,A\) and \(\Gamma,B\). Conversely, suppose both latter sequents are valid. A valuation with no true member of \(\Gamma\) must make both \(A\) and \(B\) true, so satisfies their conjunction.</p><p>For countervaluations the same calculation is useful locally: if every member of \(\Gamma,A\) is false, every member of \(\Gamma,A\land B\) is false, regardless of \(B\). The analogous assertion holds for the other child. Thus a failed conjunction branch already refutes the parent; two countervaluations do not have to be combined.</p></div>
+</section>
+
+<section id="literal-data" data-formal="aps-positive-indices aps-negative-indices aps-clash-indices aps-least-clash aps-least-clash-minimum aps-terminal-valuation" data-kind="definition">
+  <h2>Read a terminal literal context</h2>
+  <p>For a finite literal set \(S\), define its <strong>positive index set</strong> and <strong>negative index set</strong> by</p>
+  <div class="math-display">\[P(S):=\{i:p_i\in S\},\qquad N(S):=\{i:\bar p_i\in S\}.\]</div>
+  <p>A <strong>clash index</strong> belongs to \(P(S)\cap N(S)\). If this finite set is nonempty, choose its least member in the ordinary order on \(\mathbb N\). The <strong>terminal valuation</strong> associated with \(S\) is the specified function</p>
+  <div class="math-display">\[v_S(i):=\begin{cases}1&amp;i\in N(S),\\0&amp;i\notin N(S).\end{cases}\]</div>
+  <p>The two index sets are obtained by scanning the finite literal context; testing membership, finding the least clash, and evaluating \(v_S\) are finite operations.</p>
+</section>
+
+<section id="literal-alternative" data-formal="aps-index-membership aps-negative-index-membership aps-terminal aps-terminal-correctness" data-kind="lemma">
+  <h2>A terminal context gives a proof or a countervaluation</h2>
+  <p>For every finite literal set \(S\), a clash index gives an atomic-identity proof of \(S\). If no clash index exists, every member of \(S\) is false under \(v_S\).</p>
+  <div class="proof"><p>If \(i\in P(S)\cap N(S)\), both \(p_i\) and \(\bar p_i\) belong to \(S\), so the <a href="classical-propositional-sequents#sequent-rules">atomic-identity leaf</a> is a primitive proof of this exact context. Otherwise consider any member of \(S\). If it is \(p_i\), its index belongs to \(P(S)\) and cannot belong to \(N(S)\); hence \(v_S(i)=0\). If it is \(\bar p_i\), its index belongs to \(N(S)\), so \(v_S(i)=1\) and the negative literal is false. The invariant on \(S\) says these are all cases. This proves the assertion, including \(S=\varnothing\), whose terminal valuation is constantly zero.</p></div>
+</section>
+
+<section id="search-procedure" data-formal="aps-result aps-result-correctness aps-search" data-kind="definition">
+  <h2>Define the recursive proof search</h2>
+  <p>The <strong>search result</strong> for \((S,L)\) has one of two forms: \(\operatorname{Proof}(T)\), containing an actual finite primitive derivation \(T\) of \(\Gamma(S,L)\); or \(\operatorname{Counter}(v)\), containing a proposed countervaluation. Such a counterresult is <strong>correct</strong> when every member of \(\Gamma(S,L)\) is false under \(v\). The <strong>analytic search procedure</strong> \(\operatorname{Search}(S,L)\) is defined by the following recursion. At a compound head, put \(\Gamma=\Gamma(S,R)\), where \(R\) is the remaining tail.</p>
+  <ol>
+    <li>If \(L=[]\), use <a href="#literal-alternative"></a>: return the identity leaf at the least clash index, or return \(\operatorname{Counter}(v_S)\) when there is no clash.</li>
+    <li>If the head is \(p_i\) or \(\bar p_i\), insert that literal in \(S\) and search the tail. The state sequent is unchanged, so return that result.</li>
+    <li>If the head is \(\top\), return the truth leaf, since \(\top\) belongs to the state sequent.</li>
+    <li>If the head is \(\bot\), search \((S,R)\). A proof becomes a proof of \(\Gamma,\bot\) by the bottom rule. A returned countervaluation already falsifies \(\bot\), so is returned unchanged.</li>
+    <li>If the head is \(A\lor B\), search \((S,A::B::R)\), where \(::\) means placing a formula at the front of a list. Its proof of \(\Gamma,A,B\) becomes a proof of \(\Gamma,A\lor B\) by the disjunction rule. A countervaluation is returned unchanged.</li>
+    <li>If the head is \(A\land B\), first search \((S,A::R)\). Return its countervaluation immediately if it fails. Otherwise search \((S,B::R)\). Return that countervaluation if it fails; if both calls return proofs, combine them by the common-context conjunction rule to prove \(\Gamma,A\land B\).</li>
+  </ol>
+  <p>Each recursive call preserves the literal invariant. Contexts in the reconstruction are exactly the displayed sets: for example \(S\cup\operatorname{set}(A::R)=\Gamma\cup\{A\}\). No choice of an arbitrary proof or valuation is part of this prescription.</p>
+</section>
+
+<section id="decreasing-weight" data-formal="pce-formula-size aps-weight aps-recursive-step aps-weight-decrease" data-kind="theorem">
+  <h2>The recursion always terminates</h2>
+  <p>Let \(|A|\) be the <a href="propositional-cut-elimination#induction-measures">formula size</a>, counting signed atoms and constants as one and a binary node as one plus its two child sizes. The <strong>remaining weight</strong> of a list is</p>
+  <div class="math-display">\[W([])=0,\qquad W(A::R)=|A|+W(R).\]</div>
+  <p>Every recursive call in \(\operatorname{Search}(S,L)\) has strictly smaller remaining weight. Consequently the procedure terminates for every finite input.</p>
+  <div class="proof"><p>Moving a literal to \(S\) or removing a bottom head decreases the weight by one. Replacing \(A\lor B\) by the two consecutive children changes \(|A|+|B|+1+W(R)\) to \(|A|+|B|+W(R)\), again decreasing it by one. A conjunction call keeps only one child, so its decrease is the size of the other child plus one, a positive number. Truth and terminal cases make no recursive calls.</p><p>Thus induction on the natural number \(W(L)\), with arbitrary literal accumulator \(S\), defines every result after finitely many smaller calls. Each node has at most two recursive children. The decreasing weight, rather than this finite branching alone, rules out an infinite branch. Repeated input formulas are counted as separate occurrences in \(W\), even though their state contexts are sets.</p></div>
+</section>
+
+<section id="search-correctness" data-formal="aps-search-correctness" data-kind="theorem">
+  <h2>Every returned witness settles the supplied sequent</h2>
+  <div class="statement-box"><p>For every finite literal set \(S\) and finite input \(L\), the terminating procedure returns either an actual proof using the five primitive rules of \(\Gamma(S,L)\), or its specified returned valuation makes every member of that same sequent false.</p></div>
+  <p>In particular, \(\operatorname{Search}(\varnothing,L)\) settles the exact underlying sequent \(\operatorname{set}(L)\).</p>
+  <div class="proof"><p>Induct on \(W(L)\), allowing every literal accumulator at each smaller weight. The terminal case is <a href="#literal-alternative"></a>. Moving a literal changes no sequent and preserves the accumulator invariant. A truth head licenses precisely the truth leaf.</p><p>At a bottom head, the induction hypothesis provides either a proof to which the bottom rule applies, or a valuation falsifying every tail and accumulator member; it also falsifies bottom. At a disjunction head, the recursive proof has exactly the premise context of the disjunction rule. If its valuation makes both children false, their disjunction is false too. These arguments use the same valuation throughout.</p><p>For a conjunction head, failure of the first call makes the first child and every common-context member false, so the conjunction and the whole parent context are false. If that call succeeds but the second fails, the same argument uses the second child. If both succeed, their proof contexts have the common remainder \(\Gamma(S,R)\), so the primitive conjunction rule combines them. The decreasing-weight theorem justifies every induction application. All reconstructed trees are therefore finite primitive derivations, and every propagated countervaluation has the required values at the original context.</p></div>
+</section>
+
+<section id="analytic-completeness" data-formal="aps-search-validity aps-search-derivability aps-finite-completeness aps-presentation-independence aps-decide-validity aps-decide-derivability" data-kind="theorem">
+  <h2>Validity and primitive derivability are decidable</h2>
+  <p>For every finite list \(L\) of numbered-atom NNF formulas, the following three conditions are equivalent: \(\operatorname{set}(L)\) is valid; the primitive calculus derives \(\operatorname{set}(L)\); and \(\operatorname{Search}(\varnothing,L)\) returns a proof. Thus the algorithm decides validity and primitive derivability for these presented finite sequents.</p>
+  <div class="proof"><p>A proof result supplies the required primitive derivation by <a href="#search-correctness"></a>, and every primitive derivation has a valid conclusion by <a href="classical-propositional-sequents#soundness">soundness</a>. Conversely, if the sequent is valid, the procedure cannot return a valuation making all its members false. Its two result forms and termination therefore force a proof result. The same argument shows that a countervaluation result rules out every primitive derivation.</p><p>Every finite set of these formulas has a finite list presentation, so the existence of a primitive proof is equivalent to validity for all such finite sets as well. This last observation does not choose a canonical executable ordering of an abstract set; the specified computational input remains its supplied finite list. Reordering or repeating entries can change the search tree, but cannot change whether it succeeds.</p></div>
+</section>
+
+<section id="native-consequence" data-formal="aps-native-input aps-native-input-set aps-native-consequence aps-native-deduction aps-native-countervaluation" data-kind="theorem">
+  <h2>Decide ordinary classical consequences through the exact encoding</h2>
+  <p>Let \(H\) be a finite list of shared propositional formulas with numbered atoms, and let \(G\) be another such formula. Form the input</p>
+  <div class="math-display">\[L_{H,G}:=[N^-(F):F\text{ occurs in }H]\mathbin{+\!+}[N^+(G)],\]</div>
+  <p>where \(+\!+\) denotes concatenation and \(N^\pm\) are the <a href="classical-propositional-sequents#positive-negative-translation">specified NNF translations</a>. Search succeeds on this input if and only if \(\operatorname{set}(H)\models G\), equivalently if and only if the <a href="propositional-proofs#completeness">existing classical natural-deduction calculus</a> derives \(G\) from that same finite set of hypotheses.</p>
+  <div class="proof"><p>Taking the underlying set of the displayed list gives exactly \(E(\operatorname{set}(H);\{G\})\), the earlier <a href="classical-propositional-sequents#two-sided-reading">encoding of hypotheses and conclusion</a>. Its validity is precisely the stated consequence. Apply analytic completeness to this exact list and the established Boolean soundness/completeness theorem for classical natural deduction to obtain both equivalences.</p><p>A returned sequent proof is an explicit finite certificate for this encoding. A returned countervaluation falsifies each negative hypothesis translation and the positive conclusion translation. Therefore it makes every original hypothesis true and \(G\) false, giving a counterexample to the ordinary consequence. This uses the earlier translation laws, including their clauses for native negation and implication.</p></div>
+</section>
+
+<section id="successful-example" data-formal="aps-successful-example aps-successful-leaves" data-kind="lemma">
+  <h2>Reconstruct a proof from two successful branches</h2>
+  <p>Put \(p=p_0\), \(q=p_1\), and \(S=\{\bar p,\bar q\}\). Search on \([\bar p\lor\bar q,\ q\land p]\) returns a primitive proof of that exact sequent.</p>
+  <div class="proof"><p>The first disjunction is replaced by its two children. Both negative literals move into the accumulator, leaving \((S,[q\land p])\). The first conjunction branch ends at \(S,q\), with least clash index \(1\); the second ends at \(S,p\), with least clash index \(0\). Both therefore return atomic-identity leaves. Reconstructing the two compound rules gives</p>
+  <div class="math-display">\[\frac{\dfrac{\vdash S,q\qquad\vdash S,p}{\vdash S,q\land p}\;\land}{\vdash\bar p\lor\bar q,\ q\land p}\;\lor.\]</div>
+  <p>The two upper contexts contain the indicated opposite pairs. Expanding \(S\) in the middle context gives exactly the premise required by the last disjunction rule. This verifies the claimed result using only primitive rules.</p></div>
+</section>
+
+<section id="failed-second-branch" data-formal="aps-failed-second-branch aps-first-branch-success" data-kind="question">
+  <h2>Can the second conjunction branch supply the counterexample?</h2>
+  <p>Run the specified procedure on \([p_0\land p_1,\ \bar p_0]\). What does it return, and what values does its valuation assign?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The first branch processes \([p_0,\bar p_0]\), finds a clash at \(0\), and returns a proof. The second processes \([p_1,\bar p_0]\). Its terminal accumulator has positive index set \(\{1\}\) and negative index set \(\{0\}\), which are disjoint. It returns the specified valuation \(v\) with \(v(0)=1\) and \(v(i)=0\) for every \(i\ne0\).</p><p>This valuation makes \(p_0\land p_1\) false because \(p_1\) is false, and makes \(\bar p_0\) false because \(p_0\) is true. It is therefore returned unchanged at the root. Success of the first branch alone does not produce a conjunction proof.</p></div></details>
+</section>
+
+<section id="boundary-inputs" data-formal="aps-empty-input aps-truth-input aps-bottom-input aps-repeated-input aps-first-branch-success" data-kind="question">
+  <h2>What happens to empty lists, constants and repetitions?</h2>
+  <p>Determine the results on \([]\), \([\top]\), \([\bot]\), \([p_0,p_0]\), and \([p_0,\bar p_0]\).</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The empty input has empty accumulator and no clash, so returns the constantly-zero valuation; it falsifies every member of the empty context vacuously. The truth singleton returns its truth leaf immediately. The falsity singleton searches the empty tail and propagates its constantly-zero countervaluation, which also falsifies bottom.</p><p>The repeated positive literal moves into the accumulator twice, producing the same set \(\{p_0\}\), with no negative index. Its returned valuation is again constantly zero. The opposite pair produces a clash at \(0\), so returns an atomic-identity proof. Repetitions change neither the represented set nor correctness, while their separate list occurrences still disappear in the terminating scan.</p></div></details>
+</section>
+
+<section id="retained-formula-loop" data-formal="aps-backward-disjunction-step aps-retained-principal-loop" data-kind="question">
+  <h2>Why must a processed occurrence actually be removed?</h2>
+  <p>Consider a backward use of the disjunction rule that retains its principal formula in the common context. Can such a choice repeat forever, even though each rule has only finitely many premises?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Yes. Let \(D=p_0\lor p_1\) and \(\Gamma=\{D,p_0,p_1\}\). The disjunction rule with common context \(\Gamma\) has both conclusion and premise equal to \(\Gamma\): its conclusion is \(\Gamma,D=\Gamma\), and its premise is \(\Gamma,p_0,p_1=\Gamma\). Thus repeatedly selecting this rule produces the constant infinite backward branch \(\Gamma,\Gamma,\Gamma,\ldots\).</p><p>This branch is not a finite derivation. It also has no decreasing weight: the same compound is retained each time. The specified search consumes the head occurrence and replaces it by smaller children in the remaining list, so the decreasing-weight theorem excludes this behavior. Its termination statement does not assert a polynomial bound on the total number of conjunction branches.</p></div></details>
+</section>

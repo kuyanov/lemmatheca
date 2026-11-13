@@ -1,0 +1,81 @@
+<section id="countable-requests" data-formal="mt-type-finitely-realized mt-type-realizes" data-kind="definition">
+  <h2>One point must answer a whole countable list</h2>
+  <p>In the ultrapower of \((\mathbb N,&lt;)\) by a nonprincipal ultrafilter on \(\mathbb N\), the class of the identity sequence lies <a href="ultraproducts#nonstandard-natural">above every standard natural number</a>. It solves infinitely many inequalities at once. We will obtain the same conclusion for any countable list of first-order conditions whose finite parts have solutions in the ultraproduct.</p>
+  <p>Fix a set-sized first-order language \(L\), an ultrafilter \(\mathcal U\) on a set \(I\), and nonempty \(L\)-structures \(M_i\). Write \(M=\prod_{\mathcal U}M_i\), using the <a href="ultraproducts#quotient-structure">actual quotient structure</a>, and work with classical choice. Let \(A\subseteq M\) be a set of parameters and let \(\bar x=(x_0,\ldots,x_{r-1})\) be a fixed finite tuple of variables.</p>
+  <p>A collection \(p(\bar x)\) of formulas in the parameter language \(L(A)\) is <strong>finitely realized in \(M\)</strong> if every finite subset has one common solution in \(M^r\), with each name for \(a\in A\) interpreted by that same \(a\). A tuple <strong>realizes</strong> \(p\) if it satisfies every member. This is the <a href="types-and-realization#parameter-finite-test">finite test for a parameter type</a>; completeness of the type is not required.</p>
+  <p>The main result assumes that \(p\) is countable. At first neither the language nor the parameter set needs to be countable: only this chosen collection of conditions does.</p>
+</section>
+
+<section id="countable-incompleteness" data-formal="ctu-countably-incomplete ctu-normalization ctu-nonprincipal-nat" data-kind="definition">
+  <h2>Large sets can shrink to an empty intersection</h2>
+  <p>An ultrafilter \(\mathcal U\) is <strong>countably incomplete</strong> if there are sets \(X_n\in\mathcal U\), for \(n\in\mathbb N\), such that</p>
+  <div class="math-display">\[X_0=I,\qquad X_{n+1}\subseteq X_n,\qquad \bigcap_{n&lt;\omega}X_n=\varnothing.\]</div>
+  <p>The normalization imposes no extra restriction on having a countable family of large sets with empty intersection. Given such a family \((E_n)\), put \(X_n=\bigcap_{k&lt;n}E_k\). Finite-intersection closure makes each \(X_n\) large, the empty intersection gives \(X_0=I\), and the total intersection is still empty.</p>
+  <p>Every nonprincipal ultrafilter on \(\mathbb N\) is countably incomplete: take \(X_n=\{i:n\le i\}\). These sets are cofinite and hence <a href="filters-and-ultrafilters#nonprincipal-existence">large</a>, while no natural number belongs to all of them. This is compatible with closure under finite intersections; an ultrafilter need not be closed under countable intersections.</p>
+</section>
+
+<section id="parameter-representatives" data-formal="ctu-parameter-representatives ctu-named-product-identity ctu-named-los" data-kind="lemma">
+  <h2>Keep every parameter fixed by choosing its representative</h2>
+  <p>For each \(a\in A\), choose a representative \(\widehat a\in\prod_i M_i\) with \([\widehat a]=a\). Expand \(M_i\) to an \(L(A)\)-structure \(N_i\) by interpreting the new constant \(c_a\) as \(\widehat a(i)\). Then the ultraproduct of the \(N_i\) is the named expansion \(M_A\), under the identity identification of their quotient carriers.</p>
+  <div class="proof"><p>Adding constants changes neither the factors' carriers nor the equivalence relation on product functions. The old symbols therefore have their original ultraproduct interpretations. The interpretation of \(c_a\) in the expanded ultraproduct is \([i\mapsto\widehat a(i)]=a\), exactly its interpretation in \(M_A\). Thus the identity on classes preserves every symbol and is an isomorphism of the expanded structures. Induction on terms and formulas transfers satisfaction under this specified identification, including bound variables.</p><p>Consequently <a href="ultraproducts#los-theorem">Łoś's theorem</a> applies directly to formulas with these parameters: each occurrence of \(a\) is evaluated at \(\widehat a(i)\) in coordinate \(i\). One representative is chosen per parameter and used throughout the list, so repeated occurrences keep the same interpretation. Different representative choices yield the same truth in the named ultraproduct.</p></div>
+</section>
+
+<section id="finite-prefix-truth" data-formal="ctu-prefix-conjunction ctu-prefix-realization ctu-prefix-truth-sets" data-kind="lemma">
+  <h2>Finite solvability becomes a nested sequence of truth sets</h2>
+  <p>List a countable \(p\) as \(\varphi_0,\varphi_1,\ldots\), allowing repetitions. If \(p\) is finite or empty, insert tautologies to obtain an infinite list without changing its realizations. In the expanded factors from <a href="#parameter-representatives"></a>, put</p>
+  <div class="math-display">\[\theta_n(\bar x)=\bigwedge_{k&lt;n}\varphi_k(\bar x),\qquad B_n=\{i:N_i\models\exists\bar x\,\theta_n(\bar x)\}.\]</div>
+  <p>Here \(\theta_0=\top\). If the list is finitely realized in \(M_A\), then every \(B_n\) is large, \(B_0=I\), and \(B_{n+1}\subseteq B_n\).</p>
+  <div class="proof"><p>A common solution for the first \(n\) conditions says exactly that \(M_A\models\exists\bar x\,\theta_n\). Łoś's theorem makes its coordinate truth set \(B_n\) large. For the empty conjunction, each factor has a tuple of length \(r\), since its carrier is nonempty; for \(r=0\) use the unique empty tuple. Hence \(B_0=I\).</p><p>The conjunction \(\theta_{n+1}\) literally includes every conjunct of \(\theta_n\). Thus any coordinate witness for the former is a witness for the latter, proving actual inclusion of truth sets. Merely knowing that two sentences imply one another in the ultraproduct would give agreement on a large set, not this inclusion at every coordinate. Using the prefix conjunctions supplies the needed coordinatewise implication.</p></div>
+</section>
+
+<section id="finite-cutoff" data-formal="ctu-good-sets ctu-cutoff ctu-cutoff-maximum" data-kind="lemma">
+  <h2>Every coordinate receives a finite task</h2>
+  <p>Choose a normalized sequence \((X_n)\) witnessing countable incompleteness, and set \(Y_n=X_n\cap B_n\). These are decreasing large sets, with \(Y_0=I\) and empty total intersection. For every \(i\in I\), the set \(\{n:i\in Y_n\}\) is a nonempty finite initial segment of \(\mathbb N\). Define</p>
+  <div class="math-display">\[n(i)=\max\{n:i\in Y_n\}.\]</div>
+  <div class="proof"><p>The set contains \(0\) because \(Y_0=I\). Since the total intersection is empty, some \(m\) has \(i\notin Y_m\). Decreasingness excludes membership in all \(Y_n\) for \(n\ge m\), leaving a finite set below \(m\). Its maximum is therefore defined, and \(i\in Y_{n(i)}\subseteq B_{n(i)}\).</p><p>For each fixed \(j\), membership in \(Y_{j+1}\) forces \(n(i)\ge j+1\). Thus the coordinates assigned at least the first \(j+1\) conditions form a large set. Each individual coordinate receives only finitely many conditions, while every fixed condition is assigned on a large set.</p></div>
+</section>
+
+<section id="coordinate-diagonal" data-formal="ctu-coordinate-diagonal" data-kind="theorem">
+  <h2>Choose witnesses to the finite tasks and take their classes</h2>
+  <p>At coordinate \(i\), choose \(\bar f(i)\in M_i^r\) satisfying \(\theta_{n(i)}\), which is possible because \(i\in B_{n(i)}\). This defines representative functions \(f_0,\ldots,f_{r-1}\) by their coordinates. The specified tuple \(([f_0],\ldots,[f_{r-1}])\) realizes every \(\varphi_j\) in \(M_A\).</p>
+  <div class="proof"><p>Fix \(j\). On the large set \(Y_{j+1}\), the cutoff satisfies \(j&lt;n(i)\). The chosen coordinate tuple satisfies the whole prefix \(\theta_{n(i)}\), so it satisfies \(\varphi_j\). Therefore</p>
+  <div class="math-display">\[Y_{j+1}\subseteq\{i:N_i\models\varphi_j(\bar f(i))\}.\]</div>
+  <p>Upward closure makes the right-hand truth set large, and Łoś's theorem makes \(\varphi_j\) true at the tuple of classes. This holds for every \(j\), with the same chosen tuple and the original parameters.</p><p>When \(n(i)=0\), the task is the empty conjunction; any coordinate tuple works. Normalizing \(Y_0=I\) ensures that the cutoff never asks for the maximum of an empty set. Choice supplies the witnesses for all coordinates. No choice of one common coordinate surviving every \(Y_n\) is made or needed.</p></div>
+</section>
+
+<section id="countable-realization" data-formal="ctu-parameter-realization ctu-countable-realization mt-type-parameters-finite-test" data-kind="theorem">
+  <h2>Countably incomplete ultraproducts realize countable types</h2>
+  <div class="statement-box"><p>Let \(\mathcal U\) be a countably incomplete ultrafilter on \(I\), and let the \(M_i\) be nonempty structures in the same set-sized language. Every countable collection of formulas in a fixed finite tuple, with parameters from their ultraproduct, that is finitely realized in that ultraproduct is realized there.</p></div>
+  <div class="proof"><p>Name the parameters using <a href="#parameter-representatives"></a>, enumerate the conditions with tautology padding if necessary, and form their finite-prefix truth sets. Combine these with a countable-incompleteness witness and apply <a href="#coordinate-diagonal"></a>. The resulting tuple lies in this very ultraproduct, and the naming identification keeps every parameter at its original value.</p></div>
+  <p>For a partial type consistent with the complete theory of the named ultraproduct, the <a href="types-and-realization#parameter-finite-test">parameter finite test</a> supplies finite realizability. The theorem therefore applies to partial as well as complete types. The countability hypothesis concerns the formulas of the type, not the size of the ultraproduct or the total number of its types.</p>
+</section>
+
+<section id="aleph-one-saturation" data-formal="ctu-aleph-one-saturated ctu-countable-parameter-formulas ctu-countable-parameter-types ctu-ultraproduct-aleph-one ctu-aleph-one-omega ctu-nonprincipal-nat ultra-diagonal ultra-diagonal-map" data-kind="theorem">
+  <h2>In a countable language this gives aleph-one saturation</h2>
+  <p>A structure is <strong>\(\aleph_1\)-saturated</strong> if it realizes every complete one-type over every at most countable subset of its carrier. In this definition, types are consistent with the complete theory of the named structure. This asks for more parameter sets than <a href="saturated-models#omega-saturation">omega-saturation</a>, where only finite parameter sets are required.</p>
+  <div class="statement-box"><p>In a countable first-order language, an ultraproduct of nonempty structures by a countably incomplete ultrafilter is \(\aleph_1\)-saturated. The conclusion also holds for every partial type in a finite tuple over at most countably many parameters.</p></div>
+  <div class="proof"><p>For countable \(L\) and countable \(A\), adjoining the constants \(c_a\) leaves a countable collection of symbols. Terms and formulas are finite syntactic expressions over these symbols and a countable supply of variables, so the formulas in each finite context form a countable set. Every type in that context is consequently countable.</p><p>Consistency with the named complete theory gives finite realizability by the parameter finite test. Apply <a href="#countable-realization"></a>. This proves the finite-tuple partial-type conclusion directly, and in particular the complete one-type condition in the definition of \(\aleph_1\)-saturation. It also proves omega-saturation by restricting to finite parameter sets.</p></div>
+  <p>In particular every nonprincipal ultrafilter on \(\mathbb N\) gives this conclusion. For a single nonempty structure \(N\) in a countable language, its ultrapower is thus an \(\aleph_1\)-saturated elementary extension through the <a href="ultraproducts#diagonal-embedding">specified diagonal embedding</a>. The general <a href="saturated-extensions#saturated-extension">omega-saturated extension construction</a> applies to every set-sized language, while the present stronger saturation conclusion uses the countability of the language to count all formulas over a countable parameter set.</p>
+</section>
+
+<section id="standard-inequalities" data-formal="ctu-bound-formula ctu-standard-bounds-omitted ctu-identity-bounds ultra-natural-above-and-outside" data-kind="lemma">
+  <h2>The inequalities above every standard integer are one instance</h2>
+  <p>Let \(M=(\mathbb N,&lt;)^{\mathbb N}/\mathcal U\), where \(\mathcal U\) is nonprincipal, and write \(d(k)\) for the diagonal image of \(k\). The countable type</p>
+  <div class="math-display">\[p(x)=\{d(k)&lt;x:k\in\mathbb N\}\]</div>
+  <p>has a solution for every finite part: take \(d(m)\) with \(m\) larger than all indices mentioned. The realization theorem supplies a solution to the whole type. The earlier <a href="ultraproducts#nonstandard-natural">identity-sequence argument</a> already identifies a particular one, \(H=[i\mapsto i]\), since \(\{i:k&lt;i\}\) is cofinite for each \(k\).</p>
+  <p>The standard structure \((\mathbb N,&lt;)\) itself has no element satisfying all inequalities \(k&lt;x\). Finite solvability in a structure and realization in that same structure remain different requirements; the ultraproduct theorem proves their coincidence for countable types under its ultrafilter hypothesis.</p>
+</section>
+
+<section id="principal-boundary" data-formal="ctu-principal-not-incomplete ctu-principal-bounds-omitted ultra-principal-evaluation ctu-finite-aleph-one" data-kind="question">
+  <h2>Can a point ultrafilter give the same guarantee?</h2>
+  <p>Why does the proof fail for the point ultrafilter at \(i_0\)? Is its ultraproduct necessarily saturated?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Every large set contains \(i_0\), so any sequence of large sets has \(i_0\) in its intersection. There is no countable-incompleteness witness, and no finite cutoff can assign arbitrarily long tasks on large sets.</p><p>The <a href="ultraproducts#principal-finite-question">representative evaluation map</a> identifies this ultraproduct with \(M_{i_0}\). There is no general saturation conclusion: taking every factor to be \((\mathbb N,&lt;)\) returns the standard natural-number order, which omits the finitely realized countable type of all standard lower bounds. A point ultrafilter can still return a saturated factor, for example a finite structure; the missing hypothesis removes the guarantee.</p></div></details>
+</section>
+
+<section id="countable-carrier-boundary" data-formal="ctu-infinite-exclusions ctu-countable-carrier-boundary ctu-finite-aleph-one mt-type-completion" data-kind="lemma">
+  <h2>Countable types do not mean a countable saturated carrier</h2>
+  <p>No infinite structure with countable carrier is \(\aleph_1\)-saturated, in any first-order language. Enumerate its carrier as \(a_0,a_1,\ldots\) and use the countable parameter set consisting of the whole carrier. The type</p>
+  <div class="math-display">\[\{x\ne a_n:n\in\mathbb N\}\]</div>
+  <p>is finitely realized, since finitely many exclusions leave some point in an infinite domain, but it has no realization. It is a partial type by the parameter finite test, and completing it would give an omitted complete one-type. This contradicts \(\aleph_1\)-saturation.</p>
+  <p>Thus the ultraproduct theorem asserts realization of countable descriptions, with no countable bound on the resulting carrier. Infinite \(\aleph_1\)-saturated ultraproducts have uncountable carriers. Finite structures cause no conflict: excluding every point then already gives an unsatisfiable finite collection.</p>
+</section>

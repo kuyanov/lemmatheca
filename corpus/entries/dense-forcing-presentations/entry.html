@@ -1,0 +1,93 @@
+<section id="dense-suborders" data-formal="fgen-dense order-subtype-embedding dfp-dense-embedding dfp-compatibility fgen-ground-model-convention dfp-internal-closure" data-kind="definition">
+  <h2>A dense suborder keeps enough stronger conditions</h2>
+  <p>Let \(P\) be a nonempty forcing order, with smaller conditions stronger. A <strong>dense suborder</strong> is a subset \(D\subseteq P\), carrying the inherited order, such that for every \(p\in P\) some \(d\in D\) satisfies \(d\le p\). In particular \(D\ne\varnothing\). We do not require \(D\) to contain a largest condition, even when \(P\) has one.</p>
+  <p>For model statements, let \(M\) be a given externally countable transitive ZFC-model containing the forcing data and \(D\), and assume \(M\) regards \(D\) as dense in \(P\). The bounded <a href="forcing-and-generic-filters#density-absoluteness">density test</a> is absolute, so this is the same density assertion about the given sets outside \(M\). Filters are nonempty, upward closed and downward directed, as in <a href="forcing-and-generic-filters#forcing-orders">the forcing convention</a>. A filter on either order is <strong>ground-generic</strong> when it meets every dense subset of that order belonging to \(M\).</p>
+  <p>For \(d,e\in D\), compatibility computed in \(D\) is equivalent to compatibility in \(P\). A common stronger condition in \(D\) is already one in \(P\). Conversely, given \(r\in P\) with \(r\le d,e\), density gives \(s\in D\) with \(s\le r\), hence \(s\le d,e\). Thus passing to a dense inherited suborder retains incompatibility as well as order.</p>
+</section>
+
+<section id="cofinal-trace" data-formal="dfp-image-cone dfp-image-cone-dense dfp-cofinal-trace dfp-generic-cofinal-trace dfp-internal-closure" data-kind="lemma">
+  <h2>A generic filter has a dense-suborder condition below each of its conditions</h2>
+  <p>If \(G\subseteq P\) is ground-generic, then for every \(p\in G\) there is \(d\in G\cap D\) with \(d\le p\).</p>
+  <div class="proof"><p>Fix \(p\in G\). The set</p>
+  <div class="math-display">\[E_p=\{d\in D:d\le p\}\ \cup\ \{q\in P:q\perp p\}\]</div>
+  <p>belongs to \(M\) by Separation from the ground parameters. It is dense in \(P\). If \(q\perp p\), then \(q\in E_p\). Otherwise choose a common stronger \(r\le q,p\); density of \(D\) gives \(d\in D\) with \(d\le r\), so \(d\le q\) and \(d\in E_p\).</p>
+  <p>Choose \(q\in G\cap E_p\). It cannot be incompatible with \(p\), since both belong to the directed filter \(G\). Hence \(q\in D\) and \(q\le p\), giving the desired \(d=q\).</p>
+  <p>Density by itself would merely give a stronger \(d\in D\), with no reason for that particular refinement to belong to \(G\). The dense set \(E_p\) is what guarantees a refinement inside the filter. This is an instance of <a href="forcing-and-generic-filters#dense-below-test">the dense-below test</a>.</p></div>
+</section>
+
+<section id="trace-generic" data-formal="dfp-trace-set dfp-trace-filter dfp-trace-members dfp-trace-generic dfp-lift-trace-inverse dfp-internal-closure" data-kind="theorem">
+  <h2>Taking the trace gives a generic filter on the dense suborder</h2>
+  <p>For every ground-generic \(G\subseteq P\), its <strong>trace</strong> \(H=G\cap D\) is a ground-generic filter on \(D\), and</p>
+  <div class="math-display">\[G=\{p\in P:\exists d\in H\ (d\le p)\}.\]</div>
+  <div class="proof"><p>The trace is nonempty by <a href="#cofinal-trace"></a>, applied to any member of \(G\). If \(d\in H\), \(e\in D\) and \(d\le e\), upward closure of \(G\) gives \(e\in H\). If \(d,e\in H\), directedness of \(G\) supplies \(p\in G\) below both. The cofinal-trace lemma then supplies \(f\in G\cap D\) below \(p\). Thus \(f\in H\) is below \(d,e\), proving directedness in \(D\).</p>
+  <p>Let \(A\in M\) be dense in \(D\). It is also dense in \(P\): below \(p\in P\), first choose \(d\in D\), then choose \(a\in A\) below \(d\). Genericity of \(G\) supplies \(a\in G\cap A\); since \(A\subseteq D\), this is a member of \(H\cap A\). Hence \(H\) is ground-generic on \(D\).</p>
+  <p>For the displayed recovery formula, a condition above a member of \(H\) lies in \(G\) by upward closure. Conversely every \(p\in G\) is above some member of \(H\) by the cofinal-trace lemma.</p></div>
+</section>
+
+<section id="lifting-generic" data-formal="dfp-lift-set dfp-lift-filter dfp-lift-members dfp-dense-pullback dfp-dense-pullback-dense dfp-lift-generic dfp-trace-lift-members dfp-trace-lift-inverse dfp-internal-closure" data-kind="theorem">
+  <h2>Upward closure recovers the generic filter on the larger order</h2>
+  <p>For a ground-generic filter \(H\subseteq D\), define its <strong>lift</strong> by</p>
+  <div class="math-display">\[\widehat H=\{p\in P:\exists d\in H\ (d\le p)\}.\]</div>
+  <p>Then \(\widehat H\) is ground-generic on \(P\), and \(\widehat H\cap D=H\). Thus trace and lift are inverse correspondences on ground-generic filters.</p>
+  <div class="proof"><p>A member of \(H\) witnesses nonemptiness of \(\widehat H\). Upward closure follows by transitivity of \(\le\). If \(p,q\in\widehat H\), choose \(d,e\in H\) below them. A common stronger \(f\in H\) is then in \(\widehat H\) and below \(p,q\), proving directedness.</p>
+  <p>For any dense \(E\subseteq P\) in \(M\), put</p>
+  <div class="math-display">\[E^D=\{d\in D:\exists e\in E\ (d\le e)\}.\]</div>
+  <p>This set belongs to \(M\). It is dense in \(D\): below \(d_0\in D\), choose \(e\in E\) with \(e\le d_0\), then \(d\in D\) with \(d\le e\). Genericity of \(H\) supplies \(d\in H\cap E^D\). Its corresponding \(e\in E\), being above \(d\), belongs to \(\widehat H\). Thus \(\widehat H\) meets \(E\).</p>
+  <p>Certainly \(H\subseteq\widehat H\cap D\). If \(d\in\widehat H\cap D\), some \(e\in H\) has \(e\le d\). Both are in \(D\), so upward closure within \(D\) gives \(d\in H\). This proves the trace identity. The other inverse identity is <a href="#trace-generic"></a>.</p></div>
+</section>
+
+<section id="restricting-names" data-formal="dfp-suborder-set dfp-suborder-coding dfp-suborder-coding-value dfp-restriction dfp-restriction-attachments dfp-restriction-valid dfp-suborder-name-inclusion fname-child-well-founded dfp-internal-closure" data-kind="definition">
+  <h2>Restrict names recursively by replacing each condition with all dense refinements</h2>
+  <p>Names and their <a href="forcing-names#evaluation">valuation</a> are defined for any set of conditions, without needing a largest condition. In particular we may form \(D\)-names even when \(1_P\notin D\). A \(D\)-name is literally a \(P\)-name: its conditions belong to \(D\subseteq P\), and the same assertion holds recursively for every child name.</p>
+  <p>For a \(P\)-name \(\tau\), define its <strong>dense restriction</strong> by the recursion</p>
+  <div class="math-display">\[\tau\mathbin{\downarrow}D=\{(\sigma\mathbin{\downarrow}D,d):\exists p\ ((\sigma,p)\in\tau,\ d\in D,\ d\le p)\}.\]</div>
+  <p>The recursion uses the <a href="forcing-names#name-rank">well-founded child-name relation</a>. Once the restrictions of all children \(\sigma\) are known, Replacement collects them; Separation on the product of the attachment set with \(D\) selects the pairs with \(d\le p\), and Replacement forms the displayed attachments. Induction on name rank shows that every first component is a \(D\)-name and every attached condition belongs to \(D\), so the result is a \(D\)-name.</p>
+  <p>When \(\tau,D\in M\), the same recursion and these set constructions take place inside \(M\). <a href="forcing-names#recursion-absoluteness">Recursion absoluteness</a> identifies their outputs with the displayed external construction. Hence \(\tau\mathbin{\downarrow}D\in M\). No chosen dense refinement or largest condition in \(D\) is used: every dense refinement of an attached condition is included.</p>
+</section>
+
+<section id="valuation-identities" data-formal="dfp-restriction-value dfp-suborder-name-value" data-kind="lemma">
+  <h2>The actual name values agree under trace and lift</h2>
+  <p>Let \(G\subseteq P\) be ground-generic and \(H=G\cap D\). For every \(P\)-name \(\tau\) and every \(D\)-name \(\rho\),</p>
+  <div class="math-display">\[(\tau\mathbin{\downarrow}D)[H]=\tau[G],\qquad \rho[H]=\rho[G].\]</div>
+  <div class="proof"><p>Prove the first identity by well-founded induction on the children of \(\tau\). If \(x\in(\tau\mathbin{\downarrow}D)[H]\), an active attachment gives a child \(\sigma\), a condition \(p\) with \((\sigma,p)\in\tau\), and \(d\in H\) with \(d\le p\). Then \(p\in G\) by upward closure. The induction hypothesis identifies \(x=(\sigma\mathbin{\downarrow}D)[H]\) with \(\sigma[G]\), so the original attachment puts \(x\in\tau[G]\).</p>
+  <p>Conversely, if \(x\in\tau[G]\), choose an attachment \((\sigma,p)\in\tau\) with \(p\in G\) and \(x=\sigma[G]\). The <a href="#cofinal-trace">cofinal-trace lemma</a> supplies \(d\in H\) with \(d\le p\). The restriction contains \((\sigma\mathbin{\downarrow}D,d)\), and the induction hypothesis makes its active value exactly \(x\). Thus \(x\in(\tau\mathbin{\downarrow}D)[H]\).</p>
+  <p>For the second identity, induct on \(\rho\). Every condition \(d\) appearing in an attachment of \(\rho\) belongs to \(D\), so \(d\in H\) exactly when \(d\in G\). The same induction identifies the values of every child. Therefore the active attachments on both sides have precisely the same values.</p></div>
+</section>
+
+<section id="same-extension" data-formal="dfp-dense-extensions-equal dfp-trace-generic dfp-lift-generic dfp-lift-trace-inverse dfp-trace-lift-inverse fext-zfc-extension dfp-internal-closure" data-kind="theorem">
+  <h2>Dense suborders give the same generic extension</h2>
+  <div class="statement-box"><p>Under the standing ground-model hypotheses, trace \(G\mapsto G\cap D\) and lift \(H\mapsto\widehat H\) are inverse correspondences between ground-generic filters on \(P\) and on \(D\). For corresponding filters,</p>
+  <div class="math-display">\[M[G]=M[H].\]</div>
+  <p>Here \(M[H]\) is defined directly as the set of values of \(D\)-names in \(M\), even if \(D\) has no largest condition.</p></div>
+  <div class="proof"><p>The filter correspondence was proved in <a href="#trace-generic"></a> and <a href="#lifting-generic"></a>. If \(x\in M[G]\), choose a \(P\)-name \(\tau\in M\) with \(x=\tau[G]\). Its restriction \(\tau\mathbin{\downarrow}D\) is a \(D\)-name in \(M\), and <a href="#valuation-identities"></a> gives \(x=(\tau\mathbin{\downarrow}D)[H]\). Hence \(x\in M[H]\).</p>
+  <p>If \(x\in M[H]\), choose a \(D\)-name \(\rho\in M\) with \(x=\rho[H]\). It is also a \(P\)-name, and the second valuation identity gives \(x=\rho[G]\). Hence \(x\in M[G]\). The sets are equal, rather than merely elementarily equivalent or isomorphic.</p>
+  <p>When \(P\) satisfies the <a href="forcing-extensions#extension-hypotheses">earlier extension hypotheses</a>, the <a href="forcing-extensions#zfc-extension">ZFC extension theorem</a> already applies to \(M[G]\). Equality gives those same conclusions for \(M[H]\), without inserting a top into \(D\) or assuming that one was present.</p></div>
+</section>
+
+<section id="dense-order-embeddings" data-formal="order-embedding dfp-dense-embedding dfp-image-order-iso dfp-image-order-iso-value dfp-image-density dfp-push-name dfp-push-attachments dfp-push-valid dfp-push-value dfp-rebase-name dfp-rebase-value dfp-embedding-extensions-equal dfp-internal-closure" data-kind="theorem">
+  <h2>Preserving and reflecting order allows a change of condition labels</h2>
+  <p>A <strong>dense order embedding</strong> \(j:Q\to P\) is an injective map with dense image satisfying</p>
+  <div class="math-display">\[q\le_Q r\quad\Longleftrightarrow\quad j(q)\le_P j(r).\]</div>
+  <p>Assume \(Q,P,j\in M\). Then ground-generic filters correspond by</p>
+  <div class="math-display">\[G\longmapsto j^{-1}[G],\qquad H\longmapsto\{p\in P:\exists q\in H\ (j(q)\le p)\},\]</div>
+  <p>and corresponding extensions are equal. The image need not contain \(1_P\).</p>
+  <div class="proof"><p>Put \(D=j[Q]\). The displayed equivalence makes \(j:Q\to D\) an order isomorphism. A subset \(A\subseteq Q\) is dense in \(Q\) exactly when \(j[A]\) is dense in \(D\): transport a strengthening through the inverse map in either direction. Nonemptiness, upward closure and directedness likewise transport in both directions. Since \(j\) and its inverse on the image belong to \(M\), images and preimages of ground subsets belong to \(M\). Thus genericity transports between \(Q\) and \(D\), and <a href="#same-extension"></a> gives the claimed filter maps.</p>
+  <p>The name transport is explicit. For a \(Q\)-name \(\rho\), recursively set</p>
+  <div class="math-display">\[j_*(\rho)=\{(j_*(\sigma),j(q)):(\sigma,q)\in\rho\}.\]</div>
+  <p>This is a \(D\)-name in \(M\). Induction on child names gives \(j_*(\rho)[j[H]]=\rho[H]\), because the corresponding attachment is active on the left exactly when \(q\in H\). Relabeling by the inverse map on \(D\) gives the opposite translation and the same valuation identity. Thus \(M[H]=M[j[H]]\). Combining this with the dense-suborder equality proves the extension assertion for \(Q\) and \(P\).</p></div>
+</section>
+
+<section id="cohen-initial-segments" data-formal="dfp-binary-string dfp-string-map dfp-string-lookup dfp-string-keys dfp-string-injective dfp-string-prefix dfp-string-order dfp-string-embedding dfp-fill-string dfp-fill-string-extends dfp-string-dense dfp-string-image dfp-string-union dfp-string-union-lift dfp-string-poset-set dfp-string-coding dfp-string-coding-value dfp-embedding-extensions-equal fgen-cohen-real-spec dfp-internal-closure" data-kind="lemma">
+  <h2>Finite binary strings are a dense presentation of Cohen forcing</h2>
+  <p>Let \(P=\operatorname{Fn}(\omega,2,{&lt;}\omega)\), ordered by reverse inclusion as in <a href="forcing-and-generic-filters#cohen-order">Cohen forcing</a>. Let \(D\) consist of those conditions whose domain is an initial segment \(\{0,\ldots,m-1\}\). Then \(D\) is dense in \(P\). Identifying such a condition with its binary string gives a dense order embedding from finite binary strings, ordered by extension, into \(P\). Corresponding generic filters have the same union real and give the same extension.</p>
+  <div class="proof"><p>Given \(p\in P\), choose \(m\) larger than every member of its finite domain. If its domain is empty, take \(m=0\). Define a string \(s\) of length \(m\) by keeping \(p(n)\) where \(p\) is defined and assigning zero at the remaining positions below \(m\). Its graph \(p_s\) is a finite condition with domain exactly \(m\), and \(p_s\le p\). This proves density by explicitly filling the holes.</p>
+  <p>The map \(s\mapsto p_s\) is injective: its graph determines the domain length and all bits. Also \(p_t\le p_s\) exactly when the longer string \(t\) extends \(s\), proving both order preservation and reflection. These maps and their images belong to \(M\), since all strings and finite graphs involved are ground finite objects. The <a href="#dense-order-embeddings">embedding result</a> now supplies the filter and extension correspondences.</p>
+  <p>If \(H=G\cap D\), then \(\bigcup H\subseteq\bigcup G\). Conversely, an assignment in some \(p\in G\) belongs to a condition \(d\in H\) below \(p\) by <a href="#cofinal-trace"></a>. Hence the graph unions are equal. By <a href="forcing-and-generic-filters#cohen-union">Cohen totality</a>, this common graph is the generic binary real. The same argument applies after labeling the conditions by strings.</p></div>
+</section>
+
+<section id="order-reflection-question" data-formal="dfp-discrete-two dfp-discrete-to-chain dfp-discrete-generic dfp-chain-generic dfp-discrete-dense dfp-map-counterexample dfp-discrete-generic-valid dfp-lift-counterexample dfp-trace-counterexample" data-kind="question">
+  <h2>Why is an injective order-preserving dense map not enough?</h2>
+  <p>Let \(Q=\{a,b\}\) have the discrete order, and let \(P=\{0,1\}\) have \(0&lt;1\). The bijection \(j(a)=0\), \(j(b)=1\) is order preserving and has dense image. Does it give the preceding generic-filter correspondence?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. It fails order reflection: \(j(a)\le_P j(b)\), whereas \(a\not\le_Q b\). The only dense subset of \(Q\) is \(Q\) itself, so the singleton \(H=\{b\}\) is a generic filter on \(Q\). Its proposed upward-image lift is \(\{1\}\), which misses the dense subset \(\{0\}\) of \(P\). Thus the proposed lift need not be generic.</p>
+  <p>Conversely \(G=\{0,1\}\) is a generic filter on \(P\): every dense subset contains \(0\). But \(j^{-1}[G]=Q\) is not a filter on \(Q\), since \(a,b\) have no common stronger condition there. These are finite ground orders, so all the mentioned dense subsets belong to the ground model. This gives both failures without any issue about which dense sets are available. The order inherited by the image has introduced a comparison absent from \(Q\); the reflection clause rules that out.</p></div></details>
+</section>

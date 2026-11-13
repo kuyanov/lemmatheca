@@ -16,13 +16,14 @@
   </div>
 </section>
 
-<section id="atom-unification" data-formal="for-atom-unifier for-atom-mgu for-atom-head-invariance for-atom-equation-problem for-atom-equation-bridge for-atom-mgu-existence for-atom-mgu-factorization" data-kind="lemma">
+<section id="atom-unification" data-formal="for-atom-unifier for-atom-mgu for-atom-head-invariance for-atom-equation-problem for-atom-equation-bridge for-atom-mgu-existence for-atom-mgu-factorization sld-step-data sld-resolvent" data-kind="lemma">
   <h2>Unifying finitely many atoms reduces to term unification</h2>
   <p>A substitution <strong>unifies</strong> a nonempty finite family \(\mathcal A\) of atoms if all atoms in \(\mathcal A\) become the same syntactic atom. It is a <strong>most general atom unifier</strong> if it unifies \(\mathcal A\) and every other unifier \(\sigma\), including a ground one, factors as \(\sigma=\rho\star\mu\) on every variable. Whenever \(\mathcal A\) has a unifier, it has such a most general unifier \(\mu\).</p>
   <div class="proof">
     <p>Substitution changes neither a relation symbol nor its arity. Existence of one unifier therefore implies that all members have the same relation symbol \(R\) of one arity \(k\). Choose one member \(R(s_0,\ldots,s_{k-1})\). For each \(R(t_0,\ldots,t_{k-1})\in\mathcal A\), list the \(k\) equations \(s_i\doteq t_i\). This is a finite problem \(P\) on the shared terms. A substitution unifies \(P\) if and only if it unifies \(\mathcal A\): equality of actual relation atoms with the same head is exactly equality of their argument tuples.</p>
     <p>The <a href="term-unification#correctness-and-generality">term-unification theorem</a> supplies a successful answer \(\mu\), with all-variable factorization for every unifier of \(P\). The equivalence just proved transfers soundness and factorization to the atoms. For zero-ary \(R\), \(P\) has no equations and the identity works. For an arbitrary language this is a mathematical existence argument using classical equality; an executable call additionally needs the symbol-equality assumptions of the unification algorithm.</p>
   </div>
+  <p>For definite Horn programs, <a href="definite-horn-sld-resolution#sld-step">SLD resolution</a> applies this unifier to one selected goal atom and a fresh clause head, retaining the ordered body as new requests.</p>
 </section>
 
 <section id="resolution-rule" data-formal="for-inference-data for-resolvent for-derivations" data-kind="definition">

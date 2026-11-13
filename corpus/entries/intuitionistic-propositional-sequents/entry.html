@@ -1,0 +1,100 @@
+<section id="single-conclusion-sequents" data-formal="prop-formula ipsq-judgement ipsq-derivability" data-kind="definition">
+  <h2>Keep one formula as the conclusion</h2>
+  <p>Fix an atom set \(P\) and the shared <a href="propositional-logic#formulas">propositional formulas</a>, including the separate negation symbol. A <strong>single-conclusion sequent</strong> is an expression \(\Gamma\Rightarrow A\), where the <strong>antecedent</strong> \(\Gamma\) is a finite set of formulas and the <strong>succedent</strong> is the one formula \(A\). Write \(\Gamma,B\) for \(\Gamma\cup\{B\}\).</p>
+  <p>The rules below define a <strong>sequent derivation</strong> as a finite tree of sequents. Its leaves are initial sequents and its other nodes follow the specified inference rules. Write \(\Gamma\vdash_{\mathrm{LJ}}A\) when such a tree concludes \(\Gamma\Rightarrow A\). This notation asserts the existence of a rule-generated tree, rather than semantic consequence.</p>
+  <p>Every formula still has the same syntax as in <a href="intuitionistic-propositional-deduction#formulas-and-contexts">intuitionistic natural deduction</a>. The change is how the rules organize a proof: a left rule uses an assumption with a specified outer connective, while a right rule builds the sole conclusion.</p>
+</section>
+
+<section id="initial-and-structural-rules" data-formal="ipsq-derivability" data-kind="definition">
+  <h2>Start from assumptions and manage their contexts</h2>
+  <p>The <strong>identity rule</strong>, <strong>falsum-left rule</strong> and <strong>weakening rule</strong> are</p>
+  <div class="math-display">\[\frac{A\in\Gamma}{\Gamma\Rightarrow A}\;\mathrm{id},\qquad
+    \frac{\bot\in\Gamma}{\Gamma\Rightarrow C}\;\bot L.\]</div>
+  <div class="math-display">\[\frac{\Gamma\Rightarrow A\qquad\Gamma\subseteq\Delta}{\Delta\Rightarrow A}\;W.\]</div>
+  <p>Here identity is primitive for every formula, not just for atoms. Falsum-left permits any conclusion when falsum is an allowed assumption. Weakening is also a primitive rule in this presentation.</p>
+  <p>Antecedents are sets. Thus <strong>exchange</strong>, which reorders assumptions, and <strong>contraction</strong>, which removes repeated assumptions, are identities of contexts: \(\Gamma,A,A=\Gamma,A\). A formula in a context may be used more than once in a proof, or not used at all. This is a stated set-context version of LJ; no equivalence with a separately defined multiset calculus is being assumed.</p>
+</section>
+
+<section id="conjunction-rules" data-formal="ipsq-derivability" data-kind="definition">
+  <h2>Use or build a conjunction</h2>
+  <p>The <strong>conjunction-left</strong> and <strong>conjunction-right</strong> rules are</p>
+  <div class="math-display">\[\frac{\Gamma,A,B\Rightarrow C}{\Gamma,A\land B\Rightarrow C}\;\land L,\qquad
+    \frac{\Gamma\Rightarrow A\qquad\Gamma\Rightarrow B}{\Gamma\Rightarrow A\land B}\;\land R.\]</div>
+  <p>Conjunction-left replaces the displayed pair of allowed assumptions by their conjunction. Conjunction-right requires both conclusions from the same antecedent. If an antecedent already contains one of the displayed formulas, inserting it again does not change the set.</p>
+</section>
+
+<section id="disjunction-rules" data-formal="ipsq-derivability" data-kind="definition">
+  <h2>A disjunctive assumption requires both branches</h2>
+  <p>The <strong>disjunction-left</strong> rule and the two <strong>disjunction-right</strong> rules are</p>
+  <div class="math-display">\[\frac{\Gamma,A\Rightarrow C\qquad\Gamma,B\Rightarrow C}{\Gamma,A\lor B\Rightarrow C}\;\lor L.\]</div>
+  <div class="math-display">\[\frac{\Gamma\Rightarrow A}{\Gamma\Rightarrow A\lor B}\;\lor R_1,\qquad
+    \frac{\Gamma\Rightarrow B}{\Gamma\Rightarrow A\lor B}\;\lor R_2.\]</div>
+  <p>The two left-rule premises have the same conclusion \(C\), but different additional assumptions \(A\) and \(B\). Neither premise can be omitted. On the right, one supplied disjunct gives the single conclusion \(A\lor B\).</p>
+</section>
+
+<section id="implication-rules" data-formal="ipsq-derivability" data-kind="definition">
+  <h2>Implication connects two parts of an argument</h2>
+  <p>The <strong>implication-left</strong> and <strong>implication-right</strong> rules are</p>
+  <div class="math-display">\[\frac{\Gamma\Rightarrow A\qquad\Delta,B\Rightarrow C}{\Gamma\cup\Delta,A\to B\Rightarrow C}\;\to L.\]</div>
+  <div class="math-display">\[\frac{\Gamma,A\Rightarrow B}{\Gamma\Rightarrow A\to B}\;\to R.\]</div>
+  <p>Implication-left first supplies the antecedent \(A\) of the displayed implication; its second premise explains how the consequent \(B\) leads to \(C\). The two premise contexts may differ, so the conclusion keeps their union. Equal assumptions in both contexts occur just once in that union, while their two uses in the premise trees remain distinct. Implication-right incorporates the temporary assumption \(A\) into the conclusion.</p>
+</section>
+
+<section id="negation-rules" data-formal="ipsq-derivability ipnd-negation-implication" data-kind="definition">
+  <h2>Give native negation its intuitionistic rules</h2>
+  <p>The <strong>negation-left</strong> and <strong>negation-right</strong> rules are</p>
+  <div class="math-display">\[\frac{\Gamma\Rightarrow A}{\Gamma,\neg A\Rightarrow C}\;\neg L,\qquad
+    \frac{\Gamma,A\Rightarrow\bot}{\Gamma\Rightarrow\neg A}\;\neg R.\]</div>
+  <p>The first uses \(A\) against its negation and permits any conclusion, just as negation elimination followed by falsum elimination does in natural deduction. The second proves a negation by deriving falsum from its temporary antecedent. There is no rule deriving \(A\) from a derivation of falsum under the assumption \(\neg A\).</p>
+  <p>These rules concern the separate negation constructor in the shared syntax. The equivalence with implication to falsum is a proved <a href="intuitionistic-propositional-deduction#negation-as-implication">natural-deduction result</a>, not a silent change of syntax.</p>
+</section>
+
+<section id="sequent-cut" data-formal="ipsq-derivability" data-kind="definition">
+  <h2>Compose arguments through a proved formula</h2>
+  <p>The <strong>sequent cut rule</strong> is</p>
+  <div class="math-display">\[\frac{\Gamma\Rightarrow A\qquad\Delta,A\Rightarrow C}{\Gamma\cup\Delta\Rightarrow C}\;\mathrm{cut}.\]</div>
+  <p>Cut is primitive in this entry's calculus. Its intermediate formula \(A\) need not occur in the conclusion. All the initial, structural and logical rules above, together with cut, are the complete rule list.</p>
+  <p>In particular, if both premise contexts are \(\Gamma\), their union is \(\Gamma\). Hence derivations of \(\Gamma\Rightarrow A\) and \(\Gamma,A\Rightarrow C\) give a derivation of \(\Gamma\Rightarrow C\). The <a href="propositional-cut-elimination#eliminating-all-cuts">classical one-sided cut-elimination theorem</a> concerns a different primitive calculus and does not by itself remove cut here.</p>
+</section>
+
+<section id="derived-elimination-rules" data-formal="ipsq-conjunction-left-elimination ipsq-conjunction-right-elimination ipsq-implication-elimination ipsq-negation-elimination ipsq-falsum-elimination ipsq-disjunction-elimination" data-kind="lemma">
+  <h2>Natural-deduction eliminations can be composed from left rules</h2>
+  <p>The following operations on sequent derivations are available for every finite \(\Gamma\): from a derivation of \(A\land B\), derive either conjunct; from derivations of \(A\to B\) and \(A\), derive \(B\); from derivations of \(A\) and \(\neg A\), derive \(\bot\); and from a derivation of \(\bot\), derive any \(C\). Also, derivations of \(\Gamma\Rightarrow A\lor B\), \(\Gamma,A\Rightarrow C\) and \(\Gamma,B\Rightarrow C\) give one of \(\Gamma\Rightarrow C\). Every unspecified antecedent in these statements is \(\Gamma\).</p>
+  <div class="proof"><p>Identity gives \(\Gamma,A,B\Rightarrow A\). Conjunction-left gives \(\Gamma,A\land B\Rightarrow A\). Cut this with the supplied proof of \(\Gamma\Rightarrow A\land B\); the union of the two copies of \(\Gamma\) is \(\Gamma\). Choose \(B\) in the identity leaf for the other projection.</p><p>For implication elimination, use the supplied \(\Gamma\Rightarrow A\) and the identity \(\Gamma,B\Rightarrow B\) in implication-left. The result is \(\Gamma,A\to B\Rightarrow B\), since \(\Gamma\cup\Gamma=\Gamma\). Cut in the supplied derivation of \(A\to B\).</p><p>For negation elimination, negation-left turns the supplied proof of \(A\) into \(\Gamma,\neg A\Rightarrow\bot\); cut in the supplied proof of \(\neg A\). Falsum-left gives \(\Gamma,\bot\Rightarrow C\), so cutting in a proof of falsum gives explosion. Finally, disjunction-left combines the two \(C\)-branches into \(\Gamma,A\lor B\Rightarrow C\); cut in the given disjunction proof. Thus every operation is built from the stated primitive sequent rules.</p></div>
+</section>
+
+<section id="sequents-to-natural-deduction" data-formal="ipsq-to-natural-deduction" data-kind="lemma">
+  <h2>Translate every sequent rule into natural deduction</h2>
+  <p>For every finite \(\Gamma\) and shared formula \(A\), a derivation of \(\Gamma\Rightarrow A\) supplies an intuitionistic natural-deduction derivation \(\Gamma\vdash_{\mathrm I}A\), with \(\Gamma\) regarded as the same set of allowed assumptions.</p>
+  <div class="proof"><p>Induct on the finite sequent tree. Identity is an assumption, falsum-left is an assumption of falsum followed by explosion, and weakening is <a href="intuitionistic-propositional-deduction#weakening">natural-deduction weakening</a>. Conjunction-right, either disjunction-right, implication-right and negation-right use the corresponding natural-deduction rules.</p><p>For conjunction-left, work under \(\Gamma,A\land B\). Projection proves both \(A\) and \(B\); assumptions from \(\Gamma\) remain available. The <a href="intuitionistic-propositional-deduction#proof-replacement">proof-replacement theorem</a> replaces the assumptions of the translated premise \(\Gamma,A,B\vdash_{\mathrm I}C\) by those proofs, giving \(C\). For disjunction-left, assume the displayed disjunction and use the two translated premise derivations in disjunction elimination, weakened to include that same disjunction.</p><p>For implication-left, work under \(\Gamma\cup\Delta,A\to B\). Weaken the first translated premise to this context, obtaining \(A\); the displayed implication gives \(B\). In the second translated premise, replace its assumption \(B\) by this proof and assumptions from \(\Delta\) by their one-leaf proofs. This gives \(C\). Negation-left similarly weakens its translated premise \(A\), contradicts the added assumption \(\neg A\), and uses explosion.</p><p>For cut, weaken the first translated premise to \(\Gamma\cup\Delta\). In the second, replace the temporary assumption \(A\) by that proof and every assumption from \(\Delta\) by its one-leaf proof. The replacement theorem gives \(C\). These cases cover the entire rule list and use only the intuitionistic rules.</p></div>
+</section>
+
+<section id="natural-deduction-to-sequents" data-formal="ipsq-from-natural-deduction ipsq-presentation-equivalence" data-kind="theorem">
+  <h2>The two presentations derive exactly the same formulas</h2>
+  <div class="statement-box"><p>For every finite context \(\Gamma\) and shared formula \(A\),</p>
+    <div class="math-display">\[\Gamma\vdash_{\mathrm{LJ}}A\quad\Longleftrightarrow\quad\Gamma\vdash_{\mathrm I}A.\]</div>
+    <p>Both directions transform actual finite derivations and leave their assumption formulas and concluding formula unchanged.</p></div>
+  <div class="proof"><p>One direction is <a href="#sequents-to-natural-deduction"></a>. For the other, use the following induction claim, which allows arbitrary premise sets \(\Theta\): if \(\Theta\vdash_{\mathrm I}A\) and each \(B\in\Theta\) has a sequent derivation from a fixed finite \(\Gamma\), then \(\Gamma\vdash_{\mathrm{LJ}}A\).</p><p>An assumption uses its supplied sequent proof. Natural-deduction conjunction introduction, either disjunction introduction, implication introduction and negation introduction become the respective right rules. Its conjunction projections, implication elimination, negation elimination, falsum elimination and disjunction elimination become the <a href="#derived-elimination-rules">derived sequent operations</a>.</p><p>For a premise under a temporary assumption \(B\), apply the induction hypothesis with target antecedent \(\Gamma,B\). The formula \(B\) has its identity proof, while every supplied proof from \(\Gamma\) can be weakened to \(\Gamma,B\). Discharge or use that branch with the corresponding sequent operation. For disjunction elimination do this separately for its two temporary assumptions. This verifies the induction claim for every natural-deduction constructor.</p><p>Finally take \(\Theta=\Gamma\) and supply each assumption by identity. This yields the reverse implication in the displayed equivalence. The argument uses sequent cut in the derived elimination operations; it does not assert that a translation produces cut-free sequent proofs.</p></div>
+</section>
+
+<section id="infinite-premise-sets" data-formal="ipsq-finite-premise-correspondence ipnd-finite-support" data-kind="lemma">
+  <h2>Recover arbitrary allowed-assumption sets by finite support</h2>
+  <p>For every set \(\Theta\) of shared formulas, possibly infinite, and every formula \(A\),</p>
+  <div class="math-display">\[\Theta\vdash_{\mathrm I}A\quad\Longleftrightarrow\quad
+    \text{some finite }\Gamma\subseteq\Theta\text{ has }\Gamma\vdash_{\mathrm{LJ}}A.\]</div>
+  <div class="proof"><p>If the natural-deduction derivation exists, its <a href="intuitionistic-propositional-deduction#finite-support">finite-support theorem</a> supplies a finite \(\Gamma\subseteq\Theta\) deriving \(A\). The presentation equivalence translates that derivation into a sequent tree. Conversely, translate a supplied sequent derivation into natural deduction and weaken its allowed assumptions from \(\Gamma\) to \(\Theta\). This proves both directions without enlarging the syntax of finite sequents.</p></div>
+</section>
+
+<section id="conjunction-proof" data-formal="ipsq-conjunction-example" data-kind="lemma">
+  <h2>A complete proof keeps both assumption leaves</h2>
+  <p>For all formulas \(A,B\), the empty antecedent derives \(A\to(B\to A\land B)\) in this sequent calculus.</p>
+  <div class="proof"><p>Use the following finite tree, in which the two identity leaves select the respective factors:</p>
+    <div class="math-display">\[\frac{\dfrac{\dfrac{A,B\Rightarrow A\qquad A,B\Rightarrow B}{A,B\Rightarrow A\land B}\;\land R}{A\Rightarrow B\to(A\land B)}\;\to R}{\varnothing\Rightarrow A\to(B\to(A\land B))}\;\to R.\]</div>
+    <p>Each identity leaf is licensed by membership in \(\{A,B\}\). The common-context conjunction rule produces both factors, then the two implication-right rules incorporate the assumptions in reverse order. The construction still works when \(A=B\), because assumptions may be used twice.</p></div>
+</section>
+
+<section id="one-formula-or-two" data-formal="ipsq-judgement ipsq-two-conclusions-card" data-kind="question">
+  <h2>Does one conclusion forbid a disjunction?</h2>
+  <p>For an atom \(p\), compare a sequent whose sole conclusion is \(p\lor\neg p\) with a right-hand set \(\{p,\neg p\}\). Does the single-conclusion restriction identify these two forms?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The disjunction \(p\lor\neg p\) is one formula, so it is an allowed succedent; this observation supplies no derivation of it. The two formulas \(p\) and \(\neg p\) are syntactically distinct, so \(\{p,\neg p\}\) has two members and cannot be the succedent of one of our sequents.</p><p>For example, the classical negation-right pattern that moves an assumption to a list of alternative conclusions would turn \(p\Rightarrow p\) into \(\varnothing\Rightarrow p,\neg p\). That is outside the single-conclusion grammar. The <a href="classical-propositional-sequents#one-sided-sequents">classical one-sided presentation</a> explicitly allows several alternatives in a sequent; the rules given here preserve exactly one conclusion. Therefore importing such a multiple-conclusion rule is a change of calculus, not an instance of a rule already specified.</p></div></details>
+</section>

@@ -75,7 +75,7 @@
   </div>
 </section>
 
-<section id="correctness-and-generality" data-formal="unif-solver-sound unif-solver-factorization unif-solver-complete unif-failure-criterion unif-identity-off-input unif-solver-most-general" data-kind="theorem">
+<section id="correctness-and-generality" data-formal="unif-solver-sound unif-solver-factorization unif-solver-complete unif-failure-criterion unif-identity-off-input unif-solver-most-general sld-one-step-lifting" data-kind="theorem">
   <h2>A successful answer accounts for every solution</h2>
   <div class="statement-box">
     <p>For every finite problem \(P\), exactly the following alternatives apply.</p>
@@ -92,6 +92,7 @@
     <p>It remains to check variables outside \(V\). Dropping and decomposition preserve their identity images by induction. In an elimination, such a variable differs from \(x\), so \(\tau\) fixes it; it is also outside \(V\setminus\{x\}\), so \(\theta\) fixes it. Their composition fixes it too. Initializing \(V\) with \(\operatorname{FV}(P)\) proves the assertion. The returned substitution consequently has a finite description, even though the factorization quantifies over all variables.</p>
   </div>
   <p>The factorization for ground substitutions is used in <a href="first-order-resolution#one-step-lifting">lifting resolution inferences</a>: a ground pivot match factors through a most general unifier, retaining the exact ground resolvent as an instance.</p>
+  <p>The same factorization <a href="definite-horn-sld-resolution#one-step-lifting">lifts Horn goal steps</a> and preserves computed answers on the original query variables.</p>
 </section>
 
 <section id="worked-solution" data-formal="unif-worked-answer unif-worked-generality unif-worked-off-support" data-kind="question">
@@ -130,7 +131,7 @@
   </details>
 </section>
 
-<section id="matching-and-interpretation" data-formal="unif-matching unif-matching-counterexample unif-distinct-constants unif-same-constant-values fo-term-semantic-substitution" data-kind="question">
+<section id="matching-and-interpretation" data-formal="unif-matching unif-matching-counterexample unif-distinct-constants unif-same-constant-values fo-term-semantic-substitution eqc-completeness" data-kind="question">
   <h2>Unification is syntactic and two-sided</h2>
   <p>Compare unification with the following two problems: finding \(\sigma\) with \(s[\sigma]=t\), where the target \(t\) is left unchanged; and finding an assignment in a structure making the values of \(s,t\) equal. Are these the same problem?</p>
   <details class="question-answer">
@@ -140,4 +141,5 @@
       <p>The second problem depends on the chosen interpretations of symbols. Distinct constants \(a,b\) do not unify: substitution changes neither tree. Nevertheless a structure may interpret them by the same object. Indeed a one-element structure does so. The <a href="first-order-structures#semantic-substitution">semantic substitution identity</a> shows that syntactically equal substituted terms have equal values under every interpretation and assignment, but its converse fails in a particular structure. The solver decides equality of substituted finite trees, not arbitrary equations in a mathematical theory.</p>
     </div>
   </details>
+  <p>For equations forced in every model of stated laws, <a href="equational-consequence#completeness">equational consequence</a> uses congruence and substitution proofs.</p>
 </section>

@@ -1,0 +1,117 @@
+<section id="numbered-language" data-formal="prop-formula ipnd-derivability ikc-enumeration ikc-enumeration-surjective" data-kind="definition">
+  <h2>Fix a language whose formulas can be listed</h2>
+  <p>The <strong>numbered-atom language</strong> consists of the <a href="intuitionistic-propositional-deduction#formulas-and-contexts">propositional formulas</a> built from atoms \(p_0,p_1,\ldots\), falsum \(\bot\), primitive negation, conjunction, disjunction and implication. Write \(\mathcal F\) for this set. Throughout this entry, \(\Gamma\vdash A\) means intuitionistic natural deduction, and \(\Gamma\) may be any subset of \(\mathcal F\). Its derivations remain finite.</p>
+  <p>Fix a surjective list \(e:\mathbb N\to\mathcal F\). Here is why such a list exists. Write formulas as fully parenthesized finite words, coding the numbered atoms, connectives and punctuation by natural numbers. For each \(m\), list all words of length at most \(m\) using only codes at most \(m\), in length order and then lexicographic order. Each list is finite, and every finite word appears in some list. Concatenate these lists; replace each unsuccessful parse by \(\bot\). Every formula then occurs. This is a <a href="finite-and-countable-sets#surjective-lists">surjective list</a>, with harmless repetitions.</p>
+  <p>Only the existence and surjectivity of \(e\) matter. The later construction tests whether a deduction exists; it does not supply a decision algorithm for that test. The completeness theorem below concerns this fixed countable language.</p>
+</section>
+
+<section id="prime-theories" data-formal="ikc-deductively-closed ikc-consistent ikc-prime-theory ikc-closed-membership ikc-consistent-membership ikc-prime-not-complete" data-kind="definition">
+  <h2>Theories suitable for worlds</h2>
+  <p>A set \(T\subseteq\mathcal F\) is <strong>deductively closed</strong> if \(T\vdash A\) implies \(A\in T\). It is <strong>consistent</strong> if \(T\not\vdash\bot\). A <strong>prime theory</strong> is a deductively closed consistent set such that</p>
+  <div class="math-display">\[ A\lor B\in T\quad\Longrightarrow\quad A\in T\text{ or }B\in T. \]</div>
+  <p>For a deductively closed set, consistency is equivalent to \(\bot\notin T\): one direction uses closure and the other the assumption rule. Also \(A\in T\) is equivalent to \(T\vdash A\). The extra condition on disjunction will make membership agree with Kripke forcing.</p>
+  <p>Primeness does not say that \(A\in T\) or \(\neg A\in T\) for every formula. That stronger, classical requirement would discard the worlds where information remains undecided. We return to this distinction in <a href="#prime-not-complete"></a>.</p>
+</section>
+
+<section id="bounded-stage" data-formal="ikc-bounded-stage" data-kind="lemma">
+  <h2>A finite proof in an increasing union appears at one stage</h2>
+  <p>Let \(S_0\subseteq S_1\subseteq\cdots\), and put \(S=\bigcup_n S_n\). Then</p>
+  <div class="math-display">\[ S\vdash A\quad\Longleftrightarrow\quad \text{there is }n\text{ with }S_n\vdash A. \]</div>
+  <div class="proof"><p>For the forward direction, <a href="intuitionistic-propositional-deduction#finite-support">finite support</a> gives a finite \(D\subseteq S\) with \(D\vdash A\). For each of its finitely many members choose a stage containing it, and take the maximum of these indices. All members then lie in one \(S_n\); when \(D\) is empty take \(n=0\). Weakening gives \(S_n\vdash A\). Conversely, \(S_n\subseteq S\), so a proof from a stage weakens to a proof from the union.</p></div>
+  <p>In particular, if no stage proves a fixed formula \(B\), their union does not prove \(B\). This is where the finiteness of deductions controls the infinite construction.</p>
+</section>
+
+<section id="avoiding-construction" data-formal="ikc-extension-stages ikc-extension" data-kind="definition">
+  <h2>Add formulas while keeping a chosen conclusion unprovable</h2>
+  <p>Given \(\Gamma\subseteq\mathcal F\) and a formula \(B\), define its <strong>avoiding extension</strong> \(\mathsf E(\Gamma,B)\) using sets \(S_n=S_n(\Gamma,B)\) recursively by</p>
+  <div class="math-display">\[\begin{aligned} S_0&amp;=\Gamma,\\ S_{n+1}&amp;=\begin{cases}S_n\cup\{e(n)\},&amp;\text{if }S_n\cup\{e(n)\}\not\vdash B,\\ S_n,&amp;\text{otherwise},\end{cases}\\ \mathsf E(\Gamma,B)&amp;=\bigcup_n S_n.\end{aligned}\]</div>
+  <p>The recursion is defined even when \(\Gamma\vdash B\), but its useful properties below assume \(\Gamma\not\vdash B\). It uses ordinary classical reasoning about whether a deduction exists. It is a mathematical extension construction rather than an algorithm for deciding derivability.</p>
+</section>
+
+<section id="maximal-avoidance" data-formal="ikc-stages-increase ikc-extension-contains ikc-extension-avoids ikc-extension-maximal" data-kind="lemma">
+  <h2>The union avoids the conclusion and is maximal for doing so</h2>
+  <p>If \(\Gamma\not\vdash B\), the particular set \(T=\mathsf E(\Gamma,B)\) has the following properties:</p>
+  <div class="math-display">\[\begin{gathered}\Gamma\subseteq T,\qquad T\not\vdash B,\\ C\notin T\quad\Longrightarrow\quad T\cup\{C\}\vdash B.\end{gathered}\]</div>
+  <div class="proof"><p>The stages increase because the next stage either keeps the present set or inserts one formula. Thus \(S_0=\Gamma\subseteq T\). Inductively every stage fails to prove \(B\): at an insertion stage this is exactly the condition used, and at a skipped stage the previous property remains true. The <a href="#bounded-stage">bounded-stage lemma</a> gives \(T\not\vdash B\).</p><p>Now let \(C\notin T\). Choose \(n\) with \(e(n)=C\). If insertion had been permitted then \(C\in S_{n+1}\subseteq T\), a contradiction. Consequently \(S_n\cup\{C\}\vdash B\), and weakening along \(S_n\subseteq T\) gives the claimed maximality. This argument does not require the list to avoid repetitions.</p></div>
+</section>
+
+<section id="prime-extension" data-formal="ikc-extension-prime ikc-extension-contains ikc-extension-omits" data-kind="theorem">
+  <h2>The constructed extension is a prime theory</h2>
+  <p>If \(\Gamma\not\vdash B\), then \(\mathsf E(\Gamma,B)\) is a prime theory containing \(\Gamma\) and omitting \(B\).</p>
+  <div class="proof"><p>Write \(T=\mathsf E(\Gamma,B)\). Suppose \(C\notin T\), although \(T\vdash C\). Maximality gives \(T\cup\{C\}\vdash B\). <a href="intuitionistic-propositional-deduction#deduction-and-composition">Composing</a> this deduction with \(T\vdash C\) gives \(T\vdash B\), which is impossible. Hence \(T\) is deductively closed.</p><p>If \(T\vdash\bot\), explosion would give \(T\vdash B\). Thus \(T\) is consistent. Finally suppose \(C\lor D\in T\), with neither \(C\) nor \(D\) in \(T\). Maximality gives deductions of \(B\) from \(T\cup\{C\}\) and from \(T\cup\{D\}\). The assumption \(C\lor D\) and disjunction elimination combine these into \(T\vdash B\), again impossible. This proves primeness. Containment was proved above, and \(B\notin T\), since otherwise the assumption rule would derive it.</p></div>
+  <p>In particular, every consistent premise set lies in a prime theory: take \(B=\bot\). The result provides an explicitly specified extension \(\mathsf E(\Gamma,B)\), not merely an unspecified maximal set.</p>
+</section>
+
+<section id="missing-implication" data-formal="ikc-missing-implication" data-kind="lemma">
+  <h2>A missing implication has a later counterexample</h2>
+  <p>If \(T\) is a prime theory and \(A\to B\notin T\), there is a prime theory \(U\supseteq T\) with \(A\in U\) and \(B\notin U\). One such theory is</p>
+  <div class="math-display">\[ U=\mathsf E(T\cup\{A\},B). \]</div>
+  <div class="proof"><p>If \(T\cup\{A\}\vdash B\), implication introduction gives \(T\vdash A\to B\), and deductive closure puts this missing implication in \(T\). Therefore \(T\cup\{A\}\not\vdash B\). Apply <a href="#prime-extension"></a> to this premise set and conclusion. The resulting extension contains \(T\) and \(A\), and omits \(B\), as required.</p></div>
+  </section>
+
+<section id="missing-negation" data-formal="ikc-missing-negation ipnd-negation-implication" data-kind="lemma">
+  <h2>A missing primitive negation also has a later witness</h2>
+  <p>If \(T\) is prime and \(\neg A\notin T\), then \(U=\mathsf E(T\cup\{A\},\bot)\) is prime. It includes \(T\), with \(A\) as a member.</p>
+  <div class="proof"><p>If \(T\cup\{A\}\vdash\bot\), the native negation-introduction rule gives \(T\vdash\neg A\), contradicting closure and \(\neg A\notin T\). Hence this premise set is consistent and <a href="#prime-extension"></a> applies with avoided conclusion \(\bot\).</p></div>
+  <p>This proof uses the rules for primitive negation directly. The syntax has not identified \(\neg A\) with \(A\to\bot\), even though their <a href="intuitionistic-propositional-deduction#negation-as-implication">deductions are equivalent</a>.</p>
+</section>
+
+<section id="canonical-model" data-formal="ikc-prime-worlds ikc-extension-world ikc-canonical-model ipnd-consistency" data-kind="definition">
+  <h2>One canonical model contains all prime theories</h2>
+  <p>Let \(W^c\) be the set of all prime theories in \(\mathcal F\). Order it by inclusion, and set</p>
+  <div class="math-display">\[ T\leq U\iff T\subseteq U,\qquad T\Vdash_c p_i\iff p_i\in T. \]</div>
+  <p>These data define the <strong>canonical model</strong> \(\mathcal C\), a <a href="intuitionistic-kripke-semantics#frames-and-valuations">Kripke model</a>: inclusion is reflexive and transitive, and atom verification persists along inclusion. Its worlds are nonempty as a set. Indeed, <a href="intuitionistic-propositional-deduction#boolean-soundness">soundness for Boolean valuations</a> implies \(\varnothing\not\vdash\bot\), since \(\bot\) is false under every valuation. Thus \(\mathsf E(\varnothing,\bot)\) is an actual prime theory and a world of \(W^c\).</p>
+  <p>The model \(\mathcal C\) is fixed once for this language. Changing the premise set or conclusion will choose a different world in this same model; it will not change the model's worlds, order or valuation.</p>
+</section>
+
+<section id="membership-laws" data-formal="ikc-conjunction-membership ikc-disjunction-membership ikc-implication-membership ikc-negation-membership" data-kind="lemma">
+  <h2>Membership follows the introduction and elimination rules</h2>
+  <p>For every prime theory \(T\),</p>
+  <div class="math-display">\[\begin{aligned} A\land B\in T&amp;\iff A\in T\text{ and }B\in T,\\ A\lor B\in T&amp;\iff A\in T\text{ or }B\in T.\end{aligned}\]</div>
+  <p>Also, if \(T\subseteq U\) are prime, then \(A\to B\in T\) and \(A\in U\) imply \(B\in U\); while \(\neg A\in T\) implies \(A\notin U\).</p>
+  <div class="proof"><p>For conjunction, membership of the conjunction gives an assumption proof, the two eliminations give deductions of its conjuncts, and closure gives their membership. Conversely use conjunction introduction and closure. For disjunction, the forward direction is primeness, and each reverse direction uses the corresponding introduction rule and closure.</p><p>In the implication assertion, inclusion puts \(A\to B\) in \(U\), and implication elimination and closure give \(B\in U\). In the negation assertion, inclusion puts \(\neg A\) in \(U\). If \(A\in U\) as well, negation elimination would derive \(\bot\) from \(U\), contradicting consistency.</p></div>
+</section>
+
+<section id="truth-lemma" data-formal="ikc-truth-lemma" data-kind="theorem">
+  <h2>The canonical model makes membership exactly forcing</h2>
+  <div class="statement-box"><p>For every formula \(A\in\mathcal F\) and every prime theory \(T\),</p><div class="math-display">\[ T\Vdash_c A\quad\Longleftrightarrow\quad A\in T. \]</div></div>
+  <div class="proof"><p>Induct on the construction of \(A\), proving the equivalence at every prime theory simultaneously. The atomic case is the valuation's definition. Falsum fails on both sides: it is never forced, and consistency prevents its membership. The conjunction and disjunction cases follow from their forcing clauses, the induction hypotheses, and <a href="#membership-laws">the membership laws</a>.</p><p>For an implication \(A\to B\), first suppose it belongs to \(T\). At any \(U\supseteq T\), if \(U\Vdash_c A\), induction gives \(A\in U\). The membership law gives \(B\in U\), and induction gives \(U\Vdash_c B\). This is the forcing condition for the implication. Conversely, if \(A\to B\notin T\), <a href="#missing-implication"></a> supplies a prime \(U\supseteq T\) with \(A\in U\) and \(B\notin U\). Induction makes this an extension forcing \(A\) without forcing \(B\), so \(T\) does not force the implication.</p><p>For primitive \(\neg A\), suppose \(\neg A\in T\). At every \(U\supseteq T\), the negation membership law gives \(A\notin U\), and induction gives \(U\not\Vdash_c A\). This is exactly \(T\Vdash_c\neg A\). Conversely, if \(\neg A\notin T\), <a href="#missing-negation"></a> supplies a prime \(U\supseteq T\) with \(A\in U\). Induction gives \(U\Vdash_c A\), contradicting the universal condition for forcing \(\neg A\) at \(T\). This completes every constructor of the native syntax.</p></div>
+</section>
+
+<section id="strong-completeness" data-formal="ikc-canonical-countermodel ikc-strong-completeness ikc-lifted-model ikc-lifted-forcing idp-disjunction-property idp-root-negation idp-harrop-admissible" data-kind="theorem">
+  <h2>All failed deductions have counterexamples in that one model</h2>
+  <div class="statement-box"><p>For arbitrary \(\Gamma\subseteq\mathcal F\) and \(A\in\mathcal F\),</p><div class="math-display">\[ \Gamma\vdash A\quad\Longleftrightarrow\quad\Gamma\models_K A. \]</div><p>More precisely, if \(\Gamma\not\vdash A\), the prime world \(\mathsf E(\Gamma,A)\) in the fixed model \(\mathcal C\) forces every member of \(\Gamma\) and fails to force \(A\).</p></div>
+  <div class="proof"><p>The forward direction is <a href="intuitionistic-kripke-semantics#intuitionistic-soundness">Kripke soundness</a>. For the converse, suppose \(\Gamma\not\vdash A\). The <a href="#prime-extension">specified prime extension</a> \(\mathsf E(\Gamma,A)\) contains \(\Gamma\) and omits \(A\). The <a href="#truth-lemma">truth lemma</a> says that this world forces each premise and fails to force the conclusion. It therefore refutes \(\Gamma\models_K A\).</p></div>
+  <p>Here \(\models_K\) quantifies over all pointed Kripke models for the numbered-atom language, with nonempty sets of worlds. Strong completeness allows infinite \(\Gamma\). The stronger witness assertion has the order: there is one model \(\mathcal C\), and for every failed deduction there is a suitable world in \(\mathcal C\).</p>
+  <p>For empty premises, combining two failed deductions by <a href="intuitionistic-propositional-disjunction-property#gluing-models">root gluing</a> proves that a theorem disjunction has a <a href="intuitionistic-propositional-disjunction-property#disjunction-property">theorem disjunct</a>. A <a href="intuitionistic-propositional-disjunction-property#common-negated-premise">common negated assumption</a> also survives this construction and yields an admissible independence-of-premise rule.</p>
+</section>
+
+<section id="finite-premise-consequence" data-formal="ikc-finite-premise-consequence ikc-finite-semantic-consequence ifmp-finite-poset-countermodel ifmp-search-correctness ifmp-search-zero" data-kind="theorem">
+  <h2>A semantic consequence needs only finitely many premises</h2>
+  <p>For arbitrary \(\Gamma\subseteq\mathcal F\),</p>
+  <div class="math-display">\[ \Gamma\models_K A\quad\Longleftrightarrow\quad\text{some finite }D\subseteq\Gamma\text{ satisfies }D\vdash A. \]</div>
+  <div class="proof"><p>Completeness turns \(\Gamma\models_K A\) into \(\Gamma\vdash A\), and <a href="intuitionistic-propositional-deduction#finite-support">finite support</a> produces \(D\). Conversely a proof from \(D\subseteq\Gamma\) weakens to one from \(\Gamma\), and soundness gives the semantic consequence.</p></div>
+  <p>Equivalently, some finite \(D\subseteq\Gamma\) already satisfies \(D\models_K A\), by soundness and completeness applied to that finite set. This conclusion concerns the number of premises, not the number of worlds in a countermodel.</p>
+  <p>For a finite premise set, the <a href="intuitionistic-propositional-finite-model-property#bounded-countermodels">bounded finite countermodel theorem</a> also controls the number of worlds needed to witness failure. Its <a href="intuitionistic-propositional-finite-model-property#intuitionistic-decision">finite table scan</a> decides the corresponding finite intuitionistic consequence problem.</p>
+</section>
+
+<section id="satisfiability-compactness" data-formal="ikc-satisfiable ikc-compactness ikc-satisfiable-consistent ikc-canonical-satisfies" data-kind="theorem">
+  <h2>Finite satisfiability gives a canonical world for all the premises</h2>
+  <p>Call \(\Gamma\) <strong>satisfiable</strong> if there are a Kripke model and a world forcing every member of \(\Gamma\). Then</p>
+  <div class="math-display">\[ \Gamma\text{ is satisfiable}\quad\Longleftrightarrow\quad\text{every finite }D\subseteq\Gamma\text{ is satisfiable}. \]</div>
+  <div class="proof"><p>A world forcing \(\Gamma\) also forces each subset. Conversely suppose every finite subset is satisfiable. If \(\Gamma\vdash\bot\), finite support gives a finite \(D\subseteq\Gamma\) with \(D\vdash\bot\). Soundness would make any world forcing \(D\) force \(\bot\), which no world does. This contradicts the assumed satisfiability of \(D\).</p><p>Thus \(\Gamma\not\vdash\bot\), and \(\mathsf E(\Gamma,\bot)\) is a prime world of \(\mathcal C\). It contains \(\Gamma\), so the truth lemma shows that it forces all of \(\Gamma\) at once. The nonempty canonical model also handles the empty premise set.</p></div>
+  <p>The argument proves the useful additional characterization: \(\Gamma\) is satisfiable if and only if \(\Gamma\not\vdash\bot\).</p>
+</section>
+
+<section id="truth-theories" data-formal="ikc-truth-theory ikc-truth-theory-prime ikc-canonical-truth-theory" data-kind="lemma">
+  <h2>Any world's truths form a prime theory</h2>
+  <p>In any Kripke model, let \(\operatorname{Th}(w)=\{A\in\mathcal F:w\Vdash A\}\). This set is a prime theory.</p>
+  <div class="proof"><p>If \(\operatorname{Th}(w)\vdash A\), soundness applies because \(w\) forces all the premises by definition. Hence \(w\Vdash A\), so \(A\in\operatorname{Th}(w)\). Thus the set is closed. It cannot derive \(\bot\): soundness would force falsum at \(w\). Finally \(A\lor B\in\operatorname{Th}(w)\) means \(w\Vdash A\lor B\), whose forcing clause gives \(w\Vdash A\) or \(w\Vdash B\). This is precisely the required primeness.</p></div>
+  <p>The canonical model turns this observation around: every prime theory is a world whose entire truth set is that very theory, by the truth lemma.</p>
+</section>
+
+<section id="prime-not-complete" data-formal="ikc-undecided-theory ikc-prime-not-complete nd-excluded-middle baf-closed-membership" data-kind="question">
+  <h2>Must a prime theory decide each formula?</h2>
+  <p>Can a prime theory contain neither \(p_0\) nor \(\neg p_0\), or would that contradict consistency and primeness?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>It can contain neither. Take the <a href="intuitionistic-kripke-semantics#two-world-model">two-world chain</a> \(0&lt;1\) in which \(p_0\) first becomes verified at \(1\), and every other atom is never verified. Let \(T=\operatorname{Th}(0)\). The preceding lemma proves that \(T\) is prime. At \(0\), the atom \(p_0\) is not forced. Its negation is not forced either, because the later world \(1\) forces \(p_0\). Hence neither formula lies in \(T\).</p><p>Primeness applies only after a disjunction already belongs to the theory. Here \(p_0\lor\neg p_0\) is absent as well. In the <a href="boolean-algebras-of-formulas#complete-theories">classical setting</a>, excluded middle belongs to every closed theory, and primeness would therefore force a decision. Intuitionistic closure does not provide that premise.</p></div></details>
+</section>

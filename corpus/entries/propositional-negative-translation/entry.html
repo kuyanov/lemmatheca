@@ -1,0 +1,117 @@
+<section id="two-proof-relations" data-formal="prop-formula ipnd-derivability nd-derivability" data-kind="definition">
+  <h2>Compare proofs in the same propositional language</h2>
+  <p>Use the <a href="intuitionistic-propositional-deduction#formulas-and-contexts">shared formulas</a> over any atom set \(P\), with \(\bot,\neg,\land,\lor,\to\). Write \(\Gamma\vdash_{\mathrm I}A\) for <strong>intuitionistic derivability</strong>, the existence of a finite proof in intuitionistic natural deduction. For a finite context, write \(\Gamma\vdash_{\mathrm C}A\) for <strong>classical derivability</strong> in the <a href="propositional-proofs#deduction-rules">existing classical calculus</a>. Its extra rule derives \(A\) from a contradiction under temporary assumption \(\neg A\).</p>
+  <p>A negative translation will change the formulas, including the open assumptions, so that every classical proof has an intuitionistic counterpart. This does not make the extra rule intuitionistically valid on arbitrary unchanged formulas. Both proof relations here are syntactic: their assertions concern finite trees built from the specified rules.</p>
+</section>
+
+<section id="negative-translation" data-formal="pnt-translation" data-kind="definition">
+  <h2>Translate atoms and disjunctions under double negation</h2>
+  <p>The <strong>Gödel–Gentzen negative translation</strong> used here sends a formula \(A\) to \(A^{\mathsf N}\), recursively as follows:</p>
+  <div class="math-display">\[p^{\mathsf N}=\neg\neg p,\qquad \bot^{\mathsf N}=\bot,\qquad (\neg A)^{\mathsf N}=\neg A^{\mathsf N}.\]</div>
+  <div class="math-display">\[(A\land B)^{\mathsf N}=A^{\mathsf N}\land B^{\mathsf N},\qquad (A\to B)^{\mathsf N}=A^{\mathsf N}\to B^{\mathsf N}.\]</div>
+  <div class="math-display">\[(A\lor B)^{\mathsf N}=\neg\neg(A^{\mathsf N}\lor B^{\mathsf N}).\]</div>
+  <p>These are formulas in the original syntax, including its primitive negation. In particular, translating an implication does not insert a double negation around the entire implication. This translation interprets classical proofs constructively; it has a different purpose from the <a href="classical-propositional-sequents#positive-negative-translation">positive and negative Boolean translations into NNF</a>.</p>
+</section>
+
+<section id="translated-contexts" data-formal="pnt-context pnt-context-insert finite-images" data-kind="definition">
+  <h2>Translate every allowed assumption as well</h2>
+  <p>For a context \(\Gamma\), define its <strong>translated context</strong> by</p>
+  <div class="math-display">\[\Gamma^{\mathsf N}:=\{B^{\mathsf N}:B\in\Gamma\}.\]</div>
+  <p>It is finite when \(\Gamma\) is finite, and translation commutes with inserting a temporary assumption:</p>
+  <div class="math-display">\[(\Gamma\cup\{B\})^{\mathsf N}=\Gamma^{\mathsf N}\cup\{B^{\mathsf N}\}.\]</div>
+  <p>This equality follows directly from membership in an image set. It is essential when an implication, negation or disjunction rule discharges an assumption. Translation of a proof is not permission to leave its open premises untranslated.</p>
+</section>
+
+<section id="stable-formulas" data-formal="pnt-stable ipnd-weakening ipnd-deduction" data-kind="definition">
+  <h2>Single out conclusions whose double negation can be removed</h2>
+  <p>A formula \(C\) is <strong>stable</strong> if</p>
+  <div class="math-display">\[\vdash_{\mathrm I}\neg\neg C\to C.\]</div>
+  <p>A closed proof of this implication works in every ambient context by <a href="intuitionistic-propositional-deduction#weakening">weakening</a> and implication elimination. Conversely, a deduction of \(C\) from the single assumption \(\neg\neg C\) gives the closed implication by discharge. Stability is a property of a particular formula, rather than the unrestricted double-negation-elimination schema.</p>
+</section>
+
+<section id="stability-closure" data-formal="pnt-stable-bottom pnt-stable-negation pnt-stable-conjunction pnt-stable-implication" data-kind="lemma">
+  <h2>Negation, conjunction and stable consequents preserve stability</h2>
+  <p>Falsum and every negation are stable. A conjunction of stable formulas is stable. An implication is stable whenever its consequent is stable; no stability assumption on its antecedent is needed.</p>
+  <div class="proof"><p>For falsum, \(\neg\bot\) has a closed proof: assume \(\bot\) and conclude that same contradiction. Thus \(\neg\neg\bot\) contradicts this theorem and gives \(\bot\). For a negation \(\neg D\), the needed implication is \(\neg\neg\neg D\to\neg D\), already proved by the <a href="intuitionistic-propositional-deduction#constructive-negation-laws">triple-negation law</a>.</p><p>Suppose \(C,D\) are stable and assume \(\neg\neg(C\land D)\). If \(\neg C\) held, any assumption \(C\land D\) would give \(C\) and hence a contradiction. This would prove \(\neg(C\land D)\), contradicting the original assumption. So \(\neg\neg C\), and stability gives \(C\). The same argument gives \(D\); conjunction introduction finishes.</p><p>Suppose \(D\) is stable and assume \(\neg\neg(C\to D)\). To prove the implication, temporarily assume \(C\). If \(\neg D\) held, a further assumption \(C\to D\) would give \(D\) and a contradiction. Thus \(\neg(C\to D)\), contradicting the outer assumption. We have obtained \(\neg\neg D\), so stability gives \(D\). Discharge \(C\), and then the original assumption.</p></div>
+</section>
+
+<section id="translated-stability" data-formal="pnt-translated-stability ipnd-double-negation-intro" data-kind="theorem">
+  <h2>Every translated formula is stable</h2>
+  <p>For every propositional formula \(A\),</p>
+  <div class="math-display">\[\vdash_{\mathrm I}\neg\neg A^{\mathsf N}\to A^{\mathsf N}.\]</div>
+  <div class="proof"><p>Induct on \(A\), using <a href="#stability-closure"></a>. An atom translates to a negation, namely \(\neg(\neg p)\), so is stable. Falsum is stable. A primitive negation translates to a negation, and a disjunction translates to a double negation, so these cases also follow directly. For conjunction use the two induction hypotheses. For implication use the induction hypothesis for its consequent. These are all constructors of the shared syntax.</p></div>
+  <p>In particular, \(A^{\mathsf N}\) and \(\neg\neg A^{\mathsf N}\) imply one another intuitionistically: the other direction is <a href="intuitionistic-propositional-deduction#constructive-negation-laws">double-negation introduction</a>.</p>
+</section>
+
+<section id="boolean-values-and-atoms" data-formal="pnt-boolean-values pnt-atoms pnt-classical-equivalence" data-kind="lemma">
+  <h2>Classical truth and the occurring atom names are unchanged</h2>
+  <p>For every Boolean valuation \(v\) and formula \(A\), translation preserves its value and its atom support:</p>
+  <div class="math-display">\[v(A^{\mathsf N})=v(A),\qquad \operatorname{At}(A^{\mathsf N})=\operatorname{At}(A).\]</div>
+  <p>Consequently \(A\) and \(A^{\mathsf N}\) imply one another in the classical calculus.</p>
+  <div class="proof"><p>Induct on the formula. Double negation leaves a Boolean value unchanged and introduces no atom. Falsum has no atoms and keeps its false value. The negation, conjunction and implication cases use the induction hypotheses in their defining clauses. For disjunction apply those hypotheses to its two children, then use Boolean double-negation elimination for the outside pair of negations. The support of each binary formula is the union of the two child supports.</p><p>Both \(A\to A^{\mathsf N}\) and \(A^{\mathsf N}\to A\) are therefore tautologies. <a href="propositional-proofs#completeness">Classical propositional completeness</a> gives their closed classical proofs. This argument establishes classical equivalence; it does not turn these two implications into intuitionistic theorems.</p></div>
+</section>
+
+<section id="translated-disjunction" data-formal="pnt-translated-disjunction ipnd-derivability ipnd-double-negation-intro" data-kind="lemma">
+  <h2>Eliminate a double-negated disjunction into a stable conclusion</h2>
+  <p>If \(C\) is stable and intuitionistic proofs give</p>
+  <div class="math-display">\[\Delta\vdash_{\mathrm I}\neg\neg(X\lor Y),\qquad \Delta,X\vdash_{\mathrm I}C,\qquad \Delta,Y\vdash_{\mathrm I}C,\]</div>
+  <p>then \(\Delta\vdash_{\mathrm I}C\). Also a proof of \(X\), or a proof of \(Y\), gives a proof of \(\neg\neg(X\lor Y)\) in the same context.</p>
+  <div class="proof"><p>For elimination, work temporarily under \(\neg C\). The two supplied branches, weakened to allow this extra assumption, turn an assumption \(X\) into a contradiction and an assumption \(Y\) into a contradiction. Thus they give \(\neg X\) and \(\neg Y\). If \(X\lor Y\) were assumed, disjunction elimination would yield a contradiction in either branch. This proves \(\neg(X\lor Y)\), contrary to the given double negation. Discharge \(\neg C\) to obtain \(\neg\neg C\), and apply stability. Every use of an extra ambient assumption is justified by weakening and <a href="intuitionistic-propositional-deduction#proof-replacement">proof replacement</a>.</p><p>For introduction, introduce the appropriate disjunct to obtain \(X\lor Y\), and then use double-negation introduction. These constructions use only primitive intuitionistic rules.</p></div>
+</section>
+
+<section id="proof-translation" data-formal="pnt-proof-translation" data-kind="theorem">
+  <h2>Translate every finite classical proof</h2>
+  <div class="statement-box"><p>For every finite context \(\Gamma\) and formula \(A\),</p><div class="math-display">\[\Gamma\vdash_{\mathrm C}A\quad\Longrightarrow\quad\Gamma^{\mathsf N}\vdash_{\mathrm I}A^{\mathsf N}.\]</div><p>The construction translates the given proof rule by rule, including all discharged assumptions.</p></div>
+  <div class="proof"><p>Induct on the classical derivation. An assumption translates to an assumption in the image context. Conjunction introduction and either projection are reapplied to the translated premises. Implication introduction and elimination are likewise reapplied, using the translated-context insertion equality in the introduction case. Negation introduction and elimination use their original primitive rules because \((\neg B)^{\mathsf N}=\neg B^{\mathsf N}\) and \(\bot^{\mathsf N}=\bot\). Falsum elimination gives the translated conclusion from the translated contradiction.</p><p>A disjunction-introduction step uses the introduction part of <a href="#translated-disjunction"></a>. At disjunction elimination the induction hypotheses give \(\Gamma^{\mathsf N}\vdash_{\mathrm I}\neg\neg(B^{\mathsf N}\lor D^{\mathsf N})\) and branches deriving \(A^{\mathsf N}\) from each translated disjunct. The elimination part of that lemma applies because \(A^{\mathsf N}\) is stable.</p><p>Finally consider classical contradiction. Its branch derives \(\bot\) from \(\Gamma,\neg A\). By induction the translated branch derives \(\bot\) from \(\Gamma^{\mathsf N},\neg A^{\mathsf N}\). Negation introduction therefore gives \(\neg\neg A^{\mathsf N}\). The stability theorem gives \(A^{\mathsf N}\). This replaces the classical step by actual intuitionistic inferences and completes every rule case. No semantic completeness theorem is used to manufacture this translation.</p></div>
+</section>
+
+<section id="exact-classical-consequence" data-formal="pnt-classical-consequence gpt-negative-double-negation gpt-double-negated-context gpt-finite-premise-glivenko" data-kind="theorem">
+  <h2>The translated intuitionistic consequence is exactly classical consequence</h2>
+  <p>For finite \(\Gamma\), the converse also holds:</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm C}A\quad\Longleftrightarrow\quad\Gamma^{\mathsf N}\vdash_{\mathrm I}A^{\mathsf N}.\]</div>
+  <div class="proof"><p>The forward direction is <a href="#proof-translation"></a>. Conversely, every intuitionistic rule is a classical rule, so read the given finite intuitionistic proof as a classical proof from \(\Gamma^{\mathsf N}\). This is the inclusion direction of the earlier <a href="intuitionistic-propositional-deduction#recovering-classical-deduction">classical-calculus bridge</a>. For every \(B\in\Gamma\), its assumption and the closed classical implication \(B\to B^{\mathsf N}\) prove \(B^{\mathsf N}\) from \(\Gamma\). Replace each translated open assumption by this proof. Such replacement is admissible classically by the same proof-tree induction as intuitionistic replacement: under a temporary assumption keep that assumption as a leaf and weaken the replacements for ambient leaves. Classical contradiction is reapplied after transforming its branch. This gives \(\Gamma\vdash_{\mathrm C}A^{\mathsf N}\). The closed implication \(A^{\mathsf N}\to A\) now gives \(A\).</p></div>
+  <p>In particular, classical theorems correspond exactly to intuitionistic theorems among translated formulas. The conclusion is about \(A^{\mathsf N}\), not arbitrary \(A\) unchanged.</p>
+  <p>For numbered-atom formulas, the <a href="glivenkos-propositional-theorem#translation-double-negation">negative translation is intuitionistically equivalent to double negation</a>. The <a href="glivenkos-propositional-theorem#finite-premise-glivenko">finite-premise Glivenko theorem</a> therefore gives a corresponding formulation with pointwise double-negated assumptions.</p>
+</section>
+
+<section id="substitution-compatibility" data-formal="pnt-equivalence pnt-equivalent-negation pnt-equivalent-conjunction pnt-equivalent-disjunction pnt-equivalent-implication pnt-substitution pnt-renaming ipnd-identity" data-kind="lemma">
+  <h2>Substitution commutes up to intuitionistic equivalence</h2>
+  <p>Write \(C\simeq_{\mathrm I}D\) when both \(C\to D\) and \(D\to C\) have closed intuitionistic proofs. For a <a href="intuitionistic-propositional-deduction#formula-substitution">formula substitution</a> \(\sigma\), put \(\sigma^{\mathsf N}(p):=(\sigma(p))^{\mathsf N}\). Then</p>
+  <div class="math-display">\[(A[\sigma])^{\mathsf N}\simeq_{\mathrm I}(A^{\mathsf N})[\sigma^{\mathsf N}].\]</div>
+  <p>For an atom renaming \(f:P\to Q\), there is the stronger literal identity</p>
+  <div class="math-display">\[(A[f])^{\mathsf N}=(A^{\mathsf N})[f],\]</div>
+  <p>where \(A[f]\) replaces each atom \(p\) by the atom \(f(p)\).</p>
+  <div class="proof"><p>First note that intuitionistic equivalence is preserved by every connective. To transfer a negation, use the reverse implication between the inputs to turn any counter-assumption into the original contradiction. To transfer conjunction or disjunction, use the corresponding introduction and elimination rules on the two supplied equivalences. For an implication, convert its new antecedent into the old antecedent, apply the old implication, and convert its consequent into the new consequent. Reversing these constructions gives the other direction. In particular, equivalence is preserved under two negations.</p><p>Now induct on \(A\). In the atomic case the two displayed sides are \((\sigma(p))^{\mathsf N}\) and \(\neg\neg(\sigma(p))^{\mathsf N}\). They are equivalent by translated stability and double-negation introduction. Falsum is unchanged. The negation, conjunction and implication cases use connective congruence and the induction hypotheses; disjunction uses congruence followed by its two outside negations. This proves the equivalence. For a renaming, the atomic case is instead the literal equality \(\neg\neg f(p)=\neg\neg f(p)\), and every recursive clause preserves equality, proving the stronger statement.</p></div>
+</section>
+
+<section id="arbitrary-premise-sets" data-formal="prop-theory-derivability pnt-arbitrary-consequence ipnd-finite-support" data-kind="theorem">
+  <h2>Finite support extends the correspondence to arbitrary premise sets</h2>
+  <p>For an arbitrary set \(\Gamma\), use the <a href="propositional-compactness#finite-proofs">established classical convention</a>: \(\Gamma\vdash_{\mathrm C}A\) means that some finite \(D\subseteq\Gamma\) derives \(A\) in the finite-context calculus. Then</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm C}A\quad\Longleftrightarrow\quad\Gamma^{\mathsf N}\vdash_{\mathrm I}A^{\mathsf N}.\]</div>
+  <div class="proof"><p>A finite classical support \(D\subseteq\Gamma\) translates by the finite-context theorem, and weakening along \(D^{\mathsf N}\subseteq\Gamma^{\mathsf N}\) proves the forward direction. For the reverse, <a href="intuitionistic-propositional-deduction#finite-support">intuitionistic finite support</a> gives a finite set \(E\subseteq\Gamma^{\mathsf N}\) supporting the translated proof. For each member of \(E\), choose one preimage in \(\Gamma\); let \(D\) be the finite set of those choices. Then \(D\subseteq\Gamma\) and \(E\subseteq D^{\mathsf N}\). Weaken to \(D^{\mathsf N}\), apply finite-context correspondence, and obtain \(D\vdash_{\mathrm C}A\). If \(E\) is empty, take \(D=\varnothing\). No injectivity of translation is needed.</p></div>
+</section>
+
+<section id="translated-excluded-middle" data-formal="pnt-translation ipnd-double-negated-em" data-kind="lemma">
+  <h2>See what becomes of a classical excluded-middle proof</h2>
+  <p>For every formula \(A\),</p>
+  <div class="math-display">\[(A\lor\neg A)^{\mathsf N}=\neg\neg(A^{\mathsf N}\lor\neg A^{\mathsf N}),\qquad \vdash_{\mathrm I}(A\lor\neg A)^{\mathsf N}.\]</div>
+  <div class="proof"><p>The equality is the definition of translation, including its primitive-negation clause. Apply <a href="intuitionistic-propositional-deduction#double-negated-excluded-middle">double-negated excluded middle</a> to the formula \(A^{\mathsf N}\). More explicitly, assume \(\neg(A^{\mathsf N}\lor\neg A^{\mathsf N})\). An assumption \(A^{\mathsf N}\) contradicts it by left disjunction introduction, so \(\neg A^{\mathsf N}\) follows. Right disjunction introduction then contradicts the same assumption. Discharging it gives the displayed theorem.</p><p>This is the constructive content of translating the <a href="propositional-proofs#classical-cases">classical excluded-middle proof</a>. For an atom \(p\), it says \(\vdash_{\mathrm I}\neg\neg(\neg\neg p\lor\neg\neg\neg p)\).</p></div>
+</section>
+
+<section id="dropping-the-translation" data-formal="pnt-translation ipnd-double-negated-em iks-not-excluded-middle" data-kind="question">
+  <h2>Can one remove the translation from a translated theorem?</h2>
+  <p>If \(\vdash_{\mathrm I}A^{\mathsf N}\), must \(\vdash_{\mathrm I}A\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Take \(A=p_0\lor\neg p_0\). Its translation has the closed intuitionistic proof just given. The original formula has no intuitionistic proof: in the <a href="intuitionistic-kripke-semantics#excluded-middle-countermodel">two-world chain countermodel</a>, the root forces neither the atom nor its negation. Soundness therefore rules out a proof of their disjunction.</p><p>Translated stability only removes a double negation surrounding \(A^{\mathsf N}\). It does not identify \(A^{\mathsf N}\) with \(A\) intuitionistically. Classical equivalence is insufficient for that conclusion.</p></div></details>
+</section>
+
+<section id="substitution-is-not-identity" data-formal="pnt-substitution-example pnt-substitution" data-kind="question">
+  <h2>Why is the substitution law an equivalence rather than an identity?</h2>
+  <p>Take \(A=p\) and substitute \(q\lor r\) for \(p\). Compare the two formulas in <a href="#substitution-compatibility"></a>.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The left side is \(\neg\neg(\neg\neg q\lor\neg\neg r)\). The right side substitutes that entire translated formula into \(\neg\neg p\), and is therefore \(\neg\neg\neg\neg(\neg\neg q\lor\neg\neg r)\). The parse trees differ by two outside negations, so there is no literal syntactic equality.</p><p>The first formula is itself a translated formula. Double-negation introduction and its stability theorem prove the two implications between it and the second formula. This is exactly the atomic case needed in the general substitution induction.</p></div></details>
+</section>
+
+<section id="bottom-and-empty-language" data-formal="pnt-translation pnt-classical-consequence ipnd-identity ipnd-consistency nd-empty-context-consistent" data-kind="question">
+  <h2>Does the construction need any atom at all?</h2>
+  <p>What happens to the translation and proof theorem when the atom set is empty? Can the translated theorem then supply a proof of falsum?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No atom is needed by the definition or any induction above. Formulas can still be built from \(\bot\) and connectives. For example, \((\bot\to\bot)^{\mathsf N}=\bot\to\bot\), which has the implication-identity proof, while \(\bot^{\mathsf N}=\bot\).</p><p>Neither calculus proves falsum without assumptions, by their Boolean soundness and its false Boolean value. Thus the translation of a classical theorem cannot turn into a closed proof of falsum. The exact consequence theorem continues to hold for the empty atom set; it makes no nonemptiness assumption.</p></div></details>
+</section>

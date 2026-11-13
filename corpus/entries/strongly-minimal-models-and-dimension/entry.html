@@ -1,0 +1,100 @@
+<section id="model-bases" data-formal="smd-model-basis smd-model-dimension smd-basis-characterization smd-basis-existence smd-basis-dimension smd-language-bound" data-kind="definition">
+  <h2>Measure a model by a basis of its algebraic closure</h2>
+  <p>Fix a complete satisfiable strongly minimal theory \(T\) in a set-sized language \(L\). All models below satisfy \(T\), and are therefore infinite. Work classically with Choice. The <a href="strongly-minimal-sets#algebraic-pregeometry">algebraic-closure pregeometry</a> and <a href="pregeometry-dimension#basis-extension">basis extension theorem</a> give each model \(M\) an algebraically independent set \(B\subseteq M\) with \(\operatorname{acl}_M(B)=M\).</p>
+  <p>Call such a set a <strong>model basis</strong>. Its cardinality is the <strong>dimension of the model</strong>, written \(\dim(M)\). The <a href="pregeometry-dimension#basis-cardinality">equality of basis cardinalities</a> makes this well defined, even for infinite bases. The dimension can be finite; the definition also allows an empty basis when \(\operatorname{acl}_M(\varnothing)=M\). No field or vector-space structure is assumed.</p>
+  <p>Put \(\lambda_L=\max(|L|,\aleph_0)\), where \(|L|\) counts the function and relation symbols. We will first compare models using given bases, then use the <a href="strongly-minimal-types#counting-algebraic-closure">existing size bound for algebraic closure</a> to determine dimension above \(\lambda_L\).</p>
+</section>
+
+<section id="partial-elementary-maps" data-formal="smd-partial-elementary-map smd-finite-map-bridge smd-parameter-formula-transfer smd-empty-map smd-restriction smd-inverse smd-extension-order smd-domain-monotonicity smd-old-values smd-range-monotonicity smd-inverse-monotonicity" data-kind="definition">
+  <h2>Preserve all formulas on an arbitrary parameter domain</h2>
+  <p>A <strong>partial elementary map</strong> from \(M\) to \(N\) is an injective map \(f:A\to N\), with \(A\subseteq M\), such that for every finite tuple \(\bar a\) from \(A\) and every first-order formula \(\varphi\) in its variable context,</p>
+  <div class="math-display">\[M\models\varphi(\bar a)\quad\Longleftrightarrow\quad N\models\varphi(f\bar a).\]</div>
+  <p>Write \(B=f[A]\). The domain \(A\) may be infinite and need not be a substructure; terms are evaluated in the ambient models. For finite \(A\), this is the same <a href="saturated-models#finite-elementary-maps">finite elementary-map condition</a> already used for saturation. An <strong>extension</strong> of \(f\) enlarges its domain and retains its value at every old point.</p>
+  <p>Restrictions of partial elementary maps are elementary. The inverse bijection \(f^{-1}:B\to A\) is elementary, because the displayed equivalence works in both directions and every finite tuple from \(B\) has a preimage tuple. The empty map is elementary between any two models of \(T\): for its only tuples, of length zero, the condition is agreement on sentences, which follows from completeness of \(T\). These are the arbitrary-domain forms of the <a href="saturated-models#elementary-map-basics">earlier map laws</a>.</p>
+</section>
+
+<section id="transporting-finite-bounds" data-formal="smd-fiber-definability smd-transported-fiber-definability smd-finite-bound-transfer smd-finiteness-transfer smd-cofiniteness-transfer smd-nonemptiness-transfer" data-kind="lemma">
+  <h2>Finite solution bounds transfer through the parameter map</h2>
+  <p>Let \(f:A\to B\) be a partial elementary bijection between subsets of \(M,N\), and let \(\bar a\) be a finite tuple from \(A\). If \(\varphi(M;\bar a)\) has at most \(r\) elements, then \(\varphi(N;f\bar a)\) also has at most \(r\) elements. Nonemptiness transfers as well. In particular finite and cofinite unary solution sets transfer in the corresponding direction.</p>
+  <div class="proof"><p>The assertion that there are at most \(r\) solutions is expressed by the <a href="definable-and-algebraic-closure#uniform-finite-bound">finite-solution bound formula</a>: among any \(r+1\) proposed solutions, two are equal. It is a first-order formula in the parameter tuple. Partial elementarity transfers its truth from \(\bar a\) to \(f\bar a\). The assertion of nonemptiness is \(\exists x\,\varphi(x;\bar a)\), so it transfers for the same reason.</p>
+  <p>If the source solution set is finite, choose its actual finite size as \(r\). Applying the argument to \(\neg\varphi\) transfers a finite complement, hence cofiniteness. Applying it to \(f^{-1}\) gives the converse finite and cofinite transfers. Only the finite tuple of parameters is moved; there is no finiteness assumption on \(A\).</p></div>
+</section>
+
+<section id="generic-one-point-extension" data-formal="smd-point-match smd-adjoined-map smd-adjoined-map-laws smd-generic-point-match smd-generic-extension" data-kind="lemma">
+  <h2>Any two generic points can be added to an elementary match</h2>
+  <p>Let \(f:A\to B\) be partial elementary. If \(a\notin\operatorname{acl}_M(A)\) and \(b\notin\operatorname{acl}_N(B)\), then \(f\cup\{(a,b)\}\) is a partial elementary bijection from \(A\cup\{a\}\) to \(B\cup\{b\}\).</p>
+  <div class="proof"><p>Both points are new to the old domain and range, by extensivity of algebraic closure, so the displayed union is an injective map. For a formula \(\varphi(x;\bar d)\) with \(\bar d\) from \(A\), strong minimality makes its source solution set finite or cofinite. In the finite case, \(a\) cannot satisfy it, since that would put \(a\) in \(\operatorname{acl}_M(A)\). By <a href="#transporting-finite-bounds"></a>, the corresponding target set is finite, and \(b\) cannot satisfy it either.</p>
+  <p>In the cofinite case the two complements are finite. Neither generic point belongs to its complement, so both satisfy the corresponding formula. Thus</p>
+  <div class="math-display">\[M\models\varphi(a;\bar d)\quad\Longleftrightarrow\quad N\models\varphi(b;f\bar d).\]</div>
+  <p>Every formula on a finite tuple from the enlarged domain can be rewritten in this form: replace every occurrence of the newly added point by the same variable \(x\), and retain the other coordinates as the finite old parameter tuple. This includes repeated occurrences of \(a\); a formula not using \(a\) already agrees by elementarity of \(f\). Therefore all formulas are preserved. This gives the map form of the <a href="strongly-minimal-types#unique-nonalgebraic">uniqueness of the generic type</a>, without assuming an elementary inclusion between \(M\) and \(N\).</p></div>
+</section>
+
+<section id="independent-bijections" data-formal="smd-independent-map smd-independent-map-laws" data-kind="lemma">
+  <h2>A specified bijection between independent sets is elementary</h2>
+  <p>If \(I\subseteq M\) and \(J\subseteq N\) are algebraically independent, every bijection \(e:I\to J\) is a partial elementary map.</p>
+  <div class="proof"><p>First restrict to any finite set of distinct elements \(a_0,\ldots,a_{m-1}\) of \(I\). Start with the empty elementary map. At stage \(i\), independence says that \(a_i\) is outside the algebraic closure of the preceding points: those points form a subset of \(I\setminus\{a_i\}\), so algebraic-closure monotonicity applies. The same is true of \(e(a_i)\) relative to the preceding images, using independence of \(J\) and injectivity of \(e\). Apply <a href="#generic-one-point-extension"></a> with exactly this prescribed image. Induction makes the restriction of \(e\) to these \(m\) points elementary.</p>
+  <p>Now take any finite tuple from \(I\), allowing repetitions. Its finitely many distinct coordinates can be listed as above. The elementary finite restriction preserves every formula on that tuple, including its repeated coordinates. This proves elementarity of the original map on the possibly infinite domain \(I\). The empty independent set is included, with the empty-map sentence agreement supplied by completeness of \(T\).</p></div>
+</section>
+
+<section id="algebraic-one-point-extension" data-formal="smd-transported-conditions smd-algebraic-candidates smd-finite-fragment-realization smd-finite-candidates-whole-type smd-algebraic-point-match smd-algebraic-extension" data-kind="lemma">
+  <h2>A finite algebraic candidate set realizes the whole transported type</h2>
+  <p>Let \(f:A\to B\) be any partial elementary bijection between arbitrary nonempty structures \(M,N\). If \(a\in\operatorname{acl}_M(A)\setminus A\), there are \(b\in\operatorname{acl}_N(B)\setminus B\) and a partial elementary extension \(f':A\cup\{a\}\to B\cup\{b\}\) with \(f'(a)=b\). This lemma does not require strong minimality or saturation.</p>
+  <div class="proof"><p>Choose a formula \(\theta(x;\bar a_0)\), with a finite tuple \(\bar a_0\) from \(A\), whose source solution set is finite and contains \(a\). By <a href="#transporting-finite-bounds"></a>, the candidate set</p>
+  <div class="math-display">\[C=\{b\in N:N\models\theta(b;f\bar a_0)\}\]</div>
+  <p>is finite and nonempty. Collect the <strong>transported type conditions</strong> \(\varphi(x;f\bar d)\) for every formula \(\varphi(x;\bar d)\) with \(\bar d\) from \(A\) that holds of \(a\) in \(M\).</p>
+  <p>Every finite collection of those conditions has a simultaneous witness in \(C\). Indeed, \(a\) witnesses the existential conjunction of \(\theta\) and their original formulas in \(M\). All parameters in that finite conjunction lie in one finite tuple from \(A\). Partial elementarity transfers this existential assertion to \(N\), giving the required witness in \(C\).</p>
+  <p>Because \(C\) is finite, finite satisfiability here gives one point satisfying every transported condition. If no point did, choose for each \(c\in C\) a transported condition failing at \(c\). These finitely many conditions would have no common witness in \(C\), contradicting the preceding paragraph. Let \(b\) satisfy them all. If a formula with old parameters is false of \(a\), its negation is true and was transported, so the truth values agree in both directions.</p>
+  <p>For every \(d\in A\), the condition \(x\ne d\) holds of \(a\); its transported condition gives \(b\ne f(d)\). Thus \(b\notin B\), and adjoining \((a,b)\) defines an injective extension of \(f\). Every formula on the enlarged domain reduces to a formula in \(a\) and finitely many old parameters, as in <a href="#generic-one-point-extension"></a>. The truth agreement just proved makes this extension elementary. Finally \(b\in C\), a finite set definable over \(B\), so \(b\in\operatorname{acl}_N(B)\). The actual finite candidate set supplies the realization; no larger ambient model has been introduced.</p></div>
+</section>
+
+<section id="elementary-chain-unions" data-formal="smd-chain-union smd-chain-union-laws smd-maximal-extension" data-kind="lemma">
+  <h2>Unions of chains preserve partial elementarity</h2>
+  <p>A nonempty chain of partial elementary maps from \(M\) to \(N\), ordered by extension, has a partial elementary union. Its domain is the union of the domains and its range is the union of the ranges. Consequently every partial elementary map has a maximal partial elementary extension between these fixed structures.</p>
+  <div class="proof"><p>Comparable maps agree wherever both are defined, so the union is a function. Two points in its domain occur together in some chain member, which proves injectivity from that member. More generally, finitely many domain points occur in one member: choose a member for each point and take a largest one among the finitely many choices. Every formula uses only finitely many coordinates, so that member proves the formula agreement required for the union. The domain and range assertions follow directly from graph union.</p>
+  <p>For the final assertion, consider the set of graphs of all partial elementary extensions of the prescribed map, ordered by inclusion. It is nonempty because it contains the prescribed graph. A nonempty chain has the union just proved as an upper bound, still extending the prescribed map. An empty chain has the prescribed map as an upper bound. <a href="axiom-of-choice#zorns-lemma">Zorn's lemma</a> therefore gives a maximal extension. The arbitrary-domain map condition is necessary here: the union of infinitely many finite domains need not be finite.</p></div>
+</section>
+
+<section id="basis-bijection-extends" data-formal="smd-basis-bijection-extends smd-total-map-isomorphism" data-kind="theorem">
+  <h2>Every specified basis bijection extends to an isomorphism</h2>
+  <p>Let \(B_M,B_N\) be model bases and let \(e:B_M\to B_N\) be a bijection. There is an \(L\)-isomorphism \(F:M\to N\) satisfying \(F(b)=e(b)\) for every \(b\in B_M\).</p>
+  <div class="proof"><p>By <a href="#independent-bijections"></a>, the specified \(e\) is partial elementary. Choose a maximal partial elementary extension \(f:A\to B\) by <a href="#elementary-chain-unions"></a>. Its domain contains \(B_M\), and its range contains \(B_N\).</p>
+  <p>If \(a\in M\setminus A\), then</p>
+  <div class="math-display">\[a\in\operatorname{acl}_M(B_M)\subseteq\operatorname{acl}_M(A).\]</div>
+  <p>The <a href="#algebraic-one-point-extension">algebraic extension lemma</a> gives a strictly larger partial elementary map, contradicting maximality. Hence \(A=M\).</p>
+  <p>For the range, suppose \(b\in N\setminus B\). Since \(B_N\subseteq B\), the basis equation makes \(b\in\operatorname{acl}_N(B)\). Apply that same lemma to \(f^{-1}:B\to A\) and \(b\). Inverting the resulting extension gives a partial elementary map extending \(f\) and containing \(b\) in its range, again strictly larger. This contradicts maximality, so \(B=N\).</p>
+  <p>Thus \(f\) is a total bijection preserving all formulas. It is an actual \(L\)-isomorphism: atomic relations are preserved and reflected, and the atomic equations giving a function value show that every function symbol, including constants, is preserved. All arguments and their function value are now in the full domain. Call this isomorphism \(F\). Since each extension retained the old graph, its restriction to \(B_M\) is exactly the originally supplied \(e\).</p></div>
+</section>
+
+<section id="classification-by-dimension" data-formal="smd-isomorphism-algebraic-closure smd-isomorphism-independence smd-isomorphism-basis smd-isomorphism-dimension smd-dimension-classification" data-kind="theorem">
+  <h2>Dimension classifies the models of the complete theory</h2>
+  <div class="statement-box"><p>For any two models \(M,N\models T\),</p>
+  <div class="math-display">\[M\cong N\quad\Longleftrightarrow\quad\dim(M)=\dim(N).\]</div>
+  <p>More precisely, every specified bijection between model bases extends to an isomorphism of the models.</p></div>
+  <div class="proof"><p>An isomorphism \(F:M\to N\) preserves algebraic closure:</p>
+  <div class="math-display">\[F[\operatorname{acl}_M(A)]=\operatorname{acl}_N(F[A])\qquad(A\subseteq M).\]</div>
+  <p>This is the <a href="definable-and-algebraic-closure#elementary-transport">elementary transport of algebraic closure</a>, applied to the isomorphism; equivalently transport finite definable sets and use its inverse. Applying the equality to \(I\setminus\{a\}\) shows that an independent set has independent image. Applying it to a model basis shows that its image spans \(N\). Hence an isomorphism sends a basis to a basis, and its restriction is a bijection between them. Equality of basis cardinalities gives \(\dim(M)=\dim(N)\).</p>
+  <p>Conversely, choose model bases. Equal dimensions mean that their member sets have a bijection. The <a href="#basis-bijection-extends">specified-basis extension theorem</a> extends that bijection to an isomorphism \(M\cong N\), and proves the more precise assertion as well. This is a classification of existing models; it does not by itself construct a model of every possible dimension.</p></div>
+</section>
+
+<section id="large-model-dimension" data-formal="smtype-acl-cardinal-bound smd-model-size-bound smd-large-model-dimension" data-kind="lemma">
+  <h2>Above the language bound, dimension equals model size</h2>
+  <p>If \(|M|=\kappa&gt;\lambda_L\), then \(\dim(M)=\kappa\). No regularity assumption on \(\kappa\) is needed.</p>
+  <div class="proof"><p>Choose a model basis \(B\). The <a href="strongly-minimal-types#counting-algebraic-closure">algebraic-closure size bound</a> gives</p>
+  <div class="math-display">\[\kappa=|M|=|\operatorname{acl}_M(B)|\le\max(|B|,|L|,\aleph_0)=\max(|B|,\lambda_L).\]</div>
+  <p>Also \(|B|\le\kappa\), since \(B\subseteq M\). If \(|B|&lt;\kappa\), both entries in the displayed maximum would be strictly below \(\kappa\), making that maximum strictly below \(\kappa\), a contradiction. Thus \(|B|=\kappa\), which is the asserted dimension.</p>
+  <p>At size \(\lambda_L\), this inequality is compatible with smaller basis cardinality: its right side may already equal \(\lambda_L\) because of the language bound. The calculation determines dimension only above the strict threshold stated in the lemma.</p></div>
+</section>
+
+<section id="uncountable-categoricity" data-formal="model-exact-cardinality smd-large-cardinal-existence smd-large-cardinal-categoricity smd-unique-large-model smd-countable-language-bound smd-uncountable-categoricity" data-kind="theorem">
+  <h2>There is exactly one model at each sufficiently large cardinal</h2>
+  <p>For every infinite cardinal \(\kappa&gt;\lambda_L\), the theory \(T\) has a model of cardinality \(\kappa\), and any two such models are isomorphic. In a countable language, it is therefore categorical in every uncountable cardinal.</p>
+  <div class="proof"><p>Satisfiability supplies a model of \(T\), which is infinite by strong minimality. The <a href="larger-models#model-cardinalities">exact model-size theorem</a> gives a model at each \(\kappa\ge\lambda_L\), in particular at the cardinals under consideration.</p>
+  <p>Any two models of this size have dimension \(\kappa\) by <a href="#large-model-dimension"></a>. They are isomorphic by <a href="#classification-by-dimension"></a>. This proves existence and uniqueness up to isomorphism, with precisely the same \(T\) throughout. For countable \(L\), \(\lambda_L=\aleph_0\), so every uncountable cardinal satisfies the strict inequality. No general countable-categoricity assertion follows from this size calculation.</p></div>
+</section>
+
+<section id="dimension-existence-question" data-formal="smd-equality-basis smd-equality-dimension smd-equality-no-finite-dimension smd-equality-infinite-dimensions" data-kind="question">
+  <h2>Must every cardinal occur as a dimension?</h2>
+  <p>Does the basis-bijection extension theorem imply that every cardinal is the dimension of some model of each complete strongly minimal theory? Test the claim on the theory of an infinite set in the language of equality.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. In the <a href="strongly-minimal-types#equality-example">infinite equality theory</a>, algebraic closure is the identity operation: \(\operatorname{acl}(A)=A\). Thus every set is independent, and a basis spanning a model \(M\) must equal \(M\) itself. Consequently \(\dim(M)=|M|\).</p>
+  <p>All its models are infinite. Hence no finite cardinal, including zero, occurs as a model dimension for this complete strongly minimal theory. Every infinite cardinal does occur, by the exact model-size theorem. The extension theorem compares models once their bases and a bijection between them have been supplied; it makes no existence assertion at the missing dimensions.</p></div></details>
+</section>

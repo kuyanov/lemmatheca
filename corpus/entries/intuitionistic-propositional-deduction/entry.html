@@ -1,0 +1,143 @@
+<section id="formulas-and-contexts" data-formal="prop-formula ipnd-derivability" data-kind="definition">
+  <h2>Keep the formulas and change the available proofs</h2>
+  <p>Fix a set \(P\) of atoms and the <a href="propositional-logic#formulas">propositional formulas</a> formed using \(\bot,\neg,\land,\lor,\to\). A <strong>context</strong> \(\Gamma\) is any set of these formulas. An <strong>intuitionistic derivation</strong> of \(A\) from \(\Gamma\), written \(\Gamma\vdash_{\mathrm I}A\), is a finite proof tree formed by the rules below, whose open assumption leaves belong to \(\Gamma\). Write \(\vdash_{\mathrm I}A\) when the context is empty.</p>
+  <p>Contexts describe which assumptions are allowed, not which ones must be used. A formula can label several assumption leaves. Discharging a temporary assumption closes the selected leaves introduced in that branch; it does not remove an equal formula already permitted by the ambient context. The context itself may be infinite, although each proof is finite.</p>
+  <p>We retain the separate negation symbol of the shared language. Its rules will make \(\neg A\) interchangeable with \(A\to\bot\); an explicit expansion below removes every negation symbol. Thus using the shared syntax does not add a new constructive principle.</p>
+</section>
+
+<section id="intuitionistic-rules" data-formal="ipnd-derivability ipsq-presentation-equivalence" data-kind="definition">
+  <h2>Introduce and eliminate each connective</h2>
+  <p>The <strong>intuitionistic natural-deduction rules</strong> are assumption, conjunction introduction and its two eliminations, disjunction introduction on either side and disjunction elimination, implication introduction and elimination, negation introduction and elimination, and falsum elimination. Their context forms are as follows. In these displays all formulas are arbitrary and \(\Gamma,A\) means \(\Gamma\cup\{A\}\).</p>
+  <div class="math-display">\[\frac{A\in\Gamma}{\Gamma\vdash_{\mathrm I}A}\qquad
+    \frac{\Gamma\vdash_{\mathrm I}A\quad\Gamma\vdash_{\mathrm I}B}{\Gamma\vdash_{\mathrm I}A\land B}\qquad
+    \frac{\Gamma\vdash_{\mathrm I}A\land B}{\Gamma\vdash_{\mathrm I}A}\qquad
+    \frac{\Gamma\vdash_{\mathrm I}A\land B}{\Gamma\vdash_{\mathrm I}B}.\]</div>
+  <div class="math-display">\[\frac{\Gamma\vdash_{\mathrm I}A}{\Gamma\vdash_{\mathrm I}A\lor B}\qquad
+    \frac{\Gamma\vdash_{\mathrm I}B}{\Gamma\vdash_{\mathrm I}A\lor B}\qquad
+    \frac{\Gamma\vdash_{\mathrm I}A\lor B\quad\Gamma,A\vdash_{\mathrm I}C\quad\Gamma,B\vdash_{\mathrm I}C}{\Gamma\vdash_{\mathrm I}C}.\]</div>
+  <div class="math-display">\[\frac{\Gamma,A\vdash_{\mathrm I}B}{\Gamma\vdash_{\mathrm I}A\to B}\qquad
+    \frac{\Gamma\vdash_{\mathrm I}A\to B\quad\Gamma\vdash_{\mathrm I}A}{\Gamma\vdash_{\mathrm I}B}.\]</div>
+  <div class="math-display">\[\frac{\Gamma,A\vdash_{\mathrm I}\bot}{\Gamma\vdash_{\mathrm I}\neg A}\qquad
+    \frac{\Gamma\vdash_{\mathrm I}A\quad\Gamma\vdash_{\mathrm I}\neg A}{\Gamma\vdash_{\mathrm I}\bot}\qquad
+    \frac{\Gamma\vdash_{\mathrm I}\bot}{\Gamma\vdash_{\mathrm I}A}.\]</div>
+  <p>The last rule is <strong>falsum elimination</strong>, also called explosion. Negation introduction assumes \(A\) to obtain \(\neg A\); it does not license deriving \(A\) by assuming \(\neg A\). That second operation is the additional <a href="propositional-proofs#deduction-rules">classical contradiction rule</a>. It is absent from this rule list.</p>
+  <p>For finite allowed-assumption sets, the <a href="intuitionistic-propositional-sequents#natural-deduction-to-sequents">single-conclusion sequent presentation</a> derives exactly the same formulas. Its left rules organize the use of assumptions while its right rules build the concluding formula.</p>
+</section>
+
+<section id="weakening" data-formal="ipnd-weakening" data-kind="lemma">
+  <h2>Unused assumptions can be added</h2>
+  <p>If \(\Gamma\subseteq\Delta\) and \(\Gamma\vdash_{\mathrm I}A\), then \(\Delta\vdash_{\mathrm I}A\).</p>
+  <div class="proof"><p>Induct on the proof tree. An allowed assumption in \(\Gamma\) is allowed in \(\Delta\). Rules without discharge combine the transformed premise proofs. In a branch with temporary assumption \(B\), use \(\Gamma\cup\{B\}\subseteq\Delta\cup\{B\}\) and discharge that same assumption afterward. This treats implication introduction, negation introduction and both branches of disjunction elimination. Every transformed inference is one of the stated rules, so the resulting tree is a derivation.</p></div>
+</section>
+
+<section id="proof-replacement" data-formal="ipnd-proof-replacement ipnd-cut ipsq-derivability ipsq-to-natural-deduction" data-kind="theorem">
+  <h2>Replace open assumptions by proofs</h2>
+  <p>If \(\Gamma\vdash_{\mathrm I}A\) and \(\Delta\vdash_{\mathrm I}B\) for every \(B\in\Gamma\), then \(\Delta\vdash_{\mathrm I}A\). In particular, the following <strong>cut rule</strong> is admissible:</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm I}B,\quad\Gamma,B\vdash_{\mathrm I}A
+    \quad\Longrightarrow\quad\Gamma\vdash_{\mathrm I}A.\]</div>
+  <div class="proof"><p>Induct on the given derivation from \(\Gamma\). Replace an assumption leaf \(B\in\Gamma\) by its supplied proof from \(\Delta\). For a premise with temporary assumption \(C\), perform replacement into \(\Delta,C\): an ambient assumption \(B\in\Gamma\) has its supplied proof, weakened to this context, while a leaf labeled \(C\) has the one-leaf assumption proof. Apply the induction hypothesis to that branch and then discharge \(C\) by the original rule. For disjunction elimination do this independently in its two branches. Every other rule is reapplied to the transformed premises.</p><p>For the displayed cut, replace the assumption \(B\) by its given proof and every assumption from \(\Gamma\) by its one-leaf proof. If \(B\) already belongs to \(\Gamma\), either allowed replacement still proves that same formula. This is a transformation of finite proof trees using the primitive rules, not an additional primitive inference.</p></div>
+  <p>In the <a href="intuitionistic-propositional-sequents#sequent-cut">single-conclusion sequent calculus</a>, cut is instead a primitive rule. The <a href="intuitionistic-propositional-sequents#sequents-to-natural-deduction">translation into natural deduction</a> realizes each such cut by the proof replacement established here.</p>
+</section>
+
+<section id="finite-support" data-formal="ipnd-finite-support" data-kind="theorem">
+  <h2>Infinite contexts still give finite proofs</h2>
+  <p>For every context \(\Gamma\) and formula \(A\),</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm I}A
+    \quad\Longleftrightarrow\quad
+    \text{some finite }\Delta\subseteq\Gamma\text{ satisfies }\Delta\vdash_{\mathrm I}A.\]</div>
+  <div class="proof"><p>The reverse implication is weakening. For the forward implication, induct on a finite derivation. An assumption uses its singleton context. A rule with several premises uses the union of their finite supports, after weakening each premise to that union.</p><p>For implication introduction, let \(D\subseteq\Gamma\cup\{B\}\) be a finite support of the branch deriving \(C\). The set \(D\setminus\{B\}\) is contained in \(\Gamma\), and the branch can be weakened to \((D\setminus\{B\})\cup\{B\}\). Discharging \(B\) gives \(B\to C\) from \(D\setminus\{B\}\). Negation introduction has the same argument. For disjunction elimination, take the finite support of its major premise together with the two branch supports after deleting their respective temporary assumptions. Weaken the three proofs to the contexts required by disjunction elimination. These unions are finite and contained in \(\Gamma\). This proves the induction claim.</p></div>
+</section>
+
+<section id="formula-substitution" data-formal="prop-substitution ipnd-substitution-context ipnd-substitution" data-kind="lemma">
+  <h2>A uniform substitution preserves a proof</h2>
+  <p>Let \(\sigma\) assign a formula over an atom set \(Q\) to each atom of \(P\). Its <strong>simultaneous substitution</strong> sends an atom \(p\) to \(\sigma(p)\), fixes \(\bot\), and commutes with every connective. Write \(A[\sigma]\) for the resulting formula and \(\Gamma[\sigma]=\{B[\sigma]:B\in\Gamma\}\). Then</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm I}A\quad\Longrightarrow\quad
+    \Gamma[\sigma]\vdash_{\mathrm I}A[\sigma].\]</div>
+  <div class="proof"><p>Replace every formula labeling the proof tree by its substitution instance. An assumption remains in the image context. Every connective rule has the same outer shape because substitution commutes with its constructors. In a discharged branch the context becomes \(\Gamma[\sigma]\cup\{B[\sigma]\}\), exactly the context needed for the substituted introduction or elimination. Even if two different formulas acquire the same instance, the rule remains valid: contexts allow repeated uses and unused temporary assumptions. Induction on the original tree therefore proves the assertion.</p></div>
+</section>
+
+<section id="deduction-and-composition" data-formal="ipnd-deduction ipnd-identity ipnd-implication-composition" data-kind="lemma">
+  <h2>Implications record temporary assumptions</h2>
+  <p>For arbitrary \(\Gamma,A,B\), the <strong>deduction theorem</strong> is</p>
+  <div class="math-display">\[\Gamma,A\vdash_{\mathrm I}B\quad\Longleftrightarrow\quad
+    \Gamma\vdash_{\mathrm I}A\to B.\]</div>
+  <p>Consequently \(\vdash_{\mathrm I}A\to A\), and</p>
+  <div class="math-display">\[\vdash_{\mathrm I}(A\to B)\to((B\to C)\to(A\to C)).\]</div>
+  <div class="proof"><p>Implication introduction gives the forward direction. For the reverse direction weaken a proof of \(A\to B\) to \(\Gamma,A\), use the assumption \(A\), and eliminate the implication. For \(A\to A\), discharge the one-leaf proof of \(A\). For composition, assume \(A\to B\), then \(B\to C\), then \(A\). Two implication eliminations give \(B\) and \(C\). Discharge the three assumptions in reverse order to obtain exactly the displayed parenthesized formula.</p></div>
+</section>
+
+<section id="negation-as-implication" data-formal="ipnd-negation-implication ipnd-negation-implication-equivalence" data-kind="lemma">
+  <h2>Negation is implication to falsum</h2>
+  <p>For every context \(\Gamma\) and formula \(A\),</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm I}\neg A\quad\Longleftrightarrow\quad
+    \Gamma\vdash_{\mathrm I}A\to\bot.\]</div>
+  <p>In fact both \(\neg A\to(A\to\bot)\) and \((A\to\bot)\to\neg A\) have proofs without open assumptions.</p>
+  <div class="proof"><p>Given \(\neg A\), temporarily assume \(A\). Negation elimination gives \(\bot\), and implication introduction gives \(A\to\bot\). Conversely, given \(A\to\bot\), temporarily assume \(A\). Implication elimination gives \(\bot\), and negation introduction gives \(\neg A\). Each construction works with an arbitrary ambient context. If its initial premise is itself temporary, discharging that premise proves the stated implication. Thus the separate negation rules are exactly the expected rules for implication to falsum.</p></div>
+</section>
+
+<section id="negation-expansion" data-formal="ipnd-negation-expansion ipnd-negation-free ipnd-expansion-negation-free ipnd-expansion-atoms ipnd-expansion-idempotent" data-kind="definition">
+  <h2>Remove every separate negation symbol</h2>
+  <p>The <strong>negation expansion</strong> \(E\) is the recursively defined map</p>
+  <div class="math-display">\[E(p)=p,\qquad E(\bot)=\bot,\qquad
+    E(\neg A)=E(A)\to\bot.\]</div>
+  <div class="math-display">\[E(A\mathbin\circ B)=E(A)\mathbin\circ E(B)
+    \qquad(\circ\in\{\land,\lor,\to\}).\]</div>
+  <p>Its values contain no separate negation symbol and use exactly the atoms of the input. Expanding an already expanded formula changes nothing. These assertions follow by structural induction: the negation clause replaces one constructor without adding an atom, and each binary clause takes the union of its children's atom sets. For a context put \(E\Gamma=\{E(B):B\in\Gamma\}\).</p>
+</section>
+
+<section id="expansion-preserves-proofs" data-formal="ipnd-core-calculus ipnd-core-inclusion ipnd-expansion-core-proof ipnd-expansion-equivalence ipnd-expansion-consequence" data-kind="theorem">
+  <h2>The expansion preserves exactly the same deductions</h2>
+  <p>For every formula \(A\), both \(A\to E(A)\) and \(E(A)\to A\) are intuitionistically derivable without assumptions. Moreover, for every context \(\Gamma\),</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm I}A\quad\Longleftrightarrow\quad
+    E\Gamma\vdash_{\mathrm I}E(A).\]</div>
+  <div class="proof"><p>First construct the two implications by induction on \(A\). Atoms and falsum use identity. For conjunction, extract the two conjuncts, apply the corresponding induction implications, and reintroduce the conjunction. For disjunction, reason by cases on the assumed disjunction, translate the selected disjunct, and introduce the translated disjunction; the reverse construction uses the reverse induction implications. For implication, assume \(A\to B\) and then \(E(A)\). The reverse induction implication for \(A\) gives \(A\), hence \(B\), and the forward implication for \(B\) gives \(E(B)\). Discharge the two assumptions. Reversing those choices gives the reverse direction. For negation, use <a href="#negation-as-implication"></a> and this same implication construction with codomain \(\bot\). These arguments explicitly construct both proofs.</p><p>For forward preservation, expand every label in a derivation. Conjunction, disjunction and implication rules remain the same; a negation introduction becomes implication introduction with conclusion \(E(B)\to\bot\), and a negation elimination becomes implication elimination. Falsum elimination is unchanged. Thus the expanded derivation uses only the rules for \(\bot,\land,\lor,\to\).</p><p>Conversely, from \(\Gamma\) each assumption \(E(B)\in E\Gamma\) can be proved: choose its original \(B\in\Gamma\), assume \(B\), and apply the first implication already constructed. <a href="#proof-replacement"></a> turns a proof of \(E(A)\) from \(E\Gamma\) into a proof from \(\Gamma\). Applying \(E(A)\to A\) gives the desired conclusion. This proves a syntactic equivalence, independently of semantic completeness.</p></div>
+</section>
+
+<section id="constructive-negation-laws" data-formal="ipnd-double-negation-intro ipnd-contraposition ipnd-triple-negation" data-kind="lemma">
+  <h2>Some uses of double negation need no classical rule</h2>
+  <p>The following formulas have intuitionistic proofs for every \(A,B\):</p>
+  <div class="math-display">\[A\to\neg\neg A,\qquad
+    (A\to B)\to(\neg B\to\neg A),\qquad
+    \neg\neg\neg A\to\neg A.\]</div>
+  <p>In particular, \(\neg A\) and \(\neg\neg\neg A\) imply one another.</p>
+  <div class="proof"><p>For the first formula, assume \(A\), then \(\neg A\). Negation elimination gives \(\bot\); discharge \(\neg A\) and then \(A\). For contraposition, assume \(A\to B\) and \(\neg B\). A further assumption \(A\) gives \(B\) by implication elimination, hence \(\bot\). Discharge \(A\) and the two outer assumptions.</p><p>For triple negation, assume \(\neg\neg\neg A\) and then \(A\). The first result gives \(\neg\neg A\), contradicting the outer assumption. Discharging \(A\) gives \(\neg A\), and discharging the outer assumption gives the formula. The reverse implication is the first result applied to \(\neg A\). None of these proofs removes an arbitrary double negation.</p></div>
+</section>
+
+<section id="double-negated-excluded-middle" data-formal="ipnd-double-negated-em gpt-glivenko iks-not-excluded-middle iks-not-dne" data-kind="theorem">
+  <h2>Excluded middle can always be double-negated</h2>
+  <p>For every formula \(A\),</p>
+  <div class="math-display">\[\vdash_{\mathrm I}\neg\neg(A\lor\neg A).\]</div>
+  <div class="proof"><p>Assume \(H=\neg(A\lor\neg A)\). Temporarily assume \(A\); left disjunction introduction gives \(A\lor\neg A\), contradicting \(H\). Discharge \(A\) to obtain \(\neg A\). Right disjunction introduction now gives \(A\lor\neg A\) again, so \(H\) yields \(\bot\). Discharge \(H\). The conclusion is \(\neg\neg(A\lor\neg A)\), because \(H\) is the negation of that disjunction. The proof ends with negation introduction, not classical contradiction.</p></div>
+  <p>For numbered-atom formulas, this is an instance of <a href="glivenkos-propositional-theorem#glivenko-theorem">Glivenko’s general propositional theorem</a>. Every classical theorem in that language has an intuitionistic double-negated theorem, while <a href="glivenkos-propositional-theorem#excluded-middle-and-stability">the chain counterexample</a> still prevents unrestricted removal of those negations.</p>
+</section>
+
+<section id="boolean-soundness" data-formal="ipnd-boolean-soundness ipnd-consistency iks-soundness" data-kind="theorem">
+  <h2>Every intuitionistic rule preserves Boolean truth</h2>
+  <p>If \(\Gamma\vdash_{\mathrm I}A\), then every <a href="propositional-logic#valuations">Boolean valuation</a> satisfying all formulas in \(\Gamma\) satisfies \(A\). Consequently \(\nvdash_{\mathrm I}\bot\).</p>
+  <div class="proof"><p>Induct on the proof tree. Assumptions hold by hypothesis. Conjunction and disjunction introduction follow their truth tables; conjunction elimination selects a true conjunct. For disjunction elimination, a true disjunction has a true disjunct, so the induction hypothesis for that branch applies. For implication introduction, a valuation with a false antecedent already satisfies the implication; if its antecedent is true, it satisfies the enlarged branch context, so the induction hypothesis gives the consequent. Implication elimination uses a true antecedent and implication.</p><p>For negation introduction, a valuation satisfying the ambient context cannot also satisfy the temporary assumption: the branch induction hypothesis would make \(\bot\) true. Thus it satisfies the negation. Negation elimination has no valuation making both premises true, and falsum elimination has no valuation satisfying its premise. This checks every rule. Finally, any valuation satisfies the empty context and makes \(\bot\) false; the valuation constantly false on atoms exists even when \(P\) is empty. Hence a proof of \(\bot\) without assumptions is impossible.</p></div>
+  <p>The stronger <a href="intuitionistic-kripke-semantics#intuitionistic-soundness">Kripke soundness theorem</a> preserves these deductions at persistent ordered worlds, including models with more than one world.</p>
+</section>
+
+<section id="classical-schemas" data-formal="ipnd-em-schema ipnd-dne-schema ipnd-finite-support" data-kind="definition">
+  <h2>Add a schema as a set of assumptions</h2>
+  <p>The <strong>excluded-middle schema</strong> and <strong>double-negation-elimination schema</strong> are the respective sets</p>
+  <div class="math-display">\[\mathrm{EM}=\{B\lor\neg B:B\text{ is a formula}\},\qquad
+    \mathrm{DNE}=\{\neg\neg B\to B:B\text{ is a formula}\}.\]</div>
+  <p>Writing \(\Gamma\vdash_{\mathrm I+\mathrm{EM}}A\) means \(\Gamma\cup\mathrm{EM}\vdash_{\mathrm I}A\), and similarly for \(\mathrm{DNE}\). Each actual proof uses finitely many schema instances by <a href="#finite-support"></a>. The notation adds allowed assumptions; it does not silently alter the primitive rules.</p>
+</section>
+
+<section id="recovering-classical-deduction" data-formal="ipnd-em-gives-dne ipnd-dne-gives-em ipnd-schema-equivalence ipnd-classical-dne ipnd-classical-em pnt-proof-translation" data-kind="theorem">
+  <h2>Either classical schema recovers classical deduction</h2>
+  <div class="statement-box"><p>For every context \(\Gamma\) and formula \(A\),</p>
+    <div class="math-display">\[\Gamma\vdash_{\mathrm I+\mathrm{EM}}A
+      \quad\Longleftrightarrow\quad\Gamma\vdash_{\mathrm I+\mathrm{DNE}}A.\]</div>
+    <p>For a finite context \(\Gamma\), these conditions are equivalent to \(\Gamma\vdash_{\mathrm C}A\) in the <a href="propositional-proofs#deduction-rules">existing classical natural-deduction calculus</a>.</p></div>
+  <div class="proof"><p>First, excluded middle gives double-negation elimination. Under assumptions \(\neg\neg B\) and \(B\lor\neg B\), use disjunction elimination. The \(B\)-branch already gives \(B\). In the \(\neg B\)-branch, the assumption \(\neg\neg B\) gives \(\bot\), and explosion gives \(B\). Discharge \(\neg\neg B\) to prove its elimination implication. Conversely, <a href="#double-negated-excluded-middle"></a> proves \(\neg\neg(B\lor\neg B)\). Apply the DNE instance whose formula is \(B\lor\neg B\) to obtain that excluded-middle instance. <a href="#proof-replacement"></a> now replaces every schema assumption by its proof from the other schema, proving the first equivalence for arbitrary \(\Gamma\).</p><p>Every intuitionistic rule is a classical rule. Classical contradiction proves each EM instance, as shown in <a href="propositional-proofs#classical-cases">classical case reasoning</a>, and proves each DNE instance by assuming \(\neg B\) against \(\neg\neg B\). A finite intuitionistic proof from schema assumptions can therefore be translated to the existing classical calculus. Its finitely many ordinary open assumptions lie in the supplied finite context; schema leaves are replaced by their closed classical proofs.</p><p>In the other direction, translate an existing classical proof by induction. The shared rules remain valid. For its extra classical-contradiction step, suppose the already translated branch proves \(\bot\) from \(\Gamma,\neg B\) and the schema. Negation introduction gives \(\neg\neg B\), and DNE gives \(B\). This replaces every classical step by actual intuitionistic inferences with schema assumptions. It proves the claimed equivalence without appealing to semantic completeness.</p></div>
+  <p>A different comparison changes the formulas instead of adding a schema. The <a href="propositional-negative-translation#proof-translation">negative-translation theorem</a> turns every classical propositional proof into an intuitionistic proof of its translated conclusion from its translated assumptions.</p>
+</section>
+
+<section id="truth-tables-and-rules" data-formal="ipnd-schemas-boolean-valid ipnd-boolean-soundness ipnd-schema-equivalence ipnd-classical-em iks-chain-values iks-not-excluded-middle iks-not-dne ikc-strong-completeness ifmp-bounded-search ifmp-search-correctness ifmp-search-zero" data-kind="question">
+  <h2>Can Boolean soundness justify a new constructive rule?</h2>
+  <p>Every Boolean valuation satisfies \(A\lor\neg A\) and \(\neg\neg A\to A\). Does the Boolean soundness theorem alone allow either schema to be added as an intuitionistic theorem?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Soundness states an implication from derivability to truth under every valuation. Reversing that implication would be a completeness theorem for the particular rule system, and no such reverse implication has been proved here. Boolean truth therefore cannot authorize an extra inference. What the proof transformations above establish is precise: adding either schema yields all classical deductions, whereas the specified intuitionistic proofs use only the stated rules. A semantics intended to characterize those rules must be examined on its own.</p><p>The <a href="intuitionistic-kripke-semantics#excluded-middle-countermodel">two-world countermodel</a> forces neither an atom nor its negation at its lower world, and the <a href="intuitionistic-kripke-semantics#nonderivability">soundness consequence</a> rules out intuitionistic proofs of excluded middle and double-negation elimination.</p><p>For numbered atoms, <a href="intuitionistic-propositional-kripke-completeness#strong-completeness">Kripke completeness</a> supplies the exact semantic characterization: a formula follows intuitionistically from a premise set precisely when every ordered model and world forcing those premises also forces the formula.</p><p>For finite numbered-atom premises, <a href="intuitionistic-propositional-finite-model-property#intuitionistic-decision">bounded finite-model search</a> decides this intuitionistic consequence relation.</p></div></details>
+</section>

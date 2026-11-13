@@ -1,0 +1,101 @@
+<section id="theorems-and-assumptions" data-formal="prop-formula ipnd-derivability idp-disjunction-property" data-kind="definition">
+  <h2>Distinguish a theorem from a deduction under assumptions</h2>
+  <p>Work in the <a href="intuitionistic-propositional-kripke-completeness#numbered-language">numbered-atom propositional language</a>, with atoms \(p_0,p_1,\ldots\) and the native connectives \(\bot,\neg,\land,\lor,\to\). Write \(\Gamma\vdash A\) for <a href="intuitionistic-propositional-deduction#intuitionistic-rules">intuitionistic natural deduction</a>. A <strong>theorem</strong> is a formula with a deduction from the empty premise set; abbreviate \(\varnothing\vdash A\) by \(\vdash A\).</p>
+  <p>The <strong>disjunction property</strong> is the assertion that a theorem \(A\lor B\) has a theorem disjunct: \(\vdash A\) or \(\vdash B\). The alternative here concerns the existence of two possible deductions. It is stronger than obtaining another proof of the same disjunction. We will prove it by putting two hypothetical countermodels above a common new world.</p>
+</section>
+
+<section id="rooted-countermodels" data-formal="idp-rooted-countermodel" data-kind="lemma">
+  <h2>A failed deduction has a countermodel with a least world</h2>
+  <p>If \(\Gamma\nvdash A\), there are a Kripke model \(M\) and a least world \(w\) such that \(w\) forces every member of \(\Gamma\) and does not force \(A\).</p>
+  <div class="proof"><p><a href="intuitionistic-propositional-kripke-completeness#strong-completeness">Canonical completeness</a> supplies a pointed countermodel. Restrict it to the <a href="intuitionistic-kripke-semantics#generated-submodel">upward cone</a> of that point. The original point is least in the restricted frame, and <a href="intuitionistic-kripke-semantics#generated-truth">generated-submodel truth preservation</a> keeps every premise and the failed conclusion unchanged. This works for arbitrary premise sets in the fixed countable language.</p></div>
+</section>
+
+<section id="gluing-models" data-formal="idp-glued-worlds idp-glued-order idp-glued-model" data-kind="definition">
+  <h2>Place two rooted models above a new empty world</h2>
+  <p>Let \(M_0,M_1\) be Kripke models with respective least worlds \(w_0,w_1\). Their <strong>root gluing</strong> \(G(M_0,M_1)\) has a new world \(\rho\) and disjoint tagged copies \(\iota_0(W_0),\iota_1(W_1)\) of their entire world sets. Its order is specified by</p>
+  <div class="math-display">\[\rho\leq x\text{ for every }x,\qquad \iota_i(u)\leq\iota_i(v)\iff u\leq_i v.\]</div>
+  <p>There are no comparisons between the two old branches, and no old world lies below \(\rho\). Give \(\rho\) the empty atom valuation and retain the original valuations on each tagged branch.</p>
+  <p>This is a nonempty preordered model. Reflexivity holds at the new root and inside each branch. A composable pair beginning in a branch stays in that branch, so transitivity is inherited there; a pair beginning at \(\rho\) satisfies transitivity because \(\rho\) lies below every world. Atom persistence from \(\rho\) is vacuous, and every other comparison uses persistence in its old model.</p>
+  <figure id="root-gluing-diagram" class="proof-figure"><img class="figure-image" src="assets/root-gluing.svg" alt="Two disjoint old upward cones above a new root rho whose atom valuation is empty."><figcaption>Each shaded branch represents a whole old model with a least world. The new root lies below both branches; neither branch acquires new future worlds.</figcaption></figure>
+</section>
+
+<section id="old-world-truth" data-formal="idp-old-left-truth idp-old-right-truth" data-kind="theorem">
+  <h2>Every old world keeps exactly the same forced formulas</h2>
+  <p>For every formula \(D\), branch \(i\in\{0,1\}\), and old world \(u\in W_i\),</p>
+  <div class="math-display">\[G(M_0,M_1),\iota_i(u)\Vdash D\quad\Longleftrightarrow\quad M_i,u\Vdash D.\]</div>
+  <div class="proof"><p>Induct on \(D\), with the equivalence asserted at every world of each branch. Atom valuations were retained, and falsum is forced nowhere. Conjunction and disjunction follow from their local forcing clauses and the induction hypotheses.</p><p>The future worlds of \(\iota_i(u)\) are exactly the worlds \(\iota_i(v)\) with \(u\leq_i v\). The new root is below this world, and the other branch is incomparable with it, so neither adds a future world. Consequently the universal condition for forcing an implication is exactly its old universal condition after applying the two component induction hypotheses. The same future-world correspondence, with the induction hypothesis for its argument, proves the case of primitive negation. This checks all constructors of the shared syntax.</p></div>
+</section>
+
+<section id="common-negated-premise" data-formal="idp-root-negation" data-kind="lemma">
+  <h2>A negated premise holds at the new root exactly when both roots have it</h2>
+  <p>For every formula \(C\), root gluing satisfies</p>
+  <div class="math-display">\[G(M_0,M_1),\rho\Vdash\neg C\quad\Longleftrightarrow\quad M_0,w_0\Vdash\neg C\text{ and }M_1,w_1\Vdash\neg C.\]</div>
+  <div class="proof"><p>For the forward direction, <a href="intuitionistic-kripke-semantics#persistence">persistence</a> carries the forced negation to both old least worlds, and <a href="#old-world-truth"></a> transfers it back to each original model.</p><p>Conversely, suppose both old least worlds force \(\neg C\). Every old world extends its branch's least world, so no old world forces \(C\). This remains true after gluing by the preservation theorem. The new root cannot force \(C\) either: if it did, persistence to \(\iota_0(w_0)\) would make that old root force \(C\), contrary to its negation. Thus every future world of \(\rho\), including \(\rho\) itself, fails to force \(C\). This is exactly the clause for \(\rho\Vdash\neg C\).</p></div>
+</section>
+
+<section id="disjunction-property" data-formal="idp-disjunction-property" data-kind="theorem">
+  <h2>An intuitionistic theorem disjunction has a theorem disjunct</h2>
+  <div class="statement-box"><p>For all formulas \(A,B\) in the numbered-atom language,</p><div class="math-display">\[\vdash A\lor B\quad\Longrightarrow\quad (\vdash A)\text{ or }(\vdash B).\]</div></div>
+  <div class="proof"><p>Suppose neither disjunct is a theorem. By <a href="#rooted-countermodels"></a>, choose rooted models \(M_0,w_0\) and \(M_1,w_1\) failing \(A\) and \(B\), respectively. Glue them below a new root \(\rho\). If \(\rho\) forced \(A\), persistence and old-world preservation would make \(w_0\) force \(A\), a contradiction. The same argument using the other branch shows that \(\rho\) does not force \(B\).</p><p>The local disjunction clause therefore makes \(A\lor B\) fail at \(\rho\). <a href="intuitionistic-kripke-semantics#intuitionistic-soundness">Soundness</a> rules out an assumption-free deduction of that disjunction. This proves the contrapositive of the assertion. The reverse implication also holds: a theorem disjunct gives the theorem disjunction by its introduction rule.</p></div>
+</section>
+
+<section id="ordinary-assumptions" data-formal="idp-ordinary-assumptions" data-kind="question">
+  <h2>Does the same alternative hold under arbitrary assumptions?</h2>
+  <p>If \(\Gamma\vdash A\lor B\), must \(\Gamma\vdash A\) or \(\Gamma\vdash B\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Take \(\Gamma=\{p_0\lor p_1\}\). Its sole premise gives a deduction of the disjunction. A Boolean valuation making \(p_0\) false and \(p_1\) true satisfies \(\Gamma\) and refutes \(p_0\), so <a href="intuitionistic-propositional-deduction#boolean-soundness">Boolean soundness</a> excludes \(\Gamma\vdash p_0\). Interchanging the two truth values excludes \(\Gamma\vdash p_1\).</p><p>The gluing proof of the theorem property used no assumptions at its new root. Arbitrary assumptions satisfied separately at old roots need not hold there: in this example a new root can force neither atom and therefore fail to force their disjunction.</p></div></details>
+</section>
+
+<section id="admissible-and-derivable" data-formal="idp-derivable-rule idp-admissible-rule ipnd-deduction" data-kind="definition">
+  <h2>Compare theorem preservation with deduction from a premise</h2>
+  <p>A <strong>single-premise rule</strong> \(P/Q\) is a pair of formulas, written with premise \(P\) above conclusion \(Q\). It is <strong>derivable</strong> when \(\{P\}\vdash Q\), equivalently when \(\vdash P\to Q\) by the <a href="intuitionistic-propositional-deduction#deduction-and-composition">deduction theorem</a>.</p>
+  <p>The rule is <strong>admissible</strong> when every simultaneous formula substitution \(\sigma\) has the following property:</p>
+  <div class="math-display">\[\vdash P[\sigma]\quad\Longrightarrow\quad\vdash Q[\sigma].\]</div>
+  <p>Here \(\sigma\) assigns an arbitrary formula in the same numbered-atom language to each atom, and acts by the <a href="intuitionistic-propositional-deduction#formula-substitution">specified substitution operation</a>. The premise of this implication is a closed theorem, not an available open assumption. This quantification over all substitutions is part of admissibility.</p>
+</section>
+
+<section id="derivable-implies-admissible" data-formal="idp-derivable-admissible" data-kind="lemma">
+  <h2>A derivable rule is admissible</h2>
+  <p>For every single-premise rule \(P/Q\), derivability implies admissibility.</p>
+  <div class="proof"><p>Suppose \(\{P\}\vdash Q\), and take any substitution \(\sigma\) for which \(\vdash P[\sigma]\). Substitution of the given derivation gives \(\{P[\sigma]\}\vdash Q[\sigma]\). <a href="intuitionistic-propositional-deduction#proof-replacement">Replace</a> its allowed premise by the closed proof of \(P[\sigma]\). The result is a closed proof of \(Q[\sigma]\), as required.</p></div>
+</section>
+
+<section id="negated-premise-disjunction" data-formal="idp-negated-premise-disjunction" data-kind="lemma">
+  <h2>A single negated assumption still permits a disjunction choice</h2>
+  <p>For every \(C,A,B\),</p>
+  <div class="math-display">\[\{\neg C\}\vdash A\lor B\quad\Longrightarrow\quad (\{\neg C\}\vdash A)\text{ or }(\{\neg C\}\vdash B).\]</div>
+  <div class="proof"><p>If both deductions of individual disjuncts failed, rooted countermodels would give \(M_0,w_0\) forcing \(\neg C\) but not \(A\), and \(M_1,w_1\) forcing \(\neg C\) but not \(B\). Glue them. The <a href="#common-negated-premise">common-negation lemma</a> makes the new root force \(\neg C\), while persistence and old-world preservation make it force neither disjunct, just as in the theorem case. Thus it refutes the stated consequence from \(\{\neg C\}\), contradicting soundness. This proves the alternative, even when the single negated premise is inconsistent.</p></div>
+</section>
+
+<section id="harrop-admissibility" data-formal="idp-harrop-premise idp-harrop-conclusion idp-harrop-choice idp-harrop-admissible ipnd-derivability" data-kind="theorem">
+  <h2>Independence of a negated premise gives an admissible rule</h2>
+  <p>The <strong>Harrop independence-of-premise rule</strong> considered here is</p>
+  <div class="math-display">\[\frac{\neg C\to(A\lor B)}{(\neg C\to A)\lor(\neg C\to B)}.\]</div>
+  <div class="statement-box"><p>For every \(C,A,B\), if its displayed premise is a theorem, then at least one of \(\neg C\to A\) and \(\neg C\to B\) is a theorem. Consequently its conclusion is a theorem, and the displayed rule is admissible under every formula substitution.</p></div>
+  <div class="proof"><p>From a closed proof of \(\neg C\to(A\lor B)\), the deduction theorem gives \(\{\neg C\}\vdash A\lor B\). Apply <a href="#negated-premise-disjunction"></a>. In either resulting case discharge \(\neg C\) to prove the corresponding implication, and then introduce that disjunct into the displayed conclusion.</p><p>To check admissibility, take any substitution \(\sigma\). It commutes with the native connectives, so the substituted premise is exactly \(\neg C[\sigma]\to(A[\sigma]\lor B[\sigma])\), and the substituted conclusion has the same displayed form with those three substituted formulas. The argument just given applies to these arbitrary instances. This verifies the full substitution requirement, not only the original atom instance.</p></div>
+</section>
+
+<section id="four-world-model" data-formal="idp-four-world-frame idp-four-world-order idp-four-world-model" data-kind="definition">
+  <h2>A three-leaf model distinguishes the two kinds of rule</h2>
+  <p>Put \(p=p_0\), \(q=p_1\), and \(r=p_2\). The <strong>three-leaf model</strong> has four worlds: a root \(\rho\) and three incomparable terminal worlds \(u,v,t\), each above \(\rho\). The root verifies no atom; \(u\) verifies only \(q\), \(v\) only \(r\), and \(t\) only \(p\). Every unnamed atom is false everywhere. Reflexivity and these root-to-leaf comparisons define the order; the valuation is persistent because the root verifies nothing and the leaves have no proper extensions.</p>
+  <figure id="three-leaf-diagram" class="proof-figure"><img class="figure-image" src="assets/three-leaf-model.svg" alt="A root rho with no verified atoms has three terminal extensions u, v, and t, verifying only q, r, and p respectively."><figcaption>Upward edges are accessibility comparisons. The three leaves witness the separate failures needed to refute derivability of the rule.</figcaption></figure>
+</section>
+
+<section id="harrop-not-derivable" data-formal="idp-four-world-negations idp-harrop-countermodel idp-harrop-not-derivable idp-harrop-admissible ipnd-deduction" data-kind="theorem">
+  <h2>The admissible Harrop rule is not derivable</h2>
+  <p>For \(C=p\), \(A=q\), \(B=r\), write</p>
+  <div class="math-display">\[P=\neg p\to(q\lor r),\qquad Q=(\neg p\to q)\lor(\neg p\to r).\]</div>
+  <p>The three-leaf model forces \(P\) at \(\rho\) and fails to force \(Q\) there. Thus \(\{P\}\nvdash Q\), and \(\nvdash P\to Q\), although the rule \(P/Q\) is admissible.</p>
+  <div class="proof"><p>The root does not force \(\neg p\), since \(t\) forces \(p\). At the terminal worlds \(u,v\), the atom \(p\) is absent forever, so both force \(\neg p\). The world \(t\) does not force \(\neg p\). These exhaust the future worlds of the root. Whenever one of them forces \(\neg p\), it is therefore \(u\) or \(v\), where \(q\lor r\) holds. Hence \(\rho\Vdash P\).</p><p>However \(v\Vdash\neg p\) and \(v\nVdash q\), so \(\rho\nVdash\neg p\to q\). Similarly \(u\) refutes \(\neg p\to r\). The root consequently fails to force their disjunction \(Q\). Soundness excludes the deduction from \(P\), and the deduction theorem excludes the closed implication. Admissibility was proved for all formula instances in <a href="#harrop-admissibility"></a>. The model does not contradict that result: \(P\) holds at this world, but the admissibility assertion only applies when a substituted premise has a closed proof.</p></div>
+</section>
+
+<section id="open-assumption-use" data-formal="idp-harrop-not-derivable ipnd-derivability ipnd-deduction" data-kind="question">
+  <h2>Can the admissible rule be used inside every open branch?</h2>
+  <p>May a deduction from an arbitrary premise set \(\Gamma\) use the displayed Harrop rule whenever its premise has been deduced from that same \(\Gamma\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. With \(\Gamma=\{P\}\) from <a href="#harrop-not-derivable"></a>, the assumption rule already deduces \(P\), but there is no deduction of \(Q\) from that context. Allowing this local use and then discharging \(P\) would produce the closed formula \(P\to Q\), which the same countermodel refutes.</p><p>Thus this rule preserves theorems under substitution, while its unrestricted use under open assumptions would strengthen the calculus. The distinction is precisely the difference between admissibility and derivability defined above.</p></div></details>
+</section>
+
+<section id="unrestricted-antecedent" data-formal="idp-unrestricted-antecedent" data-kind="question">
+  <h2>Can an arbitrary antecedent replace the negated premise?</h2>
+  <p>For arbitrary \(D,A,B\), does \(\vdash D\to(A\lor B)\) imply \(\vdash(D\to A)\lor(D\to B)\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Put \(D=q\lor r\), \(A=q\), and \(B=r\). The premise \((q\lor r)\to(q\lor r)\) has the closed identity proof. In the three-leaf model, \(v\) forces \(q\lor r\) but not \(q\), so the root fails to force \((q\lor r)\to q\). The world \(u\) similarly refutes \((q\lor r)\to r\). Their disjunction therefore fails at the root, and has no closed proof by soundness.</p><p>The common-negation lemma supplied the extra condition in the Harrop argument. An arbitrary common antecedent does not have its root-preservation property, as the ordinary-assumption example already shows.</p></div></details>
+</section>

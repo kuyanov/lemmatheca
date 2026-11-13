@@ -1,10 +1,11 @@
-<section id="omega-saturation" data-formal="mt-sat-omega-saturated mt-type-complete" data-kind="definition">
+<section id="omega-saturation" data-formal="mt-sat-omega-saturated mt-type-complete ctu-ultraproduct-aleph-one" data-kind="definition">
   <h2>Realize every description using finitely many parameters</h2>
   <p>Fix a nonempty first-order \(L\)-structure \(M\). For \(A\subseteq M\), recall the <a href="types-and-realization#types-over-parameters">named expansion</a> \(M_A\) and the complete types \(S_n^M(A)=S_n(\operatorname{Th}(M_A))\). We work with classical choice. No countability assumption on \(L\) is made in this entry.</p>
   <p>The structure \(M\) is <strong>\(\omega\)-saturated</strong> if, for every finite \(A\subseteq M\), every complete one-type over \(A\) is realized in \(M\):</p>
   <div class="math-display">\[\forall A\subseteq M\text{ finite}\;\forall q\in S_1^M(A)\;\exists b\in M\quad \operatorname{tp}^M(b/A)=q.\]</div>
   <p>When the carrier is countable, we also call such a structure <strong>saturated</strong> in this entry. For an uncountable carrier we retain the explicit term “\(\omega\)-saturated”. Each type may contain infinitely many formulas; it is the set of available parameters that is required to be finite.</p>
   <p>Every nonempty structure has an <a href="saturated-extensions#saturated-extension">omega-saturated elementary extension</a>. That general existence theorem imposes no bound on the size of the extension.</p>
+  <p>For a stronger concrete example, a <a href="countable-types-in-ultraproducts#aleph-one-saturation">countably incomplete ultraproduct in a countable language</a> realizes types over every countable parameter set, not only finite ones.</p>
 </section>
 
 <section id="partial-type-test" data-formal="mt-sat-partial-type-test mt-sat-finite-structures" data-kind="lemma">
@@ -43,7 +44,7 @@
   </div>
 </section>
 
-<section id="one-point-extension" data-formal="mt-sat-one-point-extension" data-kind="lemma">
+<section id="one-point-extension" data-formal="mt-sat-one-point-extension smd-algebraic-extension smd-finite-candidates-whole-type" data-kind="lemma">
   <h2>One realized type extends the specified map by one point</h2>
   <p>Suppose \(N\) is \(\omega\)-saturated and \(f:A\to B\) is a finite partial elementary map from \(M\) to \(N\). For every \(a\in M\), there are \(b\in N\) and a finite partial elementary map</p>
   <div class="math-display">\[f':A\cup\{a\}\longrightarrow B\cup\{b\},\qquad f'\!\upharpoonright A=f,\qquad f'(a)=b.\]</div>
@@ -52,6 +53,7 @@
     <p>If \(a\in A\), take \(b=f(a)\) and \(f'=f\). Otherwise put \(q=\operatorname{tp}^M(a/A)\). By <a href="#pushforward-types"></a>, \(f_*q\in S_1^N(B)\). Since \(B\) is finite, choose a realization \(b\in N\) using \(\omega\)-saturation. Each inequality \(x\ne c_d\), for \(d\in A\), belongs to \(q\), so \(b\ne f(d)\) for every old domain point. Thus adjoining \(a\mapsto b\) gives a bijection of the displayed finite sets.</p>
     <p>To check all formulas, take a tuple from \(A\cup\{a\}\) and a formula \(\theta\) on that tuple. Replace every occurrence of the new value \(a\) in its tuple by one variable \(x\), and replace each remaining coordinate by its parameter name from \(A\). This gives an \(L(A)\)-formula \(\psi(x)\), possibly using \(x\) several times or not at all. Truth of \(\theta\) in \(M\) is membership of \(\psi\) in \(q\); truth after applying \(f'\) in \(N\) is membership of \(\psi^f\) in the type of \(b\), which is \(f_*q\). The two assertions agree, so \(f'\) is partial elementary.</p>
   </div>
+  <p>For an <a href="strongly-minimal-models-and-dimension#algebraic-one-point-extension">algebraic point</a>, an elementary match can instead be extended over an arbitrary parameter domain using a finite target candidate set. That separate extension lemma requires no saturation.</p>
 </section>
 
 <section id="finite-tuples" data-formal="mt-sat-finite-tuple-test" data-kind="lemma">

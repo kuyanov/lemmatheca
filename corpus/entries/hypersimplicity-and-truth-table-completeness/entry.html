@@ -1,0 +1,120 @@
+<section id="completeness-comparisons" data-formal="hstt-complete hstt-complete-criterion hstt-hypersimple-incomplete hstt-simple-complete" data-kind="definition">
+  <h2>Ask whether finitely many predetermined answers decide halting</h2>
+  <p>A <a href="simple-sets#simple-incomplete">simple c.e. set cannot be many-one complete</a>. A truth-table procedure may instead combine several answers, including their negations. We will prove that a simple set can be complete for this stronger form of reduction, while a hypersimple set cannot.</p>
+  <p>Let \(K=\{e:\varphi_e(e)\downarrow\}\) be the <a href="universal-computation#halting-sets">diagonal halting set</a>. A c.e. set \(A\) is <strong>truth-table complete</strong> if every c.e. set is <a href="truth-table-and-weak-truth-table-reductions#prefix-tables">truth-table reducible</a> to \(A\). Since every c.e. set is <a href="productive-and-creative-sets#diagonal-completeness">many-one reducible to \(K\)</a>, and <a href="truth-table-and-weak-truth-table-reductions#implication-chain">many-one reductions give truth tables</a>, this is equivalent to \(K\le_{\mathrm{tt}}A\).</p>
+  <p>Write \(A\equiv_{\mathrm{tt}}B\) for reductions in both directions, and \(A&lt;_{\mathrm{tt}}B\) for \(A\le_{\mathrm{tt}}B\) with \(B\not\le_{\mathrm{tt}}A\). Recall that <a href="dekker-deficiency-and-hypersimple-sets#hypersimple-sets">hypersimplicity</a> means that \(A\) is c.e. and its infinite complement is hyperimmune. We use classical reasoning and the fixed ordinary program enumeration throughout.</p>
+</section>
+
+<section id="table-formulas" data-formal="hstt-table-formula-computable hstt-table-formula-correct hstt-nonhalting-formula" data-kind="lemma">
+  <h2>Write a truth-table computation as a propositional formula</h2>
+  <p>Fix a truth-table reduction \(K\le_{\mathrm{tt}}A\). There is a total computable sequence of propositional formulas \(\theta_e\), in atoms \(P_0,P_1,\ldots\), such that</p>
+  <div class="math-display">\[e\in\overline K\quad\Longleftrightarrow\quad\chi_A\models\theta_e.\]</div>
+  <p>Here a set is read as its membership valuation, so \(\chi_A(P_i)=1\) exactly when \(i\in A\).</p>
+  <div class="proof"><p>On input \(e\), compute the scheme's finite prefix bound \(u(e)\) and all its binary rows. For every row where the halting table outputs zero, form the conjunction that specifies precisely that row: use \(P_i\) for bit one and \(\neg P_i\) for bit zero, for \(i&lt;u(e)\). Let \(\theta_e\) be the disjunction of these conjunctions. The <a href="propositional-normal-forms#row-formulas">row formulas</a> and <a href="propositional-normal-forms#normal-form-theorem">DNF construction</a> prove the equivalence. Empty conjunctions and disjunctions cover a zero bound or a table with no zero-output row.</p><p>This is an effective construction of formula text: generate the finite rows, compute their outputs, and concatenate the indicated constructors in a fixed order. It gives a total computable map on formula codes, rather than merely choosing a formula for each input. Equivalently, it complements the output of the original table and then represents that Boolean function.</p></div>
+</section>
+
+<section id="finite-consequence-test" data-formal="hstt-code-semantics hstt-syntax-algorithms hstt-coded-formula-correct hstt-finite-test-computable hstt-finite-test-correct" data-kind="lemma">
+  <h2>Finite propositional consequence is a terminating computation</h2>
+  <p>Given finite lists of natural-number atoms and propositional formulas, and a proposed conclusion \(\eta\), it is decidable whether every valuation satisfying the listed premises also satisfies \(\eta\). The complete list of atoms occurring in a formula can also be computed.</p>
+  <div class="proof"><p>Scan the finite syntax trees and list the union of their occurring atoms. Enumerate every binary assignment to this finite list and evaluate each formula by its <a href="propositional-logic#valuations">truth tables</a>. Consequence holds exactly when no row makes all premises true and the conclusion false. An empty atom list has one row, so the test also handles constant formulas and empty premises. Inconsistent premises pass every consequence test.</p><p>The computation uses <a href="coding-finite-sequences#list-code">finite list coding</a>, bounded loops and finite syntax evaluation. One explicit effective syntax coding uses \(4i\) for \(P_i\), \(1\) for \(\bot\), \(4c+2\) for negation of code \(c\), and \(4\langle c,d\rangle+3\) for conjunction. Subformula codes are smaller than their parent code. Parsing, collecting supports and evaluating can therefore be computed by a finite table through the input code, reusing earlier entries. Malformed codes are rejected. Other connectives are expanded into negation and conjunction before coding. These algorithms are ordinary recursive procedures on numerical inputs.</p></div>
+</section>
+
+<section id="uniform-consequence-index" data-formal="hstt-joint-recognizer hstt-recognizer-domain hstt-recognizer-index hstt-compiler-primitive hstt-compiler-domain" data-kind="theorem">
+  <h2>Compile an index uniformly from the whole finite prefix</h2>
+  <p>Let \(A\) be c.e., fix an index recognizing it, and put \(\Gamma_A=\{P_i:i\in A\}\). For every finite formula list \(\ell\), define</p>
+  <div class="math-display">\[V_\ell=\{e:\Gamma_A\cup\ell\models\theta_e\}.\]</div>
+  <p>There is a single total computable index map \(q\) on finite lists such that \(W_{q(\ell)}=V_\ell\). The map is defined even when \(\ell\) contains false or inconsistent premises.</p>
+  <div class="proof"><p>Use the fixed <a href="effective-enumerations#uniform-finite-approximation">finite-stage enumeration</a> \(A_s\) of \(A\). A recognizer with inputs \((\ell,e)\) first computes \(\theta_e\). At stages \(s=0,1,\ldots\), apply <a href="#finite-consequence-test"></a> to the finite premises \(\{P_i:i\in A_s\}\cup\ell\) and conclusion \(\theta_e\). Return zero at the first successful stage. Every success is sound because the finite positive premises belong to \(\Gamma_A\).</p><p>Conversely, suppose \(\Gamma_A\cup\ell\models\theta_e\). Let \(S\) be the finite union of the supports of \(\ell\) and \(\theta_e\). The positive premises \(\{P_i:i\in A\cap S\}\cup\ell\) already imply \(\theta_e\). Otherwise a countervaluation on \(S\) could be extended by setting every atom outside \(S\) to one. It would satisfy all of \(\Gamma_A\cup\ell\) and still falsify \(\theta_e\), contradicting the assumption. Eventually every member of the finite set \(A\cap S\) has entered \(A_s\), so the stage test succeeds. Thus the recognizer has exactly the required domain.</p><p>The recognizer is partial recursive jointly in the coded list and input: computing \(\theta_e\), producing a finite enumeration stage and performing the finite test are total recursive, followed by least-stage search. Choose one paired-input index \(v\) for this actual procedure. The <a href="universal-computation#parameter-theorem">parameter theorem</a> gives \(q(\ell)=s(v,\operatorname{code}(\ell))\) and</p>
+  <div class="math-display">\[\varphi_{q(\ell)}(e)\simeq\text{the preceding recognition procedure on }(\ell,e).\]</div>
+  <p>Consequently this same compiler has the stated domain identity for every finite prefix. It is primitive recursive as a transformation of the prefix code; the possibly longer computation of \(\theta_e\) occurs inside the compiled program.</p></div>
+</section>
+
+<section id="successive-formulas" data-formal="hstt-formula-history hstt-formula-history-computable" data-kind="definition">
+  <h2>Use the compiled index itself as the next escape point</h2>
+  <p>Starting with the empty list \(\ell_0\), define the <strong>successive formula list</strong> by</p>
+  <div class="math-display">\[\rho_n=\theta_{q(\ell_n)},\qquad \ell_{n+1}=\ell_n\mathbin{{}^\frown}[\rho_n].\]</div>
+  <p>The map \(n\mapsto\rho_n\) is total computable. Compute the current finite list, compile its index by \(q\), run the total formula producer \(\theta\) on that index, and append its result. Finite recursion gives the whole construction. No stage asks whether the current premises are true or whether their consequences lie in \(\overline K\).</p>
+</section>
+
+<section id="true-not-forced" data-formal="hstt-true-not-forced" data-kind="lemma">
+  <h2>Every formula is true but is not forced by its predecessors</h2>
+  <p>For every \(n\), the constructed formulas satisfy</p>
+  <div class="math-display">\[\chi_A\models\rho_n,\qquad \Gamma_A\cup\{\rho_j:j&lt;n\}\not\models\rho_n.\]</div>
+  <div class="proof"><p>Induct on \(n\). Assuming the earlier formulas true at \(\chi_A\), every consequence of \(\Gamma_A\cup\ell_n\) is true there. The defining equivalence for \(\theta\) therefore gives \(W_{q(\ell_n)}\subseteq\overline K\).</p><p>The <a href="productive-and-creative-sets#diagonal-complement">identity productive function</a> for \(\overline K\), applied to this very compiled index, gives</p>
+  <div class="math-display">\[q(\ell_n)\in\overline K\setminus W_{q(\ell_n)}.\]</div>
+  <p>The first membership makes \(\rho_n=\theta_{q(\ell_n)}\) true at \(\chi_A\). The second says that \(\Gamma_A\cup\ell_n\) does not imply that formula, by the exact domain identity of <a href="#uniform-consequence-index"></a>. This proves both claims and closes the induction. The argument concerns not being forced by earlier formulas; it makes no stronger assertion that all assignments of signs to the list are consistent.</p></div>
+</section>
+
+<section id="support-bound" data-formal="hstt-support-bound" data-kind="definition">
+  <h2>Bound all coordinates used by a finite collection of formulas</h2>
+  <p>For a formula \(\rho\), let \(\operatorname{supp}(\rho)\) be its finite set of occurring atom indices. Put</p>
+  <div class="math-display">\[N(n)=2^{2^n},\qquad m(n)=1+\max\left(\{n\}\cup\bigcup_{k\le N(n)}\operatorname{supp}(\rho_k)\right).\]</div>
+  <p>The <strong>support bound</strong> \(m\) is total computable: compute the first \(N(n)+1\) formulas, their finite supports and the finite maximum. In particular \(m(n)&gt;n\), and every atom used in any of those formulas has index strictly below \(m(n)\). Including \(n\) makes the maximum nonempty even when all the supports are empty.</p>
+</section>
+
+<section id="interval-hits-complement" data-formal="hstt-interval-hit" data-kind="lemma">
+  <h2>Each interval contains an omitted number</h2>
+  <p>For every \(n\), the finite interval \([n,m(n))\) meets \(\overline A\).</p>
+  <div class="proof"><p>Suppose instead that \([n,m(n))\subseteq A\). For each \(k\le N(n)\), replace every atom of \(\rho_k\) with index at least \(n\) by \(\top\), obtaining \(\rho_k^*\). Every replaced atom has index below \(m(n)\), by <a href="#support-bound"></a>, so it is one of the positive premises of \(\Gamma_A\). Hence \(\Gamma_A\models\rho_k\leftrightarrow\rho_k^*\).</p><p>The new formulas use only \(P_0,\ldots,P_{n-1}\). There are \(2^n\) assignments to these atoms and exactly \(2^{2^n}=N(n)\) Boolean truth functions. Among the \(N(n)+1\) formulas \(\rho_0^*,\ldots,\rho_{N(n)}^*\), two, say \(i&lt;j\), therefore have identical truth functions. By <a href="propositional-logic#locality">locality</a> they are equivalent under every valuation. It follows that \(\Gamma_A\models\rho_i\leftrightarrow\rho_j\).</p><p>But \(\rho_i\) is among the premises preceding \(\rho_j\), so this equivalence would force \(\rho_j\) from its predecessors, contradicting <a href="#true-not-forced"></a>. This proves the claim. At \(n=0\) there are just two constant truth functions, and the same count uses three formulas.</p></div>
+</section>
+
+<section id="hitting-strong-array" data-formal="hstt-hitting-array hstt-halting-gives-array" data-kind="theorem">
+  <h2>The omitted numbers are hit by a computable strong array</h2>
+  <p>Under the assumption \(K\le_{\mathrm{tt}}A\), with \(A\) c.e., define \(a_0=0\) and \(a_{k+1}=m(a_k)\). Then the finite sets \(F_k=[a_k,a_{k+1})\) form a <a href="domination-and-hyperimmune-degrees#strong-arrays">strong array</a> hitting \(\overline A\).</p>
+  <div class="proof"><p>The endpoint recursion is total computable, and \(m(n)&gt;n\) makes the endpoints strictly increase. Enumerating each integer between successive endpoints gives a total computable finite-list description of \(F_k\). The half-open intervals are nonempty and pairwise disjoint. Each meets \(\overline A\) by <a href="#interval-hits-complement"></a>. Thus the array has all the required properties with the specified endpoints and lists.</p></div>
+</section>
+
+<section id="hypersimple-incomplete" data-formal="hstt-hypersimple-incomplete" data-kind="theorem">
+  <h2>A hypersimple set is truth-table incomplete</h2>
+  <div class="statement-box"><p>Every hypersimple c.e. set \(A\) satisfies \(A&lt;_{\mathrm{tt}}K\). In particular, \(K\not\le_{\mathrm{tt}}A\).</p></div>
+  <div class="proof"><p>If \(K\le_{\mathrm{tt}}A\), <a href="#hitting-strong-array"></a> supplies a computable strong array hitting \(\overline A\). This contradicts its <a href="domination-and-hyperimmune-degrees#array-characterization">hyperimmunity</a>. Thus the reverse reduction fails. Since \(A\) is c.e., \(A\le_m K\), which gives \(A\le_{\mathrm{tt}}K\). These are exactly the two assertions in the strict comparison.</p></div>
+</section>
+
+<section id="coding-intervals" data-formal="hstt-coding-endpoints hstt-block-selector" data-kind="definition">
+  <h2>Use the earlier Post set to reserve a missing point in every block</h2>
+  <p>Now let \(B\) be the particular <a href="simple-sets#post-set">Post simple set</a> already constructed. Write \(c\) for the increasing enumeration of \(\overline B\), indexed from zero. Its <a href="dekker-deficiency-and-hypersimple-sets#post-simple-not-hypersimple">principal-function bound</a> is \(c(n)\le2n\), while increasingness gives \(n\le c(n)\). Define the <strong>coding endpoints and blocks</strong> by</p>
+  <div class="math-display">\[n_0=0,\qquad n_{k+1}=2n_k+1,\qquad I_k=[n_k,n_{k+1}).\]</div>
+  <p>The endpoints are primitive recursive, strictly increasing and satisfy \(n_k\ge k\). Thus the blocks partition \(\mathbb N\). Their <strong>block selector</strong> \(b(x)\) is the unique \(k\) with \(x\in I_k\): search \(k\le x\) for the first \(x&lt;n_{k+1}\). The bound works because \(n_{x+1}\ge x+1\), and minimality places \(x\) at or above \(n_k\). This gives a total computable selector.</p>
+</section>
+
+<section id="post-block-omissions" data-formal="hstt-post-block-omission" data-kind="lemma">
+  <h2>Each coding block has a specified omission from the Post set</h2>
+  <p>For every \(k\), the point \(c(n_k)\) lies in \(I_k\setminus B\).</p>
+  <div class="proof"><p>It lies outside \(B\) by the definition of the principal function, and</p>
+  <div class="math-display">\[n_k\le c(n_k)\le2n_k&lt;2n_k+1=n_{k+1}.\]</div>
+  <p>Thus it is a member of the stated half-open block. This identifies a mathematical witness; the construction does not claim that the principal function or these omitted points can be computed.</p></div>
+</section>
+
+<section id="simple-complete-set" data-formal="hstt-coding-set hstt-coding-set-union hstt-coding-recognizer hstt-coding-recognizer-index hstt-coding-program-correct hstt-coding-enumerable" data-kind="lemma">
+  <h2>Fill the block when its index enters halting</h2>
+  <p>Define the specified set</p>
+  <div class="math-display">\[C=B\cup\bigcup_{k\in K}I_k.\]</div>
+  <p>Then \(C\) is c.e. More precisely, from the earlier recognizer for \(B\) and the fixed universal program one obtains an ordinary recognizer whose domain is exactly this \(C\).</p>
+  <div class="proof"><p>On input \(x\), compute the block selector \(b(x)\). Dovetail the earlier \(B\)-recognizer on \(x\) with the computation \(\varphi_{b(x)}(b(x))\), and halt with output zero as soon as either computation halts. The selector is a total ordinary computation, and <a href="universal-computation#dovetailing">parallel simulation</a> gives a partial recursive recognizer.</p><p>Uniqueness of the block containing \(x\) gives \(x\in C\) exactly when \(x\in B\) or \(b(x)\in K\). These are precisely the two successful branches of this program. Its fixed code therefore enumerates the actual displayed set, without requiring a procedure for recognizing permanently unfilled blocks.</p></div>
+</section>
+
+<section id="halting-block-reader" data-formal="hstt-block-table-scheme hstt-halting-block-iff hstt-halting-block-reader" data-kind="theorem">
+  <h2>A finite conjunction of block bits recovers halting</h2>
+  <p>For every \(k\),</p>
+  <div class="math-display">\[k\in K\quad\Longleftrightarrow\quad I_k\subseteq C\quad\Longleftrightarrow\quad\bigwedge_{n_k\le x&lt;n_{k+1}}\chi_C(x)=1.\]</div>
+  <p>This is a truth-table reduction \(K\le_{\mathrm{tt}}C\), with computable prefix bound \(u(k)=n_{k+1}\).</p>
+  <div class="proof"><p>If \(k\in K\), its entire block is added to \(C\). If \(k\notin K\), disjointness of the blocks makes \(C\cap I_k=B\cap I_k\). The point \(c(n_k)\) from <a href="#post-block-omissions"></a> remains omitted, so the conjunction is false.</p><p>To produce the actual finite table on input \(k\), compute \(n_k,n_{k+1}\), list all binary words of length \(u(k)\), and label a word one exactly when all its positions in \(I_k\) are one. Label it zero otherwise; give malformed or wrong-length word codes the default output zero. The finite-row algorithm and lookup are total computable by <a href="truth-table-and-weak-truth-table-reductions#prefix-tables">the prefix-table construction</a>. This scheme terminates on every row for every oracle, and the preceding equivalence proves its answer under \(C\).</p></div>
+</section>
+
+<section id="simple-complement" data-formal="hstt-post-omission-membership hstt-coding-coinfinite hstt-coding-simple" data-kind="lemma">
+  <h2>Infinitely many unfilled blocks retain an immune complement</h2>
+  <p>The complement \(\overline C\) is infinite and immune. Hence \(C\) is simple.</p>
+  <div class="proof"><p>The set \(\overline K\) is <a href="productive-and-creative-sets#productive-obstructions">infinite</a>. For every \(k\in\overline K\), the point \(c(n_k)\) remains outside \(C\), by <a href="#halting-block-reader"></a>. Distinct such indices give distinct points because they lie in pairwise disjoint blocks. This gives infinitely many omissions.</p><p>Since \(B\subseteq C\), one has \(\overline C\subseteq\overline B\). Every c.e. subset of \(\overline C\) is therefore a c.e. subset of the immune set \(\overline B\), so is finite. Together with the just-proved infinitude, this makes \(\overline C\) immune. The set \(C\) is c.e. by its actual recognizer, proving simplicity. Infinitude must be proved separately: an arbitrary c.e. superset of a simple set could have finite or empty complement.</p></div>
+</section>
+
+<section id="simple-tt-complete" data-formal="hstt-simple-complete" data-kind="theorem">
+  <h2>A simple set can have the full truth-table degree of halting</h2>
+  <div class="statement-box"><p>The specified set \(C=B\cup\bigcup_{k\in K}I_k\) is simple and satisfies \(C\equiv_{\mathrm{tt}}K\). It is not many-one complete and is not hypersimple.</p></div>
+  <div class="proof"><p>Simplicity is <a href="#simple-complement"></a>, and the explicit block table gives \(K\le_{\mathrm{tt}}C\). Since \(C\) is c.e., diagonal-halting completeness gives \(C\le_m K\), hence \(C\le_{\mathrm{tt}}K\). Every simple set is <a href="simple-sets#simple-incomplete">many-one incomplete</a>. If this \(C\) were hypersimple, <a href="#hypersimple-incomplete"></a> would contradict its truth-table completeness.</p></div>
+</section>
+
+<section id="posts-problem-question" data-formal="hstt-simple-complete ttwtt-tt-implies-wtt ttwtt-wtt-implies-turing" data-kind="question">
+  <h2>Does the simple complete set solve Post's Turing-degree problem?</h2>
+  <p>What do the proved comparisons say about \(C\)'s Turing degree and about the difference between truth-table and weak truth-table reducibility?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The set \(C\) has the same Turing degree as \(K\): both truth-table reductions are Turing reductions. Thus it is Turing complete and does not give a degree strictly between the computable degree and halting. Its many-one incompleteness illustrates how that more restrictive reduction can fail even when a fixed finite table of oracle answers suffices.</p><p>The results compare hypersimplicity and simplicity with truth-table completeness. They do not supply a pair separating truth-table from weak truth-table reducibility. In particular, the constructed \(C\) is complete for both, since its halting reduction is already a truth table. The separate <a href="finite-injury-and-posts-problem#posts-problem">finite-injury solution of Post's problem</a> establishes intermediate Turing degrees.</p></div></details>
+</section>

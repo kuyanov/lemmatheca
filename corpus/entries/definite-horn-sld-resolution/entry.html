@@ -1,0 +1,139 @@
+<section id="programs-and-goals" data-formal="sld-clause sld-goal sld-goal-truth sld-program-theory sld-program-models sld-program-models-bridge sld-query sld-query-sentence sld-query-truth sld-query-context" data-kind="definition">
+  <h2>Work backward from the facts being requested</h2>
+  <p>The rules for addition can justify an answer without first listing every addition fact. Starting with a request for a sum, one matches a rule's conclusion and replaces that request by the rule's premises. The substitutions used during this process also determine values for the original unknowns.</p>
+  <p>Fix an equality-free first-order language \(L\). A <strong>definite clause</strong> has the form \(H\leftarrow B_1,\ldots,B_m\), where all displayed expressions are <a href="herbrand-models#relation-atoms">relation atoms</a> on the shared finite terms. It asserts the universal closure of \((B_1\land\cdots\land B_m)\to H\). For \(m=0\) it is a <strong>fact</strong>, asserting its head universally. A <strong>program</strong> \(P\) is a finite list of definite clauses, each with its own finite variable context.</p>
+  <p>A <strong>goal</strong> \(G=[A_1,\ldots,A_k]\) is an ordered finite list of atoms with variables from \(\mathbb N\). It requests their conjunction. The empty goal requests the true empty conjunction. Lists retain order and repetitions: two occurrences of the same atom are two requests. At a valuation \(v\) in an actual nonempty structure, the goal is true when every listed atom is true at \(v\). Write \(P\models\exists G\) when every model of the universal program admits such a valuation. Only the finitely many variables occurring in \(G\) need existential witnesses.</p>
+  <p>For models and least-model semantics, forgetting body order and repetitions recovers the existing <a href="first-order-horn-rules#definite-rules">definite Horn rules</a>. Operationally we keep both, since they determine the remaining list of requests.</p>
+</section>
+
+<section id="fresh-variants" data-formal="sld-goal-variables sld-freshening sld-fresh-away sld-step-data" data-kind="definition">
+  <h2>Every use of a clause gets fresh variables</h2>
+  <p>Keep a finite <strong>variable history</strong> \(U\), initially containing every variable of the original goal. If a clause uses a local variable context \(\{0,\ldots,n-1\}\), choose an injection \(\nu\) from that context into \(\mathbb N\) whose range misses \(U\). Replacing each local variable by \(x_{\nu(i)}\) gives a <strong>fresh variant</strong> \(H'\leftarrow B'_1,\ldots,B'_m\). One specified choice is \(\nu(i)=b+i\), where \(b\) is larger than every member of \(U\); take \(b=0\) when \(U\) is empty.</p>
+  <p>Freshness is relative to all previously used variables, including those retained in the current images of original answer variables. It is stronger than disjointness from the current goal alone. An injective renaming does not identify local variables and preserves the universally asserted clause. This is the same independence requirement as <a href="first-order-resolution#separate-variables">standardizing resolution parents apart</a>, with the current goal left in its existing names.</p>
+</section>
+
+<section id="sld-step" data-formal="sld-step-data sld-resolvent sld-history sld-resolvent-tracked sld-goal-substitution" data-kind="definition">
+  <h2>Resolve one selected atom and substitute the entire new goal</h2>
+  <p>Select one occurrence \(A\) in a nonempty goal, writing \(G=G_\ell\mathbin{+\!+}[A]\mathbin{+\!+}G_r\). Choose a fresh variant of a program clause. If \(A\) and its head \(H'\) have a <a href="first-order-resolution#atom-unification">most general atom unifier</a> \(\mu\), one <strong>SLD step</strong> has successor</p>
+  <div class="math-display">\[G'=\bigl(G_\ell\mathbin{+\!+}[B'_1,\ldots,B'_m]\mathbin{+\!+}G_r\bigr)\mu.\]</div>
+  <p>Here substitution acts on every atom in the list, including the unselected requests. The selected occurrence is replaced at its position by the ordered body. A fact removes it. Different relation symbols, incompatible arities, or a failed occurs check give no step with that clause.</p>
+  <p>After the step enlarge the history to include its old members, the fresh clause variables, and all variables in \(\mu(x)\) for each old or fresh tracked variable \(x\). This is still finite. It includes every variable in \(G'\) and in the updated images of the original answer variables. Thus the freshness requirement can be maintained at each later step.</p>
+</section>
+
+<section id="refutations-and-answers" data-formal="sld-refutation unif-identity-substitution unif-composition sld-goal-substitution-composition" data-kind="definition">
+  <h2>Compose the answers in chronological order</h2>
+  <p>An <strong>SLD derivation</strong> is a sequence of these steps, with fresh variants chosen anew at each use. A finite derivation ending in the empty goal is an <strong>SLD refutation</strong> of the initial goal. A branch ending in a nonempty goal with no applicable clause is a failure, not a refutation.</p>
+  <p>Suppose the successive unifiers are \(\mu_1,\ldots,\mu_r\). Using the existing <a href="term-unification#substitutions-and-composition">composition convention</a>, set</p>
+  <div class="math-display">\[\theta=\mu_r\star\cdots\star\mu_1,\qquad (\tau\star\sigma)(x)=\sigma(x)[\tau].\]</div>
+  <p>The <strong>computed answer</strong> is the restriction of \(\theta\) to the variables of the original goal. The empty refutation has identity answer. Later substitutions act inside terms assigned earlier; collecting unrelated bindings without composing them can give a wrong answer. When \(G\theta\) still has variables, its asserted truth means truth under every assignment to those remaining variables.</p>
+</section>
+
+<section id="addition-example" data-formal="sld-addition-program sld-addition-goal sld-addition-first-step sld-addition-second-step sld-addition-step-values sld-addition-refutation sld-addition-least sld-addition-all-triples sld-addition-not-exact" data-kind="question">
+  <h2>Compute the missing summand</h2>
+  <p>Let \(0\) be a constant, \(s\) unary, and \(\operatorname{Add}\) ternary. Use the program</p>
+  <div class="math-display">\[\operatorname{Add}(0,y,y)\leftarrow,\qquad
+  \operatorname{Add}(s(u),v,s(w))\leftarrow\operatorname{Add}(u,v,w).\]</div>
+  <p>Refute the goal \([\operatorname{Add}(s(0),x_0,s(s(0)))]\) and give its computed answer.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Take a fresh recursive clause with variables \(u,v,w\), all distinct from \(x_0\). The selected atom and head have the most general unifier</p>
+    <div class="math-display">\[\mu_1=[0/u,\ x_0/v,\ s(0)/w].\]</div>
+    <p>It gives the successor \([\operatorname{Add}(0,x_0,s(0))]\). A fresh fact with variable \(z\) then has most general unifier \(\mu_2=[s(0)/x_0,\ s(0)/z]\). Its body is empty, so this step finishes the refutation. The composite sends the original variable \(x_0\) to \(s(0)\).</p>
+    <p>For the first unifier, equality of the first and third argument trees forces the images of \(u,w\), and equality of the second forces the image of \(v\) to be that of \(x_0\). Any other unifier is therefore a further instance of the displayed substitution. The same argument for the fact forces the images of \(x_0,z\) to be \(s(0)\). The third argument of the original query has two successors. Changing it to \(s(0)\) would change the requested sum and the answer.</p>
+    <p>These rules force the particular positive instances used here and put this indicated addition instance in their least Herbrand model. They do not say that every model interprets \(\operatorname{Add}\) as exactly the ordinary addition graph: interpreting that relation as all triples also satisfies both positive clauses.</p>
+  </div></details>
+</section>
+
+<section id="step-soundness" data-formal="sld-step-sound sld-goal-substitution-truth" data-kind="lemma">
+  <h2>A successful successor proves the selected request</h2>
+  <p>For an SLD step \(G\to G'\) with unifier \(\mu\), every model of \(P\) and valuation \(v\) satisfying \(G'\) also satisfies \(G\mu\) at \(v\).</p>
+  <div class="proof">
+    <p>Every unselected atom of \(G\mu\) occurs in \(G'\). The substituted body atoms also occur there, so all are true at \(v\). The fresh clause is universally true in the model. Apply it at the valuation sending each of its variables to the value of its image under \(\mu\), evaluated at \(v\). By <a href="first-order-structures#semantic-substitution">semantic substitution</a>, its head \(H'\mu\) is true at \(v\). Unification makes this the same atom as the selected request \(A\mu\). Thus every atom of \(G\mu\) is true. Most-generality is not needed for this implication; being a unifier suffices.</p>
+  </div>
+</section>
+
+<section id="answer-soundness" data-formal="sld-answer-sound sld-query-truth" data-kind="theorem">
+  <h2>A computed answer is valid for the original query</h2>
+  <div class="statement-box"><p>If an SLD refutation of \(G_0\) computes \(\theta\), then every nonempty model of \(P\) satisfies \(G_0\theta\) at every valuation. In particular, \(P\models\exists G_0\).</p></div>
+  <div class="proof">
+    <p>Induct backward along the finite refutation. The empty final goal is true at every valuation. If the tail of a refutation proves the current successor after its remaining composite substitution \(\tau\), apply <a href="#step-soundness"></a> at the valuation \(x\mapsto\llbracket\tau(x)\rrbracket_v\). The substitution identity gives truth of \(G(\tau\star\mu)\) at \(v\). Repeating this argument yields exactly the chronological composite \(\theta\), including its action inside earlier images.</p>
+    <p>Finally choose any valuation in a nonempty model and assign each original variable the value of its image under \(\theta\). Semantic substitution makes the original goal true at that assignment. Only its original variable set matters, so restricting the computed answer loses no information about the query.</p>
+  </div>
+</section>
+
+<section id="finite-ground-proofs" data-formal="sld-ground-rule sld-grounding sld-closed-grounding-bridge sld-proof-tree sld-proof-forest sld-tree-least" data-kind="lemma">
+  <h2>Least-model membership has a finite proof tree</h2>
+  <p>Assume first that closed terms exist, and let \(L_P\) be the <a href="first-order-horn-rules#least-herbrand-model">least Herbrand model</a>. A <strong>ground proof tree</strong> for an atom labels its root by a ground instance of a program-clause head, and gives it one child proof for each occurrence in that instance's body list. A fact gives a node without children. The root atom belongs to \(L_P\) if and only if it has such a finite tree.</p>
+  <div class="proof">
+    <p>By <a href="first-order-horn-rules#finite-body-closure">finite appearance in the least-model stages</a>, a root first appears at a finite stage. Its producing ground clause has all body atoms at the preceding stage. Induct on the stage, taking a child tree for each listed occurrence; if the root was retained from an earlier stage, use its earlier tree. Repeated body atoms get repeated child slots, even if their trees happen to be equal. Stage zero contains no atoms.</p>
+    <p>Conversely, induction up a finite tree puts every child in \(L_P\); closure under its ground clause puts the parent there. Thus forgetting body order and repetitions for the semantic closure does not lose the ordered, repeated children needed by an operational proof.</p>
+  </div>
+</section>
+
+<section id="ground-goal-reduction" data-formal="sld-forest-decrease sld-ground-refutation sld-ground-completeness" data-kind="theorem">
+  <h2>Any selected ground request can be reduced</h2>
+  <p>Suppose every atom of a finite ground goal belongs to \(L_P\). Fix any rule for selecting one occurrence from each nonempty goal. There is a finite reduction to the empty goal, always selecting that occurrence and replacing it by the body of an appropriate ground clause instance.</p>
+  <div class="proof">
+    <p>Choose a finite proof tree for each goal occurrence. Let the <strong>forest weight</strong> be the sum of the numbers of nodes in these trees. If the goal is nonempty, its selected occurrence has a root clause and a list of child trees. Replace that occurrence by this body list and replace its tree by those child trees. All other goal atoms and their proof trees stay in place.</p>
+    <p>The old root tree had one node more than the sum of its children's node counts. Therefore the total weight decreases by exactly one, regardless of which occurrence was selected. Induction on this natural number reaches weight zero, where the forest and goal are empty. Counting only tree heights would not give this argument: replacing a root can introduce several children of nearly the same height. The conclusion permits any atom-selection rule, while the program-clause choices must still be suitable ones.</p>
+  </div>
+</section>
+
+<section id="one-step-lifting" data-formal="sld-one-step-lifting sld-atom-solver-sound sld-atom-solver-complete sld-goal-substitution-composition" data-kind="lemma">
+  <h2>Lift the selected ground step through its most general unifier</h2>
+  <p>Let \(G\sigma\) be a ground instance of a goal, with its variables contained in a finite history \(U\). Suppose its selected atom is proved using a ground instance of a program clause. Choose a fresh variant \(H'\leftarrow\mathbf B'\) outside \(U\). Then the selected symbolic atom \(A\) and \(H'\) have a most general unifier \(\mu\), and the resulting symbolic successor \(G'\) has a ground instance equal to the given ground successor.</p>
+  <div class="proof">
+    <p>The ground clause instance supplies a closed replacement term for each fresh clause variable. Merge those replacements with \(\sigma\), obtaining a substitution \(\gamma\) that equals \(\sigma\) on \(U\) and uses the specified replacements on the fresh variables. These prescriptions do not conflict because freshness makes the two finite sets disjoint; fill other variables arbitrarily with an existing closed term. Every atom of \(G\) uses variables in \(U\), so \(G\gamma=G\sigma\). The fresh clause under \(\gamma\) is the prescribed ground clause.</p>
+    <p>In particular \(A\gamma=H'\gamma\). The <a href="first-order-resolution#atom-unification">atom-unification theorem</a> provides an actual most general unifier \(\mu\) and a residual ground substitution \(\rho\) with \(\gamma=\rho\star\mu\) on every variable. Applying the atom and list substitution identities gives</p>
+    <div class="math-display">\[G'\rho=\bigl(G_\ell\mathbin{+\!+}\mathbf B'\mathbin{+\!+}G_r\bigr)\gamma.\]</div>
+    <p>This is exactly the ground successor, with each body occurrence and each unselected occurrence retained. Furthermore \(\mu(x)[\rho]=\sigma(x)\) for every \(x\in U\). This factorization on all tracked variables will preserve the original answer through later steps. No equality between unrelated parent variables was assumed.</p>
+  </div>
+</section>
+
+<section id="ground-answer-completeness" data-formal="sld-answer-completeness" data-kind="theorem">
+  <h2>A refutation covers every correct ground answer</h2>
+  <div class="statement-box"><p>Fix any atom-selection rule. If every atom of \(G_0\sigma\) belongs to \(L_P\), there is an SLD refutation following that rule with computed answer \(\theta\), and a ground substitution \(\delta\) such that</p>
+    <div class="math-display">\[\theta(x)[\delta]=\sigma(x)\qquad\text{for every variable }x\text{ of }G_0.\]</div>
+    <p>Thus every correct ground answer is an instance of some computed answer.</p>
+  </div>
+  <div class="proof">
+    <p>Use the proof forest for \(G_0\sigma\), and induct on its total node count as in <a href="#ground-goal-reduction"></a>. The empty forest gives the identity answer and residual substitution \(\sigma\). Otherwise lift the root step of the selected tree by <a href="#one-step-lifting"></a>. The new ground forest consists of its children and the unchanged other trees, so its weight is one smaller. Its symbolic goal is \(G'\), instantiated by the residual \(\rho\).</p>
+    <p>For the induction maintain the stronger assertion that the final factorization holds on every variable of the current finite history. The updated history contains every variable in \(\mu(x)\) for each old tracked \(x\). If the recursive refutation has answer \(\tau\) and residual \(\delta\), its factorization on that updated history gives \(\tau(y)[\delta]=\rho(y)\) for each variable occurring in \(\mu(x)\). Substitution through the finite term \(\mu(x)\) therefore yields</p>
+    <div class="math-display">\[(\tau\star\mu)(x)[\delta]=\mu(x)[\rho]=\sigma(x).\]</div>
+    <p>The prefixed step has computed answer \(\tau\star\mu\), so the invariant holds on the old history and in particular on the original query variables. Fresh variants exist at every recursive call because that history stays finite. The proof can choose the specified freshening and the successful most general unifier returned by the unification algorithm at each step.</p>
+  </div>
+</section>
+
+<section id="existential-query-completeness" data-formal="sld-query-completeness sld-query-context sld-query-instance sld-parameter-structure sld-parameter-evaluation sld-parameter-atom sld-parameter-model sld-fresh-terms-equivalence sld-fresh-terms-generator sld-fresh-terms-function" data-kind="theorem">
+  <h2>Existentially forced goals have SLD refutations</h2>
+  <p>For every finite definite program and finite goal, and every atom-selection rule,</p>
+  <div class="math-display">\[P\models\exists G\quad\Longleftrightarrow\quad G\text{ has an SLD refutation following that rule}.\]</div>
+  <div class="proof">
+    <p>Answer soundness proves the reverse implication. For the forward implication, first suppose closed terms exist. The actual least Herbrand structure is a nonempty model of \(P\). The hypothesis supplies a valuation in its term domain making the whole goal true. This is a single ground substitution \(\sigma\) making all goal atoms members of \(L_P\), with the same term used at every occurrence of each variable. Apply <a href="#ground-answer-completeness"></a>.</p>
+    <p>If the original language has no closed terms, use the existing <a href="herbrand-models#fresh-constant">fresh-constant method</a>: adjoin one constant \(c\), form the least Herbrand model, and take its old-language reduct. This reduct is a nonempty \(L\)-model of \(P\), so it also supplies witnesses. Equivalently, its domain consists of native \(L\)-terms over one protected generator \(\ast\), interpreted as \(c\). Function applications form terms and the generator supplies nonemptiness. The two term descriptions correspond by replacing \(\ast\) with \(c\).</p>
+    <p>The ground-tree and lifting arguments work with terms over this protected generator as their residual substitution images. It is a fixed parameter, not an SLD variable: all fresh variants, unification problems and computed answers still use the original signature and the variable stock \(\mathbb N\). Hence the lifted refutation is an original-language SLD refutation. This proves existential-query completeness, without asserting that all universally correct nonground substitutions are computed answers.</p>
+  </div>
+</section>
+
+<section id="search-tree" data-formal="sld-canonical-refutation sld-atom-solver sld-search-state sld-root sld-children sld-branching-bound" data-kind="definition">
+  <h2>Make a finite set of successors at every node</h2>
+  <p>To turn the existence theorem into a search, fix a computable atom-selection rule, the specified fresh-variable offset, and a deterministic most general unifier returned by the <a href="term-unification#solver">term-unification algorithm</a>. For a finite encoded program with decidable function- and relation-symbol equality, try each program clause once against the selected atom. A successful unification gives its successor, its enlarged history, and its updated answer; a failed one gives none. This defines the <strong>SLD search tree</strong>.</p>
+  <p>There are at most \(|P|\) children at a node. Fresh variants and different spellings of most general unifiers are not additional infinite search choices: the fixed procedures select one for each attempted clause. The root carries the original goal and identity answer. Every child carries the chronological composition with its parent's answer. An empty-goal node records success.</p>
+</section>
+
+<section id="fair-search" data-formal="sld-frontier sld-refutation-frontier sld-breadth-first-completeness" data-kind="theorem">
+  <h2>Breadth-first search finds every finite successful branch</h2>
+  <p>For these fixed effective choices, breadth-first search eventually finds a refutation whenever \(P\models\exists G\).</p>
+  <div class="proof">
+    <p>Start with the singleton root frontier. The next frontier concatenates the finite child lists of the current one. Induction shows that each frontier is finite and that it contains every node at its depth: every node at the next depth is a child of a node already included. The completeness proof above can use exactly the fixed freshening and canonical successful unifier, so some empty-goal node occurs at a finite depth \(r\).</p>
+    <p>Computing and checking each finite frontier takes finitely many operations. After the first \(r\) levels, breadth-first search therefore inspects that successful node. More generally, any fair traversal that eventually visits every finite-depth node has this property. There need not be a bound on \(r\) known in advance, and an unsuccessful search need not terminate.</p>
+  </div>
+</section>
+
+<section id="depth-first-loop" data-formal="sld-loop-program sld-loop-children sld-first-child sld-depth-first-loop sld-loop-success" data-kind="question">
+  <h2>Can depth-first execution miss an existing proof?</h2>
+  <p>Put the two clauses \(p\leftarrow p\) and \(p\leftarrow\) in that order, where \(p\) is a nullary relation. What happens to the goal \([p]\) if execution always tries the first clause and explores its successor before returning to alternatives?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The first clause replaces \([p]\) by \([p]\), with identity unifier. Repeating that choice gives an infinite branch whose goal never becomes empty. This depth-first execution does not return to the root to try its second clause. Yet that fact gives a one-step refutation, also with identity answer. The least model contains \(p\), and breadth-first search inspects the successful child at depth one.</p>
+    <p>There is only one atom to select in this example. The failure comes from the order in which program-clause alternatives are explored, not from any inadequacy of the atom-selection completeness theorem. SLD completeness guarantees a finite proof exists; fair search guarantees such a proof is eventually visited.</p>
+  </div></details>
+</section>

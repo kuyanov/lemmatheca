@@ -1,0 +1,112 @@
+<section id="sequent-vocabulary" data-formal="ppi-vocabulary cps-atoms cps-dual-atoms" data-kind="definition">
+  <h2>Collect the atom names on each side</h2>
+  <p>Use the <a href="classical-propositional-sequents#signed-formulas">signed NNF language</a> over an atom set \(P\), with its finite-set sequents and five <a href="classical-propositional-sequents#sequent-rules">primitive proof rules</a>. Write \(A^\perp\) for <a href="classical-propositional-sequents#duality">duality</a>. The <strong>vocabulary of a sequent</strong> is</p>
+  <div class="math-display">\[\operatorname{At}(\Gamma):=\bigcup_{A\in\Gamma}\operatorname{at}(A).\]</div>
+  <p>It is a finite set of underlying atom names, without signs. In particular, \(\operatorname{At}(\varnothing)=\varnothing\), \(\operatorname{At}(\Gamma,A)=\operatorname{At}(\Gamma)\cup\operatorname{at}(A)\), and duality changes no atom support. For the specified finite calculations below, equality of atom names is decidable.</p>
+</section>
+
+<section id="covering-splits" data-formal="ppi-covering-split" data-kind="definition">
+  <h2>Allow a covering split during the induction</h2>
+  <p>A <strong>covering split</strong> of a sequent \(\Gamma\) is a pair of finite sequents \((L,R)\) such that \(\Gamma\subseteq L\cup R\). The two sides may overlap, and may contain extra formulas. An <strong>ordinary split</strong> \(\Gamma=L\cup R\) is a special case.</p>
+  <p>This slightly stronger induction setting matters for set contexts. At a rule introducing a compound in \(L\), its children will be inserted into \(L\) without deleting the compound. A formula already in a common rule context stays there, even if it is also the displayed principal formula. Thus no step assumes that insertion created a new occurrence.</p>
+</section>
+
+<section id="split-witnesses" data-formal="ppi-witness" data-kind="definition">
+  <h2>Ask for two proof certificates and a common vocabulary</h2>
+  <p>An <strong>interpolation witness</strong> for \((L,R)\) consists of an NNF formula \(I\), actual primitive proofs of the two sequents below, and the stated support bound:</p>
+  <div class="math-display">\[\vdash L,I,\qquad \vdash R,I^\perp,\qquad \operatorname{at}(I)\subseteq\operatorname{At}(L)\cap\operatorname{At}(R).\]</div>
+  <p>The orientation is deliberate. The left proof says that falsifying all left alternatives forces \(I\); the right proof says that \(I\) forces some right alternative. The formula alone is not the whole witness: the construction will return its two finite proof trees as well.</p>
+</section>
+
+<section id="proof-operations" data-formal="ppi-promote-left ppi-promote-right cps-context-extension" data-kind="lemma">
+  <h2>Insert an alternative without choosing a new proof</h2>
+  <p>From a supplied proof of \(\Gamma,X\), one can construct a primitive proof of \(\Gamma,X\lor Y\). From a supplied proof of \(\Gamma,Y\), one can construct the same conclusion. These constructions follow the supplied tree structurally before adding their final disjunction inference.</p>
+  <div class="proof"><p>For the first construction, apply the <a href="classical-propositional-sequents#weakening">structural context-extension transformation</a> to add \(Y\). Its conclusion is the exact set \(\Gamma,X,Y\). Apply the disjunction rule. For the second, add \(X\) to the supplied proof of \(\Gamma,Y\), reorder the set context, and apply that rule. Context extension itself follows the supplied tree and repeats its rules; it does not select an unrelated derivation.</p><p>We will also reorder inserted formulas and use \(\Gamma,D=\Gamma\) when \(D\in\Gamma\). These are equalities of the actual finite concluding sets, so they only change how a certificate's context is written.</p></div>
+</section>
+
+<section id="atomic-leaves" data-formal="ppi-atomic-witness" data-kind="lemma">
+  <h2>Choose the interpolant at an atomic identity leaf</h2>
+  <p>Suppose an identity leaf for \(p\) proves \(\Gamma\), and \((L,R)\) covers \(\Gamma\). The following ordered tests specify an interpolation witness:</p>
+  <table id="identity-choices"><caption>Interpolant choices at an identity leaf</caption><thead><tr><th scope="col">First test</th><th scope="col">Second test</th><th scope="col">Return</th></tr></thead><tbody><tr><td>\(p\in L\)</td><td>\(\bar p\in L\)</td><td>\(\bot\)</td></tr><tr><td>\(p\in L\)</td><td>\(\bar p\notin L\)</td><td>\(\bar p\)</td></tr><tr><td>\(p\notin L\)</td><td>\(\bar p\in L\)</td><td>\(p\)</td></tr><tr><td>\(p\notin L\)</td><td>\(\bar p\notin L\)</td><td>\(\top\)</td></tr></tbody></table>
+  <div class="proof"><p>Both signed literals belong to \(\Gamma\), hence to \(L\cup R\). In the first row both are in \(L\), so atomic identity proves \(L,\bot\), while truth proves \(R,\top\). In the last row both literals must be in \(R\); truth proves \(L,\top\), and atomic identity proves \(R,\bot\).</p><p>In the second row \(p\in L\) and \(\bar p\in R\). Adding \(\bar p\) to the left and its dual \(p\) to the right closes both by atomic identity. The third row reverses the roles. Each cross-side row uses only the atom \(p\), which occurs on both sides. The constant rows have empty support. These are actual leaf certificates for every row, including overlapping sides.</p></div>
+</section>
+
+<section id="constant-rules" data-formal="ppi-truth-witness ppi-extractor" data-kind="lemma">
+  <h2>Handle truth and a bottom inference</h2>
+  <p>At a truth leaf, return \(I=\bot\) if \(\top\in L\), and return \(I=\top\) otherwise. At a bottom inference with premise proof \(T\) of \(\Gamma\), any witness extracted from \(T\) with the same sides \((L,R)\) is a witness for the conclusion split, provided \(\Gamma,\bot\subseteq L\cup R\).</p>
+  <div class="proof"><p>The leaf's truth formula belongs to \(L\cup R\). If it is in \(L\), truth proves \(L,\bot\), and the added dual \(\top\) proves \(R,\top\). Otherwise \(\top\in R\), and the roles reverse. Both interpolants have empty support.</p><p>For bottom, the conclusion's covering condition also covers the smaller premise context \(\Gamma\). Invoke the premise construction with the same sides. Its two output contexts and their vocabularies are already exactly the required ones. No additional rule is needed in those output trees; the allowed sides already retain whatever bottom formula they contain.</p></div>
+</section>
+
+<section id="disjunction-step" data-formal="ppi-disjunction-left ppi-disjunction-right" data-kind="lemma">
+  <h2>Move a disjunction back into its selected side</h2>
+  <p>Suppose a disjunction inference has premise proof of \(\Gamma,A,B\) and conclusion \(\Gamma,A\lor B\), covered by \((L,R)\). If \(A\lor B\in L\), extract from the premise using sides \((L,A,B;R)\). Otherwise use \((L;R,A,B)\). In either case retain its interpolant \(I\).</p>
+  <div class="proof"><p>In the first case the premise is covered: the old \(\Gamma\) is covered already and the two children were added to \(L\). Its left factor proof ends in \(L,A,B,I\). The disjunction rule gives \(L,A\lor B,I=L,I\), because the principal formula was retained in \(L\). The right factor is unchanged.</p><p>In the second case coverage puts \(A\lor B\) in \(R\). The same rule is used on the right factor instead; the left one is unchanged. Each child has support contained in that of the selected compound. Thus inserting the children adds no atom to that side's vocabulary, and the inherited common-support bound remains valid.</p></div>
+</section>
+
+<section id="left-conjunction" data-formal="ppi-conjunction-left" data-kind="lemma">
+  <h2>Use a disjunction when the principal conjunction is on the left</h2>
+  <p>Suppose a conjunction inference has premise proofs of \(\Gamma,A\) and \(\Gamma,B\), and its conclusion \(\Gamma,A\land B\) is covered by \((L,R)\), with \(A\land B\in L\). Extract witnesses \(I_0,I_1\) from its first and second premise with sides \((L,A;R)\) and \((L,B;R)\), respectively. Return</p>
+  <div class="math-display">\[I:=I_0\lor I_1.\]</div>
+  <div class="proof"><p>The left premise factors prove \(L,A,I_0\) and \(L,B,I_1\). The two constructions in <a href="#proof-operations"></a> change these into \(L,A,I_0\lor I_1\) and \(L,B,I_0\lor I_1\). Apply the conjunction rule, with common context \(L,I_0\lor I_1\):</p>
+  <div class="math-display">\[\frac{\vdash L,A,I_0\lor I_1\qquad\vdash L,B,I_0\lor I_1}{\vdash L,A\land B,I_0\lor I_1}.\]</div>
+  <p>The principal conjunction already belongs to \(L\), so the last context is \(L,I\). On the right, the two unchanged factors prove \(R,I_0^\perp\) and \(R,I_1^\perp\). One conjunction inference gives \(R,I_0^\perp\land I_1^\perp=R,I^\perp\).</p><p>The inserted children add no atoms to \(L\), since their parent is in \(L\). Each premise interpolant therefore uses only \(\operatorname{At}(L)\cap\operatorname{At}(R)\), and their disjunction takes the union of those two supports. This proves the required support assertion.</p></div>
+</section>
+
+<section id="right-conjunction" data-formal="ppi-conjunction-right" data-kind="lemma">
+  <h2>Use a conjunction when the principal conjunction is on the right</h2>
+  <p>For the same conjunction rule, if \(A\land B\notin L\), coverage puts it in \(R\). Extract from the two premises with sides \((L;R,A)\) and \((L;R,B)\), obtaining \(I_0,I_1\). Return \(I:=I_0\land I_1\).</p>
+  <div class="proof"><p>The two left factors immediately combine by the conjunction rule into \(L,I_0\land I_1\). On the right, promote the first factor \(R,A,I_0^\perp\) and second factor \(R,B,I_1^\perp\) to \(R,A,I_0^\perp\lor I_1^\perp\) and \(R,B,I_0^\perp\lor I_1^\perp\). The conjunction rule on \(A,B\) then gives \(R,A\land B,I_0^\perp\lor I_1^\perp\).</p><p>The retained principal formula is absorbed into \(R\). The remaining displayed disjunction is exactly \(I^\perp\), by duality's clause for a conjunction. The two children add no vocabulary to \(R\), so the support-union argument from the preceding case applies here as well.</p></div>
+</section>
+
+<section id="recursive-extractor" data-formal="ppi-extractor" data-kind="definition">
+  <h2>Specify the proof-recursive extractor</h2>
+  <p>The <strong>Maehara extractor</strong> \(\mathsf M(T;L,R)\) takes a supplied primitive proof tree \(T\) of \(\Gamma\) and a covering split \(\Gamma\subseteq L\cup R\). It follows this recursion:</p>
+  <ol><li>At atomic identity, use the ordered tests and exact leaf proofs of <a href="#atomic-leaves"></a>.</li><li>At truth, test \(\top\in L\) and use <a href="#constant-rules"></a>.</li><li>At bottom, call the extractor on its premise with the same sides.</li><li>At disjunction, test whether the principal formula belongs to \(L\), enlarge that selected side by both children, recurse on the sole premise, and reconstruct by <a href="#disjunction-step"></a>.</li><li>At conjunction, make the same principal-side test, recurse on both premises with the corresponding single child added to the selected side, and use <a href="#left-conjunction"></a> or <a href="#right-conjunction"></a>.</li></ol>
+  <p>Every call visits a proper premise tree. The tree is finite, so this recursion terminates. All tests are finite-set membership tests; every returned proof is assembled from primitive rules, the specified structural context-extension operation, and equalities of finite contexts. In particular, it does not invoke a validity test or choose a proof merely because one exists.</p>
+</section>
+
+<section id="maehara-lemma" data-formal="ppi-extractor ppi-witness" data-kind="theorem">
+  <h2>Extract both factors with only the common atom names</h2>
+  <div class="statement-box"><p>For every supplied primitive proof \(T\) of \(\Gamma\) and every covering split \(\Gamma\subseteq L\cup R\), the specified extractor \(\mathsf M(T;L,R)\) returns an interpolation witness. Its formula \(I\) and returned trees satisfy</p><div class="math-display">\[\vdash L,I,\qquad\vdash R,I^\perp,\qquad\operatorname{at}(I)\subseteq\operatorname{At}(L)\cap\operatorname{At}(R).\]</div></div>
+  <div class="proof"><p>Induct on the actual finite tree \(T\), proving the assertion for every pair of covering sides at each node. The atomic and truth leaves have precisely the witnesses proved above. For bottom, the premise is covered by the same sides, so its induction hypothesis is the required result.</p><p>For a disjunction or conjunction, coverage places its principal formula on at least one side. The prescribed membership test selects the left when both contain it. The indicated enlarged sides cover every premise, so the induction hypotheses apply with those new parameters. The three reconstruction lemmas prove both exact factor contexts and the atom bound. They use only constructors of the original calculus. This completes every primitive rule case and proves the assertion for the particular formula and proof trees returned by the recursion.</p></div>
+</section>
+
+<section id="proofs-with-cut" data-formal="ppi-cut-extractor pce-elimination" data-kind="theorem">
+  <h2>Normalize first when the supplied proof uses cut</h2>
+  <p>A finite proof with cut of \(\Gamma\), together with a covering split \((L,R)\), also supplies an interpolation witness. A specified choice is</p>
+  <div class="math-display">\[\mathsf M(\operatorname{Elim}(T);L,R),\]</div>
+  <p>where \(\operatorname{Elim}\) is the actual <a href="propositional-cut-elimination#eliminating-all-cuts">cut-removal transformation</a>.</p>
+  <div class="proof"><p>Cut removal returns a primitive proof of exactly the same concluding finite set \(\Gamma\). Thus the same covering condition applies, and <a href="#maehara-lemma"></a> gives the claimed witness for this displayed composition. Intermediate cut formulas need not use the common vocabulary; their disappearance before extraction is what permits the final support argument.</p></div>
+</section>
+
+<section id="native-factors" data-formal="ppi-native-factors cps-reading-atoms cps-reading-evaluation cps-normalization-atoms" data-kind="lemma">
+  <h2>Read the two factors in the ordinary propositional language</h2>
+  <p>Let \(A,B\) be shared propositional formulas over any atom set with decidable equality. A witness for \(L=\{N^-(A)\}\) and \(R=\{N^+(B)\}\), with formula \(I\), gives classical natural-deduction proofs</p>
+  <div class="math-display">\[\{A\}\vdash r(I),\qquad\{r(I)\}\vdash B,\qquad\operatorname{at}(r(I))\subseteq\operatorname{at}(A)\cap\operatorname{at}(B).\]</div>
+  <p>Here \(N^\pm\) and the reading \(r\) are the earlier <a href="classical-propositional-sequents#translation-laws">exact syntax and support bridges</a>.</p>
+  <div class="proof"><p>Soundness of the left factor says that every valuation makes \(N^-(A)\) or \(I\) true. If it makes \(A\) true, the negative translation is false, so \(I\), and hence \(r(I)\), is true. Soundness of the right factor says that \(N^+(B)\) or \(I^\perp\) is true. When \(r(I)\) is true, duality makes the second alternative false, forcing \(B\). The existing <a href="propositional-proofs#completeness">classical natural-deduction completeness theorem</a> gives both stated finite-context proofs.</p><p>Reading and either NNF translation preserve exactly the occurring atom names. Substitute these equalities into the witness's bound. This proves the displayed support inclusion. The certificates themselves remain the primitive factor proofs constructed above; this argument identifies their ordinary-language consequences. The <a href="craig-interpolation#propositional-example">semantic propositional example</a> obtains an interpolant by forgetting private atoms; here the two factor sequents were constructed from the supplied proof.</p></div>
+</section>
+
+<section id="numbered-atom-interpolation" data-formal="ppi-numbered-witness ppi-numbered-factors" data-kind="theorem">
+  <h2>Factor an ordinary classical consequence by a specified formula</h2>
+  <div class="statement-box"><p>For shared formulas \(A,B\) with numbered atoms, a classical proof \(\{A\}\vdash B\) gives a specified formula \(J\) such that</p><div class="math-display">\[\{A\}\vdash J,\qquad\{J\}\vdash B,\qquad\operatorname{at}(J)\subseteq\operatorname{at}(A)\cap\operatorname{at}(B).\]</div></div>
+  <div class="proof"><p>Run the actual <a href="analytic-propositional-proof-search#native-consequence">analytic procedure</a> on its supplied list \([N^-(A),N^+(B)]\). Its exact native-language theorem and the given classical proof force a proof result; the returned certificate \(T\) has underlying context \(\{N^-(A),N^+(B)\}\). Apply the specified extractor with singleton sides \(L=\{N^-(A)\}\), \(R=\{N^+(B)\}\), and define \(J=r(I)\) from its returned formula. The preceding lemma gives the two proofs and support bound.</p><p>This prescribes the formula from the given input list and the returned tree. It uses neither an arbitrary proof choice nor an interpolation theorem to select \(J\). The countable-atom restriction belongs to this use of analytic proof search. The extraction from a supplied sequent tree and the native-factor lemma themselves permit arbitrary atom sets with decidable equality.</p></div>
+</section>
+
+<section id="conjunction-example" data-formal="ppi-conjunction-proof ppi-conjunction-example" data-kind="lemma">
+  <h2>Follow a two-branch extraction</h2>
+  <p>For distinct atoms \(p,q\), let \(T\) be the primitive conjunction proof with conclusion \(\{\bar p,\bar q,p\land q\}\), whose first premise is the identity leaf on \(p\) and second premise the identity leaf on \(q\). For sides \(L=\{\bar p,\bar q\}\), \(R=\{p\land q\}\), the extractor returns exactly \(I=p\land q\).</p>
+  <div class="proof"><p>The principal conjunction is not in \(L\), so the right-conjunction case applies. At the first premise use sides \((L;R,p)\). The positive literal \(p\) is not in \(L\), while \(\bar p\) is. The atomic table therefore returns \(p\). Its second premise similarly returns \(q\), with sides \((L;R,q)\). The right-conjunction clause returns their conjunction in that order.</p><p>The left certificate is rebuilt from the two atomic factors. The right certificate is rebuilt from their opposite signed literals and the retained principal conjunction, exactly as in <a href="#right-conjunction"></a>. The common vocabulary is \(\{p,q\}\), which contains the exact support of this returned formula.</p></div>
+</section>
+
+<section id="empty-common-vocabulary" data-formal="ppi-left-constant ppi-right-constant ppi-inconsistent-factors ppi-tautological-factors cps-reading-atoms ppi-identity-proof" data-kind="question">
+  <h2>Can a proof need an interpolant with no atom names?</h2>
+  <p>Determine the extracted formulas for an identity proof of \(\{p,\bar p\}\) with sides \((L,R)=(\{p,\bar p\},\varnothing)\), and with the two sides reversed. How does this relate to an inconsistent premise or a tautological conclusion?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>With both literals on the left, the atomic table returns \(\bot\): identity proves \(L,\bot\), and truth proves \(\varnothing,\top\). With both on the right, it returns \(\top\), with the roles exchanged. Both constants have empty support, as the empty vocabulary on one side requires.</p><p>In ordinary language, \(p\land\neg p\) implies any conclusion through interpolant \(\bot\). Any premise implies the tautology \(q\lor\neg q\) through interpolant \(\top\). These two factorizations use no atom in the middle, even when the endpoint formulas have disjoint atom sets. Their factor proofs follow by contradiction and explosion in the first case, and excluded middle in the second. They illustrate why the NNF grammar retains both constants.</p></div></details>
+</section>
+
+<section id="nonunique-witnesses" data-formal="ppi-nonunique ppi-overlap-top ppi-identity-proof" data-kind="question">
+  <h2>Does the common-vocabulary condition determine one formula?</h2>
+  <p>For the valid one-sided sequent \(\{p,\bar p\}\), split both sides as \(L=R=\{p,\bar p\}\). Must two interpolation witnesses have equivalent formulas?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Both \(\bot\) and \(\top\) are witnesses: each side already contains an opposite pair, so both factor sequents have an identity proof; a factor with an added \(\top\) can also use truth. Both supports are empty. The two constants are not Boolean equivalent, since their values are always different.</p><p>The specified extractor returns \(\bot\) for the identity leaf with these sides, by its first membership row. This is a deterministic choice for that supplied tree and split, not uniqueness of all possible interpolation witnesses.</p></div></details>
+</section>

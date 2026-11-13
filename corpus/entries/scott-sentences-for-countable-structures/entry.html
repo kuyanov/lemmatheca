@@ -1,0 +1,77 @@
+<section id="signed-atomic-descriptions" data-formal="scott-indexed-conjunction scott-indexed-conjunction-truth scott-atomic-agreement scott-atomic-description scott-atomic-description-truth scott-tuple-map scott-tuple-map-coordinates" data-kind="definition">
+  <h2>Record everything atomic about a finite tuple</h2>
+  <p>An infinitary sentence can say that a set is infinite. Can one sentence instead describe a particular countable structure up to isomorphism? Fix a countable first-order language \(L\) and a nonempty countable \(L\)-structure \(M\). Functions, constants and nullary relations are allowed. Here countable includes finite. We use the <a href="infinitary-logic#finite-context-syntax">countable infinitary syntax</a>, with only finitely many free variables in each formula.</p>
+  <p>For a finite tuple \(\bar a\in M^n\), write \(\operatorname{At}_n(L)\) for all atomic formulas in that variable context. Give each such formula its true sign: \(\theta^{\bar a}=\theta\) if \(M\models\theta(\bar a)\), and \(\theta^{\bar a}=\neg\theta\) otherwise. The tuple's <strong>signed atomic description</strong> is</p>
+  <div class="math-display">\[\phi^0_{\bar a}(\bar x)=\bigwedge_{\theta\in\operatorname{At}_n(L)}\theta^{\bar a}(\bar x).\]</div>
+  <p>Atomic formulas use all finite terms, not just variables. There are countably many: finite strings over a countable alphabet form a countable set. The conjunction therefore belongs to the allowed syntax. An empty conjunction is \(\top\). Any conjunction over a countable index set can be represented by a sequence indexed by \(\mathbb N\), padding unused places by \(\top\); for disjunctions use \(\bot\).</p>
+  <p>A tuple \(\bar b\in N^n\) satisfies \(\phi^0_{\bar a}\) exactly when corresponding atomic formulas have the same truth value. In particular, equalities of coordinates agree, so \(a_i\mapsto b_i\) defines a bijection between the finite tuple ranges. As in <a href="back-and-forth#finite-partial-isomorphisms">finite partial isomorphisms</a>, all terms are evaluated in the ambient structures; those finite ranges need not themselves be closed under functions.</p>
+</section>
+
+<section id="ordinal-comparison" data-formal="scott-extension-step scott-ordinal-comparison scott-comparison-decreases scott-comparison-reflexive" data-kind="definition">
+  <h2>Allow a countable ordinal of back-and-forth tests</h2>
+  <p>For equally long tuples \(\bar a\in M^n\), \(\bar b\in N^n\), define the <strong>ordinal back-and-forth relations</strong> \(R_\alpha(M,\bar a;N,\bar b)\) by <a href="ordinals#transfinite-methods">transfinite recursion</a>. At zero require agreement on every atomic formula. At a successor require \(R_\alpha(M,\bar a;N,\bar b)\) and both extension conditions</p>
+  <div class="math-display">\[\begin{aligned}&\forall c\in M\ \exists d\in N\quad R_\alpha(M,\bar a c;N,\bar b d),\\&\forall d\in N\ \exists c\in M\quad R_\alpha(M,\bar a c;N,\bar b d).\end{aligned}\]</div>
+  <p>At a nonzero limit \(\lambda\), require \(R_\beta\) for every \(\beta&lt;\lambda\). Tuples may repeat coordinates, and \(\bar a c\) means append one coordinate. The empty tuples are included. This extends the <a href="finite-round-comparison#finite-round-game">finite extension tests</a>, while allowing countably many atomic formulas and limit stages.</p>
+  <p>These relations decrease with the ordinal: \(R_\alpha\) implies \(R_\beta\) for \(\beta\le\alpha\). Induction proves this, using the retained old relation at a successor and the defining conjunction at a limit. Comparing a structure with itself gives reflexivity at every stage: answer each new coordinate by itself and use the preceding stage. No enumeration of a structure is needed for these assertions.</p>
+</section>
+
+<section id="comparison-formulas" data-formal="scott-indexed-disjunction scott-indexed-disjunction-truth scott-comparison-formula" data-kind="definition">
+  <h2>Express each comparison by an actual infinitary formula</h2>
+  <p>For every countable ordinal \(\alpha\) and tuple \(\bar a\in M^n\), define its <strong>comparison formula</strong> \(\phi^\alpha_{\bar a}(\bar x)\). Start with the signed atomic description. Having defined the preceding formulas, put</p>
+  <div class="math-display">\[\phi^{\alpha+1}_{\bar a}(\bar x)=\phi^\alpha_{\bar a}(\bar x)\land\bigwedge_{c\in M}\exists y\,\phi^\alpha_{\bar a c}(\bar x,y)\land\forall y\,\bigvee_{c\in M}\phi^\alpha_{\bar a c}(\bar x,y).\]</div>
+  <p>For a nonzero countable limit \(\lambda\), put \(\phi^\lambda_{\bar a}=\bigwedge_{\beta&lt;\lambda}\phi^\beta_{\bar a}\). The conjunctions and disjunctions over \(M\), and over predecessors of \(\lambda\), are countable. Each displayed component has the same finite free context \(\bar x\): the appended variable \(y\) is bound before combining components. Thus the construction produces formulas of \(L_{\omega_1,\omega}\), rather than expressions with infinitely many free variables.</p>
+  <p>The recursion is legitimate because every formula used on the right has a smaller ordinal index. Choose countable enumerations of the index sets and use the padding convention above. Different enumeration choices can change the written syntax, but the semantic statements below do not depend on them.</p>
+</section>
+
+<section id="formula-comparison-bridge" data-formal="scott-formula-comparison-bridge scott-comparison-reflexive scott-comparison-decreases" data-kind="lemma">
+  <h2>The formulas describe exactly the recursive relations</h2>
+  <p>For every countable \(\alpha\), every \(\bar a\in M^n\), and every tuple \(\bar b\in N^n\) in any nonempty \(L\)-structure \(N\),</p>
+  <div class="math-display">\[N\models\phi^\alpha_{\bar a}(\bar b)\quad\Longleftrightarrow\quad R_\alpha(M,\bar a;N,\bar b).\]</div>
+  <div class="proof"><p>Induct on \(\alpha\). At zero, the positive and negative atomic clauses assert exactly atomic agreement. At a successor, the first conjunct gives the old comparison. Satisfaction of the next countable conjunction means that for each \(c\in M\) there is \(d\in N\) satisfying the appended-tuple formula. By induction this is precisely forth. The universal quantifier followed by the countable disjunction says that for every \(d\in N\) some \(c\in M\) gives that comparison, which is back. At a limit, satisfaction of a conjunction is satisfaction at every earlier index, giving the limit relation.</p>
+  <p>In particular, \(M\models\phi^\alpha_{\bar a}(\bar a)\), and satisfaction of a higher comparison formula implies satisfaction of every lower one. The target \(N\) need not be countable for this lemma.</p></div>
+</section>
+
+<section id="countable-stabilization" data-formal="scott-stabilization-predicate scott-countable-stabilization scott-stability-persists" data-kind="theorem">
+  <h2>Comparisons inside the fixed countable structure stabilize</h2>
+  <p>There is a countable ordinal \(\alpha\) such that, simultaneously for every \(n\) and every \(\bar a,\bar b\in M^n\),</p>
+  <div class="math-display">\[R_\alpha(M,\bar a;M,\bar b)\quad\Longleftrightarrow\quad R_{\alpha+1}(M,\bar a;M,\bar b).\]</div>
+  <div class="proof"><p>The set \(S=\bigcup_{n&lt;\omega}(\{n\}\times M^n\times M^n)\) of finite tuple pairs is countable. If no countable stage stabilized, at every \(\beta&lt;\omega_1\) choose a pair belonging to \(R_\beta\) but not \(R_{\beta+1}\). Pairs chosen at different stages are different: a pair lost at \(\beta+1\) cannot belong to any later relation, since the relations decrease. This gives an injection of the <a href="axiom-of-choice#first-uncountable-ordinal">uncountable ordinal \(\omega_1\)</a> into the countable set \(S\), a contradiction. Thus some such \(\alpha\) exists.</p>
+  <p>Once equality occurs, the same relations persist at every later countable stage. The successor operator is the fixed operation that retains a relation and imposes its forth/back extension tests on tuple pairs of every length. Applying it to equal families gives equal families. At a limit beyond \(\alpha\), intersection with the earlier, larger relations leaves that same family. Transfinite induction proves the assertion. Stabilization is asserted inside \(M\); it is not an assertion about every possible target structure at once.</p></div>
+</section>
+
+<section id="scott-sentence" data-formal="scott-universal-closure scott-universal-closure-truth scott-sentence-at-rank scott-chosen-stabilization scott-sentence" data-kind="definition">
+  <h2>One sentence demands the stable extension tests everywhere</h2>
+  <p>Choose a stabilizing countable ordinal \(\alpha\) as above. For a formula with free context \(x_0,\ldots,x_{n-1}\), write \(\forall\bar x\) for the finite universal closure; for \(n=0\) this changes nothing. Define the <strong>Scott sentence</strong> constructed from \(M\) and \(\alpha\) by</p>
+  <div class="math-display">\[\sigma_M=\phi^\alpha_{\varnothing}\ \land\ \bigwedge_{n&lt;\omega}\ \bigwedge_{\bar a\in M^n}\forall\bar x\,\bigl(\phi^\alpha_{\bar a}(\bar x)\to\phi^{\alpha+1}_{\bar a}(\bar x)\bigr).\]</div>
+  <p>This is an actual sentence of \(L_{\omega_1,\omega}\). There are countably many finite tuples in \(M\), both \(\alpha\) and \(\alpha+1\) are countable, and each universal closure binds only finitely many variables. The symbols \(\bar a\) index the conjunction; they are not new constants of the language.</p>
+  <p>More generally, a <strong>Scott sentence for \(M\)</strong> means a sentence of this infinitary language whose countable nonempty models are exactly the structures isomorphic to \(M\). The theorem below proves that the displayed construction has this property.</p>
+</section>
+
+<section id="fixed-model-satisfies" data-formal="scott-sentence-at-self scott-sentence-self" data-kind="lemma">
+  <h2>The fixed structure satisfies its constructed sentence</h2>
+  <p>\(M\models\sigma_M\).</p>
+  <div class="proof"><p>Reflexivity and the formula-comparison bridge give \(M\models\phi^\alpha_{\varnothing}\). For an arbitrary tuple \(\bar a\in M^n\) and assignment \(\bar b\in M^n\), suppose \(M\models\phi^\alpha_{\bar a}(\bar b)\). The bridge gives \(R_\alpha(M,\bar a;M,\bar b)\). Stabilization, which compares two tuples in this same structure, gives \(R_{\alpha+1}(M,\bar a;M,\bar b)\). Apply the bridge again to obtain the consequent. This proves every universally closed implication, and hence their countable conjunction.</p></div>
+</section>
+
+<section id="sentence-gives-extension" data-formal="scott-tuple-map scott-tuple-map-coordinates scott-tuple-map-extends scott-sentence-system" data-kind="lemma">
+  <h2>A model of the sentence supplies forth and back</h2>
+  <p>If a nonempty \(L\)-structure \(N\) satisfies \(\sigma_M\), let \(\mathcal I\) contain all maps \(a_i\mapsto b_i\) obtained from equally long finite tuples with \(N\models\phi^\alpha_{\bar a}(\bar b)\). Then \(\mathcal I\) is a <a href="back-and-forth#back-and-forth-systems">back-and-forth system</a> of finite partial isomorphisms between \(M,N\).</p>
+  <div class="proof"><p>The first conjunct supplies the empty tuple match, so the family is nonempty. The bridge and decreasing comparisons give atomic agreement at each displayed pair of tuples. Equalities make the coordinate map well defined and injective, and all atomic formulas, including those using terms, are preserved in both directions. Any atomic formula on elements of the finite domain can be rewritten by choosing their tuple-coordinate indices, so the same agreement holds on every finite tuple from that domain. Thus each map is a finite partial isomorphism.</p>
+  <p>For a displayed match and any \(c\in M\), the universal implication indexed by \(\bar a\) makes \(N\models\phi^{\alpha+1}_{\bar a}(\bar b)\). Its forth conjunct supplies \(d\in N\) with \(N\models\phi^\alpha_{\bar a c}(\bar b d)\). This tuple defines a member of \(\mathcal I\) extending the old map and including \(c\) in its domain. If \(c\) was already present, atomic equality forces its previous image; if it was new, atomic inequality forces a new image.</p>
+  <p>For back, start with any \(d\in N\). The universally quantified disjunction in that same successor formula supplies \(c\in M\) with the same appended-tuple property. The extended map includes \(d\) in its range. The chosen witness is in \(M\), while the prescribed point is in \(N\). This proves both extension requirements without assuming that \(N\) is saturated or countable.</p></div>
+</section>
+
+<section id="countable-characterization" data-formal="scott-countable-characterization scott-sentence-at-isomorphism bf-countable-isomorphism il-sentence-isomorphism" data-kind="theorem">
+  <h2>Scott's isomorphism theorem</h2>
+  <div class="statement-box"><p>Every nonempty countable structure in a countable first-order language has a Scott sentence. For the constructed \(\sigma_M\), every nonempty countable \(L\)-structure \(N\) satisfies</p>
+  <div class="math-display">\[N\models\sigma_M\quad\Longleftrightarrow\quad M\cong N.\]</div></div>
+  <div class="proof"><p>If \(N\models\sigma_M\), the preceding lemma provides a back-and-forth system. The existing <a href="back-and-forth#countable-isomorphism">countable back-and-forth theorem</a> extends its empty map to an actual \(L\)-isomorphism. Concretely, enumerate both carriers and alternate domain and range extensions; the compatible union is a bijection. Any atomic formula involves only finitely many chosen points, all present at some finite stage, so the union preserves its truth. In particular, the atomic equations for function values and constants give preservation of every operation.</p>
+  <p>Conversely, \(M\models\sigma_M\), and <a href="infinitary-logic#isomorphism-invariance">infinitary isomorphism invariance</a> carries this truth through any isomorphism \(M\cong N\). This proves the equivalence. Finite structures are included: their finite tuple powers and their union over all lengths are still countable, and countable enumerations may repeat points.</p></div>
+</section>
+
+<section id="uncountable-models-question" data-formal="il-infinity-sentence il-infinity-truth scott-infinity-equality scott-infinity-uncountable" data-kind="question">
+  <h2>Must a Scott sentence exclude every uncountable model?</h2>
+  <p>In the language of equality alone, consider a countably infinite set. Is every model of a Scott sentence for this structure necessarily countable?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The sentence <a href="infinitary-logic#one-sentence-infinity">\(\operatorname{Inf}\)</a>, the conjunction saying that there are at least \(n\) distinct elements for every natural \(n\), is a Scott sentence for any countably infinite equality structure. Every countable model of it is countably infinite, and any bijection is an isomorphism in the equality language. Conversely every such structure is infinite and satisfies the sentence.</p>
+  <p>The same sentence holds in every uncountable set, since it only asserts infinitude. Scott's theorem characterizes a structure among countable models; it neither bounds the cardinalities of all models of the sentence nor makes an arbitrary countable structure categorical in first-order logic.</p></div></details>
+</section>

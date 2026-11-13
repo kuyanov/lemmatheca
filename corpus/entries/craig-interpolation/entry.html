@@ -6,12 +6,13 @@
   <p>The last condition is essential: taking \(\theta=\varphi\) always meets the first two conditions, but can retain symbols absent from \(\psi\). The <a href="changing-languages#finite-symbol-support">symbol-support definition</a> applies to the actual syntax, not just to symbols on which a particular structure's truth value happens to depend.</p>
 </section>
 
-<section id="propositional-example" data-formal="ci-forgetting-operation ci-forgetting-semantics ci-propositional-example prop-substitution-evaluation res-elimination-extension res-elimination-models" data-kind="lemma">
+<section id="propositional-example" data-formal="ci-forgetting-operation ci-forgetting-semantics ci-propositional-example prop-substitution-evaluation res-elimination-extension res-elimination-models ppi-numbered-witness ppi-numbered-factors" data-kind="lemma">
   <h2>A shared atom can carry the whole implication</h2>
   <p>For distinct propositional atoms \(p,q,r\), the consequence \(p\land q\models q\lor r\) has interpolant \(q\). More generally, for a finite propositional formula \(A\), eliminating an atom \(p\) by the formula \(A[p:=\bot]\lor A[p:=\top]\) gives exactly the assignments to the remaining atoms that extend to an assignment satisfying \(A\).</p>
   <div class="proof">
     <p>If \(p\land q\) is true, then \(q\) is true; if \(q\) is true, then \(q\lor r\) is true. The only common atom is \(q\). For the general assertion, any truth value assigned to \(p\) is either false or true. Thus one of the two substituted formulas is true exactly when such an extension exists. This is the semantic operation implemented by <a href="propositional-resolution#eliminating-an-atom">resolution elimination</a>. First-order quantifiers and functions prevent this two-case argument from being a general first-order proof.</p>
   </div>
+  <p>For ordinary formulas with numbered atoms, <a href="propositional-proof-interpolation#numbered-atom-interpolation">interpolation from a classical proof</a> gives another construction. Analytic search supplies a sequent certificate, and a rule-by-rule recursion extracts the middle formula together with two primitive factor proofs and their common-atom bound.</p>
 </section>
 
 <section id="supported-sentences" data-formal="cl-formula-restriction cl-formula-restriction-recovery ci-included-symbols" data-kind="lemma">

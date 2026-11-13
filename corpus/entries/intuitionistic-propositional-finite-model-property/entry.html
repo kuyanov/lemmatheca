@@ -1,0 +1,129 @@
+<section id="finite-subformulas" data-formal="ifmp-subformulas ifmp-closed ifmp-problem-subformulas ifmp-problem-atoms prop-atom-support" data-kind="definition">
+  <h2>Keep every subformula needed by a finite problem</h2>
+  <p>Use the <a href="intuitionistic-propositional-kripke-completeness#numbered-language">shared propositional formulas with numbered atoms</a>, including primitive negation. The <strong>subformula set</strong> of a formula is defined recursively:</p>
+  <div class="math-display">\[\operatorname{Sub}(p_i)=\{p_i\},\qquad\operatorname{Sub}(\bot)=\{\bot\},\qquad\operatorname{Sub}(\neg B)=\{\neg B\}\cup\operatorname{Sub}(B).\]</div>
+  <div class="math-display">\[\operatorname{Sub}(B\circ C)=\{B\circ C\}\cup\operatorname{Sub}(B)\cup\operatorname{Sub}(C),\qquad\circ\in\{\land,\lor,\to\}.\]</div>
+  <p>A finite formula set \(\Sigma\) is <strong>subformula closed</strong> if \(A\in\Sigma\) implies \(\operatorname{Sub}(A)\subseteq\Sigma\). For a finite premise set \(\Gamma\) and conclusion \(A\), define the <strong>tracked set</strong> and <strong>atom support</strong> of the problem by</p>
+  <div class="math-display">\[\Sigma(\Gamma,A):=\operatorname{Sub}(A)\cup\bigcup_{B\in\Gamma}\operatorname{Sub}(B),\qquad S(\Gamma,A):=\operatorname{At}(A)\cup\bigcup_{B\in\Gamma}\operatorname{At}(B).\]</div>
+  <p>Here \(\operatorname{At}\) is the finite set of occurring atom names. Both displayed constructions are finite calculations on the given formulas.</p>
+</section>
+
+<section id="subformula-closure" data-formal="ifmp-subformula-self ifmp-subformula-transitivity ifmp-subformula-closure ifmp-subformula-atoms ifmp-problem-closed ifmp-problem-contains ifmp-problem-atom-membership ifmp-problem-support" data-kind="lemma">
+  <h2>The tracked set contains its children and exactly the required atoms</h2>
+  <p>Every \(\operatorname{Sub}(A)\) is finite, contains \(A\), and is subformula closed. Consequently \(\Sigma(\Gamma,A)\) is finite and subformula closed, contains \(\Gamma\cup\{A\}\), and satisfies</p>
+  <div class="math-display">\[p_i\in\Sigma(\Gamma,A)\quad\Longleftrightarrow\quad i\in S(\Gamma,A).\]</div>
+  <div class="proof"><p>Induct on a formula. An atom and falsum give singleton sets. At a negation, adjoining the formula to the child's finite closed set keeps the result finite; every proper subformula already occurs in that child. At a binary connective the same argument uses the union of its two children's sets. This also proves that if \(C\in\operatorname{Sub}(B)\), then \(\operatorname{Sub}(C)\subseteq\operatorname{Sub}(B)\). Hence a finite union of these sets is closed.</p><p>In the same induction, an atomic formula \(p_i\) is a subformula exactly when its name occurs in the formula: negation preserves the atom names, and a binary connective takes their union. Taking the finite union over the problem proves the last equivalence. In particular, a tracked negation brings its argument with it, and a tracked binary connective brings both arguments.</p></div>
+</section>
+
+<section id="canonical-traces" data-formal="ifmp-trace ifmp-trace-worlds ifmp-trace-world" data-kind="definition">
+  <h2>Replace a prime theory by its finite trace</h2>
+  <p>Fix a finite subformula-closed \(\Sigma\). For a <a href="intuitionistic-propositional-kripke-completeness#prime-theories">prime intuitionistic theory</a> \(T\), its <strong>trace</strong> is</p>
+  <div class="math-display">\[t_\Sigma(T):=T\cap\Sigma.\]</div>
+  <p>The <strong>trace worlds</strong> are all distinct subsets obtained this way:</p>
+  <div class="math-display">\[W_\Sigma:=\{t_\Sigma(T):T\text{ is a prime theory}\},\qquad s\leq t\iff s\subseteq t.\]</div>
+  <p>A world is the subset itself; two theories with the same trace give one world. Every world has at least one prime representative, but no representative is chosen to define its atom values. Inclusion makes \(W_\Sigma\) a partial order.</p>
+</section>
+
+<section id="finite-trace-model" data-formal="ifmp-trace-model ifmp-trace-card-bounds ifmp-trace-subset" data-kind="definition">
+  <h2>Give the finite worlds a persistent atom valuation</h2>
+  <p>The <strong>finite trace model</strong> \(\mathcal C_\Sigma\) has frame \(W_\Sigma\) and valuation</p>
+  <div class="math-display">\[s\Vdash_\Sigma p_i\quad\Longleftrightarrow\quad p_i\in s.\]</div>
+  <p>Since \(s\subseteq\Sigma\), every atom absent from \(\Sigma\) is false at every world. For tracked atoms, the formula \(p_i\) belongs to \(t_\Sigma(T)\) exactly when it belongs to \(T\). Thus the valuation is specified on all atom names and depends only on the trace.</p>
+  <p>These data define a nonempty finite <a href="intuitionistic-kripke-semantics#frames-and-valuations">Kripke model</a>, and</p>
+  <div class="math-display">\[1\leq |W_\Sigma|\leq 2^{|\Sigma|}.\]</div>
+  <div class="proof"><p>Inclusion is reflexive, transitive and antisymmetric. If \(s\subseteq t\), every atom in \(s\) also lies in \(t\), proving persistence. The <a href="intuitionistic-propositional-kripke-completeness#canonical-model">canonical model has a prime world</a>, whose trace witnesses nonemptiness. Every trace is a subset of the finite set \(\Sigma\), so the inclusion into its power set is injective. That power set has \(2^{|\Sigma|}\) members, giving finiteness and the stated bound.</p></div>
+</section>
+
+<section id="trace-order" data-formal="ifmp-trace-monotonicity ifmp-trace-transfer" data-kind="lemma">
+  <h2>Know exactly what trace inclusion preserves</h2>
+  <p>If prime theories satisfy \(T\subseteq U\), then \(t_\Sigma(T)\subseteq t_\Sigma(U)\). Conversely, if their traces satisfy this inclusion and \(B\in\Sigma\cap T\), then \(B\in U\).</p>
+  <div class="proof"><p>The first assertion follows by intersecting a subset inclusion with \(\Sigma\). For the second, \(B\in T\cap\Sigma=t_\Sigma(T)\); trace inclusion puts it in \(t_\Sigma(U)=U\cap\Sigma\), hence in \(U\).</p></div>
+  <p>The converse assertion does not claim \(T\subseteq U\). Trace inclusion need only preserve tracked formulas. This is enough for the implication and negation cases below, because their principal formulas themselves belong to \(\Sigma\).</p>
+</section>
+
+<section id="bounded-truth-lemma" data-formal="ifmp-bounded-truth" data-kind="theorem">
+  <h2>The finite model preserves every tracked formula</h2>
+  <div class="statement-box"><p>For every finite subformula-closed \(\Sigma\), prime theory \(T\), and \(B\in\Sigma\),</p><div class="math-display">\[\mathcal C_\Sigma,t_\Sigma(T)\Vdash B\quad\Longleftrightarrow\quad B\in T.\]</div></div>
+  <div class="proof"><p>Induct on \(B\), proving the assertion for all prime representatives simultaneously. For an atom, membership in the trace is membership in \(T\), since the atom is tracked. Falsum fails on both sides: its forcing clause is false, and a consistent theory cannot contain it. A tracked conjunction or disjunction has tracked children. Their forcing clauses, the induction hypotheses, and the <a href="intuitionistic-propositional-kripke-completeness#membership-laws">prime-theory membership laws</a> give the equivalence.</p><p>Suppose \(B=C\to D\) belongs to \(T\). Take any later trace \(s\supseteq t_\Sigma(T)\), and choose a prime representative \(U\) of \(s\). Since \(C\to D\) is tracked, trace inclusion puts that implication in \(U\). If \(s\Vdash C\), induction gives \(C\in U\). Deductive closure and implication elimination give \(D\in U\), and induction gives \(s\Vdash D\). Thus the implication is forced. Conversely, if \(C\to D\notin T\), the <a href="intuitionistic-propositional-kripke-completeness#missing-implication">specified prime extension</a> \(U\supseteq T\) contains \(C\) and omits \(D\). Its trace extends that of \(T\), and induction makes it a world forcing \(C\) without forcing \(D\). Hence the implication fails.</p><p>For native \(B=\neg C\), membership \(\neg C\in T\) transfers to every later trace's prime representative by the same tracked-formula argument. Such a representative cannot contain \(C\), by consistency, so induction says that no later trace forces \(C\). This is exactly forcing \(\neg C\). If instead \(\neg C\notin T\), the <a href="intuitionistic-propositional-kripke-completeness#missing-negation">negation extension lemma</a> gives a prime \(U\supseteq T\) containing \(C\). Its trace is later and forces \(C\) by induction, so the negation fails. All induction applications are legitimate because the children lie in \(\Sigma\).</p></div>
+</section>
+
+<section id="bounded-countermodels" data-formal="ifmp-world-bound ifmp-bounded-countermodel ifmp-finite-poset-countermodel" data-kind="theorem">
+  <h2>A failed finite deduction has a bounded finite partial-order countermodel</h2>
+  <div class="statement-box"><p>Let \(\Gamma\) be a finite set of numbered-atom formulas. If \(\Gamma\nvdash_{\mathrm I}A\), there is a nonempty finite partially ordered Kripke model and a world forcing every member of \(\Gamma\) without forcing \(A\). It can be chosen with at most</p><div class="math-display">\[N(\Gamma,A):=2^{|\Sigma(\Gamma,A)|}\]</div><p>worlds. A specified choice is \(\mathcal C_{\Sigma(\Gamma,A)}\) at the trace of \(\mathsf E(\Gamma,A)\).</p></div>
+  <div class="proof"><p><a href="intuitionistic-propositional-kripke-completeness#strong-completeness">Canonical completeness</a> supplies the prime theory \(T=\mathsf E(\Gamma,A)\), which contains \(\Gamma\) and omits \(A\). Each premise and the conclusion belongs to the tracked set. The bounded truth lemma therefore makes \(t_\Sigma(T)\) force all the premises and fail the conclusion in the precise trace model. Its frame is a partial order and has the preceding cardinal bound.</p></div>
+</section>
+
+<section id="finite-model-property" data-formal="ifmp-finite-model-property ifmp-finite-poset-countermodel ikc-strong-completeness gpt-maximal-boolean-valuation gpt-finite-double-negation gpt-glivenko" data-kind="theorem">
+  <h2>Finite models suffice to test propositional validity</h2>
+  <p>For every numbered-atom formula \(A\), the following are equivalent: \(\vdash_{\mathrm I}A\); \(A\) is valid in every Kripke model; and \(A\) is valid in every nonempty finite partially ordered Kripke model. If \(A\) is not a theorem, a countermodel with at most \(2^{|\operatorname{Sub}(A)|}\) worlds suffices. This is the <strong>finite model property</strong>.</p>
+  <div class="proof"><p>Soundness gives validity in all models from a proof, and this implies validity in the stated finite subclass. If no proof exists, apply the bounded countermodel theorem with \(\Gamma=\varnothing\). It gives a member of that very subclass refuting \(A\), so validity there implies theoremhood. The tracked set for empty premises is exactly \(\operatorname{Sub}(A)\).</p></div>
+  <p>Maximal worlds in these finite partial orders behave like Boolean valuations. This gives a <a href="glivenkos-propositional-theorem#glivenko-theorem">proof of Glivenko’s theorem</a>: every classical propositional theorem has an intuitionistic double-negated theorem.</p>
+</section>
+
+<section id="finite-model-codes" data-formal="ifmp-relation-code ifmp-valuation-code ifmp-extended-valuation ifmp-admissible-code ifmp-admissible-test ifmp-relation-code-count ifmp-valuation-code-count" data-kind="definition">
+  <h2>Describe a finite candidate by two Boolean tables</h2>
+  <p>For a natural number \(n\), write \([n]=\{0,\ldots,n-1\}\). Fix a finite atom set \(S\). A <strong>finite model code</strong> on \([n]\) consists of a relation table \(r:[n]\times[n]\to\{0,1\}\) and an atom table \(v:[n]\times S\to\{0,1\}\). Its <strong>extended atom table</strong> is</p>
+  <div class="math-display">\[\widehat v(i,p):=\begin{cases}v(i,p),&amp;p\in S,\\0,&amp;p\notin S.\end{cases}\]</div>
+  <p>A code is <strong>admissible</strong> when \(r\) is reflexive and transitive and its atom table persists:</p>
+  <div class="math-display">\[r(i,j)=1\text{ and }v(i,p)=1\quad\Longrightarrow\quad v(j,p)=1\qquad(i,j\in[n],\ p\in S).\]</div>
+  <p>Every condition is checked by finite loops through these tables. There are \(2^{n^2}\) relation tables and \(2^{n|S|}\) atom tables. Antisymmetry is not required for the search.</p>
+</section>
+
+<section id="code-models" data-formal="ifmp-code-model" data-kind="lemma">
+  <h2>An admissible table gives an actual persistent model</h2>
+  <p>If \(n&gt;0\), an admissible code defines a Kripke model \(M_{r,v}\) with worlds \([n]\), accessibility \(i\leq_r j\iff r(i,j)=1\), and atom verification \(\widehat v(i,p)=1\).</p>
+  <div class="proof"><p>The first two admissibility tests are exactly reflexivity and transitivity of accessibility. For persistence, a verified atom must lie in \(S\), since all other values were set to zero. The third test therefore applies and keeps the atom verified. The world \(0\in[n]\) witnesses nonemptiness. Hence these are precisely the required model data, rather than arbitrary tables on which soundness has been assumed.</p></div>
+</section>
+
+<section id="boolean-forcing" data-formal="ifmp-boolean-forcing" data-kind="definition">
+  <h2>Compute forcing by recursion through a finite model code</h2>
+  <p>For any two tables, even before testing admissibility, define the <strong>Boolean forcing value</strong> \(e_{r,v}(i,B)\) by recursion on the actual formula:</p>
+  <div class="math-display">\[e(i,p)=\widehat v(i,p),\qquad e(i,\bot)=0.\]</div>
+  <div class="math-display">\[e(i,B\land C)=e(i,B)\land e(i,C),\qquad e(i,B\lor C)=e(i,B)\lor e(i,C).\]</div>
+  <div class="math-display">\[e(i,\neg B)=\bigwedge_{j&lt;n}\bigl(\neg r(i,j)\lor\neg e(j,B)\bigr).\]</div>
+  <div class="math-display">\[e(i,B\to C)=\bigwedge_{j&lt;n}\bigl(\neg r(i,j)\lor\neg e(j,B)\lor e(j,C)\bigr).\]</div>
+  <p>The operations on the right are Boolean operations; a finite conjunction is one exactly when every factor is one. A conjunction over no indices has value one. Every recursive formula argument is a proper subformula, so this is a terminating calculation; the future-world loops range only over \([n]\).</p>
+</section>
+
+<section id="boolean-forcing-correctness" data-formal="ifmp-boolean-forcing-correctness" data-kind="lemma">
+  <h2>The finite calculation agrees with native forcing</h2>
+  <p>For an admissible code with \(n&gt;0\), every formula \(B\) and \(i\in[n]\) satisfy</p>
+  <div class="math-display">\[e_{r,v}(i,B)=1\quad\Longleftrightarrow\quad M_{r,v},i\Vdash B.\]</div>
+  <div class="proof"><p>Induct on \(B\), simultaneously at all worlds. The atomic clause is the model valuation, and falsum has value zero and is never forced. Boolean conjunction and disjunction agree with the two current-world forcing clauses by induction. For a negation, its finite conjunction is one exactly when every \(j\) satisfying \(r(i,j)=1\) has \(e(j,B)=0\). Induction identifies this with failure to force \(B\) at every extension, the native negation clause. The implication calculation similarly says that every extension forcing the antecedent also forces the consequent. This handles every constructor without replacing negation by a different syntax.</p></div>
+</section>
+
+<section id="relabeling-finite-models" data-formal="ifmp-present-relation ifmp-present-valuation ifmp-presentation-admissible ifmp-presentation-forcing" data-kind="lemma">
+  <h2>Every finite countermodel can be presented by such tables</h2>
+  <p>Let \(M\) be a nonempty finite preordered Kripke model with \(n\) worlds, and let \(S\) be finite. Choose a bijection \(b:[n]\to W\), and define</p>
+  <div class="math-display">\[r(i,j)=1\iff b(i)\leq b(j),\qquad v(i,p)=1\iff M,b(i)\Vdash p\quad(p\in S).\]</div>
+  <p>The code is admissible. For every formula \(B\) whose atom support is contained in \(S\),</p>
+  <div class="math-display">\[e_{r,v}(i,B)=1\quad\Longleftrightarrow\quad M,b(i)\Vdash B.\]</div>
+  <div class="proof"><p>Reflexivity, transitivity and persistence follow from the corresponding properties of \(M\). For the formula assertion, induct on \(B\). Every atom under consideration lies in \(S\), so its table entry has exactly the original value. Falsum and the two current-world binary clauses follow directly. For negation and implication, surjectivity of \(b\) identifies the finite loop through all \(j\in[n]\) with all original worlds; the relation table identifies precisely the accessible ones. Apply the induction hypotheses to their proper subformulas, whose atom supports remain in \(S\).</p><p>A designated original world is represented by its unique preimage under \(b\). Thus both premise forcing and failure of a supported conclusion transfer to the displayed finite tables. No preservation is asserted for atoms outside \(S\), whose original values may have been discarded.</p></div>
+</section>
+
+<section id="bounded-model-search" data-formal="ifmp-candidate-test ifmp-bounded-search aps-underlying-set" data-kind="definition">
+  <h2>Scan every candidate within the proved world bound</h2>
+  <p>A <strong>presented finite problem</strong> is a finite list \(H\) of numbered-atom formulas together with a conclusion \(A\). Its premise set is \(\Gamma=\operatorname{set}(H)\); repetitions are allowed. Compute \(\Sigma=\Sigma(\Gamma,A)\), \(S=S(\Gamma,A)\), and \(N=2^{|\Sigma|}\).</p>
+  <p>The <strong>bounded countermodel test</strong> \(\operatorname{Refute}(H,A)\) has value one exactly when a scan of the following finite collection succeeds: for each \(0\leq n\leq N\), each relation table \(r\), each atom table \(v\), and each \(i\in[n]\), test admissibility and then test</p>
+  <div class="math-display">\[e_{r,v}(i,A)=0\quad\text{and}\quad e_{r,v}(i,B)=1\text{ for every formula }B\text{ in }H.\]</div>
+  <p>Return one if any candidate passes and zero if none does. The scan can enumerate all Boolean functions on the indicated finite domains; its answer is independent of the enumeration order. The case \(n=0\) has no designated world and contributes no candidate. The finite table tests and formula recursion make this an explicit terminating calculation, including empty premise lists and atom-free formulas.</p>
+</section>
+
+<section id="intuitionistic-decision" data-formal="ifmp-search-correctness ifmp-search-zero" data-kind="theorem">
+  <h2>The bounded scan decides finite intuitionistic consequence</h2>
+  <div class="statement-box"><p>For every finite problem \((H,A)\), with \(\Gamma=\operatorname{set}(H)\),</p><div class="math-display">\[\operatorname{Refute}(H,A)=1\quad\Longleftrightarrow\quad\Gamma\nvdash_{\mathrm I}A.\]</div><p>Consequently its zero answer is equivalent to \(\Gamma\vdash_{\mathrm I}A\), so the scan decides intuitionistic derivability for finite presented premises.</p></div>
+  <div class="proof"><p>If a candidate passes, its designated world makes \(n&gt;0\). The admissible tables give an actual model. Boolean-forcing correctness turns the tests into premise forcing and conclusion failure, so <a href="intuitionistic-kripke-semantics#intuitionistic-soundness">soundness</a> rules out a derivation.</p><p>Conversely, a failed deduction has the particular bounded finite partial-order countermodel from the trace construction. Let \(n\) be its number of worlds; then \(1\leq n\leq N\). Relabel it by \([n]\) and restrict its atom table to the computed support \(S\). Every input formula has support in \(S\), so the relabeling lemma preserves all required truth values at the counterexample world. The resulting admissible candidate is included in the finite scan and passes. Thus the test returns one.</p><p>All loops have bounds obtained from the finite input. This proves termination and correctness, without a claim that the total search is short. The procedure need not enumerate proofs while waiting for a countermodel; the cardinal bound already makes the model scan exhaustive.</p></div>
+</section>
+
+<section id="two-world-code" data-formal="ifmp-example-relation ifmp-example-valuation ifmp-example-problem ifmp-example-code ifmp-example-search" data-kind="lemma">
+  <h2>Read the excluded-middle countermodel as a finite code</h2>
+  <p>For the conclusion \(p_0\lor\neg p_0\) with no premises, the tracked set is \(\{p_0,\neg p_0,p_0\lor\neg p_0\}\), the support is \(\{0\}\), and \(N=8\). An accepted candidate already occurs at \(n=2\):</p>
+  <div class="math-display">\[r=\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix},\qquad v(0,0)=0,\qquad v(1,0)=1.\]</div>
+  <div class="proof"><p>The matrix is reflexive and transitive, and its only growing atom value is persistent. At world \(0\), the atom has value zero. The negation calculation includes the later world \(1\), where the atom has value one, so that negation also has value zero. The disjunction is therefore zero at \(0\). With no premises there are no further tests, and the candidate is accepted. Hence \(\operatorname{Refute}([],p_0\lor\neg p_0)=1\), in agreement with the <a href="intuitionistic-kripke-semantics#excluded-middle-countermodel">earlier chain countermodel</a>.</p></div>
+</section>
+
+<section id="closure-and-empty-traces" data-formal="ifmp-representative-ambiguity ifmp-closure-failure ifmp-empty-traces ikc-truth-theory-prime" data-kind="question">
+  <h2>Why track subformulas and specify all atom values?</h2>
+  <p>Can one use an arbitrary finite \(\Sigma\), giving an atom the value it has in any chosen representative? What happens to the trace model when \(\Sigma=\varnothing\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Representative values are not well defined for untracked atoms. In the two-world chain, both worlds force \(p_0\to p_0\), so their <a href="intuitionistic-propositional-kripke-completeness#truth-theories">truth theories</a> have the same trace on \(\Sigma=\{p_0\to p_0\}\). Yet they disagree on \(p_0\). Assigning its value from an arbitrary representative would give two different answers at the same trace.</p><p>Setting untracked atoms to zero removes that ambiguity, but subformula closure is still necessary for the truth assertion. Take \(\Sigma=\{\neg p_0\}\). In the chain's lower-world prime theory, \(\neg p_0\) is absent. Our trace valuation makes \(p_0\) false at every trace, because \(p_0\notin\Sigma\). Consequently every trace forces \(\neg p_0\), so its forcing no longer agrees with membership in that theory. Including the missing subformula \(p_0\) prevents this failure.</p><p>For \(\Sigma=\varnothing\), every prime theory has the one trace \(\varnothing\). Thus there is exactly one world, all atoms are false, and the bounded truth lemma is vacuous. The model is nonempty and the bound \(2^0=1\) is attained. The finite-model construction does not confuse an empty tracked set with an empty frame.</p></div></details>
+</section>

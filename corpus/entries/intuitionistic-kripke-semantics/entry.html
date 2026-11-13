@@ -1,0 +1,117 @@
+<section id="frames-and-valuations" data-formal="order-preorder iks-model" data-kind="definition">
+  <h2>Record possible extensions of the information at a world</h2>
+  <p>A <strong>Kripke frame</strong> is a nonempty set \(W\) with a <a href="ordered-sets#preorders">preorder</a> \(\leq\): it is reflexive and transitive. Its elements are <strong>worlds</strong>, and \(w\leq v\) means that \(v\) is a possible extension of \(w\). Partial orders are permitted, but antisymmetry is not needed for the arguments here.</p>
+  <p>Fix an atom set \(P\). A <strong>persistent atom valuation</strong> assigns each world a set \(V(w)\subseteq P\) such that \(w\leq v\) implies \(V(w)\subseteq V(v)\). A <strong>Kripke model</strong> \(M=(W,\leq,V)\) is a frame with such a valuation. An atom already verified at a world remains verified at every extension; an atom absent from \(V(w)\) may appear later.</p>
+</section>
+
+<section id="forcing-formulas" data-formal="prop-formula iks-forcing iks-negation-implication" data-kind="definition">
+  <h2>Test an implication at every future world</h2>
+  <p>Use the shared <a href="propositional-logic#formulas">propositional syntax</a>, including its separate negation symbol. The <strong>forcing relation</strong> \(M,w\Vdash A\), abbreviated \(w\Vdash A\) when the model is fixed, is defined by recursion on \(A\):</p>
+  <div class="math-display">\[w\Vdash p\iff p\in V(w),\qquad w\nVdash\bot.\]</div>
+  <div class="math-display">\[w\Vdash A\land B\iff(w\Vdash A\text{ and }w\Vdash B).\]</div>
+  <div class="math-display">\[w\Vdash A\lor B\iff(w\Vdash A\text{ or }w\Vdash B).\]</div>
+  <div class="math-display">\[w\Vdash A\to B\iff \forall v\geq w\;(v\Vdash A\Longrightarrow v\Vdash B).\]</div>
+  <div class="math-display">\[w\Vdash\neg A\iff \forall v\geq w\;(v\nVdash A).\]</div>
+  <p>All recursive calls concern proper subformulas, so these clauses determine one relation. In particular, the negation clause agrees exactly with the implication clause for \(A\to\bot\). The conjunction and disjunction clauses concern the current world. The implication and negation clauses also concern its extensions, including the current world by reflexivity.</p>
+</section>
+
+<section id="persistence" data-formal="iks-persistence" data-kind="lemma">
+  <h2>Forcing persists for every formula</h2>
+  <p>For every model, formula \(A\), and worlds \(w\leq v\), if \(w\Vdash A\), then \(v\Vdash A\).</p>
+  <div class="proof"><p>Induct on \(A\). The atomic case is the valuation condition, and falsum has no forcing world. A forced conjunction has both conjuncts, which persist by induction. For a forced disjunction, its chosen disjunct persists, giving the disjunction at \(v\).</p><p>If \(w\Vdash B\to C\), take any \(u\geq v\) forcing \(B\). Transitivity gives \(u\geq w\), so the original implication forces \(C\) at \(u\). This is exactly \(v\Vdash B\to C\). If \(w\Vdash\neg B\), every \(u\geq v\) also extends \(w\) and therefore fails to force \(B\). This proves persistence in the final case.</p></div>
+</section>
+
+<section id="negation-and-failure" data-formal="iks-negation-failure iks-double-negation-futures iks-chain-values" data-kind="lemma">
+  <h2>Negation excludes all later verification</h2>
+  <p>For every model and formula \(A\), \(w\Vdash\neg A\) implies \(w\nVdash A\), and</p>
+  <div class="math-display">\[w\Vdash\neg\neg A\iff \forall v\geq w\;\exists u\geq v\;(u\Vdash A).\]</div>
+  <div class="proof"><p>The first assertion applies the negation clause to \(w\leq w\). For the displayed equivalence, \(w\Vdash\neg\neg A\) says that no \(v\geq w\) forces \(\neg A\). Such a \(v\) forces \(\neg A\) exactly when every \(u\geq v\) fails to force \(A\). Negating that condition gives the required witness \(u\); conversely such a witness rules out \(v\Vdash\neg A\). This is ordinary classical reasoning about the model, not a new inference rule in its object logic.</p><p>Thus failure to force \(A\) at the current world is weaker than forcing \(\neg A\): the latter rules out verification at every extension. The two-world construction below gives an explicit strict example.</p></div>
+</section>
+
+<section id="kripke-consequence" data-formal="iks-context iks-countermodel iks-consequence iks-validity ifmp-finite-poset-countermodel iks-soundness" data-kind="definition">
+  <h2>Require preservation of assumptions at every world</h2>
+  <p>Write \(M,w\Vdash\Gamma\) when \(M,w\Vdash B\) for every formula \(B\) in a possibly infinite set \(\Gamma\). The <strong>Kripke consequence</strong> \(\Gamma\models_{\mathrm K}A\) means that, in every Kripke model and at every world, forcing all of \(\Gamma\) implies forcing \(A\). A formula is <strong>Kripke valid</strong> when \(\varnothing\models_{\mathrm K}A\).</p>
+  <p>A <strong>pointed countermodel</strong> to this consequence is a specified model and world forcing every member of \(\Gamma\) but failing to force \(A\). The world need not be least in the whole frame. Taking only its possible extensions will preserve all the relevant forcing statements.</p>
+  <p>For numbered-atom formulas and finite premises, validity can be tested using <a href="intuitionistic-propositional-finite-model-property#bounded-countermodels">bounded finite partial-order models</a>. The bound comes from the problem’s finite subformula set.</p>
+</section>
+
+<section id="intuitionistic-soundness" data-formal="iks-soundness iks-countermodel-nonderivability ikc-strong-completeness ikc-canonical-countermodel" data-kind="theorem">
+  <h2>Every intuitionistic proof is valid in every Kripke model</h2>
+  <div class="statement-box"><p>For every premise set \(\Gamma\) and formula \(A\), if \(\Gamma\vdash_{\mathrm I}A\) in <a href="intuitionistic-propositional-deduction#intuitionistic-rules">intuitionistic natural deduction</a>, then \(\Gamma\models_{\mathrm K}A\).</p></div>
+  <div class="proof"><p>Induct on the finite derivation, allowing any world of any model. An assumption is forced by the premise condition. Conjunction introduction combines the two forced conjuncts, and either elimination selects one. Disjunction introduction supplies a forced disjunct. For disjunction elimination, the current world forces one disjunct; its corresponding branch induction hypothesis applies with that formula added to the assumptions.</p><p>For implication introduction, suppose its branch derives \(B\) from \(\Gamma,A\). At a world \(w\) forcing \(\Gamma\), take \(v\geq w\) forcing \(A\). Persistence makes \(v\) force every member of \(\Gamma\). The branch induction hypothesis gives \(v\Vdash B\), establishing \(w\Vdash A\to B\). Implication elimination applies the implication clause at the current world using reflexivity.</p><p>For negation introduction, its branch derives \(\bot\) from \(\Gamma,A\). If a future \(v\geq w\) forced \(A\), persistence and the branch induction hypothesis would force \(\bot\) there, which is impossible. Hence \(w\Vdash\neg A\). Negation elimination cannot have both its premises forced, because the negation clause includes the current world. Falsum elimination has no world forcing its premise. These checks cover every primitive rule.</p><p>Consequently a pointed countermodel rules out a derivation with the specified assumptions. No completeness theorem is needed for this direction.</p></div>
+  <p>For the language with numbered atoms, the converse is the <a href="intuitionistic-propositional-kripke-completeness#strong-completeness">strong completeness theorem</a>: every failed intuitionistic deduction has a counterexample in one fixed canonical model, even for an infinite premise set.</p>
+</section>
+
+<section id="substitution-model" data-formal="prop-substitution iks-substitution-model" data-kind="definition">
+  <h2>Make substituted formulas into the new atom valuations</h2>
+  <p>Let \(M\) have atom set \(Q\), and let \(\sigma:P\to\operatorname{Form}(Q)\) assign a formula to each atom of \(P\). The <strong>substitution model</strong> \(M_\sigma\) has the same frame and the atom valuation</p>
+  <div class="math-display">\[p\in V_\sigma(w)\iff M,w\Vdash\sigma(p).\]</div>
+  <p>This is a Kripke model: if \(w\leq v\) and \(p\in V_\sigma(w)\), <a href="#persistence"></a> gives \(M,v\Vdash\sigma(p)\), hence \(p\in V_\sigma(v)\). Write \(A[\sigma]\) for the <a href="intuitionistic-propositional-deduction#formula-substitution">simultaneous substitution</a> in the actual shared syntax.</p>
+</section>
+
+<section id="substitution-truth" data-formal="iks-substitution-forcing" data-kind="theorem">
+  <h2>Substitution commutes with forcing in the specified model</h2>
+  <p>For every formula \(A\) over \(P\) and every world \(w\),</p>
+  <div class="math-display">\[M_\sigma,w\Vdash A\iff M,w\Vdash A[\sigma].\]</div>
+  <div class="proof"><p>Induct on \(A\), simultaneously for every world. At an atom this is the definition of \(V_\sigma\). Falsum is forced on neither side. Conjunction and disjunction follow by applying the induction hypotheses to their two components at \(w\).</p><p>For an implication, both sides say that at every \(v\geq w\), forcing the substituted antecedent implies forcing the substituted consequent: use the induction hypotheses for the two components at \(v\). For negation, both sides exclude forcing the substituted subformula at every such \(v\). The frames are literally the same, so the future-world quantifiers have identical domains. This proves the equality of meaning for the specified substitution construction.</p></div>
+</section>
+
+<section id="generated-submodel" data-formal="iks-generated-model" data-kind="definition">
+  <h2>Keep all and only the extensions of one world</h2>
+  <p>For a world \(w\) of \(M\), its <strong>generated submodel</strong> \(M_{\geq w}\) has world set \(\{v\in W:w\leq v\}\), the <a href="ordered-sets#orders-from-inclusion-and-divisibility">inherited preorder</a>, and the restriction of the same atom valuation. This set is nonempty because it contains \(w\), which is now a least world.</p>
+  <p>The restriction remains persistent: a comparison between its worlds is a comparison in \(M\), where atom forcing already persists. Moreover every extension in \(M\) of a retained world \(v\) is retained, by transitivity from \(w\leq v\).</p>
+</section>
+
+<section id="generated-truth" data-formal="iks-generated-forcing iks-generated-countermodel idp-glued-model idp-old-left-truth idp-old-right-truth idp-disjunction-property" data-kind="theorem">
+  <h2>A generated submodel preserves the forcing of every formula</h2>
+  <p>For every \(v\geq w\) and formula \(A\),</p>
+  <div class="math-display">\[M_{\geq w},v\Vdash A\iff M,v\Vdash A.\]</div>
+  <div class="proof"><p>Induct on \(A\). Atomic valuations agree by restriction; falsum, conjunction and disjunction use the same clauses and the induction hypotheses. For implication, every future world of \(v\) in the submodel is an original future world. Conversely an original future \(u\geq v\) satisfies \(w\leq u\), so is a world of the submodel. Apply the component induction hypotheses at each such \(u\). This identifies the two universal conditions exactly. The negation case uses the same correspondence of future worlds.</p><p>In particular, every pointed countermodel at \(w\) can be replaced by a countermodel whose frame has \(w\) as a least world, while preserving all assumptions and the failed conclusion there.</p></div>
+  <p>Two such rooted models can be joined below a <a href="intuitionistic-propositional-disjunction-property#gluing-models">new common world</a> while retaining every formula at every old world. This construction proves the <a href="intuitionistic-propositional-disjunction-property#disjunction-property">intuitionistic theorem disjunction property</a>.</p>
+</section>
+
+<section id="one-world-models" data-formal="iks-singleton-model iks-singleton-forcing iks-one-world-valuation iks-valid-boolean" data-kind="lemma">
+  <h2>A single world gives exactly a Boolean valuation</h2>
+  <p>Let \(b:P\to\{0,1\}\) be a Boolean valuation. Its <strong>one-world model</strong> \(M_b\) has the sole world \(*\), with its reflexive order, and \(p\in V(*)\) exactly when \(b(p)=1\). Then for every formula \(A\),</p>
+  <div class="math-display">\[M_b,*\Vdash A\iff\llbracket A\rrbracket_b=1.\]</div>
+  <div class="proof"><p>The atomic and constant cases are immediate. Conjunction and disjunction use the same two Boolean operations. The only possible future in the implication clause is \(*\) itself, so it says that truth of the antecedent implies truth of the consequent, exactly the Boolean implication table. Likewise negation says that its subformula is false at \(*\). Structural induction completes the proof.</p><p>Conversely any model with a sole world defines a Boolean atom valuation by membership in its atom set, and the same induction proves the displayed interpretation. It follows that every Kripke valid formula is a Boolean tautology. The converse will fail in the following two-world model.</p></div>
+</section>
+
+<section id="two-world-model" data-formal="iks-chain-model" data-kind="definition">
+  <h2>Allow one atom to become verified later</h2>
+  <p>Fix an atom \(p\). The <strong>two-world model</strong> \(C_p\) has worlds \(0\leq1\), with no comparison \(1\leq0\), and valuations \(V(0)=\varnothing\), \(V(1)=\{p\}\). It is persistent because the only strict comparison carries the empty set into \(\{p\}\).</p>
+  <figure id="chain-diagram" class="proof-figure"><div class="figure-image"><img src="assets/two-world-chain.svg" alt="Two worlds: a lower world zero has no verified atoms; its only strict extension is world one, where p is verified." width="500" height="230"></div><figcaption>The arrow records the strict extension; each world also extends itself.</figcaption></figure>
+</section>
+
+<section id="excluded-middle-countermodel" data-formal="iks-chain-values iks-em-countermodel iks-dne-countermodel" data-kind="theorem">
+  <h2>The lower world forces neither an atom nor its negation</h2>
+  <p>At the lower world of \(C_p\),</p>
+  <div class="math-display">\[0\nVdash p,\qquad0\nVdash\neg p,\qquad0\Vdash\neg\neg p.\]</div>
+  <p>Consequently it fails to force both \(p\lor\neg p\) and \(\neg\neg p\to p\).</p>
+  <div class="proof"><p>The lower valuation omits \(p\). Its upper extension forces \(p\), so the lower world cannot force \(\neg p\). Neither world forces \(\neg p\): at world \(1\), its own forcing of \(p\) prevents this. Thus every extension of \(0\) fails to force \(\neg p\), which says \(0\Vdash\neg\neg p\).</p><p>The disjunction fails because neither disjunct is forced at \(0\). The implication fails because \(0\) itself is an extension forcing its antecedent \(\neg\neg p\) while failing its consequent \(p\). This also exhibits failure of forcing \(p\) without forcing its negation.</p></div>
+</section>
+
+<section id="branching-model" data-formal="iks-fork-frame iks-fork-model" data-kind="definition">
+  <h2>Let two incomparable extensions verify different atoms</h2>
+  <p>Fix distinct atoms \(p,q\). The <strong>fork model</strong> \(F_{p,q}\) has worlds \(r,u,v\). Besides reflexivity its only comparisons are \(r\leq u\) and \(r\leq v\); the upper worlds are incomparable. Put \(V(r)=\varnothing\), \(V(u)=\{p\}\), and \(V(v)=\{q\}\). These sets give a persistent valuation, since every strict comparison begins at the empty valuation.</p>
+  <figure id="fork-diagram" class="proof-figure"><div class="figure-image"><img src="assets/branching-fork.svg" alt="A root r with no verified atoms has two incomparable terminal extensions: u verifies p and v verifies q." width="640" height="260"></div><figcaption>The two upper worlds make different extensions possible, with no world above both of them.</figcaption></figure>
+</section>
+
+<section id="de-morgan-countermodel" data-formal="iks-fork-values iks-demorgan-countermodel" data-kind="theorem">
+  <h2>A negated conjunction need not choose a negated conjunct</h2>
+  <p>The root of \(F_{p,q}\) forces \(\neg(p\land q)\) but does not force \(\neg p\lor\neg q\). Hence it fails to force</p>
+  <div class="math-display">\[\neg(p\land q)\to(\neg p\lor\neg q).\]</div>
+  <div class="proof"><p>No world forces both atoms. The root forces neither. World \(u\) forces \(p\) but not \(q\), and world \(v\) forces \(q\) but not \(p\), using \(p\ne q\). Therefore no future of the root forces their conjunction, which proves its negation there.</p><p>The root does not force \(\neg p\), because \(u\) forces \(p\). It does not force \(\neg q\), because \(v\) forces \(q\). Thus the disjunction of these negations is not forced. The root itself witnesses failure of the displayed implication. This calculation uses every possible future world, not just the atoms currently verified at the root.</p></div>
+</section>
+
+<section id="nonderivability" data-formal="iks-not-excluded-middle iks-not-dne iks-not-demorgan ipnd-schemas-boolean-valid iks-demorgan-boolean nd-tautology-completeness ipsq-to-natural-deduction" data-kind="theorem">
+  <h2>The countermodels separate the intuitionistic and classical rules</h2>
+  <p>For every atom \(p\), neither \(p\lor\neg p\) nor \(\neg\neg p\to p\) is derivable without assumptions by intuitionistic natural deduction. For distinct atoms \(p,q\), the displayed De Morgan implication is not intuitionistically derivable either.</p>
+  <div class="proof"><p>Such a derivation would, by <a href="#intuitionistic-soundness"></a>, force its conclusion at every world of every model. The <a href="#excluded-middle-countermodel">two-world calculations</a> refute the first two conclusions, and the <a href="#de-morgan-countermodel">fork calculation</a> refutes the third. Excluded middle and double-negation elimination are true for each of the two Boolean values of an atom. For the De Morgan implication, if the conjunction is false then at least one conjunct is false, making its negation true; if the conjunction is true then the implication has a false antecedent. Thus all three formulas are Boolean tautologies, so by <a href="propositional-proofs#completeness">classical completeness</a> they have classical derivations. Boolean valuations alone therefore do not characterize intuitionistic derivability.</p><p>The same three formulas have no empty-antecedent derivation in the single-conclusion sequent calculus. Its <a href="intuitionistic-propositional-sequents#sequents-to-natural-deduction">translation into natural deduction</a> would turn such a sequent proof into an intuitionistic natural-deduction proof, contradicting the conclusions just established.</p></div>
+</section>
+
+<section id="local-material-implication" data-formal="iks-chain-model iks-chain-local-implication" data-kind="question">
+  <h2>Can an implication be tested using just its current truth values?</h2>
+  <p>For distinct atoms \(p,q\), the world \(0\) of \(C_p\) forces neither atom. Does it force \(p\to q\), as the corresponding Boolean truth-table row would suggest?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The upper extension \(1\) forces \(p\), but it does not force \(q\), since its valuation is exactly \(\{p\}\) and \(p\ne q\). This future world refutes the universal condition defining \(0\Vdash p\to q\). The current failure to force an antecedent does not determine what can happen at its extensions.</p></div></details>
+</section>

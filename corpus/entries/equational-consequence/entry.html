@@ -1,0 +1,133 @@
+<section id="identities-and-models" data-formal="eqc-identity eqc-holds eqc-models eqc-consequence fo-term-value" data-kind="definition">
+  <h2>An identity must hold at every assignment</h2>
+  <p>Suppose a binary operation satisfies \(f(x,y)=x\). Replacing \(x\) by \(f(u,v)\) suggests \(f(f(u,v),w)=f(u,v)\), and hence \(f(f(u,v),w)=u\). Which rules justify such deductions, and do they derive every equation forced by the original laws?</p>
+  <p>Fix a <strong>functional signature</strong> \(L\): for each finite arity \(k\), a set of \(k\)-ary function symbols. Constants are the symbols of arity zero. Use the fixed variable set \(X=\{x_0,x_1,\ldots\}\), identified with \(\mathbb N\), and the <a href="first-order-languages#terms">finite terms</a> \(\operatorname{Term}_L(X)\). An <strong>identity</strong> is an ordered pair of terms, written \(s\approx t\). Let \(\Sigma\) be any set of identities; it need not be finite.</p>
+  <p>An <strong>algebra</strong> is a nonempty set \(A\) interpreting every \(k\)-ary symbol \(f\) by a function \(f^A:A^k\to A\). Write \(\llbracket t\rrbracket^A_v\) for the <a href="first-order-structures#term-values">value of a term</a> at a valuation \(v:X\to A\). We say \(A\models s\approx t\) if these values are equal for <em>every</em> valuation. Write \(A\models\Sigma\) if this holds for every member of \(\Sigma\), and write \(\Sigma\models s\approx t\) if every nonempty algebra satisfying \(\Sigma\) satisfies that identity. There are no relation symbols or quantified formulas in this calculus; the universal quantification over variables is part of what “identity” means.</p>
+</section>
+
+<section id="substitutions" data-formal="fo-term-substitution fo-term-semantic-substitution" data-kind="lemma">
+  <h2>Substitution changes the valuation</h2>
+  <p>A <strong>substitution</strong> is a map \(\sigma:X\to\operatorname{Term}_L(X)\). Its <a href="term-unification#substitutions-and-composition">simultaneous action</a> \(t[\sigma]\) replaces each variable by its assigned term, once, and retains function symbols. For every algebra and valuation,</p>
+  <div class="math-display">\[\llbracket t[\sigma]\rrbracket^A_v=\llbracket t\rrbracket^A_{v_\sigma},\qquad v_\sigma(x)=\llbracket\sigma(x)\rrbracket^A_v.\]</div>
+  <div class="proof">
+    <p>This is the <a href="first-order-structures#semantic-substitution">term substitution identity</a>. At a variable both sides are the value of its replacement. At a function application, evaluation first evaluates its arguments; applying the induction hypotheses to those finitely many arguments proves equality. For a constant the tuple of arguments is empty.</p>
+  </div>
+  <p>Consequently, if an identity holds under every valuation in \(A\), all its substitution instances do too. A substitution need not fix variables absent from the displayed identity, and its images can contain any of our variables.</p>
+</section>
+
+<section id="equational-proofs" data-formal="eqc-derivable" data-kind="definition">
+  <h2>Six rules produce finite equational proofs</h2>
+  <p>A <strong>derivation</strong> from \(\Sigma\) is a finite tree formed by the following rules. Its conclusion is denoted \(\Sigma\vdash s\approx t\).</p>
+  <ul>
+    <li><strong>Axiom:</strong> infer \(s\approx t\) when \((s,t)\in\Sigma\).</li>
+    <li><strong>Reflexivity:</strong> infer \(t\approx t\) for any term \(t\).</li>
+    <li><strong>Symmetry:</strong> from \(s\approx t\), infer \(t\approx s\).</li>
+    <li><strong>Transitivity:</strong> from \(r\approx s\) and \(s\approx t\), infer \(r\approx t\).</li>
+    <li><strong>Congruence:</strong> from \(s_i\approx t_i\) for every \(i&lt;k\), infer the following identity, for each \(k\)-ary symbol \(f\):<div class="math-display">\[f(s_0,\ldots,s_{k-1})\approx f(t_0,\ldots,t_{k-1}).\]</div></li>
+    <li><strong>Substitution:</strong> from \(s\approx t\), infer its instance under any substitution \(\sigma\):<div class="math-display">\[s[\sigma]\approx t[\sigma].\]</div></li>
+  </ul>
+  <p>Congruence at arity zero has no premises and yields the reflexive equation for that constant. Every rule has finitely many premises because every arity is finite. No rule cancels a function symbol: equality of \(f(s)\) and \(f(t)\) need not imply equality of \(s\) and \(t\).</p>
+</section>
+
+<section id="projection-derivation" data-formal="eqc-projection-language eqc-projection-axioms eqc-nested-projection" data-kind="question">
+  <h2>Derive a nested projection law</h2>
+  <p>In a signature with one binary symbol \(f\), let \(\Sigma=\{f(x_0,x_1)\approx x_0\}\). Derive \(f(f(x_0,x_1),x_2)\approx x_0\). Explain which occurrence of an axiom is instantiated.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Start with the axiom and use the substitution sending \(x_0\) to \(f(x_0,x_1)\), \(x_1\) to \(x_2\), and every other variable to itself. Simultaneous replacement gives</p>
+      <div class="math-display">\[f(f(x_0,x_1),x_2)\approx f(x_0,x_1).\]</div>
+      <p>The replacement inside the new image of \(x_0\) is not performed again. A second use of the original axiom gives \(f(x_0,x_1)\approx x_0\). Transitivity yields the required conclusion. The new equation uses the old law with a compound term in its first argument.</p>
+    </div>
+  </details>
+</section>
+
+<section id="soundness" data-formal="eqc-soundness" data-kind="theorem">
+  <h2>Every derivable identity holds in every model</h2>
+  <p>For every set of identities \(\Sigma\), if \(\Sigma\vdash s\approx t\), then \(\Sigma\models s\approx t\).</p>
+  <div class="proof">
+    <p>Fix an arbitrary nonempty algebra \(A\models\Sigma\). Induct on the finite derivation, proving that each conclusion holds at every valuation. An axiom holds because \(A\models\Sigma\). Reflexivity, symmetry and transitivity follow from the corresponding properties of equality in \(A\). In a congruence inference, fix a valuation; the induction hypotheses make the corresponding argument values equal, so applying the same function \(f^A\) gives equal outputs.</p>
+    <p>For substitution, the induction hypothesis says that \(s\) and \(t\) have equal values under every valuation, including the valuation \(v_\sigma\) from <a href="#substitutions"></a>. That identity makes the values of \(s[\sigma]\) and \(t[\sigma]\) equal at the arbitrary original valuation \(v\). This covers all six rules and every model.</p>
+  </div>
+</section>
+
+<section id="least-congruence" data-formal="eqc-invariant-congruence eqc-derivability-congruence eqc-derivability-least" data-kind="lemma">
+  <h2>Derivability is the least substitution-invariant congruence</h2>
+  <p>Define \(s\sim_\Sigma t\) to mean \(\Sigma\vdash s\approx t\). A <strong>congruence on terms</strong> is an equivalence relation preserved by every function application. It is <strong>substitution-invariant</strong> if \(s\sim t\) implies \(s[\sigma]\sim t[\sigma]\) for every substitution. The relation \(\sim_\Sigma\) is the least such congruence containing every pair in \(\Sigma\).</p>
+  <div class="proof">
+    <p>Reflexivity, symmetry and transitivity are rules of the calculus, so \(\sim_\Sigma\) is an equivalence relation. The congruence rule gives compatibility with each operation, the substitution rule gives substitution invariance, and the axiom rule includes \(\Sigma\).</p>
+    <p>Now let \(R\) be any substitution-invariant congruence containing \(\Sigma\). Induction on a derivation proves that its endpoint terms are \(R\)-related. The axiom case uses containment, the three equality rules use equivalence, the congruence case uses compatibility, and the last case uses substitution invariance. Thus \(\sim_\Sigma\subseteq R\), proving leastness. This is a syntactic construction from the rules, without using semantic completeness.</p>
+  </div>
+  <p>The <a href="ground-equality#least-congruence">restricted congruence closure for ground constraints</a> instead operates on a finite retained set of closed terms. Here all variable-containing terms and all substitution instances are present; the present theorem makes no claim that this infinite closure is decidable.</p>
+</section>
+
+<section id="term-quotient" data-formal="eqc-term-setoid eqc-term-quotient eqc-class-map eqc-quotient-structure eqc-quotient-nonempty eqc-quotient-function quotient-projection-equality" data-kind="definition">
+  <h2>Take derivable equality classes of terms</h2>
+  <p>The <strong>term quotient algebra</strong> is \(Q_\Sigma=\operatorname{Term}_L(X)/{\sim_\Sigma}\). Denote the class of \(t\) by \([t]\). Its carrier is nonempty: \([x_0]\) exists even when the signature has no constants. By the defining property of a quotient,</p>
+  <div class="math-display">\[[s]=[t]\quad\Longleftrightarrow\quad\Sigma\vdash s\approx t.\]</div>
+  <p>Interpret each \(k\)-ary function symbol by</p>
+  <div class="math-display">\[f^{Q_\Sigma}([t_0],\ldots,[t_{k-1}])=[f(t_0,\ldots,t_{k-1})].\]</div>
+  <p>This is well-defined: choosing another representative \(u_i\) of each input gives \(\Sigma\vdash t_i\approx u_i\), and the congruence rule identifies the two output terms. For a constant the formula simply gives its term class. This is the <a href="equality-axioms#quotient-model">quotient construction for compatible operations</a>, now applied to a relation generated by proofs. It defines all operations on the entire carrier, with no default values needed.</p>
+</section>
+
+<section id="quotient-evaluation" data-formal="eqc-quotient-evaluation eqc-canonical-valuation eqc-canonical-evaluation" data-kind="lemma">
+  <h2>Evaluating a term returns its substituted class</h2>
+  <p>Given a substitution \(\sigma\), let \(v_\sigma(x)=[\sigma(x)]\) in \(Q_\Sigma\). Then for every term \(t\),</p>
+  <div class="math-display">\[\llbracket t\rrbracket^{Q_\Sigma}_{v_\sigma}=[t[\sigma]].\]</div>
+  <p>In particular, the <strong>canonical valuation</strong> \(\eta(x)=[x]\) satisfies \(\llbracket t\rrbracket^{Q_\Sigma}_\eta=[t]\).</p>
+  <div class="proof">
+    <p>Induct on \(t\). For a variable the equation is the definition of \(v_\sigma\). At \(f(t_0,\ldots,t_{k-1})\), the induction hypotheses give the argument values \([t_i[\sigma]]\). The definition of the quotient operation returns \([f(t_0[\sigma],\ldots,t_{k-1}[\sigma])]\), which is the class of the substituted application. The same argument includes zero-arity applications. The identity substitution gives the canonical assertion by the <a href="term-unification#composition-identities">identity law for substitution</a>.</p>
+  </div>
+</section>
+
+<section id="quotient-model" data-formal="eqc-quotient-model" data-kind="lemma">
+  <h2>The quotient satisfies the axioms under every valuation</h2>
+  <p>The nonempty algebra \(Q_\Sigma\) satisfies every identity in \(\Sigma\).</p>
+  <div class="proof">
+    <p>Fix an axiom \((s,t)\in\Sigma\) and an arbitrary valuation \(v:X\to Q_\Sigma\). Each value is a term class. Choose representatives \(\sigma(x)\) with \([\sigma(x)]=v(x)\) for all variables. This uses an ordinary choice of representatives; it does not require constants in the signature. The selected terms form a substitution.</p>
+    <p>The axiom rule gives \(\Sigma\vdash s\approx t\), and substitution gives \(\Sigma\vdash s[\sigma]\approx t[\sigma]\). Hence their quotient classes are equal. By <a href="#quotient-evaluation"></a>, these classes are exactly the values of \(s\) and \(t\) at \(v\). Since the axiom and valuation were arbitrary, \(Q_\Sigma\models\Sigma\). Checking only the canonical valuation would not establish this assertion about every valuation.</p>
+  </div>
+</section>
+
+<section id="completeness" data-formal="eqc-countermodel eqc-completeness" data-kind="theorem">
+  <h2>Every nonderivable identity has a term countermodel</h2>
+  <div class="statement-box"><p>For every \(\Sigma,s,t\),</p>
+    <div class="math-display">\[\Sigma\vdash s\approx t\quad\Longleftrightarrow\quad\Sigma\models s\approx t.\]</div>
+    <p>More explicitly, if \(\Sigma\nvdash s\approx t\), the nonempty algebra \(Q_\Sigma\models\Sigma\) falsifies \(s\approx t\) at its canonical valuation.</p>
+  </div>
+  <div class="proof">
+    <p>Soundness proves the forward implication. For the reverse, suppose the identity is not derivable. The quotient criterion in <a href="#term-quotient"></a> gives \([s]\ne[t]\). Canonical evaluation identifies these two classes with the values of \(s\) and \(t\). Thus this valuation falsifies the identity, while <a href="#quotient-model"></a> shows that the quotient satisfies every premise. It follows that \(\Sigma\not\models s\approx t\). Taking the contrapositive proves completeness.</p>
+  </div>
+  <p>The construction needs no bound on the number of function symbols or axioms. The countably infinite stock of variables provides a nonempty term carrier and includes every finite term we used; it is not a countability assumption on the signature or on the resulting algebra.</p>
+</section>
+
+<section id="finite-premises" data-formal="eqc-monotone eqc-finite-premises eqc-finite-consequence" data-kind="theorem">
+  <h2>Every consequence uses finitely many axioms</h2>
+  <p>If \(\Sigma\vdash s\approx t\), there is a finite set \(\Sigma_0\subseteq\Sigma\) with \(\Sigma_0\vdash s\approx t\). Consequently,</p>
+  <div class="math-display">\[\Sigma\models s\approx t\quad\Longleftrightarrow\quad\Sigma_0\models s\approx t\text{ for some finite }\Sigma_0\subseteq\Sigma.\]</div>
+  <div class="proof">
+    <p>First observe monotonicity: a derivation from \(\Gamma\) is still a derivation from any larger premise set, by retaining the whole tree and using inclusion at each axiom leaf. Now induct on a derivation from \(\Sigma\). An axiom leaf uses its singleton premise set; reflexivity uses the empty set. Symmetry and substitution retain the finite set given for their single premise. Transitivity uses the union of the two finite premise sets. A congruence inference uses the union of the finitely many finite sets for its argument derivations, one for each \(i&lt;k\). Each premise can be derived from this union by monotonicity, so the same rule gives the conclusion there. At arity zero this union is empty.</p>
+    <p>For semantic consequence, completeness supplies a derivation and the first assertion reduces its premises to \(\Sigma_0\); soundness gives the finite semantic consequence. Conversely, every model of \(\Sigma\) is a model of its subset \(\Sigma_0\). This finite-premise result follows from the equational calculus itself; no separate compactness theorem is needed.</p>
+  </div>
+</section>
+
+<section id="projection-countermodel" data-formal="eqc-projection-model eqc-projection-satisfies eqc-projection-separation eqc-projection-nonconsequence" data-kind="question">
+  <h2>Does the projection axiom force its arguments to agree?</h2>
+  <p>For the binary signature and \(\Sigma=\{f(x_0,x_1)\approx x_0\}\), can one derive \(f(x_0,x_1)\approx x_1\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. On \(A=\{0,1\}\), interpret \(f^A(a,b)=a\). The given axiom holds under every valuation, since the value of its left side is always the first argument. At a valuation with \(v(x_0)=0\) and \(v(x_1)=1\), the proposed conclusion has values \(0\) and \(1\), which are distinct. This is a nonempty countermodel, so soundness excludes a derivation.</p>
+      <p>The same model also shows that the original axiom does not force \(x_0\approx x_1\). Identities can describe a noninjective operation without identifying all elements of its domain.</p>
+    </div>
+  </details>
+</section>
+
+<section id="single-valuation" data-formal="eqc-single-valuation" data-kind="question">
+  <h2>Why is truth at one valuation insufficient for substitution?</h2>
+  <p>Can an equation be true at a valuation while a substitution instance is false at that same valuation?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>Yes. Use the empty signature and the nonempty carrier \(\{0,1\}\). Let \(v(x_2)=1\) and let \(v(x_j)=0\) for every \(j\ne2\). The terms \(x_0,x_1\) have the same value. Take a substitution sending \(x_0\) to \(x_2\) and fixing all other variables. Its instance \(x_2\approx x_1\) has different values at \(v\).</p>
+      <p>The semantic substitution identity still holds: the original equation is now evaluated at the changed valuation \(v_\sigma\), where its two sides differ. Substitution preserves an identity valid at every valuation because that changed valuation is included. It need not preserve a coincidence at one chosen assignment. Also distinguish this question from <a href="term-unification#problems-and-generality">syntactic unification</a>, which asks for identical substituted term trees rather than equality of values forced by a set of identities.</p>
+    </div>
+  </details>
+</section>
