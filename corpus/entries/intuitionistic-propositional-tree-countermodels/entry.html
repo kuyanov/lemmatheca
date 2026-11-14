@@ -1,0 +1,92 @@
+<section id="finite-rooted-trees" data-formal="iptc-tree-frame iptc-diamond-order iptc-diamond-not-tree iks-model" data-kind="definition">
+  <h2>A tree remembers a unique ordered history</h2>
+  <p>A <strong>finite rooted tree frame</strong> is a nonempty finite partially ordered set \((T,\preceq)\), with a specified least element \(o\), such that the predecessors of each point are linearly ordered:</p>
+  <div class="math-display">\[p\preceq s\text{ and }q\preceq s\quad\Longrightarrow\quad p\preceq q\text{ or }q\preceq p.\]</div>
+  <p>Thus two histories cannot split and subsequently merge. Branches may split above the root. A diamond with \(r&lt;u&lt;t\) and \(r&lt;v&lt;t\), where \(u,v\) are incomparable, is a partial order but is not a tree: the predecessors \(u,v\) of \(t\) violate the displayed condition. We use the <a href="intuitionistic-kripke-semantics#frames-and-valuations">usual persistent valuations</a> on tree frames.</p>
+</section>
+
+<section id="strict-rooted-paths" data-formal="iptc-paths iptc-root iptc-last iptc-last-root" data-kind="definition">
+  <h2>Use strict paths starting at the chosen world</h2>
+  <p>Fix a finite partially ordered set \((W,\leq)\) and a world \(r\in W\). A <strong>strict rooted path from \(r\)</strong> is a nonempty finite list</p>
+  <div class="math-display">\[p=[w_0,\ldots,w_k],\qquad w_0=r,\qquad w_i&lt;w_j\quad(i&lt;j).\]</div>
+  <p>Here \(x&lt;y\) means \(x\leq y\) and \(x\ne y\). By transitivity it is equivalent to require strictness only for consecutive entries. Write \(T_r(W)\) for the set of these paths. It contains the one-point path \([r]\). Paths may skip intermediate worlds; they need not follow only immediate successors.</p>
+  <p>The <strong>last-world map</strong> is the specified function \(\ell:T_r(W)\to W\) defined by \(\ell([w_0,\ldots,w_k])=w_k\). Nonemptiness makes this well-defined, including \(\ell([r])=r\).</p>
+</section>
+
+<section id="finite-paths" data-formal="iptc-path-nodup iptc-nodup-length iptc-finite-paths" data-kind="lemma">
+  <h2>Strictness bounds the length and makes the path set finite</h2>
+  <p>If \(W\) has \(n\) worlds, every \(p\in T_r(W)\) has at most \(n\) entries. Consequently \(T_r(W)\) is finite.</p>
+  <div class="proof"><p>Two different positions in a strict path cannot have the same entry: the earlier entry is strictly below the later one. The positions therefore inject into \(W\), giving the length bound. For each length \(j\leq n\), there are only finitely many lists of length \(j\) over the finite set \(W\): these lists are functions from a fixed \(j\)-element set to \(W\). A finite union over \(1\leq j\leq n\) is still finite, and the strict rooted paths form a subset of that union. The bound concerns the number of entries; a path with \(k\) strict steps has \(k+1\) entries.</p></div>
+</section>
+
+<section id="prefix-tree" data-formal="iptc-prefix-order iptc-tree-frame iptc-root-le iptc-predecessor-comparison iptc-finite-paths" data-kind="lemma">
+  <h2>Prefix order turns the paths into a rooted tree</h2>
+  <p>Define the <strong>prefix order</strong> on \(T_r(W)\) by \(p\preceq q\) when \(q=p\mathbin{\frown}s\) for some list \(s\). With this order and root \([r]\), \(T_r(W)\) is a finite rooted tree frame.</p>
+  <div class="proof"><p>A list is its own prefix by using the empty suffix. Concatenating suffixes proves transitivity. If each of two lists is a prefix of the other, their lengths are equal; the suffixes are empty and the lists are equal. Thus prefix order is a partial order. Every path starts with \(r\), so \([r]\) is its prefix and is a least element.</p><p>Suppose \(p,q\) are both prefixes of \(s\). Compare their lengths, say \(p\) is no longer than \(q\). Their first \(\operatorname{length}(p)\) entries are the same initial entries of \(s\), so \(p\) is a prefix of \(q\). This proves the required comparison of predecessors. Finiteness is <a href="#finite-paths"></a>; nonemptiness follows from \([r]\). These facts establish every part of the tree definition.</p></div>
+</section>
+
+<section id="last-world-forth" data-formal="iptc-last-monotone iptc-first-le-last" data-kind="lemma">
+  <h2>Extending a path moves its last world forward</h2>
+  <p>For every \(p,q\in T_r(W)\), \(p\preceq q\) implies \(\ell(p)\leq\ell(q)\). Also \(r\leq\ell(p)\) for every path \(p\).</p>
+  <div class="proof"><p>If the suffix extending \(p\) to \(q\) is empty, their last worlds are equal. Otherwise the last entry of \(p\) occurs strictly earlier than the last entry of \(q\), so strictness gives \(\ell(p)&lt;\ell(q)\), hence the asserted weak inequality. For the second claim, either \(p=[r]\), or its first entry \(r\) is strictly below its last entry. Thus the last-world map satisfies the <a href="intuitionistic-propositional-kripke-morphisms#bounded-frame-maps">forth condition</a>.</p></div>
+</section>
+
+<section id="last-world-back" data-formal="iptc-lift iptc-lift-spec iptc-last-bounded" data-kind="lemma">
+  <h2>Every future world lifts by one specified extension</h2>
+  <p>For \(p\in T_r(W)\) and \(x\in W\) with \(\ell(p)\leq x\), there is a path \(q\succeq p\) with \(\ell(q)=x\). One specified choice is</p>
+  <div class="math-display">\[q=\begin{cases}p,&amp;\ell(p)=x,\\p\mathbin{\frown}[x],&amp;\ell(p)\ne x.\end{cases}\]</div>
+  <div class="proof"><p>The equality case already has the right endpoint. Otherwise \(\ell(p)&lt;x\). Every earlier entry of \(p\) is strictly below \(\ell(p)\), so transitivity puts it strictly below \(x\) too. Appending \(x\) therefore retains all strict comparisons and the initial entry \(r\). The original path is a prefix, and the new last entry is exactly the requested \(x\). This is the back condition for the same last-world map; it lifts a future of the image of each supplied path.</p></div>
+</section>
+
+<section id="last-world-image" data-formal="iptc-last-range iptc-last-surjective" data-kind="lemma">
+  <h2>The image is precisely the generated cone</h2>
+  <p>The image of \(\ell:T_r(W)\to W\) is \(\{x\in W:r\leq x\}\). In particular, \(\ell\) is surjective onto \(W\) if and only if \(r\) is a least world.</p>
+  <div class="proof"><p>Every endpoint lies above \(r\) by <a href="#last-world-forth"></a>. Conversely, if \(r\leq x\), use the path \([r]\) when \(x=r\), and \([r,x]\) otherwise. In the second case \(r&lt;x\), so this is a strict rooted path with endpoint \(x\). Hence precisely the worlds above \(r\) occur. This set is all of \(W\) exactly when \(r\leq x\) for every original world. Surjectivity on the whole frame is therefore a separate assertion from the back condition.</p></div>
+</section>
+
+<section id="pullback-tree-model" data-formal="iptc-tree-model ipkm-pullback" data-kind="definition">
+  <h2>Give each path the atom information of its endpoint</h2>
+  <p>Let \(M\) be a persistent Kripke model on \(W\), with atom set \(P\). Its <strong>strict-path tree model at \(r\)</strong>, denoted \(U_r(M)\), has frame \(T_r(W)\) and valuation</p>
+  <div class="math-display">\[U_r(M),p\Vdash a\quad\Longleftrightarrow\quad M,\ell(p)\Vdash a\qquad(a\in P).\]</div>
+  <p>This is the actual <a href="intuitionistic-propositional-kripke-morphisms#pullback-models">pullback valuation</a> along \(\ell\). It is persistent because \(p\preceq q\) implies \(\ell(p)\leq\ell(q)\), after which persistence in \(M\) applies. The one-point path supplies a world, so the resulting model is nonempty.</p>
+</section>
+
+<section id="unraveling-invariance" data-formal="iptc-last-morphism ipkm-forcing ipkm-countermodel iptc-last-root prop-formula" data-kind="theorem">
+  <h2>The last-world map preserves every formula</h2>
+  <div class="statement-box"><p>For the specified finite partial-order model \(M\), world \(r\), and tree model \(U_r(M)\), the actual function \(\ell:U_r(M)\to M\) is a bounded morphism. For every shared propositional formula \(A\) and path \(p\),</p><div class="math-display">\[U_r(M),p\Vdash A\quad\Longleftrightarrow\quad M,\ell(p)\Vdash A.\]</div></div>
+  <div class="proof"><p>Atom agreement is the definition of the pullback valuation. Forth is <a href="#last-world-forth"></a>, and back is the specified extension in <a href="#last-world-back"></a>. Apply the <a href="intuitionistic-propositional-kripke-morphisms#forcing-invariance">bounded-morphism preservation theorem</a> to these three facts. It covers every constructor, including implication and native negation, because their target futures can be lifted by back.</p><p>At the root, \(\ell([r])=r\). Therefore for every formula set \(\Gamma\), including an infinite one, \((U_r(M),[r])\) forces every member of \(\Gamma\) and fails \(A\) exactly when \((M,r)\) does. This transports a supplied countermodel; it makes no assertion that arbitrary-premise nonderivability has a finite countermodel.</p></div>
+</section>
+
+<section id="rooted-surjective-map" data-formal="iks-generated-model iptc-generated-surjective iptc-generated-endpoint-morphism ipkm-generated-inclusion ipkm-composition iptc-last-surjective" data-kind="lemma">
+  <h2>Restrict to the generated model for a surjective target</h2>
+  <p>For any finite partially ordered model \(M\) and world \(r\), its <a href="intuitionistic-kripke-semantics#generated-submodel">generated model</a> \(M_{\geq r}\) is finite and has a least world. Its strict-path tree model has a surjective bounded morphism onto \(M_{\geq r}\).</p>
+  <div class="proof"><p>The generated world's underlying set is the subset \(\{x:r\leq x\}\) of the finite set \(W\), with the induced partial order. Its least world is \(r\). Apply <a href="#last-world-image"></a> and <a href="#unraveling-invariance"></a> to this precise model. The resulting last-world function is surjective onto the generated model, and composing with its <a href="intuitionistic-propositional-kripke-morphisms#generated-inclusion">bounded inclusion</a> maps each path to its original endpoint in \(M\). The composition need not be onto all of \(M\), since worlds unrelated to \(r\) have been omitted.</p></div>
+</section>
+
+<section id="finite-tree-countermodels" data-formal="iptc-finite-tree-countermodel iptc-root-consequence ifmp-finite-poset-countermodel iks-generated-countermodel iks-soundness" data-kind="theorem">
+  <h2>Every failed finite deduction has a finite rooted tree countermodel</h2>
+  <div class="statement-box"><p>Let \(\Gamma\) be a finite set of numbered-atom formulas. If \(\Gamma\nvdash_{\mathrm I}A\), there is a model on a finite rooted tree whose root forces every formula in \(\Gamma\) and fails \(A\).</p></div>
+  <div class="proof"><p>The <a href="intuitionistic-propositional-finite-model-property#bounded-countermodels">finite-poset countermodel theorem</a> gives an actual nonempty finite partially ordered model \(M\) and a designated world \(r\) retaining \(\Gamma\) and failing \(A\). Restrict to \(M_{\geq r}\); the <a href="intuitionistic-kripke-semantics#generated-truth">generated-model equivalence</a> retains the same counterexample at its least world. Form its strict-path model. Its frame is a finite rooted tree by <a href="#finite-paths"></a> and <a href="#prefix-tree"></a>. At its root the forcing equivalence in <a href="#unraveling-invariance"></a> retains all the premises and the failed conclusion.</p><p>Consequently \(\Gamma\vdash_{\mathrm I}A\) is equivalent to preservation from \(\Gamma\) to \(A\) at the root of every finite rooted tree model. The forward direction is <a href="intuitionistic-kripke-semantics#intuitionistic-soundness">soundness</a>; if derivability fails, the constructed tree refutes the root-preservation condition. Finiteness of \(\Gamma\) enters through the finite-poset theorem, whereas transporting a given model in <a href="#unraveling-invariance"></a> did not require it.</p></div>
+</section>
+
+<section id="diamond-paths" data-formal="iptc-diamond-order iptc-diamond-paths iptc-diamond-exhaustive iptc-diamond-card iptc-diamond-top-paths iptc-diamond-incomparable iptc-diamond-model iptc-diamond-path-atom iptc-last-morphism ipkm-forcing imkc-diamond-nonjoining imkc-diamond-not-directed imkc-diamond-countervaluation ipwem-frame-characterization" data-kind="lemma">
+  <h2>A diamond produces distinct copies of its top</h2>
+  <p>Take the four-world diamond with strict comparisons \(r&lt;u&lt;t\) and \(r&lt;v&lt;t\), and no comparison between \(u,v\). Its strict paths from \(r\) are exactly</p>
+  <div class="math-display">\[[r],\quad[r,u],\quad[r,v],\quad[r,t],\quad[r,u,t],\quad[r,v,t].\]</div>
+  <p>In particular, the paths \([r,u,t]\) and \([r,v,t]\) are incomparable, although their last worlds are equal. There is also the direct path \([r,t]\), since strict paths may skip intermediate worlds.</p>
+  <figure id="diamond-unraveling" class="proof-figure"><div class="figure-image"><img src="assets/diamond-paths.svg" alt="The four-world diamond on the left becomes a six-world prefix tree on the right. Its three top-ending paths are r t, r u t and r v t, with the latter two on separate branches." width="760" height="350"></div><figcaption>Edges show cover relations. The three distinct paths ending at t all map to the same original world.</figcaption></figure>
+  <div class="proof"><p>A path starts at \(r\). If it has another entry, that entry is \(u\), \(v\), or \(t\). The path ending immediately there is allowed. After \(u\) or \(v\), the only possible next entry is \(t\), and no entry can follow \(t\). This enumerates the six lists. The two three-entry lists differ in their second entries, so neither is a prefix of the other.</p><p>If a chosen atom is true precisely at \(t\) in the original diamond, it is true precisely at the three paths ending at \(t\) in the tree model, by the pullback rule. Thus the tree has six worlds although the original has four, and the copies retain the same atom information and the same full formula forcing at their endpoints.</p></div>
+  <p>This same six-path example shows that unraveling need not preserve directed future cones: the two displayed terminal paths have no common upper bound. Thus <a href="intermediate-propositional-kripke-completeness#finite-model-question">truth transfer for the pulled-back valuation</a> does not establish validity of weak excluded middle for every valuation on the tree frame.</p>
+</section>
+
+<section id="repeated-steps" data-formal="iptc-weak-singleton-paths iptc-repetition iptc-repetition-injective iptc-weak-paths-infinite" data-kind="question">
+  <h2>Why not allow a path to repeat its current world?</h2>
+  <p>Would nondecreasing lists, allowing \(w_i=w_{i+1}\), still give a finite path set for every finite frame?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Even on the one-world frame \(\{r\}\), all lists</p><div class="math-display">\[[r],\quad[r,r],\quad[r,r,r],\quad\ldots\]</div><p>are nondecreasing and have different lengths, hence are different lists. They give an injection from the positive integers into the proposed path set, so that set is infinite. Strictness removes those repetitions and makes the injection of path positions into the original finite world set possible.</p></div></details>
+</section>
+
+<section id="preorder-clusters" data-formal="iptc-cluster-preorder iptc-no-cluster-map ifmp-finite-poset-countermodel" data-kind="question">
+  <h2>Can an arbitrary finite preorder replace the partial order?</h2>
+  <p>Let \(C=\{a,b\}\), with \(a\ne b\), and declare every world accessible from every world. Is there a bounded frame map from any nonempty finite partially ordered frame to \(C\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Every nonempty finite partial order has a maximal point \(m\): start at any point and move strictly upward whenever it is not maximal; distinct moves cannot continue beyond the finite number of points. If \(f\) were a bounded map, choose the world \(c\in C\) different from \(f(m)\). The universal accessibility relation gives \(f(m)\leq c\). Back then supplies \(v\geq m\) with \(f(v)=c\).</p><p>Maximality makes \(v=m\), contradicting \(c\ne f(m)\). Thus there is no such bounded map, even without requiring it to be surjective. Distinct mutually accessible worlds therefore obstruct this proposed finite-tree representation. The <a href="intuitionistic-propositional-finite-model-property#bounded-countermodels">finite-poset countermodel theorem</a> already supplies partial orders, so the tree-countermodel argument does not need to treat this preorder as a tree image.</p></div></details>
+</section>

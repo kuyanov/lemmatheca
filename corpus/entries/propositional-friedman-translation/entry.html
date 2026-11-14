@@ -1,0 +1,98 @@
+<section id="parameter-translation" data-formal="prop-formula pfr-formula ipnd-negation-implication-equivalence" data-kind="definition">
+  <h2>Replace falsum and enlarge each atom</h2>
+  <p>Use the <a href="intuitionistic-propositional-deduction#formulas-and-contexts">shared propositional formulas</a> over an arbitrary atom set \(P\), including primitive negation. Fix a formula \(R\), called the <strong>parameter</strong>. The <strong>Friedman translation with parameter \(R\)</strong>, written \(F_R(A)\), is the following recursion:</p>
+  <div class="math-display">\[F_R(\bot)=R,\qquad F_R(p)=p\lor R,\qquad F_R(\neg A)=F_R(A)\to R.\]</div>
+  <div class="math-display">\[F_R(A\land B)=F_R(A)\land F_R(B),\qquad F_R(A\lor B)=F_R(A)\lor F_R(B).\]</div>
+  <div class="math-display">\[F_R(A\to B)=F_R(A)\to F_R(B).\]</div>
+  <p>The fixed parameter is inserted as a whole formula; the recursion does not translate it again. The negation clause uses <a href="intuitionistic-propositional-deduction#negation-as-implication">negation as implication into falsum</a> before changing falsum. Thus \(F_R(\neg p)=(p\lor R)\to R\), rather than \(\neg(p\lor R)\).</p>
+</section>
+
+<section id="translated-contexts" data-formal="pfr-context pfr-finite-context pfr-context-insert pfr-context-finite pfr-finite-context-insert pfr-finite-context-bridge ipcut-proof ipcut-natural-equivalence ipnd-derivability" data-kind="definition">
+  <h2>Change the allowed assumptions along with the conclusion</h2>
+  <p>The <strong>translated context</strong> of a set or finite set \(\Gamma\) is its image</p>
+  <div class="math-display">\[\Gamma^{[R]}=\{F_R(B):B\in\Gamma\}.\]</div>
+  <p>Images of finite contexts are finite. Insertion of a temporary assumption satisfies</p>
+  <div class="math-display">\[(\Gamma\cup\{B\})^{[R]}=\Gamma^{[R]}\cup\{F_R(B)\}.\]</div>
+  <p>Use the actual retained-principal <a href="intuitionistic-propositional-cut-elimination#cut-free-certificates">cut-free sequent certificates</a>. Write a supplied certificate as \(p:\Gamma\Rightarrow A\); \(\Gamma\) is finite. Ordinary intuitionistic derivability, denoted \(\Gamma\vdash_{\mathrm I}A\), also allows arbitrary premise sets and asserts existence of a finite natural-deduction proof. Their <a href="intuitionistic-propositional-cut-elimination#presentation-equivalence">established correspondence</a> will connect the two statements.</p>
+</section>
+
+<section id="parameter-explosion" data-formal="pfr-parameter-explosion ipcut-weakening ipcut-to-natural" data-kind="lemma">
+  <h2>The parameter proves every translated formula</h2>
+  <p>For every \(R,A\), one can construct a cut-free certificate \(K_R(A):\{R\}\Rightarrow F_R(A)\). By weakening, it works in every context containing \(R\).</p>
+  <div class="proof"><p>Recurse on \(A\). At falsum, the target is \(R\), so use the <a href="intuitionistic-propositional-cut-elimination#weakening-and-identity">derived identity certificate</a> of \(R\). At an atom \(p\), that same identity followed by right disjunction introduction gives \(p\lor R\). At a conjunction, combine the two recursively constructed children by conjunction-right. At a disjunction, use the child for its left disjunct and then disjunction-right-left.</p><p>For an implication \(B\to C\), the child \(K_R(C)\) proves \(F_R(C)\) from \(R\). Weaken it to allow the temporary assumption \(F_R(B)\), then apply implication-right. For \(\neg B\), the translated target is \(F_R(B)\to R\); under the temporary antecedent retain the assumption \(R\) and discharge. These clauses specify a finite certificate for every constructor. They do not use a rule that concludes an arbitrary unchanged atom from \(R\).</p></div>
+</section>
+
+<section id="translated-left-rules" data-formal="pfr-cut-free-translation pfr-parameter-explosion ipcut-identity pfr-finite-context-insert" data-kind="lemma">
+  <h2>Rebuild every possible left-rule ending</h2>
+  <p>Suppose the children of a supplied cut-free tree have already been translated with their exact image contexts. Then every left-rule ending can be rebuilt to conclude \(\Gamma^{[R]}\Rightarrow F_R(C)\).</p>
+  <div class="proof"><p>For an atomic identity leaf, \(p\in\Gamma\) gives \(p\lor R\in\Gamma^{[R]}\). Use compound identity for this entire formula; an atomic identity rule alone would not suffice. For falsum-left, \(\bot\in\Gamma\) gives \(R\in\Gamma^{[R]}\), so weaken \(K_R(C)\) into that context.</p><p>For conjunction-left, the translated principal is \(F_R(A)\land F_R(B)\). Its translated child allows both components, by the insertion equality. Reapply conjunction-left. For disjunction-left, the two translated children allow respectively \(F_R(A)\) and \(F_R(B)\); reapply disjunction-left to the translated principal \(F_R(A)\lor F_R(B)\). The retained principal remains in the ambient image context in both cases.</p><p>For implication-left, the principal becomes \(F_R(A)\to F_R(B)\). The translated first child proves \(F_R(A)\), and the second proves \(F_R(C)\) under the extra assumption \(F_R(B)\). The original implication-left rule therefore applies again.</p><p>Finally, a negation-left ending has \(\neg A\in\Gamma\) and a child \(\Gamma\Rightarrow A\), with arbitrary conclusion \(C\). Its translated principal is \(F_R(A)\to R\). Apply implication-left to the translated child \(\Gamma^{[R]}\Rightarrow F_R(A)\); its right premise allows \(R\), where weakened \(K_R(C)\) supplies the conclusion. This is an implication-left ending, not a native negation-left ending. These are all left rules of the specified calculus.</p></div>
+</section>
+
+<section id="cut-free-proof-translation" data-formal="pfr-cut-free-translation pfr-finite-context-insert" data-kind="theorem">
+  <h2>Translate the supplied cut-free certificate</h2>
+  <div class="statement-box"><p>There is a specified construction \(\mathcal T_R\) that sends every supplied cut-free certificate \(p:\Gamma\Rightarrow A\) to a cut-free certificate</p><div class="math-display">\[\mathcal T_R(p):\Gamma^{[R]}\Rightarrow F_R(A).\]</div><p>The construction changes every allowed assumption by the same translation.</p></div>
+  <div class="proof"><p>Recurse on the supplied tree. Use exactly the clauses in <a href="#translated-left-rules"></a> for its atomic, falsum and left-rule endings. For conjunction-right, recursively translate both children and reapply conjunction-right. For either disjunction-right rule, translate its supplied child and reapply that same chosen right rule; the translated conclusion retains the disjunction constructor.</p><p>For implication-right, the translated child has context \(\Gamma^{[R]}\cup\{F_R(B)\}\) and conclusion \(F_R(C)\). Discharge that translated antecedent to obtain \(F_R(B)\to F_R(C)\). For native negation-right, the original child concludes \(\bot\) under \(B\); its translated child instead concludes \(R\) under \(F_R(B)\). Implication-right gives \(F_R(B)\to R\), exactly the required translation of \(\neg B\).</p><p>Every recursive call uses an immediate child of the input tree. The insertion equality supplies the contexts at all discharge and left-rule steps. All eleven primitive constructors are covered, and every output uses only the established cut-free rules and derived compound identity. No cut or extra inference rule has been made primitive.</p></div>
+</section>
+
+<section id="cut-inputs" data-formal="ipcut-cut-proofs ipcut-elimination pfr-cut-input-translation" data-kind="lemma">
+  <h2>Normalize the actual cut input before translating</h2>
+  <p>For a supplied certificate \(p\) in the corresponding calculus with cuts, define its <strong>cut-input translation</strong> by</p>
+  <div class="math-display">\[\mathcal T_R^{\mathrm{cut}}(p)=\mathcal T_R(E(p)),\]</div>
+  <p>where \(E\) is the <a href="intuitionistic-propositional-cut-elimination#eliminating-cuts">established cut-elimination construction</a>. This returns a cut-free certificate of the same translated sequent.</p>
+  <div class="proof"><p>The actual tree \(E(p)\) has the identical original context and conclusion as \(p\). Apply <a href="#cut-free-proof-translation"></a> to that tree. The displayed composition specifies the input used by the translation; an unrelated proof of the same sequent is not substituted for it.</p></div>
+</section>
+
+<section id="intuitionistic-preservation" data-formal="pfr-preservation pfr-context ipnd-finite-support ipcut-natural-equivalence fofr-raw-translation fofr-parameter-explosion fofr-public-translation" data-kind="theorem">
+  <h2>Obtain proof preservation for ordinary derivability</h2>
+  <p>For every premise set \(\Gamma\), parameter \(R\), and formula \(A\),</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm I}A\quad\Longrightarrow\quad\Gamma^{[R]}\vdash_{\mathrm I}F_R(A).\]</div>
+  <div class="proof"><p>By <a href="intuitionistic-propositional-deduction#finite-support">finite support</a>, some finite \(\Delta\subseteq\Gamma\) already proves \(A\). The correspondence of natural deduction and the cut-free calculus gives existence of a certificate of \(\Delta\Rightarrow A\). Translate such a certificate by <a href="#cut-free-proof-translation"></a>, then use the same correspondence back to natural deduction. Finally weaken from \(\Delta^{[R]}\) to \(\Gamma^{[R]}\), since images preserve inclusion.</p><p>This statement concerns existence of deductions. The separately stated map on supplied sequent trees is the construction that returns definite proof data. In particular, the theorem does not allow the open premises to remain unchanged.</p></div>
+  <p>The <a href="first-order-friedman-translation#raw-proof-translation">native first-order extension</a> transforms supplied intuitionistic trees, including protected quantifier branches and logical equality. Its <a href="first-order-friedman-translation#parameter-explosion">raw parameter-explosion construction</a> needs an available term for existential conclusions; the <a href="first-order-friedman-translation#public-proof-translation">public reserve</a> supplies one without assuming an original ground term.</p>
+</section>
+
+<section id="bottom-parameter" data-formal="pnt-equivalence pfr-bottom-equivalence" data-kind="lemma">
+  <h2>Recover the original formula at the falsum parameter</h2>
+  <p>For every \(A\), \(F_{\bot}(A)\) and \(A\) imply one another intuitionistically. Thus, writing \(B\simeq_{\mathrm I}C\) for two closed intuitionistic implication proofs,</p>
+  <div class="math-display">\[F_{\bot}(A)\simeq_{\mathrm I}A.\]</div>
+  <div class="proof"><p>Induct on \(A\). Falsum is unchanged. At an atom, \(p\to p\lor\bot\) is disjunction introduction. Conversely, case analysis on \(p\lor\bot\) returns \(p\) from its left branch and uses falsum elimination in its right branch.</p><p>For conjunction, project, use the child conversions and conjoin; for disjunction, apply them within the two case branches and introduce the matching disjunct. For implication, assume its target antecedent, convert it to the needed source antecedent using one child direction, apply the given implication, convert the consequent using the other child, and discharge. Reversing those directions proves the converse.</p><p>For native negation, put \(U=F_{\bot}(B)\). To pass from \(\neg B\) to \(U\to\bot\), assume \(U\), convert it to \(B\), and contradict \(\neg B\). Conversely, under an assumed \(B\), convert it to \(U\) and use \(U\to\bot\); native negation introduction concludes \(\neg B\). These are exactly the two directions required for the negation clause. The result is proof equivalence, not equality of parse trees.</p></div>
+</section>
+
+<section id="atom-renaming" data-formal="prop-substitution pfr-renaming" data-kind="lemma">
+  <h2>Rename atoms in the parameter too</h2>
+  <p>Let \(\rho:P\to Q\) rename atom names, and write \(A[\rho]\) for the formula obtained by applying that renaming to every atom. Then the following is a literal formula identity:</p>
+  <div class="math-display">\[F_R(A)[\rho]=F_{R[\rho]}(A[\rho]).\]</div>
+  <div class="proof"><p>Induct on \(A\). Falsum translates to \(R\), whose renamed version is \(R[\rho]\). For an atom, both sides are \(\rho(p)\lor R[\rho]\). For each binary constructor, distribute renaming and apply the child identities. For native negation, both sides are the implication from the renamed child translation into \(R[\rho]\). The parameter must therefore be renamed wherever it was inserted.</p><p>This argument uses atom names as the substitution values. <a href="#substitution-question">Replacing an atom by an arbitrary formula</a> behaves differently.</p></div>
+</section>
+
+<section id="classical-reading" data-formal="pfr-boolean-reading pfr-classical-equivalence" data-kind="lemma">
+  <h2>Classically the translation adds the parameter as an alternative</h2>
+  <p>For every Boolean valuation \(v\) and formulas \(R,A\),</p>
+  <div class="math-display">\[v(F_R(A))=v(A)\lor v(R).\]</div>
+  <p>Consequently \(F_R(A)\) and \(A\lor R\) have closed classical implication proofs in both directions.</p>
+  <div class="proof"><p>If \(v(R)\) is true, induction shows that every translated formula is true: atoms have the true right disjunct, falsum becomes \(R\), conjunction and disjunction use their child values, and every translated implication has a true consequent. The translated native negation has consequent \(R\) too.</p><p>If \(v(R)\) is false, another formula induction gives \(v(F_R(A))=v(A)\): atoms become disjunction with false, falsum stays false, and negation becomes implication into false. The other constructors preserve their Boolean operations. Combining the two cases proves the identity. Hence each of the two comparison implications is a tautology, and <a href="propositional-proofs#completeness">classical propositional completeness</a> supplies its proof. This does not supply intuitionistic equivalence with \(A\lor R\).</p></div>
+</section>
+
+<section id="untranslated-premise" data-formal="pfr-double-negation-formula pfr-double-negation-equivalence iks-chain-model iks-chain-values pfr-chain-upper-values pfr-unchanged-countermodel pfr-unchanged-nonderivability" data-kind="lemma">
+  <h2>An unchanged premise need not prove its translation</h2>
+  <p>There is no general intuitionistic rule \(A\vdash_{\mathrm I}F_R(A)\). In particular, for an atom \(p\),</p>
+  <div class="math-display">\[F_p(\neg\neg p)=((p\lor p)\to p)\to p\simeq_{\mathrm I}p.\]</div>
+  <div class="proof"><p>Write \(C=(p\lor p)\to p\). The formula \(C\) has a closed intuitionistic proof by disjunction elimination with two identity branches. From \(C\to p\), apply that closed proof to get \(p\). Conversely, from \(p\), discharge an unused assumption \(C\) to get \(C\to p\). This proves the displayed equivalence.</p><p>Use the <a href="intuitionistic-kripke-semantics#two-world-model">two-stage chain</a> whose atom \(p\) holds only at the upper world. Its forcing values are</p><div class="math-display">\[\begin{array}{c|ccc}\text{world}&p&\neg p&\neg\neg p\\\hline\text{root}&\text{false}&\text{false}&\text{true}\\\text{upper}&\text{true}&\text{false}&\text{true}\end{array}\]</div><p>At the root, \(\neg\neg p\) holds while its translation, equivalent to \(p\), fails. <a href="intuitionistic-kripke-semantics#intuitionistic-soundness">Intuitionistic soundness</a> excludes a derivation of the latter from the unchanged former. In <a href="#intuitionistic-preservation"></a>, the translated assumption would instead be \(F_p(\neg\neg p)\) itself.</p></div>
+</section>
+
+<section id="bottom-only-failure" data-formal="pfr-bottom-only pfr-separating-valuation pfr-bottom-only-failure pfr-explosion-example" data-kind="lemma">
+  <h2>Changing only falsum would fail at explosion</h2>
+  <p>Replacing falsum by \(R\) while leaving atoms unchanged does not in general preserve intuitionistic theorems.</p>
+  <div class="proof"><p>The theorem \(\bot\to p\) would become \(R\to p\). Take distinct atoms \(p,q\) and parameter \(R=q\). A Boolean valuation making \(q\) true and \(p\) false refutes \(q\to p\), so <a href="intuitionistic-propositional-deduction#boolean-soundness">Boolean soundness</a> rules out an intuitionistic proof.</p><p>Friedman translation instead gives \(R\to(p\lor R)\), with the direct proof that assumes \(R\) and introduces the right disjunct. The enlargement of atoms is what makes <a href="#parameter-explosion"></a> possible and repairs the falsum-left case of proof preservation.</p></div>
+</section>
+
+<section id="substitution-question" data-formal="pfr-counter-substitution pfr-substitution-formulas pfr-substitution-countermodel pfr-substitution-failure pfr-double-negation-equivalence" data-kind="question">
+  <h2>Does arbitrary formula substitution satisfy the renaming identity?</h2>
+  <p>For a formula substitution \(\sigma\), must \((F_R(A))[\sigma]\) equal, or at least be intuitionistically equivalent to, \(F_{R[\sigma]}(A[\sigma])\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Take distinct atoms \(p,q\), put \(A=p\), \(R=q\), and let \(\sigma(p)=\neg\neg q\), while \(\sigma(q)=q\). Fix all other atoms. Then</p><div class="math-display">\[(F_q(p))[\sigma]=\neg\neg q\lor q,\]</div><div class="math-display">\[F_{q[\sigma]}(p[\sigma])=((q\lor q)\to q)\to q.\]</div><p>The second formula is intuitionistically equivalent to \(q\) by <a href="#untranslated-premise"></a>. At the root of the two-stage \(q\)-model, the first holds because \(\neg\neg q\) holds, while the second fails. Thus the two formulas are neither identical nor intuitionistically equivalent. The parameter was fixed by this substitution, so changing it on the right cannot repair this example. Translation treats a substituted compound formula recursively; ordinary substitution into an already translated atom inserts that compound formula unchanged.</p></div></details>
+</section>
+
+<section id="classical-reading-question" data-formal="pfr-negation-theorem pfr-classical-countermodel pfr-classical-comparison-failure pfr-nonreflection" data-kind="question">
+  <h2>Can the classical comparison be strengthened intuitionistically?</h2>
+  <p>Does <a href="#classical-reading"></a> imply \(F_R(A)\simeq_{\mathrm I}A\lor R\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Put \(A=\neg p\) and \(R=p\). Then \(F_p(\neg p)=(p\lor p)\to p\), which has the closed case-analysis proof used in <a href="#untranslated-premise"></a>. But \(A\lor R=\neg p\lor p\) fails at the root of that same two-stage model, where neither disjunct is forced. Therefore the implication from the translated formula to \(A\lor R\) is not intuitionistically derivable.</p><p>The example also shows that a closed translated theorem need not reflect to a theorem of the original formula: \(F_p(\neg p)\) is provable, while \(\neg p\) is not, since the upper world forces \(p\). Proof preservation here is the one-way theorem with translated premises, not the exact classical-consequence correspondence of the <a href="propositional-negative-translation#exact-classical-consequence">Gödel–Gentzen translation</a>.</p></div></details>
+</section>

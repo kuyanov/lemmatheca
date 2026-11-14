@@ -1,0 +1,137 @@
+<section id="multiplication-certificates" data-formal="arith-language arith-numeral ha-basic-axioms ha-theory ha-axioms-over-names ha-certificate" data-kind="definition">
+  <h2>Use multiplication's two recursion equations</h2>
+  <p>Work in the native arithmetic language of <a href="heyting-arithmetic#heyting-arithmetic">Heyting arithmetic</a>, with logical equality. The <strong>multiplication recursion axioms</strong> are the universal closures of</p>
+  <div class="math-display">\[x\cdot0=0,\qquad x\cdot Sy=x\cdot y+x.\]</div>
+  <p>Write \(\overline n=S^n0\), so \(\overline1=S0\) and \(\overline2=S(S0)\). Multiplication recurses on its second argument. Zero on the left, either distributive law, commutativity and associativity will be derived, not assumed as new arithmetic axioms.</p>
+  <p>An <strong>HA certificate over \(X\) with additional context \(\Gamma\)</strong> is an actual finite intuitionistic deduction, with a specified finite support allowed by the original closed HA axioms over the original free-name set \(X\), together with the finite context \(\Gamma\). The <a href="heyting-arithmetic-addition#addition-certificates">addition treatment</a> supplies the same certificate convention. We construct such proof data throughout, using the <a href="heyting-arithmetic-addition#fixed-parameter-induction">derived induction rule</a> and the already proved addition identities.</p>
+</section>
+
+<section id="multiplication-congruence" data-formal="hamul-certificate-multiplication haadd-certificate-addition haadd-certificate-symmetry haadd-certificate-transitivity" data-kind="lemma">
+  <h2>Rewrite either factor by an actual equality proof</h2>
+  <p>For arbitrary arithmetic terms \(s,t,u,v\) over \(X\), supplied HA certificates under the same \(\Gamma\) of \(s=t\) and \(u=v\) construct one of \(s\cdot u=t\cdot v\). In particular, one supplied equality permits rewriting either factor while the other remains fixed.</p>
+  <div class="proof"><p>Use the <a href="heyting-arithmetic#arithmetic-equality-operations">binary multiplication congruence operation</a>. Replace the first factor using the first supplied equality, replace the second using the second equality, and compose by transitivity. A reflexive equality supplies an unchanged factor. These are logical equality steps; they need no multiplication axiom. As in the <a href="heyting-arithmetic-addition#equality-chains">addition equality chains</a>, finite unions and weakening align the actual arithmetic supports, and \(X,\Gamma\) remain fixed. Every replacement inside a product below uses this operation, including equalities read backwards by symmetry.</p></div>
+</section>
+
+<section id="zero-on-left" data-formal="hamul-zero-left hamul-zero-left-instance" data-kind="lemma">
+  <h2>Derive zero in the first argument</h2>
+  <p>HA constructs a closed certificate of \(\forall z\,(0\cdot z=0)\).</p>
+  <div class="proof"><p>Induct on \(z\) in \(0\cdot z=0\), with no fixed parameters. The base \(0\cdot0=0\) is a recursion-axiom instance. Under the protected hypothesis \(0\cdot e=0\), multiplication recursion and addition congruence give</p>
+  <div class="math-display">\[0\cdot Se=0\cdot e+0=0+0=0.\]</div>
+  <p>The final equality is the addition-zero axiom. Discharge the hypothesis and use the native induction axiom for this equation. Thus a recursion clause on the right has produced a theorem on the left through one finite internal induction.</p></div>
+</section>
+
+<section id="one-on-left" data-formal="hamul-one-left hamul-one-left-instance haadd-certificate-successor" data-kind="lemma">
+  <h2>Derive the left identity without assuming commutativity</h2>
+  <p>HA constructs a closed certificate of \(\forall z\,(\overline1\cdot z=z)\).</p>
+  <div class="proof"><p>First, addition recursion gives, for any term \(t\),</p>
+  <div class="math-display">\[t+\overline1=t+S0=S(t+0)=St.\]</div>
+  <p>The last step uses the addition-zero axiom beneath successor. Now induct on \(z\) in \(\overline1\cdot z=z\), with no fixed parameters. Its base is \(\overline1\cdot0=0\). Under \(\overline1\cdot e=e\), the protected step is</p>
+  <div class="math-display">\[\overline1\cdot Se=(\overline1\cdot e)+\overline1=e+\overline1=Se.\]</div>
+  <p>The first equality is multiplication recursion, the second is addition congruence for the induction hypothesis, and the third is the just constructed addition instance. Induction yields the closed result. No symmetry law for multiplication has been used.</p></div>
+</section>
+
+<section id="successor-on-left" data-formal="hamul-successor-left hamul-successor-left-instance haadd-exchange-instance haadd-certificate-successor" data-kind="lemma">
+  <h2>Reorder the addition terms in the left-successor step</h2>
+  <p>HA constructs a closed certificate of \(\forall x\forall y\,(Sx\cdot y=x\cdot y+y)\).</p>
+  <div class="proof"><p>Fix \(x\) and induct on \(y\). At zero, use the two multiplication-zero instances and addition-zero, reading the last two backwards where necessary:</p>
+  <div class="math-display">\[Sx\cdot0=0=x\cdot0=(x\cdot0)+0.\]</div>
+  <p>For the protected step, assume \(Sx\cdot e=x\cdot e+e\). Multiplication recursion and the induction hypothesis give</p>
+  <div class="math-display">\[Sx\cdot Se=(Sx\cdot e)+Sx=(x\cdot e+e)+Sx.\]</div>
+  <p>It remains to move the fixed \(x\) past \(e\) in the sum. Apply addition recursion, then the proved <a href="heyting-arithmetic-addition#exchange-three-summands">three-term exchange</a> with \((r,s,t)=(x\cdot e,e,x)\) beneath successor:</p>
+  <div class="math-display">\[(x\cdot e+e)+Sx=S((x\cdot e+e)+x)=S((x\cdot e+x)+e).\]</div>
+  <p>Read addition recursion backwards and then multiplication recursion backwards inside addition by \(Se\):</p>
+  <div class="math-display">\[S((x\cdot e+x)+e)=(x\cdot e+x)+Se=(x\cdot Se)+Se.\]</div>
+  <p>Transitivity joins the three displays into the required step. Discharge the hypothesis, apply induction, and universally introduce \(x\). The rearrangement is a composition of earlier addition certificates, not an identification of different parenthesized term trees.</p></div>
+</section>
+
+<section id="commutative-multiplication" data-formal="hamul-commutativity hamul-commutativity-instance" data-kind="theorem">
+  <h2>Prove commutativity with the left-successor certificate</h2>
+  <div class="statement-box"><p>HA constructs a closed certificate of \(\forall x\forall y\,(x\cdot y=y\cdot x)\).</p></div>
+  <div class="proof"><p>Fix \(x\) and induct on \(y\). At zero, multiplication recursion and <a href="#zero-on-left"></a> give \(x\cdot0=0=0\cdot x\). For the protected step assume \(x\cdot e=e\cdot x\). Then</p>
+  <div class="math-display">\[x\cdot Se=x\cdot e+x=e\cdot x+x=Se\cdot x.\]</div>
+  <p>These equalities are respectively multiplication recursion, addition congruence for the induction hypothesis, and <a href="#successor-on-left"></a> read backwards at \((e,x)\). Induction followed by closure of the fixed \(x\) finishes the proof. Distributivity is not a prerequisite of this argument.</p></div>
+</section>
+
+<section id="left-distributivity" data-formal="hamul-left-distributivity hamul-left-distributivity-instance haadd-associativity-instance" data-kind="theorem">
+  <h2>Distribute a fixed factor over a sum</h2>
+  <div class="statement-box"><p>HA constructs a closed certificate of the <strong>left distributive law</strong></p>
+  <div class="math-display">\[\forall x\forall y\forall z\,(x\cdot(y+z)=x\cdot y+x\cdot z).\]</div></div>
+  <div class="proof"><p>Fix \(x,y\) and induct on \(z\). The base uses addition-zero within the product, then addition-zero and multiplication-zero backwards:</p>
+  <div class="math-display">\[x\cdot(y+0)=x\cdot y=x\cdot y+0=x\cdot y+x\cdot0.\]</div>
+  <p>Assume \(x\cdot(y+e)=x\cdot y+x\cdot e\). Rewrite \(y+Se=S(y+e)\) by addition recursion and then apply multiplication recursion:</p>
+  <div class="math-display">\[x\cdot(y+Se)=x\cdot S(y+e)=x\cdot(y+e)+x.\]</div>
+  <p>Apply the induction hypothesis inside addition, use <a href="heyting-arithmetic-addition#associative-addition">addition associativity</a>, and read multiplication recursion backwards:</p>
+  <div class="math-display">\[x\cdot(y+e)+x=(x\cdot y+x\cdot e)+x=x\cdot y+(x\cdot e+x)=x\cdot y+x\cdot Se.\]</div>
+  <p>These finite chains prove the protected step. Induction and universal introduction of the identical pair \((x,y)\) give the displayed closure.</p></div>
+</section>
+
+<section id="right-distributivity" data-formal="hamul-right-distributivity hamul-right-distributivity-instance" data-kind="lemma">
+  <h2>Obtain the other distributive orientation by commutativity</h2>
+  <p>HA constructs a closed certificate of the <strong>right distributive law</strong> \(\forall x\forall y\forall z\,((x+y)\cdot z=x\cdot z+y\cdot z)\).</p>
+  <div class="proof"><p>At protected arbitrary \(x,y,z\), use <a href="#commutative-multiplication"></a> and <a href="#left-distributivity"></a>:</p>
+  <div class="math-display">\[(x+y)\cdot z=z\cdot(x+y)=z\cdot x+z\cdot y=x\cdot z+y\cdot z.\]</div>
+  <p>The final equality combines the two commutativity instances by addition congruence. Universally introduce all three parameters. There is no new induction in this orientation.</p></div>
+</section>
+
+<section id="associative-multiplication" data-formal="hamul-associativity hamul-associativity-instance" data-kind="theorem">
+  <h2>Use distributivity in the associativity induction</h2>
+  <div class="statement-box"><p>HA constructs a closed certificate of</p>
+  <div class="math-display">\[\forall x\forall y\forall z\,((x\cdot y)\cdot z=x\cdot(y\cdot z)).\]</div></div>
+  <div class="proof"><p>Fix \(x,y\) and induct on \(z\). Multiplication-zero and multiplication congruence give the base</p>
+  <div class="math-display">\[(x\cdot y)\cdot0=0=x\cdot0=x\cdot(y\cdot0).\]</div>
+  <p>The last equality reads \(y\cdot0=0\) backwards under multiplication by \(x\). For the protected step assume \((x\cdot y)\cdot e=x\cdot(y\cdot e)\). Multiplication recursion and the induction hypothesis give</p>
+  <div class="math-display">\[(x\cdot y)\cdot Se=(x\cdot y)\cdot e+x\cdot y=x\cdot(y\cdot e)+x\cdot y.\]</div>
+  <p>Read <a href="#left-distributivity"></a> backwards at \((x,y\cdot e,y)\), and then read multiplication recursion for \(y\cdot Se\) backwards inside multiplication by \(x\):</p>
+  <div class="math-display">\[x\cdot(y\cdot e)+x\cdot y=x\cdot(y\cdot e+y)=x\cdot(y\cdot Se).\]</div>
+  <p>This proves the step with the same two fixed parameters. Induction and their universal closure yield the theorem. The order of these proofs matters: distributivity was available before it was used here.</p></div>
+</section>
+
+<section id="closed-theorem-certificates" data-formal="ha-certificate ha-theory ha-induction-rule ha-universal-closure hamul-zero-left hamul-one-left hamul-successor-left hamul-commutativity hamul-left-distributivity hamul-right-distributivity hamul-associativity" data-kind="lemma">
+  <h2>Keep the derived laws inside the original theory</h2>
+  <p>All seven universal multiplication conclusions above have actual finite intuitionistic HA certificates supported by the original seven basic axioms and full native induction schema.</p>
+  <div class="proof"><p>For left zero and left one, the induction body has no fixed parameters. For left successor and commutativity, the second factor is the induction variable and the first is fixed. For left distributivity and associativity, the last displayed variable is the induction variable and the first two remain fixed. Each body is exactly the equation stated in its proof. The base and protected step use finitely many axiom instances and earlier certificates. The <a href="heyting-arithmetic#induction-as-derived-rule">derived induction construction</a> adds the corresponding original native induction axiom and combines those finite supports.</p><p>Close the fixed parameters by universal introduction, since the arithmetic assumptions are closed. To present any chosen displayed order, instantiate at new protected names in that order and introduce them again, using the <a href="intuitionistic-first-order-deduction#quantifier-rules">native quantifier rules</a>. Right distributivity only combines earlier universal certificates. In every case the output remains one finite deduction from the original HA axiom set; no commutative-semiring axiom has been adjoined.</p></div>
+</section>
+
+<section id="arbitrary-term-instances" data-formal="ha-certificate hamul-zero-left-instance hamul-one-left-instance hamul-successor-left-instance hamul-commutativity-instance hamul-left-distributivity-instance hamul-right-distributivity-instance hamul-associativity-instance hamul-expand-left-sum" data-kind="lemma">
+  <h2>Apply the universal proofs without evaluating the factors</h2>
+  <p>For every original free-name set \(X\), finite additional context \(\Gamma\), and arithmetic terms over \(X\), the seven laws above have actual HA certificate instances under \(\Gamma\). Moreover, for specified terms \(s,t,u,v\), a supplied certificate under \(\Gamma\) of \((s+t)\cdot u=v\) gives one of \(s\cdot u+t\cdot u=v\) under the identical context.</p>
+  <div class="proof"><p>Use the <a href="heyting-arithmetic-addition#arbitrary-term-instances">closed-certificate instantiation construction</a>: rename the closed proof into \(X\), universally eliminate its slots at the supplied terms, then weaken its empty additional context to \(\Gamma\). This is a specified capture-free operation on the constructed certificate, not an appeal to a model's multiplication function.</p><p>For the last claim, instantiate right distributivity at \((s,t,u)\), read its equality backwards and compose with the supplied proof:</p>
+  <div class="math-display">\[s\cdot u+t\cdot u=(s+t)\cdot u=v.\]</div>
+  <p>Union the actual finite supports before transitivity. This operation uses the input equality tree itself, and preserves every original name and additional assumption.</p></div>
+</section>
+
+<section id="doubling" data-formal="hamul-doubling" data-kind="lemma">
+  <h2>A universal certificate doubles an arbitrary term</h2>
+  <p>For any arithmetic term \(t\) over any \(X\), HA constructs a certificate under any finite additional \(\Gamma\) of \(\overline2\cdot t=t+t\).</p>
+  <div class="proof"><p>Instantiate the left-successor theorem at \((\overline1,t)\). Since \(S\overline1\) is exactly the numeral term \(\overline2\), combine that instance with left one inside addition:</p>
+  <div class="math-display">\[\overline2\cdot t=(\overline1\cdot t)+t=t+t.\]</div>
+  <p>The supplied \(t\) may itself contain variables, addition and multiplication. Neither its value nor a bound on its value is an input to this construction.</p></div>
+</section>
+
+<section id="worked-rewrite" data-formal="hamul-worked-rewrite hamul-expand-left-sum" data-kind="lemma">
+  <h2>Expand a proved equation in a fixed context</h2>
+  <p>For arbitrary terms \(x,y,z\), a supplied HA certificate under \(\Gamma\) of \((x+\overline1)\cdot y=z\) gives an HA certificate under \(\Gamma\) of \(x\cdot y+y=z\).</p>
+  <div class="proof"><p>Apply the expansion operation in <a href="#arbitrary-term-instances"></a> at \((s,t,u,v)=(x,\overline1,y,z)\). It gives \(x\cdot y+\overline1\cdot y=z\). Read the left-one instance backwards inside addition and compose with that returned certificate:</p>
+  <div class="math-display">\[x\cdot y+y=x\cdot y+\overline1\cdot y=z.\]</div>
+  <p>The proof depends on the original supplied equality and on the specified universal multiplication certificates. It neither replaces \(\Gamma\) by an empty context nor evaluates the unknown terms.</p></div>
+</section>
+
+<section id="standard-model-question" data-formal="ha-certificate ha-standard-soundness ifond-theory-soundness hamul-commutativity hamul-commutativity-instance" data-kind="question">
+  <h2>Is a standard-model calculation already an HA certificate?</h2>
+  <p>Suppose commutativity has been proved for ordinary natural-number multiplication. Does that semantic proof, by itself, already give the finite HA certificate specified in <a href="#commutative-multiplication"></a>?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. The semantic statement quantifies over elements of a specified structure; the requested certificate is an actual finite deduction from the original HA axioms with the native equation as conclusion. A proof of the first statement has not, by itself, supplied that deduction tree. Logical soundness takes a deduction to truth in structures satisfying its assumptions; it does not turn a check in the one standard structure into a deduction.</p><p>Here the certificate is supplied by the explicit induction on the second factor, using the already constructed left-zero and left-successor certificates. Its <a href="#arbitrary-term-instances">term instances</a> are obtained by native quantifier elimination, even when no standard numerical values have been assigned to the terms. The familiar identity is the same, while the mathematical proof object being constructed is different.</p></div>
+  </details>
+</section>
+
+<section id="recursion-only-question" data-formal="hamul-recursion-theory hamul-projection-structure hamul-projection-recursion-axioms hamul-projection-refutes-zero-left hamul-projection-refutes-separation hamul-zero-left-not-from-recursion ifond-theory-soundness" data-kind="question">
+  <h2>Do the four recursion clauses alone force left zero?</h2>
+  <p>Keep only the two addition recursion clauses and the two multiplication recursion clauses as nonlogical arithmetic axioms. With intuitionistic deduction and genuine logical equality, do they already imply \(\forall z\,(0\cdot z=0)\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. Take a two-element structure with distinct carrier labels \(0,1\), constant interpreted by \(0\), successor interpreted as the identity, addition by first projection \(a+b=a\), and multiplication by second projection \(a\cdot b=b\). The labels distinguish carrier elements; the carrier element \(1\) is not the value of the numeral \(\overline1=S0\) in this structure.</p><p>For any carrier elements \(a,b\), addition-zero reads \(a+0=a\), and addition-successor reads \(a+Sb=a=S(a+b)\). Multiplication-zero reads \(a\cdot0=0\), and multiplication-successor reads</p>
+    <div class="math-display">\[a\cdot Sb=b=(a\cdot b)+a.\]</div>
+    <p>Thus all four universally closed recursion clauses hold. But \(0\cdot1=1\ne0\), so the proposed left-zero conclusion fails. The <a href="intuitionistic-first-order-deduction#ordinary-soundness">ordinary soundness theorem</a> excludes a deduction from those four clauses.</p><p>This structure is not a model of full HA: for example, its identity successor violates successor separation. The counterexample shows precisely that the four clauses alone are insufficient. Our HA proof uses its stated induction axiom; the example does not assert that induction is the only possible extra assumption that could yield left zero.</p></div>
+  </details>
+</section>

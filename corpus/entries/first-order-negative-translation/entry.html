@@ -16,12 +16,13 @@
   <p>Each call concerns a strict formula child, so this specifies a finite tree. Quantifiers retain their original bound slots, and every atomic argument tuple retains its actual term trees. The superscript refers to this constructive interpretation.</p>
 </section>
 
-<section id="scope-identities" data-formal="fongg-scope-map fongg-free-substitution fongg-free-renaming fongg-opening fongg-slot-instances fongg-term-instance fongg-free-support" data-kind="theorem">
+<section id="scope-identities" data-formal="fongg-scope-map fongg-free-substitution fongg-free-renaming fongg-opening fongg-slot-instances fongg-term-instance fongg-free-support fofr-scope-map fofr-body-opening fofr-body-instance" data-kind="theorem">
   <h2>Commute translation with the actual scope maps</h2>
   <p>For every compatible <a href="first-order-proof-formulas#scope-substitution">scope substitution</a> \(\sigma\),</p>
   <div class="math-display">\[(A\langle\sigma\rangle)^{\mathsf N}=A^{\mathsf N}\langle\sigma\rangle.\]</div>
   <p>Consequently translation commutes with free substitution, free renaming, opening a body and instantiating it at a supplied term. Its free-name support is exactly that of the original formula.</p>
   <div class="proof"><p>Induct on the full tree, allowing both scopes and the replacement terms to vary. At an atom both orders substitute into the same original tuple or equality terms, then add the same two negations. Falsum is fixed. Every connective clause reapplies its constructor and any displayed outer negations to the same child results. At either binder, both orders use the <a href="first-order-proof-formulas#lifting-a-substitution">protected extension</a> of \(\sigma\), which fixes its newest slot. Apply the body hypothesis to that extension. These cases prove literal tree equality. The specified free, opening and instance maps give the consequences. A second formula induction gives support equality: added negations introduce no names, and the original unions and binder supports are retained.</p></div>
+  <p>The <a href="first-order-friedman-translation#scope-identities">parameterized Friedman translation</a> has its own scope identity: the scope map must act on the parameter as well as the original formula. Its <a href="first-order-friedman-translation#opening-and-instances">opening and instance identities</a> use a parameter protected from each newly bound slot. This distinguishes it from the fixed negative translation stated here.</p>
 </section>
 
 <section id="translated-contexts" data-formal="fongg-context fongg-context-insert fongg-context-union fongg-context-renaming fongg-context-lift" data-kind="lemma">

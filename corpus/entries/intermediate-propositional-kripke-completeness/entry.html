@@ -1,0 +1,124 @@
+<section id="two-consequence-relations" data-kind="definition" data-formal="prop-formula ipnd-derivability ipwem-formula ipwem-axioms pdl-linearity pdl-axioms ipwem-schema-consequence ipwem-schema-union ipwem-directed-futures pdl-locally-linear imkc-entails-on">
+  <h2>Fix the axiom set before choosing premises</h2>
+  <p>Let \(\mathcal F\) be the <a href="intuitionistic-propositional-kripke-completeness#numbered-language">native formulas with numbered atoms</a>. Write \(\vdash_{\mathrm I}\) for the original intuitionistic deduction relation and use the earlier <a href="propositional-weak-excluded-middle#schema-consequence">finite-extra-assumption relation</a> \(\Gamma\vdash_S A\). Its <a href="propositional-weak-excluded-middle#finite-schema-support">union characterization</a> is</p>
+  <div class="math-display">\[\Gamma\vdash_S A\quad\Longleftrightarrow\quad\Gamma\cup S\vdash_{\mathrm I}A.\]</div>
+  <p>The two fixed axiom sets considered here are</p>
+  <div class="math-display">\[\begin{aligned}\mathcal W&amp;=\{\neg B\lor\neg\neg B:B\in\mathcal F\},\\\mathcal L&amp;=\{(B\to C)\lor(C\to B):B,C\in\mathcal F\}.\end{aligned}\]</div>
+  <p>These give <strong>KC consequence</strong> \(\vdash_{\mathcal W}\) and <strong>LC consequence</strong> \(\vdash_{\mathcal L}\). Every compound-formula instance is included. For a class \(\mathscr K\) of nonempty preordered frames, <strong>consequence over \(\mathscr K\)</strong>, written \(\Gamma\models_{\mathscr K}A\), means that every persistent valuation on every frame in \(\mathscr K\), at every world forcing all of \(\Gamma\), forces \(A\). Let \(\mathscr D\) consist of frames with <a href="propositional-weak-excluded-middle#directed-futures">directed future cones</a> and \(\mathscr C\) of frames with <a href="propositional-dummett-linearity#comparable-futures">linearly ordered future cones</a>. No finiteness restriction is imposed.</p>
+</section>
+
+<section id="consistent-axiom-sets" data-kind="lemma" data-formal="imkc-kc-consistent imkc-lc-consistent iks-singleton-model ipwem-frame-characterization pdl-frame-characterization iks-soundness">
+  <h2>Both axiom sets are consistent</h2>
+  <p>Neither \(\mathcal W\) nor \(\mathcal L\) derives \(\bot\) in the original intuitionistic calculus.</p>
+  <div class="proof"><p>Take the one-world frame \(\{*\}\), and, for definiteness, make every atom false there. Its sole future cone is directed and linearly ordered. The earlier <a href="propositional-weak-excluded-middle#frame-characterization">weak excluded middle</a> and <a href="propositional-dummett-linearity#frame-characterization">linearity characterizations</a> show that this world forces every member of each respective axiom set. If either set derived \(\bot\), <a href="intuitionistic-kripke-semantics#intuitionistic-soundness">intuitionistic soundness</a> would make this world force falsum. This is impossible.</p><p>The argument concerns all instances at once. It supplies the consistency needed to obtain a nonempty canonical model independently of any later premise set or conclusion.</p></div>
+</section>
+
+<section id="restricted-canonical-model" data-kind="definition" data-formal="ikc-prime-worlds ikc-prime-theory ikc-consistent imkc-worlds imkc-model ikc-extension-world ikc-extension-contains">
+  <h2>Keep exactly the prime theories containing the axioms</h2>
+  <p>Fix any \(S\subseteq\mathcal F\) with \(S\not\vdash_{\mathrm I}\bot\). Let \(W^c\) be the earlier set of intuitionistic prime theories. The <strong>canonical worlds over \(S\)</strong> are</p>
+  <div class="math-display">\[W_S=\{P\in W^c:S\subseteq P\}.\]</div>
+  <p>Here <a href="intuitionistic-propositional-kripke-completeness#prime-theories">prime theory</a> means deductively closed, consistent and prime for disjunction. Order \(W_S\) by literal set inclusion. The <strong>restricted canonical model</strong> \(\mathcal C_S\) has that order and valuation</p>
+  <div class="math-display">\[P\Vdash_{\mathcal C_S}p_i\quad\Longleftrightarrow\quad p_i\in P.\]</div>
+  <p>Inclusion is a partial order, and the valuation persists along inclusion. The specified <a href="intuitionistic-propositional-kripke-completeness#prime-extension">prime extension</a> \(\mathsf E(S,\bot)\) contains \(S\), so is a world and proves nonemptiness. Thus \(\mathcal C_S\) is a model. It is fixed once \(S\) is fixed: neither its worlds nor its valuation depends on \(\Gamma\) or \(A\).</p>
+</section>
+
+<section id="canonical-inclusion" data-kind="lemma" data-formal="imkc-inclusion ipkm-model-morphism">
+  <h2>The restriction retains every future of each retained world</h2>
+  <p>The literal inclusion \(j:W_S\to W^c\), \(j(P)=P\), into all intuitionistic prime theories is a <a href="intuitionistic-propositional-kripke-morphisms#bounded-model-morphisms">bounded morphism</a> from \(\mathcal C_S\) to the earlier canonical model \(\mathcal C\).</p>
+  <div class="proof"><p>It preserves inclusion and verifies exactly the same atoms. For the back condition, suppose \(j(P)\subseteq Q\), where \(Q\) is any prime theory. Since \(S\subseteq P\subseteq Q\), the same set \(Q\) belongs to \(W_S\). Use that very world as the lift: it extends \(P\) and maps to \(Q\) exactly.</p><p>Thus restricting has removed no future of a retained world. This is why implication and negation can keep their earlier meanings; an arbitrary subset of canonical worlds would not suffice.</p></div>
+</section>
+
+<section id="restricted-truth-lemma" data-kind="theorem" data-formal="imkc-truth ipkm-forcing ikc-truth-lemma">
+  <h2>Forcing remains exactly membership</h2>
+  <p>For every consistent \(S\), every \(P\in W_S\) and every \(A\in\mathcal F\),</p>
+  <div class="math-display">\[P\Vdash_{\mathcal C_S}A\quad\Longleftrightarrow\quad A\in P.\]</div>
+  <div class="proof"><p><a href="intuitionistic-propositional-kripke-morphisms#forcing-invariance">Bounded-morphism invariance</a> for the specified inclusion gives \(P\Vdash_{\mathcal C_S}A\) if and only if \(j(P)\Vdash_{\mathcal C}A\). The original <a href="intuitionistic-propositional-kripke-completeness#truth-lemma">truth lemma</a> identifies the latter with \(A\in P\). It covers every native constructor, including primitive negation.</p></div>
+</section>
+
+<section id="specified-counterworld" data-kind="theorem" data-formal="imkc-counterworld imkc-countermodel ikc-extension ipwem-schema-union">
+  <h2>Every failed extended deduction chooses a world in the fixed model</h2>
+  <p>Let \(S\) be consistent. If \(\Gamma\not\vdash_S A\), the specified world</p>
+  <div class="math-display">\[P_{\Gamma,A}=\mathsf E(\Gamma\cup S,A)\in W_S\]</div>
+  <p>forces all of \(\Gamma\) in \(\mathcal C_S\) and does not force \(A\).</p>
+  <div class="proof"><p>The union characterization says \(\Gamma\cup S\not\vdash_{\mathrm I}A\). The earlier prime-extension construction therefore makes \(P_{\Gamma,A}\) prime, containing \(\Gamma\cup S\) and omitting \(A\). Containment of \(S\) puts it in the already fixed \(W_S\). The restricted truth lemma gives each claimed forcing assertion.</p><p>This generic counterworld construction has not yet proved completeness for a class of frames. We must still prove that the particular canonical frame has the required geometry.</p></div>
+</section>
+
+<section id="finite-conjunction" data-kind="definition" data-formal="imkc-package">
+  <h2>Package a finite list of assumptions into one formula</h2>
+  <p>For a finite list \(L\) of formulas, its <strong>conjunction package</strong> is defined recursively by</p>
+  <div class="math-display">\[c([])=\top:=(\bot\to\bot),\qquad c(B::L)=B\land c(L).\]</div>
+  <p>Write \(|L|_{\mathrm{set}}\) for the set of formulas occurring in \(L\); repetitions are permitted. The empty package is a theorem, rather than an extra assumption that needs a premise.</p>
+</section>
+
+<section id="finite-conjunction-bridge" data-kind="lemma" data-formal="imkc-package-premises imkc-package-closed ipnd-proof-replacement ikc-deductively-closed">
+  <h2>The package can replace exactly its finitely many assumptions</h2>
+  <p>For every \(U\subseteq\mathcal F\), formula \(A\) and finite list \(L\),</p>
+  <div class="math-display">\[U\cup|L|_{\mathrm{set}}\vdash_{\mathrm I}A\quad\Longleftrightarrow\quad U\cup\{c(L)\}\vdash_{\mathrm I}A.\]</div>
+  <p>If all entries of \(L\) belong to a deductively closed theory \(R\), then \(c(L)\in R\).</p>
+  <div class="proof"><p>Induct on \(L\). Under the assumption \(c(B::L)\), the two conjunction eliminations give \(B\) and \(c(L)\). Continuing recursively gives every list entry. Conversely, assumptions for the list entries construct \(c(L)\): for the empty list, introduce \(\bot\to\bot\) by assuming and returning \(\bot\); at a cons step, combine the head assumption with the recursively constructed tail by conjunction introduction.</p><p>These deductions and the unchanged assumptions from \(U\) give both displayed implications by <a href="intuitionistic-propositional-deduction#proof-replacement">replacing assumption leaves</a>. In the second assertion, the same introduction construction is a deduction of \(c(L)\) from \(R\), and deductive closure puts its conclusion in \(R\). This includes the empty list because every closed theory contains each intuitionistic theorem.</p></div>
+</section>
+
+<section id="inconsistent-union-bridge" data-kind="lemma" data-formal="imkc-union-package ipnd-finite-support">
+  <h2>An inconsistent union separates the two theories by one formula</h2>
+  <p>Let \(Q,R\) be deductively closed theories. If \(Q\cup R\vdash_{\mathrm I}\bot\), there is a finite list \(L\) of members of \(R\) such that, with \(B=c(L)\),</p>
+  <div class="math-display">\[B\in R\qquad\text{and}\qquad\neg B\in Q.\]</div>
+  <div class="proof"><p><a href="intuitionistic-propositional-deduction#finite-support">Finite support</a> supplies a finite \(D\subseteq Q\cup R\) deriving \(\bot\). List the finite set \(D\cap R\) as \(L\). Every member of \(D\) lies in \(Q\) or in this list, so weakening gives \(Q\cup|L|_{\mathrm{set}}\vdash_{\mathrm I}\bot\). The package bridge gives \(Q\cup\{B\}\vdash_{\mathrm I}\bot\). Native negation introduction discharges \(B\), giving \(Q\vdash_{\mathrm I}\neg B\), hence \(\neg B\in Q\) by closure. Every list entry belongs to \(R\), so the bridge also gives \(B\in R\).</p><p>If \(D\cap R\) is empty, this argument uses the closed proof of \(\top\) and yields \(\neg\top\in Q\); it does not require the finite set to be nonempty.</p></div>
+</section>
+
+<section id="kc-canonical-directedness" data-kind="theorem" data-formal="imkc-kc-union-consistent imkc-kc-joint-world imkc-kc-joint-spec imkc-kc-directed ikc-extension-prime">
+  <h2>The KC canonical frame has directed future cones</h2>
+  <p>If \(P,Q,R\in W_{\mathcal W}\), \(P\subseteq Q\) and \(P\subseteq R\), then \(Q\cup R\) is consistent and the specified prime theory</p>
+  <div class="math-display">\[U=\mathsf E(Q\cup R,\bot)\in W_{\mathcal W}\]</div>
+  <p>contains both \(Q\) and \(R\). Consequently every future cone of \(W_{\mathcal W}\) is directed.</p>
+  <div class="proof"><p>Suppose instead that the union derives \(\bot\). The preceding bridge gives a formula \(B\) with \(B\in R\) and \(\neg B\in Q\). Since \(P\) contains <em>every</em> weak excluded middle instance, \(\neg B\lor\neg\neg B\in P\). Primeness of \(P\) gives one of its disjuncts.</p><p>If \(\neg B\in P\), then \(\neg B\in R\), contradicting \(B\in R\) and consistency of \(R\). If \(\neg\neg B\in P\), then \(\neg\neg B\in Q\), contradicting \(\neg B\in Q\) and consistency of \(Q\). Both contradictions use the native negation-elimination rule. Thus the union is consistent.</p><p>The specified prime extension of that union contains both theories. It contains \(\mathcal W\) already because \(Q\) does, so it is a world of the same canonical frame. It is the required joint future. The formula \(B\) is generally compound; restricting the assumed schema to atomic instances would not justify this proof.</p></div>
+</section>
+
+<section id="lc-canonical-linearity" data-kind="theorem" data-formal="imkc-lc-linear ikc-prime-theory">
+  <h2>The LC canonical frame has linearly ordered future cones</h2>
+  <p>If \(P,Q,R\in W_{\mathcal L}\), \(P\subseteq Q\) and \(P\subseteq R\), then \(Q\subseteq R\) or \(R\subseteq Q\).</p>
+  <div class="proof"><p>If neither inclusion holds, choose \(B\in Q\setminus R\) and \(C\in R\setminus Q\). The common predecessor contains the instance \((B\to C)\lor(C\to B)\). Primeness of \(P\) puts one of these implications in \(P\).</p><p>If \(B\to C\in P\), it belongs to \(Q\). From it and \(B\in Q\), implication elimination and closure give \(C\in Q\), contrary to the choice of \(C\). If \(C\to B\in P\), the same reasoning in \(R\) gives \(B\in R\), contrary to the choice of \(B\). Hence the theories are comparable. This proves local comparability; theories without a common predecessor are not being compared.</p></div>
+</section>
+
+<section id="frame-soundness" data-kind="lemma" data-formal="ipwem-schema-soundness ipwem-frame-characterization pdl-frame-characterization imkc-entails-on">
+  <h2>The two frame classes validate the added deductions</h2>
+  <p>For all \(\Gamma,A\),</p>
+  <div class="math-display">\[\begin{aligned}\Gamma\vdash_{\mathcal W}A&amp;\Longrightarrow\Gamma\models_{\mathscr D}A,\\\Gamma\vdash_{\mathcal L}A&amp;\Longrightarrow\Gamma\models_{\mathscr C}A.\end{aligned}\]</div>
+  <div class="proof"><p>The respective <a href="propositional-weak-excluded-middle#frame-characterization">directedness</a> and <a href="propositional-dummett-linearity#frame-characterization">linearity</a> characterizations make every member of the chosen axiom set valid on every frame in its class, for all persistent valuations. The already established <a href="propositional-weak-excluded-middle#finite-schema-support">soundness with added assumptions</a> therefore applies to the original deduction and proves the assertion.</p></div>
+</section>
+
+<section id="strong-completeness" data-kind="theorem" data-formal="imkc-kc-complete imkc-lc-complete imkc-countermodel imkc-kc-directed imkc-lc-linear imkc-model">
+  <h2>Both extensions are strongly complete for their frame conditions</h2>
+  <div class="statement-box"><p>For every premise set \(\Gamma\subseteq\mathcal F\) and every formula \(A\),</p><div class="math-display">\[\begin{aligned}\Gamma\vdash_{\mathcal W}A&amp;\Longleftrightarrow\Gamma\models_{\mathscr D}A,\\\Gamma\vdash_{\mathcal L}A&amp;\Longleftrightarrow\Gamma\models_{\mathscr C}A.\end{aligned}\]</div><p>For each extension one fixed canonical model, chosen independently of \(\Gamma,A\), supplies a counterworld to every failed deduction.</p></div>
+  <div class="proof"><p>Soundness gives the forward implications. For the converse in KC, if \(\Gamma\not\vdash_{\mathcal W}A\), <a href="#specified-counterworld">the specified construction</a> supplies the world \(\mathsf E(\Gamma\cup\mathcal W,A)\) in the fixed \(\mathcal C_{\mathcal W}\), forcing \(\Gamma\) and failing \(A\). The <a href="#kc-canonical-directedness">directedness theorem</a> proves that this model's frame belongs to \(\mathscr D\), so the world refutes \(\Gamma\models_{\mathscr D}A\). The same argument for LC uses \(\mathcal C_{\mathcal L}\) and <a href="#lc-canonical-linearity">local linearity</a>.</p><p>Consistency of the two axiom sets made both fixed models nonempty before any conclusion was chosen. The proof works without enumerating the premises: only the numbered language and the earlier prime-extension construction are countable.</p></div>
+</section>
+
+<section id="consequence-compactness" data-kind="theorem" data-formal="imkc-consequence-compactness imkc-kc-complete imkc-lc-complete ipnd-finite-support">
+  <h2>Each semantic consequence uses only finitely many premises</h2>
+  <p>For \((S,\mathscr K)=(\mathcal W,\mathscr D)\) or \((\mathcal L,\mathscr C)\),</p>
+  <div class="math-display">\[\Gamma\models_{\mathscr K}A\quad\Longleftrightarrow\quad\exists D\subseteq\Gamma\;\bigl(D\text{ finite and }D\models_{\mathscr K}A\bigr).\]</div>
+  <div class="proof"><p>Completeness gives \(\Gamma\cup S\vdash_{\mathrm I}A\). Finite support supplies finite \(F\subseteq\Gamma\cup S\) deriving \(A\). Put \(D=F\cap\Gamma\). Every member of \(F\) belongs to \(D\cup S\), so weakening and the union characterization give \(D\vdash_S A\). Soundness yields the finite semantic consequence. Conversely, if a world forces \(\Gamma\), it forces \(D\subseteq\Gamma\); apply the assumed consequence for \(D\).</p><p>This bounds the premises used by one consequence, not the number of worlds needed for a counterexample.</p></div>
+</section>
+
+<section id="satisfiability-compactness" data-kind="theorem" data-formal="imkc-satisfiable-on imkc-satisfiable-consistent imkc-satisfiability-compactness imkc-kc-complete imkc-lc-complete">
+  <h2>Finite satisfiability gives a world for all premises</h2>
+  <p>For either pair \((S,\mathscr K)\) above, \(\Gamma\) is satisfiable at a world of a model on a frame in \(\mathscr K\) if and only if \(\Gamma\not\vdash_S\bot\). Moreover, this satisfiability holds if and only if every finite subset of \(\Gamma\) is satisfiable in that class.</p>
+  <div class="proof"><p>A world forcing \(\Gamma\) rules out \(\Gamma\vdash_S\bot\) by soundness and impossibility of forcing falsum. Conversely, if this deduction fails, the specified counterworld for conclusion \(\bot\) forces all premises in the appropriate canonical model. Its frame belongs to \(\mathscr K\).</p><p>Satisfiability passes to subsets. For the other compactness direction, suppose all finite subsets are satisfiable. If \(\Gamma\vdash_S\bot\), the finite-support argument of <a href="#consequence-compactness"></a> gives finite \(D\subseteq\Gamma\) with \(D\vdash_S\bot\). Its assumed satisfying world would force falsum by soundness, a contradiction. Thus the deduction fails and the characterization gives a world satisfying all of \(\Gamma\).</p></div>
+</section>
+
+<section id="rooted-countermodels" data-kind="theorem" data-formal="imkc-kc-rooted imkc-lc-rooted iks-generated-model iks-generated-countermodel iks-generated-forcing">
+  <h2>Countermodels may have a least world</h2>
+  <p>A failed KC deduction has a countermodel with a least world and with every pair of worlds admitting a common upper bound. A failed LC deduction has a countermodel with a least world and a linearly ordered frame. These assertions allow infinite premise sets and infinite frames.</p>
+  <div class="proof"><p>Take the specified canonical counterworld \(P\), and restrict its model to the <a href="intuitionistic-propositional-kripke-morphisms#generated-inclusion">generated future cone</a> \(\mathord\uparrow P\). Its least world is \(P\) itself, and generated-submodel truth preservation retains all premises and failure of the conclusion there.</p><p>In KC, any \(Q,R\) in the cone have the common predecessor \(P\). Canonical directedness supplies \(U\supseteq Q,R\); since \(P\subseteq Q\subseteq U\), that same \(U\) still lies in the restricted cone. Thus every pair joins there. In LC, local comparability above \(P\) compares any two worlds in the cone, so its inclusion order is linear. Antisymmetry is inherited from inclusion. No finite bound on either cone has been proved.</p></div>
+</section>
+
+<section id="one-valuation-question" data-kind="question" data-formal="ipwem-matching-fork-validity ipwem-fork-not-directed ipkm-fork-frame-failure ipkm-collapse-morphism ipkm-all-worlds-preimage">
+  <h2>Why prove the geometry after the truth lemma?</h2>
+  <p>The restricted truth lemma makes every added axiom true at every world of its canonical model. Would that fact alone establish that the frame validates the schema under every valuation?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The earlier <a href="propositional-weak-excluded-middle#one-valuation-question">matching fork model</a> forces every weak excluded middle instance at all its worlds. Its bounded morphism to a two-world chain transfers all these formulas for the specified matching valuation. Nevertheless the two fork leaves have no common upper bound, so the frame is not in \(\mathscr D\). A valuation verifying one atom on just one leaf refutes that atom's weak excluded middle at the root.</p><p>Thus truth of all instances in one valuation does not imply validity of the frame. The canonical directedness and comparability proofs above establish properties of the order itself; the earlier frame correspondences then apply to every persistent valuation. This additional argument is what puts the canonical countermodel in the required semantic class.</p></div></details>
+</section>
+
+<section id="finite-model-question" data-kind="question" data-formal="imkc-diamond-nonjoining imkc-diamond-not-directed imkc-diamond-countervaluation iptc-diamond-paths iptc-diamond-card pdl-diamond-wem-valid ipwem-upset-model ipwem-nonjoining-countervaluation iptc-last-morphism ipkm-forcing">
+  <h2>Do the intuitionistic finite countermodel methods finish the argument?</h2>
+  <p>Can we infer finite countermodels for KC or LC just by applying the earlier intuitionistic finite-model or finite-tree construction?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Those conclusions require an additional preservation argument. For example, the four-world <a href="propositional-dummett-linearity#diamond-separation">diamond with a greatest world</a> validates every weak excluded middle instance. Its <a href="intuitionistic-propositional-tree-countermodels#diamond-paths">six-path strict unraveling</a> has distinct terminal paths \([r,u,t]\) and \([r,v,t]\). Both extend the root path \([r]\), but neither has an extension and they have no common upper bound. The unraveled frame is therefore not directed above its root.</p><p>The specified last-world bounded morphism still preserves all formulas in the pulled-back valuation. It does not make every other valuation on the path frame validate weak excluded middle. In particular, verifying \(p_0\) exactly above one of those terminal paths gives the earlier <a href="propositional-weak-excluded-middle#nonjoining-countervaluation">nonjoining-futures countervaluation</a>.</p><p>Likewise ordinary intuitionistic finite-model existence guarantees neither local directedness nor local linearity of the resulting frame. To obtain a finite-model theorem or decision procedure for either extension one must prove the relevant condition survives a suitable construction. Strong completeness and the two compactness results here make no such claim.</p></div></details>
+</section>

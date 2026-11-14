@@ -52,12 +52,13 @@
   <div class="proof"><p>Translation preserves Boolean truth, so each of</p><div class="math-display">\[\neg\neg A\to A^{\mathsf N},\qquad A^{\mathsf N}\to\neg\neg A\]</div><p>is a classical tautology and hence has a closed classical proof. The first consequent is stable by <a href="propositional-negative-translation#translated-stability">translated stability</a>. The second is a negation and therefore stable by the <a href="propositional-negative-translation#stability-closure">same closure laws</a>. Consequently both implications have closed intuitionistic proofs by <a href="#stable-theorem-transfer"></a>. These are precisely the two required directions. This proves equivalence of the actual native formulas, without asserting that their parse trees are equal.</p></div>
 </section>
 
-<section id="removing-the-translation" data-formal="gpt-negative-introduction gpt-negative-removal gpt-negative-fixed-iff" data-kind="lemma">
+<section id="removing-the-translation" data-formal="gpt-negative-introduction gpt-negative-removal gpt-negative-fixed-iff pfr-bottom-equivalence pfr-unchanged-nonderivability" data-kind="lemma">
   <h2>Determine exactly when the translation can be removed</h2>
   <p>For every numbered-atom formula \(A\), \(\vdash_{\mathrm I}A\to A^{\mathsf N}\). Moreover,</p>
   <div class="math-display">\[\vdash_{\mathrm I}A^{\mathsf N}\to A\quad\Longleftrightarrow\quad A\text{ is stable}.\]</div>
   <p>Equivalently, \(A\simeq_{\mathrm I}A^{\mathsf N}\) if and only if \(A\) is stable.</p>
   <div class="proof"><p>Double-negation introduction gives \(A\to\neg\neg A\), and the preceding equivalence gives \(\neg\neg A\to A^{\mathsf N}\). Compose them to prove the first implication.</p><p>If \(A\) is stable, compose \(A^{\mathsf N}\to\neg\neg A\) with \(\neg\neg A\to A\). Conversely, a proof of \(A^{\mathsf N}\to A\), composed with \(\neg\neg A\to A^{\mathsf N}\), proves \(\neg\neg A\to A\), which is exactly stability. All compositions are <a href="intuitionistic-propositional-deduction#deduction-and-composition">compositions of deductions</a> in the same native calculus.</p></div>
+  <p>For the <a href="propositional-friedman-translation#bottom-parameter">Friedman translation with falsum parameter</a>, the translated formula is intuitionistically equivalent to the original formula. With a general parameter, <a href="propositional-friedman-translation#untranslated-premise">even the implication from an unchanged formula to its translation can fail</a>. These assertions concern that parameterized map, whose proof-preservation theorem translates the assumptions.</p>
 </section>
 
 <section id="negative-fragment" data-formal="gpt-negative-fragment prop-formula" data-kind="definition">
@@ -95,10 +96,11 @@
   <div class="proof"><p>Each assumption \(B\in\Gamma\) gives \(\neg\neg B\) by double-negation introduction. Replace the allowed premises of the deduction from \(D\Gamma\) in <a href="#finite-premise-glivenko"></a> by these deductions from \(\Gamma\). This proves the forward implication. Boolean soundness and classical completeness give the reverse implication exactly as before.</p><p>For a stable conclusion, its closed stability implication weakens to \(\Gamma\), removing the final double negation. Conversely an intuitionistic deduction of \(A\) gives one of \(\neg\neg A\) by double-negation introduction. Thus stable conclusions have the same classical and intuitionistic consequences from these finite unchanged premises. This does not make an arbitrary classical conclusion intuitionistically derivable.</p></div>
 </section>
 
-<section id="excluded-middle-and-stability" data-formal="ipnd-double-negated-em iks-not-excluded-middle iks-not-dne pnt-stable" data-kind="lemma">
+<section id="excluded-middle-and-stability" data-kind="lemma" data-formal="ipnd-double-negated-em iks-not-excluded-middle iks-not-dne pnt-stable ipwem-chain-validity ipwem-not-classical">
   <h2>An atom is not stable even though excluded middle is double-negated</h2>
   <p>For \(p=p_0\), intuitionistic logic proves \(\neg\neg(p\lor\neg p)\), but it proves neither \(p\lor\neg p\) nor \(\neg\neg p\to p\).</p>
   <div class="proof"><p>Classical excluded middle and Glivenko give the double-negated theorem; the earlier <a href="intuitionistic-propositional-deduction#double-negated-excluded-middle">direct intuitionistic proof</a> gives the same result. In the <a href="intuitionistic-kripke-semantics#excluded-middle-countermodel">two-world chain</a>, the lower world forces neither \(p\) nor \(\neg p\), so excluded middle fails there. That world does force \(\neg\neg p\) while failing \(p\), so the displayed elimination implication fails there as well. Kripke soundness rules out both closed deductions. The latter failure says exactly that this atom is not stable.</p></div>
+  <p>The two-world chain validates every weak excluded middle instance for every persistent valuation, although its growing-atom valuation still refutes excluded middle. The <a href="propositional-weak-excluded-middle#strictness">resulting separation of added-axiom deductions</a> shows that weak excluded middle does not recover classical reasoning.</p>
 </section>
 
 <section id="stable-disjunctions" data-formal="pnt-stable-negation gpt-weak-em-countermodel gpt-weak-em-tautology gpt-stable-disjunction-failure" data-kind="question">

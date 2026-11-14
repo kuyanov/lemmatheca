@@ -16,7 +16,7 @@
   <p>Falsum elimination gives \(\Gamma\Rightarrow C\) from \(\Gamma\Rightarrow\bot\). These are the entire propositional rule list. In particular, there is no rule deriving \(A\) merely from a contradiction under \(\neg A\). Conjunction, disjunction and existence keep their own full trees; the smaller classical abbreviations are not substituted for these constructive connectives.</p>
 </section>
 
-<section id="quantifier-rules" data-kind="definition" data-formal="ifond-raw-derivation ifond-lift-context ifond-universal-elimination ifond-existential-introduction ifond-universal-introduction ifond-existential-elimination">
+<section id="quantifier-rules" data-kind="definition" data-formal="ifond-raw-derivation ifond-lift-context ifond-universal-elimination ifond-existential-introduction ifond-universal-introduction ifond-existential-elimination fofr-universal-introduction fofr-universal-elimination fofr-existential-introduction fofr-existential-elimination fofr-capture-values">
   <h2>Keep witnesses and arbitrary parameters distinct</h2>
   <p>Let \(B\) be a full one-slot body over \(X\), and let \(t\) be a term over \(X\). Its <a href="first-order-proof-formulas#opening-slots">instance</a> is \(B(t)\). The <strong>witness rules</strong> are</p>
   <div class="math-display">\[\frac{\Gamma\Rightarrow\forall xB}{\Gamma\Rightarrow B(t)},\qquad
@@ -25,6 +25,7 @@
   <div class="math-display">\[\frac{\Gamma^\uparrow\Rightarrow\operatorname{open}(B)}{\Gamma\Rightarrow\forall xB},\qquad
     \frac{\Gamma\Rightarrow\exists xB\quad\Gamma^\uparrow,\operatorname{open}(B)\Rightarrow C^\uparrow}{\Gamma\Rightarrow C}.\]</div>
   <p>The tag guarantees that \(e\) occurs in neither the lifted ambient assumptions nor the lifted concluding formula. Universal introduction can therefore vary its value without changing those assumptions. Existential elimination may reason from its witness assumption, but the conclusion may not retain that witness name. Each rule has finitely many premise trees; the universal rule does not contain a separate premise for every domain element.</p>
+  <p>The <a href="first-order-friedman-translation#translated-quantifier-rules">Friedman proof transformation</a> retains these four quantifier rules by protecting its formula parameter under binders and renaming that parameter in each eigenparameter branch. Its <a href="first-order-friedman-translation#capture-example">capture example</a> separates this protection from simply inserting a formula under a printed quantifier.</p>
 </section>
 
 <section id="equality-rules" data-kind="definition" data-formal="ifond-raw-derivation ifond-term-equality ifond-equality-reflexivity ifond-equality-replacement">

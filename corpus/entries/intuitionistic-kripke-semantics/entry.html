@@ -5,7 +5,7 @@
   <p>For quantified formulas, <a href="intuitionistic-first-order-kripke-semantics#varying-domain-models">first-order Kripke models</a> attach a nonempty structure to each world and transport its objects coherently to future worlds.</p>
 </section>
 
-<section id="forcing-formulas" data-formal="prop-formula iks-forcing iks-negation-implication" data-kind="definition">
+<section id="forcing-formulas" data-formal="prop-formula iks-forcing iks-negation-implication pdl-frame-characterization pdl-incomparable-countervaluation" data-kind="definition">
   <h2>Test an implication at every future world</h2>
   <p>Use the shared <a href="propositional-logic#formulas">propositional syntax</a>, including its separate negation symbol. The <strong>forcing relation</strong> \(M,w\Vdash A\), abbreviated \(w\Vdash A\) when the model is fixed, is defined by recursion on \(A\):</p>
   <div class="math-display">\[w\Vdash p\iff p\in V(w),\qquad w\nVdash\bot.\]</div>
@@ -14,6 +14,7 @@
   <div class="math-display">\[w\Vdash A\to B\iff \forall v\geq w\;(v\Vdash A\Longrightarrow v\Vdash B).\]</div>
   <div class="math-display">\[w\Vdash\neg A\iff \forall v\geq w\;(v\nVdash A).\]</div>
   <p>All recursive calls concern proper subformulas, so these clauses determine one relation. In particular, the negation clause agrees exactly with the implication clause for \(A\to\bot\). The conjunction and disjunction clauses concern the current world. The implication and negation clauses also concern its extensions, including the current world by reflexivity.</p>
+  <p>For numbered-atom formulas, <a href="propositional-dummett-linearity#frame-characterization">validity of the Dummett comparison</a> \((A\to B)\lor(B\to A)\) has an exact frame condition: any two futures of the same world are comparable. Its <a href="propositional-dummett-linearity#incomparable-countervaluation">two-atom countervaluation</a> uses the whole upward cone of each of two incomparable futures.</p>
 </section>
 
 <section id="persistence" data-formal="iks-persistence" data-kind="lemma">
@@ -63,12 +64,13 @@
   <p>The restriction remains persistent: a comparison between its worlds is a comparison in \(M\), where atom forcing already persists. Moreover every extension in \(M\) of a retained world \(v\) is retained, by transitivity from \(w\leq v\).</p>
 </section>
 
-<section id="generated-truth" data-formal="iks-generated-forcing iks-generated-countermodel idp-glued-model idp-old-left-truth idp-old-right-truth idp-disjunction-property" data-kind="theorem">
+<section id="generated-truth" data-kind="theorem" data-formal="iks-generated-forcing iks-generated-countermodel idp-glued-model idp-old-left-truth idp-old-right-truth idp-disjunction-property ipkm-generated-inclusion ipkm-forcing">
   <h2>A generated submodel preserves the forcing of every formula</h2>
   <p>For every \(v\geq w\) and formula \(A\),</p>
   <div class="math-display">\[M_{\geq w},v\Vdash A\iff M,v\Vdash A.\]</div>
   <div class="proof"><p>Induct on \(A\). Atomic valuations agree by restriction; falsum, conjunction and disjunction use the same clauses and the induction hypotheses. For implication, every future world of \(v\) in the submodel is an original future world. Conversely an original future \(u\geq v\) satisfies \(w\leq u\), so is a world of the submodel. Apply the component induction hypotheses at each such \(u\). This identifies the two universal conditions exactly. The negation case uses the same correspondence of future worlds.</p><p>In particular, every pointed countermodel at \(w\) can be replaced by a countermodel whose frame has \(w\) as a least world, while preserving all assumptions and the failed conclusion there.</p></div>
   <p>Two such rooted models can be joined below a <a href="intuitionistic-propositional-disjunction-property#gluing-models">new common world</a> while retaining every formula at every old world. This construction proves the <a href="intuitionistic-propositional-disjunction-property#disjunction-property">intuitionistic theorem disjunction property</a>.</p>
+  <p>The generated-model inclusion is a <a href="intuitionistic-propositional-kripke-morphisms#generated-inclusion">bounded morphism</a>. Its forcing equivalence is a special case of the <a href="intuitionistic-propositional-kripke-morphisms#forcing-invariance">general preservation theorem</a>, whose back condition lifts every future of an included world.</p>
 </section>
 
 <section id="one-world-models" data-formal="iks-singleton-model iks-singleton-forcing iks-one-world-valuation iks-valid-boolean" data-kind="lemma">
@@ -98,11 +100,12 @@
   <figure id="fork-diagram" class="proof-figure"><div class="figure-image"><img src="assets/branching-fork.svg" alt="A root r with no verified atoms has two incomparable terminal extensions: u verifies p and v verifies q." width="640" height="260"></div><figcaption>The two upper worlds make different extensions possible, with no world above both of them.</figcaption></figure>
 </section>
 
-<section id="de-morgan-countermodel" data-formal="iks-fork-values iks-demorgan-countermodel" data-kind="theorem">
+<section id="de-morgan-countermodel" data-kind="theorem" data-formal="iks-fork-values iks-demorgan-countermodel ipwem-de-morgan-from-wem ipwem-de-morgan-schema-equivalence ipwem-not-classical">
   <h2>A negated conjunction need not choose a negated conjunct</h2>
   <p>The root of \(F_{p,q}\) forces \(\neg(p\land q)\) but does not force \(\neg p\lor\neg q\). Hence it fails to force</p>
   <div class="math-display">\[\neg(p\land q)\to(\neg p\lor\neg q).\]</div>
   <div class="proof"><p>No world forces both atoms. The root forces neither. World \(u\) forces \(p\) but not \(q\), and world \(v\) forces \(q\) but not \(p\), using \(p\ne q\). Therefore no future of the root forces their conjunction, which proves its negation there.</p><p>The root does not force \(\neg p\), because \(u\) forces \(p\). It does not force \(\neg q\), because \(v\) forces \(q\). Thus the disjunction of these negations is not forced. The root itself witnesses failure of the displayed implication. This calculation uses every possible future world, not just the atoms currently verified at the root.</p></div>
+  <p>For the numbered-atom language, <a href="propositional-weak-excluded-middle#de-morgan-from-wem">weak excluded middle supplies this reverse De Morgan implication</a>. The full <a href="propositional-weak-excluded-middle#equivalent-de-morgan-schema">reverse De Morgan schema gives exactly the same added-axiom consequences</a>. The fork therefore marks a principle that can be added without recovering full excluded middle.</p>
 </section>
 
 <section id="nonderivability" data-formal="iks-not-excluded-middle iks-not-dne iks-not-demorgan ipnd-schemas-boolean-valid iks-demorgan-boolean nd-tautology-completeness ipsq-to-natural-deduction" data-kind="theorem">

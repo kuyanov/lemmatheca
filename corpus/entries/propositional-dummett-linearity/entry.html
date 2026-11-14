@@ -1,0 +1,92 @@
+<section id="linearity-schema" data-formal="prop-formula pdl-linearity pdl-axioms pdl-substitution ipwem-schema-consequence" data-kind="definition">
+  <h2>Compare the two directions of implication</h2>
+  <p>Use the <a href="intuitionistic-propositional-deduction#formulas-and-contexts">shared native propositional formulas</a> on numbered atoms \(p_0,p_1,\ldots\). The <strong>Dummett instance</strong> on formulas \(A,B\) is</p>
+  <div class="math-display">\[\mathsf L(A,B):=(A\to B)\lor(B\to A).\]</div>
+  <p>The <strong>linearity schema</strong> is \(\mathcal L=\{\mathsf L(A,B):A,B\text{ are formulas}\}\). It includes every compound-formula instance, with the disjunction retained inside each formula. Formula substitution commutes with the displayed connectives, so \(\mathsf L(A,B)[\sigma]=\mathsf L(A[\sigma],B[\sigma])\).</p>
+  <p>Write \(\Gamma\vdash_{\mathcal L}C\) for the <a href="propositional-weak-excluded-middle#schema-consequence">existing consequence relation with finitely many added axioms</a>: some finite \(E\subseteq\mathcal L\) gives an ordinary intuitionistic deduction \(\Gamma\cup E\vdash_{\mathrm I}C\). This extension is called <strong>LC</strong>, or <strong>Gödel–Dummett logic</strong>. The allowed premise set \(\Gamma\) may be infinite; each deduction and its added support are finite.</p>
+</section>
+
+<section id="comparable-futures" data-formal="pdl-linear-cone pdl-locally-linear ipkm-frame-validity" data-kind="definition">
+  <h2>Compare futures of a common world</h2>
+  <p>For a nonempty preordered frame \((W,\leq)\), the <strong>future cone at \(w\) is linearly ordered</strong> when</p>
+  <div class="math-display">\[\forall u,v\geq w\;(u\leq v\text{ or }v\leq u).\]</div>
+  <p>Call the frame <strong>locally linear</strong> when this holds at every world. The word “ordered” here permits a preorder: distinct mutually accessible worlds are allowed. We are asking for comparability of futures with a common predecessor, rather than comparability of every two unrelated worlds in the whole frame.</p>
+  <p>As before, <a href="intuitionistic-propositional-kripke-morphisms#frame-validity">frame validity</a> quantifies over every persistent valuation and every world. Truth in just one fixed model is a different condition.</p>
+</section>
+
+<section id="linear-cone-forcing" data-formal="pdl-linear-cone-forcing iks-forcing iks-persistence" data-kind="lemma">
+  <h2>A linearly ordered cone forces a comparison</h2>
+  <p>If the cone above \(w\) is linearly ordered, then in every model on that frame, \(w\Vdash\mathsf L(A,B)\) for all formulas \(A,B\).</p>
+  <div class="proof"><p>Reason classically about the model. If \(w\Vdash A\to B\), its left disjunct gives the result. Otherwise the <a href="intuitionistic-kripke-semantics#forcing-formulas">implication clause</a> supplies \(u\geq w\) such that \(u\Vdash A\) and \(u\nVdash B\). We prove \(w\Vdash B\to A\).</p><p>Take any \(v\geq w\) with \(v\Vdash B\). If \(u\leq v\), <a href="intuitionistic-kripke-semantics#persistence">persistence</a> carries \(A\) from \(u\) to \(v\). If \(v\leq u\), persistence would carry \(B\) from \(v\) to \(u\), contradicting its chosen failure there. Comparability supplies these two cases, so every requested future forcing \(B\) forces \(A\). This gives the right disjunct. The case distinction is reasoning about models; it adds no excluded-middle inference to the object calculus.</p></div>
+</section>
+
+<section id="incomparable-countervaluation" data-formal="pdl-two-upset-model pdl-incomparable-countervaluation" data-kind="lemma">
+  <h2>Two distinct atoms detect incomparable futures</h2>
+  <p>Suppose \(u,v\geq w\), but neither \(u\leq v\) nor \(v\leq u\). On this exact frame, the persistent valuation</p>
+  <div class="math-display">\[p_0\in V(x)\iff u\leq x,\qquad p_1\in V(x)\iff v\leq x\]</div>
+  <p>with every other atom false makes \(w\nVdash\mathsf L(p_0,p_1)\).</p>
+  <div class="proof"><p>Transitivity makes both upward-cone valuations persistent. At \(u\), the atom \(p_0\) holds by reflexivity, but \(p_1\) fails because \(v\nleq u\). Thus the future \(u\) witnesses failure of \(p_0\to p_1\) at \(w\). At \(v\), the atom \(p_1\) holds and \(p_0\) fails because \(u\nleq v\). This future witnesses failure of \(p_1\to p_0\). Neither disjunct is forced, so their disjunction fails. The two atom names must be distinct to give them these separately specified valuations.</p></div>
+</section>
+
+<section id="frame-characterization" data-formal="pdl-frame-characterization pdl-two-atom-characterization imkc-lc-linear imkc-lc-complete" data-kind="theorem">
+  <h2>Linearity instances characterize comparable future cones</h2>
+  <div class="statement-box"><p>For a nonempty preordered frame \((W,\leq)\),</p><div class="math-display">\[\bigl(\forall A,B\;(W,\leq)\Vdash\mathsf L(A,B)\bigr)\quad\Longleftrightarrow\quad\text{the frame is locally linear}.\]</div><p>Validity of the single formula \(\mathsf L(p_0,p_1)\), over every persistent valuation, is already equivalent to this condition.</p></div>
+  <div class="proof"><p>Local linearity gives every instance at every world by <a href="#linear-cone-forcing"></a>. Validity of all instances includes the displayed two-atom instance. Conversely, if that instance is valid but a cone contains incomparable \(u,v\), <a href="#incomparable-countervaluation"></a> gives a valuation refuting it at their common predecessor. This contradiction establishes local linearity, proving both stated characterizations.</p></div>
+  <p>The <a href="intermediate-propositional-kripke-completeness#lc-canonical-linearity">LC canonical frame has linearly ordered future cones</a>. This proves <a href="intermediate-propositional-kripke-completeness#strong-completeness">strong completeness</a> of the added-linearity consequence relation for these frames, including arbitrary sets of numbered-atom premises.</p>
+</section>
+
+<section id="wem-from-linearity" data-formal="pdl-wem-from-linearity pdl-kc-in-lc ipwem-formula ipwem-axioms ipnd-proof-replacement" data-kind="lemma">
+  <h2>A linearity instance gives weak excluded middle</h2>
+  <p>For every formula \(A\), the original intuitionistic calculus proves</p>
+  <div class="math-display">\[\vdash_{\mathrm I}\mathsf L(A,\neg A)\to\mathsf W(A).\]</div>
+  <p>Consequently \(\Gamma\vdash_{\mathcal W}C\) implies \(\Gamma\vdash_{\mathcal L}C\) for every \(\Gamma,C\), where \(\mathcal W\) is the <a href="propositional-weak-excluded-middle#weak-excluded-middle">weak excluded middle schema</a>.</p>
+  <div class="proof"><p>Assume \((A\to\neg A)\lor(\neg A\to A)\), and use disjunction elimination. In the first branch, temporarily assume \(A\). Applying \(A\to\neg A\) gives \(\neg A\), hence a contradiction. Discharge \(A\) to prove \(\neg A\), and introduce the left disjunct of \(\mathsf W(A)\).</p><p>In the second branch, temporarily assume \(\neg A\). The implication \(\neg A\to A\) supplies \(A\), again giving a contradiction. Discharge \(\neg A\) to prove \(\neg\neg A\), and introduce the right disjunct. Join the branches and discharge the original disjunction. Every step is intuitionistic.</p><p>For consequence inclusion, replace each of the finitely many extra assumptions \(\mathsf W(A)\) by a deduction using the added instance \(\mathsf L(A,\neg A)\) and the closed implication just proved. There are only finitely many new instances. <a href="intuitionistic-propositional-deduction#proof-replacement">Proof replacement</a> retains every original premise from \(\Gamma\), giving the claimed LC deduction.</p></div>
+</section>
+
+<section id="diamond-separation" data-formal="iptc-diamond-order order-top-bound pdl-diamond-model pdl-diamond-values pdl-diamond-wem-valid pdl-diamond-countermodel pdl-not-kc-linearity pdl-instance-theorem pdl-not-intuitionistic-linearity ipwem-schema-soundness ipwem-finite-frame-validity" data-kind="lemma">
+  <h2>A greatest world need not make futures comparable</h2>
+  <p>Take the finite diamond \(r&lt;u&lt;t\) and \(r&lt;v&lt;t\), with \(u,v\) incomparable. Its frame validates every weak excluded middle instance, but the valuation</p>
+  <div class="math-display">\[V(r)=\varnothing,\quad V(u)=\{p_0\},\quad V(v)=\{p_1\},\quad V(t)=\{p_0,p_1\}\]</div>
+  <p>refutes \(\mathsf L(p_0,p_1)\) at \(r\). In particular, \(\nvdash_{\mathcal W}\mathsf L(p_0,p_1)\), whereas LC proves that instance.</p>
+  <figure id="diamond-valuation-diagram" class="proof-figure"><div class="figure-image" style="max-width: 440px; margin: 0 auto;"><img src="assets/diamond-valuation.svg" alt="A four-world diamond has root r with no true atoms, incomparable worlds u and v verifying p zero and p one respectively, and a greatest world t verifying both." width="440" height="310"></div><figcaption>The top joins both futures, but neither middle world extends the other.</figcaption></figure>
+  <div class="proof"><p>The world \(t\) is greatest, so <a href="propositional-weak-excluded-middle#finite-rooted-frames">the finite rooted-frame criterion</a> gives validity of every \(\mathcal W\)-instance for every valuation. The displayed valuation is persistent and is exactly the two upward-cone valuation from <a href="#incomparable-countervaluation"></a>. Its two middle worlds refute the two implications at \(r\).</p><p>If KC proved their disjunction, <a href="propositional-weak-excluded-middle#finite-schema-support">soundness with the added axioms</a> would make it true at this root, a contradiction. LC proves it by selecting this single instance as an added assumption and using identity. Together with <a href="#wem-from-linearity"></a>, this proves that the LC extension is strictly stronger than KC. An ordinary intuitionistic proof is also a KC proof by taking no extra axioms, so this instance is not an intuitionistic theorem either.</p></div>
+</section>
+
+<section id="distribution-schema" data-formal="pdl-distribution pdl-distribution-axioms ipwem-schema-consequence" data-kind="definition">
+  <h2>Choose an implication to one side of a disjunction</h2>
+  <p>The <strong>implication–disjunction instance</strong> on \(A,B,C\) is</p>
+  <div class="math-display">\[\mathsf H(A,B,C):=(A\to(B\lor C))\to((A\to B)\lor(A\to C)).\]</div>
+  <p>The <strong>implication–disjunction schema</strong> is \(\mathcal H=\{\mathsf H(A,B,C):A,B,C\text{ are formulas}\}\). Its consequence relation \(\vdash_{\mathcal H}\) uses the same finite-extra-assumption definition as \(\vdash_{\mathcal L}\). This schema is a family of formulas that may be assumed, rather than an extra primitive deduction rule.</p>
+</section>
+
+<section id="distribution-from-linearity" data-formal="pdl-distribution-from-linearity" data-kind="lemma">
+  <h2>Compare the possible outputs before using the input</h2>
+  <p>For every \(A,B,C\),</p>
+  <div class="math-display">\[\vdash_{\mathrm I}\mathsf L(B,C)\to\mathsf H(A,B,C).\]</div>
+  <div class="proof"><p>Assume \(\mathsf L(B,C)\), then \(f:A\to(B\lor C)\), and split the first disjunction. In the branch \(B\to C\), temporarily assume \(A\). Apply \(f\) to obtain \(B\lor C\). A \(B\) branch gives \(C\) by \(B\to C\); a \(C\) branch already gives \(C\). Discharge \(A\), obtaining \(A\to C\), and introduce the right disjunct.</p><p>In the branch \(C\to B\), the same case analysis instead yields \(B\) under \(A\): retain \(B\) in its branch and use \(C\to B\) in the other. Discharge \(A\) and introduce the left disjunct \(A\to B\). Disjunction elimination joins the results. Discharge \(f\) and then the linearity assumption to obtain the stated closed implication.</p></div>
+</section>
+
+<section id="linearity-from-distribution" data-formal="pdl-linearity-from-distribution" data-kind="lemma">
+  <h2>Use the disjunction itself as the input</h2>
+  <p>For every \(B,C\),</p>
+  <div class="math-display">\[\vdash_{\mathrm I}\mathsf H(B\lor C,B,C)\to\mathsf L(B,C).\]</div>
+  <div class="proof"><p>Assume the displayed \(\mathsf H\)-instance. Apply it to the closed identity proof of \((B\lor C)\to(B\lor C)\). This gives</p><div class="math-display">\[((B\lor C)\to B)\lor((B\lor C)\to C).\]</div><p>In the left branch, assume \(C\), introduce \(B\lor C\) on the right, and apply the branch implication to get \(B\). Discharge \(C\), yielding \(C\to B\), the <em>right</em> disjunct of \(\mathsf L(B,C)\). In the right branch, assume \(B\), introduce \(B\lor C\) on the left, and obtain \(C\). Discharge \(B\), yielding \(B\to C\), its <em>left</em> disjunct. Join the branches and discharge the original instance. The selected sides are reversed because each branch receives the other disjunct as its new assumption.</p></div>
+</section>
+
+<section id="equivalent-distribution-extension" data-formal="pdl-schema-equivalence ipwem-schema-union ipnd-proof-replacement" data-kind="theorem">
+  <h2>The two schemas have exactly the same consequences</h2>
+  <div class="statement-box"><p>For every premise set \(\Gamma\) and formula \(D\),</p><div class="math-display">\[\Gamma\vdash_{\mathcal L}D\quad\Longleftrightarrow\quad\Gamma\vdash_{\mathcal H}D.\]</div></div>
+  <div class="proof"><p>An LC deduction selects finitely many extra instances \(\mathsf L(B,C)\). For each one, select \(\mathsf H(B\lor C,B,C)\); <a href="#linearity-from-distribution"></a> supplies a deduction of the old assumption from that new instance. Replace these leaves in the original ordinary deduction. The replacement instances form a finite set, and every original assumption from \(\Gamma\) remains allowed. This gives the forward direction.</p><p>Conversely, for each of the finitely many extra instances \(\mathsf H(A,B,C)\), select \(\mathsf L(B,C)\) and use <a href="#distribution-from-linearity"></a>. The same <a href="intuitionistic-propositional-deduction#proof-replacement">replacement operation</a> gives an LC deduction with exactly the original premise set allowed. This proves the reverse direction without adding any new primitive rule.</p></div>
+</section>
+
+<section id="local-global-question" data-formal="pdl-discrete-frame pdl-discrete-local-not-global pdl-discrete-valid pdl-rooted-local-global" data-kind="question">
+  <h2>Must an LC-valid frame be globally linearly ordered?</h2>
+  <p>Does <a href="#frame-characterization"></a> force every two worlds of the whole frame to be comparable? What changes when the frame has a least world?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Without a least world, no. Take two distinct worlds \(a,b\) with accessibility given only by equality. Each future cone is a singleton, so every cone is linearly ordered and the frame validates all \(\mathcal L\)-instances. But \(a\nleq b\) and \(b\nleq a\), so the whole frame is not linearly ordered.</p><p>If \(r\) is least, every pair \(u,v\) lies above the same world \(r\). Local linearity there gives \(u\leq v\) or \(v\leq u\). Conversely, global comparability immediately gives comparability in each cone. Thus on a rooted frame the local and global conditions agree, even when there are infinitely many worlds.</p></div></details>
+</section>
+
+<section id="classical-question" data-formal="pdl-chain-valid iks-chain-model iks-em-countermodel pdl-not-lc-em pdl-em-implies-linearity" data-kind="question">
+  <h2>Does comparing implications recover excluded middle?</h2>
+  <p>Does LC prove \(p_0\lor\neg p_0\)? How does full excluded middle compare with the linearity schema?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>LC does not prove that excluded-middle instance. The two-world chain is locally linear, so every persistent valuation validates every \(\mathcal L\)-instance by <a href="#frame-characterization"></a>. Its <a href="intuitionistic-kripke-semantics#excluded-middle-countermodel">usual growing-atom model</a> still refutes \(p_0\lor\neg p_0\) at the lower world. Soundness with the added axioms therefore gives \(\nvdash_{\mathcal L}p_0\lor\neg p_0\).</p><p>Full excluded middle implies every linearity instance. More precisely, intuitionistic logic proves \((A\lor\neg A)\to\mathsf L(A,B)\). Under an assumption \(A\lor\neg A\), use cases. In the \(A\) branch, discharge an unused \(B\) assumption to obtain \(B\to A\), then introduce the right disjunct. In the \(\neg A\) branch, assume \(A\), derive falsum, and use falsum elimination to get \(B\). Discharge \(A\), giving \(A\to B\), and introduce the left disjunct. Join the cases and discharge excluded middle. Thus each comparison has an intuitionistic proof from one excluded-middle instance, while the chain gives the strictness in the other direction.</p></div></details>
+</section>

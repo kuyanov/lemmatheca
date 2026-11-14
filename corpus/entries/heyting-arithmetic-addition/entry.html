@@ -1,0 +1,116 @@
+<section id="addition-certificates" data-formal="ha-basic-axioms ha-theory ha-axioms-over-names ha-certificate arith-numeral" data-kind="definition">
+  <h2>Use the original arithmetic axioms and actual finite deductions</h2>
+  <p>Work in the native arithmetic language and <a href="heyting-arithmetic#heyting-arithmetic">Heyting arithmetic</a> \(\mathrm{HA}\). Write \(\overline n=S^n0\). The <strong>addition recursion axioms</strong> are the closed sentences obtained from \(x+0=x\) and \(x+Sy=S(x+y)\) by universal closure. Addition recurses on its second argument; neither \(0+x=x\) nor commutativity is an additional axiom.</p>
+  <p>An <strong>HA certificate over \(X\) with additional context \(\Gamma\)</strong> has an actual finite intuitionistic deduction whose specified finite support is allowed by the original closed <a href="heyting-arithmetic#basic-arithmetic-axioms">arithmetic axioms</a> over \(X\) together with \(\Gamma\). Logical equality is enabled. We allow any original free-name set \(X\) and any finite additional context \(\Gamma\), writing \(\mathrm{HA},\Gamma\vdash_X A\) for existence of such a certificate. When \(\Gamma\) is empty, omit it; when the conclusion is closed, omit \(X\) too. The constructions below produce the certificates, rather than merely verifying the corresponding equations in the standard natural numbers.</p>
+</section>
+
+<section id="equality-chains" data-formal="haadd-certificate-symmetry haadd-certificate-transitivity haadd-certificate-successor haadd-certificate-addition" data-kind="lemma">
+  <h2>Every equality chain composes finite proof data</h2>
+  <p>In a fixed additional context, supplied HA certificates of \(s=t\) and \(t=u\) give one of \(s=u\). A certificate of \(s=t\) also gives certificates of \(t=s\), \(Ss=St\), \(s+r=t+r\), and \(r+s=r+t\), for any arithmetic term \(r\).</p>
+  <div class="proof"><p>Use the established <a href="heyting-arithmetic#arithmetic-equality-operations">symmetry, transitivity and congruence operations</a>. For example, combine \(s=t\) with the reflexive certificate \(r=r\) to obtain the two addition congruences. Take a finite union of the input arithmetic supports and weaken the participating deductions to it before applying an inference. The additional context stays fixed. Thus each equality in a displayed chain is justified by a finite operation on specified proofs, including a use of symmetry when an earlier equality is read backwards.</p></div>
+</section>
+
+<section id="fixed-parameter-induction" data-formal="ha-induction-rule ha-universal-closure" data-kind="lemma">
+  <h2>Build the induction step without changing its parameters</h2>
+  <p>Let \(\varphi(z,\bar y)\) be a native arithmetic formula, with a specified finite tuple of fixed parameters \(\bar y\). Actual proofs of \(\varphi(0,\bar y)\) and of \(\varphi(Se,\bar y)\) under the temporary assumption \(\varphi(e,\bar y)\), with \(e\) a protected fresh name, construct an HA proof of \(\forall z\,\varphi(z,\bar y)\). Additional assumptions over the fixed parameter names may remain if they do not contain \(e\).</p>
+  <div class="proof"><p>This is the <a href="heyting-arithmetic#induction-as-derived-rule">derived induction rule</a>. Discharge the temporary induction hypothesis, universally introduce the protected name, conjoin the resulting step with the supplied base, and apply the corresponding <a href="heyting-arithmetic#full-native-induction">native induction axiom</a>. In an equality step, the induction hypothesis is a usable assumption from which congruence produces the required successor equality. Fixed parameters are renamed into the protected scope and remain unchanged in both premises.</p><p>When there are no additional assumptions, the arithmetic support consists of closed axioms. It therefore contains no free occurrence of a fixed parameter either. After induction, those parameters can be universally introduced one at a time. This produces a closed theorem certificate with finitely many arithmetic leaves; it does not add induction as another primitive rule.</p></div>
+</section>
+
+<section id="zero-on-left" data-formal="haadd-zero-left haadd-zero-left-instance" data-kind="lemma">
+  <h2>Prove the zero equation on the other side</h2>
+  <p>HA has a closed certificate of \(\forall z\,(0+z=z)\).</p>
+  <div class="proof"><p>Apply induction to \(\varphi(z)\equiv0+z=z\), with no fixed parameters. At zero, instantiate the first addition axiom at \(0\), obtaining \(0+0=0\). For the step, work under \(0+e=e\). The second addition axiom and successor congruence give</p>
+  <div class="math-display">\[0+Se=S(0+e)=Se.\]</div>
+  <p>The final equality uses exactly the temporary induction hypothesis. Discharge it and apply <a href="#fixed-parameter-induction"></a>. Both recursion-axiom instances come from the original closed arithmetic axioms; the conclusion is a new derived theorem.</p></div>
+</section>
+
+<section id="successor-on-left" data-formal="haadd-successor-left haadd-successor-left-instance" data-kind="lemma">
+  <h2>Move successor out of the first argument</h2>
+  <p>HA has a closed certificate of \(\forall x\forall y\,(Sx+y=S(x+y))\).</p>
+  <div class="proof"><p>Fix \(x\), and induct on \(y\) in \(\varphi(y,x)\equiv Sx+y=S(x+y)\). At zero, two instances of the zero axiom yield \(Sx+0=Sx=S(x+0)\), the second read backwards after applying successor congruence.</p><p>For the protected step, assume \(Sx+e=S(x+e)\). The recursion axiom, congruence for the induction hypothesis, and the recursion axiom again give</p>
+  <div class="math-display">\[Sx+Se=S(Sx+e)=S(S(x+e))=S(x+Se).\]</div>
+  <p>The last equality reads \(x+Se=S(x+e)\) backwards beneath \(S\). Induction constructs \(\forall y\,\varphi(y,x)\); universal introduction closes the fixed parameter \(x\). In particular, \(x\) was never replaced by the induction name.</p></div>
+</section>
+
+<section id="associative-addition" data-formal="haadd-associativity haadd-associativity-instance" data-kind="theorem">
+  <h2>Keep two parameters fixed in associativity</h2>
+  <div class="statement-box"><p>HA constructs a closed certificate of</p>
+  <div class="math-display">\[\forall x\forall y\forall z\,((x+y)+z=x+(y+z)).\]</div></div>
+  <div class="proof"><p>Fix \(x,y\) and induct on \(z\). At zero, \((x+y)+0=x+y=x+(y+0)\), using two zero instances and addition congruence. Assume the protected hypothesis \((x+y)+e=x+(y+e)\). First apply recursion and then successor congruence:</p>
+  <div class="math-display">\[(x+y)+Se=S((x+y)+e)=S(x+(y+e)).\]</div>
+  <p>Read the recursion axiom for \(x+(S(y+e))\) backwards, and then read the recursion axiom for \(y+Se\) backwards inside addition by \(x\). This continues the chain as</p>
+  <div class="math-display">\[S(x+(y+e))=x+S(y+e)=x+(y+Se).\]</div>
+  <p>These two short chains compose by transitivity into the required successor step. Apply induction with the identical parameter pair \((x,y)\), and universally close both parameters.</p></div>
+</section>
+
+<section id="commutative-addition" data-formal="haadd-commutativity haadd-commutativity-instance" data-kind="theorem">
+  <h2>Use the left-side lemmas to prove commutativity</h2>
+  <div class="statement-box"><p>HA constructs a closed certificate of \(\forall x\forall y\,(x+y=y+x)\), using intuitionistic deduction and the original arithmetic axioms.</p></div>
+  <div class="proof"><p>Fix \(x\) and induct on \(y\). For zero, combine the recursion axiom with <a href="#zero-on-left"></a> to get \(x+0=x=0+x\). At the protected successor name \(e\), assume \(x+e=e+x\). Then</p>
+  <div class="math-display">\[x+Se=S(x+e)=S(e+x)=Se+x.\]</div>
+  <p>The first equality is the original recursion axiom, the second is successor congruence applied to the induction hypothesis, and the third is <a href="#successor-on-left"></a> read backwards at \((e,x)\). Discharge the hypothesis, apply induction, and close \(x\). Thus the argument uses a fixed parameter twice: first in the earlier successor lemma, and now in the commutativity induction.</p></div>
+</section>
+
+<section id="exchange-three-summands" data-formal="haadd-exchange haadd-exchange-instance hamul-successor-left" data-kind="lemma">
+  <h2>Derive a reusable three-term rearrangement</h2>
+  <p>For arbitrary arithmetic terms \(r,s,t\), HA constructs a certificate of \((r+s)+t=(r+t)+s\), without another induction.</p>
+  <div class="proof"><p>Instantiate <a href="#associative-addition"></a> and <a href="#commutative-addition"></a>. Congruence applies \(s+t=t+s\) within addition by \(r\), so the equality chain is</p>
+  <div class="math-display">\[(r+s)+t=r+(s+t)=r+(t+s)=(r+t)+s.\]</div>
+  <p>The final step is associativity read backwards. The resulting certificate combines the finite supports of those instances. Reassociation and exchange therefore remain derived proof operations, rather than conventions for identifying different term trees.</p></div>
+  <p>This same three-term exchange is used beneath successor in <a href="heyting-arithmetic-multiplication#successor-on-left">the left-successor multiplication proof</a>, with the three terms \(x\cdot e,e,x\). It rearranges the addition terms needed for that induction step without assuming any multiplication symmetry law.</p>
+</section>
+
+<section id="left-cancellation" data-formal="haadd-cancel-left haadd-cancel-left-instance" data-kind="theorem">
+  <h2>Cancel a shared left addend by induction</h2>
+  <div class="statement-box"><p>HA constructs a closed certificate of the universal closure of</p>
+  <div class="math-display">\[a+b=a+c\ \to\ b=c.\]</div></div>
+  <div class="proof"><p>Fix \(b,c\), and induct on \(a\) in the full formula \(\varphi(a,b,c)\equiv(a+b=a+c\to b=c)\). The implication belongs to the induction body; its antecedent is a temporary assumption within each base or step proof.</p><p>For the base, assume \(0+b=0+c\). The two instances of <a href="#zero-on-left"></a>, together with symmetry and transitivity, give</p>
+  <div class="math-display">\[b=0+b=0+c=c.\]</div>
+  <p>Discharge the assumed equation to obtain \(\varphi(0,b,c)\).</p><p>For the step, retain \(\varphi(e,b,c)\) as the induction hypothesis and temporarily assume \(Se+b=Se+c\). The left-successor certificates turn that equation into</p>
+  <div class="math-display">\[S(e+b)=Se+b=Se+c=S(e+c).\]</div>
+  <p>Instantiate the original successor-injectivity axiom to obtain \(e+b=e+c\). Apply the induction hypothesis to get \(b=c\), and discharge the temporary successor equation. This proves \(\varphi(Se,b,c)\). Induction and universal closure finish the result. Successor injectivity is one step in the argument; the induction is what permits cancellation of an arbitrary shared addend.</p></div>
+</section>
+
+<section id="right-cancellation" data-formal="haadd-cancel-right haadd-cancel-right-instance" data-kind="lemma">
+  <h2>Cancel on the right using commutativity</h2>
+  <p>HA constructs a closed certificate of the universal closure of \(b+a=c+a\to b=c\).</p>
+  <div class="proof"><p>Under the temporary premise \(b+a=c+a\), instantiate commutativity twice to build</p>
+  <div class="math-display">\[a+b=b+a=c+a=a+c.\]</div>
+  <p>Apply <a href="#left-cancellation"></a> at the three terms \((a,b,c)\), obtaining \(b=c\). Discharge the premise and universally close the free parameters. This derives the second orientation from the first instead of running a second cancellation induction.</p></div>
+</section>
+
+<section id="closed-theorem-certificates" data-formal="ha-certificate ha-theory ha-induction-rule ha-universal-closure haadd-zero-left haadd-successor-left haadd-associativity haadd-commutativity haadd-exchange haadd-cancel-left haadd-cancel-right" data-kind="lemma">
+  <h2>The universal conclusions have finite arithmetic support</h2>
+  <p>Each universal theorem above has an actual finite HA certificate. Every arithmetic leaf is an instance of an original basic axiom or of the original full induction schema; the displayed addition laws introduce no new nonlogical axiom.</p>
+  <div class="proof"><p>For zero-left, left-successor, associativity, commutativity and left cancellation, use respectively the induction bodies stated in their proofs. Each has a finite list of fixed parameters. The base and protected step are finite combinations of axiom instances, temporary assumptions and earlier theorem certificates. The <a href="#fixed-parameter-induction">derived rule</a> adds one corresponding native induction axiom and combines the finitely many supports.</p><p>Universal introduction then closes the fixed parameters, since none occurs freely in the arithmetic axioms. If a different displayed order of universal quantifiers is wanted, instantiate the constructed closed theorem at new protected names in that order and introduce them again; <a href="intuitionistic-first-order-deduction#quantifier-rules">the native quantifier rules</a> construct that finite rearrangement. Three-term exchange and right cancellation use only finite combinations of the resulting certificates. In every case the final object is one finite deduction with a finite arithmetic support.</p></div>
+</section>
+
+<section id="arbitrary-term-instances" data-formal="ha-certificate haadd-zero-left-instance haadd-successor-left-instance haadd-associativity-instance haadd-commutativity-instance haadd-exchange-instance haadd-cancel-left-instance haadd-cancel-right-instance haadd-consume-left-cancellation haadd-consume-right-cancellation" data-kind="lemma">
+  <h2>Instantiate the proved sentences at supplied terms</h2>
+  <p>Let \(X\) be any original free-name set and \(\Gamma\) any finite additional arithmetic context over \(X\). All the addition laws above have HA certificate instances at arbitrary terms over \(X\). In particular, a supplied certificate of \(s+t=s+u\) gives a certificate of \(t=u\) in the identical additional context; the same holds from \(t+s=u+s\).</p>
+  <div class="proof"><p>Rename each closed theorem certificate into \(X\), leaving its closed arithmetic assumptions in the allowed axiom set. Repeated universal elimination substitutes the specified terms, with their own original names, for the quantified slots. The capture-free instantiation operations keep every remaining bound slot protected. This gives an instance with empty additional context, which may be weakened to \(\Gamma\).</p><p>For left cancellation, instantiate its implication certificate at \((s,t,u)\), weaken it to \(\Gamma\), and apply implication elimination to the supplied equality certificate. Union their actual finite arithmetic supports before the application. Right cancellation is identical using its proved implication, or can first compose the two supplied commutativity instances with the input equality and then apply left cancellation. Thus an equation already proved under additional assumptions can be consumed directly; no semantic choice of a proof is involved.</p></div>
+</section>
+
+<section id="worked-cancellation" data-formal="haadd-worked-cancellation haadd-consume-left-cancellation" data-kind="lemma">
+  <h2>A fixed context can carry a cancellation calculation</h2>
+  <p>For arbitrary terms \(x,y\), a supplied HA certificate under \(\Gamma\) of \((x+\overline2)+y=(x+\overline2)+\overline3\) yields one under \(\Gamma\) of \(y=\overline3\). The term \(x+\overline2\) need not be a numeral.</p>
+  <div class="proof"><p>Instantiate the universal left-cancellation theorem at \(a=x+\overline2\), \(b=y\), \(c=\overline3\). Its antecedent is exactly the supplied equation, including the parentheses in the common addend. Implication elimination gives the required conclusion. This application neither computes the value of \(x\) nor repeats an induction up to its value; the single universal certificate supplies every such term instance.</p></div>
+</section>
+
+<section id="numeral-family-question" data-formal="ifond-raw-derivation ha-numeral-addition haadd-certificate-node-count haadd-finite-omits-numeral-equation haadd-zero-left" data-kind="question">
+  <h2>Can infinitely many numeral proofs be joined into one certificate?</h2>
+  <p>For each external \(n\), unrolling the recursion equations gives a finite proof of \(0+\overline n=\overline n\). Can the union of these proofs, with one new step above them, be used as an HA certificate of \(\forall z\,(0+z=z)\)?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. The proposed union has infinitely many distinct numeral conclusions and is not a finite deduction tree. HA has no rule with all those conclusions as its infinitely many premises. Its universal-introduction rule instead takes one proof with one protected arbitrary name, and its induction axiom takes a base and a uniform successor step.</p><p>The finite proof in <a href="#zero-on-left"></a> provides exactly the latter data. It proves the universal sentence here, but is a different construction from collecting its numeral instances. The distinction is between a family indexed outside arithmetic and one finite deduction inside arithmetic, not between two values of a numerical calculation.</p></div>
+  </details>
+</section>
+
+<section id="equality-only-question" data-formal="haadd-collapsing-structure haadd-collapse-refutes-cancellation haadd-cancellation-not-logical ifond-raw-soundness" data-kind="question">
+  <h2>Does logical equality alone permit addition cancellation?</h2>
+  <p>Delete every nonlogical arithmetic axiom and retain intuitionistic first-order deduction with logical equality. Is the universal closure of \(a+b=a+c\to b=c\) still derivable?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body"><p>No. Interpret the arithmetic language on the two-element set \(\{0,1\}\), with its genuine equality relation, its constant interpreted by \(0\), and addition interpreted as the constant function \(a+b=0\). Successor may be the identity and multiplication may also be constantly zero, since none of their arithmetic axioms is being assumed. With \(b=0\) and \(c=1\), both sums in the antecedent equal \(0\), while the conclusion \(b=c\) is false.</p><p>The <a href="intuitionistic-first-order-deduction#ordinary-soundness">ordinary soundness theorem</a> for the equality-enabled logical calculus therefore excludes such a derivation. In HA, cancellation was obtained from specific recursion equations, the derived left-successor identity, successor injectivity and full induction. Congruence for addition goes from equal inputs to equal outputs; it does not justify cancelling an arbitrary function symbol.</p></div>
+  </details>
+</section>

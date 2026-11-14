@@ -7,7 +7,7 @@
 <p>We use the arithmetic abbreviations \(u\le v\) for \(\exists w\,(w+u=v)\) and \(u\lt v\) for \(Su\le v\), introduced with <a href="arithmetic-representability#bounded-formulas">bounded formulas</a>. A function notation introduced by a proved unique graph is an abbreviation: its occurrence can always be replaced by a value variable and that graph assertion.</p>
 </section>
 
-<section id="induction-as-a-proof-rule" data-formal="pac-least-witness pac-least-witness-derives pac-strong-induction pac-additive-cancellation" data-kind="lemma">
+<section id="induction-as-a-proof-rule" data-kind="lemma" data-formal="pac-least-witness pac-least-witness-derives pac-strong-induction pac-additive-cancellation haadd-cancel-left haadd-consume-left-cancellation hamul-commutativity hamul-left-distributivity hamul-right-distributivity hamul-associativity">
   <h2>Internal induction also proves least-element principles</h2>
   <p>PA proves induction for every arithmetic formula with parameters. Consequently, if an arithmetic formula \(A(x,\bar u)\) has a witness, it has a least witness:</p>
   <div class="math-display">\[\mathrm{PA}\vdash\forall\bar u\,\bigl(\exists x\,A(x,\bar u)\to\exists x\,(A(x,\bar u)\land\forall z\lt x\,\neg A(z,\bar u))\bigr).\]</div>
@@ -16,6 +16,8 @@
 </div>
   <p>PA also proves the discrete linear-order and semiring laws used below. Associativity, commutativity and distributivity follow by induction from the recursive addition and multiplication axioms. Additive cancellation needs induction too: induct on the common summand in \(a+b=a+c\Rightarrow b=c\). At \(a=0\), use the zero-on-the-left law; at \(Sa\), rewrite both sides as successors, apply successor injectivity, and use the induction hypothesis. Injectivity alone would not supply cancellation.</p>
   <p>Induction on \(v\), using the predecessor axiom, proves \(u\le v\) or \(v\lt u\). Cancellation and the successor axioms then give antisymmetry. All these are inductions on arithmetic formulas, with their other variables as parameters.</p>
+  <p>For addition, <a href="heyting-arithmetic-addition#left-cancellation">the cancellation induction also produces a finite intuitionistic HA proof</a>. Its body is the implication \(a+b=a+c\to b=c\), with \(b,c\) fixed, and the <a href="heyting-arithmetic-addition#arbitrary-term-instances">resulting certificate consumes an equality proved under a fixed additional context</a>.</p>
+  <p>The <a href="heyting-arithmetic-multiplication#commutative-multiplication">multiplication commutativity</a>, <a href="heyting-arithmetic-multiplication#left-distributivity">two distributive laws</a> and <a href="heyting-arithmetic-multiplication#associative-multiplication">associativity</a> also have direct finite intuitionistic HA certificates. Their proofs keep the other variables fixed through each induction, using the already proved addition rearrangements.</p>
 </section>
 <section id="strong-induction" data-kind="lemma" data-formal="pac-strong-induction pac-strong-induction-derives">
 <h2>A least counterexample justifies recursion on smaller codes</h2>

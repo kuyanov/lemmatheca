@@ -1,0 +1,90 @@
+<section id="weak-excluded-middle" data-formal="prop-formula ipwem-formula ipwem-axioms ipwem-substitution" data-kind="definition">
+  <h2>Decide between impossibility and unavoidable possibility</h2>
+  <p>Use the <a href="intuitionistic-propositional-deduction#formulas-and-contexts">shared propositional formulas</a> with numbered atoms \(p_0,p_1,\ldots\), including native negation. The <strong>weak excluded middle instance</strong> associated with a formula \(A\) is</p>
+  <div class="math-display">\[\mathsf W(A):=\neg A\lor\neg\neg A.\]</div>
+  <p>The <strong>weak excluded middle schema</strong> is the set \(\mathcal W=\{\mathsf W(A):A\text{ is a formula}\}\). It includes arbitrary compound formulas, rather than just the displayed atoms. A simultaneous formula substitution satisfies \(\mathsf W(A)[\sigma]=\mathsf W(A[\sigma])\), because it preserves disjunction and native negation.</p>
+  <p>In a <a href="intuitionistic-kripke-semantics#negation-and-failure">Kripke model</a>, the two alternatives say respectively that no future verifies \(A\), or that every future has a further extension verifying \(A\). The latter need not verify \(A\) at the current world. Thus this schema asks less than \(A\lor\neg A\).</p>
+</section>
+
+<section id="schema-consequence" data-formal="ipwem-schema-consequence ipnd-derivability" data-kind="definition">
+  <h2>Add schema instances as finitely many ordinary assumptions</h2>
+  <p>For any fixed set \(S\) of formulas, the <strong>consequence relation with added axioms \(S\)</strong> is defined, for an arbitrary premise set \(\Gamma\), by</p>
+  <div class="math-display">\[\Gamma\vdash_S C\quad\Longleftrightarrow\quad\exists E\subseteq S\;\bigl(E\text{ finite and }\Gamma\cup E\vdash_{\mathrm I}C\bigr).\]</div>
+  <p>The deduction on the right is in the <a href="intuitionistic-propositional-deduction#intuitionistic-rules">original intuitionistic calculus</a>. No new proof constructor is introduced, and each deduction uses only finitely many added instances. Write \(\vdash_{\mathcal W}\) when \(S=\mathcal W\). This extension is commonly called <strong>KC</strong>, or the logic of weak excluded middle. Calling \(\mathsf W(A)\) an added axiom means it may be selected as one of these ordinary assumptions.</p>
+</section>
+
+<section id="finite-schema-support" data-formal="ipwem-schema-union ipwem-schema-soundness ipnd-finite-support iks-soundness" data-kind="lemma">
+  <h2>The entire axiom set has the same finite-proof consequences</h2>
+  <p>For every formula set \(S\), arbitrary \(\Gamma\), and formula \(C\),</p>
+  <div class="math-display">\[\Gamma\vdash_S C\quad\Longleftrightarrow\quad\Gamma\cup S\vdash_{\mathrm I}C.\]</div>
+  <p>If every member of \(S\) is <a href="intuitionistic-propositional-kripke-morphisms#frame-validity">valid on a given frame</a>, then \(\Gamma\vdash_S C\) implies that every model on that frame and every world forcing \(\Gamma\) forces \(C\).</p>
+  <div class="proof"><p>One direction weakens from \(\Gamma\cup E\) to \(\Gamma\cup S\). Conversely, <a href="intuitionistic-propositional-deduction#finite-support">finite support</a> gives a finite \(F\subseteq\Gamma\cup S\) sufficient for the deduction. Put \(E=F\cap S\). Then \(E\) is finite, \(E\subseteq S\), and every member of \(F\) belongs to \(\Gamma\cup E\). Weakening gives the defining deduction.</p><p>For soundness, choose such an \(E\). The world forces its members by frame validity and the original premises by hypothesis. <a href="intuitionistic-kripke-semantics#intuitionistic-soundness">Ordinary intuitionistic soundness</a> applied to the unchanged proof gives \(C\). This argument works even when \(\Gamma\) or \(S\) is infinite.</p></div>
+</section>
+
+<section id="directed-futures" data-formal="ipwem-directed-cone ipwem-directed-futures ipkm-future-image iks-fork-frame" data-kind="definition">
+  <h2>Allow any two futures to share a continuation</h2>
+  <p>Let \((W,\leq)\) be a nonempty preordered frame. Its <strong>future cone at \(w\)</strong> is \(\mathord\uparrow w=\{v:w\leq v\}\). The cone is <strong>directed</strong> when</p>
+  <div class="math-display">\[\forall u,v\geq w\;\exists z\;(u\leq z\text{ and }v\leq z).\]</div>
+  <p>The witness \(z\) need not be unique, least, or fixed independently of \(u,v\). We say the frame has <strong>directed future cones</strong> when this holds at every \(w\). This condition compares worlds with a common predecessor; worlds in unrelated parts of the frame need not share a continuation.</p>
+  <figure id="joining-futures-diagram" class="proof-figure"><div class="figure-image"><img src="assets/joining-futures.svg" alt="The three-world fork has two terminal futures with no common continuation. A second order diagram shows the required witness z above two futures u and v of w." width="700" height="300"></div><figcaption>Upward edges indicate further futures. The left picture is the three-world fork. The right picture shows the required witness for two futures; other worlds may also exist.</figcaption></figure>
+</section>
+
+<section id="directed-cone-forcing" data-formal="ipwem-directed-forcing iks-persistence iks-double-negation-futures" data-kind="lemma">
+  <h2>A directed cone forces each weak excluded middle instance</h2>
+  <p>In any model \(M\), if the cone above \(w\) is directed, then \(M,w\Vdash\mathsf W(A)\) for every formula \(A\).</p>
+  <div class="proof"><p>Reason classically about the model. If no \(u\geq w\) forces \(A\), the definition of forcing gives \(w\Vdash\neg A\). Otherwise fix one such \(u\). Given any \(v\geq w\), directedness gives \(z\geq u,v\). <a href="intuitionistic-kripke-semantics#persistence">Formula persistence</a> carries \(A\) from \(u\) to \(z\).</p><p>Thus every future \(v\) has a further future forcing \(A\). The <a href="intuitionistic-kripke-semantics#negation-and-failure">double-negation characterization</a> gives \(w\Vdash\neg\neg A\). Either case supplies a disjunct of \(\mathsf W(A)\). The reasoning about whether a future exists is not an added excluded-middle inference in the object calculus.</p></div>
+</section>
+
+<section id="nonjoining-countervaluation" data-formal="ipwem-upset-model ipwem-nonjoining-countervaluation iks-forcing" data-kind="lemma">
+  <h2>Nonjoining futures give a precise countervaluation</h2>
+  <p>Suppose \(u,v\geq w\) have no common upper bound. On this same frame there is a persistent valuation for which \(w\nVdash\mathsf W(p_0)\).</p>
+  <div class="proof"><p>Make \(p_0\) true exactly on \(\mathord\uparrow u\), and every other atom false everywhere. This is persistent: if \(u\leq x\leq y\), then \(u\leq y\). In particular \(u\Vdash p_0\), so its predecessor \(w\) cannot force \(\neg p_0\).</p><p>No future \(z\geq v\) can force \(p_0\), since that would also give \(u\leq z\), contrary to the missing common upper bound. Therefore \(v\Vdash\neg p_0\). Because \(v\geq w\), this rules out \(w\Vdash\neg\neg p_0\). Both disjuncts fail at \(w\), as asserted. The valuation is allowed to depend on the chosen nonjoining pair.</p></div>
+</section>
+
+<section id="frame-characterization" data-formal="ipwem-frame-characterization ipwem-atom-characterization ipkm-frame-validity imkc-kc-directed imkc-kc-complete" data-kind="theorem">
+  <h2>Weak excluded middle characterizes directed future cones</h2>
+  <div class="statement-box"><p>For a nonempty preordered frame \((W,\leq)\), weak excluded middle is valid for every formula and every persistent valuation if and only if every future cone is directed:</p><div class="math-display">\[\bigl(\forall A\;(W,\leq)\Vdash\mathsf W(A)\bigr)\quad\Longleftrightarrow\quad\text{all future cones are directed}.\]</div><p>Already validity of the single numbered-atom formula \(\mathsf W(p_0)\), over all valuations, is equivalent to this condition.</p></div>
+  <div class="proof"><p>If all cones are directed, apply <a href="#directed-cone-forcing"></a> at each world of each model. Conversely, validity of all instances includes \(\mathsf W(p_0)\). If a cone were not directed, some two of its worlds would have no common upper bound. The explicit valuation in <a href="#nonjoining-countervaluation"></a> would refute that atom instance. Finally validity of \(\mathsf W(p_0)\) follows from validity of all instances, so the same argument proves the stronger single-formula characterization.</p></div>
+  <p>The converse from semantic consequences to deductions requires more than this frame characterization. The <a href="intermediate-propositional-kripke-completeness#kc-canonical-directedness">KC canonical frame has directed future cones</a>, which supplies <a href="intermediate-propositional-kripke-completeness#strong-completeness">strong completeness</a> for arbitrary sets of numbered-atom premises.</p>
+</section>
+
+<section id="finite-rooted-frames" data-formal="ipwem-finite-greatest ipwem-finite-frame-validity order-greatest-unique" data-kind="lemma">
+  <h2>A finite rooted partial order needs a greatest world</h2>
+  <p>Let \(W\) be a finite partial order with a specified least world \(r\). Then its future cones are directed if and only if it has a greatest world \(t\), meaning \(w\leq t\) for every \(w\in W\). Hence these are also equivalent to validity of the weak excluded middle schema on this frame. Such a greatest world is unique.</p>
+  <div class="proof"><p>A greatest world is a common upper bound for every pair, so works in every cone. For the converse, list the finitely many worlds as \(w_1,\ldots,w_n\). Start with \(t_0=r\). Having chosen \(t_{i-1}\), apply directedness above \(r\) to \(t_{i-1}\) and \(w_i\), both of which extend \(r\), to obtain \(t_i\) above them. Induction shows that \(t_i\) bounds \(w_1,\ldots,w_i\). Thus \(t_n\) is greatest.</p><p>The frame equivalence follows from <a href="#frame-characterization"></a>. If \(t,t'\) are greatest, then \(t\leq t'\) and \(t'\leq t\), so antisymmetry gives equality. Finiteness is used in the single bound-building process; the <a href="#infinite-directed-question">infinite case</a> differs.</p></div>
+</section>
+
+<section id="de-morgan-from-wem" data-formal="ipwem-de-morgan-formula ipwem-de-morgan-from-wem" data-kind="lemma">
+  <h2>Weak excluded middle supplies the missing De Morgan direction</h2>
+  <p>Put \(\mathsf D(A,B):=\neg(A\land B)\to(\neg A\lor\neg B)\). For every \(A,B\), the original intuitionistic calculus proves</p>
+  <div class="math-display">\[\vdash_{\mathrm I}\mathsf W(A)\to\mathsf D(A,B).\]</div>
+  <div class="proof"><p>Assume \(\mathsf W(A)\), and then \(\neg(A\land B)\). Eliminate the first disjunction. Its \(\neg A\) branch immediately gives \(\neg A\lor\neg B\). In the \(\neg\neg A\) branch, temporarily assume \(B\). Under a further assumption \(A\), conjunction introduction contradicts \(\neg(A\land B)\). Discharging \(A\) gives \(\neg A\), which contradicts the branch assumption \(\neg\neg A\). Discharging \(B\) therefore gives \(\neg B\), and right disjunction introduction gives the required alternative.</p><p>Disjunction elimination joins the branches. Discharge the conjunction's negation and then \(\mathsf W(A)\) to obtain the displayed closed implication. Every step is an ordinary intuitionistic introduction or elimination; the only additional formula used was the stated instance.</p></div>
+</section>
+
+<section id="equivalent-de-morgan-schema" data-formal="ipwem-de-morgan-axioms ipwem-wem-from-de-morgan ipwem-de-morgan-schema-equivalence ipnd-proof-replacement" data-kind="theorem">
+  <h2>The reverse De Morgan schema gives exactly the same extension</h2>
+  <p>Let \(\mathcal D=\{\mathsf D(A,B):A,B\text{ are formulas}\}\). For every \(A\),</p>
+  <div class="math-display">\[\vdash_{\mathrm I}\mathsf D(A,\neg A)\to\mathsf W(A).\]</div>
+  <p>Consequently, for every premise set \(\Gamma\) and formula \(C\), \(\Gamma\vdash_{\mathcal W}C\) if and only if \(\Gamma\vdash_{\mathcal D}C\).</p>
+  <div class="proof"><p>There is a closed proof of \(\neg(A\land\neg A)\): assume the conjunction, project its two contradictory components, and discharge. An assumed \(\mathsf D(A,\neg A)\) applied to that proof yields \(\neg A\lor\neg\neg A\). Discharge the assumption to obtain the displayed implication.</p><p>For the consequence equivalence, start with a finite set of extra instances in an ordinary deduction. To replace a \(\mathcal W\)-instance \(\mathsf W(A)\), allow \(\mathsf D(A,\neg A)\) and use the closed implication just proved. To replace a \(\mathcal D\)-instance \(\mathsf D(A,B)\), allow \(\mathsf W(A)\) and use <a href="#de-morgan-from-wem"></a>. Only finitely many replacement instances are needed. The <a href="intuitionistic-propositional-deduction#proof-replacement">proof-replacement theorem</a> substitutes these deductions for the old instance leaves while retaining every original premise from \(\Gamma\). This proves both directions.</p></div>
+</section>
+
+<section id="strictness" data-formal="ipwem-not-intuitionistic ipwem-not-classical ipwem-excluded-middle-implies ipwem-chain-validity ipkm-fork-frame-failure ipkm-one-branch-fork iks-em-countermodel iks-chain-model ipnd-double-negation-intro pdl-wem-from-linearity pdl-kc-in-lc pdl-not-kc-linearity" data-kind="lemma">
+  <h2>The schema lies strictly between the familiar boundary principles</h2>
+  <p>Weak excluded middle is not an intuitionistic theorem schema, and adding it does not make \(p_0\lor\neg p_0\) derivable. Full excluded middle does imply weak excluded middle: for every \(A\),</p>
+  <div class="math-display">\[\vdash_{\mathrm I}(A\lor\neg A)\to\mathsf W(A).\]</div>
+  <div class="proof"><p>The <a href="intuitionistic-propositional-kripke-morphisms#reverse-frame-validity">one-branch fork valuation</a> refutes \(\mathsf W(p_0)\) at its root, so ordinary intuitionistic soundness rules out a closed deduction of that instance.</p><p>The two-world chain has a greatest world, hence validates every \(\mathcal W\)-instance by <a href="#finite-rooted-frames"></a>. Its <a href="intuitionistic-kripke-semantics#excluded-middle-countermodel">standard growing-atom valuation</a> refutes \(p_0\lor\neg p_0\) at the lower world. Soundness for the added axioms from <a href="#finite-schema-support"></a> therefore excludes a closed KC deduction of excluded middle.</p><p>For the displayed implication, assume \(A\lor\neg A\) and use cases. From \(A\), <a href="intuitionistic-propositional-deduction#constructive-negation-laws">double-negation introduction</a> gives \(\neg\neg A\), then the right disjunct of \(\mathsf W(A)\). From \(\neg A\), introduce its left disjunct. Discharge the initial assumption. Thus the weaker principle has an explicit proof from the stronger one.</p></div>
+  <p><a href="propositional-dummett-linearity#wem-from-linearity">Dummett’s principle supplies weak excluded middle</a> by an ordinary intuitionistic proof from a linearity instance. The converse fails: a <a href="propositional-dummett-linearity#diamond-separation">finite diamond with a greatest world</a> validates the weak excluded middle schema but refutes a linearity instance at its root.</p>
+</section>
+
+<section id="infinite-directed-question" data-formal="ipwem-natural-boundary ipwem-natural-validity" data-kind="question">
+  <h2>Can a directed rooted frame have no greatest world?</h2>
+  <p>Does the greatest-world conclusion in <a href="#finite-rooted-frames"></a> still follow without finiteness?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Take \(W=\mathbb N\) with its usual order and root \(0\). For \(u,v\geq w\), the number \(\max(u,v)\) extends both, so every cone is directed. Nevertheless no \(n\) is greatest, because \(n+1\nleq n\). This frame validates every weak excluded middle instance by <a href="#frame-characterization"></a>. Each finite stage of the bound-building argument is possible, but there is no final stage containing all worlds.</p></div></details>
+</section>
+
+<section id="one-valuation-question" data-formal="ipwem-matching-fork-validity ipwem-fork-not-directed ipkm-collapse ipkm-collapse-morphism ipkm-all-worlds-preimage iks-fork-frame iks-fork-model iks-chain-model" data-kind="question">
+  <h2>Can one valuation validate the whole schema on a nondirected frame?</h2>
+  <p>If every \(\mathsf W(A)\) holds at every world of one fixed model, must its frame have directed future cones?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Use the <a href="intuitionistic-propositional-kripke-morphisms#collapsing-worlds">matching fork and chain models</a>: both fork leaves verify exactly \(p_0\), the root verifies none, and the chain verifies \(p_0\) only above its lower world. The specified bounded morphism sends the fork root to the lower chain world and both leaves to the upper world.</p><p>The chain frame validates \(\mathsf W(A)\) for every \(A\), so its displayed model forces each such formula at both worlds. <a href="intuitionistic-propositional-kripke-morphisms#all-worlds-transfer">Truth transfer along that same morphism</a> makes every world of the matching fork model force \(\mathsf W(A)\) too. Yet the fork's two terminal leaves have no common upper bound.</p><p>The characterization quantifies over <em>every</em> persistent valuation. Changing the fork valuation so that \(p_0\) holds at just one leaf gives exactly the failure already used in <a href="#strictness"></a>. Agreement in one matching pair of models cannot replace that universal quantifier.</p></div></details>
+</section>
