@@ -5,7 +5,7 @@
   const history = statistics.history || {};
   const today = Date.now();
   const seriesFor = {
-    entries: [["count", "Total entries"], ["verified", "Formalized"]],
+    entries: [["count", "Total entries"], ["verified", "Fully formalized"]],
     nodes: [["count", "Total nodes"], ["verified", "Verified"]],
     areas: [["count", "Total areas"]],
     contributors: [["count", "Contributors"]],
