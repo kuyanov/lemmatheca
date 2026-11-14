@@ -1,0 +1,149 @@
+<section id="full-formulas" data-kind="definition" data-formal="fopf-scoped-formula fopf-complete-formula">
+  <h2>Keep the constructive connectives in the tree</h2>
+  <p>Fix a <a href="first-order-languages#signatures">first-order language</a> \(L\) and a set \(X\) of free parameter names. Terms use the same function symbols and argument trees as <a href="first-order-languages#terms">before</a>. At scope size \(n\), a term may use a name in \(X\) or a bound placeholder \(z_i\), where \(i&lt;n\). The two kinds of variable are disjoint.</p>
+  <p>A <strong>full scoped formula</strong> at size \(n\) is a finite tree with any of these constructors: \(\bot\); an equality \(s=t\); a relation application \(R(t_0,\ldots,t_{k-1})\); \(\neg A\); \(A\land B\); \(A\lor B\); \(A\to B\); \(\forall z_n A\); or \(\exists z_n A\). In the last two constructors the body is at size \(n+1\); every other child has size \(n\). Equality and relation arguments must be terms at the displayed scope. Write \(\mathcal F_X(n)\) for this collection, and call a member of \(\mathcal F_X(0)\) a <strong>complete formula</strong>.</p>
+  <p>Here conjunction, disjunction and existence are constructors in their own right. The <a href="first-order-languages#scoped-formulas">smaller classical syntax</a> instead abbreviates them using implication, negation and universal quantification. That smaller syntax suffices for classical truth. Keeping these trees distinct also lets a proof calculus assign separate introduction and elimination rules to them. No identification of constructive proof rules follows from classical truth equivalence.</p>
+</section>
+
+<section id="scope-and-induction" data-kind="theorem" data-formal="fopf-formula-induction fopf-logical-depth fopf-quantified-depth">
+  <h2>Induct over every scope size at once</h2>
+  <p>Let \(P_n\) be a property of formulas at scope size \(n\). Suppose it holds at every leaf, is preserved by each of the four propositional constructors, and holds for either quantified formula whenever it holds for its body. Then \(P_n(A)\) holds for every \(n\) and every \(A\in\mathcal F_X(n)\). Recursive functions specified on those constructors are likewise well defined.</p>
+  <div class="proof">
+    <p>Give a leaf depth zero, a unary tree depth one more than its child's depth, and a binary tree depth one more than the maximum of its children's depths. The body of a quantifier has smaller depth even though its scope size is larger. Strong induction on depth, with the assertion quantified over all scope sizes, therefore proves the result. In a recursive definition the same descent determines every child value before the parent value, so the clauses determine one function.</p>
+  </div>
+  <p>The <strong>logical depth</strong> just defined counts connectives and quantifiers along the longest branch. It is independent of the lengths of the terms inside an atom. For example, \(\forall z_0\,(P(f(z_0))\lor\neg P(z_0))\) has depth three, regardless of the complexity of \(f\).</p>
+</section>
+
+<section id="support-and-fragments" data-kind="definition" data-formal="fopf-free-support fopf-equality-free fopf-quantifier-free">
+  <h2>Record free parameters and syntactic fragments</h2>
+  <p>The <strong>free support</strong> \(\operatorname{FV}(A)\) is the finite set of names in \(X\) that occur in \(A\). At an atomic formula take the union of its argument terms' free supports; \(\bot\) has empty support. Negation and either quantifier retain their child's support, and a binary connective takes the union of its two child supports. Quantified placeholders contribute no free name. Thus \(\exists z_0 R(x,z_0)\) has support \(\{x\}\), and \(\forall z_0\exists z_1R(z_0,z_1)\) has empty support.</p>
+  <p>A formula is <strong>equality-free</strong> if no equality constructor occurs in its tree. It is <strong>quantifier-free</strong> if neither quantifier constructor occurs. These properties recurse through the actual tree; they are not assertions about equivalence to a formula of a simpler kind. In particular, an equality-free formula may contain arbitrary function symbols, and a quantifier-free formula may contain equality.</p>
+</section>
+
+<section id="scope-substitution" data-kind="definition" data-formal="fopf-scope-substitution fopf-scope-map">
+  <h2>Replace all currently available variables</h2>
+  <p>Let \(V_X(n)=X\sqcup\{z_0,\ldots,z_{n-1}\}\). A <strong>scope substitution</strong> from \((X,n)\) to \((Y,m)\) is a map \(\sigma\) assigning a term over \(V_Y(m)\) to every variable in \(V_X(n)\). On terms, the existing simultaneous <a href="first-order-languages#substitution">term substitution</a> replaces a variable by its assigned term and traverses every function argument. Variables inside an inserted term are not replaced again in that same operation.</p>
+  <p>Define \(A\langle\sigma\rangle\in\mathcal F_Y(m)\) recursively. Substitute in every atomic argument; keep \(\bot\); traverse each propositional connective without changing it. To traverse a quantifier, first extend the substitution by one protected slot, as specified in <a href="#lifting-a-substitution"></a>, then apply the same quantifier to the transformed body. This permits both changing free parameter names and opening available slots. A slot bound by a quantifier inside the tree is protected when the recursion reaches that quantifier.</p>
+</section>
+
+<section id="lifting-a-substitution" data-kind="lemma" data-formal="fopf-lift-scope fopf-lift-identity fopf-lift-composition">
+  <h2>Protect the newest slot under a binder</h2>
+  <p>For every scope substitution \(\sigma:(X,n)\to(Y,m)\), there is a specified <strong>lifted substitution</strong> \(\sigma^+:(X,n+1)\to(Y,m+1)\): keep each old image, now regarded as a term with one extra unused slot, and send the new source placeholder \(z_n\) to the new target placeholder \(z_m\). If \(\mathrm v\) denotes the identity variable substitution and \((\tau\star\sigma)(v)=\sigma(v)[\tau]\), then</p>
+  <div class="math-display">\[\mathrm v^+=\mathrm v,\qquad (\tau\star\sigma)^+=\tau^+\star\sigma^+.\]</div>
+  <div class="proof">
+    <p>There are two sorts of input to a lifted substitution. At an old variable, both sides of the first identity return that same variable, included into the enlarged scope. Both sides of the composition identity return the old term \(\sigma(v)[\tau]\), included into the enlarged target scope. To check this last assertion inside a term, induct on the term: a variable is replaced as specified, and a function symbol keeps its argument list while applying the induction hypothesis to each argument. At the newest placeholder, both sides of either identity return the newest target placeholder. These checks prove the map equalities on every input.</p>
+    <p>For example, under a binder the image of a free name \(x\) may contain an older available slot, but cannot accidentally become the new slot. The inclusion keeps every older index unchanged. The new slot is introduced only by the separate last clause, so the binder retains exactly its intended occurrences.</p>
+  </div>
+</section>
+
+<section id="substitution-laws" data-kind="theorem" data-formal="fopf-map-identity fopf-map-composition fopf-map-depth fopf-map-equality-free fopf-map-quantifier-free">
+  <h2>Substitution has identity and composition laws</h2>
+  <p>For every \(A\in\mathcal F_X(n)\), scope substitution preserves the outer constructor and satisfies</p>
+  <div class="statement-box">
+    <div class="math-display">\[A\langle\mathrm v\rangle=A,\qquad
+      (A\langle\sigma\rangle)\langle\tau\rangle=A\langle\tau\star\sigma\rangle.\]</div>
+  </div>
+  <p>Here \(\sigma:(X,n)\to(Y,m)\) and \(\tau:(Y,m)\to(Z,k)\) are arbitrary compatible scope substitutions. It preserves equality-freeness and quantifier-freeness in both directions, and does not change logical depth.</p>
+  <div class="proof">
+    <p>First prove the corresponding term identities by induction on terms. A variable gives the defining replacement; a function application uses the identity for every argument. Now induct on formulas, with arbitrary source and target scopes. At an equality or relation application, use those term identities. At \(\bot\) the trees are unchanged. A propositional constructor is retained, and its child identities finish that case.</p>
+    <p>For either binder, the recursively transformed body uses the lifted substitution. The identity assertion follows from \(\mathrm v^+=\mathrm v\) and the body's induction hypothesis. For composition, that hypothesis combines the two body substitutions into \(\tau^+\star\sigma^+\); the lifting identity identifies it with \((\tau\star\sigma)^+\), exactly the body required on the right. Reapply the same binder. Finally, substitution traverses every formula constructor once without adding or deleting any constructor, so the two fragment tests and logical depth remain the same.</p>
+  </div>
+</section>
+
+<section id="free-parameter-substitution" data-kind="definition" data-formal="fopf-free-substitution fopf-free-renaming">
+  <h2>Ordinary free substitution is a special case</h2>
+  <p>A <strong>free-parameter substitution</strong> \(s:X\to\operatorname{Term}(Y)\) supplies terms with no available placeholders. At scope size \(n\), include each \(s(x)\) among terms over \(V_Y(n)\) and leave every available \(z_i\) fixed. This gives a scope substitution, denoted \(\widehat s_n\). Define \(A[s]=A\langle\widehat s_n\rangle\). A <strong>free renaming</strong> along \(f:X\to Y\) is the special substitution \(s(x)=f(x)\), regarded as a variable term; write \(A[f]\).</p>
+  <p>This operation preserves the number of available slots. For instance, \((\forall z_0\exists z_1R(x,z_0,z_1))[f]\) is \(\forall z_0\exists z_1R(f(x),z_0,z_1)\). The image of \(x\) stays free under both binders. The same definition allows noninjective renamings, so two distinct free names may become the same name.</p>
+</section>
+
+<section id="free-substitution-laws" data-kind="theorem" data-formal="fopf-substitution-identity fopf-substitution-composition fopf-substitution-support fopf-renaming-identity fopf-renaming-composition fopf-map-depth fopf-map-equality-free fopf-map-quantifier-free">
+  <h2>Calculate free support and successive replacements</h2>
+  <p>For every full scoped formula \(A\), free-parameter substitution satisfies</p>
+  <div class="math-display">\[A[\mathrm v]=A,\qquad (A[s])[t]=A[x\mapsto s(x)[t]],\qquad
+    \operatorname{FV}(A[s])=\bigcup_{x\in\operatorname{FV}(A)}\operatorname{FV}(s(x)).\]</div>
+  <p>In particular, \(A[\operatorname{id}]=A\) and \((A[f])[g]=A[g\circ f]\) for free renamings. Neither substitution nor renaming changes either syntactic fragment test or logical depth.</p>
+  <div class="proof">
+    <p>The identity and composition laws follow from <a href="#substitution-laws"></a>: lifting a free substitution through one more binder is exactly its extension to one more protected slot. At an old free name the lifted image is still its supplied term, and at each bound placeholder it is still that placeholder.</p>
+    <p>For the support formula first use the term calculation from <a href="first-order-languages#substitution-support">the support theorem</a>. Atoms take a finite union of these supports. Falsity contributes nothing. A binary connective takes two unions, which combine into the union indexed by the two original supports. Negation and either binder retain the child support, because newly bound slots have never contributed free names. This proves the equality by structural induction. The renaming laws follow by replacing each name with its variable term; the fragment and depth assertions are the special cases already proved.</p>
+  </div>
+</section>
+
+<section id="opening-slots" data-kind="definition" data-formal="fopf-open-slots fopf-instantiate-slots fopf-instantiate fopf-opening-body fopf-opening-calculation">
+  <h2>Open a slot without capturing an inserted term</h2>
+  <p>For \(A\in\mathcal F_X(1)\) and a term \(t\) over \(X\), the <strong>instance</strong> \(A(t)\) is \(A\langle\nu_t\rangle\), where \(\nu_t\) keeps every free parameter and replaces the sole available placeholder \(z_0\) by \(t\), now in a scope of size zero. Internal binders are traversed using the lifted maps. For example,</p>
+  <div class="math-display">\[(\forall z_1R(z_0,z_1))(t)=\forall z_0R(t,z_0).\]</div>
+  <p>More generally, the <strong>opening of all available slots</strong> sends the \(n\) placeholders of \(A\in\mathcal F_X(n)\) to a new disjoint collection of free parameter names. It gives a complete formula over \(X\sqcup\{z_0,\ldots,z_{n-1}\}\), denoted \(\operatorname{open}(A)\). Existing free parameters retain their left-hand tag. A slot opened this way becomes free; the slots introduced by internal binders remain bound. Simultaneously instantiating the available slots at terms \(t_0,\ldots,t_{n-1}\) is the analogous scope substitution with these term images.</p>
+  <p>In particular, the newly opened parameter can serve as an eigenparameter in a proof rule: its disjoint tag distinguishes it from every original free name. This is a syntactic freshness device. Which surrounding assumptions may mention it is a condition imposed by the proof rule, not by opening alone.</p>
+</section>
+
+<section id="opening-and-substitution" data-kind="theorem" data-formal="fopf-opening-substitution fopf-instantiate-substitution">
+  <h2>Opening commutes with free substitution</h2>
+  <p>Let \(A\in\mathcal F_X(1)\), \(t\) be a term over \(X\), and \(s:X\to\operatorname{Term}(Y)\). Then</p>
+  <div class="statement-box">
+    <div class="math-display">\[(A(t))[s]=(A[s])(t[s]).\]</div>
+  </div>
+  <p>For \(A\in\mathcal F_X(n)\), let \(s^{(n)}\) act on the original free names by \(s\), with their left-hand tags, and fix each of the \(n\) newly opened parameter names. Then</p>
+  <div class="math-display">\[\operatorname{open}(A[s])=\operatorname{open}(A)[s^{(n)}].\]</div>
+  <div class="proof">
+    <p>Both sides of the instance identity are composites of scope substitutions. On an original free name, each composite gives its image under \(s\). On the available slot, the left composite first inserts \(t\) and then applies \(s\), whereas the right composite inserts \(t[s]\). These are the same term. The composition theorem therefore gives the formula equality, including under all internal binders.</p>
+    <p>The same check proves the opening identity. An original free name gives the left-tagged version of its replacement term on both sides. An available placeholder gives the corresponding new right-tagged free name on both sides. Thus the scope substitutions coincide on every variable, and the formula composition law proves the result.</p>
+  </div>
+</section>
+
+<section id="classical-translation" data-kind="definition" data-formal="fopf-classical-expansion fopf-primitive-inclusion">
+  <h2>Compare with the existing classical syntax</h2>
+  <p>The <strong>classical expansion</strong> \(c(A)\) is a formula in the <a href="first-order-languages#scoped-formulas">existing small syntax</a>, at the same scope size and with the same free parameter type. It retains falsity, equality, relation applications, implication and universal quantification. The remaining clauses are</p>
+  <div class="math-display">\[c(\neg A)=c(A)\to\bot,\qquad c(A\land B)=\neg(c(A)\to\neg c(B)),\qquad c(A\lor B)=\neg c(A)\to c(B).\]</div>
+  <div class="math-display">\[c(\exists z_n A)=\neg\forall z_n\neg c(A).\]</div>
+  <p>Conversely, the <strong>primitive inclusion</strong> \(i\) of the small syntax copies its five primitive constructors into the full syntax. It expands no abbreviation into a new primitive conjunction, disjunction or existential constructor: an abbreviated expression is already a tree in the small alphabet. Thus \(i\) and \(c\) have different purposes.</p>
+</section>
+
+<section id="classical-truth" data-kind="theorem" data-formal="fopf-classical-realization fopf-classical-truth-bridge fopf-scope-substitution-truth">
+  <h2>Expansion preserves classical truth</h2>
+  <p>In any classical \(L\)-structure \(M\), assign values to the free parameters and to the \(n\) available slots. Interpret the full constructors by their usual classical meanings, including actual conjunction, disjunction and existence. For every full scoped formula \(A\),</p>
+  <div class="statement-box">
+    <div class="math-display">\[M\models c(A)\quad\Longleftrightarrow\quad M\models A.\]</div>
+  </div>
+  <p>The same assignments are used on both sides. More generally, substitution of a scope map \(\sigma\) satisfies the <strong>substitution truth law</strong>: the truth of \(A\langle\sigma\rangle\) under a target assignment is the truth of \(A\) under the source assignment that sends \(v\) to the value of \(\sigma(v)\).</p>
+  <div class="proof">
+    <p>For substitution truth, induct first on terms and then on formulas. Atoms use the term identity. Connectives use their defining truth conditions and the child equivalences. At a quantifier, extend the assignment by an arbitrary value for its newest slot. A lifted substitution sends that slot to itself and interprets each old image independently of this new value. Therefore the substituted assignments agree on every variable; use the body's induction hypothesis for every value in a universal clause or the particular witness in an existential clause. This proves the truth law.</p>
+    <p>For classical expansion, induct on the full formula. The retained constructors immediately use the induction hypotheses. Classically, \(\neg(P\to\neg Q)\) means \(P\land Q\), and \(\neg P\to Q\) means \(P\lor Q\). Finally, \(\neg\forall x\neg P(x)\) means \(\exists xP(x)\). These classical equivalences prove the remaining cases. The assertion compares classical interpretations; it does not replace a constructive existential witness by a double negation.</p>
+  </div>
+</section>
+
+<section id="translation-operations" data-kind="theorem" data-formal="fopf-expansion-map fopf-expansion-substitution fopf-expansion-support fopf-expansion-equality-free fopf-expansion-quantifier-free fopf-expansion-inclusion fopf-expansion-opening fopf-expansion-instantiation cfdtr-public-full-correspondence cfdtr-public-small-correspondence">
+  <h2>Expansion respects scope and substitution</h2>
+  <p>For every compatible scope substitution \(\sigma\) and every full formula \(A\), classical expansion satisfies</p>
+  <div class="math-display">\[c(A\langle\sigma\rangle)=c(A)\langle\sigma\rangle,\qquad
+    \operatorname{FV}(c(A))=\operatorname{FV}(A).\]</div>
+  <p>The substitution on the right is the same capture-free traversal in the small syntax. Consequently expansion commutes with free renaming, free substitution, opening and slot instantiation. It preserves equality-freeness and quantifier-freeness in both directions. For every small-syntax formula \(B\), \(c(i(B))=B\).</p>
+  <div class="proof">
+    <p>The two sides of the substitution identity have identical atomic term replacements. At a retained constructor, the induction hypotheses give the result. At a conjunction, disjunction, negation or existential constructor, expand its fixed defining expression and apply the child identity at every occurrence; under either quantifier the map is lifted in the same way on both sides. Thus the two recursive traversals produce literally the same tree.</p>
+    <p>Each expansion clause introduces no new term and deletes no term occurrence. Negations, implications and binders have the same support rules as their full counterparts, proving the free-support equality. An equality occurrence remains an equality occurrence, and only the existential expansion introduces a universal binder when its full tree already had a quantifier. Hence both fragment tests agree. Finally, induction on the five small constructors proves \(c(i(B))=B\), since expansion leaves those constructors unchanged.</p>
+  </div>
+  <p>The same scope identities support the <a href="classical-first-order-deduction-translations#public-correspondence">comparison of classical proof presentations</a>, which reconstructs the connective rules rather than relying only on truth equivalence.</p>
+</section>
+
+<section id="primitive-connectives" data-kind="question" data-formal="fopf-conjunction-example fopf-expanded-conjunction-example fopf-primitive-trees-distinct fopf-classical-expansions-equal fopf-expansion-inclusion">
+  <h2>Does expansion determine the original full tree?</h2>
+  <p>Is the classical expansion \(c\) injective? In particular, can one reconstruct the primitive connectives just from the expanded formula?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>No. At any scope size take \(A=\bot\land\bot\) and \(B=\neg(\bot\to\neg\bot)\). The first tree has conjunction at its root and the second has negation, so they are unequal by the construction of full formulas. But both expansions are exactly \(\neg(\bot\to\neg\bot)\) in the small syntax. No function can invert \(c\) on every full tree.</p>
+      <p>The identity \(c\circ i=\operatorname{id}\) only recovers a tree that started in the small alphabet. It does not assert \(i\circ c=\operatorname{id}\). Keeping primitive full trees is therefore meaningful even when the classical truth bridge is exact.</p>
+    </div>
+  </details>
+</section>
+
+<section id="capture-example" data-kind="question" data-formal="fopf-capture-body fopf-capture-calculation fopf-instantiate-substitution">
+  <h2>Compare a free replacement with opening a slot</h2>
+  <p>Let \(R\) be binary. In the one-slot body \(A=\forall z_1R(x,z_0)\), first replace the free name \(x\) by a free name \(y\), then open \(z_0\) at a term \(t\). What is the result? Does the internal universal binder capture anything?</p>
+  <details class="question-answer">
+    <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
+    <div class="answer-body">
+      <p>The result is \(\forall z_0R(y,t)\). The internal binder originally introduced \(z_1\), which does not occur in its displayed relation; after opening the outer slot it introduces \(z_0\) and is still vacuous. The name \(y\) stays free, as do all free names in \(t\), because they belong to the separate parameter component.</p>
+      <p>The two replacements have different domains: one changes a free parameter while preserving the available scope, and the other removes an available slot. If the free substitution also changes names occurring in \(t\), the order must follow <a href="#opening-and-substitution"></a>: opening first and then substituting uses the transformed term \(t[s]\). Reusing an untransformed term would be a different composite map.</p>
+    </div>
+  </details>
+</section>

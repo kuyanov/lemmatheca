@@ -1,0 +1,144 @@
+<section id="native-arithmetic-language" data-formal="arith-language arith-numeral fopf-scoped-formula fopf-complete-formula" data-kind="definition">
+  <h2>Keep arithmetic terms and constructive formula trees</h2>
+  <p>Use the <a href="arithmetic-theories#arithmetic-language">arithmetic language</a> \(L_A\), with constant \(0\), unary successor \(S\), binary addition and multiplication, and logical equality. There are no nonlogical relation symbols. Terms are the same finite trees as before. The <strong>numeral</strong> \(\overline n\) is \(S^n0\), for an external natural number \(n\).</p>
+  <p>Arithmetic formulas here are the <a href="first-order-proof-formulas#full-formulas">native full formulas</a>: \(\bot,\neg,\land,\lor,\to,\forall,\exists\) retain their separate constructors. Write \(s\ne t\) for \(\neg(s=t)\). All substitutions are capture-free, and a quantified body has its own protected slot. In particular, \(A\lor B\) and \(\exists xA\) do not mean their smaller classical encodings. This distinction matters when arithmetic is proved constructively.</p>
+</section>
+
+<section id="basic-arithmetic-axioms" data-formal="ha-universal-closure ha-basic-axioms" data-kind="definition">
+  <h2>Use the same seven arithmetic axioms</h2>
+  <p>The <strong>basic arithmetic axioms</strong> are the universal closures of the following native formulas:</p>
+  <ol>
+    <li>\(Sx\ne0\).</li>
+    <li>\(Sx=Sy\to x=y\).</li>
+    <li>\(x\ne0\to\exists y\,x=Sy\).</li>
+    <li>\(x+0=x\).</li>
+    <li>\(x+Sy=S(x+y)\).</li>
+    <li>\(x\cdot0=0\).</li>
+    <li>\(x\cdot Sy=x\cdot y+x\).</li>
+  </ol>
+  <p><strong>Universal closure</strong> binds a specified finite list of the displayed free variables, in its specified order. Internally this moves those names into available slots and closes the newest slot repeatedly. These are precisely the arithmetic assertions of <a href="arithmetic-theories#robinson-axioms">Robinson arithmetic</a>, now with native negation and existence. The recursion equations concern the second argument; \(0+x=x\) is not one of the listed axioms.</p>
+</section>
+
+<section id="full-native-induction" data-formal="ha-induction-axiom ha-induction-schema" data-kind="definition">
+  <h2>Induct on every native formula with fixed parameters</h2>
+  <p>Let \(\varphi(x,y_1,\ldots,y_k)\) be any full arithmetic formula whose free variables are among the indicated distinct names. Its <strong>native induction axiom</strong> is</p>
+  <div class="math-display">\[\forall\bar y\,\bigl[(\varphi(0,\bar y)\land\forall x(\varphi(x,\bar y)\to\varphi(Sx,\bar y)))\to\forall x\varphi(x,\bar y)\bigr].\]</div>
+  <p>The tuple \(\bar y\) is fixed through the base, step and conclusion; \(k=0\) is allowed. Forming the step substitutes \(Sx\) for the induction slot while protecting every nested binder. The <strong>full native induction schema</strong> is the set of these closed axioms as the finite parameter list and the full formula vary. Formulas containing native disjunction and existence are included. As with the <a href="arithmetic-theories#induction-schema">earlier schema</a>, this is an external family of first-order sentences, not an object-language quantifier over formulas or arbitrary subsets.</p>
+</section>
+
+<section id="heyting-arithmetic" data-formal="ha-theory ha-axioms-over-names ha-certificate ha-derivability ifond-certificate ifond-theory-replacement" data-kind="definition">
+  <h2>Combine these axioms with intuitionistic deduction</h2>
+  <p><strong>Heyting arithmetic</strong>, written \(\mathrm{HA}\), is the set of the seven basic sentences and every native induction axiom, used with <a href="intuitionistic-first-order-deduction#propositional-rules">intuitionistic natural deduction</a> and <a href="intuitionistic-first-order-deduction#equality-rules">logical equality</a>. Classical contradiction is absent. The <strong>classical extension</strong> \(\mathrm{HA}^{\mathrm C}\) uses exactly the same axiom set and additionally permits that rule.</p>
+  <p>For free names \(X\), the <strong>HA axioms over \(X\)</strong> form the set \(\mathrm{HA}_X\) of closed axioms renamed into that free-name set. An <strong>HA certificate</strong> of \(A\) consists of a specified finite \(\Delta\subseteq\mathrm{HA}_X\) and an actual <a href="intuitionistic-first-order-deduction#auxiliary-reserve">public intuitionistic certificate</a> of \(\Delta\Rightarrow A\). <strong>HA derivability</strong>, written \(\mathrm{HA}\vdash_X A\), means existence of such a certificate. Write \(\mathrm{HA},\Gamma\vdash_X A\) when a finite additional context \(\Gamma\) is also allowed. Finite unions of supports and <a href="intuitionistic-first-order-deduction#proof-replacement">proof replacement</a> combine such certificates; no infinite-premise inference is introduced. For a closed sentence omit \(X\).</p>
+</section>
+
+<section id="zero-removes-reserve" data-formal="ha-raw-certificate ha-remove-reserve ha-remove-reserve-support ha-introduce-reserve ha-introduce-reserve-support" data-kind="lemma">
+  <h2>Replace auxiliary names by the arithmetic constant</h2>
+  <p>Every supplied HA certificate over original names \(X\) yields an actual raw derivation with the same original endsequent and finite support. Conversely a supplied raw derivation yields a public certificate. The same operations work in the classical extension.</p>
+  <div class="proof"><p>The public tree has names \(X\sqcup U\), with end formulas left-renamed from \(X\). Apply <a href="intuitionistic-first-order-deduction#proof-substitution">raw proof substitution</a> with \(x\mapsto x\) for original names and \(u_i\mapsto0\) for every reserved name. Each end formula is unchanged because it contains no reserve name. Nested protected parameters stay protected under the substitution extension, so all quantified rules remain valid. The finite axiom support is the identical collection of closed sentences viewed over \(X\). For the converse, left-rename the raw tree into \(X\sqcup U\). Both operations preserve the deduction mode. Thus arithmetic's actual ground term \(0\) removes the constant-free obstruction; it does not require selecting a proof from its mere existence.</p></div>
+</section>
+
+<section id="induction-as-derived-rule" data-formal="ha-induction-rule" data-kind="lemma">
+  <h2>Build an induction proof from its base and protected step</h2>
+  <p>Fix the finite original parameter list \(\bar y\), a finite context \(\Gamma\) over those names, and a full body \(\varphi(x,\bar y)\). Supplied HA proofs of the following two premises give an HA proof of the conclusion:</p>
+  <div class="math-display">\[\frac{\Gamma\Rightarrow\varphi(0,\bar y)\qquad\Gamma^\uparrow,\varphi(e,\bar y)\Rightarrow\varphi(Se,\bar y)}{\Gamma\Rightarrow\forall x\varphi(x,\bar y)}.\]</div>
+  <p>Here \(e\) is the new protected tag and \(\Gamma^\uparrow\) lifts the original names. It cannot occur in the original \(\Gamma\).</p>
+  <div class="proof"><p>Discharge the temporary \(\varphi(e,\bar y)\) by implication introduction, then discharge the arbitrary parameter by universal introduction. This constructs the step \(\forall x(\varphi(x,\bar y)\to\varphi(Sx,\bar y))\) under \(\Gamma\). Instantiate the outer parameter quantifiers of the induction axiom at the actual terms \(y_1,\ldots,y_k\). Conjoin the supplied base with the constructed step, and apply implication elimination to obtain \(\forall x\varphi(x,\bar y)\).</p><p>The two premise certificates and this one induction axiom use finitely many arithmetic assumptions. Take their union and weaken all participating trees to it before combining them. These operations construct a certificate using only the existing native logical rules; induction has not been added as another primitive proof constructor. Fixed parameters may occur in \(\Gamma\), which is why this rule also applies inside a larger arithmetic argument.</p></div>
+</section>
+
+<section id="arithmetic-equality-operations" data-formal="ifond-equality-symmetry ifond-equality-transitivity ha-successor-congruence ha-addition-congruence ha-multiplication-congruence" data-kind="lemma">
+  <h2>Equality rules supply symmetry and congruence</h2>
+  <p>Native logical equality proves symmetry and transitivity, and supplied equalities give congruences for \(S,+,\cdot\). These operations require no nonlogical arithmetic axiom.</p>
+  <div class="proof"><p><a href="intuitionistic-first-order-deduction#equality-symmetry">Symmetry and transitivity</a> are already established native proof operations. From \(s=t\), replace the distinguished argument in the reflexive equality \(Ss=Ss\), using the one-slot body \(Ss=Sz\), to obtain \(Ss=St\). For a binary operation, first replace one argument and then the other; transitivity combines the two results. Thus proofs of \(s=t\) and \(u=v\) give \(s+u=t+v\) and \(s\cdot u=t\cdot v\). Every one-slot substitution is capture-free. The same constructions can be made under additional assumptions and hence inside the induction proofs below.</p></div>
+</section>
+
+<section id="zero-or-successor" data-formal="ha-zero-or-successor" data-kind="theorem">
+  <h2>Induction gives an actual zero-or-successor disjunction</h2>
+  <p>Using only native induction and logical equality, one can construct a certificate of</p>
+  <div class="math-display">\[\forall x\,(x=0\lor\exists y\,x=Sy).\]</div>
+  <div class="proof"><p>Apply <a href="#induction-as-derived-rule"></a> to \(\varphi(x)\equiv x=0\lor\exists y\,x=Sy\). At zero, reflexivity gives \(0=0\), and left disjunction introduction gives the base. At a protected arbitrary \(e\), reflexivity gives \(Se=Se\). Existential introduction at the actual term \(e\), followed by right disjunction introduction, proves the successor case. This step does not use its induction hypothesis. Induction supplies the displayed universal formula. The conclusion uses native disjunction and a native existential witness, rather than their classical codes.</p></div>
+</section>
+
+<section id="predecessor-redundancy" data-formal="ha-six-axiom-theory ha-predecessor-from-induction ha-remove-predecessor-axiom ha-restore-predecessor-axiom ha-six-axiom-consequences" data-kind="lemma">
+  <h2>The predecessor axiom follows without classical reasoning</h2>
+  <p>Let \(\mathrm{HA}_6\) contain the six basic axioms other than the predecessor axiom, together with all native induction axioms. Then \(\mathrm{HA}_6\) proves the omitted predecessor sentence. Consequently \(\mathrm{HA}_6\) and \(\mathrm{HA}\) have the same intuitionistic consequences.</p>
+  <div class="proof"><p>The proof of <a href="#zero-or-successor"></a> used none of the seven basic axioms, so it is available in \(\mathrm{HA}_6\). Fix \(x\) and assume \(x\ne0\). Eliminate its zero-or-successor disjunction. In the equality branch obtain falsum and then the desired existential by falsum elimination. In the existential branch retain that existential. Discharge \(x\ne0\) and introduce the universal quantifier. This is exactly the third basic sentence.</p><p>Every \(\mathrm{HA}_6\) certificate is already an HA certificate. Conversely, replace each use of the omitted axiom in a finite HA support by the just constructed certificate and combine the finite supports. Actual proof replacement gives the reverse transformation. Thus retaining seven axioms is a presentation choice and does not add constructive consequences.</p></div>
+</section>
+
+<section id="zero-equality-decision" data-formal="ha-zero-equality-decision" data-kind="lemma">
+  <h2>Constructively decide whether a number equals zero</h2>
+  <p>HA proves \(\forall y\,(0=y\lor\neg(0=y))\).</p>
+  <div class="proof"><p>Induct on \(y\). At zero use reflexivity and left disjunction introduction. At \(Sv\), assume \(0=Sv\); symmetry gives \(Sv=0\), contradicting the first basic axiom instantiated at \(v\). Negation introduction gives \(\neg(0=Sv)\), and right disjunction introduction gives the required case. The step ignores its induction hypothesis. The derived induction rule and universal closure give the assertion. This is an arithmetic proof of a disjunction; no general excluded-middle rule was used.</p></div>
+</section>
+
+<section id="equality-decidability" data-formal="ha-equality-decision ha-term-equality-decision" data-kind="theorem">
+  <h2>Two inductions decide arbitrary arithmetic equality</h2>
+  <div class="statement-box"><p>There is an actual HA certificate of</p>
+    <div class="math-display">\[\forall x\forall y\,(x=y\lor\neg(x=y)).\]</div>
+  <p>Instantiating it at any two supplied arithmetic terms \(s,t\) yields an HA certificate of \(s=t\lor\neg(s=t)\).</p></div>
+  <div class="proof"><p>Induct on \(x\) in the full formula \(P(x)\equiv\forall y(x=y\lor\neg(x=y))\). The base is <a href="#zero-equality-decision"></a>. For the step, keep an arbitrary protected \(u\) and the induction hypothesis \(\forall y(u=y\lor\neg(u=y))\). Prove \(P(Su)\) by a second induction on \(y\), keeping \(u\) and this hypothesis fixed.</p><p>At \(y=0\), the first basic axiom gives \(Su\ne0\), so choose the negative disjunct. At \(y=Sv\), instantiate the outer hypothesis at the protected \(v\). If \(u=v\), successor congruence gives \(Su=Sv\), so choose the positive disjunct. If \(\neg(u=v)\), any temporary \(Su=Sv\) gives \(u=v\) by the injectivity axiom, a contradiction. Discharge that temporary equality and choose the negative disjunct. Disjunction elimination combines these two branches. The inner induction hypothesis need not be used.</p><p>The inner induction yields \(\forall y(Su=y\lor\neg(Su=y))\) under the fixed outer hypothesis. The outer induction yields the displayed theorem. Both step branches use protected names; the inner protected name is absent from the fixed outer assumptions. Finally apply the two universal eliminations at the actual terms \(s,t\). All alternatives were obtained from proved disjunctions or induction, not from a classical case split inside HA.</p></div>
+</section>
+
+<section id="atomic-stability" data-formal="ha-atomic-stability arng-native-fragment arng-fragment-to-negative arng-fragment-from-negative arng-native-conservation arng-pa-conservation" data-kind="lemma">
+  <h2>Arithmetic equality is stable under double negation</h2>
+  <p>For every pair of supplied arithmetic terms \(s,t\), HA proves \(\neg\neg(s=t)\to s=t\).</p>
+  <div class="proof"><p>Assume \(\neg\neg(s=t)\) and eliminate the <a href="#equality-decidability">proved equality disjunction</a>. Its positive branch already gives \(s=t\). Its negative branch contradicts the double negation and gives \(s=t\) by falsum elimination. Discharge the initial hypothesis. This derives double-negation elimination for arithmetic atoms from their arithmetic decidability; it does not add it for every quantified formula.</p></div>
+  <p>Arithmetic atomic stability makes the <a href="arithmetic-negative-translation#fragment-equivalence">disjunction- and existential-free native fragment</a> constructively equivalent to its negative translation. The resulting <a href="arithmetic-negative-translation#native-fragment-conservation">conservation theorem</a> preserves those native sentence conclusions.</p>
+</section>
+
+<section id="quantifier-free-decidability" data-formal="fopf-quantifier-free ha-quantifier-free-decision" data-kind="theorem">
+  <h2>Every quantifier-free arithmetic formula has a decision disjunction</h2>
+  <p>For every full quantifier-free arithmetic formula \(A\) over any original free names, one can construct an HA certificate of \(A\lor\neg A\).</p>
+  <div class="proof"><p>Recurse on the formula. An atom is an equality because \(L_A\) has no relation symbols; use <a href="#equality-decidability"></a> at its two terms. For falsum, negation introduction gives \(\neg\bot\), so choose the negative disjunct.</p><p>Suppose certificates of \(B\lor\neg B\) and \(C\lor\neg C\) have already been constructed. Repeated native disjunction elimination permits the following finite cases. For \(B\land C\), two positive branches give the conjunction; either negative branch refutes a proposed conjunction by projection. For \(B\lor C\), either positive branch gives a disjunction introduction; when both are negative, case elimination on a proposed disjunction gives falsum, hence its negation.</p><p>For \(B\to C\), a negative \(B\) gives the implication by assuming \(B\), deriving falsum and eliminating it. A positive \(C\) also gives the implication, by weakening and discharge. In the remaining case, positive \(B\) and negative \(C\), a proposed implication gives \(C\) and then falsum; discharge the proposed implication to obtain its negation. For \(\neg B\), the negative branch of the decision for \(B\) supplies \(\neg B\); the positive branch refutes a proposed \(\neg B\), giving \(\neg\neg B\). These are respectively the positive and negative alternatives for the new formula.</p><p>Each case constructs the selected disjunct and then introduces the required decision disjunction. Finite unions and weakening align the finite arithmetic supports before each elimination. All recursive calls concern strict child formulas. Quantifier-free syntax has no remaining constructor, so the construction is complete. It supplies an internal decision disjunction for each such formula, not a decision procedure for arbitrary HA provability.</p></div>
+</section>
+
+<section id="numeral-addition-proofs" data-formal="ha-numeral-addition" data-kind="lemma">
+  <h2>Unroll finite addition computations into certificates</h2>
+  <p>For all external natural numbers \(m,n\), a specified finite construction gives an HA certificate of \(\overline m+\overline n=\overline{m+n}\), using only basic arithmetic axioms and equality rules.</p>
+  <div class="proof"><p>Fix \(m\) and recurse externally on the finite index \(n\). At zero, instantiate \(x+0=x\) at \(\overline m\). Given the constructed proof at \(n\), instantiate the addition-successor axiom to obtain \(\overline m+S\overline n=S(\overline m+\overline n)\). Successor congruence applies to the already constructed equality, and transitivity gives the numeral \(S\overline{m+n}=\overline{m+n+1}\). This defines the next finite proof tree.</p><p>Universal elimination uses the displayed numeral terms, and every composition is a logical equality operation. This is an external recursion producing one certificate for each finite input pair; it is different from applying an HA induction axiom to an internal variable. The earlier <a href="arithmetic-theories#numeral-computation">model calculation</a> is now accompanied by an actual constructive arithmetic proof.</p></div>
+</section>
+
+<section id="numeral-multiplication-proofs" data-formal="ha-numeral-multiplication" data-kind="lemma">
+  <h2>Unroll multiplication using the constructed addition proofs</h2>
+  <p>For all external natural numbers \(m,n\), a specified finite construction gives an HA certificate of \(\overline m\cdot\overline n=\overline{mn}\), again using no induction axiom.</p>
+  <div class="proof"><p>Recurse externally on \(n\). The zero case is the multiplication-zero axiom. At a successor, instantiate multiplication's recursion equation and compose the previously constructed equality with addition congruence:</p>
+  <div class="math-display">\[\overline m\cdot S\overline n=\overline m\cdot\overline n+\overline m=\overline{mn}+\overline m=\overline{mn+m}.\]</div>
+  <p>The last equality is the addition certificate at the finite pair \((mn,m)\). The external identity \(m(n+1)=mn+m\) identifies the last numeral with the required one. Thus each recursive step appends explicit axiom instances and equality compositions to finite supplied trees.</p></div>
+</section>
+
+<section id="expanding-the-arithmetic-axioms" data-formal="ha-closure-expansion ha-basic-axiom-expansion ha-basic-theory-expansion ha-induction-axiom-expansion ha-induction-schema-expansion ha-axiom-expansion fopf-expansion-substitution fopf-expansion-inclusion" data-kind="lemma">
+  <h2>Expansion identifies the actual earlier PA axiom set</h2>
+  <p>Let \(c\) be the <a href="classical-first-order-deduction-translations#two-presentations">full-to-small classical expansion</a>. Expansion of the native HA axiom set is exactly the earlier <a href="arithmetic-theories#peano-arithmetic">PA axiom set</a>, after the canonical identification of a single induction slot with the earlier single distinguished variable.</p>
+  <div class="proof"><p>Both presentations use the identical \(L_A\)-term trees. Expansion carries native negation, conjunction and existence to the very classical abbreviations used in the seven earlier Robinson sentences. It preserves implication and universal quantification. Universal closure in both presentations closes the same ordered finite list of slots, so each of the seven basic axioms expands to its corresponding earlier sentence.</p><p>For an induction body, expansion commutes with its zero substitution, successor substitution and protected binders, by the <a href="first-order-proof-formulas#translation-operations">scope identities</a>. The single native slot and the earlier distinguished variable both denote that same induction argument; mapping one to the other fixes every parameter and protects every nested binder. Hence</p>
+  <div class="math-display">\[c(\operatorname{Ind}(\varphi))=\operatorname{Ind}_{\mathrm s}(c(\varphi)).\]</div>
+  <p>Every expanded native induction axiom therefore belongs to the earlier induction schema. Conversely take any earlier small induction body \(D\) and include it as the full body \(i(D)\). Since \(c(i(D))=D\) literally and inclusion commutes with those same substitutions, its native induction axiom expands to the desired earlier axiom. These two directions establish equality of the actual axiom sets; no completeness theorem or substitution of a different theory named PA is involved.</p></div>
+</section>
+
+<section id="classical-pa-correspondence" data-formal="ha-classical-pa-correspondence fopf-expansion-inclusion ifond-certificate-classical-inclusion arng-certificate-interpretation arng-pa-correspondence arng-native-equiconsistency arng-pa-equiconsistency" data-kind="theorem">
+  <h2>The classical extension is exactly PA across the two syntaxes</h2>
+  <div class="statement-box"><p>For every closed native arithmetic formula \(A\),</p>
+    <div class="math-display">\[\mathrm{HA}^{\mathrm C}\vdash A\quad\Longleftrightarrow\quad\mathrm{PA}\vdash c(A).\]</div>
+  <p>For an earlier small arithmetic sentence \(D\), equivalently \(\mathrm{PA}\vdash D\) if and only if \(\mathrm{HA}^{\mathrm C}\vdash i(D)\).</p></div>
+  <div class="proof"><p>Apply the established <a href="classical-first-order-deduction-translations#theory-correspondence">classical theory correspondence</a> with the actual full axiom set \(\mathrm{HA}\). Its expanded assumption set is exactly PA by <a href="#expanding-the-arithmetic-axioms"></a>. Both consequence relations retain a finite supporting set of axiom sentences and use logical equality. In the forward direction expand the supplied native proof. In the reverse direction the correspondence gives existence of a native classical certificate, using the classical full-formula conversions and finite proof replacement. At \(A=i(D)\), the identity \(c(i(D))=D\) gives the second equivalence.</p><p>Copying any intuitionistic HA certificate into the classical mode and then expanding consequently gives a PA derivation of \(c(A)\). The converse direction of the displayed equivalence uses classical native rules and does not assert that HA and PA have the same constructive consequences or the same primitive formula trees.</p></div>
+  <p>The <a href="arithmetic-negative-translation#earlier-pa-correspondence">arithmetic negative interpretation</a> converts classical arithmetic certificates into HA certificates of their full negative translations. Its <a href="arithmetic-negative-translation#proof-equiconsistency">contradiction transformations</a> give external equiconsistency.</p>
+</section>
+
+<section id="standard-soundness" data-formal="ha-standard-axiom-truth ha-standard-soundness ha-consistency" data-kind="theorem">
+  <h2>The standard natural numbers validate every HA certificate</h2>
+  <p>Every closed HA theorem is true in the ordinary <a href="arithmetic-theories#arithmetic-language">standard arithmetic structure</a> \(\mathbb N_A\). In particular, no HA certificate derives \(\bot\).</p>
+  <div class="proof"><p>The seven basic axioms hold under their ordinary arithmetic interpretations. For a native induction axiom, fix a standard tuple \(\bar a\) for its parameters. If its antecedent holds, the set of natural numbers satisfying \(\varphi(x,\bar a)\) contains zero and is successor-closed. Ordinary external induction proves that every natural number belongs to it. This argument applies to every full formula, including formulas with native disjunction and existence, so every native induction sentence is true.</p><p>A certificate uses finitely many of these true sentences. <a href="intuitionistic-first-order-deduction#ordinary-soundness">Native proof soundness</a> therefore makes its conclusion true in \(\mathbb N_A\); the domain is nonempty, so its public reserve causes no problem. Falsum is false there, excluding the claimed certificate of falsum. This is an external relative-consistency argument in the surrounding mathematics. It does not construct an arithmetic sentence asserting HA's consistency or a proof of such a sentence inside HA.</p></div>
+</section>
+
+<section id="moving-parameter-question" data-formal="ha-moving-parameter-countermodel" data-kind="question">
+  <h2>May an induction parameter change at each step?</h2>
+  <p>Suppose \(\exists y\,\varphi(0,y)\) and \(\forall x\forall y(\varphi(x,y)\to\exists z\,\varphi(Sx,z))\) hold. Do they imply \(\exists y\forall x\,\varphi(x,y)\), as if the varying choices formed one induction with a fixed parameter?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. In \(\mathbb N_A\), take \(\varphi(x,y)\equiv x=y\). The base is witnessed by zero. Given \(x=y\), choose \(z=Sx\) for the displayed step. Both premises are true. But no fixed \(y\) equals every \(x\): comparing \(x=0\) and \(x=S0\) would give \(0=S0\), contrary to the successor axiom. Thus the conclusion is false in this structure.</p><p>The actual induction axiom keeps exactly the same parameter tuple throughout its base and step. Variable renaming and protected tags implement this restriction rather than allowing a new parameter value after each inference.</p></div></details>
+</section>
+
+<section id="finite-computation-question" data-formal="ha-numeral-addition ha-successor-congruence ifond-equality-transitivity arith-numeral" data-kind="question">
+  <h2>Does proving two plus two equals four need an induction axiom?</h2>
+  <p>Does the certificate construction for \(\overline2+\overline2=\overline4\) use the full induction schema?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Two successor instances and one zero instance give</p>
+    <div class="math-display">\[\overline2+SS0=S(\overline2+S0)=SS(\overline2+0)=SS\overline2=\overline4.\]</div>
+  <p>Each replacement under \(S\) uses logical equality congruence, and transitivity joins the displayed equalities. The last step is the definition of the numeral, so this is a finite proof from the basic arithmetic equations. The external recursion describing such trees for every finite \(m,n\) does not place an infinite proof or a new induction inference inside any one certificate. Internal induction is instead what proves uniform arithmetic assertions with an object variable, such as <a href="#equality-decidability"></a>.</p></div></details>
+</section>

@@ -1,0 +1,123 @@
+<section id="fixed-arithmetic-presentation" data-formal="arith-language ha-theory ha-axioms-over-names ha-certificate ha-derivability" data-kind="definition">
+  <h2>Keep the arithmetic axioms fixed while changing the logic</h2>
+  <p>Use the <a href="heyting-arithmetic#native-arithmetic-language">full native arithmetic language</a> with terms \(0,S,+,\cdot\), logical equality, and separate constructors for every connective and quantifier. Let \(H\) be the exact <a href="heyting-arithmetic#heyting-arithmetic">HA axiom set</a>: the seven basic closed sentences and every full native induction axiom. Write \(H_X\) for its closed axioms renamed into the original free-name set \(X\).</p>
+  <p>An arithmetic certificate has a specified finite support in \(H_X\), together with an actual public deduction. We write \(\mathrm{HA},\Gamma\vdash_X A\) for existence of an intuitionistic certificate allowing the additional finite context \(\Gamma\). The notation \(\mathrm{HA}^{\mathrm C},\Gamma\vdash_X A\) uses the same arithmetic axioms and additionally permits classical contradiction. Logical equality is enabled in both systems. For a sentence and empty additional context, omit the subscripts and context.</p>
+</section>
+
+<section id="translated-arithmetic-formulas" data-formal="fongg-translation fongg-context" data-kind="definition">
+  <h2>Apply the existing negative translation to arithmetic formulas</h2>
+  <p>Use the specified <a href="first-order-negative-translation#negative-translation">Gödel–Gentzen translation</a> \(A^{\mathsf N}\). Arithmetic has no nonlogical relation symbols, so its atoms are equations, translated as \((s=t)^{\mathsf N}=\neg\neg(s=t)\). Falsum is fixed; negation, conjunction, implication and universal quantification preserve their outer constructors. Disjunction and existence satisfy</p>
+  <div class="math-display">\[(B\lor C)^{\mathsf N}=\neg\neg(B^{\mathsf N}\lor C^{\mathsf N}),\qquad (\exists xB)^{\mathsf N}=\neg\neg\exists xB^{\mathsf N}.\]</div>
+  <p>Terms and available bound slots are unchanged. Put \(\Gamma^{\mathsf N}=\{B^{\mathsf N}:B\in\Gamma\}\). The logical proof transformation already interprets a classical tree from translated premises. To obtain an interpretation using the original arithmetic axioms \(H\), we must construct HA certificates of their translated versions.</p>
+</section>
+
+<section id="parameter-closure" data-formal="arng-bind-unit arng-universal-unit arng-universal-slots arng-finite-closure arng-zero-instance arng-successor-instance fongg-opening" data-kind="lemma">
+  <h2>Translate substitutions and finite universal closures literally</h2>
+  <p>Negative translation commutes with the actual zero substitution, successor substitution, protected opening and finite universal closure used in arithmetic. In particular, for a full formula \(B(\bar y)\),</p>
+  <div class="math-display">\[(\forall\bar y\,B)^{\mathsf N}=\forall\bar y\,B^{\mathsf N}.\]</div>
+  <div class="proof"><p>The <a href="first-order-negative-translation#scope-identities">scope identities</a> commute translation with every specified term map. Apply them to the maps that replace the distinguished induction variable by \(0\) or \(Sx\), fixing the parameter tuple. Translation retains each universal constructor, so induction on the length of the ordered parameter list proves the closure identity. Empty parameter lists are included. These are equalities of formula trees, including occurrences beneath nested binders.</p></div>
+</section>
+
+<section id="translated-recursion-equations" data-formal="arng-addition-zero arng-addition-successor arng-multiplication-zero arng-multiplication-successor" data-kind="lemma">
+  <h2>Translate the four recursion equations by double-negation introduction</h2>
+  <p>For each of the <a href="heyting-arithmetic#basic-arithmetic-axioms">four addition and multiplication axioms</a>, HA proves its negative translation.</p>
+  <div class="proof"><p>Write its unclosed equation as \(E(\bar x)\). Instantiate the original arithmetic axiom at protected arbitrary parameters to obtain \(E(\bar x)\). The constructive <a href="first-order-negative-translation#stability-constructions">double-negation introduction</a> operation gives \(\neg\neg E(\bar x)\): under \(\neg E(\bar x)\), combine the supplied equation with that assumption and discharge. Restore the original universal prefix by protected introduction. By <a href="#parameter-closure"></a>, the result is exactly the translation of the original closed axiom. The original finite arithmetic support is retained.</p></div>
+</section>
+
+<section id="translated-successor-separation" data-formal="arng-successor-nonzero" data-kind="lemma">
+  <h2>A forbidden successor equation remains forbidden after translation</h2>
+  <p>HA proves \(\forall x\,\neg\neg\neg(Sx=0)\), the translation of its successor-separation axiom.</p>
+  <div class="proof"><p>At a protected arbitrary \(x\), the original axiom supplies \(\neg(Sx=0)\). Assume \(\neg\neg(Sx=0)\). This contradicts the supplied negative equation. Discharge the temporary double-negated equation to get \(\neg\neg\neg(Sx=0)\), then universally introduce \(x\). No elimination of double negation at an arbitrary formula was used.</p></div>
+</section>
+
+<section id="translated-successor-injectivity" data-formal="arng-successor-injective" data-kind="lemma">
+  <h2>Lift injectivity through double-negated equations</h2>
+  <p>HA proves the literal translated injectivity sentence</p>
+  <div class="math-display">\[\forall x\forall y\,\bigl(\neg\neg(Sx=Sy)\to\neg\neg(x=y)\bigr).\]</div>
+  <div class="proof"><p>Fix protected \(x,y\) and assume \(\neg\neg(Sx=Sy)\). Under a further \(\neg(x=y)\), temporarily assume \(Sx=Sy\). Original successor injectivity gives \(x=y\), a contradiction. Discharge the successor equation to obtain \(\neg(Sx=Sy)\); this contradicts the first assumption. Discharge \(\neg(x=y)\), obtaining \(\neg\neg(x=y)\). Discharge the first assumption and close both protected parameters. Every step belongs to intuitionistic arithmetic.</p></div>
+</section>
+
+<section id="translated-predecessor" data-formal="arng-predecessor" data-kind="lemma">
+  <h2>Translate the predecessor witness inside its double negation</h2>
+  <p>HA proves the translated predecessor axiom</p>
+  <div class="math-display">\[\forall x\,\bigl(\neg\neg\neg(x=0)\to\neg\neg\exists y\,\neg\neg(x=Sy)\bigr).\]</div>
+  <div class="proof"><p>Fix protected \(x\) and assume \(\neg\neg\neg(x=0)\). An assumed \(x=0\) would give \(\neg\neg(x=0)\) by double-negation introduction, and hence a contradiction. Discharge it to obtain \(\neg(x=0)\). The original predecessor axiom now gives an actual \(\exists y\,x=Sy\).</p><p>Eliminate that existential with protected witness \(e\). From the branch equation \(x=Se\), introduce \(\neg\neg(x=Se)\), then introduce \(\exists y\,\neg\neg(x=Sy)\) at that same \(e\), and double-negate the existential. This final formula contains no \(e\), so witness elimination concludes it. Discharge the initial assumption and universally introduce \(x\). The constructed certificate retains the original positive witness branch while producing precisely the recursively translated endpoint.</p></div>
+</section>
+
+<section id="translated-induction" data-formal="arng-induction-identity ha-induction-schema arng-axiom-certificate" data-kind="theorem">
+  <h2>The translation of induction is induction for the translated body</h2>
+  <p>For every full body \(\varphi(x,\bar y)\), write \(\operatorname{Ind}_{\bar y}(\varphi)\) for its exact <a href="heyting-arithmetic#full-native-induction">closed native induction axiom</a>. Then</p>
+  <div class="math-display">\[\operatorname{Ind}_{\bar y}(\varphi)^{\mathsf N}=\operatorname{Ind}_{\bar y}(\varphi^{\mathsf N}).\]</div>
+  <div class="proof"><p>Its base translates to \(\varphi^{\mathsf N}(0,\bar y)\), and its successor instance translates to \(\varphi^{\mathsf N}(Sx,\bar y)\), by <a href="#parameter-closure"></a>. The conjunction of base and step, both implications and every universal constructor retain their constructors. These are exactly the components defining the induction axiom for \(\varphi^{\mathsf N}\), with the identical finite parameter list. Thus the displayed identity is literal, and its right side is itself an HA axiom. The original body may contain native disjunctions and existentials; the full induction schema permits its translated body too.</p></div>
+</section>
+
+<section id="induction-with-existential-body" data-formal="arng-example-matrix arng-example-body arng-example-body-translation arng-example-induction-translation ha-induction-schema" data-kind="lemma">
+  <h2>An existential induction body stays within the full schema</h2>
+  <p>Take \(\varphi(x,y)\equiv\exists z\,(x+z=y)\), with induction variable \(x\) and fixed parameter \(y\). Its translation is exactly</p>
+  <div class="math-display">\[\varphi^{\mathsf N}(x,y)=\neg\neg\exists z\,\neg\neg(x+z=y).\]</div>
+  <p>Accordingly, the translation of \(\operatorname{Ind}_y(\varphi)\) is the native induction axiom for this displayed translated body, still universally closed over \(y\). The full schema includes this translated instance even though its original body contains a native existential.</p>
+</section>
+
+<section id="translated-axiom-certificates" data-formal="arng-axiom-certificate arng-axiom-over-names" data-kind="theorem">
+  <h2>Every translated arithmetic axiom has an actual HA certificate</h2>
+  <p>For every \(\theta\in H\), one can construct an intuitionistic HA certificate of \(\theta^{\mathsf N}\). The same construction works for its closed copy over any original free-name set.</p>
+  <div class="proof"><p>If \(\theta\) is basic, use the relevant construction in <a href="#translated-recursion-equations"></a>–<a href="#translated-predecessor"></a>. These cover all seven sentences. If it is an induction instance, <a href="#translated-induction"></a> identifies its translation with another actual induction axiom, whose assumption certificate supplies the result.</p><p>Renaming a closed sentence into the free-name set commutes with translation. Thus each required translated axiom leaf can be replaced by the constructed certificate. Every certificate has a finite support in the unchanged arithmetic axiom set \(H\). Basic translations use the derived proofs above, and induction translations are axiom instances.</p></div>
+</section>
+
+<section id="arithmetic-interpretation" data-formal="arng-raw-interpretation arng-certificate-interpretation ha-remove-reserve ha-introduce-reserve ha-raw-certificate" data-kind="theorem">
+  <h2>Interpret every supplied classical arithmetic certificate</h2>
+  <div class="statement-box"><p>A supplied certificate of \(\mathrm{HA}^{\mathrm C},\Gamma\vdash_X A\) transforms into an actual certificate of \(\mathrm{HA},\Gamma^{\mathsf N}\vdash_X A^{\mathsf N}\), over the same original names.</p></div>
+  <div class="proof"><p>Group its finitely many arithmetic axiom leaves into \(\Delta\subseteq H_X\), and enlarge the allowed context to \(\Delta\cup\Gamma\). Use <a href="heyting-arithmetic#zero-removes-reserve">reserve removal</a> to obtain its actual raw tree, and apply the <a href="first-order-negative-translation#finite-proof-translation">logical proof transformation</a>. The result uses \(\Delta^{\mathsf N}\cup\Gamma^{\mathsf N}\) and concludes \(A^{\mathsf N}\).</p><p>For every translated arithmetic assumption, supply the certificate from <a href="#translated-axiom-certificates"></a>; for a translated additional assumption, supply its assumption leaf. Only finitely many replacements occur. Union their finite arithmetic supports to a finite \(\Theta\subseteq H_X\), weaken the participating trees to that union with \(\Gamma^{\mathsf N}\), and perform actual <a href="intuitionistic-first-order-deduction#proof-replacement">proof replacement</a>. Reintroduce the public reserve. This constructs the required arithmetic certificate.</p></div>
+</section>
+
+<section id="classical-reflection" data-formal="arng-certificate-reflection arng-arithmetic-correspondence" data-kind="lemma">
+  <h2>Recover a classical arithmetic certificate from the translated one</h2>
+  <p>A supplied HA certificate of \(A^{\mathsf N}\) from \(\Gamma^{\mathsf N}\) gives an actual \(\mathrm{HA}^{\mathrm C}\) certificate of \(A\) from \(\Gamma\). Hence the interpretation gives an exact derivability equivalence.</p>
+  <div class="proof"><p>Copy the supplied intuitionistic tree into classical mode. Keep its arithmetic axiom leaves. For each additional translated premise \(B^{\mathsf N}\), supply the classical conversion of the original assumption \(B\in\Gamma\) to \(B^{\mathsf N}\), using <a href="first-order-negative-translation#classical-equivalence">classical equivalence</a>. Replace those leaves, and use its reverse conclusion conversion to obtain \(A\). All replacements use finitely many actual trees and preserve the allowed arithmetic axioms. Together with <a href="#arithmetic-interpretation"></a>, this proves \(\mathrm{HA}^{\mathrm C},\Gamma\vdash_X A\) if and only if \(\mathrm{HA},\Gamma^{\mathsf N}\vdash_X A^{\mathsf N}\).</p></div>
+</section>
+
+<section id="earlier-pa-correspondence" data-formal="arng-pa-correspondence arng-small-pa-correspondence ha-classical-pa-correspondence" data-kind="theorem">
+  <h2>Apply the interpretation to the established PA theory</h2>
+  <p>Let \(c\) be the actual full-to-small classical expansion and \(i\) its literal inclusion. For every closed native arithmetic formula \(A\),</p>
+  <div class="math-display">\[\mathrm{PA}\vdash c(A)\quad\Longleftrightarrow\quad\mathrm{HA}\vdash A^{\mathsf N}.\]</div>
+  <p>For every earlier small arithmetic sentence \(D\), this specializes to \(\mathrm{PA}\vdash D\) if and only if \(\mathrm{HA}\vdash i(D)^{\mathsf N}\).</p>
+  <div class="proof"><p>The <a href="heyting-arithmetic#classical-pa-correspondence">established PA correspondence</a> identifies \(\mathrm{PA}\vdash c(A)\) with \(\mathrm{HA}^{\mathrm C}\vdash A\), using the actual expansion of all seven axioms and full induction. Apply <a href="#arithmetic-interpretation"></a> and <a href="#classical-reflection"></a>. At \(A=i(D)\), the literal identity \(c(i(D))=D\) gives the specialization. The smaller proof presentation provides derivability and hence existence of a corresponding native certificate; the actual tree transformation takes that native certificate as input.</p></div>
+</section>
+
+<section id="proof-equiconsistency" data-formal="arng-native-consistency arng-native-equiconsistency arng-pa-equiconsistency arng-certificate-interpretation arng-classical-inclusion fod-consistency" data-kind="theorem">
+  <h2>The certificate transformations give equiconsistency</h2>
+  <p>Define external <strong>syntactic consistency</strong> of either arithmetic calculus to mean that it has no certificate of falsum. Then HA, its classical extension, and the established PA calculus are equiconsistent.</p>
+  <div class="proof"><p>A supplied classical-native certificate of falsum transforms by <a href="#arithmetic-interpretation"></a> into an HA certificate of falsum, since \(\bot^{\mathsf N}=\bot\). Conversely copy any supplied HA contradiction certificate into classical mode. These are transformations of the actual encoded proofs in both directions. Apply the earlier PA bridge at falsum to obtain the PA comparison. Taking absence of such certificates gives the stated equivalence of external consistency assertions.</p></div>
+</section>
+
+<section id="native-negative-fragment" data-formal="arng-native-fragment arng-fragment-scope arng-fragment-opening" data-kind="definition">
+  <h2>Specify a fragment before expanding its connectives</h2>
+  <p>The <strong>disjunction- and existential-free native fragment</strong> consists of formulas built by</p>
+  <div class="math-display">\[F::=\bot\mid s=t\mid\neg F\mid(F\land F)\mid(F\to F)\mid\forall xF.\]</div>
+  <p>The restriction applies to the whole native tree, including inside negations and quantified bodies. It is preserved by scope maps, since term replacement changes no formula constructor. Opening a body therefore remains in this fragment. Arbitrarily nested universal quantifiers and implications are allowed.</p>
+</section>
+
+<section id="fragment-equivalence" data-formal="arng-fragment-to-negative arng-fragment-from-negative ha-atomic-stability" data-kind="lemma">
+  <h2>Arithmetic fixes this fragment up to constructive proof conversions</h2>
+  <p>For every formula \(F\) in the specified fragment, supplied HA certificates of either \(F\) or \(F^{\mathsf N}\) convert into certificates of the other, in the same finite additional context and original free names.</p>
+  <div class="proof"><p>Induct on original formula depth, keeping names and ambient contexts arbitrary. At an equation, the forward conversion introduces double negation; the backward conversion applies <a href="heyting-arithmetic#atomic-stability">HA's proved atomic stability</a> at the actual two terms. Falsum is unchanged. There is no relation-atom case in the arithmetic language.</p><p>For \(\neg B\), assume \(B^{\mathsf N}\), convert it back to \(B\), and contradict the given \(\neg B\); discharge to obtain \(\neg B^{\mathsf N}\). Reverse the child conversion for the converse. For conjunction, project each factor, apply its child conversion and conjoin. For \(B\to C\), assume \(B^{\mathsf N}\), convert it backwards to \(B\), apply the given implication, convert \(C\) forwards and discharge. In the reverse direction use the child conversions in reverse order.</p><p>For a universal, lift the given certificate to a protected arbitrary parameter and instantiate it there. Apply the smaller opened-body conversion in that lifted context, then universally introduce again. The <a href="first-order-negative-translation#scope-identities">opening identity</a> identifies the translated endpoints. Closing the protected branch preserves finite arithmetic supports as in HA's quantifier rules. No disjunction or existential case remains in the specified fragment.</p></div>
+</section>
+
+<section id="native-fragment-conservation" data-formal="arng-native-conservation arng-pa-conservation ha-classical-pa-correspondence" data-kind="theorem">
+  <h2>Classical arithmetic is conservative for these native sentences</h2>
+  <div class="statement-box"><p>For every closed native arithmetic formula \(F\) in the disjunction- and existential-free fragment,</p>
+  <div class="math-display">\[\mathrm{PA}\vdash c(F)\quad\Longleftrightarrow\quad\mathrm{HA}^{\mathrm C}\vdash F\quad\Longleftrightarrow\quad\mathrm{HA}\vdash F.\]</div></div>
+  <div class="proof"><p>The first equivalence is the actual PA bridge. For the second, transform a supplied classical certificate into an HA certificate of \(F^{\mathsf N}\) by <a href="#arithmetic-interpretation"></a>, then apply the backward conversion from <a href="#fragment-equivalence"></a>. Conversely copy an HA certificate into classical mode. Thus the arithmetic-specific atomic proof, together with closure of the native fragment, removes the translation at precisely the stated conclusion.</p></div>
+</section>
+
+<section id="classical-code-question" data-formal="arng-native-fragment arng-included-small-fragment arng-included-existential-code arng-native-existential-distinct arng-pa-conservation" data-kind="question">
+  <h2>Does the smaller classical alphabet make every formula belong to the fragment?</h2>
+  <p>The earlier small syntax has no primitive disjunction or existential. Could one apply the fragment theorem after expansion and then read a native existential conclusion back unchanged?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The fragment test concerns the original native tree. A smaller classical existential is an abbreviation: for an equation body \(E(x)\), its code is \((\forall x(E(x)\to\bot))\to\bot\). Its literal native inclusion lies in the fragment, so a PA proof of the small code yields an HA proof of its native inclusion. The native formula \(\exists xE(x)\) is a distinct tree and fails the fragment condition.</p><p>The classical presentation bridge supplies conversions between such readings in classical deduction. It supplies no intuitionistic operation turning this code proof into a native witness proof. The conservation statement therefore retains the native conclusion's explicit syntactic restriction; expanding away its positive constructors cannot justify removing it.</p></div></details>
+</section>
+
+<section id="internal-consistency-question" data-formal="arng-native-consistency arng-native-equiconsistency arng-pa-equiconsistency fod-consistency ha-consistency" data-kind="question">
+  <h2>Does equiconsistency say that HA proves PA consistent?</h2>
+  <p>Does the certificate comparison prove an internal HA sentence asserting consistency of PA?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The assertion proved here is external: a supplied contradiction certificate in either calculus yields one in the other. Absence of one kind of certificate is therefore equivalent to absence of the other. An internal consistency statement would additionally require a specified arithmetic encoding of certificates and an object-language statement about those codes. No such internal derivation is part of this argument.</p><p>The existing <a href="heyting-arithmetic#standard-soundness">standard-model consistency proof</a> is also an argument in the surrounding mathematics. The new equiconsistency result instead follows directly from the two proof transformations. It records their relationship even without appealing to the standard-model argument.</p></div></details>
+</section>

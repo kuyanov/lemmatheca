@@ -1,0 +1,144 @@
+<section id="vocabulary-and-certificates" data-formal="prop-atom-support prop-context-atoms ipcut-proof ipi-top" data-kind="definition">
+  <h2>Use native formulas and actual single-conclusion trees</h2>
+  <p>Fix a set of atom names with decidable equality. Work with the <a href="intuitionistic-propositional-cut-elimination#cut-free-certificates">cut-free intuitionistic certificates</a> on native formulas built from atoms, \(\bot,\neg,\land,\lor,\to\). Write \(\mathcal P(\Gamma,C)\) for the actual finite trees with antecedent \(\Gamma\) and sole conclusion \(C\). Antecedents are finite sets; \(\Gamma,A\) means \(\Gamma\cup\{A\}\). Left rules retain their principal assumption in every premise.</p>
+  <p>Let \(\operatorname{at}(A)\) be the finite set of atom names occurring in \(A\), and put \(\operatorname{At}(\Gamma)=\bigcup_{A\in\Gamma}\operatorname{at}(A)\). Each binary connective takes the union of its children's supports, while \(\operatorname{at}(\neg A)=\operatorname{at}(A)\) and \(\operatorname{at}(\bot)=\varnothing\). We abbreviate the native formula \(\bot\to\bot\) by \(\top\); it also has empty support. Its proof introduces the implication from the identity of \(\bot\).</p>
+</section>
+
+<section id="covering-splits" data-formal="ipi-covering" data-kind="definition">
+  <h2>Cover the antecedent by two possibly overlapping sides</h2>
+  <p>For a supplied tree \(T\in\mathcal P(\Gamma,C)\), a <strong>covering split</strong> is a pair of finite antecedents \((L,R)\) satisfying \(\Gamma\subseteq L\cup R\). An exact split has \(\Gamma=L\cup R\). As in the <a href="propositional-proof-interpolation#covering-splits">earlier covering convention</a>, overlap and extra assumptions are allowed.</p>
+  <p>At a left rule, test whether its principal formula belongs to \(L\). If it does, assign it to that side, even if it also belongs to \(R\); otherwise coverage puts it in \(R\). Temporary components are inserted into the selected side without deleting their parent. This preserves every retained assumption and works when a component was already present.</p>
+</section>
+
+<section id="interpolation-packets" data-formal="ipi-packet" data-kind="definition">
+  <h2>Return a formula, two factor trees, and their atom bound</h2>
+  <p>An <strong>interpolation packet</strong> for \((L,R,C)\) consists of a native formula \(I\), two actual cut-free trees, and the support condition</p>
+  <div class="math-display">\[L\Rightarrow I,\qquad R,I\Rightarrow C,\]</div>
+  <div class="math-display">\[\operatorname{at}(I)\subseteq
+    \operatorname{At}(L)\cap\bigl(\operatorname{At}(R)\cup\operatorname{at}(C)\bigr).\]</div>
+  <p>The concluding formula belongs on the right of this vocabulary comparison: the middle formula conveys what the left assumptions contribute to the remaining assumptions and conclusion. The recursion below specifies all three pieces of data. The factor trees use precisely the established intuitionistic rules, with one conclusion at every node and native negation retained.</p>
+</section>
+
+<section id="factor-operations" data-formal="ipcut-weakening ipcut-identity ipcut-conjunction-inversion ipcut-split-cut ipcut-proof" data-kind="lemma">
+  <h2>Project, apply, and paste already supplied factors</h2>
+  <p>We may enlarge a tree's antecedent by <a href="intuitionistic-propositional-cut-elimination#weakening-and-identity">actual weakening</a> and compose two supplied trees by the proved <a href="intuitionistic-propositional-cut-elimination#cut-admissibility">cut-admissibility operation</a>. Both operations return cut-free trees.</p>
+  <div class="proof"><p>To obtain \(J\) from an assumed \(J\land K\), apply conjunction-left to the identity of \(J\) in the context enlarged by \(J,K\). The other projection is identical with the identity of \(K\). Given a supplied tree of \(\Theta,J\Rightarrow D\), paste the first projection into it to get \(\Theta,J\land K\Rightarrow D\), weakening either input as required. This is the existing cut operation applied to actual inputs.</p>
+  <p>To apply an assumed \(J\to K\), supply a tree of \(J\) and use implication-left with a continuation under \(K\). To use an assumed \(\neg J\), supply a tree of \(J\) and use negation-left. Introducing \(J\lor K\) from either supplied disjunct uses the corresponding right rule. We will name these constructions when assembling factors; none adds a new primitive inference.</p></div>
+</section>
+
+<section id="leaves" data-formal="ipi-atomic-leaf ipi-falsum-leaf ipi-top" data-kind="lemma">
+  <h2>Start the extraction at identity and falsum</h2>
+  <p>At an atomic identity leaf concluding \(p\), choose \(I=p\) if \(p\in L\), and choose \(I=\top\) otherwise. At a falsum-left leaf concluding any \(C\), choose \(I=\bot\) if \(\bot\in L\), and choose \(I=\top\) otherwise.</p>
+  <div class="proof"><p>In the first identity case, identity gives \(L\Rightarrow p\) and \(R,p\Rightarrow p\). The atom \(p\) occurs in \(L\) and in the conclusion, so its support is permitted. In the other case, coverage gives \(p\in R\). Prove \(L\Rightarrow\top\) by implication-right and falsum identity; the right factor is the atomic identity already available in \(R,\top\).</p>
+  <p>If falsum is on the left, falsum identity proves \(L\Rightarrow\bot\), and falsum-left proves \(R,\bot\Rightarrow C\). Otherwise it belongs to \(R\): use the same proof of \(\top\) on the left and falsum-left on the right. Both constant choices have empty support. The first membership test also resolves overlapping sides deterministically.</p></div>
+</section>
+
+<section id="conjunction-left" data-formal="ipi-left-conjunction ipi-right-conjunction" data-kind="lemma">
+  <h2>Restore a retained conjunction on its selected side</h2>
+  <p>Suppose the last rule is conjunction-left, with \(D=A\land B\in\Gamma\) and premise \(\Gamma,A,B\Rightarrow C\). If \(D\in L\), recurse with sides \((L,A,B;R)\); otherwise recurse with \((L;R,A,B)\). Keep the returned interpolant \(I\).</p>
+  <div class="proof"><p>In the left case the first factor is \(L,A,B\Rightarrow I\). Conjunction-left, using \(D\in L\), gives \(L\Rightarrow I\). The second factor already is \(R,I\Rightarrow C\). In the right case, reapply conjunction-left to the second factor \(R,A,B,I\Rightarrow C\), using \(D\in R,I\); the first factor is unchanged.</p>
+  <p>The atoms of \(A,B\) already occur in their parent on the selected side. Thus adding them changes neither that side's vocabulary nor the required common-atom bound. No occurrence of the principal assumption has been erased from a premise.</p></div>
+</section>
+
+<section id="conjunction-right" data-formal="ipi-conjunction-conclusion ipi-left-disjunct-conclusion ipi-right-disjunct-conclusion" data-kind="lemma">
+  <h2>Combine two right conclusions by a conjunction</h2>
+  <p>For conjunction-right, extract from the premise trees \(\Gamma\Rightarrow A\) and \(\Gamma\Rightarrow B\) with the same sides \((L,R)\), obtaining \(J,K\). Set \(I=J\land K\).</p>
+  <div class="proof"><p>The first factors \(L\Rightarrow J\) and \(L\Rightarrow K\) combine by conjunction-right. For the second factor, project \(J\) from \(I\) and paste into the first premise's factor \(R,J\Rightarrow A\). This gives \(R,I\Rightarrow A\). Project and paste \(K\) to obtain \(R,I\Rightarrow B\), then conclude \(R,I\Rightarrow A\land B\).</p>
+  <p>Both supports lie in \(\operatorname{At}(L)\). Their other bounds lie respectively in \(\operatorname{At}(R)\cup\operatorname{at}(A)\) and \(\operatorname{At}(R)\cup\operatorname{at}(B)\). Their union therefore lies in the required right vocabulary for \(A\land B\). For either disjunction-right rule, keep its sole premise interpolant and apply the same disjunction-right rule to its second factor. The conclusion's support contains that of its chosen disjunct.</p></div>
+</section>
+
+<section id="left-disjunction" data-formal="ipi-left-disjunction" data-kind="lemma">
+  <h2>Use a disjunction when the disjunction assumption is on the left</h2>
+  <p>Let \(D=A\lor B\in L\) be the principal assumption of a disjunction-left step. Recurse on its two premises with sides \((L,A;R)\) and \((L,B;R)\), obtaining \(J,K\). Set \(I=J\lor K\).</p>
+  <div class="proof"><p>The first child gives \(L,A\Rightarrow J\); introduce the left disjunct to get \(L,A\Rightarrow I\). The second gives \(L,B\Rightarrow K\); introduce the right disjunct to get \(L,B\Rightarrow I\). Disjunction-left with the retained \(D\in L\) concludes \(L\Rightarrow I\).</p>
+  <p>The other child factors are \(R,J\Rightarrow C\) and \(R,K\Rightarrow C\). Weaken both to retain \(I\), and use disjunction-left on this added assumption \(I=J\lor K\) to obtain \(R,I\Rightarrow C\). The atoms of each temporary assumption \(A\) or \(B\) already occur in \(L\) through \(D\), so each child interpolant has the final common-atom bound. Their disjunction takes the union of those supports.</p></div>
+</section>
+
+<section id="right-disjunction" data-formal="ipi-right-disjunction" data-kind="lemma">
+  <h2>Use a conjunction when that assumption is on the right</h2>
+  <p>If the same principal \(D=A\lor B\) is not in \(L\), it belongs to \(R\). Recurse with sides \((L;R,A)\) and \((L;R,B)\), obtaining \(J,K\), and set \(I=J\land K\).</p>
+  <div class="proof"><p>Conjunction-right joins the two first factors into \(L\Rightarrow I\). For the right factor, disjunction-left on \(D\in R,I\) requires proofs of \(R,I,A\Rightarrow C\) and \(R,I,B\Rightarrow C\). In the first branch project \(J\) from \(I\), then paste into the child factor \(R,A,J\Rightarrow C\). In the second branch project \(K\), then paste into \(R,B,K\Rightarrow C\). Reapply disjunction-left.</p>
+  <p>Each child support lies in \(\operatorname{At}(L)\), and adding \(A\) or \(B\) to \(R\) adds no atom because \(D\in R\). Thus both child supports, and their union, satisfy the required right bound. This proves both factors for the specified conjunction, including coincident child formulas.</p></div>
+</section>
+
+<section id="left-implication" data-formal="ipi-left-implication" data-kind="lemma">
+  <h2>Reverse the first split when the implication is on the left</h2>
+  <p>Suppose implication-left uses \(D=A\to B\in L\), with premise trees \(\Gamma\Rightarrow A\) and \(\Gamma,B\Rightarrow C\). On the first premise recurse with the <strong>reversed</strong> sides \((R;L)\). On the continuation use \((L,B;R)\). Write their outputs as \(J,K\). Their factors are</p>
+  <div class="math-display">\[R\Rightarrow J,\qquad L,J\Rightarrow A,\]</div>
+  <div class="math-display">\[L,B\Rightarrow K,\qquad R,K\Rightarrow C.\]</div>
+  <p>Set \(I=J\to K\).</p>
+  <div class="proof"><p>For \(L\Rightarrow J\to K\), introduce \(J\). The first premise factor supplies \(A\) under \(L,J\); the continuation factor, weakened by \(J\), supplies \(K\) under \(L,J,B\). Apply implication-left using the retained \(D\in L,J\), then discharge \(J\). This constructs the first factor.</p>
+  <p>For \(R,I\Rightarrow C\), use implication-left on \(I=J\to K\). Its antecedent proof is \(R\Rightarrow J\), weakened by \(I\); its continuation is \(R,K\Rightarrow C\), also weakened by \(I\). Thus the second factor follows by one genuine implication-left step.</p>
+  <p>The reversed child gives \(\operatorname{at}(J)\subseteq\operatorname{At}(R)\cap(\operatorname{At}(L)\cup\operatorname{at}(A))\). Since \(D\in L\), both \(\operatorname{at}(A)\) and \(\operatorname{at}(B)\) lie in \(\operatorname{At}(L)\). Hence \(J\)'s atoms lie on both final sides. The continuation's bound for \(K\) already is the final bound after absorbing \(B\) into \(L\)'s vocabulary. Their union is exactly the support of \(J\to K\). Reversing the split supplies the direction \(L,J\Rightarrow A\) needed to introduce this implication.</p></div>
+</section>
+
+<section id="right-implication" data-formal="ipi-right-implication" data-kind="lemma">
+  <h2>Keep the first split when the implication is on the right</h2>
+  <p>If the principal \(D=A\to B\) is not in \(L\), it belongs to \(R\). Recurse on the antecedent premise with \((L;R)\), giving \(J\), and on the continuation with \((L;R,B)\), giving \(K\). Set \(I=J\land K\).</p>
+  <div class="proof"><p>Combine \(L\Rightarrow J\) and \(L\Rightarrow K\) by conjunction-right. For the second factor work in \(R,I\). Project \(J\) from \(I\) and paste it into the first child factor \(R,J\Rightarrow A\), obtaining the antecedent of \(D\). For the continuation under \(B\), project \(K\) from \(I\) and paste it into \(R,B,K\Rightarrow C\). These give the two premises of implication-left using \(D\in R,I\), hence \(R,I\Rightarrow C\).</p>
+  <p>The bound for \(J\) is \(\operatorname{At}(L)\cap(\operatorname{At}(R)\cup\operatorname{at}(A))\). Here \(A\)'s atoms already occur in \(R\) through \(D\). The same absorption removes the temporary \(B\) from the continuation's vocabulary bound for \(K\). Therefore their conjunction has exactly the required common-vocabulary inclusion.</p></div>
+</section>
+
+<section id="native-negation-left" data-formal="ipi-left-negation ipi-right-negation" data-kind="lemma">
+  <h2>Follow the polarity of a native negation assumption</h2>
+  <p>At negation-left, the premise proves \(\Gamma\Rightarrow A\), the principal \(D=\neg A\) belongs to \(\Gamma\), and the conclusion is any \(C\). If \(D\in L\), recurse with reversed sides \((R;L)\), obtaining \(J\), and set \(I=\neg J\).</p>
+  <div class="proof"><p>The child factors are \(R\Rightarrow J\) and \(L,J\Rightarrow A\). For the first output, introduce \(J\), apply negation-left using \(\neg A\in L,J\) to obtain falsum, and conclude \(L\Rightarrow\neg J\) by negation-right. For the second output, weaken \(R\Rightarrow J\) by \(\neg J\), then apply negation-left to derive \(R,\neg J\Rightarrow C\). Because \(A\)'s atoms already lie in \(L\), the reversed child bounds \(J\) by \(\operatorname{At}(R)\cap\operatorname{At}(L)\); negation preserves that support.</p>
+  <p>If \(D\notin L\), recurse normally with \((L;R)\) and keep \(I=J\). Its factors are \(L\Rightarrow J\) and \(R,J\Rightarrow A\). Negation-left with \(D\in R,J\) turns the latter into \(R,J\Rightarrow C\). The extra \(\operatorname{at}(A)\) in the child bound is already contained in \(\operatorname{At}(R)\). These constructions use the native negation rules on the displayed parse trees.</p></div>
+</section>
+
+<section id="discharged-assumptions" data-formal="ipi-implication-conclusion ipi-negation-conclusion" data-kind="lemma">
+  <h2>Put each discharged assumption on the right</h2>
+  <p>At implication-right concluding \(A\to B\), recurse on \(\Gamma,A\Rightarrow B\) with sides \((L;R,A)\) and keep its interpolant \(I\). At negation-right concluding \(\neg A\), use the same sides for its premise \(\Gamma,A\Rightarrow\bot\), again keeping \(I\).</p>
+  <div class="proof"><p>The first factor stays \(L\Rightarrow I\). The second factor in the implication case is \(R,A,I\Rightarrow B\). Reorder the finite antecedent and introduce the implication, discharging \(A\), to obtain \(R,I\Rightarrow A\to B\). For negation, the second factor proves \(R,A,I\Rightarrow\bot\); negation-right yields \(R,I\Rightarrow\neg A\).</p>
+  <p>For implication the child's right vocabulary is \(\operatorname{At}(R)\cup\operatorname{at}(A)\cup\operatorname{at}(B)\), which is the vocabulary of the final right assumptions and conclusion. For negation it is \(\operatorname{At}(R)\cup\operatorname{at}(A)\), the same final vocabulary. The left support bound is unchanged.</p></div>
+</section>
+
+<section id="maehara-extractor" data-formal="ipi-extractor ipi-packet" data-kind="definition">
+  <h2>Specify the recursion on the supplied proof tree</h2>
+  <p>Define \(\mathsf M(T;L,R)\) by the preceding clauses, with the conclusion of \(T\) understood. At a leaf use <a href="#leaves"></a>. At conjunction-left use <a href="#conjunction-left"></a>. At conjunction-right or either disjunction-right use <a href="#conjunction-right"></a>. At disjunction-left choose <a href="#left-disjunction"></a> or <a href="#right-disjunction"></a> by the principal's membership in \(L\). At implication-left choose <a href="#left-implication"></a> or <a href="#right-implication"></a> by the same test. Use <a href="#native-negation-left"></a> at negation-left, and <a href="#discharged-assumptions"></a> at either remaining right rule.</p>
+  <p>Each recursive call visits a strict premise subtree and quantifies afresh over its covering sides. In the two reversing cases, the child conclusion is the antecedent \(A\), so the child packet's support bound also uses that actual new conclusion. Every other change to the split is an explicit insertion of premise assumptions. The recursion returns the displayed formula together with the two constructed trees; all pasting invokes the specified cut-free composition operation.</p>
+</section>
+
+<section id="maehara-lemma" data-formal="ipi-extractor ipi-packet" data-kind="theorem">
+  <h2>Factor every covered intuitionistic certificate</h2>
+  <div class="statement-box"><p>For every supplied \(T\in\mathcal P(\Gamma,C)\) and covering split \(\Gamma\subseteq L\cup R\), the specified operation \(\mathsf M(T;L,R)\) returns an interpolation packet. In particular its two trees and formula satisfy</p>
+    <div class="math-display">\[L\Rightarrow I,\qquad R,I\Rightarrow C,\]</div>
+    <div class="math-display">\[\operatorname{at}(I)\subseteq
+      \operatorname{At}(L)\cap\bigl(\operatorname{At}(R)\cup\operatorname{at}(C)\bigr).\]</div></div>
+  <div class="proof"><p>Induct on the actual finite input tree, proving the assertion for every covering pair at each node. Coverage places a left principal on at least one side. The deterministic test selects a valid case, and the enlarged or reversed sides cover every premise. The induction hypotheses supply the child packets with their correct conclusions. Each reconstruction proved above returns both required factor trees and preserves the support bound.</p>
+  <p>The listed cases exhaust all eleven constructors of the cut-free calculus. Strict subtree descent proves termination; the size of a tree returned by admissible composition is irrelevant, because the extractor never recurses on that returned tree. Thus the theorem concerns the actual data produced by this recursion on the supplied input.</p></div>
+</section>
+
+<section id="proofs-with-cut" data-formal="ipi-cut-extractor ipcut-cut-proofs ipcut-elimination" data-kind="lemma">
+  <h2>Remove intermediate cuts before extracting</h2>
+  <p>For an actual certificate with cut \(T\) of \(\Gamma\Rightarrow C\), define its packet by \(\mathsf M(\operatorname{Elim}(T);L,R)\), using the earlier <a href="intuitionistic-propositional-cut-elimination#eliminating-cuts">cut-removal transformation</a>.</p>
+  <div class="proof"><p>The transformation returns an actual cut-free tree with exactly the same antecedent and conclusion. Therefore the original covering condition still applies, and <a href="#maehara-lemma"></a> returns both factors with the stated vocabulary. The middle formulas used by the original cuts may contain other atoms; extraction is run after those cuts have been removed.</p></div>
+</section>
+
+<section id="native-interpolation" data-formal="ipi-native-factors ipi-native-interpolation ipcut-from-natural ipcut-to-natural" data-kind="theorem">
+  <h2>Obtain a common-atom factor for intuitionistic deduction</h2>
+  <div class="statement-box"><p>If \(\{A\}\vdash_{\mathrm I} B\), there exists a native formula \(I\) such that</p>
+    <div class="math-display">\[\{A\}\vdash_{\mathrm I} I,\qquad\{I\}\vdash_{\mathrm I} B,\]</div>
+    <div class="math-display">\[\operatorname{at}(I)\subseteq\operatorname{at}(A)\cap\operatorname{at}(B).\]</div></div>
+  <div class="proof"><p>The established <a href="intuitionistic-propositional-cut-elimination#presentation-equivalence">native-deduction correspondence</a> supplies the existence of a cut-free tree for \(\{A\}\Rightarrow B\). For each such tree, extract with \(L=\{A\}\) and \(R=\varnothing\). Its actual factor trees are \(\{A\}\Rightarrow I\) and \(\{I\}\Rightarrow B\). The same correspondence reads both as intuitionistic deductions, and the packet's bound simplifies to the displayed intersection.</p>
+  <p>This establishes the existential assertion from native derivability. The more specific operation in <a href="#maehara-lemma"></a> takes an already supplied cut-free tree and returns its formula and factor trees. Both results use the shared native syntax directly; there is no additional translation of the interpolant's atom names or negation.</p></div>
+</section>
+
+<section id="implication-example" data-formal="ipi-example-left-packet ipi-example-right-packet ipi-example-left-middle ipi-example-right-middle ipcut-implication-example" data-kind="lemma">
+  <h2>Follow the reversed split in a concrete implication use</h2>
+  <p>For distinct atoms \(p,q\), let \(T\) prove \(\{p\to q,p\}\Rightarrow q\) by implication-left. Its antecedent premise is the atomic identity of \(p\); its continuation is the atomic identity of \(q\) in the context additionally containing \(q\).</p>
+  <div class="proof"><p>Take \(L=\{p\to q\}\), \(R=\{p\}\). The implication is selected into \(L\), so the first child uses the reversed sides \((R;L)\). Its atomic leaf returns exactly \(J=p\). In the continuation, the sides are \((L,q;R)\), so its leaf returns \(K=q\). The specified output is exactly \(I=p\to q\). The left factor is the expanded identity of that implication, and the right factor applies it to the assumed \(p\).</p>
+  <p>For the same input tree with \(L=\{p\}\), \(R=\{p\to q\}\), the implication is selected into \(R\). The first leaf returns \(J=p\); the continuation's \(q\) lies only on its right side, so that leaf returns \(K=\top\). This time the extractor returns exactly \(p\land\top\). Its left factor introduces the conjunction, while the right factor projects \(p\) and uses the retained implication. Its support is \(\{p\}\), precisely the common vocabulary permitted by this second split.</p></div>
+</section>
+
+<section id="empty-common-vocabulary" data-formal="ipi-bottom-packet ipi-bottom-middle ipi-top-packet ipi-top ipi-empty-support ipi-native-interpolation" data-kind="question">
+  <h2>What can the middle formula say without any shared atom?</h2>
+  <p>Find atom-free interpolants for \(\{\bot\}\vdash_{\mathrm I}q\) and \(\{p\}\vdash_{\mathrm I}\top\). What does the theorem require when the endpoint atom sets are disjoint?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>For the first deduction choose \(I=\bot\): the first factor is falsum identity and the second is falsum-left. This is also the prescribed output at the corresponding leaf with \(L=\{\bot\}\), \(R=\varnothing\). For the second choose \(I=\top=\bot\to\bot\). Its first factor is the implication-right proof of \(\top\), and its second is its expanded identity. Both chosen formulas have empty atom support.</p><p>In general, disjoint endpoint supports make the theorem's intersection empty, so the returned formula contains no atom names. It may still use the logical constant and connectives, as these two examples show. The theorem supplies its two intuitionistic factors as well as this syntactic restriction.</p></div></details>
+</section>
+
+<section id="overlap-and-nonuniqueness" data-formal="ipi-overlap-bottom-packet ipi-overlap-bottom-middle ipi-overlap-top-packet ipi-nonunique-middles" data-kind="question">
+  <h2>Does choosing the left side on overlap make the interpolant unique?</h2>
+  <p>Apply a falsum-left leaf with conclusion \(p\) to the overlapping split \(L=R=\{\bot\}\). Determine the extractor's formula, then give a different formula satisfying the packet conditions.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The first membership test succeeds, so the extractor returns exactly \(I=\bot\). Both output trees are falsum-left or falsum identity. Another packet has \(I=\top\): falsum-left proves \(L\Rightarrow\top\), and the falsum already in \(R\) proves \(R,\top\Rightarrow p\). Both formulas have empty support.</p><p>Thus the conditions permit more than one formula. The membership convention specifies one output for this particular tree and split. Overlap causes no ambiguity in the recursion and does not assert uniqueness among all possible packets.</p></div></details>
+</section>

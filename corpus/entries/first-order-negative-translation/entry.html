@@ -1,0 +1,153 @@
+<section id="native-proof-relations" data-formal="fopf-complete-formula ifond-raw-derivation ifond-certificate ifond-derivability fongg-raw-consequence" data-kind="definition">
+  <h2>Translate full formulas and their open assumptions</h2>
+  <p>Fix a language \(L\), free names \(X\), and the <a href="first-order-proof-formulas#full-formulas">full native formulas</a> with primitive equality, negation, conjunction, disjunction, implication and both quantifiers. Use the <a href="intuitionistic-first-order-deduction#propositional-rules">intuitionistic native rules</a> and their <a href="intuitionistic-first-order-deduction#classical-extension">classical extension</a>. Fix whether logical equality rules are enabled, using the same choice in both calculi.</p>
+  <p>A supplied raw derivation is a particular finite proof tree over \(X\). Write \(\Gamma\vdash_{\mathrm I}A\) or \(\Gamma\vdash_{\mathrm C}A\) for existence of the corresponding raw derivation from a finite context. Public certificates use the established disjoint auxiliary reserve. We extend the <a href="propositional-negative-translation#proof-translation">propositional proof interpretation</a> by transforming formulas, hypotheses and every quantified rule together.</p>
+</section>
+
+<section id="negative-translation" data-formal="fongg-translation" data-kind="definition">
+  <h2>Put atoms, disjunctions and existentials under double negation</h2>
+  <p>The <strong>Gödel–Gentzen translation</strong> \(A^{\mathsf N}\) is defined on full formulas at every available bound scope. Terms are unchanged. Its clauses are</p>
+  <div class="math-display">\[\bot^{\mathsf N}=\bot,\qquad(s=t)^{\mathsf N}=\neg\neg(s=t),\qquad R(\bar t)^{\mathsf N}=\neg\neg R(\bar t).\]</div>
+  <div class="math-display">\[\begin{aligned}(\neg A)^{\mathsf N}&=\neg A^{\mathsf N},\\
+    (A\land B)^{\mathsf N}&=A^{\mathsf N}\land B^{\mathsf N},\\
+    (A\to B)^{\mathsf N}&=A^{\mathsf N}\to B^{\mathsf N},\\
+    (A\lor B)^{\mathsf N}&=\neg\neg(A^{\mathsf N}\lor B^{\mathsf N}).\end{aligned}\]</div>
+  <div class="math-display">\[(\forall xB)^{\mathsf N}=\forall xB^{\mathsf N},\qquad(\exists xB)^{\mathsf N}=\neg\neg\exists xB^{\mathsf N}.\]</div>
+  <p>Each call concerns a strict formula child, so this specifies a finite tree. Quantifiers retain their original bound slots, and every atomic argument tuple retains its actual term trees. The superscript refers to this constructive interpretation.</p>
+</section>
+
+<section id="scope-identities" data-formal="fongg-scope-map fongg-free-substitution fongg-free-renaming fongg-opening fongg-slot-instances fongg-term-instance fongg-free-support" data-kind="theorem">
+  <h2>Commute translation with the actual scope maps</h2>
+  <p>For every compatible <a href="first-order-proof-formulas#scope-substitution">scope substitution</a> \(\sigma\),</p>
+  <div class="math-display">\[(A\langle\sigma\rangle)^{\mathsf N}=A^{\mathsf N}\langle\sigma\rangle.\]</div>
+  <p>Consequently translation commutes with free substitution, free renaming, opening a body and instantiating it at a supplied term. Its free-name support is exactly that of the original formula.</p>
+  <div class="proof"><p>Induct on the full tree, allowing both scopes and the replacement terms to vary. At an atom both orders substitute into the same original tuple or equality terms, then add the same two negations. Falsum is fixed. Every connective clause reapplies its constructor and any displayed outer negations to the same child results. At either binder, both orders use the <a href="first-order-proof-formulas#lifting-a-substitution">protected extension</a> of \(\sigma\), which fixes its newest slot. Apply the body hypothesis to that extension. These cases prove literal tree equality. The specified free, opening and instance maps give the consequences. A second formula induction gives support equality: added negations introduce no names, and the original unions and binder supports are retained.</p></div>
+</section>
+
+<section id="translated-contexts" data-formal="fongg-context fongg-context-insert fongg-context-union fongg-context-renaming fongg-context-lift" data-kind="lemma">
+  <h2>Retain insertion, unions and protected contexts</h2>
+  <p>Put \(\Gamma^{\mathsf N}=\{B^{\mathsf N}:B\in\Gamma\}\). This finite image satisfies</p>
+  <div class="math-display">\[(\Gamma,B)^{\mathsf N}=\Gamma^{\mathsf N},B^{\mathsf N},\qquad
+    (\Gamma\cup\Delta)^{\mathsf N}=\Gamma^{\mathsf N}\cup\Delta^{\mathsf N}.\]</div>
+  <p>Also \((\Gamma^\uparrow)^{\mathsf N}=(\Gamma^{\mathsf N})^\uparrow\), with the same identity for each lifted conclusion. Repeated image formulas are identified as context members.</p>
+  <div class="proof"><p>Membership in an image of an insertion is membership in the old image or equality to the inserted image. Membership in the image of a union is membership in one of its two images. These give the first identities. Apply <a href="#scope-identities"></a> to each member for the lifted-context identity. Thus a discharged or protected assumption is translated into exactly the assumption required by the corresponding new rule.</p></div>
+</section>
+
+<section id="stability-constructions" data-formal="fongg-stability-construction fongg-double-negation-introduction fongg-stability-to-closed fongg-stability-from-closed" data-kind="definition">
+  <h2>Specify stability as a proof transformation</h2>
+  <p>A <strong>stability construction</strong> for \(C\) transforms any supplied intuitionistic raw derivation of \(\Gamma\Rightarrow\neg\neg C\) into one of \(\Gamma\Rightarrow C\), uniformly in the finite ambient context. Discharging the premise gives an assumption-free proof of \(\neg\neg C\to C\); conversely that proof supplies the operation by weakening and implication elimination.</p>
+  <p>Double-negation introduction always has an intuitionistic construction: from a supplied proof of \(C\), assume \(\neg C\), obtain falsum and discharge. Stability supplies the reverse direction for the particular formula under consideration.</p>
+</section>
+
+<section id="negative-stability" data-formal="fongg-stable-bottom fongg-stable-negation" data-kind="lemma">
+  <h2>Eliminate double negation at falsum and negative formulas</h2>
+  <p>Falsum and every formula \(\neg C\) have stability constructions. Hence every double-negated formula is stable.</p>
+  <div class="proof"><p>The intuitionistic theorem \(\neg\bot\) follows by assuming falsum and discharging it. A proof of \(\neg\neg\bot\) contradicts that theorem and gives falsum. For \(\neg C\), start with \(\neg\neg\neg C\) and assume \(C\). Double-negation introduction from this new assumption gives \(\neg\neg C\), contradicting the original premise. Discharge \(C\), obtaining \(\neg C\). All ambient assumptions stay available. Apply this construction with \(\neg C\) as its child to cover \(\neg\neg C\).</p></div>
+</section>
+
+<section id="binary-stability" data-formal="fongg-stable-conjunction fongg-stable-implication" data-kind="lemma">
+  <h2>Use stable factors and stable consequents</h2>
+  <p>If \(C,D\) have supplied stability constructions, so does \(C\land D\). If \(D\) has one, so does \(C\to D\), for arbitrary \(C\).</p>
+  <div class="proof"><p>Given \(\neg\neg(C\land D)\), assume \(\neg C\). An assumed conjunction would give \(C\) by projection and a contradiction, so it gives \(\neg(C\land D)\). The original premise contradicts this. Discharge \(\neg C\), obtaining \(\neg\neg C\), then use the supplied stability of \(C\). Repeat with the other projection for \(D\), and conjoin.</p><p>For implication assume \(C\), while retaining \(\neg\neg(C\to D)\). Under \(\neg D\), any assumed \(C\to D\) gives \(D\) and a contradiction. This yields \(\neg(C\to D)\), contradicting the original premise. Discharge \(\neg D\), use stability of \(D\), and discharge \(C\). Each operation is made in the indicated enlarged context and uses no classical step.</p></div>
+</section>
+
+<section id="universal-stability" data-formal="fongg-stable-universal" data-kind="lemma">
+  <h2>Stabilize a universal through an arbitrary protected parameter</h2>
+  <p>If the opened body \(\operatorname{open}(B)\) has a supplied stability construction, then \(\forall xB\) has one.</p>
+  <div class="proof"><p>Start with a proof of \(\neg\neg\forall xB\) from \(\Gamma\), and rename it into \(X\sqcup\{e\}\). In this lifted context assume \(\neg\operatorname{open}(B)\). An additional assumed lifted universal gives its instance at \(e\), exactly \(\operatorname{open}(B)\), by the scope identity. Thus the additional universal assumption leads to falsum; discharge it to obtain the negation of that lifted universal. This contradicts the lifted double-negated premise.</p><p>Discharge \(\neg\operatorname{open}(B)\). The supplied body stability now gives \(\operatorname{open}(B)\) from \(\Gamma^\uparrow\). Universal introduction concludes \(\forall xB\). The tag \(e\) is absent from every lifted side assumption; the temporary negative-body assumption has already been discharged.</p></div>
+</section>
+
+<section id="translated-stability" data-formal="fongg-translated-stability" data-kind="theorem">
+  <h2>Every translated formula has a specified stability construction</h2>
+  <p>For every full \(A\), any supplied intuitionistic proof of \(\Gamma\Rightarrow\neg\neg A^{\mathsf N}\) gives one of \(\Gamma\Rightarrow A^{\mathsf N}\), with the same equality mode.</p>
+  <div class="proof"><p>Use strong induction on the original logical depth, with names and contexts arbitrary. Translated equality and relation atoms are double negations, so <a href="#negative-stability"></a> applies. It also treats falsum, primitive negation, disjunction and existence, by their translation clauses. Conjunction and implication use <a href="#binary-stability"></a> and their smaller child constructions.</p><p>For a universal, use <a href="#universal-stability"></a>. By <a href="#scope-identities"></a>, its opened translated body is the translation of the opened original body. Opening preserves original logical depth, so this source body is strictly smaller than the original universal. The induction hypothesis therefore supplies precisely the required body stability over the extended name set. This accounts for every constructor, including nested binders.</p></div>
+</section>
+
+<section id="translated-propositional-rules" data-formal="ifond-raw-derivation fongg-raw-proof-translation fongg-disjunction-left fongg-disjunction-right" data-kind="lemma">
+  <h2>Copy the rules whose translated outer constructor is unchanged</h2>
+  <p>Assumptions, conjunction rules, implication rules, primitive negation rules and falsum elimination translate into actual intuitionistic derivations.</p>
+  <div class="proof"><p>An assumption \(A\in\Gamma\) becomes its image assumption. For conjunction introduction or either projection, reapply that same rule to the translated children. Implication introduction translates its discharged assumption to \(A^{\mathsf N}\) by the insertion identity; implication elimination uses the two translated premises. Negation introduction similarly discharges \(A^{\mathsf N}\) after its translated falsum branch; negation elimination combines \(A^{\mathsf N}\) with \(\neg A^{\mathsf N}\). Falsum is fixed, so explosion gives the translated requested conclusion. Disjunction introduction first chooses the same disjunct in \(A^{\mathsf N}\lor B^{\mathsf N}\), then applies double-negation introduction.</p></div>
+</section>
+
+<section id="translated-disjunction-elimination" data-formal="fongg-stable-disjunction-elimination" data-kind="lemma">
+  <h2>Consume a double-negated disjunction into a stable target</h2>
+  <p>From supplied intuitionistic proofs of \(\neg\neg(C\lor D)\), and branches deriving stable \(E\) from either additional assumption \(C\) or \(D\), construct a proof of \(E\).</p>
+  <div class="proof"><p>Assume \(\neg E\). Assume also \(C\lor D\) and use native case elimination. Each supplied branch, weakened to this context, gives \(E\) and hence falsum. Discharge the disjunction, obtaining \(\neg(C\lor D)\), which contradicts the supplied double-negated disjunction. Discharge \(\neg E\) to get \(\neg\neg E\), then apply the given stability construction.</p><p>For a translated original case rule take \(C=B^{\mathsf N}\), \(D=D_0^{\mathsf N}\) and \(E=A^{\mathsf N}\). The translated branch contexts are exactly the two required insertions, and <a href="#translated-stability"></a> supplies the target stability.</p></div>
+</section>
+
+<section id="translated-quantifier-introductions" data-formal="fongg-universal-introduction fongg-universal-elimination fongg-existential-introduction" data-kind="lemma">
+  <h2>Keep the universal tag and the supplied existential term</h2>
+  <p>Universal introduction, universal elimination and existential introduction have explicit translated derivations.</p>
+  <div class="proof"><p>A universal-introduction premise translates to a proof of \(\operatorname{open}(B^{\mathsf N})\) from \((\Gamma^{\mathsf N})^\uparrow\), by the two scope identities. Reapply native universal introduction with the same protected tag. For universal elimination at \(t\), the translated universal gives \(B^{\mathsf N}(t)=(B(t))^{\mathsf N}\), using that very supplied term.</p><p>An existential-introduction child translates to \(B^{\mathsf N}(t)\). Introduce \(\exists xB^{\mathsf N}\) at \(t\), then double-negate that result. The new rule neither selects a fresh witness nor changes the original witness term.</p></div>
+</section>
+
+<section id="translated-existential-elimination" data-formal="fongg-existential-elimination" data-kind="lemma">
+  <h2>Discharge the witness before stabilizing the conclusion</h2>
+  <p>Translate an existential elimination whose major premise is \(\exists xB\), whose protected branch concludes \(C^\uparrow\), and whose final conclusion is \(C\).</p>
+  <div class="proof"><p>The translated major is \(\neg\neg\exists xB^{\mathsf N}\). The translated branch concludes \((C^{\mathsf N})^\uparrow\) from \((\Gamma^{\mathsf N})^\uparrow\) and \(\operatorname{open}(B^{\mathsf N})\). Assume \(\neg C^{\mathsf N}\) in the ambient context. To refute \(\exists xB^{\mathsf N}\), assume it and perform native existential elimination. In its protected branch use the supplied translated branch, weakened by the lifted negative-conclusion assumption. Its conclusion contradicts that lifted assumption, giving falsum.</p><p>Falsum contains no witness tag, so existential elimination and discharge give \(\neg\exists xB^{\mathsf N}\). This contradicts the double-negated major. Discharge \(\neg C^{\mathsf N}\), obtaining \(\neg\neg C^{\mathsf N}\), and use its stability. All temporary witnesses have been eliminated before concluding \(C^{\mathsf N}\).</p></div>
+</section>
+
+<section id="translated-equality" data-formal="fongg-equality-reflexivity fongg-equality-replacement" data-kind="lemma">
+  <h2>Replace equals after translating the equation premise</h2>
+  <p>An enabled equality-reflexivity step translates by reflexivity followed by double-negation introduction. Equality replacement has the actual derived rule</p>
+  <div class="math-display">\[\frac{\neg\neg(s=t)\qquad (B(s))^{\mathsf N}}{(B(t))^{\mathsf N}}.\]</div>
+  <div class="proof"><p>Assume \(\neg(B(t))^{\mathsf N}\). Under a further actual equation assumption \(s=t\), apply the native equality-replacement rule to the translated one-slot body \(B^{\mathsf N}\). The scope identity takes the supplied \((B(s))^{\mathsf N}\) to its exact instance at \(s\), and replacement gives its instance at \(t\), namely \((B(t))^{\mathsf N}\). This contradicts the temporary negative-target assumption. Discharge the equation, obtaining \(\neg(s=t)\), which contradicts the original \(\neg\neg(s=t)\).</p><p>Discharge the negative-target assumption and apply stability of \((B(t))^{\mathsf N}\). Thus the double-negated equation is used through a contradiction branch, while the inner replacement uses an actual equation. Equality remains enabled exactly when it was enabled in the source tree.</p></div>
+</section>
+
+<section id="translated-classical-step" data-formal="fongg-classical-step" data-kind="lemma">
+  <h2>Replace classical contradiction by stability of its translated target</h2>
+  <p>A classical branch deriving falsum from \(\Gamma,\neg A\) translates to an intuitionistic branch deriving falsum from \(\Gamma^{\mathsf N},\neg A^{\mathsf N}\).</p>
+  <div class="proof"><p>Native negation introduction discharges \(\neg A^{\mathsf N}\) and gives \(\neg\neg A^{\mathsf N}\). Apply <a href="#translated-stability"></a> to conclude \(A^{\mathsf N}\). This performs the desired replacement entirely within intuitionistic deduction.</p></div>
+</section>
+
+<section id="finite-proof-translation" data-formal="fongg-raw-proof-translation" data-kind="theorem">
+  <h2>Transform every supplied classical raw proof</h2>
+  <div class="statement-box"><p>For every finite \(\Gamma\), a supplied classical raw derivation of \(\Gamma\Rightarrow A\) transforms into an actual intuitionistic raw derivation of \(\Gamma^{\mathsf N}\Rightarrow A^{\mathsf N}\), with the identical free-name set and equality mode.</p></div>
+  <div class="proof"><p>Recurse on the given finite tree. <a href="#translated-propositional-rules"></a> and <a href="#translated-disjunction-elimination"></a> give every propositional case. <a href="#translated-quantifier-introductions"></a> gives three quantified cases, and <a href="#translated-existential-elimination"></a> gives the fourth. Copy enabled reflexivity and replacement using <a href="#translated-equality"></a>. Finally use <a href="#translated-classical-step"></a> for classical contradiction. Disabled equality constructors have no case to translate.</p><p>Every recursive proof call concerns an original strict child. Context images preserve the exact temporary assumptions, and opening/instance identities preserve the protected branches. The resulting finite tree uses only the intuitionistic rules and the same allowed equality rules.</p></div>
+</section>
+
+<section id="classical-equivalence" data-formal="fongg-classical-forward fongg-classical-backward" data-kind="lemma">
+  <h2>Recover the original formula inside classical deduction</h2>
+  <p>For every full \(A\), there are specified classical raw conversions in both directions between proofs of \(A\) and proofs of \(A^{\mathsf N}\), retaining any ambient context and the equality mode.</p>
+  <div class="proof"><p>Induct on original logical depth, with the parameter set arbitrary. An atom uses double-negation introduction in one direction and classical elimination in the other; falsum is unchanged. Negation transports a contradiction through the opposite child conversion. Conjunction uses projections and introduction, applying the two child conversions. For implication, assume the required new antecedent, convert it backwards, apply the supplied implication, convert its consequent forwards and discharge; reverse the two child directions for the reverse conversion.</p><p>For disjunction, case-eliminate the supplied disjunction, convert its chosen factor and reintroduce; add double negation in the forward direction and eliminate it before cases in the reverse direction. For a universal, open its supplied proof at a protected parameter, apply the smaller opened-body conversion and universally introduce again. For an existential, eliminate into a protected witness branch, convert that body's instance and reintroduce at its witness; double-negate the result forwards, and classically eliminate the outer double negation first backwards. For an arbitrary instance, first apply the smaller body conversion to its assumption and discharge it, giving an assumption-free implication over the opened names. Substitute the intended term for the protected name in that implication and apply it to the supplied instance proof. Scope laws identify every endpoint, and every temporary tag is discharged. These arguments produce actual classical trees, without requiring equality's special rules.</p></div>
+</section>
+
+<section id="exact-consequence" data-formal="fongg-theory fongg-raw-reflection fongg-raw-correspondence fongg-public-proof-translation fongg-public-reflection fongg-public-correspondence fongg-theory-proof-translation fongg-theory-reflection fongg-theory-correspondence arng-certificate-interpretation" data-kind="theorem">
+  <h2>Identify the translated constructive consequences exactly</h2>
+  <div class="statement-box"><p>For finite contexts, with either fixed equality mode,</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm C}A\quad\Longleftrightarrow\quad\Gamma^{\mathsf N}\vdash_{\mathrm I}A^{\mathsf N}.\]</div>
+  <p>The same equivalence holds for public derivability, and for arbitrary premise sets \(T\) with \(T^{\mathsf N}=\{B^{\mathsf N}:B\in T\}\).</p></div>
+  <div class="proof"><p>The raw forward transformation is <a href="#finite-proof-translation"></a>. Conversely read the supplied intuitionistic tree as a classical one. For every original assumption \(B\in\Gamma\), convert its assumption proof to \(B^{\mathsf N}\) by <a href="#classical-equivalence"></a>. Use <a href="intuitionistic-first-order-deduction#proof-replacement">actual assumption replacement</a> in the translated tree, then convert its conclusion backwards to \(A\).</p><p>For public proofs work over the same \(X\sqcup U\). The renaming identity makes the translated endpoints the reserved copies of precisely \(\Gamma^{\mathsf N},A^{\mathsf N}\). For arbitrary premise sets translate a particular finite support. Conversely a given finite support inside \(T^{\mathsf N}\) has finitely many preimages in \(T\); choose those formulas, enlarge the allowed translated context and use the finite public converse. Their finite preimage set is the support of the resulting classical certificate. This uses only finitely supported proof operations.</p></div>
+  <p>The <a href="arithmetic-negative-translation#arithmetic-interpretation">arithmetic application</a> replaces translated nonlogical axiom leaves by HA certificates. Its output uses a finite support in the original HA axiom set, together with the translated additional assumptions, and concludes the translated formula.</p>
+</section>
+
+<section id="classical-presentation-inputs" data-formal="fongg-small-public-correspondence fongg-full-small-theory-correspondence" data-kind="lemma">
+  <h2>Apply the theorem to the established smaller classical syntax</h2>
+  <p>Let \(i\) be the literal native inclusion and \(c\) the classical expansion from the <a href="classical-first-order-deduction-translations#public-correspondence">presentation bridge</a>. With logical equality enabled, small public derivability of \(D\) from \(\Delta\) is equivalent to intuitionistic public derivability of \(i(D)^{\mathsf N}\) from \(i[\Delta]^{\mathsf N}\). More generally full classical consequence of \(A\) from \(T\) corresponds both to small consequence of \(c(A)\) from \(c[T]\) and to intuitionistic consequence of \(A^{\mathsf N}\) from \(T^{\mathsf N}\).</p>
+  <div class="proof"><p>Use the exact <a href="classical-first-order-deduction-translations#theory-correspondence">classical existence correspondences</a> to obtain a native classical certificate, then apply <a href="#exact-consequence"></a>. Reverse these steps for each converse. This statement uses the actual earlier proof presentation and its literal inclusion. A supplied native tree is the input to the tree transformation; the smaller presentation's derivability assertion supplies the corresponding existence statement.</p></div>
+</section>
+
+<section id="equivalent-conventions" data-formal="fongg-raw-equivalence-construction fongg-negated-disjunction fongg-negated-existential fongg-disjunction-convention fongg-existential-convention" data-kind="lemma">
+  <h2>Relate negative-conjunction and negative-universal clauses</h2>
+  <p>The selected clauses retain native positive constructors under double negation. Other usual conventions use \(\neg(\neg C\land\neg D)\) and \(\neg\forall x\neg E\) in place of \(\neg\neg(C\lor D)\) and \(\neg\neg\exists xE\). Each pair has intuitionistic conversions in both directions.</p>
+  <div class="proof"><p>Native case elimination and negation introduction give \(\neg(C\lor D)\) exactly when both \(\neg C\) and \(\neg D\) hold: each direction assumes a proposed disjunct and derives the corresponding contradiction. Transporting a contradiction through these two constructions gives the first pair of negative formulas. For the <a href="intuitionistic-first-order-quantifier-principles#constructive-quantifier-negation">constructive quantified law</a>, a proof of \(\neg\exists xE\) gives \(\neg E(e)\) at an arbitrary protected parameter: an assumed \(E(e)\) would introduce the forbidden existential. Universally introduce to get \(\forall x\neg E\). Conversely that universal refutes a supposed existential through its protected witness branch. These constructions work over the fixed raw names too. Negating through them gives the second pair. Thus these conventions supply the same constructive interpretation while keeping distinct literal trees.</p></div>
+</section>
+
+<section id="quantified-excluded-middle" data-formal="fongg-quantified-em fongg-quantified-em-calculation fongg-quantified-em-classical fongg-quantified-em-intuitionistic" data-kind="lemma">
+  <h2>Translate a classical universal excluded-middle proof</h2>
+  <p>For a one-slot body \(R\), the classical theorem \(G=\forall x(R(x)\lor\neg R(x))\) translates to the intuitionistic theorem</p>
+  <div class="math-display">\[G^{\mathsf N}=\forall x\neg\neg\bigl(R(x)^{\mathsf N}\lor\neg R(x)^{\mathsf N}\bigr).\]</div>
+  <div class="proof"><p>Classical excluded middle at a protected parameter followed by universal introduction gives a raw proof of \(G\). Apply <a href="#finite-proof-translation"></a>. There is also a direct intuitionistic construction: for any full \(C\), assume \(\neg(C\lor\neg C)\). A further \(C\) yields a contradiction, so discharge it to get \(\neg C\). Right disjunction introduction gives a second contradiction. Discharge the original assumption, obtaining \(\neg\neg(C\lor\neg C)\). Take \(C=R(e)^{\mathsf N}\), then universally introduce \(e\). Both constructions preserve the equality mode and work in the raw calculus.</p></div>
+</section>
+
+<section id="outer-double-negation-question" data-formal="ifoqp-first-order-glivenko-failure ifoqp-quantified-em-raw-classical fongg-eventual-translated-em fongg-quantified-em-calculation" data-kind="question">
+  <h2>Why not translate a first-order theorem by one outer double negation?</h2>
+  <p>Would the simpler conclusion \(\neg\neg A\) suffice for every classically proved first-order \(A\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Use the <a href="intuitionistic-first-order-quantifier-principles#first-order-glivenko-failure">specified infinite-chain counterexample</a> \(G=\forall x(R(x)\lor\neg R(x))\). It has an actual classical proof, but the eventual-predicate Kripke model refutes \(\neg\neg G\), so no intuitionistic certificate of that formula exists.</p><p>The translation theorem instead gives the formula in <a href="#quantified-excluded-middle"></a>. Its double negations occur within the universal, and its atomic occurrences are translated too. That formula has the explicit intuitionistic proof just given. In particular, replacing the whole recursive translation by \(\neg\neg G\) would assert the refuted first-order Glivenko extension.</p></div></details>
+</section>
+
+<section id="dropping-translation-question" data-formal="ifoqp-eventual-model ifoqp-eventual-pointwise ifoqp-eventual-negative-universal fongg-untranslated-premise fongg-untranslated-context fongg-source-assumption fongg-negative-premise-calculation fongg-untranslated-countermodel fongg-untranslated-nonderivability fongg-translated-assumptions" data-kind="question">
+  <h2>Why must the hypotheses be translated too?</h2>
+  <p>Does a classical proof from \(\Gamma\) automatically give an intuitionistic proof of \(A^{\mathsf N}\) from those same untranslated assumptions?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. In the <a href="intuitionistic-first-order-quantifier-principles#double-negation-shift-failure">specified eventual-predicate model</a>, every world forces \(\forall x\neg\neg R(x)\) and \(\neg\forall xR(x)\). Take \(A=\neg\forall xR(x)\) and \(\Gamma=\{A\}\). There is a raw classical proof of \(A\) from \(\Gamma\): its assumption leaf. Its translation is \(A^{\mathsf N}=\neg\forall x\neg\neg R(x)\). This fails at every world, because its inner universal is already forced there. Kripke soundness therefore excludes an intuitionistic certificate of \(A^{\mathsf N}\) from \(\Gamma\), even though the source assumption is true.</p><p>The theorem gives the image context \(\Gamma^{\mathsf N}\). It can be used from \(\Gamma\) whenever actual intuitionistic proofs of all its translated assumptions are supplied; proof replacement then applies. Such additional constructions are available in many special cases, but the displayed counterexample prevents assuming them for an arbitrary first-order premise.</p></div></details>
+</section>

@@ -1,0 +1,97 @@
+<section id="minimal-rules" data-formal="minnd-derivability" data-kind="definition">
+  <h2>The rules of minimal deduction</h2>
+  <p>Fix an atom set \(P\) and the <a href="propositional-logic#formulas">shared formula syntax</a> with atoms, \(\bot,\neg,\land,\lor,\to\). A <strong>minimal derivation</strong> is a finite tree using the <a href="intuitionistic-propositional-deduction#intuitionistic-rules">intuitionistic natural-deduction rules</a> except falsum elimination. Write \(\Gamma\vdash_{\mathrm M} A\) when its conclusion is \(A\) and every undischarged assumption belongs to the set \(\Gamma\), which may be infinite.</p>
+  <p>Thus assumption leaves, both conjunction projections, conjunction introduction, both disjunction introductions and disjunction elimination are allowed. Implication introduction and elimination are allowed, with the usual discharge of a temporary assumption. The primitive negation rules remain</p>
+  <div class="math-display">\[\frac{\Gamma,A\vdash_{\mathrm M}\bot}{\Gamma\vdash_{\mathrm M}\neg A},\qquad
+    \frac{\Gamma\vdash_{\mathrm M}A\qquad\Gamma\vdash_{\mathrm M}\neg A}{\Gamma\vdash_{\mathrm M}\bot}.\]</div>
+  <p>There is no inference from \(\Gamma\vdash_{\mathrm M}\bot\) to an arbitrary \(\Gamma\vdash_{\mathrm M}B\). There is also no classical contradiction rule. A repeated use of an assumption is permitted: removing explosion does not remove weakening or contraction from the allowed treatment of assumptions.</p>
+</section>
+
+<section id="weakening-and-replacement" data-formal="minnd-weakening minnd-proof-replacement" data-kind="lemma">
+  <h2>Replace open assumptions by proofs</h2>
+  <p>For all premise sets \(\Gamma,\Delta\) and formulas \(A\), if \(\Gamma\vdash_{\mathrm M}A\) and \(\Gamma\subseteq\Delta\), then \(\Delta\vdash_{\mathrm M}A\). More generally, if every \(B\in\Gamma\) has a minimal proof from \(\Delta\), then \(\Gamma\vdash_{\mathrm M}A\) implies \(\Delta\vdash_{\mathrm M}A\).</p>
+  <div class="proof"><p>For weakening, induct on the supplied finite tree. An assumption leaf remains licensed by inclusion; each rule is reapplied to the transformed children. In a branch with temporary assumption \(C\), use the enlarged inclusion \(\Gamma,C\subseteq\Delta,C\). Disjunction elimination has two such branches, treated separately.</p><p>For replacement, induct on the tree with target premise set \(\Delta\) arbitrary. Replace a leaf \(B\in\Gamma\) by its supplied proof. Under a temporary \(C\), supply the newly bound assumption \(C\) by its own leaf, and weaken the supplied proofs for ambient assumptions to \(\Delta,C\). This proves the induction hypothesis for the branch without capturing its temporary assumption. Reapply its introduction or elimination rule. These are all the rules, so the transformed tree is a minimal proof.</p></div>
+</section>
+
+<section id="deduction-and-substitution" data-formal="minnd-deduction minnd-formula-substitution ipnd-substitution-context" data-kind="theorem">
+  <h2>Discharge and formula substitution remain admissible</h2>
+  <p>For every \(\Gamma,A,B\),</p>
+  <div class="math-display">\[\Gamma,A\vdash_{\mathrm M}B\quad\Longleftrightarrow\quad\Gamma\vdash_{\mathrm M}A\to B.\]</div>
+  <p>If \(\Gamma\vdash_{\mathrm M}A\) and \(\sigma\) sends each atom in \(P\) to a formula over another atom set, then \(\Gamma[\sigma]\vdash_{\mathrm M}A[\sigma]\), where \(\Gamma[\sigma]=\{B[\sigma]:B\in\Gamma\}\). In particular, minimal derivability is invariant under uniform changes of atom names.</p>
+  <div class="proof"><p>The forward deduction implication is implication introduction. For the reverse, weaken the proof of \(A\to B\) to \(\Gamma,A\), use its assumption \(A\), and apply implication elimination.</p><p>For substitution, induct on the proof. Every logical rule keeps the same form after substituting its formulas. An assumption maps into the image context. For a discharged assumption, use the exact equality \((\Gamma\cup\{C\})[\sigma]=\Gamma[\sigma]\cup\{C[\sigma]\}\). This equality also handles both branches of disjunction elimination. No substitution step introduces falsum elimination, so the resulting tree is minimal.</p></div>
+</section>
+
+<section id="negation-as-implication" data-formal="minnd-negation-implication minnd-negation-equivalence" data-kind="lemma">
+  <h2>Primitive negation still means implication to falsum</h2>
+  <p>For every \(\Gamma,A\),</p>
+  <div class="math-display">\[\Gamma\vdash_{\mathrm M}\neg A\quad\Longleftrightarrow\quad\Gamma\vdash_{\mathrm M}A\to\bot.\]</div>
+  <p>Consequently \(\vdash_{\mathrm M}(\neg A\to(A\to\bot))\land((A\to\bot)\to\neg A)\).</p>
+  <div class="proof"><p>Given \(\neg A\), temporarily assume \(A\), derive \(\bot\) by negation elimination, and discharge \(A\). Conversely, given \(A\to\bot\), temporarily assume \(A\), apply the implication, and use negation introduction to discharge \(A\). Applying these two operations under their respective singleton assumptions and using conjunction introduction proves the closed equivalence. Neither direction needs explosion.</p></div>
+</section>
+
+<section id="minimal-negation-laws" data-formal="minnd-double-negation-introduction minnd-contraposition minnd-triple-negation-elimination minnd-double-negated-excluded-middle" data-kind="theorem">
+  <h2>Negation laws that do not use explosion</h2>
+  <p>For all formulas \(A,B\), minimal logic proves</p>
+  <div class="math-display">\[A\to\neg\neg A,\qquad (A\to B)\to(\neg B\to\neg A),\qquad \neg\neg\neg A\to\neg A.\]</div>
+  <p>It also proves \(\neg\neg(A\lor\neg A)\).</p>
+  <div class="proof"><p>For double-negation introduction, assume \(A\), then \(\neg A\), and use negation elimination. Discharge the second assumption by negation introduction and the first by implication introduction. For contraposition, assume \(A\to B\) and \(\neg B\); an additional \(A\) gives \(B\) and hence \(\bot\). Discharge \(A\), then the two outer assumptions.</p><p>For triple-negation elimination, assume \(\neg\neg\neg A\). An additional \(A\) gives \(\neg\neg A\) by the first result and contradicts \(\neg\neg\neg A\). Discharging \(A\) gives \(\neg A\).</p><p>Finally assume \(H=\neg(A\lor\neg A)\). Under an additional \(A\), left disjunction introduction contradicts \(H\), so \(\neg A\) follows by discharge. Right disjunction introduction then gives \(A\lor\neg A\), contradicting \(H\) again. Discharging \(H\) proves the double-negated excluded middle. Each contradiction was used only to introduce a negation; none was used to infer an unrelated formula.</p></div>
+</section>
+
+<section id="explosion-extension" data-formal="minnd-explosion-schema minnd-intuitionistic-inclusion minnd-intuitionistic-explosion-equivalence" data-kind="theorem">
+  <h2>Adjoining explosion gives exactly intuitionistic logic</h2>
+  <p>Define the <strong>explosion schema</strong> to be \(\mathcal E=\{\bot\to B:B\text{ is a formula over }P\}\). For every premise set \(\Gamma\) and formula \(A\),</p>
+  <div class="statement-box"><div class="math-display">\[\Gamma\vdash_{\mathrm I}A\quad\Longleftrightarrow\quad\Gamma\cup\mathcal E\vdash_{\mathrm M}A.\]</div></div>
+  <div class="proof"><p>Translate an intuitionistic proof by induction. Assumptions become assumptions in \(\Gamma\cup\mathcal E\), and all rules other than falsum elimination are reapplied. If a step derives \(B\) from \(\bot\), the translated child proves \(\bot\). The assumption \(\bot\to B\in\mathcal E\) and implication elimination now prove \(B\). Under temporary assumptions, adjoining the fixed set \(\mathcal E\) commutes with insertion, so the induction also covers discharge.</p><p>Conversely, every minimal rule is intuitionistically valid. Thus a minimal proof from \(\Gamma\cup\mathcal E\) is an intuitionistic proof from that same set. Each explosion instance has a closed intuitionistic proof: assume \(\bot\), apply falsum elimination, and discharge. Use the <a href="intuitionistic-propositional-deduction#proof-replacement">intuitionistic replacement theorem</a> to replace these schema leaves by their proofs from \(\Gamma\), while retaining ordinary assumptions. This gives the required intuitionistic proof.</p></div>
+</section>
+
+<section id="abnormal-models" data-formal="minnd-kripke-model minnd-forcing minnd-ordinary-model-embedding minnd-ordinary-forcing-bridge" data-kind="definition">
+  <h2>Persistent worlds may force falsum</h2>
+  <p>A <strong>minimal Kripke model</strong> consists of a preorder \((W,\leq)\), a persistent atomic valuation \(V\), and an upward-closed set \(E\subseteq W\). Here persistence means \(w\in V(p)\) and \(w\leq v\) imply \(v\in V(p)\); upward closure of \(E\) has the same meaning. A world in \(E\) is called <strong>abnormal</strong>.</p>
+  <p>Define <strong>minimal forcing</strong> recursively. Atomic forcing is \(w\Vdash p\) iff \(w\in V(p)\), and \(w\Vdash\bot\) iff \(w\in E\). Their <strong>conjunction and disjunction forcing clauses</strong> are</p>
+  <div class="math-display">\[w\Vdash A\land B\quad\Longleftrightarrow\quad w\Vdash A\text{ and }w\Vdash B.\]</div>
+  <div class="math-display">\[w\Vdash A\lor B\quad\Longleftrightarrow\quad w\Vdash A\text{ or }w\Vdash B.\]</div>
+  <p>Implication and primitive negation are defined by</p>
+  <div class="math-display">\[w\Vdash A\to B\quad\Longleftrightarrow\quad\forall v\geq w\;(v\Vdash A\Rightarrow v\Vdash B).\]</div>
+  <div class="math-display">\[w\Vdash\neg A\quad\Longleftrightarrow\quad\forall v\geq w\;(v\Vdash A\Rightarrow v\in E).\]</div>
+  <p>In particular, a forced negation need not prevent its positive formula from being forced at an abnormal world. Taking \(E=\varnothing\) recovers the <a href="intuitionistic-kripke-semantics#forcing-formulas">intuitionistic forcing clauses</a>. Falsum is allowed to be forced here to test the rules of minimal deduction; it remains a distinct formula with no introduction rule.</p>
+</section>
+
+<section id="minimal-soundness" data-formal="minnd-forcing-persistence minnd-soundness" data-kind="theorem">
+  <h2>Minimal deduction preserves forcing</h2>
+  <p>In every minimal Kripke model, forcing is persistent: \(w\leq v\) and \(w\Vdash A\) imply \(v\Vdash A\). Moreover, if \(\Gamma\vdash_{\mathrm M}A\) and a world forces every member of \(\Gamma\), then it forces \(A\).</p>
+  <div class="proof"><p>Induct on formulas for persistence. The atomic and falsum cases are the model assumptions. For conjunction and disjunction apply the induction hypotheses to their forced components. For implication or negation, any successor of \(v\) is also a successor of \(w\), by transitivity, so the condition already known at \(w\) applies.</p><p>For soundness, induct on the finite derivation, allowing the world to vary. An assumption is forced by hypothesis. Conjunction and disjunction introduction or elimination use their local forcing clauses and the induction hypotheses. In implication introduction, let \(v\geq w\) force the temporary antecedent. Persistence transports the ambient assumptions to \(v\), and the induction hypothesis for the branch forces its conclusion there. This is exactly implication forcing at \(w\). For implication elimination, apply the forced implication at \(w\) itself.</p><p>Negation introduction uses the same successor argument with conclusion \(\bot\), obtaining membership of that successor in \(E\). Negation elimination applies the forced negation at the current world to its forced positive formula, giving precisely \(w\Vdash\bot\). There is no falsum-elimination case: its absence is what allows \(E\) to contain worlds that need not force every atom.</p></div>
+</section>
+
+<section id="one-world-countermodels" data-formal="minnd-singleton-model minnd-explosion-countermodels minnd-explosion-not-derivable minnd-syllogism-countermodels minnd-syllogism-not-derivable" data-kind="theorem">
+  <h2>A contradiction need not prove an atom</h2>
+  <p>For every atom \(q\), \(\{\bot\}\not\vdash_{\mathrm M}q\) and \(\not\vdash_{\mathrm M}\bot\to q\). For distinct atoms \(p,q\),</p>
+  <div class="math-display">\[\{p\lor q,\neg p\}\not\vdash_{\mathrm M}q,\qquad \{p,\neg p\}\not\vdash_{\mathrm M}q.\]</div>
+  <div class="proof"><p>Use a singleton world \(w\) with its reflexive order and \(E=\{w\}\). Make \(q\) unforced. Then \(w\Vdash\bot\), but \(w\not\Vdash q\), so soundness rules out the first consequence. Reflexivity makes \(\bot\to q\) unforced too, ruling out its closed proof.</p><p>For the remaining claims, make exactly \(p\) forced among the atoms; this still leaves \(q\) unforced because they are distinct. The world forces \(p\lor q\) by its left disjunct. It also forces \(\neg p\), since its only successor belongs to \(E\). Thus both displayed premise sets are forced and their conclusion is not. Soundness proves the two nonderivability claims. This example does not say that arbitrary contradictions have proofs without assumptions.</p></div>
+</section>
+
+<section id="disjunctive-syllogism" data-formal="minnd-syllogism-explosion-equivalence minnd-negated-falsum" data-kind="theorem">
+  <h2>Disjunctive syllogism has exactly the strength of explosion</h2>
+  <p>For every premise set \(\Gamma\), the following conditions are equivalent:</p>
+  <div class="math-display">\[\forall B\;\Gamma\vdash_{\mathrm M}\bot\to B.\]</div>
+  <div class="math-display">\[\forall A,B\;\Gamma\vdash_{\mathrm M}(A\lor B)\to(\neg A\to B).\]</div>
+  <div class="proof"><p>Assume every explosion instance is derivable from \(\Gamma\). Under temporary assumptions \(A\lor B\) and \(\neg A\), use disjunction elimination. The \(B\)-branch is its own assumption. The \(A\)-branch produces \(\bot\) by negation elimination; the available implication \(\bot\to B\), weakened into that branch, gives \(B\). Discharge the two temporary assumptions to obtain the stated syllogism formula.</p><p>Conversely, choose the syllogism instance with \(A=\bot\). The formula \(\neg\bot\) has a closed minimal proof: temporarily assume \(\bot\), retain that assumption as the conclusion \(\bot\), and discharge it by negation introduction. Under an additional assumption \(\bot\), introduce \(\bot\lor B\); the chosen syllogism and \(\neg\bot\) give \(B\). Discharging \(\bot\) proves \(\bot\to B\), for each \(B\). The instance \(A=\bot\) is essential; a claim only about fixed atomic antecedents would not be this formula schema.</p></div>
+</section>
+
+<section id="double-negation-and-explosion" data-formal="minnd-double-negation-implies-explosion" data-kind="lemma">
+  <h2>Double-negation elimination implies explosion</h2>
+  <p>For every formula \(A\), minimal logic proves</p>
+  <div class="math-display">\[(\neg\neg A\to A)\to(\bot\to A).\]</div>
+  <div class="proof"><p>Assume \(\neg\neg A\to A\), and then assume \(\bot\). Under a further assumption \(\neg A\), the already available \(\bot\) is still a proof of \(\bot\). Discharge \(\neg A\) to obtain \(\neg\neg A\); apply the first assumption to obtain \(A\). Discharge \(\bot\), then the outer assumption. Thus adding every double-negation-elimination instance supplies every explosion instance.</p></div>
+</section>
+
+<section id="excluded-middle-without-explosion" data-formal="ipnd-em-schema minnd-excluded-middle-countermodel minnd-excluded-middle-without-explosion" data-kind="question">
+  <h2>Does excluded middle alone restore explosion?</h2>
+  <p>Let \(\mathcal L=\{A\lor\neg A:A\text{ is any formula over }P\}\). For an atom \(q\), can a minimal proof from \(\mathcal L\) establish \(\bot\to q\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Use the singleton abnormal model of <a href="#one-world-countermodels"></a> with \(q\) unforced. At its sole world, every negation \(\neg A\) is forced, since every successor belongs to \(E\). Hence every member of \(\mathcal L\) is forced by right disjunction introduction, regardless of which formulas \(A\) themselves are forced. But \(\bot\to q\) is still unforced. Soundness rules out the proposed derivation.</p><p>This also explains a boundary of the <a href="intuitionistic-propositional-deduction#classical-schemas">intuitionistic equivalence between excluded middle and double-negation elimination</a>: its proof uses explosion in the negative branch of an excluded-middle argument. Minimal logic cannot reuse that step unless explosion has separately been supplied.</p></div></details>
+</section>
+
+<section id="closed-falsum" data-formal="minnd-intuitionistic-inclusion minnd-consistency minnd-normal-singleton-countermodel" data-kind="question">
+  <h2>Can minimal logic prove falsum with no assumptions?</h2>
+  <p>Does allowing abnormal worlds make \(\vdash_{\mathrm M}\bot\) possible? Does this depend on the atom set being nonempty?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No in both cases. Every minimal derivation is an intuitionistic derivation, because all of its rules occur in the intuitionistic list. A closed proof of \(\bot\) would therefore contradict <a href="intuitionistic-propositional-deduction#boolean-soundness">intuitionistic Boolean soundness</a>. Alternatively, use a singleton minimal model with \(E=\varnothing\) and every atom unforced. Its sole world does not force \(\bot\), while all members of the empty premise set are forced.</p><p>The all-false atomic valuation exists even for an empty atom set, so this argument requires no atom. Abnormal models supply additional tests for derivations; they do not assert that the calculus derives the formulas that happen to be forced in one particular model.</p></div></details>
+</section>

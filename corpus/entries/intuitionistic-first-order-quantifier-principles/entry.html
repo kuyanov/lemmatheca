@@ -1,0 +1,119 @@
+<section id="bodies-and-independent-formulas" data-formal="ifoqp-vacuous-lift ifoqp-vacuous-opening ifoqp-vacuous-instance ifoqp-certificate-equivalence" data-kind="definition">
+  <h2>Separate a quantified body from an independent formula</h2>
+<p>Fix a language \(L\), free parameter set \(X\), and the <a href="first-order-proof-formulas#full-formulas">full constructive syntax</a>. Let \(P,Q\) be one-slot bodies, and let \(A\) be a complete formula over \(X\). Its <strong>vacuous lift</strong> \(\iota A\) is the same formula included into the scope with one available slot, without using that slot. Thus writing \(A\) inside \(\forall x(A\to P(x))\) asserts that the quantified variable does not occur freely in \(A\). Opening \(\iota A\) gives the left-renamed copy of \(A\), and every term instance of it is exactly \(A\).</p>
+  <p>Use <a href="intuitionistic-first-order-deduction#auxiliary-reserve">intuitionistic certificates</a>, with either equality mode retained. Write \(C\simeq_{\mathrm I}D\) for <strong>deduction equivalence</strong>: in every finite ambient context, specified operations convert a supplied certificate of either formula into one of the other. The arguments below give actual tree operations using the <a href="intuitionistic-first-order-deduction#quantifier-rules">protected quantifier rules</a>. A temporary witness is always discharged before it can enter the final conclusion.</p>
+</section>
+
+<section id="universal-conjunction" data-formal="ifoqp-all-conjunction" data-kind="lemma">
+  <h2>A universal quantifier distributes over conjunction</h2>
+<p>For arbitrary one-slot bodies,</p>
+  <div class="math-display">\[\forall x(P(x)\land Q(x))\simeq_{\mathrm I}(\forall xP(x))\land(\forall xQ(x)).\]</div>
+  <div class="proof"><p>Lift a supplied universal proof and its context to a fresh parameter \(e\). Instantiate at \(e\), project \(P(e)\), and universally introduce \(P\). The lifted ambient assumptions contain no \(e\). Repeat with the other projection, and conjoin the two universal conclusions.</p><p>Conversely, project the supplied two universals, lift both to the same fresh parameter, and instantiate both at \(e\). Conjoin these body proofs and introduce the universal quantifier. Both transformations keep exactly the original ambient context and use no equality rule or classical contradiction.</p></div>
+</section>
+
+<section id="existential-disjunction" data-formal="ifoqp-ex-disjunction" data-kind="lemma">
+  <h2>An existential quantifier distributes over disjunction</h2>
+<p>For arbitrary one-slot bodies,</p>
+  <div class="math-display">\[\exists x(P(x)\lor Q(x))\simeq_{\mathrm I}(\exists xP(x))\lor(\exists xQ(x)).\]</div>
+  <div class="proof"><p>Eliminate a supplied existential with protected parameter \(e\). Its branch assumes \(P(e)\lor Q(e)\). Split that disjunction: its first branch introduces \(\exists xP(x)\) at \(e\) and then the left disjunct; its other branch introduces the right disjunct in the same way. Their common conclusion contains no \(e\), so existential elimination discharges the witness branch.</p><p>Conversely split the supplied disjunction of existentials. In the first branch eliminate its witness, introduce \(P(e)\lor Q(e)\) on the left, and existentially introduce the target at \(e\). The second branch uses right introduction. Each witness is discharged before the outer disjunction elimination. These are conversions of the supplied proof trees.</p></div>
+</section>
+
+<section id="one-way-distributions" data-formal="ifoqp-ex-conjunction ifoqp-all-disjunction ifoqp-split-model ifoqp-split-values ifoqp-distribution-converse-failures ifoqp-distribution-converses-nonderivable" data-kind="lemma">
+  <h2>The other two distributions have a constructive direction</h2>
+<p>There are intuitionistic deductions</p>
+  <div class="math-display">\[\exists x(P\land Q)\ \longrightarrow\ (\exists xP)\land(\exists xQ),\qquad
+    (\forall xP)\lor(\forall xQ)\ \longrightarrow\ \forall x(P\lor Q).\]</div>
+  <div class="proof"><p>For the first, eliminate the given witness, project each conjunct and introduce its corresponding existential using that same witness. Conjoin the two existential conclusions, then discharge the witness. For the second, split the supplied disjunction. In either branch use a fresh universal parameter, instantiate the available universal, introduce the appropriate disjunct, and universally introduce the body disjunction.</p><p>These implications do not assert converse distributions. For example, in a one-world two-element structure let \(P\) hold exactly at zero and \(Q\) exactly at one. Both existentials hold, but no object satisfies their conjunction. Also every object satisfies \(P\lor Q\), while neither predicate holds universally. The <a href="intuitionistic-first-order-kripke-semantics#singleton-structures">singleton-model bridge</a> and soundness therefore exclude both converse implication schemas.</p></div>
+</section>
+
+<section id="universal-implication-shift" data-formal="ifoqp-all-implication" data-kind="lemma">
+  <h2>Move an independent antecedent across a universal quantifier</h2>
+<p>Assume that \(A\) contains no occurrence of the quantified variable. Then</p>
+  <div class="math-display">\[\forall x(A\to P(x))\simeq_{\mathrm I}A\to\forall xP(x).\]</div>
+  <div class="proof"><p>Given the left formula, temporarily assume \(A\) and open a fresh parameter \(e\). Universal elimination gives \(A^\uparrow\to P(e)\). The lifted assumption supplies \(A^\uparrow\), so implication elimination yields \(P(e)\). Universal introduction and then implication introduction give the target.</p><p>Conversely, open fresh \(e\) and assume \(A^\uparrow\). Apply the lifted given implication to obtain the lifted \(\forall xP(x)\), then instantiate it at \(e\). Discharge \(A^\uparrow\), and universally introduce the resulting implication. The vacuous-lift identities identify its antecedent with the opening of \(\iota A\). Freshness of \(A\) is precisely what licenses these identifications and introductions.</p></div>
+</section>
+
+<section id="existential-implication-shift" data-formal="ifoqp-ex-implication" data-kind="lemma">
+  <h2>Move an independent consequent across an existential antecedent</h2>
+<p>Assume that \(A\) contains no occurrence of the quantified variable. Then</p>
+  <div class="math-display">\[(\exists xP(x))\to A\simeq_{\mathrm I}\forall x(P(x)\to A).\]</div>
+  <div class="proof"><p>Given the left implication, open fresh \(e\) and assume \(P(e)\). Introduce the lifted existential at \(e\), apply the lifted implication, and obtain \(A^\uparrow\). Discharge \(P(e)\) and universally introduce the implication.</p><p>Conversely assume \(\exists xP(x)\) and eliminate its protected witness. Instantiate the supplied universal at \(e\), apply it to the branch assumption \(P(e)\), and obtain \(A^\uparrow\). Since the original \(A\) contains no \(e\), existential elimination concludes \(A\). Discharge the existential assumption. Neither direction selects a witness outside a supplied existential proof.</p></div>
+</section>
+
+<section id="constructive-quantifier-negation" data-formal="ifoqp-neg-existential" data-kind="theorem">
+  <h2>Negating existence means excluding every possible witness</h2>
+<div class="statement-box"><p>For every one-slot body,</p><div class="math-display">\[\neg\exists xP(x)\simeq_{\mathrm I}\forall x\neg P(x).\]</div></div>
+  <div class="proof"><p>Lift a supplied negative existential to fresh \(e\). Under \(P(e)\), existential introduction gives the contradicted existential. Discharge that body assumption to obtain \(\neg P(e)\), then universally introduce it. The negative existential and all original assumptions were lifted, so none contains the fresh name.</p><p>Conversely assume an existential and open its witness branch. The supplied universal instantiated at the protected witness gives \(\neg P(e)\), contradicting the branch assumption \(P(e)\). The branch conclusion is falsum, which contains no witness name. Eliminate the existential and discharge it by negation introduction. The transformations use exactly the native negation constructor; they do not replace it syntactically by implication to falsum.</p></div>
+</section>
+
+<section id="negative-witness" data-formal="ifoqp-negative-witness" data-kind="lemma">
+  <h2>A negative witness excludes a universal conclusion</h2>
+<p>For every one-slot body, intuitionistic deduction proves</p>
+  <div class="math-display">\[(\exists x\neg P(x))\to\neg\forall xP(x).\]</div>
+  <div class="proof"><p>Assume the existential, then temporarily assume the universal. Eliminate the existential with protected \(e\). Its branch has \(\neg P(e)\), while the lifted universal supplies \(P(e)\). Obtain falsum, discharge the witness branch, and negate the universal assumption. Finally discharge the existential assumption. The contrary direction would have to supply a present negative witness from the failure of a universal claim; the following growing model shows why that additional assertion fails.</p></div>
+</section>
+
+<section id="constant-domain-schema" data-formal="ifoqp-constant-domain-schema ifoqp-identity-transport ifoqp-growing-cd ifoqp-growing-counterdual ifoks-growing-model" data-kind="definition">
+  <h2>Specify the principle that separates current from future objects</h2>
+<p>For a complete \(A\) independent of \(x\), the <strong>constant-domain schema</strong> is</p>
+  <div class="math-display">\[\mathsf{CD}(A,P):\quad\forall x(A\lor P(x))\to\bigl(A\lor\forall xP(x)\bigr).\]</div>
+  <p>An <strong>identity-transport model</strong> has one fixed nonempty domain \(D\) at every world and identity transition maps; its interpretations still satisfy the homomorphism conditions. Those hypotheses describe actual maps, not merely domains with the same cardinality. For contrast use the <a href="intuitionistic-first-order-kripke-semantics#growing-domain-example">specified two-world growing model</a>: its root domain is \(\{0\}\), its upper domain is \(\{0,1\}\), \(P(d)\) means \(d=0\), and \(Q(d)\) means \(d=1\). Put \(E=\exists yQ(y)\), a closed formula.</p>
+</section>
+
+<section id="fixed-domain-validation" data-formal="ifoqp-fixed-domain-validation" data-kind="lemma">
+  <h2>Identity transports validate the constant-domain schema</h2>
+<p>Every identity-transport model forces every instance of \(\mathsf{CD}(A,P)\) at every world and assignment.</p>
+  <div class="proof"><p>At an arbitrary world \(v\), suppose \(\forall x(A\lor P(x))\) is forced. If \(A\) is forced there, the desired disjunction follows. Otherwise its universal clause at \(v\) itself gives \(P(d)\) for every \(d\in D\), since the independent \(A\) alternative fails. At every future world, persistence retains each such \(P(d)\), and identity transport leaves that same \(d\) and the old assignment unchanged. Hence the future universal clause forces \(\forall xP(x)\).</p><p>This reasoning applies at every future \(v\) of any starting world, so it proves the implication's forcing condition. The case distinction is an ordinary mathematical proof about this restricted model class; it does not introduce excluded middle as an inference rule of intuitionistic deduction.</p></div>
+</section>
+
+<section id="growing-domain-failures" data-formal="ifoqp-growing-cd-antecedent ifoqp-growing-cd-failure ifoqp-growing-neg-universal ifoqp-growing-no-negative-witness ifoqp-growing-counterdual-failure ifoqp-growing-nonderivable" data-kind="theorem">
+  <h2>The growing model refutes the two stronger principles</h2>
+<p>At the root of the specified growing model, \(\mathsf{CD}(E,P)\) and \(\neg\forall xP(x)\to\exists x\neg P(x)\) both fail to be forced. Thus neither closed formula has an intuitionistic certificate, with either equality mode.</p>
+  <div class="proof"><p>The root forces \(\forall x(E\lor P(x))\). At the root its only object is zero and satisfies \(P\). At the upper world, \(E\) is forced by witness one, so every object satisfies the disjunction. But root \(E\) fails, while \(\forall xP(x)\) fails because upper object one does not satisfy \(P\). Therefore the schema's conclusion fails at the same root as its true antecedent.</p><p>No world above the root forces \(\forall xP(x)\): the upper object one refutes it there, and is included in the root's future test. Hence the root forces \(\neg\forall xP(x)\). It does not force \(\exists x\neg P(x)\), since its only possible witness is zero and \(P(0)\) already holds. This refutes the second implication. In both cases <a href="intuitionistic-first-order-kripke-semantics#certificate-soundness">certificate soundness</a> excludes a closed deduction of the failed formula.</p></div>
+</section>
+
+<section id="eventual-model" data-formal="ifoqp-eventual-model ifoqp-predicate-body ifoqp-dns-formula ifoqp-eventual-atomic" data-kind="definition">
+  <h2>Let each object acquire its property at a finite stage</h2>
+<p>The <strong>eventual-predicate model</strong> has worlds \(0\leq1\leq2\leq\cdots\), constant domain \(\mathbb N\), and identity transition maps. Its language has one unary relation symbol \(R\) and no function symbols, with</p>
+  <div class="math-display">\[w\Vdash R(n)\quad\Longleftrightarrow\quad n\leq w.\]</div>
+  <p>Every true relation persists by transitivity of \(\leq\), and there are no function interpretations to check. Thus these data satisfy the full model conditions. For its one-slot atomic body define the <strong>double-negation-shift formula</strong></p>
+  <div class="math-display">\[\mathsf{DNS}(R):\quad(\forall x\neg\neg R(x))\to\neg\neg\forall xR(x).\]</div>
+  <p>The domain stays fixed: only the verified predicate instances increase. At stage \(w\), all numbers up to \(w\) satisfy \(R\), and every larger number eventually does.</p>
+</section>
+
+<section id="double-negation-shift-failure" data-formal="ifoqp-eventual-pointwise ifoqp-eventual-not-universal ifoqp-eventual-negative-universal ifoqp-eventual-not-double-universal ifoqp-eventual-dns-failure ifoqp-dns-nonderivable" data-kind="theorem">
+  <h2>Pointwise eventual truth does not give an eventual universal verification</h2>
+<div class="statement-box"><p>Every world of the eventual-predicate model forces \(\forall x\neg\neg R(x)\) and \(\neg\forall xR(x)\), but fails to force \(\neg\neg\forall xR(x)\). Consequently \(\mathsf{DNS}(R)\) has no closed intuitionistic certificate.</p></div>
+  <div class="proof"><p>Fix a world \(v\), an object \(n\), and any future \(u\geq v\). At \(\max(u,n)\), the object \(n\) satisfies \(R\). Therefore \(u\) cannot force \(\neg R(n)\), whose future condition would exclude this very instance. This proves \(\neg\neg R(n)\) at \(v\). Since \(v\) and \(n\) were arbitrary, the future universal clause proves \(\forall x\neg\neg R(x)\) at every starting world.</p><p>No world \(u\) forces \(\forall xR(x)\): its current object \(u+1\) fails the atomic test. The same fact at every future gives \(\neg\forall xR(x)\) at every world. Testing the double negation at the current world therefore refutes \(\neg\neg\forall xR(x)\). The DNS implication has a forced antecedent and failed consequent at its own world, so it fails there. Soundness rules out the proposed deduction. The infinite chain is part of the specified construction.</p></div>
+</section>
+
+<section id="quantified-classical-theorem" data-formal="ifoqp-quantified-em ifoqp-quantified-em-raw-classical ifoqp-quantified-em-classical" data-kind="lemma">
+  <h2>Classical deduction proves quantified excluded middle</h2>
+<p>For the eventual model's language put \(G=\forall x(R(x)\lor\neg R(x))\). There is an actual closed raw classical deduction of \(G\), with either equality mode.</p>
+  <div class="proof"><p>Open a fresh protected parameter \(e\). The <a href="intuitionistic-first-order-deduction#classical-extension">classical excluded-middle construction</a> gives \(R(e)\lor\neg R(e)\) with no ambient assumptions. Universal introduction closes the fresh parameter, yielding exactly \(G\). This is a syntactic classical proof in the native calculus, not merely a claim of ordinary semantic validity. Its public certificate follows by renaming into the auxiliary reserve.</p></div>
+</section>
+
+<section id="first-order-glivenko-failure" data-formal="ifoqp-eventual-not-em ifoqp-eventual-neg-em ifoqp-eventual-not-double-em ifoqp-first-order-glivenko-failure fongg-quantified-em-calculation fongg-eventual-translated-em" data-kind="theorem">
+  <h2>A classical quantified theorem need not have an intuitionistic double negation</h2>
+<div class="statement-box"><p>The specified formula \(G\) has a closed classical proof, while \(\neg\neg G\) has no closed intuitionistic certificate. Thus the <a href="glivenkos-propositional-theorem#glivenko-theorem">propositional Glivenko implication</a> does not extend unchanged to first-order formulas.</p></div>
+  <div class="proof"><p>At every world \(u\), choose its current object \(n=u+1\). The atom \(R(n)\) fails there. Its negation also fails: world \(n\geq u\) verifies \(R(n)\). Hence this object fails \(R(n)\lor\neg R(n)\), so \(G\) is not forced at \(u\).</p><p>No future world forces \(G\); therefore every world forces \(\neg G\). In particular the current world, as a future of itself, refutes \(\neg\neg G\). Kripke soundness excludes an intuitionistic certificate of that double-negated formula, while <a href="#quantified-classical-theorem"></a> supplies the required classical proof of its unnegated version. This conclusion uses both halves, rather than inferring classical provability from a completeness theorem.</p></div>
+  <p>The <a href="first-order-negative-translation#quantified-excluded-middle">full negative translation</a> of this classical theorem does have an intuitionistic proof. Its negations occur inside the universal according to the recursive formula clauses.</p>
+</section>
+
+<section id="double-negated-instances" data-formal="ifoqp-double-neg-em-raw ifoqp-quantified-double-neg-em-raw ifoqp-quantified-double-neg-em" data-kind="question">
+  <h2>Can every instance be double-negated without double-negating the universal?</h2>
+<p>Does intuitionistic deduction nevertheless prove \(\forall x\neg\neg(R(x)\lor\neg R(x))\)? Would that contradict the countermodel?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>It does prove this formula. For any full \(B\), assume \(\neg(B\lor\neg B)\). Under an additional \(B\), left disjunction introduction yields a contradiction, so negation introduction gives \(\neg B\). Right disjunction introduction now gives another contradiction. Discharge the outer assumption to obtain \(\neg\neg(B\lor\neg B)\), without a classical step. Apply this construction to the fresh \(R(e)\), then universally introduce.</p><p>There is no contradiction. The double negations occur inside the universal quantifier. Moving them outside would require the double-negation-shift principle for this body, which is not one of the intuitionistic rules. The same eventual model forces the displayed theorem but refutes \(\neg\neg\forall x(R(x)\lor\neg R(x))\), by the preceding calculation.</p></div></details>
+</section>
+
+<section id="finite-world-question" data-formal="ifoqp-maximal-em ifoqp-finite-double-neg-em" data-kind="question">
+  <h2>Would a finite frame give the same Glivenko counterexample?</h2>
+<p>Can the failure of \(\neg\neg G\) just established occur on a finite partially ordered frame with nonempty domains?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Every world in such a frame has a <a href="glivenkos-propositional-theorem#maximal-extensions">maximal extension</a>. At a maximal world only that world remains to test; for any assigned object, either its atomic predicate holds or it does not, in which case its negation is forced. Hence that maximal world forces \(G\). Every world above any chosen root therefore has a future verifying that formula, so none can force its negation. That is precisely root forcing of \(\neg\neg G\).</p><p>This argument also covers domains that grow before a maximal world. The infinite eventual model has no maximal world, so the finite argument cannot be applied to it. The claim concerns this particular quantified excluded-middle formula; it asserts no general finite-model theorem for intuitionistic first-order logic.</p></div></details>
+</section>
+
+<section id="nonderivability-and-negation" data-formal="ifoqp-all-true-model ifoqp-all-true-cd ifoqp-all-true-dns ifoqp-all-true-double-em ifoqp-negations-nonderivable" data-kind="question">
+  <h2>Does rejecting a principle prove its negation?</h2>
+<p>Do the countermodels make the negations of the displayed constant-domain instance, DNS formula, or \(\neg\neg G\) closed intuitionistic theorems?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Each of those three formulas is true in a one-world nonempty structure interpreting every relation as true. The first holds because its independent existential \(E\) is true; DNS holds because its universal predicate is true; and \(G\), hence \(\neg\neg G\), is true. Their negations are false in these singleton Kripke models, so soundness excludes closed intuitionistic proofs of those negations.</p><p>A pointed countermodel says that its failed conclusion is not a theorem valid in every model. It does not say that all models force the opposite conclusion. In particular, failure of a schema and deduction of its negation are different mathematical assertions.</p></div></details>
+</section>

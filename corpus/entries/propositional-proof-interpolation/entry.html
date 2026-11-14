@@ -65,10 +65,11 @@
   <p>Every call visits a proper premise tree. The tree is finite, so this recursion terminates. All tests are finite-set membership tests; every returned proof is assembled from primitive rules, the specified structural context-extension operation, and equalities of finite contexts. In particular, it does not invoke a validity test or choose a proof merely because one exists.</p>
 </section>
 
-<section id="maehara-lemma" data-formal="ppi-extractor ppi-witness" data-kind="theorem">
+<section id="maehara-lemma" data-formal="ppi-extractor ppi-witness ipi-extractor ipi-left-implication" data-kind="theorem">
   <h2>Extract both factors with only the common atom names</h2>
   <div class="statement-box"><p>For every supplied primitive proof \(T\) of \(\Gamma\) and every covering split \(\Gamma\subseteq L\cup R\), the specified extractor \(\mathsf M(T;L,R)\) returns an interpolation witness. Its formula \(I\) and returned trees satisfy</p><div class="math-display">\[\vdash L,I,\qquad\vdash R,I^\perp,\qquad\operatorname{at}(I)\subseteq\operatorname{At}(L)\cap\operatorname{At}(R).\]</div></div>
   <div class="proof"><p>Induct on the actual finite tree \(T\), proving the assertion for every pair of covering sides at each node. The atomic and truth leaves have precisely the witnesses proved above. For bottom, the premise is covered by the same sides, so its induction hypothesis is the required result.</p><p>For a disjunction or conjunction, coverage places its principal formula on at least one side. The prescribed membership test selects the left when both contain it. The indicated enlarged sides cover every premise, so the induction hypotheses apply with those new parameters. The three reconstruction lemmas prove both exact factor contexts and the atom bound. They use only constructors of the original calculus. This completes every primitive rule case and proves the assertion for the particular formula and proof trees returned by the recursion.</p></div>
+  <p>The <a href="intuitionistic-propositional-proof-interpolation#maehara-lemma">single-conclusion intuitionistic construction</a> returns a native formula and two intuitionistic factor trees. Its <a href="intuitionistic-propositional-proof-interpolation#left-implication">implication-left step</a> reverses the split in one premise, and its vocabulary bound includes the sole concluding formula on the right.</p>
 </section>
 
 <section id="proofs-with-cut" data-formal="ppi-cut-extractor pce-elimination" data-kind="theorem">

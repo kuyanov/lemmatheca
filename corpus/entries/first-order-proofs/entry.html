@@ -1,8 +1,9 @@
-<section id="derivations-and-theories" data-formal="fod-finite-derivation fod-derivability" data-kind="definition">
+<section id="derivations-and-theories" data-formal="fod-finite-derivation fod-derivability ifond-raw-derivation" data-kind="definition">
   <h2>Proofs from a theory</h2>
   <p>Fix a <a href="first-order-languages#signatures">first-order language</a> with equality. A <a href="first-order-structures#theories-and-models">theory</a> \(T\) is a set of sentences in this language; it need not be finite. <strong>Derivability</strong>, written \(T\vdash A\), means that a finite natural-deduction proof ends in the sentence \(A\), and every assumption left open belongs to \(T\). The proof may introduce temporary assumptions and discharge them, as in <a href="propositional-proofs#proofs-and-discharge">propositional natural deduction</a>. The notation \(\vdash A\) means that no assumptions remain open.</p>
   <p>We retain all the <a href="propositional-proofs#deduction-rules">classical propositional rules</a>, now applied to first-order sentences. The rules below add quantifiers and equality. A proof may use extra constant symbols as temporary names for objects. There is always a fresh name available: enlarge the language by an unlimited supply of auxiliary constants. These are ordinary constants within a proof, and the rules specify where their use can end. Conclusions and axioms of \(T\) stay in the original language.</p>
   <p>In a rule, \(A(x)\) denotes a scoped body with one available placeholder, labelled \(x\) in place of \(z_0\), and no free variables; other named objects are represented by constants. The expressions \(\forall x\,A(x)\) and \(\exists x\,A(x)\) bind that slot. The expression \(A(t)\) means its <a href="first-order-languages#bound-slot-instantiation">capture-safe instance</a> at the closed term \(t\). A closed term contains no free variables. The labels \(I\) and \(E\) stand for <strong>introduction</strong> and <strong>elimination</strong>: they introduce a quantifier into the conclusion or remove one from a premise.</p>
+  <p>The <a href="intuitionistic-first-order-deduction#propositional-rules">intuitionistic first-order calculus</a> retains the full connective trees and omits classical contradiction, while keeping the quantifier freshness restrictions.</p>
 </section>
 
 <section id="quantifier-instances" data-formal="fod-term-instance fod-universal-elimination fod-existential-introduction fod-retained-constant-witness" data-kind="definition">
@@ -12,13 +13,14 @@
   <p>Here \(t\) is any closed term in the language of the proof. <strong>Universal elimination</strong> uses the claim at the object named by \(t\). <strong>Existential introduction</strong> supplies that object as a witness. The term may already occur elsewhere in \(A(x)\): from \(R(c,c)\), for example, we may infer \(\exists x\,R(c,x)\). The retained occurrence of \(c\) is part of the formula, not a variable to be bound.</p>
 </section>
 
-<section id="fresh-parameters" data-formal="fod-universal-introduction fod-existential-elimination" data-kind="definition">
+<section id="fresh-parameters" data-formal="fod-universal-introduction fod-existential-elimination foqs-raw-certificate foqs-opening foqs-lifted-context" data-kind="definition">
   <h2>Arbitrary objects and temporary witnesses</h2>
   <div class="math-display">\[\frac{A(c)}{\forall x\,A(x)}\;\forall I
   \qquad\frac{\exists x\,A(x)\qquad\begin{array}{c}[A(c)]^1\\ \vdots\\ B\end{array}}{B}\;\exists E,1.\]</div>
   <p>For <strong>universal introduction</strong>, the constant \(c\) must occur neither in \(A(x)\) nor in any undischarged assumption of the proof of \(A(c)\). The reasoning then treats the object named by \(c\) as arbitrary. The condition permits assumptions about other constants and permits discharged assumptions involving \(c\).</p>
   <p>For <strong>existential elimination</strong>, \(c\) must occur neither in \(A(x)\), nor in \(B\), nor in the remaining undischarged assumptions of either premise proof. The displayed occurrences of the temporary assumption \(A(c)\) are discharged. The witness can help establish \(B\), but its name cannot survive in the conclusion or be constrained by an assumption left open. Such a name is also called an <strong>eigenparameter</strong>.</p>
   <p>The superscript \(1\) labels the discharged assumption; the dots stand for a finite subproof. As in propositional deduction, discharge may remove selected occurrences, including none. When two premise proofs use different open assumptions, combine their contexts by taking their union, subject to the stated freshness conditions.</p>
+  <p>The <a href="equality-free-first-order-sequents#quantifier-rules">quantified rules of the equality-free sequent calculus</a> use the same freshness restriction, represented by a newly tagged parameter.</p>
 </section>
 
 <section id="equality-rules" data-formal="fod-equality-reflexivity fod-equality-substitution fod-equality-symmetry fod-equality-transitivity" data-kind="definition">

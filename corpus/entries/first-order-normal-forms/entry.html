@@ -33,7 +33,7 @@
   <p>A formula is finite, so only finitely many names occur in it. An infinite stock of names lets us choose a different fresh label for every binder, avoiding all free names and all other chosen labels.</p>
 </section>
 
-<section id="negation-identities" data-formal="fonf-double-negation fonf-de-morgan-conjunction fonf-de-morgan-disjunction fonf-implication-disjunction fonf-not-universal fonf-not-existential fonf-negation-identities-support fo-satisfaction-negation fo-truth fonf-equivalence-negation fonf-equivalence-implication fonf-equivalence-universal fonf-equivalence-existential" data-kind="lemma">
+<section id="negation-identities" data-formal="fonf-double-negation fonf-de-morgan-conjunction fonf-de-morgan-disjunction fonf-implication-disjunction fonf-not-universal fonf-not-existential fonf-negation-identities-support fo-satisfaction-negation fo-truth fonf-equivalence-negation fonf-equivalence-implication fonf-equivalence-universal fonf-equivalence-existential ifoqp-neg-existential ifoqp-growing-counterdual-failure ifoqp-growing-nonderivable" data-kind="lemma">
   <h2>Negation reverses connectives and quantifiers</h2>
   <p>The classical truth clauses give the following equivalences:</p>
   <div class="math-display">\[\begin{gathered}
@@ -45,9 +45,10 @@
     <p>Fix a structure and assignment. The connective identities are the corresponding Boolean truth identities. To fail \(\forall u\,\theta\) is to have some domain element at which the body fails; this is precisely \(\exists u\,\neg\theta\). To fail \(\exists u\,\theta\) is to have the body fail at every element; this is precisely \(\forall u\,\neg\theta\). These are classical equivalences. The two sides have the same free names because negation leaves free support unchanged, a binary connective takes the union of its children's supports, and a scoped binder does not change the free names of its body.</p>
 </div>
   <p>An equivalence can be used inside a larger formula: corresponding children have the same truth values, and a quantifier compares the body at every possible value. Induction on the surrounding expression proves this replacement rule.</p>
+  <p>In intuitionistic deduction, <a href="intuitionistic-first-order-quantifier-principles#constructive-quantifier-negation">negated existence still gives universal negation</a>. The implication from a negated universal to a negative existential has a <a href="intuitionistic-first-order-quantifier-principles#growing-domain-failures">growing-domain countermodel</a>.</p>
 </section>
 
-<section id="negation-normal-form" data-formal="fonf-nnf-construction fonf-nnf-shape fonf-nnf-truth fonf-nnf-support fonf-negated-universal-example fonf-negated-universal-example-shape" data-kind="theorem">
+<section id="negation-normal-form" data-formal="fonf-nnf-construction fonf-nnf-shape fonf-nnf-truth fonf-nnf-support fonf-negated-universal-example fonf-negated-universal-example-shape efosd-raw-positive-forward efosd-raw-positive-backward efosd-raw-negative-forward efosd-raw-negative-backward" data-kind="theorem">
   <h2>Every formula has a negation normal form</h2>
   <div class="statement-box">
     <p>Every first-order formula \(\varphi\) has a formula \(N\) in negation normal form such that \(\varphi\equiv N\) and \(\operatorname{FV}(\varphi)=\operatorname{FV}(N)\). The construction works at every context size, retaining the surrounding placeholders.</p>
@@ -62,6 +63,7 @@
     <p>The inductive hypotheses and <a href="#negation-identities"></a> prove the two equivalences at each step. Every output uses only the permitted normal-form constructors. Free support is unchanged in the atomic and falsity cases, is the same union in either implication case, and is retained by either scoped quantifier. The quantifier step applies the induction hypothesis at context size \(n+1\); it does not turn a surrounding placeholder into a free variable. Taking \(N=N^+(\varphi)\) proves the result.</p>
 </div>
   <p>For instance, \(\neg\forall u\,(P(u)\to\exists v\,R(u,v))\) is equivalent to \(\exists u\,(P(u)\land\forall v\,\neg R(u,v))\). The counterexample to a universal implication consists of an object satisfying its antecedent for which no object satisfies its consequent.</p>
+  <p>For the equality-free full syntax, <a href="equality-free-first-order-signed-formula-deductions#four-conversions">signed-formula deductions</a> also construct classical proof conversions to and from the chosen positive or negative reading.</p>
 </section>
 
 <section id="moving-quantifiers" data-formal="fonf-moving-quantifiers fonf-empty-compatible-scope fonf-context-extension-support" data-kind="lemma">

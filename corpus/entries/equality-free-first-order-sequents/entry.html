@@ -1,0 +1,126 @@
+<section id="signed-quantified-formulas" data-formal="foqs-formula" data-kind="definition">
+  <h2>Use signed relation atoms and keep both quantifiers</h2>
+  <p>Fix a <a href="first-order-languages#signatures">language</a> \(L\) and free parameter set \(X\). We use its existing <a href="first-order-languages#terms">terms</a>, with free names in \(X\) and available bound slots \(z_0,\ldots,z_{n-1}\). A <strong>signed relation literal</strong> is \(R(\bar t)\) or \(\overline{R(\bar t)}\), with the same relation symbol, arity and term tuple in its two signs. Equality is not an allowed atom here.</p>
+  <p>A <strong>scoped signed normal formula</strong> is built from these literals, \(\bot,\top,\land,\lor,\forall,\exists\). A quantifier at scope \(n\) has a body at scope \(n+1\), binding its newest slot. All other constructors retain scope. Write \(\mathcal N_X(n)\) for these trees. This is an equality-free view of the <a href="first-order-proof-formulas#full-formulas">full first-order syntax</a>, with negation restricted to the literal signs. It imposes no restriction on function symbols inside terms or on the nesting of conjunctions, disjunctions and quantifiers.</p>
+</section>
+
+<section id="duality-and-rank" data-formal="foqs-dual foqs-rank foqs-dual-involution foqs-dual-rank" data-kind="definition">
+  <h2>Dualize signs, connectives and quantifiers together</h2>
+  <p>The <strong>dual</strong> \(A^\perp\) reverses literal signs, exchanges \(\bot\) with \(\top\), and obeys</p>
+  <div class="math-display">\[(A\land B)^\perp=A^\perp\lor B^\perp,\qquad(A\lor B)^\perp=A^\perp\land B^\perp.\]</div>
+  <div class="math-display">\[(\forall z_n A)^\perp=\exists z_n A^\perp,\qquad(\exists z_n A)^\perp=\forall z_n A^\perp.\]</div>
+  <p>The <strong>logical rank</strong> is zero for a literal or constant, one plus the maximum child rank for a binary connective, and one plus the body rank for a quantifier. Structural induction gives \((A^\perp)^\perp=A\) and \(\operatorname{rk}(A^\perp)=\operatorname{rk}(A)\): each paired constructor is exchanged twice, and the exchanged constructors have the same rank clause. The terms and all their free names are unchanged.</p>
+</section>
+
+<section id="reading-the-full-syntax" data-formal="foqs-reading foqs-reading-equality-free foqs-free-support foqs-quantifier-free foqs-realization foqs-dual-realization" data-kind="definition">
+  <h2>Read a signed tree as a full formula</h2>
+  <p>The <strong>full reading</strong> \(r:\mathcal N_X(n)\to\mathcal F_X(n)\) retains a positive relation atom, reads its negative sign as primitive negation, reads \(\top\) as \(\neg\bot\), and preserves conjunction, disjunction and either quantifier. In particular, \(r(A)\) is an actual equality-free full formula, at the same scope and with exactly the same free support.</p>
+  <p>Given a structure, free assignment and values for the available slots, define <strong>signed realization</strong> by the usual classical clauses: a positive relation literal is its relation's truth value, its negative sign negates that value, and the two quantifiers range over the structure's domain. This agrees with the <a href="first-order-proof-formulas#classical-truth">full classical interpretation</a> of \(r(A)\), by induction on the signed tree. The same induction proves that \(A^\perp\) is realized exactly when \(A\) is not: the quantified cases use classical quantifier negation, just as the binary cases use De Morgan's laws.</p>
+</section>
+
+<section id="positive-and-negative-normalization" data-formal="foqs-normalization foqs-normalization-truth foqs-normalization-support foqs-normalization-quantifier-free foqs-negative-dual foqs-reading-round-trip efosd-raw-positive-forward efosd-raw-positive-backward efosd-raw-negative-forward efosd-raw-negative-backward" data-kind="theorem">
+  <h2>Normalize the actual equality-free full formulas</h2>
+  <p>Every equality-free full formula \(F\) has specified signed trees \(N^+(F)\) and \(N^-(F)\), at the same scope, realizing respectively \(F\) and \(\neg F\). They have exactly the free support of \(F\), and are quantifier-free exactly when \(F\) is quantifier-free.</p>
+  <p>Moreover \(N^-(F)=N^+(F)^\perp\), and \(N^+(r(A))=A\) for every signed tree \(A\). Thus the signed presentation has an exact return map, in addition to its truth bridge.</p>
+  <div class="proof"><p>Define the two outputs together by structural recursion. A relation atom gives its positive and negative literals; falsum gives \(\bot\) and \(\top\). Native negation exchanges the two outputs. Conjunction preserves the positive children with conjunction and joins the negative children by disjunction; disjunction does the converse. The remaining clauses are</p>
+  <div class="math-display">\[N^+(F\to G)=N^-(F)\lor N^+(G),\qquad N^-(F\to G)=N^+(F)\land N^-(G).\]</div>
+  <div class="math-display">\[N^+(\forall z_nF)=\forall z_nN^+(F),\qquad N^-(\forall z_nF)=\exists z_nN^-(F).\]</div>
+  <div class="math-display">\[N^+(\exists z_nF)=\exists z_nN^+(F),\qquad N^-(\exists z_nF)=\forall z_nN^-(F).\]</div>
+  <p>The equality case cannot occur by hypothesis. Induct over all scopes at once. Each clause has the claimed classical meaning by its children and the connective or quantifier truth law. Each literal retains exactly its terms; binary clauses take the same union of supports and quantified clauses retain body support. No clause creates or deletes a quantifier except by exchanging its kind, so the quantifier-free tests agree. These observations prove the interpretation, support and fragment assertions. The same constructor induction proves the two literal identities, including \(N^+(\neg\bot)=\top\) in the truth-constant case. This completes every clause.</p></div>
+  <p>The <a href="equality-free-first-order-signed-formula-deductions#four-conversions">classical deduction conversions</a> turn these specified positive and negative readings into actual native proof transformations in both directions.</p>
+</section>
+
+<section id="scope-operations" data-formal="foqs-scope-map foqs-reading-map foqs-dual-map foqs-map-identity foqs-map-composition foqs-map-rank foqs-map-quantifier-free foqs-normalization-map foqs-free-substitution foqs-free-renaming foqs-opening foqs-instantiation foqs-fresh-instance-opening" data-kind="lemma">
+  <h2>Carry scope substitutions through the signed view</h2>
+  <p>The <a href="first-order-proof-formulas#scope-substitution">scope substitutions</a> act on a signed tree by substituting in its literal terms, retaining its constants and connectives, and using the same protected lift under either binder. For every compatible map \(\sigma\),</p>
+  <div class="math-display">\[r(A\langle\sigma\rangle)=r(A)\langle\sigma\rangle,\qquad(A\langle\sigma\rangle)^\perp=A^\perp\langle\sigma\rangle.\]</div>
+  <p>The action has identity and composition laws, preserves logical rank and quantifier-freeness, and commutes with normalization: \(N^\pm(F\langle\sigma\rangle)=N^\pm(F)\langle\sigma\rangle\). Write \(A[f]\), \(\operatorname{open}(A)\) and \(A(t)\) for its free-renaming, all-slot opening and one-slot instantiation special cases.</p>
+  <div class="proof"><p>Induct on trees. At a literal all operations use the existing term substitution, whose identity and composition laws already hold. At a binary connective they use the same transformed children. At either quantifier they use the same lifted scope map, so the induction hypotheses apply to the body. The <a href="first-order-proof-formulas#lifting-a-substitution">lifting composition law</a> identifies the maps in the composition case. Reading and duality do not alter terms, and normalization only changes formula constructors and signs. Their two traversals therefore coincide in every case. Rank and the quantifier-free test depend only on the retained tree shape.</p></div>
+</section>
+
+<section id="one-sided-sequents" data-formal="foqs-sequent foqs-satisfaction foqs-validity foqs-encoding foqs-encoding-truth" data-kind="definition">
+  <h2>A finite sequent offers alternative conclusions</h2>
+  <p>A <strong>one-sided sequent</strong> \(\vdash\Gamma\) is a finite set of complete signed formulas, meaning members of \(\mathcal N_X(0)\). Write \(\Gamma,A\) for insertion into this set. It is <strong>satisfied</strong> at an assignment when at least one of its members is realized, and <strong>valid</strong> when this holds in every nonempty \(L\)-structure at every free assignment. The empty sequent is never satisfied.</p>
+  <p>The <strong>one-sided encoding</strong> of finite sets \(\Lambda,\Delta\) of equality-free full formulas is</p>
+  <div class="math-display">\[E(\Lambda,\Delta)=\{N^-(F):F\in\Lambda\}\cup\{N^+(G):G\in\Delta\}.\]</div>
+  <p>At each assignment this encoding is satisfied exactly when truth of every member of \(\Lambda\) implies truth of some member of \(\Delta\). Indeed, a true negative alternative says that a premise fails, and a true positive alternative supplies a conclusion. This is the classical interpretation of a two-sided sequent, including either empty side. Set contexts already identify permutations and repeated occurrences; they do not identify different literal signs or different term tuples.</p>
+</section>
+
+<section id="primitive-rules" data-formal="foqs-raw-certificate foqsub-raw-weakening foqsub-raw-weakening-height foqcut-elimination foqcut-raw-conservativity foqcut-public-conservativity" data-kind="definition">
+  <h2>Generate raw certificates with seven rules</h2>
+  <p>A <strong>raw certificate</strong> is a finite tree built from precisely the following rules. Here \(a\) is a relation atom with its complete term tuple, and all displayed contexts are finite sets.</p>
+  <div class="math-display">\[\frac{}{\vdash\Gamma}\ (a,\bar a\in\Gamma),\qquad\frac{}{\vdash\Gamma}\ (\top\in\Gamma).\]</div>
+  <div class="math-display">\[\frac{\vdash\Gamma,A\qquad\vdash\Gamma,B}{\vdash\Gamma,A\land B},\qquad\frac{\vdash\Gamma,A,B}{\vdash\Gamma,A\lor B},\qquad\frac{\vdash\Gamma}{\vdash\Gamma,\bot}.\]</div>
+  <p>The two remaining rules are the quantified rules in <a href="#quantifier-rules"></a>. A raw certificate contains no cut inference and no primitive weakening inference. In particular, validity is an interpretation of its endsequent, not the definition of a certificate. Denote the collection of these finite trees by \(\mathcal C_X(\Gamma)\).</p>
+  <p>The <a href="equality-free-first-order-sequent-substitution#weakening">height-preserving weakening operation</a> rebuilds a supplied tree using these primitive rules, so it does not require an extra weakening constructor.</p>
+  <p>The <a href="equality-free-first-order-cut-elimination#eliminating-cuts">quantified cut-elimination construction</a> shows that allowing cut inside these actual trees adds no raw or public derivability.</p>
+</section>
+
+<section id="quantifier-rules" data-formal="foqs-raw-certificate foqs-lifted-context foqs-opening foqs-instantiation" data-kind="definition">
+  <h2>Introduce a quantifier with the correct kind of parameter</h2>
+  <p>For a one-slot body \(A\in\mathcal N_X(1)\) and a term \(t\) over \(X\), existential introduction is</p>
+  <div class="math-display">\[\frac{\vdash\Gamma,A(t)}{\vdash\Gamma,\exists z_0A}.\]</div>
+  <p>For universal introduction, first rename every original free name into the left component of \(X\sqcup\{e\}\); write this lifted context as \(\Gamma^\uparrow\). Opening the body's sole slot turns it into the separately tagged new free parameter \(e\). The rule is</p>
+  <div class="math-display">\[\frac{\vdash\Gamma^\uparrow,\operatorname{open}(A)}{\vdash\Gamma,\forall z_0A}.\]</div>
+  <p>This is the <strong>eigenparameter rule</strong>. The tag makes \(e\) absent from every lifted side formula and from the original free names in the concluding quantified formula. Its value is therefore unconstrained by the side context. It is a temporary parameter of the premise tree, not a constant added to \(L\). Existential introduction instead accepts a specified term and does not impose an eigenparameter condition on it.</p>
+</section>
+
+<section id="auxiliary-parameters" data-formal="foqs-reserved-certificate foqs-derivability" data-kind="definition">
+  <h2>Reserve free names for temporary witnesses</h2>
+  <p>For an endsequent over \(X\), fix a disjoint countable collection \(U=\{u_0,u_1,\ldots\}\) of <strong>auxiliary parameters</strong>. Its <strong>sequent certificate</strong> is a raw certificate over \(X\sqcup U\) whose endsequent is exactly \(\Gamma\) renamed into the \(X\)-component. Write \(\mathsf C\vdash\Gamma\) when such a certificate exists.</p>
+  <p>No member of \(U\) occurs in the displayed endsequent. Such names may nevertheless be used in witness terms inside its proof. A constant-free language has no closed term at all, so restricting every proof to the free names actually occurring at its root would forbid legitimate nonempty-domain arguments. The reserve fixes that problem without changing a relation symbol, function symbol or concluding formula. Raw certificates and certificates with a reserve are distinct specified objects; subsequent transformations can act on their actual trees.</p>
+</section>
+
+<section id="proof-height" data-formal="foqs-height" data-kind="definition">
+  <h2>Measure a finite proof tree</h2>
+  <p>The <strong>height</strong> \(h(p)\) of a raw certificate is zero at either leaf, one plus the child's height at a unary rule, and one plus the maximum of its two child heights at conjunction introduction. A sequent certificate has the height of its underlying raw certificate. These recurrences are well defined by induction on the finite tree.</p>
+  <p>Opening a quantifier changes the available parameter type but does not add infinitely many premise trees: universal introduction has one tree, with one fresh parameter. Its soundness argument varies the interpretation of that same parameter through the domain.</p>
+</section>
+
+<section id="soundness" data-formal="foqs-raw-soundness foqs-reserved-soundness foqs-soundness foqs-encoded-consequence" data-kind="theorem">
+  <h2>Every certificate is valid in every nonempty structure</h2>
+  <div class="statement-box"><p>If \(\mathsf C\vdash\Gamma\), then \(\Gamma\) is valid. Consequently, a certificate of \(E(\Lambda,\Delta)\) shows that every nonempty structure satisfying all premises in \(\Lambda\) satisfies at least one conclusion in \(\Delta\).</p></div>
+  <div class="proof"><p>First induct on a raw tree, proving satisfaction for every assignment of all its free parameters. An identity leaf contains an atom and its classical negation; a truth leaf contains \(\top\). At a conjunction step, if a side formula is already true there is nothing to prove. Otherwise the two induction hypotheses force both displayed factors, so the conjunction is true. The disjunction rule obtains one of its two factors unless a side formula is true. Bottom insertion preserves any true alternative already supplied by its premise.</p>
+  <p>For existential introduction, a true instance \(A(t)\) gives a witness: the value of \(t\) under the assignment. The <a href="first-order-proof-formulas#classical-truth">instantiation truth law</a> identifies this with truth of the quantified body at that value. A true side formula again suffices by itself.</p>
+  <p>For universal introduction, suppose every original side formula is false under an assignment \(s\). For each domain element \(m\), extend \(s\) by assigning \(e\) the value \(m\). Every lifted side formula remains false because it mentions only the original names. The premise's induction hypothesis therefore forces \(\operatorname{open}(A)\), which is exactly the body with its slot assigned \(m\). This holds for every \(m\), giving the universal conclusion. This argument explains the eigenparameter restriction rather than assuming it.</p>
+  <p>Finally, to interpret a certificate over the reserve, extend an original assignment by giving every auxiliary parameter any one domain value. Such a value exists because the domain is nonempty. Raw soundness yields a true renamed end formula, and the renaming truth law returns its truth under the original assignment. The encoding interpretation proves the stated consequence assertion.</p></div>
+</section>
+
+<section id="quantified-identity" data-formal="foqs-raw-compound-identity foqs-compound-identity foqs-fresh-instance-opening" data-kind="theorem">
+  <h2>Atomic identity expands through quantifiers</h2>
+  <p>For every signed formula \(A\) and finite complete context \(\Gamma\), a raw certificate of \(\Gamma,A,A^\perp\) can be constructed. In particular, every such compound identity has a sequent certificate.</p>
+  <div class="proof"><p>Induct on logical rank, with all free parameter types and side contexts arbitrary. Literals use atomic identity and constants use the truth leaf. For a conjunction, obtain the two smaller identities with the other dual component already in the side context, introduce their dual disjunctions, and use conjunction introduction. For a disjunction, use the smaller identities to introduce the conjunction of its dual components, then its positive disjunction. This is the same contextual construction as the <a href="classical-propositional-sequents#identity-expansion">propositional identities</a>; choosing the side contexts inside the induction avoids assuming a weakening transformation.</p>
+  <p>For \(A=\forall z_0B\), the dual is \(\exists z_0B^\perp\). Open \(B\) using fresh \(e\). Its rank is smaller, so the induction hypothesis supplies an identity containing \(\operatorname{open}(B)\) and its dual, with \(\Gamma^\uparrow\) as side context. The dual is the instance of the lifted \(B^\perp\) at the term \(e\), by the scope-operation laws. Existential introduction therefore gives the premise needed for universal introduction, which concludes \(\Gamma,\forall B,\exists B^\perp\). The existential case reverses these two roles: introduce the universal dual through a fresh parameter, then the existential positive formula inside that premise. All recursive calls have smaller rank, including after opening, whose action preserves rank.</p>
+  <p>Apply this raw construction to the renamed formulas and context to obtain the certificate over the reserve. Every step uses only the seven primitive rules.</p></div>
+</section>
+
+<section id="universal-instance" data-formal="foqs-universal-instance-formula foqs-universal-instance-proof" data-kind="lemma">
+  <h2>A universal assumption supplies any specified term instance</h2>
+  <p>Let \(R\) be unary and \(t\) a term over the displayed free names. There is a sequent certificate for the equality-free full formula \(\forall x\,R(x)\to R(t)\), meaning its singleton positive normal form.</p>
+  <div class="proof"><p>Atomic identity gives \(R(t),\overline{R(t)}\). Regard \(R(t)\) as the side context and apply existential introduction to the negative literal, using the supplied term \(t\). This gives \(R(t),\exists x\,\overline{R(x)}\). The disjunction rule combines them into \(\exists x\,\overline{R(x)}\lor R(t)\), exactly the positive normalization of the displayed implication. Renaming the supplied term into the reserve yields the required sequent certificate.</p></div>
+</section>
+
+<section id="nonempty-domain-example" data-formal="foqs-excluded-middle-body foqs-reserved-existence" data-kind="lemma">
+  <h2>A temporary parameter can witness a closed existence</h2>
+  <p>For every unary relation symbol \(R\), there is a sequent certificate of the closed equality-free formula \(\exists x\,(R(x)\lor\neg R(x))\), even when the language has no constant or function symbol.</p>
+  <div class="proof"><p>Choose the reserved free parameter \(u_0\). Atomic identity at \(R(u_0)\), followed by disjunction introduction, gives \(R(u_0)\lor\overline{R(u_0)}\). Existential introduction uses the term \(u_0\), producing the displayed closed formula. The concluding formula contains no auxiliary name, although its proof has used one.</p>
+  <p>In a structure, \(u_0\) can name an arbitrarily chosen domain element. This proof uses classical excluded middle for that element and the nonemptiness of the domain; it supplies no particular ground term when the language has none.</p></div>
+</section>
+
+<section id="freshness-counterexample" data-formal="foqs-unary-language foqs-two-element-structure foqs-freshness-premise foqs-freshness-conclusion foqs-freshness-premise-proof foqs-bad-eigenparameter-model" data-kind="question">
+  <h2>Why may the eigenparameter not remain in a side formula?</h2>
+  <p>Suppose one allowed \(\vdash\Gamma,A(e)\) to imply \(\vdash\Gamma,\forall xA(x)\) while leaving occurrences of \(e\) in \(\Gamma\) unchanged. Would the resulting rule be sound?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Take \(\Gamma=\{\neg R(e)\}\), so its premise \(\neg R(e),R(e)\) is an atomic identity. In a two-element structure let \(R(0)\) hold and \(R(1)\) fail, and assign \(e=0\). The proposed conclusion \(\neg R(e),\forall xR(x)\) has no true member: the first is false at \(0\), and the universal assertion fails at \(1\).</p><p>The genuine rule lifts every side formula from the original parameter type, so the newly tagged name cannot already occur there. This is the same mathematical restriction as <a href="first-order-proofs#fresh-parameters">fresh parameters in natural deduction</a>, expressed directly in the syntax of the premise.</p></div></details>
+</section>
+
+<section id="no-ground-term" data-formal="foqs-unary-language foqs-no-closed-term foqs-no-raw-existence foqs-reserved-existence" data-kind="question">
+  <h2>Can the auxiliary reserve simply be removed?</h2>
+  <p>In a language with one unary relation and no function symbols, suppose the displayed free parameter set is empty. Is there a raw certificate, with no reserve, of \(\exists x(R(x)\lor\neg R(x))\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. There is no term over the empty set of parameters: a term can start neither with a free variable nor with a function symbol. A raw proof of a singleton existential sequent would have to end with existential introduction. Its other possible last rules have the wrong principal constructor or require a literal pair or truth in that singleton. Existential introduction, however, requires a term, so it too is impossible.</p><p>The sequent certificate constructed in <a href="#nonempty-domain-example"></a> uses a term over the reserved parameter set instead. This distinction prevents a false completeness claim for the raw fixed-parameter calculus. The universal eigenparameter rule alone cannot supply a term at the bottom of an unrelated existential proof.</p></div></details>
+</section>
+
+<section id="consistency" data-formal="foqs-unit-structure foqs-empty-unprovable foqs-falsum-unprovable" data-kind="theorem">
+  <h2>No certificate ends in the empty sequent or falsum alone</h2>
+  <p>Neither \(\mathsf C\vdash\varnothing\) nor \(\mathsf C\vdash\{\bot\}\) holds, for any language or displayed free parameter set.</p>
+  <div class="proof"><p>Interpret every function symbol in a one-element structure by its unique possible function, and every relation symbol as false. A free assignment to this domain always exists. The empty sequent has no realized member, and falsum is false. Either proposed certificate would contradict <a href="#soundness"></a>. No consistency axiom or completeness theorem is used in this argument.</p></div>
+</section>
