@@ -1,0 +1,114 @@
+<section id="minimal-pairs" data-formal="mpt-minimal-pair mpt-set-minimal-pair mpt-minimal-pair-set-equivalence" data-kind="definition">
+  <h2>Two nonzero degrees can have only zero below both</h2>
+  <p>The <a href="turing-degrees#least-degree">zero Turing degree</a> consists of the computable sets. A pair \(\mathbf a,\mathbf b\) is an <strong>ordinary minimal pair</strong> if both degrees are nonzero and</p>
+  <div class="math-display">\[\forall\mathbf c\;[\mathbf c\le\mathbf a\ \land\ \mathbf c\le\mathbf b\ \Longrightarrow\ \mathbf c=\mathbf0].\]</div>
+  <p>Equivalently, representatives \(A,B\subseteq\mathbb N\) are both noncomputable, and every set \(C\) satisfying \(C\le_T A\) and \(C\le_T B\) is computable. This equivalence uses the <a href="turing-degrees#degree-order">degree order</a> and its least-degree characterization. The adjective “ordinary” places no enumerability requirement on the representatives. We will not construct a c.e. minimal pair here.</p>
+</section>
+
+<section id="common-output-requirements" data-formal="mpt-common-requirement" data-kind="definition">
+  <h2>Control a pair of programs whenever their outputs agree</h2>
+  <p>Retain the fixed <a href="oracle-program-numberings#oracle-numbering">oracle-program numbering</a> \(\varphi_e^X\). A displayed equality to a function means equality at every input, including definedness. For each pair of indices \(e,f\), impose</p>
+  <div class="math-display">\[R_{e,f}:\quad\forall g:\mathbb N\to\mathbb N\;[\varphi_e^A=g=\varphi_f^B\ \Longrightarrow\ g\text{ is computable}].\]</div>
+  <p>It is useful to demand this for arbitrary total numerical outputs, rather than only membership bits. Choosing \(g=\chi_C\), where \(\chi_C\) is the characteristic function of \(C\), will handle a common lower bound. The two indices are retained throughout the argument: we do not change which programs compute the common function.</p>
+</section>
+
+<section id="finite-certificates" data-formal="incomp-word incomp-binary-word incomp-prefix incomp-realizes incomp-certificate-value incomp-prefix-primitive incomp-certificate-primitive incomp-prefix-adequacy incomp-certificate-persists mpt-disagreement-candidate mpt-has-disagreement mpt-candidate-primitive" data-kind="definition">
+  <h2>Search for two persistent, unequal finite outputs</h2>
+  <p>Use the <a href="incomparable-turing-degrees#binary-prefixes">binary words</a>, prefix relation \(\preceq\), and <a href="incomparable-turing-degrees#prefix-certificates">bounded checker</a> \(D(\sigma,e,x)\). Thus \(D(\sigma,e,x)=y+1\) certifies the output \(y\); zero certifies nothing. Word codes, their lengths, prefix comparison and this checker are primitive recursive. Every actual halting computation has a <a href="incomparable-turing-degrees#prefix-adequacy">certifying prefix extending any prescribed prefix</a>, and certificates <a href="incomparable-turing-degrees#certificate-persistence">persist under extension</a>.</p>
+  <p>For fixed words \(\sigma,\tau\), call a triple \((x,\rho,\eta)\) a <strong>disagreement witness</strong> for \((e,f,\sigma,\tau)\) if \(\sigma\preceq\rho\), \(\tau\preceq\eta\), both \(D(\rho,e,x)\) and \(D(\eta,f,x)\) are positive, and these two numbers differ. Their decoded outputs consequently differ as well. Checking a proposed triple is primitive recursive; deciding whether any such triple exists need not be computable.</p>
+</section>
+
+<section id="split-case" data-formal="mpt-split-excludes-common" data-kind="lemma">
+  <h2>A disagreement witness excludes a common total output</h2>
+  <p>If \((x,\rho,\eta)\) is a disagreement witness, then no sets \(X,Y\) extending \(\rho,\eta\), respectively, can satisfy \(\varphi_e^X=g=\varphi_f^Y\) for a total function \(g\).</p>
+  <div class="proof">
+    <p>Write the two positive certificate values as \(y+1\) and \(z+1\), with \(y\ne z\). Certificate soundness gives \(\varphi_e^X(x)=y\) and \(\varphi_f^Y(x)=z\). A common function would give \(y=g(x)=z\), a contradiction. The same argument applies after any further finite extensions.</p>
+  </div>
+</section>
+
+<section id="prefix-search-program" data-formal="incomp-word-recovery mpt-search-candidate mpt-search-partial mpt-search-candidate-primitive mpt-search-recursive mpt-search-code mpt-search-code-evaluation mpt-search-result-certificate" data-kind="definition">
+  <h2>Fix one ordinary search program before choosing a common function</h2>
+  <p>Fix an index \(e\) and a word \(\sigma\). On input \(x\), enumerate all numerical binary-word codes \(u=0,1,2,\ldots\). Interpret a code by decoding its finite list and reducing its entries modulo two; this enumeration contains every binary word. Search until the corresponding word \(\rho_u\) satisfies</p>
+  <div class="math-display">\[\sigma\preceq\rho_u\quad\text{and}\quad D(\rho_u,e,x)>0,\]</div>
+  <p>then return \(D(\rho_u,e,x)-1\). Denote this partial function by \(S_{e,\sigma}(x)\). The displayed test is primitive recursive in \((x,u)\). Unbounded least search followed by subtraction therefore supplies an <strong>ordinary</strong> partial-recursive program for \(S_{e,\sigma}\); it makes no oracle queries. This particular program depends only on \(e,\sigma\), before a common function \(g\) is chosen. It is not claimed to halt on every input without further assumptions.</p>
+</section>
+
+<section id="no-split-search" data-formal="mpt-no-split-search mpt-no-split-computable" data-kind="theorem">
+  <h2>Without a disagreement, that search computes every common total output</h2>
+  <p>Suppose there is no disagreement witness for \((e,f,\sigma,\tau)\), the sets \(X,Y\) extend \(\sigma,\tau\), and \(\varphi_e^X=g=\varphi_f^Y\) is total. Then the specified ordinary program \(S_{e,\sigma}\) halts on every input and returns \(g(x)\). In particular \(g\) is computable.</p>
+  <div class="proof">
+    <p>Fix \(x\). Since \(\varphi_e^X(x)=g(x)\), prefix adequacy gives a word \(\rho\succeq\sigma\) with \(D(\rho,e,x)=g(x)+1\). Its code eventually occurs in the search, so the search halts. Let \(\widehat\rho\) be the first successful word, whose output is \(y\). This word need not be a prefix of \(X\), which is why soundness on \(X\) alone does not justify the decoder.</p>
+    <p>Instead use \(\varphi_f^Y(x)=g(x)\). Prefix adequacy gives \(\eta\succeq\tau\) with \(D(\eta,f,x)=g(x)+1\). If \(y\ne g(x)\), then \((x,\widehat\rho,\eta)\) is a disagreement witness. Thus \(y=g(x)\). The ordinary partial-recursive search is consequently total with exactly the function \(g\) as its output, so \(g\) is computable.</p>
+  </div>
+</section>
+
+<section id="settling-a-pair" data-formal="mpt-selected mpt-selected-spec mpt-settle" data-kind="definition">
+  <h2>One extension settles a pair of indices</h2>
+  <p>Define \(E_{e,f}(\sigma,\tau)\) as follows. If there is a disagreement witness, choose the one with the least numerical triple code and retain its words \(\rho,\eta\). If there is none, retain \(\sigma,\tau\). In either case append a zero to both retained words. This padding ensures proper growth without losing a successful certificate.</p>
+  <p>The choice is definite: use the established <a href="coding-finite-sequences#list-code">finite sequence coding</a> and the standard pairing map to enumerate triples. No effective method for choosing between the two cases is asserted.</p>
+</section>
+
+<section id="pair-extension" data-formal="mpt-settle-growth mpt-settle-correct" data-kind="theorem">
+  <h2>The extension works for every completion of its two words</h2>
+  <p>Write \((\sigma',\tau')=E_{e,f}(\sigma,\tau)\). Both new words properly extend their inputs. For all sets \(X,Y\) extending \(\sigma',\tau'\), respectively, and every total \(g\),</p>
+  <div class="math-display">\[\varphi_e^X=g=\varphi_f^Y\quad\Longrightarrow\quad g\text{ is computable}.\]</div>
+  <div class="proof">
+    <p>In the witness case, the old words extend to \(\rho,\eta\), and appending zero preserves their unequal outputs. The antecedent is impossible by <a href="#split-case"></a>. In the other case the new sets still extend \(\sigma,\tau\), so <a href="#no-split-search"></a> proves the conclusion using the fixed program \(S_{e,\sigma}\). Each word gains at least one position in either case. Because the assertion holds for every completion, later stages cannot undo it.</p>
+  </div>
+</section>
+
+<section id="ordinary-diagonal-extension" data-formal="mpt-diagonal-bit mpt-diagonal-word mpt-diagonal-growth mpt-diagonal-correct turing-red-computable-uniform" data-kind="lemma">
+  <h2>A separate bit makes one set different from one computable candidate</h2>
+  <p>For an index \(e\) and word \(\sigma\), put \(m=|\sigma|\) and define</p>
+  <div class="math-display">\[b=\begin{cases}1,&\varphi_e^{\varnothing}(m)\downarrow=0,\\0,&\text{otherwise},\end{cases}\qquad H_e(\sigma)=\sigma b.\]</div>
+  <p>Then every \(X\) extending \(H_e(\sigma)\) differs, as a total characteristic function, from \(\varphi_e^{\varnothing}\).</p>
+  <div class="proof">
+    <p>If the displayed computation returns zero, then \(\chi_X(m)=1\). Otherwise \(\chi_X(m)=0\), while that computation either diverges or has a nonzero output. In all cases \(\varphi_e^{\varnothing}(m)\ne\chi_X(m)\). Outputs larger than one cause no problem. Every ordinary computable characteristic function occurs in the empty-oracle numbering, by the <a href="turing-degrees#computable-oracles">ordinary-program bridge</a>, so meeting all these requirements makes \(X\) noncomputable.</p>
+  </div>
+</section>
+
+<section id="stage-construction" data-formal="mpt-round mpt-stage mpt-left-word mpt-right-word mpt-left-set mpt-right-set mpt-round-growth mpt-stage-prefixes mpt-stage-lengths mpt-stage-realizes incomp-coherent-union incomp-union-bit" data-kind="definition">
+  <h2>At each round diagonalize twice and settle one program pair</h2>
+  <p>Start with \(\sigma_0=\tau_0=[]\). At round \(n\), first form \(u=H_n(\sigma_n)\) and \(v=H_n(\tau_n)\). Decode \(n=\langle e,f\rangle\) using the fixed pairing bijection, and set</p>
+  <div class="math-display">\[(\sigma_{n+1},\tau_{n+1})=E_{e,f}(u,v).\]</div>
+  <p>This defines the actual sequences of words and the actual sets</p>
+  <div class="math-display">\[A=\bigcup_n\sigma_n,\qquad B=\bigcup_n\tau_n.\]</div>
+  <p>The unions mean the sets whose characteristic sequences extend every displayed word. Both operations preserve prefixes and append a bit, so \(|\sigma_{n+1}|\ge|\sigma_n|+2\) and \(|\tau_{n+1}|\ge|\tau_n|+2\). In particular the lengths are at least \(n\), and the <a href="incomparable-turing-degrees#growing-unions">coherent-union lemma</a> makes \(A,B\) well defined. Concretely \(\chi_A(x)=\sigma_{x+1}(x)\) and \(\chi_B(x)=\tau_{x+1}(x)\).</p>
+</section>
+
+<section id="constructed-minimal-pair" data-formal="mpt-constructed-requirements mpt-constructed-noncomputable mpt-constructed-common-lower mpt-constructed-minimal-pair" data-kind="theorem">
+  <h2>The two constructed sets form an ordinary minimal pair</h2>
+  <div class="statement-box">
+    <p>The sets \(A,B\) in <a href="#stage-construction"></a> are noncomputable, and every \(C\subseteq\mathbb N\) satisfies</p>
+    <div class="math-display">\[C\le_T A\ \land\ C\le_T B\quad\Longrightarrow\quad C\text{ is computable}.\]</div>
+  </div>
+  <div class="proof">
+    <p>At round \(e\), the first two operations impose the ordinary diagonal requirements for index \(e\) on \(A\) and \(B\). Every later word extends those outputs, and so do the final unions. Thus neither set has a computable characteristic function.</p>
+    <p>Now suppose \(C\le_T A\) and \(C\le_T B\). Choose the actual oracle-program indices \(e,f\) witnessing these reductions, so \(\varphi_e^A=\chi_C=\varphi_f^B\). At round \(\langle e,f\rangle\), <a href="#pair-extension"></a> settles exactly this pair. The final unions extend that round's output words, so the same theorem makes \(\chi_C\) computable. Computability of the characteristic function is exactly computability of \(C\).</p>
+  </div>
+</section>
+
+<section id="degree-consequences" data-formal="mpt-constructed-degree-pair mpt-minimal-pair-consequences mpt-degree-consequences ept-jump-no-glb ept-jump-incomparable" data-kind="theorem">
+  <h2>These degrees are incomparable and have greatest lower bound zero</h2>
+  <p>Let \(\mathbf a=\deg_T A\) and \(\mathbf b=\deg_T B\) for the constructed sets. Then \(\mathbf0&lt;\mathbf a\), \(\mathbf0&lt;\mathbf b\), the degrees are incomparable, and \(\mathbf0\) is their greatest lower bound.</p>
+  <div class="proof">
+    <p>Noncomputability and the least-degree characterization give positivity. If \(\mathbf a\le\mathbf b\), then \(\mathbf a\) itself would be a common lower bound. The minimal-pair conclusion would give \(\mathbf a=\mathbf0\), a contradiction. Exchange the two degrees for the other direction. Finally \(\mathbf0\) is a lower bound of every pair of degrees, while the theorem says every common lower bound of this pair equals \(\mathbf0\). This is exactly the greatest-lower-bound property.</p>
+  </div>
+  <p>The <a href="exact-pairs-and-failure-of-meets#failure-of-meets">exact-pair construction</a> gives a different outcome: an incomparable pair with no greatest common lower bound.</p>
+</section>
+
+<section id="incomparability-question" data-formal="mpt-joins-not-minimal mpt-joins-collapse turing-degree-zero-least turing-join-degree-upper-bounds" data-kind="question">
+  <h2>A common nonzero lower bound survives taking joins</h2>
+  <p>Take any incomparable degrees \(\mathbf a,\mathbf b\), and choose a nonzero degree \(\mathbf d\). Can the joins \(\mathbf a\vee\mathbf d\) and \(\mathbf b\vee\mathbf d\) form a minimal pair? Must they remain incomparable?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The joins need not even remain incomparable: for example choosing \(\mathbf d=\mathbf a\vee\mathbf b\) makes them equal. Whether or not they are incomparable, they cannot form a minimal pair, because \(\mathbf d\ne\mathbf0\) lies below both. The minimal-pair requirement controls all common lower bounds, so it is a different requirement from checking the two comparisons between a given pair.</p>
+  </div></details>
+</section>
+
+<section id="enumerability-question" data-formal="mpt-settle mpt-has-disagreement mpt-diagonal-bit mpt-round mpt-stage" data-kind="question">
+  <h2>Have we constructed a computably enumerable minimal pair?</h2>
+  <p>Does the finite-stage construction supply enumerations of \(A\) and \(B\), or a computable function returning their stage words?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No such procedure is supplied. A round chooses between the existence and nonexistence of any disagreement witness, and the diagonal bit uses a halting-output test. Although each finite certificate can be checked effectively, those case choices are not claimed computable. The construction commits to both zero and one bits, whereas an enumeration of a c.e. set only lists positive members. Proving the existence of c.e. minimal pairs requires an additional argument; the <a href="finite-injury-and-posts-problem#friedberg-muchnik">finite-injury incomparability theorem</a> alone also does not prove minimality.</p>
+  </div></details>
+</section>

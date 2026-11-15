@@ -1,0 +1,97 @@
+<section id="finite-lc-problems" data-kind="definition" data-formal="pdl-linearity pdl-axioms ipwem-schema-consequence ifmp-problem-subformulas ifmp-problem-atoms ifmp-world-bound aps-underlying-set order-chain">
+  <h2>Ask the finite consequence question for Dummett logic</h2>
+  <p>A <strong>presented LC problem</strong> is a finite list \(H\) of shared numbered-atom formulas and a conclusion \(A\), with premise set \(\Gamma=\operatorname{set}(H)\). Write \(\Gamma\vdash_{\mathrm{LC}}A\) for the <a href="propositional-dummett-linearity#linearity-schema">established Dummett consequence relation</a>, which allows finitely many additional instances from</p>
+  <div class="math-display">\[\mathcal L=\{(B\to C)\lor(C\to B):B,C\text{ are native formulas}\}.\]</div>
+  <p>Reuse the <a href="kc-propositional-finite-models#finite-kc-problems">finite problem data</a> \(\Sigma=\Sigma(\Gamma,A)\), \(S=S(\Gamma,A)\), and \(N=2^{|\Sigma|}\). A <a href="ordered-sets#chains-and-hasse-diagrams"><strong>chain</strong></a> is a partial order in which every two worlds are comparable. The finite models used below have a least root, at which the premises and conclusion are tested.</p>
+</section>
+
+<section id="chain-soundness" data-kind="lemma" data-formal="pdl-linear-cone-forcing lcfm-chain-soundness">
+  <h2>Comparability validates every linearity instance</h2>
+  <p>If every pair of worlds in a nonempty preordered Kripke model \(M\) is comparable, then every world forces every member of \(\mathcal L\). Consequently a supplied LC deduction preserves forcing from its premises at every world of \(M\).</p>
+  <div class="proof"><p>Every future cone is then linearly ordered. The <a href="propositional-dummett-linearity#frame-characterization">linearity frame characterization</a> therefore validates every compound-formula instance under every persistent valuation, including the given valuation. A supplied LC deduction is an ordinary intuitionistic deduction with finitely many such extra assumptions. All those assumptions are forced, so intuitionistic soundness yields its conclusion whenever its original premises are forced.</p></div>
+</section>
+
+<section id="rooted-linear-source" data-kind="lemma" data-formal="imkc-lc-rooted iks-generated-forcing">
+  <h2>Use the rooted canonical cone whose worlds are comparable</h2>
+  <p>If \(\Gamma\nvdash_{\mathrm{LC}}A\), the <a href="intermediate-propositional-kripke-completeness#rooted-countermodels">rooted LC countermodel construction</a> supplies a partially ordered model \(M\) and least world \(r\) such that \(M,r\Vdash\Gamma\), \(M,r\nVdash A\), and every pair of its worlds is comparable.</p>
+  <div class="proof"><p>Restrict the canonical model to the future cone above its counterworld. This world is least in the cone and retains the premise truths and conclusion failure by generated-submodel preservation. The canonical frame has linearly ordered future cones, so any two members of this particular cone are comparable. Thus the source has a global comparison property before filtration begins; no comparison is inferred merely from a selected valuation.</p></div>
+</section>
+
+<section id="finite-chain-countermodels" data-kind="theorem" data-formal="lcfm-finite-countermodel ipff-countermodel ipff-cardinality ipff-root ipff-chain-traces ipff-greatest">
+  <h2>Filter the source to a bounded finite chain countermodel</h2>
+  <div class="statement-box"><p>If \(\Gamma\nvdash_{\mathrm{LC}}A\) for a finite presented problem, there is a nonempty finite chain model \(F\), with least world \(r_F\), greatest world \(t_F\), and at most \(N\) worlds, satisfying</p><div class="math-display">\[F,r_F\Vdash\Gamma,\qquad F,r_F\nVdash A.\]</div></div>
+  <div class="proof"><p>Filter the rooted linear source model on \(\Sigma\). The <a href="intuitionistic-propositional-finite-filtrations#tracked-countermodels">tracked countermodel theorem</a> preserves all premises and failure of \(A\) at the root trace, and the <a href="intuitionistic-propositional-finite-filtrations#finite-trace-frame">cardinal bound</a> gives at most \(N\) trace worlds. The <a href="intuitionistic-propositional-finite-filtrations#least-root">root trace remains least</a>.</p><p>For two trace worlds choose original representatives. Their original comparison gives the same-direction trace inclusion, by <a href="intuitionistic-propositional-finite-filtrations#chain-traces">comparability preservation</a>. Thus the finite partial-order trace frame is a chain. The original comparable frame is also globally directed: choose the larger of any two worlds as a common upper world. Hence the <a href="intuitionistic-propositional-finite-filtrations#greatest-trace">greatest-trace theorem</a> supplies a greatest world in this same finite frame. This proves every claimed property together with the required counterexample.</p></div>
+</section>
+
+<section id="finite-chain-characterization" data-kind="theorem" data-formal="lcfm-finite-validity lcfm-bounded-validity">
+  <h2>Finite rooted chains characterize finite LC consequence</h2>
+  <p>For finite \(\Gamma\), the deduction \(\Gamma\vdash_{\mathrm{LC}}A\) exists if and only if every nonempty finite chain model, at its least root, forces \(A\) whenever it forces all premises in \(\Gamma\). It is enough to test chains with at most \(N\) worlds.</p>
+  <div class="proof"><p>Chain soundness gives both validity assertions from a deduction. If no deduction exists, the preceding theorem produces a finite chain countermodel, already within the bound. It violates both assertions. Thus each finite validity condition implies derivability in the original LC relation.</p></div>
+</section>
+
+<section id="chain-code-test" data-kind="definition" data-formal="ifmp-relation-code ifmp-admissible-code kcfm-rooted-top-code lcfm-comparable-code lcfm-comparability-test lcfm-comparability-correct">
+  <h2>Add exactly the missing comparison test</h2>
+  <p>For a relation table \(r:[n]^2\to\{0,1\}\), its <strong>comparability condition</strong> is</p>
+  <div class="math-display">\[\forall j,k\in[n]\quad r(j,k)=1\text{ or }r(k,j)=1.\]</div>
+  <p>The <strong>comparability test</strong> \(\operatorname{Chain}(r)\) returns one exactly when this condition holds, by scanning all \(n^2\) pairs. A <strong>chain code</strong> is an admissible relation-and-atom code with designated root and greatest indices \(i,t\), satisfying the <a href="kc-propositional-finite-models#rooted-top-codes">rooted-top conditions</a> and this additional comparison condition. All comparisons concern the table relation, not the numerical order of the indices.</p>
+</section>
+
+<section id="chain-code-models" data-kind="lemma" data-formal="ifmp-code-model kcfm-code-partial-order kcfm-code-endpoints lcfm-code-comparable lcfm-code-schema-validity">
+  <h2>A passing code gives the actual finite chain model</h2>
+  <p>An admissible rooted-top code that passes \(\operatorname{Chain}(r)\) gives a nonempty finite chain model, with the designated least root and greatest world. This exact model validates every linearity instance at every index.</p>
+  <div class="proof"><p>The <a href="kc-propositional-finite-models#code-class-models">rooted-top construction</a> already gives a persistent partially ordered code model and its two endpoints. The new test compares every pair for that same coded relation, so the partial order is a chain. Chain soundness then validates the entire schema \(\mathcal L\) for the extended atom valuation, including formulas outside the input support.</p></div>
+</section>
+
+<section id="presenting-chains" data-kind="lemma" data-formal="ifmp-present-relation ifmp-present-valuation ifmp-presentation-admissible kcfm-present-endpoints lcfm-present-comparable ifmp-presentation-forcing">
+  <h2>A bijection preserves comparisons as well as the endpoints</h2>
+  <p>Present a finite chain model \(F\) by a bijection \(b:[n]\to W_F\), and restrict its atom table to \(S\). The exact tables pass admissibility, the rooted-top test at the preimages of \(r_F,t_F\), and the comparability test. Supported forcing at the root is preserved.</p>
+  <div class="proof"><p>The <a href="kc-propositional-finite-models#presenting-endpoints">endpoint presentation lemma</a> supplies admissibility, antisymmetry, and both endpoints, while preserving every supported formula. Given indices \(j,k\), the chain compares \(b(j)\) and \(b(k)\). In the first direction the presented table has \(r(j,k)=1\); in the second it has \(r(k,j)=1\). Thus the additional test also passes for the same presentation.</p></div>
+</section>
+
+<section id="lc-candidate-test" data-kind="definition" data-formal="lcfm-candidate lcfm-candidate-correct">
+  <h2>Reuse the KC candidate and require a chain</h2>
+  <p>The <strong>LC candidate test</strong> is the Boolean conjunction</p>
+  <div class="math-display">\[\operatorname{Cand}_{\mathrm{LC}}(H,A;r,v,i,t):=\operatorname{Cand}_{\mathrm{KC}}(H,A;r,v,i,t)\land\operatorname{Chain}(r).\]</div>
+  <p>Here conjunction is Boolean conjunction, and the <a href="kc-propositional-finite-models#kc-candidate-test">KC candidate test</a> already checks admissibility, the rooted-top conditions, truth of every premise at \(i\), and failure of \(A\) at \(i\). The new test therefore accepts exactly chain codes that refute the original finite problem at their least root.</p>
+</section>
+
+<section id="bounded-lc-search" data-kind="definition" data-formal="lcfm-search ifmp-relation-code-count ifmp-valuation-code-count ifmp-boolean-forcing">
+  <h2>Search the same finite sizes with the stricter class test</h2>
+  <p>The <strong>bounded LC countermodel search</strong> \(\operatorname{Refute}_{\mathrm{LC}}(H,A)\) scans the <a href="kc-propositional-finite-models#bounded-kc-search">same finite choices</a> of sizes \(0\leq n\leq N\), relation tables, supported atom tables, and indices \(i,t\), returning one exactly when an LC candidate passes and zero otherwise.</p>
+  <p>The old tests and native formula evaluator are terminating calculations, and comparability adds one finite loop over pairs of indices. The resulting complete scan therefore terminates. No candidate exists at size zero because there is no root index. The input-dependent bound is still computed from \(\Sigma(\Gamma,A)\); no fixed number of worlds independent of the input has been substituted for it.</p>
+</section>
+
+<section id="lc-search-correctness" data-kind="theorem" data-formal="lcfm-search-correctness lcfm-search-zero ifmp-boolean-forcing-correctness">
+  <h2>The scan decides exactly the native LC consequence relation</h2>
+  <div class="statement-box"><p>For every presented finite problem,</p><div class="math-display">\[\operatorname{Refute}_{\mathrm{LC}}(H,A)=1\quad\Longleftrightarrow\quad\operatorname{set}(H)\nvdash_{\mathrm{LC}}A.\]</div><p>The zero answer is equivalent to \(\operatorname{set}(H)\vdash_{\mathrm{LC}}A\).</p></div>
+  <div class="proof"><p>A passing candidate gives an actual finite chain model. Correctness of Boolean forcing turns its tests into premise truths and conclusion failure at its least root. Since every linearity instance is valid there, chain soundness excludes an LC deduction.</p><p>Conversely, a failed deduction has the bounded finite chain countermodel constructed above. Relabel this exact model by \([n]\) and retain precisely the atom support \(S\). The presentation lemmas preserve the two endpoints, all comparisons, and the input formula values. Hence this presentation passes every LC candidate test at the preimage of the root, and its size lies in the finite search range. The scan returns one. As before, the two possible Boolean answers give the zero-answer equivalence too.</p></div>
+</section>
+
+<section id="two-world-lc-code" data-kind="lemma" data-formal="ifmp-example-problem ifmp-example-relation ifmp-example-valuation ifmp-example-code kcfm-chain-class lcfm-chain-comparable lcfm-chain-candidate lcfm-chain-search pdl-not-lc-em">
+  <h2>The earlier two-world countermodel is still a chain</h2>
+  <p>The <a href="kc-propositional-finite-models#two-world-kc-code">worked two-world code</a> with no premises and conclusion \(p_0\lor\neg p_0\) also passes the LC candidate test. Consequently its bounded LC search returns one, and ordinary excluded middle is not an LC theorem.</p>
+  <div class="proof"><p>The relation matrix is upper triangular with both diagonal entries true, so every pair of indices is comparable. Its KC candidate already passes, with root zero and greatest index one. The new comparability test is therefore true as well. Its size two lies within the same bound eight, so it witnesses the LC scan's one answer. Search correctness gives the stated nonderivability.</p></div>
+</section>
+
+<section id="diamond-code-boundary" data-kind="lemma" data-formal="lcfm-diamond-relation lcfm-diamond-valuation lcfm-diamond-values lcfm-diamond-noncomparison lcfm-diamond-candidates lcfm-diamond-searches pdl-not-kc-linearity pdl-instance-theorem">
+  <h2>A greatest world does not pass the extra comparison test</h2>
+  <p>For \(L=(p_0\to p_1)\lor(p_1\to p_0)\), present the <a href="propositional-dummett-linearity#diamond-separation">four-world diamond</a> by indices \(0,1,2,3\), with root zero, greatest index three, and relation table</p>
+  <div class="math-display">\[r=\begin{pmatrix}1&amp;1&amp;1&amp;1\\0&amp;1&amp;0&amp;1\\0&amp;0&amp;1&amp;1\\0&amp;0&amp;0&amp;1\end{pmatrix}.\]</div>
+  <p>The atom table has verified-name sets</p>
+  <div class="math-display">\[V(0)=\varnothing,\qquad V(1)=\{0\},\qquad V(2)=\{1\},\qquad V(3)=\{0,1\}.\]</div>
+  <p>With no premises, these tables pass the KC candidate for \(L\) but fail the LC candidate. In fact</p>
+  <div class="math-display">\[\operatorname{Refute}_{\mathrm{KC}}([],L)=1,\qquad \operatorname{Refute}_{\mathrm{LC}}([],L)=0.\]</div>
+  <div class="proof"><p>The table is reflexive, transitive and antisymmetric, with the stated endpoints. Both atom upsets are persistent. At index one, \(p_0\) is true and \(p_1\) false; at index two the reverse holds. Both indices are accessible from zero, so both implications in \(L\) fail at zero. This proves acceptance by the KC candidate. However \(r(1,2)=r(2,1)=0\), so comparability fails and the LC candidate is rejected.</p><p>The <a href="propositional-dummett-linearity#diamond-separation">diamond countermodel</a> already proves that KC does not derive \(L\); KC search correctness therefore gives its one answer. LC does derive \(L\), since it is one of its allowed axiom instances. LC search correctness gives zero. Rejecting this single diamond code alone would not prove that every LC candidate fails; the native axiom deduction supplies that conclusion for the whole scan.</p></div>
+</section>
+
+<section id="rooted-chain-question" data-kind="question" data-formal="pdl-discrete-frame pdl-discrete-local-not-global pdl-discrete-valid lcfm-generated-comparable iks-generated-model iks-generated-forcing iks-generated-countermodel">
+  <h2>Must every frame validating linearity be one global chain?</h2>
+  <p>Why is it legitimate to search rooted chains when the frame characterization requires only linearly ordered future cones?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The two isolated-world frame has linearly ordered future cones, since each cone is a singleton, but its two worlds are incomparable. It is <a href="propositional-dummett-linearity#local-global-question">locally linear without being globally comparable</a>.</p><p>At any designated counterexample world \(w\) in a locally linear model, restrict to its generated future cone. This cone has least world \(w\), and any two of its worlds lie above \(w\), so local linearity at \(w\) compares them. <a href="intuitionistic-kripke-semantics#generated-truth">Generated-submodel preservation</a> keeps the same formula truths and failures at \(w\). Thus the countermodel can first be rooted and made globally comparable, and only then filtered to a finite chain. No assertion that unrelated original components were comparable is needed.</p></div></details>
+</section>
+
+<section id="tracking-linearity-question" data-kind="question" data-formal="lcfm-finite-countermodel pdl-frame-characterization lcfm-code-schema-validity lcfm-diamond-candidates lcfm-diamond-searches">
+  <h2>Why do the untracked linearity instances remain true?</h2>
+  <p>The tracked set contains only subformulas of the finite input. Why does the resulting chain still force every instance \((B\to C)\lor(C\to B)\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Tracked truth preserves the input formulas. A separate order argument proves that the finite frame is a chain. The linearity frame characterization quantifies over every persistent valuation and every pair of native formulas \(B,C\), so it validates all those instances for the filtered valuation too. They need not be included in the finite tracked set.</p><p>This is also why the comparison test is essential. A greatest world suffices for weak excluded middle, as the diamond demonstrates, but it does not make its incomparable middle worlds comparable or validate the linearity schema there.</p></div></details>
+</section>

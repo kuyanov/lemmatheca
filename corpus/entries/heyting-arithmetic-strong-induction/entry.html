@@ -1,0 +1,111 @@
+<section id="fixed-parameters" data-formal="ha-certificate ha-theory ha-induction-rule hasi-predicate-instance" data-kind="definition">
+  <h2>Keep the predicate, its parameters and the deduction fixed</h2>
+  <p>Work in the original native language of <a href="heyting-arithmetic#heyting-arithmetic">Heyting arithmetic</a>, with terms \(0,S,+,\cdot\), logical equality, all native connectives and both quantifiers. Fix a full formula \(A(x,\bar y)\), a finite ordered parameter tuple \(\bar y\), and a finite additional context \(\Gamma\) over those parameters. The distinguished name \(x\) is absent from \(\Gamma\). The parameter tuple may be empty, and \(A\) may contain disjunction and unbounded quantifiers.</p>
+  <p>Every proof below constructs an actual <a href="heyting-arithmetic#heyting-arithmetic">finite HA certificate</a> from the supplied certificates. It uses the original closed arithmetic axioms and intuitionistic deduction, including the established <a href="heyting-arithmetic#induction-as-derived-rule">ordinary induction operation</a>. Parameters remain fixed during induction. A protected name introduced by a quantifier rule is fresh for the lifted ambient context.</p>
+</section>
+
+<section id="history-and-minimum" data-formal="hasi-history hasi-negative-history hasi-minimum hasi-minimum-body hasi-complete-premise hasi-predicate-instance" data-kind="definition">
+  <h2>Write the complete history and the minimum formulas explicitly</h2>
+  <p>Use the native <a href="heyting-arithmetic-order#defined-orders">additive order formulas</a> \(u\le v\equiv\exists d(d+u=v)\) and \(u&lt;v\equiv Su\le v\). With all new binders chosen fresh, put</p>
+  <div class="math-display">\[H_A(n)\equiv\forall x\,(x&lt;n\to A(x)),\qquad N_A(n)\equiv\forall x\,(x&lt;n\to\neg A(x)).\]</div>
+  <div class="math-display">\[M_A(m)\equiv A(m)\land N_A(m),\qquad T_A\equiv\forall n\,(H_A(n)\to A(n)).\]</div>
+  <p>Here \(\bar y\) remains free in each abbreviation. \(M_A(m)\) says that \(m\) satisfies \(A\) and every smaller input fails it. \(T_A\) is the complete-induction premise. The subscript \(A\) specifies an actual formula tree; these definitions add no quantification over predicates to arithmetic.</p>
+</section>
+
+<section id="scope-substitutions" data-formal="hasi-parameter-map hasi-parameter-renaming hasi-binder-instance hasi-predicate-instance-substitution hasi-predicate-instance-renaming hasi-history-substitution hasi-history-renaming hasi-negative-history-substitution hasi-negative-history-renaming hasi-minimum-substitution hasi-minimum-renaming hasi-complete-premise-substitution hasi-complete-premise-renaming" data-kind="lemma">
+  <h2>Substitute parameters while protecting the history input</h2>
+  <p>Renaming or substituting the original parameters commutes literally with the displayed constructions. If \(\sigma\) replaces \(\bar y\) by specified terms and leaves the distinguished predicate input protected, then</p>
+  <div class="math-display">\[H_A(t)[\sigma]=H_{A[\sigma]}(t[\sigma]),\quad N_A(t)[\sigma]=N_{A[\sigma]}(t[\sigma]),\quad M_A(t)[\sigma]=M_{A[\sigma]}(t[\sigma]).\]</div>
+  <div class="proof"><p>The history binder is extended past the parameter map, fixing its fresh input name. The <a href="heyting-arithmetic-order#scope-identities">order substitution identity</a> handles its guard; the native scope identities handle implication, negation and the universal. The minimum formula then uses conjunction. Substitution for the distinguished input of \(A\) is likewise capture-free, including below its own quantifiers. Thus the notation \(A(t)\) always denotes its specified term instance, with no free name captured by the displayed history binder.</p></div>
+</section>
+
+<section id="history-boundaries" data-formal="hasi-history-zero hasi-history-successor hao-strict-initial-segment hao-lt-zero" data-kind="lemma">
+  <h2>A successor history adds exactly its new endpoint</h2>
+  <p>For every full \(A\), HA constructs certificates of \(H_A(0)\) and the two implications abbreviated by</p>
+  <div class="math-display">\[H_A(Sn)\;\longleftrightarrow\;H_A(n)\land A(n).\]</div>
+  <div class="proof"><p>For the zero history, open an arbitrary \(x\), assume \(x&lt;0\), and use the proved <a href="heyting-arithmetic-order#order-zero">impossibility of a strict zero bound</a> to obtain falsum and then \(A(x)\). Discharge the guard and close \(x\).</p><p>From \(H_A(Sn)\), every \(x&lt;n\) also satisfies \(x&lt;Sn\): strict order implies non-strict order, and \(x&lt;Sn\leftrightarrow x\le n\). This gives \(H_A(n)\). Reflexivity gives \(n\le n\), hence \(n&lt;Sn\), so the same supplied history gives \(A(n)\).</p><p>Conversely, suppose \(H_A(n)\) and \(A(n)\), and open \(x&lt;Sn\). The exact <a href="heyting-arithmetic-order#initial-segments">successor-segment split</a> gives \(x&lt;n\lor x=n\). The first branch uses the old history. In the second, logical equality transports \(A(n)\) to \(A(x)\). Discharge and universally close the arbitrary \(x\). Every branch concludes the identical native formula. Applying this result to \(\neg A\) also gives \(N_A(0)\) and \(N_A(Sn)\leftrightarrow N_A(n)\land\neg A(n)\).</p></div>
+</section>
+
+<section id="strong-induction-rule" data-formal="hasi-cumulative-body hasi-cumulative-body-base hasi-cumulative-body-successor hasi-cumulative-body-opening hasi-cumulative-body-instance hasi-cumulative-proof hasi-strong-rule ha-induction-rule" data-kind="theorem">
+  <h2>Ordinary induction constructs strong induction for every full body</h2>
+  <div class="statement-box"><p>For every fixed full \(A(x,\bar y)\), a supplied HA certificate of \(T_A\) under \(\Gamma\) transforms into an HA certificate of \(\forall x\,A(x,\bar y)\) under the same \(\Gamma\).</p></div>
+  <div class="proof"><p>Use the actual ordinary induction axiom for the full body \(H_A(n)\), with the fixed parameter tuple \(\bar y\). Its base certificate is <a href="#history-boundaries"></a>. In the protected successor branch, the induction assumption is \(H_A(e)\). Instantiate the supplied \(T_A\) at that same \(e\) and apply its implication to get \(A(e)\). Conjoin it with the history assumption. The backward successor-history implication constructs \(H_A(Se)\). Discharging the protected branch and applying ordinary induction yields \(\forall n\,H_A(n)\).</p><p>Now open an arbitrary \(e\). Instantiate this universal and the supplied \(T_A\) there, and apply implication elimination to obtain \(A(e)\). Universal introduction gives the required conclusion. The input predicate itself was never tested: this construction works for arbitrary native disjunctions, implications and quantified subformulas.</p><p>All arithmetic supports are finite. Union the support of the supplied certificate with those of the history lemmas and the one displayed ordinary induction instance, and weaken the participating proof trees to that union. The resulting deduction uses precisely the original HA theory. The cumulative argument is the constructive complete-induction argument of <em>Logic and Proof</em>, §17.2, with these native order and certificate steps supplied explicitly.</p></div>
+</section>
+
+<section id="closed-strong-induction" data-formal="hasi-strong-schema hasi-strong-schema-proof hao-close-certificate hao-instantiate-closed" data-kind="lemma">
+  <h2>Discharge the premise and close the finite parameter list</h2>
+  <p>For each full body \(A\), HA has an actual certificate of the closed strong-induction instance</p>
+  <div class="math-display">\[\forall\bar y\,\bigl[T_A\to\forall x\,A(x,\bar y)\bigr].\]</div>
+  <div class="proof"><p>Work first under the single temporary assumption \(T_A\) over the original finite parameter list. Apply <a href="#strong-induction-rule"></a> to that assumption certificate and discharge it by implication introduction. There are no remaining additional assumptions. Apply the <a href="heyting-arithmetic-order#finite-universal-certificates">finite universal-closure operation</a> in the chosen parameter order. Its term-instantiation operation subsequently gives any specified parameter instance under a finite additional context. The empty parameter list requires no extra universal introduction.</p></div>
+</section>
+
+<section id="zero-step-question" data-formal="hasi-history-zero hasi-strong-zero hasi-complete-premise" data-kind="question">
+  <h2>Where is the zero case in the strong-induction premise?</h2>
+  <p>The premise \(T_A\) has no separately displayed \(A(0)\). Does strong induction require an additional base certificate?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The zero history \(H_A(0)\) is already proved by the impossible strict zero bound. Instantiating \(T_A\) at zero and applying it to that history constructs \(A(0)\). Thus the zero obligation is present in \(T_A\), where its hypothesis is vacuous. In the cumulative proof, ordinary induction still has its explicit base \(H_A(0)\).</p></div></details>
+</section>
+
+<section id="internal-decisions" data-formal="hasi-predicate-decision hasi-predicate-decision-substitution hasi-predicate-decision-renaming ha-quantifier-free-decision hao-le-decision hao-lt-decision habf-decision habf-search-reindex" data-kind="definition">
+  <h2>Supply decisions inside arithmetic before searching for a minimum</h2>
+  <p>An <strong>internal decision certificate for the predicate</strong> is a supplied HA certificate, under the same \(\Gamma\), of</p>
+  <div class="math-display">\[D_A\equiv\forall x\,(A(x,\bar y)\lor\neg A(x,\bar y)).\]</div>
+  <p>This is a proof of a native disjunction at each arithmetic input. It is supplied independently of the strong-induction construction. The <a href="heyting-arithmetic#quantifier-free-decidability">quantifier-free decision proofs</a>, and the <a href="heyting-arithmetic-order#decidable-order">order decision proofs</a>, give examples after closing their distinguished input. The latter formulas already contain a native existential. An external test of a few numeral instances does not supply this universal certificate.</p>
+  <p>The <a href="heyting-arithmetic-bounded-formulas#uniform-decisions">bounded-formula decision construction</a> supplies this uniform decision premise for every expression in its finite-parameter bounded grammar. It uses the internal search theorem below at the quantifier steps, with fresh inputs reindexed into the required finite parameter tuple.</p>
+</section>
+
+<section id="search-invariant" data-formal="hasi-search-invariant hasi-minimum-exists hasi-minimum-body-instance hasi-minimum-exists-substitution hasi-minimum-exists-renaming hasi-search-invariant-substitution hasi-search-invariant-renaming" data-kind="definition">
+  <h2>Record either a completely empty interval or a least witness</h2>
+  <p>For the strict interval below \(n\), define</p>
+  <div class="math-display">\[F_A(n)\equiv N_A(n)\lor\exists m\,(m&lt;n\land M_A(m)).\]</div>
+  <p>The left disjunct excludes every input below the bound. The right disjunct carries an actual native existential proof of a globally least witness that lies below the bound. Its minimality quantifies over all smaller inputs, so it remains valid when the search bound increases. The displayed alternatives and witnesses are inside arithmetic; the construction does not enumerate the elements of a model externally.</p>
+</section>
+
+<section id="finite-search-step" data-formal="hasi-search-zero hasi-search-carry-witness hasi-search-endpoint-witness hasi-search-successor hasi-history-successor" data-kind="lemma">
+  <h2>Extend the interval by one internal decision</h2>
+  <p>Using the supplied \(D_A\), HA constructs \(F_A(0)\) and a protected successor proof from \(F_A(e)\) to \(F_A(Se)\).</p>
+  <div class="proof"><p>At zero, choose the left disjunct using \(N_A(0)\). For the successor, eliminate the supplied disjunction \(F_A(e)\). If it carries \(\exists m(m&lt;e\land M_A(m))\), open its protected witness \(m\). From \(m&lt;e\) obtain \(m&lt;Se\) by the successor-bound equivalence and strict-to-nonstrict conversion. Retain the same \(M_A(m)\), introduce the existential at that same \(m\), and choose the right disjunct of \(F_A(Se)\). The result contains no protected witness, so existential elimination closes this branch.</p><p>In the other case we have \(N_A(e)\). Instantiate the supplied decision certificate at \(e\), obtaining \(A(e)\lor\neg A(e)\). In the positive branch, conjoin \(A(e)\) with \(N_A(e)\) to get \(M_A(e)\). Reflexivity and the successor-bound law give \(e&lt;Se\), so existential introduction at \(e\) supplies the right disjunct of \(F_A(Se)\). In the negative branch, the successor-history law for \(\neg A\) combines \(N_A(e)\) and \(\neg A(e)\) into \(N_A(Se)\); choose the left disjunct.</p><p>These are native disjunction eliminations on supplied proofs. The protected induction input and the separate existential witness have different fresh tags. Every branch concludes \(F_A(Se)\), and each temporary assumption is discharged by its own rule. This accounts for both outcomes of the only new predicate test.</p></div>
+</section>
+
+<section id="bounded-search" data-formal="hasi-search-body hasi-search-body-base hasi-search-body-successor hasi-search-body-opening hasi-search-body-instance hasi-bounded-search hasi-bounded-search-instance ha-induction-rule" data-kind="theorem">
+  <h2>Induction proves the finite search dichotomy uniformly in the bound</h2>
+  <div class="statement-box"><p>A supplied certificate of \(D_A\) under \(\Gamma\) transforms into an actual HA certificate of \(\forall n\,F_A(n)\) under the same \(\Gamma\).</p></div>
+  <div class="proof"><p>Apply ordinary native induction to the full body \(F_A(n)\). Its base and protected step are <a href="#finite-search-step"></a>; the finite context \(\Gamma\), including the support of the supplied \(D_A\), stays fixed. The induction axiom permits this body with its disjunction, existential and universal subformulas. After the step is discharged, the induction operation supplies the stated universal proof.</p><p>Universal elimination at any specified arithmetic term \(t\) gives the exact dichotomy for the interval below \(t\). Thus variable bounds and fixed parameters are included in one internal proof. No external induction over the elements represented by \(t\) is being assumed.</p></div>
+</section>
+
+<section id="least-witness-rule" data-formal="hasi-least-witness hasi-minimum-exists hasi-minimum-body-instance hasi-least-schema hasi-least-schema-proof hao-close-certificate hao-instantiate-closed" data-kind="theorem">
+  <h2>A decidable witnessed predicate has a least witness</h2>
+  <div class="statement-box"><p>From supplied HA certificates of \(D_A\) and \(\exists x\,A(x,\bar y)\) under \(\Gamma\), construct a certificate of \(\exists m\,M_A(m)\) under \(\Gamma\).</p></div>
+  <div class="proof"><p>Use <a href="#bounded-search"></a> to construct \(\forall n\,F_A(n)\). Eliminate the supplied existential with a protected witness \(w\), retaining its proof of \(A(w)\). Instantiate the search theorem at \(Sw\). If its result is \(N_A(Sw)\), instantiate that universal at \(w\). Since \(w&lt;Sw\), it gives \(\neg A(w)\), contradicting the branch assumption. Explosion gives the desired existential in this branch.</p><p>In the other search branch, eliminate \(\exists m(m&lt;Sw\land M_A(m))\), retain \(M_A(m)\), and introduce \(\exists mM_A(m)\) at that same protected \(m\). Close this witness branch, then close the original \(w\)-branch: the final existential contains neither protected name. This transforms the two actual input certificates and finite supports without choosing a witness from semantic existence.</p><p>Discharging the two premises and closing the parameter tuple also gives the schema \(\forall\bar y[D_A\to(\exists xA(x)\to\exists mM_A(m))]\). Its decision premise is explicit.</p></div>
+</section>
+
+<section id="least-witness-unique" data-formal="hasi-minimum-unique hao-trichotomy" data-kind="lemma">
+  <h2>Two least witnesses are equal without testing the predicate</h2>
+  <p>For arbitrary full \(A\), HA proves \((M_A(m)\land M_A(n))\to m=n\). This uniqueness operation needs no \(D_A\).</p>
+  <div class="proof"><p>Apply the internal <a href="heyting-arithmetic-order#comparison-induction">three-way comparison</a> to \(m,n\). If \(m&lt;n\), the negative history in \(M_A(n)\) gives \(\neg A(m)\), contradicting the positive part of \(M_A(m)\). If \(n&lt;m\), exchange the two roles and obtain falsum. The equality alternative gives the conclusion directly. Discharge the two supplied minimum assumptions, using explosion in the impossible comparison branches.</p></div>
+</section>
+
+<section id="zero-minimum" data-formal="hasi-zero-minimum" data-kind="lemma">
+  <h2>Zero is a minimum exactly when it satisfies the predicate</h2>
+  <p>HA constructs both directions of \(M_A(0)\leftrightarrow A(0)\), for every full \(A\).</p>
+  <div class="proof"><p>The forward operation projects the positive part. For the reverse, conjoin the supplied \(A(0)\) with the already constructed empty history \(N_A(0)\). No predicate decision or witness search is required at this endpoint.</p></div>
+</section>
+
+<section id="order-predicate-example" data-formal="hasi-example-order-predicate hasi-example-order-instance hasi-example-order-decision hasi-example-order-minimum" data-kind="lemma">
+  <h2>The least input above a supplied bound is the bound itself</h2>
+  <p>Fix an arithmetic term \(t\) over the parameter names, and take \(A_t(x)\equiv t\le x\). HA has its internal decision certificate and a certificate of \(M_{A_t}(t)\).</p>
+  <div class="proof"><p>Close the established order decisions over the fresh input \(x\) to obtain \(D_{A_t}\). Reflexivity proves \(A_t(t)\). To prove the negative history, open \(x&lt;t\) and assume \(t\le x\). Mixed transitivity gives \(x&lt;x\), contradicting strict irreflexivity. Discharge the assumed \(t\le x\), then the bound guard, and close \(x\). Conjoin this history with reflexivity.</p><p>Thus existential introduction at \(t\) supplies a witnessed example of the least-number conclusion. The construction applies when \(t=0\) as well: the negative interval is empty. It exhibits a decidable predicate with a quantified native order abbreviation.</p></div>
+</section>
+
+<section id="unrestricted-least-number" data-formal="hasi-em-predicate hasi-em-witness hasi-em-zero hasi-least-number-em ha-zero-or-successor" data-kind="theorem">
+  <h2>Removing all predicate decisions would supply excluded middle</h2>
+  <p>Fix any native arithmetic formula \(B(\bar y)\) and form, with fresh \(n\),</p>
+  <div class="math-display">\[A_B(n)\equiv(n=0\land B)\lor n=S0.\]</div>
+  <p>A supplied HA certificate of \((\exists nA_B(n))\to\exists mM_{A_B}(m)\) transforms into a certificate of \(B\lor\neg B\), under the same finite parameter context. Consequently a least-number schema available for every full predicate without its decision premise yields every arithmetic instance of excluded middle.</p>
+  <div class="proof"><p>HA proves \(A_B(S0)\) by its right disjunct and reflexivity. Introduce the existential at \(S0\), apply the supplied least-number implication, and open its protected least witness \(m\). Eliminate the internal zero-or-successor disjunction for \(m\).</p><p>If \(m=0\), equality transports its positive certificate to \(A_B(0)\). Its first disjunct projects \(B\); its second is \(0=S0\), refuted by symmetry and successor separation. Thus obtain \(B\), and introduce the left disjunct of excluded middle.</p><p>If \(m=Su\), the order laws prove \(0&lt;m\). The minimum's negative history therefore gives \(\neg A_B(0)\). Under a temporary \(B\), the reflexive equation \(0=0\) constructs the first disjunct of \(A_B(0)\), a contradiction. Discharge \(B\) to obtain \(\neg B\) and choose the right disjunct. Close the predecessor branch and the original minimum branch. Their common conclusion \(B\lor\neg B\) contains neither protected name. This is a proof transformation for each specified \(B\), not an arithmetic quantifier over formulas.</p></div>
+</section>
+
+<section id="certificate-witness-question" data-formal="hasi-least-witness hasi-minimum-exists hasi-strong-rule ha-certificate" data-kind="question">
+  <h2>Does this construction output a numeral witnessing the predicate?</h2>
+  <p>Given the two certificates in <a href="#least-witness-rule"></a>, has the proof also produced a specified standard numeral \(\overline k\) and a certificate of \(A(\overline k)\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The output proved here is the actual certificate of \(\exists mM_A(m)\). Existential elimination used protected arbitrary witnesses and discharged them; it did not read a numeral from the supplied existential proof. A numerical existence or proof-normalization theorem would be an additional result. Strong induction itself also consumed no predicate decision. Its unrestricted full-body scope and the explicit decision premise in the least-witness rule are therefore separate claims.</p></div></details>
+</section>

@@ -1,0 +1,113 @@
+<section id="presented-goals" data-formal="prop-formula g4s-goal g4s-underlying g4s-reduced-goal g4s-reduced-bridge g4s-certificate g4s-weight" data-kind="definition">
+  <h2>Keep an ordered presentation of the finite assumptions</h2>
+  <p>A <strong>presented goal</strong> is a pair \(g=(H,E)\), where \(H\) is a finite list of shared <a href="intuitionistic-propositional-g4ip#reduced-formulas">reduced propositional formulas</a> and \(E\) is reduced as well. Atom names have decidable equality. The <strong>underlying sequent</strong> is \(\operatorname{set}(H)\Rightarrow E\), where the list's finite set forgets order and repetitions. A <strong>certificate of the presented goal</strong> is an actual <a href="intuitionistic-propositional-g4ip#g4ip-rules">G4ip tree</a> of that sequent.</p>
+  <p>The core search below works on these reduced goals. Its native-input version accepts arbitrary native formulas and first expands every primitive negation, including those inside assumptions. Define the <strong>presented-goal weight</strong> by</p>
+  <div class="math-display">\[W(H,E)=W\bigl(\operatorname{set}(H)\Rightarrow E\bigr).\]</div>
+  <p>The right side is the established <a href="intuitionistic-propositional-g4ip#formula-weight">sequent weight</a>; repeated assumptions are counted once. The list supplies a finite order in which to visit possible principals, without choosing an order on the atom set.</p>
+</section>
+<section id="remove-selected-principal" data-formal="g4s-remove g4s-remove-finset g4s-cons-finset" data-kind="lemma">
+  <h2>Remove every copy of the selected principal</h2>
+  <p>Let \(\operatorname{remove}(F,H)\) be the list obtained by retaining exactly those members of \(H\) unequal to \(F\), in their original order. Then</p>
+  <div class="math-display">\[\operatorname{set}(\operatorname{remove}(F,H))=\operatorname{set}(H)\setminus\{F\},\qquad
+    \operatorname{set}(A::H)=\{A\}\cup\operatorname{set}(H).\]</div>
+  <div class="proof"><p>A formula belongs to the filtered list exactly when it belongs to \(H\) and differs from \(F\). This is precisely membership in the set difference. A formula belongs to \(A::H\) exactly when it equals \(A\) or belongs to \(H\), proving the second identity. Thus prefixing replacement formulas to the filtered list represents the exact erased-principal contexts of G4ip, even when \(H\) originally contained repeated copies of \(F\).</p></div>
+</section>
+<section id="backward-moves" data-formal="g4s-move g4s-premises g4s-rebuild" data-kind="definition">
+  <h2>Represent one rule choice together with its premises</h2>
+  <p>A <strong>backward move</strong> for \((H,E)\) records a specified nonleaf G4ip rule, any selected principal occurring in \(H\), and the ordered list of its one or two premise goals. For every left move put \(D=\operatorname{remove}(F,H)\), with \(F\) the recorded principal. The right moves and their premise lists are</p>
+  <table id="right-move-table"><caption>Right-rule choices</caption><thead><tr><th scope="col">Conclusion</th><th scope="col">Choice</th><th scope="col">Premise goals</th></tr></thead><tbody>
+    <tr><td>\(A\land B\)</td><td>Conjunction right</td><td>\((H,A),(H,B)\)</td></tr>
+    <tr><td>\(A\lor B\)</td><td>Left disjunct</td><td>\((H,A)\)</td></tr>
+    <tr><td>\(A\lor B\)</td><td>Right disjunct</td><td>\((H,B)\)</td></tr>
+    <tr><td>\(A\to B\)</td><td>Implication right</td><td>\((A::H,B)\)</td></tr>
+  </tbody></table>
+  <p>The left moves keep the old conclusion \(E\), except for the first premise of implication-input left. An atomic-input implication requires the indicated atom in \(H\).</p>
+  <table id="left-move-table"><caption>Left-rule choices for a selected principal</caption><thead><tr><th scope="col">Principal \(F\)</th><th scope="col">Condition</th><th scope="col">Premise goals</th></tr></thead><tbody>
+    <tr><td>\(A\land B\)</td><td>None</td><td>\((A::B::D,E)\)</td></tr>
+    <tr><td>\(A\lor B\)</td><td>None</td><td>\((A::D,E),(B::D,E)\)</td></tr>
+    <tr><td>\(p\to B\)</td><td>\(p\in H\)</td><td>\((B::D,E)\)</td></tr>
+    <tr><td>\(\bot\to B\)</td><td>None</td><td>\((D,E)\)</td></tr>
+    <tr><td>\((A\land B)\to C\)</td><td>None</td><td>\(((A\to(B\to C))::D,E)\)</td></tr>
+    <tr><td>\((A\lor B)\to C\)</td><td>None</td><td>\(((A\to C)::(B\to C)::D,E)\)</td></tr>
+    <tr><td>\((A\to B)\to C\)</td><td>None</td><td>\(((B\to C)::D,A\to B),(C::D,E)\)</td></tr>
+  </tbody></table>
+  <p>No left move is generated for a bare atom, falsum, or an atomic-input implication lacking its atom. Falsum is handled by the leaf test below. Every recorded move has a <strong>reconstruction operation</strong>: supplied actual certificates of all its premise goals are combined by its recorded G4ip constructor into a certificate of \((H,E)\). The two finite-set identities in <a href="#remove-selected-principal"></a> identify its premise contexts exactly.</p>
+</section>
+<section id="enumerate-moves" data-formal="g4s-right-moves g4s-left-moves g4s-moves g4s-moves-exhaustive g4s-move-count g4s-premise-count g4s-root-move g4s-root-rebuild" data-kind="lemma">
+  <h2>The finite option list contains every primitive nonleaf choice</h2>
+  <p>For each presented goal, form \(\operatorname{Moves}(H,E)\) by listing the applicable right moves in the order shown, then visiting each member of \(H\) from left to right and appending its applicable left move. This is an effectively computed finite list. Every nonleaf primitive G4ip inference with that underlying conclusion has a corresponding move in this list, with the same premise sequents and reconstruction constructor.</p>
+  <div class="proof"><p>Inspect the right conclusion's outer constructor to obtain its listed right choices. For a left inference its selected formula belongs to \(\operatorname{set}(H)\), hence occurs at some position of \(H\). Visiting that occurrence inspects its outer constructor and, for an implication, the constructor of its input. The table contains every allowed case. In the atomic-input case list membership decides the required atom test. The finite-set bridge identifies all the premise contexts. An atom or falsum has no nonleaf left rule of its own.</p>
+    <p>The list has finitely many positions, each giving at most one left move, and there are at most two right moves. Duplicate occurrences may repeat a choice, but cannot remove it or create a new kind of inference. Each move has at most two premises. This establishes finite branching together with the actual enumeration, rather than just an abstract finiteness assertion.</p></div>
+</section>
+<section id="smaller-presented-premises" data-formal="g4s-backward-bridge g4s-premise-decrease g4s-premise-reduced" data-kind="lemma">
+  <h2>Each generated premise inherits the G4ip weight decrease</h2>
+  <p>If \(g'\) is a premise of a generated move for \(g\), then \(W(g')&lt;W(g)\). Generated premises of a reduced goal are reduced.</p>
+  <div class="proof"><p>The finite-set bridge turns this particular premise into exactly a <a href="intuitionistic-propositional-g4ip#weight-decrease">G4ip backward step</a>, whose strict inequality applies. Repeated list occurrences cause no discrepancy, because both weights use the underlying finite sets. Reducedness follows by inspecting the same tables: a replacement uses components of the reduced principal, combines reduced components by implication, or introduces an already reduced right-input formula. Filtering and prefixing retain those properties.</p></div>
+</section>
+<section id="leaf-test" data-formal="g4s-leaf" data-kind="definition">
+  <h2>Close falsum and atomic identities before branching</h2>
+  <p>The <strong>leaf test</strong> \(\operatorname{Leaf}(H,E)\) returns a certificate of \((H,E)\) if \(\bot\in H\), using falsum-left. Otherwise, if \(E\) is an atom present in \(H\), it returns atomic identity. In every other case it returns \(\mathsf{none}\). These tests are finite membership calculations. The order gives falsum-left priority when both tests apply.</p>
+  <p>The returned value includes the actual primitive certificate. A compound formula already in \(H\) is handled by the rule search and derived identity, rather than an additional primitive leaf.</p>
+</section>
+<section id="all-premises" data-formal="g4s-certificates g4s-all g4s-all-correct" data-kind="definition">
+  <h2>Solve every premise of one selected move</h2>
+  <p>Let \(s\) be a supplied solver that returns either \(\mathsf{none}\) or an actual certificate for each presented goal. The <strong>all-premise calculation</strong> \(\operatorname{All}_s\) acts on a finite list of goals. It returns the empty tuple on the empty list. For \(g::G\), first run \(s(g)\). If that fails, return \(\mathsf{none}\). If it returns \(p\), calculate \(\operatorname{All}_s(G)\); return \(\mathsf{none}\) if this fails, and otherwise return the tuple formed by prefixing \(p\) to the returned certificates.</p>
+  <p>Thus \(\operatorname{All}_s(G)\) succeeds exactly when \(s\) succeeds at every member of \(G\). Its returned tuple supplies a certificate at each exact goal, including repeated goals. Applied to a move's premise list, reconstruction turns that tuple into a certificate of the parent. Both operations are finite recursions on explicit data.</p>
+</section>
+<section id="try-moves" data-formal="g4s-try g4s-try-correct" data-kind="definition">
+  <h2>Backtrack across rule choices</h2>
+  <p>The <strong>move trial</strong> \(\operatorname{Try}_s(M)\), for a finite list of moves of one fixed parent goal, tries them in order. For the empty list it returns \(\mathsf{none}\). At the head move, run \(\operatorname{All}_s\) on its premise list. If this succeeds, reconstruct and return the parent certificate. If it fails, try the remaining moves.</p>
+  <p>Consequently \(\operatorname{Try}_s(M)\) succeeds exactly when some move in \(M\) has all of its premises solved by \(s\). The successful value comes from the first such move. Failure of one move continues with the next alternative; failure of either premise of a binary move rejects that entire move.</p>
+</section>
+<section id="fuel-recursion" data-formal="g4s-fuel g4s-full" data-kind="definition">
+  <h2>Give every recursive call a smaller fuel value</h2>
+  <p>The <strong>fuelled search</strong> \(S_n(g)\) returns an optional actual certificate of the presented goal \(g\). Its defining recurrence is</p>
+  <div class="math-display">\[S_0(g)=\mathsf{none}.\]</div>
+  <div class="math-display">\[S_{n+1}(g)=\begin{cases}
+    \mathsf{some}(p),&\operatorname{Leaf}(g)=\mathsf{some}(p),\\
+    \operatorname{Try}_{S_n}(\operatorname{Moves}(g)),&\operatorname{Leaf}(g)=\mathsf{none}.
+  \end{cases}\]</div>
+  <p>The <strong>full search</strong> is \(S(g)=S_{W(g)}(g)\). The natural-number recursion decreases fuel at every recursive goal call. The auxiliary calculations recurse on their finite premise and move lists. These definitions therefore execute and terminate on every finite input. The weight theorem will justify the chosen initial fuel; fuel exhaustion at a smaller arbitrary value has not yet been given a logical interpretation.</p>
+</section>
+<section id="search-soundness" data-formal="g4s-sound g4s-rebuild g4s-certificate" data-kind="theorem">
+  <h2>Success returns the promised primitive proof tree</h2>
+  <p>For every fuel \(n\) and presented goal \(g=(H,E)\), if \(S_n(g)=\mathsf{some}(p)\), then the returned \(p\) is an actual G4ip certificate of \(\operatorname{set}(H)\Rightarrow E\). In particular, full-search success implies native intuitionistic derivability of its reduced underlying endsequent.</p>
+  <div class="proof"><p>Induct on fuel. Zero returns no certificate. At successor fuel, a successful leaf test directly supplies the stated primitive rule. Otherwise a successful move trial supplies a tuple of successful recursive child results. Induction gives actual certificates for those children. The selected move's reconstruction operation applies exactly its G4ip constructor, with the finite-set context identities already established. It returns the promised parent tree. The <a href="intuitionistic-propositional-g4ip#implication-rule-derivations">G4ip interpretation</a> then yields a native intuitionistic deduction. This proof checks the returned tree itself, rather than replacing success by a claim that some unrelated proof exists.</p></div>
+</section>
+<section id="sufficient-fuel" data-formal="g4s-complete g4s-full-correct g4s-failure-correct" data-kind="theorem">
+  <h2>The endsequent weight is sufficient fuel</h2>
+  <div class="statement-box"><p>If a G4ip certificate proves the underlying sequent of a presented goal \(g\), then \(S_n(g)\) succeeds whenever \(W(g)\leq n\). Hence</p>
+    <div class="math-display">\[S(g)\ne\mathsf{none}\quad\Longleftrightarrow\quad g\text{ has a G4ip certificate}.\]</div>
+    <p>A full-search failure therefore rules out every G4ip certificate of that goal.</p></div>
+  <div class="proof"><p>Induct on \(n\), with the goal and its supplied certificate arbitrary. Zero cannot satisfy the weight assumption: every conclusion has weight at least two. At successor fuel, if a leaf test succeeds there is nothing to prove. If it fails, the supplied certificate cannot be a falsum-left or atomic-identity leaf. Inspect its last constructor. The exhaustive move-list lemma supplies the corresponding listed move and its actual child certificates, transported through the finite-set identities.</p>
+    <p>For each child \(g'\), strict weight decrease and \(W(g)\leq n+1\) give \(W(g')\leq n\). The induction hypothesis makes \(S_n\) succeed at every child. The all-premise calculation therefore succeeds for this move. The move trial either succeeds earlier or reaches this successful move, so \(S_{n+1}(g)\) succeeds. This establishes the fuel claim.</p>
+    <p>Set \(n=W(g)\) for completeness of full search. Soundness gives its converse. If full search returns \(\mathsf{none}\), a hypothetical certificate would force success by the proved fuel claim, a contradiction. This conclusion uses the specified sufficient bound, not an arbitrary failed partial run.</p></div>
+</section>
+<section id="native-decision" data-formal="g4s-expand g4s-expand-reduced g4s-expand-bridge g4s-native-search g4s-decision g4s-native-decision" data-kind="theorem">
+  <h2>Decide the full native intuitionistic input</h2>
+  <p>For a finite native premise list \(H\) and native conclusion \(E\), let \(g^\circ=(\operatorname{map}(A\mapsto A^\circ,H),E^\circ)\). The executable Boolean answer \(\operatorname{Prove}(H,E)\) is one exactly when \(S(g^\circ)\) succeeds. Then</p>
+  <div class="statement-box"><div class="math-display">\[\operatorname{Prove}(H,E)=1\quad\Longleftrightarrow\quad
+    \operatorname{set}(H)\vdash_{\mathrm I}E.\]</div><p>When the answer is one, the same computation retains an actual G4ip certificate of the expanded endsequent.</p></div>
+  <div class="proof"><p>List mapping and the finite-set bridge identify the expanded antecedent with \(\{A^\circ:A\in\operatorname{set}(H)\}\). Full-search success is equivalent to G4ip provability by <a href="#sufficient-fuel"></a>. The <a href="intuitionistic-propositional-g4ip#native-correspondence">native expansion correspondence</a> identifies this exactly with the displayed native consequence. All list, membership, formula and fuel calculations are effective from the input. Taking whether the optional certificate is present gives the Boolean decision.</p></div>
+</section>
+<section id="excluded-middle-examples" data-formal="g4s-excluded-middle g4s-double-negated-excluded-middle g4s-numbered-runs" data-kind="lemma">
+  <h2>Reject excluded middle and prove its double negation</h2>
+  <p>For an atom \(p\), the full native search rejects \(\varnothing\Rightarrow p\lor\neg p\), and succeeds on \(\varnothing\Rightarrow\neg\neg(p\lor\neg p)\).</p>
+  <div class="proof"><p>After expansion the first goal is \(\varnothing\Rightarrow p\lor(p\to\bot)\). The first right choice asks for \(p\) with no assumptions, which has no closing leaf or move. The second asks for \(p\to\bot\); its right-implication child is \(\{p\}\Rightarrow\bot\), which also has no closing leaf or move. Thus every option fails, with the full bound available.</p>
+    <p>For the double negation, put \(F=(p\lor(p\to\bot))\to\bot\). Right implication leaves \(\{F\}\Rightarrow\bot\). The disjunction-input left move replaces \(F\) by \(p\to\bot\) and \((p\to\bot)\to\bot\). Select the latter implication-input move. Its second premise contains falsum and closes. Its first premise has assumptions \(p\to\bot\) and \(\bot\to\bot\), with conclusion \(p\to\bot\). Right implication adds \(p\); atomic implication-left on \(p\to\bot\) then introduces falsum, so this premise closes too. Reconstructing these choices gives a G4ip certificate. The sufficient-fuel theorem ensures the exhaustive search finds one, and direct execution on the numbered atom \(p_0\) gives the same two answers.</p></div>
+</section>
+<section id="order-and-repetitions" data-formal="g4s-set-invariance g4s-permutation g4s-repetition" data-kind="theorem">
+  <h2>Order and repeated premises do not change the decision</h2>
+  <p>If two finite native premise lists \(H,K\) have the same underlying finite set, then \(\operatorname{Prove}(H,E)=\operatorname{Prove}(K,E)\) for every native conclusion \(E\). In particular, permuting a list or inserting a repeated assumption preserves the answer.</p>
+  <div class="proof"><p>The native decision theorem makes each answer one exactly when the shared finite set proves \(E\). The two answers therefore have the same truth value and, as Booleans, are equal. A permutation or repetition preserves that finite set. The implementation may visit the alternatives in a different order, but every accepted result is still a primitive certificate of its stated endsequent.</p></div>
+</section>
+<section id="backtracking-question" data-formal="g4s-backtracking g4s-try g4s-rebuild" data-kind="question">
+  <h2>Can the first right-disjunct choice fail although the goal is provable?</h2>
+  <p>Run the search on \(\varnothing\Rightarrow q\lor(p\to p)\), with distinct atoms \(p,q\). What happens if the left-disjunct choice is tried first?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>It asks for \(q\) under the empty context. There is no closing leaf and no move, so that trial fails. The move trial then visits the right-disjunct choice. Right implication changes its goal \(p\to p\) into \(\{p\}\Rightarrow p\), which closes by atomic identity. Reconstruction returns first the implication and then the right disjunction. The initial goal weight is eight, so its full search has sufficient fuel. Returning failure immediately after the first disjunct would give the wrong decision on this concrete input.</p></div></details>
+</section>
+<section id="insufficient-fuel-question" data-formal="g4s-insufficient-fuel g4ip-identity g4s-failure-correct" data-kind="question">
+  <h2>Does every fuelled failure prove nonderivability?</h2>
+  <p>Can a failed run \(S_n(g)=\mathsf{none}\) establish that \(g\) has no G4ip certificate when \(n\) is smaller than the proved sufficient bound?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Take \(g=([p],p)\). The definition gives \(S_0(g)=\mathsf{none}\), although atomic identity is a certificate. Already \(S_1(g)\) succeeds. The goal has weight four, and the full search uses that safe bound. The sufficient-fuel theorem proves failure sound as a nonderivability conclusion when the weight bound is available; it does not give that interpretation to an arbitrary prematurely exhausted run.</p></div></details>
+</section>

@@ -56,6 +56,7 @@
   <div class="math-display">\[L_q(\vec x,j)=1\quad\Longleftrightarrow\quad\forall i&lt;j\;q(\vec x,i)=1.\]</div>
   <p>The zero case has no smaller inputs. At the successor, a product of two Boolean values equals one exactly when both equal one. Split \(i&lt;j+1\) into \(i&lt;j\) or \(i=j\) to prove both directions of the invariant. The existential test is the Boolean negation of the universal test of the negated matrix. An external structural induction on the fixed formula combines these loops with the atomic and connective cases. Every resulting internal equivalence holds in every PA model, so completeness gives the stated PA proofs.</p>
 </div>
+  <p>The <a href="primitive-recursion#bounded-quantifiers">finite-range Boolean construction</a> supplies the external primitive-recursive test; the internal loop invariant establishes its uniform PA correctness.</p>
 </section>
 
 <section id="strict-bounds" data-formal="ap-inclusive-bounded-normal-form ap-strict-bounded-normalization ap-quoted-proof-conversion ap-bounded-positive ap-bounded-negative" data-kind="lemma">
@@ -82,7 +83,7 @@
 <p>The loop retains the <em>latest</em> successful index. Leastness is unnecessary: all subsequent proof constructors need only a witness together with its verified bound.</p>
 </section>
 
-<section id="bounded-proof-builders" data-formal="ap-bounded-positive ap-bounded-negative" data-kind="theorem">
+<section id="bounded-proof-builders" data-formal="ap-bounded-positive ap-bounded-negative habf-decision" data-kind="theorem">
   <h2>A bounded formula has a truth test and two proof builders</h2>
 <div class="statement-box">
 <p>For every fixed <a href="arithmetic-representability#bounded-formulas">bounded formula</a> \(D(\vec x)\), there are primitive-recursive functions \(c_D^+,c_D^-\) such that PA proves both universally closed implications</p>
@@ -91,6 +92,7 @@
 </div>
 <p>Here \(\operatorname{sub}_D(\vec n)=\ulcorner D(\overline{\vec n})\urcorner\) is the actual simultaneous numeral-substitution program from <a href="pa-proof-checkers#numeral-substitution">the numeral-substitution construction</a>. Each displayed function application abbreviates its graph formula. Thus the assertions specify both the proof record and its exact conclusion code. On a branch whose antecedent is false, the builder is permitted to return an arbitrary code.</p>
 <p>The formula \(D\) is fixed outside arithmetic; its input values remain variables inside the PA derivation. We construct the signed builders by external structural induction on \(D\), using the truth tests to select each internal branch. The remaining lemmas supply its connective and quantifier steps, including the induction on variable bounds. Their assembly proves this theorem in <a href="#bounded-quantifier-assembly"></a>.</p>
+  <p>The earlier <a href="heyting-arithmetic-bounded-formulas#uniform-decisions">bounded-formula theorem for native HA</a> supplies internal decision disjunctions at variable bounds. Its <a href="heyting-arithmetic-bounded-formulas#comparison-boundary">certificate output</a> is an actual intuitionistic deduction. The present signed-builder theorem additionally constructs numerical proof codes and proves acceptance by the specified PA checker; the HA decision theorem does not substitute for those coding and checker arguments.</p>
 </section>
 
 <section id="logical-proof-branches" data-formal="ap-falsum-builders ap-equality-atom-builders ap-order-atom-builders ap-logical-positive-consequent ap-logical-positive-negative ap-logical-negative-implication" data-kind="lemma">

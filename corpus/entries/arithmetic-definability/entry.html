@@ -6,7 +6,7 @@
   <p>This asks about truth in one specified structure. <a href="arithmetic-representability#numeralwise-representation">Representing a relation in Robinson arithmetic</a> asks for proofs of its positive and negative numeral instances. Those are different requirements. We will identify exactly the sets whose membership has an arithmetic description consisting of an unbounded search followed by a finite check.</p>
 </section>
 
-<section id="bounded-truth" data-formal="adef-bounded-truth prim-arity-equivalence" data-kind="lemma">
+<section id="bounded-truth" data-formal="adef-bounded-truth prim-arity-equivalence habf-decision" data-kind="lemma">
   <h2>A bounded formula has a terminating truth test</h2>
   <p>For every fixed <a href="arithmetic-representability#bounded-formulas">bounded arithmetic formula</a> \(D(\bar x)\), its truth relation \(\mathbb N_A\models D(\bar x)\) is primitive recursive. Both strict and inclusive bounds are allowed, and their bounding terms do not contain the variable being quantified.</p>
   <div class="proof">
@@ -14,6 +14,7 @@
     <p>For \(\forall u\lt t(\bar x)\,E(\bar x,u)\), first evaluate the bound \(b=t(\bar x)\). Run the test for \(E\) at each of \(0,\ldots,b-1\), keeping a Boolean conjunction. Existential quantification keeps a disjunction instead. These are precisely the <a href="primitive-recursion#bounded-quantifiers">bounded quantifier operations</a>. Inclusive bounds use the loop of length \(b+1\). At a strict zero bound, the conjunction is true and the disjunction false. Induction on the fixed formula completes the construction.</p>
 </div>
   <p>The algorithm is specific to the given formula. This lemma supplies a terminating test for each bounded relation, without asserting a single primitive-recursive interpreter for arbitrary formula codes.</p>
+  <p>The <a href="heyting-arithmetic-bounded-formulas#uniform-decisions">bounded-formula construction in native HA</a> gives an internal proof counterpart for its finite-parameter grammar: the decision disjunction is proved with variable bounds inside arithmetic. This standard-model truth algorithm and that intuitionistic certificate construction are distinct results.</p>
 </section>
 
 <section id="existential-and-universal-forms" data-formal="pac-sigma-one-syntax adef-pi-one-prefix adef-sigma-one-definability adef-pi-one-definability adef-delta-one-definability" data-kind="definition">
@@ -57,6 +58,7 @@
     <p>Finally apply the graph construction to the primitive-recursive characteristic function of a relation and substitute the numeral \(1\) for its output. Term substitution preserves boundedness and the existential-prefix form. This proves the relation claim.</p>
 </div>
   <p>This argument concerns finite sequences of ordinary natural numbers. It does not require a theorem about the existence of coded histories inside arbitrary models of arithmetic.</p>
+  <p>The later <a href="pa-computations#canonical-graphs">canonical PA graph construction</a> proves <a href="pa-computations#primitive-recursive-totality">uniform totality</a> and its defining equations inside arithmetic for each specified primitive-recursive presentation.</p>
 </section>
 
 <section id="enumerable-sigma-one" data-formal="adef-enumerable-sigma-one adef-unary-enumerable-sigma-one adef-finite-certificate adef-tuple-recoding adef-sigma-projection" data-kind="theorem">

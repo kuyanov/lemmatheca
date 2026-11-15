@@ -1,0 +1,107 @@
+<section id="order-certificates" data-formal="ha-certificate ha-derivability ha-theory ha-axioms-over-names arith-language" data-kind="definition">
+  <h2>Keep order arguments inside the original arithmetic theory</h2>
+  <p>Use the <a href="heyting-arithmetic#native-arithmetic-language">native arithmetic language</a> with \(0,S,+,\times\), logical equality, and every native connective. An <strong>HA order certificate</strong> is an actual <a href="heyting-arithmetic-addition#addition-certificates">finite HA deduction</a> of one of the formulas below. It uses finitely many original arithmetic axioms and full induction instances. The letters \(x,y,z,a\) may denote original variables or supplied arithmetic terms; an existential witness is always introduced under a fresh bound name.</p>
+  <p>Write \(\mathrm{HA}\vdash_X A\) when the certificate has original free-name set \(X\) and no additional assumptions. Every construction also works in a fixed finite context \(\Gamma\): weaken closed arithmetic facts into that context, retain its assumptions, and combine only the finite supports actually used. We use the established <a href="heyting-arithmetic-addition#arbitrary-term-instances">addition instances</a>, including both cancellation directions, rather than replacing an arithmetic deduction by a calculation in the standard natural numbers.</p>
+</section>
+<section id="defined-orders" data-formal="hao-le-formula hao-lt-formula hao-le-introduction hao-le-elimination" data-kind="definition">
+  <h2>Express order by an additive witness</h2>
+  <p>The <strong>non-strict order formula</strong> and <strong>strict order formula</strong> are the native abbreviations</p>
+  <div class="math-display">\[x\leq y\;:=\;\exists d\,(d+x=y),\qquad x&lt;y\;:=\;\exists d\,(d+Sx=y).\]</div>
+  <p>Thus \(x&lt;y\) is literally the abbreviation \(Sx\leq y\). The quantified name \(d\) does not occur in the supplied terms. These definitions introduce no new relation symbol or arithmetic axiom. For example, a certificate of \(a+x=y\) gives a certificate of \(x\leq y\) by existential introduction with witness \(a\).</p>
+  <p>Conversely, an order premise may be used by existential elimination: work under \(d+x=y\) at a fresh parameter \(d\), derive a conclusion not containing \(d\), then discharge that witness branch. This is the native <a href="intuitionistic-first-order-deduction#quantifier-rules">quantifier rule</a>; the remaining context must stay independent of the fresh parameter.</p>
+</section>
+<section id="scope-identities" data-formal="hao-le-substitution hao-lt-substitution hao-le-renaming hao-lt-renaming hao-certificate-substitution hao-certificate-renaming" data-kind="lemma">
+  <h2>Substitution changes the supplied terms and fixes the witness slot</h2>
+  <p>For every capture-free term substitution \(\sigma:X\to\operatorname{Term}(Y)\),</p>
+  <div class="math-display">\[(s\leq t)[\sigma]=(s[\sigma]\leq t[\sigma]),\qquad(s&lt;t)[\sigma]=(s[\sigma]&lt;t[\sigma]).\]</div>
+  <p>The corresponding identities hold for renaming original free names. Consequently a supplied order certificate can be substituted or renamed using the existing certificate operations.</p>
+  <div class="proof"><p>Expand the existential abbreviation. Under its binder, lift \(\sigma\) so that it substitutes into the original names and fixes the new witness slot. Addition and equality commute with that lifted substitution, producing \(d+s[\sigma]=t[\sigma]\). Reclosing the same slot is precisely the first displayed formula. Successor also commutes with substitution, so the same calculation proves the strict identity. A renaming is the special substitution sending each name to its renamed variable. The <a href="intuitionistic-first-order-deduction#proof-substitution">native substitution transformation</a> acts on the supplied proof tree; the closed arithmetic axioms remain copies of the same axioms.</p></div>
+</section>
+<section id="zero-sums" data-formal="hao-zero-sum ha-zero-or-successor" data-kind="lemma">
+  <h2>A sum is zero only when both summands are zero</h2>
+  <p>HA proves, uniformly in the two terms,</p>
+  <div class="math-display">\[a+b=0\quad\Longleftrightarrow\quad a=0\land b=0.\]</div>
+  <div class="proof"><p>Use the <a href="heyting-arithmetic#zero-or-successor">zero-or-successor alternative</a> for \(b\). If \(b=0\), the equation \(a+b=0\) and the recursion equation \(a+0=a\) give \(a=0\). If \(b=Sc\), the sum is \(S(a+c)\), which cannot equal zero by the successor-nonzero axiom. That branch gives falsum, from which the required conjunction follows. Existential elimination removes the temporary predecessor \(c\). Conversely, substituting \(a=b=0\) reduces the sum to \(0+0=0\). These are equality substitutions and native disjunction cases, with no appeal to excluded middle for an arbitrary formula.</p></div>
+</section>
+<section id="order-zero" data-formal="hao-zero-le hao-le-zero hao-lt-zero" data-kind="lemma">
+  <h2>Zero is least and has no strict predecessor</h2>
+  <p>For every arithmetic term \(x\), HA supplies certificates of</p>
+  <div class="math-display">\[0\leq x,\qquad (x\leq0\Longleftrightarrow x=0),\qquad\neg(x&lt;0).\]</div>
+  <div class="proof"><p>For \(0\leq x\), use witness \(x\) and the recursion equation \(x+0=x\). If \(x\leq0\), open its witness \(d+x=0\); the zero-sum lemma gives \(x=0\). Conversely, \(x=0\) permits witness zero, using \(0+0=0\). Finally, a witness for \(x&lt;0\) would give \(d+Sx=0\), whose second summand must be zero. This contradicts successor-nonzero. Discharge the assumed strict-order formula to obtain its native negation.</p></div>
+</section>
+<section id="successor-order" data-formal="hao-successor-witness hao-le-successor hao-lt-successor hao-lt-successor-le" data-kind="lemma">
+  <h2>Cancel one successor in the order formulas</h2>
+  <p>HA proves the following three equivalences, with the displayed witnesses unchanged:</p>
+  <div class="math-display">\[Sx\leq Sy\Longleftrightarrow x\leq y,\qquad Sx&lt;Sy\Longleftrightarrow x&lt;y,\qquad x&lt;Sy\Longleftrightarrow x\leq y.\]</div>
+  <div class="proof"><p>The witness equation for the first left side is \(d+Sx=Sy\). The addition recursion equation changes it to \(S(d+x)=Sy\), and successor injectivity gives \(d+x=y\). Reversing this equality reasoning gives the converse with the same \(d\). Apply that first equivalence at \(Sx,y\) to obtain the second, using the definition of strict order. The third is the first equivalence itself, since \(x&lt;Sy\) abbreviates \(Sx\leq Sy\). Each direction opens the input witness, performs this equality calculation, and introduces that witness into the required existential formula.</p></div>
+</section>
+<section id="split-witness" data-formal="hao-le-split hao-le-reflexive hao-strict-to-nonstrict" data-kind="lemma">
+  <h2>Split a non-strict witness into equality or strict inequality</h2>
+  <p>For every \(x,y\), HA proves</p>
+  <div class="math-display">\[x\leq y\Longleftrightarrow(x&lt;y\lor x=y).\]</div>
+  <p>In particular, it proves \(x\leq x\) and converts every certificate of \(x&lt;y\) into one of \(x\leq y\).</p>
+  <div class="proof"><p>Open a witness \(d+x=y\) and apply zero-or-successor to \(d\). If \(d=0\), the proved <a href="heyting-arithmetic-addition#zero-on-left">left-zero law</a> gives \(x=y\). If \(d=Se\), the left-successor and right-successor addition laws identify \((Se)+x\) with \(e+Sx\); hence \(e\) witnesses \(x&lt;y\). Eliminate the predecessor branch and introduce the appropriate disjunct.</p><p>Conversely, a strict witness \(e+Sx=y\) gives the non-strict witness \(Se\), using the same two successor equations. An equality \(x=y\) gives witness zero. Taking reflexivity \(x=x\) gives \(x\leq x\). These constructions prove both directions, rather than replacing the existential premise by a choice of a standard numeral.</p></div>
+</section>
+<section id="initial-segments" data-formal="hao-strict-initial-segment hao-nonstrict-initial-segment hao-lt-zero" data-kind="theorem">
+  <h2>A successor bound adds exactly one point to an initial segment</h2>
+  <div class="statement-box"><p>HA proves, uniformly in \(x,y\),</p>
+  <div class="math-display">\[x&lt;Sy\Longleftrightarrow(x&lt;y\lor x=y),\qquad x\leq Sy\Longleftrightarrow(x\leq y\lor x=Sy).\]</div></div>
+  <div class="proof"><p>The first equivalence combines \(x&lt;Sy\leftrightarrow x\leq y\) with the preceding witness split. For the second, split a proof of \(x\leq Sy\) into \(x&lt;Sy\) or \(x=Sy\). The strict branch gives \(x\leq y\) by successor cancellation. Conversely, a witness \(d+x=y\) gives \((Sd)+x=Sy\), so \(Sd\) witnesses \(x\leq Sy\). An equality \(x=Sy\) supplies that order formula by reflexivity and equality substitution. Native disjunction elimination combines the alternatives. At bound zero the strict initial segment is empty by <a href="#order-zero"></a>, so these successor laws also specify the empty-bound case.</p></div>
+</section>
+<section id="order-transitivity" data-formal="hao-le-transitive hao-lt-le-transitive hao-le-lt-transitive hao-lt-transitive" data-kind="lemma">
+  <h2>Compose order witnesses by addition</h2>
+  <p>HA has proof operations for the three implications</p>
+  <div class="math-display">\[(x\leq y\land y\leq z)\to x\leq z,\qquad (x&lt;y\land y\leq z)\to x&lt;z,\]</div>
+  <div class="math-display">\[(x\leq y\land y&lt;z)\to x&lt;z.\]</div>
+  <div class="proof"><p>Open witnesses \(a+x=y\) and \(b+y=z\). Associativity gives \((b+a)+x=b+(a+x)=z\), so \(b+a\) witnesses the first conclusion. If the first input is strict, replace \(x\) in that calculation by \(Sx\). For the third implication the input equations are \(a+x=y\) and \(b+Sy=z\). The successor equations give</p>
+    <div class="math-display">\[(b+a)+Sx=S((b+a)+x)=S(b+(a+x))=b+S(a+x)=z.\]</div>
+    <p>Thus \(b+a\) is again the strict witness. Each temporary witness parameter is absent from the final order formula and original context, so the two existential eliminations are legitimate. The supplied premise proofs are retained in the resulting finite deduction. Combining a strict-to-non-strict conversion with either mixed implication also gives transitivity of strict order.</p></div>
+</section>
+<section id="strict-exclusion" data-formal="hao-strict-irreflexive hao-strict-nonstrict-unequal" data-kind="lemma">
+  <h2>A strict inequality excludes equality</h2>
+  <p>HA proves \(\neg(x&lt;x)\), and it proves</p>
+  <div class="math-display">\[x&lt;y\Longleftrightarrow(x\leq y\land\neg(x=y)).\]</div>
+  <div class="proof"><p>A putative strict witness gives \(d+Sx=x\), hence \((Sd)+x=x\). Rewrite the right side as \(0+x\) and use <a href="heyting-arithmetic-addition#right-cancellation">right cancellation</a> to obtain \(Sd=0\), contradicting successor-nonzero. This proves irreflexivity.</p><p>A strict certificate gives a non-strict one by the witness split. If \(x=y\), equality substitution would turn it into the impossible \(x&lt;x\), so it also gives \(\neg(x=y)\). Conversely, split \(x\leq y\) into strict inequality or equality. Retain the strict branch; in the equality branch use its supplied negation and explosion. Thus the displayed equivalence uses only native logical operations.</p></div>
+</section>
+<section id="antisymmetry" data-formal="hao-antisymmetry hao-le-reflexive hao-le-transitive" data-kind="lemma">
+  <h2>Opposite non-strict inequalities force equality</h2>
+  <p>HA proves \((x\leq y\land y\leq x)\to x=y\). Together with reflexivity and transitivity, this establishes the partial-order laws for the defined formula.</p>
+  <div class="proof"><p>Open witnesses \(a+x=y\) and \(b+y=x\). Substitution and associativity give \((b+a)+x=x\). Rewriting the right side as \(0+x\) and cancelling \(x\) gives \(b+a=0\). The zero-sum lemma gives \(a=0\), and the first input equation reduces to \(x=y\). Remove the two witness branches and discharge the conjunction. No order comparison or general excluded middle is needed for this argument.</p></div>
+</section>
+<section id="comparison-induction" data-formal="hao-comparison-formula hao-comparison-induction-body hao-comparison-sentence hao-comparison-closure-identity hao-comparison-proof hao-trichotomy hao-comparison-exclusive" data-kind="theorem">
+  <h2>One induction constructs comparison for every pair</h2>
+  <div class="statement-box"><p>HA has one finite certificate of the universally closed trichotomy formula</p>
+  <div class="math-display">\[\forall y\,\forall x\;\bigl(x&lt;y\lor(x=y\lor y&lt;x)\bigr).\]</div>
+  <p>The three alternatives are pairwise incompatible.</p></div>
+  <div class="proof"><p>Induct on \(y\) in the full native body \(C(y):=\forall x\,(x&lt;y\lor(x=y\lor y&lt;x))\). Its inner variable is distinct from the protected induction parameter. For \(y=0\), take an arbitrary \(x\) and split it into zero or successor. Equality handles the zero case. If \(x=Su\), then \(u+S0=Su=x\), so \(u\) witnesses \(0&lt;x\). Introduce the required disjunction and then universally introduce \(x\).</p><p>In the successor step assume \(C(y)\), and again take arbitrary \(x\). If \(x=0\), witness \(y\) proves \(0&lt;Sy\), since \(y+S0=Sy\). If \(x=Su\), instantiate the induction hypothesis at \(u\). Its three alternatives are \(u&lt;y\), \(u=y\), and \(y&lt;u\). Successor cancellation transports them, respectively, to \(Su&lt;Sy\), \(Su=Sy\), and \(Sy&lt;Su\). Disjunction elimination therefore supplies comparison for \(x,Sy\). Eliminate the temporary predecessor, universally introduce \(x\), and finish the <a href="heyting-arithmetic#induction-as-derived-rule">native induction construction</a>. The result is the displayed closed formula, obtained from one specified full induction instance.</p><p>A strict alternative and equality contradict <a href="#strict-exclusion"></a>. Two opposite strict inequalities give \(x&lt;x\) by mixed transitivity and strict-to-non-strict conversion, again a contradiction. Thus at most one alternative can hold, as claimed.</p></div>
+</section>
+<section id="decidable-order" data-formal="hao-le-decision hao-lt-decision hao-not-reverse-strict hao-not-reverse-nonstrict" data-kind="theorem">
+  <h2>Order has internal decision disjunctions</h2>
+  <p>For arbitrary supplied arithmetic terms \(s,t\), HA constructs certificates of</p>
+  <div class="math-display">\[(s\leq t)\lor\neg(s\leq t),\qquad(s&lt;t)\lor\neg(s&lt;t).\]</div>
+  <p>It also proves \(\neg(t&lt;s)\leftrightarrow s\leq t\) and \(\neg(t\leq s)\leftrightarrow s&lt;t\).</p>
+  <div class="proof"><p>Instantiate the closed comparison proof at the supplied two terms. For non-strict order, either \(s&lt;t\) or \(s=t\) supplies \(s\leq t\). In the third case \(t&lt;s\), an assumed \(s\leq t\) gives \(t&lt;t\) by mixed transitivity, so it gives \(\neg(s\leq t)\). For strict order, the first comparison branch supplies the positive decision. Equality refutes a strict inequality by irreflexivity; the opposite strict branch refutes it by transitivity. These three native disjunction cases produce the required strict decision.</p><p>If \(s\leq t\), then \(t&lt;s\) would contradict irreflexivity by mixed transitivity. Conversely, under \(\neg(t&lt;s)\), comparison eliminates its third branch and the other two give \(s\leq t\). The second equivalence uses the same comparison: strict \(s&lt;t\) excludes \(t\leq s\); under the negation of that latter formula, the equality and opposite-strict branches each give a contradiction, leaving \(s&lt;t\). These arguments decide the defined order formulas even though their expansions contain existential quantifiers.</p></div>
+</section>
+<section id="additive-transport" data-formal="hao-add-right-le hao-add-right-lt hao-add-left-le hao-add-left-lt hao-add-right-witness hao-add-right-strict-witness hao-add-left-witness hao-add-left-strict-witness" data-kind="theorem">
+  <h2>Adding the same term preserves and reflects both orders</h2>
+  <div class="statement-box"><p>HA proves the following equivalences for arbitrary arithmetic terms:</p>
+  <div class="math-display">\[x+a\leq y+a\Longleftrightarrow x\leq y,\qquad x+a&lt;y+a\Longleftrightarrow x&lt;y,\]</div>
+  <div class="math-display">\[a+x\leq a+y\Longleftrightarrow x\leq y,\qquad a+x&lt;a+y\Longleftrightarrow x&lt;y.\]</div></div>
+  <div class="proof"><p>A witness \(d+x=y\) gives \(d+(x+a)=(d+x)+a=y+a\), so the same \(d\) proves preservation of non-strict order. Conversely, a witness \(d+(x+a)=y+a\) gives \((d+x)+a=y+a\); right cancellation supplies \(d+x=y\). Thus reflection also retains the actual witness.</p><p>For strict order use the identity \((d+Sx)+a=d+S(x+a)\), obtained from associativity and the left- and right-successor addition laws. A witness on either side can therefore be moved to an equation with a common final summand \(a\), which right cancellation removes. This proves the strict equivalence with the same witness. Finally, commutativity replaces \(a+x,a+y\) by \(x+a,y+a\), giving the left-addition versions. All equality chains use the <a href="heyting-arithmetic-addition#equality-chains">existing finite equality-proof operations</a>.</p></div>
+</section>
+<section id="finite-universal-certificates" data-formal="hao-close-certificate hao-instantiate-closed hao-le-substitution hao-lt-substitution" data-kind="theorem">
+  <h2>Close finite parameter lists and instantiate them again</h2>
+  <p>For each law above, give its finitely many original variables a fixed order. The construction yields an HA certificate of its universal closure. Instantiating that supplied closed certificate at arbitrary arithmetic terms gives the corresponding law in every finite additional context \(\Gamma\).</p>
+  <div class="proof"><p>The calculations and witness eliminations prove each open law without additional assumptions. Its finitely many arithmetic axiom copies are closed, so none contains the original free parameters. Apply native universal introduction successively along the fixed parameter list, using fresh protected tags and keeping these closed axiom copies fixed. This builds one finite closed certificate. For comparison the preceding induction has already produced such a certificate directly.</p><p>To apply a closed certificate, rename it into the desired original name set, use universal elimination at the supplied terms in the same ordered list, and weaken its empty additional context into \(\Gamma\). The scope identities in <a href="#scope-identities"></a> identify the resulting order formulas with the required literal term instances. No numeral evaluation or fresh induction at the supplied terms is needed. Every operation acts on the given finite proof tree and retains finite arithmetic support.</p></div>
+</section>
+<section id="two-successor-bound" data-formal="hao-two-successor-bound" data-kind="lemma">
+  <h2>Work out a bound with two new endpoints</h2>
+  <p>HA proves, for arbitrary terms \(x,y\),</p>
+  <div class="math-display">\[x&lt;SSy\Longleftrightarrow\bigl(x&lt;y\lor(x=y\lor x=Sy)\bigr).\]</div>
+  <div class="proof"><p>Apply the strict initial-segment split first at \(Sy\). It gives \(x&lt;Sy\lor x=Sy\). Split the first branch at \(y\), obtaining \(x&lt;y\lor x=y\), and introduce the displayed three-way disjunction. Conversely, each of the first two branches gives \(x&lt;Sy\) by that split, hence \(x&lt;SSy\) by the split at \(Sy\). The final equality branch also gives \(x&lt;SSy\) by the latter split. Native disjunction elimination and introduction implement these two directions.</p></div>
+</section>
+<section id="equal-endpoints-question" data-formal="hao-equal-endpoint-counterexample hao-strict-irreflexive ha-consistency" data-kind="question">
+  <h2>Must comparison choose a strict direction?</h2>
+  <p>Can the trichotomy conclusion be strengthened to \(x&lt;y\lor y&lt;x\) for every pair, without its equality alternative?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Set both terms equal to zero. Each strict alternative becomes \(0&lt;0\), and HA has its negation by strict irreflexivity. In fact, assuming \(0&lt;0\lor0&lt;0\), disjunction elimination contradicts that same negation in either branch. Discharging the assumption gives an actual HA certificate of \(\neg(0&lt;0\lor0&lt;0)\). Equality is therefore an essential comparison case; it cannot be replaced by a strict choice.</p></div></details>
+</section>

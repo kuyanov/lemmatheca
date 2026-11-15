@@ -1,0 +1,107 @@
+<section id="tracked-formulas" data-formal="ifmp-subformulas ifmp-closed ifmp-problem-subformulas ifmp-problem-closed ifmp-problem-contains" data-kind="definition">
+  <h2>Fix the finite questions the model must answer</h2>
+  <p>Let \(M=(W,\leq,V)\) be a <a href="intuitionistic-kripke-semantics#frames-and-valuations">nonempty preordered Kripke model</a> for the shared formulas with numbered atoms \(p_0,p_1,\ldots\), including native negation. A <strong>tracked set</strong> is a finite subformula-closed set \(\Sigma\) of these formulas: whenever \(A\in\Sigma\), every member of \(\operatorname{Sub}(A)\) also belongs to \(\Sigma\). Use the <a href="intuitionistic-propositional-finite-model-property#finite-subformulas">previously defined native subformula sets</a>.</p>
+  <p>In particular, a tracked negation brings its argument, and a tracked binary connective brings both arguments. For finite premises \(\Gamma\) and conclusion \(A\), the set \(\Sigma(\Gamma,A)\) defined there is a tracked set containing every premise and the conclusion. No finiteness assumption is made on \(W\).</p>
+</section>
+
+<section id="realized-traces" data-formal="ipff-trace ipff-worlds ipff-world-map ipff-membership ipff-subset ipff-trace-equality" data-kind="definition">
+  <h2>Identify worlds that agree on the tracked formulas</h2>
+  <p>The <strong>forcing trace</strong> of \(w\in W\) is the finite set</p>
+  <div class="math-display">\[t_\Sigma(w):=\{B\in\Sigma:M,w\Vdash B\}.\]</div>
+  <p>The <strong>realized trace worlds</strong> and their order are</p>
+  <div class="math-display">\[W_\Sigma:=\{t_\Sigma(w):w\in W\},\qquad s\leq_\Sigma t\iff s\subseteq t.\]</div>
+  <p>A trace world is the subset itself, rather than a selected original representative. Thus \(t_\Sigma(w)=t_\Sigma(v)\) exactly when \(w\) and \(v\) agree on the forcing of every formula in \(\Sigma\). Each trace is contained in \(\Sigma\), and every trace world has at least one original representative.</p>
+</section>
+
+<section id="finite-trace-frame" data-formal="ipff-worlds ipff-finite ipff-cardinality" data-kind="lemma">
+  <h2>The trace worlds form a finite partial order</h2>
+  <p>For any finite \(\Sigma\), inclusion makes \(W_\Sigma\) a nonempty finite partial order, with</p>
+  <div class="math-display">\[1\leq |W_\Sigma|\leq 2^{|\Sigma|}.\]</div>
+  <div class="proof"><p>Subset inclusion is reflexive and transitive, and inclusions in both directions identify the same subset. An original world exists because \(M\) is nonempty; its trace supplies a trace world. Every realized trace is a subset of \(\Sigma\), so the map sending that world to the same member of the power set of \(\Sigma\) is injective. The power set has \(2^{|\Sigma|}\) members. This proves finiteness and the upper bound, while nonemptiness gives the lower bound.</p></div>
+</section>
+
+<section id="filtered-model" data-formal="ipff-model ipff-membership ipff-untracked-atoms" data-kind="definition">
+  <h2>Read atom values from the subsets themselves</h2>
+  <p>The <strong>finite filtration</strong> \(M_\Sigma\) has frame \((W_\Sigma,\subseteq)\) and atom valuation</p>
+  <div class="math-display">\[M_\Sigma,s\Vdash p_i\quad\Longleftrightarrow\quad p_i\in s.\]</div>
+  <p>This is a persistent valuation: if \(p_i\in s\subseteq t\), then \(p_i\in t\). It is defined on every numbered atom. If \(p_i\notin\Sigma\), that atom is false at every trace world. If \(p_i\in\Sigma\), then</p>
+  <div class="math-display">\[M_\Sigma,t_\Sigma(w)\Vdash p_i\quad\Longleftrightarrow\quad M,w\Vdash p_i.\]</div>
+  <p>Consequently the definition gives an actual nonempty finite Kripke model without making a choice between original worlds that share a trace.</p>
+</section>
+
+<section id="trace-transfer" data-formal="ipff-surjection ipff-monotone ipff-transfer" data-kind="lemma">
+  <h2>Distinguish original accessibility from trace inclusion</h2>
+  <p>The specified trace map \(t_\Sigma:W\to W_\Sigma\) is surjective and monotone. Moreover, for every \(B\in\Sigma\),</p>
+  <div class="math-display">\[t_\Sigma(w)\subseteq t_\Sigma(v)\text{ and }M,w\Vdash B\quad\Longrightarrow\quad M,v\Vdash B.\]</div>
+  <div class="proof"><p>Surjectivity is the definition of a realized trace. If \(w\leq v\), <a href="intuitionistic-kripke-semantics#persistence">forcing persistence</a> carries each tracked formula true at \(w\) to \(v\), proving monotonicity. For the last assertion, the two hypotheses put \(B\) in \(t_\Sigma(w)\), hence in \(t_\Sigma(v)\). The definition of the latter trace gives its forcing at \(v\).</p></div>
+  <p>The last assertion uses only trace inclusion and a tracked formula. It does not infer \(w\leq v\). The filtered order can have more comparisons than those induced by original accessibility.</p>
+</section>
+
+<section id="tracked-truth" data-formal="ipff-tracked-truth" data-kind="theorem">
+  <h2>The supplied model and its filtration agree on every tracked formula</h2>
+  <div class="statement-box"><p>For every nonempty preordered model \(M\), finite subformula-closed \(\Sigma\), original world \(w\), and \(B\in\Sigma\),</p><div class="math-display">\[M_\Sigma,t_\Sigma(w)\Vdash B\quad\Longleftrightarrow\quad M,w\Vdash B.\]</div></div>
+  <div class="proof"><p>Induct on \(B\), proving the assertion simultaneously for every original world. A tracked atom has the same value by the valuation definition. Falsum is forced in neither model. For conjunction and disjunction, both children are tracked; their current-world forcing clauses and the induction hypotheses give the required equivalence.</p>
+  <p>Let \(B=C\to D\). First suppose \(M,w\Vdash C\to D\). Consider any trace \(s\supseteq t_\Sigma(w)\) forcing \(C\) in \(M_\Sigma\). Choose an original representative \(v\) of \(s\). Since the principal formula \(C\to D\) is itself tracked, trace inclusion transfers its forcing from \(w\) to \(v\). Induction changes \(M_\Sigma,s\Vdash C\) into \(M,v\Vdash C\). Apply the original implication at the reflexive extension \(v\leq v\) to obtain \(M,v\Vdash D\), and use induction again to get \(M_\Sigma,s\Vdash D\). This proves the filtered implication even when \(w\) and \(v\) are incomparable.</p>
+  <p>Conversely suppose the filtered implication is forced at \(t_\Sigma(w)\). Given any original \(v\geq w\) forcing \(C\), monotonicity makes \(t_\Sigma(v)\) a future trace. Induction supplies \(C\) there, the filtered implication supplies \(D\), and induction returns \(M,v\Vdash D\). Hence the original implication is forced.</p>
+  <p>For native \(B=\neg C\), suppose first that \(M,w\Vdash\neg C\). At any later trace, transfer the tracked principal negation to an original representative \(v\). Induction identifies a proposed filtered forcing of \(C\) with original forcing at \(v\); the transferred negation forbids that at \(v\leq v\). Thus the filtered negation is forced. In the reverse direction, any original extension \(v\geq w\) has a later trace. The filtered negation forbids \(C\) there, and induction therefore forbids original forcing of \(C\) at \(v\). These are precisely the two native negation clauses. All uses of induction concern tracked proper subformulas, so every constructor has been handled.</p></div>
+</section>
+
+<section id="tracked-countermodels" data-formal="ipff-context ipff-countermodel ifmp-problem-closed ifmp-problem-contains" data-kind="theorem">
+  <h2>Carry the same counterexample into the finite model</h2>
+  <p>Let \(\Sigma\) be a tracked set containing every member of a premise set \(\Gamma\) and the conclusion \(A\). At every specified original world \(w\),</p>
+  <div class="math-display">\[M,w\Vdash\Gamma\text{ and }M,w\nVdash A\quad\Longleftrightarrow\quad M_\Sigma,t_\Sigma(w)\Vdash\Gamma\text{ and }M_\Sigma,t_\Sigma(w)\nVdash A.\]</div>
+  <div class="proof"><p>Apply the tracked truth theorem to each premise and to \(A\). It transfers all premise truths in either direction and transfers conclusion failure by the same equivalence. The point in the finite model is the trace of the supplied point, so no new counterexample world is selected.</p></div>
+  <p>For finite \(\Gamma\), take \(\Sigma=\Sigma(\Gamma,A)\). This recovers the <a href="intuitionistic-propositional-finite-model-property#bounded-countermodels">earlier bounded-countermodel argument</a> when \(M\) is the canonical model, and also applies to a supplied model with additional frame geometry.</p>
+</section>
+
+<section id="least-root" data-formal="ipff-root" data-kind="lemma">
+  <h2>A least original world remains a least trace</h2>
+  <p>If \(r\in W\) satisfies \(r\leq w\) for every \(w\in W\), then \(t_\Sigma(r)\) is a least world of \(W_\Sigma\).</p>
+  <div class="proof"><p>Every trace \(s\) has a representative \(w\). The hypothesis gives \(r\leq w\), and monotonicity gives \(t_\Sigma(r)\subseteq t_\Sigma(w)=s\). Thus this exact trace lies below every trace world.</p></div>
+</section>
+
+<section id="directed-traces" data-formal="ipff-directed-traces" data-kind="lemma">
+  <h2>Common original upper worlds give common upper traces</h2>
+  <p>A preorder is <strong>globally directed</strong> if every pair \(u,v\) has a common upper world \(z\), with \(u\leq z\) and \(v\leq z\). If the original frame is globally directed, then so is \(W_\Sigma\).</p>
+  <div class="proof"><p>Given trace worlds \(s,t\), choose representatives \(u,v\). Global directedness supplies \(z\geq u,v\). Monotonicity gives \(s=t_\Sigma(u)\subseteq t_\Sigma(z)\) and \(t=t_\Sigma(v)\subseteq t_\Sigma(z)\). The trace of this actual original upper world is therefore a common upper trace.</p></div>
+  <p>The hypothesis concerns every original pair. Merely having directed future cones does not make arbitrary representatives of comparable traces share an original predecessor. A rooted future cone, however, is globally directed whenever that cone has directed future cones.</p>
+</section>
+
+<section id="greatest-trace" data-formal="ipff-greatest order-greatest-unique kcfm-finite-countermodel" data-kind="lemma">
+  <h2>A finite directed trace frame has a greatest world</h2>
+  <p>If the original frame is globally directed, there is a trace \(g\in W_\Sigma\) such that \(s\subseteq g\) for every trace \(s\). Thus the finite filtration has a greatest world.</p>
+  <div class="proof"><p>The trace frame is nonempty, finite and globally directed by the preceding results. List all its worlds as \(s_1,\ldots,s_n\), with \(n\geq1\). Start with \(g_1=s_1\). Having found a common upper world \(g_k\) of the first \(k\) listed worlds, use directedness to choose a common upper world \(g_{k+1}\) of \(g_k\) and \(s_{k+1}\). Transitivity keeps it above every earlier \(s_i\). Finite induction gives \(g_n\) above every world in the list, which is the required greatest trace. Antisymmetry makes any two such greatest worlds equal.</p></div>
+  <p>Applied to the rooted directed canonical countermodel for weak excluded middle, this gives the <a href="kc-propositional-finite-models#finite-rooted-countermodels">finite KC countermodels</a> needed for a bounded decision procedure.</p>
+</section>
+
+<section id="chain-traces" data-formal="ipff-chain-traces ipff-root ipff-finite" data-kind="lemma">
+  <h2>Comparable original worlds give a finite chain</h2>
+  <p>If the original preorder is <strong>globally comparable</strong>, meaning \(u\leq v\) or \(v\leq u\) for every pair, then the trace frame is a finite <strong>chain</strong>: every two traces are comparable by inclusion. If the original frame also has a specified least world \(r\), its trace is the least point of this chain.</p>
+  <div class="proof"><p>Choose representatives \(u,v\) for two traces. In the first comparison case monotonicity gives \(t_\Sigma(u)\subseteq t_\Sigma(v)\); in the second it gives the reverse inclusion. This proves comparability of every pair of traces. Finiteness and antisymmetry were already proved, and the least-root lemma supplies the final assertion.</p></div>
+</section>
+
+<section id="new-comparisons" data-formal="pdl-discrete-frame ipff-example-model ipff-example-set ipff-example-closed ipff-example-traces ipff-example-comparison ipff-example-atoms" data-kind="lemma">
+  <h2>Filtration can add a comparison between isolated worlds</h2>
+  <p>Let \(W=\{u,v\}\) have the discrete order: a world sees only itself. Let \(p_0\) hold exactly at \(v\), and let every other atom be false. For the tracked set \(\Sigma=\{p_0\}\), the traces are</p>
+  <div class="math-display">\[t_\Sigma(u)=\varnothing,\qquad t_\Sigma(v)=\{p_0\},\qquad\varnothing\subsetneq\{p_0\}.\]</div>
+  <div class="proof"><p>The singleton is subformula closed. At \(u\), its sole tracked atom is false, giving the empty trace; at \(v\) it is true, giving the singleton trace. These are the only original worlds, so these are precisely the two trace worlds. The empty set is properly included in the singleton although \(u\nleq v\). In the filtered model, \(p_0\) is false at the lower trace and true at the upper trace.</p></div>
+  <figure id="added-comparison-figure" class="proof-figure"><div class="figure-image"><img src="assets/added-comparison.svg" width="640" height="300" alt="Two isolated original worlds, u with empty trace and v with trace p zero, map to two trace worlds ordered from the empty set to the singleton p zero." /></div><figcaption>The inclusion order adds a future world that the original lower representative did not have.</figcaption></figure>
+</section>
+
+<section id="back-condition-question" data-formal="ipff-example-not-bounded" data-kind="question">
+  <h2>Is the trace map necessarily a bounded morphism?</h2>
+  <p>Does the specified monotone surjection \(t_\Sigma\) always satisfy the <a href="intuitionistic-propositional-kripke-morphisms#bounded-frame-maps">back condition</a>?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. In the discrete two-world model above, the upper trace \(\{p_0\}\) lies above \(t_\Sigma(u)=\varnothing\). A back witness would have to be an original \(z\geq u\) whose trace is \(\{p_0\}\). Discreteness forces \(z=u\), whose trace is empty, a contradiction.</p><p>Thus even tracking every atom that varies in this example does not make the trace map a bounded frame map. The tracked truth theorem is proved directly from the tracked principal formulas; it does not invoke bounded-morphism invariance.</p></div></details>
+</section>
+
+<section id="untracked-formulas-question" data-formal="ipff-example-formulas ipff-discrete-excluded-middle" data-kind="question">
+  <h2>Must the model and filtration agree outside the tracked set?</h2>
+  <p>In the same example, do the two models agree on \(\neg p_0\) and \(p_0\lor\neg p_0\) at the specified lower point?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Originally \(u\) sees only itself and does not force \(p_0\), so it forces \(\neg p_0\), and hence \(p_0\lor\neg p_0\). Its empty trace has a future trace \(\{p_0\}\) forcing \(p_0\); it therefore fails to force \(\neg p_0\). It also fails to force \(p_0\), so it fails to force their disjunction. Neither of these two composite formulas belongs to \(\Sigma\).</p><p>Every valuation on the original discrete frame validates excluded middle, since each world's future consists only of itself. The filtered chain with the specified valuation refutes it at its lower point. Preservation of tracked truth in one supplied model therefore does not imply preservation of validity for every formula under every valuation on the two frames.</p></div></details>
+</section>
+
+<section id="empty-tracked-set" data-formal="ipff-empty" data-kind="question">
+  <h2>What if no formulas are tracked?</h2>
+  <p>Describe \(M_\varnothing\), including its size and atom values.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Every original world has the empty trace. Nonemptiness of the original frame ensures that this trace occurs, so the trace frame has exactly one world. Every atom is untracked and is false there. The bound is exact: \(|W_\varnothing|=1=2^0\). The tracked truth assertion has no formula instances; it is vacuous, rather than an assertion that all original formulas have the same value.</p></div></details>
+</section>

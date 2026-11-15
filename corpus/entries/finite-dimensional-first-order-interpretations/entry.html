@@ -1,0 +1,87 @@
+<section id="tuple-domains" data-kind="definition" data-formal="fdi-data fdi-domain qdi-data">
+  <h2>One interpreted element may need several coordinates</h2>
+  <p>A <a href="interpreting-theories#relational-data">one-dimensional interpretation</a> represents each new object by an element of a definable subset of the old structure. Sometimes an ordered pair is the natural representation. Fix first-order languages \(L,K\) and a positive natural number \(d\). A <strong>finite-dimensional interpretation datum</strong> \(I\) from \(L\) to \(K\) consists of a domain formula \(\delta(\bar x)\) with \(d\) designated variables, a formula \(\rho_R(\bar x_0,\ldots,\bar x_{n-1})\) for each \(n\)-ary relation symbol \(R\) of \(L\), and a formula \(\gamma_f(\bar x_0,\ldots,\bar x_{n-1},\bar y)\) for each \(n\)-ary function symbol \(f\). Every barred variable denotes a block of \(d\) coordinates. All the displayed blocks are disjoint.</p>
+  <p>In a \(K\)-structure \(M\), the <strong>selected domain</strong> is \(D=\{\bar a\in M^d:M\models\delta(\bar a)\}\). Elements of \(D\) are actual tuples: equality means equality of every coordinate. <a href="quotient-first-order-interpretations#quotient-data">Quotient interpretations</a> supply the further construction for objects represented by equivalence classes of tuples. The defining formulas are fixed before choosing \(M\) or an assignment.</p>
+</section>
+<section id="coordinate-contexts" data-kind="definition" data-formal="fdi-coordinates fdi-last-block fdi-last-block-values">
+  <h2>Give every available variable its own block</h2>
+  <p>If the original free-variable context is a set \(\alpha\), its <strong>coordinate context</strong> is \(\alpha\times\{0,\ldots,d-1\}\). An assignment \(v:\alpha\to D\) gives the <strong>flattened assignment</strong> \(v^\flat(a,j)=v(a)_j\). With \(n\) available quantified placeholders, use \((\alpha\sqcup\{0,\ldots,n-1\})\times\{0,\ldots,d-1\}\). Thus a placeholder receives a whole coordinate block, just like a free variable.</p>
+  <p>The <strong>last-block rebinding</strong> convention is as follows. To translate a body with \(n+1\) placeholders, send each free coordinate \((a,j)\) and each old placeholder coordinate \((i,j)\), \(i&lt;n\), to the same old coordinate. Send the last placeholder's coordinate \((n,j)\) to a fresh coordinate \(y_j\). Then quantify the fresh block \(\bar y\). The old coordinates and the fresh block form a disjoint union, so none of the old variables can be captured. Quantifying a finite block means iterating ordinary first-order quantifiers; it introduces no new logical operation.</p>
+</section>
+<section id="tuple-function-graphs" data-kind="definition" data-formal="fdi-guarded-graph fdi-good-graphs fdi-good fdi-structure fdi-function-value">
+  <h2>A function must select exactly one output tuple</h2>
+  <p>Put \(\widehat\gamma_f(\bar x,\bar y)=\delta(\bar y)\land\gamma_f(\bar x,\bar y)\). The <strong>guarded graph condition</strong> in \(M\) is</p>
+  <div class="math-display">\[\forall\bar a\in D^n\;\exists!\bar b\in M^d\;M\models\widehat\gamma_f(\bar a,\bar b).\]</div>
+  <p>The datum is <strong>good in \(M\)</strong> when \(D\) is nonempty and every guarded graph condition holds. The output guard requires the unique tuple to lie in \(D\). Raw graph values outside \(D\), and raw graph behavior on nonselected input tuples, do not matter. Arity zero requires a unique selected tuple for each constant.</p>
+  <p>The <strong>induced \(L\)-structure</strong> \(I(M)\) has domain \(D\), interprets \(R(\bar a_0,\ldots,\bar a_{n-1})\) by \(\rho_R\), and interprets \(f\) by the unique guarded graph output. This is the <a href="interpreting-theories#function-data">earlier graph construction</a> with a tuple in place of one element.</p>
+</section>
+<section id="tuple-term-graphs" data-kind="definition" data-formal="fdi-term-graph">
+  <h2>Nested terms receive tuple-valued graph formulas</h2>
+  <p>For an \(L\)-term \(t\) on context \(\alpha\), its <strong>term graph</strong> \(G_t(\alpha^\flat,\bar y)\) is a \(K\)-formula with the coordinate context and a separate output block. Define</p>
+  <div class="math-display">\[G_a=\delta(\bar y)\land\bigwedge_{j&lt;d}y_j=x_{a,j},\]</div>
+  <div class="math-display">\[G_{f(t_0,\ldots,t_{n-1})}=\exists\bar z_0\cdots\exists\bar z_{n-1}\;\left(\bigwedge_{i&lt;n}G_{t_i}(\alpha^\flat,\bar z_i)\land\widehat\gamma_f(\bar z_0,\ldots,\bar z_{n-1},\bar y)\right).\]</div>
+  <p>For the second line, the intermediate coordinates have indices \((i,j)\) with \(i&lt;n,j&lt;d\). In the \(i\)-th recursive graph, relabel its output coordinate \(j\) to \((i,j)\), retaining all original input coordinates. Relabel the function graph's input coordinate \((i,j)\) to the same intermediate coordinate and its output coordinate \(j\) to the outer output coordinate. Finally bind just the intermediate coordinates. This specifies a capture-free formula for every term. When \(n=0\), the intermediate tuple is empty and the empty conjunction is true, so constants are included.</p>
+</section>
+<section id="tuple-term-truth" data-kind="lemma" data-formal="fdi-term-truth fdi-term-unique fdi-term-domain">
+  <h2>The graph determines the actual interpreted term value</h2>
+  <p>Assume the guarded graph conditions. For every domain-valued assignment \(v:\alpha\to D\), every term \(t\), and every ambient tuple \(\bar b\in M^d\),</p>
+  <div class="math-display">\[M\models G_t(v^\flat,\bar b)\quad\Longleftrightarrow\quad\bar b=t^{I(M)}[v].\]</div>
+  <p>On the right, the domain element is identified with its underlying tuple. Hence every such graph has exactly one ambient output, and its output satisfies \(\delta\).</p>
+  <div class="proof">
+    <p>Induct on the term, for every proposed output tuple. For a variable \(a\), coordinate equality says exactly \(\bar b=v(a)\). That tuple satisfies \(\delta\), so the guard adds no restriction at the required value. For \(f(\bar t)\), a satisfying tuple of intermediate witnesses must, by the induction hypotheses, consist of the actual interpreted values of the child terms. Every child value is in \(D\). The guarded graph condition therefore identifies the final output with the function value in \(I(M)\). Conversely, use exactly these child values as intermediate witnesses; their induction hypotheses and the defining function graph make the formula true. This argument includes constants because there are then no child witnesses to select. The displayed equivalence proves existence, uniqueness and the output-domain assertion.</p>
+  </div>
+</section>
+<section id="tuple-formula-translation" data-kind="definition" data-formal="fdi-relation-translation fdi-scoped-translation fdi-translation fdi-sentence-translation fdi-existential-guard">
+  <h2>Translate atoms and bind one whole block at a time</h2>
+  <p>The <strong>translation</strong> \(A\mapsto A^I\) is defined on the existing <a href="first-order-languages#scoped-formulas">scoped first-order formulas</a>. For atoms, set</p>
+  <div class="math-display">\[(s=t)^I=\exists\bar y\,(G_s(\bar y)\land G_t(\bar y)),\]</div>
+  <div class="math-display">\[(R(t_0,\ldots,t_{n-1}))^I=\exists\bar z_0\cdots\exists\bar z_{n-1}\left(\bigwedge_{i&lt;n}G_{t_i}(\bar z_i)\land\rho_R(\bar z_0,\ldots,\bar z_{n-1})\right).\]</div>
+  <p>Keep falsity and implication unchanged. For a universal constructor use</p>
+  <div class="math-display">\[(\forall x A)^I=\forall y_0\cdots\forall y_{d-1}\,(\delta(\bar y)\to A^I),\]</div>
+  <p>where the translated body is relabeled by <a href="#coordinate-contexts">the last-block convention</a>. Classical abbreviations for conjunction, disjunction and negation are preserved in truth. In particular the existential translation agrees in truth with \(\exists\bar y(\delta(\bar y)\land A^I)\). Fresh graph-output blocks are bound only inside their own atoms; the quantifier clause binds precisely the original quantified variable's block.</p>
+</section>
+<section id="tuple-truth-lemma" data-kind="theorem" data-formal="fdi-scoped-truth fdi-truth fdi-sentence-truth">
+  <h2>Truth agrees for every scoped formula</h2>
+  <div class="statement-box"><p>Suppose the guarded graph conditions hold in \(M\). For every scoped \(L\)-formula \(A\), every assignment of its free variables into \(D\), and every assignment of its available placeholders into \(D\),</p>
+    <div class="math-display">\[I(M)\models A[v]\quad\Longleftrightarrow\quad M\models A^I[v^\flat].\]</div>
+    <p>For sentences no assignment is needed. To obtain a nonempty interpreted structure, also require \(D\ne\varnothing\).</p></div>
+  <div class="proof">
+    <p>Induct on the actual scoped formula, retaining both assignments in the induction statement. Equality holds after translation precisely when the term graphs have a common output tuple. By <a href="#tuple-term-truth">term truth</a>, that means their interpreted values have the same coordinates. Two elements of the subset \(D\) with the same underlying tuple are equal, so this is exactly the original equality atom. For a relation, the term graphs force exactly the interpreted argument tuples, and the remaining relation formula is its definition in \(I(M)\). This includes a nullary relation, where there are no intermediate outputs. Falsity is the same on both sides. For implication, replace the two child truth values by their induction equivalents.</p>
+    <p>For \(\forall x A\), fix the free assignment and the preceding placeholders. The original clause tests every \(b\in D\). The translated clause tests every \(\bar b\in M^d\), and imposes its body exactly when \(\delta(\bar b)\) holds. Such a tuple, with its guard certificate, is precisely an element of \(D\). Rebinding sends its coordinates to the last placeholder and leaves every earlier coordinate unchanged. Thus the induction hypothesis identifies each admitted test on one side with the corresponding test on the other. This proves both directions, the fully scoped statement, and its formula and sentence specializations.</p>
+    <p>The existential guard assertion follows too: its classical expansion negates a universal clause, so it asks for one admitted block where the translated body holds. No assertion is made for assignments outside the selected domain.</p>
+  </div>
+</section>
+<section id="tuple-theory-interpretation" data-kind="definition" data-formal="fdi-domain-sentence fdi-graph-sentence fdi-admissible fdi-interprets fdi-domain-sentence-truth fdi-graph-sentence-truth">
+  <h2>Side conditions are sentences of the ambient theory</h2>
+  <p>Let \(T\) be an \(L\)-theory and \(S\) a \(K\)-theory. The datum <strong>interprets \(T\) in \(S\)</strong> when \(S\) derives the domain sentence \(\exists\bar x\,\delta(\bar x)\), every universally closed guarded graph condition, and \(\sigma^I\) for every axiom \(\sigma\in T\). Here tuple uniqueness abbreviates coordinatewise equality: two guarded outputs must agree at every coordinate. The graph sentence quantifies all input coordinates, assumes their domain guards, and asserts existence and uniqueness of the output block.</p>
+  <p>All derivations use the <a href="first-order-proofs#derivations-and-theories">existing first-order calculus</a>. The selected domain and symbol formulas are fixed syntactic data, rather than formulas chosen separately in individual models.</p>
+</section>
+<section id="tuple-consequence-transfer" data-kind="theorem" data-formal="fdi-model-good fdi-models fdi-native-transfer fdi-consistency">
+  <h2>Models and consequences transfer through tuple domains</h2>
+  <div class="statement-box"><p>If \(I\) interprets \(T\) in \(S\), every nonempty \(S\)-model induces a nonempty \(T\)-model. For every \(L\)-sentence \(\sigma\),</p>
+    <div class="math-display">\[T\vdash\sigma\quad\Longrightarrow\quad S\vdash\sigma^I.\]</div></div>
+  <div class="proof">
+    <p>Fix a nonempty \(S\)-model. Soundness makes its derived domain and graph sentences true. These give a nonempty selected domain and the unique outputs defining \(I(M)\). The translated axioms are true as well. The sentence case of <a href="#tuple-truth-lemma">truth translation</a> makes every original axiom true in \(I(M)\), proving the model assertion.</p>
+    <p>If \(T\vdash\sigma\), soundness gives \(I(M)\models\sigma\). Truth translation gives \(M\models\sigma^I\). This holds in every nonempty \(S\)-model, so <a href="changing-languages#arbitrary-language-completeness">arbitrary-language completeness</a> gives the claimed native derivation from \(S\). As in the one-dimensional result, this proves the existence of a finite derivation; it does not specify an effective transformation on derivation codes. In particular, consistency of \(S\) implies consistency of \(T\), since falsity translates to falsity.</p>
+  </div>
+</section>
+<section id="two-coordinate-example" data-kind="lemma" data-formal="fdi-pair-language fdi-pair-data fdi-pair-good fdi-pair-function fdi-pair-relation fdi-pair-double-term fdi-pair-sentence fdi-pair-double-graph fdi-pair-sentence-truth">
+  <h2>A pair can evolve in both coordinates</h2>
+  <p>Let \(K\) have a unary function \(s\) and a binary relation \(r\). Let \(L\) have a unary function \(f\) and a unary predicate \(P\). In dimension two take the whole tuple domain, define</p>
+  <div class="math-display">\[\gamma_f(\bar x,\bar y)\;\equiv\;(y_0=s(x_0)\land y_1=s(x_1)),\qquad\rho_P(\bar x)\;\equiv\;r(x_0,x_1).\]</div>
+  <p>In every nonempty \(K\)-structure, \(D=M^2\) is nonempty. The only graph output is \((s(x_0),s(x_1))\), so the datum is good. It induces \(f(a,b)=(s(a),s(b))\) and \(P(a,b)\leftrightarrow r(a,b)\). Applying the term recurrence twice gives \(G_{f(f(x))}(\bar x,\bar y)\) equivalent to \(y_0=s(s(x_0))\land y_1=s(s(x_1))\): each intermediate graph forces its two coordinates. Thus the translated sentence \(\forall x\,P(f(f(x)))\) is equivalent in every nonempty ambient structure to \(\forall a\,\forall b\;r(s(s(a)),s(s(b)))\). This example requires neither arithmetic axioms nor any closure hypothesis on \(s\).</p>
+</section>
+<section id="coordinatewise-guard-question" data-kind="question" data-formal="fdi-diagonal-guard fdi-diagonal-projections fdi-diagonal-counterexample fdi-singleton-diagonal">
+  <h2>May the guard be checked one coordinate at a time?</h2>
+  <p>Take dimension two and \(\delta(x_0,x_1)\equiv x_0=x_1\). Does replacing this guard by the assertion that each coordinate occurs somewhere in a selected tuple preserve the selected domain?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>No. Every \(a\in M\) occurs in the selected tuple \((a,a)\), so both coordinate projections of \(D\) are all of \(M\). The separate-coordinate test therefore admits every pair. If \(M\) has distinct \(a,b\), it admits \((a,b)\), although \(\delta(a,b)\) is false. A block guard can relate its coordinates and must be retained as one formula. On a singleton domain the two sets happen to agree; the proposed replacement is still invalid in general.</p>
+  </div></details>
+</section>
+<section id="dimension-one" data-kind="theorem" data-formal="fdi-from-one fdi-one-domain-map fdi-one-map-value fdi-one-graphs fdi-one-good fdi-one-isomorphism fdi-one-translation">
+  <h2>The earlier interpretations are exactly the one-coordinate case</h2>
+  <p>A one-dimensional datum from <a href="interpreting-theories#function-data">the earlier construction</a> gives a dimension-one datum by reading its designated variable as coordinate zero in each block. Evaluation at coordinate zero identifies its tuple domain with the earlier selected subset. This specified bijection preserves functions and relations, so it is an isomorphism of the induced structures. Consequently, on corresponding selected assignments, the two native translations of every formula agree in truth.</p>
+  <div class="proof">
+    <p>Send a selected one-coordinate tuple \(a\) to its entry \(a_0\). The inverse sends a selected ambient element \(b\) to the constant one-coordinate tuple with value \(b\). Both inverse identities follow because a one-coordinate tuple has only its zeroth entry. Relabeling the domain formula gives exactly the required membership certificates. The relabeled guarded graph has the same unique output entry as the old graph, so the maps preserve every function, including constants. The relabeled relation formula tests the same tuple of entries, so relations are preserved too. Apply the two truth lemmas and invariance under this isomorphism to obtain the formula comparison. The formula trees need not literally coincide, because their contexts and auxiliary quantified slots are indexed differently.</p>
+  </div>
+</section>

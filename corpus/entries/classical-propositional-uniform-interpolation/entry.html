@@ -1,0 +1,113 @@
+<section id="retained-vocabulary" data-formal="cpui-uniform-interpolant prop-semantic-equivalence prop-atom-support prop-verum" data-kind="definition">
+  <h2>Keep the consequences expressed in a selected vocabulary</h2>
+  <p>Use the <a href="propositional-logic#formulas">shared propositional formulas</a> over an atom set with decidable equality, with their Boolean valuations and finite supports \(\operatorname{at}(A)\). Write \(A\models B\) for singleton semantic consequence and \(A\equiv B\) for equality of their truth values at every valuation. Truth is the atom-free abbreviation \(\top:=\neg\bot\).</p>
+  <p>Fix a formula \(A\) and a finite retained vocabulary \(S\subseteq\operatorname{at}(A)\). A <strong>uniform interpolant</strong> of \(A\) over \(S\) is a formula \(I\) satisfying</p>
+  <div class="math-display">\[A\models I,\qquad \operatorname{at}(I)\subseteq S,\]</div>
+  <p>and, for every formula \(B\) with \(\operatorname{at}(B)\cap\operatorname{at}(A)\subseteq S\),</p>
+  <div class="math-display">\[A\models B\quad\Longrightarrow\quad I\models B.\]</div>
+  <p>The formula \(I\) is selected from \(A,S\) before \(B\) is given. The condition on \(B\) allows fresh atoms outside \(\operatorname{at}(A)\). This strengthens <a href="propositional-proof-interpolation#numbered-atom-interpolation">factoring one supplied consequence</a>: the same middle formula must work for every permitted future consequence.</p>
+</section>
+
+<section id="constant-substitution" data-formal="cpui-constant-instance cpui-existential-atom cpui-universal-atom cpui-existing-forgetting ci-forgetting-operation cpui-instance-evaluation" data-kind="definition">
+  <h2>Replace an atom by a specified truth value</h2>
+  <p>For an atom \(p\) and \(b\in\{0,1\}\), the <strong>constant instance</strong> \(A[p:=b]\) is simultaneous <a href="propositional-logic#substitution">formula substitution</a> that sends \(p\) to \(\bot\) when \(b=0\), sends it to \(\top\) when \(b=1\), and fixes every other atom. For a valuation \(v\), its <strong>update</strong> \(v[p:=b]\) assigns \(b\) at \(p\) and agrees with \(v\) elsewhere.</p>
+  <p>The two <strong>single-atom elimination formulas</strong> are</p>
+  <div class="math-display">\[E_pA:=A[p:=0]\lor A[p:=1],\qquad U_pA:=A[p:=0]\land A[p:=1].\]</div>
+  <p>They are ordinary propositional formulas. The letters \(E,U\) name these constructions and do not introduce first-order quantifiers or quantification into the formula grammar.</p>
+</section>
+
+<section id="substitution-evaluation" data-formal="cpui-instance-evaluation cpui-instance-support cpui-atom-support prop-substitution-evaluation" data-kind="lemma">
+  <h2>Constant substitution evaluates at the updated valuation</h2>
+  <p>For every formula \(A\), valuation \(v\), atom \(p\) and Boolean \(b\),</p>
+  <div class="math-display">\[\llbracket A[p:=b]\rrbracket_v=\llbracket A\rrbracket_{v[p:=b]},\qquad \operatorname{at}(A[p:=b])\subseteq\operatorname{at}(A)\setminus\{p\}.\]</div>
+  <div class="proof"><p>The <a href="propositional-logic#substitution-principle">substitution evaluation law</a> replaces an atom's value by the value of its substituted formula. That value is \(b\) at \(p\), since \(\bot\) is false and \(\neg\bot\) true, and is \(v(q)\) at every \(q\ne p\). Thus the resulting valuation is exactly the displayed update.</p><p>For the support bound, induct on \(A\). The atom \(p\) becomes an atom-free constant. Another atom remains itself. Falsum has no atoms; negation leaves the child support unchanged; each binary connective takes the union of its children's supports. The induction hypotheses therefore give the claimed inclusion in every case. Both elimination formulas consequently have support contained in \(\operatorname{at}(A)\setminus\{p\}\).</p></div>
+</section>
+
+<section id="single-atom-projection" data-formal="cpui-single-existential-projection cpui-single-universal-projection ci-forgetting-semantics" data-kind="theorem">
+  <h2>Forgetting means extending an assignment</h2>
+  <p>For every formula \(A\), atom \(p\) and valuation \(v\),</p>
+  <div class="math-display">\[v\models E_pA\quad\Longleftrightarrow\quad\exists w\;(w\models A\ \text{and}\ \forall q\ne p\;w(q)=v(q)).\]</div>
+  <p>Likewise \(v\models U_pA\) exactly when every valuation agreeing with \(v\) off \(p\) satisfies \(A\).</p>
+  <div class="proof"><p>If \(v\models E_pA\), one of its two constant instances is true. Choose that branch's Boolean \(b\) and set \(w=v[p:=b]\). The evaluation lemma makes \(A\) true at \(w\), which changes no other atom. Conversely, given \(w\), put \(b=w(p)\). The update \(v[p:=b]\) equals \(w\) at \(p\) and at every other atom. Hence the corresponding constant instance is true at \(v\), proving its disjunction.</p><p>For \(U_pA\), its two conjuncts say that \(A\) is true at both updates. Every agreeing valuation is one of them, by its Boolean value at \(p\); conversely both updates agree off \(p\). This proves the universal assertion as well.</p></div>
+</section>
+
+<section id="finite-elimination" data-formal="cpui-existential-list cpui-universal-list cpui-outside-agreement" data-kind="definition">
+  <h2>Eliminate a finite list of atoms</h2>
+  <p>For a finite atom list \(L\), define the <strong>existential elimination</strong> and <strong>universal elimination</strong> recursively by</p>
+  <div class="math-display">\[E_{[]}A=A,\quad E_{p::L}A=E_p(E_LA),\qquad U_{[]}A=A,\quad U_{p::L}A=U_p(U_LA).\]</div>
+  <p>Each call to the list recursion shortens its input list; each constant substitution follows the finite formula tree. Thus these definitions give finite formulas by a terminating procedure, even if the list repeats an atom. Write \(F_L\) for the finite set of atoms appearing in \(L\). Valuations <strong>agree outside</strong> \(F_L\) when \(w(q)=v(q)\) for every \(q\notin F_L\).</p>
+</section>
+
+<section id="finite-projection" data-formal="cpui-finite-existential-projection cpui-finite-universal-projection cpui-finite-support" data-kind="theorem">
+  <h2>The finite construction preserves exactly the possible retained assignments</h2>
+  <div class="statement-box"><p>For every finite list \(L\), formula \(A\) and valuation \(v\),</p><div class="math-display">\[v\models E_LA\quad\Longleftrightarrow\quad\exists w\;(w\models A\ \text{and }w=v\text{ outside }F_L).\]</div><p>Also \(v\models U_LA\) exactly when every \(w\) agreeing with \(v\) outside \(F_L\) satisfies \(A\). Both output supports are contained in \(\operatorname{at}(A)\setminus F_L\).</p></div>
+  <div class="proof"><p>Induct on \(L\), with \(A,v\) arbitrary. For the empty list, agreeing outside the empty set means equality of the valuations; both outputs are \(A\). For \(p::L\), the single-atom theorem first changes only \(p\), and the induction hypothesis then permits changes only in \(F_L\). Composing the two agreements gives agreement outside \(F_L\cup\{p\}\).</p><p>For the reverse existential direction, suppose \(w\models A\) agrees with \(v\) outside that union. Let \(u=v[p:=w(p)]\). The valuations \(w,u\) agree outside \(F_L\): at \(p\) this follows from the update, and away from \(p\) it follows from the original agreement. The induction hypothesis gives \(u\models E_LA\); the single-atom theorem then gives \(v\models E_p(E_LA)\). This argument also handles \(p\in F_L\).</p><p>For the universal direction, if every valuation differing only at \(p\) satisfies \(U_LA\), choose any \(w\) agreeing with \(v\) outside the union and the same intermediate \(u\). Induction applied at \(u\) proves \(w\models A\). Conversely, if all valuations agreeing outside the union satisfy \(A\), then for each update \(u\), every valuation agreeing with \(u\) outside \(F_L\) also agrees with \(v\) outside the union. Induction proves \(u\models U_LA\), giving the two conjuncts. Finally, the single-atom support bound and the induction hypothesis remove \(F_L\) and then \(p\), proving both support assertions.</p></div>
+</section>
+
+<section id="order-and-repetition" data-formal="cpui-existential-list-invariance cpui-universal-list-invariance cpui-absent-atom" data-kind="lemma">
+  <h2>Only the set of forgotten atoms matters up to equivalence</h2>
+  <p>If \(F_L=F_K\), then \(E_LA\equiv E_KA\) and \(U_LA\equiv U_KA\). In particular, permuting a list or repeating a forgotten atom does not change either result's Boolean meaning. The syntactic formulas may differ.</p>
+  <div class="proof"><p>By <a href="#finite-projection"></a>, truth of either existential output at \(v\) means exactly that \(A\) has a satisfying valuation agreeing with \(v\) outside the same set. The universal outputs also quantify over that identical class of valuations. Their truth conditions agree at every valuation, proving equivalence. This includes an atom absent from \(A\): changing that atom leaves \(A\)'s value unchanged by <a href="propositional-logic#locality">locality</a>, so eliminating it changes no Boolean meaning.</p></div>
+</section>
+
+<section id="strongest-retained-consequence" data-formal="cpui-source-projection-factor cpui-strongest-consequence" data-kind="theorem">
+  <h2>One formula captures every consequence avoiding the forgotten atoms</h2>
+  <div class="statement-box"><p>For every finite atom list \(L\) and formula \(A\), \(A\models E_LA\). For every formula \(B\) with \(\operatorname{at}(B)\cap F_L=\varnothing\),</p><div class="math-display">\[A\models B\quad\Longleftrightarrow\quad E_LA\models B.\]</div></div>
+  <div class="proof"><p>A valuation satisfying \(A\) itself supplies the witness for \(E_LA\) in <a href="#finite-projection"></a>. Now assume \(A\models B\), and let \(v\models E_LA\). Obtain its witness \(w\models A\). The assumed consequence gives \(w\models B\). All atoms of \(B\) lie outside \(F_L\), so \(w,v\) agree on its support. Locality gives \(v\models B\). Conversely, if \(E_LA\models B\), the already proved consequence \(A\models E_LA\) gives \(A\models B\) by composition.</p><p>The argument does not require \(\operatorname{at}(B)\subseteq\operatorname{at}(A)\). Agreement outside the forgotten set preserves every other atom, including any fresh ones in \(B\). That full agreement is why the projection theorem has the exact extension condition it does.</p></div>
+</section>
+
+<section id="uniform-interpolation" data-formal="cpui-uniform-construction cpui-uniform-uniqueness" data-kind="theorem">
+  <h2>Choose the uniform interpolant before a consequence is supplied</h2>
+  <p>Given \(A\) and \(S\subseteq\operatorname{at}(A)\), choose any list \(L\) containing exactly \(\operatorname{at}(A)\setminus S\), and set \(I:=E_LA\). This is a uniform interpolant of \(A\) over \(S\). Any two uniform interpolants over \(S\) are Boolean equivalent.</p>
+  <div class="proof"><p>The finite-projection support bound puts \(\operatorname{at}(I)\) inside \(S\), and <a href="#strongest-retained-consequence"></a> gives \(A\models I\). Suppose \(\operatorname{at}(B)\cap\operatorname{at}(A)\subseteq S\). An atom shared by \(B\) and \(F_L=\operatorname{at}(A)\setminus S\) would belong both to \(S\) and its complement. Hence \(B\)'s support avoids \(F_L\), and the preceding theorem gives the uniform consequence property.</p><p>For uniqueness, let \(I,J\) both satisfy the definition. Since \(A\models J\) and \(\operatorname{at}(J)\subseteq S\), uniformity of \(I\) gives \(I\models J\). Reversing their roles gives \(J\models I\). Boolean implication in both directions is exactly equality of their truth values. Different enumerations therefore give equivalent formulas, even though a chosen enumeration already specifies a concrete output independently of every future \(B\).</p></div>
+</section>
+
+<section id="weakest-retained-premise" data-formal="cpui-universal-source-factor cpui-weakest-premise cpui-universal-duality" data-kind="theorem">
+  <h2>The universal construction gives the dual factor</h2>
+  <p>For every finite list \(L\), \(U_LA\models A\). For every formula \(B\) whose support avoids \(F_L\),</p>
+  <div class="math-display">\[B\models A\quad\Longleftrightarrow\quad B\models U_LA.\]</div>
+  <p>Moreover, \(U_LA\equiv\neg E_L(\neg A)\).</p>
+  <div class="proof"><p>If \(v\models U_LA\), its universal condition includes \(v\) itself, yielding \(v\models A\). Suppose \(B\models A\) and \(v\models B\). Every \(w\) agreeing with \(v\) outside \(F_L\) still satisfies \(B\) by locality, hence satisfies \(A\). Thus \(v\models U_LA\). The converse composes \(B\models U_LA\) with \(U_LA\models A\).</p><p>Finally, the finite-projection theorem says that \(E_L(\neg A)\) is true exactly when some agreeing valuation makes \(A\) false. Its Boolean negation therefore says that all agreeing valuations make \(A\) true, precisely the truth condition of \(U_LA\). This proves the duality for the actual two recursive constructions.</p></div>
+</section>
+
+<section id="native-proof-factors" data-formal="cpui-native-unconditional cpui-native-existential cpui-native-universal nd-completeness nd-soundness" data-kind="theorem">
+  <h2>Recover factors in the established classical deduction system</h2>
+  <p>Write \(\vdash_{\mathrm C}\) for <a href="propositional-proofs#proofs-and-discharge">classical natural deduction</a> on the same formulas. For every finite list \(L\), the two unconditional factors and, when \(\operatorname{at}(B)\cap F_L=\varnothing\), the two equivalences are</p>
+  <div class="math-display">\[\{A\}\vdash_{\mathrm C}E_LA,\qquad\{U_LA\}\vdash_{\mathrm C}A,\]</div>
+  <div class="math-display">\[\{A\}\vdash_{\mathrm C}B\quad\Longleftrightarrow\quad\{E_LA\}\vdash_{\mathrm C}B,\]</div>
+  <div class="math-display">\[\{B\}\vdash_{\mathrm C}A\quad\Longleftrightarrow\quad\{B\}\vdash_{\mathrm C}U_LA.\]</div>
+  <div class="proof"><p>Use <a href="propositional-proofs#soundness">soundness</a> to pass from each supplied derivability assertion to singleton semantic consequence. Apply <a href="#strongest-retained-consequence"></a> or <a href="#weakest-retained-premise"></a>, and then use <a href="propositional-proofs#completeness">completeness</a> to obtain the displayed proof in the existing calculus. The two unconditional semantic factors proved above give their deduction counterparts in the same way.</p><p>The elimination formula is specified by recursion on \(L,A\); its proof factors are obtained through the established finite-context completeness theorem. This argument asserts the resulting native derivations. It does not identify them with a recursive transformation of a particular supplied proof tree, unlike the earlier <a href="propositional-proof-interpolation#recursive-extractor">Maehara extractor</a>.</p></div>
+</section>
+
+<section id="resolution-projection" data-formal="cpui-resolution-projection cpui-resolution-formula res-elimination-extension res-elimination-support res-list-clause-bridge res-list-cnf-bridge" data-kind="lemma">
+  <h2>Clause elimination realizes the same forgetting operation</h2>
+  <p>Let \(\Gamma\) be a finite clause set, let \(C\) be any ordinary formula whose truth at every valuation is equivalent to satisfying all clauses of \(\Gamma\), and let \(E_p^{\mathrm{cl}}\Gamma\) be the earlier <a href="propositional-resolution#eliminating-an-atom">clause-elimination construction</a>. Then</p>
+  <div class="math-display">\[v\models E_pC\quad\Longleftrightarrow\quad v\models E_p^{\mathrm{cl}}\Gamma.\]</div>
+  <p>Thus a conjunction of the remaining clauses is Boolean equivalent to \(E_pC\).</p>
+  <div class="proof"><p>Suppose first that \(v\) models the eliminated clauses. Their <a href="propositional-resolution#elimination-extension">extension theorem</a> supplies \(w\) modeling \(\Gamma\) and agreeing with \(v\) off \(p\). The hypothesis on \(C\) gives \(w\models C\); <a href="#single-atom-projection"></a> gives \(v\models E_pC\).</p><p>Conversely, take the agreeing \(w\models C\) supplied by that theorem. It models \(\Gamma\), so soundness of each retained clause or resolvent makes it model \(E_p^{\mathrm{cl}}\Gamma\). Clause elimination removes every occurrence of \(p\); changing only \(p\) therefore preserves the truth of all those clauses. Hence \(v\) models them too. Reading each clause as a finite disjunction and the set as a finite conjunction gives the last assertion, including an empty clause or an empty set.</p></div>
+</section>
+
+<section id="implication-chain" data-formal="cpui-implication-chain cpui-chain-resolvent cpui-strongest-consequence" data-kind="lemma">
+  <h2>Forget the middle atom of an implication chain</h2>
+  <p>For pairwise distinct atoms \(p,q,r\), set \(A=(p\to q)\land(q\to r)\). Then</p>
+  <div class="math-display">\[E_qA\equiv p\to r,\qquad U_qA\equiv\neg p\land r.\]</div>
+  <div class="proof"><p>At \(q=0\), the two implications simplify to \(\neg p\) and \(\top\), so the instance is equivalent to \(\neg p\). At \(q=1\), they simplify to \(\top\) and \(r\), giving \(r\). Their disjunction is \(\neg p\lor r\), the Boolean meaning of \(p\to r\); their conjunction is \(\neg p\land r\).</p><p>In particular the single formula \(p\to r\) captures every consequence of this chain that avoids \(q\), even if the consequence mentions other atoms. It is also the clause resolvent of \(\neg p\lor q\) and \(\neg q\lor r\), in agreement with <a href="#resolution-projection"></a>.</p></div>
+</section>
+
+<section id="fresh-conclusion-atoms" data-formal="cpui-fresh-conclusion cpui-single-existential-projection" data-kind="question">
+  <h2>May a future consequence mention a new atom?</h2>
+  <p>For distinct atoms \(p,q,r\), forget \(q\) from \(p\land q\). Does the uniform consequence property apply to the conclusion \(p\lor r\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>Yes. The two constant instances are \(p\land\bot\) and \(p\land\top\), so \(E_q(p\land q)\equiv p\). The conclusion's shared atoms with the original premise form \(\{p\}\), although \(r\) is new. Both \(p\land q\models p\lor r\) and \(E_q(p\land q)\models p\lor r\) hold.</p><p>The extension theorem preserves the value of \(r\), since it preserves every atom except \(q\). Requiring only agreement on \(\operatorname{at}(p\land q)\setminus\{q\}\) would leave this value unspecified and would not supply that exact argument. The stated full off-pivot agreement avoids this problem.</p></div></details>
+</section>
+
+<section id="empty-retained-vocabulary" data-formal="cpui-complete-existential cpui-complete-universal cpui-finite-support" data-kind="question">
+  <h2>What remains after every occurring atom is forgotten?</h2>
+  <p>Let \(L\) contain all atoms of \(A\). Determine \(E_LA\) and \(U_LA\) up to Boolean equivalence.</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The existential result is equivalent to \(\top\) when \(A\) is satisfiable and to \(\bot\) otherwise. Indeed, a satisfying valuation can be combined with any given \(v\): keep its values on \(\operatorname{at}(A)\) and use \(v\)'s elsewhere. Locality keeps \(A\) true, and the combined valuation agrees with \(v\) outside \(F_L\). The projection theorem therefore makes \(E_LA\) true at every \(v\). If no satisfying valuation exists, that theorem makes it false everywhere.</p><p>The universal result is equivalent to \(\top\) when \(A\) is a tautology and to \(\bot\) otherwise. A countervaluation can be combined with any \(v\) by the same construction, disproving the universal condition at every \(v\). Thus complete existential forgetting decides satisfiability, whereas complete universal forgetting decides validity. The output may still be a long atom-free formula; equivalence to a constant need not mean literal equality of syntax.</p></div></details>
+</section>
+
+<section id="craig-versus-uniform" data-formal="cpui-craig-not-uniform cpui-uniform-uniqueness" data-kind="question">
+  <h2>Does a Craig interpolant already contain every retained consequence?</h2>
+  <p>Take \(A=p\land q\), \(B=p\lor q\), with \(p\ne q\). Both \(p\) and \(q\) are Craig interpolants for \(A\models B\). Are they uniform interpolants of \(A\) over \(S=\{p,q\}\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Each follows from \(A\) and implies \(B\), and each uses only the shared vocabulary. But \(p\) does not imply the retained consequence \(q\): set \(p=1,q=0\). Likewise \(q\) does not imply \(p\): reverse these values. Thus neither satisfies the uniform condition.</p><p>No atom of \(A\) is being forgotten here. Taking the empty list gives \(E_{[]}A=A\), which is a uniform interpolant over the whole support. This illustrates both the <a href="propositional-proof-interpolation#nonunique-witnesses">nonuniqueness of ordinary interpolation witnesses</a> and the uniqueness up to equivalence of the stronger uniform result.</p></div></details>
+</section>

@@ -20,15 +20,16 @@
 </div>
 </section>
 
-<section id="bounded-formulas" data-kind="definition" data-formal="repr-bounded-universal repr-bounded-existential repr-strict-bounded-universal repr-strict-bounded-existential repr-delta-zero">
+<section id="bounded-formulas" data-kind="definition" data-formal="repr-bounded-universal repr-bounded-existential repr-strict-bounded-universal repr-strict-bounded-existential repr-delta-zero hao-le-formula hao-lt-formula hao-le-classical-expansion hao-lt-classical-expansion hao-le-decision hao-lt-decision">
   <h2>Quantifiers with arithmetic bounds</h2>
   <p>A <strong>bounded quantifier</strong> is an abbreviation</p>
   <div class="math-display">\[\exists u\le t\,A\;:=\;\exists u\,(u\le t\land A),\qquad \forall u\le t\,A\;:=\;\forall u\,(u\le t\to A),\]</div>
   <p>where \(u\) does not occur in the bounding term \(t\); strict bounds are defined similarly. A <strong>bounded formula</strong>, or <strong>\(\Delta_0\) formula</strong>, is built from equalities of arithmetic terms by Boolean connectives and bounded quantifiers. The displayed order abbreviations are allowed in this grammar and have the meanings fixed in <a href="#finite-numeral-cuts"></a>.</p>
   <p>Here “bounded” restricts the arithmetic quantifiers. It does not refer to the number of in-scope variable slots in a formal syntax type. A <strong>\(\Sigma_1\) formula</strong> in the convention used below has the form \(\exists u_0\cdots\exists u_{r-1}D\), where \(D\) is \(\Delta_0\). An empty existential prefix is allowed. We make no claim that the later representing formulas constructed using arbitrary Boolean operations have this restricted form.</p>
+  <p>The corresponding <a href="heyting-arithmetic-order#defined-orders">native order formulas</a> use the same additive-witness orientation. Their <a href="heyting-arithmetic-order#decidable-order">HA decision certificates</a> apply uniformly to arbitrary terms; they differ from deciding each fixed numeral instance in Q.</p>
 </section>
 
-<section id="bounded-completeness" data-kind="theorem" data-formal="repr-bounded-absoluteness repr-bounded-completeness repr-bounded-refutation">
+<section id="bounded-completeness" data-kind="theorem" data-formal="repr-bounded-absoluteness repr-bounded-completeness repr-bounded-refutation habf-decision">
   <h2>Robinson arithmetic decides each bounded numeral instance</h2>
   <div class="statement-box">
     <p>For every \(\Delta_0\) formula \(D(\bar x)\) and external numerical tuple \(\bar a\),</p>
@@ -39,6 +40,7 @@
     <p>Induct externally on the formula, strengthening the claim to all numeral assignments to its free variables. A closed arithmetic term is provably equal to its standard numeral: follow its finite construction, using the addition and multiplication equations. Distinct numerals are provably unequal by successor injectivity and \(Sx\ne0\). This settles equalities and, by <a href="#finite-numeral-cuts"></a>, the order abbreviations. The classical Boolean rules combine the proofs or refutations at the next constructor.</p>
     <p>At a bounded quantifier, the bounding term under the given numeral assignment is provably some \(\overline b\). The cut lemma replaces a universal quantifier over that bound by the finite conjunction of its numeral instances, and an existential quantifier by their finite disjunction. The induction hypothesis decides each instance. Empty strict bounds give the empty conjunction \(\top\) and empty disjunction \(\bot\). This constructs a proof in either case. Equivalently every model of \(Q\) agrees with \(\mathbb N_A\) on these instances, and <a href="henkin-completeness#deductive-completeness">completeness</a> converts that agreement into a derivation.</p>
 </div>
+  <p>The <a href="heyting-arithmetic-bounded-formulas#uniform-decisions">native HA bounded decision theorem</a> proves a different uniform assertion: one intuitionistic certificate of the decision disjunction, with parameters and bounds still variable. The present Q result chooses a standard numeral assignment and proves its true side. The <a href="heyting-arithmetic-bounded-formulas#comparison-boundary">comparison</a> keeps those outputs and uses of induction separate.</p>
 </section>
 
 <section id="existential-completeness" data-kind="theorem" data-formal="repr-existential-completeness">
@@ -180,6 +182,6 @@
   <p>For a representing formula \(F\), compare “for every external \(\bar a\), \(Q\vdash\exists!y\,F(\overline{\bar a},y)\)” with \(Q\vdash\forall\bar x\exists!y\,F(\bar x,y)\). Does the representation theorem establish both?</p>
   <details class="question-answer">
     <summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary>
-    <div class="answer-body"><p>It establishes the first: use the correct numeral as a witness and the universal output identity for uniqueness. The proof may depend on the input tuple and its actual finite computation. The second asks for one finite proof covering every element of every \(Q\)-model, including nonstandard inputs. Our external construction of a proof for each standard tuple does not supply that universal proof. A failure of this argument to supply uniform totality is not, by itself, a theorem that the particular totality sentence is unprovable.</p></div>
+    <div class="answer-body"><p>It establishes the first: use the correct numeral as a witness and the universal output identity for uniqueness. The proof may depend on the input tuple and its actual finite computation. The second asks for one finite proof covering every element of every \(Q\)-model, including nonstandard inputs. Our external construction of a proof for each standard tuple does not supply that universal proof. A failure of this argument to supply uniform totality is not, by itself, a theorem that the particular totality sentence is unprovable.</p><p>For a primitive-recursive presentation, the later <a href="pa-computations#primitive-recursive-totality">PA graph construction</a> does supply one uniform totality-and-uniqueness proof.</p></div>
   </details>
 </section>

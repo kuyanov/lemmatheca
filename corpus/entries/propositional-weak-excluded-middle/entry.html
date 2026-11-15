@@ -48,10 +48,11 @@
   <p>The converse from semantic consequences to deductions requires more than this frame characterization. The <a href="intermediate-propositional-kripke-completeness#kc-canonical-directedness">KC canonical frame has directed future cones</a>, which supplies <a href="intermediate-propositional-kripke-completeness#strong-completeness">strong completeness</a> for arbitrary sets of numbered-atom premises.</p>
 </section>
 
-<section id="finite-rooted-frames" data-formal="ipwem-finite-greatest ipwem-finite-frame-validity order-greatest-unique" data-kind="lemma">
+<section id="finite-rooted-frames" data-formal="ipwem-finite-greatest ipwem-finite-frame-validity order-greatest-unique kcfm-finite-countermodel kcfm-search-correctness" data-kind="lemma">
   <h2>A finite rooted partial order needs a greatest world</h2>
   <p>Let \(W\) be a finite partial order with a specified least world \(r\). Then its future cones are directed if and only if it has a greatest world \(t\), meaning \(w\leq t\) for every \(w\in W\). Hence these are also equivalent to validity of the weak excluded middle schema on this frame. Such a greatest world is unique.</p>
   <div class="proof"><p>A greatest world is a common upper bound for every pair, so works in every cone. For the converse, list the finitely many worlds as \(w_1,\ldots,w_n\). Start with \(t_0=r\). Having chosen \(t_{i-1}\), apply directedness above \(r\) to \(t_{i-1}\) and \(w_i\), both of which extend \(r\), to obtain \(t_i\) above them. Induction shows that \(t_i\) bounds \(w_1,\ldots,w_i\). Thus \(t_n\) is greatest.</p><p>The frame equivalence follows from <a href="#frame-characterization"></a>. If \(t,t'\) are greatest, then \(t\leq t'\) and \(t'\leq t\), so antisymmetry gives equality. Finiteness is used in the single bound-building process; the <a href="#infinite-directed-question">infinite case</a> differs.</p></div>
+  <p>The <a href="kc-propositional-finite-models#finite-rooted-countermodels">bounded KC countermodel construction</a> produces frames in this finite class from every failed finite-premise deduction; the <a href="kc-propositional-finite-models#kc-search-correctness">corresponding table search</a> is therefore a decision procedure.</p>
 </section>
 
 <section id="de-morgan-from-wem" data-formal="ipwem-de-morgan-formula ipwem-de-morgan-from-wem" data-kind="lemma">

@@ -1,0 +1,88 @@
+<section id="definition-codes" data-kind="definition" data-formal="lhier-definition-code lhier-defined-subset lhier-def gch-code-bound gch-code-output gch-code-output-surjective">
+  <h2>Count formulas together with their finite parameter lists</h2>
+  <p>Begin in ZFC. For a set \(M\), use the actual membership structure \((M,\in)\) and the <a href="constructible-hierarchy#definable-subsets">definable-subset operation</a> \(\operatorname{Def}(M)\). A <strong>definition code over \(M\)</strong> consists of a natural number \(n\), a finite membership-language formula with free variables among \(x,y_0,\ldots,y_{n-1}\), and a parameter tuple \(\bar a\in M^n\). Its output is the set</p>
+  <div class="math-display">\[\{x\in M:(M,\in)\models\varphi(x,\bar a)\}.\]</div>
+  <p>Write \(C(M)\) for this set of codes and put \(\mu_M=\max(\aleph_0,|M|)\). Different codes may have the same output. The map from codes onto \(\operatorname{Def}(M)\) counts definable subsets without claiming that definitions are unique or that arbitrary subsets have codes.</p>
+</section>
+
+<section id="counting-definitions" data-kind="lemma" data-formal="gch-definition-code-card gch-def-card-upper">
+  <h2>Finite parameter lists give one uniform upper bound</h2>
+  <p>For every set \(M\),</p>
+  <div class="math-display">\[|C(M)|\le\mu_M,\qquad |\operatorname{Def}(M)|\le\mu_M.\]</div>
+  <div class="proof"><p>For each fixed \(n\), the formulas in question form a countable set: they are finite strings over a countable alphabet, with a decidable grammatical restriction. The parameter lists have size \(|M|^n\le\mu_M^n\). Since \(\mu_M\) is infinite, <a href="infinite-cardinal-arithmetic#finite-powers">finite products of an infinite cardinal</a> give \(\mu_M^n\le\mu_M\), including \(n=0\). Thus the codes of each length have size at most \(\aleph_0\cdot\mu_M=\mu_M\). Their countable union still has size at most \(\aleph_0\cdot\mu_M=\mu_M\). The output map is onto \(\operatorname{Def}(M)\), so its image satisfies the same bound.</p><p>The maximum with \(\aleph_0\) keeps the argument valid for finite and empty \(M\), where counting formulas still produces infinitely many codes. This generalizes the earlier <a href="constructible-hierarchy#counting-definable-subsets">countable-domain argument</a>.</p></div>
+</section>
+
+<section id="infinite-def-cardinality" data-kind="theorem" data-formal="lhier-singleton-map lhier-singleton-map-injective gch-def-card-infinite">
+  <h2>An infinite set and its definable subsets have equal size</h2>
+  <p>If \(M\) is infinite, then \(|\operatorname{Def}(M)|=|M|\).</p>
+  <div class="proof"><p>For every \(a\in M\), the formula \(x=a\), with parameter \(a\), defines the singleton \(\{a\}\) as a subset of \(M\). The assignment \(a\mapsto\{a\}\) is injective, so \(|M|\le|\operatorname{Def}(M)|\). Since \(M\) is infinite, \(\mu_M=|M|\), and <a href="#counting-definitions"></a> gives the reverse bound. Apply <a href="comparing-sizes#cantor-schroeder-bernstein">Cantor–Schröder–Bernstein</a>.</p></div>
+</section>
+
+<section id="level-upper-bound" data-kind="theorem" data-formal="gch-level-card-upper">
+  <h2>Count every constructible level by induction</h2>
+  <p>For every ordinal \(\alpha\), including finite ordinals,</p>
+  <div class="math-display">\[|L_\alpha|\le\max(\aleph_0,|\alpha|).\]</div>
+  <div class="proof"><p>Use transfinite induction along the <a href="constructible-hierarchy#constructible-recursion">actual constructible recursion</a>. At zero, \(L_0=\varnothing\). At a successor, \(L_{\beta+1}=\operatorname{Def}(L_\beta)\), so <a href="#counting-definitions"></a> and the induction hypothesis give</p>
+  <div class="math-display">\[\begin{aligned}|L_{\beta+1}|&\le\max(\aleph_0,|L_\beta|)\\&\le\max(\aleph_0,|\beta|)\\&\le\max(\aleph_0,|\beta+1|).\end{aligned}\]</div>
+  <p>At a nonzero limit \(\lambda\), let \(\mu=\max(\aleph_0,|\lambda|)\). Every \(\beta&lt;\lambda\) has \(|L_\beta|\le\max(\aleph_0,|\beta|)\le\mu\). Since \(L_\lambda=\bigcup_{\beta&lt;\lambda}L_\beta\), the <a href="infinite-sums-and-products#indexed-bounds">indexed union bound</a> gives \(|L_\lambda|\le|\lambda|\cdot\mu\le\mu\cdot\mu=\mu\). This finishes all three clauses of the induction.</p><p>The proof gives an upper bound at finite stages, not the false equation \(|L_n|=n\). For example, the <a href="constructible-hierarchy#finite-levels">finite levels are \(V_n\)</a>, whose sizes grow much faster.</p></div>
+</section>
+
+<section id="infinite-level-cardinality" data-kind="theorem" data-formal="gch-ordinal-level-map gch-ordinal-level-map-injective gch-level-card-infinite">
+  <h2>At infinite indices the bound is exact</h2>
+  <p>For every ordinal \(\alpha\ge\omega\),</p>
+  <div class="math-display">\[|L_\alpha|=|\alpha|.\]</div>
+  <div class="proof"><p>The <a href="constructible-hierarchy#ordinals-at-each-level">ordinal part of \(L_\alpha\)</a> is exactly \(\alpha\). Thus \(\beta\mapsto\beta\), for \(\beta&lt;\alpha\), is an injection from \(\alpha\) into \(L_\alpha\). This gives \(|\alpha|\le|L_\alpha|\). The previous upper bound gives \(|L_\alpha|\le\max(\aleph_0,|\alpha|)=|\alpha|\). The two bounds prove equality.</p></div>
+</section>
+
+<section id="reflecting-a-strong-level" data-kind="lemma" data-formal="gch-reflected-strong-level">
+  <h2>Under V equals L, choose a level to which condensation applies</h2>
+  <p>Now assume \(V=L\). Fix the finite <a href="constructible-condensation#adequate-fragment">construction fragment \(S\)</a> used by condensation. Given an ordinal \(\kappa\) and a set \(x\), there is a \(\theta&gt;\kappa\) such that \(x\in L_\theta\) and</p>
+  <div class="math-display">\[(L_\theta,\in)\models S+V=L.\]</div>
+  <div class="proof"><p>The <a href="constructible-inner-model#reflection-before-modelhood">finite-family reflection theorem for \(L\)</a> applies to the finitely many sentences in \(S\) and the single first-order sentence \(V=L\). Under our assumption, \(L=V\) satisfies all of them. Reflect above a stage containing \(x\) and above \(\kappa\). The resulting \(L_\theta\) has the stated properties.</p><p>This is the strength required by the <a href="constructible-condensation#elementary-level-condensation">elementary-level condensation theorem</a>. Transitivity alone, or being an arbitrary low constructible level, would not supply its model-theoretic hypotheses.</p></div>
+</section>
+
+<section id="subset-stage-bound" data-kind="theorem" data-formal="gch-subset-stage-bound cc-small-hull cc-ordinals-fixed cc-subsets-fixed cc-collapse-cardinality gch-level-card-infinite">
+  <h2>Every subset of an infinite cardinal appears before its successor</h2>
+  <div class="statement-box"><p>Assume \(V=L\). If \(\kappa\) is an infinite cardinal and \(x\subseteq\kappa\), then for some ordinal \(\lambda&lt;\kappa^+\),</p>
+  <div class="math-display">\[x\in L_\lambda.\]</div></div>
+  <div class="proof"><p>Choose \(L_\theta\) as in <a href="#reflecting-a-strong-level"></a>, containing \(x\) and every ordinal below \(\kappa\). Apply the <a href="constructible-condensation#small-hull-with-subset">small-hull construction</a> with seed \(\kappa\cup\{x\}\). It gives \(X\preccurlyeq(L_\theta,\in)\) containing each \(\xi&lt;\kappa\) and \(x\), with \(|X|=\kappa\).</p><p>By <a href="constructible-condensation#elementary-level-condensation">condensation</a>, the specified Mostowski collapse \(\pi_X\) maps \(X\) bijectively onto \(L_\lambda\) for a nonzero limit ordinal \(\lambda\). Every \(\xi&lt;\kappa\) is fixed, by <a href="constructible-condensation#collapse-fixes-ordinals"></a>. Consequently each such \(\xi\) belongs to \(L_\lambda\). Its ordinal part is \(\lambda\), so \(\kappa\le\lambda\); in particular \(\omega\le\lambda\).</p><p>The bijection and <a href="#infinite-level-cardinality"></a> now give \(|\lambda|=|L_\lambda|=|X|=\kappa\). Since \(\kappa^+\) is the least ordinal of cardinality greater than \(\kappa\), this implies \(\lambda&lt;\kappa^+\). Finally the <a href="constructible-condensation#collapse-fixes-subsets">subset-fixing theorem</a> gives \(\pi_X(x)=x\), because every member of \(x\) is an ordinal below \(\kappa\). Hence \(x\in L_\lambda\), as required.</p><p>The seed contains \(\kappa\) pointwise. It need not contain \(\kappa\) as an additional object: no claim that \(\pi_X(\kappa)=\kappa\) occurs in this proof.</p></div>
+</section>
+
+<section id="power-set-from-stage-bound" data-kind="lemma" data-formal="gch-subsets-successor-level gch-power-upper-from-stage gch-power-from-stage">
+  <h2>A supplied stage bound has a separate counting consequence</h2>
+  <p>Let \(\kappa\) be an infinite cardinal. If every subset of \(\kappa\) belongs to \(L_{\kappa^+}\), then \(2^\kappa=\kappa^+\).</p>
+  <div class="proof"><p>The hypothesis means \(\mathcal P(\kappa)\subseteq L_{\kappa^+}\), so the identity on subsets is an injection into that level. Its size is \(\kappa^+\) by <a href="#infinite-level-cardinality"></a>. Thus \(2^\kappa\le\kappa^+\). Conversely, <a href="comparing-sizes#cantor-power-set">Cantor's theorem</a> gives \(\kappa&lt;2^\kappa\), hence \(\kappa^+\le2^\kappa\). The bounds agree.</p><p>This implication isolates the cardinal arithmetic. It assumes the stage bound; the preceding hull and collapse argument is what establishes that bound from \(V=L\).</p></div>
+</section>
+
+<section id="v-equals-l-implies-gch" data-kind="theorem" data-formal="gch-v-equals-l lhier-level-monotone gch-power-from-stage generalized-continuum-hypothesis">
+  <h2>The axiom of constructibility implies GCH</h2>
+  <div class="statement-box"><p>ZF together with \(V=L\) proves the <a href="continuum-function#gch">generalized continuum hypothesis</a>:</p>
+  <div class="math-display">\[2^\kappa=\kappa^+\qquad(\kappa\text{ any infinite cardinal}).\]</div></div>
+  <div class="proof"><p>The <a href="constructible-inner-model#v-equals-l-implies-choice">constructible well-order argument</a> first supplies Choice, so the ZFC cardinal counts and small-hull argument above apply. For each \(x\subseteq\kappa\), <a href="#subset-stage-bound"></a> supplies \(\lambda&lt;\kappa^+\) with \(x\in L_\lambda\). Monotonicity of the hierarchy puts \(x\) in \(L_{\kappa^+}\). Therefore \(\mathcal P(\kappa)\subseteq L_{\kappa^+}\), and <a href="#power-set-from-stage-bound"></a> gives the conclusion.</p><p>The containment concerns each subset individually. The proof does not assert that the whole object \(\mathcal P(\kappa)\) is an element of \(L_{\kappa^+}\).</p></div>
+</section>
+
+<section id="internal-cardinals" data-kind="definition" data-formal="linner-power-set linner-internal-power-set gch-bijection-graph gch-bijection-graph-members gch-constructible-equinumerosity gch-internal-cardinal gch-internal-successor">
+  <h2>Read power sets, bijections and successor cardinals inside L</h2>
+  <p>Return to ambient ZF, without assuming \(V=L\). For an ordinal \(\kappa\), define the <strong>constructible power set</strong></p>
+  <div class="math-display">\[\mathcal P^L(\kappa)=\{x\subseteq\kappa:x\in L\}.\]</div>
+  <p>This is a set in \(L\), by the <a href="constructible-inner-model#internal-power-set-in-l">internal power-set theorem</a>. A <strong>cardinal of \(L\)</strong> is an ordinal \(\kappa\) for which there is no bijection in \(L\) between \(\kappa\) and a smaller ordinal. Its successor \((\kappa^+)^L\) is the least larger cardinal as computed by \(L\). The superscript concerns which bijections are available, not a different collection of ordinals: \(L\) contains every ordinal.</p>
+  <p>Thus \(L\models 2^\kappa=(\kappa^+)^L\) means that a bijection in \(L\) pairs \(\mathcal P^L(\kappa)\) with \((\kappa^+)^L\). It does not identify either the internal power set or the internal successor with its ambient counterpart.</p>
+</section>
+
+<section id="gch-in-l" data-kind="theorem" data-formal="gch-in-l">
+  <h2>The constructible universe satisfies GCH internally</h2>
+  <div class="statement-box"><p>In ZF, the constructible universe satisfies GCH. More explicitly, if \(\kappa\) is an infinite cardinal of \(L\) and \(\lambda=(\kappa^+)^L\), there is a bijection belonging to \(L\) between \(\mathcal P^L(\kappa)\) and \(\lambda\).</p></div>
+  <div class="proof"><p>The <a href="constructible-inner-model#l-is-inner-model">inner-model theorem</a> and <a href="constructible-inner-model#l-satisfies-choice">constructible Choice theorem</a> give \(L\models\mathrm{ZFC}\). Also <a href="constructible-inner-model#idempotence-and-v-equals-l">\(L\models V=L\)</a>. The preceding proof is a proof in ZF from that additional axiom, so it can be carried out inside \(L\). In that proof, subsets are the members of \(\mathcal P^L(\kappa)\), elementary hulls and collapse maps are constructed in \(L\), and all size comparisons use bijections available in \(L\).</p><p>In particular its subset-stage conclusion is: for every \(x\in\mathcal P^L(\kappa)\), some \(\alpha&lt;\lambda\) satisfies \(x\in L_\alpha\). The internally computed levels agree with the actual ones by <a href="constructible-hierarchy#constructible-recursion-absoluteness">hierarchy absoluteness</a>. The internal counting and Cantor bounds then give the required internal bijection. This is the stated mathematical meaning of \(L\models\mathrm{GCH}\).</p><p>As in the inner-model entry, class satisfaction here is the formula-by-formula relativization to \(L\). No set-sized structure with domain all of \(L\), or global truth predicate for arbitrary classes, is being assumed.</p></div>
+</section>
+
+<section id="infinite-boundary-question" data-kind="question" data-formal="gch-empty-stage-failure lhier-first-levels">
+  <h2>Can the subset-stage theorem include the empty cardinal?</h2>
+  <p>At \(\kappa=0\), does every \(x\subseteq\kappa\) belong to some \(L_\alpha\) with \(\alpha&lt;\kappa^+\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Here \(\kappa^+=1\) and the only subset is \(x=\varnothing\). The only ordinal below \(1\) is \(0\), but \(L_0=\varnothing\) does not contain \(\varnothing\). The subset first appears as an element of \(L_1=\{\varnothing\}\). This already disproves a statement for all cardinals. In the proof for infinite \(\kappa\), infinitude also makes the seed size exactly \(\kappa\) and ensures the collapse index is an infinite ordinal, where \(|L_\lambda|=|\lambda|\) applies.</p></div></details>
+</section>
+
+<section id="ambient-comparison-question" data-kind="question" data-formal="gch-in-l gch-ambient-cardinal-in-l gch-intervening-ordinal-card gch-constructible-bijection-ambient-card gch-ambient-power-comparison">
+  <h2>What happens if the internal successor has smaller ambient size?</h2>
+  <p>For this question assume ambient Choice. Suppose \(\kappa\) is an ambient infinite cardinal and \(\lambda=(\kappa^+)^L&lt;\kappa^+\), where the last successor is ambient. What is the ambient size of \(\mathcal P^L(\kappa)\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>It is \(\kappa\). First \(\kappa\) is also a cardinal of \(L\): a constructible bijection with a smaller ordinal would be an ambient bijection, contradicting the ambient cardinal property. Thus <a href="#gch-in-l"></a> supplies a bijection \(f\in L\) from \(\mathcal P^L(\kappa)\) to \(\lambda\). It remains a bijection in the ambient universe, because its domain, range and ordered pairs are the same actual sets.</p><p>Now \(\kappa&lt;\lambda&lt;\kappa^+\). By the definition of the ambient successor cardinal, \(|\lambda|=\kappa\). The bijection therefore gives \(|\mathcal P^L(\kappa)|=\kappa\) in the ambient universe, although \(L\) computes its size as its own next cardinal. This is a conditional calculation; no existence of such an ambient universe is needed here. It explains why internal GCH cannot be replaced by the ambient equation \(|\mathcal P^L(\kappa)|=\kappa^+\).</p></div></details>
+</section>

@@ -1,0 +1,102 @@
+<section id="finite-kc-problems" data-formal="ipwem-formula ipwem-axioms ipwem-schema-consequence ifmp-problem-subformulas ifmp-problem-atoms ifmp-world-bound ifmp-problem-closed ifmp-problem-contains ifmp-problem-atom-membership" data-kind="definition">
+  <h2>Keep the premises finite while allowing every axiom instance</h2>
+  <p>A <strong>presented KC problem</strong> is a finite list \(H\) of shared numbered-atom formulas and a conclusion \(A\). Put \(\Gamma=\operatorname{set}(H)\). Repetitions in the list are permitted. Write \(\Gamma\vdash_{\mathrm{KC}}A\) for the <a href="propositional-weak-excluded-middle#schema-consequence">established consequence relation</a>: an ordinary intuitionistic deduction may additionally use finitely many instances from</p>
+  <div class="math-display">\[\mathcal W=\{\neg B\lor\neg\neg B:B\text{ is any native formula}\}.\]</div>
+  <p>Compute the <strong>problem data</strong> using the earlier <a href="intuitionistic-propositional-finite-model-property#finite-subformulas">finite subformula and atom-support constructions</a>:</p>
+  <div class="math-display">\[\Sigma=\Sigma(\Gamma,A),\qquad S=S(\Gamma,A),\qquad N=2^{|\Sigma|}.\]</div>
+  <p>The set \(\Sigma\) contains every premise and \(A\), and is subformula closed. Its atom names are exactly \(S\). The finite input does not restrict which weak excluded middle instances a KC deduction may use.</p>
+</section>
+
+<section id="greatest-world-soundness" data-formal="kcfm-greatest-validity kcfm-greatest-soundness ipwem-schema-consequence" data-kind="lemma">
+  <h2>A greatest world validates all the weak excluded middle instances</h2>
+  <p>Let \(M\) be a nonempty preordered Kripke model with a greatest world \(t\). Every world of \(M\) forces every member of \(\mathcal W\). Consequently, if \(\Gamma\vdash_{\mathrm{KC}}A\), each world forcing \(\Gamma\) forces \(A\).</p>
+  <div class="proof"><p>Every pair of worlds above a given \(w\) has the common upper world \(t\). Thus the frame has directed future cones, and the <a href="propositional-weak-excluded-middle#frame-characterization">weak excluded middle characterization</a> validates all instances, independently of the particular valuation. More directly, if no future of \(w\) forces \(B\), then \(w\Vdash\neg B\). Otherwise choose \(v\geq w\) forcing \(B\). Persistence gives \(t\Vdash B\). Every future \(u\geq w\) has \(t\geq u\), so \(u\) cannot force \(\neg B\). This gives \(w\Vdash\neg\neg B\).</p><p>A supplied KC deduction uses only finitely many additional instances, all forced at the chosen world. Ordinary intuitionistic soundness applied to its premise set therefore yields its conclusion. This proves the second assertion for the original KC consequence relation.</p></div>
+</section>
+
+<section id="rooted-source-model" data-formal="imkc-kc-rooted" data-kind="lemma">
+  <h2>Begin with the specified rooted directed countermodel</h2>
+  <p>If \(\Gamma\nvdash_{\mathrm{KC}}A\), the <a href="intermediate-propositional-kripke-completeness#rooted-countermodels">canonical rooted-countermodel construction</a> supplies a model \(M\), least world \(r\), and counterexample there. Every pair of worlds of this model has a common upper world:</p>
+  <div class="math-display">\[M,r\Vdash\Gamma,\qquad M,r\nVdash A,\qquad \forall u,v\;\exists z\;(u\leq z\text{ and }v\leq z).\]</div>
+  <div class="proof"><p>Take the generated future cone above the canonical counterworld. That counterworld is its least world. Any two cone worlds share this predecessor, so canonical directedness supplies a common upper world. Since that upper world lies above a cone world, it still lies in the cone. Generated-submodel truth preservation keeps all premises and the conclusion failure at its root. These are exactly the properties supplied by the cited construction; its world set can be infinite.</p></div>
+</section>
+
+<section id="finite-rooted-countermodels" data-formal="kcfm-finite-countermodel ipff-countermodel ipff-cardinality ipff-root ipff-directed-traces ipff-greatest" data-kind="theorem">
+  <h2>Every finite KC failure has a bounded countermodel with a greatest world</h2>
+  <div class="statement-box"><p>If a presented problem satisfies \(\Gamma\nvdash_{\mathrm{KC}}A\), there is a nonempty finite partially ordered Kripke model \(F\), with least world \(r_F\), greatest world \(t_F\), and at most \(N\) worlds, such that</p><div class="math-display">\[F,r_F\Vdash\Gamma,\qquad F,r_F\nVdash A.\]</div></div>
+  <div class="proof"><p>Use the rooted directed source model just supplied. Form its <a href="intuitionistic-propositional-finite-filtrations#filtered-model">realized forcing-trace filtration</a> on \(\Sigma\). The <a href="intuitionistic-propositional-finite-filtrations#tracked-countermodels">tracked countermodel theorem</a> carries all premises and failure of \(A\) to the exact trace of the original root. The trace frame is a nonempty finite partial order with at most \(2^{|\Sigma|}=N\) worlds.</p><p>The <a href="intuitionistic-propositional-finite-filtrations#least-root">root trace</a> is least. Original global directedness gives <a href="intuitionistic-propositional-finite-filtrations#directed-traces">directed traces</a>, and the <a href="intuitionistic-propositional-finite-filtrations#greatest-trace">finite directedness argument</a> supplies their greatest world. Choose these as \(r_F,t_F\). Thus both the required truth values and the required frame geometry hold in the same finite model.</p></div>
+</section>
+
+<section id="finite-model-characterization" data-formal="kcfm-finite-validity kcfm-bounded-validity" data-kind="theorem">
+  <h2>Finite rooted frames with a greatest point suffice</h2>
+  <p>For finite \(\Gamma\), a KC deduction \(\Gamma\vdash_{\mathrm{KC}}A\) exists if and only if, in every nonempty finite partially ordered Kripke model with a least root and a greatest world, forcing all premises at the least root implies forcing \(A\) there. It is enough to test models with at most \(N\) worlds.</p>
+  <div class="proof"><p>A deduction is sound in every such model by the greatest-world soundness lemma. Conversely, absence of a deduction gives the finite countermodel just constructed, already within the bound. It violates both the unrestricted finite-model test and the test restricted to that bound. Hence either test implies the required deduction.</p></div>
+</section>
+
+<section id="rooted-top-codes" data-formal="ifmp-relation-code ifmp-valuation-code ifmp-admissible-code kcfm-rooted-top-code kcfm-rooted-top-test kcfm-rooted-top-correct" data-kind="definition">
+  <h2>Specify the finite frame class by Boolean tests</h2>
+  <p>Reuse the <a href="intuitionistic-propositional-finite-model-property#finite-model-codes">relation and atom tables</a> on \([n]=\{0,\ldots,n-1\}\): \(r:[n]^2\to\{0,1\}\) and \(v:[n]\times S\to\{0,1\}\). Besides the existing admissibility test for reflexivity, transitivity and atom persistence, choose indices \(i,t\in[n]\). A <strong>rooted-top code</strong> satisfies</p>
+  <div class="math-display">\[\forall j&lt;n\quad r(i,j)=1,\qquad \forall j&lt;n\quad r(j,t)=1,\]</div>
+  <div class="math-display">\[\forall j,k&lt;n\quad r(j,k)=1\text{ and }r(k,j)=1\ \Longrightarrow\ j=k.\]</div>
+  <p>The first condition makes the designated counterexample point \(i\) a least world. The second makes \(t\) greatest. The last condition imposes antisymmetry, so that an admissible relation is a partial order. The <strong>rooted-top test</strong> returns one exactly when all three conditions hold. Every quantifier ranges over a specified finite table, so this is a finite Boolean calculation.</p>
+</section>
+
+<section id="code-class-models" data-formal="ifmp-code-model kcfm-code-partial-order kcfm-code-endpoints kcfm-code-schema-validity" data-kind="lemma">
+  <h2>An accepted class code gives the required actual frame</h2>
+  <p>Suppose \(r,v\) are admissible and \((r,i,t)\) passes the rooted-top test. The <a href="intuitionistic-propositional-finite-model-property#code-models">code model</a> with accessibility \(j\leq_r k\iff r(j,k)=1\) is nonempty, partially ordered, rooted at \(i\), and has greatest world \(t\). It validates every weak excluded middle instance.</p>
+  <div class="proof"><p>The index \(i\in[n]\) makes \(n>0\), providing nonemptiness. Admissibility proves reflexivity, transitivity and persistence of the extended atom table; the latter sets all atoms outside \(S\) to false. The new class tests supply antisymmetry and the two endpoint properties for that same relation. Greatest-world soundness therefore applies to this exact code model. No assumption about its relation is inferred merely from its being a Boolean table.</p></div>
+</section>
+
+<section id="presenting-endpoints" data-formal="ifmp-present-relation ifmp-present-valuation ifmp-presentation-admissible ifmp-presentation-forcing kcfm-present-endpoints" data-kind="lemma">
+  <h2>Relabel a finite countermodel without losing either endpoint</h2>
+  <p>Let \(F\) be a nonempty finite partially ordered Kripke model with \(n\) worlds, least world \(r_F\), and greatest world \(t_F\). Choose a bijection \(b:[n]\to W_F\). The <a href="intuitionistic-propositional-finite-model-property#relabeling-finite-models">specified relation and valuation presentations</a>, restricted to \(S\), are admissible and pass the rooted-top test at</p>
+  <div class="math-display">\[i=b^{-1}(r_F),\qquad t=b^{-1}(t_F).\]</div>
+  <p>For every formula \(B\) whose atom support lies in \(S\), their Boolean forcing value at \(i\) equals one if and only if \(F,r_F\Vdash B\).</p>
+  <div class="proof"><p>The earlier presentation lemma proves admissibility and supported forcing preservation for these exact tables. Since \(b(i)=r_F\), leastness gives \(r(i,j)=1\) for every \(j\). Similarly \(b(t)=t_F\) gives \(r(j,t)=1\). If both table directions hold between \(j,k\), antisymmetry of the original relation gives \(b(j)=b(k)\); injectivity of \(b\) gives \(j=k\). Thus all three class tests pass. Substitute \(i\) into the supported forcing equivalence and use its displayed image to obtain the final assertion.</p></div>
+</section>
+
+<section id="kc-candidate-test" data-formal="kcfm-candidate kcfm-candidate-correct ifmp-boolean-forcing" data-kind="definition">
+  <h2>Check the class and the counterexample at the same root</h2>
+  <p>For the finite input \((H,A)\), tables \(r,v\), and designated indices \(i,t\), the <strong>KC candidate test</strong> \(\operatorname{Cand}_{\mathrm{KC}}(H,A;r,v,i,t)\) returns one exactly when:</p>
+  <ol><li>the old admissibility test and the rooted-top test both return one;</li><li>the <a href="intuitionistic-propositional-finite-model-property#boolean-forcing">Boolean forcing value</a> \(e_{r,v}(i,A)\) is zero;</li><li>\(e_{r,v}(i,B)=1\) for every formula \(B\) in the list \(H\).</li></ol>
+  <p>All formula tests use the same relation and valuation tables at the same least point \(i\). The bound \(N\) and atom support \(S\) were computed from the original premises and conclusion; the candidate does not introduce extra atom names.</p>
+</section>
+
+<section id="bounded-kc-search" data-formal="kcfm-search ifmp-relation-code-count ifmp-valuation-code-count ifmp-boolean-forcing lcfm-search lcfm-comparability-test" data-kind="definition">
+  <h2>Scan the proved finite range</h2>
+  <p>The <strong>bounded KC countermodel search</strong> \(\operatorname{Refute}_{\mathrm{KC}}(H,A)\) returns one if any candidate passes among the following finite choices:</p>
+  <div class="math-display">\[0\leq n\leq N,\quad r:[n]^2\to\{0,1\},\quad v:[n]\times S\to\{0,1\},\quad i,t\in[n].\]</div>
+  <p>It returns zero if none passes. For each \(n\), there are \(2^{n^2}\) relation tables and \(2^{n|S|}\) valuation tables; each table and endpoint check is finite. Formula evaluation terminates by recursion on proper subformulas, with finite future-world loops. Thus the whole search terminates. At \(n=0\), no designated \(i\) exists, so that size contributes no candidate. This definition uses finite enumeration, without a test for KC derivability inside the enumeration.</p>
+  <p>The <a href="lc-propositional-finite-models#bounded-lc-search">LC search</a> reuses these finite choices and adds a <a href="lc-propositional-finite-models#chain-code-test">comparability test</a> for the same supplied relation table.</p>
+</section>
+
+<section id="kc-search-correctness" data-formal="kcfm-search-correctness kcfm-search-zero" data-kind="theorem">
+  <h2>The Boolean search decides exactly the original KC problem</h2>
+  <div class="statement-box"><p>For every finite presented problem \((H,A)\), with \(\Gamma=\operatorname{set}(H)\),</p><div class="math-display">\[\operatorname{Refute}_{\mathrm{KC}}(H,A)=1\quad\Longleftrightarrow\quad\Gamma\nvdash_{\mathrm{KC}}A.\]</div><p>Its zero answer is therefore equivalent to \(\Gamma\vdash_{\mathrm{KC}}A\).</p></div>
+  <div class="proof"><p>Suppose a candidate passes. Its class tests give a nonempty finite partial-order code model with greatest world. Correctness of Boolean forcing makes the designated least world force every premise and fail \(A\). Greatest-world soundness therefore rules out a KC deduction from those premises.</p><p>Conversely, suppose no KC deduction exists. The bounded-countermodel theorem gives \(F,r_F,t_F\) with \(1\leq n=|W_F|\leq N\). Present this exact model by tables on \([n]\), using the computed support \(S\). Every input formula has support in \(S\), so presentation correctness preserves all premise truths and failure of \(A\) at the preimage of \(r_F\). The endpoint-preservation lemma gives a passing rooted-top code, with the greatest index chosen as the preimage of \(t_F\). This is one of the candidates in the finite scan and it passes every test. Hence the answer is one.</p><p>A Boolean answer has only two possibilities. The first equivalence therefore makes a zero answer equivalent to existence of the KC deduction, completing the decision result.</p></div>
+</section>
+
+<section id="two-world-kc-code" data-formal="ifmp-example-problem ifmp-example-relation ifmp-example-valuation ifmp-example-code kcfm-chain-class kcfm-chain-candidate kcfm-chain-search ipwem-not-classical" data-kind="lemma">
+  <h2>The two-world chain is accepted as a KC countermodel</h2>
+  <p>For \(H=[]\) and \(A=p_0\lor\neg p_0\), the tracked set is \(\{p_0,\neg p_0,p_0\lor\neg p_0\}\), the support is \(\{0\}\), and \(N=8\). At \(n=2\), use</p>
+  <div class="math-display">\[r=\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix},\qquad v(0,0)=0,\quad v(1,0)=1,\qquad i=0,\quad t=1.\]</div>
+  <p>These data give a passing KC candidate, so \(\operatorname{Refute}_{\mathrm{KC}}([],A)=1\) and \(\nvdash_{\mathrm{KC}}A\).</p>
+  <div class="proof"><p>The relation is reflexive, transitive and antisymmetric; its least index is zero and its greatest is one. The sole atom grows from false to true, so persistence holds. At zero, \(p_0\) is false and its negation is false because index one forces \(p_0\). Hence their disjunction has Boolean value zero. There are no premises to check. This is the <a href="intuitionistic-propositional-finite-model-property#two-world-code">earlier explicit finite code</a>, now also checked against the KC frame class. Its size is within the bound, so it makes the bounded scan return one; search correctness gives the nonderivability assertion.</p></div>
+</section>
+
+<section id="tracking-axioms-question" data-formal="kcfm-infinite-schema kcfm-greatest-validity kcfm-finite-countermodel" data-kind="question">
+  <h2>Must the tracked set contain every KC axiom?</h2>
+  <p>The schema set \(\mathcal W\) is infinite, but the filtered set \(\Sigma(\Gamma,A)\) can be small. Why is no axiom omitted from the correctness argument?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>The truth theorem preserves the finite premises and conclusion, which are the formulas selected for tracking. Separately, preserving global directedness gives the filtered frame a greatest world. Every weak excluded middle instance is valid on that frame under every persistent valuation, including the filtered valuation. Thus the finite model satisfies the entire schema without placing every instance in \(\Sigma\).</p><p>Merely preserving a few axiom instances as tracked formulas would not justify this conclusion for all instances. The order argument is what allows the finite countermodel to test the original KC deduction relation with unrestricted schema substitution.</p></div></details>
+</section>
+
+<section id="contradictory-premises-question" data-formal="kcfm-falsum-premise kcfm-search-zero ifmp-boolean-forcing" data-kind="question">
+  <h2>What happens when a premise is falsum?</h2>
+  <p>For an arbitrary conclusion \(A\), what does \(\operatorname{Refute}_{\mathrm{KC}}([\bot],A)\) return?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>It returns zero. Every Boolean forcing evaluation of falsum is zero, so no candidate can satisfy the premise test requiring its value to be one. Consequently the finite scan has no accepted candidate. This agrees with the ordinary intuitionistic falsum-elimination deduction of \(A\) from \(\bot\), which is also a KC deduction and needs no additional schema instance.</p></div></details>
+</section>
+
+<section id="finite-input-question" data-formal="kcfm-search kcfm-same-premises" data-kind="question">
+  <h2>Does the scan decide consequence from an arbitrary infinite theory?</h2>
+  <p>Does this construction accept an arbitrary premise set \(\Gamma\), rather than a finite list \(H\), as input?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. The construction computes a finite union of subformula sets from the supplied list, then uses its cardinality to bound the entire search. An arbitrary infinite premise set is not an input of that algorithm and need not have a finite subformula union. The earlier canonical completeness and compactness theorems concern arbitrary premise sets, but do not turn this finite table scan into an algorithm on unrestricted infinite input.</p><p>Repeated formulas in a finite input cause no problem: taking the underlying premise set removes repetitions, and repeating a true premise test does not change its value. The search theorem therefore concerns exactly the usual finite-premise KC consequence relation.</p></div></details>
+</section>

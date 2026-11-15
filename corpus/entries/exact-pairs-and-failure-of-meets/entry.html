@@ -1,0 +1,168 @@
+<section id="exact-pairs" data-formal="ept-exact-pair mpt-minimal-pair" data-kind="definition">
+  <h2>Prescribe all common lower bounds by an increasing sequence</h2>
+  <p>Let \((\mathbf a_n)_{n\in\mathbb N}\) be a nondecreasing sequence of <a href="turing-degrees#degree-order">Turing degrees</a>. An <strong>exact pair</strong> for this sequence is a pair \(\mathbf b,\mathbf c\) satisfying</p>
+  <div class="math-display">\[\forall\mathbf d\quad\begin{gathered}\mathbf d\le\mathbf b\ \land\ \mathbf d\le\mathbf c\\\Longleftrightarrow\quad\exists n\;\mathbf d\le\mathbf a_n.\end{gathered}\]</div>
+  <p>Thus each \(\mathbf a_n\) lies below both members of the pair, and every common lower bound is bounded by one term of the sequence. When the sequence is strictly increasing, this excludes a common lower bound lying above the whole sequence. In contrast, an <a href="ordinary-minimal-pairs-of-turing-degrees#minimal-pairs">ordinary minimal pair</a> has precisely the zero degree below both members.</p>
+</section>
+
+<section id="columns" data-formal="ept-column ept-column-program ept-column-evaluation ept-column-index-primitive ept-column-reducible" data-kind="definition">
+  <h2>A fixed computable projection reads one column</h2>
+  <p>Use the fixed computable pairing bijection \(\langle i,x\rangle\) of natural numbers. For \(X\subseteq\mathbb N\), its <strong>column of index \(i\)</strong> is</p>
+  <div class="math-display">\[X_i=\{x:\langle i,x\rangle\in X\}.\]</div>
+  <p>The program \(P_i\) which forms \(\langle i,x\rangle\), queries \(X\), and returns that answer satisfies \(\varphi_{P_i}^{X}(x)=\chi_{X_i}(x)\), for every \(X,x\). Hence \(X_i\le_T X\). This projection program is computably uniform in \(i\): it merely hardcodes the integer \(i\) in front of the query.</p>
+</section>
+
+<section id="finite-error-correction" data-formal="ept-finite-error-table ept-finite-error-table-spec ept-correction-program ept-correction-evaluation ept-correction-reduces ept-finite-variant-equivalent ept-column-reducible" data-kind="lemma">
+  <h2>A fixed finite error can be corrected by a finite table</h2>
+  <p>If sets \(U,V\subseteq\mathbb N\) satisfy \(\chi_U(x)=\chi_V(x)\) for every \(x\ge m\), then \(U\equiv_T V\). In particular, if \(X_i\) agrees with \(U\) above \(m\), then \(U\le_T X\).</p>
+  <div class="proof">
+    <p>To compute \(\chi_U(x)\) from \(V\), test the computable inequality \(x&lt;m\). In that case return the hardcoded bit from the finite table \((\chi_U(0),\ldots,\chi_U(m-1))\); otherwise query \(V\) at \(x\). This is an actual oracle program, with a finite table in its code. Exchanging \(U,V\) gives the reverse reduction. For the final assertion, substitute the column program \(P_i\) for the query, using <a href="turing-degrees#substitution-preorder">oracle-program substitution</a>.</p>
+    <p>Existence of such a program for each fixed finite error does not give an algorithm choosing its table from an arbitrary description of the sets. This distinction will matter for the columns of our construction.</p>
+  </div>
+</section>
+
+<section id="finite-joins" data-formal="ept-finite-join ept-bounded-join ept-bounded-join-indicator" data-kind="definition">
+  <h2>A finite join has a genuine total membership oracle</h2>
+  <p>Fix the actual family \(A:\mathbb N\to\mathcal P(\mathbb N)\). Define two presentations of its <strong>finite join of length \(s\)</strong>:</p>
+  <div class="math-display">\[\begin{gathered}F_0=\varnothing,\qquad F_{s+1}=F_s\oplus A_s,\\J_s=\{\langle i,x\rangle:i&lt;s\ \land\ x\in A_i\}.\end{gathered}\]</div>
+  <p>Here \(\oplus\) is the existing <a href="turing-degrees#finite-join">even–odd binary join</a>. The membership oracle of \(J_s\) answers every query. At \(q=\langle i,x\rangle\), it returns \(\chi_{A_i}(x)\) if \(i&lt;s\), and zero otherwise. The zero answers outside these columns are part of the definition of a total set.</p>
+</section>
+
+<section id="finite-join-bound" data-formal="ept-finite-join-universal ept-bounded-join-successor ept-finite-join-presentations ept-finite-join-chain-bound" data-kind="lemma">
+  <h2>The two finite joins agree in degree and are bounded by one chain member</h2>
+  <p>For every \(s\), \(J_s\equiv_T F_s\). For every set \(Z\),</p>
+  <div class="math-display">\[F_s\le_T Z\quad\Longleftrightarrow\quad\forall i&lt;s\;A_i\le_T Z.\]</div>
+  <p>If \(A_i\le_T A_{i+1}\) for all \(i\), then \(F_s\le_T A_{s-1}\) for \(s&gt;0\), while \(F_0\le_T A_0\). Consequently \(J_s\le_T A_{\max(s-1,0)}\) for every \(s\).</p>
+  <div class="proof">
+    <p>The universal property of \(F_s\) follows by induction from the <a href="turing-degrees#join-upper-bound">binary join universal property</a>. At \(s=0\), the right side is vacuous and the empty set has a program returning zero. At a successor, reducing \(F_s\oplus A_s\) to \(Z\) is equivalent to reducing both constituents to \(Z\).</p>
+    <p>For the other presentation, \(J_0=\varnothing\). From \(J_s\oplus A_s\), compute membership in \(J_{s+1}\) at \(\langle i,x\rangle\) by querying the left constituent at \(\langle i,x\rangle\) if \(i&lt;s\), the right at \(x\) if \(i=s\), and returning zero if \(i&gt;s\). Conversely, \(A_s\) is column \(s\) of \(J_{s+1}\); to compute \(J_s\), query \(J_{s+1}\) only when \(i&lt;s\), and otherwise return zero. These fixed finite tests and query programs show \(J_{s+1}\equiv_T J_s\oplus A_s\). Induction and substitution prove \(J_s\equiv_T F_s\).</p>
+    <p>Transitivity along the input chain gives \(A_i\le_T A_{s-1}\) for all \(i&lt;s\) when \(s&gt;0\). Apply the universal property. The empty join is computable and hence reduces to \(A_0\); no negative index is needed.</p>
+  </div>
+</section>
+
+<section id="protected-extensions" data-formal="ept-protected-extension ept-protected-completion ept-protected-transitive ept-protected-completion-extension" data-kind="definition">
+  <h2>Protect old columns beyond a finite seed</h2>
+  <p>Use the <a href="incomparable-turing-degrees#binary-prefixes">finite binary words</a> and their prefix relation \(\preceq\). Say that \(v\) is a <strong>protected extension</strong> of the seed \(u\) at level \(s\), written \(u\preceq_s v\), if \(u\preceq v\) and</p>
+  <div class="math-display">\[\begin{gathered}|u|\le q&lt;|v|,\quad q=\langle i,x\rangle,\quad i&lt;s\\\Longrightarrow\quad v(q)=\chi_{A_i}(x).\end{gathered}\]</div>
+  <p>A set \(X\) is a <strong>protected completion</strong> of \((s,u)\) if it extends \(u\) and satisfies the same equation for every \(q\ge|u|\) in a column \(i&lt;s\). The seed may contain finitely many exceptions to the prescribed columns. The protection starts beyond that seed, separately for each side of the construction.</p>
+  <p>If \(u\preceq_s v\), \(v\preceq_t w\), and \(s\le t\), then \(u\preceq_s w\): positions below \(|v|\) use the first relation, and later positions use the second. Likewise any protected completion of \((t,v)\) is one of \((s,u)\).</p>
+  <figure id="protected-columns-figure" class="proof-figure"><div class="figure-image"><img width="660" height="380" src="assets/protected-columns.svg" alt="A finite prefix occupies the first five paired positions. Columns zero and one copy their prescribed sets beyond the prefix, while later columns remain free."/></div><figcaption>A stage with protection level \(2\) and a seed of length \(5\). The unequal seed heights come from the fixed pairing, not from a separate cutoff in each column. Blue cells retain the seed, green cells copy the prescribed column, and white cells remain free.</figcaption></figure>
+</section>
+
+<section id="protected-padding" data-formal="ept-protected-pad ept-protected-pad-spec ept-completion-set ept-completion-set-spec incomp-certificate-persists" data-kind="lemma">
+  <h2>Compatible padding supplies words of any required length</h2>
+  <p>For every seed \(u\), level \(s\), and bound \(m\), there is a specified word \(\operatorname{pad}_s(u,m)\) of length \(\max(|u|,m)\) with \(u\preceq_s\operatorname{pad}_s(u,m)\).</p>
+  <div class="proof">
+    <p>Retain all old bits. For each fresh position \(q=\langle i,x\rangle\), write \(\chi_{A_i}(x)\) when \(i&lt;s\), and write zero otherwise. This finite rule specifies the word uniquely. It makes no assertion that the word is computable from \(s,u,m\) without access to the input sets. It also supplies a protected completion by using the same rule at every remaining position.</p>
+    <p>If \(u\preceq_s v\), padding \(v\) at level \(s\) is still a protected extension of \(u\). Existing <a href="incomparable-turing-degrees#certificate-persistence">finite computation certificates persist</a> under this padding.</p>
+  </div>
+</section>
+
+<section id="protected-disagreement" data-formal="ept-disagreement-candidate ept-has-disagreement ept-disagreement-excludes-common incomp-certificate-value" data-kind="definition">
+  <h2>Search for disagreement only among compatible words</h2>
+  <p>Write \(D(v,e,x)\) for the <a href="ordinary-minimal-pairs-of-turing-degrees#finite-certificates">bounded finite certificate value</a>: value \(y+1\) certifies output \(y\), while zero certifies nothing. For fixed \(s,e,f,u,v\), a <strong>protected disagreement witness</strong> is a triple \((x,\rho,\eta)\) such that</p>
+  <div class="math-display">\[\begin{gathered}u\preceq_s\rho,\quad v\preceq_s\eta,\\D(\rho,e,x)&gt;0,\quad D(\eta,f,x)&gt;0,\\D(\rho,e,x)\ne D(\eta,f,x).\end{gathered}\]</div>
+  <p>Denote the existence of such a triple by \(W(s,e,f,u,v)\). Every pair of protected completions extending the two witness words has unequal outputs at the witness input. This follows directly from <a href="incomparable-turing-degrees#prefix-certificates">certificate soundness</a>. Deciding whether a witness exists is not claimed computable.</p>
+</section>
+
+<section id="protected-search-program" data-formal="ept-search-candidate ept-search-check-uniform-primitive ept-search-program ept-search-partial ept-search-check-evaluation ept-search-index-primitive ept-search-evaluation ept-search-result-certificate ept-protected-search-test" data-kind="definition">
+  <h2>One total-oracle search tests the protected prefix condition</h2>
+  <p>Fix \(s,e,u\). Define the particular partial oracle program \(S_{s,e,u}^{J_s}\) as follows. On input \(x\), enumerate numerical codes of binary words \(\rho\), using the <a href="ordinary-minimal-pairs-of-turing-degrees#prefix-search-program">established exhaustive enumeration</a>. Search for the first code satisfying</p>
+  <div class="math-display">\[\begin{gathered}u\preceq\rho,\qquad D(\rho,e,x)&gt;0,\\\forall q\in[|u|,|\rho|)\quad\bigl[\pi_1(q)&lt;s\\\Longrightarrow\rho(q)=\chi_{J_s}(q)\bigr].\end{gathered}\]</div>
+  <p>Here \(\pi_1(q)\) is the column coordinate of the inverse pairing. Return \(D(\rho,e,x)-1\). The prefix test, certificate test and bounded range are effective; each required bit comparison uses one ordinary membership query to the total set \(J_s\). Thus bounded iteration and unbounded search give an actual program in the <a href="oracle-computation#oracle-programs">oracle language</a>. Its code is fixed from the finite parameters \(s,e,u\), before any common output is chosen.</p>
+  <p>The displayed condition is exactly \(u\preceq_s\rho\), not merely \(u\preceq\rho\). Queries outside the protected columns are unnecessary. In particular this algorithm does not run a partial oracle with undefined answers replaced by zero: all oracle answers come from the total set \(J_s\), and only prescribed positions are tested.</p>
+</section>
+
+<section id="protected-no-disagreement" data-formal="ept-protected-prefix ept-no-disagreement-search ept-no-disagreement-relative incomp-prefix-adequacy" data-kind="theorem">
+  <h2>Without a compatible disagreement, the search computes any common output</h2>
+  <p>Suppose \(\neg W(s,e,f,u,v)\), \(X,Y\) are protected completions of \((s,u),(s,v)\), and \(\varphi_e^X=g=\varphi_f^Y\) is a total numerical function. Then the specified program \(S_{s,e,u}^{J_s}\) halts on every input and returns \(g\). Consequently \(g\) is computable relative to \(J_s\), and hence to \(F_s\).</p>
+  <div class="proof">
+    <p>Fix \(x\). <a href="incomparable-turing-degrees#prefix-adequacy">Prefix adequacy</a> supplies a word \(\rho\succeq u\), realized by \(X\), with \(D(\rho,e,x)=g(x)+1\). Because \(X\) is a protected completion, this word satisfies \(u\preceq_s\rho\). Its code is a successful search candidate. The search therefore terminates.</p>
+    <p>Let \(\widehat\rho\) be the returned word and let its output be \(y\). Obtain from \(Y\) a word \(\eta\succeq_s v\) with \(D(\eta,f,x)=g(x)+1\). If \(y\ne g(x)\), then \((x,\widehat\rho,\eta)\) is a protected disagreement witness, a contradiction. Thus the returned value equals \(g(x)\). We compare with a certificate from the other oracle because the searched word need not be a prefix of \(X\). Finally substitute a reduction \(J_s\le_T F_s\) into the specified search program.</p>
+  </div>
+</section>
+
+<section id="protected-pair-extension" data-formal="ept-selected-witness ept-selected-witness-spec ept-settle ept-settle-growth ept-settle-correct" data-kind="definition">
+  <h2>Settle the supplied pair of indices and then pad compatibly</h2>
+  <p>Define \(E_s^{e,f}(u,v)\). If \(W(s,e,f,u,v)\), select the witness with least code \(\langle x,\langle\rho,\eta\rangle\rangle\), and retain its two words. Otherwise retain \(u,v\). Pad each retained word at level \(s\) to length at least \(s+1\), using \(\operatorname{pad}_s\).</p>
+  <p>Writing the resulting pair as \((u',v')\), we have \(u\preceq_s u'\), \(v\preceq_s v'\), and \(|u'|,|v'|\ge s+1\). For every protected completion \(X,Y\) of \((s,u'),(s,v')\), respectively,</p>
+  <div class="math-display">\[\begin{gathered}\varphi_e^X=g=\varphi_f^Y\text{ total}\\\Longrightarrow\quad g\text{ is computable relative to }J_s.\end{gathered}\]</div>
+  <div class="proof">
+    <p>A chosen disagreement survives padding and every later completion, so in that case the antecedent is impossible. In the other case the new completions are protected completions of the old seeds, and <a href="#protected-no-disagreement"></a> applies. The assertion concerns protected completions; it does not assert the conclusion for arbitrary completions of the finite seeds.</p>
+  </div>
+</section>
+
+<section id="stage-construction" data-formal="ept-stage ept-left-word ept-right-word ept-left-set ept-right-set ept-stage-prefixes ept-stage-lengths ept-stage-realizes incomp-coherent-union incomp-union-bit" data-kind="definition">
+  <h2>Increase the number of protected columns at every stage</h2>
+  <p>Start with \(u_0=v_0=[]\). At stage \(s=\langle e,f\rangle\), put</p>
+  <div class="math-display">\[\begin{gathered}(u_{s+1},v_{s+1})=E_s^{e,f}(u_s,v_s),\\B=\bigcup_s u_s,\qquad C=\bigcup_s v_s.\end{gathered}\]</div>
+  <p>These are the actual constructed words and sets for the given family \(A\). Each successor preserves the old prefix and has length at least \(s+1\). The <a href="incomparable-turing-degrees#growing-unions">coherent-union lemma</a> therefore supplies total characteristic sequences extending every stage word. Concretely \(\chi_B(q)=u_{q+1}(q)\), and similarly for \(C\).</p>
+</section>
+
+<section id="protected-unions" data-formal="ept-stage-protected ept-union-protected" data-kind="lemma">
+  <h2>The final unions keep every earlier protected tail</h2>
+  <p>For every \(s\), the final sets \(B,C\) are protected completions of \((s,u_s),(s,v_s)\). In particular, for \(t\ge s\), \(u_s\preceq_s u_t\) and \(v_s\preceq_s v_t\).</p>
+  <div class="proof">
+    <p>Induct on \(t\ge s\). At a successor stage the extension protects all columns of index less than \(t\), hence every column of index less than \(s\). The composition rule for protected extensions proves the finite assertion. Fix a position \(q\ge|u_s|\) in a protected column. Choose \(t\ge s\) with \(t&gt;q\). The length bound puts \(q\) inside \(u_t\), whose bit equals the prescribed bit; the final union retains that bit. The right side has the identical argument.</p>
+    <p>Thus an earlier exceptional bit in a seed is preserved, and every previously protected tail remains protected. Raising the protection level never requires changing an old bit.</p>
+  </div>
+</section>
+
+<section id="column-recovery" data-formal="ept-column-agreement ept-left-recovery-program ept-right-recovery-program ept-column-recovery" data-kind="theorem">
+  <h2>Each prescribed set is recoverable from both constructed sets</h2>
+  <p>For every \(n\), columns \(B_n,C_n\) agree with \(A_n\) except at finitely many positions. More explicitly,</p>
+  <div class="math-display">\[\begin{gathered}x\ge|u_{n+1}|\Longrightarrow\chi_{B_n}(x)=\chi_{A_n}(x),\\x\ge|v_{n+1}|\Longrightarrow\chi_{C_n}(x)=\chi_{A_n}(x).\end{gathered}\]</div>
+  <p>Consequently \(A_n\le_T B\) and \(A_n\le_T C\).</p>
+  <div class="proof">
+    <p>The set \(B\) is a protected completion at stage \(n+1\), so column \(n\) agrees with \(A_n\) at each paired position \(\langle n,x\rangle\ge|u_{n+1}|\). The fixed pairing satisfies \(\langle n,x\rangle\ge x\), giving the displayed cutoff. Use the separate cutoff \(|v_{n+1}|\) on the other side. Apply <a href="#finite-error-correction"></a> followed by the actual column projection.</p>
+    <p>These are pointwise reductions: for each \(n\) there is a finite correction table and a reduction program. We have not proved a computable function that produces these tables or reduction indices from \(n\). The stage words themselves need not be computable in \(n\).</p>
+  </div>
+</section>
+
+<section id="common-output-bound" data-formal="ept-constructed-common-output ept-constructed-lower-bound" data-kind="theorem">
+  <h2>The same supplied programs yield a bound in a finite join</h2>
+  <p>If \(\varphi_e^B=g=\varphi_f^C\) is total, then \(g\) is computable relative to \(J_{\langle e,f\rangle}\). In particular, if \(D\le_T B\) and \(D\le_T C\) with witnessing indices \(e,f\), then</p>
+  <div class="math-display">\[D\le_T F_{\langle e,f\rangle}.\]</div>
+  <div class="proof">
+    <p>Consider exactly stage \(s=\langle e,f\rangle\). The final unions are protected completions of the words produced at that stage. The conclusion of <a href="#protected-pair-extension"></a> applies to these actual sets and these actual program indices. A disagreement choice would contradict their common total output; in the other case the fixed protected-prefix search computes it. For the set version use \(g=\chi_D\), obtaining an actual reduction to \(J_s\), and substitute the reduction \(J_s\le_T F_s\).</p>
+  </div>
+</section>
+
+<section id="constructed-exact-pair" data-formal="ept-constructed-exact-pair ept-constructed-degree-exact-pair ept-exact-pair-exists" data-kind="theorem">
+  <h2>The protected-column construction gives an exact pair</h2>
+  <div class="statement-box">
+    <p>Let \(A_n\le_T A_{n+1}\) for every \(n\). For the actual constructed sets \(B,C\) above and every set \(D\),</p>
+    <div class="math-display">\[\begin{gathered}D\le_T B\ \land\ D\le_T C\\\Longleftrightarrow\quad\exists n\;D\le_T A_n.\end{gathered}\]</div>
+  </div>
+  <div class="proof">
+    <p>For the forward implication choose the supplied reduction indices \(e,f\). By <a href="#common-output-bound"></a> and <a href="#finite-join-bound"></a>, \(D\le_T F_s\le_T A_{\max(s-1,0)}\), where \(s=\langle e,f\rangle\). This includes \(s=0\), when the finite join is empty. For the reverse implication, compose \(D\le_T A_n\) with the two reductions in <a href="#column-recovery"></a>.</p>
+    <p>For a nondecreasing sequence of degrees, choose representatives \(A_n\). The <a href="turing-degrees#degree-order">native degree order</a> makes the input inequalities precisely \(A_n\le_T A_{n+1}\). Passing to the degrees of these same \(B,C\) proves the exact-pair definition. Every degree has a representative, so the set formulation covers all degree lower bounds.</p>
+  </div>
+</section>
+
+<section id="failure-of-meets" data-formal="ept-exact-pair-no-glb ept-no-glb-incomparable ept-jump-family ept-jump-left ept-jump-right ept-jump-exact-pair ept-jump-no-glb ept-jump-incomparable jump-degree-iterate-strict" data-kind="theorem">
+  <h2>A strictly increasing chain gives a pair with no greatest lower bound</h2>
+  <div class="statement-box">
+    <p>If \(\mathbf a_n&lt;\mathbf a_{n+1}\) for all \(n\), any exact pair \(\mathbf b,\mathbf c\) for this sequence has no greatest common lower bound. Such an incomparable pair exists in the Turing degrees.</p>
+  </div>
+  <div class="proof">
+    <p>Suppose \(\mathbf d\) were a greatest common lower bound. Exactness gives \(\mathbf d\le\mathbf a_n\) for some \(n\). But \(\mathbf a_{n+1}\) is a common lower bound, so greatestness gives \(\mathbf a_{n+1}\le\mathbf d\le\mathbf a_n\), contradicting strict increase.</p>
+    <p>For a concrete input use the <a href="turing-jump#finite-iterates">finite jump iterates</a> \(\mathbf0,\mathbf0',\mathbf0'',\ldots\). Their strict increase and <a href="#constructed-exact-pair"></a> produce the required pair. If two degrees were comparable, their smaller member would be their greatest common lower bound. Thus this pair is incomparable. The Turing degrees have binary joins, but some pairs have no meet in the existing degree order.</p>
+  </div>
+</section>
+
+<section id="constant-chain-question" data-formal="ept-constant-chain-glb ept-minimal-pair-zero-exact mpt-minimal-pair" data-kind="question">
+  <h2>What if the prescribed chain is constant?</h2>
+  <p>Apply the construction to \(\mathbf a_n=\mathbf a\) for all \(n\). Must the resulting pair fail to have a meet? If \(\mathbf a=\mathbf0\), must it be an ordinary minimal pair?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>Its common lower bounds are exactly the degrees below \(\mathbf a\), so \(\mathbf a\) is its meet. Strict increase is essential to the no-meet conclusion, although it is unnecessary for the construction. For the zero chain the common lower bounds are exactly zero, but positivity of both constructed degrees has not been required or proved. The definition of an ordinary minimal pair includes positivity. The preceding <a href="ordinary-minimal-pairs-of-turing-degrees#ordinary-diagonal-extension">separate diagonal requirements</a> supply that extra condition in the minimal-pair construction.</p>
+  </div></details>
+</section>
+
+<section id="uniformity-question" data-formal="ept-column-index-primitive ept-search-index-primitive ept-left-recovery-program ept-right-recovery-program ept-stage ept-has-disagreement ept-selected-witness" data-kind="question">
+  <h2>Which uniformity has the construction supplied?</h2>
+  <p>Are the projection programs, the correction programs, and the stage map all computable uniformly in their displayed indices? Does the argument give c.e. representatives for the exact pair?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body">
+    <p>The column projection code is uniform in its column index. The protected-prefix search has one code effectively determined by its finite parameters \(s,e,u\); correctness is proved relative to the specified total oracle \(J_s\). But the finite stage seeds and their correction tables are not supplied computably in the stage index. The stage choice decides whether a compatible disagreement exists, using the input sets in its compatibility condition. No algorithm computing all stages, no c.e. enumeration of the constructed sets, and no jump bound for them is proved. In particular this exact-pair theorem does not imply a c.e. minimal-pair theorem.</p>
+  </div></details>
+</section>

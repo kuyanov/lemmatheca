@@ -44,12 +44,13 @@
   </div></details>
 </section>
 
-<section id="eliminating-an-atom" data-formal="res-eliminate res-elimination-derivable res-elimination-support ci-forgetting-semantics ci-propositional-example" data-kind="definition">
+<section id="eliminating-an-atom" data-formal="res-eliminate res-elimination-derivable res-elimination-support ci-forgetting-semantics ci-propositional-example cpui-resolution-projection cpui-strongest-consequence" data-kind="definition">
   <h2>Forget one atom while retaining its constraints</h2>
   <p>Fix an atom \(p\). Discard every clause containing both \(p\) and \(\neg p\), since those clauses are always true. Partition the remaining clauses into \(\Gamma_0\), containing neither sign of \(p\); \(\Gamma_+\), containing \(p\) but not \(\neg p\); and \(\Gamma_-\), containing \(\neg p\) but not \(p\). Define the <strong>elimination of \(p\)</strong> from \(\Gamma\) by</p>
   <div class="math-display">\[ E_p(\Gamma):=\Gamma_0\cup\{R_p(C,D):C\in\Gamma_+,\ D\in\Gamma_-\}. \]</div>
   <p>This finite clause set contains no occurrence of \(p\). Every member is either an original clause or the result of one resolution step, so it is derivable from \(\Gamma\). No other atom is introduced. We discard clauses tautological on the selected pivot only; tautologies on other atoms may remain harmlessly.</p>
   <p>For \(p\land q\models q\lor r\) with distinct atoms, removing \(p\) from the premise gives the <a href="craig-interpolation#propositional-example">shared-vocabulary interpolant</a> \(q\).</p>
+  <p>The <a href="classical-propositional-uniform-interpolation#resolution-projection">formula projection theorem</a> identifies this clause operation with constant-substitution forgetting. Its <a href="classical-propositional-uniform-interpolation#strongest-retained-consequence">finite iteration</a> retains every consequence avoiding the eliminated atoms.</p>
 </section>
 
 <section id="elimination-extension" data-formal="res-elimination-extension res-elimination-models res-elimination-equisatisfiable" data-kind="lemma">

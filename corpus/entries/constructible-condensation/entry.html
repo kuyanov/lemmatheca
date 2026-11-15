@@ -1,0 +1,103 @@
+<section id="adequate-fragment" data-kind="definition" data-formal="cc-construction-fragment mm-transitive-set-model lhier-satisfaction-set-schema zf-set-valued-recursion-schema">
+  <h2>Keep a finite fragment that can construct its own levels</h2>
+  <p>Work in ambient ZF, using ambient Choice only for the size-controlled elementary hull below. A <strong>construction fragment</strong> \(S\) is one fixed finite collection of axioms of ZF without Power Set sufficient for the following internal constructions: the actual natural numbers and finite membership-language syntax, set-domain satisfaction and its definable-subset collection, and the uniquely defined constructible-level recursion through every ordinal. Include Empty Set, Pairing and Union. Fix such an \(S\) for this entry.</p>
+  <p>Here “sufficient” concerns ordinary first-order proofs of the uniform construction theorems, rather than a separate axiom saying that an arbitrary set is a constructible level. The <a href="constructible-hierarchy#set-structure-satisfaction">satisfaction construction</a> uses Separation and Replacement over finite syntax trees. The <a href="constructible-hierarchy#definable-subsets">definable-subset construction</a> then collects their formula-and-parameter images; it does not take the full power set. The <a href="cumulative-hierarchy#set-valued-ordinal-recursion">ordinal recursion theorem</a> supplies the level history as a set. These are uniform theorems of ZF without Power Set. Each proof is a finite derivation, so only finitely many instances of Separation and Replacement occur in their proofs. Collect those instances and the finitely many other axioms used, together with the three named axioms, into \(S\).</p>
+  <p>Write \(M\models S+V=L\) for ordinary membership-structure truth: \(M\models S\), and every object of \(M\) belongs to a level of the hierarchy computed inside \(M\). Internal ordinal indices and levels are the ones specified by those defining formulas. They are not an externally supplied hierarchy. This uses the <a href="membership-models#membership-structures">membership-model convention</a>.</p>
+</section>
+
+<section id="ordinal-height" data-kind="definition" data-formal="cc-ordinal-part cc-ordinal-height cc-ordinal-part-ordinal cc-height-set cc-ordinal-member-height cc-height-missing">
+  <h2>The ordinal part of a transitive set determines its height</h2>
+  <p>For a transitive set \(M\), its <strong>ordinal height</strong> is the ordinal</p>
+  <div class="math-display">\[h(M)=M\cap\mathrm{Ord}.\]</div>
+  <p>This intersection is a set by Separation. If \(\alpha\) is in it and \(\beta&lt;\alpha\), then \(\beta\in\alpha\in M\), so transitivity puts \(\beta\) in it too. Thus it is a transitive set of ordinals and hence an ordinal. Consequently</p>
+  <div class="math-display">\[\alpha\in M\quad\Longleftrightarrow\quad\alpha&lt;h(M)\qquad(\alpha\text{ an ordinal}).\]</div>
+  <p>In particular \(h(M)\notin M\): otherwise its own ordinal membership condition would give \(h(M)&lt;h(M)\). Thus it is the least ordinal missing from \(M\), rather than a largest ordinal belonging to \(M\).</p>
+</section>
+
+<section id="limit-height" data-kind="lemma" data-formal="cc-ordinal-successor-closed cc-native-basic-closure cc-limit-height cc-construction-fragment">
+  <h2>Successor closure makes the missing ordinal a nonzero limit</h2>
+  <p>Let \(M\) be transitive, contain \(0\), and be <strong>closed under ordinal successors</strong>, meaning that \(\alpha\in M\) implies \(\alpha+1\in M\) for each ordinal \(\alpha\). Then \(h(M)\) is a nonzero limit ordinal. In particular this holds when \(M\models S\).</p>
+  <div class="proof"><p>Membership of \(0\) makes the height positive. For every \(\alpha&lt;h(M)\), successor closure gives \(\alpha+1&lt;h(M)\). This excludes a last member and therefore excludes a successor height. For an \(S\)-model, Empty Set supplies its actual empty set by transitivity and Extensionality. Pairing and Union construct the actual successor \(\alpha\cup\{\alpha\}\) inside \(M\). Their definitions use only members of supplied sets, so transitivity makes their internal and external outputs identical. These are exactly the two closure facts used above.</p></div>
+</section>
+
+<section id="internal-level-agreement" data-kind="theorem" data-formal="cc-internal-level-agreement lhier-nested-truth lhier-inside-def-agreement lhier-supplied-history-agreement">
+  <h2>Every internally indexed level is the actual level</h2>
+  <p>If \(M\) is transitive and \(M\models S\), then for every ordinal \(\alpha&lt;h(M)\), its internal construction supplies an object \(L_\alpha^M\in M\), and</p>
+  <div class="math-display">\[L_\alpha^M=L_\alpha.\]</div>
+  <div class="proof"><p>The construction theorem provable from \(S\) is universally quantified over ordinal indices. The <a href="absoluteness#bounded-ordinal-test">bounded ordinal test</a> is absolute in a transitive set, so every actual \(\alpha&lt;h(M)\) is an admissible internal index. Its theorem therefore supplies the internal level and its recursion history as actual members of \(M\).</p><p>Now repeat the <a href="constructible-hierarchy#constructible-recursion-absoluteness">hierarchy agreement induction</a> using only the constructions included in \(S\). Transitivity gives the same ordinals below each supplied index. At zero both histories give the empty set. At a successor, the earlier level is a set in \(M\) and agrees with the actual level by induction. The finite formula codes and all finite parameter tuples over that set are the actual ones. Induction on those formula codes gives the same satisfaction relation: at a quantifier, both computations test exactly the members of that supplied set. Internal Separation forms each actual defining subset, and internal Replacement collects the same definable-subset image. Hence the successor levels agree.</p><p>At a limit index, the internal earlier-level history is an object in \(M\), supplied by the recursion theorem rather than assumed from outside. Its domain consists of exactly the smaller ordinals, and its values agree by induction. Its union is therefore the actual union of the same levels. This proves the displayed identity at every internal index. No Power Set axiom is used to replace definability by arbitrary subsets.</p></div>
+</section>
+
+<section id="classification-from-levels" data-kind="lemma" data-formal="cc-level-classification">
+  <h2>Available levels and exhaustion give equality in both directions</h2>
+  <p>Let \(M\) be transitive and \(\lambda\) a nonzero limit ordinal. Suppose</p>
+  <div class="math-display">\[\forall\alpha&lt;\lambda\ (L_\alpha\in M),\qquad \forall x\in M\ \exists\alpha&lt;\lambda\ (x\in L_\alpha).\]</div>
+  <p>Then \(M=L_\lambda\).</p>
+  <div class="proof"><p>The second hypothesis puts every \(x\in M\) in the union of the levels below \(\lambda\), which is \(L_\lambda\). Conversely, if \(x\in L_\lambda\), the <a href="constructible-hierarchy#constructible-recursion">limit-level clause</a> gives \(\alpha&lt;\lambda\) with \(x\in L_\alpha\). The first hypothesis puts this whole level in \(M\). Transitivity then gives \(x\in M\). Each inclusion uses a different hypothesis; merely knowing the ordinal height supplies neither of them.</p></div>
+</section>
+
+<section id="transitive-condensation" data-kind="theorem" data-formal="cc-finite-fragment-condensation cc-level-height">
+  <h2>A transitive model of the fragment and V equals L is a level</h2>
+  <div class="statement-box"><p>For the fixed finite construction fragment \(S\), every transitive set \(M\) satisfying \(S+V=L\) is exactly</p>
+  <div class="math-display">\[M=L_{h(M)},\]</div>
+  <p>where \(h(M)\) is a nonzero limit ordinal. This level index is unique.</p></div>
+  <div class="proof"><p>Its height is a nonzero limit by <a href="#limit-height"></a>. For every \(\alpha&lt;h(M)\), <a href="#internal-level-agreement"></a> supplies the actual \(L_\alpha\) as an object of \(M\). This proves the first hypothesis of <a href="#classification-from-levels"></a>.</p><p>The internal assertion \(V=L\) says that for every \(x\in M\) there is an internal ordinal \(\alpha\) with \(x\in L_\alpha^M\). Bounded ordinal absoluteness makes that index an actual \(\alpha&lt;h(M)\), and the level agreement identity replaces \(L_\alpha^M\) by \(L_\alpha\). This proves the second hypothesis. The two-inclusion lemma gives the asserted equality.</p><p>Finally the <a href="constructible-hierarchy#ordinals-at-each-level">ordinal part of \(L_\beta\)</a> is exactly \(\beta\). If \(M=L_\beta\) as well, taking ordinal parts gives \(\beta=h(M)\). This proves uniqueness. The theorem uses actual membership and transitivity; it does not identify arbitrary ill-founded models satisfying the same first-order sentences with actual levels.</p></div>
+</section>
+
+<section id="elementary-collapse-hypotheses" data-kind="lemma" data-formal="elem-elementary-submodel mm-actual-membership-structure cc-submodel-relation cc-submodel-well-founded cc-submodel-extensional">
+  <h2>An elementary membership substructure inherits extensionality</h2>
+  <p>Let \(D\) be transitive and \(X\preccurlyeq(D,\in)\) an elementary substructure. On the carrier \(X\), the relation \(a\mathrel E b\) defined by actual \(a\in b\) is well founded and extensional.</p>
+  <div class="proof"><p>Ambient Foundation makes actual membership well founded; restricting it to \(X\) preserves this property. For extensionality, suppose \(a,b\in X\) have the same predecessors from \(X\). If \(a\ne b\), ambient Extensionality gives an element in exactly one of the two sets. Since \(D\) is transitive, that element belongs to \(D\). Thus \(D\) satisfies the first-order assertion that some \(z\) belongs to exactly one of \(a,b\). Elementarity, with these two parameters in \(X\), supplies such a \(z\in X\), contradicting their equal predecessor collections. Hence \(a=b\).</p><p>The elementary assumption is essential to this argument: an arbitrary subset of a transitive set need not contain the witness distinguishing two of its elements.</p></div>
+</section>
+
+<section id="specified-elementary-collapse" data-kind="theorem" data-formal="mostowski-collapse mostowski-collapse-equation mostowski-collapse-image mostowski-collapse-injective cc-native-collapse-map cc-native-collapse-bijective cc-native-collapse-isomorphism cc-native-collapse-map-value cc-native-collapse-satisfaction">
+  <h2>The specified collapse preserves the actual formulas</h2>
+  <p>Under <a href="#elementary-collapse-hypotheses">these hypotheses</a>, define</p>
+  <div class="math-display">\[\pi_X(a)=\{\pi_X(b):b\in X\cap a\},\qquad N_X=\{\pi_X(a):a\in X\}.\]</div>
+  <p>Then \(N_X\) is transitive, and this specified map is a bijection from \(X\) onto \(N_X\) satisfying</p>
+  <div class="math-display">\[a\in b\quad\Longleftrightarrow\quad\pi_X(a)\in\pi_X(b).\]</div>
+  <p>For every actual finite membership-language formula \(\varphi\) and assignment \(\bar a\) from \(X\),</p>
+  <div class="math-display">\[X\models\varphi(\bar a)\quad\Longleftrightarrow\quad N_X\models\varphi(\pi_X\bar a).\]</div>
+  <div class="proof"><p>The <a href="mostowski-collapse#collapse-map">well-founded recursion defining the collapse</a> is exactly the displayed rule. Apply the <a href="mostowski-collapse#mostowski-collapse-theorem">Mostowski theorem</a> using the preceding well-foundedness and extensionality. Its transitive representation has the displayed map and image. Membership preservation and reflection identify the atomic clauses. Induct on the same finite formula: equality follows from injectivity, membership from that identity, and the Boolean clauses from induction. At a quantifier, the map's surjectivity gives exactly the corresponding witnesses or tests in \(N_X\). Thus the same formula and assignment are preserved, including all their bound-variable slots. This is the <a href="membership-models#collapse-models">collapse satisfaction argument</a>.</p></div>
+</section>
+
+<section id="elementary-level-condensation" data-kind="theorem" data-formal="cc-elementary-level-condensation cc-native-collapse-theory cc-collapse-cardinality">
+  <h2>Collapse an elementary submodel of a sufficiently strong level</h2>
+  <div class="statement-box"><p>Suppose \(L_\theta\models S+V=L\), and \(X\preccurlyeq(L_\theta,\in)\). Its specified Mostowski collapse has image</p>
+  <div class="math-display">\[N_X=L_\beta\qquad\text{for the unique nonzero limit }\beta=h(N_X).\]</div></div>
+  <div class="proof"><p>The level \(L_\theta\) is transitive, so <a href="#specified-elementary-collapse"></a> applies. Elementarity transfers every sentence in the fixed finite \(S\), and the single sentence \(V=L\), from \(L_\theta\) to \(X\). Preservation of these same sentences by the collapse transfers them to \(N_X\). Thus \(N_X\models S+V=L\), and its image is transitive. Apply <a href="#transitive-condensation"></a> to identify it with the level at its ordinal height.</p><p>As actual sets, \(X\) and \(L_\beta\) have the same cardinality, witnessed by the specified collapse bijection. The strength assumption on \(L_\theta\) supplies the internal construction theorem used in this proof. No assertion about arbitrary weak levels or merely partially elementary substructures is being inferred.</p></div>
+</section>
+
+<section id="collapse-fixes-ordinals" data-kind="lemma" data-formal="cc-ordinal-points cc-ordinals-fixed">
+  <h2>Keeping every earlier ordinal makes those ordinals fixed points</h2>
+  <p>Let \(X\) and \(\pi_X\) be as in <a href="#specified-elementary-collapse"></a>. If \(\kappa\) is an ordinal and every \(\alpha&lt;\kappa\) belongs to \(X\), then</p>
+  <div class="math-display">\[\pi_X(\alpha)=\alpha\qquad(\alpha&lt;\kappa).\]</div>
+  <div class="proof"><p>Induct on \(\alpha&lt;\kappa\). Every actual member of \(\alpha\) is a smaller ordinal \(\gamma\), is present in \(X\), and is fixed by induction. There are no other members of \(X\cap\alpha\). The collapse recursion therefore gives</p>
+  <div class="math-display">\[\pi_X(\alpha)=\{\pi_X(\gamma):\gamma&lt;\alpha\}=\{\gamma:\gamma&lt;\alpha\}=\alpha.\]</div>
+  <p>At zero both sets are empty; at a limit this argument uses all smaller members directly. The statement does not evaluate \(\pi_X(\kappa)\) unless \(\kappa\) itself is in the map's domain.</p></div>
+</section>
+
+<section id="collapse-fixes-subsets" data-kind="lemma" data-formal="cc-subsets-fixed">
+  <h2>A named subset survives a pointwise-preserving collapse</h2>
+  <p>Assume every \(\alpha&lt;\kappa\) belongs to \(X\). If \(x\in X\) and \(x\subseteq\kappa\), then \(\pi_X(x)=x\). In particular \(x\in N_X\).</p>
+  <div class="proof"><p>Every \(y\in x\) is an ordinal below \(\kappa\), hence is present in \(X\) and fixed by <a href="#collapse-fixes-ordinals"></a>. Thus \(X\cap x=x\), and the actual recursion gives</p>
+  <div class="math-display">\[\pi_X(x)=\{\pi_X(y):y\in X\cap x\}=\{y:y\in x\}=x.\]</div>
+  <p>The image definition then puts \(x\) in \(N_X\). Naming only the set \(x\) would not ensure that all its members were retained in the substructure; the pointwise ordinal assumption is what guarantees that here.</p></div>
+</section>
+
+<section id="small-hull-with-subset" data-kind="lemma" data-formal="cc-small-hull cc-subsets-fixed cc-elementary-level-condensation cc-collapse-cardinality">
+  <h2>A hull can retain a whole infinite ordinal and one more object</h2>
+  <p>In ambient ZFC, let \(\kappa\) be an infinite ordinal, \(D\) a transitive set containing every \(\alpha&lt;\kappa\), and \(x\in D\). There is an elementary substructure \(X\preccurlyeq(D,\in)\) with every \(\alpha&lt;\kappa\) in \(X\), with \(x\in X\), and with \(|X|=|\kappa|\). If also \(x\subseteq\kappa\), its specified collapse fixes \(x\).</p>
+  <div class="proof"><p>Take the prescribed parameter set \(A=\kappa\cup\{x\}\), regarded as a subset of the carrier \(D\). Its cardinality is \(|\kappa|\), since \(\kappa\) is infinite. The <a href="elementary-submodels#downward-size-bound">small elementary-submodel theorem</a> supplies \(X\) containing \(A\) of size at most \(|A|+|\{\in\}|+\aleph_0=|\kappa|\). The membership language has one relation symbol and no function symbols. Pointwise inclusion of \(\kappa\) gives the reverse cardinal inequality, hence equality. The fixed-subset conclusion is <a href="#collapse-fixes-subsets"></a>.</p><p>When \(D=L_\theta\) also satisfies \(S+V=L\), its collapse is a constructible level by <a href="#elementary-level-condensation"></a>. Its cardinality is therefore \(|\kappa|\), and its image contains the unchanged subset \(x\). These are the facts used in the power-set stage count.</p></div>
+</section>
+
+<section id="transitivity-alone-question" data-kind="question" data-formal="cc-first-levels cc-singleton-one-separation cc-three-counterexample cc-ordinal-height-of-ordinal">
+  <h2>Does a transitive set have to be a constructible level?</h2>
+  <p>Let \(3=\{0,1,2\}\) be the finite von Neumann ordinal. Is this transitive set equal to \(L_\alpha\) for some ordinal \(\alpha\)?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. Its ordinal part has height \(3\), so equality with a level would force \(\alpha=3\). Starting from \(L_0=\varnothing\) gives \(L_1=\{0\}\). The empty and whole subsets exhaust the subsets of this singleton, so \(L_2=\{0,1\}\). Now \(\{1\}\) is definable over this level using the parameter \(1\). Hence \(\{1\}\in\operatorname{Def}(L_2)=L_3\). It does not belong to the ordinal \(3\): it is different from \(0\) because it is nonempty, different from \(1=\{0\}\) because \(0\ne1\), and different from \(2=\{0,1\}\) because it lacks \(0\). Therefore \(3\ne L_3\), and it equals no constructible level.</p><p>The finite-fragment and internal \(V=L\) assumptions establish availability of the levels and exhaustion by them. Transitivity alone says only that existing elements bring their members along.</p></div></details>
+</section>
+
+<section id="index-versus-points-question" data-kind="question" data-formal="cc-subsets-fixed cc-index-fixed cc-small-hull-with-index">
+  <h2>Must the ordinal itself be named to preserve its subsets?</h2>
+  <p>In the fixed-subset lemma, must \(\kappa\) itself belong to \(X\)? Which stronger statement would need that extra membership?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No. To fix \(x\subseteq\kappa\), the proof needs \(x\in X\) and every point \(\alpha&lt;\kappa\) in \(X\). It fixes each such point first and then applies the recursion at \(x\). The expression \(\pi_X(\kappa)\) is defined only if \(\kappa\in X\); with that additional hypothesis the same recursion proves \(\pi_X(\kappa)=\kappa\).</p><p>If that stronger identity is needed, include \(\kappa\) among the prescribed hull parameters. Adding one point to the parameter set of the <a href="#small-hull-with-subset">infinite hull construction</a> does not change its cardinality. Pointwise inclusion and membership of the index are separate statements.</p></div></details>
+</section>

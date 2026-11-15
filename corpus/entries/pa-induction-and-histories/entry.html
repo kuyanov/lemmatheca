@@ -7,7 +7,7 @@
 <p>We use the arithmetic abbreviations \(u\le v\) for \(\exists w\,(w+u=v)\) and \(u\lt v\) for \(Su\le v\), introduced with <a href="arithmetic-representability#bounded-formulas">bounded formulas</a>. A function notation introduced by a proved unique graph is an abbreviation: its occurrence can always be replaced by a value variable and that graph assertion.</p>
 </section>
 
-<section id="induction-as-a-proof-rule" data-kind="lemma" data-formal="pac-least-witness pac-least-witness-derives pac-strong-induction pac-additive-cancellation haadd-cancel-left haadd-consume-left-cancellation hamul-commutativity hamul-left-distributivity hamul-right-distributivity hamul-associativity">
+<section id="induction-as-a-proof-rule" data-kind="lemma" data-formal="pac-least-witness pac-least-witness-derives pac-strong-induction pac-additive-cancellation haadd-cancel-left haadd-consume-left-cancellation hamul-commutativity hamul-left-distributivity hamul-right-distributivity hamul-associativity hao-strict-initial-segment hao-nonstrict-initial-segment hao-comparison-proof hasi-predicate-decision hasi-least-witness hasi-em-predicate hasi-least-number-em">
   <h2>Internal induction also proves least-element principles</h2>
   <p>PA proves induction for every arithmetic formula with parameters. Consequently, if an arithmetic formula \(A(x,\bar u)\) has a witness, it has a least witness:</p>
   <div class="math-display">\[\mathrm{PA}\vdash\forall\bar u\,\bigl(\exists x\,A(x,\bar u)\to\exists x\,(A(x,\bar u)\land\forall z\lt x\,\neg A(z,\bar u))\bigr).\]</div>
@@ -18,14 +18,17 @@
   <p>Induction on \(v\), using the predecessor axiom, proves \(u\le v\) or \(v\lt u\). Cancellation and the successor axioms then give antisymmetry. All these are inductions on arithmetic formulas, with their other variables as parameters.</p>
   <p>For addition, <a href="heyting-arithmetic-addition#left-cancellation">the cancellation induction also produces a finite intuitionistic HA proof</a>. Its body is the implication \(a+b=a+c\to b=c\), with \(b,c\) fixed, and the <a href="heyting-arithmetic-addition#arbitrary-term-instances">resulting certificate consumes an equality proved under a fixed additional context</a>.</p>
   <p>The <a href="heyting-arithmetic-multiplication#commutative-multiplication">multiplication commutativity</a>, <a href="heyting-arithmetic-multiplication#left-distributivity">two distributive laws</a> and <a href="heyting-arithmetic-multiplication#associative-multiplication">associativity</a> also have direct finite intuitionistic HA certificates. Their proofs keep the other variables fixed through each induction, using the already proved addition rearrangements.</p>
+  <p>A separate <a href="heyting-arithmetic-order#initial-segments">native HA treatment of successor bounds</a> and <a href="heyting-arithmetic-order#comparison-induction">comparison</a> constructs the corresponding additive discrete-order proofs with intuitionistic deduction.</p>
+  <p>The <a href="heyting-arithmetic-strong-induction#least-witness-rule">HA least-witness construction</a> consumes an internal predicate decision certificate. Removing that premise for every full predicate would yield <a href="heyting-arithmetic-strong-induction#unrestricted-least-number">each arithmetic instance of excluded middle</a>.</p>
 </section>
-<section id="strong-induction" data-kind="lemma" data-formal="pac-strong-induction pac-strong-induction-derives">
+<section id="strong-induction" data-kind="lemma" data-formal="pac-strong-induction pac-strong-induction-derives hasi-strong-rule hasi-cumulative-body hasi-cumulative-proof">
 <h2>A least counterexample justifies recursion on smaller codes</h2>
 <p>For each fixed arithmetic formula \(P(x,\bar u)\), PA proves strong induction: if \(P(x,\bar u)\) follows from its truth at every \(y\lt x\), then it holds for every \(x\).</p>
 <div class="proof">
   <p>Fix the parameters and suppose a counterexample exists. Apply <a href="#induction-as-a-proof-rule">the least-witness principle</a> to \(\neg P\). Its least witness \(c\) has \(P(y,\bar u)\) for every \(y\lt c\). The assumed induction step gives \(P(c,\bar u)\), contradicting the choice of \(c\). This proof is first-order: the formula \(\neg P\) names the counterexamples.</p>
 </div>
 <p>This is the form of induction needed when a syntax routine calls itself on the children of an encoded expression. The input decreases numerically; it need not be the immediate predecessor. A bounded loop, a maximum or a graph-defined function inside \(P\) must first be written using its arithmetic graph, so that \(P\) really is an arithmetic formula.</p>
+  <p>A direct <a href="heyting-arithmetic-strong-induction#strong-induction-rule">HA certificate construction of strong induction</a> uses the bounded universal history formula and ordinary native induction with fixed parameters. It applies to arbitrary full native bodies.</p>
 </section>
 
 <section id="internal-division" data-formal="pac-internal-division pac-division-derives" data-kind="lemma">

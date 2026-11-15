@@ -1,4 +1,5 @@
 import Lemmatheca.PropositionalDummettLinearity.Frames
+import Lemmatheca.IntuitionisticPropositionalFiniteFiltrations.Examples
 import Lemmatheca.PropositionalWeakExcludedMiddle.Examples
 import Lemmatheca.IntuitionisticPropositionalTreeCountermodels.Examples
 
@@ -69,13 +70,6 @@ theorem not_lc_excluded_middle :
   obtain ⟨⟨A, B⟩, rfl⟩ := hE
   exact chain_schema_valid A B
 
-/-- A named non-instance: the ordinary Boolean chain instance is never replaced. -/
-@[instance_reducible] def discretePreorder : Preorder Bool where
-  le := Eq
-  lt := fun _ _ => False
-  le_refl _ := rfl
-  le_trans _ _ _ := Eq.trans
-  lt_iff_le_not_ge _ _ := ⟨False.elim, fun h => h.2 h.1.symm⟩
 
 theorem discrete_local_not_global :
     @LocallyLinear Bool discretePreorder ∧

@@ -1,0 +1,86 @@
+<section id="witness-problem" data-kind="definition" data-formal="fgen-ground-model-convention fth-semantic-forcing fname-evaluation fname-evaluation-members">
+  <h2>A witness may depend on the generic branch</h2>
+  <p>A condition can force that something exists while different generic filters supply different witnesses. The <a href="forcing-theorem#refining-witnesses">refining-witness theorem</a> chooses a name after passing to a stronger condition. We will combine these local choices into one name that works at the original condition.</p>
+  <p>Use the <a href="forcing-and-generic-filters#ground-model">ground-model convention</a>: \(M\) is an externally countable transitive set model of ZFC, \((P,\le)\in M\) is a forcing order, and smaller conditions are stronger. All names and their indexed families are ground-model objects unless explicitly stated otherwise. For a name \(\tau\) and an \(M\)-generic filter \(G\), its value is the actual recursively evaluated set \(\tau[G]\). The <a href="forcing-names#evaluation">evaluation clause</a> is</p>
+  <div class="math-display">\[\tau[G]=\{\sigma[G]:\exists q\in G\ ((\sigma,q)\in\tau)\}.\]</div>
+  <p>The name we construct is called a <strong>mixture</strong>. The term refers to its choice of one branch, rather than a union of all branch values.</p>
+</section>
+
+<section id="antichain-data" data-kind="definition" data-formal="fgen-antichain fcc-predense-below">
+  <h2>Assign a name to each incompatible branch</h2>
+  <p>Let \(A\subseteq P\) be an antichain, and let \(a\mapsto\tau_a\) assign a \(P\)-name to every \(a\in A\). Thus distinct members of \(A\) have no common stronger condition. This definition allows the empty antichain. For a condition \(p\), say \(A\) is <strong>predense below \(p\)</strong> if every \(q\le p\) is compatible with some \(a\in A\), as in <a href="forcing-chain-conditions#deciding-antichain"></a>.</p>
+  <p>The mixing construction itself does not need predensity, a chain condition, or genericity. Its value identity will hold for any filter meeting \(A\). Predensity will later ensure that every relevant generic filter does meet \(A\).</p>
+</section>
+
+<section id="mixed-name" data-kind="definition" data-formal="fmix-branch-bundle fmix-name fmix-name-members fname-union-name">
+  <h2>Splice attachments below their branch conditions</h2>
+  <p>Define the specified <strong>mixed name</strong> by</p>
+  <div class="math-display">\[\operatorname{mix}(A,\tau)=\{(\sigma,r):\exists a\in A\ \exists q\in P\ ((\sigma,q)\in\tau_a\ \land\ r\le a\ \land\ r\le q)\}.\]</div>
+  <p>Here \(r\in P\) is understood. In particular, copying an attachment from \(\tau_a\) also requires strengthening its old condition \(q\) and the branch condition \(a\). Copying only the label \(a\), without preserving \(q\), would activate members that were not active in that branch name.</p>
+  <p>This is an actual set of attachments. Let \(W=\bigcup_{a\in A}\operatorname{dom}(\tau_a)\), where the <a href="forcing-names#name-hierarchy">name domain</a> consists of attached child names. Replacement and Union give \(W\), and Separation defines the displayed subset of \(W\times P\). Equivalently, form the branch bundle \(b=\{(\tau_a,a):a\in A\}\) and apply the <a href="forcing-names#union-name">union-name constructor</a>: its common-refinement clause gives exactly the displayed name. This identifies the construction itself, rather than merely some name with the desired value.</p>
+</section>
+
+<section id="mixed-name-validity" data-kind="lemma" data-formal="fmix-name-valid fmix-ground-mixing-closure">
+  <h2>The spliced set is a name</h2>
+  <p>If every \(\tau_a\) is a \(P\)-name, then \(\operatorname{mix}(A,\tau)\) is a \(P\)-name. If \(A\) and the whole function \(a\mapsto\tau_a\) belong to the transitive ZFC model \(M\), then the specified mixture also belongs to \(M\).</p>
+  <div class="proof"><p>Every attachment has second coordinate in \(P\). Its first coordinate \(\sigma\) is a child of some valid \(\tau_a\), so it too is a \(P\)-name, by the <a href="forcing-names#name-hierarchy">recursive name criterion</a>. That criterion proves validity of the mixture. Alternatively, the branch bundle is a name, and validity follows from validity of the union-name constructor.</p><p>For the ground-membership assertion perform the bounding construction inside \(M\), starting with its supplied family. The domains, their union, the product with \(P\), and its separated subset are all sets there. These operations agree with the external construction: membership, ordered-pair coding, and comparison by the fixed order graph are absolute between these transitive sets. Every existential in the displayed membership test ranges over the supplied ground sets. Thus the resulting internal set is precisely the specified mixture.</p></div>
+</section>
+
+<section id="unique-active-branch" data-kind="lemma" data-formal="fcc-antichain-filter-unique">
+  <h2>A filter meets at most one antichain branch</h2>
+  <p>If \(G\) is a filter on \(P\) and \(A\) is an antichain, then \(G\cap A\) has at most one member.</p>
+  <div class="proof"><p>If \(a,b\in G\cap A\), directedness of \(G\) gives \(r\in G\) with \(r\le a,b\). Thus \(a,b\) are compatible. The antichain condition gives \(a=b\). This is the <a href="forcing-chain-conditions#deciding-antichain">unique-branch fact</a> without any genericity assumption.</p></div>
+</section>
+
+<section id="mixing-lemma" data-kind="theorem" data-formal="fmix-name-value">
+  <h2>A mixture has exactly the active branch's value</h2>
+  <div class="statement-box"><p>Let \(A\) be an antichain of conditions and \((\tau_a)_{a\in A}\) a family of names. For every filter \(G\) and every \(a\in G\cap A\),</p>
+  <div class="math-display">\[\operatorname{mix}(A,\tau)[G]=\tau_a[G].\]</div></div>
+  <div class="proof"><p>Suppose \(x\) belongs to the value on the left. Evaluation gives an attachment \((\sigma,r)\) of the mixture with \(r\in G\) and \(x=\sigma[G]\). By its definition choose \(b\in A\) and \((\sigma,q)\in\tau_b\) with \(r\le b,q\). Upward closure of \(G\) puts both \(b\) and \(q\) in \(G\). The <a href="#unique-active-branch"></a> gives \(b=a\). Therefore the attachment to \(\tau_a\) is active, so \(x\in\tau_a[G]\).</p><p>Conversely let \(x\in\tau_a[G]\). Choose an active attachment \((\sigma,q)\in\tau_a\) with \(q\in G\) and \(x=\sigma[G]\). Directedness refines \(a,q\in G\) to \(r\in G\) with \(r\le a,q\). Then \((\sigma,r)\) is an attachment of the specified mixture, so \(x\) belongs to its value. Extensionality gives the equality. The same argument works for empty branch values; no maximum or least attachment is needed.</p></div>
+</section>
+
+<section id="generic-branch" data-kind="lemma" data-formal="fcc-generic-meets-predense fcc-antichain-filter-unique fgen-ground-family-closure">
+  <h2>Predensity supplies the branch in a generic filter</h2>
+  <p>Suppose \(A\in M\) is predense below \(p\). Every \(M\)-generic filter \(G\) containing \(p\) meets \(A\). If \(A\) is also an antichain, it meets \(A\) exactly once.</p>
+  <div class="proof"><p>Use the ground dense set</p>
+  <div class="math-display">\[E=A^\downarrow\cup\{q\in P:q\perp p\},\qquad A^\downarrow=\{r\in P:\exists a\in A\ (r\le a)\}.\]</div>
+  <p>The <a href="forcing-chain-conditions#deciding-antichain">predense-set argument</a> proves its density. All displayed sets belong to \(M\) by Separation. A filter containing \(p\) cannot meet the incompatible part. Genericity therefore gives \(r\in G\cap A^\downarrow\), and upward closure gives some \(a\in G\cap A\). Uniqueness is <a href="#unique-active-branch"></a>.</p></div>
+</section>
+
+<section id="supplied-witness-family" data-kind="theorem" data-formal="fmix-ground-name fmix-supplied-family-witness fmix-ground-mixing-closure">
+  <h2>A supplied ground family gives one witness at the original condition</h2>
+  <p>Fix an ordinary membership-language formula \(\varphi(x,\bar y)\), ground names \(\bar\rho\), and \(p\in P\). Suppose \(A\) is a ground antichain predense below \(p\), and a ground family of names satisfies \(a\Vdash\varphi(\tau_a,\bar\rho)\) for every \(a\in A\). Put \(\tau=\operatorname{mix}(A,\tau_{(-)})\). Then</p>
+  <div class="math-display">\[p\Vdash\varphi(\tau,\bar\rho).\]</div>
+  <div class="proof"><p>The mixture is a ground name by <a href="#mixed-name-validity"></a>. Let \(G\) be any \(M\)-generic filter containing \(p\). By <a href="#generic-branch"></a>, choose \(a\in G\cap A\). Semantic forcing at \(a\) gives \(M[G]\models\varphi(\tau_a[G],\bar\rho[G])\). The <a href="#mixing-lemma">exact valuation identity</a> replaces \(\tau_a[G]\) by \(\tau[G]\) without changing any other parameter. This proves the asserted semantic forcing at \(p\).</p></div>
+  <p>More generally the same proof works for a transitive ground set when the family, mixture, and dense test \(E\) above are explicitly supplied as available ground objects, and the stated local forcing assertions hold. That precise construction does not itself assert that an arbitrary transitive set satisfies the ZFC axioms needed to supply them.</p>
+</section>
+
+<section id="ground-choice" data-kind="lemma" data-formal="fmix-witness-conditions fmix-witness-density fmix-ground-witness-family fext-collection-over-zf">
+  <h2>Select the whole family inside the ground model</h2>
+  <p>Assume \(p\Vdash\exists x\,\varphi(x,\bar\rho)\). Define</p>
+  <div class="math-display">\[D=\{q\le p:\exists\sigma\in M\ (\sigma\text{ is a name and }q\Vdash\varphi(\sigma,\bar\rho))\}.\]</div>
+  <p>Then \(D\in M\) is dense below \(p\). There is a ground antichain \(A\subseteq D\) predense below \(p\), together with a whole function \((\tau_a)_{a\in A}\in M\) such that \(a\Vdash\varphi(\tau_a,\bar\rho)\) for every \(a\in A\).</p>
+  <div class="proof"><p>The <a href="forcing-theorem#forcing-theorem">formula-by-formula definability theorem</a> expresses the witness condition by a fixed formula inside \(M\), with an unbounded internal quantifier over its names. Separation makes \(D\) a ground subset of \(P\). For any \(q\le p\), monotonicity gives \(q\Vdash\exists x\,\varphi\). Apply the <a href="forcing-theorem#refining-witnesses">refining-witness theorem</a> at \(q\) to obtain \(r\le q\) in \(D\). Thus \(D\) is dense below \(p\). This is also the internal density assertion, since its quantifiers now range over the same ground sets \(P,D\) and the fixed order graph.</p><p>Inside \(M\), apply <a href="axiom-of-choice#zorns-lemma">Zorn's lemma</a> to antichains contained in \(D\), ordered by inclusion. A chain union remains an antichain, so there is an inclusion-maximal one, \(A\in M\). For \(q\le p\), if no member of \(A\) were compatible with \(q\), density would give \(r\le q\) in \(D\), and \(A\cup\{r\}\) would be a larger antichain. Hence \(A\) is predense below \(p\). This is the same <a href="forcing-chain-conditions#deciding-antichain">maximality argument</a>, without any ccc assumption.</p><p>For each \(a\in A\), its membership in \(D\) supplies a name witness. To obtain a family belonging to \(M\), first use <a href="forcing-extensions#ground-collection">Collection</a> there to bound these witnesses by one ground set \(W\). For each \(a\), Separation forms the nonempty subset of \(W\) satisfying the witness condition. Replacement forms this indexed family of nonempty sets, and Choice inside \(M\) selects one name from each. Replacement gives its function graph \((\tau_a)_{a\in A}\in M\). An external choice of a witness for each actual \(a\) would not prove that this graph belongs to \(M\).</p></div>
+</section>
+
+<section id="maximum-principle" data-kind="theorem" data-formal="fmix-maximum-principle fmix-witness-existential-introduction">
+  <h2>A forced existential has a ground-name witness at the same condition</h2>
+  <div class="statement-box"><p>Under the standing transitive ZFC ground-model convention, for every fixed formula and tuple of ground names,</p>
+  <div class="math-display">\[p\Vdash\exists x\,\varphi(x,\bar\rho)\quad\Longleftrightarrow\quad\exists\tau\in M\ [\tau\text{ is a }P\text{-name and }p\Vdash\varphi(\tau,\bar\rho)].\]</div></div>
+  <p>This is the <strong>forcing maximum principle</strong>. “Maximum” means that a single witness name works already at \(p\); it does not mean that the order has a maximum condition.</p>
+  <div class="proof"><p>For the forward direction, <a href="#ground-choice"></a> supplies the antichain and its whole witness family inside \(M\). Form the specified mixture there. Apply <a href="#supplied-witness-family"></a> to obtain the matrix at the original \(p\). For the reverse direction, let \(G\) be any generic through \(p\). The supplied ground name has value in \(M[G]\), and the forcing hypothesis makes the matrix true at that value. Existential introduction in this ordinary structure proves the existential statement, as required.</p></div>
+  <p>The witness name is independent of \(G\). Its value may still vary with \(G\). No chain-condition assumption was used.</p>
+</section>
+
+<section id="two-branch-example" data-kind="lemma" data-formal="fth-three-conditions fth-three-order-facts fmix-fork-antichain fmix-fork-antichain-valid fmix-fork-family fmix-fork-name fmix-fork-name-valid fmix-fork-filters fmix-fork-values fmix-equality-formula fmix-fork-choice-formula fmix-fork-semantic-choices fmix-fork-no-fixed-check">
+  <h2>One name can choose between two different ordinary sets</h2>
+  <p>Take \(P=\{1,a,b\}\), where \(a,b\le1\) are incompatible and minimal. Let \(A=\{a,b\}\), with \(\tau_a=\check0\) and \(\tau_b=\check1\), where \(0=\varnothing\) and \(1=\{0\}\). Both principal filters \(G_a=\{a,1\}\) and \(G_b=\{b,1\}\) are generic for a transitive ground model containing this finite order: every dense subset contains both minimal conditions. The mixture \(\tau\) satisfies</p>
+  <div class="math-display">\[\tau[G_a]=0,\qquad\tau[G_b]=1.\]</div>
+  <div class="proof"><p>The two filters respectively meet \(A\) in \(a\) and \(b\). The <a href="#mixing-lemma">mixing lemma</a> and <a href="forcing-names#check-names">check-name valuation identity</a> give the displayed values. Every generic filter meets the dense set \(A\), and contains at most one of its members, so \(1\Vdash\tau=\check0\lor\tau=\check1\). Neither equality is forced alone at \(1\), because the other principal filter refutes it. In particular no single check name \(\check x\) can have these two different values: its value is always \(x\).</p></div>
+</section>
+
+<section id="choice-question" data-kind="question" data-formal="fmix-identity-graph fmix-transitive-family-counterexample fmix-fork-no-fixed-check fmix-maximum-principle">
+  <h2>Does choosing the branch witnesses externally suffice?</h2>
+  <p>Suppose a transitive ground set contains every \(a\in A\) and every individually chosen name \(\tau_a\). Does this alone put the function \(a\mapsto\tau_a\), and hence the specified mixture, in the ground set? Does the maximum principle choose a fixed ordinary witness set?</p>
+  <details class="question-answer"><summary><span class="answer-show">Show answer</span><span class="answer-hide">Hide answer</span></summary><div class="answer-body"><p>No to both conclusions. Transitivity is downward closure under membership; it does not close a set under collecting an externally specified family into a new set. For a concrete example, the transitive set \(V_\omega\) contains every natural number and every individual value of the identity function on \(\omega\), but it contains neither \(\omega\) nor that function's infinite graph. Ground availability must be established for the whole family. The proof above obtains it by internal Collection and Choice, and then constructs the mixture internally; the supplied-data version assumes those actual objects instead.</p><p>The maximum principle chooses a fixed <em>name</em>. Its value can depend on the generic filter, as the two-branch example shows. Replacing that name by a check name of one ordinary set is a stronger assertion and fails in the example.</p></div></details>
+</section>
